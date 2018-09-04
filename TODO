@@ -1,0 +1,20 @@
+Pantalla Alta de equipos size = 3hs:
+  ✔ Error al guardar equipo el campo unidad se guarda en cero por eso no aparce en el listado. @done (18-09-01 00:57)
+  ✔ sacar nombre empresa de pantalla, ese valor ya se mostrara en la barra de navegacion superior al lado del usuario. @done (18-09-01 00:59)
+  ✔ verificar si guarda Agregar información no queda claro para que es - Mejora. @done (18-09-01 01:06)
+  ✔ Los items que se cargan en las cargas rápidas de sector o grupo no aparecen en sus respectivos ABM - error. @done (18-09-01 01:25)
+  ✔ Marca no tiene carga rápidas- error. @done (18-09-01 01:53)
+  --- ✄ -----------------------
+  Echo por ELiana
+      ☐ No están todos las ABM correspondientes a cargas rápidas  Área Proceso criticidad- error.
+
+
+Pantalla listado equipos size = 4hs:
+  ✔ imprimir no funciona sacar icono. @done (18-09-01 01:57)
+  ☐ en el historial de  mantenimiento autónomo yo debería poder buscar.
+  ✔ el icono de reloj es mantenimiento autonomo no lectura horaria y no funciona poner en reparación el equipo. (EL CAMPO LECTURA DEBE SER ENTERO!!!!) @done (18-09-01 13:32)
+  ☐ La editar equipo queda pantalla en negro y no están todos los campos para editar.
+
+
+Desplegable multiempresa: size 5hs:
+  ☐ Cambiar multiempresa => En realidad multi unidad Industrial?! @question
