@@ -163,6 +163,29 @@ class Users extends CI_Model
 		{
 			$usr  = $data['usr'];
 			$pas  = md5($data['pas']);
+
+			/*$this->db->select('sisusers.usrId, sisusers.usrNick, sisusers.usrName, sisusers.usrLastName, sisusers.usrComision, sisusers.usrPassword, sisusers.grpId, sisusers.usrimag, 
+				empresas.descripcion, empresas.id_empresa');
+			$this->db->from('sisusers');
+			$this->db->join('usuarioasempresa', 'usuarioasempresa.usrId = sisusers.usrId');
+			$this->db->join('empresas', 'usuarioasempresa.empresaid = empresas.id_empresa');
+			$this->db->where('sisusers.usrNick', $usr);
+			//$this->db->where('sisusers.usrPassword', $pas);
+			$this->db->where('usuarioasempresa.tipo', 1);
+			$query = $this->db->get();
+			
+			if ($query->num_rows() != 0)
+			{
+				$datosSesionUsuario = $query->result_array();
+				
+				dump_exit($datosSesionUsuario);
+				$this->session->set_userdata('user_data', $datosSesionUsuario);
+				
+				return true;
+			} else {
+				return false;
+			}*/
+
 			$this->db->select('sisusers.usrId, sisusers.usrNick, sisusers.usrName, sisusers.usrLastName, sisusers.usrComision, sisusers.usrPassword, sisusers.grpId, sisusers.usrimag, sisusers.id_empresa, 
 				empresas.id_empresa, empresas.descripcion');
 			$this->db->from('sisusers');

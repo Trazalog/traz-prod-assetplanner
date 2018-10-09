@@ -2,41 +2,216 @@
 
 class  Equipo extends CI_Controller {
 
-    public function __construct(){
+    public function __construct()
+    {
        parent::__construct();
        $this->load->model('Equipos');
     }
 
-    public function index($permission){    
-    	
-		$data['list'] = $this->Equipos->equipos_List();
+    public function index($permission)
+    {
+		$userdata           = $this->session->userdata('user_data');
+		$data['empresa']    = $userdata[0]['id_empresa'];
+		$data['list']       = $this->Equipos->equipos_List();
 		$data['permission'] = $permission;
-		
 		$this->load->view('equipo/list', $data);		     
     }
 
+    /********** ELIMINAR EQUIPO **********/
+    
     // Da de baja equipos (AN)
-    public function baja_equipo(){
-	
-		$idequipo=$_POST['idequipo'];		
-		$datos = array('estado'=>"AN");
-		//doy de baja
-		$result = $this->Equipos->baja_equipos($datos, $idequipo);
-		print_r(json_encode($result))	;	
+    public function baja_equipo()
+    {
+		$idequipo = $_POST['idequipo'];
+		$datos    = array('estado'=>"AN");
+		$result   = $this->Equipos->baja_equipos($datos, $idequipo);
+		print_r(json_encode($result));	
 	}
 
-	// Trae contratistas
-	public function getcontra(){
+	/********** EDITAR EQUIPO **********/
+
+	/**
+	 * Equipo::getEditar()
+	 * Trae info de equipo a editar
+	 *
+	 * @return 	String 	Json con información del equipo.
+	 */
+	public function getEditar()
+	{
+		$idEquipo = $this->input->post('idEquipo');
+		$info     = $this->Equipos->getEquipoId($idEquipo); 
 		
+		//dump_exit($info);
+		if($info)
+			echo json_encode($info);
+		else 
+			echo "nada";
+	}
+
+	// Trae areas
+    public function getarea()
+	{
+		$area = $this->Equipos->getareas();
+		if($area)
+		{
+			$arre = array();
+	        foreach ($area as $row ) 
+	        {
+	           $arre[] = $row;
+	        }
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}
+
+	// Trae procesos
+	public function getproceso()
+	{
+		$proceso = $this->Equipos->getprocesos();
+		if($proceso)
+		{	
+			$arre = array();
+	        foreach ($proceso as $row ) 
+	        {   
+	           $arre[] = $row;
+	        }
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}
+
+	// Trae criticidad
+	public function getcriti()
+	{
+		$criti = $this->Equipos->getcriti();
+		if($criti)
+		{	
+			$arre = array();
+	        foreach ($criti as $row ) 
+	        {   
+	           $arre[] = $row;
+	        }
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}
+
+	// Trae sector/etapa
+	public function getetapa()
+	{	
+		$etapa = $this->Equipos->getetapas();
+		if($etapa)
+		{	
+			$arre = array();
+	        foreach ($etapa as $row ) 
+	        {   
+	           $arre[] = $row;
+	        }
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}
+
+	// Trae grupo
+	public function getgrupo()
+	{	
+		$grupo = $this->Equipos->getgrupos();
+		if($grupo)
+		{	
+			$arre = array();
+	        foreach ($grupo as $row ) 
+	        {   
+	           $arre[] = $row;
+	        }
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}
+
+	//	Trae marcas
+	public function getmarca()
+	{
+		$marca = $this->Equipos->getmarcas();
+		if($marca)
+		{	
+			$arre = array();
+	        foreach ($marca as $row ) 
+	        {   
+	           $arre[] = $row;
+	        }
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}
+
+	//	Trae marcas
+	public function getcliente()
+	{
+		$cliente = $this->Equipos->getclientes();
+		if($cliente)
+		{	
+			$arre = array();
+	        foreach ($cliente as $row ) 
+	        {   
+	           $arre[] = $row;
+	        }
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}
+
+
+	//Guarda datos editados
+	public function editar_equipo() // Ok
+	{
+		$datos            = $this->input->post('data');
+		$id               = $this->input->post('idEquipo');
+		$userdata         = $this->session->userdata('user_data');
+		$datos['id_empresa'] = $userdata[0]['id_empresa'];
+		$result           = $this->Equipos->update_editar($datos,$id);
+		print_r(json_encode($result));
+		
+	}
+
+
+
+
+
+
+
+
+
+
+
+	//trae asiganciones de contratistas
+	public function getContratistasEquipo()
+	{
+		$id_equipo = $this->input->post('id_equipo');
+		//dump_exit($id_equipo, 'id_equipo');
+		$info     = $this->Equipos->getContratistasEquipo($id_equipo); 
+		echo json_encode($info);
+	}
+
+
+
+
+
+
+
+
+
+
+	// Trae contratistas
+	public function getcontra()
+	{
 		$empresa = $this->Equipos->getcontra();
 		//echo json_encode($Customers);
-
 		if($empresa)
 		{	
-			$arre=array();
+			$arre = array();
 	        foreach ($empresa as $row ) 
 	        {   
-	           $arre[]=$row;
+	           $arre[] = $row;
 	        }
 			echo json_encode($arre);
 		}
@@ -92,107 +267,10 @@ class  Equipo extends CI_Controller {
 		else echo "nada";
 	}
 
-	public function getmarca(){
-		
-		$marca = $this->Equipos->getmarcas();
-		//echo json_encode($Customers);
-
-		if($marca)
-		{	
-			$arre=array();
-	        foreach ($marca as $row ) 
-	        {   
-	           $arre[]=$row;
-	        }
-			echo json_encode($arre);
-		}
-		else echo "nada";
-	}
-	
-	// Trae grupo por empresa y llena el select - Listo 
-	public function getgrupo(){
-		
-		$grupo = $this->Equipos->getgrupos();
-
-		if($grupo)
-		{	
-			$arre=array();
-	        foreach ($grupo as $row ) 
-	        {   
-	           $arre[]=$row;
-	        }
-			echo json_encode($arre);
-		}
-		else echo "nada";
-	}
 
 	
- 	
- 	public function getarea(){
 	
-		$area = $this->Equipos->getareas();
-		//echo json_encode($Customers);
 
-		if($area)
-		{	
-			$arre=array();
-	        foreach ($area as $row ) 
-	        {   
-	           $arre[]=$row;
-	        }
-			echo json_encode($arre);
-		}
-		else echo "nada";
-	}
-
-	// Trae criticidad y llena el select - Listo
-	public function getcriti(){
-		
-		$criti = $this->Equipos->getcriti();
-		if($criti)
-		{	
-			$arre=array();
-	        foreach ($criti as $row ) 
-	        {   
-	           $arre[]=$row;
-	        }
-			echo json_encode($arre);
-		}
-		else echo "nada";
-	}
-
-	// Trae proceso y llena el select - Listo
-	public function getproceso(){
-		
-		$proceso = $this->Equipos->getprocesos();
-
-		if($proceso)
-		{	
-			$arre=array();
-	        foreach ($proceso as $row ) 
-	        {   
-	           $arre[]=$row;
-	        }
-			echo json_encode($arre);
-		}
-		else echo "nada";
-	}
-	
-	// Trae sector/etapa y llena el select - Listo
-	public function getetapa(){
-		
-		$etapa = $this->Equipos->getetapas();
-		if($etapa)
-		{	
-			$arre=array();
-	        foreach ($etapa as $row ) 
-	        {   
-	           $arre[]=$row;
-	        }
-			echo json_encode($arre);
-		}
-		else echo "nada";
-	}
 
 	public function getcodigo(){
 		$this->load->model('Equipos');
@@ -357,6 +435,20 @@ class  Equipo extends CI_Controller {
 	    }
   	}
 
+  	// Agrega las grupos nuevos - Listo
+  	public function agregar_cliente(){
+
+	    if($_POST)
+	    {
+	    	$datos=$_POST['parametros'];
+
+	     	$result = $this->Equipos->agregar_clientes($datos);
+
+	      	if($result)
+	      		echo $this->db->insert_id();
+	      	else echo 0;
+	    }
+  	}
  	// 	public function guardar_equipo(){
 		
 		// 	$datos=$_POST['data'];
@@ -408,36 +500,35 @@ class  Equipo extends CI_Controller {
 	// }
 
   	// Agrega equipo nuevo - Listo
-	public function guardar_equipo(){
-		
+	public function guardar_equipo()
+	{
 		$datos = $_POST['data'];	// todos los datos de equipo
-		$mar = $_POST['marca'];	// marca equipo
-		$cod = $_POST['codigo'];	// nombre del equipo
+		$mar   = $_POST['marca'];	// marca equipo
+		$cod   = $_POST['codigo'];	// nombre del equipo
+		
 		if(isset($_POST['comp'])){
 			$com = $_POST['comp'];	// registros titulo/descripcion
 		}
 		
-		$can = $_POST['j'];	//cantidad de registros titulo/descripción
-		
+		$can    = $_POST['j'];	//cantidad de registros titulo/descripción
 		$result = $this->Equipos->insert_equipo($datos);
 		
-		if($result){
+		if($result)
+		{
+			$ultimoId = $this->db->insert_id(); // ultimo registro insertado en equipos (id_equipos)
+			$datos    = array();			
+			$j        = 1;
+			$long     = (int)$can - 1; // llega hasta 2 comp antes del final
 
-			$ultimoId = $this->db->insert_id(); // ultimo registro insertado en equipos (id_equipos)		
-			$datos = array();			
-			
-			$j = 1;
-			$long = (int)$can - 1; // llega hasta 2 comp antes del final
-
-			for ($i = 0; $i < $long ; $i++) { 
-				
-			 	$datos = array(
-			 		       	'titulo'=>$com[$i], 
-			 		       	'descripcion'=>$com[$j],
-			 		       	'id_equipo'=>$ultimoId
-			 		  	);			 	
-			 	$j = $j+2;
-			 	$i++;
+			for ($i = 0; $i < $long ; $i++)
+			{ 
+				$datos = array(
+					'titulo'=>$com[$i], 
+					'descripcion'=>$com[$j],
+					'id_equipo'=>$ultimoId
+				);			 	
+				$j = $j+2;
+				$i++;
 				$result = $this->Equipos->insert_equipinfo($datos);
 			}
 		}
@@ -521,15 +612,7 @@ class  Equipo extends CI_Controller {
 	 } 
 	}
 
-	public function editar_equipo(){
-		
-		$datos=$_POST['data'];
-		$id=$_POST['comglob'];
 
-		$result = $this->Equipos->update_editar($datos,$id);
-		print_r(json_encode($result));
-		
-	}
 	
 	public function getco(){
 		
@@ -562,24 +645,23 @@ class  Equipo extends CI_Controller {
 	}
 
 	//Guarda contratista asignado a equipo
-	public function guardarcontra(){
+	public function guardarcontra()
+	{
+		$datos  = $_POST['idscontra'];//contratista		
+		$contra = $_POST['idglob'];//idequipo
+		$arre   = array();
 		
-		$datos=$_POST['idscontra'];//contratista		
-		$contra=$_POST['idglob'];
-
-		$arre=array();
-		
-	    if(count($datos) > 0 ){	    	
-	    	
-	        foreach ($datos as $row ){   
+	    if(count($datos) > 0 )
+	    {	    		
+	        foreach ($datos as $row )
+	        {
 	        	$datos2 = array(
-			        	 'id_equipo'=>$contra, 
-			        	 'id_contratista'=>$row
-			        	);	
+					'id_equipo'      => $contra, 
+					'id_contratista' => $row
+				);	
 	          	$r1 = $this->Equipos->insert_contratista($datos2);
 	        }	    	
 		}
-
 		echo json_encode($r1);
 	}
 
@@ -674,7 +756,10 @@ class  Equipo extends CI_Controller {
   		$result = $this->Equipos->getEqPorIds($this->input->post());
   	  	echo json_encode($result);
   	}
+
+
+
+
+
+
 }
- 
-
-

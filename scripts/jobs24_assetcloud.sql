@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `jobs24_assetcloud` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `jobs24_assetcloud`;
 -- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: jobs24_assetcloud
@@ -100,8 +102,10 @@ CREATE TABLE `admcustomers` (
   `cliDay` int(11) DEFAULT '30',
   `cliColor` varchar(7) COLLATE utf8_spanish_ci DEFAULT NULL,
   `estado` varchar(4) COLLATE utf8_spanish_ci NOT NULL,
+  `id_empresa` int(11) NOT NULL,
+  `cliRazonSocial` varchar(45) COLLATE utf8_spanish_ci NOT NULL,
   PRIMARY KEY (`cliId`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,7 +114,7 @@ CREATE TABLE `admcustomers` (
 
 LOCK TABLES `admcustomers` WRITE;
 /*!40000 ALTER TABLE `admcustomers` DISABLE KEYS */;
-INSERT INTO `admcustomers` VALUES (13,'Daniel','Osvaldo','31324200','1984-05-01','1','Av La Humareda 12','','','','13.png',10,30,'#00a65a','C'),(14,'Mariana','Romero','31324205','2016-05-04','14','Av. Simpre Viva 123','','','','14.png',11,15,'#f39c12','C'),(15,'Patricia','Moreno','45632145','2016-05-19','15','Rogelio Funes Mori y No Fue Corner','','','','15.png',10,10,'#dd4b39','C'),(16,'Homero','Perez','45888882','2000-05-10','16','Rivadavia 124s','','','','16.png',12,20,'#00a65a','C'),(17,'Mauricio','perez','23339814','2016-06-01','17','dd','26465','026457070785','permaucirio@gmail.com','17.png',10,30,'#00a65a','C'),(18,'asAS','ASas','ss','2016-12-16','18','sASAs','sss','s333','permauricio23','18.png',10,30,'#00a65a','C');
+INSERT INTO `admcustomers` VALUES (1,'Daniel','Osvaldo','31324200','1984-05-01','1','Av La Humareda 12','','','','13.png',10,30,'#00a65a','AC',2,'Daniel Osvaldo'),(2,'Mariana','Romero','31324205','2016-05-04','14','Av. Simpre Viva 123','','','','14.png',11,15,'#f39c12','AC',2,'Mariana Romero'),(3,'Mauricio','perez','23339814','2016-06-01','17','dd','26465','026457070785','permaucirio@gmail.com','17.png',10,30,'#00a65a','AC',2,'Master of Ventas'),(15,'Patricia','Moreno','45632145','2016-05-19','15','Rogelio Funes Mori y No Fue Corner','','','','15.png',10,10,'#dd4b39','AC',2,'Patricia Romero'),(16,'Homero','Perez','45888882','2000-05-10','16','Rivadavia 124s','','','','16.png',12,20,'#00a65a','AC',2,'Homero'),(31,'747','747','747',NULL,NULL,'747','747',NULL,'747',NULL,NULL,30,NULL,'AC',2,'747');
 /*!40000 ALTER TABLE `admcustomers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -182,8 +186,9 @@ CREATE TABLE `area` (
   `id_area` int(11) NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(100) COLLATE utf8mb4_spanish_ci NOT NULL,
   `id_empresa` int(11) NOT NULL,
+  `estado` varchar(45) COLLATE utf8mb4_spanish_ci NOT NULL,
   PRIMARY KEY (`id_area`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -192,7 +197,7 @@ CREATE TABLE `area` (
 
 LOCK TABLES `area` WRITE;
 /*!40000 ALTER TABLE `area` DISABLE KEYS */;
-INSERT INTO `area` VALUES (1,'proceso nuevo de area',2),(2,'gemma area 1',2),(3,'Industrial',2),(5,'666',2);
+INSERT INTO `area` VALUES (1,'Area 01',2,'AC'),(2,'gemma area 1',2,'AN'),(3,'Industrial',2,'AC'),(5,'Area 02',2,'AC'),(6,'agregar área',2,'AN'),(7,'Area c-01',2,'AN'),(8,'747',2,'AN');
 /*!40000 ALTER TABLE `area` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -312,7 +317,7 @@ CREATE TABLE `componenteequipo` (
 
 LOCK TABLES `componenteequipo` WRITE;
 /*!40000 ALTER TABLE `componenteequipo` DISABLE KEYS */;
-INSERT INTO `componenteequipo` VALUES (6,1,1,NULL,'','AC',2),(16,1,2,NULL,'','AC',2),(71,4,12,NULL,'codigoXXX','AC',2);
+INSERT INTO `componenteequipo` VALUES (6,1,1,NULL,'cod compone','AC',2),(16,1,2,NULL,'cod compone','AC',2),(71,4,12,NULL,'codigoXXX c','AC',2);
 /*!40000 ALTER TABLE `componenteequipo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -432,11 +437,11 @@ DROP TABLE IF EXISTS `contratistaquipo`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `contratistaquipo` (
-  `id_equipo` int(1) NOT NULL,
+  `id_contratistaquipo` int(11) NOT NULL,
+  `id_equipo` int(11) NOT NULL,
   `id_contratista` int(11) NOT NULL,
-  PRIMARY KEY (`id_contratista`,`id_equipo`),
-  KEY `id_equipo` (`id_equipo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+  PRIMARY KEY (`id_contratistaquipo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -445,6 +450,7 @@ CREATE TABLE `contratistaquipo` (
 
 LOCK TABLES `contratistaquipo` WRITE;
 /*!40000 ALTER TABLE `contratistaquipo` DISABLE KEYS */;
+INSERT INTO `contratistaquipo` VALUES (1,2,17),(2,2,19),(3,4,17),(4,4,19),(5,4,21),(6,8,19),(7,8,20);
 /*!40000 ALTER TABLE `contratistaquipo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -468,7 +474,7 @@ CREATE TABLE `contratistas` (
   `estado` char(4) COLLATE utf8_spanish_ci NOT NULL,
   `id_empresa` int(11) NOT NULL,
   PRIMARY KEY (`id_contratista`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -477,7 +483,7 @@ CREATE TABLE `contratistas` (
 
 LOCK TABLES `contratistas` WRITE;
 /*!40000 ALTER TABLE `contratistas` DISABLE KEYS */;
-INSERT INTO `contratistas` VALUES (17,'Clorox7','Clorox 123 norte','contacto@clorox.com','info@clorox.com','1565656657','1565656657','1565656657','1565656657','AC',2),(19,'Trazalog','Lib. Gral. S. Martin 1890','soporte@tazalog.com','soporte@tazalog.com','155555555','155555555','155555555','Soporte','AC',2),(20,'aaac','aaac','aaac','aaac','aaac','aaac','aaac','aaac','AN',2),(21,'bbb','bbb','bbb','bbb','bbb','bbb','bbb','bbb','AN',2);
+INSERT INTO `contratistas` VALUES (17,'Clorox7','Clorox 123 norte','contacto@clorox.com','info@clorox.com','1565656657','1565656657','1565656657','1565656657','AC',2),(19,'Trazalog','Lib. Gral. S. Martin 1890','soporte@tazalog.com','soporte@tazalog.com','155555555','155555555','155555555','Soporte','AC',2);
 /*!40000 ALTER TABLE `contratistas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -492,8 +498,9 @@ CREATE TABLE `criticidad` (
   `id_criti` int(10) NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(50) CHARACTER SET latin1 NOT NULL,
   `id_empresa` varchar(45) COLLATE utf8_spanish_ci NOT NULL,
+  `estado` varchar(45) COLLATE utf8_spanish_ci NOT NULL,
   PRIMARY KEY (`id_criti`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -502,7 +509,7 @@ CREATE TABLE `criticidad` (
 
 LOCK TABLES `criticidad` WRITE;
 /*!40000 ALTER TABLE `criticidad` DISABLE KEYS */;
-INSERT INTO `criticidad` VALUES (1,'Alta','2'),(2,'Media','2'),(3,'Baja','2'),(4,'nueva cric','2'),(5,'666','2');
+INSERT INTO `criticidad` VALUES (1,'Alta','2','AC'),(2,'Media','2','AC'),(3,'Baja','2','AC'),(4,'Criticidad 02','2','AC'),(5,'666','2','AN'),(6,'Criticidad nivel 01','2','AN'),(7,'747','2','AN');
 /*!40000 ALTER TABLE `criticidad` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -675,8 +682,9 @@ CREATE TABLE `equipos` (
   `codigo` varchar(255) CHARACTER SET latin1 NOT NULL,
   `ubicacion` varchar(100) CHARACTER SET latin1 NOT NULL,
   `id_sector` int(11) NOT NULL,
-  `id_hubicacion` double NOT NULL,
+  `id_hubicacion` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
   `id_grupo` int(11) NOT NULL,
+  `id_customer` int(11) DEFAULT NULL,
   `id_criticidad` int(11) NOT NULL,
   `estado` varchar(2) CHARACTER SET latin1 NOT NULL,
   `fecha_ultimalectura` datetime NOT NULL,
@@ -699,7 +707,7 @@ CREATE TABLE `equipos` (
   KEY `id_sector` (`id_sector`),
   KEY `id_criticidad` (`id_criticidad`),
   KEY `id_grupo` (`id_grupo`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -708,7 +716,7 @@ CREATE TABLE `equipos` (
 
 LOCK TABLES `equipos` WRITE;
 /*!40000 ALTER TABLE `equipos` DISABLE KEYS */;
-INSERT INTO `equipos` VALUES (1,'PERFORADORA RANGER 500','2017-01-01','0000-00-00','2018-12-31','Tamrock','EMPER001','La Laja',4,0,4,1,'AC','0000-00-00 00:00:00',9000,'',0,0,'0000-00-00',0,0,'','',1,3,3,0,2),(2,'PERFORADORA RANGER 680','2017-06-01','0000-00-00','2018-01-19','Tamrock','EMPER002','La Laja',4,0,4,2,'AC','2018-01-17 00:00:00',7000,'',0,0,'0000-00-00',0,0,'','',1,3,3,0,2),(4,'CARGADORA FRONTAL CAT 980H','2017-08-01','0000-00-00','2018-03-14','Caterpillar','EMCAR002','La Laja',5,0,4,2,'RE','2018-01-17 00:00:00',4500,'',0,0,'0000-00-00',0,0,'','',1,3,3,0,2),(6,'sdfgsdfdfg','2018-09-01','0000-00-00','2018-09-29','Marca Genérica','E1010','jfghjfghjfgj',6,0,2,4,'RE','2018-09-06 00:00:00',123,'',0,0,'0000-00-00',0,0,'','chgjchjcjhjhcj',2,1,3,10123456,2),(7,'3463463463463','2018-09-04','0000-00-00','2018-10-05','Bahco','3456356','34564634653456',3,0,4,2,'AN','2018-09-21 00:00:00',3456,'',0,0,'0000-00-00',0,0,'','3456346456',2,2,2,34564563456,2),(8,'666','2018-09-06','0000-00-00','2018-09-06','666','666','666',12,0,8,5,'AC','2018-09-06 00:00:00',666,'',0,0,'0000-00-00',0,0,'','666',2,5,4,666,2);
+INSERT INTO `equipos` VALUES (1,'PERFORADORA RANGER 500','2017-01-01','0000-00-00','2018-12-31','Tamrock','EMPER001','La Laja',4,NULL,4,1,1,'AC','0000-00-00 00:00:00',9000,'',0,0,'0000-00-00',0,0,'','',1,3,3,0,2),(2,'PERFORADORA RANGER 680','2017-06-01','0000-00-00','2018-01-19','Tamrock','EMPER002','La Laja',4,NULL,4,2,2,'AC','2018-01-17 00:00:00',7000,'',0,0,'0000-00-00',0,0,'','',1,3,3,0,2),(4,'CARGADORA FRONTAL CAT 980H','2017-08-01','0000-00-00','2018-03-14','Caterpillar','EMCAR002','La Laja',5,NULL,4,2,2,'RE','2018-01-17 00:00:00',4500,'',0,0,'0000-00-00',0,0,'','',1,3,3,0,2),(8,'747','2018-09-08','0000-00-00','2018-09-15','747','747','',15,NULL,8,31,1,'AC','2018-09-15 00:00:00',747,'',0,0,'0000-00-00',0,0,'','666',2,1,1,747,2),(13,'descrip','2018-09-14','0000-00-00','2018-09-30','Caterpillar','mos2018','123456',6,NULL,3,3,4,'AC','2018-09-14 00:00:00',12,'',0,0,'0000-00-00',0,0,'','',2,5,2,555,2);
 /*!40000 ALTER TABLE `equipos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -783,7 +791,7 @@ CREATE TABLE `grupo` (
   `estado` varchar(45) COLLATE utf8_spanish_ci NOT NULL,
   `id_empresa` int(11) NOT NULL,
   PRIMARY KEY (`id_grupo`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -792,7 +800,7 @@ CREATE TABLE `grupo` (
 
 LOCK TABLES `grupo` WRITE;
 /*!40000 ALTER TABLE `grupo` DISABLE KEYS */;
-INSERT INTO `grupo` VALUES (1,'Instalaciones','AC',2),(2,'Rodados','AC',2),(3,'Instalaciones Electricas','AC',2),(4,'Equipos Moviles','AC',2),(5,'grupo de prueba','AN',2),(8,'666','AC',2);
+INSERT INTO `grupo` VALUES (1,'Instalaciones','AC',2),(2,'Rodados','AC',2),(3,'Instalaciones Electricas','AC',2),(4,'Equipos Moviles','AC',2),(5,'grupo de prueba','AN',2),(8,'666','AC',2),(9,'Grupo 33','AN',2),(10,'sdfsdfddf','AC',2),(11,'747','AC',2);
 /*!40000 ALTER TABLE `grupo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -847,7 +855,7 @@ CREATE TABLE `historial_lecturas` (
   `turno` varchar(11) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
   `estado` varchar(4) NOT NULL,
   PRIMARY KEY (`id_lectura`)
-) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -856,7 +864,7 @@ CREATE TABLE `historial_lecturas` (
 
 LOCK TABLES `historial_lecturas` WRITE;
 /*!40000 ALTER TABLE `historial_lecturas` DISABLE KEYS */;
-INSERT INTO `historial_lecturas` VALUES (1,1,150,'2017-10-01 04:24:41',8,'too ok','pepe','tarde','AC'),(2,1,56,'2017-10-16 04:29:15',8,'todo normal','ruben','noche','AC'),(3,1,20,'2017-10-28 10:48:21',8,'normal','juan','mañana','AC'),(4,1,0,'2017-11-08 20:14:59',0,NULL,'','','AC'),(5,1,0,'2017-11-16 20:15:21',0,NULL,'','','RE'),(6,1,0,'2017-11-24 20:15:32',0,NULL,'','','RE'),(7,2,12,'2018-07-27 17:24:07',1,'lalalaaaa','perez','mañana','RE'),(8,6,20,'2018-09-01 11:57:34',1,'test','test','test','RE'),(9,6,0,'2018-09-01 12:03:21',1,'aaa','aaa','aaa','AC'),(10,6,0,'2018-09-01 12:03:56',1,'bbb','bbb','bbb','RE'),(11,6,0,'2018-09-01 12:04:17',1,'ccc','ccc','ccc','AC'),(12,7,0,'2018-09-01 12:05:46',1,'ddd','ddd','ddd','AC'),(13,6,666,'2018-09-01 13:31:25',1,'666','666','666','AC'),(14,6,777,'2018-09-01 21:39:24',1,'777','777','777','RE');
+INSERT INTO `historial_lecturas` VALUES (1,1,150,'2017-10-01 04:24:41',8,'too ok','pepe','tarde','AC'),(2,1,56,'2017-10-16 04:29:15',8,'todo normal','ruben','noche','AC'),(3,1,20,'2017-10-28 10:48:21',8,'normal','juan','mañana','AC'),(4,1,0,'2017-11-08 20:14:59',0,NULL,'','','AC'),(5,1,0,'2017-11-16 20:15:21',0,NULL,'','','RE'),(6,1,0,'2017-11-24 20:15:32',0,NULL,'','','RE'),(7,2,12,'2018-07-27 17:24:07',1,'lalalaaaa','perez','mañana','RE'),(8,6,20,'2018-09-01 11:57:34',1,'test','test','test','RE'),(9,6,0,'2018-09-01 12:03:21',1,'aaa','aaa','aaa','AC'),(10,6,0,'2018-09-01 12:03:56',1,'bbb','bbb','bbb','RE'),(11,6,0,'2018-09-01 12:04:17',1,'ccc','ccc','ccc','AC'),(12,7,0,'2018-09-01 12:05:46',1,'ddd','ddd','ddd','AC'),(13,6,666,'2018-09-01 13:31:25',1,'666','666','666','AC'),(14,6,777,'2018-09-01 21:39:24',1,'777','777','777','RE'),(15,8,12,'2018-09-24 18:43:56',1,'12','12','12','RE'),(16,8,123,'2018-09-24 18:45:08',1,'123','123','123','AC'),(17,8,3,'2018-09-24 18:57:02',1,'3','3','3','RE'),(18,8,4,'2018-09-24 19:00:51',1,'4','4','4','AC'),(19,8,12,'2018-09-24 19:04:10',1,'12','12','12','RE'),(20,8,5,'2018-09-24 19:08:10',1,'5','5','5','AC');
 /*!40000 ALTER TABLE `historial_lecturas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -927,7 +935,7 @@ CREATE TABLE `informacionequipo` (
   `id_equipo` int(11) NOT NULL,
   `id_empresa` varchar(45) COLLATE utf8mb4_spanish_ci NOT NULL,
   PRIMARY KEY (`id_informacion`)
-) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -936,7 +944,7 @@ CREATE TABLE `informacionequipo` (
 
 LOCK TABLES `informacionequipo` WRITE;
 /*!40000 ALTER TABLE `informacionequipo` DISABLE KEYS */;
-INSERT INTO `informacionequipo` VALUES (1,'tit01','tit01',17,'2'),(2,'tit01','dede02',17,'2'),(3,'tit01','tit03',17,'2'),(4,'tit01','jjj04',17,'2'),(5,'dede02','tit01',17,'2'),(6,'dede02','dede02',17,'2'),(7,'dede02','tit03',17,'2'),(8,'dede02','jjj04',17,'2'),(9,'tit03','tit01',17,'2'),(10,'tit03','dede02',17,'2'),(11,'tit03','tit03',17,'2'),(12,'tit03','jjj04',17,'2'),(13,'jjj04','tit01',17,'2'),(14,'jjj04','dede02',17,'2'),(15,'jjj04','tit03',17,'2'),(16,'jjj04','jjj04',17,'2'),(17,'fefe1','fefe1',15,'2'),(18,'fefe1','fefe2',15,'2'),(19,'fefe1','fefe4',15,'2'),(20,'fefe1','fefe5',15,'2'),(21,'fefe2','fefe1',15,'2'),(22,'fefe2','fefe2',15,'2'),(23,'fefe2','fefe4',15,'2'),(24,'fefe2','fefe5',15,'2'),(25,'fefe4','fefe1',15,'2'),(26,'fefe4','fefe2',15,'2'),(27,'fefe4','fefe4',15,'2'),(28,'fefe4','fefe5',15,'2'),(29,'fefe5','fefe1',15,'2'),(30,'fefe5','fefe2',15,'2'),(31,'fefe5','fefe4',15,'2'),(32,'fefe5','fefe5',15,'2'),(33,'fefe','fefe',16,'2'),(34,'fefe','fefe',16,'2'),(35,'fefe','fff',16,'2'),(36,'fefe','ff2',16,'2'),(37,'fefe','fefe',16,'2'),(38,'fefe','fefe',16,'2'),(39,'fefe','fff',16,'2'),(40,'fefe','ff2',16,'2'),(41,'fff','fefe',16,'2'),(42,'fff','fefe',16,'2'),(43,'fff','fff',16,'2'),(44,'fff','ff2',16,'2'),(45,'ff2','fefe',16,'2'),(46,'ff2','fefe',16,'2'),(47,'ff2','fff',16,'2'),(48,'ff2','ff2',16,'2'),(49,'dede','dede',14,'2'),(50,'dede','dee',14,'2'),(51,'dee','dede',14,'2'),(52,'dee','dee',14,'2'),(53,'titulo info complementaria','info complementaria en si misma',7,'2'),(54,'666','666',8,'2');
+INSERT INTO `informacionequipo` VALUES (1,'tit01','tit01',17,'2'),(2,'tit01','dede02',17,'2'),(3,'tit01','tit03',17,'2'),(4,'tit01','jjj04',17,'2'),(5,'dede02','tit01',17,'2'),(6,'dede02','dede02',17,'2'),(7,'dede02','tit03',17,'2'),(8,'dede02','jjj04',17,'2'),(9,'tit03','tit01',17,'2'),(10,'tit03','dede02',17,'2'),(11,'tit03','tit03',17,'2'),(12,'tit03','jjj04',17,'2'),(13,'jjj04','tit01',17,'2'),(14,'jjj04','dede02',17,'2'),(15,'jjj04','tit03',17,'2'),(16,'jjj04','jjj04',17,'2'),(17,'fefe1','fefe1',15,'2'),(18,'fefe1','fefe2',15,'2'),(19,'fefe1','fefe4',15,'2'),(20,'fefe1','fefe5',15,'2'),(21,'fefe2','fefe1',15,'2'),(22,'fefe2','fefe2',15,'2'),(23,'fefe2','fefe4',15,'2'),(24,'fefe2','fefe5',15,'2'),(25,'fefe4','fefe1',15,'2'),(26,'fefe4','fefe2',15,'2'),(27,'fefe4','fefe4',15,'2'),(28,'fefe4','fefe5',15,'2'),(29,'fefe5','fefe1',15,'2'),(30,'fefe5','fefe2',15,'2'),(31,'fefe5','fefe4',15,'2'),(32,'fefe5','fefe5',15,'2'),(33,'fefe','fefe',16,'2'),(34,'fefe','fefe',16,'2'),(35,'fefe','fff',16,'2'),(36,'fefe','ff2',16,'2'),(37,'fefe','fefe',16,'2'),(38,'fefe','fefe',16,'2'),(39,'fefe','fff',16,'2'),(40,'fefe','ff2',16,'2'),(41,'fff','fefe',16,'2'),(42,'fff','fefe',16,'2'),(43,'fff','fff',16,'2'),(44,'fff','ff2',16,'2'),(45,'ff2','fefe',16,'2'),(46,'ff2','fefe',16,'2'),(47,'ff2','fff',16,'2'),(48,'ff2','ff2',16,'2'),(49,'dede','dede',14,'2'),(50,'dede','dee',14,'2'),(51,'dee','dede',14,'2'),(52,'dee','dee',14,'2'),(53,'titulo info complementaria','info complementaria en si misma',7,'2'),(54,'666','666',8,'2'),(55,'fgh','fgh',10,'2'),(56,'qqq','qqq',12,'2');
 /*!40000 ALTER TABLE `informacionequipo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -962,7 +970,7 @@ CREATE TABLE `marcasequipos` (
 
 LOCK TABLES `marcasequipos` WRITE;
 /*!40000 ALTER TABLE `marcasequipos` DISABLE KEYS */;
-INSERT INTO `marcasequipos` VALUES (1,'Marca Unica','AN',2),(2,'Black & Decker','AC',2),(3,'Bahco','AC',2),(4,'Caterpillar','AC',2),(5,'Skill','AN',2),(9,'Marca Genérica','AN',2),(17,'MARCA TEST','AC',2),(18,'TEST 2','AC',2),(19,'666','AC',2);
+INSERT INTO `marcasequipos` VALUES (1,'Marca Unica','AN',2),(2,'Black & Decker','AC',2),(3,'Bahco','AC',2),(4,'Caterpillar','AC',2),(5,'Skill','AC',2),(9,'Marca Genérica','AN',2),(17,'MARCA TEST','AC',2),(18,'TEST 2','AN',2),(19,'666','AC',2),(20,'747','AC',2);
 /*!40000 ALTER TABLE `marcasequipos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1282,8 +1290,9 @@ CREATE TABLE `proceso` (
   `id_proceso` int(11) NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(100) COLLATE utf8mb4_spanish_ci NOT NULL,
   `id_empresa` varchar(45) COLLATE utf8mb4_spanish_ci NOT NULL,
+  `estado` varchar(45) COLLATE utf8mb4_spanish_ci NOT NULL,
   PRIMARY KEY (`id_proceso`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1292,7 +1301,7 @@ CREATE TABLE `proceso` (
 
 LOCK TABLES `proceso` WRITE;
 /*!40000 ALTER TABLE `proceso` DISABLE KEYS */;
-INSERT INTO `proceso` VALUES (1,'un proceso nuevo 1','2'),(2,'nuevo proceso 001','2'),(3,'Extracción y Transporte','2'),(4,'666','2');
+INSERT INTO `proceso` VALUES (1,'un proceso nuevo 1','2','AC'),(2,'Proceso 00-2017','2','AC'),(3,'Extracción y Transporte','2','AC'),(4,'666','2','AN'),(5,'Proceso 01','2','AN'),(6,'747','2','AN');
 /*!40000 ALTER TABLE `proceso` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1360,7 +1369,7 @@ CREATE TABLE `sector` (
   `estado` varchar(45) COLLATE utf8_spanish_ci NOT NULL,
   `id_empresa` int(11) NOT NULL,
   PRIMARY KEY (`id_sector`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1369,7 +1378,7 @@ CREATE TABLE `sector` (
 
 LOCK TABLES `sector` WRITE;
 /*!40000 ALTER TABLE `sector` DISABLE KEYS */;
-INSERT INTO `sector` VALUES (1,'Planta','AC',2),(3,'Administracion','AC',2),(4,'Perforación','AC',2),(5,'test','AN',2),(6,'Auxiliar','AC',2),(12,'666','AC',2);
+INSERT INTO `sector` VALUES (1,'Planta','AC',2),(3,'Administración','AC',2),(4,'Perforación','AC',2),(5,'test','AN',2),(6,'Auxiliar','AC',2),(12,'666','AC',2),(13,'Sector A4','AN',2),(14,'sector 56','AN',2),(15,'747','AC',2);
 /*!40000 ALTER TABLE `sector` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1468,7 +1477,7 @@ CREATE TABLE `sisgroups` (
   `grpDash` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
   `id_empresa` int(11) NOT NULL,
   PRIMARY KEY (`grpId`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1477,7 +1486,7 @@ CREATE TABLE `sisgroups` (
 
 LOCK TABLES `sisgroups` WRITE;
 /*!40000 ALTER TABLE `sisgroups` DISABLE KEYS */;
-INSERT INTO `sisgroups` VALUES (1,'Administrador','Otrabajo',2),(2,'Vendedores','Sservicio',2),(3,'Depósito','Sservicio',2),(4,'Operario1','Sservicio',2),(5,'Supervisor de Taller','Sservicio',2),(7,'GRUPO TEST','Grafica',2);
+INSERT INTO `sisgroups` VALUES (1,'Administrador','Otrabajo',2),(2,'Vendedores','Sservicio',2),(3,'Depósito','Sservicio',2),(4,'Operario1','Sservicio',2),(5,'Supervisor de Taller','Sservicio',2),(7,'GRUPO TEST','Grafica',2),(8,'666','Cliente',2);
 /*!40000 ALTER TABLE `sisgroups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1495,7 +1504,7 @@ CREATE TABLE `sisgroupsactions` (
   PRIMARY KEY (`grpactId`),
   KEY `grpId` (`grpId`) USING BTREE,
   KEY `menuAccId` (`menuAccId`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=994 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1014 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1504,7 +1513,7 @@ CREATE TABLE `sisgroupsactions` (
 
 LOCK TABLES `sisgroupsactions` WRITE;
 /*!40000 ALTER TABLE `sisgroupsactions` DISABLE KEYS */;
-INSERT INTO `sisgroupsactions` VALUES (154,151,1),(158,158,1),(159,159,1),(160,160,1),(841,1,6),(842,1,7),(843,1,8),(844,1,9),(845,1,10),(846,1,11),(847,1,12),(848,1,13),(849,1,14),(850,1,15),(851,1,16),(852,1,17),(853,1,18),(854,1,19),(855,1,20),(856,1,21),(857,1,23),(858,1,24),(859,1,25),(860,1,151),(861,1,26),(862,1,27),(863,1,28),(864,1,29),(865,1,30),(866,1,31),(867,1,32),(868,1,33),(869,1,34),(870,1,35),(871,1,36),(872,1,37),(873,1,38),(874,1,39),(875,1,40),(876,1,41),(877,1,42),(878,1,43),(879,1,115),(880,1,116),(881,1,117),(882,1,155),(883,1,156),(884,1,157),(885,1,118),(886,1,119),(887,1,120),(888,1,121),(889,1,122),(890,1,123),(891,1,152),(892,1,153),(893,1,154),(894,1,177),(895,1,178),(896,1,179),(897,1,180),(898,1,64),(899,1,65),(900,1,66),(901,1,67),(902,1,68),(903,1,69),(904,1,70),(905,1,71),(906,1,72),(907,1,73),(908,1,74),(909,1,75),(910,1,79),(911,1,80),(912,1,81),(913,1,1),(914,1,2),(915,1,3),(916,1,4),(917,1,85),(918,1,86),(919,1,87),(920,1,88),(921,1,90),(922,1,91),(923,1,92),(924,1,93),(925,1,94),(926,1,95),(927,1,96),(928,1,97),(929,1,98),(930,1,99),(931,1,100),(932,1,101),(933,1,102),(934,1,103),(935,1,104),(936,1,105),(937,1,106),(938,1,107),(939,1,108),(940,1,109),(941,1,110),(942,1,111),(943,1,170),(944,1,171),(945,1,172),(946,1,127),(947,1,128),(948,1,129),(949,1,130),(950,1,132),(951,1,136),(952,1,137),(953,1,138),(954,1,139),(955,1,140),(956,1,141),(957,1,142),(958,1,143),(959,1,144),(960,1,145),(961,1,146),(962,1,147),(963,1,148),(964,1,149),(965,1,150),(966,1,45),(967,1,46),(968,1,47),(969,1,48),(970,1,49),(971,1,50),(972,1,54),(973,1,55),(974,1,56),(975,1,57),(976,1,58),(977,1,59),(978,1,60),(979,2,10),(980,2,11),(981,2,12),(982,2,13),(983,7,6),(984,7,7),(985,7,8),(986,7,9),(987,7,13),(988,7,14),(989,7,15),(990,7,16),(991,7,17),(992,1,89),(993,1,181);
+INSERT INTO `sisgroupsactions` VALUES (154,151,1),(158,158,1),(159,159,1),(160,160,1),(841,1,6),(842,1,7),(843,1,8),(844,1,9),(845,1,10),(846,1,11),(847,1,12),(848,1,13),(849,1,14),(850,1,15),(851,1,16),(852,1,17),(853,1,18),(854,1,19),(855,1,20),(856,1,21),(857,1,23),(858,1,24),(859,1,25),(860,1,151),(861,1,26),(862,1,27),(863,1,28),(864,1,29),(865,1,30),(866,1,31),(867,1,32),(868,1,33),(869,1,34),(870,1,35),(871,1,36),(872,1,37),(873,1,38),(874,1,39),(875,1,40),(876,1,41),(877,1,42),(878,1,43),(879,1,115),(880,1,116),(881,1,117),(882,1,155),(883,1,156),(884,1,157),(885,1,118),(886,1,119),(887,1,120),(888,1,121),(889,1,122),(890,1,123),(891,1,152),(892,1,153),(893,1,154),(894,1,177),(895,1,178),(896,1,179),(897,1,180),(898,1,64),(899,1,65),(900,1,66),(901,1,67),(902,1,68),(903,1,69),(904,1,70),(905,1,71),(906,1,72),(907,1,73),(908,1,74),(909,1,75),(910,1,79),(911,1,80),(912,1,81),(913,1,1),(914,1,2),(915,1,3),(916,1,4),(917,1,85),(918,1,86),(919,1,87),(920,1,88),(921,1,90),(922,1,91),(923,1,92),(924,1,93),(925,1,94),(926,1,95),(927,1,96),(928,1,97),(929,1,98),(930,1,99),(931,1,100),(932,1,101),(933,1,102),(934,1,103),(935,1,104),(936,1,105),(937,1,106),(938,1,107),(939,1,108),(940,1,109),(941,1,110),(942,1,111),(943,1,170),(944,1,171),(945,1,172),(946,1,127),(947,1,128),(948,1,129),(949,1,130),(950,1,132),(951,1,136),(952,1,137),(953,1,138),(954,1,139),(955,1,140),(956,1,141),(957,1,142),(958,1,143),(959,1,144),(960,1,145),(961,1,146),(962,1,147),(963,1,148),(964,1,149),(965,1,150),(966,1,45),(967,1,46),(968,1,47),(969,1,48),(970,1,49),(971,1,50),(972,1,54),(973,1,55),(974,1,56),(975,1,57),(976,1,58),(977,1,59),(978,1,60),(979,2,10),(980,2,11),(981,2,12),(982,2,13),(983,7,6),(984,7,7),(985,7,8),(986,7,9),(987,7,13),(988,7,14),(989,7,15),(990,7,16),(991,7,17),(992,1,89),(993,1,181),(994,1,182),(995,1,183),(996,1,184),(997,1,185),(998,1,186),(999,1,187),(1000,1,188),(1001,1,189),(1002,1,190),(1003,1,191),(1004,1,192),(1005,1,193),(1006,1,194),(1007,1,195),(1008,1,196),(1009,1,167),(1010,8,10),(1011,8,11),(1012,8,12),(1013,8,13);
 /*!40000 ALTER TABLE `sisgroupsactions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1525,7 +1534,7 @@ CREATE TABLE `sismenu` (
   `id_empresa` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `parent` (`parent`)
-) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1534,7 +1543,7 @@ CREATE TABLE `sismenu` (
 
 LOCK TABLES `sismenu` WRITE;
 /*!40000 ALTER TABLE `sismenu` DISABLE KEYS */;
-INSERT INTO `sismenu` VALUES (2,NULL,'Seguridad','fa fa-lock','',2,2),(3,2,'Usuarios','fa fa-fw fa-user','user',2,2),(4,2,'Grupos','fa fa-fw fa-users','group',1,2),(5,2,'Menu','fa fa-fw fa-bars','menu',3,2),(6,2,'Database','fa fa-fw fa-database','backup',4,2),(7,NULL,'Mantenimiento','fa  fa-wrench ','',3,2),(8,7,'Equipos','fa fa-cogs','Equipo',1,2),(9,7,'Componentes','fa fa-cogs','Componente',2,2),(10,7,'Preventivo','fa fa-tasks','Preventivo',4,2),(12,7,'Backlog','fa fa-tasks','Backlog',5,2),(13,7,'Registro_de_Parametros','fa fa-tasks','Lectura',10,2),(14,7,'Predictivo','fa fa-tasks','Predictivo',7,2),(15,7,'Solicitud_de_Servicio','fa fa-sitemap','Sservicio',3,2),(16,NULL,'Pañol','fa fa-briefcase','',4,2),(17,59,'Articulos','fa fa-barcode ','Article',1,2),(18,59,'Stock','fa fa-cubes','Lote',2,2),(20,59,'Orden_Insumos','fa fa-check','Ordeninsumo',3,2),(21,59,'Remitos','fa fa-paperclip ','Remito',4,2),(23,16,'Herramientas','fa fa-sign-out ','Herramienta',5,2),(24,16,'Salida_Herramientas','fa fa-paper-plane','Order',6,2),(25,16,'Entrada_Herramientas','fa fa-paper-plane','Unload',7,2),(26,16,'Trazabilidad_Componentes','fa fa-exchange','Trazacomp',8,2),(28,16,'Punto_Pedido','fa fa-bookmark','Lote/puntoPedList',10,2),(29,NULL,'ABM','fa fa-book','',6,2),(30,29,'ABM_Grupo','fa fa-server ','Grupo',2,2),(31,29,'ABM_Sector','fa fa-sitemap ','Sector',3,2),(32,29,'ABM_Contratista','fa fa-life-ring','Contratista',4,2),(33,29,'Parametrizar_Predictivo','fa fa-bullhorn','Parametro',5,2),(34,29,'ABM_Deposito','fa fa-qrcode','Deposito',5,2),(35,29,'ABM_Tareas','fa fa-street-view','Tarea',6,2),(36,29,'ABM_Parametros','fa fa-adjust','Altparametro',6,2),(37,29,'ABM_Proveedor','fa fa-truck','Proveedor',7,2),(38,29,'ABM_Familia','fa fa-check-square','Family',8,2),(40,7,' Ordenes_de_trabajo','fa fa-tasks','Otrabajo/listorden',8,2),(41,7,'Administrar_Ordenes','fa fa-thumbs-up','Envio',10,2),(43,7,'Alta_Nota_Pedido','fa fa-cart-plus','Notapedido',11,2),(44,NULL,'Compras','fa fa-shopping-cart ','',5,2),(45,44,'Enviar_Pedidos','fa fa-envelope-open-o','',1,2),(46,44,'Recepción_pedidos','fa fa-check','Administracion',2,2),(47,NULL,'Reportes',' fa fa-line-chart ','',8,2),(49,47,'Rep_Informe_de_Servicios','fa fa-file-text-o ','Reporte',3,2),(50,47,'Rep_Ordenes_de_trabajo','fa fa-file-text-o ','Reporteorden',2,2),(51,47,'Grafica_de_predictivos','fa fa-pie-chart ','Grafica',1,2),(52,47,'Rep_Articulos','fa fa-file-text-o','Reportepedido',4,2),(53,29,'ABM_modelos','','',0,2),(54,7,'Plan_de_Mantenimiento','fa fa-calendar','calendario/indexot',9,2),(55,7,'trazabilidad_ Activos','fa fa-exchange','fa fa-calendar',0,2),(58,NULL,'Equipos','fa fa-exchange','',0,2),(59,NULL,'Almacenes','fa fa-check','',4,2),(60,29,'ABM Marca','fa fa-sitemap','Marca',9,2),(61,47,'Rep_articulos_pedidos','fa fa-file-text-o ','Reportepedido',6,2);
+INSERT INTO `sismenu` VALUES (2,NULL,'Seguridad','fa fa-lock','',2,2),(3,2,'Usuarios','fa fa-fw fa-user','user',2,2),(4,2,'Grupos','fa fa-fw fa-users','group',1,2),(5,2,'Menu','fa fa-fw fa-bars','menu',3,2),(6,2,'Database','fa fa-fw fa-database','backup',4,2),(7,NULL,'Mantenimiento','fa  fa-wrench ','',3,2),(8,7,'Equipos','fa fa-cogs','Equipo',1,2),(9,7,'Componentes','fa fa-cogs','Componente',2,2),(10,7,'Preventivo','fa fa-tasks','Preventivo',4,2),(12,7,'Backlog','fa fa-tasks','Backlog',5,2),(13,7,'Registro_de_Parametros','fa fa-tasks','Lectura',10,2),(14,7,'Predictivo','fa fa-tasks','Predictivo',7,2),(15,7,'Solicitud_de_Servicio','fa fa-sitemap','Sservicio',3,2),(16,NULL,'Pañol','fa fa-briefcase','',4,2),(17,59,'Articulos','fa fa-barcode ','Article',1,2),(18,59,'Stock','fa fa-cubes','Lote',2,2),(20,59,'Orden_Insumos','fa fa-check','Ordeninsumo',3,2),(21,59,'Remitos','fa fa-paperclip ','Remito',4,2),(23,16,'Herramientas','fa fa-sign-out ','Herramienta',5,2),(24,16,'Salida_Herramientas','fa fa-paper-plane','Order',6,2),(25,16,'Entrada_Herramientas','fa fa-paper-plane','Unload',7,2),(26,16,'Trazabilidad_Componentes','fa fa-exchange','Trazacomp',8,2),(28,16,'Punto_Pedido','fa fa-bookmark','Lote/puntoPedList',10,2),(29,NULL,'ABM','fa fa-book','',6,2),(30,29,'ABM_Grupo','fa fa-server ','Grupo',2,2),(31,29,'ABM_Sector','fa fa-sitemap ','Sector',3,2),(32,29,'ABM_Contratista','fa fa-life-ring','Contratista',4,2),(33,29,'Parametrizar_Predictivo','fa fa-bullhorn','Parametro',1,2),(34,29,'ABM_Deposito','fa fa-qrcode','Deposito',5,2),(35,29,'ABM_Tareas','fa fa-street-view','Tarea',6,2),(36,29,'ABM_Parametros','fa fa-adjust','Altparametro',6,2),(37,29,'ABM_Proveedor','fa fa-truck','Proveedor',7,2),(38,29,'ABM_Familia','fa fa-check-square','Family',8,2),(40,7,' Ordenes_de_trabajo','fa fa-tasks','Otrabajo/listorden',8,2),(41,7,'Administrar_Ordenes','fa fa-thumbs-up','Envio',10,2),(43,7,'Alta_Nota_Pedido','fa fa-cart-plus','Notapedido',11,2),(44,NULL,'Compras','fa fa-shopping-cart ','',5,2),(45,44,'Enviar_Pedidos','fa fa-envelope-open-o','',1,2),(46,44,'Recepción_pedidos','fa fa-check','Administracion',2,2),(47,NULL,'Reportes',' fa fa-line-chart ','',8,2),(49,47,'Rep_Informe_de_Servicios','fa fa-file-text-o ','Reporte',3,2),(50,47,'Rep_Ordenes_de_trabajo','fa fa-file-text-o ','Reporteorden',2,2),(51,47,'Grafica_de_predictivos','fa fa-pie-chart ','Grafica',1,2),(52,47,'Rep_Articulos','fa fa-file-text-o','Reportepedido',4,2),(53,29,'ABM_modelos','','',0,2),(54,7,'Plan_de_Mantenimiento','fa fa-calendar','calendario/indexot',9,2),(55,7,'trazabilidad_ Activos','fa fa-exchange','fa fa-calendar',0,2),(58,NULL,'Equipos','fa fa-exchange','',0,2),(59,NULL,'Almacenes','fa fa-check','',4,2),(60,29,'ABM Marca','fa fa-sitemap','Marca',9,2),(61,47,'Rep_articulos_pedidos','fa fa-file-text-o ','Reportepedido',6,2),(62,29,'ABM Clientes','','Cliente',10,2),(63,29,'ABM Area','','Area',10,2),(64,29,'ABM Criticidad','','Criticidad',11,2),(65,29,'ABM Procesos','','Proceso',12,2);
 /*!40000 ALTER TABLE `sismenu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1550,7 +1559,7 @@ CREATE TABLE `sismenuactions` (
   `menuId` int(11) NOT NULL,
   `actId` int(11) DEFAULT NULL,
   PRIMARY KEY (`menuAccId`)
-) ENGINE=InnoDB AUTO_INCREMENT=182 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=198 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1559,7 +1568,7 @@ CREATE TABLE `sismenuactions` (
 
 LOCK TABLES `sismenuactions` WRITE;
 /*!40000 ALTER TABLE `sismenuactions` DISABLE KEYS */;
-INSERT INTO `sismenuactions` VALUES (1,1,1),(2,1,2),(3,1,3),(4,1,4),(5,2,1),(6,3,1),(7,3,2),(8,3,3),(9,3,4),(10,4,1),(11,4,2),(12,4,3),(13,4,4),(14,5,1),(15,5,2),(16,5,3),(17,5,4),(18,6,1),(19,6,2),(20,6,3),(21,6,4),(22,7,1),(23,8,1),(24,8,2),(25,8,3),(26,9,1),(27,9,2),(28,9,3),(29,10,1),(30,10,2),(31,10,3),(32,12,1),(33,12,2),(34,12,3),(35,13,1),(36,13,2),(37,13,3),(38,14,1),(39,14,2),(40,14,3),(41,15,1),(42,15,2),(43,15,3),(44,16,1),(45,17,1),(46,17,2),(47,17,3),(48,18,1),(49,18,2),(50,18,3),(51,19,1),(52,19,2),(53,19,3),(54,20,1),(55,20,2),(56,20,3),(57,21,1),(58,21,2),(59,21,3),(60,21,4),(61,22,1),(62,22,2),(63,22,3),(64,23,1),(65,23,2),(66,23,3),(67,24,1),(68,24,2),(69,24,3),(70,25,1),(71,25,2),(72,25,3),(73,26,1),(74,26,2),(75,26,3),(76,27,1),(77,27,2),(78,27,3),(79,28,1),(80,28,2),(81,28,3),(82,29,1),(83,29,2),(84,29,3),(85,30,1),(86,30,2),(87,30,3),(88,31,1),(89,31,2),(90,31,3),(91,32,1),(92,32,2),(93,32,3),(94,33,1),(95,33,2),(96,33,3),(97,34,1),(98,34,2),(99,34,3),(100,35,1),(101,35,2),(102,35,3),(103,36,1),(104,36,2),(105,36,3),(106,37,1),(107,37,2),(108,37,3),(109,38,1),(110,38,2),(111,38,3),(112,39,1),(113,39,2),(114,39,3),(115,40,1),(116,40,2),(117,40,3),(118,41,1),(119,41,2),(120,41,3),(121,43,1),(122,43,2),(123,43,3),(124,44,1),(125,44,2),(126,44,3),(127,45,1),(128,45,2),(129,45,3),(130,46,1),(131,46,52),(132,46,3),(133,47,1),(134,47,2),(135,47,3),(136,48,1),(137,48,2),(138,48,3),(139,49,1),(140,49,2),(141,49,3),(142,50,1),(143,50,2),(144,50,3),(145,51,1),(146,51,2),(147,51,3),(148,52,1),(149,52,2),(150,52,3),(151,8,13),(152,54,1),(153,54,2),(154,54,3),(155,40,9),(156,40,7),(157,40,10),(158,55,1),(159,55,2),(160,55,3),(161,56,1),(162,56,2),(163,56,3),(164,58,1),(165,58,2),(166,58,3),(167,58,4),(168,59,1),(170,60,1),(171,60,2),(172,60,3),(173,47,1),(174,47,2),(175,47,3),(176,54,13),(177,54,14),(178,54,15),(179,54,16),(180,54,17),(181,31,4);
+INSERT INTO `sismenuactions` VALUES (1,1,1),(2,1,2),(3,1,3),(4,1,4),(5,2,1),(6,3,1),(7,3,2),(8,3,3),(9,3,4),(10,4,1),(11,4,2),(12,4,3),(13,4,4),(14,5,1),(15,5,2),(16,5,3),(17,5,4),(18,6,1),(19,6,2),(20,6,3),(21,6,4),(22,7,1),(23,8,1),(24,8,2),(25,8,3),(26,9,1),(27,9,2),(28,9,3),(29,10,1),(30,10,2),(31,10,3),(32,12,1),(33,12,2),(34,12,3),(35,13,1),(36,13,2),(37,13,3),(38,14,1),(39,14,2),(40,14,3),(41,15,1),(42,15,2),(43,15,3),(44,16,1),(45,17,1),(46,17,2),(47,17,3),(48,18,1),(49,18,2),(50,18,3),(51,19,1),(52,19,2),(53,19,3),(54,20,1),(55,20,2),(56,20,3),(57,21,1),(58,21,2),(59,21,3),(60,21,4),(61,22,1),(62,22,2),(63,22,3),(64,23,1),(65,23,2),(66,23,3),(67,24,1),(68,24,2),(69,24,3),(70,25,1),(71,25,2),(72,25,3),(73,26,1),(74,26,2),(75,26,3),(76,27,1),(77,27,2),(78,27,3),(79,28,1),(80,28,2),(81,28,3),(82,29,1),(83,29,2),(84,29,3),(85,30,1),(86,30,2),(87,30,3),(88,31,1),(89,31,2),(90,31,3),(91,32,1),(92,32,2),(93,32,3),(94,33,1),(95,33,2),(96,33,3),(97,34,1),(98,34,2),(99,34,3),(100,35,1),(101,35,2),(102,35,3),(103,36,1),(104,36,2),(105,36,3),(106,37,1),(107,37,2),(108,37,3),(109,38,1),(110,38,2),(111,38,3),(112,39,1),(113,39,2),(114,39,3),(115,40,1),(116,40,2),(117,40,3),(118,41,1),(119,41,2),(120,41,3),(121,43,1),(122,43,2),(123,43,3),(124,44,1),(125,44,2),(126,44,3),(127,45,1),(128,45,2),(129,45,3),(130,46,1),(131,46,52),(132,46,3),(133,47,1),(134,47,2),(135,47,3),(136,48,1),(137,48,2),(138,48,3),(139,49,1),(140,49,2),(141,49,3),(142,50,1),(143,50,2),(144,50,3),(145,51,1),(146,51,2),(147,51,3),(148,52,1),(149,52,2),(150,52,3),(151,8,13),(152,54,1),(153,54,2),(154,54,3),(155,40,9),(156,40,7),(157,40,10),(158,55,1),(159,55,2),(160,55,3),(161,56,1),(162,56,2),(163,56,3),(164,58,1),(165,58,2),(166,58,3),(167,58,4),(168,59,1),(170,60,1),(171,60,2),(172,60,3),(173,47,1),(174,47,2),(175,47,3),(176,54,13),(177,54,14),(178,54,15),(179,54,16),(180,54,17),(181,31,4),(182,62,1),(183,62,2),(184,62,3),(185,62,4),(186,63,1),(187,63,2),(188,63,3),(189,63,4),(190,64,1),(191,64,2),(192,64,3),(193,64,4),(194,65,1),(195,65,2),(196,65,3),(197,65,4);
 /*!40000 ALTER TABLE `sismenuactions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2167,7 +2176,7 @@ CREATE TABLE `unidad_industrial` (
   `descripcion` varchar(100) COLLATE utf8mb4_spanish_ci NOT NULL,
   `id_empresa` varchar(45) COLLATE utf8mb4_spanish_ci NOT NULL,
   PRIMARY KEY (`id_unidad`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2204,6 +2213,34 @@ LOCK TABLES `unidad_tiempo` WRITE;
 INSERT INTO `unidad_tiempo` VALUES (1,'minutos','2'),(2,'horas','2'),(3,'dias','2');
 /*!40000 ALTER TABLE `unidad_tiempo` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `usuarioasempresa`
+--
+
+DROP TABLE IF EXISTS `usuarioasempresa`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `usuarioasempresa` (
+  `empresaid` int(11) NOT NULL,
+  `usrId` int(11) NOT NULL,
+  `fecha` datetime DEFAULT NULL,
+  `tipo` tinyint(1) NOT NULL,
+  `grpId` int(11) NOT NULL,
+  PRIMARY KEY (`empresaid`,`usrId`),
+  KEY `usrId` (`usrId`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `usuarioasempresa`
+--
+
+LOCK TABLES `usuarioasempresa` WRITE;
+/*!40000 ALTER TABLE `usuarioasempresa` DISABLE KEYS */;
+INSERT INTO `usuarioasempresa` VALUES (2,1,'2018-09-18 00:00:00',1,1),(6,17,'2018-09-18 00:00:00',1,0),(7,16,'2018-09-17 00:00:00',1,0),(7,18,'2018-09-21 00:00:00',1,7),(7,19,'2018-09-12 00:00:00',1,1);
+/*!40000 ALTER TABLE `usuarioasempresa` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -2214,4 +2251,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-09-03 23:07:43
+-- Dump completed on 2018-09-24 23:38:55

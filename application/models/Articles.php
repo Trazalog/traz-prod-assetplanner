@@ -8,7 +8,8 @@ class Articles extends CI_Model
 		parent::__construct();
 	}
 	
-	function Articles_List()
+	//
+	function Articles_List()  // Ok
 	{
 		$userdata  = $this->session->userdata('user_data');
         $empresaId = $userdata[0]['id_empresa'];
@@ -17,6 +18,7 @@ class Articles extends CI_Model
 		$this->db->join('conffamily', 'articles.famId = conffamily.famId');
 		$this->db->join('tbl_unidadmedida', 'tbl_unidadmedida.id_unidadmedida = articles.unidadmedida');
 		$this->db->where('articles.id_empresa', $empresaId);
+		$this->db->where('articles.artEstado', 'AC');
 		$query = $this->db->get();	
 		if ($query->num_rows()!=0)
 		{
@@ -28,6 +30,49 @@ class Articles extends CI_Model
 		}
 	}
 	
+	//
+    function getpencil($id) // Ok
+    {
+    	$userdata  = $this->session->userdata('user_data');
+		$empresaId = $userdata[0]['id_empresa'];
+	    $sql       = "SELECT *
+			FROM articles
+			JOIN tbl_unidadmedida ON tbl_unidadmedida.id_unidadmedida=articles.unidadmedida
+			JOIN conffamily ON conffamily.famId=articles.famId
+			WHERE articles.artId = $id
+			AND articles.id_empresa = $empresaId
+			";
+	    $query = $this->db->query($sql);
+	    if( $query->num_rows() > 0)
+	    {
+	    	return $query->result_array();	
+	    } 
+	    else {
+	    	return 0;
+	    }
+	}
+
+	//
+	function getdatosarts() // Ok
+	{
+		$userdata  = $this->session->userdata('user_data');
+        $empresaId = $userdata[0]['id_empresa'];
+		$query     = $this->db->get_where('tbl_unidadmedida', array('id_empresa' => $empresaId));
+		if($query->num_rows()>0)
+		{
+		    return $query->result_array();
+		}
+		else
+		{
+		    return false;
+		}		
+	}
+
+
+
+
+
+
 	function getArticle($data = null)
 	{
 		if($data == null)
@@ -88,6 +133,7 @@ class Articles extends CI_Model
 			{
 				$data['familia'] = $query->result_array();	
 			}
+			//dump_exit($data);
 			return $data;
 		}
 	}
@@ -148,19 +194,7 @@ class Articles extends CI_Model
 		}
 	}
 	
-	function getdatosarts()
-	{
-		$userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-		$query     = $this->db->get_where('tbl_unidadmedida', array('id_empresa' => $empresaId));
-		if($query->num_rows()>0){
-		    return $query->result();
-		}
-		else{
-		    return false;
-		    }
-				
-	}
+
 	
 	function getdatosfams()
 	{
@@ -186,26 +220,7 @@ class Articles extends CI_Model
 		return $query;
     }
 
-    function getpencil($id)
-    {
-    	$userdata  = $this->session->userdata('user_data');
-		$empresaId = $userdata[0]['id_empresa'];
-	    $sql       = "SELECT *
-	    	  FROM articles
-	    	  JOIN tbl_unidadmedida ON tbl_unidadmedida.id_unidadmedida=articles.unidadmedida
-	    	  JOIN conffamily ON conffamily.famId=articles.famId
-	    	  WHERE articles.artId = $id
-	    	  AND articles.id_empresa = $empresaId
-	    	  ";
-	    $query = $this->db->query($sql);
-	    if( $query->num_rows() > 0)
-	    {
-	    	return $query->result_array();	
-	    } 
-	    else {
-	    	return 0;
-	    }
-	}
+
 
 	function update_editar($data, $id)
 	{

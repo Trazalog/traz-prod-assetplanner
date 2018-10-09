@@ -7,6 +7,32 @@ class Componentes extends CI_Model
 		parent::__construct();
 	}
 
+    //
+    function listadoABM()
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId = $userdata[0]['id_empresa'];
+
+        $this->db->select('componentes.id_componente, componentes.descripcion, componentes.informacion, componentes.marcaid, componentes.pdf,
+            marcasequipos.marcaid, marcasequipos.marcadescrip');
+        $this->db->from('componentes');
+        $this->db->join('marcasequipos', 'componentes.marcaid = marcasequipos.marcaid');
+        $this->db->where('componentes.id_empresa', $empId);
+        $this->db->where('componentes.estado', 'AC');
+        $this->db->where('marcasequipos.estado', 'AC');
+
+        $query= $this->db->get();   
+        
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 	// Trae listado de componentes por empresa logueada - Listo
 	function componentes_List(){
 	 
@@ -18,8 +44,9 @@ class Componentes extends CI_Model
 	 					equipos.descripcion, 
 	 					componentes.id_componente, 
 	 					componentes.descripcion AS descomp, 
-	 					componenteequipo.estado');
-    	
+                        componenteequipo.idcomponenteequipo,
+	 					componenteequipo.estado,
+                        componenteequipo.codigo AS codcomponente');
     	$this->db->from('equipos');
     	$this->db->join('componenteequipo', 'componenteequipo.id_equipo = equipos.id_equipo');
     	$this->db->join('componentes', 'componentes.id_componente=componenteequipo.id_componente');
@@ -155,4 +182,57 @@ class Componentes extends CI_Model
         return $query;		
     }	
 
+
+    function getEditar($idCompEq)
+    {
+        $this->db->select('componenteequipo.idcomponenteequipo, componenteequipo.id_equipo, componenteequipo.id_componente, componenteequipo.codigo, 
+            equipos.codigo as codigoEq, equipos.descripcion');
+        $this->db->from('componenteequipo');
+        $this->db->join('equipos', 'componenteequipo.id_equipo = equipos.id_equipo');
+        $this->db->where('componenteequipo.estado', 'AC');
+        $this->db->where('componenteequipo.idcomponenteequipo', $idCompEq);
+        $query = $this->db->get();   
+        if($query->num_rows()>0){
+            return $query->result();
+        }
+        else{
+            return false;
+        }       
+    }
+
+    function updateEditar($data, $id)
+    {
+        $this->db->where('idcomponenteequipo', $id);
+        $query = $this->db->update("componenteequipo",$data);
+        return $query;
+    }
+
+    //
+    function agregarComponente($data) //
+    {
+        $userdata            = $this->session->userdata('user_data');
+        $data2['id_empresa'] = $userdata[0]['id_empresa'];  
+        $query = $this->db->insert("componenteequipo", $data2);
+        return $query;
+    }
+
+    //
+    function bajaComponente($idcomp) // Ok
+    {
+        $update = array('estado' => 'AN' );
+        $this->db->where('id_componente', $idcomp);
+        $query = $this->db->update("componentes", $update);
+        return $query;
+    }
+
+    //
+    function editarComponente($datos,$idComponente) // Ok
+    {
+        //dump($datos);
+        //dump_exit($idComponente);
+        $this->db->where('id_componente', $idComponente);
+        $query = $this->db->update('componentes', $datos);
+        
+        return $query;
+    }
 }	

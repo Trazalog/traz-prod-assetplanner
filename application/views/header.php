@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="<?php echo base_url();?>assets/plugin/datatables/dataTables.bootstrap.css">
     <!-- Daterange picker -->
     <link rel="stylesheet" type="text/css" media="all" href="<?php echo base_url();?>assets/plugin/daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="<?php echo base_url();?>assets/css/propios.css" />
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -54,23 +55,18 @@
     <script src="<?php echo base_url();?>assets/plugin/chartjs/Chart.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.5.5/i18n/jquery-ui-timepicker-addon-i18n.js"></script>
 
-
-
     <!-- iCheck -->
     <link rel="stylesheet" href="<?php  echo base_url();?>assets/plugin/iCheck/minimal/blue.css">
-    <!--<link rel="stylesheet" href="<?php  echo base_url();?>assets/css/square/green.css">-->
-    <!-- iCheck -->
     <script src="<?php  echo base_url();?>assets/plugin/iCheck/icheck.min.js"></script>
 
     <!-- fullcalendar -->
     <link rel="stylesheet" href="<?php  echo base_url();?>assets/plugin/fullcalendar/fullcalendar.min.css">
     <link rel="stylesheet" href="<?php  echo base_url();?>assets/plugin/fullcalendar/fullcalendar.print.css" media="print">
 
-    <!-- Bootstrap Color Picker - ->
-    <link rel="stylesheet" href="<?php  echo base_url();?>assets/plugin/colorpicker/bootstrap-colorpicker.min.css">
-    -->
     <!-- Jasny Bootstrap -->
     <link rel="stylesheet" href="<?php echo base_url();?>assets/plugin/jasny-bootstrap/css/jasny-bootstrap.min.css">
+    <!-- Bootstrap Validator -->
+    <link rel="stylesheet" href="<?php echo base_url();?>assets/plugin/bootstrapvalidator/bootstrapValidator.min.css">
 
     <!-- FastClick -->
     <script src="<?php  echo base_url();?>assets/plugin/fastclick/fastclick.min.js"></script>
@@ -78,31 +74,16 @@
     <!-- SlimScroll -->
     <script src="<?php  echo base_url();?>assets/plugin/slimScroll/jquery.slimscroll.min.js"></script>
 
-    <!-- Select2 - ->
-    <link rel="stylesheet" href="<?php  echo base_url();?>assets/plugin/select2/select2.css">
-    <!-- Select2 - ->
-    <script src="<?php  echo base_url();?>assets/plugin/select2/select2.js"></script>
-
-    <!--
-    <script src="<?php  echo base_url();?>assets/plugin/input-mask/jquery.inputmask.js"></script>
-    <script src="<?php  echo base_url();?>assets/plugin/input-mask/jquery.inputmask.date.extensions.js"></script>
-    <script src="<?php  echo base_url();?>assets/plugin/input-mask/jquery.inputmask.extensions.js"></script>
-    -->
-    <!--<link rel="stylesheet" href="<?php  echo base_url();?>code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">-->
-
-    <script src="<?php  echo base_url();?>assets/plugin/fullcalendar/moment.min.js"></script>
-    <script src="<?php  echo base_url();?>assets/plugin/fullcalendar/fullcalendar.min.js"></script>
+    <script src="<?php echo base_url();?>assets/plugin/fullcalendar/moment.min.js"></script>
+    <script src="<?php echo base_url();?>assets/plugin/fullcalendar/fullcalendar.min.js"></script>
     <!-- Daterange picker -->
     <script type="text/javascript" src="<?php echo base_url();?>assets/plugin/daterangepicker/daterangepicker.js"></script>
     <script src="<?php echo base_url();?>assets/js/jquery.PrintArea.js"></script>
 
-    <!-- <script src="<?php  //echo base_url();?>ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-    <script src="<?php  //echo base_url();?>ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.js"></script>- ->
-
-    <!-- bootstrap color picker - ->
-    <script src="<?php  echo base_url();?>assets/plugin/colorpicker/bootstrap-colorpicker.min.js"></script>
     <!-- Jasny Bootstrap -->
     <script src="<?php echo base_url();?>assets/plugin/jasny-bootstrap/js/jasny-bootstrap.min.js"></script>
+    <!-- Bootstrap Validator -->
+    <script src="<?php echo base_url();?>assets/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
 </head>
 
 

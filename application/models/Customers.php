@@ -10,8 +10,12 @@ class Customers extends CI_Model
 	
 	function Customers_List(){
 
+		//$this->db->select('admcustomers.* ');
+		//$this->db->from('admcustomers');
+/*
 		$this->db->order_by('cliLastName','asc');
 		$this->db->order_by('cliName','asc');
+		//$query = $this->db->get();
 		$query= $this->db->get('admcustomers');
 		
 		if ($query->num_rows()!=0)
@@ -21,23 +25,23 @@ class Customers extends CI_Model
 		else
 		{
 			return false;
-		}
-	}
-
-	function Equipos_List(){
-
-		$this->db->order_by('codigo','asc');
-		$this->db->order_by('descripcion','asc');
-		$query= $this->db->get('equipos');
+		}*/
+		$this->db->select('admcustomers.*');
+		$this->db->from('admcustomers');
+		//$this->db->order_by('admcustomers.cliLastName','asc');
+		//$this->db->order_by('cliName','asc');
+		
+		$query= $this->db->get();
 		
 		if ($query->num_rows()!=0)
 		{
 			return $query->result_array();	
 		}
 		else
-		{
-			return false;
+		{	
+			return array();
 		}
+		
 	}
 	
 	function getCustomer($data = null){
@@ -48,25 +52,44 @@ class Customers extends CI_Model
 		else
 		{
 			$action = $data['act'];
-			$id_solicitud = $data['id'];
+			$idCust = $data['id'];
 
 			$data = array();
 
-			//Datos de la familia
-			$query= $this->db->get_where('solicitud_reparacion',array('id_solicitud'=>$idorden));
+			//Datos del usuario
+			$query= $this->db->get_where('admcustomers',array('cliId'=>$idCust));
 			if ($query->num_rows() != 0)
 			{
-
-				$f = $query->result_array();
-				$data['solicitud'] = $f[0];
+				$c = $query->result_array();
+				$c[0]['cliDateOfBirth'] = explode('-', $c[0]['cliDateOfBirth']);
+				$c[0]['cliDateOfBirth'] = $c[0]['cliDateOfBirth'][2].'-'.$c[0]['cliDateOfBirth'][1].'-'.$c[0]['cliDateOfBirth'][0];
+				$c[0]['cliImagePath'] = ( $c[0]['cliImagePath'] != '' ? 'assets/img/customers/'.$c[0]['cliImagePath'] : '');
+				$data['customer'] = $c[0];
 			} else {
-				$servicio = array();
-				$servicio['causa'] = '';
-				$servicio['fsolicitado'] = '';
-				$servicio['f_sugerido'] = '';
-				$servicio['hora_sug'] = '';
-				$servicio['causa'] = '';
-				$data['servicio'] = $servicio;
+				$cust = array();
+				
+				//select max id de cliente
+				$this->db->select_max('cliId');
+ 				$query = $this->db->get('admcustomers');
+ 				$id = $query->result_array();
+				$cust['cliNroCustomer'] = $id[0]['cliId'] + 1;
+
+				$cust['cliId'] = '';
+				$cust['cliName'] = '';
+				$cust['cliLastName'] = '';
+				$cust['cliDni'] = '';
+				$cust['cliDateOfBirth'] = '';
+				$cust['cliAddress'] = '';
+				$cust['cliPhone'] = '';
+				$cust['cliMovil'] = '';
+				$cust['cliEmail'] = '';
+				$cust['cliImagePath'] = '';
+				$cust['zonaId'] = '';
+				$cust['cliImagePath'] = '';
+				$cust['cliDay'] = '30';
+				$cust['cliColor'] = '#00a65a';
+
+				$data['customer'] = $cust;
 			}
 
 			//Readonly
@@ -76,15 +99,41 @@ class Customers extends CI_Model
 			}
 			$data['read'] = $readonly;
 
-			
-
 			//Zonas
-			$query= $this->db->get('equipos');
+			$query= $this->db->get('confzone');
 			if ($query->num_rows() != 0)
 			{
-				$data['equipos'] = $query->result_array();	
+				$data['zone'] = $query->result_array();	
 			}
 
+			/*/Prefrencias
+			$data['preferences'] = array();
+			$query= $this->db->get('conffamily');
+			if ($query->num_rows() != 0) {
+					
+					foreach ($query->result() as $f) {
+
+						//-----------
+						$this->db->select('confsubfamily.*, admcustomerpreferences.sfamId as acepted ');
+						$this->db->from('confsubfamily');
+						$this->db->join('admcustomerpreferences', ' admcustomerpreferences.sfamId = confsubfamily.sfamId And admcustomerpreferences.cliId = '.$idCust.'', 'left');
+						$this->db->where(array('famId'=>$f->famId));
+						//-----------
+
+						$querySF = $this->db->get();
+						if($querySF->num_rows() != 0) {
+							$f->subf = $querySF->result_array();	
+							$data['preferences'][] = $f;
+						} else {
+							//No agregar a la lista
+						}
+					}
+
+			} else {
+				//No hay subfamilias
+			}*/
+			
+			return $data;
 		}
 	}
 	
@@ -116,15 +165,17 @@ class Customers extends CI_Model
 
 
 			$data = array(
-				   'cliDni' => $dni,
+				   
 				   'cliName' => $name,
 				   'cliLastName' => $lnam,
+				   'cliDni' => $dni,
 				   'cliDateOfBirth' => $fech,
 				   'cliNroCustomer' => $nro,
 				   'cliAddress' => $dom,
 				   'cliPhone' => $tel,
 				   'cliMovil' => $movil,
 				   'cliEmail' => $mail,
+				   'clilmagePath' => 0,
 				   'zonaId' => $zona,
 				   'cliDay' => $day,
 				   'cliColor' => $color
@@ -227,18 +278,21 @@ class Customers extends CI_Model
 	}
 
 	function visits($data = null){
+
 		if($data == null)
 		{
 			return false;
 		}
-		else
-		{
+		else{
+
 			$month = $data['month'] + 1;
-			$this->db->select('solicitud_reparacion.*, equipos.codigo, equipos.descripcion');
-			$this->db->from('solicitud_reparacion');
-			$this->db->join('equipos', 'equipos.id_equipo = solicitud_reparacion.id_equipo');
-			$this->db->where('solicitud_reparacion.estado','C'); // Set Filter		
-			$this->db->where('month(solicitud_reparacion.f_sugerido)', $month);			
+			$this->db->select('admvisits.*, admcustomers.cliName, admcustomers.cliLastName, admcustomers.cliColor');
+			$this->db->from('admvisits');
+			$this->db->join('admcustomers', 'admcustomers.cliId = admvisits.cliId');
+			$this->db->where('admvisits.vstStatus','PN'); // Set Filter		
+			$this->db->where('month(admvisits.vstDate)', $month);
+			$this->db->or_where('month(admvisits.vstDate) = '.$data['month'].' and admvisits.vstStatus = \'PN\'' );
+			$this->db->or_where('month(admvisits.vstDate) = '.($month+1).' and admvisits.vstStatus = \'PN\'');
 
 			$query= $this->db->get();
 			
@@ -253,71 +307,14 @@ class Customers extends CI_Model
 		}
 	}
 
-	function getPreventivos($data = null){
-		
-		if($data == null)
-		{
-			return false;
-		}
-		else
-		{
-			$month = $data['month'] + 1;			
-			//echo "mes en el modelo: ";
-			//echo $month;
-			// $this->db->select('preventivo.prevId,
-			// 					preventivo.id_tarea,
-			// 					preventivo.perido,
-			// 					preventivo.cantidad,
-			// 					preventivo.ultimo,
-			// 					equipos.id_equipo,
-			// 					preventivo.id_equipo,
-			// 					tareas.descripcion								
-			// 					');
-			// $this->db->from('preventivo');
-			// $this->db->join('equipos', 'preventivo.id_equipo = equipos.id_equipo');
-			// $this->db->join('tareas', 'preventivo.id_tarea = tareas.id_tarea');	
-			// //$this->db->where('preventivo.estadoprev','C'); 		
-			// //$this->db->where('month(preventivo.ultimo)', $month);
-
-			// $this->db->where('month('DATE_ADD(preventivo.ultimo, INTERVAL 60 DAY )')', '6', TRUE);
-
-			$sql= "select preventivo.prevId, 
-					preventivo.id_tarea, 
-					preventivo.perido, 
-					preventivo.cantidad, 
-					preventivo.ultimo, 
-					equipos.id_equipo, 
-					preventivo.id_equipo, 
-					tareas.descripcion,
-					equipos.codigo, 
-					DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY) AS prox 
-					from preventivo 
-					join equipos ON preventivo.id_equipo = equipos.id_equipo 
-					join tareas ON preventivo.id_tarea = tareas.id_tarea 
-					where preventivo.estadoprev = 'C' 
-					AND month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $month ";
-			
-			$query= $this->db->query($sql);
-			
-			if ($query->num_rows()!=0)
-			{
-				return $query->result_array();	
-			}
-			else
-			{
-				return false;
-			}
-		}
-
-	}
-
 	function status($data = null){
+
 		if($data == null)
 		{
 			return false;
 		}
-		else
-		{
+		else{
+
 			$vstId = $data['id'];
 
 			$this->db->select('cliId, vstNote');
@@ -344,6 +341,21 @@ class Customers extends CI_Model
 			}
 		}
 	}
+
+	/*function BajaClientes($data){
+
+       	$this->db->where('cliId', $data);
+		$query =$this->db->delete('admcustomers');
+        return $query;
+    }*/
+
+    function update_equipo($data, $idequipo)
+    {
+        $this->db->where('cliId', $idequipo);
+        $query = $this->db->update("admcustomers",$data);
+        return $query;
+    }
+
 	
 }
 ?>

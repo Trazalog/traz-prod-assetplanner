@@ -13,9 +13,9 @@
               <tr>
                 <th>Codigo</th>
                 <th>Producto</th>
-                <th>Cantidad</th>
                 <th>Deposito</th>
                 <th>Estado</th>
+                <th>Cantidad</th>
               </tr>
             </thead>
             <tbody>
@@ -26,17 +26,17 @@
   	                echo '<tr>';
                     /*
                     if (strpos($permission,'Edit') !== false) {
-  	                	echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" onclick="LoadStk('.$s['stkId'].',\'Edit\')"></i>';
+  	                	echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" onclick="LoadStk('.$f['loteid'].',\'Edit\')"></i>';
                     }
                     if (strpos($permission,'Del') !== false) {
-  	                	echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" onclick="LoadStk('.$s['stkId'].',\'Del\')"></i>';
+  	                	echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" onclick="LoadStk('.$f['loteid'].',\'Del\')"></i>';
                     }
                     */
                     echo '<td>'.$f['artBarCode'].'</td>';
                     echo '<td>'.$f['artDescription'].'</td>';
-                    echo '<td>'.$f['cantidad'].'</td>';
                     echo '<td>'.$f['depositodescrip'].'</td>';
                     echo '<td>'.($f['lotestado'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' : ($f['lotestado'] == 'IN' ? '<small class="label pull-left bg-red">Inactivo</small>' : '<small class="label pull-left bg-yellow">Suspendido</small>')).'</td>';
+                    echo '<td>'.$f['cantidad'].'</td>';
    	                echo '</tr>';
       		        }
                 }

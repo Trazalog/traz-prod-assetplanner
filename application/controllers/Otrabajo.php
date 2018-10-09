@@ -4,24 +4,237 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Otrabajo extends CI_Controller {
 
 	function __construct()
-        {
+    {
 		parent::__construct();
 		$this->load->model('Otrabajos');
 	}
 
-	public function index($permission)
+	/**
+	 * Muestra pantalla de listado de Ordenes de Trabajo.
+	 *
+	 * @param 	String 	$permission 	Permisos de ejecución.
+	 */
+	public function index($permission) // Ok
 	{
-		$data['list'] = $this->Otrabajos->otrabajos_List();
+		$data['list']       = $this->Otrabajos->otrabajos_List();
 		$data['permission'] = $permission;
 		$this->load->view('otrabajos/dash', $data);
 	}
 
-	// pantalla de listado de ordenes
-	public function listOrden($permission){
-		$data['list'] = $this->Otrabajos->otrabajos_List();
+	/**
+	 * Muestra pantalla de listado de Ordenes de Trabajo.
+	 *
+	 * @param 	String 	$permission 	Permisos de ejecución.
+	 */
+	public function listOrden($permission) // Ok
+	{
+		$data['list']       = $this->Otrabajos->otrabajos_List();
 		$data['permission'] = $permission;
 		$this->load->view('otrabajos/list', $data);
 	}
+
+	/**
+  	 * Traer proveedores de empresa con estado AC.
+  	 *
+  	 * @return 	String 	Arreglo con proveedores.
+  	 */
+  	public function getproveedor() // Ok
+  	{	
+		$proveedores = $this->Otrabajos->getproveedor();
+		if($proveedores)
+		{	
+			$arre=array();
+	        foreach ($proveedores as $row ) 
+	        {   
+	           $arre[] = $row;
+	        }
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}
+
+	/**
+  	 * Traer Sucursales de empresa con estado AC.
+  	 *
+  	 * @return 	String 	Arreglo con sucursales.
+  	 */
+	public function traer_sucursal() // Ok
+	{
+		$sucursales = $this->Otrabajos->traer_sucursal();
+		if($sucursales)
+		{	
+			$arre = array();
+	        foreach ($sucursales as $row ) 
+	        {   
+	           $arre[] = $row;
+	        }
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}
+
+	/**
+  	 * Traer Equipos de empresa con estado AC.
+  	 *
+  	 * @return 	String 	Arreglo con equipos.
+  	 */
+	public function getequipo() // Ok
+	{
+		$equipos = $this->Otrabajos->getequipo();
+		if($equipos)
+		{
+			$arre = array();
+	        foreach ($equipos as $row )
+	        {
+	           $arre[] = $row;
+	        }
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}
+
+	/**
+	 * Agrega nueva OTs.
+	 *
+	 * @return
+	 */
+	public function guardar_agregar() // Ok
+	{
+		$userdata  = $this->session->userdata('user_data');
+		$usrId     = $userdata[0]['usrId'];
+		$empresaId = $userdata[0]['id_empresa'];
+	    
+		$id_orden    = $this->input->post('id_orden');
+		$num         = $this->input->post('num');
+		$descripcion = $this->input->post('descripcion');
+		$equipo      = $this->input->post('equipo');
+		$sucursal    = $this->input->post('sucursal');
+		$proveedor   = $this->input->post('proveedor');
+    	
+    	$datos2 = array(
+			'nro'          => $num,
+			'fecha_inicio' => date('Y-m-d H:i:S'),
+			'descripcion'  => $descripcion,
+			'estado'       => 'C',
+			'id_usuario'   => $usrId,
+			'id_usuario_a' => 1,
+			'id_sucursal'  => $sucursal,
+			'id_proveedor' => $proveedor,
+			'id_equipo'    => $equipo,
+			'tipo'         => 1,
+			'id_empresa'   => $empresaId
+		);
+
+     	$result = $this->Otrabajos->guardar_agregar($datos2);
+      	/*if($result)
+      		echo $this->db->insert_id();
+      	else echo 0;*/
+      	return true;
+  	}
+
+  	/**
+  	 * Trae datos para editar
+  	 *
+  	 */
+    public function getpencil() // Ok
+    {
+		$id = $this->input->post('idp');
+		$result = $this->Otrabajos->getpencil($id);
+		echo json_encode($result);
+	}
+
+	/**
+  	 * Actualiza la OT.
+  	 *
+  	 */
+	public function guardar_editar() // Ok
+	{
+		$idequipo = $this->input->post('idp');
+		$datos    = $this->input->post('parametros');
+		$result   = $this->Otrabajos->update_edita($idequipo,$datos);
+		print_r($result);
+	}
+
+	/**
+	 * Muestra la vista de Asignar Tarea
+	 *
+	 * @param 	String 	$permission 	Permisos de ejecución.
+	 * @param 	Int 	$idglob 		Id de orden de trabajo.
+	 */
+	public function cargartarea($permission, $idglob) // Ok
+	{ 
+		$data['list']       = $this->Otrabajos->cargartareas($idglob);
+		$data['permission'] = $permission;
+		$data['id_orden']   = $idglob; 
+        $this->load->view('otrabajos/asignacion',$data);
+    }
+
+    /**
+     * Trae datos a mostrar en el Modal Asignar OT.
+     *
+     * @return 	String 	Arreglo con datos a mostrar en Modal Asignar OT.
+     */
+    public function getasigna() // Ok
+    {
+		$id     = $_GET['id_orden'];
+		$result = $this->Otrabajos->getasigna($id);
+		if($result)
+		{
+			$arre['datos'] = $result;
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}
+
+	/**
+	 * Trae usuarios por id de empresa logueada.
+	 *
+	 * @return 	String 	Arreglo con usuarios.
+	 */
+	public function getusuario() // Ok
+	{	
+		$usuarios = $this->Otrabajos->getusuario();
+		if($usuarios)
+		{
+			$arre = array();
+	        foreach ($usuarios as $row )
+	        {
+	           $arre[] = $row;
+	        }
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}
+
+
+
+
+
+
+
+
+
+
+	/**
+	 *
+	 *
+	 */
+	public function traer_cli()
+	{
+		$usuario = $this->Otrabajos->traer_cli();
+		if($usuario)
+		{	
+			$arre = array();
+	        foreach ($usuario as $row ) 
+	        {   
+	           $arre[] = $row;
+	        }
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}
+
+
 	// Cargar orden de servicios(Informe de servicios)
 	public function cargarOrden($permission, $id_sol = null, $id_eq = null, $causa = null){ 
         $data['permission'] = $permission;    // envia permisos 
@@ -32,23 +245,10 @@ class Otrabajo extends CI_Controller {
         $this->load->view('ordenservicios/view_',$data);
     }
 
-    // Trae datos para editar
-    public function getpencil(){
-		$id=$_POST['idp'];
+
+
+
 	
-		$result = $this->Otrabajos->getpencil($id);
-		
-		
-		print_r(json_encode($result));
-	}
-
-
-	public function cargartarea($permission,$idglob){ 
-		$data['list'] = $this->Otrabajos->cargartareas($idglob);
-		$data['id_orden'] = $idglob; 
-        $data['permission'] = $permission;    // envia permisos       
-        $this->load->view('otrabajos/asignacion',$data); //equipo controlador 
-    }
 	public function getotrabajo(){
 		$data['data'] = $this->Otrabajos->getotrabajos($this->input->post());
 		$response['html'] = $this->load->view('otrabajos/view_', $data, true);
@@ -79,20 +279,6 @@ class Otrabajo extends CI_Controller {
 	}
 
 	
-	public function getasigna(){
-
-		$id=$_GET['id_orden'];
-
-		$result = $this->Otrabajos->getasigna($id);
-		if($result)
-		{
-			$arre['datos']=$result;
-
-			echo json_encode($arre);
-		}
-		else echo "nada";
-	}
-
 	//pedidos
 	public function getorden(){
 
@@ -107,20 +293,7 @@ class Otrabajo extends CI_Controller {
 		else echo "nada";
 	}
 
-	public function getequipo(){
 
-		$cliente = $this->Otrabajos->getequipo();
-		if($cliente)
-		{
-			$arre=array();
-	        foreach ($cliente as $row )
-	        {
-	           $arre[]=$row;
-	        }
-			echo json_encode($arre);
-		}
-		else echo "nada";
-	}
 
 	//pedidos a entregar x fecha
 	public function getpedidos(){
@@ -182,39 +355,9 @@ class Otrabajo extends CI_Controller {
 		else echo "nada";
 	}
 
-	public function traer_sucursal(){
 
-		$usuario = $this->Otrabajos->traer_sucursal();
 
-		if($usuario)
-		{	
-			$arre=array();
-	        foreach ($usuario as $row ) 
-	        {   
-	           $arre[]=$row;
-	        }
-			echo json_encode($arre);
-		}
-		else echo "nada";
-	}
-
-	// trae usuarios por id de empresa logueada
-	public function getusuario(){
-		
-		$usuario = $this->Otrabajos->getusuario();
-		echo json_encode($usuario);
-
-		// if($usuario!=''){	
-		// 	$arre=array();
-	 //         foreach ($usuario as $row ) 
-	 //         {   
-	 //           $arre[]=$row;
-	 //        }
-		//  	echo json_encode($arre);
-		 	
-		// }
-		//  else echo "nada";
-	}
+	
 
 	/*public function getusuario (){
       $response = $this->Ordenservicios->getusuario();
@@ -223,22 +366,7 @@ class Otrabajo extends CI_Controller {
 
 	
 //nuevo
-	public function traer_cli(){
-		
-		$usuario = $this->Otrabajos->traer_cli();
 
-
-		if($usuario)
-		{	
-			$arre=array();
-	        foreach ($usuario as $row ) 
-	        {   
-	           $arre[]=$row;
-	        }
-			echo json_encode($arre);
-		}
-		else echo "nada";
-	}
 
 	//traer grupo
 	public function getgrupo(){
@@ -280,44 +408,7 @@ class Otrabajo extends CI_Controller {
 
 	}
 
-	
-	public function guardar_agregar(){
 
-		$userdata = $this->session->userdata('user_data');
-        $usrId= $userdata[0]['usrId'];
-	    if($_POST) {
-	    	//$datos=$_POST['parametros'];
-	    	$id_orden=$_POST['id_orden'];
-	    	$num=$_POST['num'];
-	    	$descripcion=$_POST['descripcion'];
-	    	$equipo=$_POST['equipo'];
-	    	$sucursal=$_POST['sucursal'];
-	    	$proveedor=$_POST['proveedor'];
-
-	    	
-	    	$datos2 = array(
-			        	 'nro'=>$num,
-			        	 'fecha_inicio'=>date('Y-m-d H:i:S'),
-			        	 'descripcion'=>$descripcion,
-			        	 'estado' =>'C',
-			        	 'id_usuario' =>$usrId,
-			        	 'id_usuario_a' =>1,
-			        	 'id_sucursal' => $sucursal,
-			        	 'id_proveedor' => $proveedor,
-			        	 'id_equipo' => $equipo,
-			        	 'tipo' => 1
-
-
-		        		);
-
-	     	$result = $this->Otrabajos->guardar_agregar($datos2);
-	      	//print_r($this->db->insert_id());
-	      	/*if($result)
-	      		echo $this->db->insert_id();
-	      	else echo 0;*/
-	      	return true;
-	    }
-  	}
 
 	public function agregar_usuario(){
 
@@ -332,35 +423,15 @@ class Otrabajo extends CI_Controller {
 	    }
   	}
 
-  	//traer proveedor
-  	public function getproveedor(){
-		
-		//$id=$_POST['id_proveedor'];
-		$proveedor= $this->Otrabajos->getproveedor();
-		//echo json_encode($Customers);
 
-		if($proveedor)
-		{	
-			$arre=array();
-	        foreach ($proveedor as $row ) 
-	        {   
-	           $arre[]=$row;
-	        }
-			echo json_encode($arre);
-		}
-		else echo "nada";
-	}
 
 	//argegar un proveedor
 	public function agregar_proveedor()
 	{
-
 	    if($_POST)
 	    {
-	    	$datos=$_POST['datos'];
-
+	    	$datos  = $_POST['datos'];
 	     	$result = $this->Otrabajos->agregar_proveedor($datos);
-	      	//print_r($this->db->insert_id());
 	      	if($result)
 	      		echo $this->db->insert_id();
 	      	else echo 0;
@@ -430,22 +501,7 @@ class Otrabajo extends CI_Controller {
 	    print_r($result);
   	}
 
-  	public function guardar_editar(){
 
-		$idequipo=$_POST['idp'];
-		$datos=$_POST['parametros'];
-		//$datos = array('estado'=>'E');
-		// $uno=substr($ultm, 0, 2); 
-	  //       $dos=substr($ultm, 3, 2); 
-	  //       $tres=substr($ultm, 6, 4); 
-	  //       $resul = ($tres."/".$dos."/".$uno); 
-
-
-		//doy de baja
-		$result = $this->Otrabajos->update_edita($idequipo,$datos);
-		print_r($result);
-
-	}
 
 	
 

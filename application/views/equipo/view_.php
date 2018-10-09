@@ -53,7 +53,7 @@
                     </div>
                     <div class="col-xs-4">
                       <label>&emsp;</label><br>
-                      <button type="button" class="btn btn-primary" id="addarea"  data-toggle="modal" data-target="#modalarea"><i class="fa fa-plus"> Agregar</i></button> 
+                      <button type="button" class="btn btn-primary" id="addarea" data-toggle="modal" data-target="#modalarea"><i class="fa fa-plus"> Agregar</i></button> 
                     </div>
 
                     <div class="col-xs-8"><label>Proceso:</label>
@@ -61,7 +61,15 @@
                     </div>
                     <div class="col-xs-4">
                       <label>&emsp;</label><br>
-                      <button type="button" class="btn btn-primary" id="addproceso"  data-toggle="modal" data-target="#modalproceso"><i class="fa fa-plus"> Agregar</i></button>
+                      <button type="button" class="btn btn-primary" id="addproceso" data-toggle="modal" data-target="#modalproceso"><i class="fa fa-plus"> Agregar</i></button>
+                    </div>
+
+                    <div class="col-xs-8"><label>Criticidad:</label>
+                      <select id="criticidad" name="criticidad" class="form-control"></select>
+                    </div>
+                    <div class="col-xs-4">
+                      <label>&emsp;</label><br>
+                      <button type="button" class="btn btn-primary" id="addcriti" data-toggle="modal" data-target="#modalcrit"><i class="fa fa-plus"> Agregar</i></button> 
                     </div>
                   </div>
                 </div>
@@ -69,11 +77,11 @@
                 <div class="col-md-6 col-sm-12"> <!-- FIRST COLUMN -->
                   <div class="row">
                     <div class="col-xs-8"><label>Sector/Etapa<strong style="color: #dd4b39">*</strong>:</label>
-                      <select id="etapa" name="etapa" class="form-control"  value=""></select>
+                      <select id="etapa" name="etapa" class="form-control" value=""></select>
                     </div>
                     <div class="col-xs-4">
                       <label>&emsp;</label><br>
-                      <button type="button" class="btn btn-primary" id="addetapa"  data-toggle="modal" data-target="#modaletapa"><i class="fa fa-plus"> Agregar</i></button> 
+                      <button type="button" class="btn btn-primary" id="addetapa" data-toggle="modal" data-target="#modaletapa"><i class="fa fa-plus"> Agregar</i></button> 
                     </div>
 
                     <div class="col-xs-8"><label>Grupo:</label>
@@ -81,19 +89,15 @@
                     </div>
                     <div class="col-xs-4">
                       <label>&emsp;</label><br>
-                      <button type="button" class="btn btn-primary" id="addgrupo"  data-toggle="modal" data-target="#modalgrupo"><i class="fa fa-plus"> Agregar</i></button> 
+                      <button type="button" class="btn btn-primary" id="addgrupo" data-toggle="modal" data-target="#modalgrupo"><i class="fa fa-plus"> Agregar</i></button> 
                     </div>
-                  </div>
-                </div>
 
-                <div class="col-md-6 col-sm-12"> <!-- FIRST COLUMN -->
-                  <div class="row">
-                    <div class="col-xs-8"><label>Criticidad:</label>
-                      <select id="criticidad" name="criticidad" class="form-control"></select>
+                    <div class="col-xs-8"><label>Cliente:</label>
+                      <select id="cliente" name="cliente" class="form-control"></select>
                     </div>
                     <div class="col-xs-4">
                       <label>&emsp;</label><br>
-                      <button type="button" class="btn btn-primary" id="addcriti"  data-toggle="modal" data-target="#modalcrit"><i class="fa fa-plus"> Agregar</i></button> 
+                      <button type="button" class="btn btn-primary" id="addcliente" data-toggle="modal" data-target="#modalCliente"><i class="fa fa-plus"> Agregar</i></button> 
                     </div>
                   </div>
                 </div>
@@ -129,11 +133,11 @@
                   <textarea class="form-control" id="descripcion" name="descripcion" placeholder="Ingrese breve Descripción (Tamaño Máx 255 caracteres) ..." cols="20" rows="3"></textarea>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-4">
-                  <label>Número de serie:</label>
+                  <label>Número de serie: <strong style="color: #dd4b39">*</strong></label>
                   <input type="text" id="numse"  name="numse" class="form-control input-md" placeholder="Ingrese Número de serie">
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-4">
-                  <label>Ubicación</label><strong style="color: #dd4b39">*</strong>:
+                  <label>Ubicación (Georeferencial)</label><strong style="color: #dd4b39">*</strong>:
                   <input type="text" id="ubicacion" name="ubicacion" class="form-control" placeholder="Ingrese Ubicación">
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-4">
@@ -158,7 +162,7 @@
                 </div>
               </div>
               <br>
-              <div class="row">
+              <?php /*<div class="row">
                 <div id="exTab1" class="col-xs-12"> 
                   <ul  class="nav nav-tabs">
                     <li>
@@ -201,12 +205,12 @@
                     </div><!-- /.tab-pane -->
                   </div><!-- /.tab-content -->
                 </div>
-              </div>
+              </div>*/?>
             </div><!-- /.panel-body-->   
-          </div>
+          </div><!-- /.panel -->
           
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" onclick="limpiar()">Cancelar</button>
+            <!--<button type="button" class="btn btn-default" onclick="limpiar()">Cancelar</button>-->
             <button type="button" class="btn btn-primary" onclick="guardar()">Guardar</button>
           </div>
         </div>
@@ -288,6 +292,7 @@ function guardar(){
   }
   else{
     $('#error').fadeOut('slow');
+    var idEquipo            = $('#id_equipo').val();
     var codigo              = $('#codigo').val();
     var ubicacion           = $('#ubicacion').val();
     var marca               = $('#marca option:selected').text();
@@ -296,34 +301,35 @@ function guardar(){
     var fecha_ultimalectura = $('#fecha_ultimalectura').val();
     var ultima_lectura      = $('#ultima_lectura').val();
     var fecha_garantia      = $('#fecha_garantia').val();
-    var empresa             = $('#empresa').val();
-    var unidad              = $('#unin').val();
-    var criticidad          = $('#criticidad').val();
-    var area                = $('#area').val();
-    var proceso             = $('#proceso').val();
-    var detec               = $('#destec').val(); //descripcion tecnica
-    var num                 = $('#numse').val();
+    //var id_empresa        = $('#id_empresa').val();
+    var sector              = $('#etapa option:selected').val();
+    var criticidad          = $('#criticidad option:selected').val();
     var grupo               = $('#grupo').val();
-    var sector              = $('#etapa').val();
-    var parametros          = {
+    var unidad              = $('#unin').val();
+    var id_area             = $('#area option:selected').val();
+    var id_proceso          = $('#proceso option:selected').val();
+    var id_cliente          = $('#cliente option:selected').val();
+    var numero_serie        = $('#numse').val();
+
+    var parametros = {
       'descripcion': descripcion,
       'fecha_ingreso': fecha_ingreso,
       'fecha_garantia': fecha_garantia,
       'marca': marca,
       'codigo': codigo,
       'ubicacion': ubicacion,
-      'id_empresa' : empresa,
+      //'id_empresa' : id_empresa,
       'id_sector' : sector,
       'id_grupo' : grupo,
+      'id_area' : id_area,
+      'id_proceso' : id_proceso,
       'id_criticidad' : criticidad,
+      'id_customer' : id_cliente,
+      'id_unidad': unidad,
+      'numero_serie' : numero_serie,
       'estado' : 'AC',
       'fecha_ultimalectura': fecha_ultimalectura,
-      'ultima_lectura': ultima_lectura,
-      'descrip_tecnica': detec,
-      'id_unidad': unidad,
-      'id_area' : area,
-      'id_proceso' : proceso,
-      'numero_serie':num            
+      'ultima_lectura': ultima_lectura,             
     };
     console.table(parametros);
     var i    = 0;
@@ -398,6 +404,9 @@ function validarCampos(){
   if ( $('#codigo').val() == "" ) {
       hayError = true;
   }
+  if ( $('#numse').val() == "" ) {
+      hayError = true;
+  }
   if ( $('#descripcion').val() == "" ) {
       hayError = true;
   }
@@ -418,8 +427,16 @@ function regresa(){
   WaitingClose();    
 }
   
+
+
+
+
+
+
+
+
 //Trae empresa logueada - Listo
-traer_empresa();
+/*traer_empresa();
 function traer_empresa(){
   $.ajax({
     data: { },
@@ -436,7 +453,7 @@ function traer_empresa(){
       console.log(data);
     },
   });
-}
+}*/
 
 // Trae unidad industrial segun empresa - Listo
 /*traer_unidad();
@@ -461,6 +478,7 @@ function traer_unidad(){
   });
 }*/
   
+
 // Trae area y llena el select - Listo
 traer_area();
 function traer_area(){
@@ -468,7 +486,7 @@ function traer_area(){
     data: { },
     dataType: 'json',
     type: 'POST',
-    url: 'index.php/Equipo/getarea', //index.php/
+    url: 'index.php/Equipo/getarea', 
     success: function(data){
       console.log("estoy en area");
       console.log(data);
@@ -477,7 +495,7 @@ function traer_area(){
       for(var i=0; i < data.length ; i++) 
       {    
         var nombre = data[i]['descripcion'];
-        var opcion = "<option value='"+data[i]['id_area']+"'>" +nombre+ "</option>" ; 
+        var opcion  = "<option value='"+data[i]['id_area']+"'>" +nombre+ "</option>" ; 
         $('#area').append(opcion); 
       }
     },
@@ -486,6 +504,77 @@ function traer_area(){
     },
   });
 }
+
+// Trae proceso y llena el select - Listo
+traer_proceso();
+function traer_proceso(){
+ $.ajax({
+   type: 'POST',
+   data: { },
+   url: 'index.php/Equipo/getproceso',
+   success: function(data){
+     var opcion = "<option value='-1'>Seleccione...</option>" ; 
+     $('#proceso').append(opcion); 
+     for(var i=0; i < data.length ; i++) 
+     {    
+       var nombre = data[i]['descripcion'];
+       var opcion = "<option value='"+data[i]['id_proceso']+"'>" +nombre+ "</option>" ; 
+       $('#proceso').append(opcion); 
+     }
+   },
+   error: function(result){
+     console.log(result);
+   },
+   dataType: 'json'
+ });
+}
+
+// Trae criticidad y llena el select - Listo
+traer_criticidad();
+function traer_criticidad(){
+  $.ajax({
+    type: 'POST',
+    data: { },
+    url: 'index.php/Equipo/getcriti', 
+    success: function(data){
+      var opcion = "<option value='-1'>Seleccione...</option>" ; 
+      $('#criticidad').append(opcion); 
+      for(var i=0; i < data.length ; i++){    
+        var nombre = data[i]['descripcion'];
+        var opcion = "<option value='"+data[i]['id_criti']+"'>" +nombre+ "</option>" ; 
+        $('#criticidad').append(opcion);                                    
+      }
+    },
+    error: function(result){
+      console.log(result);
+    },
+    dataType: 'json'
+  });
+} 
+
+// Trae etapa/sector y llena el select - Listo
+traer_etapa();
+function traer_etapa(){
+  $.ajax({
+    type: 'POST',
+    data: { },
+    url: 'index.php/Equipo/getetapa',
+    success: function(data){
+      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+      $('#etapa').append(opcion); 
+      for(var i=0; i < data.length ; i++) 
+      {    
+        var nombre = data[i]['descripcion'];
+        var opcion  = "<option value='"+data[i]['id_sector']+"'>" +nombre+ "</option>" ; 
+        $('#etapa').append(opcion);                                    
+      }                
+    },
+    error: function(result){
+      console.log(result);
+    },
+    dataType: 'json'
+  });
+} 
 
 // Trae grupo y llena el select - Listo
 traer_grupo();
@@ -513,394 +602,387 @@ function traer_grupo(){
   });
 }
 
-  // Trae criticidad y llena el select - Listo
-  traer_criticidad();
-  function traer_criticidad(){
-      $.ajax({
-        type: 'POST',
-        data: { },
-        url: 'index.php/Equipo/getcriti', 
-        success: function(data){
-               
-                var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-                $('#criticidad').append(opcion); 
-                for(var i=0; i < data.length ; i++){    
-
-                  var nombre = data[i]['descripcion'];
-                  var opcion  = "<option value='"+data[i]['id_criti']+"'>" +nombre+ "</option>" ; 
-
-                  $('#criticidad').append(opcion);                                    
-                }
-              },
-        error: function(result){
-              
-              console.log(result);
-            },
-            dataType: 'json'
-        });
-  }  
+// Trae grupo y llena el select - listo
+traer_cliente();
+function traer_cliente(){
+  $.ajax({
+    data: { },
+    dataType: 'json',
+    type: 'POST',
+    url: 'index.php/Equipo/getcliente', 
+    success: function(data){
+      console.log("estoy en cliente");
+      console.log(data);
+      var opcion = "<option value='-1'>Seleccione...</option>" ; 
+      $('#cliente').append(opcion); 
+      for(var i=0; i < data.length ; i++) 
+      {    
+        var nombre = data[i]['cliRazonSocial'];
+        var opcion = "<option value='"+data[i]['cliId']+"'>" +nombre+ "</option>" ; 
+        $('#cliente').append(opcion); 
+      }
+      $('modalCliente').modal('hide');
+    },
+    error: function(result){
+      console.log(result);
+    },
+  });
+}
   
-  // Trae proceso y llena el select - Listo
-  traer_proceso();
-  function traer_proceso(){
-      $.ajax({
-        type: 'POST',
-        data: { },
-        url: 'index.php/Equipo/getproceso',
-        success: function(data){
-               
-                 var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-                  $('#proceso').append(opcion); 
-                for(var i=0; i < data.length ; i++) 
-                {    
-                    var nombre = data[i]['descripcion'];
-                    var opcion  = "<option value='"+data[i]['id_proceso']+"'>" +nombre+ "</option>" ; 
-
-                    $('#proceso').append(opcion); 
-                                   
-                }
-                
-              },
-        error: function(result){
-              
-              console.log(result);
-            },
-            dataType: 'json'
-        });
-  }
-
-  // Trae etapa/sector y llena el select - Listo
-  traer_etapa();
-  function traer_etapa(){
-      $.ajax({
-        type: 'POST',
-        data: { },
-        url: 'index.php/Equipo/getetapa', //index.php/
-        success: function(data){
-               
-                 var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-                  $('#etapa').append(opcion); 
-                for(var i=0; i < data.length ; i++) 
-                {    
-                      var nombre = data[i]['descripcion'];
-                      var opcion  = "<option value='"+data[i]['id_sector']+"'>" +nombre+ "</option>" ; 
-
-                    $('#etapa').append(opcion);                                    
-                }                
-              },
-        error: function(result){
-              
-              console.log(result);
-            },
-            dataType: 'json'
-        });
-  }  
-
-  // Trae marca y llena el select - Listo
-  traer_marca();
-  function traer_marca(){
-      $.ajax({
-        type: 'POST',
-        data: { },
-        url: 'index.php/Equipo/getmarca', 
-        success: function(data){
-               
-                 var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+// Trae marca y llena el select - Listo
+traer_marca();
+function traer_marca(){
+    $.ajax({
+      type: 'POST',
+      data: { },
+      url: 'index.php/Equipo/getmarca', 
+      success: function(data){
+             
+               var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+                $('#marca').append(opcion); 
+              for(var i=0; i < data.length ; i++) 
+              {    
+                  var nombre = data[i]['marcadescrip'];
+                  var opcion  = "<option value='"+data[i]['marcaid']+"'>" +nombre+ "</option>" ; 
                   $('#marca').append(opcion); 
-                for(var i=0; i < data.length ; i++) 
-                {    
-                    var nombre = data[i]['marcadescrip'];
-                    var opcion  = "<option value='"+data[i]['marcaid']+"'>" +nombre+ "</option>" ; 
-                    $('#marca').append(opcion); 
-                                   
-                }
-                
-              },
-        error: function(result){
+                                 
+              }
               
-              console.log(result);
             },
-            dataType: 'json'
-        });
-  }  
-
-  // Limpia campos al cancelar
-  function limpiar(){
-      $("#equipo").val("");
-      $("#codigo").val("");
-      $("#ubicacion").val("");
-      $("#marca").val("");
-      $("#fecha_ingreso").val("");
-      $("#descripcion").val("");
-      $("#fecha_ultimalectura").val("");
-      $("#ultima_lectura").val("");
-      $("#fecha_garantia").val("");
-      $("#empresa").val("");
-      $("#sector").val("");
-      $("#criticidad").val("");
-      $("#grupo").val("");
-  }
-
-  // Agrega unidad industrial y llena el select - Listo
-  function guardarunidad(){ 
-       
-    var descripcion= $('#nombreunidad').val(); 
-    var datos = {
-      'descripcion': descripcion        
-      };                                              
-      console.log(datos);
-      var hayError = false; 
-
-      if( datos !=0){  
-
-        $.ajax({
-          type:"POST",
-          url: "index.php/Equipo/agregar_unidad", //controlador /metodo
-          data:{datos:datos},
-          success: function(data){
-                    console.log("exito");
-                    var dat= parseInt(data);
-                   
-                    if(dat > 0){  //Agrego la descripcion dinamicamte en el select con id componente            
-                      
-                        var texto = '<option value="'+dat+'">'+ datos.descripcion +'</option>';
-                        console.log(texto);
-                        $('#unin').append(texto);
-                    } 
-          },        
-          error: function(result){
-              console.log("entro por el error");
-              console.log(result);
+      error: function(result){
+            
+            console.log(result);
           },
-           dataType: 'json'
-        });     
-      }
-      else 
-      { 
-        alert("Por favor complete el nombre del sector, es un campo obligatorio");
-      }
-  }
+          dataType: 'json'
+      });
+}  
 
-  // Agrega las areas nuevas - Listo
-  function guardararea(){ 
-       
-      var descripcion= $('#nomarea').val(); 
-      var parametros = {
-          'descripcion': descripcion        
-      };                                              
-      console.log(parametros);
-      var hayError = false; 
+// Limpia campos al cancelar
+function limpiar(){
+    $("#equipo").val("");
+    $("#codigo").val("");
+    $("#ubicacion").val("");
+    $("#marca").val("");
+    $("#fecha_ingreso").val("");
+    $("#descripcion").val("");
+    $("#fecha_ultimalectura").val("");
+    $("#ultima_lectura").val("");
+    $("#fecha_garantia").val("");
+    $("#empresa").val("");
+    $("#sector").val("");
+    $("#criticidad").val("");
+    $("#grupo").val("");
+}
 
-      if( parametros !=0){
+// Agrega unidad industrial y llena el select - Listo
+function guardarunidad(){ 
+     
+  var descripcion= $('#nombreunidad').val(); 
+  var datos = {
+    'descripcion': descripcion        
+    };                                              
+    console.log(datos);
+    var hayError = false; 
 
-        $.ajax({
-          type:"POST",
-          url: "index.php/Equipo/agregar_area",
-          data:{parametros:parametros},
-          success: function(data){
+    if( datos !=0){  
+
+      $.ajax({
+        type:"POST",
+        url: "index.php/Equipo/agregar_unidad", //controlador /metodo
+        data:{datos:datos},
+        success: function(data){
                   console.log("exito");
-                  var datos= parseInt(data);
-                  console.log(datos);
-                    //alert(data);
-                    if(data > 0){  //Agrego la descripcion dinamicamte en el select con id componente             
-                      
-                        var texto = '<option value="'+data+'">'+ parametros.descripcion +'</option>';
-                        console.log(texto);
-                        $('#area').append(texto);
-                    } 
-          },        
-          error: function(result){
-              console.log("entro por el error");
-              console.log(result);
-          },
-           dataType: 'json'
-        });
-       
-      }
-      else 
-      { 
-        alert("Por favor complete la descripcion del grupo, es un campo obligatorio");
+                  var dat= parseInt(data);
+                 
+                  if(dat > 0){  //Agrego la descripcion dinamicamte en el select con id componente            
+                    
+                      var texto = '<option value="'+dat+'">'+ datos.descripcion +'</option>';
+                      console.log(texto);
+                      $('#unin').append(texto);
+                  } 
+        },        
+        error: function(result){
+            console.log("entro por el error");
+            console.log(result);
+        },
+         dataType: 'json'
+      });     
+    }
+    else 
+    { 
+      alert("Por favor complete el nombre del sector, es un campo obligatorio");
+    }
+}
 
-      }
-  }
+// Agrega las areas nuevas - Listo
+function guardararea(){ 
+     
+    var descripcion= $('#nomarea').val(); 
+    var parametros = {
+        'descripcion': descripcion        
+    };                                              
+    console.log(parametros);
+    var hayError = false; 
 
-  // Agrega las procesos nuevos - Listo
-  function guardarproceso(){ 
-       
-      var descripcion= $('#nomproceso').val(); 
-      var parametros = {
-          'descripcion': descripcion        
-      };                                              
-      console.log(parametros);
-      var hayError = false; 
+    if( parametros !=0){
 
-      if( parametros !=0){                                     
-        
-        $.ajax({
-          type:"POST",
-          url: "index.php/Equipo/agregar_proceso", 
-          data:{parametros:parametros},
-          success: function(data){
-                  console.log("exito");
-                  var datos= parseInt(data);
-                  console.log(datos);
-                    //alert(data);
-                    if(data > 0){ //Agrego la descripcion dinamicamte en el select con id componente              
-                      
-                        var texto = '<option value="'+data+'">'+ parametros.descripcion +'</option>';
-                        console.log(texto);
-                        $('#proceso').append(texto);
-                    }            
-          },
-          
-          error: function(result){
-              console.log("entro por el error");
-              console.log(result);
-          },
-           dataType: 'json'
-        });
-       
-      }
-      else 
-      { 
-        alert("Por favor complete la descripcion del grupo, es un campo obligatorio");
-
-      }
-  }
-
-  // Agrega criticidad nueva - Listo
-  function guardarcri(){ 
-       
-      var descripcion= $('#de').val(); 
-      var parametros = {
-          'descripcion': descripcion        
-      };                                              
-      console.log(parametros);
-      var hayError = false; 
-
-      if( parametros !=0){                                     
-        $.ajax({
-          type:"POST",
-          url: "index.php/Equipo/agregar_criti", 
-          data:{parametros:parametros},
-          success: function(data){
-                  console.log("exito");
-                  var datos= parseInt(data);
-                  console.log(datos);
-                    //Agrego la descripcion dinamicamte en el select con id componente
-                    if(data > 0){               
-                      
-                        var texto = '<option value="'+data+'">'+ parametros.descripcion +'</option>';
-                        console.log(texto);
-                        $('#criticidad').append(texto);
-                    } 
-                  }, 
-
-          error: function(result){
-                    console.log("entro por el error");
-                    console.log(result);
-                },
-           dataType: 'json'
-        });
-       
-      }
-      else 
-      { 
-        alert("Por favor complete criticidad, es un campo obligatorio");
-
-      }
-  }
-
-  // Agrega las grupos nuevos - Listo
-  function guardargrupo(){ 
-       
-      var descripcion= $('#nomgrupo').val(); 
-      var parametros = {
-          'descripcion': descripcion,
-          'estado': 'AC',
-      };                                              
-      console.table(parametros);
-      var hayError = false; 
-
-      if( parametros !=0){      
-
-        $.ajax({
-          type:"POST",
-          url: "index.php/Equipo/agregar_grupo", 
-          data:{parametros:parametros},
-          success: function(data){
-            console.log("exito");
-            var datos= parseInt(data);
-            console.log(datos);
-              //alert(data);
-              if(data > 0){  
-                
-                  var texto = '<option value="'+data+'">'+ parametros.descripcion +'</option>';
-                  console.log(texto);
-
-                  $('#grupo').append(texto);
-              }   
-            },
-          
-          error: function(result){
-              console.log("entro por el error");
-              console.log(result);
-          },
-           dataType: 'json'
-        });     
-      }
-      else 
-      { 
-        alert("Por favor complete la descripcion del grupo, es un campo obligatorio");
-
-      }
-  }
-
-  // Agrega sector/etapa nuevos - Listo
-  function guardaretapa(){ 
-       
-      var descripcion= $('#nometapa').val(); 
-      var parametros = {
-          'descripcion': descripcion,
-          'estado': 'AC',        
-      };                                              
-      console.table(parametros);
-      var hayError = false; 
-
-      if( parametros !=0){                                     
-        
-        $.ajax({
-          type:"POST",
-          url: "index.php/Equipo/agregar_etapa", 
-          data:{parametros:parametros},
-          success: function(data){
+      $.ajax({
+        type:"POST",
+        url: "index.php/Equipo/agregar_area",
+        data:{parametros:parametros},
+        success: function(data){
                 console.log("exito");
                 var datos= parseInt(data);
                 console.log(datos);
                   //alert(data);
-                  if(data > 0){  
-
+                  if(data > 0){  //Agrego la descripcion dinamicamte en el select con id componente             
+                    
                       var texto = '<option value="'+data+'">'+ parametros.descripcion +'</option>';
                       console.log(texto);
+                      $('#area').append(texto);
+                  } 
+        },        
+        error: function(result){
+            console.log("entro por el error");
+            console.log(result);
+        },
+         dataType: 'json'
+      });
+     
+    }
+    else 
+    { 
+      alert("Por favor complete la descripcion del grupo, es un campo obligatorio");
 
-                      $('#etapa').append(texto);
+    }
+}
+
+// Agrega las procesos nuevos - Listo
+function guardarproceso(){ 
+     
+    var descripcion= $('#nomproceso').val(); 
+    var parametros = {
+        'descripcion': descripcion        
+    };                                              
+    console.log(parametros);
+    var hayError = false; 
+
+    if( parametros !=0){                                     
+      
+      $.ajax({
+        type:"POST",
+        url: "index.php/Equipo/agregar_proceso", 
+        data:{parametros:parametros},
+        success: function(data){
+                console.log("exito");
+                var datos= parseInt(data);
+                console.log(datos);
+                  //alert(data);
+                  if(data > 0){ //Agrego la descripcion dinamicamte en el select con id componente              
+                    
+                      var texto = '<option value="'+data+'">'+ parametros.descripcion +'</option>';
+                      console.log(texto);
+                      $('#proceso').append(texto);
                   }            
-            },        
-          error: function(result){
-              console.log("entro por el error");
-              console.log(result);
+        },
+        
+        error: function(result){
+            console.log("entro por el error");
+            console.log(result);
+        },
+         dataType: 'json'
+      });
+     
+    }
+    else 
+    { 
+      alert("Por favor complete la descripcion del grupo, es un campo obligatorio");
+
+    }
+}
+
+// Agrega criticidad nueva - Listo
+function guardarcri(){ 
+     
+    var descripcion= $('#de').val(); 
+    var parametros = {
+        'descripcion': descripcion        
+    };                                              
+    console.log(parametros);
+    var hayError = false; 
+
+    if( parametros !=0){                                     
+      $.ajax({
+        type:"POST",
+        url: "index.php/Equipo/agregar_criti", 
+        data:{parametros:parametros},
+        success: function(data){
+                console.log("exito");
+                var datos= parseInt(data);
+                console.log(datos);
+                  //Agrego la descripcion dinamicamte en el select con id componente
+                  if(data > 0){               
+                    
+                      var texto = '<option value="'+data+'">'+ parametros.descripcion +'</option>';
+                      console.log(texto);
+                      $('#criticidad').append(texto);
+                  } 
+                }, 
+
+        error: function(result){
+                  console.log("entro por el error");
+                  console.log(result);
+              },
+         dataType: 'json'
+      });
+     
+    }
+    else 
+    { 
+      alert("Por favor complete criticidad, es un campo obligatorio");
+
+    }
+}
+
+// Agrega las grupos nuevos - Listo
+function guardargrupo(){ 
+     
+    var descripcion= $('#nomgrupo').val(); 
+    var parametros = {
+        'descripcion': descripcion,
+        'estado': 'AC',
+    };                                              
+    console.table(parametros);
+    var hayError = false; 
+
+    if( parametros !=0){      
+
+      $.ajax({
+        type:"POST",
+        url: "index.php/Equipo/agregar_grupo", 
+        data:{parametros:parametros},
+        success: function(data){
+          console.log("exito");
+          var datos= parseInt(data);
+          console.log(datos);
+            //alert(data);
+            if(data > 0){  
+              
+                var texto = '<option value="'+data+'">'+ parametros.descripcion +'</option>';
+                console.log(texto);
+
+                $('#grupo').append(texto);
+            }   
           },
-           dataType: 'json'
-        });     
-      }
-      else 
-      { 
-        alert("Por favor complete la descripcion del grupo, es un campo obligatorio");
-      }
+        
+        error: function(result){
+            console.log("entro por el error");
+            console.log(result);
+        },
+         dataType: 'json'
+      });     
+    }
+    else 
+    { 
+      alert("Por favor complete la descripcion del grupo, es un campo obligatorio");
+
+    }
+}
+
+// Agrega sector/etapa nuevos - Listo
+function guardaretapa(){ 
+     
+    var descripcion= $('#nometapa').val(); 
+    var parametros = {
+        'descripcion': descripcion,
+        'estado': 'AC',        
+    };                                              
+    console.table(parametros);
+    var hayError = false; 
+
+    if( parametros !=0){                                     
+      
+      $.ajax({
+        type:"POST",
+        url: "index.php/Equipo/agregar_etapa", 
+        data:{parametros:parametros},
+        success: function(data){
+              console.log("exito");
+              var datos= parseInt(data);
+              console.log(datos);
+                //alert(data);
+                if(data > 0){  
+
+                    var texto = '<option value="'+data+'">'+ parametros.descripcion +'</option>';
+                    console.log(texto);
+
+                    $('#etapa').append(texto);
+                }            
+          },        
+        error: function(result){
+            console.log("entro por el error");
+            console.log(result);
+        },
+         dataType: 'json'
+      });     
+    }
+    else 
+    { 
+      alert("Por favor complete la descripcion del grupo, es un campo obligatorio");
+    }
+}
+
+// Agrega sector/etapa nuevos
+function guardarCliente(){  
+  var cliName        = $('#cliName').val();
+  var cliLastName    = $('#cliLastName').val();
+  var cliDni         = $('#cliDni').val();
+  var cliAddress     = $('#cliAddress').val();
+  var cliPhone       = $('#cliPhone').val();
+  var cliEmail       = $('#cliEmail').val();
+  var cliRazonSocial = $('#cliRazonSocial').val();
+
+  var parametros = {
+        'cliName'     : cliName,
+        'cliLastName' : cliLastName,
+        'cliDni'      : cliDni,
+        'cliAddress'  : cliAddress,
+        'cliPhone'    : cliPhone,
+        'cliEmail'    : cliEmail,
+        'cliRazonSocial' : cliRazonSocial,
+        'estado'      : 'AC',    
+    };                                              
+    console.table(parametros);
+    var hayError = false; 
+
+    if( parametros !=0){                                         
+
+    $.ajax({
+      data:{parametros:parametros},
+      dataType: 'json',
+      type:"POST",
+      url: "index.php/Equipo/agregar_cliente", 
+      success: function(data){
+        console.log("exito");
+        console.log(data);
+        if(data > 0){  
+          var texto = '<option value="'+data+'">'+ parametros.cliRazonSocial +'</option>';
+          console.log(texto);
+          $('#cliente').append(texto);
+          $('#modalCliente').modal('hide');
+        }           
+      },        
+      error: function(result){
+        console.log("entro por el error");
+        console.log(result);
+      },
+    });     
   }
-
-
-
+  else 
+  { 
+    alert("Por favor complete la descripcion del grupo, es un campo obligatorio");
+  }
+}
 
 // Agrega las grupos nuevos - Listo
 function guardarmarca(){ 
@@ -1144,7 +1226,6 @@ function guardarmarca(){
 </div>  <!-- /.modal fade -->
 <!-- / Modal -->
 
-
 <!-- Modal Marca-->
 <div class="modal fade" id="modalMarca" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
@@ -1172,3 +1253,74 @@ function guardarmarca(){
   </div>  <!-- /.modal-dialog -->
 </div>  <!-- /.modal fade -->
 <!-- / Modal -->
+
+<!-- Modal Clientes --> 
+<div class="modal" id="modalCliente">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Agregar Cliente</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+              <h4><i class="icon fa fa-ban"></i> Error!</h4>
+              Revise que todos los campos esten completos
+            </div>
+          </div>
+        </div>
+
+        <div class="row"> 
+          <div class="col-xs-12">
+            <label style="margin-top: 7px;">Nombre <strong style="color: #dd4b39">*</strong>: </label>
+            <input type="text" class="form-control" id="cliName" >
+          </div>
+        </div><br>
+        <div class="row"> 
+          <div class="col-xs-12">
+            <label style="margin-top: 7px;">Apellido <strong style="color: #dd4b39">*</strong>: </label>
+            <input type="text" class="form-control" id="cliLastName" >
+          </div>
+        </div><br>
+        <div class="row"> 
+          <div class="col-xs-12">
+            <label style="margin-top: 7px;">Dni <strong style="color: #dd4b39">*</strong>: </label>
+            <input type="text" class="form-control"  id="cliDni" >
+          </div>
+        </div><br>
+        <div class="row"> 
+          <div class="col-xs-12">
+            <label style="margin-top: 7px;">Direccion <strong style="color: #dd4b39">*</strong>: </label>
+            <input type="text" class="form-control"  id="cliAddress" >
+          </div>
+        </div><br>
+        <div class="row"> 
+          <div class="col-xs-12">
+            <label style="margin-top: 7px;">Telefono <strong style="color: #dd4b39">*</strong>: </label>
+            <input type="text" class="form-control"  id="cliPhone" >
+          </div>
+        </div><br>
+        <div class="row"> 
+          <div class="col-xs-12">
+            <label style="margin-top: 7px;">Email <strong style="color: #dd4b39">*</strong>: </label>
+          </div>
+          <div class="col-xs-5">
+            <input type="text" class="form-control"  id="cliEmail" >
+          </div>
+        </div><br>
+        <div class="row"> 
+          <div class="col-xs-12">
+            <label style="margin-top: 7px;">Razon Social <strong style="color: #dd4b39">*</strong>: </label>
+            <input type="text" class="form-control"  id="cliRazonSocial" >
+          </div>
+        </div><br>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" onclick="guardarCliente()" >Guardar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal --><!-- Modal -->

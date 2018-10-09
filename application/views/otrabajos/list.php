@@ -16,8 +16,8 @@
             <thead>
               <tr>
                 <th>Acciones</th>
-                <th>Id</th>
-                <th>Fecha</th>
+                <th>Id Orden</th>
+                <th>Fecha Inicio</th>
                 <th>Fecha Entrega</th>
                 <th>Fecha Terminada</th>
                 <th>Detalle</th>
@@ -30,30 +30,31 @@
             <tbody>
               <?php
               //dump_exit($list);
-                if(count($list) > 0) { 
+                if( $list!=false && count($list) > 0) 
+                {
                   $userdata = $this->session->userdata('user_data');
                   $usrId    = $userdata[0]['usrId']; 
-               	  foreach($list as $a){
+               	  foreach($list as $a)
+                  {
                     $gr = $a['grpId'];
-                    //echo "grupo";
-                    //echo $gr;
-                    if($gr=='1') { 
+                    //echo "grupo: ".$gr;
+                    if ($gr=='1') { 
                       if (($a['estado'] =='As') || ($a['estado'] =='P') || ($a['estado'] =='C')) {
-                        $id = $a['id_orden'];
+                        $id        = $a['id_orden'];
                         $id_equipo = $a['id_equipo'];
-                        $causa = $a['descripcion'];
+                        $causa     = $a['descripcion'];
                         echo '<tr id="'.$id.'" class="'.$id.'" data-id_equipo="'.$id_equipo.'" data-causa="'.$causa.'" >';
       	                echo '<td>';
                         if (strpos($permission,'Del') !== false) {
                           echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar" data-toggle="modal" data-target="#modalaviso"></i>';
-                           echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"  ></i> '; 
+                          //echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"  ></i> '; 
                         }
                         if (strpos($permission,'Edit') !== false) {
       	                	echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar" data-toggle="modal" data-target="#modaleditar" ></i>';
-                          echo '<i class="fa fa-check-square-o text-light-blue" style="cursor: pointer; margin-left: 15px;"  title="Asignar tarea " id="btnAddtarea"></i>';
                         }
                         if (strpos($permission,'Asignar') !== false) {
-                          echo '<i class="fa fa-thumb-tack  text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar OT" data-toggle="modal" data-target="#modalAsig" ></i>';
+                          echo '<i class="fa fa-check-square-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar tarea" id="btnAddtarea"></i>';
+                          echo '<i class="fa fa-thumb-tack text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar OT" data-toggle="modal" data-target="#modalAsig" ></i>';
                          
                         }
                         if (strpos($permission,'OP') !== false) {
@@ -72,9 +73,12 @@
                         }
       	                echo '</td>';
                         echo '<td>'.$a['id_orden'].'</td>';
-      	                echo '<td>'.date_format(date_create($a['fecha_inicio']), 'd-m-Y').'</td>';
-                        echo '<td>'.date_format(date_create($a['fecha_entrega']), 'd-m-Y').'</td>';
-                        echo '<td>'.date_format(date_create($a['fecha_terminada']), 'd-m-Y').'</td>';
+                        $fecha_inicio = ($a['fecha_inicio'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_inicio']), 'd-m-Y');
+                        echo '<td>'.$fecha_inicio.'</td>';
+                        $fecha_entrega = ($a['fecha_entrega'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_entrega']), 'd-m-Y');
+                        echo '<td>'.$fecha_entrega.'</td>';
+                        $fecha_terminada = ($a['fecha_terminada'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_terminada']), 'd-m-Y');
+                        echo '<td>'.$fecha_terminada.'</td>';
                         echo '<td>'.$a['descripcion'].'</td>';
                         // echo '<td">'.$a['cliLastName'].' , '.$a['cliName'].'</td>';
                         echo '<td>'.$a['codigo'].' </td>';
@@ -83,7 +87,7 @@
                         echo '<td>'.($a['estado'] == 'C' ? '<small class="label pull-left bg-green">Curso</small>' : ($a['estado'] == 'P' ? '<small class="label pull-left bg-red">Pedido</small>' : '<small class="label pull-left bg-yellow">Asignado</small>')).'</td>';
       	                echo '</tr>';
         		          }
-                    }      
+                    }
                   }
                 }
               ?>
@@ -96,80 +100,498 @@
 </section><!-- /.content -->
 
 <script>
-var iort= "";
-var ido ="";
-var idp ="";
+var iort  = "";
+var ido   = "";
+var idp   = "";
 var idArt = 0;
-var acArt = '';
-var i ="";
-var idord ="";
-var idfin= "";
+var acArt = "";
+var i     = "";
+var idord = "";
+var idfin = "";
+
+// llena select de proveedores - Ok
+traer_prov();
+function traer_prov(){
+  $.ajax({
+    type: 'POST',
+    data: {},
+    url: 'index.php/Otrabajo/getproveedor',
+    success: function(data){
+      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+      $('#prov').append(opcion); 
+      for(var i=0; i < data.length ; i++) 
+      {    
+        var nombre = data[i]['provnombre'];
+        var opcion = "<option value='"+data[i]['provid']+"'>" +nombre+ "</option>" ; 
+        $('#prov').append(opcion);                
+      }
+    },
+    error: function(result){
+      console.error("Error al traer proveedor. Ver console.table")
+      console.table(result);
+    },
+    dataType: 'json'
+  });
+}
+
+// llena el select de sucursales - Ok 
+traer_sucursal()
+function traer_sucursal(){
+  $.ajax({
+    type: 'POST',
+    data: { },
+    url: 'index.php/Otrabajo/traer_sucursal',
+    success: function(data){
+      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+      $('#suci').append(opcion); 
+      for(var i=0; i < data.length ; i++) 
+      {    
+        var nombre = data[i]['descripc'];
+        var opcion = "<option value='"+data[i]['id_sucursal']+"'>" +nombre+ "</option>" ;
+        $('#suci').append(opcion);        
+      }
+    },
+    error: function(result){
+      console.error("Error al traer sucursal. Ver console.table");
+      console.table(result);
+    },
+    dataType: 'json'
+  });
+} 
+
+// llena el select de equipos - Ok 
+traer_equipo()
+function traer_equipo(){
+  $.ajax({
+    type: 'POST',
+    data: { },
+    url: 'index.php/Otrabajo/getequipo',
+    success: function(data){
+      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+      $('#equipo').append(opcion); 
+      for(var i=0; i < data.length ; i++) 
+      {    
+        var nombre = data[i]['codigo'];
+        var opcion = "<option value='"+data[i]['id_equipo']+"'>" +nombre+ "</option>" ; 
+        $('#equipo').append(opcion);             
+      }
+    },
+    error: function(result){
+      console.error("Error al traer equipos. Ver console.table");
+      console.table(result);
+    },
+    dataType: 'json'
+  });
+}
+
+// Limpia modales y regresa al listado de OTs - Ok test 
+function regresa1(){
+    $('#content').empty();
+    $('#modalOT').empty();
+    $('#modalAsig').empty(); //local index 
+    $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/listOrden/<?php echo $permission; ?>");
+    WaitingClose();
+    //WaitingClose();
+}
+
+// Guarda una nueva OT - Ok
+function guardaragregar(){
+  console.log("Guarda OT");
+  var id_orden     = $('#id_orden').val();
+  var num          = $('#nro1').val();
+  var fecha_inicio = $('#fecha').val();
+  var descripcion  = $('#vsdetal').val();
+  var sucursal     = $('#suci').val();
+  var proveedor    = $('#prov').val();
+  var equipo       = $('#equipo').val();;
+
+  console.log("Datos a guardar");
+  console.log(id_orden);
+  console.log(num);
+  console.log(fecha_inicio);
+  console.log(descripcion);
+  console.log(sucursal);
+  console.log(proveedor);
+  console.log(equipo);
+
+  $.ajax({
+    type: 'POST', 
+    data: {id_orden:id_orden, num:num, equipo:equipo, descripcion:descripcion, sucursal:sucursal, proveedor:proveedor},
+    url: 'index.php/Otrabajo/guardar_agregar',
+    success: function(data){
+      //console.log(data);  
+      regresa1();
+    },
+    error: function(result){
+      console.error("Error al agregar nueva OT. Ver console.table");
+      console.table(result);
+    }
+  });        
+}
+
+// Elimina OT (estado = AN) - Ok
+function eliminarpred(){
+  var idpre = $(this).parent('td').parent('tr').attr('id');
+  console.log("Estoy por la opcion SI a eliminar")
+  console.log(gloid);
+          
+  $.ajax({
+    type: 'POST',
+    data: { gloid: gloid},
+    url: 'index.php/Otrabajo/baja_predictivo',
+    success: function(data){
+      regresa1();
+    },
+    error: function(result){
+      console.error("Error al eliminar OT. Ver console.table");
+      console.table(result);
+    }
+  });
+}
+
+// Trae datos para llenar el modal Editar OT - Ok
+$(".fa-pencil").click(function(e) { 
+  $("#modaleditar tbody").remove();
+  var idord = $(this).parent('td').parent('tr').attr('id');
+  idp = idord;
+console.log("idp: "+idp);
+  $.ajax({
+    data: { idp:idp },
+    dataType: 'json',
+    type: 'POST',
+    url: 'index.php/Otrabajo/getpencil',
+    success: function(data){
+      console.table(data);
+      datos = {
+        'id_ot'        : data[0]['id_orden'],
+        'nro'          : data[0]['nro'],
+        'equipo'       : data[0]['codigo'],
+        'id_equipo'    : data[0]['id_equipo'],
+        'fecha_inicio' : data[0]['fecha_inicio'],
+        'idusuario'    : data[0]['id_usuario'],
+        'nota'         : data[0]['descripcion'],
+        'id_sucu'      : data[0]['id_sucursal'],
+        'sucursal'     : data[0]['descripc'],
+        'id_proveedor' : data[0]['provid'],
+        'nombreprov'   : data[0]['provnombre'],
+      }
+      completarEdit(datos);
+    },
+    error: function(result){
+      console.error("Error al Editar OT. Ver console.table");
+      console.table(result);
+    },
+  });
+});
+
+// completa los datos del modal Editar - Ok
+function completarEdit(datos){
+  console.log("datos que llegaron: ");
+  console.table(datos);
+  $('#nroedit').val(datos['nro']);
+  traer_equipo2(datos['id_equipo']);
+  $('#fecha_inicio1').val(datos['fecha_inicio']);
+  $('#vsdetalleedit').val(datos['nota']);
+  traer_sucursal2(datos['id_sucu']);
+  traer_prov1(datos['id_proveedor']);
+}
+
+// llena select equipos en modal Editar OT - Ok
+function traer_equipo2(id_equipo){
+  $('#equipo1').text("");
+  $.ajax({
+    dataType: 'json',
+    type: 'POST',
+    url: 'index.php/Otrabajo/getequipo',
+    success: function(data){
+      for(var i=0; i < data.length ; i++) 
+      {
+        var selectAttr = '';
+        if(data[i]['id_equipo'] == id_equipo) { var selectAttr = 'selected'; }
+        var nombre = data[i]['codigo'];
+        var opcion = "<option value='"+data[i]['id_equipo']+"' "+selectAttr+">" +nombre+ "</option>" ; 
+        $('#equipo1').append(opcion); 
+      }
+    },
+    error: function(result){
+      console.error("Error al llenar salect equipo en Editar OT");
+      console.table(result);
+    },
+  });
+}
+
+// llena select sucursales en modal Editar - Ok
+function traer_sucursal2(id_sucursal){
+  $('#sucidedit').text("");
+  $.ajax({
+    type: 'POST',
+    data: { },
+    url: 'index.php/Otrabajo/traer_sucursal',
+    success: function(data){
+      for(var i=0; i < data.length ; i++) 
+      {
+        console.info("i:"+data[i]['id_equipo']);
+        var selectAttr = '';
+        if(data[i]['id_sucursal'] == id_sucursal) { var selectAttr = 'selected'; console.log("sel")}
+        var nombre = data[i]['descripc'];
+        var opcion = "<option value='"+data[i]['id_sucursal']+"' "+selectAttr+">" +nombre+ "</option>";
+        $('#sucidedit').append(opcion); 
+      }
+    },
+    error: function(result){
+      console.error("Error al traer sucursales en Editar OT");
+      console.table(result);
+    },
+    dataType: 'json'
+  });
+}    
+
+// llena select proveedores en modal Editar - Ok
+function traer_prov1(id_proveedor){
+  $('#prov1').text("");
+  $.ajax({
+    type: 'POST',
+    data: {},
+    url: 'index.php/Otrabajo/getproveedor',
+    success: function(data){
+      for(var i=0; i < data.length ; i++) 
+      {
+        console.info("i:"+data[i]['id_equipo']);
+        var selectAttr = '';
+        if(data[i]['provid'] == id_proveedor) { var selectAttr = 'selected'; console.log("sel")}
+        var nombre = data[i]['provnombre'];
+        var opcion = "<option value='"+data[i]['provid']+"' "+selectAttr+">" +nombre+ "</option>";
+        $('#prov1').append(opcion); 
+      }
+    },
+    error: function(result){
+      console.log(result);
+    },
+    dataType: 'json'
+  });
+}
+
+// Guarda Edicion de OT - Ok
+function guardareditar(){
+  var id_orden     = $('#id_orden').val();
+  var nro          = $('#nroedit').val();
+  var fecha_inicio = $('#fecha_inicio1').val();
+  var descripcion  = $('#vsdetalleedit').val();
+  var id_sucu      = $('#sucidedit').val();
+  var proveedor    = $('#prov1').val();
+  var equipo       = $('#equipo1').val();
+  var equipo1      = $('#id_equipo1').val();
+  var parametros = {
+    //'id_orden'     : id_orden,
+    'nro'          : nro,                                          
+    'fecha_inicio' : fecha_inicio,     
+    'descripcion'  : descripcion,     
+    'id_sucursal'  : id_sucu,                  
+    'id_proveedor' : id_sucu,                
+    'id_equipo'    : equipo                    
+  };
+  // console.log("Parametros:");
+  // console.log(parametros);
+  // console.log("El id de orden es:");
+  // console.log(idp);
+  // console.log("El id de equipo es:");
+  // console.log(equipo);
+  // console.log(equipo1);
+  // console.log("El id de proveedor es:");
+  // console.log(proveedor);
+  $.ajax({
+    type: 'POST',
+    data: {parametros:parametros, idp:idp},
+    url: 'index.php/Otrabajo/guardar_editar',
+    success: function(data){
+      regresa1();
+    },
+    error: function(result){
+      console.error("Error al guardar en modal Editar Ot");
+      console.table(result);
+    }
+  });
+}
+
+// Lleva a la pantalla Asignar Tareas - Ok (no revisé la asignación!!!)
+$(".fa-check-square-o").click(function (e) { 
+  var id = $(this).parent('td').parent('tr').attr('id');
+  console.log("El id de OT es:");
+  console.log(id);
+  iort = id;
+  WaitingOpen();
+  $('#content').empty();
+  $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/cargartarea/<?php echo $permission; ?>/"+iort+"");
+  WaitingClose();  
+});
+
+// Trae los datos a mostrar en el modal Asignar OT - Ok
+$(".fa-thumb-tack").click(function (e) { 
+  // $('#modalAsig').modal('show');
+  var id_orden = $(this).parent('td').parent('tr').attr('id');  
+  console.log("El id de orden es: "+id_orden);
+  $.ajax({
+    type: 'GET',
+    data: { id_orden: id_orden},
+    url: 'index.php/Otrabajo/getasigna', 
+    success: function(data){
+      datos = {
+        'id_orden'     : id_orden,
+        'nro'          : data['datos'][0]['nro'],
+        'fecha_inicio' : data['datos'][0]['fecha_inicio'],
+        'estado'       : data['datos'][0]['estado'],
+        'descripcion'  : data['datos'][0]['descripcion'],
+        'equipo'       : data['datos'][0]['codigo'],
+        'id_usuario'   : data['datos'][0]['id_usuario'],
+        'id_equipo'    : data['datos'][0]['id_equipo'],
+        'equipoDescrip': data['datos'][0]['equipoDescrip'],
+      };
+      var arre = new Array();
+      arre = datos['fecha_inicio'].split(' ');
+      //var fe= date_format(date_create(arre[0]), 'd-m-Y');
+      $('#id_orden').val(datos['id_orden']);
+      $('#nro').val(datos['nro']);
+      $('#descripcion').val(datos['descripcion']);
+      $('#fecha_inicio').val(arre[0]); 
+      $('#estado').val(datos['estado']);
+      $('#equipo13').val(datos['equipo']);
+      $('#equipo13').prop('title', datos['equipoDescrip']);
+      $('#equipo13id').val(datos['id_equipo']);
+      traer_usuario( datos['id_usuario'] ); 
+      // click_pedent();
+    },
+    error: function(result){
+      console.error("Error al ")
+      console.table(result);
+    },
+    dataType: 'json'
+  }); 
+});
+
+// llena select usuario en modal Asignar OT - Ok
+function traer_usuario(id_usuario){
+  $("#usuario1").html("");
+  $.ajax({
+    data: {},
+    dataType: 'json',
+    type: 'POST',
+    url: "Otrabajo/getusuario",
+    success: function (data) {
+      $('#usuario1').text("");
+      for(var i=0; i < data.length ; i++) 
+      {
+        var selectAttr = '';
+        if(data[i]['usrId'] == id_usuario) { var selectAttr = 'selected';}
+        var nombre = data[i]['usrName']+' '+data[i]['usrLastName'];
+        var opcion = "<option value='"+data[i]['usrId']+"' "+selectAttr+">" +nombre+ "</option>";
+        $('#usuario1').append(opcion); 
+      }
+    },
+    error : function (data){
+      console.error('Error al traer usuarios en modal Asignar OT');
+      console.table(data);
+    },
+  });
+}
+
+// 
+function orden(){
+  console.log("si guardo ");
+  var id_orden = $('#id_orden').val();
+  var nro = $('#nro').val();
+  var fecha_inicio = $('#fecha_inicio').val();
+  var fecha_entrega = $('#fecha_entrega').val();
+  var usuario= $('#usuario1').val();
+  var estado= $('#estado').val();
+  var cliente = $('#id_cliente').val();
+  var parametros = {
+      //'id_orden': id_orden,
+      'nro': nro,
+      'fecha_inicio': fecha_inicio,
+      'fecha_entrega': fecha_entrega,
+      'id_usuario_a': usuario,
+      'estado': 'As',     
+      'cliId': cliente,
+  };
+  console.log(parametros);
+  console.log(id_orden);
+  $.ajax({
+      type: 'POST',
+      data: { id_orden:id_orden, fecha_entrega:fecha_entrega, usuario:usuario},
+      url: 'index.php/Otrabajo/guardar', 
+      success: function(data){
+              console.log(data);
+              regresa1();
+             
+            },
+      error: function(result){
+            
+            console.log(result);
+           
+          },
+          dataType: 'json'
+  });              
+}
+
+
+
+
+
+
+
+// Refresca    
+function regresa(){
+  $('#content').empty(); //listOrden  
+  $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/listOrden/<?php echo $permission; ?>");
+  WaitingClose();
+}
+
+// llena select clientes en modal Asignar OT - 
+function traer_clientes(id_cliente){
+  $.ajax({
+    type: 'POST',
+    data: {},
+    url: 'index.php/Otrabajo/traer_cli',
+    success: function(data){
+      console.info(data);
+      /*var selectAttr = '';
+      if(data[i]['cliId'] == id_cliente) { var selectAttr = 'selected'; console.log("sel")}
+      var nombre = data[i]['cliLastName']+'. .'+datos['cliName'];
+      var opcion = "<option value='"+data[i]['cliId']+"' "+selectAttr+">" +nombre+ "</option>";
+      $('#cli').append(opcion); 
+
+      /*var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+      $('#cli').append(opcion); 
+      for(var i=0; i < data.length ; i++) 
+      {    
+        var nombre = data[i]['cliLastName']+'. .'+datos['cliName'];
+        var opcion = "<option value='"+data[i]['cliId']+"'>" +nombre+ "</option>" ; 
+        $('#cli').append(opcion);          
+      }*/
+    },
+    error: function(result){
+      console.log(result);
+    },
+    dataType: 'json'
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 $(document).ready(function(event) {
   
-  //Al apretar la opcion asignar tareas , esto lleva a esa pantalla, esto es lo que hay q cambiar para subir
-  $(".fa-check-square-o").click(function (e) { 
-    var id = $(this).parent('td').parent('tr').attr('id');
-    console.log("El id de OT es:");
-    console.log(id);
-    iort= id;
-    WaitingOpen();
-    $('#content').empty();
-    $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/cargartarea/<?php echo $permission; ?>/"+iort+"");
-    WaitingClose();  
-  });
-   //Asignar OT/ aca traigo los datos a mostrar en el modal  
-  $(".fa-thumb-tack").click(function (e) { 
-          
-   // $('#modalAsig').modal('show');
-    var id_orden = $(this).parent('td').parent('tr').attr('id');  
-    console.log("El id de orden es:");
-    console.log(id_orden);    
-    traer_usuario();
-    $.ajax({
-        type: 'GET',
-        data: { id_orden: id_orden},
-        url: 'index.php/Otrabajo/getasigna', 
-        success: function(data){
-                
-                console.log(data);
-                datos={
-                  'id_orden':id_orden,
-                  'nro':data['datos'][0]['nro'],
-                  'fecha_inicio':data['datos'][0]['fecha_inicio'],
-                  'estado':data['datos'][0]['estado'],
-                  'descripcion':data['datos'][0]['descripcion'],
-                  'equipo': data['datos'][0]['codigo'],
-                  
-                 
 
-                };
 
-                var arre = new Array();
-                arre=datos['fecha_inicio'].split(' ');
-                //var fe= date_format(date_create(arre[0]), 'd-m-Y');
-
-                $('#id_orden').val(datos['id_orden']);
-                $('#nro').val(datos['nro']);
-                $('#fecha_inicio').val(arre[0]); 
-                $('#estado').val(datos['estado']);
-                $('#equipo1').val(datos['equipo']);
-                
-                $('#descripcion').val(datos['descripcion']);
-                
-                //traerUsuario(); 
-               // click_pedent();
-               
-              },
-          
-        error: function(result){
-              
-              console.log(result);
-            },
-            dataType: 'json'
-      }); 
-   
-
-  });
 
    //cargar pedido
   $(".fa-tags").click(function (e) { 
@@ -325,9 +747,9 @@ $(document).ready(function(event) {
     gloid=ido;
                                 
   }); 
-var origen="";
-  $(".fa-print").click(function (e) {
+  var origen="";
 
+  $(".fa-print").click(function (e) {
         e.preventDefault();
         var ido = $(this).parent('td').parent('tr').attr('id');
         console.log("El id de orden al imprimir es :");
@@ -554,7 +976,6 @@ var origen="";
   });    
 
   $(".fa-toggle-on").click(function (e) { 
-
     var idord = $(this).parent('td').parent('tr').attr('id');
     console.log(idord);  
     idfin=idord;
@@ -580,64 +1001,14 @@ var origen="";
     firstDay: 1
   }).datepicker("setDate", new Date()); 
 
-  $(".datepicker").datepicker({
-      
+  $(".datepicker").datepicker({    
       changeMonth: true,
       changeYear: true
   });
 
-  // Edito- listo
-  $(".fa-pencil").click(function (e) { 
 
-    $("#modaleditar tbody").remove();
-     
-    console.log("Estoy editado ");
-    var idord = $(this).parent('td').parent('tr').attr('id');
-    idp=idord;
-    console.log("El id de orden es:");
-    console.log(idord);
-    console.log(idp);
-  
-    $.ajax({
-        type: 'POST',
-        data: { idp: idp},
-        url: 'index.php/Otrabajo/getpencil', //index.php/
-        success: function(data){
-              console.log("Datos que llegan en el editar");                  
-              console.log(data);
-             //console.log(data[0]['nro']);
-              datos={
-                  'nro':data[0]['nro'],
-                  'equipo' :data[0]['codigo'],
-                  'id_equipo':data[0]['id_equipo'],
-                  
-                  'fecha_inicio':data[0]['fecha_inicio'],
-                  'idusuario':data[0]['id_usuario'],
-                  'nota':data[0]['descripcion'],
-                  'id_sucu':data[0]['id_sucursal'],
-                  'sucursal':data[0]['descripc'],
-                  'id_proveedor':data[0]['provid'],
-                  'nombreprov':data[0]['provnombre'],
-                }
-              console.log("datos a enviar");
-              console.log(datos);
-              completarEdit(datos);
-             // OpenSale();               
-            
-              },
-          
-        error: function(result){
-              
-              console.log(result);
-            },
-            dataType: 'json'
-    });
-  
-  });
-
- // Genera Informe de Servicio - Hugo
+  // Genera Informe de Servicio - Hugo
   $('.fa-sticky-note-o').click( function cargarVista(){
-      
       var id_sol = parseInt($(this).parent('td').parent('tr').attr('id'));
       var id_eq = parseInt($(this).parent('td').parent('tr').data('id_equipo')); 
       var desc = $(this).parent('td').parent('tr').data('causa');
@@ -677,26 +1048,7 @@ var origen="";
 
 });
 
-function completarEdit(datos){
 
-  console.log("datos que llegaron");
-  console.log(datos);
-  $('#nroedit').val(datos['nro']);
-  $('select#equipo1').append($('<option />', { value: datos['id_equipo'],text: datos['equipo']+'.'}));
-  //$('#equipo1').val(datos['id_equipo']);
-  $('#id_equipo1').val(datos['id_equipo']);
-  traer_equipo2();
- // $('#equipo1').val(datos['id_equipo']);
-  $('#fecha_inicio1').val(datos['fecha_inicio']);
-  $('#vsdetalleedit').val(datos['nota']);
-  //$('#sucidedit').val(datos['id_sucu']);
-  $('#prov1').val(datos['id_proveedor']);
-
-  $('select#sucidedit').append($('<option />', { value: datos['id_sucu'],text: datos['sucursal']+'.'}));
-  traer_sucursal2();
- $('select#prov1').append($('<option />', { value: datos['id_proveedor'],text: datos['nombreprov']+'.'}));
-  traer_prov1();  
-}
     
 function LoadOT(id_, action){
   idArt = id_;
@@ -723,11 +1075,9 @@ function LoadOT(id_, action){
     				},
           dataType: 'json'
   });
-  
 }
 
 function traer_clientes(idcliente){
-
     $.ajax({
           type: 'POST',
           data: { idcliente: idcliente},
@@ -754,7 +1104,6 @@ function traer_clientes(idcliente){
 }
 
 function finalOT(id_, action){ //esto es nuevo 
-
   idot = id_;
   ac = action;
   est='T';
@@ -778,72 +1127,11 @@ function finalOT(id_, action){ //esto es nuevo
 }
  
    
-function traer_usuario(){
-
-  console.log("Traer usuario");
-  $("#usuario1").html('');                
-  $.ajax({
-          'data' : {},
-          'async': true,
-          'type': "POST",
-          'global': false,
-          'dataType': 'json',
-          'url': "Otrabajo/getusuario",
-          'success': function (data) {
-              console.log("Entro por Traer usuario ok");
-              //console.log(data[0]['id_equipo']);
-
-               // Asigna opciones al select Equipo en modal
-              var $select = $("#usuario1");
-              //data[i]['usrId']
-
-              for (var i = 0; data.length; i++) {
-
-                $select.append($('<option />', { value: data[i]['usrId'], text: data[i]['usrLastName']+' '+data[i]['usrName'] }));
-              }
-
-           },
-          'error' : function (data){
-            console.log('Error en getusuario');
-            alert('error');
-           },
-
-  });
-}
 
 
-
-
-function traer_sucursal2(){
-  $('#sucidedit').html('');
-  $.ajax({
-      type: 'POST',
-      data: { },
-      url: 'index.php/Otrabajo/traer_sucursal', //index.php/
-      success: function(data){
-             
-               //var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-                $('#sucidedit').append(opcion); 
-              for(var i=0; i < data.length ; i++) 
-              {    
-                    var nombre = data[i]['descripc'];
-                    var opcion  = "<option value='"+data[i]['id_sucursal']+"'>" +nombre+ "</option>" ; 
-
-                  $('#sucidedit').append(opcion); 
-                                 
-              }
-            },
-      error: function(result){
-            
-            console.log(result);
-          },
-          dataType: 'json'
-  });
-}    
  
 // Trae proveedores por empresa logueada      
 function traer_proveedor(){
-
   $('#proveedor').html('');
   $.ajax({
     type: 'POST',
@@ -867,121 +1155,10 @@ function traer_proveedor(){
         },
         dataType: 'json'
     });
-
 }
 
-traer_prov();
-function traer_prov(){
-  $.ajax({
-    type: 'POST',
-    data: {},
-    url: 'index.php/Otrabajo/getproveedor', //index.php/
-    success: function(data){
-           
-             var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-              $('#prov').append(opcion); 
-            for(var i=0; i < data.length ; i++) 
-            {    
-                  var nombre = data[i]['provnombre'];
-                  var opcion  = "<option value='"+data[i]['provid']+"'>" +nombre+ "</option>" ; 
-
-                $('#prov').append(opcion);                
-            }
-          },
-    error: function(result){
-          
-          console.log(result);
-        },
-        dataType: 'json'
-    });
-
-}
-
-//Trae los proveedores del edit 
-function traer_prov1(){
-  $.ajax({
-    type: 'POST',
-    data: {},
-    url: 'index.php/Otrabajo/getproveedor', //index.php/
-    success: function(data){
-           
-             //var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-             // $('#prov1').append(opcion); 
-            for(var i=0; i < data.length ; i++) 
-            {    
-                  var nombre = data[i]['provnombre'];
-                  var opcion  = "<option value='"+data[i]['provid']+"'>" +nombre+ "</option>" ; 
-
-                $('#prov1').append(opcion);                
-            }
-          },
-    error: function(result){
-          
-          console.log(result);
-        },
-        dataType: 'json'
-  });
-
-}
-
-
-traer_clientes()
-function traer_clientes(){
-  $.ajax({
-    type: 'POST',
-    data: { },
-    url: 'index.php/Otrabajo/traer_cli', //index.php/
-    success: function(data){
-           
-             var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-              $('#cli').append(opcion); 
-            for(var i=0; i < data.length ; i++) 
-            {    
-                  var nombre = data[i]['cliLastName']+'. .'+datos['cliName'];
-                  var opcion  = "<option value='"+data[i]['cliId']+"'>" +nombre+ "</option>" ; 
-
-                $('#cli').append(opcion); 
-                               
-            }
-          },
-    error: function(result){
-          
-          console.log(result);
-        },
-        dataType: 'json'
-    });
-}
-    
-traer_sucursal()
-function traer_sucursal(){
-      $.ajax({
-        type: 'POST',
-        data: { },
-        url: 'index.php/Otrabajo/traer_sucursal', //index.php/
-        success: function(data){
-               
-                 var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-                  $('#suci').append(opcion); 
-                for(var i=0; i < data.length ; i++) 
-                {    
-                      var nombre = data[i]['descripc'];
-                      var opcion  = "<option value='"+data[i]['id_sucursal']+"'>" +nombre+ "</option>" ; 
-
-                    $('#suci').append(opcion); 
-                                   
-                }
-              },
-        error: function(result){
-              
-              console.log(result);
-            },
-            dataType: 'json'
-        });
-} 
-    
 
 function click_pedent(){  
-
   var fechai= $("#fecha_inicio").val(); //optengo el valor del campo fecha 
   $.ajax({
         type: 'GET',
@@ -1002,117 +1179,10 @@ function click_pedent(){
             },
             dataType: 'json'
         });
-
 }
 
-function guardareditar(){
-
-  console.log("estoy guardando lo editado ");
-  var id_orden = $('#id_orden').val();
-  var nro = $('#nroedit').val();
-  var fecha_inicio = $('#fecha_inicio1').val();
-  var descripcion = $('#vsdetalleedit').val();
-  var id_sucu= $('#sucidedit').val();
-  var proveedor=  $('#prov1').val();
-  var equipo = $('#equipo1').val();
-  var equipo1 = $('#id_equipo1').val();
-  var parametros = {
-      //'id_orden': id_orden,
-      'nro': nro,
-      'fecha_inicio': fecha_inicio, 
-      'descripcion': descripcion,     
-      'id_sucursal': id_sucu,
-      'id_proveedor': id_sucu,
-      'id_equipo': equipo1
-
-  };
-  console.log("Parametros:");
-  console.log(parametros);
-  console.log("El id de orden es:");
-  console.log(idp);
-  console.log("El id de equipo es:");
-  console.log(equipo);
-  console.log(equipo1);
-  console.log("El id de proveedor es:");
-  console.log(proveedor);
-     $.ajax({
-         type: 'POST',
-         data: {parametros:parametros, idp:idp},
-         url: 'index.php/Otrabajo/guardar_editar',  //index.php/
-         success: function(data){
-                
-                console.log("Exito en la edicion");
-                console.log(data);
-              
-                regresa1();
-               
-              },
-         error: function(result){
-              
-             console.log(result);
-             // $('#modalAsig').modal('hide');
-             }
-         // dataType: 'json'
-     });
-           
-}
-
-traer_equipo()
-function traer_equipo(){
-
-  $.ajax({
-    type: 'POST',
-    data: { },
-    url: 'index.php/Otrabajo/getequipo', //index.php/
-    success: function(data){
-           
-             var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-              $('#equipo').append(opcion); 
-            for(var i=0; i < data.length ; i++) 
-            {    
-                  var nombre = data[i]['codigo'];
-                  var opcion  = "<option value='"+data[i]['id_equipo']+"'>" +nombre+ "</option>" ; 
-
-                $('#equipo').append(opcion); 
-                               
-            }
-          },
-    error: function(result){
-          
-          console.log(result);
-        },
-        dataType: 'json'
-    });
-}
-
-function traer_equipo2(){
-  $.ajax({
-    type: 'POST',
-    data: { },
-    url: 'index.php/Otrabajo/getequipo', //index.php/
-    success: function(data){
-           
-            // var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-             // $('#equipo1').append(opcion); 
-            for(var i=0; i < data.length ; i++) 
-            {    
-                  var nombre = data[i]['codigo'];
-                  var opcion  = "<option value='"+data[i]['id_equipo']+"'>" +nombre+ "</option>" ; 
-
-                $('#equipo1').append(opcion); 
-                               
-            }
-          },
-    error: function(result){
-          
-          console.log(result);
-        },
-        dataType: 'json'
-    });
-}
 
 function guardarpedido(){
-
   console.log("si guardo pedido");
   var id_orden = $(this).parent('td').parent('tr').attr('id');
   var numero = $('#num1').val();
@@ -1156,108 +1226,11 @@ function guardarpedido(){
   });                 
 }  
    
-//guardar AGREGAR
-function orden(){
 
-  console.log("si guardo ");
-  var id_orden = $('#id_orden').val();
-  var nro = $('#nro').val();
-  var fecha_inicio = $('#fecha_inicio').val();
-  var fecha_entrega = $('#fecha_entrega').val();
-  var usuario= $('#usuario1').val();
-  var estado= $('#estado').val();
-  var cliente = $('#id_cliente').val();
-  var parametros = {
-      //'id_orden': id_orden,
-      'nro': nro,
-      'fecha_inicio': fecha_inicio,
-      'fecha_entrega': fecha_entrega,
-      'id_usuario_a': usuario,
-      'estado': 'As',     
-      'cliId': cliente,
-  };
-  console.log(parametros);
-  console.log(id_orden); //data:parametros,
-  $.ajax({
-      type: 'POST',
-      data: { id_orden:id_orden, fecha_entrega:fecha_entrega, usuario:usuario},
-      url: 'index.php/Otrabajo/guardar', 
-      success: function(data){
-              console.log(data);
-              regresa1();
-             
-            },
-      error: function(result){
-            
-            console.log(result);
-           
-          },
-          dataType: 'json'
-  });
-                 
-}
-//Refresca    
-function regresa(){
 
-  $('#content').empty(); //listOrden  
-  $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/listOrden/<?php echo $permission; ?>");
-  WaitingClose();
-}
-    
-  
-function regresa1(){
-  
-    $('#content').empty();
-    $('#modalOT').empty();
-    $('#modalAsig').empty(); //local index 
-    $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/listOrden/<?php echo $permission; ?>");
-    WaitingClose();
-    WaitingClose();
-}
-//Guarda OT     
-function guardaragregar(){
 
-  console.log("Guarda OT");
-
-  var id_orden = $('#id_orden').val();
-  var num = $('#nro1').val();
-  var fecha_inicio = $('#fecha').val();
-  var descripcion= $('#vsdetal').val();
-  var sucursal = $('#suci').val();
-  var proveedor= $('#prov').val();
-  var equipo= $('#equipo').val();;
-
-  console.log("Datos a guardar");
-  console.log(id_orden);
-  console.log(num);
-  console.log(fecha_inicio);
-  console.log(descripcion);
-  console.log(sucursal);
-  console.log(proveedor);
-  console.log(equipo);
-
-  $.ajax({
-        type: 'POST', //parametros:parametros
-        data: {id_orden:id_orden, num:num, equipo:equipo, descripcion:descripcion, sucursal:sucursal, proveedor:proveedor},
-        url: 'index.php/Otrabajo/guardar_agregar',  //index.php/
-        success: function(data){
-        
-                console.log(data);  
-                regresa1();
-               
-              },
-        error: function(result){
-              
-              console.log(result);
-            
-            }
-           
-  });
-                 
-}
 //OT TOTAL, pasa a la partalla de ot terminadas 
 function guardartotal(){
- 
   console.log("Estoy finalizando total la ot ");
   console.log(idfin);
   $.ajax({
@@ -1275,12 +1248,10 @@ function guardartotal(){
             }
             //dataType: 'json'
     });
-
 } 
 
 //OT PARCIAL, pasa a la partalla de ot PARCIAL 
 function guardarparcial(){
-
   console.log("Estoy finalizando parcial la ot ");
   console.log(idfin); 
   $.ajax({
@@ -1298,249 +1269,13 @@ function guardarparcial(){
             }
             //dataType: 'json'
     });
-
 } 
 
-function eliminarpred(){
 
-  var idpre = $(this).parent('td').parent('tr').attr('id');
-  console.log("Estoy por la opcion SI a eliminar")
-  console.log(gloid);
-          
-  $.ajax({
-    type: 'POST',
-    data: { gloid: gloid},
-    url: 'index.php/Otrabajo/baja_predictivo', //index.php/
-    success: function(data){
-            //var data = jQuery.parseJSON( data );
-            console.log(data);  
-            regresa();
-          },
-      
-    error: function(result){
-          
-          console.log(result);
-        }
-        //dataType: 'json'
-  });
-
-}
 </script>
 
-
-<!-- Modal ASIGNA-->
-<div id="modalAsig" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title"><span class="fa fa-thumb-tack text-light-blue"></span> Asignación Orden de trabajo</h4>
-      </div>
-      <div class="modal-body">
-        <div class="row" >
-          <div class="col-xs-12">
-            <label for="nro">Nro:</label>
-            <input type="text" class="form-control" id="nro"  name="nro"   disabled >
-          </div>
-          <input type="hidden" id="id_orden" name="id_orden">
-          <div class="col-xs-12">
-            <label for="fecha_inicio">Fecha de inicio:</label>
-            <input type="text" class="form-control" id="fecha_inicio" name="fecha_inicio" disabled>
-          </div>
-          <div class="col-xs-12">
-            <label for="equipo1">Equipo:</label>
-            <input type="text"  id="equipo1" name="equipo1" class="form-control " disabled >
-          </div>
-          <div class="col-xs-12">
-            <label for="descripcion">Descripcion:</label>
-            <textarea  class="form-control" rows="6" cols="500" id="descripcion" name="descripcion" value="" disabled ></textarea>
-          </div>
-          <div class="col-xs-12">Fecha de entrega:
-            <input type="text" id="fecha_entrega" name="fecha_entrega" class="form-control datepicker" / >
-          </div>
-          <div  class="col-xs-12">Usuario:
-            <select id="usuario1" name="usuario1" class="form-control " value="" ></select>
-            <input type="hidden" id="id_usuario" name="id_usuario">
-          </div>
-        </div><!-- /.row-->   
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" >Cancelar</button>
-        <button type="button" class="btn btn-primary" id="reset" data-dismiss="modal" onclick="orden()">Guardar</button>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- Modal editar-->
-<div class="modal fade" id="modaleditar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-fw fa-pencil text-light-blue"></span> Editar Orden de Trabajo</h4>
-      </div> <!-- /.modal-header  -->
-
-      <div class="modal-body" id="modalBodyArticle">
-        <div class="row">
-          <div class="col-xs12 col-sm-4">
-            <label style="margin-top: 7px;">Nro <strong style="color: #dd4b39">*</strong>: </label>
-          </div>
-          <div class="col-xs12 col-sm-8">
-            <input type="text" class="form-control" placeholder="Nro Orden de trabajo" id="nroedit" name="nroedit">
-          </div>
-        </div><br>
-        <div class="row">
-          <div class="col-xs12 col-sm-4">
-            <label style="margin-top: 7px;">Equipo <strong style="color: #dd4b39">*</strong>: </label>
-          </div>
-          <div class="col-xs12 col-sm-8">
-            <select class="form-control" id="equipo1" name="equipo1" value="">
-              <!-- options -->
-            </select>
-            <input type="hidden" class="form-control"  id="id_equipo1" name="id_equipo1">
-          </div>
-        </div><br>
-        <div class="row">
-          <div class="col-xs-12 col-sm-4">
-            <label style="margin-top: 7px;">Fecha <strong style="color: #dd4b39">*</strong>: </label>
-          </div>
-          <div class="col-xs-12 col-sm-8">
-            <input type="text" class="datepicker form-control fecha_inicio1 " id="fecha_inicio1" name="vfecha" value="<?php echo date_format(date_create(date("Y-m-d")), 'd-m-Y') ; ?>" size="26"/>
-            <!-- <input type="text" class="form-control" id="vfecha" placeholder="dd-mm-aaaa" name="vfecha">-->
-          </div>
-        </div><br>
-        <div class="row">
-          <div class="col-xs-12 col-sm-4">
-            <label style="margin-top: 7px;">Nota: </label>
-          </div>
-          <div class="col-xs-12 col-sm-8">
-            <textarea placeholder="Orden de trabajo" class="form-control" rows="10" id="vsdetalleedit" name="vsdetalleedit" value=""></textarea>
-          </div>
-        </div><br>
-        <div class="row">
-          <div class="col-xs-12 col-sm-4">
-            <label style="margin-top: 7px;">Sucursal <strong style="color: #dd4b39">*</strong>: </label>
-          </div>
-          <div class="col-xs-12 col-sm-8">
-            <select class="form-control" id="sucidedit" name="sucidedit" value="" style="width: 100%;">
-
-            </select>
-          </div>
-        </div><br>
-        <div class="row">
-          <div class="col-xs-12 col-sm-4">
-            <label style="margin-top: 7px;">Proveedor <strong style="color: #dd4b39">*</strong>: </label>
-          </div>
-          <div class="col-xs-12 col-sm-8">
-            <select class="form-control" id="prov1" name="prov1"  value="" style="width: 100%;">
-
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" >Cancelar</button>
-        <button type="button" class="btn btn-primary" id="reset" data-dismiss="modal" onclick="guardareditar()">Guardar</button> 
-        </div>  <!-- /.modal footer -->
-      </div>
-    </div> <!-- /.modal-content -->
-  </div>  <!-- /.modal-dialog modal-lg -->
-</div>  <!-- /.modal fade -->
-<!-- / Modal -->
-
-<!-- Modal Pedido-->
-<div class="modal fade" id="modalpedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"  id="myModalLabel"><span class="fa fa-tags text-light-blue"></span> Orden de Pedido</h4>
-       </div> <!-- /.modal-header  -->
-
-      <div class="modal-body" id="modalBodyArticle">
-        <div class="row" >
-
-            <div class="col-xs-12">
-              <label for="num1">Nro:</label>
-              <input type="text"  class="form-control" id="num1" name="num1" placeholder="Ingrese nro de orden de pedido..">
-              <!--align=\"right\" -->
-            </div>
-            <div class="col-xs-12">
-              <label for="fecha1">Fecha:</label>
-              <input type="date"  class="datepicker fecha1 form-control" id="fecha1"  name="fecha1" size= "36" value="<?php echo date_format(date_create(date("Y-m-d ")), 'd/m/Y') ; ?>"  />
-            </div>
-            <div class="col-xs-12">
-              <label for="fecha_entrega2">Fecha de Entrega:</label>
-              <input type="date"  class="form-control" id="fecha_entrega2" name="fecha_entrega2" />
-            </div>
-            <div class="col-xs-12">
-              <label for="proveedor">Proveedor:</label>
-              <select type="text"  id="proveedor" name="proveedor" class="form-control" value="" ></select>
-              <input type="hidden" id="id_proveedor" name="id_proveedor">
-            </div>
-            
-            <div class="col-xs-12">
-              <label for="">Detalle del pedido:</label>
-              <textarea  class="form-control input-md" rows="6" cols="500" id="descripcion2" name="descripcion2"
-              value="" placeholder="Ingrese detalle del pedido..."></textarea>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal" onclick="cerro()">Cancelar</button>     
-          <button type="button" class="btn btn-primary" id="btnSave" data-dismiss="modal" onclick="guardarpedido()" >Guardar</button>
-        </div>  <!-- /.modal footer -->
-      </div>  <!-- /.modal-body -->
-    </div> <!-- /.modal-content -->
-  </div>  <!-- /.modal-dialog modal-lg -->
-</div>  <!-- /.modal fade -->
-<!-- / Modal -->
-
-
-<!-- Modal mostrar pedido-->
-<div class="modal fade" id="modallista" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"  id="myModalLabel"><spanclass="fa fa-truck text-light-blue"></span> Lista de Orden de Pedido</h4>
-      </div> <!-- /.modal-header  -->
-
-      <div class="modal-body" id="modalBodyArticle">
-        <div class="row" >
-          <div class="col-xs-12">
-            <table class="table table-bordered table-hover" id="tabladetalle">
-              <thead>
-                <tr>
-                  <th></th>                  
-                  <th>Nro de orden</th>
-                  <th>Fecha</th>
-                  <th>Fecha de Entrega</th>
-                  <th>Proveedor</th>
-                  <th>Descripcion</th>
-                  <th>Estado</th>
-                </tr>
-              </thead>
-              <tbody>              
-              </tbody>
-            </table>    
-          </div>
-        </div>  
-      </div>  <!-- /.modal-body -->
-    </div> <!-- /.modal-content -->
-  </div>  <!-- /.modal-dialog modal-lg -->
-</div>  <!-- /.modal fade -->
-<!-- / Modal -->
-
-<!-- Modal agregar-->
-<div class="modal fade" id="modalagregar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<!-- Modal agregar -->
+<div class="modal" id="modalagregar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
 
@@ -1615,11 +1350,262 @@ function eliminarpred(){
       </div>  <!-- /.modal-body -->
     </div> <!-- /.modal-content -->
   </div>  <!-- /.modal-dialog modal-lg -->
+</div><!-- /.modal fade -->
+<!-- / Modal -->
+
+<!-- Modal Aviso desea eliminar -->
+<div class="modal" id="modalaviso">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" >&times;</span>
+        </button>
+        <h5 class="modal-title" ><span class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar</h5>
+      </div>
+      <div class="modal-body">
+        <h4>¿Desea eliminarl Orden de Trabajo?</h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminarpred()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div><!-- /.modal fade -->
+<!-- / Modal -->
+
+<!-- Modal editar -->
+<div class="modal" id="modaleditar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-fw fa-pencil text-light-blue"></span> Editar Orden de Trabajo</h4>
+      </div> <!-- /.modal-header  -->
+
+      <div class="modal-body" id="modalBodyArticle">
+        <div class="row">
+          <div class="col-xs12 col-sm-4">
+            <label style="margin-top: 7px;">Nro <strong style="color: #dd4b39">*</strong>: </label>
+          </div>
+          <div class="col-xs12 col-sm-8">
+            <input type="text" class="form-control" placeholder="Nro Orden de trabajo" id="nroedit" name="nroedit">
+          </div>
+        </div><br>
+        <div class="row">
+          <div class="col-xs12 col-sm-4">
+            <label style="margin-top: 7px;">Equipo <strong style="color: #dd4b39">*</strong>: </label>
+          </div>
+          <div class="col-xs12 col-sm-8">
+            <select class="form-control" id="equipo1" name="equipo1" value="">
+              <!-- options -->
+            </select>
+            <input type="hidden" class="form-control"  id="id_equipo1" name="id_equipo1">
+          </div>
+        </div><br>
+        <div class="row">
+          <div class="col-xs-12 col-sm-4">
+            <label style="margin-top: 7px;">Fecha <strong style="color: #dd4b39">*</strong>: </label>
+          </div>
+          <div class="col-xs-12 col-sm-8">
+            <input type="text" class="datepicker form-control fecha_inicio1 " id="fecha_inicio1" name="vfecha" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="26"/>
+            <!-- <input type="text" class="form-control" id="vfecha" placeholder="dd-mm-aaaa" name="vfecha">-->
+          </div>
+        </div><br>
+        <div class="row">
+          <div class="col-xs-12 col-sm-4">
+            <label style="margin-top: 7px;">Nota: </label>
+          </div>
+          <div class="col-xs-12 col-sm-8">
+            <textarea placeholder="Orden de trabajo" class="form-control" rows="10" id="vsdetalleedit" name="vsdetalleedit" value=""></textarea>
+          </div>
+        </div><br>
+        <div class="row">
+          <div class="col-xs-12 col-sm-4">
+            <label style="margin-top: 7px;">Sucursal <strong style="color: #dd4b39">*</strong>: </label>
+          </div>
+          <div class="col-xs-12 col-sm-8">
+            <select class="form-control" id="sucidedit" name="sucidedit" value="" style="width: 100%;">
+
+            </select>
+          </div>
+        </div><br>
+        <div class="row">
+          <div class="col-xs-12 col-sm-4">
+            <label style="margin-top: 7px;">Proveedor <strong style="color: #dd4b39">*</strong>: </label>
+          </div>
+          <div class="col-xs-12 col-sm-8">
+            <select class="form-control" id="prov1" name="prov1"  value="" style="width: 100%;">
+
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" >Cancelar</button>
+        <button type="button" class="btn btn-primary" id="reset" data-dismiss="modal" onclick="guardareditar()">Guardar</button> 
+        </div>  <!-- /.modal footer -->
+      </div>
+    </div> <!-- /.modal-content -->
+  </div>  <!-- /.modal-dialog modal-lg -->
+</div>  <!-- /.modal fade -->
+<!-- / Modal -->
+
+<!-- Modal ASIGNA OT -->
+<div id="modalAsig" class="modal" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title"><span class="fa fa-thumb-tack text-light-blue"></span> Asignación Orden de trabajo</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row" >
+          <div class="col-xs-12">
+            <label for="nro">Nro:</label>
+            <input type="text" class="form-control" id="nro" name="nro" disabled>
+          </div>
+          <input type="hidden" id="id_orden" name="id_orden">
+          <div class="col-xs-12">
+            <label for="fecha_inicio">Fecha de inicio:</label>
+            <input type="text" class="form-control" id="fecha_inicio" name="fecha_inicio" disabled>
+          </div>
+          <div class="col-xs-12">
+            <label for="equipo13">Equipo:</label>
+            <input type="text"  id="equipo13" name="equipo13" class="form-control" title="" disabled>
+            <input type="hidden" id="equipo13id" name="equipo13id">
+          </div>
+          <div class="col-xs-12">
+            <label for="descripcion">Descripcion:</label>
+            <textarea  class="form-control" rows="6" cols="500" id="descripcion" name="descripcion" value="" disabled ></textarea>
+          </div>
+          <div class="col-xs-12">Fecha de entrega:
+            <input type="text" id="fecha_entrega" name="fecha_entrega" class="form-control datepicker" / >
+          </div>
+          <div  class="col-xs-12">Usuario:
+            <select id="usuario1" name="usuario1" class="form-control"></select>
+            <input type="hidden" id="id_usuario" name="id_usuario">
+          </div>
+        </div><!-- /.row-->   
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" >Cancelar</button>
+        <button type="button" class="btn btn-primary" id="reset" data-dismiss="modal" onclick="orden()">Guardar</button>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /.modal fade -->
+<!-- / Modal -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Modal Pedido-->
+<div class="modal" id="modalpedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"  id="myModalLabel"><span class="fa fa-tags text-light-blue"></span> Orden de Pedido</h4>
+       </div> <!-- /.modal-header  -->
+
+      <div class="modal-body" id="modalBodyArticle">
+        <div class="row" >
+
+            <div class="col-xs-12">
+              <label for="num1">Nro:</label>
+              <input type="text"  class="form-control" id="num1" name="num1" placeholder="Ingrese nro de orden de pedido..">
+              <!--align=\"right\" -->
+            </div>
+            <div class="col-xs-12">
+              <label for="fecha1">Fecha:</label>
+              <input type="date"  class="datepicker fecha1 form-control" id="fecha1"  name="fecha1" size= "36" value="<?php echo date_format(date_create(date("Y-m-d ")), 'd/m/Y') ; ?>"  />
+            </div>
+            <div class="col-xs-12">
+              <label for="fecha_entrega2">Fecha de Entrega:</label>
+              <input type="date"  class="form-control" id="fecha_entrega2" name="fecha_entrega2" />
+            </div>
+            <div class="col-xs-12">
+              <label for="proveedor">Proveedor:</label>
+              <select type="text"  id="proveedor" name="proveedor" class="form-control" value="" ></select>
+              <input type="hidden" id="id_proveedor" name="id_proveedor">
+            </div>
+            
+            <div class="col-xs-12">
+              <label for="">Detalle del pedido:</label>
+              <textarea  class="form-control input-md" rows="6" cols="500" id="descripcion2" name="descripcion2"
+              value="" placeholder="Ingrese detalle del pedido..."></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" onclick="cerro()">Cancelar</button>     
+          <button type="button" class="btn btn-primary" id="btnSave" data-dismiss="modal" onclick="guardarpedido()" >Guardar</button>
+        </div>  <!-- /.modal footer -->
+      </div>  <!-- /.modal-body -->
+    </div> <!-- /.modal-content -->
+  </div>  <!-- /.modal-dialog modal-lg -->
+</div>  <!-- /.modal fade -->
+<!-- / Modal -->
+
+<!-- Modal mostrar pedido-->
+<div class="modal" id="modallista" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"  id="myModalLabel"><spanclass="fa fa-truck text-light-blue"></span> Lista de Orden de Pedido</h4>
+      </div> <!-- /.modal-header  -->
+
+      <div class="modal-body" id="modalBodyArticle">
+        <div class="row" >
+          <div class="col-xs-12">
+            <table class="table table-bordered table-hover" id="tabladetalle">
+              <thead>
+                <tr>
+                  <th></th>                  
+                  <th>Nro de orden</th>
+                  <th>Fecha</th>
+                  <th>Fecha de Entrega</th>
+                  <th>Proveedor</th>
+                  <th>Descripcion</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>              
+              </tbody>
+            </table>    
+          </div>
+        </div>  
+      </div>  <!-- /.modal-body -->
+    </div> <!-- /.modal-content -->
+  </div>  <!-- /.modal-dialog modal-lg -->
 </div>  <!-- /.modal fade -->
 <!-- / Modal -->
 
 <!-- Modal FINALIZAR-->
-<div class="modal fade" id="modalfinalizar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modalfinalizar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
 
@@ -1641,23 +1627,3 @@ function eliminarpred(){
   </div>  <!-- /.modal-dialog modal-lg -->
 </div>  <!-- /.modal fade -->
 <!-- / Modal -->
-
-<div class="modal fade" id="modalaviso">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true" >&times;</span>
-        </button>
-        <h5 class="modal-title" ><span class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar</h5>
-      </div>
-      <div class="modal-body">
-        <h4>¿Desea eliminarl Orden de Trabajo?</h4>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminarpred()">Eliminar</button>
-      </div>
-    </div>
-  </div>
-</div>

@@ -25,32 +25,33 @@
             </thead>
             <tbody>
               <?php
-                if(isset($list)) { 
-                  if(count($list) > 0)                 
-                	foreach($list as $a){
-                    if ($a['artEstado'] != "AN") {
-                      $id=$a['artId'];
-                      echo '<tr  id="'.$id.'" >';
-                      echo '<td>';
-                      if (strpos($permission,'Edit') !== false) {
-    	                	//echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" onclick="LoadArt('.$a['artId'].',\'Edit\')"></i>';
-                        echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar" data-toggle="modal" data-target="#modaleditar"></i>';
-                      }
-                      if (strpos($permission,'Del') !== false) {
-    	                	//echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" onclick="LoadArt('.$a['artId'].',\'Del\')"></i>';
-                        echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar" data-toggle="modal" data-target="#modaleliminar"></i>';
-                      }
-                      if (strpos($permission,'View') !== false) {
-    	                	echo '<i class="fa fa-fw fa-search text-light-blue" style="cursor: pointer; margin-left: 15px;" onclick="LoadArt('.$a['artId'].',\'View\')"></i>';
-                      }
-    	                echo '</td>';
-                      echo '<td>'.$a['artBarCode'].'</td>';
-    	                echo '<td>'.$a['artDescription'].'</td>';
-                      echo '<td>'.$a['famName'].'</td>';
-                      echo '<td>'.$a['descripcion'].'</td>';
-                      echo '<td>'.($a['artEstado'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' : ($a['artEstado'] == 'IN' ? '<small class="label pull-left bg-red">Inactivo</small>' : '<small class="label pull-left bg-yellow">Suspendido</small>')).'</td>';
-    	                echo '</tr>';
-        		        }
+                if(isset($list))
+                { 
+                  if(count($list) > 0){              
+                  	foreach($list as $a)
+                    {
+                      if ($a['artEstado'] != "AN") {
+                        $id=$a['artId'];
+                        echo '<tr  id="'.$id.'" >';
+                        echo '<td>';
+                        if (strpos($permission,'Edit') !== false) {
+                          echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar" data-toggle="modal" data-target="#modaleditar"></i>';
+                        }
+                        if (strpos($permission,'Del') !== false) {
+                          echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar" data-toggle="modal" data-target="#modaleliminar"></i>';
+                        }
+                        if (strpos($permission,'View') !== false) {
+      	                	echo '<i class="fa fa-fw fa-search text-light-blue" style="cursor: pointer; margin-left: 15px;" onclick="LoadArt('.$a['artId'].',\'View\')"></i>';
+                        }
+      	                echo '</td>';
+                        echo '<td>'.$a['artBarCode'].'</td>';
+      	                echo '<td>'.$a['artDescription'].'</td>';
+                        echo '<td>'.$a['famName'].'</td>';
+                        echo '<td>'.$a['descripcion'].'</td>';
+                        echo '<td>'.($a['artEstado'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' : ($a['artEstado'] == 'IN' ? '<small class="label pull-left bg-red">Inactivo</small>' : '<small class="label pull-left bg-yellow">Suspendido</small>')).'</td>';
+      	                echo '</tr>';
+          		        }
+                    }
                   }
                 }
                 ?>
@@ -63,12 +64,213 @@
 </section><!-- /.content -->
 
 <script>
-var idArt = 0;
-var acArt = '';
-var idelim ="";
-var ida ="";
-var estadovar="";
-var estadoid="";
+var idArt     = 0;
+var acArt     = "";
+var idelim    = "";
+var ida       = "";
+var estadovar = "";
+var estadoid  = "";
+
+// Abre modal agregar artículos
+function LoadArt(id_, action){
+  idArt = id_;
+  acArt = action;
+  LoadIconAction('modalAction',action);
+  WaitingOpen('Cargando Artículo');
+  $.ajax({
+    type: 'POST',
+    data: { id : id_, act: action },
+    url: 'index.php/Article/getArticle', 
+    success: function(result){
+      $("#modalBodyArticle").html(result.html);
+      $('#modalArticle').modal('show');
+      WaitingClose();
+      //$("#artCantBox").maskMoney({allowNegative: true, thousands:'', decimal:'.'});
+      //$("#artCoste").maskMoney({allowNegative: true, thousands:'', decimal:'.'});
+      //$("#artMargin").maskMoney({allowNegative: true, thousands:'', decimal:'.'});
+      //CalcularPrecio();
+      //$("[data-mask]").inputmask();
+    },
+    error: function(result){
+      console.error("error");
+      console.table(result);
+      WaitingClose();
+    },
+    dataType: 'json'
+  });// Ok
+}
+
+// Trae datos para llenar el modal Editar 
+$(".fa-pencil").click(function (e) { // Ok
+  var idartic = $(this).parent('td').parent('tr').attr('id');
+  console.log("ID de articulo es: "+idartic);
+  ida = idartic;
+  $('#artBarCode').val('');
+  $('#artDescription').val('');
+  $('#artIsByBox').val('');
+  $('#artCantBox').val('');
+  $('#famId').html('');
+  $('#unidmed').html('');
+  $('#artEstado').val('');
+  $('#puntped').val('');
+  $.ajax({
+    data: { idartic:idartic },
+    dataType: 'json',
+    type: 'POST',
+    url:  'index.php/Article/getpencil',
+    success: function(data){
+      datos = {
+        'codigoart'       : data[0]['artBarCode'],
+        'descripart'      : data[0]['artDescription'],
+        'artIsByBox'      : data[0]['artIsByBox'],
+        'artcant'         : data[0]['artCantBox'],
+        'idfam'           : data[0]['famId'],
+        'famDsc'          : data[0]['famName'],
+        'estado'          : data[0]['artEstado'],
+        'idunidad'        : data[0]['unidadmedida'],
+        'unidadmedidades' : data[0]['descripcion'],
+        'punto_pedido'    : data[0]['punto_pedido'],
+      }
+      completarEdit(datos);
+    },
+    error: function(result){
+      console.error("Error al traer datos para llenar Modal Editar");
+      console.table(result);
+    },
+  });
+});
+
+// Llena campos del modal Editar
+function completarEdit(datos){ // Ok
+  console.table(datos);
+  $('#artBarCode').val(datos['codigoart']);
+  $('#artDescription').val(datos['descripart']);
+
+  if(datos['artIsByBox'] == 1) {
+    $('#artIsByBox').prop('checked', true);
+    $('#artCantBox').val(datos['artcant']);
+    $('#artCantBox').removeAttr('disabled');
+  } else {
+    $('#artIsByBox').prop('checked', false);
+    $('#artCantBox').val('');
+    $('#artCantBox').attr('disabled', true);
+  }
+
+  traer_familia(datos['idfam']);
+  traer_estado(datos['estado']);
+  traer_unidad(datos['idunidad']);
+  $('#puntped').val(datos['punto_pedido']);
+}
+
+// Trae familias y llena select
+function traer_familia(famId){ // Ok
+  $.ajax({
+    data: { famId:famId },
+    dataType: 'json',
+    type: 'POST',
+    url: 'index.php/Article/getdatosfam',
+    success: function(data){
+      $('#famId').empty();
+      for(var i=0; i < data.length ; i++) {
+        var nombre = data[i]['famName'];
+        var selected = (famId == data[i]['famId']) ? 'selected' : '';
+        var opcion  = "<option value='"+data[i]['famId']+"' " +selected+ ">" +nombre+ "</option>" ; 
+        $('#famId').append(opcion); 
+      }
+    },
+    error: function(result){
+      console.log(result);
+    },
+  });
+}
+
+// Trae estado de artículo y llena select
+function traer_estado(estado){ // Ok
+  var estados = [
+    ['AC', 'Activo'],
+    ['IN', 'Inactivo'],
+    ['AN', 'Anulado'],
+  ];
+  $('#artEstado').empty();
+  for(var i=0; i < estados.length ; i++) {
+    var nombre = estados[i][1];
+    var selected = (estado == estados[i][0]) ? 'selected' : '';
+    var opcion  = "<option value='"+estados[i][0]+"' " +selected+ ">" +nombre+ "</option>" ; 
+    $('#artEstado').append(opcion); 
+  }
+}
+
+// trae unidad de medida y llena select
+function traer_unidad(idunidad){ // Ok
+  $.ajax({
+    data: { },
+    dataType: 'json',
+    type: 'POST',
+    url: 'index.php/Article/getdatosart', 
+    success: function(data){
+      $('#unidmed').empty(); 
+      for(var i=0; i < data.length ; i++)  {    
+        var nombre = data[i]['descripcion'];
+        var selected = (idunidad == data[i]['id_unidadmedida']) ? 'selected' : '';
+        var opcion  = "<option value='"+data[i]['id_unidadmedida']+"' " +selected+ ">" +nombre+ "</option>" ; 
+        $('#unidmed').append(opcion); 
+      }
+    },
+    error: function(result){
+      console.log(result);
+    },
+  });// Ok
+}
+
+// Edita los datos de artículo
+function guardareditar(){ // Ok
+  var codigo     = $('#artBarCode').val();
+  var desc       = $('#artDescription').val();
+  if($('#artIsByBox').is(':checked')){
+    var box      = 1; 
+    var unidades = $('#artCantBox').val();
+  } else {
+    var box = 0;
+    var unidades   = '';
+  }
+  //var box        = $('#artIsByBox').val();
+  
+  var fam        = $('#famId').val();
+  var estado     = $('#artEstado').val();
+  var unmed      = $('#unidmed').val();
+  var punto      = $('#puntped').val();
+  var parametros = {
+    // 'id_equipo': id_equipo, // el id_equipo es ida
+    'artBarCode'    : codigo,
+    'artDescription': desc,
+    'artIsByBox'    : box,
+    'artCantBox'    : unidades,
+    'famId'         : fam,
+    'artEstado'     : estado,
+    'unidadmedida'  : unmed,
+    'punto_pedido'  : punto
+  };
+  console.log("estoy editando");
+  console.table(parametros);
+  $.ajax({
+    type: 'POST',
+    data: {data:parametros, ida: ida},
+    url: 'index.php/Article/editar_art',
+    success: function(data){
+      regresa();                    
+    },
+    error: function(result){
+      console.error("Error al editar Artículo");
+      console.table(result);
+    }
+    //dataType: 'json'
+  });
+}
+
+
+
+
+
 
 $(document).ready(function(event) { 
    
@@ -134,57 +336,7 @@ $(document).ready(function(event) {
     idelim=idar;
   });
 
-  //Editar
-  $(".fa-pencil").click(function (e) { 
-    var idartic = $(this).parent('td').parent('tr').attr('id');
-    console.log("ID de articulo es:");
-    console.log(idartic);
-    ida=idartic;
-    $('#artBarCode').val('');
-    $('#artDescription').val('');
-    $('#artIsByBox').val('');
-    $('#artCantBox').val('');
-    $('#famId').html('');
-    $('#unidmed').html('');
-    $('#artEstado').val('');
-    $('#puntped').val('');
-    $.ajax({
-      type: 'POST',
-      data: { idartic: idartic},
-      url: 'index.php/Article/getpencil',
-      success: function(data){
-        console.log("Estoy editando");           
-        console.log(data);
-        console.log(data[0]['artBarCode']);
-        datos={
-          'codigoart':data[0]['artBarCode'],
-          'descripart':data[0]['artDescription'],
-          'artbox':data[0]['artIsByBox'],
-          'artcant':data[0]['artCantBox'],
-          'idfam':data[0]['famId'],
-          'famDsc':data[0]['famName'],
-          'estado':data[0]['artEstado'],
-          'idunidad':data[0]['unidadmedida'],
-          'unidadmedidades':data[0]['descripcion'],
-          'punto_pedido':data[0]['punto_pedido']  
-        }
-        if(data[0]['artEstado']=='AC'){
-          estadovar= 'Activo';
-          estadoid= 1;
-        }
-        else 
-        {
-          estadovar= 'Suspendido';
-          estadoid= 2;
-        }
-        completarEdit(datos, estadovar, estadoid);
-      },
-      error: function(result){
-        console.log(result);
-      },
-      dataType: 'json'
-    });
-  });
+
 
   $('#artIsByBox').click(function() {
     if($('#artIsByBox').is(':checked')){
@@ -223,24 +375,8 @@ $(document).ready(function(event) {
       "orderable": false
     } ],
     "order": [[1, "asc"]],
-  });
-  
+  }); 
 });
-
-function completarEdit(datos ,estadovar, estadoid){
-  console.log("datos que llegaron");
-  $('#artBarCode').val(datos['codigoart']);
-  $('#artDescription').val(datos['descripart']);
-  $('#artIsByBox').val(datos['artbox']);
-  $('#artCantBox').val(datos['artcant']);
-  traer_unidad();
-  traer_familia();
-  $('select#famId').append($('<option />', { value: datos['idfam'],text: datos['famDsc']}));
-  $('select#unidmed').append($('<option />', { value: datos['idunidad'],text: datos['unidadmedidades']}));
-  //$('select#artEstado').append($('<option />', { value: datos['estadoid'],text: datos['estadovar']}));
-  $('#puntped').val(datos['punto_pedido']);
-  $('#artEstado').val(datos['estado']);
-}
 
 function CalcularPrecio(){
   var precioCosto   = $('#artCoste').val() == '' ? 0 : parseFloat($('#artCoste').val()).toFixed(2);
@@ -265,73 +401,6 @@ function CalcularPrecio(){
   $('#pventa').html(pVenta);
 }
 
-function traer_unidad(){
-  $.ajax({
-    type: 'POST',
-    data: { },
-    url: 'index.php/Article/getdatosart', 
-    success: function(data){
-      $('#unidmed').append(opcion); 
-      for(var i=0; i < data.length ; i++)  {    
-        var nombre = data[i]['descripcion'];
-        var opcion  = "<option value='"+data[i]['id_unidadmedida']+"'>" +nombre+ "</option>" ; 
-        $('#unidmed').append(opcion); 
-      }
-    },
-    error: function(result){
-      console.log(result);
-    },
-    dataType: 'json'
-  });
-}
-
-function traer_familia(){
-  $.ajax({
-    type: 'POST',
-    data: { },
-    url: 'index.php/Article/getdatosfam',
-    success: function(data){
-      $('#famId').append(opcion); 
-      for(var i=0; i < data.length ; i++) {
-        var nombre = data[i]['famName'];
-        var opcion  = "<option value='"+data[i]['famId']+"'>" +nombre+ "</option>" ; 
-        $('#famId').append(opcion); 
-      }
-    },
-    error: function(result){
-      console.log(result);
-    },
-    dataType: 'json'
-  });
-}
-
-function LoadArt(id_, action){
-  idArt = id_;
-  acArt = action;
-  LoadIconAction('modalAction',action);
-  WaitingOpen('Cargando Artículo');
-  $.ajax({
-    type: 'POST',
-    data: { id : id_, act: action },
-    url: 'index.php/Article/getArticle', 
-    success: function(result){
-      WaitingClose();
-      $("#modalBodyArticle").html(result.html);
-      //$("#artCantBox").maskMoney({allowNegative: true, thousands:'', decimal:'.'});
-      //$("#artCoste").maskMoney({allowNegative: true, thousands:'', decimal:'.'});
-      //$("#artMargin").maskMoney({allowNegative: true, thousands:'', decimal:'.'});
-      CalcularPrecio();
-      setTimeout("$('#modalArticle').modal('show')",800);
-      //$("[data-mask]").inputmask();
-    },
-    error: function(result){
-      WaitingClose();
-      alert("error");
-    },
-    dataType: 'json'
-  });
-}
-
 function guardareliminar(){
   console.log("Estoy guardando el eliminar , el id de articulo es:");
   console.log(idelim);
@@ -353,45 +422,6 @@ function guardareliminar(){
   });
 } 
 
-function guardareditar(){
-  var codigo = $('#artBarCode').val();
-  var desc = $('#artDescription').val();
-  var box= $('#artIsByBox').val();
-  var unidades = $('#artCantBox').val();
-  var fam = $('#famId').val();
-  var estado = $('#artEstado').val();
-  var unmed = $('#unidmed').val();
-  var punto = $('#puntped').val();
-  var parametros = {
-    // 'id_equipo': id_equipo,
-    'artBarCode': codigo,
-    'artDescription': desc,
-    'artIsByBox': box,
-    'artCantBox': unidades,
-    'famId': fam,
-    'artEstado': estado,
-    'unidadmedida': unmed,
-    'punto_pedido': punto
-  };
-  console.log("estoy editando");
-  console.log("parametros");
-  $.ajax({
-    type: 'POST',
-    data: {data:parametros, ida: ida},
-    url: 'index.php/Article/editar_art',  //index.php/
-    success: function(data){
-      console.log(data);
-      //cargarVista(); 
-      regresa();                    
-    },
-    error: function(result){
-      console.log(result);
-      //$('#modalSale').modal('hide');
-    }
-    //dataType: 'json'
-  });
-}
-
 function regresa(){
   $('#content').empty();
   $("#content").load("<?php echo base_url(); ?>index.php/Article/index/<?php echo $permission; ?>");
@@ -399,8 +429,12 @@ function regresa(){
 }
 </script>
 
+
+
+
+
 <!-- Modal -->
-<div class="modal fade" id="modalArticle" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modalArticle" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -420,7 +454,7 @@ function regresa(){
 </div>
 
 <!-- Modal eliminar-->
-<div class="modal fade" id="modaleliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modaleliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
 
@@ -430,7 +464,7 @@ function regresa(){
       </div> <!-- /.modal-header  -->
 
       <div class="modal-body" id="modalBodyArticle">
-        <label>¿Realmente desea ELIMINAR ARTICULO? </label>
+        <p>¿Realmente desea ELIMINAR ARTICULO? </p>
       </div>  <!-- /.modal-body -->
 
       <div class="modal-footer">
@@ -444,7 +478,7 @@ function regresa(){
 <!-- / Modal -->
 
 <!-- Modal editar-->
-<div class="modal fade" id="modaleditar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modaleditar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
 
@@ -459,7 +493,7 @@ function regresa(){
             <label style="margin-top: 7px;">Código <strong style="color: #dd4b39">*</strong>: </label>
           </div>
           <div class="col-xs-12 col-sm-8">
-            <input type="text" class="form-control" id="artBarCode" value="<?php echo $data['article']['artBarCode'];?>" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
+            <input type="text" class="form-control" id="artBarCode" value="" >
           </div>
         </div><br>
 
@@ -469,7 +503,7 @@ function regresa(){
             <label style="margin-top: 7px;">Descripción <strong style="color: #dd4b39">*</strong>: </label>
           </div>
           <div class="col-xs-12 col-sm-8">
-            <input type="text" class="form-control" id="artDescription" value="<?php echo $data['article']['artDescription'];?>" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
+            <input type="text" class="form-control" id="artDescription" value="" >
           </div>
         </div><br>
       
@@ -479,13 +513,13 @@ function regresa(){
             <label style="margin-top: 7px;">Se Compra x Caja <strong style="color: #dd4b39">*</strong>: </label>
           </div>
           <div class="col-xs-2 col-sm-1">
-            <input type="checkbox" id="artIsByBox" style="margin-top:10px;" <?php echo($data['article']['artIsByBox'] == true ? 'checked': ''); ?> <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
+            <input type="checkbox" id="artIsByBox" style="margin-top:10px;" >
           </div>
           <div class="col-xs-12 col-sm-3">
             <label style="margin-top: 7px;">Unidades <strong style="color: #dd4b39">*</strong>: </label>
           </div>
           <div class="col-xs-12 col-sm-4">
-            <input type="text" class="form-control" id="artCantBox" value="<?php echo $data['article']['artCantBox'];?>" <?php echo (($data['article']['artIsByBox'] != true || ($data['action'] == 'View' || $data['action'] == 'Del'))? 'disabled="disabled"' : '');?>  >
+            <input type="text" class="form-control" id="artCantBox" value="" >
           </div>
         </div><br>
 
@@ -506,11 +540,7 @@ function regresa(){
           </div>
           <div class="col-xs-12 col-sm-8">
             <select class="form-control" id="artEstado"  name="artEstado"  value="" >
-              <?php 
-                  echo '<option value="AC" '.($data['article']['artEstado'] == 'AC' ? 'selected' : '').'>Activo</option>';
-                  echo '<option value="IN" '.($data['article']['artEstado'] == 'IN' ? 'selected' : '').'>Inactivo</option>';
-                  echo '<option value="SU" '.($data['article']['artEstado'] == 'SU' ? 'selected' : '').'>Suspendido</option>';
-              ?>
+              
             </select>
           </div>
         </div><br>
