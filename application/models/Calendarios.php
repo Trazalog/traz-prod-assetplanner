@@ -1,17 +1,262 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-
-class Calendarios extends CI_Model
-{
-	function __construct()
+class Calendarios extends CI_Model {
+	
+    function __construct()
 	{
 		parent::__construct();
 	}	
 
-	function Equipos_List(){
+    /**
+     * MANDA ORDENES DE TRABAJO AL CALENDARIO (programadas).
+     *
+     * @param   Array   $data   Arreglo con el mes y el año a mostrar.
+     * @return  Array           Ordenes de trabajo de la fecha especificada.
+     */
+    function getot($data = null) // Ok
+    {
+        //dump_exit($data);
+        $month = $data['month'] + 1 ; 
+        $year  = $data['year'] ;
+        $sql= "SELECT orden_trabajo.id_orden,
+            orden_trabajo.nro,
+            orden_trabajo.fecha_program,
+            orden_trabajo.tipo,
+            orden_trabajo.descripcion,
+            orden_trabajo.duracion,
+            equipos.codigo 
+            from orden_trabajo
+            INNER JOIN equipos ON equipos.id_equipo = orden_trabajo.id_equipo
+            WHERE orden_trabajo.estado = 'C' 
+            AND month(orden_trabajo.fecha_program) = $month
+            AND year(orden_trabajo.fecha_program) = $year";
+        $query= $this->db->query($sql);
+        
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();  
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+        // Preventivos por Hora para la Tabla
+    function getPreventivosHoras($data = null) // No utilizada
+    {   
+        $month = $data;//['month'] + 1 ;    
+        $sql   = "select preventivo.prevId, 
+            preventivo.id_tarea, 
+            preventivo.perido, 
+            preventivo.cantidad, 
+            preventivo.ultimo,
+            preventivo.id_equipo,
+            equipos.codigo, 
+            equipos.id_equipo, 
+            tareas.descripcion,
+            DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY) AS prox 
+            from preventivo 
+            join equipos ON preventivo.id_equipo = equipos.id_equipo 
+            join tareas ON preventivo.id_tarea = tareas.id_tarea 
+            where preventivo.estadoprev = 'C' and preventivo.perido = 'Horas'";
+            //AND month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $month ";
+        $query = $this->db->query($sql);
+                if ($query->num_rows()!=0)
+        {
+            return $query->result_array();  
+        }
+        else
+        {
+            return false;
+        }       
+    }
+
+    // Predictivos para la Tabla por id de empresa logueada
+    function getpredlist($month, $year) // Ok
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
+        $sql      = "SELECT predictivo.predId, 
+            predictivo.tarea_descrip,  
+            predictivo.periodo, 
+            predictivo.cantidad, 
+            predictivo.fecha,
+            predictivo.horash, 
+            predictivo.id_equipo,               
+            equipos.id_equipo,
+            equipos.codigo,     
+            tareas.descripcion,
+            sector.descripcion AS sector 
+            FROM predictivo 
+                JOIN equipos ON predictivo.id_equipo = equipos.id_equipo 
+                JOIN tareas ON predictivo.tarea_descrip = tareas.id_tarea
+                JOIN sector ON sector.id_sector = equipos.id_sector 
+            WHERE predictivo.id_empresa = $empId
+                AND month(predictivo.fecha) = $month 
+                AND year(predictivo.fecha) = $year 
+                AND predictivo.estado = 'C'
+            ";
+        $query = $this->db->query($sql);
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();  
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // Backlog para la Tabla por id de empresa logueada
+    function getbacklog($month, $year) // Ok
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];    
+        $sql      = "SELECT
+            tbl_back.backId,
+            tbl_back.estado,
+            tbl_back.fecha,
+            tbl_back.tarea_descrip,
+            tbl_back.id_equipo,
+            tbl_back.back_duracion,
+            equipos.descripcion,
+            equipos.codigo,
+            tareas.descripcion AS tarea
+            FROM tbl_back
+            INNER JOIN equipos ON equipos.id_equipo = tbl_back.id_equipo
+            INNER JOIN tareas ON tareas.id_tarea = tbl_back.tarea_descrip
+            WHERE tbl_back.id_empresa = $empId
+            AND year(tbl_back.fecha) = $year 
+            AND month(tbl_back.fecha) = $month 
+            AND tbl_back.estado = 'C' 
+            "; 
+        $query= $this->db->query($sql);
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();  
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // Trae preventivos
+    function getPreventivos($month, $year) // Ok
+    {   
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
+        /*$sql_ant  = "select preventivo.prevId, preventivo.id_tarea, preventivo.perido, preventivo.cantidad, preventivo.ultimo, preventivo.id_equipo, equipos.codigo, equipos.id_equipo, tareas.descripcion, 
+            DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY) AS prox 
+            from preventivo join equipos ON preventivo.id_equipo = equipos.id_equipo 
+            join tareas ON preventivo.id_tarea = tareas.id_tarea 
+            where (preventivo.estadoprev = 'C') AND 
+            (month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $month or month(preventivo.ultimo) = $month)";  */
+        $sql      = "SELECT preventivo.prevId, 
+            preventivo.id_tarea, 
+            preventivo.perido, 
+            preventivo.cantidad, 
+            preventivo.ultimo,
+            preventivo.id_equipo,
+            equipos.codigo, 
+            equipos.id_equipo, 
+            tareas.descripcion,
+            DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY) AS prox 
+            FROM preventivo 
+                JOIN equipos ON preventivo.id_equipo = equipos.id_equipo 
+                JOIN tareas ON preventivo.id_tarea = tareas.id_tarea 
+            WHERE preventivo.id_empresa = $empId
+                AND preventivo.estadoprev = 'C'
+                AND year(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $year 
+                AND month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $month 
+            ";    
+        $query = $this->db->query($sql);
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();  
+        }
+        else
+        {
+            return false;
+        }       
+    }
+
+    // Correctivos para la Tabla por id de empresa logueada
+    function getsservicio($month, $year) // Ok
+    {        
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
+        $sql      = " SELECT solicitud_reparacion.id_solicitud,
+                solicitud_reparacion.numero,
+                solicitud_reparacion.id_tipo,
+                solicitud_reparacion.nivel,
+                solicitud_reparacion.solicitante,
+                solicitud_reparacion.f_solicitado,
+                solicitud_reparacion.f_sugerido,
+                solicitud_reparacion.hora_sug,
+                equipos.descripcion,
+                equipos.codigo,
+                equipos.id_equipo,
+                solicitud_reparacion.correctivo,
+                solicitud_reparacion.causa,
+                sector.descripcion AS sector
+            FROM solicitud_reparacion
+            INNER JOIN equipos ON equipos.id_equipo = solicitud_reparacion.id_equipo
+            INNER JOIN sector ON sector.id_sector = equipos.id_sector
+            WHERE solicitud_reparacion.id_empresa = $empId
+            AND year(solicitud_reparacion.f_solicitado) = $year
+            AND month(solicitud_reparacion.f_solicitado) = $month
+            ";
+        $query = $this->db->query($sql);
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();  
+        }
+        else
+        {
+            return false;
+        }       
+    }
+
+
+
+    // Preventivo por Id
+    function getPrevPorIds($data)
+    {
+        $id = $data;
+        $this->db->select('preventivo.id_tarea, 
+            preventivo.ultimo, 
+            preventivo.prevId,
+            preventivo.id_equipo,
+            tareas.descripcion
+            ');
+        $this->db->from('preventivo');
+        $this->db->join('tareas', 'tareas.id_tarea = preventivo.id_tarea');
+        $this->db->where('preventivo.prevId', $id);
+        $query = $this->db->get();      
+        return $query->result_array();                
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	function Equipos_List()
+    {
 		$this->db->order_by('codigo','asc');
 		$this->db->order_by('descripcion','asc');
-		$query= $this->db->get('equipos');
+		$query = $this->db->get('equipos');
 		
 		if ($query->num_rows()!=0)
 		{
@@ -23,7 +268,8 @@ class Calendarios extends CI_Model
 		}
 	}
 	
-	function setVisit($data = null){
+	function setVisit($data = null)
+    {
 		if($data == null)
 		{
 			return false;
@@ -35,10 +281,7 @@ class Calendarios extends CI_Model
 			$hora = $data['hora'];
 			$min = $data['min'];
 			$note = $data['falla'];
-			
-			
-			$dia = explode('-', $dia);
-			
+	       	$dia = explode('-', $dia);
 			$insert = array(
 				   'fecha_inicio' => $dia[2].'-'.$dia[1].'-'.$dia[0],
 				   'id_equipo' => $equipId,
@@ -98,274 +341,87 @@ class Calendarios extends CI_Model
 				return false;
 			}
 		}
-	}	
-
-	// Preventivos por Hora para la Tabla
-	function getPreventivosHoras($data = null){		
-		
-			$month = $data['month'] + 1 ;	
-
-			$sql= "select preventivo.prevId, 
-					preventivo.id_tarea, 
-					preventivo.perido, 
-					preventivo.cantidad, 
-					preventivo.ultimo,
-					preventivo.id_equipo,
-
-					equipos.codigo, 
-					equipos.id_equipo, 
-					 
-					tareas.descripcion,
-					 
-					DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY) AS prox 
-					from preventivo 
-					join equipos ON preventivo.id_equipo = equipos.id_equipo 
-					join tareas ON preventivo.id_tarea = tareas.id_tarea 
-					where preventivo.estadoprev = 'C' and preventivo.perido = 'Horas'";
-					//AND month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $month ";
-			
-			$query= $this->db->query($sql);
-			
-			if ($query->num_rows()!=0)
-			{
-				return $query->result_array();	
-			}
-			else
-			{
-				return false;
-			}		
 	}
 
+	
 
+	//correctivo por Id
+	function getCorrectPorIds($data){
 
-
-
-
-
-
-
-
-    /// MANDA ORDENES DE TRABAJO AL CALENDARIO (programadas)
-
-	// Predictivos para la Tabla
-	function getpredlist($data = null)
-    {
-        $userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-        $month     = $data;
-        $sql       = "SELECT predictivo.predId, predictivo.tarea_descrip, predictivo.periodo, predictivo.cantidad, predictivo.fecha, predictivo.horash, predictivo.id_equipo,				
-				equipos.id_equipo, equipos.codigo, 	
-				tareas.descripcion,
-				sector.descripcion AS sector 
-			FROM predictivo 
-			JOIN equipos ON predictivo.id_equipo = equipos.id_equipo 
-			JOIN tareas ON predictivo.tarea_descrip = tareas.id_tarea
-			JOIN sector ON sector.id_sector = equipos.id_sector 
-			WHERE predictivo.id_empresa = $empresaId
-            AND predictivo.estado = 'C' 
-            AND month(predictivo.fecha) = $month
-            ";
-		$query = $this->db->query($sql);
-		if ($query->num_rows()!=0)
-		{
-			return $query->result_array();	
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-    // Backlog para la Tabla
-    function getbacklog($data = null)
-    {
-        $userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-        $month     = $data;             
-        $sql       = "SELECT tbl_back.backId, tbl_back.estado, tbl_back.fecha, tbl_back.tarea_descrip, tbl_back.id_equipo, tbl_back.back_duracion,
-                equipos.descripcion, equipos.codigo,
-                tareas.descripcion as tarea
-            FROM tbl_back
-            INNER JOIN equipos ON equipos.id_equipo = tbl_back.id_equipo
-            INNER JOIN tareas ON tareas.id_tarea = tbl_back.tarea_descrip
-            WHERE tbl_back.id_empresa = $empresaId
-            AND tbl_back.estado = 'C' 
-            AND month(tbl_back.fecha) = $month
-            "; 
-        $query = $this->db->query($sql);
-        if ($query->num_rows()!=0)
-        {
-            return $query->result_array();  
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    // Trae preventivos
-    function getPreventivos($data = null)
-    {
-        $userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-        $month     = $data;
-        $sql_ant   = "select preventivo.prevId, preventivo.id_tarea, preventivo.perido, preventivo.cantidad, preventivo.ultimo, preventivo.id_equipo, equipos.codigo, equipos.id_equipo, tareas.descripcion, 
-            DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY) AS prox 
-            from preventivo join equipos ON preventivo.id_equipo = equipos.id_equipo 
-            join tareas ON preventivo.id_tarea = tareas.id_tarea 
-            where (preventivo.estadoprev = 'C') AND 
-            (month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $month or month(preventivo.ultimo) = $month)";  
-        $sql      = "SELECT preventivo.prevId, preventivo.id_tarea, preventivo.perido, preventivo.cantidad, preventivo.ultimo, preventivo.id_equipo,
-                equipos.codigo, equipos.id_equipo, 
-                tareas.descripcion,
-                DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY) AS prox 
-            FROM preventivo 
-            JOIN equipos ON preventivo.id_equipo = equipos.id_equipo 
-            JOIN tareas ON preventivo.id_tarea = tareas.id_tarea 
-            WHERE preventivo.id_empresa = $empresaId
-            AND preventivo.estadoprev = 'C'
-            AND month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $month
-            ";    
-        $query = $this->db->query($sql);
-        if ($query->num_rows()!=0)
-        {
-            return $query->result_array();  
-        }
-        else
-        {
-            return false;
-        }       
-    }
-
-    // Correctivos para la Tabla
-    function getsservicio($data = null)
-    {        
-        $userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-        $month     = $data;         
-        $sql       = " SELECT solicitud_reparacion.id_solicitud, solicitud_reparacion.numero, solicitud_reparacion.id_tipo, solicitud_reparacion.nivel, solicitud_reparacion.solicitante, solicitud_reparacion.f_solicitado, solicitud_reparacion.f_sugerido, solicitud_reparacion.hora_sug,
-                    equipos.descripcion, equipos.codigo, equipos.id_equipo,
-                    solicitud_reparacion.correctivo, solicitud_reparacion.causa,
-                    sector.descripcion AS sector
-            FROM solicitud_reparacion
-            INNER JOIN equipos ON equipos.id_equipo = solicitud_reparacion.id_equipo
-            INNER JOIN sector ON sector.id_sector = equipos.id_sector
-            WHERE solicitud_reparacion.id_empresa = $empresaId
-            AND month(solicitud_reparacion.f_solicitado) = $month
-            ";           
-        $query = $this->db->query($sql);
-        if ($query->num_rows()!=0)
-        {
-            return $query->result_array();  
-        }
-        else
-        {
-            return false;
-        }       
-    }
-
-    function getot($data = null)
-    {       
-        $userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-        $month     = $data['month'] + 1 ;   
-        $sql       = "SELECT orden_trabajo.id_orden, orden_trabajo.nro, orden_trabajo.fecha_program, orden_trabajo.tipo, orden_trabajo.descripcion, orden_trabajo.duracion,
-                equipos.codigo 
-            FROM orden_trabajo
-            INNER JOIN equipos ON equipos.id_equipo = orden_trabajo.id_equipo
-            WHERE orden_trabajo.id_empresa = $empresaId
-            AND orden_trabajo.estado = 'C' 
-            AND month(orden_trabajo.fecha_program) = $month
-            ";
-        $query= $this->db->query($sql);
-        if ($query->num_rows()!=0)
-        {
-            return $query->result_array();  
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-
-    //correctivo por Id
-    function getCorrectPorIds($id)
-    {
-        $this->db->select('solicitud_reparacion.id_solicitud, solicitud_reparacion.f_solicitado, solicitud_reparacion.causa, solicitud_reparacion.id_equipo');
+		$id = $data;
+    
+        $this->db->select('solicitud_reparacion.id_solicitud,
+			        	solicitud_reparacion.f_solicitado, 
+			        	solicitud_reparacion.causa,
+						solicitud_reparacion.id_equipo						
+						');
         $this->db->from('solicitud_reparacion');        
         $this->db->where('solicitud_reparacion.id_solicitud', $id);
-        $query = $this->db->get();         
-        return $query->result_array();  
-    }
-
-    //Guarda orden de trabajo a partir de Pred/Correc/Backlog/Prevent
-    function guardar_agregar($data)
-    {
-        $userdata           = $this->session->userdata('user_data');
-        $data['id_empresa'] = $userdata[0]['id_empresa'];
-        $query              = $this->db->insert("orden_trabajo", $data);
-        return $query;        
-    }
-
-	//Preventivo por Id
-	function getPrevPorIds($id)
-    {
-        $this->db->select('preventivo.id_tarea, 
-        	preventivo.ultimo, 
-        	preventivo.prevId,
-			preventivo.id_equipo,
-			tareas.descripcion
-			');
-        $this->db->from('preventivo');
-        $this->db->join('tareas', 'tareas.id_tarea = preventivo.id_tarea');
-        $this->db->where('preventivo.prevId', $id);
         $query = $this->db->get();      
-        return $query->result_array();                
+        
+        return $query->result_array();  
 	}
 
-	function getBackPorIds($id)
-    {
+	function getBackPorIds($data){
+		$id = $data;
+    
         $this->db->select('tareas.descripcion,
-			tbl_back.id_equipo,
-			tbl_back.tarea_descrip,
-			tbl_back.fecha,
-			tbl_back.backId						
-			');
+						tbl_back.id_equipo,
+						tbl_back.tarea_descrip,
+						tbl_back.fecha,
+						tbl_back.backId						
+						');
         $this->db->from('tbl_back'); 
         $this->db->join('tareas', 'tareas.id_tarea = tbl_back.tarea_descrip');       
         $this->db->where('tbl_back.backId', $id);
         $query = $this->db->get();      
+        
         return $query->result_array(); 
 	}
 
-	function getPredictPorIds($id)
-    {
+	function getPredictPorIds($data){
+		$id = $data;
+    
         $this->db->select('predictivo.tarea_descrip,
-			tareas.descripcion,
-			predictivo.predId,
-			predictivo.id_equipo,
-			predictivo.fecha
-			');
+						tareas.descripcion,
+						predictivo.predId,
+						predictivo.id_equipo,
+						predictivo.fecha
+						');
         $this->db->from('predictivo');
         $this->db->join('tareas', 'tareas.id_tarea = predictivo.tarea_descrip');
         $this->db->where('predictivo.predId', $id);
         $query = $this->db->get();      
+        
         return $query->result_array(); 
 	}
 
-    // Actualiza dia nueva fecha de programacion en OT
-    function updateDiaProgramacion($id, $diaNuevo)
-    {
-        $this->db->set('fecha_program', $diaNuevo);
-        $this->db->where('id_orden', $id);
-        $resposnse = $this->db->update('orden_trabajo');
-        return $resposnse;
+
+	//Guarda orden de trabajo a partir de Pred/Correc/Backlog/Prevent
+	function guardar_agregar($data){
+                   
+        $query = $this->db->insert("orden_trabajo",$data);
+    	return $query;        
     }
 
+    // Guarda batch de OT 
+    function setOTbatch($data){
+
+    	$this->db->insert_batch('orden_trabajo', $data);
+    }
+
+    // Actualiza dia nueva fecha de programacion en OT
+    function updateDiaProgramacion($id, $diaNuevo){   		
+   		
+   		$this->db->set('fecha_program', $diaNuevo);
+		$this->db->where('id_orden', $id);
+		$resposnse = $this->db->update('orden_trabajo');
+		return $resposnse;
+   	}
+
    	// Actualiza la nueva duracion de la OT 
-   	function updateDuraciones($id, $nueva)
-    {
+   	function updateDuraciones($id, $nueva){
+
    		$this->db->set('duracion', $nueva);
 		$this->db->where('id_orden', $id);
 		$resposnse = $this->db->update('orden_trabajo');
@@ -373,12 +429,10 @@ class Calendarios extends CI_Model
    	}
 
 
-
-
 	/**
      * Trae listado de equipos que tengan mantenimiento preventivo por horas
      *
-     * @return  Array   Vuelca la variable o no devuelve nada
+     * @return  Array   Vuleca la variable o no devuelve nada
      */
     function getPreventivosPorHora()
     {
@@ -388,7 +442,9 @@ class Calendarios extends CI_Model
         $this->db->join('sector', 'sector.id_sector = equipos.id_sector', 'inner');
         $this->db->where('preventivo.perido', 'Horas');
         $this->db->where('equipos.estado', 'AC');
-        $query = $this->db->get();
+
+        $query= $this->db->get();
+
         if ($query->num_rows() > 0)
         {
             $preventivos  = $query->result_array();
@@ -402,6 +458,7 @@ class Calendarios extends CI_Model
         }
     }
 
+    
     // bucle que recorra preventivos
     //      con id_equipo traigo historial_lecturas ->ultima lectura
     //      hago cuenta
@@ -409,7 +466,7 @@ class Calendarios extends CI_Model
     //      cambio $preventivos[estadoprev]
     // cierro bucle
     // devuelvo $preventivos
-    function revisaEstadoPreventivosPorHoras( $preventivos )
+    function revisaEstadoPreventivosPorHoras($preventivos)
     {
         $cantPreventivos = sizeof( $preventivos );
         for ($i=0; $i<$cantPreventivos; $i++)
@@ -419,6 +476,7 @@ class Calendarios extends CI_Model
             //dump( $preventivos[$i]['ultima_lectura'], 'Ultima lectura' );
             //dump( $preventivos[$i]['cantidad'], 'cantidad' );
             //dump( $preventivos[$i]['critico1'], 'critico' );
+
             //1er caso: lecturaactual - ultimalectura >= cantidad  => estado vencido
             if (($lecturaActual - $preventivos[$i]['ultima_lectura']) >= $preventivos[$i]['cantidad'])
             {
@@ -428,6 +486,7 @@ class Calendarios extends CI_Model
                     $preventivos[$i]['estadoprev'] = 'VE';
                 }
             }
+
             //2do caso: lecturaactual - ultimalectura < cantidad  => estado en curso
             if (($lecturaActual - $preventivos[$i]['ultima_lectura']) < $preventivos[$i]['cantidad'])
             {
@@ -459,14 +518,16 @@ class Calendarios extends CI_Model
      * @param   String  $id_equipo  Equipo que se quiere saber la ultima lectura
      * @return  Int     Última lectura
      */
-    function getLecturaActual( $id_equipo )
+    function getLecturaActual($id_equipo)
     {
         $this->db->select('lectura');
         $this->db->from('historial_lecturas');
         $this->db->where('id_equipo', $id_equipo);
         $this->db->order_by('id_lectura', 'desc');
         $this->db->limit(1);
-        $query = $this->db->get();
+
+        $query= $this->db->get();
+
         if ($query->num_rows() > 0)
         {
             $data  = $query->result_array();
@@ -485,15 +546,14 @@ class Calendarios extends CI_Model
      * @param   String  $estado         Valor del nuevo estado
      * @return  bool                    Cambio correcto o incorrecto
      */
-    function cambiaEstadoPreventivo( $idPreventivo, $estado )
+    function cambiaEstadoPreventivo($idPreventivo, $estado)
     {
-        $this->db->trans_start();   // inicio transaccion
-            $data = array(
-                   'estadoprev' => $estado
-                );
-            $this->db->where('prevId', $idPreventivo);
-            $this->db->update('preventivo', $data);
-        $this->db->trans_complete(); //fin transaccion
+        $data = array(
+               'estadoprev' => $estado
+            );
+        $this->db->where('prevId', $idPreventivo);
+        $this->db->update('preventivo', $data);
+
         if ($this->db->trans_status() === FALSE)
         {
             return false;
@@ -503,5 +563,4 @@ class Calendarios extends CI_Model
             return true;
         }
     }
-
 }

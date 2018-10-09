@@ -6,7 +6,6 @@
       </div>
 	</div>
 </div>
-
 <!-- Código de Articulo -->
 <div class="row">
   <div class="col-xs-12 col-sm-4">
@@ -101,9 +100,9 @@ $('#artIsByBox').click(function() {
     $('#artCantBox').val('');
     $('#artCantBox').prop('disabled', true);
   }
-  CalcularPrecio();
+  //CalcularPrecio();
 });
-
+/*
 $('#artMargin').keyup(function(){
   CalcularPrecio();
 });
@@ -141,7 +140,7 @@ function CalcularPrecio(){
   }
 
   $('#pventa').html(pVenta);
-}
+}*/
 
 traer_unidad();
 function traer_unidad(){

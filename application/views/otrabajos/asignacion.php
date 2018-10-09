@@ -21,22 +21,22 @@
         </div><!-- /.box-header -->
         <div class="box-body">
           <div class="row" >
-              <div class="col-xs-12 col-sm-8">
-                <label for="tarea">Tarea</label>
-                <input type="text" class="form-control" id="tarea" name="tarea" placeholder="Ingrese descripcion de tarea...">
-              </div>
-              <div class="col-xs-12 col-sm-4">
-                <input type="hidden" id="numord" name="numord" value="<?php echo $id_orden;?>"></input>
-              </div>  
+            <input type="hidden" id="numord" name="numord" value="<?php echo $id_orden;?>"></input>
+            <div class="col-xs-12 col-sm-8">
+              <label for="tarea">Tarea</label>
+              <input type="text" class="form-control" id="tarea" name="tarea" placeholder="Ingrese descripcion de tarea...">
+            </div>
+            <div class="col-xs-12 col-sm-4">
               <br>
-              <div class="col-xs-4">
-                <button type="button" class="btn btn-primary" id="agregar"><i class="fa fa-plus"></i> Agregar</button>
-              </div>
-              <br><br>
-              <div class="col-xs-12">
-                <table id="orden" class="table table-bordered table-hover">
+              <button type="button" class="btn btn-primary" id="agregar"><i class="fa fa-plus"></i> Agregar</button>
+            </div><br><br>
+          </div>
+            
+          <div class="row" >
+            <div class="col-xs-12">
+              <table id="orden" class="table table-bordered table-hover">
                 <!--<br>
-                <div class="col-xs-4" align="center"><label>Listado de tareas</label></div>-->
+                  <div class="col-xs-4" align="center"><label>Listado de tareas</label></div>-->
                   <thead>
                     <tr>
                       <th></th>
@@ -51,7 +51,7 @@
                     <?php
                     //echo "<pre>";  
                     //var_dump($list);
-                    if(count($list) > 0) {
+                    if( $list!=false && count($list) > 0) {
                       $userdata = $this->session->userdata('user_data');
                       $usrId    = $userdata[0]['usrId'];  
 

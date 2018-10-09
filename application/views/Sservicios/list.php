@@ -53,7 +53,7 @@
                                 echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar"></i>';
                             }                                      
 
-                            echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"  ></i> ';
+                            //echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"  ></i> ';
 
                             echo '<i class="fa fa-picture-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imagen" data-imagen ="'.$f['foto'].'" data-toggle="modal" data-target="#foto"></i> '; 
 
@@ -433,22 +433,21 @@
 
   // Levanta imagen de solicitud - Chequeado
   $('.fa-picture-o').click(function(){
+    $('#imgSolServ').attr('src',''); 
+    $('#resp').remove();    
 
-     $('#imgSolServ').attr('src',''); 
-     $('#resp').remove();    
-     
-     var imag = $(this).data('imagen');
-     if (imag != 'assets/files/orders/sinImagen.jpg') {
-        $('#imgSolServ').attr('src',imag); 
-     }else{
-        $('.imagen').append('<h5 id="resp">Sin imagen cargada.<h5>');
-     }
+    var imag = $(this).data('imagen');
+    if (imag != 'assets/files/orders/sinImagen.jpg') {
+      $('#imgSolServ').attr('src',imag); 
+    }else{
+      $('.imagen').append('<h5 id="resp">Sin imagen cargada.<h5>');
+    }
   });
 
   // Datepicker  
   $("#vstFecha").datepicker({    
-      firstDay: 0      
-    }).datepicker("setDate", "+1d"); // agrega la cantidad de dias o meses a partir de hoy
+    firstDay: 0      
+  }).datepicker("setDate", "+1d"); // agrega la cantidad de dias o meses a partir de hoy
  
   $("#fecha_conformidad").datepicker({
     dateFormat: 'yy/mm/dd',
@@ -456,86 +455,77 @@
   }).datepicker("setDate", new Date());
 
   // Trae Sectores y autocompleta el campo
-  $( function() {
+  //$( function() {
 
-      var dataF = function () {
-          var tmp = null;
-          $.ajax({
-              'async': false,
-              'type': "POST",
-              'global': false,
-              'dataType': 'json',
-              'url': "Sservicio/getSector",
-              'success': function (data) {
-                  tmp = data;
-              }
-          });
-          return tmp;
-      }();
-
-      $(function() {
-          $(".buscSector").autocomplete({
-              source: dataF,
-              delay: 100,
-              minLength: 1,
-              focus: function(event, ui) {
-                  // prevent autocomplete from updating the textbox
-                  event.preventDefault();
-                  // manually update the textbox
-                  $(this).val(ui.item.label);
-              },
-              select: function(event, ui) {
-                  // prevent autocomplete from updating the textbox
-                  event.preventDefault();
-                  // manually update the textbox and hidden field
-                  $(this).val(ui.item.label);
-                  $("#idSector").val(ui.item.value);
-
-                  $("#equipSelec").html("");
-                  // guardo el id de sector
-                  var idSect =  $("#idSector").val();
-                  getEquiSector(idSect);
-
-                  //console.log("id sector en autocompletar: ");
-                  //console.log(ui.item.value);
-              },
-          });
-      });
-
-      function getEquiSector(idSect){
-
-        var id =  idSect;
-        console.log("id de sector para traer equipos");
-        console.log(id);
-
-        $.ajax({
-                'data' : {id_sector : id },
-                'async': true,
-                'type': "POST",
-                'global': false,
-                'dataType': 'json',
-                'url': "Sservicio/getEquipSector",
-                'success': function (data) {
-                    console.log("Entro por getEquiSector ok");
-                    //console.log(data[0]['id_equipo']);
-
-                     // Asigna opciones al select Equipo en modal
-                    var $select = $("#equipSelec");
-
-                    for (var i = 0; data[i]['id_equipo'].length; i++) {
-
-                      $select.append($('<option />', { value: data[i]['id_equipo'], text: data[i]['descripcion'] }));
-                    }
-
-                 },
-                'error' : function (data){
-                  console.log('Error en getEquiSector');
-                  alert('error');
-                 },
-
-        });
+  var dataF = function () {
+    var tmp = null;
+    $.ajax({
+      'async': false,
+      'type': "POST",
+      'global': false,
+      'dataType': 'json',
+      'url': "Sservicio/getSector",
+      'success': function (data) {
+        tmp = data;
       }
+    });
+    return tmp;
+  }();
+
+  //$(function() {
+  $(".buscSector").autocomplete({
+    source: dataF,
+    delay: 100,
+    minLength: 1,
+    focus: function(event, ui) {
+      // prevent autocomplete from updating the textbox
+      event.preventDefault();
+      // manually update the textbox
+      $(this).val(ui.item.label);
+    },
+    select: function(event, ui) {
+      // prevent autocomplete from updating the textbox
+      event.preventDefault();
+      // manually update the textbox and hidden field
+      $(this).val(ui.item.label);
+      $("#idSector").val(ui.item.value);
+      $("#equipSelec").html("");
+      // guardo el id de sector
+      var idSect =  $("#idSector").val();
+      getEquiSector(idSect);
+      //console.log("id sector en autocompletar: ");
+      //console.log(ui.item.value);
+    },
   });
+  //});
+
+  function getEquiSector(idSect){
+    var id =  idSect;
+    console.log("id de sector para traer equipos: "+id);
+    $.ajax({
+      'data' : {id_sector : id },
+      'async': true,
+      'type': "POST",
+      'global': false,
+      'dataType': 'json',
+      'url': "Sservicio/getEquipSector",
+      'success': function (data) {
+        console.log("Entro por getEquiSector ok");
+        console.table(data);//[0]['id_equipo']);
+        // Asigna opciones al select Equipo en modal
+        //console.log("length: "+data.length);
+        var $select = $("#equipSelec");
+        for (var i = 0; data.length; i++) {
+          $select.append($('<option />', { value: data[i]['id_equipo'], text: data[i]['descripcion'] }));
+        }
+      },
+      'error' : function(data){
+        console.log('Error en getEquiSector');
+        console.table(data);
+      },
+    });
+  }
+  //});
 
   // Guardado de datos y validaciones
   $("#btnSave").click(function(){
@@ -658,7 +648,7 @@ $(function () {
 
 
 <!-- Modal Solicitud Nueva-->
-<div class="modal fade" id="modalservicio" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modalservicio" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -772,7 +762,7 @@ $(function () {
 </div>
 
 <!-- Modal Conformidad -->
-<div class="modal fade" id="modalConformidad" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modalConformidad" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       
@@ -817,7 +807,7 @@ $(function () {
 <!-- / Modal Conformidad -->
 
 <!-- Modal Foto-->
-<div class="modal fade" id="foto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="foto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">

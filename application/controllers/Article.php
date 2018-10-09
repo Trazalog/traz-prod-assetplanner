@@ -10,21 +10,64 @@ class Article extends CI_Controller {
 		//$this->Users->updateSession(true);
 	}
 
-	public function index($permission)
+	// Muestra listado de articulos
+	public function index($permission) // Ok
 	{
 		$data['list']       = $this->Articles->Articles_List();
 		$data['permission'] = $permission;
 		$this->load->view('articles/list', $data);
 	}
 	
-	public function getArticle()
+	//
+	public function getdatosart() // Ok
+	{
+		$art = $this->Articles->getdatosarts();
+		if($art)
+		{	
+			$arre = array();
+	        foreach ($art as $row ) 
+	        {   
+	           $arre[] = $row;
+	        }
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}
+
+	//
+	public function getArticle() // Ok
 	{
 		$data['data']     = $this->Articles->getArticle($this->input->post());
 		$response['html'] = $this->load->view('articles/view_', $data, true);
 
 		echo json_encode($response);
 	}
+
+	//
+	public function getpencil() // Ok
+	{
+		$id     = $this->input->post('idartic');
+		$result = $this->Articles->getpencil($id);
+		print_r(json_encode($result));
+	}
+
+	//
+	public function editar_art()  // Ok
+	{
+		$datos  = $this->input->post('data');
+		$id     = $this->input->post('ida');
+		$result = $this->Articles->update_editar($datos,$id);
+		print_r(json_encode($result));	
+	}
+
+
+
 	
+
+
+
+
+
 	public function setArticle(){
 		$data = $this->Articles->setArticle($this->input->post());
 		if($data  == false)
@@ -38,22 +81,7 @@ class Article extends CI_Controller {
 	}
 
 
-	public function getdatosart(){
-		
-		$art = $this->Articles->getdatosarts();
-		//echo json_encode($Customers);
 
-		if($art)
-		{	
-			$arre=array();
-	        foreach ($art as $row ) 
-	        {   
-	           $arre[]=$row;
-	        }
-			echo json_encode($arre);
-		}
-		else echo "nada";
-	}
 
 	
 	public function getdatosfam(){
@@ -81,23 +109,9 @@ class Article extends CI_Controller {
 		print_r($result);
 	}
 
-	public function getpencil(){
 
-		$id=$_POST['idartic'];
-		$result = $this->Articles->getpencil($id);
-		print_r(json_encode($result));
 
-	}
 
-	public function editar_art(){
-		
-		$datos=$_POST['data'];
-		$id=$_POST['ida'];
-
-		$result = $this->Articles->update_editar($datos,$id);
-		print_r(json_encode($result));
-		
-	}
 
 	public function searchByCode() {
 		$data = $this->Articles->searchByCode($this->input->post());

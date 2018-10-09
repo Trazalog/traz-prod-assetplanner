@@ -88,7 +88,7 @@
                       </div>
                       <div class="col-xs-12 col-md-6">
                         <br>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalOrder"><i class="fa fa-plus"> Nuevo</i></button>
+                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modalAddComp2"><i class="fa fa-plus"> Nuevo</i></a>
                       </div>
                     </div>
                     <div class="row">
@@ -140,7 +140,7 @@
 </section><!-- /.content -->
 
 <!-- Modal Agregar componente-->
-<div class="modal fade" id="modalOrder" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modalAddComp2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
 
@@ -150,37 +150,41 @@
        </div> <!-- /.modal-header  -->
 
       <div class="modal-body" id="modalBodyArticle">
-        <div class="row" >
-
-          <div class="alert alert-danger alert-dismissable" id="error1" style="display: none">
-            <h4><i class="icon fa fa-ban"></i> Error!</h4>
-            Revise que todos los campos esten completos...                  
-          </div>
-          <div class="col-xs-12 col-sm-6">
-            <label>Marca <strong style="color: #dd4b39">*</strong>: </label>
-            <select class="form-control input-md" id="ma" name="ma" />
-          </div>
-          <div class="col-xs-12 col-sm-6">
-            <label>Descripción <strong style="color: #dd4b39">*</strong>: </label>
-            <input type="text"   class="form-control input-md" id="descrip1"  name="descrip1" placeholder="Ingrese Descripcion" />
-          </div>
-          <div class="col-xs-12"><label>Información:</label>
-            <textarea class="form-control" id="informacion" name="informacion" placeholder="Ingrese Informacion Adicional"></textarea>
-          </div>
-          <div class="col-xs-12">
-            <label><span class="fa fa-file-pdf-o"></span> Adjuntar</label>
-            <input id="input-4" name="input4[]" type="file"  class="form-control input-md">
-          </div>
-
+        <div class="alert alert-danger alert-dismissable" id="errorComponentes" style="display: none">
+          <h4><i class="icon fa fa-ban"></i> ALERTA!</h4>
+          Complete todos los datos obligatorios.
         </div>
-      </div>
+        <form id="formComponentes" enctype="multipart/form-data">
+          <div class="row" >
+            <div class="alert alert-danger alert-dismissable" id="error1" style="display: none">
+              <h4><i class="icon fa fa-ban"></i> Error!</h4>
+              Revise que todos los campos esten completos...                  
+            </div>
+            <div class="col-xs-12 col-sm-6">
+              <label>Marca <strong style="color: #dd4b39">*</strong>: </label>
+              <select class="form-control input-md" id="ma" name="ma" />
+            </div>
+            <div class="col-xs-12 col-sm-6">
+              <label>Descripción <strong style="color: #dd4b39">*</strong>: </label>
+              <input type="text"   class="form-control input-md" id="descrip1"  name="descrip1" placeholder="Ingrese Descripcion" />
+            </div>
+            <div class="col-xs-12"><label>Información:</label>
+              <textarea class="form-control" id="info" name="info" placeholder="Ingrese Informacion Adicional"></textarea>
+            </div>
+            <div class="col-xs-12">
+              <label><span class="fa fa-file-pdf-o"></span> Adjuntar</label>
+              <input id="pdf" name="pdf" type="file"  class="form-control input-md">
+            </div>
 
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="guardarcompo()">Guardar</button>
-      </div>  <!-- /.modal footer -->
+          </div>
+        </div>
 
-       </div>  <!-- /.modal-body -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="guardarComponente">Guardar</button>
+        </div>  <!-- /.modal footer -->
+        </form>
+      </div>  <!-- /.modal-body -->
     </div> <!-- /.modal-content -->
 
   </div>  <!-- /.modal-dialog modal-lg -->
@@ -199,6 +203,14 @@ $('#tablaequipos').DataTable({
     "orderable": false
   } ],
   "order": [[1, "asc"]],
+});
+
+
+//si abre mas de dos modales...
+$(document).on('show.bs.modal', '.modal', function () {
+    if ($(".modal-backdrop").length > -1) {
+        $(".modal-backdrop").not(':first').remove();
+    }
 });
 
 var di="";
@@ -236,7 +248,7 @@ function traer_componente(){
     data: { },
     url: 'index.php/Componente/getcomponente', //index.php/
     success: function(data){
-           
+           $('#componente').empty();
             var opcion  = "<option value='-1'>Seleccione...</option>" ; 
             $('#componente').append(opcion); 
             for(var i=0; i < data.length ; i++){  
@@ -260,7 +272,7 @@ function traer_marca(){
     data: { },
     url: 'index.php/Componente/getmarca', 
     success: function(data){
-           
+           $('#ma').empty();
              var opcion  = "<option value='-1'>Seleccione...</option>" ; 
               $('#ma').append(opcion); 
             for(var i=0; i < data.length ; i++) 
@@ -397,54 +409,59 @@ function guardar(){
   }
 }
 
-// Guarda un componente nuevo - chequeado
-function guardarcompo(){ 
+// Guarda un componente nuevo
+$('#guardarComponente').click(function(e) { //
+  e.preventDefault();
 
   var descripcion = $('#descrip1').val();
-  var id_equipo   = $('#equipo').val(); 
   var informacion = $('#informacion').val();
   var marcaid     = $('#ma').val();
   var pdf         = $('#input-4').val();
   var parametros  = {
-    'descripcion': descripcion,
-    'informacion': informacion,
-    'marcaid': marcaid,
-    'id_equipo': id_equipo,
-    'pdf': pdf,
+    'descripcion' : descripcion,
+    'informacion' : informacion,
+    'marcaid'     : marcaid,
+    'pdf'         : pdf,
   };                                              
-  console.log(parametros);
+  //console.log("marcaid"+marcaid);
   var hayError = false; 
-  if( id_equipo>0 && marcaid >0){                                     
+  $('#errorComponentes').hide();
+  if ( marcaid < 0 ) {
+    hayError = true;
+    console.log("entro x marcaid");
+  }
+  if( descripcion == "" ) {
+    hayError = true;
+    console.log("entro x descrip");
+  }
+
+  if(hayError == true){
+    $('#errorComponentes').fadeIn('slow');
+  }
+  else{
+    var formData = new FormData(document.getElementById("formComponentes"));
     $.ajax({
-      type:"POST",
-      url: "index.php/Componente/agregar_componente", 
-      data:{parametros:parametros},
+      cache: false,
+      contentType: false,
+      data: formData,
+      dataType: "html",
+      processData: false,
+      type: "POST",
+      url: "index.php/Componente/agregarComponente", 
       success: function(data){
-        console.log("exito");
-        var datos= parseInt(data);
-        console.log(datos);
-          
-          if(data > 0) //Agrego la descripcion dinamicamte en el select con id componente
-          {  
-            var texto = '<option value="'+data+'">'+ parametros.descripcion +'</option>';
-            console.log(texto);
-            $('#componente').append(texto);
-          }  
-        },
-      
-      error: function(result){
-          console.log("entro por el error");
-          console.log(result);
+        traer_componente();
+        $("#modalAddComp2").modal("hide");
+        //$("#modalAddComp2").css("display":"none");
+        //$('.modal.in:visible').modal('hide');
+        //$(".modal-backdrop.in").hide();
       },
-       dataType: 'json'
+      error: function(result){
+          console.error("Error al crear componente");
+          console.table(result);
+      },
     });
-   
   }
-  else 
-  { 
-    alert("Los campos obligatorios deben estar completos: EQUIPO, COMPONENTE Y MARCA deben estar");
-  }
-}
+});
 
 // Crea la tabla con la asociacion de equipo/componente
 var equipoglob="";

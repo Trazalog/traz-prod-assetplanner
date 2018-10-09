@@ -6,7 +6,7 @@ class Lotes extends CI_Model {
 		parent::__construct();
 	}
 	
-	function Lotes_List()
+	function Lotes_List() // Ok
 	{
 		$userdata  = $this->session->userdata('user_data');
         $empresaId = $userdata[0]['id_empresa'];

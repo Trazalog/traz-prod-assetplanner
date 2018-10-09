@@ -7,12 +7,12 @@ class Sservicios extends CI_Model
 		parent::__construct();
 	}
 	// Trae solicitudes en estado en Curso	
-	function servicios_List(){			
-
+	function servicios_List()
+	{			
 		$userdata = $this->session->userdata('user_data');
-        $usrId = $userdata[0]['usrId'];   
-        $grupoId = $userdata[0]["grpId"];
-        $empId = $userdata[0]['id_empresa'];
+		$usrId    = $userdata[0]['usrId'];   
+		$grupoId  = $userdata[0]["grpId"];
+		$empId    = $userdata[0]['id_empresa'];
 		
 		$this->db->select('solicitud_reparacion.*,
 			equipos.codigo as equipo, 
@@ -24,11 +24,9 @@ class Sservicios extends CI_Model
 		$this->db->join('sector', 'equipos.id_sector = sector.id_sector');
 		$this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo');
 		$this->db->where('solicitud_reparacion.estado', 'C');
-		//$this->db->or_where('solicitud_reparacion.estado', 'S');
+		$this->db->or_where('solicitud_reparacion.estado', 'S');
 		$this->db->where('solicitud_reparacion.id_empresa', $empId);
-		
-		$query= $this->db->get();
-
+		$query = $this->db->get();
 		if ($query->num_rows()!=0)
 		{
 			return $query->result_array();	
@@ -50,48 +48,45 @@ class Sservicios extends CI_Model
 	}			
 	
 	// Trae equipos segun sector de empresa logueada
-	function getEquipSectores($data = null){
-
+	function getEquipSectores($data = null)
+	{
 		$id = $data["id_sector"];
-
-		$this->db->select('equipos.id_equipo,
-							equipos.codigo');
+		$this->db->select('equipos.id_equipo, equipos.codigo');
         $this->db->from('equipos');
         $this->db->where('equipos.estado', 'AC');
         $this->db->where('equipos.id_sector', $id);
-        $query= $this->db->get();
-
-		if ($query->num_rows()!=0){
-
-			$i=0;
-			foreach ($query->result() as $row){
-			   
-			   $data[$i]["descripcion"] = $row->codigo;
-			   $data[$i]["id_equipo"] = $row->id_equipo;
+        $query = $this->db->get();
+		if ($query->num_rows()!=0)
+		{
+			$i = 0;
+			foreach ($query->result() as $row)
+			{   
+			   $data2[$i]["descripcion"] = $row->codigo;
+			   $data2[$i]["id_equipo"]   = $row->id_equipo;
 			   $i++;
 			}		
-	        return $data;
+	        return $data2;
 	    }	    
 	}	
 	
 	// Trae sectores por empresa logueada - Listo
-	function getSectores(){
-
+	function getSectores()
+	{
 		$userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa'];  
+		$empId    = $userdata[0]['id_empresa'];  
 
 		$this->db->select('sector.id_Sector, sector.descripcion');
     	$this->db->from('sector');    	
     	$this->db->where('sector.id_empresa', $empId);
-    	$query= $this->db->get();
-        $i=0;
-        foreach ($query->result() as $row){
+		$query = $this->db->get();
 
+		$i     = 0;
+        foreach ($query->result() as $row)
+        {
         	$sectores[$i]['label'] = $row->descripcion;
             $sectores[$i]['value'] = $row->id_Sector;
             $i++;
         }
-
         return $sectores;
     }
 
@@ -132,53 +127,46 @@ class Sservicios extends CI_Model
 	}
 
 	// Guarda solicitud de Servicio - Listo
-	function setservicios($data = null){ 
-		
+	function setservicios($data = null)
+	{ 	
 		if($data == null)
 		{
 			return false;
 		}
 		else
 		{			
-			$equipId = $data['equip'];//
+			$equipId  = $data['equip'];//
 			$solicita = $data['solici'];//
-			$dia = $data['fecha'];//
-			$dia = explode('-', $dia);
-			$hora = $data['hora'];//
-			$min = $data['min'];//
-			$falla = $data['falla'];//
-
+			$dia      = $data['fecha'];//
+			$dia      = explode('-', $dia);
+			$hora     = $data['hora'];//
+			$min      = $data['min'];//
+			$falla    = $data['falla'];//
 			//$idPreventivo = $data['id_prev'];
+			$userdata = $this->session->userdata('user_data');
+        	$empId    = $userdata[0]['id_empresa'];
+			
+			// if ($idPreventivo !== "") { //actualiza fecha preventivo (fecha sistema)
+			// 	  $fechUltimo['ultimo'] = date('Y-m-d H:i:s');
+			//    $this->db->where('prevId', $idPreventivo);
+			//    $this->db->update('preventivo', $fechUltimo);		        
+			// }
 
 			$userdata = $this->session->userdata('user_data');
-        	$empId = $userdata[0]['id_empresa'];   				
-			
-			$this->db->trans_start();
-
-				// if ($idPreventivo !== "") { //actualiza fecha preventivo (fecha sistema)
-
-				// 	$fechUltimo['ultimo'] = date('Y-m-d H:i:s');
-			 //        $this->db->where('prevId', $idPreventivo);
-			 //        $this->db->update('preventivo', $fechUltimo);		        
-				// }
-
-				$userdata = $this->session->userdata('user_data');
-                $usrId = $userdata[0]['usrId'];     // guarda usuario logueado
-                
-				$insert = array('f_solicitado' => date('Y-m-d H:i:s'), 
-							   'f_sugerido' => $dia[2].'-'.$dia[1].'-'.$dia[0],
-							   'hora_sug' => $hora.':'.$min,
-							   'id_equipo' => $equipId,
-							   'estado' => 'S',	// graba estado Solicitado, cambia a 'C' en Ord Serv
-							   'usrId' => $usrId,
-							   'solicitante' => $solicita,
-							   'causa' => $falla,
-							   'foto'=> 'assets/files/orders/sinImagen.jpg',
-							   'id_empresa' => $empId
-							);
-				$this->db->insert('solicitud_reparacion', $insert);
-
-			$this->db->trans_complete();
+			$usrId    = $userdata[0]['usrId'];     // guarda usuario logueado
+			$insert   = array(
+				'f_solicitado' => date('Y-m-d H:i:s'), 
+				'f_sugerido'   => $dia[2].'-'.$dia[1].'-'.$dia[0],
+				'hora_sug'     => $hora.':'.$min,
+				'id_equipo'    => $equipId,
+				'estado'       => 'S',	// graba estado Solicitado, cambia a 'C' en Ord Serv
+				'usrId'        => $usrId,
+				'solicitante'  => $solicita,
+				'causa'        => $falla,
+				'foto'         => 'assets/files/orders/sinImagen.jpg',
+				'id_empresa'   => $empId
+			);
+			$this->db->insert('solicitud_reparacion', $insert);
 
             if ($this->db->trans_status() === FALSE){
                  return false;  

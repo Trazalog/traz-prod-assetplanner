@@ -1,41 +1,44 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-
-class Otrabajos extends CI_Model
-{
+class Otrabajos extends CI_Model {
 	function __construct()
 	{
 		parent::__construct();
 	}
-	// Trae las ordenes de de trabajo de ua empresa logueada
-	function otrabajos_List(){
-
-		$userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa'];
+	
+    /**
+     * Trae las ordenes de de trabajo de la empresa logueada.
+     *
+     * @return  Array   Arreglo con Ordenes de Trabajo.
+     */
+	function otrabajos_List() // Ok
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
 
        	$this->db->select('orden_trabajo.id_orden,
-       						orden_trabajo.nro,
-       						orden_trabajo.fecha_inicio,
-       						orden_trabajo.fecha_entrega,
-       						orden_trabajo.fecha_terminada,
-       						orden_trabajo.fecha_aviso,
-       						orden_trabajo.fecha_entregada,
-       						orden_trabajo.descripcion,
-       						orden_trabajo.cliId,
-       						orden_trabajo.estado,
-       						orden_trabajo.id_usuario,
-       						orden_trabajo.id_usuario_a,
-       						user1.usrName AS nombre,
-       						user1.usrLastName,
-       						user1.grpId AS grp,
-       						orden_trabajo.id_usuario_e,
-       						orden_trabajo.id_sucursal,
-       						sisusers.usrName,
-       						sisusers.usrLastName,
-       						sucursal.descripc,
-							equipos.codigo,
-							equipos.id_equipo,
-							sisgroups.grpId');
+			orden_trabajo.nro,
+			orden_trabajo.fecha_inicio,
+			orden_trabajo.fecha_entrega,
+			orden_trabajo.fecha_terminada,
+			orden_trabajo.fecha_aviso,
+			orden_trabajo.fecha_entregada,
+			orden_trabajo.descripcion,
+			orden_trabajo.cliId,
+			orden_trabajo.estado,
+			orden_trabajo.id_usuario,
+			orden_trabajo.id_usuario_a,
+			user1.usrName AS nombre,
+			user1.usrLastName,
+			user1.grpId AS grp,
+			orden_trabajo.id_usuario_e,
+			orden_trabajo.id_sucursal,
+			sisusers.usrName,
+			sisusers.usrLastName,
+			sucursal.descripc,
+    		equipos.codigo,
+    		equipos.id_equipo,
+    		sisgroups.grpId');
 		$this->db->from('orden_trabajo');
 		$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario');
 		$this->db->join('sisusers AS user1', 'user1.usrId = orden_trabajo.id_usuario_a');
@@ -45,8 +48,7 @@ class Otrabajos extends CI_Model
 		$this->db->where('equipos.estado !=','AN');
 		$this->db->where('orden_trabajo.id_empresa', $empId);
 		$this->db->order_by('orden_trabajo.fecha_inicio', 'DESC');
-
-		$query= $this->db->get();
+		$query = $this->db->get();
 
 		if ($query->num_rows()!=0)
 		{
@@ -58,18 +60,151 @@ class Otrabajos extends CI_Model
 		}
 	}
 
-	// Trae proveedores por id de empresa logueada - Listo
-	function getproveedor(){
-
-		$userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa'];     // guarda usuario logueado
-
-		$this->db->select('abmproveedores.provnombre,
-							abmproveedores.provid');
+    /**
+     * Trae los proveedores de la empresa logueada.
+     *
+     * @return  Array   Arreglo con Proveedores.
+     */
+    function getproveedor() // Ok
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
+        $this->db->select('abmproveedores.provnombre, abmproveedores.provid');
         $this->db->from('abmproveedores');
-        $this->db->where('abmproveedores.provestado', 'AC');
+        $this->db->where('abmproveedores.estado', 'AC');
         $this->db->where('abmproveedores.id_empresa', $empId);
+        $query = $this->db->get();
 
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Trae las ordenes de de trabajo de ua empresa logueada.
+     *
+     * @return  Array   Arreglo con Ordenes de Trabajo.
+     */
+    function traer_sucursal() // Ok
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
+        $query    = $this->db->get_where('sucursal', array('id_empresa' => $empId));
+        if($query->num_rows()>0)
+        {
+            return $query->result();
+        }
+        else
+        {
+            return false;
+        }       
+    }
+
+    /**
+     * Trae las ordenes de de trabajo de ua empresa logueada.
+     *
+     * @return  Array   Arreglo con Ordenes de Trabajo.
+     */
+    function getequipo() // Ok
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
+        $query    = $this->db->get_where('equipos',array('estado'=>'AC', 'id_empresa' => $empId));
+        if($query->num_rows()>0)
+        {
+            return $query->result();
+        }
+        else
+        {
+            return false;
+        }   
+    }
+
+    /**
+     * Guarda Orden de Trabajo
+     *
+     * @param   Array   $data   Arreglo con los datos de la OT.
+     */
+    function guardar_agregar($data) // Ok
+    {
+        $query = $this->db->insert("orden_trabajo", $data);
+        return $query;
+    }
+
+    /**
+     * Devuelve valores de la OT con id_orden = $id.
+     *
+     * @param   Int     Id de Orden de Trabajo.
+     */
+    function getpencil($id) // Ok
+    {
+        $sql = "SELECT orden_trabajo.id_orden,
+                orden_trabajo.nro,
+                orden_trabajo.fecha_inicio,
+                orden_trabajo.descripcion,
+                orden_trabajo.estado,
+                orden_trabajo.id_usuario,
+                orden_trabajo.id_usuario_a,
+                orden_trabajo.id_usuario,
+                orden_trabajo.id_sucursal,
+                sucursal.descripc,
+                sisusers.usrNick,
+                abmproveedores.provnombre,
+                abmproveedores.provid,
+                equipos.id_equipo,
+                equipos.codigo
+            FROM orden_trabajo
+            JOIN equipos ON equipos.id_equipo=orden_trabajo.id_equipo
+            JOIN sucursal ON sucursal.id_sucursal=orden_trabajo.id_sucursal
+            jOIN sisusers ON sisusers.usrId=orden_trabajo.id_usuario
+            JOIN abmproveedores ON abmproveedores.provid=orden_trabajo.id_proveedor
+            WHERE orden_trabajo.id_orden=$id
+            ";
+        $query = $this->db->query($sql);
+
+        if( $query->num_rows() > 0)
+        {
+          return $query->result_array();
+        }
+        else {
+          return 0;
+        }
+    }
+
+    /**
+     * Guarda le edicion de una OT (actualiza OT).
+     *
+     * @param   Int     $idequipo   Id de equipo.
+     * @param   Array   $data       Arreglo con los datos a editar del equipo $idequipo.
+     */
+    function update_edita($idequipo,$data) // Ok
+    {
+        $this->db->where('id_orden', $idequipo);
+        $query = $this->db->update("orden_trabajo",$data);
+        return $query;
+    }
+
+    /**
+     * Devuelve el listado de tareas asociadas a una OT.
+     *
+     * @param   Int     $idglob     Id de Orden de Trabajo.
+     * @return  Array               Listado de Tareas.
+     */
+    function cargartareas($idglob) // Ok
+    {
+        //$userdata = $this->session->userdata('user_data');
+        //$empId    = $userdata[0]['id_empresa'];
+        $this->db->select('*');
+        $this->db->from('tbl_listarea');
+        $this->db->join('sisusers', 'sisusers.usrId = tbl_listarea.id_usuario', 'left outer');
+        $this->db->where('tbl_listarea.id_orden',$idglob);
+        //$this->db->where('tbl_listarea.id_empresa',$empId);
+        $this->db->group_by('tbl_listarea.id_listarea');
         $query= $this->db->get();
         if ($query->num_rows()!=0)
         {
@@ -79,7 +214,103 @@ class Otrabajos extends CI_Model
         {
             return false;
         }
-	}
+    }
+
+    /**
+     * Trae datos de orden de trabajo por id y empresa logueada para asignar.
+     *
+     * @param   Int     $id     Id de orden de trabajo.
+     *
+     * @return  Array|false     Arreglo con los datos de la orden de trabajo
+     */
+    function getasigna($id) // Ok
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId = $userdata[0]['id_empresa'];
+
+        $this->db->select('orden_trabajo.id_orden, orden_trabajo.nro, orden_trabajo.id_usuario,
+            orden_trabajo.fecha_inicio,
+            orden_trabajo.fecha_entrega,
+            orden_trabajo.descripcion,
+            equipos.id_equipo,
+            equipos.codigo,
+            equipos.descripcion as equipoDescrip');
+        $this->db->from('orden_trabajo');
+        $this->db->join('equipos','equipos.id_equipo=orden_trabajo.id_equipo');
+        $this->db->where('orden_trabajo.id_empresa', $empId);//no hace falta. Es redundante
+        $this->db->where('orden_trabajo.id_orden', $id);
+        $query = $this->db->get();
+
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Trae usuarios por id de empresa logueada
+     *
+     * @return  Array|false     Arreglo con usuarios de la empresa.
+     */
+    function getusuario() // Ok
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
+        $this->db->select('*');
+        $this->db->from('sisusers');
+        $this->db->where('sisusers.id_empresa', $empId);
+        $query = $this->db->get();
+        if ($query->num_rows()!=0)
+        {
+            $i = 0;
+            foreach ($query->result() as $row)
+            {
+               $data[$i]["usrId"]       = $row->usrId;
+               $data[$i]["usrName"]     = $row->usrName;
+               $data[$i]["usrLastName"] = $row->usrLastName;
+               $i++;
+            }
+            return $data;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function traer_cli()
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId = $userdata[0]['id_empresa'];
+
+        $this->db->select('*');
+        $this->db->from('admcustomers');
+        $this->db->where('admcustomers.id_empresa', $empId);
+        $this->db->where('admcustomers.estado', 'C');
+        $query = $this->db->query($sql);   
+        if( $query->num_rows() > 0)
+        {
+          return $query->result_array();    
+        } 
+        else {
+          return false;
+        }
+    }
 
 	function getprint($id){ //JOIN grupo ON grupo.id_grupo=equipos.id_grupo
 	    $sql="SELECT orden_trabajo.id_orden, orden_trabajo.id_tarea, orden_trabajo.nro, orden_trabajo.fecha, orden_trabajo.fecha_program, orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, orden_trabajo.fecha_terminada, orden_trabajo.fecha_aviso, orden_trabajo.fecha_entregada, orden_trabajo.descripcion, orden_trabajo.estado, orden_trabajo.id_usuario, orden_trabajo.id_usuario_a, orden_trabajo.id_solicitud, orden_trabajo.tipo, orden_trabajo.id_equipo, orden_trabajo.duracion, orden_trabajo.id_tareapadre, tareas.descripcion AS detarea, orden_trabajo.id_equipo, equipos.codigo, equipos.descripcion AS deequipos, user1.usrName AS nombre,user1.usrLastName, user1.grpId AS grp, sisusers.usrName, sisusers.usrLastName, sisgroups.grpId, tbl_tipoordentrabajo.id
@@ -104,78 +335,11 @@ class Otrabajos extends CI_Model
 
 	}
 
-	// Trae datos de orden de trabajo por id y empresa logueada para asignar
-	function getasigna($id){
-		$userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa'];     // guarda usuario logueado
-
-		$this->db->select('orden_trabajo.id_orden,
-							orden_trabajo.fecha_inicio,
-							orden_trabajo.fecha_entrega,
-							orden_trabajo.descripcion,
-							equipos.id_equipo,
-							equipos.codigo');
-        $this->db->from('orden_trabajo');
-        $this->db->join('equipos','equipos.id_equipo=orden_trabajo.id_equipo');
-        $this->db->where('orden_trabajo.id_empresa', $empId);
-        $query= $this->db->get();
-
-        if ($query->num_rows()!=0)
-        {
-            return $query->result_array();
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    // Trae usuarios por id de empresa logueada
-	function getusuario(){
-
-		$userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa'];
-
-        $this->db->select('*');
-        $this->db->from('sisusers');
-        $this->db->where('sisusers.id_empresa', $empId);
-        $query= $this->db->get();
-
-		if ($query->num_rows()!=0){
-
-			$i=0;
-			foreach ($query->result() as $row){
-
-			   $data[$i]["usrId"] = $row->usrId;
-			   $data[$i]["usrName"] = $row->usrName;
-			   $data[$i]["usrLastName"] = $row->usrLastName;
-			   $i++;
-			}
-	        return $data;
-		}
-	}
-
-	function cargartareas($idglob){
-
-		$this->db->select('*');
-		$this->db->from('tbl_listarea');
-		$this->db->join('sisusers', 'sisusers.usrId = tbl_listarea.id_usuario', 'left outer');
-		$this->db->where('tbl_listarea.id_orden',$idglob);
-		$this->db->group_by('tbl_listarea.id_listarea');
-		$query= $this->db->get();
 
 
-		if ($query->num_rows()!=0)
-		{
-			return $query->result_array();
+    
 
-		}
-		else
-		{
-			return false;
-		}
 
-	}
 
 	
 	function getotrabajos($data = null){
@@ -312,16 +476,7 @@ class Otrabajos extends CI_Model
 	    }
 	}
 
-	function getequipo(){
-	
-			$query= $this->db->get_where('equipos',array('estado'=>'AC'));
-			if($query->num_rows()>0){
-                return $query->result();
-            }
-            else{
-                return false;
-            }	
-	}
+
 
 	//pediso a entregar x fecha
 	function getpedidos($id){
@@ -379,32 +534,9 @@ class Otrabajos extends CI_Model
 
 
 
-	function traer_sucursal(){
 
-		$query= $this->db->get_where('sucursal');
-		if($query->num_rows()>0){
-            return $query->result();
-        }
-        else{
-            return false;
-        }		
-	}
 
-	function traer_cli(){
-        $sql="SELECT * 
-    	  FROM admcustomers
-    	  WHERE estado= 'C'
-    	  ";
-	    $query= $this->db->query($sql);   
-	    if( $query->num_rows() > 0)
-	    {
-	      return $query->result_array();	
-	    } 
-	    else {
-	      return false;
-	    }
-		
-	}
+
 
 	function getnums($id){
 
@@ -440,13 +572,7 @@ class Otrabajos extends CI_Model
     	return $query;
         
     }
-    
-	function guardar_agregar($data){
-                   
-        $query = $this->db->insert("orden_trabajo",$data);
-    	return $query;
-        
-    }
+
 
     function agregar_pedidos($data){
                    
@@ -512,12 +638,11 @@ class Otrabajos extends CI_Model
         }
 		
 	}
-	//agrega proveedor
+	
+    //agrega proveedor
 	function agregar_proveedor($data){
-                   
-        $query = $this->db->insert("proveedores",$data);
+        $query = $this->db->insert("proveedores", $data);
     	return $query;
-        
     }
 
     function getdatos($m){ //id_trabajo
@@ -562,48 +687,6 @@ class Otrabajos extends CI_Model
 
     }
 
-    function update_edita($idequipo,$data) {
-
-        $this->db->where('id_orden', $idequipo);
-        $query = $this->db->update("orden_trabajo",$data);
-        return $query;
-
-    }
-	
-   	function getpencil($id){
-	    $sql="SELECT orden_trabajo.nro,
-	    			orden_trabajo.fecha_inicio,
-	    			orden_trabajo.descripcion,
-	    			orden_trabajo.estado,
-	    			orden_trabajo.id_usuario,
-	    			orden_trabajo.id_usuario_a,
-	    			orden_trabajo.id_usuario,
-	    			orden_trabajo.id_sucursal,
-	    			sucursal.descripc,
-	    			sisusers.usrNick,
-	    			abmproveedores.provnombre,
-	    			abmproveedores.provid,
-	    			equipos.id_equipo,
-	    			equipos.codigo
-	    	  FROM orden_trabajo
-	    	  JOIN equipos ON equipos.id_equipo=orden_trabajo.id_equipo
-	    	  JOIN sucursal ON sucursal.id_sucursal=orden_trabajo.id_sucursal
-	    	  jOIN sisusers ON sisusers.usrId=orden_trabajo.id_usuario
-	    	  JOIN abmproveedores ON abmproveedores.provid=orden_trabajo.id_proveedor
-
-	    	  WHERE orden_trabajo.id_orden=$id
-	    	  ";
-
-	    $query= $this->db->query($sql);
-
-	    if( $query->num_rows() > 0)
-	    {
-	      return $query->result_array();
-	    }
-	    else {
-	      return 0;
-	    }
-	}
 
 	function getArticulos(){
 

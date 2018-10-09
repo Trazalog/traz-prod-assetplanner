@@ -916,7 +916,7 @@ function guardarEdicion(){
         </div>
         <div class="modal-body">
           <input type="hidden" id="id">
-            <h4>¿Desea eliminar Predictivo?</h4>
+            <h4>¿Desea eliminar Preventivo?</h4>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
