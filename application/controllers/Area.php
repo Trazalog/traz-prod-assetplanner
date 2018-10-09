@@ -1,16 +1,18 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php
+
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 class area extends CI_Controller {
 
 	function __construct()
-    {
+        {
 		parent::__construct();
 		$this->load->model('areas');
 	}
 
 	public function index($permission)					
 	{
-		$data['list']       = $this->areas->Listado_areas();
+		$data['list'] = $this->areas->Listado_areas();
 		$data['permission'] = $permission;
 		$this->load->view('area/view_', $data);
 	}
