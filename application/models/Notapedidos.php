@@ -87,13 +87,14 @@ class Notapedidos extends CI_Model
         }   
     }     
             
-    function getArticulos(){
+    function getArticulos()
+    {
         $query = $this->db->query("SELECT articles.artId, articles.artBarCode,articles.artDescription FROM articles");
-        $i=0;
+        $i     = 0;
         foreach ($query->result() as $row){
 
-            $insumos[$i]['value'] = $row->artId;
-            $insumos[$i]['label'] = $row->artBarCode;
+            $insumos[$i]['value']       = $row->artId;
+            $insumos[$i]['label']       = $row->artBarCode;
             $insumos[$i]['descripcion'] = $row->artDescription;
             $i++;
         }
@@ -111,23 +112,26 @@ class Notapedidos extends CI_Model
         }   
     }  
 
-    function setNotaPedidos($data){
-      
-      $this->db->trans_start();    
+    function setNotaPedidos($data)
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
+
         $orden = $data['orden_Id'][0]; 
         $notaP = array(
-                'fecha' => date('Y-m-d H:i:s'),
-                'id_ordTrabajo' => $orden
-                );
+            'fecha'         => date('Y-m-d H:i:s'),
+            'id_ordTrabajo' => $orden,
+            'id_empresa'    => $empId
+            );
         $this->db->insert('tbl_notapedido', $notaP);
         $idNota = $this->db->insert_id();
        
         for($i=0; $i<count($data['insum_Id']); $i++){
 
-            $insumo = $data['insum_Id'][$i];
-            $cant = $data['cant_insumos'][$i];
+            $insumo  = $data['insum_Id'][$i];
+            $cant    = $data['cant_insumos'][$i];
             $proveed = $data['proveedid'][$i];
-            $date = $data['fechaentrega'][$i]; 
+            $date    = $data['fechaentrega'][$i]; 
             $newDate = date("Y-m-d", strtotime($date));
 
             $nota = array(
@@ -142,7 +146,6 @@ class Notapedidos extends CI_Model
                     );
             $this->db->insert('tbl_detanotapedido', $nota);
         }
-      $this->db->trans_complete();
 
       if ($this->db->trans_status() === FALSE)
       {
@@ -155,5 +158,21 @@ class Notapedidos extends CI_Model
     } // fin setNotaPedidos   
     
 	
-}	
+    //
+    function getOTporId($id)
+    {
+        $this->db->select('id_orden, nro, descripcion');
+        $this->db->from('orden_trabajo');
+        $this->db->where('id_orden', $id);
+        $query = $this->db->get();
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();
+        }
+        else
+        {
+            return false;
+        }
+    }
 
+}

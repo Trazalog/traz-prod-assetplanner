@@ -600,78 +600,81 @@ function setOtPreventivo() {
   });
 }
 
-  function CancPrevent(){
-     id_tar = "";
-     fec_sol_prev = "";
-     id_prev = "";
-     id_equ = "";
-     desc_tarea = "";
-  }
+function CancPrevent(){
+   id_tar = "";
+   fec_sol_prev = "";
+   id_prev = "";
+   id_equ = "";
+   desc_tarea = "";
+}
   
-  //habilita/deshabilita el campo cantidad
-  $('#event_Preventivo').change(function(){
-    
-      if ( $(this).val() == 0 ) {
-
-        $('#cant_meses_prev').attr('disabled',true);
-      }else{
-        $('#cant_meses_prev').attr('disabled',false);
-      }    
-  });
+//habilita/deshabilita el campo cantidad
+$('#event_Preventivo').change(function(){
+    if ( $(this).val() == 0 ) {
+      $('#cant_meses_prev').attr('disabled',true);
+    }else{
+      $('#cant_meses_prev').attr('disabled',false);
+    }    
+});
 //////////  / PREVENTIVO 
 
 //////////  PREVENTIVO POR HORAS CAMBIAR VARIABLE IDP UREGNTTE
-  var id_tarhs = "";
+  var id_tarhs       = "";
   var fec_sol_prevhs = "";
-  var id_prevhs = "";
-  var id_equhs = "";
-  var desc_tareahs = "";
+  var id_prevhs      = "";
+  var id_equhs       = "";
+  var desc_tareahs   = "";
+  var proximo_servicio = "";
+  var ultima_lectura   = "";
 
-  $('.fa-history').click(function(){
-
-    id_tarhs = $(this).parents("tr").find("td").eq(1).html();  //id de solicitud de servicios
-    fec_sol_prevhs = $(this).parents("tr").find("td").eq(6).html();
-    desc_tareahs = $(this).parents("tr").find("td").eq(5).html(); 
-    id_prevhs = $(this).parents("tr").find("td").eq(3).html();
-    id_equhs = $(this).parents("tr").find("td").eq(2).html(); 
-
+  //$('.fa-history').click(function(){
+  $(document).on("click", ".fa-history", function() {
+    id_tarhs         = $(this).parents("tr").find("td").eq(1).html();
+    id_equhs         = $(this).parents("tr").find("td").eq(2).html(); 
+    id_prevhs        = $(this).parents("tr").find("td").eq(3).html();
+    desc_tareahs     = $(this).parents("tr").find("td").eq(5).html(); 
+    fec_sol_prevhs   = $(this).parents("tr").find("td").eq(6).html();
+    proximo_servicio = $(this).parents("tr").find("td").eq(9).html();
+    ultima_lectura   = $(this).parents("tr").find("td").eq(10).html();
   });
 
   function setOtPrevHoras() {
-    var progr_corr_hs = $('#fecha_progr_prevent_horas').val();
+    var progr_corr_hs    = $('#fecha_progr_prevent_horas').val();
     var hora_progr_prevH = $('#hora_progr_prevH').val();
+console.info(fec_sol_prevhs);
+console.info(ultima_lectura);
 
     $.ajax({
-          type: 'POST', //parametros:parametros
-          data: {
-                  id_sol : id_prevhs,
-                  id_tarea : id_tarhs,
-                  fecha_progr : progr_corr_hs,
-                  hora_progr : hora_progr_prevH,
-                  fecha_inicio : fec_sol_prevhs,
-                  descripcion : desc_tareahs,
-                  idp : id_sol,
-                  tipo : 3, // preventivo
-                  ide : id_equhs
-                },
-          url: 'index.php/Calendario/guardar_agregar',  //index.php/
-          success: function(data){
-
-                   setTimeout("cargarView('Calendario', 'indexot', '"+$('#permission').val()+"');",0);
-                },
-          error: function(result){
-
-                console.log(result);
-              }
+      type: 'POST', //parametros:parametros
+      data: {
+        id_sol       : id_prevhs,
+        id_tarea     : id_tarhs,
+        fecha_progr  : progr_corr_hs,
+        hora_progr   : hora_progr_prevH,
+        fecha_inicio : fec_sol_prevhs,
+        descripcion  : desc_tareahs,
+        idp          : id_sol,
+        tipo         : 3, // preventivo
+        ide          : id_equhs,
+        lectura_programada : proximo_servicio,
+        lectura_ejecutada  : ultima_lectura
+      },
+      url: 'index.php/Calendario/guardar_agregar',
+      success: function(data){
+        setTimeout("cargarView('Calendario', 'indexot', '"+$('#permission').val()+"');",0);
+      },
+      error: function(result){
+        console.log(result);
+      }
     });
   }
 
   function CancPrevHoras(){
-     id_tarhs = "";
+     id_tarhs       = "";
      fec_sol_prevhs = "";
-     id_prevhs = "";
-     id_equhs = "";
-     desc_tareahs = "";
+     id_prevhs      = "";
+     id_equhs       = "";
+     desc_tareahs   = "";
   }
 //////////  / PREVENTIVO POR HORAS 
 
@@ -940,7 +943,7 @@ function setOtPreventivo() {
 </div>
 
 <!-- Modal Preventivo P/ Horas-->
-<div class="modal fade" id="modal-preventivo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="modal-preventivoH" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">

@@ -7,7 +7,7 @@
           <h3 class="box-title">Asociar Componentes a Equipo</h3>
           <?php
           if (strpos($permission,'Add') !== false) {
-            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="btnAgre">Agregar</button>';
+            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="btnAgre">Asociar</button>';
           }
           ?>
         </div><!-- /.box-header -->
@@ -20,6 +20,8 @@
                 <th>Descripción Componente</th>   
                 <th>Código Equipo</th>
                 <th>Descripción Equipo</th>
+                <th>Sistema</th>
+                <th>Adjunto Componente</th>
               </tr>
             </thead>
             <tbody>
@@ -46,6 +48,9 @@
                   echo '<td>'.$a['descomp'].'</td>';
                   echo '<td>'.$a['codigo'].'</td>';
                   echo '<td>'.$a['descripcion'].'</td>';
+                  echo '<td>'.$a['sistema'].'</td>';
+                  $url = base_url().'assets/files/equipos/'.$a['pdf'];
+                  echo '<td><a href="'.$url.'" target="_blank">'.basename($a['pdf']).'</td>';
                   $idc++;
                 }
               }
@@ -108,6 +113,7 @@ var idequipo     = "";
         $('#equipo').val(data['codigoEq']);
         $('#descrip').val(data['descripcion']);
         llenarComponentes(data['id_equipo'], data['id_componente']);
+        llenarSistemas(data['sistemaid']);
         $('#codigo').val(data['codigo']);
       },
       error: function(result){
@@ -129,7 +135,7 @@ var idequipo     = "";
         //console.table(data);
         $('#componente').empty();
         for(var i=0; i < data.length ; i++) {
-          var nombre = data[i]['descripcion'];
+          var nombre = data[i]['descripcion']+" - "+data[i]['marcadescrip']+" - "+data[i]['informacion'];
           var selected = (idComponente == data[i]['id_componente']) ? 'selected' : '';
           var opcion  = "<option value='"+data[i]['id_componente']+"' " +selected+ ">" +nombre+ "</option>" ; 
           $('#componente').append(opcion); 
@@ -142,19 +148,46 @@ var idequipo     = "";
     });
   }
 
+  // Llena los datos del modal editar
+  function llenarSistemas(idSistema) { // Ok
+    $.ajax({
+      //data: { idequipo:idEquipo },
+      dataType: 'json',
+      type: 'POST',
+      //url:  'index.php/Componente/getcompo',
+      url:  'index.php/Componente/getsistema',
+      success: function(data){
+        //console.table(data);
+        $('#sistema').empty();
+        for(var i=0; i < data.length ; i++) {
+          var nombre   = data[i]['descripcion'];
+          var selected = (idSistema == data[i]['sistemaid']) ? 'selected' : '';
+          var opcion   = "<option value='"+data[i]['sistemaid']+"' " +selected+ ">" +nombre+ "</option>" ; 
+          $('#sistema').append(opcion); 
+        }
+      },
+      error: function(result){
+        console.error("Error al traer sistema de equipos.");
+        console.table(result);
+      },
+    });
+  }
+
   // Editar asociacion de componente a equipo - 
   function editarAsoc(){
     var idcomponenteequipo = $('#idcomponenteequipo').val();
     var id_equipo          = $('#id_equipo').val();
     var id_componente      = $('#componente').val();
     var codigo             = $('#codigo').val();
+    var sistema             = $('#sistema').val();
 
     var parametros = {
       'id_equipo'          : id_equipo,
       'id_componente'      : id_componente,
       'codigo'             : codigo,
+      'sistemaid'          : sistema,
     };
-    console.log(parametros);
+    console.table(parametros);
     $.ajax({
       type: 'POST',
       data: {data:parametros, idCompEq: idcomponenteequipo},
@@ -162,7 +195,7 @@ var idequipo     = "";
       success: function(data){
         $('#modalEditar').modal('hide');
         $('#content').empty();
-        $("#content").load("<?php echo base_url(); ?>index.php/Componente/index/<?php echo $permission; ?>");                    
+        $("#content").load("<?php echo base_url(); ?>index.php/Componente/asigna/<?php echo $permission; ?>");                    
       },
       error: function(result){
         console.error("Error al editar Asociación componente equipo");
@@ -327,16 +360,24 @@ function traer_marca(){
             <input type="hidden" name="idcomponenteequipo" id="idcomponenteequipo">
             <label for="codigo">Equipo: </label>
             <input type="text" name="equipo" id="equipo" class="form-control" disabled>
-            <br>
+          </div>
+          <div class="col-xs-12 col-md-6">
             <label>Descripción:</label>
             <textarea class="form-control" id="descrip" name="descrip" cols="18" rows="3" disabled></textarea>
           </div>
-
-          <div class="col-xs-12 col-md-6"><label>Componente <strong style="color: #dd4b39">*</strong> :</label>
+        </div><hr>
+        <div class="row">
+          <div class="col-xs-12 col-md-6">
+            <label>Componente <strong style="color: #dd4b39">*</strong> :</label>
             <select id="componente" name="componente" class="form-control"></select>
-            <br>
+          </div>
+          <div class="col-xs-12 col-md-6">
             <label for="codigo">Código: </label>
             <input type="text" name="codigo" id="codigo" class="form-control">
+          </div>
+          <div class="col-xs-12 col-md-6">
+            <label for="sistema">Sistema: </label>
+            <select id="sistema" name="sistema" class="form-control"></select>
           </div>
         </div>
       </div>

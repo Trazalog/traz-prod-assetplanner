@@ -229,6 +229,8 @@ function traer_modelo2(){
 }
 
 function completarEdit(datos){
+  $('#errorDe').hide();
+  $('#errorExisteDe').hide();
   //console.log("datos que llegaron");
   //console.log(datos);
   $('#codigode').val(datos['codigode']);
@@ -249,43 +251,63 @@ function guardareditar(){
   //console.log("El id de herramienta  es:"); 
   //console.log(ed);
     
+  var cod     = $('#codigode').val();
   var descrip = $('#descripcionde').val();
-  var cod = $('#codigode').val();
-  var mod = $('#modelode').val();
-  var mar= $('#marcade').val();
-  var dep = $('#depode').val();
+  var mod     = $('#modelode').val();
+  var mar     = $('#marcade').val();
+  var dep     = $('#depode').val();
 
   var parametros = {
-    'herrcodigo': cod,
-    'herrdescrip': descrip,
-    'herrmarca': mar,
-    'modid': mod,
-    'depositoId': dep    
+    'herrcodigo'  : cod,
+    'herrdescrip' : descrip,
+    'herrmarca'   : mar,
+    'modid'       : mod,
+    'depositoId'  : dep    
   };                                            
   //console.log(parametros);
   var hayError = false; 
+  $('#errorDe').hide();
 
-  if( parametros !=0)
-  {                                     
-    $.ajax({
-      type:"POST",
-      url: "index.php/Herramienta/edit_herramienta", //controlador /metodo
-      data:{parametros:parametros, ed:ed},
-      success: function(data){
-        //console.log("exito ");
-        regresa();     
-        },
-      error: function(result){
-          console.log("entro por el error");
-          //console.log(result);
-      },
-      // dataType: 'json'
-    });
+  if($('#codigode').val() == '')
+  {
+    hayError = true;
   }
-  else 
-  { 
-    alert("Por favor complete la descripcion del grupo, es un campo obligatorio");
+  if($('#descripcionde').val() == '')
+  {
+    hayError = true;
   }
+  if($('#marcade').val() == '')
+  {
+    hayError = true;
+  }
+  if($('#modelode').val() == '-1')
+  {
+    hayError = true;
+  }
+  if($('#depode').val() == '-1')
+  {
+    hayError = true;
+  }
+
+  if(hayError == true){
+    $('#errorDe').fadeIn('slow');     
+    return;
+  }
+
+  $.ajax({
+    type:"POST",
+    url: "index.php/Herramienta/edit_herramienta",
+    data:{parametros:parametros, ed:ed},
+    success: function(data){
+      //console.log("data: "+data);
+      $('#modaleditar').modal('hide');
+      regresa();    
+    },
+    error: function(result){
+      console.error("Error al editar herramienta");
+      console.table(result);
+    },
+  });
 }
 
 function guardar(){
@@ -305,28 +327,54 @@ function guardar(){
   };                                              
   //console.log(parametros);
   var hayError = false; 
+  $('#error').hide();
+  $('#errorExiste').hide();
 
-  if( parametros !="")
-  {                                     
-    $.ajax({
-      data:{parametros:parametros},
-      // dataType: 'json',
-      type:"POST",
-      url: "index.php/Herramienta/agregar_herramienta", //controlador/metodo
-      success: function(data){
-        //console.log("exito ");
+  if($('#codigo').val() == '')
+  {
+    hayError = true;
+  }
+  if($('#descripcion').val() == '')
+  {
+    hayError = true;
+  }
+  if($('#marca').val() == '')
+  {
+    hayError = true;
+  }
+  if($('#modelo').val() == '-1')
+  {
+    hayError = true;
+  }
+  if($('#depo').val() == '-1')
+  {
+    hayError = true;
+  }
+
+  if(hayError == true){
+    $('#error').fadeIn('slow');     
+    return;
+  }                               
+  
+  $.ajax({
+    data:{parametros:parametros},
+    // dataType: 'json',
+    type:"POST",
+    url: "index.php/Herramienta/agregar_herramienta", //controlador/metodo
+    success: function(data){
+      //console.log("data: "+data);
+      if(data=="existe") {
+        $('#errorExiste').show();
+      } else {
+        $('#modaltarea').modal('hide');
         regresa();
-        },
-      error: function(result){
-          console.log("entro por el error");
-          //console.log(result);
-      },
-    });
-  }
-  else 
-  { 
-    alert("Por favor complete toda la informacion para poder guardar");
-  }
+      }
+    },
+    error: function(result){
+        console.error("Error al agregar herramientas");
+        console.table(result);
+    },
+  });
 }
 
 function regresa(){
@@ -341,7 +389,7 @@ function regresa(){
 
 
 <!-- Modal alta de Tarea-->
-<div class="modal fade" id="modaltarea" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modaltarea" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
 
@@ -351,38 +399,53 @@ function regresa(){
       </div> <!-- /.modal-header  -->
 
       <div class="modal-body" id="modalBodyArticle">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+              <h4><i class="icon fa fa-ban"></i> Error!</h4>
+              Revise que todos los campos esten completos
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="alert alert-danger alert-dismissable" id="errorExiste" style="display: none">
+              La herramienta que intenta Agregar ya existe!
+            </div>
+          </div>
+        </div>
         <div class="row" >
           <div class="col-xs-12">
             <div class="form-group">
-              <label for="">Codigo:</label>
+              <label for="">Codigo <strong style="color: #dd4b39">*</strong>:</label>
               <input type="text" id="codigo" name="codigo" class="form-control" placeholder="Ingrese Codigo...">
             </div>
           </div>
 
           <div class="col-xs-12">
             <div class="form-group">
-              <label for="">Descripcion:</label>
+              <label for="">Descripcion <strong style="color: #dd4b39">*</strong>:</label>
               <input type="text" id="descripcion" name="descripcion" class="form-control" placeholder="Ingrese Descripcion...">
             </div>
           </div>
 
           <div class="col-xs-12">
             <div class="form-group">
-              <label for="">Modelo:</label>
+              <label for="">Modelo <strong style="color: #dd4b39">*</strong>:</label>
               <input type="text" id="marca" name="marca" class="form-control" placeholder="Ingrese Modelo...">
             </div>
           </div>
 
           <div class="col-xs-12">
             <div class="form-group">
-              <label for="">Marca:</label>
+              <label for="">Marca <strong style="color: #dd4b39">*</strong>:</label>
               <select type="text" id="modelo" name="modelo" class="form-control" ></select>
             </div>
           </div>
 
           <div class="col-xs-12">
             <div class="form-group">
-              <label for="">Deposito:</label>
+              <label for="">Deposito <strong style="color: #dd4b39">*</strong>:</label>
               <select type="text" id="depo" name="depo" class="form-control" ></select>
             </div>
           </div>                
@@ -391,58 +454,73 @@ function regresa(){
 
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" id="btnSave" data-dismiss="modal" onclick="guardar()" >Guardar</button>
+        <button type="button" class="btn btn-primary" id="btnSave" onclick="guardar()" >Guardar</button>
       </div>  <!-- /.modal footer -->
 
     </div> <!-- /.modal-content -->
   </div>  <!-- /.modal-dialog modal-lg -->
-</div>  <!-- /.modal fade -->
+</div>  <!-- /.modal -->
 <!-- / Modal -->
 
 
 <!-- Modal editar-->
-<div class="modal fade" id="modaleditar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modaleditar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-
+  
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-fw fa-pencil text-light-blue"></span> Editar Herramienta</h4>
       </div> <!-- /.modal-header  -->
 
       <div class="modal-body" id="modalBodyArticle">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="alert alert-danger alert-dismissable" id="errorDe" style="display: none">
+              <h4><i class="icon fa fa-ban"></i> Error!</h4>
+              Revise que todos los campos esten completos
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="alert alert-danger alert-dismissable" id="errorExisteDe" style="display: none">
+              La herramienta que intenta Agregar ya existe!
+            </div>
+          </div>
+        </div>
         <div class="row" >
           <div class="col-xs-12">
             <div class="form-group">
-              <label for="codigode">Codigo:</label>
+              <label for="codigode">Codigo <strong style="color: #dd4b39">*</strong>:</label>
               <input type="text" id="codigode" name="codigode" class="form-control" placeholder="Ingrese Codigo...">
             </div>
           </div>
 
           <div class="col-xs-12">
             <div class="form-group">
-              <label for="descripcionde">Descripcion:</label>
+              <label for="descripcionde">Descripción <strong style="color: #dd4b39">*</strong>:</label>
               <input type="text" id="descripcionde" name="descripcionde" class="form-control" placeholder="Ingrese Descripcion...">
             </div>
           </div>
 
           <div class="col-xs-12">
             <div class="form-group">
-              <label for="marcade">Modelo:</label>
+              <label for="marcade">Modelo <strong style="color: #dd4b39">*</strong>:</label>
               <input type="text" id="marcade" name="marcade" class="form-control" placeholder="Ingrese Marca...">
             </div>
           </div>
 
           <div class="col-xs-12">
             <div class="form-group">
-              <label for="modelode">Marca:</label>
+              <label for="modelode">Marca <strong style="color: #dd4b39">*</strong>:</label>
               <select type="text" id="modelode" name="modelode" class="form-control" ></select>
             </div>
           </div>
 
           <div class="col-xs-12">
             <div class="form-group">
-              <label for="depode">Deposito:</label>
+              <label for="depode">Deposito <strong style="color: #dd4b39">*</strong>:</label>
               <select type="text" id="depode" name="depode" class="form-control" ></select>
             </div>
           </div>   
@@ -451,10 +529,10 @@ function regresa(){
 
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" ata-dismiss="modal" onclick="guardareditar()" >Guardar</button>
+        <button type="button" class="btn btn-primary" onclick="guardareditar()" >Guardar</button>
       </div>  <!-- /.modal footer -->
 
     </div> <!-- /.modal-content -->
   </div>  <!-- /.modal-dialog modal-lg -->
-</div>  <!-- /.modal fade -->
+</div>  <!-- /.modal -->
 <!-- / Modal -->

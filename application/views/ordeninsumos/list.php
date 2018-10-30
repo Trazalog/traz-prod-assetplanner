@@ -18,20 +18,28 @@
               <tr>                
                 <th>Acciones</th>
                 <th>Orden de Insumo</th>
+                <th>Orden de Trabajo</th>
+                <th>Nro de Comprobante</th>
+                <th>Solicitante</th>
                 <th>Fecha</th>
               </tr>
             </thead>
             <tbody>
               <?php
+              if(isset($list))
               foreach($list['data'] as $a)
               { 
                 $id=$a['id_orden'];
                 echo '<tr id="'.$id.'">';
                 echo '<td>';
-                echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"  ></i> ';
+                //echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"  ></i> ';
                 echo '<i class="fa fa-fw fa-search-plus text-light-blue" style="cursor: pointer; margin-left: 15px;" data-toggle="modal" data-target="#modalvista" title="Consultar"></i> ';
                 echo '</td>';
                 echo '<td>'.$a['id_orden'].'</td>';
+                echo '<td>'.$a['id_ot'].'</td>';
+                //echo '<td>'.$a['descripcion'].'</td>';
+                echo '<td>'.$a['comprobante'].'</td>';
+                echo '<td>'.$a['solicitante'].'</td>';
                 echo '<td>'.date_format(date_create($a['fecha']), 'd-m-Y').'</td>';
               }
               ?>
@@ -44,11 +52,15 @@
 </section><!-- /.content -->
 
 <script>
+$('#modalvista').on('shown.bs.modal', function (e) {
+  $($.fn.dataTable.tables(true)).DataTable()
+    .columns.adjust();
+});
 //  var isOpenWindow = false;
-var comglob="";
-var ide="";
-var edit=0;
-var datos=Array();
+var comglob = "";
+var ide     = "";
+var edit    = 0;
+var datos   = Array();
 
 $(document).ready(function(event) {
 
@@ -60,279 +72,12 @@ $(document).ready(function(event) {
     WaitingClose();
   });
 
-  $(".fa-print").click(function (e) {
-    e.preventDefault();
-    var id_orden = $(this).parent('td').parent('tr').attr('id');
-    console.log("El id de orden al imprimir es :");
-    console.log(id_orden);
-    // alert(id_orden);
-
-    $.ajax({
-      type: 'POST',
-      data: { id_orden: id_orden},
-      url: 'index.php/Ordeninsumo/getsolImp', //index.php/
-      success: function(data){
-        //data = JSON.parse(data,true);
-        console.log("Entre a la impresion");
-        console.log(data);
-        console.log(data.datos.fecha);
-        // console.log(data['f_solicitado']);
-        //alert("entre");
-        // console.log(data['datos'][0]['fecha']);
-
-        datos={
-          'id_orden':id_orden,
-          'fecha':data.datos.fecha,
-          'id_orden_insumo':data.datos.id_ordeninsumo,
-          'solicitante':data.datos.solicitante,
-        }
-        var trequipos = '';
-        for(var i=0; i < data['equipos'].length ; i++) //aca solo listo niveles y especialidades
-        {   
-          trequipos  = trequipos+"<tr> <td width='1%'></td> <td width='10%'>"+ data['equipos'][i]['artBarCode']+"</td> <td width='10%'>"+data['equipos'][i]['artDescription']+"</td> <td width='10%'>"+data['equipos'][i]['cantidad']+"</td>  </tr>" ;
-        }
-
-        var texto =
-          '<div class="" id="vistaimprimir">'+
-            '<div class="container">'+
-              '<div class="thumbnail">'+
-
-                '<div class="caption">'+
-                  '<div class="row" >'+
-                    '<div class="panel panel-default">'+
-                      '<div class="form-group">'+
-                        '<h3 class="text-center" align="center"></h3>'+
-                      '</div>'+
-                      '<hr/>'+
-                      '<div class="panel-body">'+
-                        '<div class="container">'+
-                          '<div class="thumbnail">'+
-                            '<div class="row">'+
-                              '<div class="col-sm-12 col-md-12">'+
-                                '<table width="100%" style="text-align:justify">'+
-                                  '<tr>'+
-                                  '<tr>'+
-                                    '<td  colspan="1"  align="left" >'+
-                                      '<div class="text-left"> <img src="img/logo.jpg" width="280" height="80" /> </div></td>'+
-                                      '<br>'+
-                                    '</td>'+
-                                   
-                                    '<td colspan="2"  align="left" >'+
-                                      '<div class="col-xs-4">Orden Nº: '+datos.id_orden+
-                                        
-                                      '</div>'+
-
-                                      '<div class="col-xs-4">Fecha: '+data.datos.fecha+
-                          
-                                      '</div>'+
-                                    '</td>'+
-
-                                  '</tr>'+
-                                  '<tr>'+
-                                    '<td >'+
-                                    '</td>'+
-                                  '<tr>'+
-                                    '<td>'+
-                                    '<td/>'+
-                                    '<td height="2" colspan="2">'+
-                                      '<div class="col-xs-8">'+
-                                      '</h3>'+
-                                      '</div>'+
-                                    '</td>'+
-                                  '</tr>'+
-                                  '<br>'+
-                                  '<tr>'+
-                                    '<td height="2" colspan="2">'+
-                                      '<div class="col-md-3 col-md-offset-9">Solicitado  '+
-                                      '<textarea class="form-control" id="solicitante" name="solicitante" style="padding-left:15px"  value='+datos.solicitante+' rows="2" cols="90">'+datos.solicitante+'</textarea>'+
-                                      '</div>'+
-                                        
-                                    '</td'+
-                                  '</tr>'+
-                                  '<br>'+
-                                  
-                                  '</tr>'+
-                                '</table>'+
-                              '</div>'+
-                            '</div>'+
-                          
-                            '<br>'+
-                            '<br>'+
-                            
-                            //
-                            '<div class="row">'+
-                              '<div class="col-xs-10 col-xs-offset-1" style="text-align: center">'+
-                             
-                                '<table  class="table table-bordered table-hover" style="text-align: center" >'+ //class="table table-bordered"
-                               
-                                  '<tr align="center" bottom="middle>'+
-                                    '<td colspan="1"   align="center" >'+
-                                      '<div class="text-center">'+
-                                      ' <img src="img/logo.jpg" width="280" height="80"/>'+
-                                      '</div>'+
-                                    '</td>'+
-                                    
-                                  '</tr>'+
-                                  '<tr>'+
-                                    '<td><h3> Vale de Materiales:'+'</h3>'+
-                                    '</td>'+
-                                  '</tr>'+
-                                '</table>'+
-                              '</div>'+
-                            '</div>'+
-                            
-                            //style="text-align: center"
-                            
-                            '<div class="row">'+
-                              '<div class="col-xs-10 col-xs-offset-1 text-center">'+
-                             
-                                '<table class="table table-bordered"  border="1px solid black"  >'+ //class="table table-bordered"
-                                  '<thead>'+
-                                    '<tr colspan="2">'+
-                                      '<th width="5%">Item  (Tachar sino corresponde)</th>'+
-                                      '<th width="15%">Codigo</th>'+ 
-                                      '<th width="40%">Descripcion</th>'+
-                                      '<th width="5%">Cantidad</th>'+
-                                    '</tr>'+
-                                  '</thead>'+
-                                  '<tbody style="text-align:center">'+trequipos+
-                                  '<tr colspan="2">'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                  '<tr colspan="2">'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                  '<tr colspan="2">'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                  '<tr colspan="2">'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                  '<tr colspan="2">'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                  '<tr>'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                    '<tr>'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                    '<tr>'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                    '<tr>'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                    '<tr>'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                    '<tr>'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                    '<tr>'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                  '</tbody>'+
-                                '</table>'+    
-                              '</div>'+
-                            '</div>'+
-                            //'<div class="container-fluid">'+
-                            '<br>'+
-                            '<br>'+
-                            '<br>'+
-                            '<br>'+
-
-                            '<div class="row">'+
-
-                             // '<div class="col-sm-12 col-md-12">'+
-                                '<div class="col-md-4">Entrega (Firma y aclaracion): '+
-                                ' <input type="text" class="form-control" id="inputPassword3" size="40">'+
-                                        
-                                '</div>'+
-                                '<br>'+
-                                
-                                '<div class="col-md-4 col-md-offset-4">Recibe (Firma y aclaracion): '+ 
-                                ' <input type="text" class="form-control" id="inputPassword3" size="40">'+
-                               
-                                '</div>'+
-                                //'</div>'+
-                            '</div>'+
-
-                          '</div>'+
-                        '</div>'+
-                      '</div>'+
-
-                    '</div>'+
-                  '</div>'+
-                '</div>'+
-                '<style>'+
-                   '.table, .table>tr, .table>td {border: 1px solid #f4f4f4;} '+
-                '</style>';
-
-        var mywindow = window.open('', 'Imprimir', 'height=700,width=900');
-        mywindow.document.write('<html><head><title></title>');
-        //mywindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
-        //mywindow.document.write('<link rel="stylesheet" href="main.css">
-        mywindow.document.write('</head><body onload="window.print();">');
-        mywindow.document.write(texto);
-        mywindow.document.write('</body></html>');
-
-        mywindow.document.close(); // necessary for IE >= 10
-        mywindow.focus(); // necessary for IE >= 10
-        //mywindow.print();
-        //mywindow.close();
-        return true;
-      },
-      error: function(result){
-        console.log(result);
-        console.log("error en la vistaimprimir");
-      },
-      dataType: 'json'
-    });
-  });
-
   $(".fa-search-plus").click(function (e) { 
     $('#total').val(''); 
-    $("#modalvista tbody tr").remove(); 
+    //$("#modalvista tbody tr").remove(); 
     console.log("Esto Consultando"); 
     var idor = $(this).parent('td').parent('tr').attr('id');
-    console.log(idor);
+    console.log("id orden de insumo: "+idor);
     $.ajax({
       type: 'POST',
       data: { idor: idor},
@@ -340,36 +85,35 @@ $(document).ready(function(event) {
       success: function(data){
         //var data = jQuery.parseJSON( data );
         console.log("Estoy Consultando");
-        console.log(data);
+        console.table(data);
         console.log(data['datos'][0]['id_ordeninsumo']);
+        console.log(data['datos'][0]['id_ot']);
         console.log(data['equipos'][0]['artBarCode']);
         console.log(data['total'][0]['cantidad']);
-        // console.log(data.datos.abonodescrip);
-        //console.log(data['datos']['id_ordeninsumo']);
-        //console.log(data['datos'][1]['abonodescrip']);
 
         datos={
           'id':data['datos'][0]['id_orden'],
           'fecha':data['datos'][0]['fecha'],
           'solicitante':data['datos'][0]['solicitante'],
           'comprobante':data['datos'][0]['comprobante'],
+          'id_ot':data['datos'][0]['id_ot'],
         }
                     
         $('#total').val(data['total'][0]['cantidad']);
         $('#orden').val(data['datos'][0]['id_ordeninsumo']);
         $('#fecha').val(data['datos'][0]['fecha']);
+        $('#id_ot').val(data['datos'][0]['id_ot']);
 
-        for (var i = 0; i < data['equipos'].length; i++) {  
-          var tabla = "<tr >"+
-            "<td ></td>"+
-            "<td>"+data['equipos'][i]['codigo']+"</td>"+
-            "<td>"+data['equipos'][i]['artBarCode']+"</td>"+
-            "<td>"+data['equipos'][i]['depositodescrip']+"</td>"+
-            "<td>"+data['equipos'][i]['cantidad']+"</td>"+
-            "</tr>";
-          $('#tablaconsulta tbody').append(tabla);
+        tabla = $('#tablaconsulta').DataTable(); 
+        tabla.clear().draw();
+        for (var i = 0; i < data['equipos'].length; i++) { 
+          $('#tablaconsulta').DataTable().row.add( [
+            data['equipos'][i]['artBarCode'],
+            data['equipos'][i]['artDescription'],
+            data['equipos'][i]['depositodescrip'],
+            data['equipos'][i]['cantidad']
+          ]).draw();
         }
-        console.log(tabla);
       },
       error: function(result){
         console.log(result);
@@ -390,30 +134,46 @@ $(document).ready(function(event) {
     } ],
     "order": [[1, "asc"]],
   });
+  $('#tablaconsulta').DataTable({
+    "aLengthMenu": [ 10, 25, 50, 100 ],
+    "columnDefs": [ {
+      "targets": [ 0 ], 
+      "searchable": true
+    },
+    {
+      "targets": [ 0 ], 
+      "orderable": true
+    } ],
+    "order": [[0, "asc"]],
+  });
 
 });
 </script>
 
 
 <!-- Modal CONSULTA-->
-<div class="modal fade" id="modalvista" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modalvista" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
 
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-fw fa-search-plus text-light-blue"></span> Consulta</h4>
+        <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-fw fa-search-plus text-light-blue"></span> Consulta Orden de Insumos</h4>
       </div> <!-- /.modal-header  -->
 
       <div class="modal-body" id="modalBodyArticle">
         <div class="row">
-          <div class="col-xs-12 col-sm-6">
+          <div class="col-xs-12 col-sm-6 col-md-4">
             <label for="orden">Orden de insumo:</label>
-            <input type="text" class="form-control" id="orden" name="orden">
+            <input type="text" class="form-control" id="orden" name="orden" disabled>
           </div>
-          <div class="col-xs-12 col-sm-6">
+          <div class="col-xs-12 col-sm-6 col-md-4">
             <label for="fecha">Fecha:</label>
-            <input type="text" class="form-control" id="fecha" name="fecha">
+            <input type="text" class="form-control" id="fecha" name="fecha" disabled>
+          </div>
+          <div class="col-xs-12 col-sm-6 col-md-4">
+            <label for="fecha">ID orden trabajo:</label>
+            <input type="text" class="form-control" id="id_ot" name="id_ot" disabled>
           </div>
         </div><br>
       
@@ -421,10 +181,9 @@ $(document).ready(function(event) {
           <div class="col-xs-12">
             <table class="table table-bordered" id="tablaconsulta"> 
               <thead>
-                <tr>                           
-                  <th></th>
-                  <th>Lote</th>
+                <tr>
                   <th>Articulo</th>
+                  <th>Descripción</th>
                   <th>Deposito</th>
                   <th>Cantidad</th>
                 </tr>
@@ -445,7 +204,7 @@ $(document).ready(function(event) {
       </div>  <!-- /.modal-body -->
       
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
       </div>  <!-- /.modal footer -->
 
     </div> <!-- /.modal-content -->

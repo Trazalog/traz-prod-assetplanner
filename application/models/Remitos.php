@@ -1,6 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Remitos extends CI_Model {
+
 	function __construct()
 	{
 		parent::__construct();
@@ -11,6 +12,26 @@ class Remitos extends CI_Model {
 		echo "cargo modelo de Remito";
 	}
 
+    function getRemitosList()
+    {
+        $userdata  = $this->session->userdata('user_data');
+        $empresaId = $userdata[0]['id_empresa'];
+        $this->db->select('remitos.remitoId, remitos.fecha, remitos.comprobante,
+            abmproveedores.provid, abmproveedores.provnombre');
+        $this->db->from('remitos');
+        $this->db->join('abmproveedores','remitos.provid = abmproveedores.provid');
+        $this->db->where('remitos.id_empresa', $empresaId);
+        $query = $this->db->get();
+        if( $query->num_rows() > 0)
+        {
+            $data['data']    = $query->result_array();  
+            return $data;
+        } 
+        else {
+            return false;
+        }
+    }
+
     function getcodigo()
     {
         $userdata  = $this->session->userdata('user_data');
@@ -20,10 +41,12 @@ class Remitos extends CI_Model {
         JOIN tbl_lote ON tbl_lote.prodId= articles.artId AND tbl_lote.lotestado='AC' 
         WHERE tbl_lote.prodId=articles.artId
         "; */
-       	$sql = "SELECT articles.artId,articles.artBarCode, articles.artDescription
-    	   FROM articles
-           WHERE articles.id_empresa = $empresaId
-    	   ";
+       	$sql = "SELECT articles.artId, articles.artBarCode, articles.artDescription
+            FROM articles
+            WHERE articles.artEstado='AC'
+            AND articles.id_empresa = $empresaId
+            GROUP BY articles.artBarCode;
+            ";
     	$query = $this->db->query($sql);
 
 		if($query->num_rows()>0)
@@ -88,6 +111,49 @@ class Remitos extends CI_Model {
 		}
 	}
 
+    function getConsulta($id) // 
+    {
+        $this->db->select('remitos.comprobante, remitos.fecha, abmproveedores.provnombre');
+        $this->db->from('remitos');
+        $this->db->join('abmproveedores', 'abmproveedores.provid = remitos.provid'); 
+        $this->db->where('remitos.remitoId', $id);
+        $query= $this->db->get();   
+
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    function getDetaRemitos($idRemito)
+    {
+        //$userdata  = $this->session->userdata('user_data');
+        //$empresaId = $userdata[0]['id_empresa'];
+        $sql       = "SELECT deta_remito.detaremitoid, deta_remito.id_remito, deta_remito.loteid, deta_remito.cantidad, 
+            tbl_lote.codigo, tbl_lote.depositoid, 
+            articles.artId, articles.artBarCode, articles.artDescription, 
+            abmdeposito.depositodescrip
+            FROM deta_remito
+            JOIN tbl_lote ON tbl_lote.loteid = deta_remito.loteid
+            JOIN articles ON articles.artId = tbl_lote.artId
+            JOIN abmdeposito ON abmdeposito.depositoid = tbl_lote.depositoid
+            WHERE deta_remito.id_remito = $idRemito
+            ";
+            //AND deta_remito.id_empresa = $empresaId
+        $query = $this->db->query($sql);
+        if( $query->num_rows() > 0)
+        {
+            return $query->result_array();  
+        } 
+        else {
+            return 0;
+        }
+    }
+
     function alerta($codigo,$de)
     {
         //arriba es artId, prodId
@@ -136,6 +202,13 @@ class Remitos extends CI_Model {
         return $query;
     }
 
+    /**
+     * @param   Int     $ultimoId   id del remito insertado.
+     * @param   Int     $co         cantidad
+     * @param   Int     $dep        id de deposito
+     * @param   Array   $indice     ids de insumos
+     * @param   Array   $ar         id de articulos
+     */
     function detaorden($ultimoId,$co,$dep,$indice,$ar)
     {
     	$i = 1;
@@ -145,9 +218,9 @@ class Remitos extends CI_Model {
     			if($dep[$i]){
                     $a   = $ar[$i];                 
                     $d   = $dep[$i];                
-                    $res = $this->loteres($a,$d);   
+                    $res = $this->loteres($a,$d);   //saca id de lote con articulo y deposito
     				print_r($res);
-    				if($res > 0){
+    				if($res > 0){ //si tiene id de lote
     					if($co[$i]){ //cant
     						$datos2 = array(
                              'id_remito' => $ultimoId, 
@@ -178,7 +251,7 @@ class Remitos extends CI_Model {
                             'loteid'    => $ultimolote,
                             'cantidad'  => $co[$i]
     		        	);
-    					$this->insert_detaremito($datos2); //inserta en detaremito
+    					$result = $this->insert_detaremito($datos2); //inserta en detaremito
     				}
     			}
     		}
@@ -214,7 +287,7 @@ class Remitos extends CI_Model {
     {
         $userdata            = $this->session->userdata('user_data');
         $data2['id_empresa'] = $userdata[0]['id_empresa'];
-        $query = $this->db->insert("deta-remito", $data2);
+        $query = $this->db->insert("deta_remito", $data2);
         return $query;
     }
 
@@ -254,7 +327,7 @@ class Remitos extends CI_Model {
         $query = $this->db->query($sql);
         if($query->result() ){
             foreach ($query->result() as $row){     
-                $datos = $row->artDescription;     
+                $datos = $row->artBarCode;//artDescription;     
             } 
         return $datos;
         }

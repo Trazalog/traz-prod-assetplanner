@@ -32,11 +32,11 @@
                 $idmarca = $a['marcaid'];
                 echo '<tr data-idcomponente="'.$idcom.'" data-idmarca="'.$idmarca.'">';
                 echo '<td>';
-                if (strpos($permission,'Del') !== false) {
-                  echo '<a href="#" class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar componente" data-toggle="modal" data-target="#modaleliminar"></a>';
-                }
                 if (strpos($permission,'Edit') !== false) {
                   echo '<a href="#" class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar componente" data-toggle="modal" data-target="#modalEditar"></a>';
+                }
+                if (strpos($permission,'Del') !== false) {
+                  echo '<a href="#" class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar componente" data-toggle="modal" data-target="#modaleliminar"></a>';
                 }
                 echo '</td>';
                 echo '<td>'.$a['marcadescrip'].'</td>';

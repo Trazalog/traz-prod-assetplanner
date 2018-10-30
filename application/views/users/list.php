@@ -19,7 +19,7 @@
                                 <th>Usuario</th>
                                 <th>Nombre</th>
                                 <th>Apellido</th>
-                                <th>Comisión</th>
+                                <!--<th>Comisión</th>-->
                                 <th>Img</th>
                             </tr>
                         </thead>
@@ -43,7 +43,7 @@
                                 echo '<td style="text-align: left">'.$u['usrNick'].'</td>';
                                 echo '<td style="text-align: left">'.$u['usrName'].'</td>';
                                 echo '<td style="text-align: left">'.$u['usrLastName'].'</td>';
-                                echo '<td style="text-align: right">'.$u['usrComision'].' %</td>';
+                                //echo '<td style="text-align: right">'.$u['usrComision'].' %</td>';
                                 $user_image = $u['usrimag'];
                                 if( $user_image != '' ) {
                                     $user_image = 'data:image/jpg;base64,'.base64_encode($user_image).'" ';

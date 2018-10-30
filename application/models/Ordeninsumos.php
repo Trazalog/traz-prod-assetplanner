@@ -7,20 +7,26 @@ class Ordeninsumos extends CI_Model {
 		parent::__construct();
 	}
 	
-	public function index()
+	/*public function index()
     {
 		echo "cargo modelo OrdenInsumo";
-	}
+	}*/
 
 	function getList()
     {
         $userdata  = $this->session->userdata('user_data');
         $empresaId = $userdata[0]['id_empresa'];
-        $sql       = "SELECT orden_insumos.id_orden, orden_insumos.fecha
+        /*$sql       = "SELECT orden_insumos.id_orden, orden_insumos.fecha
 	    	FROM orden_insumos
             WHERE orden_insumos.id_empresa = $empresaId;
 	    	";
-	    $query = $this->db->query($sql);
+	    $query = $this->db->query($sql);*/
+        $this->db->select('orden_insumos.id_orden, orden_insumos.fecha, orden_insumos.solicitante, orden_insumos.comprobante,
+            orden_trabajo.id_orden as id_ot, orden_trabajo.descripcion');
+        $this->db->from('orden_insumos');
+        $this->db->join('orden_trabajo','orden_insumos.id_ot = orden_trabajo.id_orden');
+        $this->db->where('orden_insumos.id_empresa', $empresaId);
+        $query = $this->db->get();
 	    if( $query->num_rows() > 0)
 	    {
             $data['openBox'] = 1;
@@ -38,9 +44,11 @@ class Ordeninsumos extends CI_Model {
         $empresaId = $userdata[0]['id_empresa'];
         $sql       = "SELECT articles.artId, tbl_lote.loteid,articles.artBarCode, articles.artDescription
         	FROM articles
-        	JOIN tbl_lote ON tbl_lote.artId= articles.artId AND tbl_lote.lotestado='AC' 
+        	JOIN tbl_lote ON tbl_lote.artId= articles.artId  
         	WHERE tbl_lote.artId=articles.artId
-            AND articles.id_empresa = $empresaId;
+            AND tbl_lote.lotestado='AC'
+            AND articles.id_empresa = $empresaId
+            GROUP BY tbl_lote.artId;
         	";
         $query = $this->db->query($sql);
 		if($query->num_rows()>0)
@@ -57,7 +65,12 @@ class Ordeninsumos extends CI_Model {
     {
         $userdata  = $this->session->userdata('user_data');
         $empresaId = $userdata[0]['id_empresa'];
-        $query     = $this->db->get_where('solicitud_reparacion', array('id_empresa'=>$empresaId));
+        //$query     = $this->db->get_where('solicitud_reparacion', array('id_empresa'=>$empresaId));
+        $this->db->select('id_solicitud, solicitante');
+        $this->db->from('solicitud_reparacion');
+        $this->db->where('id_empresa', $empresaId);
+        $this->db->group_by('solicitante');
+        $query = $this->db->get();
         if($query->num_rows()>0){
             return $query->result();
         }
@@ -159,27 +172,49 @@ class Ordeninsumos extends CI_Model {
     }
 
 
-    function lote($idLote,$cantidadOrdenInsumo,$d){
+    function lote($idarticulo,$cantidadOrdenInsumo,$iddeposito)
+    {
+        $result = $this->traeIdLote($idarticulo,$iddeposito);
+        //dump_exit($result[0]["loteid"]);
+        $idLote = $result[0]["loteid"];
+    	if ($idLote!=0) {
+    	 	$cantidadLote = $this->lotecantidad($idLote); //obtengo la cantidad segun el lote
+    	 	dump($cantidadLote);
+    	} else {
+            echo  "No hay insumos"; 
+        }
+    	if ($cantidadLote >= $cantidadOrdenInsumo) {
+    		$res = $cantidadLote - $cantidadOrdenInsumo;
+		}	
+		else {
+			echo  "No hay insumos suficientes"; 
+			//$res=$cantidadOrdenInsumo - $cantidadLote;
+		}	
 
-        	if ($idLote!=0) {
-        	 	$cantidadLote = $this->lotecantidad($idLote); //obtengo la cantidad segun el lote
-        	 	print_r($cantidadLote);
-        	}
-        	if ($cantidadLote >= $cantidadOrdenInsumo) {
-        		$res = $cantidadLote - $cantidadOrdenInsumo;
-    		}	
-    		else {
-    			echo  "No hay insumos suficientes"; 
-    			//$res=$cantidadOrdenInsumo - $cantidadLote;
-    		}	
-
-    		$datos3 = array(
-    			'cantidad'=>$res
-    		);
-    		print_r($datos3);
-    					        	
-    		$this->update_tbllote($idLote,$datos3);
+		$datos3 = array(
+			'cantidad'=>$res
+		);
+		dump($datos3);
+					        	
+		$this->update_tbllote($idLote,$datos3);
+        return $idLote;
 	}
+
+    function traeIdLote($idarticulo,$iddeposito)
+    {
+        $this->db->select('tbl_lote.loteid');
+        $this->db->from('tbl_lote');
+        $this->db->where('tbl_lote.artId', $idarticulo);
+        $this->db->where('tbl_lote.depositoid', $iddeposito);
+        $query = $this->db->get();
+        if($query->num_rows()>0){
+            return $query->result_array();
+        }
+        else
+        {
+            return false;
+        }    
+    }
 
 	function lotecantidad($v)
     {
@@ -201,21 +236,17 @@ class Ordeninsumos extends CI_Model {
             return $query;
     }
 
-    public function alerta($codigo,$de){
-        $sql="SELECT  tbl_lote.cantidad
-				FROM tbl_lote
-				WHERE tbl_lote.artId=$codigo AND tbl_lote.depositoid=$de
-				";
-
-		$query= $this->db->query($sql);
-
-	  	foreach ($query->result() as $row){   
-                   
-            $datos= $row->cantidad;
-                 
+    public function alerta($codigo,$de)
+    {
+        $sql="SELECT tbl_lote.cantidad
+			FROM tbl_lote
+			WHERE tbl_lote.artId=$codigo AND tbl_lote.depositoid=$de
+			";
+		$query = $this->db->query($sql);
+	  	foreach ($query->result() as $row)
+        {          
+            $datos = $row->cantidad;
         }
-
-		
 	    return $datos;
     }
 
@@ -283,15 +314,15 @@ class Ordeninsumos extends CI_Model {
 
 	function getequipos($id)
     {
-        /*$userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];*/
-	    $sql       = "SELECT deta_ordeninsumos.id_detaordeninsumo, deta_ordeninsumos.id_ordeninsumo, deta_ordeninsumos.loteid, deta_ordeninsumos.cantidad, tbl_lote.codigo, tbl_lote.depositoid, articles.artId, articles.artBarCode, abmdeposito.depositodescrip
+        $userdata  = $this->session->userdata('user_data');
+        $empresaId = $userdata[0]['id_empresa'];
+	    $sql       = "SELECT deta_ordeninsumos.id_detaordeninsumo, deta_ordeninsumos.id_ordeninsumo, deta_ordeninsumos.loteid, deta_ordeninsumos.cantidad, tbl_lote.codigo, tbl_lote.depositoid, articles.artId, articles.artBarCode, articles.artDescription, abmdeposito.depositodescrip
     		FROM deta_ordeninsumos
 			JOIN tbl_lote ON tbl_lote.loteid = deta_ordeninsumos.loteid
 			JOIN articles ON articles.artId = tbl_lote.artId
 			JOIN abmdeposito ON abmdeposito.depositoid = tbl_lote.depositoid
 			WHERE deta_ordeninsumos.id_ordeninsumo = $id
-            /*AND deta_ordeninsumos.id_empresa = $empresaId*/
+            AND deta_ordeninsumos.id_empresa = $empresaId
 			";
 	    $query = $this->db->query($sql);
 	    if( $query->num_rows() > 0)
@@ -305,13 +336,13 @@ class Ordeninsumos extends CI_Model {
 	
 	function total($id)
     {
-        /*$userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];*/
+        $userdata  = $this->session->userdata('user_data');
+        $empresaId = $userdata[0]['id_empresa'];
 	    $sql       = "SELECT SUM(deta_ordeninsumos.cantidad) as cantidad
     		FROM deta_ordeninsumos
 			JOIN orden_insumos ON orden_insumos.id_orden = deta_ordeninsumos. id_ordeninsumo
 			WHERE deta_ordeninsumos.id_ordeninsumo = $id
-            /*AND deta_ordeninsumos.id_empresa = $empresaId*/
+            AND deta_ordeninsumos.id_empresa = $empresaId
 			";
 	    $query = $this->db->query($sql);
 	    if( $query->num_rows() > 0)
@@ -322,5 +353,26 @@ class Ordeninsumos extends CI_Model {
             return 0;
 	    }
 	}
+
+    function getOT()
+    {
+        $userdata  = $this->session->userdata('user_data');
+        $empresaId = $userdata[0]['id_empresa'];
+        $this->db->select('id_orden, descripcion');
+        $this->db->from('orden_trabajo');
+        $this->db->where('id_empresa', $empresaId); //de la empresa
+        $this->db->where('estado !=', 'AN'); //que no estén anuladas (eliminadas)
+        $this->db->where('estado !=', 'T'); //que no estén terminadas
+        $this->db->order_by('id_orden');
+        $query = $this->db->get();
+        if($query->num_rows()>0){
+            return $query->result();
+        }
+        else
+        {
+            return false;
+        }     
+    }
+
 
 }

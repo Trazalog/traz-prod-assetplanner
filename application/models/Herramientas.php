@@ -24,6 +24,7 @@ class Herramientas extends CI_Model
 		$this->db->join('abmdeposito','abmdeposito.depositoId = herramientas.depositoId');	
 		$this->db->join('marcasequipos','marcasequipos.marcaid = herramientas.modid');
 		$this->db->where('herramientas.id_empresa', $empresaId);
+       //$this->db->where('herramientas.estado !=', 'AC');
         $query = $this->db->get();
 		if ($query->num_rows()!=0)
 		{
@@ -64,6 +65,21 @@ class Herramientas extends CI_Model
         $this->db->where('herrId', $data);
         $query = $this->db->delete('herramientas');
         return $query;
+    }
+
+    // revisa si existe la herramienta
+    function existeHerramienta($codigoH)
+    {
+        $query = $this->db->get_where('herramientas', array('herrcodigo' => $codigoH));
+        $count = $query->num_rows(); //counting result from query 
+        if ($count === 0)
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+        }
     }
 
     // trae marca de equipos

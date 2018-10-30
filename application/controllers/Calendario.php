@@ -35,14 +35,55 @@ class Calendario extends CI_Controller {
 		$permission   = $this->input->post('permission');
 		$data['mes']  = $mes;
 		$data['year'] = $year;
-		//$data['list']  = $this->Calendarios->getPreventivosHoras($mes);
+		$preventivosHoras  = $this->Calendarios->getPreventivosHoras($mes, $year);
 		$data['list1'] = $this->Calendarios->getpredlist($mes, $year); 	// listo
 		$data['list2'] = $this->Calendarios->getbacklog($mes, $year);		// listo
 		$data['list3'] = $this->Calendarios->getPreventivos($mes, $year);  // listo 
 		$data['list4'] = $this->Calendarios->getsservicio($mes, $year);	// listo
 		$data['permission'] = $permission;
-		$response['html'] = $this->load->view('calendar/tablas', $data);
 		//dump_exit($data['list3']);
+		//dump_exit($preventivosHoras);
+
+		//para cada preventivo
+		if($preventivosHoras) {
+			$j = 0;
+			for ($i=0; $i<sizeof($preventivosHoras) ; $i++) { 
+				$estaAlertado = false;
+				//sacar tipo alerta
+				//proximo servicio = lectura base + frecuencia
+				$proximoServicio = $preventivosHoras[$i]['lectura_base'] + $preventivosHoras[$i]['cantidad'];
+				$proximaAlerta = $preventivosHoras[$i]['lectura_base'] + $preventivosHoras[$i]['critico1'];
+				$lecturaAutonomo = $preventivosHoras[$i]['ultima_lectura'];
+				//si alerta amarilla pone en array y agrega dato amarillo
+				if($lecturaAutonomo >= $proximaAlerta) {
+					$tipoAlerta = 'A';
+					$estaAlertado = true;
+				}
+				//si alerta es roja pone en array y agrega rojo
+				if($lecturaAutonomo >= $proximoServicio) {
+					$tipoAlerta = 'R';
+					$estaAlertado = true;
+				}
+				
+				//si esta alertado guardo
+				if($estaAlertado) {
+					$preventivosHorasVisible[$j] = $preventivosHoras[$i];
+					//agrego tipo alerta, proximo servicio y ultima lectura
+					$preventivosHorasVisible[$j]['tipoAlerta'] = $tipoAlerta;
+					$preventivosHorasVisible[$j]['proximoServicio'] = $proximoServicio;
+					$preventivosHorasVisible[$j]['ultimaLectura'] = $preventivosHoras[$i]['ultima_lectura'];
+					$j++;
+				} else {
+					$preventivosHorasVisible = false;
+				}
+			}
+		} else {
+			$preventivosHorasVisible = false;
+		}
+
+		$data['list'] = $preventivosHorasVisible;
+
+		$response['html'] = $this->load->view('calendar/tablas', $data);
 		echo json_encode($response);
 	}
 
@@ -67,18 +108,21 @@ class Calendario extends CI_Controller {
 	    if($_POST) 
 	    {
 	    	// evento unico '1' evnto repetitivo '2'
-	    	$event_tipo = $_POST['event_tipo']; 
-	    	$id_solicitud = $_POST['id_sol'];		// id predic - correct - back 
-	    	$id_tarea = $_POST['id_tarea'];
-	    	$hora_progr = $_POST['hora_progr'];
-	    	$fecha_progr = $_POST['fecha_progr'];
-	    	$fecha_progr = explode('-', $fecha_progr);
+			$event_tipo       = $_POST['event_tipo']; 
+			$id_solicitud     = $_POST['id_sol'];		// id predic - correct - back 
+			$id_tarea         = $_POST['id_tarea'];
+			$hora_progr       = $_POST['hora_progr'];
+			$fecha_progr      = $_POST['fecha_progr'];
+			$fecha_progr      = explode('-', $fecha_progr);
 			$fec_programacion = $fecha_progr[2].'-'.$fecha_progr[1].'-'.$fecha_progr[0].' '.$hora_progr.':00';
-	    	$fecha_inicio = $_POST['fecha_inicio'];
-	    	$descripcion = $_POST['descripcion'];	// descripcion del predictivo/correc/backlog/etc
-	    	$tipo = $_POST['tipo'];					// numero de tipo segun tbl_ordentrabajo
-	    	$equipo = $_POST['ide'];  
-	    	$cant_meses = $_POST['cant_meses'];		// cantidad de meses a programar las OT
+			$fecha_inicio     = $_POST['fecha_inicio'];
+			$descripcion      = $_POST['descripcion'];	// descripcion del predictivo/correc/backlog/etc
+			$tipo             = $_POST['tipo'];					// numero de tipo segun tbl_ordentrabajo
+			$equipo           = $_POST['ide'];  
+			$cant_meses       = $_POST['cant_meses'];		// cantidad de meses a programar las OT
+			$lectura_programada = $_POST['lectura_programada'];
+			$lectura_ejecutada  = $_POST['lectura_ejecutada'];
+
 	    	// si no es correctivo busca duracion sino pone 60' por defecto	    	
 	    	if ($tipo != '2') 
 	    	{
@@ -107,8 +151,10 @@ class Calendario extends CI_Controller {
 				'id_equipo'     => $equipo,
 				'duracion'      => $duracion,
 				'id_tareapadre' => $id_solicitud,		// solic que genera la 1º OT y las repetitivas
-				'id_empresa'    => $empId
-	    		);
+				'id_empresa'    => $empId,
+				'lectura_programada' => $lectura_programada,
+				'lectura_ejecutada'  => $lectura_ejecutada,
+	    	);
 	    	
 	    	if ($event_tipo == '1') 
 	    	{		// si el evento es unico lo guarda

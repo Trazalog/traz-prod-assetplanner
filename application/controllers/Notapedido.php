@@ -15,11 +15,17 @@ class Notapedido extends CI_Controller {
     //$this->load->view('notapedido/view_');
   }
 
-  public function agregarNota($permission){
+  /*public function agregarNota($permission){
     //$data['list'] = $this->Notapedidos->notaPedidos_List();
     $data['permission'] = $permission;
     $this->load->view('notapedido/view_',$data);
     //$this->load->view('notapedido/view_');
+  }*/
+
+  public function agregarNota($permission, $idot){
+    $data['permission'] = $permission;
+    $data['ot']         = $this->Notapedidos->getOTporId($idot);
+    $this->load->view('notapedido/view_', $data);
   }
 
   public function getOrdenesCursos(){
@@ -52,6 +58,4 @@ class Notapedido extends CI_Controller {
     echo json_encode($response);
   }
   
-
 }
-

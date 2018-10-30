@@ -39,17 +39,16 @@ class Componentes extends CI_Model
 		$userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];    
 
-	 	$this->db->select('equipos.id_equipo, 
-	 					equipos.codigo, 
-	 					equipos.descripcion, 
-	 					componentes.id_componente, 
-	 					componentes.descripcion AS descomp, 
-                        componenteequipo.idcomponenteequipo,
-	 					componenteequipo.estado,
-                        componenteequipo.codigo AS codcomponente');
+	 	$this->db->select('
+                equipos.id_equipo, equipos.codigo, equipos.descripcion, componentes.id_componente, componentes.descripcion AS descomp, 
+                componentes.pdf,
+                componenteequipo.idcomponenteequipo, componenteequipo.estado, componenteequipo.codigo AS codcomponente,
+                sistema.descripcion as sistema
+            ');
     	$this->db->from('equipos');
     	$this->db->join('componenteequipo', 'componenteequipo.id_equipo = equipos.id_equipo');
     	$this->db->join('componentes', 'componentes.id_componente=componenteequipo.id_componente');
+        $this->db->join('sistema', 'sistema.sistemaid = componenteequipo.sistemaid');
     	$this->db->where('componentes.id_empresa', $empId);
     	$query= $this->db->get();   
 		
@@ -64,16 +63,16 @@ class Componentes extends CI_Model
 	}
 
 	// Trae equipos segun empresa logueada - Listo
-	function traerequipo(){
-
-		$userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa'];    
-
+	function traerequipo()
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];    
 	 	$this->db->select('equipos.*');
 	 	$this->db->from('equipos');
 	 	$this->db->where('equipos.id_empresa', $empId);
-	 	$query= $this->db->get();   
-		
+        $this->db->where('estado !=', 'AN');
+        $this->db->order_by('codigo');
+	 	$query = $this->db->get();   
 		if ($query->num_rows()!=0)
 		{
 			return $query->result_array();
@@ -84,20 +83,31 @@ class Componentes extends CI_Model
 		}
 	}
 
-    // Devuelve descripcion de equipo segun id 
-	function getequipo($id){
-
-        $query= $this->db->get_where('equipos',$id);
-	    foreach ($query->result() as $row){	
+    // Devuelve descripcion de equipo segun id  - listo
+	function getequipo($id)
+    {
+        $this->db->select('id_equipo, descripcion');
+        $this->db->from('equipos');
+        $this->db->where('id_equipo', $id);
+        $query = $this->db->get();
+	    foreach ($query->result_array() as $row) 
+        {
 	       $data['descripcion'] = $row['descripcion']; 
 	       return $data; 
 		}		
 	}
 
 	// Trae marcas para modal agregar componente - Chequeado
-	function getmarca(){
-
-		$query= $this->db->get_where('marcasequipos');
+	function getmarca()
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
+        $this->db->select('marcaid, marcadescrip');
+        $this->db->from('marcasequipos');
+        $this->db->where('id_empresa', $empId);
+        $this->db->where('estado', 'AC');
+        $this->db->order_by('marcadescrip');
+        $query = $this->db->get();
 		if($query->num_rows()>0){
             return $query->result();
         }
@@ -107,16 +117,17 @@ class Componentes extends CI_Model
 	}	
 
 	// Trae componentes segun empresa (no equipos)
-	function getcomponente(){
-		
-		$userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa'];
-		
-        $this->db->select('componentes.*');    	
+	function getcomponente()
+    {	
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
+        $this->db->select('componentes.*, marcasequipos.marcadescrip');    	
     	$this->db->from('componentes');
-		$this->db->where('componentes.id_empresa', $empId); 
-	 	$query= $this->db->get();  
-		
+        $this->db->join('marcasequipos', 'componentes.marcaid=marcasequipos.marcaid');
+		$this->db->where('componentes.id_empresa', $empId);
+        $this->db->where('componentes.estado !=', 'AN');
+        $this->db->order_by('descripcion');
+	 	$query = $this->db->get();
 		if($query->num_rows()>0){
             return $query->result();
         }
@@ -124,6 +135,25 @@ class Componentes extends CI_Model
             return false;
         }	
 	}
+
+    // Trae componentes segun empresa (no equipos)
+    function getsistema()
+    {   
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
+        $this->db->select('sistema.*');     
+        $this->db->from('sistema');
+        $this->db->where('sistema.id_empresa', $empId);
+        $this->db->where('sistema.estado', 'AC');
+        $this->db->order_by('descripcion');
+        $query = $this->db->get();
+        if($query->num_rows()>0){
+            return $query->result();
+        }
+        else{
+            return false;
+        }   
+    }
 	
 	// Agrega componente nuevo - Listo
 	function agregar_componente($insert)
@@ -147,14 +177,19 @@ class Componentes extends CI_Model
     function getcompo($id)
     {
 		$this->db->select('equipos.id_equipo, 
-				equipos.descripcion, 
-				componentes.descripcion AS dee11, 
-				componenteequipo.id_componente');
+			equipos.descripcion, 
+			componentes.descripcion AS dee11, 
+            componentes.informacion, 
+			componenteequipo.id_componente,
+            marcasequipos.marcadescrip
+            ');
     	$this->db->from('equipos');
     	$this->db->join('componenteequipo', 'componenteequipo.id_equipo = equipos.id_equipo');
     	$this->db->join('componentes', 'componentes.id_componente=componenteequipo.id_componente');
+        $this->db->join('marcasequipos', 'componentes.marcaid=marcasequipos.marcaid');
     	$this->db->where('componenteequipo.id_equipo', $id);
     	$this->db->where('componenteequipo.estado', 'AC');
+        $this->db->order_by('dee11', 'marcadescrip');
     	$query = $this->db->get();   
 		if($query->num_rows()>0){
             return $query->result();
@@ -185,7 +220,7 @@ class Componentes extends CI_Model
 
     function getEditar($idCompEq)
     {
-        $this->db->select('componenteequipo.idcomponenteequipo, componenteequipo.id_equipo, componenteequipo.id_componente, componenteequipo.codigo, 
+        $this->db->select('componenteequipo.idcomponenteequipo, componenteequipo.id_equipo, componenteequipo.id_componente, componenteequipo.codigo, componenteequipo.sistemaid,
             equipos.codigo as codigoEq, equipos.descripcion');
         $this->db->from('componenteequipo');
         $this->db->join('equipos', 'componenteequipo.id_equipo = equipos.id_equipo');

@@ -72,10 +72,9 @@ class Backlog extends CI_Controller {
 		$ide=$_GET['datos'];
 
 		$result = $this->Backlogs->geteditar($id);
-		
 		if($result){	
 
-			$arre['datos']=$result;
+			$arre['datos'] = $result;
 			$result2 = $this->Backlogs->traerequiposprev($ide,$id);
 			if($result2){
 
@@ -131,8 +130,9 @@ class Backlog extends CI_Controller {
 		$userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa']; 
 
-		$fe=$_POST['fecha'];
+        $idce=$_POST['idce'];
 		$eq=$_POST['equipo'];
+		$fe=$_POST['fecha'];
 		$ta=$_POST['tarea'];
 		$hs=$_POST['horas'];		
 		
@@ -141,16 +141,39 @@ class Backlog extends CI_Controller {
         $tres=substr($fe, 6, 4); 
         $resul = ($tres."/".$dos."/".$uno); 
 
-		$datos = array(	'id_equipo'=>$eq,
-						'tarea_descrip'=>$ta,						
-						'fecha'=>$resul,
-						'estado'=>'C',
-						'back_duracion' =>$hs,
-						'id_empresa'=> $empId					
-						);
+		$datos = array(
+				'id_equipo'     => $eq,
+				'tarea_descrip' => $ta,						
+				'fecha'         => $resul,
+				'estado'        => 'C',
+				'back_duracion' => $hs,
+				'id_empresa'    => $empId,
+				'idcomponenteequipo' => $idce
+			);
 
 		$result = $this->Backlogs->insert_backlog($datos);
 		echo json_encode($result);
 	}
 
+	public function getComponente()
+	{
+		$idEquipo = $this->input->post('idEquipo');
+		$componentes = $this->Backlogs->getComponentes($idEquipo);
+		if($componentes)
+		{	
+			$arre = array();$i=0;
+	        foreach ($componentes as $valor ) 
+	        {   
+				$valorS = (array)$valor;
+				$arre[$i]['value']   = $valorS['codigo'];
+				$arre[$i]['label']   = $valorS['codigo'];
+				$arre[$i]['descrip'] = $valorS['descripcion'];
+				$arre[$i]['sistema'] = $valorS['sistema'];
+				$arre[$i]['idce']    = $valorS['idce'];
+				$i++;
+	        }
+			echo json_encode($arre);
+		}
+		else echo json_encode(0);
+	}
 }

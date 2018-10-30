@@ -538,9 +538,9 @@ class Equipos extends CI_Model {
 	}
 
 
-	function getcodigo($data = null){
-
-		$query= $this->db->get_where('equipos');
+	function getcodigo($data = null)
+    {
+		$query = $this->db->get_where('equipos');
 		if($query->num_rows()>0){
 		    return $query->result();
 		}

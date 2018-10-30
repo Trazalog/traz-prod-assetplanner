@@ -1,92 +1,90 @@
-Equipo
-Otrabajo
-
-
-
-Equipo:
-    ✔ Editar: ubicacion y descripcion no guarda. @done (18-10-04 17:28)
-    Contratista: ver errores.
-Componentes:
-    falta hacer EDITAR.
-
-
-
-Todo pasa por OTD
-si hacen algo contra otd
-debieron cotar el ingreso de trx
-cortar
-(Yo no estaba siguiendo el chat)
-eso jode el insert en la base para el trace
-vamos a perder registros en la base de datos
-
-
-IP de PAMI: 190.216.34.234
-desvio llamadas: ./Iplan1019
-
-Diego - pero Boom no esta apuntando al DC nuevo
-el DC nuevo de Atos es DC-Level3 no?
-Mariana - No, el dc nuevo de Atos es Tasa
-Level3 es su contingencia
-Mariana - van a ver corte en boom desde level3
-están cambiando el vínculo level3-ruta8 a level3-tasa
-
-
-
-actualmente hay 4 beacons...
-beacon1 testea desde Level3
-beacon2 testea desde Iplan
-beacon3 testea desde Atos-DC-tasa
-beacon4 testea desde Atos-DC-Level3
-los enlaces alertados en este momento son los que se testean desde beacon3 desde Atos-DC-tasa
-
-
-Estimados
-por lo que verificamos en las graficas adjuntas, el monitoreo que estan indicando como alertado, es sobre el juego de Ip's que no estan productivas en este momento. 
-las ip's referenciadas a la DMZ 232, corresponden al Datacenter de TASA (ex R8). 
-El servicio transaccional esta funcionando de manera productiva en las ip's referidas a la DMZ 233 (Datacenter Level3). 
-
-
-para el que quiera conectarse a la PC de la oficina, para ver las consolas, lo puede hacer con el programa UltraViewer_setup_6.1_en.
-ID: 13175213
-Pass: welcome1
+ OT -> listado:
+ ☐ Eliminar boton cargar pedido.
+ ☐ Boton Mostrar pedido lleva a listado de Notas de pedido, 
+     pero de esa OT y muestra id orden de pedido (datos de modal).
 
 
 
 
-Pantalla calendario (pantalla plan de mantenimiento):
-  ☐ @critical Cuando se cargan tareas desde la lista de tareas no funciona.
+INFORME DE SERVICIOS:
+  ☐ Mantenimiento -> OT -> ordenes de servicio: Buscar herramienta por codigo, y mostrar marca y modelo
 
 
-Orden de trabajo:
-  ☐ @high falta validar TODO.
+Almacen -> orden insumos - agregar:
+  ✔ Cuando se carga no descuenta en Stock @done (18-10-21 05:20)
+  ✔ Y NO carga los datos incresados @done (18-10-21 05:20)
+  ✔ Almacena un remito pero con datos erroneos??? no almacena remito!! @done (18-10-24 17:32)
+  ✔ trae articulo con estado AN @done (18-10-24 17:32)
+  ✔ NO DESCUENTA STOCK!! @done (18-10-24 17:32)
+Almacen --> Orden de Insumo:
+  ✔ en la lista debe aparecer nro comprobante, solicitante y ot. @done (18-10-21 05:31)
+Almacen -> Orden de Insumo -> consultar:
+  ✔ Agregar descripcion de cada producto en la orden de insumo y sacar lote??? @done (18-10-24 17:32)
 
 
 
-Falta por hacer (listado de equipos):
-  ☐ @critical al editar hay que validar que los campos al llenar los select no tengan estado AN !!!
-  ☐ @critical validar datos TODAS las pantallas de Equipo (preguntar que datos validar)!!!!
-  ☐ @critical habilitar botones una vez que hayan datos validos (por ej no permitir guardar select con value= -1 o sea "seleccione opcion...")
+
+ ✔ informe de servicio linea 120, subir (muestra todas las herramientas) @done (18-10-25 19:45)
+
+Alamcen -> remitos: 
+  ☐ poner datatable en agregar remitos.
+
+Almacen -> orden insumo:
+  ☐ poner datatable en agregar orden de insumo.
+
+ EQUIPOS:
+   ☐ agregar descripcion tecnica (no graba).
+   ☐ editar descripcion tecnica (no graba).
+
+COMPONENTES:
+  ☐ asociar componente a equipo -> no graba sistemaid en tabla sistemaid.
+  ☐ poner datatable en los componentes asociados a equipo.
+
+PREVENTIVO:
+  ☐ falta editar -> lectura base + alerta
+  ☐ Poner peridodo en tabla de base de datos
+
+ BACKLOG:
+ ✔ #7 falta agregar componente equipo en listado Y EN EDITAR!!! 
+
+Listado de equipos:
+  ☐ Al editar hay que validar que los campos al llenar los select no tengan estado AN !!!
+  ☐ Validar datos TODAS las pantallas de Equipo (preguntar que datos validar)!!!!
+  ☐ Habilitar botones una vez que hayan datos validos (por ej no permitir guardar select con value= -1 o sea "seleccione opcion...")
 
 Desplegable multiempresa: size 5hs:
   ☐ Cambiar multiempresa => En realidad multi unidad Industrial?! @question
 
-Pantalla Alta de equipos size = 3hs:
-  ✔ Error al guardar equipo el campo unidad se guarda en cero por eso no aparce en el listado. @done (18-09-01 00:57)
-  ✔ sacar nombre empresa de pantalla, ese valor ya se mostrara en la barra de navegacion superior al lado del usuario. @done (18-09-01 00:59)
-  ✔ verificar si guarda Agregar información no queda claro para que es - Mejora. @done (18-09-01 01:06)
-  ✔ Los items que se cargan en las cargas rápidas de sector o grupo no aparecen en sus respectivos ABM - error. @done (18-09-01 01:25)
-  ✔ Marca no tiene carga rápidas- error. @done (18-09-01 01:53)
-  --- ✄ -----------------------
-  Echo por ELiana
-    ✔ No están todos las ABM correspondientes a cargas rápidas  Área Proceso criticidad- error. @done (18-09-15 22:05)
-      AGREGAR AL MENU!!
 
-  ✔ @critical ELI usa campo razonsocial, pero en la tabla no está!!! @done (18-09-15 22:05)
-  ✔ @critical ELI el archivo del controlador esta roto!!! @done (18-09-15 22:05)
 
-Pantalla listado equipos size = 4hs:
-  ✔ imprimir no funciona sacar icono. @done (18-09-01 01:57)
-  ✔ en el historial de  mantenimiento autónomo yo debería poder buscar. @done (18-09-16 02:44)
-  ✔ el icono de reloj es mantenimiento autonomo no lectura horaria y no funciona poner en reparación el equipo. (EL CAMPO LECTURA DEBE SER ENTERO!!!!) @done (18-09-01 13:32)
-  ✔ La editar equipo queda pantalla en negro y **no** están todos los campos para editar. @done (18-09-16 02:44)
-  ✔ Hay que agregar un campo cliente. @done (18-09-15 00:49)
+
+
+
+
+
+tabla preventivo / que es?
+lectura base    -> la lectura actual
+critico1        -> alerta
+
+
+proximo servicio = lectura base + frecuencia
+proxima alerta = lectura base + alerta
+
+lectura autonomo = equipo->mantenimiento autonomo -> lectura (ultima lectura)
+
+en plan de mantenimiento x horas/ciclos muestro solo las alertadas
+alertadas.... ...lectura base + alerta + lectura autonomo
+
+lectura autonomo >= proxima alerta => tag AMARILLO
+lectura autonomo >= proximo servicio => tag ROJO
+
+cdo se crea la OT (plan de mantenimiento) 
+-> lectura_autonomo lo guarda en lectura_base
+-> lectura programada = proximo servicio
+-> lectura ejecutada  = ultima lectura (lectura_autonomo ó lectura_base)
+
+ ✔ Preventivo--> Programación Preventivo--> Agregar Periodo por (diario, por hora, por ciclo,km) , lectura, alerta. @done (18-10-19 00:55)
+ ✔ Mantenimiento --> Plan de Mantenimiento --> Generar un listado de preventivo por horas. @done (18-10-19 03:49)
+ ✔ Mantenimiento --> Plan de Mantenimiento --> Generar ot grabando @done (18-10-19 10:28)
+     - próximo servicio=lectura programada 
+     - orometro actual=lectura_ejecutada => lectura base ó lectura autonomo???
