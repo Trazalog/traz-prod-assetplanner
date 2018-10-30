@@ -22,7 +22,8 @@
                 <th>Fecha Terminada</th>
                 <th>Detalle</th>
                 <th>Equipo</th>
-                <th>Solicita</th>
+                <th>Origen</th>
+                <th>Id Solicitud</th>
                 <th>Asignado</th>
                 <th>Estado</th>
               </tr>
@@ -40,10 +41,11 @@
                     //echo "grupo: ".$gr;
                     if ($gr=='1') { 
                       if (($a['estado'] =='As') || ($a['estado'] =='P') || ($a['estado'] =='C')) {
-                        $id        = $a['id_orden'];
-                        $id_equipo = $a['id_equipo'];
-                        $causa     = $a['descripcion'];
-                        echo '<tr id="'.$id.'" class="'.$id.'" data-id_equipo="'.$id_equipo.'" data-causa="'.$causa.'" >';
+                        $id          = $a['id_orden'];
+                        $id_equipo   = $a['id_equipo'];
+                        $causa       = $a['descripcion'];
+                        $idsolicitud = $a['id_solicitud'];
+                        echo '<tr id="'.$id.'" class="'.$id.'" data-id_equipo="'.$id_equipo.'" data-causa="'.$causa.'" data-idsolicitud="'.$idsolicitud.'">';
       	                echo '<td>';
                         if (strpos($permission,'Del') !== false) {
                           echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar" data-toggle="modal" data-target="#modalaviso"></i>';
@@ -62,6 +64,7 @@
                         }
                         if (strpos($permission,'Pedidos') !== false) {
                           echo '<i class="fa fa-truck text-light-blue" style="cursor: pointer; margin-left: 15px;"  title="Mostrar Perdido " data-toggle="modal" data-target="#modallista"></i>';
+                          echo '<i class="fa fa-cart-plus text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Agregar Nota de Pedido"></i>';
                         }
                         if(($a['estado'] == 'As' || $a['estado'] == 'P') && ($a['id_usuario_a'] == $usrId)){
                         //if($a['estado'] == 'As' ){
@@ -82,7 +85,8 @@
                         echo '<td>'.$a['descripcion'].'</td>';
                         // echo '<td">'.$a['cliLastName'].' , '.$a['cliName'].'</td>';
                         echo '<td>'.$a['codigo'].' </td>';
-                        echo '<td>'.$a['usrName'].'</td>';
+                        echo '<td>'.$a['tipoDescrip'].'</td>';
+                        echo '<td>'.$a['id_solicitud'].'</td>';
                         echo '<td>'.$a['nombre'].'</td>';
                         echo '<td>'.($a['estado'] == 'C' ? '<small class="label pull-left bg-green">Curso</small>' : ($a['estado'] == 'P' ? '<small class="label pull-left bg-red">Pedido</small>' : '<small class="label pull-left bg-yellow">Asignado</small>')).'</td>';
       	                echo '</tr>';
@@ -100,6 +104,12 @@
 </section><!-- /.content -->
 
 <script>
+// cargo plugin DateTimePicker
+$('#fechaEntrega, #fecha_inicio1, #fecha_entrega1').datetimepicker({
+  format: 'YYYY-MM-DD H:mm:ss', //format: 'YYYY-MM-DD', // es igaul a campo date
+  locale: 'es',
+});
+
 var iort  = "";
 var ido   = "";
 var idp   = "";
@@ -108,7 +118,7 @@ var acArt = "";
 var i     = "";
 var idord = "";
 var idfin = "";
-
+var descrip = "";
 // llena select de proveedores - Ok
 traer_prov();
 function traer_prov(){
@@ -163,10 +173,12 @@ function traer_sucursal(){
 traer_equipo()
 function traer_equipo(){
   $.ajax({
-    type: 'POST',
     data: { },
+    dataType: 'json',
+    type: 'POST',
     url: 'index.php/Otrabajo/getequipo',
     success: function(data){
+      $('#equipo').empty();
       var opcion  = "<option value='-1'>Seleccione...</option>" ; 
       $('#equipo').append(opcion); 
       for(var i=0; i < data.length ; i++) 
@@ -180,7 +192,6 @@ function traer_equipo(){
       console.error("Error al traer equipos. Ver console.table");
       console.table(result);
     },
-    dataType: 'json'
   });
 }
 
@@ -196,33 +207,55 @@ function regresa1(){
 
 // Guarda una nueva OT - Ok
 function guardaragregar(){
-  console.log("Guarda OT");
-  var id_orden     = $('#id_orden').val();
-  var num          = $('#nro1').val();
-  var fecha_inicio = $('#fecha').val();
-  var descripcion  = $('#vsdetal').val();
-  var sucursal     = $('#suci').val();
-  var proveedor    = $('#prov').val();
-  var equipo       = $('#equipo').val();;
+  //console.log("Guarda OT");
+  var num           = $('#nro1').val();
+  var fecha_entrega = $('#fechaEntrega').val();
+  var descripcion   = $('#vsdetal').val();
+  var sucursal      = $('#suci').val();
+  var proveedor     = $('#prov').val();
+  var equipo        = $('#equipo').val();;
+  //console.log("Datos a guardar");
+  //console.log(num);
+  //console.log(fecha_entrega);
+  //console.log(descripcion);
+  //console.log(sucursal);
+  //console.log(proveedor);
+  //console.log(equipo);
 
-  console.log("Datos a guardar");
-  console.log(id_orden);
-  console.log(num);
-  console.log(fecha_inicio);
-  console.log(descripcion);
-  console.log(sucursal);
-  console.log(proveedor);
-  console.log(equipo);
+  var hayError = false; 
+  $('#error').hide();
+  if($('#equipo').val() == '')
+  {
+    hayError = true;
+  }
+  if($('#fechaEntrega').val()=='' || $('#fechaEntrega').val()=='0000-00-00 00:00:00')
+  {
+    hayError = true;
+  }
+  if($('#suci').val() == '-1')
+  {
+    hayError = true;
+  }
+  if($('#prov').val() == '-1')
+  {
+    hayError = true;
+  }
+  if(hayError == true){
+    $('#error').fadeIn('slow');     
+    return;
+  }
 
   $.ajax({
     type: 'POST', 
-    data: {id_orden:id_orden, num:num, equipo:equipo, descripcion:descripcion, sucursal:sucursal, proveedor:proveedor},
+    data: {num:num, fecha_entrega:fecha_entrega, equipo:equipo, descripcion:descripcion, sucursal:sucursal, proveedor:proveedor},
     url: 'index.php/Otrabajo/guardar_agregar',
     success: function(data){
       //console.log(data);  
+      $('#modalagregar').modal('hide');
       regresa1();
     },
     error: function(result){
+      $('#modalagregar').modal('hide');
       console.error("Error al agregar nueva OT. Ver console.table");
       console.table(result);
     }
@@ -254,26 +287,27 @@ $(".fa-pencil").click(function(e) {
   $("#modaleditar tbody").remove();
   var idord = $(this).parent('td').parent('tr').attr('id');
   idp = idord;
-console.log("idp: "+idp);
+  //console.log("idp: "+idp);
   $.ajax({
     data: { idp:idp },
     dataType: 'json',
     type: 'POST',
     url: 'index.php/Otrabajo/getpencil',
     success: function(data){
-      console.table(data);
+      //console.table(data);
       datos = {
-        'id_ot'        : data[0]['id_orden'],
-        'nro'          : data[0]['nro'],
-        'equipo'       : data[0]['codigo'],
-        'id_equipo'    : data[0]['id_equipo'],
-        'fecha_inicio' : data[0]['fecha_inicio'],
-        'idusuario'    : data[0]['id_usuario'],
-        'nota'         : data[0]['descripcion'],
-        'id_sucu'      : data[0]['id_sucursal'],
-        'sucursal'     : data[0]['descripc'],
-        'id_proveedor' : data[0]['provid'],
-        'nombreprov'   : data[0]['provnombre'],
+        'id_ot'         : data[0]['id_orden'],
+        'nro'           : data[0]['nro'],
+        'equipo'        : data[0]['codigo'],
+        'id_equipo'     : data[0]['id_equipo'],
+        'fecha_inicio'  : data[0]['fecha_inicio'],
+        'fecha_entrega' : data[0]['fecha_entrega'],
+        'idusuario'     : data[0]['id_usuario'],
+        'nota'          : data[0]['descripcion'],
+        'id_sucu'       : data[0]['id_sucursal'],
+        'sucursal'      : data[0]['descripc'],
+        'id_proveedor'  : data[0]['provid'],
+        'nombreprov'    : data[0]['provnombre'],
       }
       completarEdit(datos);
     },
@@ -286,11 +320,12 @@ console.log("idp: "+idp);
 
 // completa los datos del modal Editar - Ok
 function completarEdit(datos){
-  console.log("datos que llegaron: ");
-  console.table(datos);
+  //console.log("datos que llegaron: ");
+  //console.table(datos);
   $('#nroedit').val(datos['nro']);
   traer_equipo2(datos['id_equipo']);
   $('#fecha_inicio1').val(datos['fecha_inicio']);
+  $('#fecha_entrega1').val(datos['fecha_entrega']);
   $('#vsdetalleedit').val(datos['nota']);
   traer_sucursal2(datos['id_sucu']);
   traer_prov1(datos['id_proveedor']);
@@ -298,23 +333,26 @@ function completarEdit(datos){
 
 // llena select equipos en modal Editar OT - Ok
 function traer_equipo2(id_equipo){
-  $('#equipo1').text("");
+  $('#equipo1').empty();
   $.ajax({
+    data: { },
     dataType: 'json',
     type: 'POST',
     url: 'index.php/Otrabajo/getequipo',
     success: function(data){
+      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+      $('#equipo1').append(opcion); 
       for(var i=0; i < data.length ; i++) 
-      {
+      {    
         var selectAttr = '';
         if(data[i]['id_equipo'] == id_equipo) { var selectAttr = 'selected'; }
         var nombre = data[i]['codigo'];
         var opcion = "<option value='"+data[i]['id_equipo']+"' "+selectAttr+">" +nombre+ "</option>" ; 
-        $('#equipo1').append(opcion); 
+        $('#equipo1').append(opcion);             
       }
     },
     error: function(result){
-      console.error("Error al llenar salect equipo en Editar OT");
+      console.error("Error al traer equipos. Ver console.table");
       console.table(result);
     },
   });
@@ -330,9 +368,9 @@ function traer_sucursal2(id_sucursal){
     success: function(data){
       for(var i=0; i < data.length ; i++) 
       {
-        console.info("i:"+data[i]['id_equipo']);
+        //console.info("i:"+data[i]['id_equipo']);
         var selectAttr = '';
-        if(data[i]['id_sucursal'] == id_sucursal) { var selectAttr = 'selected'; console.log("sel")}
+        if(data[i]['id_sucursal'] == id_sucursal) { var selectAttr = 'selected';}
         var nombre = data[i]['descripc'];
         var opcion = "<option value='"+data[i]['id_sucursal']+"' "+selectAttr+">" +nombre+ "</option>";
         $('#sucidedit').append(opcion); 
@@ -356,9 +394,9 @@ function traer_prov1(id_proveedor){
     success: function(data){
       for(var i=0; i < data.length ; i++) 
       {
-        console.info("i:"+data[i]['id_equipo']);
+        //console.info("i:"+data[i]['id_equipo']);
         var selectAttr = '';
-        if(data[i]['provid'] == id_proveedor) { var selectAttr = 'selected'; console.log("sel")}
+        if(data[i]['provid'] == id_proveedor) { var selectAttr = 'selected'; }
         var nombre = data[i]['provnombre'];
         var opcion = "<option value='"+data[i]['provid']+"' "+selectAttr+">" +nombre+ "</option>";
         $('#prov1').append(opcion); 
@@ -373,25 +411,27 @@ function traer_prov1(id_proveedor){
 
 // Guarda Edicion de OT - Ok
 function guardareditar(){
-  var id_orden     = $('#id_orden').val();
-  var nro          = $('#nroedit').val();
-  var fecha_inicio = $('#fecha_inicio1').val();
-  var descripcion  = $('#vsdetalleedit').val();
-  var id_sucu      = $('#sucidedit').val();
-  var proveedor    = $('#prov1').val();
-  var equipo       = $('#equipo1').val();
-  var equipo1      = $('#id_equipo1').val();
+  //var id_orden      = $('#id_orden').val();
+  var nro           = $('#nroedit').val();
+  var fecha_inicio  = $('#fecha_inicio1').val();
+  var fecha_entrega = $('#fecha_entrega1').val();
+  var descripcion   = $('#vsdetalleedit').val();
+  var id_sucu       = $('#sucidedit').val();
+  var proveedor     = $('#prov1').val();
+  var equipo        = $('#equipo1').val();
+  //var equipo1       = $('#id_equipo1').val();
   var parametros = {
     //'id_orden'     : id_orden,
-    'nro'          : nro,                                          
-    'fecha_inicio' : fecha_inicio,     
-    'descripcion'  : descripcion,     
-    'id_sucursal'  : id_sucu,                  
-    'id_proveedor' : id_sucu,                
-    'id_equipo'    : equipo                    
+    'nro'           : nro,                                          
+    'fecha_inicio'  : fecha_inicio,
+    'fecha_entrega' : fecha_entrega,     
+    'descripcion'   : descripcion,     
+    'id_sucursal'   : id_sucu,                  
+    'id_proveedor'  : id_sucu,                
+    'id_equipo'     : equipo                    
   };
-  // console.log("Parametros:");
-  // console.log(parametros);
+  // console.info("Parametros:");
+  // console.table(parametros);
   // console.log("El id de orden es:");
   // console.log(idp);
   // console.log("El id de equipo es:");
@@ -399,11 +439,48 @@ function guardareditar(){
   // console.log(equipo1);
   // console.log("El id de proveedor es:");
   // console.log(proveedor);
+  //console.info($('#fecha_inicio1').val());
+  var hayError = false; 
+  $('#errorE').hide();
+
+  console.info( $('#equipo1').val() );
+  console.info( $('#fecha_inicio1').val() );
+  console.info( fecha_entrega );
+  console.info( $('#sucidedit').val() );
+  console.info( $('#prov1').val() );
+
+  if($('#equipo1').val() == '-1')
+  {
+    hayError = true;
+  }
+  if($('#fecha_inicio1').val()=='' || $('#fecha_inicio1').val()=='0000-00-00 00:00:00')
+  {
+    hayError = true;
+  }
+  if(fecha_entrega=='' || fecha_entrega=='0000-00-00 00:00:00')
+  {
+    hayError = true;
+  }
+  if($('#sucidedit').val() == '-1')
+  {
+    hayError = true;
+  }
+  if($('#prov1').val() == '-1')
+  {
+    hayError = true;
+  }
+  console.error( hayError );
+  if(hayError == true){
+    $('#errorE').fadeIn('slow');     
+    return;
+  }
+
   $.ajax({
     type: 'POST',
     data: {parametros:parametros, idp:idp},
     url: 'index.php/Otrabajo/guardar_editar',
     success: function(data){
+      $('#modaleditar').modal('hide');
       regresa1();
     },
     error: function(result){
@@ -411,6 +488,7 @@ function guardareditar(){
       console.table(result);
     }
   });
+  
 }
 
 // Lleva a la pantalla Asignar Tareas - Ok (no revisé la asignación!!!)
@@ -539,12 +617,12 @@ function orden(){
 
 
 
-// Refresca    
+/*/ Refresca    
 function regresa(){
   $('#content').empty(); //listOrden  
   $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/listOrden/<?php echo $permission; ?>");
   WaitingClose();
-}
+}*/
 
 // llena select clientes en modal Asignar OT - 
 function traer_clientes(id_cliente){
@@ -589,11 +667,8 @@ function traer_clientes(id_cliente){
 
 
 $(document).ready(function(event) {
-  
 
-
-
-   //cargar pedido
+  //cargar pedido
   $(".fa-tags").click(function (e) { 
 
     var id_orden = $(this).parent('td').parent('tr').attr('id');
@@ -605,7 +680,6 @@ $(document).ready(function(event) {
     $('#num1').append(opcion);
     i=i+1; 
     traer_proveedor();
-    
   });
 
 
@@ -674,9 +748,9 @@ $(document).ready(function(event) {
               },
               dataType: 'json'
     });
-    
   });
 
+  //guardar pedido
   $('#btnSave').click(function(){
 
       if(acArt == 'View')
@@ -738,7 +812,7 @@ $(document).ready(function(event) {
           });
   });
 
-    //Eliminar
+  //Eliminar
   $(".fa-times-circle").click(function (e) { 
                  
     var ido = $(this).parent('td').parent('tr').attr('id');
@@ -981,7 +1055,7 @@ $(document).ready(function(event) {
     idfin=idord;
   });
   
-  $('#vfecha').datepicker({
+  /*$('#vfecha').datepicker({
       changeMonth: true,
       changeYear: true
   }); 
@@ -1004,19 +1078,21 @@ $(document).ready(function(event) {
   $(".datepicker").datepicker({    
       changeMonth: true,
       changeYear: true
-  });
+  });*/
 
 
   // Genera Informe de Servicio - Hugo
   $('.fa-sticky-note-o').click( function cargarVista(){
       var id_sol = parseInt($(this).parent('td').parent('tr').attr('id'));
-      var id_eq = parseInt($(this).parent('td').parent('tr').data('id_equipo')); 
-      var desc = $(this).parent('td').parent('tr').data('causa');
+      var id_eq  = parseInt($(this).parent('td').parent('tr').data('id_equipo')); 
+      var desc   = $(this).parent('td').parent('tr').data('causa');
+      var id_solicitud = parseInt($(this).parent('td').parent('tr').data('idsolicitud'));
+      desc = encodeURIComponent(desc);
+      //console.log("id solicitud de servicio: "+id_solicitud);
       //alert(desc);
-
       WaitingOpen();
       $('#content').empty();
-      $("#content").load("<?php echo base_url(); ?>index.php/Ordenservicio/cargarOrden/<?php echo $permission; ?>/"+id_sol+"/"+id_eq+"/"+desc+"");
+      $("#content").load("<?php echo base_url(); ?>index.php/Ordenservicio/cargarOrden/<?php echo $permission; ?>/"+id_sol+"/"+id_eq+"/"+desc+"/"+id_solicitud+"/");
       WaitingClose();
   });
 
@@ -1224,9 +1300,7 @@ function guardarpedido(){
            }
            // dataType: 'json'
   });                 
-}  
-   
-
+}
 
 
 //OT TOTAL, pasa a la partalla de ot terminadas 
@@ -1269,8 +1343,19 @@ function guardarparcial(){
             }
             //dataType: 'json'
     });
-} 
+}
 
+
+$(".fa-cart-plus").click(function (e) { 
+  var id = $(this).parent('td').parent('tr').attr('id');
+  console.log("El id de OT es: "+id);
+  iort = id;
+
+  WaitingOpen();
+  $('#content').empty();
+  $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/agregarnota/<?php echo $permission; ?>/"+iort);
+  WaitingClose();  
+});
 
 </script>
 
@@ -1285,10 +1370,17 @@ function guardarparcial(){
        </div> <!-- /.modal-header  -->
 
        <div class="modal-body" id="modalBodyArticle">
-
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+              <h4><i class="icon fa fa-ban"></i> Error!</h4>
+              Revise que todos los campos obligatorios estén completos.
+            </div>
+          </div>
+        </div>
         <div class="row">
           <div class="col-xs-12 col-sm-4">
-            <label style="margin-top: 7px;">Nro <strong style="color: #dd4b39">*</strong>: </label>
+            <label style="margin-top: 7px;">Nro: </label>
           </div>
           <div class="col-xs-12 col-sm-8">
             <input type="text" class="form-control"  id="nro1" name="nro1" placeholder="Ingrese Numero de OT">
@@ -1306,10 +1398,18 @@ function guardarparcial(){
         </div><br>
         <div class="row">
           <div class="col-xs-12 col-sm-4">
-            <label style="margin-top: 7px;">Fecha <strong style="color: #dd4b39">*</strong>: </label>
+            <label style="margin-top: 7px;">Fecha Inicio<strong style="color: #dd4b39">*</strong>: </label>
           </div>
           <div class="col-xs-12 col-sm-8">
             <input type="text" class="form-control" id="vfech" name="vfech" value="<?php echo date_format(date_create(date("Y-m-d")), 'd-m-Y ') ; ?>"  disabled/>
+          </div>
+        </div><br>
+        <div class="row">
+          <div class="col-xs-12 col-sm-4">
+            <label style="margin-top: 7px;">Fecha Entrega<strong style="color: #dd4b39">*</strong>: </label>
+          </div>
+          <div class="col-xs-12 col-sm-8">
+            <input type="datetime" class="form-control" id="fechaEntrega" name="fechaEntrega" value=""/>
           </div>
         </div><br>
         <div class="row">
@@ -1344,8 +1444,8 @@ function guardarparcial(){
         </div>
         <br>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal" onclick="cerro()">Cancelar</button>
-          <button type="button" class="btn btn-primary" id="reset" data-dismiss="modal" onclick="guardaragregar()">Guardar</button> 
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" onclick="guardaragregar()">Guardar</button> 
         </div>  <!-- /.modal footer -->
       </div>  <!-- /.modal-body -->
     </div> <!-- /.modal-content -->
@@ -1387,8 +1487,16 @@ function guardarparcial(){
 
       <div class="modal-body" id="modalBodyArticle">
         <div class="row">
+          <div class="col-xs-12">
+            <div class="alert alert-danger alert-dismissable" id="errorE" style="display: none">
+              <h4><i class="icon fa fa-ban"></i> Error!</h4>
+              Revise que todos los campos obligatorios estén completos.
+            </div>
+          </div>
+        </div>
+        <div class="row">
           <div class="col-xs12 col-sm-4">
-            <label style="margin-top: 7px;">Nro <strong style="color: #dd4b39">*</strong>: </label>
+            <label style="margin-top: 7px;">Nro: </label>
           </div>
           <div class="col-xs12 col-sm-8">
             <input type="text" class="form-control" placeholder="Nro Orden de trabajo" id="nroedit" name="nroedit">
@@ -1407,11 +1515,18 @@ function guardarparcial(){
         </div><br>
         <div class="row">
           <div class="col-xs-12 col-sm-4">
-            <label style="margin-top: 7px;">Fecha <strong style="color: #dd4b39">*</strong>: </label>
+            <label style="margin-top: 7px;">Fecha Inicio<strong style="color: #dd4b39">*</strong>: </label>
           </div>
           <div class="col-xs-12 col-sm-8">
-            <input type="text" class="datepicker form-control fecha_inicio1 " id="fecha_inicio1" name="vfecha" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="26"/>
-            <!-- <input type="text" class="form-control" id="vfecha" placeholder="dd-mm-aaaa" name="vfecha">-->
+            <input type="text" class="form-control" id="fecha_inicio1" name="fecha_inicio1" value=""/>
+          </div>
+        </div><br>
+        <div class="row">
+          <div class="col-xs-12 col-sm-4">
+            <label style="margin-top: 7px;">Fecha Entrega<strong style="color: #dd4b39">*</strong>: </label>
+          </div>
+          <div class="col-xs-12 col-sm-8">
+            <input type="text" class="form-control" id="fecha_entrega1" name="fecha_entrega1" value=""/>
           </div>
         </div><br>
         <div class="row">
@@ -1438,7 +1553,6 @@ function guardarparcial(){
           </div>
           <div class="col-xs-12 col-sm-8">
             <select class="form-control" id="prov1" name="prov1"  value="" style="width: 100%;">
-
             </select>
           </div>
         </div>
@@ -1446,7 +1560,7 @@ function guardarparcial(){
 
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" >Cancelar</button>
-        <button type="button" class="btn btn-primary" id="reset" data-dismiss="modal" onclick="guardareditar()">Guardar</button> 
+        <button type="button" class="btn btn-primary" onclick="guardareditar()">Guardar</button> 
         </div>  <!-- /.modal footer -->
       </div>
     </div> <!-- /.modal-content -->
@@ -1501,21 +1615,6 @@ function guardarparcial(){
   </div>
 </div><!-- /.modal fade -->
 <!-- / Modal -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

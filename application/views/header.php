@@ -26,6 +26,10 @@
     <link rel="stylesheet" href="<?php echo base_url();?>assets/plugin/datatables/dataTables.bootstrap.css">
     <!-- Daterange picker -->
     <link rel="stylesheet" type="text/css" media="all" href="<?php echo base_url();?>assets/plugin/daterangepicker/daterangepicker.css" />
+    <!-- Bootstrap datetimepicker -->
+    <link rel="stylesheet" href="<?php echo base_url();?>assets/plugin/datetimepicker/css/bootstrap-datetimepicker.min.css">
+
+    <!-- Propios -->
     <link rel="stylesheet" type="text/css" media="all" href="<?php echo base_url();?>assets/css/propios.css" />
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -53,7 +57,8 @@
     <script src="<?php echo base_url();?>assets/js/jquery-ui.min.js"></script>
     <!-- ChartJS 2.5.0 -->
     <script src="<?php echo base_url();?>assets/plugin/chartjs/Chart.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.5.5/i18n/jquery-ui-timepicker-addon-i18n.js"></script>
+
+    <script type="text/javascript" src="<?php echo base_url();?>assets/plugin/jquery-ui-timepicker-addon-i18n.js"></script>
 
     <!-- iCheck -->
     <link rel="stylesheet" href="<?php  echo base_url();?>assets/plugin/iCheck/minimal/blue.css">
@@ -78,12 +83,15 @@
     <script src="<?php echo base_url();?>assets/plugin/fullcalendar/fullcalendar.min.js"></script>
     <!-- Daterange picker -->
     <script type="text/javascript" src="<?php echo base_url();?>assets/plugin/daterangepicker/daterangepicker.js"></script>
-    <script src="<?php echo base_url();?>assets/js/jquery.PrintArea.js"></script>
-
+    
+    <script src="<?php echo base_url();?>assets/plugin/moment/moment-with-locales.min.js"></script>
+    <script src="<?php echo base_url();?>assets/plugin/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
     <!-- Jasny Bootstrap -->
     <script src="<?php echo base_url();?>assets/plugin/jasny-bootstrap/js/jasny-bootstrap.min.js"></script>
     <!-- Bootstrap Validator -->
     <script src="<?php echo base_url();?>assets/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+    
+    <script src="<?php echo base_url();?>assets/js/jquery.PrintArea.js"></script>
 </head>
 
 

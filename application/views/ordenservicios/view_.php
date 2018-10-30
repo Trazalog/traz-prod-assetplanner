@@ -1,23 +1,24 @@
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
+
 <div class="row">
   <div class="col-xs-12">
     <div class="alert alert-danger alert-dismissable" id="error3" style="display: none">
           <h4><i class="icon fa fa-ban"></i> Error!</h4>
-          Revise que todos los campos obligatorios esten seleccionados
-      </div>
-  </div>
-</div>
- <div class="row">
-  <div class="col-xs-12">
-    <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
-          <h4><i class="icon fa fa-ban"></i> Error!</h4>
-          Este articulo no esta en el deposito seleccionado
+          Revise que todos los campos obligatorios estén seleccionados.
       </div>
   </div>
 </div>
 <div class="row">
   <div class="col-xs-12">
-    <div class="alert alert-danger alert-dismissable"  id="error1" style="display: none">
+    <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+          <h4><i class="icon fa fa-ban"></i> Error!</h4>
+          Este artículo no está en el depósito seleccionado.
+      </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="alert alert-danger alert-dismissable" id="error1" style="display: none">
           <h4><i class="icon fa fa-ban"></i> Error!</h4>
           NO HAY INSUMOS SUFICIENTES
       </div>
@@ -31,24 +32,18 @@
       </div>
   </div>
 </div>
-<div class="row">
-  <div class="col-xs-12">
-    <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
-          <h4><i class="icon fa fa-ban"></i> Error!</h4>
-          Revise que todos los campos obligatorios esten completos
-    </div>
-  </div>
-</div>
+
 <section class="content">
   <div class="row">
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
-        <h3 class="box-title">Informe de Servicio</h3>
-        <?php
-          // if (strpos($permission,'Add') !== false) {
-          //   echo '<button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" id="listado">Ver Listado</button>';
-          //}
+          <h3 class="box-title">Informe de Servicio</h3>
+          <?php
+            //if (strpos($permission,'Add') !== false) {
+            echo '<button class="btn btn-block btn-primary" style="width: 250px; margin-top: 10px;" id="listadoOT">Ver Listado Ordenes de Trabajo</button>';
+            echo '<button class="btn btn-block btn-primary" style="width: 250px; margin-top: 10px;" id="listado">Ver Listado de Informes de servicio</button>';
+            //}
           ?>
         </div><!-- /.box-header -->
 
@@ -56,382 +51,307 @@
           <!-- form  -->
           <form class="form-horizontal" role="form" id="form_order" action="" accept-charset="utf-8">
 
-            <!-- fecha y comprobante -->
-            <div class="pull-right "> 
-              <div class="form-group">
-                <label for="comprobante" class="col-xs-12 col-sm-6 control-label">Comprobante</label>
-                <div class="col-xs-12 col-sm-6">
-                  <input type="text" name="comprobante" class="form-control comprobante" id="comprobante">
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="fecha" class="col-xs-12 col-sm-6 control-label">Fecha</label>
-                <div class="col-xs-12 col-sm-6">
-                  <input type="text" name="fecha" class="form-control fecha" id="fechaOrden">
-                </div>
-              </div>
-            </div>  
-            <div class="clearfix"></div>
-            <!-- / fecha y comprobante -->
-
-            <style>
-            p.titulos{
-              margin-left: 2%;
-              margin-bottom: -1% !important;
-              margin-top: 3%;
-            }
-            .icotitulo{margin-right: 5px;}
-            .panel,.panel-default{padding-bottom: 17px;}
-            .botones{margin-left: 27px;}
-            #rowdetalle{margin-left: 26px;}
-            .hidenn{display: none;}
-
-            input.cant_insumos, input.nom_depo, input#tareas_a_real, input#comp, input#cant_horas, input#costos{border: none;}               
-            input.form_equipos{border: none; padding-left: 15px;}
-            select#numSolic, input#causa{width: 80%;}
-            input#contratista{width: 100%;} 
-            </style>
-
+            <!--  ORDEN SERVICIO  -->
             <div class="row">
-              <div class="col-xs-12">
-                <table class="table table-condensed table-responsive" id="tbl_sserv">
-                  <thead>
-                    <tr>
-                      <th>Número de Solicitud</th>
-                      <th>Descripción de la Falla</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><input class="numSolic form_equipos" id="numSolic" value="<?php echo $id_solicitud;?>"> </input></td>
-                      <td><input type="text" name="causa" class="causa form_equipos" id="causa" value="<?php echo $causa;?>" placeholder=""></td>
-                      <td class="hidenn">
-                        <input type="text" name="id_solicitudreparacion" class="id_solicitudreparacion" id="id_solicitudreparacion" value="<?php echo $id_solicitud;?>">
-                      </td>
-                      <td class="hidenn">
-                        <input type="text" name="id_equipoSolic" class="id_equipoSolic" id="id_equipoSolic" value="<?php echo $id_eq; ?>">
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+              <!--<div class="col-xs-12 col-sm-6">
+                <label for="comprobante">Comprobante</label>
+                <input type="text" name="comprobante" class="form-control comprobante" id="comprobante" disabled>
               </div>
+              <div class="col-xs-12 col-sm-6">
+                <label for="lecturaP">Lectura</label>
+                <input type="text" name="lecturaP" class="form-control lecturaP" id="lecturaP" disabled>
+              </div>-->
+              <div class="col-xs-12 col-sm-6">
+                <label for="numSolic">Número de OT</label>
+                <input class="form-control numSolic form_equipos" name="numSolic" id="numSolic" value="<?php echo $id_ot;?>" disabled/>
+              </div>
+              <div class="col-xs-12 col-sm-6">
+                <label for="causa">Descripción de la Falla</label>
+                <input type="text" name="causa" class="form-control causa form_equipos" id="causa" value="<?php echo $causa;?>" disabled>
+              </div>
+              <div class="col-xs-12 col-sm-6">
+                <label for="fecha">Fecha</label>
+                <input type="text" name="fecha" class="form-control fecha" id="fechaOrden" disabled>
+              </div>
+              <input type="hidden" name="id_ordenservicio" class="id_ordenservicio" id="id_ordenservicio" value="<?php echo $id_solicitudServicio;?>">
+              <input type="hidden" name="id_ot" class="id_ot" id="id_ot" value="<?php echo $id_ot;?>">
+              <input type="hidden" name="id_equipoSolic" class="id_equipoSolic" id="id_equipoSolic" value="<?php echo $id_eq; ?>">
             </div>
+            <br>
 
-            <!--  EQUIPOS   -->            
+            <!--  EQUIPOS  -->
             <div class="panel panel-default">
+              <div class="panel-heading">
+                <span class="fa fa-cogs icotitulo"></span> Datos de Equipo
+              </div>
 
-                <div class="panel-heading"><span class="fa fa-cogs icotitulo" aria-hidden="true"></span> Equipos</div>
-                    <p class="titulos">Datos de Equipo</p>
-                    <hr>                  
+              <div class="panel-body">
+                <div class="row">
+                  <!--<input type="hidden" name="id_contratista" class="id_contratista" id="id_contratista" value=""  >-->
 
-                    <table class="table table-condensed table-responsive" id="tabequip">
-                      <thead>
-                        <tr>
-                          <th width="2%"></th>                          
-                          <th>Nombre Equipo</th>
-                          <th>Descripción</th> 
-                          <th>Estado</th>                                                   
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td><label ></label></td>    
-                          <!-- codigo en BD es el nombre del equipo -->                       
-                          <td><input type="text" name="nomEquipo" class="nomEquipo form_equipos" id="nomEquipo" value="" placeholder=""></td>
-                          <td><input type="text" name="descEquipo" class="descEquipo form_equipos" id="descEquipo" value="" placeholder=""></td>
-                          <td><input type="text" name="estado" class="estado form_equipos" id="estado" value="" placeholder=""></td>
-                          <td class="hidden"><input type="text" name="id_equipo" class="id_equipo" id="id_equipo" value="" placeholder=""></td>
-                        </tr>
-                      </tbody>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="nomEquipo">Nombre Equipo</label>
+                    <input type="text" name="nomEquipo" class="form-control nomEquipo form_equipos" id="nomEquipo" value="" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="descEquipo">Descripción</label>
+                    <input type="text" name="descEquipo" class="form-control descEquipo form_equipos" id="descEquipo" value="" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="estado">Estado</label>
+                    <input type="text" name="estado" class="form-control estado form_equipos" id="estado" value="" disabled>
+                  </div>
 
-                      <thead>
-                        <tr>
-                          <th width="2%"></th>                          
-                          <th>Sector</th>
-                          <th>Grupo</th>
-                          <th>Ubicación</th>
-                        </tr>
-                      </thead>                      
-                      <tbody>
-                        <tr>
-                          <td><label ></label></td>                          
-                          <td><input type="text" name="sector" class="sector form_equipos" id="sector" value="" placeholder=""></td>
-                          <td><input type="text" name="grupo" class="grupo form_equipos" id="grupo" value="" placeholder=""></td>                     
-                          <td><input type="text" name="ubicacion" class="ubicacion form_equipos" id="ubicacion" value="" placeholder=""></td>
-                        </tr>
-                      </tbody>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="sector">Sector</label>
+                    <input type="text" name="sector" class="form-control sector form_equipos" id="sector" value="" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="grupo">Grupo</label>
+                    <input type="text" name="grupo" class="form-control grupo form_equipos" id="grupo" value="" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="ubicacion">Ubicación</label>
+                    <input type="text" name="ubicacion" class="form-control ubicacion form_equipos" id="ubicacion" value="" disabled>
+                  </div>
 
-                      <thead>
-                        <tr>
-                          <th width="2%"></th>
-                          <th>Fecha Ingreso</th>
-                          <th>Fecha Baja</th>
-                          <th>Fecha Garantía</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        <tr>
-                          <td><label ></label></td>
-                          <td><input type="date" name="fecha_ingreso" class="fecha_ingreso form_equipos" id="fecha_ingreso" value="" placeholder=""></td>
-                          <td><input type="date" name="fecha_baja" class="fecha_baja form_equipos" id="fecha_baja" value="" placeholder=""></td>
-                          <td><input type="date" name="fecha_garantia" class="fecha_garantia form_equipos" id="fecha_garantia" value="" placeholder=""></td>
-                        </tr>
-                      </tbody> 
-
-                      <thead>
-                        <tr>
-                          <th width="2%"></th>
-                          <th>Contratista</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        <tr>
-                          <td><label ></label></td>
-                          <td><select name="contratista" class="contratista" id="contratista">
-                                <!-- <option value=""></option> -->
-                          </select></td>
-                          <td class="hidden"><input type="text" name="id_contratista" class="id_contratista" id="id_contratista" value="" placeholder="" disabled></td>
-                        </tr>
-                      </tbody> 
-
-                    </table>                
+                  <!--<div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="fecha_ingreso">Fecha Ingreso</label>
+                    <input type="text" name="fecha_ingreso" class="form-control fecha_ingreso form_equipos" id="fecha_ingreso" value="" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="fecha_baja">Fecha Baja</label>
+                    <input type="text" name="fecha_baja" class="form-control fecha_baja form_equipos" id="fecha_baja" value="" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="fecha_garantia">Fecha garantía</label>
+                    <input type="text" name="fecha_garantia" class="form-control fecha_garantia form_equipos" id="fecha_garantia" value="" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="contratista">Contratista</label>
+                    <input type="text" name="contratista" class="form-control contratista" id="contratista" disabled>
+                  </div>-->
+                </div>
+              </div><!-- end .panel-body -->
             </div><!--  / <div class="panel panel-default"> -->   
 
-
-          <!-- TABS -->
-
+            <!-- TABS -->
             <!-- Nav tabs -->
             <ul class="nav nav-tabs nav-justified" role="tablist">
-              <li role="presentation" class="active"><a href="#tar" aria-controls="tar" role="tab" data-toggle="tab">Tareas</a></li>
+              <li role="presentation" class="active"><a href="#lecturaTab" aria-controls="lecturaTab" role="tab" data-toggle="tab">Lecturas</a></li>
+              <li role="presentation"><a href="#tar" aria-controls="tar" role="tab" data-toggle="tab">Tareas</a></li>
               <li role="presentation"><a href="#herramientas" aria-controls="herramientas" role="tab" data-toggle="tab">Herramientas</a></li>
-              <!-- <li role="presentation"><a href="#insumos" aria-controls="insumos" role="tab" data-toggle="tab">Insumo</a></li> -->
               <li role="presentation"><a href="#rrhh" aria-controls="rrhh" role="tab" data-toggle="tab">Recursos Humanos</a></li>       
             </ul>
 
             <!-- Tab panes -->
             <div class="tab-content">
-              <div role="tabpanel" class="tab-pane active" id="tar">
-                <!--  TAREAS REALIZADAS   -->
-                      <div class="panel panel-default">
-                          <div class="panel-heading"><span class="fa fa-file-text-o icotitulo" aria-hidden="true"></span>Tareas a Realizar</div>
-                          <p class="titulos">Detalle de tareas</p>
-                          <hr>                        
-                          <br />
+              <div role="tabpanel" class="tab-pane active" id="lecturaTab">
+                <!--  LECTURAS REALIZADAS  -->
+                <div class="panel panel-default">
+                  <div class="panel-heading"><span class="fa fa-file-text-o icotitulo" aria-hidden="true"></span> Lecturas Realizadas
+                  </div>
+                  <div class="panel-body">
+                    
+                    <input type="hidden" name="id-comp" class="id-comp" id="id-comp" value="" disabled>
+                    <div class="row">
+                      <div class="col-xs-12 col-sm-6">
+                        <label for="lectura_inicio">Horómetro inicio <strong style="color: #dd4b39">*</strong> :</label>
+                        <input type="number" class="form-control Horómetro_inicio" name="lectura_inicio" id="lectura_inicio" step="any" lang="en-150" placeholder="">
+                      </div>
+                      <div class="col-xs-12 col-sm-6">
+                        <label for="fecha_inicio">Fecha inicio <strong style="color: #dd4b39">*</strong> :</label>
+                        <input type="text" class="form-control fecha_inicio" id="fecha_inicio" value="" placeholder="">
+                      </div>
+                      <div class="col-xs-12 col-sm-6">
+                        <label for="lectura_fin">Horómetro fin <strong style="color: #dd4b39">*</strong> :</label>
+                        <input type="number" class="form-control lectura_fin" name="lectura_fin" id="lectura_fin" step="any" lang="en-150" placeholder="">
+                      </div>
+                      <div class="col-xs-12 col-sm-6">
+                        <label for="fecha_fin">Fecha fin <strong style="color: #dd4b39">*</strong> :</label>
+                        <input type="text" class="form-control fecha_fin" id="fecha_fin" value="" placeholder="">
+                      </div>
+                    </div>
+                    <br><br>
 
-                          <table class="table table-condensed table-responsive tbl_tareas">
-                              <thead>
-                                <tr>
-                                  <th width="2%"></th>
-                                  <th>Tarea</th>
-                                  <th>Componente</th>
-                                  <th>Horas</th>
-                                  <th>Costo</th>                                 
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td><label ></label></td>
-                                  <td>
-                                      <select name="tareas" class="tareas" id="tareas">
-                                      <option value=""></option>
-                                      </select>
-                                  </td>                  
-                                  <td>
-                                      <select name="componentes" class="componentes" id="componentes">
-                                        <option value=""></option>
-                                      </select>
-                                  </td>                    
-                                  <td><input type="text" class="horas" id="horas" value="" placeholder=""></td>
-                                  <td><input type="text" class="costo" id="costo" value="" placeholder=""></td>
-                                   <td class="hidden"><input type="text" name="id-comp" class="id-comp" id="id-comp" value="" placeholder="" disabled></td>
-                                </tr>
-                              </tbody>
-                          </table> 
+                  </div><!-- end .panel-body -->
+                </div><!-- end .panel-default -->
+              </div><!-- end .tabpanel -->
 
-                            <button type="button" class="botones btn btn-success btn-sm" onclick="javascript:armarTablaTareas()">Agregar</button>
-                            <br/><br/>
+              <div role="tabpanel" class="tab-pane" id="tar">
+                <!--  TAREAS REALIZADAS  -->
+                <div class="panel panel-default">
+                  <div class="panel-heading"><span class="fa fa-file-text-o icotitulo" aria-hidden="true"></span> Tareas Realizadas
+                  </div>
+                  <div class="panel-body">
+                    
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <div class="alert alert-danger alert-dismissable" id="errorTareas" style="display: none">
+                          <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                          Revise que todos los campos obligatorios de las tareas realizadas estén seleccionados.
+                        </div>
+                      </div>
+                    </div>
 
-                          <div class="form-group">
-                            <table class="table table-condensed table-responsive tablalistareas" id="tablalistareas">
-                              <thead>
-                                <tr>
-                                  <th width="2%"></th>
-                                  <th>Tareas</th>
-                                  <th>Componentes</th>
-                                  <th>Horas</th>
-                                  <th>Costo</th>
-                                </tr>
-                              </thead>
+                    <input type="hidden" name="id-comp" class="id-comp" id="id-comp" value="" disabled>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <label for="tareas">Tarea <strong style="color: #dd4b39">*</strong> :</label>
+                        <input type="text" class="form-control tareas" name="tareas" id="tareas" placeholder="Ingrese tarea realizada">
+                      </div>
+                    </div>
 
-                              <tbody> </tbody>
-                            
-                            </table>
-                          </div>  
-                          <!-- btn ver detalle   -->
-                          <!-- <button type="button" class="botones btn btn-success btn-sm" data-toggle="modal" data-target="#detalleTareas" >Detalle de Tareas</button> -->
-                          <br/><br/>
-                      </div><!--  / <div class="panel panel-default"> -->
-              </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <br>
+                        <button type="button" class="botones btn btn-primary" onclick="armarTablaTareas()">Agregar</button>
+                      </div>
+
+                    </div>
+
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <hr>
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <div class="alert alert-danger alert-dismissable" id="errorTable" style="display: none">
+                              <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                              Agregue al menos una tarea.
+                            </div>
+                          </div>
+                        </div>
+                        <table class="table table-condensed table-responsive" id="tablalistareas">
+                          <thead>
+                            <tr>
+                              <th>Acciones</th>
+                              <th>Tareas</th>
+                            </tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                      <br/><br/>
+                    </div>
+                  </div><!-- end .panel-body -->
+                </div><!-- end .panel-default -->
+              </div><!-- end .tabpanel -->
 
               <div role="tabpanel" class="tab-pane" id="herramientas">
-                <!--  ORDEN DE HERRAMIENTAS   -->
-                      <div class="panel panel-default">
-                          <div class="panel-heading"><span class="fa fa-file-text-o icotitulo" aria-hidden="true"></span>Orden de Herramientas</div>
-                          <p class="titulos">Detalle</p>
-                          <hr>                        
-                          <br />
-                           <table class="table table-condensed table-responsive tablaherram">
-                            <thead>
-                              <tr>
-                                <th width="2%"></th>
-                                <th>Herramienta</th>
-                                <th>Marca</th>
-                                <th>Código</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td><label ></label></td>                      
-                                <td><input type="text" class="herramienta" id="herramienta" value="" placeholder="Buscar..."></td>                      
-                                <td><input type="text" class="marcaherram" id="marcaherram" value="" placeholder=""></td>
-                                <td><input type="text" class="codherram" id="codherram" value="" placeholder=""></td>
-                                <td class="hidden"><input type="text" name="herrId" class="herrId" id="herrId" value="" placeholder="" disabled></td>
-                              </tr>
-                            </tbody>
-                          </table>
-
-                          <button type="button" class="botones btn btn-success btn-sm" onclick="javascript:armartablistherr()">Agregar</button>
-                          <br/><br/>
-
-                          <table class="table table-condensed table-responsive tablalistherram" id="tablalistherram">
-                            <thead>
-                              <tr>
-                                <th width="2%"></th>
-                                <th>Herramienta</th>
-                                <th>Marca</th>
-                                <th>Código</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              
-                            </tbody>
-                          </table><br /><br />
-                      </div>
-              </div>
-             
-              <div role="tabpanel" class="tab-pane" id="insumos">
-                <!--  ORDEN DE INSUMOS   -->
+                <!--  ORDEN DE HERRAMIENTAS  -->
                 <div class="panel panel-default">
-                    <div class="panel-heading"><span class="fa fa-file-text-o icotitulo" aria-hidden="true"></span>Orden de Insumo</div>
-                    <p class="titulos">Detalle</p>
-                    <hr> 
-                     <!--    GUARDAR ESTOS CAMPOS POR DEFECTO 
-                          orden id de orden de insumos
-                          fecha la de arriba
-                          solicitante el usr logueado
-                      -->
-                    <table class="table table-condensed table-responsive tabArmarInsum">
-                      <thead>
-                        <tr>
-                          <th width="2%"></th>
-                          <th>Código</th>
-                          <th>Artículo</th>
-                          <th>Cantidad</th>
-                          <th>Depósitos</th>                                
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td><label ></label></td>                      
-                          <td><input type="text" class="artOrdInsum" id="artOrdInsum" value="" placeholder="Buscar..."></td>
+                  <div class="panel-heading"><span class="fa fa-file-text-o icotitulo" aria-hidden="true"></span> Orden de Herramientas</div>
+                  <div class="panel-body">
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <div class="alert alert-danger alert-dismissable" id="errorHerramientas" style="display: none">
+                          <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                          Revise que todos los campos obligatorios de las Herramientas estén seleccionados.
+                        </div>
+                      </div>
+                    </div>
 
-                          <td><input type="text" class="decripInsumo" id="decripInsumo" value="" placeholder=""></td>
+                    <input type="hidden" name="id-comp" class="id-comp" id="id-comp" value="">
+                    <input type="hidden" name="herrId" class="herrId" id="herrId" value="" placeholder="">
+                    <div class="row">
+                      <div class="col-xs-12 col-sm-6 col-md-4">
+                        <label for="herramienta">Herramienta <strong style="color: #dd4b39">*</strong> :</label>
+                        <input type="text" class="form-control herramienta" id="herramienta" name="herramienta" value="" placeholder="Buscar...">
+                      </div>
+                      <div class="col-xs-12 col-sm-6 col-md-4">
+                        <label for="marcaherram">Marca <strong style="color: #dd4b39">*</strong> :</label>
+                        <input type="text" class="form-control marcaherram" id="marcaherram" name="marcaherram" value="" placeholder="" disabled>
+                      </div>
+                      <div class="col-xs-12 col-sm-6 col-md-4">
+                        <label for="codherram">Código <strong style="color: #dd4b39">*</strong> :</label>
+                        <input type="text" class="form-control codherram" id="codherram" name="codherram" value="" placeholder="" disabled>
+                      </div>
+                    </div>
 
-                          <td><input type="text" class="cantOrdInsum" id="cantOrdInsum" value="" placeholder=""></td>
-                          <td><select name="depositos" class="depositos" id="depositos">
-                                    <option value=""></option>
-                              </select>
-                          </td>
-                          <td class="hidden"><input type="text" name="id-artOrdIns" class="id-artOrdIns" id="id-artOrdIns" value="" placeholder="" disabled></td>
-                          <td class="hidden"><input type="text" name="id-depositos" class="id-depositos" id="id-depositos" value="" placeholder="" disabled></td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <br>
+                        <button type="button" class="botones btn btn-primary" onclick="armartablistherr()">Agregar</button>
+                      </div>
+                    </div>
 
-                    <div class="">                            
-                      <button type="button" class="botones btn btn-success btn-sm" onclick="javascript:armarTablaInsumos()">Agregar</button>
-                    </div> 
-                     <br/><br/>
-                    <table class="table table-condensed table-responsive tabModInsum" id="tabModInsum">
-                      <thead>
-                        <tr>
-                          <th width="10%"></th>
-                          <th>Código</th>
-                          <th>Artículo</th>
-                          <th>Cantidad</th>
-                          <th>Depósitos</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        
-                      </tbody>
-                    </table>
-                    <br /> <br />
-                </div><!--  / <div class="panel panel-default"> -->
-              </div> 
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <hr>
+                        <table class="table table-condensed table-responsive tablalistherram" id="tablalistherram">
+                          <thead>
+                            <tr>
+                              <th>Acciones</th>
+                              <th>Herramienta</th>
+                              <th>Marca</th>
+                              <th>Código</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div><!-- end .tabpanel -->
 
               <div role="tabpanel" class="tab-pane" id="rrhh">
-                <!--  ORDEN DE RECURSOS HUMANOS   -->
+                <!--  ORDEN DE RECURSOS HUMANOS  -->
                 <div class="panel panel-default">
-                    <div class="panel-heading"><span class="fa fa-file-text-o icotitulo" aria-hidden="true"></span>Orden de Recursos Humanos</div>
-                    <p class="titulos">Detalle</p>
-                    <hr> 
-                    <table class="table table-condensed table-responsive tabArmarOperarios">
-                      <thead>
-                        <tr>
-                          <th width="2%"></th>
-                          <th>Apellido y Nombre</th>                          
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td><label ></label></td>                      
-                          <td><input type="text" class="operario" id="operario" value="" placeholder="Buscar..."></td>
-                          <td class="hidden"><input type="text" class="id-Operario" id="id-Operario" value="" placeholder="" disabled></td>                             
-                        </tr>
-                      </tbody>
-                    </table>
+                  <div class="panel-heading"><span class="fa fa-file-text-o icotitulo" aria-hidden="true"></span> Orden de Recursos Humanos</div>
 
-                    <div class="">                            
-                      <button type="button" class="botones btn btn-success btn-sm" onclick="javascript:armarTablaRecursos()">Agregar</button>
+                  <div class="panel-body">
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <div class="alert alert-danger alert-dismissable" id="errorRRHH" style="display: none">
+                          <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                          Revise que todos los campos obligatorios de Recursos Humanos estén seleccionados.
+                        </div>
+                      </div>
                     </div>
-                    <br/><br/>                      
-                    <table class="table table-condensed table-responsive tabModRecursos" id="tabModRecursos">
-                      <thead>
-                        <tr>
-                          <th width="10%"></th>
-                          <th>Apellido y Nombre</th>                           
-                        </tr>
-                      </thead>
-                      <tbody>
-                        
-                      </tbody>
-                    </table>
-                    <br /><br />              
-                </div><!--  / <div class="panel panel-default"> -->
-              </div>
 
-        </form>      
+                    <input type="hidden" class="id-Operario" id="id-Operario" value="">
+                    <div class="row">
+                      <div class="col-xs-12 col-sm-6 col-md-4">
+                        <label for="operario">Apellido y Nombre <strong style="color: #dd4b39">*</strong> :</label>
+                        <input type="text" class=" form-control operario" id="operario" name="operario" value="" placeholder="Buscar...">
+                      </div>
+                    </div>
 
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <br>
+                        <button type="button" class="botones btn btn-primary" onclick="armarTablaRecursos()">Agregar</button>
+                      </div>
+                    </div>
 
-              <div class="pull-right">
-                <button type="button" class="botones btn btn-primary" onclick="javascript:enviarOrden()">Guardar</button> 
-              </div>           
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <hr>
+                        <table class="table table-condensed table-responsive tabModRecursos" id="tabModRecursos">
+                          <thead>
+                            <tr>
+                              <th>Acciones</th>
+                              <th>Apellido y Nombre</th>                           
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div><!-- end .panel-default -->
+              </div><!-- end .tabpanel -->
+            </div>
+          </form>      
 
-          
+          <div class="pull-right">
+            <button type="button" class="botones btn btn-primary" onclick="enviarOrden()">Guardar</button> 
+          </div>           
+
         </div><!-- /.box-body -->
       </div><!-- /.box -->
     </div><!-- /.col -->
@@ -439,407 +359,455 @@
 </section><!-- /.content -->
 
 
-<!-- Carga vista Orden de Servicio -->
 <script>
- $('#listado').click( function cargarVista(){
-    WaitingOpen();
-    $('#content').empty();
-    $("#content").load("<?php echo base_url(); ?>index.php/ordenservicio/index/<?php echo $permission; ?>/");
-    WaitingClose();
-  });
-</script>
-<!-- / Carga vista Orden de Servicio -->
+// Datepicker 
+$("#fechaOrden").datepicker({
+  dateFormat: 'yy-mm-dd',
+  firstDay: 1
+}).datepicker("setDate", new Date());
 
-<!-- Datepicker -->
-<script>     
-  $("#fechaOrden").datepicker({
-    dateFormat: 'dd/mm/yy',
-    firstDay: 1
-  }).datepicker("setDate", new Date());
-</script>
-<!-- / Datepicker -->
+//datetimepicker
+$( "#fecha_inicio, #fecha_fin" ).datetimepicker({
+  format: 'YYYY-MM-DD H:mm:ss',
+  locale: 'es',
+});
 
-<!-- Trae Causa y equipos componentes segun Solc de servicio -->
-<script>
+//va listado de OTs
+$("#listadoOT").click(function (e) {
+  WaitingOpen();
+  $('#content').empty();
+  $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/listOrden/<?php echo $permission; ?>");
+  WaitingClose();
+});
 
-  $(function() {
+//va a listado de nota de pedido
+$("#listado").click(function (e) {
+  WaitingOpen();
+  $('#content').empty();
+  $("#content").load("<?php echo base_url(); ?>index.php/Ordenservicio/index/<?php echo $permission; ?>");
+  WaitingClose();
+});
 
-      // var id_solicitud = $("#numSolic").val();
-      // $.ajax({
-      //     'data':{id_solic: id_solicitud},
-      //     'async': false,
-      //     'type': "POST",
-      //     'global': false,
-      //     'dataType': 'json',
-      //     'url': "ordenservicio/getSolEquipCausa",
-      //     'success': function (data) {
-      //         $("#causa").val(data[0].causa);
-      //         $("#id_equipoSolic").val(data[0].id_equipo);
-      //         console.log('causa en ajax');
-      //         console.log(data[0].causa);              
-      //     }
-      // });
-
-      var id_eq = $("#id_equipoSolic").val(); 
-      $.ajax({
-            'data' : {id_equipo : id_eq },
-            'async': true,
-            'type': "POST",
-            'global': false,
-            'dataType': 'json',
-            'url': "ordenservicio/getEquipo",
-            'success': function (data) {
-                console.log(data);
-                $("#nomEquipo").val(data.nomb_equipo);              
-                $("#descEquipo").val(data.desc_equipo);
-                $("#estado").val(data.estado);
-                $("#marca").val(data.marca);
-                $("#sector").val(data.sector);
-                $("#ubicacion").val(data.ubicacion)
-                $("#fecha_ingreso").val(data.fecha_ingreso);
-                $("#fecha_baja").val(data.fecha_baja);
-                $("#fecha_garantia").val(data.fecha_garantia);                 
-                $("#grupo").val(data.grupo_desc);
-
-            }
-      });
-
-     var comp_select= $("#componentes"); 
-     $.ajax({
-              'data' : {id_equipo : id_eq },
-              'async': true,
-              'type': "POST",
-              'global': false,
-              //'dataType': 'json',
-              'url': "ordenservicio/getComponente",
-              'success': function (data) {
-                  data = JSON.parse(data,true);
-
-                  console.log('componentes por equipo');                  
-                  console.log(data['datos'][0]['descripcion']); 
-                  console.log(data['datos'][0]['id_componente']);
-
-                  for (var i = 0; i< data['datos'].length; i++) {
-                    comp_select.append($('<option />', 
-                      { value: data['datos'][i]['id_componente'], 
-                        text: data['datos'][i]['descripcion'] }
-                        ));
-                  };                                     
-              },
-              'error': function(data){
-                console.log("No hay componentes asociados en BD");
-              }
-      });        
-  });    
-</script>
-<!-- / Trae Causa y equipos segun Solc de servicio -->
-
-<!-- Trae Herrammientas -->
-<script>
-  $( function() {
-      var dataF = function () {
-          var tmp = null;
-          $.ajax({
-              'async': false,
-              'type': "POST",
-              'global': false,
-              'dataType': 'json',
-              'url': "ordenservicio/getHerramienta",
-              'success': function (data) {
-                  tmp = data;
-              }
-          });
-          return tmp;
-      }();
-
-      $(function() {
-          $(".herramienta").autocomplete({
-              source: dataF,
-              delay: 100,
-              minLength: 1,
-              focus: function(event, ui) {
-                  // prevent autocomplete from updating the textbox
-                  event.preventDefault();
-                  // manually update the textbox
-                  $(this).val(ui.item.label);
-              },
-              select: function(event, ui) {
-                  // prevent autocomplete from updating the textbox
-                  event.preventDefault();
-                  // manually update the textbox and hidden field
-                  $(this).val(ui.item.label);
-                  $(".marcaherram").val(ui.item.value);
-                  $(".codherram").val(ui.item.codherram);
-                  $(".herrId").val(ui.item.herrId);
-                  console.log("id de herramienta: ");
-                  console.log(ui.item.herrId);
-                  
-              }
-          });
-      });
-  });
-</script>
-<!-- / Trae Herrammientas -->
-
-<!-- Trae Contratistas -->
-<script>
-  $( function() {
-      var dataF = function () {
-          var tmp = null;
-          $.ajax({
-              'async': false,
-              'type': "POST",
-              'global': false,
-              'dataType': 'json',
-              'url': "ordenservicio/getContratista",
-              'success': function (data) {
-                  tmp = data;
-              }
-          });
-          return tmp;
-      }();   
-
-      // Asigna opciones al select #tareas
-      var cont_selec= $("#contratista");
-      $.each(dataF, function(i, val){
-                      cont_selec.append($('<option />', { value: val.id_contratista, text: val.nombre }));
-                  });
-
-      $(cont_selec).change(
-          function(){
-            var cont_id = $("#contratista option:selected").val();
-            $("#id_contratista").val(cont_id);
-            console.log("id contratista selec")
-            console.log(cont_id);
-          }
-      );
-
-  });
-</script> 
-<!--  / Trae Contratistas -->
-
-<!-- Trae Articulos -->
-<script>
-  $( function() {
-      var dataF = function () {
-          var tmp = null;
-          $.ajax({
-              'async': false,
-              'type': "POST",
-              'global': false,
-              'dataType': 'json',
-              'url': "ordenservicio/getArticulo",
-              'success': function (data) {
-                  tmp = data;
-              }
-          });
-          return tmp;
-      }();
-
-      $(function() {
-          $(".artOrdInsum").autocomplete({
-              source: dataF,
-              delay: 100,
-              minLength: 1,
-              focus: function(event, ui) {
-                  // prevent autocomplete from updating the textbox
-                  event.preventDefault();
-                  // manually update the textbox
-                  $(this).val(ui.item.label);
-              },
-              select: function(event, ui) {
-                  // prevent autocomplete from updating the textbox
-                  event.preventDefault();
-                  // manually update the textbox and hidden field
-                  $(this).val(ui.item.label);
-                  $("#id-artOrdIns").val(ui.item.value);
-                  $("#decripInsumo").val(ui.item.descripcion); 
-                  //console.log("id articulo de orden insumo: ") 
-                  //console.log(ui.item.value);                
-              },
-              
-          });
-      });
-  } );
-</script>
-<!--  / Trae Articulos -->
-
-<!-- Trae Depósitos -->
-<script>
-  $( function() {
-      var dataF = function () {
-          var tmp = null;
-          $.ajax({
-              'async': false,
-              'type': "POST",
-              'global': false,
-              'dataType': 'json',
-              'url': "ordenservicio/getDeposito",
-              'success': function (data) {
-                  tmp = data;
-              }
-          });
-          return tmp;
-      }();   
-
-      // Asigna opciones al select #tareas
-      var dep_selec= $("#depositos");
-      $.each(dataF, function(i, val){
-                      dep_selec.append($('<option />', { value: val.depositoId, text: val.depositodescrip }));
-                  });
-
-      $(dep_selec).change(
-          function(){
-            var dep_id = $("#depositos option:selected").val();
-            $("#id_depositos").val(dep_id);
-            //console.log("id depositos selec")
-            //console.log(dep_id);
-          }
-      );
-  });
-</script>
-<!--   / Trae Depósitos -->
-
-
-
-<!-- Trae Tareas -->
-<script>
-  $( function() {
-      var dataF = function () {
-          var tmp = null;
-          $.ajax({
-              'async': false,
-              'type': "POST",
-              'global': false,
-              'dataType': 'json',
-              'url': "ordenservicio/getTarea",
-              'success': function (data) {
-                  tmp = data;               
-
-              }
-          });
-          return tmp;
-      }();
-     
-      // Asigna opciones al select #tareas
-      var tarea_selec= $("#tareas");
-      $.each(dataF, function(i, val){
-                      tarea_selec.append($('<option />', { value: val.id_tarea, text: val.descripcion }));
-                  });
-
-      $(tarea_selec).change(
-          function(){
-            var tareas_id = $("#tareas option:selected").val();
-            $("#id_contratista").val(tareas_id);
-            console.log("id tareas selec")
-            console.log(tareas_id);
-          }
-      );
-  });
-</script>
-<!-- / Trae Tareas -->
-
-<!-- Trae Operarios -->
-<script>
-  $( function() {
-      var dataF = function () {
-          var tmp = null;
-          $.ajax({
-              'async': false,
-              'type': "POST",
-              'global': false,
-              'dataType': 'json',
-              'url': "ordenservicio/getOperario",
-              'success': function (data) {
-                  tmp = data;
-              }
-          });
-          return tmp;
-      }();   
-
-      
-      $(function() {
-          $(".operario").autocomplete({
-              source: dataF,
-              delay: 100,
-              minLength: 1,
-              focus: function(event, ui) {
-                  // prevent autocomplete from updating the textbox
-                  event.preventDefault();
-                  // manually update the textbox
-                  $(this).val(ui.item.label);
-                  $("#id-Operario").val(ui.item.value);
-                  console.log("id de operario: ");
-                  console.log(ui.item.value);
-              },
-              select: function(event, ui) {
-                  // prevent autocomplete from updating the textbox
-                  event.preventDefault();
-                  // manually update the textbox and hidden field
-                  $(this).val(ui.item.label);                  
-              },
-              open: function( event, ui ) {
-                  $("#ui-id-3").css('z-index',1050);
-              }
-          });
-      });
-  });
-</script>
-<!--  / Trae Operarios -->
-
-<!-- Tablas armado -->
-<script>
-
-// TAREAS
-  
-  var regTar = 0;                  // variable incrementable en func, para diferenciar los inputs
-  function armarTablaTareas(){    // inserta valores de inputs en la tabla 
-
-    var $tareas = $("select#tareas option:selected").html();
-    var $id_tareas = $("#tareas").val();
-    
-    var $componentes = $("select#componentes option:selected").html();
-    var $id_comp = $("#componentes").val();    // muestra e id de componente
-    
-    var $horas = $("#horas").val();
-    var $costo = $("#costo").val(); 
-    
-    $(".tablalistareas tbody").append(
-                    '<tr>'+'<td><i class="fa fa-ban elirow" style="color: #f39c12; cursor: pointer; margin-left: 15px;"></i></td>'+
-
-                     '<td class="tareas"><input type="text" class="tareas_a_real" id="tareas_a_real" value=" '+ $tareas +' " placeholder=""></td>'+
-                     
-
-                     '<td class="componentes" id="componentes"><input type="text" class="comp" id="comp" value=" '+ $componentes +' " placeholder=""></td>'+
-                     //'<td class="hidden id_tareas" name="id_tareas" id="id_tareas">'+ $id_tareas +'</td>'+
-
-                     '<td class="hidden id_tareas" id="id_tareas"><input type="text" name="tarea_id'+ '['+ regTar+']' +'" class="tarea_id" id="tarea_id" value=" '+ $id_tareas +' " placeholder=""></td>'+
-
-
-                     '<td class="hidden id_comp" id="id_comp"><input type="text" name="comp_id'+ '['+ regTar+']' +'" class="comp_id" id="comp_id" value=" '+ $id_comp +' " placeholder=""></td>'+
-
-
-                     '<td class="horas" id="horas"><input type="text" name="cant_horas'+ '['+ regTar+']' +'" class="cant_horas" id="cant_horas" value=" '+ $horas +' " placeholder=""></td>'+
-
-
-                     '<td class="costo" id="costo"><input type="text" name="costos'+ '['+ regTar+']' +'" class="costos" id="costos" value=" '+ $costo +' " placeholder=""></td>'+'</tr>');
-
-
-    // console.log("id componentes en funcion");
-    // console.log($id_comp);
-
-    $("#tareas").val("");
-    $("#componentes").val("");
-    $("#horas").val("");
-    $("#costo").val(""); 
-
-    regTar++;
+// Trae datos de equipo
+var id_eq = $("#id_equipoSolic").val(); 
+$.ajax({
+  'data' : { id_equipo:id_eq },
+  'async': true,
+  'type': "POST",
+  'global': false,
+  'dataType': 'json',
+  'url': "ordenservicio/getEquipo",
+  'success': function (data) {
+    //console.table(data);
+    $("#nomEquipo").val(data.nomb_equipo);              
+    $("#descEquipo").val(data.desc_equipo);
+    $("#estado").val(data.estado);
+    $("#marca").val(data.marca);
+    $("#sector").val(data.sector);
+    $("#ubicacion").val(data.ubicacion)
+    $("#fecha_ingreso").val(data.fecha_ingreso);
+    $("#fecha_baja").val(data.fecha_baja);
+    $("#fecha_garantia").val(data.fecha_garantia);                 
+    $("#grupo").val(data.grupo_desc);
+    //$("#contratista").val(data.contratista);
+    //$("#id_contratista").val(data.id_contratista);
   }
-  // Evento que selecciona la fila y la elimina 
-  $(document).on("click",".elirow",function(){
-      var parent = $(this).closest('tr');
-      $(parent).remove();
+});
+
+
+// Llenar tabla tareas
+var regTar = 0;              // variable incrementable en func, para diferenciar los inputs
+function armarTablaTareas(){ // inserta valores de inputs en la tabla 
+  var tareas       = $("#tareas").val();
+
+  var hayError = false;
+  if (tareas == '') {
+    hayError = true;
+  }
+
+  if(hayError == true){
+     $('#errorTareas').fadeIn('slow');
+     $('#tar').tab('show');
+     return;
+  }
+  else{
+    $('#errorTareas').fadeOut('slow');
+    $('#errorTarea').fadeOut('slow');
+    //agrego valores a la tabla
+    $('#tablalistareas').DataTable().row.add( [
+        "<i class ='fa fa-ban elirow text-primary' style='cursor:pointer'></i>",
+        tareas
+      ]
+    ).draw();
+
+    //limpio formulario
+    $('#tareas').val('');
+  }
+}
+
+// elimina fila de la tabla listareas
+$(document).on("click",".elirow",function(){
+  $('#tablalistareas').DataTable().row( $(this).closest('tr') ).remove().draw();
+});  
+
+
+
+// Trae herramientas
+var dataH = function () {
+  var tmp = null;
+  $.ajax({
+    'async': false,
+    'type': "POST",
+    'global': false,
+    'dataType': 'json',
+    'url': "ordenservicio/getHerramienta",
+    'success': function (data) {
+        tmp = data;
+    }
   });
+  return tmp;
+}();
+$("#herramienta").autocomplete({
+  //autoFocus: true,
+  delay: 300,
+  minLength: 1,
+  source: dataH,
+  focus: function(event, ui) {
+    // prevent autocomplete from updating the textbox
+    event.preventDefault();
+    // manually update the textbox
+    $(this).val(ui.item.label);
+    $("#herrId").val(ui.item.herrId);
+    $("#marcaherram").val(ui.item.value);
+    $("#codherram").val(ui.item.codherram);
+  },
+  select: function(event, ui) {
+    // prevent autocomplete from updating the textbox
+    event.preventDefault();
+    // manually update the textbox and hidden field
+    $(this).val(ui.item.label);
+    $("#herrId").val(ui.item.herrId);
+    $("#marcaherram").val(ui.item.value);
+    $("#codherram").val(ui.item.codherram);
+  },
+  change: function (event, ui) {
+    if (!ui.item) {
+      this.value = '';
+      $("#herrId").val("");
+      $("#marcaherram").val("");
+      $("#codherram").val("");
+    }
+  }
+});
+
+// Llenar tabla herramientas
+function armartablistherr() {   // inserta valores de inputs en la tabla 
+  var herrId      = $("#herrId").val();
+  var herramienta = $("#herramienta").val();
+  var marcaherram = $("#marcaherram").val();
+  var codherram   = $("#codherram").val(); 
+
+  var hayError = false;
+  if (herramienta == '') {
+    hayError = true;
+  }
+
+  if(hayError == true){
+     $('#errorHerramientas').fadeIn('slow');
+     return;
+  }
+  else{
+    $('#errorHerramientas').fadeOut('slow');
+    //agrego valores a la tabla
+    $('#tablalistherram').DataTable().row.add( [
+        "<i class ='fa fa-ban elirow text-primary' id='delFileH' style='cursor:pointer'></i>",
+        herramienta,
+        marcaherram,
+        codherram
+      ]
+    ).node().id = herrId;
+    $('#tablalistherram').DataTable().draw();
+
+    //limpio formulario
+    $('#herramienta').val('');
+    $('#marcaherram').val('');
+    $('#codherram').val('');
+  }
+}
+
+// elimina fila de la tabla listareas
+$(document).on("click","#delFileH",function(){
+  $('#tablalistherram').DataTable().row( $(this).closest('tr') ).remove().draw();
+});
+
+
+
+// Trae Operarios
+var dataO = function () {
+  var tmp = null;
+  $.ajax({
+    'async': false,
+    'type': "POST",
+    'global': false,
+    'dataType': 'json',
+    'url': "ordenservicio/getOperario",
+    'success': function (data) {
+        tmp = data;
+    }
+  });
+  return tmp;
+}();
+$("#operario").autocomplete({
+  autoFocus: true,
+  delay: 100,
+  minLength: 1,
+  source: dataO,
+  focus: function(event, ui) {
+    // prevent autocomplete from updating the textbox
+    event.preventDefault();
+    // manually update the textbox
+    $(this).val(ui.item.label);
+    $("#id-Operario").val(ui.item.value);
+  },
+  select: function(event, ui) {
+    // prevent autocomplete from updating the textbox
+    event.preventDefault();
+    // manually update the textbox and hidden field
+    $(this).val(ui.item.label);                  
+  },
+  /*open: function( event, ui ) {
+    $("#ui-id-3").css('z-index',1050);
+  },*/
+  change: function (event, ui) {
+    if (!ui.item) {
+      this.value = '';
+    }
+  }
+});
+
+// Llenar tabla operario
+function armarTablaRecursos() {   // inserta valores de inputs en la tabla 
+  var operarioId = $("#id-Operario").val();
+  var operario = $("#operario").val();
+
+  var hayError = false;
+  if (operario == '') {
+    hayError = true;
+  }
+
+  if(hayError == true){
+     $('#errorRRHH').fadeIn('slow');
+     return;
+  }
+  else{
+    $('#errorRRHH').fadeOut('slow');
+    //agrego valores a la tabla
+    $('#tabModRecursos').DataTable().row.add( [
+        "<i class ='fa fa-ban elirow text-primary' id='delRRHH' style='cursor:pointer'></i>",
+        operario
+      ]
+    ).node().id = operarioId;
+    $('#tabModRecursos').DataTable().draw();
+
+    //limpio formulario
+    $('#operario').val('');
+  }
+}
+
+// elimina fila de la tabla listareas
+$(document).on("click","#delRRHH",function(){
+  $('#tabModRecursos').DataTable().row( $(this).closest('tr') ).remove().draw();
+});
+
+
+
+//guardar orden de servicio
+function enviarOrden() {
+  var hayError = false;
+  var hayError2 = false;
+  var hayError3 = false;
+  /*if ($('#numSolic').val() == '') {// nro de OT
+    hayError = true;
+  }*/
+  if ($('#lectura_inicio').val() == '') {// nro de OT
+    hayError3 = true;
+  }
+  if ($('#lectura_fin').val() == '') {// nro de OT
+    hayError3 = true;
+  }
+  if ($('#fecha_inicio').val() == '') {// nro de OT
+    hayError3 = true;
+  }
+  if ($('#fecha_fin').val() == '') {// nro de OT
+    hayError3 = true;
+  }
+  
+  if( ! $('#tablalistareas').DataTable().data().any() ) {
+      console.info("tabla tarea vacia");
+      hayError2 = true;
+  }
+  if(hayError3 == true){
+    $('#error3').fadeIn('slow');
+    activaTab('lecturaTab');
+    return;
+  }
+  if(hayError2 == true) {
+    $('#errorTable').fadeIn('slow');
+    activaTab('tar');
+    return;
+  }
+  else {
+    $('#error').fadeOut('slow');
+    $('#error2').fadeOut('slow');
+    $('#errorTable').fadeOut('slow');
+
+    // tarea 
+    var tarea = new Array(); 
+    var j = 0;
+    $("#tablalistareas tbody tr").each(function (index) {
+        var act = new Array();
+        //var id_tarea = $(this).attr('id');
+        var i = 0;
+        $(this).children("td").each(function (index2) {
+          if (index2) {
+            act[i] = $(this).text();
+            i++;
+          }
+        });
+        //act[0]=id_tarea;
+        tarea[j] = act;
+        j++;
+    });
+    //console.table(tarea);
+
+    // herramienta 
+    var herramienta = new Array(); 
+    var j = 0;
+    $("#tablalistherram tbody tr").each(function (index) {
+        var act = new Array();
+        var id_herramienta = $(this).attr('id');
+        var i = 0;
+        $(this).children("td").each(function (index2) {
+          if (index2) {
+            act[i] = $(this).text();
+            i++;
+          }
+        });
+        act[i]=id_herramienta;
+        herramienta[j] = act;
+        j++;
+    });
+    //console.table(herramienta);
+
+    // operario 
+    var operario = new Array(); 
+    var j = 0;
+    $("#tabModRecursos tbody tr").each(function (index) {
+        var act = new Array();
+        var id_operario = $(this).attr('id');
+        var i = 0;
+        $(this).children("td").each(function (index2) {
+          if (index2) {
+            act[i] = $(this).text();
+            i++;
+          }
+        });
+        act[i]=id_operario;
+        operario[j] = act;
+        j++;
+    });
+    //console.table(operario);
+
+    //datosInfoServicio
+    var datosInfoServicio = {
+      'id_equipo'              : $("#id_equipoSolic").val(),
+      'fecha'                  : $("#fechaOrden").val(),
+      //'comprobante'            : $("#comprobante").val(),
+      //'id_contratista'         : $("#id_contratista").val(),
+      'id_solicitudreparacion' : $("#id_ordenservicio").val(),           
+      'id_ot'                  : $("#id_ot").val(),
+      'horometro_inicio'       : $("#lectura_inicio").val(),
+      'horometro_fin'          : $("#lectura_fin").val(),
+      'fecha_inicio'           : $("#fecha_inicio").val(),
+      'fecha_fin'              : $("#fecha_fin").val(),
+    };
+    //console.log( "horometro_inicio: " + horometro_inicio );
+    //console.table( datosInfoServicio );
+
+    WaitingOpen('Guardando cambios');
+    $.ajax({
+      data: {datosInfoServicio:datosInfoServicio, tarea:tarea, herramienta:herramienta, operario:operario},
+      type: 'POST',
+      dataType: 'json',
+      url: 'index.php/Ordenservicio/setOrdenServ',
+      success: function(result){
+        WaitingClose();
+        cargarView('Ordenservicio', 'index', '<?php echo $permission ?>');
+      },
+      error: function(result){
+        console.error("Error en guardado...");
+        console.table(result);
+        WaitingClose();
+      },
+    });
+  }
+}
+
+//activa el tab= tab
+function activaTab(tab){
+    $('.nav-tabs a[href="#' + tab + '"]').tab('show');
+};
+
+// datatables 
+/* ajusto el anocho de la cabecera de la tabla */
+$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    // https://datatables.net/reference/api/columns.adjust() states that this function is trigger on window resize
+    $( $.fn.dataTable.tables( true ) ).DataTable().columns.adjust();
+});
+
+$('#tablalistareas, #tablalistherram, #tabModRecursos').DataTable({
+  "aLengthMenu": [ 10, 25, 50, 100 ],
+    "columnDefs": [ {
+      "targets": [ 0 ], 
+      "searchable": false
+    },
+    {
+      "targets": [ 0 ], 
+      "orderable": false
+    } ],
+    "order": [[0, "asc"]],
+});
+/*
+// Carga vista Orden de Servicio -->
+$('#listado').click( function cargarVista(){
+  WaitingOpen();
+  $('#content').empty();
+  $("#content").load("<?php echo base_url(); ?>index.php/ordenservicio/index/<?php echo $permission; ?>/");
+  WaitingClose();
+});
+
+
+
+// Trae Tareas 
+var dataF = function () {
+  var tmp = null;
+  $.ajax({
+    'async': false,
+    'type': "POST",
+    'global': false,
+    'dataType': 'json',
+    'url': "ordenservicio/getTarea",
+    'success': function (data) {
+        tmp = data;               
+    }
+  });
+  return tmp;
+}();
+
+// Trae Tareas 
+
+
+  
 
 // HERRAMIENTAS
   var regHerr = 0;                // variable incrementable en func, para diferenciar los inputs
@@ -993,56 +961,8 @@
       var parent = $(this).closest('tr');
       $(parent).remove();
    });
- 
 
-</script>
 
-<!-- Validacion de campos y Envio form -->
-<script>
 
-function enviarOrden() {  
-
-    
-  /////  VALIDACIONES
-
-  var hayError = false;
-    
-  if ($('#numSolic').val() == '') {
-          hayError = true;
-      }
-
-  if(hayError == true){
-     $('#error').fadeIn('slow');
-     return;
-  }
-  else{
-      $('#error').fadeOut('slow');
-      var id_equipo = $("#numSolic").val();
-      var datos = $("#form_order").serializeArray();
-
-      WaitingOpen('Guardando cambios');
-      $.ajax({    
-                  data: datos,
-                  type: 'POST',             
-                  dataType: 'json',
-                  url: 'index.php/Ordenservicio/setOrdenServ',                
-                  success: function(result){
-                                                    
-                          WaitingClose();
-                          setTimeout("cargarView('Ordenservicio', 'index', '"+$('#permission').val()+"');",0);
-                  },
-                  error: function(result){
-                          WaitingClose();
-                                                    
-                          alert("Error en guardado...");
-                  },
-            });
-      }    
-}
-</script>
-<!-- / Validacion de campos y Envio form -->
-
-<!-- datatables -->
-<script>
-  $('#tbl_sserv').DataTable();
+*/
 </script>

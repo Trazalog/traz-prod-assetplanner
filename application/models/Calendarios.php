@@ -15,6 +15,8 @@ class Calendarios extends CI_Model {
      */
     function getot($data = null) // Ok
     {
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
         //dump_exit($data);
         $month = $data['month'] + 1 ; 
         $year  = $data['year'] ;
@@ -27,7 +29,8 @@ class Calendarios extends CI_Model {
             equipos.codigo 
             from orden_trabajo
             INNER JOIN equipos ON equipos.id_equipo = orden_trabajo.id_equipo
-            WHERE orden_trabajo.estado = 'C' 
+            WHERE orden_trabajo.id_empresa = $empId
+            AND orden_trabajo.estado != 'T'
             AND month(orden_trabajo.fecha_program) = $month
             AND year(orden_trabajo.fecha_program) = $year";
         $query= $this->db->query($sql);
@@ -43,24 +46,34 @@ class Calendarios extends CI_Model {
     }
 
         // Preventivos por Hora para la Tabla
-    function getPreventivosHoras($data = null) // No utilizada
-    {   
-        $month = $data;//['month'] + 1 ;    
-        $sql   = "select preventivo.prevId, 
+    function getPreventivosHoras($mes, $year) // No utilizada
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
+
+        //$month = $data;//['month'] + 1 ;    
+        //$month = $data['month'] + 1 ; 
+        //$year  = $data['year'] ;
+        $sql   = "SELECT preventivo.prevId, 
             preventivo.id_tarea, 
             preventivo.perido, 
             preventivo.cantidad, 
             preventivo.ultimo,
             preventivo.id_equipo,
+            preventivo.critico1,
+            preventivo.lectura_base,
             equipos.codigo, 
-            equipos.id_equipo, 
+            equipos.id_equipo,
+            equipos.ultima_lectura, 
             tareas.descripcion,
             DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY) AS prox 
             from preventivo 
             join equipos ON preventivo.id_equipo = equipos.id_equipo 
             join tareas ON preventivo.id_tarea = tareas.id_tarea 
-            where preventivo.estadoprev = 'C' and preventivo.perido = 'Horas'";
-            //AND month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $month ";
+            WHERE preventivo.id_empresa = $empId AND preventivo.estadoprev = 'C' AND ((preventivo.perido = 'Horas') OR (preventivo.perido = 'Ciclos'))";
+            //AND month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $mes 
+            //AND year(orden_trabajo.fecha_program) = $year
+            //";
         $query = $this->db->query($sql);
                 if ($query->num_rows()!=0)
         {
@@ -153,7 +166,7 @@ class Calendarios extends CI_Model {
             join tareas ON preventivo.id_tarea = tareas.id_tarea 
             where (preventivo.estadoprev = 'C') AND 
             (month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $month or month(preventivo.ultimo) = $month)";  */
-        $sql      = "SELECT preventivo.prevId, 
+        $sql = "SELECT preventivo.prevId, 
             preventivo.id_tarea, 
             preventivo.perido, 
             preventivo.cantidad, 

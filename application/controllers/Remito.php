@@ -8,14 +8,21 @@ class Remito extends CI_Controller {
         $this->load->model('Remitos');
     }
 
-    public function index($permission)
+    public function index($permission) // Ok
     {
       	$data['permission'] = $permission;
-      	//$data['list'] = $this->Ordenservicios->getSolServiciosList();
+      	$data['list'] = $this->Remitos->getRemitosList();
+      	$this->load->view('remito/list',$data);
+        //$this->load->view('remito/view_',$data);
+    }
+
+    public function cargarlista($permission) // Ok
+    {
+        $data['permission'] = $permission;
         $this->load->view('remito/view_',$data);
     }
 
-    public function getcodigo()
+    /*public function getcodigo()
     {
 		$sol = $this->Remitos->getcodigo();
 		if($sol)
@@ -24,6 +31,24 @@ class Remito extends CI_Controller {
 	        foreach ($sol as $row ) 
 	        {   
 	           $arre[] = $row;
+	        }
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}*/
+	public function getcodigo()
+    {
+		$codigo = $this->Remitos->getcodigo();
+		if($codigo)
+		{	
+			$arre = array();$i=0;
+	        foreach ($codigo as $valor ) 
+	        {   
+				$valorS = (array)$valor;
+				$arre[$i]['value'] = $valorS['artId'];
+				$arre[$i]['label'] = $valorS['artBarCode'];
+				$arre[$i]['artDescription'] = $valorS['artDescription'];
+				$i++;
 	        }
 			echo json_encode($arre);
 		}
@@ -77,6 +102,23 @@ class Remito extends CI_Controller {
 		else echo "nada";
 	}
 
+	public function consultar()
+	{
+		$id     = $_POST['idremito'];
+		$result = $this->Remitos->getConsulta($id);
+		if($result)
+		{	
+			$arre['datosRemito'] = $result;
+			$datosDetaRemitos       = $this->Remitos->getDetaRemitos($id);
+			if($datosDetaRemitos)
+			{
+				$arre['datosDetaRemitos'] = $datosDetaRemitos;
+			}
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}
+	
 	public function alerta()
 	{
 		$deposito = $_POST['id_deposito'];

@@ -23,6 +23,14 @@
       </div>
   </div>
 </div>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="alert alert-danger alert-dismissable" id="error3" style="display: none">
+          <h4></h4>
+          NO HAY INSUMOS
+      </div>
+  </div>
+</div>
 
 <section class="content">
   <div class="row">
@@ -31,9 +39,9 @@
         <div class="box-header">
           <h3 class="box-title">Orden de Insumo</h3> 
           <?php
-          if (strpos($permission,'Add') !== false) {
+          //if (strpos($permission,'Add') !== false) {
             echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="listado">Ver Listado</button>';
-          }
+          //}
           ?>
         </div><!-- /.box-header -->
            
@@ -53,14 +61,23 @@
                       <input type="text" align=\"right\"  class="form-control" id="comprobante"  min="1" size="30" placeholder="Ingrese numero de comprobante..." >
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="">Fecha <strong style="color: #dd4b39">*</strong> :</label>
-                      <input type="date" align=\"right\" class="form-control datepicker" id="fecha" size="29"  >
+                      <label for="fecha">Fecha <strong style="color: #dd4b39">*</strong> :</label>
+                      <input type="text" class="form-control" id="fecha" name="fecha">
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="">Solicitante <strong style="color: #dd4b39">*</strong> :</label>
-                      <!--<input type="text"  id="solicitante" name="solicitante" class="form-control input" placeholder="Ingrese Nombre..." >-->
-                      <select id="solicitante" name="solicitante" class="form-control"   />  
+                      <input type="text"  id="solicitante" name="solicitante" class="form-control input" placeholder="Ingrese Nombre..." >
+                      <!--<select id="solicitante" name="solicitante" class="form-control"   />-->
                     </div>
+
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                          <label for="">id Orden de Trabajo <strong style="color: #dd4b39">*</strong> :</label>
+                          <input type="text" id="idOT" name="idOT" class="form-control" value="" placeholder="Ingrese id de OT"/>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                          <label for="">Descripción de OT <strong style="color: #dd4b39">*</strong> :</label>
+                          <textarea id="ot" name="ot" class="form-control" disabled></textarea>
+                        </div>
                   </div><br>
 
                   <!-- Nav tabs -->
@@ -77,11 +94,13 @@
                         <br>
                         <div class="col-xs-12 col-sm-6 col-md-3">
                           <label for="">Codigo <strong style="color: #dd4b39">*</strong> :</label>
-                          <select id="codigo" name="codigo" class="form-control"   />  
+                          <!--<select id="codigo" name="codigo" class="form-control" />-->
+                          <input type="text" id="codigo" name="codigo" placeholder="Buscar código..." class="form-control">
+                          <input type="hidden" id="id_herr" name="id_herr">
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-3">
                           <label for="">Descripción <strong style="color: #dd4b39">*</strong> :</label>
-                          <input type="text" id="descripcion" name="descripcion" class="form-control" />  
+                          <input type="text" id="descripcion" name="descripcion" class="form-control" disabled/>  
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-3">
                           <label for="">Cantidad <strong style="color: #dd4b39">*</strong> :</label>
@@ -91,8 +110,8 @@
                           <label for="">Deposito <strong style="color: #dd4b39">*</strong> :</label>
                           <select  id="deposito" name="deposito" class="form-control"  />  
                         </div>
-                        
-                        <div class="col-xs-12 col-sm-6 col-md-3">
+
+                        <div class="col-xs-12">
                           <br>
                           <button type="button" class="btn btn-primary" id="agregar"><i class="fa fa-check">Agregar</i></button>
                         </div>
@@ -108,6 +127,7 @@
                                 <th>Descripcion</th>
                                 <th>Cantidad</th>
                                 <th>Deposito</th>
+                                <th>OT</th>
                               </tr>
                             </thead>
                             <tbody></tbody>
@@ -125,30 +145,35 @@
         </div><!-- /.box-body -->
         
         <div class="modal-footer">
-          <button type="button" class="btn btn-default delete" onclick="limpiar()">Cancelar</button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="guardar()" >Guardar</button>
+          <button type="button" class="btn btn-default delete" onclick="limpiar()">Limpiar</button>
+          <button type="button" class="btn btn-primary" onclick="guardar()" >Guardar</button>
         </div>  <!-- /.modal footer -->
 
       </div><!-- /.box -->
     </div><!-- /.col -->
   </div><!-- /.row -->
 </section><!-- /.content -->
-<script>
 
- $('#listado').click( function cargarVista(){
-    WaitingOpen();
-    $('#content').empty();
-    $("#content").load("<?php echo base_url(); ?>index.php/Ordeninsumo/index/<?php echo $permission; ?>");
-    WaitingClose();
-  });
+<script>
+$( "#fecha" ).datetimepicker({
+  format: 'YYYY-MM-DD',
+  locale: 'es',
+});
+
+$('#listado').click( function cargarVista(){
+  WaitingOpen();
+  $('#content').empty();
+  $("#content").load("<?php echo base_url(); ?>index.php/Ordeninsumo/index/<?php echo $permission; ?>");
+  WaitingClose();
+});
   
 var idslote = new Array(); 
-traer_codigo();
+/*traer_codigo();
 function traer_codigo(){
   $.ajax({
     type: 'POST',
     data: { },
-    url: 'index.php/Ordeninsumo/getcodigo', //index.php/
+    url: 'index.php/Ordeninsumo/getcodigo',
     success: function(data){
       var opcion  = "<option value='-1'>Seleccione...</option>" ; 
       $('#codigo').append(opcion);
@@ -165,10 +190,57 @@ function traer_codigo(){
     },
       dataType: 'json'
   });
-}
+}*/
+// autocomplete para codigo
+var dataF = function () {
+  var tmp = null;
+  $.ajax({
+    'async': false,
+    'type': "POST",
+    'global': false,
+    'dataType': 'json',
+    'url': "index.php/Ordeninsumo/getcodigo",
+    'success': function (data) {
+      tmp = data;
+      for(var i=0; i < data.length ; i++) 
+      {   
+          idslote[i] = data[i]['loteid'];
+      }
+    }
+  });
+  return tmp;
+}();
+$("#codigo").autocomplete({
+  source: dataF,
+  delay: 100,
+  minLength: 1,
+  /*response: function(event, ui) {
+    var noResult = { value:"",label:"No se encontraron resultados" };
+    ui.content.push(noResult);
+  },*/
+  focus: function(event, ui) {
+    // prevent autocomplete from updating the textbox
+    event.preventDefault();
+    // manually update the textbox
+    $(this).val(ui.item.label);
+    $("#descripcion").val(ui.item.artDescription);
+  },
+  select: function(event, ui) {
+    // prevent autocomplete from updating the textbox
+    event.preventDefault();
+    // manually update the textbox and hidden field
+    //$(this).val(ui.item.value);//label
+    $("#codigo").val(ui.item.label); //value
+    $("#descripcion").val(ui.item.artDescription);
+    $("#id_herr").val(ui.item.value);
+    traer_deposito(ui.item.value);
+    //console.log("id articulo de orden insumo: ") 
+    //console.log(ui.item.value);                
+  },
+});
 
-trae_solicitante();
-function trae_solicitante(){
+//trae_solicitante();
+/*function trae_solicitante(){
   $.ajax({
     type: 'POST',
     data: { },
@@ -188,15 +260,114 @@ function trae_solicitante(){
     },
     dataType: 'json'
   });
-}
+}*/
 
-traer_deposito();
+// autocomplete para solicitante
+var dataF = function () {
+  var tmp = null;
+  $.ajax({
+    'async': false,
+    'type': "POST",
+    'global': false,
+    'dataType': 'json',
+    'url': "index.php/Ordeninsumo/getsolicitante",
+    'success': function (data) {
+      tmp = data;
+    }
+  });
+  return tmp;
+}();
+$("#solicitante").autocomplete({
+  source: dataF,
+  delay: 100,
+  minLength: 1,
+  /*response: function(event, ui) {
+    var noResult = { value:"",label:"No se encontraron resultados" };
+    ui.content.push(noResult);
+  },*/
+  focus: function(event, ui) {
+    // prevent autocomplete from updating the textbox
+    event.preventDefault();
+    // manually update the textbox
+    $(this).val(ui.item.label);
+  },
+  select: function(event, ui) {
+    // prevent autocomplete from updating the textbox
+    event.preventDefault();
+    // manually update the textbox and hidden field
+    $(this).val(ui.item.value);//label
+    $("#solicitante").val(ui.item.label); //value
+    //console.log("id articulo de orden insumo: ") 
+    //console.log(ui.item.value);                
+  },
+});
+
+// autocomplete para OT
+var dataOT = function () {
+  var tmp = null;
+  $.ajax({
+    'async': false,
+    'type': "POST",
+    'global': false,
+    'dataType': 'json',
+    'url': "index.php/Ordeninsumo/getOT",
+    'success': function (data) {
+      tmp = data;
+      //console.table(tmp);
+    }
+  });
+  return tmp;
+}();
+$("#idOT").autocomplete({
+  autoFocus: true,
+  source: dataOT,
+  delay: 500,
+  minLength: 1,
+  response: function(event, ui) {
+    var noResult = { value:"",label:"No se encontraron resultados" };
+    ui.content.push(noResult);
+  },
+  focus: function(event, ui) {
+    // prevent autocomplete from updating the textbox
+    event.preventDefault();
+    // manually update the textbox
+    $(this).val(ui.item.value);
+    if(ui.item.value=="")
+      $('#ot').html("");
+    $('#ot').html(ui.item.info);
+  },
+  select: function(event, ui) {
+    // prevent autocomplete from updating the textbox
+    event.preventDefault();
+    // manually update the textbox and hidden field
+    $(this).val(ui.item.value);//label
+    if(ui.item.value=="")
+      $('#ot').html("");
+    $("#ot").html(ui.item.info);
+    //console.log("id articulo de orden insumo: ") 
+    //console.log(ui.item.value);                
+  },
+  /*change: function (event, ui) {
+    if (!ui.item) {
+      this.value = '';
+      $("#ot").val("");
+    }
+  }*/
+}).autocomplete( "widget" ).addClass( "hidden" );
+/*.autocomplete("instance")._renderItem = function(ul, item) {
+  console.log('test');
+  var item = $('<div class="list_item_container"><div class="label"><h3> Reputation:  ' + item.label + '</h3></div><div class="description">' + item.info + '</div></div>')
+  return $("<li>").append(item).appendTo(ul);
+};*/
+
+
+//traer_deposito();
 function traer_deposito(artId){
   $('#deposito').html(""); 
   $.ajax({
     type: 'POST',
     data: {artId:artId },
-    url: 'index.php/Ordeninsumo/getdeposito', //index.php/
+    url: 'index.php/Ordeninsumo/getdeposito',
     success: function(data){
       var opcion  = "<option value='-1'>Seleccione...</option>" ; 
       $('#deposito').append(opcion); 
@@ -229,9 +400,11 @@ function limpiar(){
 function guardar(){    
   console.log("estoy guardando");
   var parametros = {
-    'fecha': $('#fecha').val(),
+    'fecha'      : $('#fecha').val(),
     'solicitante': $('#solicitante').val(),
-    'comprobante': $('#comprobante').val(),        
+    'comprobante': $('#comprobante').val(), 
+    'destino'    : $('#deposito').val(),  
+    'id_ot'      : $('#idOT').val(),      
   };
 
   var idsinsumo = new Array();     
@@ -243,14 +416,15 @@ function guardar(){
 
   comp = {};
   depo = {};
+  art = {};
+    var campo1, campo2, campo3, campo4,campo5, campo6, campo7, campo8, campo9;
+    var i = 0;//$(this).attr('id'); 
 
   $("#tablainsumo tbody tr").each(function (index) 
   {
-    var campo1, campo2, campo3, campo4,campo5, campo6;
-    var i = $(this).attr('id'); 
-    console.log(i);
     $(this).children("td").each(function (index2) 
     {
+      console.log("i: "+i);
       switch (index2) 
       {
         case 0: campo1 = $(this).text();
@@ -264,13 +438,21 @@ function guardar(){
           break;
         case 4: campo5 = $(this).text();               
           break;
-        case 5: campo6 = $(this).text();
-          depo[i]=campo6;                   
+        case 5: campo6 = $(this).text();               
+          break;
+        case 6: campo7 = $(this).text();               
+          break;
+        case 7: campo8 = $(this).text();
+          depo[i]=campo8;                   
+          break;
+        case 8: campo9 = $(this).text();
+          art[i]=campo9;                   
           break;
       }
     });
-    console.log(comp);
-    console.log(depo);
+    i++;
+    console.log('cantidad: '+comp);
+    console.log('articulo: '+art);
   });
      
   console.log("parametros de Orden");
@@ -283,13 +465,15 @@ function guardar(){
   console.log(idslote);
   console.log("depo");
   console.log(depo);
+    console.log("art");
+  console.log(art);
   var hayError = false;
 
-  if(parametros !=0 && idsinsumo !=0){
+  if(parametros !=0 && idsinsumo !=0 && $('#comprobante').val()!="" && $('#fecha').val()!="" && $('#solicitante').val()!=""){
     //&& depo !=0 && idsinsumo >0 && comp >0
     $.ajax({
       type: 'POST',
-      data: {data:parametros, comp:comp, idslote:idslote, depo:depo},
+      data: {data:parametros, comp:comp, idslote:idslote, depo:depo, art:art},
       url: 'index.php/Ordeninsumo/guardar',  //index.php/
       success: function(data){
         console.log("exito");
@@ -297,8 +481,8 @@ function guardar(){
         regresa();                   
       },
       error: function(result){
-        console.log("entro por el error");
-        console.log(result);
+        console.error("Error al guardar orden de insumo");
+        console.table(result);
       },
            // dataType: 'json'
     });
@@ -314,7 +498,7 @@ function guardar(){
     $('#error').fadeOut('slow');
   }
 }
-
+/*
 $('#codigo').change(function(){
   var artId = $(this).val();
   console.log(artId);
@@ -333,51 +517,59 @@ $('#codigo').change(function(){
     dataType: 'json'
   });
   traer_deposito(artId);
-});
+});*/
 
 //agrega insumos a la tabla detainsumos
 var i = 1;
 $('#agregar').click(function (e) { 
-  var $codigo     = $("select#codigo option:selected").html(); 
-  var id_her      = $('#codigo').val();
+  var $codigo     = $("#codigo").val(); 
+  var id_her      = $('#id_herr').val();
   var descripcion = $('#descripcion').val();
   var cantidad    = $('#cantidad').val();
   var deposito    = $("select#deposito option:selected").html(); 
   var id_deposito = $('#deposito').val();
+  var idOT        = $('#idOT').val();
+  var ot          = $('#ot').html();
   var tr          = "<tr id='"+i+"'>"+
-    "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+    "<td ><i class='fa fa-ban elirow text-light-blue' style='cursor: 'pointer'></i></td>"+
     "<td>"+$codigo+"</td>"+
     "<td>"+descripcion+"</td>"+
     "<td>"+cantidad+"</td>"+
     "<td>"+deposito+"</td>"+
+    "<td>"+ot+"</td>"+
+    "<td class='hidden' id='"+idOT+"'>"+idOT+"</td>"+
     "<td class='hidden' id='"+id_deposito+"'>"+id_deposito+"</td>"+
+    "<td class='hidden' id='"+id_her+"'>"+id_her+"</td>"+
     "</tr>";
   i++;    
   console.log(tr);
-  console.log("El id de deposito es :"+ id_deposito);
-  console.log("El codigo es:" +$codigo);
-  console.log("El id de articulo:" + id_her);
+  console.log("El id de deposito es :"+id_deposito);
+  console.log("El codigo es: "+$codigo);
+  console.log("El id de articulo: "+id_her);
+  console.log("La cantidad es: "+cantidad);
   /* mando el codigo y el id _ deposito entonces traigo esa cantidad de lote*/
   var hayError = false;
   var Error1   = false;
   var Error2   = false;
+  var Error3   = false;
   if ($codigo !=0 && cantidad >0 && id_deposito>0  ) {
     $.ajax({
       type: 'POST',
       data: { id_her:id_her, id_deposito:id_deposito}, 
       url: 'index.php/Ordeninsumo/alerta',
       success: function(data){
-        console.log("exito en la elerta");
+        console.log("exito en la alerta");
         console.log(data);
         var datos = parseInt(data);
         console.log(datos);
+        $('#error3').fadeOut('slow');
         if( cantidad<=datos ){
           if(Error1 == false){
             $('#error1').fadeOut('slow');
           }
           $('#error2').fadeIn('slow');
           $('#tablainsumo tbody').append(tr);
-          $('#error2').fadeOut('slow');
+          $('#error2').delay(1000).fadeOut('slow');
         }
         else {
           // alert("No hay insumos suficientes,la cantidad de insumos disponibles es: " + data); 
@@ -387,6 +579,7 @@ $('#agregar').click(function (e) {
         }           
       },
       error: function(result){
+        $('#error3').fadeIn('slow');
         console.log(result);
       },
       dataType: 'json'

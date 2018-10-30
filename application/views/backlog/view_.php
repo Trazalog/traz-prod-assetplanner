@@ -1,5 +1,5 @@
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
- <div class="row">
+<div class="row">
   <div class="col-xs-12">
     <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
           <h4><i class="icon fa fa-ban"></i> Error!</h4>
@@ -53,6 +53,22 @@
                     <label for="descripcion">Descripción: </label>
                     <textarea class="form-control" id="descripcion" name="descripcion" disabled></textarea>
                   </div> 
+
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="codigo_componente">Código de componente-equipo :</label>
+                    <input type="text" id="codigo_componente" name="codigo_componente" class="form-control input-md" placeholder="Ingrese código de componente"/>
+                    <input type="hidden" id="idcomponenteequipo" name="idcomponenteequipo" value=""/>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="descrip_componente">Descripción de componente:</label>
+                    <input type="text" id="descrip_componente" name="descrip_componente" class="form-control input-md"  disabled />
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="sistema_componente">Sistema:</label>
+                    <input type="text" id="sistema_componente" name="sistema_componente" class="form-control input-md"  disabled />
+                  </div>
+            
                 </div><!-- /.row -->
               </div><!-- /.panel-body -->
             </div><!-- /.panel -->
@@ -96,67 +112,60 @@
 
 <script>
   
-var codhermglo="";
-var codinsumolo="";
-var preglob="";
-$(document).ready(function(event) {
+var codhermglo  = "";
+var codinsumolo = "";
+var preglob     = "";
   
-  //carga listado backlog(desde boton) - Chequeado
-  $('#listado').click( function cargarVista(){
-      WaitingOpen();
-      $('#content').empty();
-      $("#content").load("<?php echo base_url(); ?>index.php/Backlog/index/<?php echo $permission; ?>");
-      WaitingClose();
-  });
+//carga listado backlog(desde boton) - Chequeado
+$('#listado').click( function cargarVista(){
+    WaitingOpen();
+    $('#content').empty();
+    $("#content").load("<?php echo base_url(); ?>index.php/Backlog/index/<?php echo $permission; ?>");
+    WaitingClose();
+});
 
-  $(".datepicker").datepicker({
-      
-      changeMonth: true,
-      changeYear: true
-  });
+$(".datepicker").datepicker({
+    changeMonth: true,
+    changeYear: true
+});
 
-  // trae info de equipo por id para completar los campos - Chequeado
-  $('#equipo').change(function(){
-          
-    var id_equipo = $(this).val();
-    $.ajax({
-        type: 'POST',
-        data: { id_equipo: id_equipo},
-        url: 'index.php/Backlog/getInfoEquipo', //index.php/
-        success: function(data){
-                        //var data = jQuery.parseJSON( data );
-                        
-                console.log(data);
-                       
-                var fecha_ingreso = data[0]['fecha_ingreso']; 
-                var marca = data[0]['marca']; 
-                var ubicacion = data[0]['ubicacion']; 
-                var criterio1 = data[0]['criterio1']; 
-                var descripcion = data[0]['descripcion']; 
+// trae info de equipo por id para completar los campos - Chequeado
+$('#equipo').change(function(){
+  var id_equipo = $(this).val();
+  $.ajax({
+    data: { id_equipo:id_equipo },
+    dataType: 'json',
+    type: 'POST',
+    url: 'index.php/Backlog/getInfoEquipo',
+    success: function(data){
+      //console.table(data);
+      var fecha_ingreso = data[0]['fecha_ingreso']; 
+      var marca         = data[0]['marca']; 
+      var ubicacion     = data[0]['ubicacion']; 
+      var criterio1     = data[0]['criterio1']; 
+      var descripcion   = data[0]['descripcion']; 
+      $('#fecha_ingreso').val(fecha_ingreso);       
+      $('#marca').val(marca);   
+      $('#descripcion').val(descripcion);       
+      $('#ubicacion').val(ubicacion);
+      refrescarAutocompletar();
+      $('#codigo_componente').val("");
+      $('#descrip_componente').val("");
+      $('#sistema_componente').val("");
+    },
+    error: function(result){
+      console.error("Error al traer info de equipo.");
+      console.table(result);
+    },
+  });   
+});
 
+$("#fecha").datepicker({
+  format: 'dd/mm/yy',
+  startDate: '-3d'
+  //firstDay: 1
+}).datepicker("setDate", new Date());
 
-                $('#fecha_ingreso').val(fecha_ingreso);       
-                $('#marca').val(marca);   
-                $('#descripcion').val(descripcion);       
-                $('#ubicacion').val(ubicacion);  
-
-              },
-          
-        error: function(result){
-                      
-                console.log(result);
-              },
-        dataType: 'json'
-    });   
-  });
-
- $("#fecha").datepicker({
-    format: 'dd/mm/yy',
-    startDate: '-3d'
-    //firstDay: 1
-  }).datepicker("setDate", new Date());
-
-});    
 
 // Trae equipos llena select - Chequeado
 traer_equipo();
@@ -214,6 +223,88 @@ function traer_tarea(){
       });
 }
 
+// autocomplete para componente
+function dataC() {
+  var tmp = null;
+  var idEquipo = $('#equipo').val();
+  console.info("id equipo: "+idEquipo);
+  $.ajax({
+    'async': false,
+    'data': {idEquipo:idEquipo},
+    'dataType': 'json',
+    'global': false,
+    'type': "POST",
+    'url': "index.php/Backlog/getComponente",
+    'success': function(data) {
+      //console.info("trae componentes para autocomplete");
+      console.log(data);
+      if(data==0){
+        data = "0: { value: null, label: null, descrip: null, sistema:null }";
+      }
+      tmp = data;
+    }
+  });
+  return tmp;
+};
+
+refrescarAutocompletar();
+function refrescarAutocompletar(){
+  $("#codigo_componente").autocomplete({
+    source: dataC(),
+    delay: 100,
+    minLength: 1,
+    messages: {
+      noResults: function(count) {
+        $('#codigo_componente').val("");
+        $('#codigo_componente').attr("placeholder", "No se encontraron resultados");
+      },
+      results: function(count) {
+        console.log("There were " + count + " matches")
+      },
+    },
+    focus: function(event, ui) {
+      //console.table(ui.item);
+      // prevent autocomplete from updating the textbox
+      event.preventDefault();
+      // manually update the textbox
+      $(this).val(ui.item.value);
+      $('#descrip_componente').val(ui.item.descrip);
+      $('#sistema_componente').val(ui.item.sistema);
+      $('#idcomponenteequipo').val(ui.item.idce);
+    },
+    select: function(event, ui) {
+      // prevent autocomplete from updating the textbox
+      event.preventDefault();
+      // manually update the textbox and hidden field
+      $(this).val(ui.item.value);//label
+      $("#descrip_componente").val(ui.item.descrip);
+      $("#sistema_componente").val(ui.item.sistema);
+      $('#idcomponenteequipo').val(ui.item.idce);
+    }
+  });/*/
+  $("#codigo_componente").autocomplete({
+    source: dataC,
+    delay: 100,
+    minLength: 1,
+    focus: function(event, ui) {
+      // prevent autocomplete from updating the textbox
+      event.preventDefault();
+      // manually update the textbox
+      $(this).val(ui.item.label);
+      $('#descrip_componente').val(ui.item.descrip);
+      $('#sistema_componente').val(ui.item.sistema);
+    },
+    select: function(event, ui) {
+      // prevent autocomplete from updating the textbox
+      event.preventDefault();
+      // manually update the textbox and hidden field
+      $(this).val(ui.item.value);//label
+      $('#descrip_componente').val(ui.item.descrip);
+      $('#sistema_componente').val(ui.item.sistema);               
+    },
+  });*/
+}
+
 // Carga lista de backlog - Chequeado
 function cargarVista(){
     WaitingOpen();
@@ -224,21 +315,24 @@ function cargarVista(){
 
 // Guarda Backlog - Chequeado
 function guardar(){     
-       
+  var idComponenteEquipo = $('#idcomponenteequipo').val();
   var equipo = $('#equipo').val();
-  var tarea = $('#tarea').val();       
-  var fecha = $('#fecha').val();
-  var horas= $('#back_duracion').val();  
+  var tarea  = $('#tarea').val();       
+  var fecha  = $('#fecha').val();
+  var horas  = $('#back_duracion').val();  
   console.log("Estoy guardando");
 
   if(equipo > 0 && tarea !=='' && horas !=='' ){
     
       $.ajax({
           type: 'POST',
-          data: {equipo:equipo, 
-                  tarea:tarea,  
-                  fecha:fecha, 
-                  horas:horas},
+          data: {
+            idce:idComponenteEquipo,
+            equipo:equipo, 
+            tarea:tarea,  
+            fecha:fecha, 
+            horas:horas
+          },
           url: 'index.php/Backlog/guardar_backlog', 
           success: function(data){
                  

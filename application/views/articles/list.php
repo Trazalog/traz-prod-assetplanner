@@ -474,7 +474,7 @@ function regresa(){
       
     </div> <!-- /.modal-content -->
   </div>  <!-- /.modal-dialog modal-lg -->
-</div>  <!-- /.modal fade -->
+</div>  <!-- /.modal -->
 <!-- / Modal -->
 
 <!-- Modal editar-->
@@ -571,4 +571,4 @@ function regresa(){
 
     </div> <!-- /.modal-content -->
   </div>  <!-- /.modal-dialog modal-lg -->
-</div>  <!-- /.modal fade -->
+</div>  <!-- /.modal -->

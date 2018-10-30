@@ -29,29 +29,34 @@ class Herramienta extends CI_Controller {
      * @param   string  $permission     Permisos de visualización.
      * @return  void
      */
-	public function index($permission)
+	public function index($permission) // Ok
 	{
         $data['list']       = $this->Herramientas->listar_herramientas();
         $data['permission'] = $permission;
 		$this->load->view('herramienta/list', $data);
 	}
 
-    public function edit_herramienta()
+    public function edit_herramienta() // Ok
     {
-        $datos  = $_POST['parametros'];
-        $id     = $_POST['ed'];
+        $datos  = $this->input->post('parametros');
+        $id     = $this->input->post('ed');
         $result = $this->Herramientas->update_editar($datos,$id);
         return true;
     }
 
-    public function agregar_herramienta()
+    public function agregar_herramienta() // Ok
     {
         if($_POST){
-            $datos  = $_POST['parametros'];
-            $result = $this->Herramientas->agregar_herramientas($datos);
-            if($result)
-                echo $this->db->insert_id();
-            else echo 0;
+            $datos  = $this->input->post('parametros');
+            $existe = $this->Herramientas->existeHerramienta( $datos['herrcodigo'] );
+            if($existe) {
+                echo "existe";
+            } else {
+                $result = $this->Herramientas->agregar_herramientas($datos);
+                if($result)
+                    echo $this->db->insert_id();
+                else echo 0;
+            }
         }
     }
 

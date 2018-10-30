@@ -2,33 +2,97 @@
 
 class Ordenservicio extends CI_Controller {
 
-    public function __construct(){
+    public function __construct()
+    {
         parent::__construct();
         $this->load->model('Ordenservicios');
     }
 
-    public function index($permission){
-      	$data['permission'] = $permission;		// envia permisos
-      	$data['list'] = $this->Ordenservicios->getOrdServiciosList();
+    public function index($permission)
+    {
+        $data['permission'] = $permission;
+        $data['list']       = $this->Ordenservicios->getOrdServiciosList();
         $this->load->view('ordenservicios/list',$data);
     }
-    // FUNCION ANTERIOR - EN DESUSO
-      // public function cargarOrden($permission, $id_sol = null, $id_eq = null){ 
-      //     $data['permission'] = $permission;    // envia permisos 
-      //     $data['id_solicitud'] = $id_sol;
-      //     $data['id_eq'] = $id_eq;
-          
-      //     $this->load->view('ordenservicios/view_',$data);
-      // }
 
-    public function cargarOrden($permission, $id_sol = null, $id_eq = null, $causa = null){ 
-        $data['permission'] = $permission;    // envia permisos 
-        $data['id_solicitud'] = $id_sol;      // id de O.T. 
-        $data['id_eq'] = $id_eq;              // id de equipo
-        $data['causa'] = $causa;              // motivo de la O.T.
-        
+    public function cargarOrden($permission, $id_ot = null, $id_eq = null, $causa = null, $id_solicitud = null) // Ok
+    { 
+        $data['permission'] = $permission;        // permisos 
+        $data['id_ot']      = $id_ot;            // id de OT. 
+        $data['id_eq']      = $id_eq;             // id de equipo
+        $data['causa']      = urldecode($causa);  // motivo de la solicitud
+        $data['id_solicitudServicio'] = $id_solicitud; // id de orden de servicio. 
+        //dump($data);
         $this->load->view('ordenservicios/view_',$data);
     }
+
+    public function getDatosOrdenServicio() // Ok
+    {
+      $response = $this->Ordenservicios->getDatosOrdenServicios($this->input->post());
+      echo json_encode($response);
+    }
+
+    public function getEquipo() // Ok
+    {
+      $response = $this->Ordenservicios->getEquipos($this->input->post());
+      echo json_encode($response);
+    }
+
+    public function getHerramienta() //Ok
+    {
+      $response = $this->Ordenservicios->getHerramientas($this->input->post());
+      echo json_encode($response);
+    }
+
+    public function getOperario() // Ok
+    {
+      $response = $this->Ordenservicios->getOperarios($this->input->post());
+      echo json_encode($response);
+    }
+
+    public function setOrdenServ()
+    {
+      //$data[''] = $this->input->post('');
+      //$data     = $this->input->post();
+      $datosInfoServicio   = $this->input->post('datosInfoServicio');
+      //dump_exit($datosInfoServicio);
+      $data['id_solicitudreparacion'] = $datosInfoServicio['id_solicitudreparacion'];
+      $data['fecha']                  = $datosInfoServicio['fecha'];
+      $data['id_equipo']              = $datosInfoServicio['id_equipo'];
+      //$data['id_contratista']         = $datosInfoServicio['id_contratista'];
+      $data['id_ot']                  = $datosInfoServicio['id_ot'];
+      $data['horometro_inicio']       = $datosInfoServicio['horometro_inicio'];
+      $data['horometro_fin']          = $datosInfoServicio['horometro_fin'];
+      $data['fecha_inicio']           = $datosInfoServicio['fecha_inicio'];
+      $data['fecha_fin']              = $datosInfoServicio['fecha_fin'];
+//dump_exit($data);
+      $data['tarea']       = $this->input->post('tarea');
+      $data['herramienta'] = $this->input->post('herramienta');
+      $data['operario']    = $this->input->post('operario');
+
+      $response = $this->Ordenservicios->setOrdenServicios($data);
+      echo json_encode($response);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     public function getsolicitud(){
@@ -39,11 +103,6 @@ class Ordenservicio extends CI_Controller {
 
     public function getSolEquipCausa(){
       $response = $this->Ordenservicios->getSolEquipCausas($this->input->post());
-      echo json_encode($response);
-    }
-
-    public function getEquipo (){
-      $response = $this->Ordenservicios->getEquipos($this->input->post());
       echo json_encode($response);
     }
 
@@ -74,11 +133,6 @@ class Ordenservicio extends CI_Controller {
       echo json_encode($response);
     }
 
-    public function getHerramienta(){
-      $response = $this->Ordenservicios->getHerramientas($this->input->post());
-      echo json_encode($response);
-    }
-
     public function getHerramOrden(){
       $response = $this->Ordenservicios->getHerramOrdenes($this->input->post());
       echo json_encode($response);
@@ -86,6 +140,11 @@ class Ordenservicio extends CI_Controller {
 
     public function getTarea(){
       $response = $this->Ordenservicios->getTareas($this->input->post());
+      echo json_encode($response);
+    }
+
+    public function getLecturaOrden(){
+      $response = $this->Ordenservicios->getLecturasOrden($this->input->post());
       echo json_encode($response);
     }
 
@@ -105,11 +164,6 @@ class Ordenservicio extends CI_Controller {
       }
     }
 
-    public function getOperario(){
-      $response = $this->Ordenservicios->getOperarios($this->input->post());
-      echo json_encode($response);
-    }
-
     public function getOperarioOrden(){
       $response = $this->Ordenservicios->getOperariosOrden($this->input->post());
       echo json_encode($response);
@@ -124,12 +178,6 @@ class Ordenservicio extends CI_Controller {
       $data = $this->input->post();
       $response = $this->Ordenservicios->setEstados($data);
       echo json_encode($response);  
-    }
-
-    public function setOrdenServ(){
-      $data = $this->input->post();
-      $response = $this->Ordenservicios->setOrdenServicios($data);
-      echo json_encode($response);
     }
 
     /*public function getsolImp(){  
@@ -165,8 +213,6 @@ class Ordenservicio extends CI_Controller {
         echo json_encode($arre);
       }
       else echo "nada";
-
-
   }
   
   

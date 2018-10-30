@@ -34,7 +34,7 @@
     </div>
 </div>
 <br>
-<div class="row">
+<!--<div class="row">
     <div class="col-xs-4">
         <label style="margin-top: 7px;">Comisión <strong style="color: #dd4b39">*</strong>: </label>
     </div>
@@ -42,7 +42,7 @@
         <input type="text" class="form-control" placeholder="Comisión" id="usrComision" name="usrComision" value="<?php echo $data['user']['usrComision'];?>" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?>  >
     </div>
 </div>
-<br>
+<br>-->
 <div class="row">
     <div class="col-xs-4">
         <label style="margin-top: 7px;">Contraseña <strong style="color: #dd4b39">*</strong>: </label>

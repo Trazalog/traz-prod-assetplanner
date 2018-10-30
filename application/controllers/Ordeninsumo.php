@@ -23,14 +23,18 @@ class Ordeninsumo extends CI_Controller {
 
 	public function getcodigo()
 	{
-		$sol = $this->Ordeninsumos->getcodigo();
-		//echo json_encode($Customers);
-		if($sol)
+		$codigo = $this->Ordeninsumos->getcodigo();
+		if($codigo)
 		{	
-			$arre=array();
-	        foreach ($sol as $row ) 
+			$arre = array();$i=0;
+	        foreach ($codigo as $valor ) 
 	        {   
-	        	$arre[]=$row;
+				$valorS = (array)$valor;
+				$arre[$i]['value']          = $valorS['artId'];
+				$arre[$i]['label']          = $valorS['artBarCode'];
+				$arre[$i]['artDescription'] = $valorS['artDescription'];
+				$arre[$i]['loteid']         = $valorS['loteid'];
+				$i++;
 	        }
 			echo json_encode($arre);
 		}
@@ -42,10 +46,13 @@ class Ordeninsumo extends CI_Controller {
 		$solicitante = $this->Ordeninsumos->getsolicitante();
 		if($solicitante)
 		{	
-			$arre = array();
-	        foreach ($solicitante as $row ) 
+			$arre = array();$i=0;
+	        foreach ($solicitante as $valor ) 
 	        {   
-	           $arre[] = $row;
+				$valorS = (array)$valor;
+				$arre[$i]['value'] = $valorS['id_solicitud'];
+				$arre[$i]['label'] = $valorS['solicitante'];
+				$i++;
 	        }
 			echo json_encode($arre);
 		}
@@ -84,63 +91,52 @@ class Ordeninsumo extends CI_Controller {
 
 	public function guardar()
 	{
-		$datos  = $_POST['data'];
-		$lote   = $_POST['idslote'];
-		$co     = $_POST['comp'];
-		$dep    = $_POST['depo'];
-		$i      = 1;
-		$y      = 1;
-		$r      = 1;
+		$cantidad = array();
+		$art = array();
+		$datos  = $this->input->post('data');
+		$lote   = $this->input->post('idslote');
+		$cantidad  = $this->input->post('comp');
+		$dep    = $this->input->post('depo');
+		$art    = $this->input->post('art');
 		$result = $this->Ordeninsumos->insert_orden($datos);
+
 		if($result)
 		{
 			$ultimoId = $this->db->insert_id(); 
-			$arre     = array();
-		    if(count($lote) > 0 ){
-		        foreach ($lote as $row ) 
-		        {   
-		        	if($co[$i])
-		        	{
-		        		$datos2 = array(
-		        			'id_ordeninsumo' =>$ultimoId, 
-		        			'loteid'         =>$row,
-		        			'cantidad'       =>$co[$i]
-		        		);
-			        	print_r($datos2);
-			          	$this->Ordeninsumos->insert_detaordeninsumo($datos2);
-		      		}
-					$i++;
-		        }
-		    }
+
+			dump($ultimoId, 'id orden');
+			dump($cantidad, 'cantidad');
+			dump($art, 'articulo');
+			dump($dep, 'deposito');
+
 			//$lote as $row 
-			foreach($lote as $row) 
-		    { 
-	        	$val = $row;
-	        	print_r($val); //id de lote 
-				if($co[$y]){ //cantidad 123
-					$d = $dep[$r];
-					$this->Ordeninsumos->lote($val,$co[$y],$d);
+			for($i=0; $i < sizeof($art); $i++) { 
+	        	$idArticulo = $art[$i];
+				if(isset($cantidad[$i]) && $cantidad[$i]){
+					$deposito = $dep[$i];
+					$idLote = $this->Ordeninsumos->lote($idArticulo,$cantidad[$i],$deposito);
+					dump($idLote, 'id lote for');
+					dump($ultimoId, 'id orden for');
+					$datos2 = array(
+	        			'id_ordeninsumo' => $ultimoId, 
+	        			'loteid'         => $idLote,
+	        			'cantidad'       => $cantidad[$i]
+	        		);
+		        	//dump($datos2,'datos2');
+		          	$this->Ordeninsumos->insert_detaordeninsumo($datos2);
          		}
-			         	
-	         	$y++;
-	         	$r++;
-	        	//	$f=0;
 	        }        
 		}
 		return $result;
 	}
 
-	public function alerta(){
-		
-		$deposito=$_POST['id_deposito'];
-		$codigo=$_POST['id_her'];
-		
-			
-			
-			$s = $this->Ordeninsumos->alerta($codigo,$deposito);
-			if($s)
+	public function alerta()
+	{
+		$deposito = $_POST['id_deposito'];
+		$codigo   = $_POST['id_her'];
+		$s = $this->Ordeninsumos->alerta($codigo,$deposito);
+		if($s)
 		{	
-			
 			echo json_encode($s);
 		}
 		else echo "nada";	
@@ -191,5 +187,23 @@ class Ordeninsumo extends CI_Controller {
 		else echo "nada";
 	}
 
-   
+	public function getOT()
+	{
+		$solicitante = $this->Ordeninsumos->getOT();
+		if($solicitante)
+		{	
+			$arre = array();$i=0;
+	        foreach ($solicitante as $valor ) 
+	        {   
+				$valorS = (array)$valor;
+				$arre[$i]['value'] = $valorS['id_orden'];
+				$arre[$i]['label'] = $valorS['id_orden'];
+				$arre[$i]['info']  = $valorS['descripcion'];
+				$i++;
+	        }
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}
+
 }

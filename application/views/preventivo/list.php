@@ -747,8 +747,8 @@ function guardarEdicion(){
               </div>
             </div><!-- /.row -->
             <div class="row">
-              <div class="col-xs-12 col-sm-6 col-md-4">Periodo <strong style="color: #dd4b39">*</strong>:
-                <select id="periodo"  name="periodo" class=" selectpicker form-control input-md">
+              <div class="col-xs-12 col-sm-6">Periodo <strong style="color: #dd4b39">*</strong>:
+                <select id="periodo" name="periodo" class=" selectpicker form-control input-md">
                   <!--<option >Anual</option>-->
                   <option value="0">Diario</option>
                   <!--<option >Mensual</option>

@@ -71,18 +71,26 @@
                   <div class="col-xs-12 col-sm-6 col-md-4">Fecha Base:
                     <input type="text" class="datepicker form-control ultimo" id="ultimo" name="vfecha" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y') ; ?>" size="27"/>
                   </div> 
-                  <div class="col-xs-12 col-sm-6 col-md-4">Periodo <strong style="color: #dd4b39">*</strong>:
+                  <div class="col-xs-12 col-sm-6">Periodo <strong style="color: #dd4b39">*</strong>:
                     <select id="periodo"  name="periodo" class=" selectpicker form-control input-md">
                       <!--<option >Anual</option>-->
-                      <option >Diario</option>
-                      <!--<option >Mensual</option>
-                      <option >Periodos</option>
-                      <option >Ciclos</option>
-                      <option >Semestral</option>-->
+                      <option value="Diario">Diario</option>
+                      <option value="Mensual">Mensual</option>
+                      <!--<option >Periodos</option>-->
+                      <option value="Kilometro">Kilometros</option>
+                      <option value="Horas">Horas</option>
+                      <option value="Ciclos">Ciclos</option>
+                      <!--<option >Semestral</option>-->
                     </select>
                   </div>
-                  <div class="col-xs-12 col-sm-6 col-md-4">Frecuencia <strong style="color: #dd4b39">*</strong>:
-                    <input type="text"  id="cantidad" name="cantidad" class="form-control input-md" placeholder="Ingrese valor" />
+                  <div class="col-xs-12 col-sm-6">Frecuencia <strong style="color: #dd4b39">*</strong>:
+                    <input type="text"  id="cantidad" name="cantidad" class="form-control input-md" placeholder="Ingrese valor"/>
+                  </div>
+                  <div class="col-xs-12 col-sm-6">Lectura base <strong style="color: #dd4b39">*</strong>:
+                    <input type="text"  id="lectura_base" name="lectura_base" class="form-control input-md" placeholder="Ingrese valor" disabled/>
+                  </div>
+                  <div class="col-xs-12 col-sm-6">Alerta <strong style="color: #dd4b39">*</strong>:
+                    <input type="text"  id="alerta" name="alerta" class="form-control input-md" placeholder="Ingrese valor" disabled/>
                   </div>
                 </div> <!-- /.row -->
                 <div class="row">
@@ -103,7 +111,6 @@
                 </div>
               </div>
             </div>
-          
 
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Guardar</button>
@@ -230,103 +237,101 @@
 
 // Guarda Preventivo  
 $("#formPreventivo").submit(function (event){   
-  var equipo    = $('#equipo').val();
-  var tarea     = $('#tarea').val();
-  var compon    = $('#componente').val();
-  var periodo   = $('#periodo').val();
-  var freq      = $('#cantidad').val();
-  var duracion  = $('#duracion').val();
-  var unidad    = $('#unidad').val();
-  var oper      = $('#cantOper').val();
-  var hh        = $('#hshombre').val();
-
   event.preventDefault();  
 
-  if ((equipo < 0)||(tarea < 0)||(periodo < 0)||(unidad < 0)||(duracion == "")||(freq == "")||(oper == "")||(hh == ""))   {
+  var equipo   = $('#equipo').val();
+  var tarea    = $('#tarea').val();
+  var compon   = $('#componente').val();
+  var periodo  = $('#periodo').val();
+  var freq     = $('#cantidad').val();
+  var lectbase = $('#lectura_base').val();
+  var alerta   = $('#alerta').val();
+  var duracion = $('#duracion').val();
+  var unidad   = $('#unidad').val();
+  var oper     = $('#cantOper').val();
+  var hh       = $('#hshombre').val();
+
+  if((periodo=='horas') || (periodo=='ciclos')){
+    if ((lectbase < 0)||(alerta < 0)) {
+      $('#error').fadeIn('slow');
+    }
+  }
+  if ((equipo < 0)||(tarea < 0)||(periodo < 0)||(unidad < 0)||(duracion == "")||(freq == "")||(oper == "")||(hh == "")) {
       $('#error').fadeIn('slow');
   }
   else{
-      $('#error').fadeOut('slow');
-      var formData = new FormData($("#formPreventivo")[0]);
-      $.ajax({
-        url:$("form").attr("action"),
-        type:$("form").attr("method"),
-        data:formData,
-        cache:false,
-        contentType:false,
-        processData:false,
-        success:function(respuesta){
-          
-          //alert(respuesta);
-          console.log('resp prenevt: ');
-          console.log(respuesta.resPrenvent);
-
-          if (respuesta) {
-            alert("Los datos han sido guardados correctamente");
-            //$("#msg-error").hide();
-            //$("#form-create-empleado")[0].reset();
-          }
-          else if(respuesta==="error"){
-            alert("Los datos no se han podido guardar");
-          }
-          else{
-            //$("#msg-error").show();
-            //$(".list-errors").html(respuesta);
-          }
+    $('#error').fadeOut('slow');
+    var formData = new FormData($("#formPreventivo")[0]);
+    $.ajax({
+      url:$("form").attr("action"),
+      type:$("form").attr("method"),
+      data:formData,
+      cache:false,
+      contentType:false,
+      processData:false,
+      success:function(respuesta){
+        //alert(respuesta);
+        console.log('resp prenevt: ');
+        console.log(respuesta.resPrenvent);
+        if (respuesta) {
+          alert("Los datos han sido guardados correctamente");
+          //$("#msg-error").hide();
+          //$("#form-create-empleado")[0].reset();
         }
-      });
+        else if(respuesta==="error"){
+          alert("Los datos no se han podido guardar");
+        }
+        else{
+          //$("#msg-error").show();
+          //$(".list-errors").html(respuesta);
+        }
+      }
+    });
   }
-
-  
 });
 
 // Trae unidades de tiempo - Chequeado
-$(function(){  
-  
-  $.ajax({
-    type: 'POST',
-    data: { },
-    url: 'index.php/Predictivo/getUnidTiempo', 
-    success: function(data){
-           
-              var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-              $('#unidad').append(opcion); 
-              for(var i=0; i < data.length ; i++){    
-                    var nombre = data[i]['unidaddescrip'];
-                    var opcion  = "<option value='"+data[i]['id_unidad']+"'>" +nombre+ "</option>" ; 
-                  $('#unidad').append(opcion);                                
-              }
-          },
-    error: function(result){
-          
-            console.log(result);
+$.ajax({
+  type: 'POST',
+  data: { },
+  url: 'index.php/Predictivo/getUnidTiempo', 
+  success: function(data){
+         
+            var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+            $('#unidad').append(opcion); 
+            for(var i=0; i < data.length ; i++){    
+                  var nombre = data[i]['unidaddescrip'];
+                  var opcion  = "<option value='"+data[i]['id_unidad']+"'>" +nombre+ "</option>" ; 
+                $('#unidad').append(opcion);                                
+            }
         },
-        dataType: 'json'
-  });
-}); 
+  error: function(result){
+        
+          console.log(result);
+      },
+      dataType: 'json'
+});
 
 // Trae equipos por empresa logueada - Chequeado
-$(function(){
-    $.ajax({
-      type: 'POST',
-      data: { },
-      url: 'index.php/Preventivo/getequipo', //index.php/
-      success: function(data){
-             
-                  var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-                  $('#equipo').append(opcion); 
-                  for(var i=0; i < data.length ; i++){   
+$.ajax({
+  type: 'POST',
+  data: { },
+  url: 'index.php/Preventivo/getequipo', //index.php/
+  success: function(data){
+         
+              var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+              $('#equipo').append(opcion); 
+              for(var i=0; i < data.length ; i++){   
 
-                    var nombre = data[i]['codigo'];
-                    var opcion  = "<option value='"+data[i]['id_equipo']+"'>" +nombre+ "</option>" ;
-                    $('#equipo').append(opcion);                                  
-                  }
-                },
-      error: function(result){            
-              console.log(result);
+                var nombre = data[i]['codigo'];
+                var opcion  = "<option value='"+data[i]['id_equipo']+"'>" +nombre+ "</option>" ;
+                $('#equipo').append(opcion);                                  
+              }
             },
-      dataType: 'json'
-    });
+  error: function(result){            
+          console.log(result);
+        },
+  dataType: 'json'
 });
 
 // Calcula horas hombre por tiempo y unidades -chequeado
@@ -368,7 +373,6 @@ $('#listado').click( function cargarVista(){
 
 // Trae datos de equipo por ID para nuevo preventivo - Chequeado
 $('#equipo').change(function(){
-        
   var id_equipo = $(this).val();
   $.ajax({
       type: 'POST',
@@ -424,55 +428,64 @@ function traer_componente(id_equipo){
     });
 }
 
+$('#periodo').change(function(){
+  if( $('#periodo').val()=='horas' || $('#periodo').val()=='ciclos' ) {
+    $('#alerta').prop('disabled', false);
+    $('#lectura_base').prop('disabled', false);
+  } else {
+    $('#alerta').prop('disabled', 'disabled');
+    $('#lectura_base').prop('disabled', 'disabled');
+  }
+});
+
 // Trae tareas por empresa logueada - Chequeado
-$(function(){
-     $.ajax({
+$.ajax({
+    type: 'POST',
+    data: { },
+    url: 'index.php/Preventivo/gettarea', 
+    success: function(data){
+           
+              var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+              $('#tarea').append(opcion); 
+              for(var i=0; i < data.length ; i++){    
+                var nombre = data[i]['descripcion'];
+                var opcion  = "<option value='"+data[i]['id_tarea']+"'>" +nombre+ "</option>" ; 
+                $('#tarea').append(opcion);                                    
+              }
+          },
+    error: function(result){
+          
+          console.log(result);
+        },
+    dataType: 'json'
+});
+
+
+
+
+////// HERRAMIENTAS
+// Trae herramientas por empresa logueada - Chequeado
+$.ajax({
       type: 'POST',
       data: { },
-      url: 'index.php/Preventivo/gettarea', 
+      url: 'index.php/Preventivo/getherramienta', 
       success: function(data){
              
-                var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-                $('#tarea').append(opcion); 
-                for(var i=0; i < data.length ; i++){    
-                  var nombre = data[i]['descripcion'];
-                  var opcion  = "<option value='"+data[i]['id_tarea']+"'>" +nombre+ "</option>" ; 
-                  $('#tarea').append(opcion);                                    
-                }
+              var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+              $('#herramienta').append(opcion); 
+              for(var i=0; i < data.length ; i++) 
+              {    
+                    var nombre = data[i]['herrcodigo'];
+                    var opcion  = "<option value='"+data[i]['herrId']+"'>" +nombre+ "</option>" ; 
+
+                  $('#herramienta').append(opcion);                                    
+              }
             },
       error: function(result){
             
             console.log(result);
           },
       dataType: 'json'
-      });
-});
-
-////// HERRAMIENTAS
-// Trae herramientas por empresa logueada - Chequeado
-$(function(){
-  $.ajax({
-        type: 'POST',
-        data: { },
-        url: 'index.php/Preventivo/getherramienta', 
-        success: function(data){
-               
-                var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-                $('#herramienta').append(opcion); 
-                for(var i=0; i < data.length ; i++) 
-                {    
-                      var nombre = data[i]['herrcodigo'];
-                      var opcion  = "<option value='"+data[i]['herrId']+"'>" +nombre+ "</option>" ; 
-
-                    $('#herramienta').append(opcion);                                    
-                }
-              },
-        error: function(result){
-              
-              console.log(result);
-            },
-        dataType: 'json'
-      });
 });
 
 // Completa los datos de herramientas seleccionadas      
@@ -552,32 +565,29 @@ $("#agregarherr").click(function (e) {
 
 ////// INSUMOS
 // Trae insumos para llenar el select - Chequeado
-$(function(){
-  $.ajax({
-        type: 'POST',
-        data: { },
-        url: 'index.php/Preventivo/getinsumo',
-        success: function(data){
-               
-                  var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-                  $('#insumo').append(opcion); 
-                  for(var i=0; i < data.length ; i++){    
-                        var nombre = data[i]['artBarCode'];
-                        var opcion  = "<option value='"+data[i]['artId']+"'>" +nombre+ "</option>" ; 
-                      $('#insumo').append(opcion);                                    
-                  }
-                },
-        error: function(result){
-              
-              console.log(result);
-            },
-            dataType: 'json'
-  });
+$.ajax({
+      type: 'POST',
+      data: { },
+      url: 'index.php/Preventivo/getinsumo',
+      success: function(data){
+             
+                var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+                $('#insumo').append(opcion); 
+                for(var i=0; i < data.length ; i++){    
+                      var nombre = data[i]['artBarCode'];
+                      var opcion  = "<option value='"+data[i]['artId']+"'>" +nombre+ "</option>" ; 
+                    $('#insumo').append(opcion);                                    
+                }
+              },
+      error: function(result){
+            
+            console.log(result);
+          },
+          dataType: 'json'
 });
   
 // llenar descripcion insumos - Chequeado
 $("#insumo").change(function(){
-
   var id_insumo = $(this).val();
   $('#id_insumo').val(id_insumo); // guarda id en input para usar despues en tabla 
 
@@ -601,7 +611,6 @@ $("#insumo").change(function(){
 // Agrega insumos a la tabla 
 var nrofilaIns = 0; 
 $("#agregarins").click(function (e) {
-
     var id_insumo = $('#id_insumo').val(); 
     var $insumo = $("select#insumo option:selected").html();
     var descript = $('#descript').val();
@@ -637,8 +646,9 @@ $("#agregarins").click(function (e) {
     $('#cant').val(''); 
 });
 
+
+
 $(".datepicker").datepicker({
-    
     changeMonth: true,
     changeYear: true
 });
@@ -665,5 +675,5 @@ $("#fecha").datepicker({
     dateFormat: 'dd/mm/yy',
     firstDay: 1
 }).datepicker("setDate", new Date());
-  
+
 </script>

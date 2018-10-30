@@ -18,7 +18,10 @@
             <thead>
               <tr>
                 <th>Acciones</th>
+                <th>Nro Backlog</th>
                 <th>Equipo</th>
+                <th>Componente</th>
+                <th>Sistema</th>
                 <th>Tarea</th>
                 <th>Fecha</th>
                 <th>Duración</th>
@@ -37,7 +40,10 @@
                           echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar" ></i>';
                         }                     
                       echo '</td>';
+                      echo '<td>'.$a['backId'].'</td>';
                       echo '<td>'.$a['codigo'].'</td>';
+                      echo '<td>'.$a['componente'].'</td>';
+                      echo '<td>'.$a['sistema'].'</td>';
                       echo '<td>'.$a['de1'].'</td>';
                       echo '<td>'.date_format(date_create($a['fecha']), 'd-m-Y').'</td>';
                       //echo '<td>'.$a['horash'].'</td>'; 
@@ -93,7 +99,7 @@ $(document).ready(function(event) {
         url: 'index.php/Backlog/geteditar',
         success: function(data){
                     
-                    console.log(data);                  
+                    console.table(data);                  
                     datos={ 'codigo':data['equipo'][0]['codigo'],
                             'marca':data['equipo'][0]['marca'],
                             'descripcion':data['equipo'][0]['des'],   
@@ -105,6 +111,9 @@ $(document).ready(function(event) {
                             'hora':data['equipo'][0]['horash'],
                             'ubicacion':data['equipo'][0]['ubicacion'],
                             'duracion' :data['datos'][0]['back_duracion'],
+                            'sistema' :data['equipo'][0]['sistema'],
+                            'componente' :data['equipo'][0]['componente'],
+                            'codcompeq' :data['equipo'][0]['codcompeq'],
                             'backId': idpred              
                           };
                     completarEdit(datos); 
@@ -177,6 +186,9 @@ function completarEdit(datos){
   $('#fecha').val(fechater);
   $('#periodo').val(datos['periodo']);
   $('#horash').val(datos['duracion']); 
+  $('#sistema_componente').val(datos['sistema']); 
+  $('#descrip_componente').val(datos['componente']); 
+  $('#codigo_componente').val(datos['codcompeq']); 
 }
   
 function getFormattedPartTime(partTime) {
@@ -309,7 +321,7 @@ function Refrescar1(){
 
 <!-- Modal Editar -->
 <div class="modal fade" id="modalSale" tabindex="2000" aria-labelledby="myModalLabel" style="display: none;">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       
       <div class="modal-header">
@@ -351,6 +363,22 @@ function Refrescar1(){
                 <label for="descripcion">Descripcion: </label>
                 <textarea class="form-control limpiar" id="descripcion" name="descripcion" disabled></textarea>
               </div>
+
+              <div class="col-xs-12 col-sm-6 col-md-4">
+                <label for="codigo_componente">Código de componente-equipo :</label>
+                <input type="text" id="codigo_componente" name="codigo_componente" class="form-control input-md" placeholder="Ingrese código de componente" disabled/>
+                <input type="hidden" id="idcomponenteequipo" name="idcomponenteequipo" value=""/>
+              </div>
+              <div class="col-xs-12 col-sm-6 col-md-4">
+                <label for="descrip_componente">Descripción de componente:</label>
+                <input type="text" id="descrip_componente" name="descrip_componente" class="form-control input-md"  disabled />
+              </div>
+
+              <div class="col-xs-12 col-sm-6 col-md-4">
+                <label for="sistema_componente">Sistema:</label>
+                <input type="text" id="sistema_componente" name="sistema_componente" class="form-control input-md"  disabled />
+              </div>
+
             </div><!-- /.row -->
           </div><!-- /.panel-body -->
         </div><!-- /.panel -->

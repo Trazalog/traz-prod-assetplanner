@@ -1,6 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Otrabajos extends CI_Model {
+
 	function __construct()
 	{
 		parent::__construct();
@@ -24,10 +25,12 @@ class Otrabajos extends CI_Model {
 			orden_trabajo.fecha_aviso,
 			orden_trabajo.fecha_entregada,
 			orden_trabajo.descripcion,
+            orden_trabajo.id_solicitud,
 			orden_trabajo.cliId,
 			orden_trabajo.estado,
 			orden_trabajo.id_usuario,
 			orden_trabajo.id_usuario_a,
+            tbl_tipoordentrabajo.descripcion AS tipoDescrip,
 			user1.usrName AS nombre,
 			user1.usrLastName,
 			user1.grpId AS grp,
@@ -40,6 +43,7 @@ class Otrabajos extends CI_Model {
     		equipos.id_equipo,
     		sisgroups.grpId');
 		$this->db->from('orden_trabajo');
+        $this->db->join('tbl_tipoordentrabajo', 'tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
 		$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario');
 		$this->db->join('sisusers AS user1', 'user1.usrId = orden_trabajo.id_usuario_a');
 		$this->db->join('sisgroups', 'sisgroups.grpId = user1.grpId');
@@ -114,7 +118,13 @@ class Otrabajos extends CI_Model {
     {
         $userdata = $this->session->userdata('user_data');
         $empId    = $userdata[0]['id_empresa'];
-        $query    = $this->db->get_where('equipos',array('estado'=>'AC', 'id_empresa' => $empId));
+        $this->db->select('*');
+        $this->db->from('equipos');
+        $this->db->where('id_empresa', $empId);
+        $this->db->where('estado !=', 'AN');
+        //$this->db->where( array('estado'=>'AC', 'id_empresa'=>$empId) );
+        //$this->db->or_where('estado', 'RE');
+        $query = $this->db->get();
         if($query->num_rows()>0)
         {
             return $query->result();
@@ -146,6 +156,7 @@ class Otrabajos extends CI_Model {
         $sql = "SELECT orden_trabajo.id_orden,
                 orden_trabajo.nro,
                 orden_trabajo.fecha_inicio,
+                orden_trabajo.fecha_entrega,
                 orden_trabajo.descripcion,
                 orden_trabajo.estado,
                 orden_trabajo.id_usuario,
@@ -185,6 +196,7 @@ class Otrabajos extends CI_Model {
     function update_edita($idequipo,$data) // Ok
     {
         $this->db->where('id_orden', $idequipo);
+        dump($data);
         $query = $this->db->update("orden_trabajo",$data);
         return $query;
     }
@@ -278,8 +290,7 @@ class Otrabajos extends CI_Model {
         }
     }
 
-
-
+    
 
 
 
@@ -298,7 +309,7 @@ class Otrabajos extends CI_Model {
         $userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];
 
-        $this->db->select('*');
+        $this->db->select('admcustomers.*');
         $this->db->from('admcustomers');
         $this->db->where('admcustomers.id_empresa', $empId);
         $this->db->where('admcustomers.estado', 'C');
@@ -332,15 +343,7 @@ class Otrabajos extends CI_Model {
 	    else {
 	      return 0;
 	    }
-
 	}
-
-
-
-    
-
-
-
 	
 	function getotrabajos($data = null){
 
@@ -476,8 +479,6 @@ class Otrabajos extends CI_Model {
 	    }
 	}
 
-
-
 	//pediso a entregar x fecha
 	function getpedidos($id){
 
@@ -516,9 +517,7 @@ class Otrabajos extends CI_Model {
             }
 			
 		}
-		
 	}
-
 
 	/*	  function getusuario(){
         $query = $this->db->query("SELECT * FROM sisusers");
@@ -531,12 +530,6 @@ class Otrabajos extends CI_Model {
         }
         return $insumos;
     }*/
-
-
-
-
-
-
 
 	function getnums($id){
 
@@ -557,32 +550,23 @@ class Otrabajos extends CI_Model {
 			{
 			return 0;
 			}
-
 	}
-
-
-
-
-
 
 
 	function agregar_usuario($data){
                    
         $query = $this->db->insert("sisusers",$data);
     	return $query;
-        
     }
 
 
-    function agregar_pedidos($data){
-                   
+    function agregar_pedidos($data){          
         $query = $this->db->insert("orden_pedido",$data);
     	return $query;
-        
     }
         
-    function update_guardar($id, $datos){
 
+    function update_guardar($id, $datos){
         $this->db->where('id_orden', $id);
         $query = $this->db->update("orden_trabajo",$datos);
         return $query;
@@ -590,15 +574,13 @@ class Otrabajos extends CI_Model {
 
     
     function update_ordtrab($id, $datos){
-         
         $this->db->where('id_orden', $id);
         $query = $this->db->update("orden_trabajo",$datos);
         return $query;
     }
 		
-		// seleccionar el grupo
+	// seleccionar el grupo
 	function getgrupo(){
-
        $query= $this->db->get_where('sisgroups');
 		if($query->num_rows()>0){
 			 return $query->result();
@@ -606,7 +588,6 @@ class Otrabajos extends CI_Model {
         else{
             return false;
         }
-		
 	}
 
 	//insertar pedido 
@@ -616,15 +597,12 @@ class Otrabajos extends CI_Model {
         return $query;
     }
 
-   
     function agregar_tareas($data) {
-
         $query = $this->db->insert("tbl_listarea",$data);
         return $query;
     }
 
 	function get_pedido($id){
-
 		$query= "SELECT *
 				 FROM orden_pedido 
 				 WHERE id_orden=$id";
@@ -636,7 +614,6 @@ class Otrabajos extends CI_Model {
         else{
             return false;
         }
-		
 	}
 	
     //agrega proveedor
@@ -664,18 +641,15 @@ class Otrabajos extends CI_Model {
             else{
                 return false;
          }
-		
 	}
 	  
 	function eliminacion($data){
-
        	$this->db->where('id_orden', $data);
 		$query =$this->db->delete('orden_trabajo');
         return $query;
     }
 
     function update_cambio($ido,$fecha){
-
     	$consulta= "UPDATE orden_trabajo SET estado='T',
     										fecha_terminada='$fecha'
                                
@@ -684,12 +658,9 @@ class Otrabajos extends CI_Model {
 		$query= $this->db->query($consulta);
         
 		return $query;
-
     }
 
-
 	function getArticulos(){
-
 		$sql= "SELECT *
 			FROM sisusers
 			
@@ -710,51 +681,39 @@ class Otrabajos extends CI_Model {
     }
 
     function EliminarTareas($idor,$data){
-    	
         $this->db->where('id_listarea', $idor);
         $query = $this->db->update("tbl_listarea",$data);
         return $query;
-
     }
 
     function ModificarUsuarios($idta,$datos){
-    	
         $this->db->where('id_listarea', $idta);
         $query = $this->db->update("tbl_listarea",$datos);
         return $query;
-
     }
 
     function TareaRealizadas($id, $datos){
-
         $this->db->where('id_listarea', $id);
         $query = $this->db->update("tbl_listarea",$datos);
         return $query;
     }
 
     function ModificarFechas($idta,$datos){
-    	
         $this->db->where('id_listarea', $idta);
         $query = $this->db->update("tbl_listarea",$datos);
         return $query;
-
     }
     
     function CambioParcials($idor,$datos){
-    	
         $this->db->where('id_orden', $idor);
         $query = $this->db->update("orden_trabajo",$datos);
         return $query;
-
     }
 
- 
     function agregar_pedidos_fecha($fecha,$id){
-    	
         $this->db->where('id_orden', $id);
         $query = $this->db->update("orden_pedido",$fecha);
         return $query;
-
     }
 
     function update_predictivo($data, $id){
@@ -763,7 +722,6 @@ class Otrabajos extends CI_Model {
 	    return $query;
 	}
 	
-
     /**
      * Cuenta la cantidad de ordenes de trabajo agrupadas por tipo.
      *
@@ -788,7 +746,4 @@ class Otrabajos extends CI_Model {
         }
     }
 
-
 }	
-
-?>

@@ -173,39 +173,44 @@ class Preventivo extends CI_Controller {
 	}
 
 	// Guarda preventivo segun empresa logueada
-  	public function guardar_preventivo(){		
-  		
-  		$data = $this->input->post();
-  		$userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa'];  		
+  	public function guardar_preventivo()
+  	{	
+		$data     = $this->input->post();
+		$userdata = $this->session->userdata('user_data');
+		$empId    = $userdata[0]['id_empresa'];  		
 
-		$eq=$this->input->post('id_equipo');
-		$ta=$this->input->post('id_tarea');
-		$com=$this->input->post('id_componente');
-		$ultm=$this->input->post('vfecha');
-		$ultm = explode('-', $ultm);		
-		$pe=$this->input->post('periodo');
-		$can=$this->input->post('cantidad');
-		$oper = $this->input->post('cantOper');
-		//$unitiemp= $this->input->post('unidad');		
-		$com=$this->input->post('id_componente');
-		$durac=$this->input->post('duracion');
-		$unidad=$this->input->post("unidad");
-		$canhm=$this->input->post('hshombre');		
+		$eq         =$this->input->post('id_equipo');
+		$ta         =$this->input->post('id_tarea');
+		$com        =$this->input->post('id_componente');
+		$ultm       =$this->input->post('vfecha');
+		$ultm       = explode('-', $ultm);		
+		$pe         =$this->input->post('periodo');
+		$can        =$this->input->post('cantidad');
+		$oper       = $this->input->post('cantOper');
+		//$unitiemp = $this->input->post('unidad');		
+		$com        =$this->input->post('id_componente');
+		$durac      =$this->input->post('duracion');
+		$unidad     =$this->input->post("unidad");
+		$canhm      =$this->input->post('hshombre');
+		$critico1   =$this->input->post('alerta');
+		$lectbase   =$this->input->post('lectura_base');	
 
-		$datos = array('id_equipo'=>$eq,
-						'id_tarea'=>$ta,
-						'perido'=>$pe,
-						'cantidad'=>$can,
-						'ultimo' => $ultm[2].'-'.$ultm[1].'-'.$ultm[0],
-						'id_componente'=>$com,
-						'horash'=>$canhm,
-						'estadoprev'=>'C',
-						'prev_duracion'=> $durac,
-						'id_unidad'=> $unidad,
-						'prev_canth'=> $oper,
-						'id_empresa'=> $empId
-						);
+		$datos = array(
+				'id_equipo'     => $eq,
+				'id_tarea'      => $ta,
+				'perido'        => $pe,
+				'cantidad'      => $can,
+				'ultimo'        => $ultm[2].'-'.$ultm[1].'-'.$ultm[0],
+				'id_componente' => $com,
+				'critico1'      => $critico1,
+				'horash'        => $canhm,
+				'estadoprev'    => 'C',
+				'prev_duracion' => $durac,
+				'id_unidad'     => $unidad,
+				'prev_canth'    => $oper,
+				'id_empresa'    => $empId,
+				'lectura_base'  => $lectbase
+			);
 		
 		$response['resPrenvent'] = $this->Preventivos->insert_preventivo($datos);
 		

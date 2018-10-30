@@ -11,7 +11,7 @@
   <div class="col-xs-12">
     <div class="alert alert-danger alert-dismissable"  id="error1" style="display: none">
       <h4><i class="icon fa fa-ban"></i> </h4>
-      EL ARTICULO Y DEPOSITO SELECCIONADO NO ESTAN EN LOTE 
+      El artículo y depósito seleccionado no están en Lote.
     </div>
   </div>
 </div>
@@ -19,7 +19,7 @@
   <div class="col-xs-12">
     <div class="alert alert-success" id="error2" style="display: none">
       <h4></h4>
-      EL ARTICULO Y DEPOSITO SELECCIONADO ESTAN EN LOTE 
+      El artículo y depósito seleccionado están en Lote.
     </div>
   </div>
 </div>
@@ -41,15 +41,15 @@
                   <div class="row">
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="comprobante">Comprobante <strong style="color: #dd4b39">*</strong> :</label>
-                      <input type="text" align=\"right\" placeholder="Ingrese Numero..." class="form-control" id="comprobante" name="comprobante" min="1" size="35">
+                      <input type="text" placeholder="Ingrese Numero..." class="form-control" id="comprobante" name="comprobante">
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="fecha">Fecha <strong style="color: #dd4b39">*</strong> :</label>
-                      <input type="date" align=\"right\" class="form-control datepicker" id="fecha" size="35"  >
+                      <input type="text" class="form-control" id="fecha" name="fecha">
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="proveedor">Proveedor <strong style="color: #dd4b39">*</strong> :</label>
-                      <select  id="proveedor" name="proveedor" class="form-control"   />  
+                      <select  id="proveedor" name="proveedor" class="form-control"/>  
                     </div>
                   </div><br>
                         
@@ -64,19 +64,21 @@
                       <div class="row">
                         <br>
                         <div class="col-xs-12 col-sm-6 col-md-3">
-                          <label for="codigo">Codigo <strong style="color: #dd4b39">*</strong> :</label>
-                          <select id="codigo" name="codigo" class="form-control" />  
+                          <label for="codigo">Código <strong style="color: #dd4b39">*</strong> :</label>
+                          <!--<select id="codigo" name="codigo" class="form-control" />  -->
+                          <input type="text" id="codigo" name="codigo" placeholder="Buscar código..." class="form-control">
+                          <input type="hidden" id="id_herr" name="id_herr">
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-3">
-                          <label for="descripcion">Descripcion <strong style="color: #dd4b39">*</strong> :</label>
-                          <input type="text" id="descripcion" name="descripcion" class="form-control" />
+                          <label for="descripcion">Descripción <strong style="color: #dd4b39">*</strong> :</label>
+                          <input type="text" id="descripcion" name="descripcion" class="form-control" disabled/>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-3">
                           <label for="cantidad">Cantidad <strong style="color: #dd4b39">*</strong> :</label>
                           <input type="text" id="cantidad" name="cantidad" placeholder="Ingrese Cantidad..." class="form-control">  
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-3">
-                          <label for="deposito">Deposito <strong style="color: #dd4b39">*</strong> :</label>
+                          <label for="deposito">Depósito <strong style="color: #dd4b39">*</strong> :</label>
                           <select  id="deposito" name="deposito" class="form-control" />  
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-3">
@@ -93,9 +95,9 @@
                               <tr>                      
                                 <th></th>
                                 <th>Código</th>
-                                <th>Descripcion</th>
+                                <th>Descripción</th>
                                 <th>Cantidad</th>
-                                <th>Deposito</th>
+                                <th>Depósito</th>
                               </tr>
                             </thead>
                             <tbody></tbody>
@@ -124,28 +126,78 @@
 var idslote = {}; 
 var j = 0;
 
-traer_codigo();
-function traer_codigo(){
+$("#fecha").datetimepicker({
+  format: 'YYYY-MM-DD HH:mm:ss',
+  locale: 'es',
+});
+
+
+/*traer_codigo();
+function traer_codigo(){ // Ok
   $.ajax({
-    type: 'POST',
     data: { },
-    url: 'index.php/Remito/getcodigo', //index.php/
+    dataType: 'json',
+    type: 'POST',
+    url: 'index.php/Remito/getcodigo',
     success: function(data){
       var opcion  = "<option value='-1'>Seleccione...</option>";
       $('#codigo').append(opcion);
       for(var i=0; i < data.length ; i++) 
       {   
         var nombre = data[i]['artBarCode'];
-        var opcion  = "<option value='"+data[i]['artId']+"'>" +nombre+ "</option>" ;
+        var opcion = "<option value='"+data[i]['artId']+"'>" +nombre+ "</option>" ;
         $('#codigo').append(opcion); 
       }
     },
     error: function(result){
-      console.log(result);
+      console.error("Error al traer código de insumo.")
+      console.table(result);
     },
-      dataType: 'json'
   });
-}
+}*/
+// autocomplete para codigo
+var dataF = function () {
+  var tmp = null;
+  $.ajax({
+    'async': false,
+    'type': "POST",
+    'global': false,
+    'dataType': 'json',
+    'url': "index.php/Remito/getcodigo",
+    'success': function (data) {
+      tmp = data;
+    }
+  });
+  return tmp;
+}();
+$("#codigo").autocomplete({
+  source: dataF,
+  delay: 100,
+  minLength: 1,
+  /*response: function(event, ui) {
+    var noResult = { value:"",label:"No se encontraron resultados" };
+    ui.content.push(noResult);
+  },*/
+  focus: function(event, ui) {
+    // prevent autocomplete from updating the textbox
+    event.preventDefault();
+    // manually update the textbox
+    $(this).val(ui.item.label);
+    $("#descripcion").val(ui.item.artDescription);
+  },
+  select: function(event, ui) {
+    // prevent autocomplete from updating the textbox
+    event.preventDefault();
+    // manually update the textbox and hidden field
+    //$(this).val(ui.item.value);//label
+    $("#codigo").val(ui.item.label); //value
+    $("#descripcion").val(ui.item.artDescription);
+    $("#id_herr").val(ui.item.value);
+    //traer_deposito(ui.item.value);
+    //console.log("id articulo de orden insumo: ") 
+    //console.log(ui.item.value);                
+  },
+});
 
 traer_deposito();
 function traer_deposito(){
@@ -162,13 +214,13 @@ function traer_deposito(){
       for(var i=0; i < data.length ; i++) 
       {    
         var nombre = data[i]['depositodescrip'];
-        var opcion  = "<option value='"+data[i]['depositoId']+"'>" +nombre+ "</option>" ; 
+        var opcion = "<option value='"+data[i]['depositoId']+"'>" +nombre+ "</option>" ; 
         $('#deposito').append(opcion); 
       }
     },
     error: function(result){
       console.log("entre por el error en deposito");
-      alert("este articulo no esta en deposito");             
+      //alert("este articulo no está en deposito");             
       console.log(result);
     },
     dataType: 'json'
@@ -176,12 +228,12 @@ function traer_deposito(){
 }
 
 traer_proveedor();
-function traer_proveedor(){
+function traer_proveedor(){ // Ok
   $('#proveedor').html(""); 
   $.ajax({
     type: 'POST',
     data: {},
-    url: 'index.php/Remito/getproveedor', //index.php/
+    url: 'index.php/Remito/getproveedor',
     success: function(data){
       console.log("exito en proveedor");
       console.log(data);
@@ -190,13 +242,13 @@ function traer_proveedor(){
       for(var i=0; i < data.length ; i++) 
       {    
         var nombre = data[i]['provnombre'];
-        var opcion  = "<option value='"+data[i]['provid']+"'>" +nombre+ "</option>" ; 
+        var opcion = "<option value='"+data[i]['provid']+"'>" +nombre+ "</option>" ; 
         $('#proveedor').append(opcion); 
       }
     },
     error: function(result){
-      console.log("entre por el error en proveedor");
-      console.log(result);
+      console.error("entre por el error en proveedor");
+      console.table(result);
     },
     dataType: 'json'
   });
@@ -239,14 +291,14 @@ function limpiar(){
   $('#tablainsumo tbody tr').remove();
 }
 
-$('#codigo').change(function(){
+/*$('#codigo').change(function(){
   var artId = $(this).val();
   console.log("Id de articulo");
   console.log(artId);
   $.ajax({
     type: 'POST',
     data: {artId:artId }, 
-    url: 'index.php/Remito/getdescrip', //index.php/
+    url: 'index.php/Remito/getdescrip',
     success: function(data){
       console.log(data);
       // if (data[0]['depositoid']!="")
@@ -256,31 +308,31 @@ $('#codigo').change(function(){
       $('#descripcion').val(descrip);
       //$('#deposito').val(depo) }
       //else 
-      /*{
+      / *{
         alert("El articulo seleccionado no esta deposito");
         var descrip = data[0]['artDescription'];
          $('#descripcion').val(descrip); 
-      } */    
+      } * /    
     },
     error: function(result){
       console.log(result);
     },
     dataType: 'json'
   });  
-});
+});*/
 
 
 //agrega insumos a la tabla detainsumos
 var i = 1;
 $('#agregar').click(function (e) {
-  var $codigo     = $("select#codigo option:selected").html(); 
-  var id_her      = $('#codigo').val(); //id de articulo
+  var $codigo     = $("#codigo").val(); 
+  var id_her      = $('#id_herr').val(); //id de articulo
   var descripcion = $('#descripcion').val();
   var cantidad    = $('#cantidad').val();
   var deposito    = $("select#deposito option:selected").html(); 
   var id_deposito = $('#deposito').val();
   var tr          = "<tr id='"+i+"'>"+
-    "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+    "<td ><i class='fa fa-ban elirow text-light-blue' style='cursor: 'pointer'></i></td>"+
     "<td>"+$codigo+"</td>"+
     "<td class='hidden' id='"+id_her+"'>"+id_her+"</td>"+
     "<td>"+descripcion+"</td>"+
@@ -306,9 +358,11 @@ $('#agregar').click(function (e) {
     $('#error2').fadeOut('slow'); // lo levanto
   }
   if($codigo !=0 && cantidad >0 && id_deposito>0  ){
-    $.ajax({
-      type: 'POST',
+    $('#tablainsumo tbody').append(tr);
+    /*$.ajax({
+      dataType: 'json',
       data: { id_her:id_her, id_deposito:id_deposito}, 
+      type: 'POST',
       url: 'index.php/Remito/alerta', //se fija en la tabla lote , con el id de articulo y id d deposito
       success: function(data){
         //traigo la cantidad
@@ -319,38 +373,37 @@ $('#agregar').click(function (e) {
         console.log(datos);
         if(Error2 == false){
           Error2 = true;
-          alert("El articulo esta en el deposito seleccionado en lote ")
+          //alert("El articulo esta en el deposito seleccionado en lote ")
           //el deposito y el articulos estan en lote y devielve la cantidad
           $('#error1').fadeOut('slow');//levanta error1
           $('#error2').fadeIn('slow');
           traer_lote(id_her,id_deposito); 
           j++;
           $('#tablainsumo tbody').append(tr);
-          $('#error2').fadeOut('slow'); //levanta errror2
+          $('#error2').delay(1500).fadeOut('slow'); //levanta errror2
         }
         else {
           if(Error1== true){
             Error1=false;
-            $('#error1').fadeOut('slow');//levanta error1
+            $('#error1').delay(1500).fadeOut('slow');//levanta error1
             return;
           }
         }
       },
       error: function(result){
         console.log("este articulo en el deposito seleccionado no esta en lote ");
-        alert("este articulo en el deposito seleccionado no esta en lote ");  
+        //alert("este articulo en el deposito seleccionado no esta en lote ");  
         console.log(result); // lo tengo que agregar 
-        if(Error1== false){
+        if(Error1==false){
           Error1=true;
           $('#error2').fadeOut('slow');
           $('#error1').fadeIn('slow');
-          $('#tablainsumo tbody').append(tr);
+          //$('#tablainsumo tbody').append(tr);
         }
-        $('#error1').fadeOut('slow');//levanta error1
+        $('#error1').delay(1500).fadeOut('slow');//levanta error1
         return; 
       },
-      dataType: 'json'
-    });
+    });*/
 
     $(document).on("click",".elirow",function(){
       var parent = $(this).closest('tr');
@@ -441,6 +494,7 @@ function guardar(){
       success: function(data){
         console.log("exito");
         console.log(data);
+        regresa();
       },
       error: function(result){
         console.log("entro por el error");
@@ -462,4 +516,10 @@ function guardar(){
 
 }
 
+function regresa(){
+  WaitingOpen();
+  $('#content').empty();
+  $("#content").load("<?php echo base_url(); ?>index.php/Remito/index/<?php echo $permission; ?>");
+  WaitingClose();
+}
 </script>

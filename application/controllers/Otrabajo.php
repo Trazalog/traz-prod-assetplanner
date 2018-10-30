@@ -104,25 +104,26 @@ class Otrabajo extends CI_Controller {
 		$usrId     = $userdata[0]['usrId'];
 		$empresaId = $userdata[0]['id_empresa'];
 	    
-		$id_orden    = $this->input->post('id_orden');
-		$num         = $this->input->post('num');
-		$descripcion = $this->input->post('descripcion');
-		$equipo      = $this->input->post('equipo');
-		$sucursal    = $this->input->post('sucursal');
-		$proveedor   = $this->input->post('proveedor');
+		$num           = $this->input->post('num');
+		$descripcion   = $this->input->post('descripcion');
+		$fecha_entrega = $this->input->post('fecha_entrega');
+		$equipo        = $this->input->post('equipo');
+		$sucursal      = $this->input->post('sucursal');
+		$proveedor     = $this->input->post('proveedor');
     	
     	$datos2 = array(
-			'nro'          => $num,
-			'fecha_inicio' => date('Y-m-d H:i:S'),
-			'descripcion'  => $descripcion,
-			'estado'       => 'C',
-			'id_usuario'   => $usrId,
-			'id_usuario_a' => 1,
-			'id_sucursal'  => $sucursal,
-			'id_proveedor' => $proveedor,
-			'id_equipo'    => $equipo,
-			'tipo'         => 1,
-			'id_empresa'   => $empresaId
+			'nro'           => $num,
+			'fecha_inicio'  => date('Y-m-d H:i:S'),
+			'fecha_entrega' => $fecha_entrega,
+			'descripcion'   => $descripcion,
+			'estado'        => 'C',
+			'id_usuario'    => $usrId,
+			'id_usuario_a'  => 1,
+			'id_sucursal'   => $sucursal,
+			'id_proveedor'  => $proveedor,
+			'id_equipo'     => $equipo,
+			'tipo'          => 1,
+			'id_empresa'    => $empresaId
 		);
 
      	$result = $this->Otrabajos->guardar_agregar($datos2);
@@ -206,9 +207,7 @@ class Otrabajo extends CI_Controller {
 		else echo "nada";
 	}
 
-
-
-
+	
 
 
 

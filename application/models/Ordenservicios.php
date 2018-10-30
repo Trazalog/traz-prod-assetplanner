@@ -1,56 +1,374 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-
-class Ordenservicios extends CI_Model{
+class Ordenservicios extends CI_Model {
 	
-    function __construct(){
-        
+    function __construct()
+    {
 		parent::__construct();
 	}
 	
-	function index(){
-
-		echo "cargo modelo Ordenservicios";
-	}
-
-	function getEquipos($data = null){
-
-        $id = $data['id_equipo'];       
-
+    function getOrdServiciosList()
+    {
+        $userdata  = $this->session->userdata('user_data');
+        $empresaId = $userdata[0]['id_empresa'];
         $this->db->select('
-                equipos.codigo AS nomb_equipo,                
-                equipos.descripcion AS desc_equip,
-                equipos.fecha_ingreso,
-                equipos.fecha_baja,
-                equipos.fecha_garantia,
-                equipos.estado,
-                equipos.marca,
-                grupo.descripcion AS grupo_desc,
-                sector.descripcion As sector_desc,
-                equipos.ubicacion');
-        
+            orden_servicio.id_orden, 
+            orden_servicio.estado,
+            orden_servicio.comprobante,
+            orden_servicio.fecha, 
+            orden_servicio.id_ot,
+            orden_trabajo.descripcion AS descripcion_ot,
+            equipos.codigo AS equipo
+        ');
+            /*
+            equipos.id_equipo,
+            equipos.codigo,
+            solicitud_reparacion.id_solicitud,
+            solicitud_reparacion.solicitante, 
+            solicitud_reparacion.f_solicitado,                     
+            solicitud_reparacion.causa,*/
+        $this->db->from('orden_servicio');
+        $this->db->join('orden_trabajo', 'orden_servicio.id_ot = orden_trabajo.id_orden');
+        $this->db->join('equipos', 'orden_servicio.id_equipo = equipos.id_equipo');
+        $this->db->where('orden_servicio.id_empresa', $empresaId);
+        //$this->db->join('solicitud_reparacion', 'orden_servicio.id_solicitudreparacion = solicitud_reparacion.id_solicitud');
+        //$this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo');
+        $query = $this->db->get();
+
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();  
+        }
+        else
+        {   
+            return array();
+        }      
+    }
+
+	function getEquipos($data = null) // Ok
+    {
+        $id = $data['id_equipo'];       
+        $this->db->select('
+            equipos.codigo AS nomb_equipo,                
+            equipos.descripcion AS desc_equip,
+            equipos.fecha_ingreso,
+            equipos.fecha_baja,
+            equipos.fecha_garantia,
+            equipos.estado,
+            equipos.marca,
+            grupo.descripcion AS grupo_desc,
+            sector.descripcion As sector_desc,
+            equipos.ubicacion
+            ');
+            //contratistas.id_contratista,
+            //contratistas.nombre as contratista,
         $this->db->from('equipos');        
         $this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo');
         $this->db->join('sector', 'equipos.id_sector = sector.id_sector');
+        //$this->db->join('contratistaquipo', 'equipos.id_equipo = contratistaquipo.id_equipo');
+        //$this->db->join('contratistas', 'contratistaquipo.id_contratista = contratistas.id_contratista');
         $this->db->group_by('equipos.id_equipo');
         $this->db->having('equipos.id_equipo', $id);
         $query = $this->db->get();      
-
-        foreach ($query->result_array() as $row){ 
-
-                $data['nomb_equipo'] = $row['nomb_equipo'];
-                $data['desc_equipo'] = $row['desc_equip'];
-                $data['fecha_ingreso'] = $row['fecha_ingreso'];
-                $data['fecha_baja'] = $row['fecha_baja'];
+        foreach ($query->result_array() as $row)
+        { 
+                $data['nomb_equipo']    = $row['nomb_equipo'];
+                $data['desc_equipo']    = $row['desc_equip'];
+                $data['fecha_ingreso']  = $row['fecha_ingreso'];
+                $data['fecha_baja']     = $row['fecha_baja'];
                 $data['fecha_garantia'] = $row['fecha_garantia'];
-                $data['estado'] = $row['estado'];
-                $data['marca'] = $row['marca'];
-                $data['grupo_desc'] = $row['grupo_desc'];
-                $data['sector'] = $row['sector_desc'];
-                $data['ubicacion'] = $row['ubicacion'];
+                $data['estado']         = $row['estado'];
+                $data['marca']          = $row['marca'];
+                $data['grupo_desc']     = $row['grupo_desc'];
+                $data['sector']         = $row['sector_desc'];
+                $data['ubicacion']      = $row['ubicacion'];
+                //$data['id_contratista'] = $row['id_contratista'];
+                //$data['contratista']    = $row['contratista'];
                 return $data;
         }
     }
+
+    function getDatosOrdenServicios($data = null) // Ok ¿al pedo?
+    {
+        $id = $data['id_ordenservicio'];       
+        $this->db->select('
+            orden_servicio.lectura,
+            orden_servicio.comprobante,
+            contratistas.id_contratista,
+            contratistas.nombre');
+        $this->db->from('orden_servicio');
+        $this->db->join('contratistas', 'contratistas.id_contratista = orden_servicio.id_contratista');
+        $this->db->where('orden_servicio.id_solicitudreparacion', $id);
+        $query = $this->db->get();
+        foreach ($query->result_array() as $row)
+        { 
+                $data['comprobante']    = $row['comprobante'];
+                $data['lectura']        = $row['lectura'];
+                $data['contratista']    = $row['nombre'];
+                $data['id_contratista'] = $row['id_contratista'];
+                return $data;
+        }
+    }
+
+    function getHerramientas() // Ok
+    {
+        $userdata  = $this->session->userdata('user_data');
+        $empresaId = $userdata[0]['id_empresa'];
+        $this->db->select('herrdescrip, herrmarca, herrcodigo, herrId');
+        $this->db->from('herramientas');
+        $this->db->where('id_empresa', $empresaId);
+        $this->db->where('equip_estad !=', 'AN');
+        $query = $this->db->get();
+        $i     = 0;
+        foreach ($query->result() as $row)
+        {
+            $herramientas[$i]['label'] = $row->herrdescrip;
+            $herramientas[$i]['value'] = $row->herrmarca;
+            $herramientas[$i]['codherram'] = $row->herrcodigo;
+            $herramientas[$i]['herrId'] = $row->herrId;
+            $i++;
+        }
+        return $herramientas;
+    }
+
+    function getOperarios() // Ok
+    {
+        $userdata  = $this->session->userdata('user_data');
+        $empresaId = $userdata[0]['id_empresa'];
+        $this->db->select('usrId, usrLastName, usrname');
+        $this->db->from('sisusers');
+        $this->db->where('id_empresa', $empresaId);
+        $this->db->where('estado', 'AC');
+        $query = $this->db->get();
+        $i     = 0;
+        foreach ($query->result() as $row)
+        {   
+            $equipos[$i]['label'] = $row->usrLastName.", ". $row->usrname ;
+            $equipos[$i]['value'] = $row->usrId;
+            $i++;
+        }
+        return $equipos; 
+    }
+
+    function setOrdenServicios($data = null)
+    {
+        //dump_exit($data);
+        if($data == null)
+        {
+            return false;
+        }
+        else
+        {
+            $userdata      = $this->session->userdata('user_data');
+            $usrId         = $userdata[0]['usrId'];     // guarda usuario logueado
+            $empresaId     = $userdata[0]['id_empresa'];
+            ////////// para guardar herramientas                 
+            if ( !empty($data['herramienta']) ){
+                $date          = $data['fecha'];
+                $valeSalHerram = array(
+                    'fecha'      => $date,
+                    'usrid'      => $usrId,
+                    'id_empresa' => $empresaId
+                );
+                if ( ! $this->db->insert('tbl_valesalida', $valeSalHerram) )
+                {
+                    return $this->db->error(); // Has keys 'code' and 'message'
+                }
+                $idInsertVale = $this->db->insert_id();
+
+                // detalle herramientas
+                for ($i=0; $i < count($data['herramienta']) ; $i++)
+                { 
+                    $detavalHerram["valesid"]    = $idInsertVale;
+                    $detavalHerram["herrId"]     = $data["herramienta"][$i][3];
+                    $detavalHerram["id_empresa"] = $empresaId;
+                    if ( ! $this->db->insert('tbl_detavalesalida', $detavalHerram) )
+                    {
+                        return $this->db->error(); // Has keys 'code' and 'message'
+                    }
+                }
+            }
+            else
+            {
+                $idInsertVale = 1;    // no puede ser 0 por la clave foranea
+            }
+
+            ////// guarda orden servicio                 
+            //$lectura                = $data['lectura'];
+            //$comprobante            = $data['comprobante'];
+            $id_equipo              = $data['id_equipo'];
+            $id_contratista         = $data['id_contratista'];
+            $id_solicitudreparacion = $data['id_solicitudreparacion'];
+            $id_ot                  = $data['id_ot'];
+            $horometroinicio        = $data['horometro_inicio'];
+            $horometrofin           = $data['horometro_fin'];
+            $fechahorainicio        = $data['fecha_inicio'];
+            $fechahorafin           = $data['fecha_fin'];
+            $ord_serv               = array(
+                'fecha'                  => date('Y-m-d H:i:s'),
+                //'lectura'                => $lectura,
+                'id_equipo'              => $id_equipo,
+                'id_contratista'         => $id_contratista,
+                'id_solicitudreparacion' => $id_solicitudreparacion,
+                'valesid'                => $idInsertVale,
+                'id_ot'                  => $id_ot,
+                'estado'                 => 'C',
+                'id_empresa'             => $empresaId,
+                'fechahorainicio'        => $fechahorainicio,
+                'fechahorafin'           => $fechahorafin,
+                'horometroinicio'        => $horometroinicio,
+                'horometrofin'           => $horometrofin,
+            );
+            if ( ! $this->db->insert('orden_servicio', $ord_serv) )
+            {
+                return $this->db->error(); // Has keys 'code' and 'message'
+            }
+            $idInsertOrden = $this->db->insert_id();
+
+            // deta orden servicio
+            for ($i=0; $i < count($data['tarea']) ; $i++)
+            {
+                $tarea_id        = $data['tarea'][$i][0];
+                $tarea           = array(
+                    'id_ordenservicio' => $idInsertOrden,
+                    'id_tarea'         => $tarea_id
+                );
+                if ( ! $this->db->insert('deta_ordenservicio', $tarea) )
+                {
+                    return $this->db->error(); // Has keys 'code' and 'message'
+                }
+            }
+
+            ////// actualiza estado de solicitud de reparacion
+            $estado['estado'] = 'C';
+            $this->db->where('id_solicitud', $id_solicitudreparacion);
+            $this->db->update('solicitud_reparacion', $estado);  
+
+            ////// guarda Operarios
+            if (!empty($data['operario'])) 
+            {
+                $fechaSist = date('Y-m-d H:i:s');
+                for ($i=0; $i < count($data['operario']) ; $i++) 
+                {
+                    $asigUsr["usrId"]     = $data['operario'][$i][1];
+                    $asigUsr["id_orden"]  = $idInsertOrden;      // id orden servicio
+                    $asigUsr["fechahora"] = $fechaSist;
+                    if ( ! $this->db->insert('asignausuario', $asigUsr) )
+                    {
+                        return $this->db->error(); // Has keys 'code' and 'message'
+                    }
+                }
+            }
+
+            return true;
+        }
+    }
+
+    function getLecturasOrden($data) // Ok
+    {
+        $id_orden = $data['id_orden'];
+        $this->db->select('
+            orden_servicio.horometroinicio,
+            orden_servicio.horometrofin,
+            orden_servicio.fechahorainicio,
+            orden_servicio.fechahorafin
+            ');
+        $this->db->from('orden_servicio');
+        $this->db->where('orden_servicio.id_orden', $id_orden);
+        $query = $this->db->get();
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();
+        }
+        else
+        {   
+            return false;
+        }   
+    }
+
+    function getTareasOrden($data) // Ok
+    {
+        $id_orden = $data['id_orden'];
+        $this->db->select('
+            deta_ordenservicio.id_tarea
+            ');
+        $this->db->from('orden_servicio');
+        $this->db->join('deta_ordenservicio', 'deta_ordenservicio.id_ordenservicio = orden_servicio.id_orden');
+        $this->db->where('orden_servicio.id_orden', $id_orden);
+        $query = $this->db->get();
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();
+        }
+        else
+        {   
+            return false;
+        }   
+    }
+
+    function getHerramOrdenes($data) // Ok
+    {
+        $id_orden = $data['id_orden'];
+        $this->db->select('
+            herramientas.herrcodigo,
+            herramientas.herrmarca,
+            herramientas.herrdescrip
+        ');
+        $this->db->from('orden_servicio');        
+        $this->db->join('tbl_valesalida', 'orden_servicio.valesid = tbl_valesalida.valesid');        
+        $this->db->join('tbl_detavalesalida', 'tbl_detavalesalida.valesid = tbl_valesalida.valesid');
+        $this->db->join('herramientas', 'tbl_detavalesalida.herrId = herramientas.herrId');        
+        $this->db->where('orden_servicio.id_orden', $id_orden);
+        $query = $this->db->get();
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();  
+        }
+        else
+        {   
+            return array();
+        }   
+    }
+
+    function getOperariosOrden($data)
+    {
+        $id_orden = $data['id_orden'];
+        $this->db->select('
+            sisusers.usrId,
+            sisusers.usrLastName,
+            sisusers.usrname
+        ');
+        $this->db->from('sisusers');        
+        $this->db->join('asignausuario', 'asignausuario.usrId = sisusers.usrId');        
+        $this->db->join('orden_servicio', 'asignausuario.id_orden = orden_servicio.id_orden'); 
+        $this->db->where('orden_servicio.id_orden', $id_orden);
+        $query = $this->db->get();
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();  
+        }
+        else
+        {   
+            return array();
+        }                
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     function getsolicitudes($data=null){
 
@@ -114,12 +432,12 @@ class Ordenservicios extends CI_Model{
         return $query->result_array();                
     }
 
-    function getContratistas(){
-
-        $query = $this->db->query("SELECT `id_contratista`, `nombre` FROM `contratistas`");
-        $contratistas = $query->result_array();
-        
-        return $contratistas;
+    function getContratistas()
+    {
+        $this->db->select('id_contratista, nombre');
+        $this->db->from('contratistas');
+        $query = $this->db->get();
+        return $query->result_array();
     }
 
     function getArticulos(){
@@ -171,50 +489,7 @@ class Ordenservicios extends CI_Model{
         return $depositos;
     }
 
-    function getHerramientas(){
-        
-        $this->db->select('herrdescrip, herrmarca, herrcodigo, herrId');
-        $this->db->from('herramientas');
-        $this->db->where('equip_estad', 'AC');
-        $query = $this->db->get();
-        $i=0;
-        foreach ($query->result() as $row){
 
-            $herramientas[$i]['label'] = $row->herrdescrip;
-            $herramientas[$i]['value'] = $row->herrmarca;
-            $herramientas[$i]['codherram'] = $row->herrcodigo;
-            $herramientas[$i]['herrId'] = $row->herrId;
-
-            $i++;
-        }
-        return $herramientas;
-    }
-
-    function getHerramOrdenes($data){
-        $id_orden = $data['id_orden'];
-
-        $this->db->select(
-                    'herramientas.herrcodigo,
-                    herramientas.herrmarca,
-                    herramientas.herrdescrip');
-        
-        $this->db->from('orden_servicio');        
-        $this->db->join('tbl_valesalida', 'orden_servicio.valesid = tbl_valesalida.valesid');        
-        $this->db->join('tbl_detavalesalida', 'tbl_detavalesalida.valesid = tbl_valesalida.valesid');        
-        $this->db->join('herramientas', 'tbl_detavalesalida.herrId = herramientas.herrId');        
-        $this->db->where('orden_servicio.id_orden', $id_orden);
-
-        $query = $this->db->get();
-
-        if ($query->num_rows()!=0)
-        {
-            return $query->result_array();  
-        }
-        else
-        {   
-            return array();
-        }   
-    }
 
     function getTareas(){      
 
@@ -224,44 +499,7 @@ class Ordenservicios extends CI_Model{
         return $tareas;
     }
 
-    function getTareasOrden($data){
-        
-        $id_orden = $data['id_orden'];
 
-        $this->db->select(
-                    'tareas.descripcion, 
-                    componentes.descripcion AS componente,
-                    deta_ordenservicio.tiempo AS horas,
-                    deta_ordenservicio.monto');
-        $this->db->from('orden_servicio');
-        $this->db->join('deta_ordenservicio', 'deta_ordenservicio.id_ordenservicio = orden_servicio.id_orden');
-        $this->db->join('tareas', 'deta_ordenservicio.id_tarea = tareas.id_tarea');
-        $this->db->join('componentes', 'deta_ordenservicio.id_componente = componentes.id_componente');
-        $this->db->where('orden_servicio.id_orden', $id_orden);
-        
-        $query = $this->db->get();
-
-        if ($query->num_rows()!=0)
-        {
-            return $query->result_array();  
-        }
-        else
-        {   
-            return array();
-        }   
-    }
-
-    function getOperarios(){
-        $query = $this->db->query("SELECT `usrId`, CONCAT(`usrLastName`,', ',`usrname`)  as `operario` FROM `sisusers`");
-        $i=0;
-        foreach ($query->result() as $row)
-        {   
-            $equipos[$i]['label'] = $row->operario;
-            $equipos[$i]['value'] = $row->usrId;
-            $i++;
-        }
-        return $equipos; 
-    }
 
     function validaOperarios($data){
         
@@ -282,46 +520,7 @@ class Ordenservicios extends CI_Model{
         return $resp;
     }
 
-    function getOperariosOrden($data){
 
-        $id_orden = $data['id_orden'];
-
-        $sql = "SELECT sisusers.usrId, CONCAT(sisusers.usrLastName,',' ,sisusers.usrname)  as operario FROM sisusers
-                INNER JOIN asignausuario ON asignausuario.usrId = sisusers.usrId
-                INNER JOIN orden_servicio ON asignausuario.id_orden = orden_servicio.id_orden
-                WHERE orden_servicio.id_orden = $id_orden";
-        $query = $this->db->query($sql);
-        return $query->result_array();              
-    }
-
-    function getOrdServiciosList(){
-                
-        $this->db->select(
-                    'orden_servicio.id_orden, 
-                    orden_servicio.estado,
-                    equipos.id_equipo,
-                    orden_servicio.comprobante,
-                    orden_servicio.fecha, 
-                    equipos.codigo,
-                    solicitud_reparacion.id_solicitud,
-                    solicitud_reparacion.solicitante, 
-                    solicitud_reparacion.f_solicitado,                     
-                    solicitud_reparacion.causa');
-        $this->db->from('orden_servicio');
-        $this->db->join('solicitud_reparacion', 'orden_servicio.id_solicitudreparacion = solicitud_reparacion.id_solicitud');
-        $this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo');
-        
-        $query = $this->db->get();
-
-        if ($query->num_rows()!=0)
-        {
-            return $query->result_array();  
-        }
-        else
-        {   
-            return array();
-        }      
-    }
 
     function getSolEquipCausas($data){
 
@@ -385,181 +584,6 @@ class Ordenservicios extends CI_Model{
         // $this->db->update('solicitud_reparacion', $estado);        
     }
 
-    function setOrdenServicios($data = null){
-        
-        if($data == null) {
-            return false;
-        }
-        else{    
 
-            $this->db->trans_start();   // inicio transaccion
-            
-            ////////// para guardar herramientas                 
-                if ( !empty($data['herrid']) ){
-                    $date = $data['fecha'];
-                    $date = explode('/', $date);                    
-                    
-                    $userdata = $this->session->userdata('user_data');
-                    $usrId = $userdata[0]['usrId'];     // guarda usuario logueado
-
-                    $valeSalHerram = array(
-                                        'fecha' => $date[2].'-'.$date[1].'-'.$date[0],
-                                        'usrid' => $usrId
-                                    );
-                    $this->db->insert('tbl_valesalida', $valeSalHerram);
-                    $idInsertVale = $this->db->insert_id();
-
-                            // detalle herramientas
-                    for ($i=0; $i < count($data['herrid']) ; $i++) { 
-                        
-                        $detavalHerram["valesid"] = $idInsertVale;
-                        $detavalHerram["herrId"] = $data["herrid"][$i];
-                        
-                        $this->db->insert('tbl_detavalesalida', $detavalHerram);
-                    }
-                }else{
-                    $idInsertVale = 1;    // no puede ser 0 por la clave foranea
-                }
-
-            ///////// guarda insumos
-                if (!empty($data['insum_Id'])) {
-                    
-                    //  orden insumos                    
-                    $userdata = $this->session->userdata('user_data');
-                    $usrId = $userdata[0]['usrId'];     // guarda usuario logueado   
-                    $comprobante = $data['comprobante'];
-
-                    $ordIns = array(
-                                'fecha' => date('Y-m-d H:i:s'),
-                                'solicitante' => $usrId,
-                                'comprobante' => $comprobante
-                                );
-                    $this->db->insert('orden_insumos', $ordIns);
-                    $idInsertOrdInsum = $this->db->insert_id();
-                    
-                    //  /orden insumos
-
-                    //   deta orden insumos
-                    $depo = $data['depositoid']; 
-
-                    for($i=0; $i<count($data['cant_insumos']); $i++) { // para cada insumo 
-                        
-                        $cant = $data['cant_insumos'][$i];   // cant de ins de un registro
-
-                        $depo['depoid'] = $data['depositoid'][$i]; 
-                        $depo['id_insum'] = $data['insum_Id'][$i];                        
-                        
-                        $lote = $this->getLotesActivos($depo); 
-                       
-                       if ( $lote['cantidad'] > 0 ) {                     //lote con insumos
-                           
-                           if ( $lote['cantidad'] >= $cant ) {
-
-                               // actualizo en deta_ordeninsumo y resto en lote
-                               $valEnLote['cantidad'] = $lote['cantidad'] - $cant;   
-                               $id_lote = $lote['id_lote'];      
-                               $this->db->where('loteid', $id_lote);
-                               $this->db->update('tbl_lote', $valEnLote);       // resto cantidad en lote
-
-                               $detOrdenIns = array(
-                                            'id_ordeninsumo' => $idInsertOrdInsum, // viene de orden insumo
-                                            'loteid' => $id_lote,
-                                            'cantidad' => $cant
-                                            );
-                                $this->db->insert('deta_ordeninsumos', $detOrdenIns); 
-
-                           }
-                           else{    //no alcanza lote
-                                echo "no alcanza la cantidad en este lote: ";
-                                echo $lote['id_lote'];
-                           }
-
-                       }
-                       else{
-                            // lote sin insumos para ese deposito ( cambie deposito )
-                            //return false;
-                       }                   
-                    } // fin for(){}
-
-                   //   / deta orden insumos
-                }else{
-                   $idInsertOrdInsum = 1;   // no puede ser 0 or la clave foranea
-                } 
-
-            ////// guarda orden servicio                 
-
-                $comprobante = $data['comprobante'];
-                $id_equipo = $data['id_equipoSolic'];
-                $id_contratista = $data['contratista'];
-                $id_solicitudreparacion = $data['id_solicitudreparacion'];
-
-                $ord_serv = array(
-                                'fecha' => date('Y-m-d H:i:s'),
-                                'comprobante' => $comprobante,
-                                'id_equipo' => $id_equipo,
-                                'id_contratista' => $id_contratista,
-                                'id_solicitudreparacion' => $id_solicitudreparacion,
-                                'valesid' => $idInsertVale,
-                                'id_orden_insumo' => $idInsertOrdInsum,
-                                'estado' => 'C'
-                            );
-
-                $this->db->insert('orden_servicio', $ord_serv);
-                $idInsertOrden = $this->db->insert_id();
-
-                /// deta
-              
-                for ($i=0; $i < count($data['tarea_id']) ; $i++) {
-                    $tarea_id = $data['tarea_id'][$i];
-                    $cant_horas = $data['cant_horas'][$i];                    
-                    $monto = $data['costos'][$i];
-                    $comp_id = $data['comp_id'][$i];
-                    $rh = $idInsertOrden; // guarda id Orden de Servicio
-                    
-                    $tarea = array(
-                                'id_ordenservicio' => $idInsertOrden,
-                                'id_tarea' => $tarea_id,
-                                'tiempo' => $cant_horas,
-                                'monto' => $monto,
-                                'id_componente' => $comp_id,
-                                'rh' => $rh
-                            );
-
-                    $this->db->insert('deta_ordenservicio', $tarea);
-                }
-
-            ////// actualiza estado de solicitud de reparacion
-
-                $estado['estado'] = 'C';
-                $this->db->where('id_solicitud', $id_solicitudreparacion);
-                $this->db->update('solicitud_reparacion', $estado);  
-
-            ////// guarda Operarios
-                if (!empty($data['usrid'])) {
-
-                    $fechaSist = date('Y-m-d H:i:s');
-                    
-                    for ($i=0; $i < count($data['usrid']) ; $i++) { 
-
-                        $asigUsr["usrId"] = $data['usrid'][$i];
-                        $asigUsr["id_orden"] = $idInsertOrden;      // id orden servicio
-                        $asigUsr["fechahora"] = $fechaSist;
-                         
-                        $this->db->insert('asignausuario', $asigUsr);
-                    }
-
-                } 
-                
-            $this->db->trans_complete();
-
-             if ($this->db->trans_status() === FALSE)
-             {
-                 return false;  
-             }
-             else{
-                 return true;
-             }    
-        }
-    }
 }
 

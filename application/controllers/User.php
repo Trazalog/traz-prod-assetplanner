@@ -47,7 +47,7 @@ class user extends CI_Controller {
 		$dataForm['usrNick'] = $_POST['usrNick'];
 		$dataForm['usrName'] = $_POST['usrName'];
 		$dataForm['usrLastName'] = $_POST['usrLastName'];
-		$dataForm['usrComision'] = $_POST['usrComision'];
+		//$dataForm['usrComision'] = $_POST['usrComision'];
 		$dataForm['usrPassword'] = $_POST['usrPassword'];
 		$dataForm['grpId'] = $_POST['grpId'];
 
