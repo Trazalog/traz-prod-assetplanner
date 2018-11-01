@@ -1088,8 +1088,6 @@ $(document).ready(function(event) {
       var desc   = $(this).parent('td').parent('tr').data('causa');
       var id_solicitud = parseInt($(this).parent('td').parent('tr').data('idsolicitud'));
       desc = encodeURIComponent(desc);
-      //console.log("id solicitud de servicio: "+id_solicitud);
-      //alert(desc);
       WaitingOpen();
       $('#content').empty();
       $("#content").load("<?php echo base_url(); ?>index.php/Ordenservicio/cargarOrden/<?php echo $permission; ?>/"+id_sol+"/"+id_eq+"/"+desc+"/"+id_solicitud+"/");
