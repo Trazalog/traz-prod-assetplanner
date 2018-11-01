@@ -33,7 +33,7 @@
   </div>
 </div>
 
-<section class="content">
+<section class="content docImprimir">
   <div class="row">
     <div class="col-xs-12">
       <div class="box">
@@ -43,11 +43,17 @@
             //if (strpos($permission,'Add') !== false) {
             echo '<button class="btn btn-block btn-primary" style="width: 250px; margin-top: 10px;" id="listadoOT">Ver Listado Ordenes de Trabajo</button>';
             echo '<button class="btn btn-block btn-primary" style="width: 250px; margin-top: 10px;" id="listado">Ver Listado de Informes de servicio</button>';
+
+            echo '<button class="btn btn-block btn-primary" id="imprimir" style="width: 250px; margin-top: 10px;" id="listado">Imprimir</button>';
+            
             //}
           ?>
         </div><!-- /.box-header -->
 
         <div class="box-body">
+          <!-- <div class="row" style="margin-top:20px;">
+            <div class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px; border-radius: 18px; " title="Imprimir"  ></div>
+          </div> -->
           <!-- form  -->
           <form class="form-horizontal" role="form" id="form_order" action="" accept-charset="utf-8">
 
@@ -141,7 +147,8 @@
               <li role="presentation" class="active"><a href="#lecturaTab" aria-controls="lecturaTab" role="tab" data-toggle="tab">Lecturas</a></li>
               <li role="presentation"><a href="#tar" aria-controls="tar" role="tab" data-toggle="tab">Tareas</a></li>
               <li role="presentation"><a href="#herramientas" aria-controls="herramientas" role="tab" data-toggle="tab">Herramientas</a></li>
-              <li role="presentation"><a href="#rrhh" aria-controls="rrhh" role="tab" data-toggle="tab">Recursos Humanos</a></li>       
+              <li role="presentation"><a href="#rrhh" aria-controls="rrhh" role="tab" data-toggle="tab">Recursos Humanos</a></li> 
+              <li role="presentation"><a href="#insumosPed" aria-controls="insumosPed" role="tab" data-toggle="tab">Insumos </a></li>       
             </ul>
 
             <!-- Tab panes -->
@@ -345,6 +352,76 @@
                   </div>
                 </div><!-- end .panel-default -->
               </div><!-- end .tabpanel -->
+
+
+
+              <div role="tabpanel" class="tab-pane" id="insumosPed">
+                <!--  INSUMOS PEDIDOS  -->
+                <div class="panel panel-default">
+                  <div class="panel-heading"><span class="fa fa-file-text-o icotitulo" aria-hidden="true"></span> Insumos Usados
+                  </div>
+                  <div class="panel-body">
+                    
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <div class="alert alert-danger alert-dismissable" id="errorTareas" style="display: none">
+                          <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                          Revise que todos los campos obligatorios de las tareas realizadas estén seleccionados.
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- <input type="hidden" name="id-comp" class="id-comp" id="id-comp" value="" disabled> -->
+                    <!-- <div class="row">
+                      <div class="col-xs-12">
+                        <label for="tareas">Tarea <strong style="color: #dd4b39">*</strong> :</label>
+                        <input type="text" class="form-control tareas" name="tareas" id="tareas" placeholder="Ingrese tarea realizada">
+                      </div>
+                    </div> -->
+
+                    <!-- <div class="row">
+                      <div class="col-xs-12">
+                        <br>
+                        <button type="button" class="botones btn btn-primary" onclick="armarTablaTareas()">Agregar</button>
+                      </div>
+
+                    </div> -->
+
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <hr>
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <div class="alert alert-danger alert-dismissable" id="errorTable" style="display: none">
+                              <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                              Agregue al menos una tarea.
+                            </div>
+                          </div>
+                        </div>
+                        <table class="table table-condensed table-responsive" id="tablalistinsumos">
+                          <thead>
+                            <tr>
+                              <th>Nº O.Insumo</th>
+                              <th>Fecha</th>
+                              <th>Solicitante</th>
+                              <th>Código</th>
+                              <th>Descripción</th>
+                              <th>Cantidad</th>
+                            </tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                      <br/><br/>
+                    </div>
+                  </div><!-- end .panel-body -->
+                </div><!-- end .panel-default -->
+              </div><!-- end .tabpanel -->
+
+
+
+
+              
             </div>
           </form>      
 
@@ -360,6 +437,21 @@
 
 
 <script>
+
+$(document).on("click","#imprimir",function(){
+  //alert('alert print');
+  // Before printing show all the tab panel contents
+  $('.ui-tabs-panel').show();
+  // Print the page
+  window.print();
+  // After printing hide back all the tab panel contents which are supposed to be hidden
+  $('.ui-tabs-panel[aria-hidden=true]').hide();
+  //$(".docImprimir").printArea();  
+  //$('#tablalistareas').DataTable().row( $(this).closest('tr') ).remove().draw();
+}); 
+
+
+
 // Datepicker 
 $("#fechaOrden").datepicker({
   dateFormat: 'yy-mm-dd',
@@ -414,7 +506,6 @@ $.ajax({
   }
 });
 
-
 // Llenar tabla tareas
 var regTar = 0;              // variable incrementable en func, para diferenciar los inputs
 function armarTablaTareas(){ // inserta valores de inputs en la tabla 
@@ -449,8 +540,6 @@ function armarTablaTareas(){ // inserta valores de inputs en la tabla
 $(document).on("click",".elirow",function(){
   $('#tablalistareas').DataTable().row( $(this).closest('tr') ).remove().draw();
 });  
-
-
 
 // Trae herramientas
 var dataH = function () {
@@ -541,7 +630,6 @@ $(document).on("click","#delFileH",function(){
 });
 
 
-
 // Trae Operarios
 var dataO = function () {
   var tmp = null;
@@ -613,6 +701,53 @@ function armarTablaRecursos() {   // inserta valores de inputs en la tabla
     $('#operario').val('');
   }
 }
+
+getInsumos();
+function getInsumos(){
+
+  var id_ot = $("#numSolic").val(); 
+  $.ajax({
+    data: { id_ot:id_ot },
+    async: true,
+    type: "POST",
+    global: false,
+    dataType: 'json',
+    url: "Ordenservicio/getInsumosPorOT",
+    success: function (data) { 
+
+        tabla = $('#tablalistinsumos').DataTable();
+        tabla.clear().draw();
+
+        for(i = 0; i < data.length; i++) {
+          
+          var otNro = data[i]['nroOT'];
+          var fecha = data[i]['fecha'];
+          var solicitante = data[i]['nombre'] + ' '+ data[i]['apellido'];
+          var codigo = data[i]['codigo'];
+          var descripcion = data[i]['descripcion'];
+          var cantidad = data[i]['cantidad'];
+          //agrego valores a la tabla
+          $('#tablalistinsumos').DataTable().row.add( [            
+            otNro,
+            fecha,
+            solicitante,
+            codigo,
+            descripcion, 
+            cantidad             
+          ] );
+          $('#tablalistinsumos').DataTable().draw();        
+        }
+     
+
+
+    },
+    error: function(data){
+
+    }
+  });
+
+}
+
 
 // elimina fila de la tabla listareas
 $(document).on("click","#delRRHH",function(){
@@ -777,6 +912,12 @@ $('#tablalistareas, #tablalistherram, #tabModRecursos').DataTable({
     } ],
     "order": [[0, "asc"]],
 });
+
+
+</script>
+
+
+<script>
 /*
 // Carga vista Orden de Servicio -->
 $('#listado').click( function cargarVista(){
@@ -785,8 +926,6 @@ $('#listado').click( function cargarVista(){
   $("#content").load("<?php echo base_url(); ?>index.php/ordenservicio/index/<?php echo $permission; ?>/");
   WaitingClose();
 });
-
-
 
 // Trae Tareas 
 var dataF = function () {
@@ -805,9 +944,6 @@ var dataF = function () {
 }();
 
 // Trae Tareas 
-
-
-  
 
 // HERRAMIENTAS
   var regHerr = 0;                // variable incrementable en func, para diferenciar los inputs
