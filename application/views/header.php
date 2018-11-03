@@ -24,6 +24,8 @@
     <link rel="stylesheet" href="<?php echo base_url();?>assets/css/jquery-ui.min.css">
     <!-- DataTables 1.10.7 -->
     <link rel="stylesheet" href="<?php echo base_url();?>assets/plugin/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="<?php echo base_url();?>assets/plugin/datatables/extensions/Buttons/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="<?php echo base_url();?>assets/plugin/datatables/extensions/Buttons/css/buttons.bootstrap.min.css">
     <!-- Daterange picker -->
     <link rel="stylesheet" type="text/css" media="all" href="<?php echo base_url();?>assets/plugin/daterangepicker/daterangepicker.css" />
     <!-- Bootstrap datetimepicker -->
@@ -52,6 +54,9 @@
     <!-- DataTables 1.10.7 -->
     <script src="<?php echo base_url();?>assets/plugin/datatables/jquery.dataTables.min.js"></script>
     <script src="<?php echo base_url();?>assets/plugin/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="<?php echo base_url();?>assets/plugin/datatables/extensions/Buttons/js/dataTables.buttons.js"></script>
+    <script src="<?php echo base_url();?>assets/plugin/datatables/extensions/Buttons/js/buttons.print.js"></script>
+    <script src="<?php echo base_url();?>assets/plugin/datatables/extensions/Buttons/js/buttons.bootstrap.js"></script>
 
     <!-- Jquery UI 1.12.1 -->
     <script src="<?php echo base_url();?>assets/js/jquery-ui.min.js"></script>
@@ -72,6 +77,7 @@
     <link rel="stylesheet" href="<?php echo base_url();?>assets/plugin/jasny-bootstrap/css/jasny-bootstrap.min.css">
     <!-- Bootstrap Validator -->
     <link rel="stylesheet" href="<?php echo base_url();?>assets/plugin/bootstrapvalidator/bootstrapValidator.min.css">
+
 
     <!-- FastClick -->
     <script src="<?php  echo base_url();?>assets/plugin/fastclick/fastclick.min.js"></script>
