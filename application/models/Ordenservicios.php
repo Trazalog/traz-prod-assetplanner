@@ -353,7 +353,33 @@ class Ordenservicios extends CI_Model {
         }                
     }
 
+		// devuelve insumos pedidos por id de OT
+    function getInsumosPorOT($id_ot){        
+			//var_dump($id_ot);
+			
+			$this->db->select('tbl_detanotapedido.cantidad,
+												tbl_notapedido.fecha,
+												orden_trabajo.id_usuario,
+												articles.artDescription as descripcion,
+												articles.artBarCode as codigo,
+												tbl_notapedido.id_notaPedido as nroOT,
+												sisusers.usrName as nombre,
+												sisusers.usrLastName as apellido');
+			$this->db->from('tbl_detanotapedido');
+			$this->db->join('tbl_notapedido', 'tbl_detanotapedido.id_notaPedido = tbl_notapedido.id_notaPedido');
+			$this->db->join('orden_trabajo', 'tbl_notapedido.id_ordTrabajo = orden_trabajo.id_orden');
+			$this->db->join('articles', 'articles.artId = tbl_detanotapedido.artId');
+			$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario');
+			$this->db->where('tbl_notapedido.id_ordTrabajo', $id_ot);
+			$query = $this->db->get();
+		
+			if ($query->num_rows()!=0){
+					return $query->result_array();
+			}else{   
+					return false;
+			}  
 
+    }
 
 
 
@@ -453,33 +479,33 @@ class Ordenservicios extends CI_Model {
         return $insumos;
     }
 
-    function getInsumOrdenes($data){        
+    // function getInsumOrdenes($data){        
 
-        $id_orden = $data['id_orden'];
+    //     $id_orden = $data['id_orden'];
 
-        $this->db->select(
-                    'deta_ordeninsumos.cantidad,
-                    articles.artDescription AS descripcion,
-                    abmdeposito.depositodescrip AS deposito');        
-        $this->db->from('orden_insumos');
-        $this->db->join('orden_servicio', 'orden_servicio.id_orden_insumo = orden_insumos.id_orden');        
-        $this->db->join('deta_ordeninsumos', 'deta_ordeninsumos.id_ordeninsumo = orden_insumos.id_orden');        
-        $this->db->join('tbl_lote', 'deta_ordeninsumos.loteid = tbl_lote.loteid');        
-        $this->db->join('articles','articles.artId = tbl_lote.artId');
-        $this->db->join('abmdeposito','abmdeposito.depositoId = tbl_lote.depositoid');
-        $this->db->where('orden_servicio.id_orden', $id_orden);
+    //     $this->db->select(
+    //                 'deta_ordeninsumos.cantidad,
+    //                 articles.artDescription AS descripcion,
+    //                 abmdeposito.depositodescrip AS deposito');        
+    //     $this->db->from('orden_insumos');
+    //     $this->db->join('orden_servicio', 'orden_servicio.id_orden_insumo = orden_insumos.id_orden');        
+    //     $this->db->join('deta_ordeninsumos', 'deta_ordeninsumos.id_ordeninsumo = orden_insumos.id_orden');        
+    //     $this->db->join('tbl_lote', 'deta_ordeninsumos.loteid = tbl_lote.loteid');        
+    //     $this->db->join('articles','articles.artId = tbl_lote.artId');
+    //     $this->db->join('abmdeposito','abmdeposito.depositoId = tbl_lote.depositoid');
+    //     $this->db->where('orden_servicio.id_orden', $id_orden);
 
-        $query = $this->db->get();
+    //     $query = $this->db->get();
 
-        if ($query->num_rows()!=0)
-        {
-            return $query->result_array();  
-        }
-        else
-        {   
-            return array();
-        }   
-    }
+    //     if ($query->num_rows()!=0)
+    //     {
+    //         return $query->result_array();  
+    //     }
+    //     else
+    //     {   
+    //         return array();
+    //     }   
+    // }
 
     function getDepositos(){
 

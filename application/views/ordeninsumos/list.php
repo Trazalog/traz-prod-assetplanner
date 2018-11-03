@@ -197,16 +197,23 @@ $(document).ready(function(event) {
 
 
 });
+
+// imprime consulta de insumos
+$(".imprimir").click(function (e) {        
+    $('.acciones, .dataTables_filter, .dataTables_length, .dataTables_info, .dataTables_paginate paging_full_numbers, #modalAction').addClass('no-print');  
+    $('a[href]').addClass('no-print');     
+    $(".impresion").printArea();   
+  });
 </script>
 
 
 <!-- Modal CONSULTA-->
 <div class="modal" id="modalvista" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
+    <div class="modal-content impresion">
 
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close no-print" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-fw fa-search-plus text-light-blue"></span> Consulta Orden de Insumos</h4>
       </div> <!-- /.modal-header  -->
 
@@ -258,7 +265,8 @@ $(document).ready(function(event) {
       </div>  <!-- /.modal-body -->
       
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-default imprimir no-print" data-dismiss="modal">Imprimir</button>
+        <button type="button" class="btn btn-default no-print" data-dismiss="modal">Cerrar</button>
       </div>  <!-- /.modal footer -->
 
     </div> <!-- /.modal-content -->

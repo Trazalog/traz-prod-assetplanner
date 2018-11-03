@@ -15,7 +15,7 @@ class Ordenservicio extends CI_Controller {
         $this->load->view('ordenservicios/list',$data);
     }
 
-    public function cargarOrden($permission, $id_ot = null, $id_eq = null, $causa = null, $id_solicitud = null) // Ok
+    public function cargarOrden($permission, $id_ot = null, $id_eq = null, $causa = null, $id_solicitud = null)   // Ok
     { 
         $data['permission'] = $permission;        // permisos 
         $data['id_ot']      = $id_ot;            // id de OT. 
@@ -65,7 +65,7 @@ class Ordenservicio extends CI_Controller {
       $data['horometro_fin']          = $datosInfoServicio['horometro_fin'];
       $data['fecha_inicio']           = $datosInfoServicio['fecha_inicio'];
       $data['fecha_fin']              = $datosInfoServicio['fecha_fin'];
-//dump_exit($data);
+      //dump_exit($data);
       $data['tarea']       = $this->input->post('tarea');
       $data['herramienta'] = $this->input->post('herramienta');
       $data['operario']    = $this->input->post('operario');
@@ -73,7 +73,12 @@ class Ordenservicio extends CI_Controller {
       $response = $this->Ordenservicios->setOrdenServicios($data);
       echo json_encode($response);
     }
-
+    // devuelve insumos pedidos por id de OT
+    public function getInsumosPorOT(){
+      $response = $this->Ordenservicios->getInsumosPorOT($this->input->post('id_ot'));
+      
+      echo json_encode($response);
+    }
 
 
 
@@ -116,10 +121,10 @@ class Ordenservicio extends CI_Controller {
       echo json_encode($response);
     }
 
-    public function getInsumOrden(){
-      $response = $this->Ordenservicios->getInsumOrdenes($this->input->post());
-      echo json_encode($response);
-    }
+    // public function getInsumOrden(){
+    //   $response = $this->Ordenservicios->getInsumOrdenes($this->input->post());
+    //   echo json_encode($response);
+    // }
 
     public function getLoteActivo(){
       
