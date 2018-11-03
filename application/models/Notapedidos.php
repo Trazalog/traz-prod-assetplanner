@@ -7,28 +7,60 @@ class Notapedidos extends CI_Model
 		parent::__construct();
 	}
 	
-    function notaPedidos_List(){
-    
-      $this->db->select('tbl_notapedido.id_notaPedido,
-                          tbl_notapedido.fecha,
-                          tbl_notapedido.id_ordTrabajo,
-                          orden_trabajo.descripcion');     
-      $this->db->from('tbl_notapedido');
-      $this->db->join('orden_trabajo','tbl_notapedido.id_ordTrabajo = orden_trabajo.id_orden');  
-      
-      $query= $this->db->get();
-    
-      if ($query->num_rows()!=0)
-      {
-       return $query->result_array();          
-      }
-      else
-      { 
-        return array();
-      }
-    }       
+    function notaPedidos_List()
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
+        $this->db->select('tbl_notapedido.id_notaPedido,
+            tbl_notapedido.fecha,
+            tbl_notapedido.id_ordTrabajo,
+            orden_trabajo.descripcion');
+        $this->db->from('tbl_notapedido');
+        $this->db->join('orden_trabajo','tbl_notapedido.id_ordTrabajo = orden_trabajo.id_orden');
+        $this->db->where('tbl_notapedido.id_empresa', $empId);
+        $query = $this->db->get();
 
-      // Trae lista de articulos por id de nota de pedido 
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();          
+        }
+        else
+        { 
+            return array();
+        }
+    }
+
+        //
+    function getNotasxOT($id)
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
+        $this->db->select('
+            tbl_notapedido.id_notaPedido,
+            tbl_notapedido.fecha,
+            tbl_notapedido.id_ordTrabajo,
+            solicitud_reparacion.solicitante,
+            orden_trabajo.descripcion
+        ');
+        $this->db->from('tbl_notapedido');
+        $this->db->join('orden_trabajo','tbl_notapedido.id_ordTrabajo = orden_trabajo.id_orden');
+        $this->db->join('solicitud_reparacion', 'orden_trabajo.id_solicitud = solicitud_reparacion.id_solicitud');
+        $this->db->where('tbl_notapedido.id_empresa', $empId);
+        $this->db->where('orden_trabajo.id_orden', $id);
+
+        $query = $this->db->get();
+
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();          
+        }
+        else
+        { 
+            return array();
+        }
+    }
+
+    // Trae lista de articulos por id de nota de pedido 
     function getNotaPedidoIds($data){
       
       $id = $data['id'];

@@ -15,6 +15,12 @@ class Notapedido extends CI_Controller {
     //$this->load->view('notapedido/view_');
   }
 
+  public function getNotasxOT($permission, $idot){
+    $data['permission'] = $permission;
+    $data['list']       = $this->Notapedidos->getNotasxOT($idot);
+    $this->load->view('notapedido/listOt', $data);
+  }
+
   /*public function agregarNota($permission){
     //$data['list'] = $this->Notapedidos->notaPedidos_List();
     $data['permission'] = $permission;

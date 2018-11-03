@@ -134,6 +134,7 @@ $(document).ready(function(event) {
     } ],
     "order": [[1, "asc"]],
   });
+  /*
   $('#tablaconsulta').DataTable({
     "aLengthMenu": [ 10, 25, 50, 100 ],
     "columnDefs": [ {
@@ -145,7 +146,55 @@ $(document).ready(function(event) {
       "orderable": true
     } ],
     "order": [[0, "asc"]],
+    buttons: [
+      'print'
+    ],
   });
+  */
+
+  var table = $('#tablaconsulta').DataTable( {
+    "aLengthMenu": [ 10, 25, 50, 100 ],
+    "columnDefs": [ {
+      "targets": [ 0 ], 
+      "searchable": true
+    },
+    {
+      "targets": [ 0 ], 
+      "orderable": true
+    } ],
+    "order": [[0, "asc"]],
+  });
+  var buttons = new $.fn.dataTable.Buttons(table, {
+    buttons: [
+    {
+      extend: 'print',
+      text: 'Imprimir',
+      className: "btn btn-primary",
+      title: '',
+      //messageTop: '<strong>Mensaje entre el titulo y la tabla..</strong>',
+      init: function(api, node, config) {
+        $(node).removeClass('btn-default')
+      },
+
+      customize: function ( win ) {
+        $(win.document.body)
+          .css('font-size', '10pt')
+          /*.prepend(
+          '<img src="http://datatables.net/media/images/logo-fade.png" style="position:absolute; top:0; left:0;" />'
+          )*/;
+        
+        $(win.document.body).find( 'table' )
+          .addClass( 'table-condensed' )
+          .css( 'font-size', 'inherit' );
+
+        $('#infoOI').clone().prependTo( win.document.body );
+        $(win.document.body).prepend('<h1>Orden de insumo</h1>');
+      } 
+    }
+    ]
+  }).container().appendTo($('#btn-datatables'));
+
+
 
 });
 </script>
@@ -162,7 +211,7 @@ $(document).ready(function(event) {
       </div> <!-- /.modal-header  -->
 
       <div class="modal-body" id="modalBodyArticle">
-        <div class="row">
+        <div class="row" id="infoOI">
           <div class="col-xs-12 col-sm-6 col-md-4">
             <label for="orden">Orden de insumo:</label>
             <input type="text" class="form-control" id="orden" name="orden" disabled>
@@ -172,14 +221,19 @@ $(document).ready(function(event) {
             <input type="text" class="form-control" id="fecha" name="fecha" disabled>
           </div>
           <div class="col-xs-12 col-sm-6 col-md-4">
-            <label for="fecha">ID orden trabajo:</label>
+            <label for="fecha">Orden de trabajo:</label>
             <input type="text" class="form-control" id="id_ot" name="id_ot" disabled>
           </div>
+          <div class="clearfix"></div>
         </div><br>
       
         <div class="row">
           <div class="col-xs-12">
-            <table class="table table-bordered" id="tablaconsulta"> 
+            <hr>
+            <div class="row">
+              <div class="col-xs-12" id="btn-datatables"></div>
+            </div><br>
+            <table class="table table-bordered compact" id="tablaconsulta"> 
               <thead>
                 <tr>
                   <th>Articulo</th>
