@@ -163,9 +163,12 @@
                <table id="modInsum" class="table table-bordered table-hover">
                 <thead>
                   <tr>                            
-                    <th>Artículo</th>             
-                    <th>Cantidad</th>
-                    <th>Depósito</th>                                       
+                    <th>Nº O.Insumo</th>
+                    <th>Fecha</th>
+                    <th>Solicitante</th>
+                    <th>Código</th>  
+                    <th>Descripción</th>           
+                    <th>Cantidad</th> 
                   </tr>
                 </thead>
                 <tbody>
@@ -231,12 +234,15 @@ $(".fa-sticky-note-o").click(function () {
   var id_ord = row.attr('id'); // guardo el Id de la orden de servicio.
   console.log('id de orden servicio: '+id_ord);
 
+  // guarda id de OT
+  var id_ot = $(this).parents("tr").find("td").eq(2).html();
+
   if ($flag == 0) {     //primera vez
       mostrarOrd(row); 
       getLecturaOrden(id_ord);
       getTarOrden(id_ord);
       getHerrramOrden(id_ord);
-      getInsumOrd(id_ord);
+      getInsumOrd(id_ot);
       getRecOrden(id_ord);             
       $flag = 1;
   } 
@@ -250,7 +256,7 @@ $(".fa-sticky-note-o").click(function () {
       getLecturaOrden(id_ord);
       getTarOrden(id_ord);
       getHerrramOrden(id_ord);
-      getInsumOrd(id_ord);  
+      getInsumOrd(id_ot);  
       getRecOrden(id_ord);      
       $flag = 1;
   };
@@ -350,30 +356,34 @@ function getHerrramOrden(id_ord){
 }
 
 // trae Insumos segun id de orden y arma tabla en modal 
-function getInsumOrd(id_ord){
+function getInsumOrd(id_ot){
   var dataF = function () {
     var tmp = null;
     $.ajax({
-      'data' : {id_orden:id_ord },
+      'data' : {id_ot:id_ot },
       'async': false,
       'type': "POST",
       'global': false,
       'dataType': 'json',
-      'url': "Ordenservicio/getInsumOrden",
+      'url': "Ordenservicio/getInsumosPorOT",
       'success': function (data) {
         tmp = data;
-        //console.table(data);
+        console.table(data);
       }
     });
     return tmp;
   }();
   tabla = $('#modInsum').DataTable(); 
   tabla.clear().draw();
-  $.each(dataF, function(i, val){           
+  $.each(dataF, function(i, val){ 
+         
     $('#modInsum').DataTable().row.add( [
+      val.nroOT,
+      val.fecha,
+      val.nombre,
+      val.codigo,
       val.descripcion,
-      val.cantidad,
-      val.deposito
+      val.cantidad
     ]).draw();
   });      
 }
