@@ -59,9 +59,9 @@
                           echo '<i class="fa fa-thumb-tack text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar OT" data-toggle="modal" data-target="#modalAsig" ></i>';
                          
                         }
-                        if (strpos($permission,'OP') !== false) {
+                        /*if (strpos($permission,'OP') !== false) {
                           echo '<i class="fa fa-tags text-light-blue" style="cursor: pointer; margin-left: 15px;"  title="Cargar Pedido " data-toggle="modal" data-target="#modalpedido"></i>';
-                        }
+                        }*/
                         if (strpos($permission,'Pedidos') !== false) {
                           echo '<i class="fa fa-truck text-light-blue" style="cursor: pointer; margin-left: 15px;"  title="Mostrar Perdido " data-toggle="modal" data-target="#modallista"></i>';
                           echo '<i class="fa fa-cart-plus text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Agregar Nota de Pedido"></i>';
@@ -494,8 +494,7 @@ function guardareditar(){
 // Lleva a la pantalla Asignar Tareas - Ok (no revisé la asignación!!!)
 $(".fa-check-square-o").click(function (e) { 
   var id = $(this).parent('td').parent('tr').attr('id');
-  console.log("El id de OT es:");
-  console.log(id);
+  console.log("El id de OT es: "+id);
   iort = id;
   WaitingOpen();
   $('#content').empty();
@@ -507,7 +506,7 @@ $(".fa-check-square-o").click(function (e) {
 $(".fa-thumb-tack").click(function (e) { 
   // $('#modalAsig').modal('show');
   var id_orden = $(this).parent('td').parent('tr').attr('id');  
-  console.log("El id de orden es: "+id_orden);
+  console.log("El id de OT: "+id_orden);
   $.ajax({
     type: 'GET',
     data: { id_orden: id_orden},
@@ -543,7 +542,7 @@ $(".fa-thumb-tack").click(function (e) {
       console.table(result);
     },
     dataType: 'json'
-  }); 
+  });
 });
 
 // llena select usuario en modal Asignar OT - Ok
@@ -670,7 +669,6 @@ $(document).ready(function(event) {
 
   //cargar pedido
   $(".fa-tags").click(function (e) { 
-
     var id_orden = $(this).parent('td').parent('tr').attr('id');
     ido=id_orden; //aca esta el id de orden de trabajo
     console.log("El id de orden para la carga de pedido es :");
@@ -684,47 +682,32 @@ $(document).ready(function(event) {
 
 
   $(".fa-truck").click(function (e) { 
-
-   $("#modallista tbody tr").remove();
+    $("#modallista tbody tr").remove();
     var idorde = $(this).parent('td').parent('tr').attr('id');
-    
-    //idord= idorde;
-    console.log("ID de orden de trabajo para mostrar pedido es :");
-    console.log(idorde);    
-    $.ajax({
-        type: 'POST',
-        data: { idorde:idorde},
-        url: 'index.php/Otrabajo/getmostrar', //index.php/
-          success: function(data){
-            console.log("llego el detalle");
-            console.log(data);
-           
-            for (var i = 0; i < data.length; i++) {
-
-              if (data[i]['estado']== 'P'){
-              var estado= '<small class="label pull-left bg-green">Pedido</small>';
+    console.log("ID de orden de trabajo para mostrar pedido es: "+idorde);  
+    /*$.ajax({
+      dataType: 'json',
+      data: { idorde:idorde },
+      type: 'POST',
+      url: 'index.php/Otrabajo/getmostrar',
+      success: function(data){
+        console.log("llego el detalle");
+        console.table(data);
+        for (var i = 0; i < data.length; i++) {
+          if (data[i]['estado']== 'P') {
+            var estado= '<small class="label pull-left bg-green">Pedido</small>';
+          }
+          else {
+            if (data[i]['estado']== 'C'){
+              var estado= '<small class="label pull-left bg-blue">Curso</small>';
+            }
+            else {
+              if (data[i]['estado']== 'E'){ 
+                var estado= '<small class="label pull-left bg-red">Entregado</small>';
               }
-              else 
-                if (data[i]['estado']== 'C'){
-                var estado= '<small class="label pull-left bg-blue">Curso</small>';
-                }
-                else
-                  if (data[i]['estado']== 'E'){ 
-                  var estado= '<small class="label pull-left bg-red">Entregado</small>';
-                  }
-                    else{ 
-                      var estado= '<small class="label pull-left bg-yellow">Terminado</small>';
-                    }
-              /*var tr = "<tr >"+
-                      "<td ></td>"+
-                      "<td>"+data[i]['nro_trabajo']+"</td>"+
-                      "<td>"+data[i]['fecha']+"</td>"+
-                      "<td>"+data[i]['fecha_entrega']+"</td>"+
-                      "<td>"+data[i]['provnombre']+"</td>"+
-                      "<td>"+data[i]['descripcion']+"</td>"+
-                      "<td>"+estado+"</td>"+
-                      "</tr>";
-              $('#tabladetalle tbody').append(tr);*/
+              else { 
+                var estado= '<small class="label pull-left bg-yellow">Terminado</small>';
+              }
               $('#tabladetalle').DataTable().clear().draw();
               $('#tabladetalle').DataTable().row.add( [
                 "",
@@ -735,19 +718,20 @@ $(document).ready(function(event) {
                 data[i]['descripcion'],
                 estado,
               ] ).draw();
-
             }
-            console.log(tr);
-
-          },
-            
-          error: function(result){
-                console.log("Entro x el error de detalle");
-                
-                console.log(result);
-              },
-              dataType: 'json'
-    });
+          }
+        }
+      },
+      error: function(result){
+        console.error("Entro x el error de detalle");
+        console.table(result);
+      },
+    });*/
+    //iort = id;
+    WaitingOpen();
+    $('#content').empty();
+    $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/getNotasxOT/<?php echo $permission; ?>/"+idorde+"");
+    WaitingClose(); 
   });
 
   //guardar pedido
@@ -1616,7 +1600,7 @@ $(".fa-cart-plus").click(function (e) {
 
 
 
-<!-- Modal Pedido-->
+<?php /*<!-- Modal Pedido-->
 <div class="modal" id="modalpedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -1699,7 +1683,7 @@ $(".fa-cart-plus").click(function (e) {
     </div> <!-- /.modal-content -->
   </div>  <!-- /.modal-dialog modal-lg -->
 </div>  <!-- /.modal fade -->
-<!-- / Modal -->
+<!-- / Modal -->*/ ?>
 
 <!-- Modal FINALIZAR-->
 <div class="modal" id="modalfinalizar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
