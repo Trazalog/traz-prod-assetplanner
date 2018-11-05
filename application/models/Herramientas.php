@@ -13,9 +13,9 @@ class Herramientas extends CI_Model
      *
      * @return  Array   Devuelve un arreglo con las herramientas.
      */
-	function listar_herramientas()
-    {
-        $userdata  = $this->session->userdata('user_data');
+	function listar_herramientas(){
+
+    $userdata  = $this->session->userdata('user_data');
 		$empresaId = $userdata[0]['id_empresa'];
 		$this->db->select('herramientas.*,
             abmdeposito.depositodescrip, abmdeposito.depositoId,
@@ -24,8 +24,8 @@ class Herramientas extends CI_Model
 		$this->db->join('abmdeposito','abmdeposito.depositoId = herramientas.depositoId');	
 		$this->db->join('marcasequipos','marcasequipos.marcaid = herramientas.modid');
 		$this->db->where('herramientas.id_empresa', $empresaId);
-       //$this->db->where('herramientas.estado !=', 'AC');
-        $query = $this->db->get();
+ 
+    $query = $this->db->get();
 		if ($query->num_rows()!=0)
 		{
 			return $query->result_array();	

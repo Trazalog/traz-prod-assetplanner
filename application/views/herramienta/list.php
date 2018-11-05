@@ -311,21 +311,21 @@ function guardareditar(){
 }
 
 function guardar(){
-  //console.log("Estoy guardando");
+ 
   var descripcion = $('#descripcion').val();
   var codigo      = $('#codigo').val();
   var modelo      = $('#modelo').val();
   var marca       = $('#marca').val();
   var deposito    = $('#depo').val();
   var parametros  = {
-    'herrcodigo': codigo,
-    'herrdescrip': descripcion,
-    'herrmarca': marca,
-    'modid': modelo,
-    'depositoId': deposito,
-    'equip_estad' :'AC' 
-  };                                              
-  //console.log(parametros);
+                      'herrcodigo': codigo,
+                      'herrdescrip': descripcion,
+                      'herrmarca': marca,
+                      'modid': modelo,
+                      'depositoId': deposito,
+                      'equip_estad' :'AC' 
+                    };                                              
+ 
   var hayError = false; 
   $('#error').hide();
   $('#errorExiste').hide();
@@ -360,7 +360,7 @@ function guardar(){
     data:{parametros:parametros},
     // dataType: 'json',
     type:"POST",
-    url: "index.php/Herramienta/agregar_herramienta", //controlador/metodo
+    url: "index.php/Herramienta/agregar_herramienta", 
     success: function(data){
       //console.log("data: "+data);
       if(data=="existe") {
@@ -388,7 +388,7 @@ function regresa(){
 </script>
 
 
-<!-- Modal alta de Tarea-->
+<!-- Modal alta de Herramienta-->
 <div class="modal" id="modaltarea" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
