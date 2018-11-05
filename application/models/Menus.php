@@ -27,11 +27,13 @@ class Menus extends CI_Model {
 	 *
 	 * @return	array
 	 */
+	// TODO: SACAR HARCODEO DE ID D EMPRESA
 	function getMenu($data = null)
 	{
 		$userdata  = $this->session->userdata('user_data');
 		$empresaId = $userdata[0]['id_empresa'];
-		$query     = $this->db->get_where('sismenu', array('id_empresa' => $empresaId));
+		//$query     = $this->db->get_where('sismenu', array('id_empresa' => $empresaId));
+		$query     = $this->db->get('sismenu');
 		if ($query->num_rows()!=0)
 		{
 			return $query->result_array();
