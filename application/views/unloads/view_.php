@@ -31,18 +31,18 @@
                 <input type="text" name="comprobante" class="form-control comprobante" id="comprobante">
               </div>
               <div class="col-xs-12 col-sm-6">
-                <label for="fecha">Fecha</label>
+                <label for="fecha">Fecha<strong style="color: #dd4b39">*</strong></label>
                 <input type="text" name="fecha" class="form-control fecha" id="fechaOrden">
               </div>
             </div>
 
             <div class="row">
               <div class="col-xs-12 col-sm-6">
-                <label for="comprobante">Responsable</label>
+                <label for="comprobante">Responsable<strong style="color: #dd4b39">*</strong></label>
                 <input type="text" name="respons" class="form-control respons" id="respons" value="" placeholder="">
               </div>
               <div class="col-xs-12 col-sm-6">
-                <label for="fecha">Destino</label>
+                <label for="fecha">Destino<strong style="color: #dd4b39">*</strong></label>
                 <input type="text" name="dest" class="form-control dest" id="dest" value="" placeholder="">
               </div>
             </div><br>
@@ -215,7 +215,9 @@ $(document).on("click",".eliminrow",function(){
 function enviarOrden() {   
   /////  VALIDACIONES
   var hayError = false;    
-  
+  if($("#respons").val() == "" || $('#dest').val() == ""){
+    hayError = true;
+  }
   if(hayError == true){
     $('#error').fadeIn('slow');
     return;
@@ -224,26 +226,20 @@ function enviarOrden() {
     $('#error').fadeOut('slow');
     var id_equipo = $("#numSolic").val();
     var datos = $("#form_order").serializeArray();
-    // console.log("Orden array serializado");
-    // console.log(datos);
 
     WaitingOpen('Guardando cambios');
     $.ajax({    
       data: datos,
       type: 'POST',             
       dataType: 'json',
-      url: 'index.php/Unload/setHerramienta',
-      //url: 'index.php/Ordenservicio/setOrdenServ',                
+      url: 'index.php/Unload/setHerramienta',                  
       success: function(result){
-        //cargarView('Ordenservicio', 'index', '"+$('#permission').val()+"');
-        WaitingClose();
-        //setTimeout("cargarView('Ordenservicio', 'index', '"+$('#permission').val()+"');",0);
+       
+        WaitingClose();        
         alert("Guardado con exito...");
       },
       error: function(result){
-        WaitingClose();
-        //setTimeout("cargarView('Ordenservicio', 'index', '"+$('#permission').val()+"');",0);
-        //cargarView('Ordenservicio', 'index', '"+$('#permission').val()+"');
+        WaitingClose();     
         alert("Error en guardado...");
       },
     });

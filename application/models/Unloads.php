@@ -8,30 +8,39 @@ class Unloads extends CI_Model {
         parent::__construct();
     }
 
-    function getValeDescarga()
-    { 
+    function getValeDescarga(){ 
+
         $userdata  = $this->session->userdata('user_data');
         $empresaId = $userdata[0]['id_empresa'];
         $this->db->select('tbl_valedesacarga.valedfecha,
-            tbl_valedesacarga.respons,
-            tbl_valedesacarga.dest,
-            herramientas.herrcodigo, 
-            herramientas.herrmarca, 
-            herramientas.herrdescrip');
+                            tbl_valedesacarga.respons,
+                            tbl_valedesacarga.dest,
+                            herramientas.herrcodigo, 
+                            herramientas.herrmarca, 
+                            herramientas.herrdescrip,
+                            marcasequipos.marcadescrip as herrmarca,
+                            marcasequipos.marcaid');
         $this->db->from('tbl_valedesacarga');
         $this->db->join('tbl_detavaledescarga', 'tbl_detavaledescarga.valedid = tbl_valedesacarga.valedid');
         $this->db->join('herramientas', 'tbl_detavaledescarga.herrId = herramientas.herrId');
+        $this->db->join('marcasequipos', 'marcasequipos.marcaid = herramientas.modid');
         $this->db->where('tbl_valedesacarga.id_empresa', $empresaId);
         $query = $this->db->get();
         return $query->result_array();
-    }
+    }                    
 
     function getHerramientas()
     {
         $userdata  = $this->session->userdata('user_data');
         $empresaId = $userdata[0]['id_empresa'];
-        $this->db->select('herrdescrip, herrmarca, herrcodigo, herrId');
+
+        $this->db->select('herrdescrip, 
+                            herrcodigo, 
+                            herrId,
+                            marcasequipos.marcadescrip as herrmarca,
+                            marcasequipos.marcaid');
         $this->db->from('herramientas');
+        $this->db->join('marcasequipos', 'marcasequipos.marcaid = herramientas.modid');
         $this->db->where('equip_estad', 'TR');
         $this->db->where('herramientas.id_empresa', $empresaId);
         $query = $this->db->get();

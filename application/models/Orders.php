@@ -7,20 +7,24 @@ class Orders extends CI_Model {
     {
         parent::__construct();
     }
+   
+    function getValeSalidaHerr(){
 
-    function getValeSalidaHerr()
-    {
         $userdata  = $this->session->userdata('user_data');
         $empresaId = $userdata[0]['id_empresa'];
+
         $this->db->select('herramientas.herrcodigo, 
-            herramientas.herrmarca, 
-            herramientas.herrdescrip,
-            tbl_valesalida.fecha, 
-            tbl_valesalida.respons ,
-            tbl_valesalida.dest');
+                            herramientas.herrmarca, 
+                            herramientas.herrdescrip,
+                            tbl_valesalida.fecha, 
+                            tbl_valesalida.respons ,
+                            tbl_valesalida.dest,
+                            marcasequipos.marcadescrip as herrmarca,
+                            marcasequipos.marcaid');
         $this->db->from('tbl_valesalida');
         $this->db->join('tbl_detavalesalida', 'tbl_detavalesalida.valesid = tbl_valesalida.valesid');
         $this->db->join('herramientas', 'tbl_detavalesalida.herrId = herramientas.herrId');
+        $this->db->join('marcasequipos', 'marcasequipos.marcaid = herramientas.modid');
         $this->db->where('tbl_valesalida.id_empresa', $empresaId);
         $query = $this->db->get();
         return $query->result_array();
@@ -29,11 +33,19 @@ class Orders extends CI_Model {
     function getHerramientas()
     {
         $userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-        $this->db->select('herrdescrip, herrmarca, herrcodigo, herrId');
+        $empresaId = $userdata[0]['id_empresa'];    
+        //$empresaId = 7;
+        $this->db->select('herramientas.herrdescrip,
+                            herramientas.herrcodigo,
+                            herramientas.herrId,
+                            marcasequipos.marcadescrip as herrmarca,
+                            marcasequipos.marcaid');
         $this->db->from('herramientas');
+        $this->db->join('marcasequipos', 'marcasequipos.marcaid = herramientas.modid');
         $this->db->where('herramientas.id_empresa', $empresaId);
         $this->db->where('equip_estad', 'AC');
+        
+
         $query = $this->db->get();
         $i     = 0;
         foreach ($query->result() as $row){

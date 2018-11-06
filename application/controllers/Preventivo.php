@@ -129,11 +129,10 @@ class Preventivo extends CI_Controller {
 	}
 
 	// Trae componente segun id de equipo - Listo
-	public function getcomponente(){
-	
-		$id=$_POST['id_equipo']; 
+	public function getcomponente()
+	{
+		$id = $_POST['id_equipo']; 
 		$componente = $this->Preventivos->getcomponente($id);
-		
 		if($componente){	
 			$arre=array();
 	        foreach ($componente as $row ){   
