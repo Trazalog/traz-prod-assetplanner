@@ -197,7 +197,7 @@ class Ordenservicios extends CI_Model {
             //$lectura                = $data['lectura'];
             //$comprobante            = $data['comprobante'];
             $id_equipo              = $data['id_equipo'];
-            $id_contratista         = $data['id_contratista'];
+            //$id_contratista         = $data['id_contratista'];
             $id_solicitudreparacion = $data['id_solicitudreparacion'];
             $id_ot                  = $data['id_ot'];
             $horometroinicio        = $data['horometro_inicio'];
@@ -208,7 +208,7 @@ class Ordenservicios extends CI_Model {
                 'fecha'                  => date('Y-m-d H:i:s'),
                 //'lectura'                => $lectura,
                 'id_equipo'              => $id_equipo,
-                'id_contratista'         => $id_contratista,
+               // 'id_contratista'         => $id_contratista,
                 'id_solicitudreparacion' => $id_solicitudreparacion,
                 'valesid'                => $idInsertVale,
                 'id_ot'                  => $id_ot,

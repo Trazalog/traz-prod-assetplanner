@@ -152,14 +152,11 @@
                     fecha = day + ' - ' + month + ' - ' + year;
 
                     datos={
-
                       'idservicio':idservicio,
-
                       'f_solicitado':data.datos.f_solicitado,
                       'solicitante':data.datos.solicitante,
                       'hora_sug':data.datos.hora_sug,
                       'codigo':data.datos.codigo,
-
                       //'descripcion':data['datos'][0]['descripcion'],
                       'ubicacion':data.datos.ubicacion,
                       'sector':data.datos.sec,
@@ -423,7 +420,6 @@
                 },
 
         error: function(result){
-
                   console.log(result);
                   console.log("error en la vistaimprimir");
                 },
