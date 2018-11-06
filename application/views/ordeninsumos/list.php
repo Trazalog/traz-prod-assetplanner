@@ -265,7 +265,7 @@ $(".imprimir").click(function (e) {
       </div>  <!-- /.modal-body -->
       
       <div class="modal-footer">
-        <button type="button" class="btn btn-default imprimir no-print" data-dismiss="modal">Imprimir</button>
+        <!-- <button type="button" class="btn btn-default imprimir no-print" data-dismiss="modal">Imprimir</button> -->
         <button type="button" class="btn btn-default no-print" data-dismiss="modal">Cerrar</button>
       </div>  <!-- /.modal footer -->
 

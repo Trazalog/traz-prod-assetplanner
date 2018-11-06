@@ -336,6 +336,7 @@ function limpiarModal(){
   $("#equipo").val("");
   $("#descrip").val("");
   $("#componente").val("");
+  $("#codigo").val("");
   $('#tablacompo tbody tr').remove();
   $('#tablaequipos tbody tr').remove();
 }
