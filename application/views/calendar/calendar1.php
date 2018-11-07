@@ -1,45 +1,25 @@
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
 <section class="content">
   <style>
-  input.prevent{border: none; padding-left: 5px; width: 100%;} 
-  .selmes{margin-bottom: 10px;}     
-</style>
+    input.prevent{border: none; padding-left: 5px; width: 100%;} 
+    .selmes{margin-bottom: 10px;}
+  </style>
 
-<!-- CALENDARIO -->
-<div class="col-md-6">
-  <div class="box box-primary">
-    <div class="box-body">
-      <div class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left:10px;" title="Imprimir"></div>
-      <div id="calendar"></div>
-    </div><!-- /.box-body -->
-  </div><!-- /. box -->
-</div><!-- /.col --> 
+  <!-- CALENDARIO -->
+  <div class="col-md-6">
+    <div class="box box-primary">
+      <div class="box-body">
+        <div class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left:10px;" title="Imprimir"></div>
+        <div id="calendar"></div>
+      </div><!-- /.box-body -->
+    </div><!-- /. box -->
+  </div><!-- /.col --> 
 
-<div id="tablas">
-
-</div>    
-
-<!-- <button id="boton">boton</button> -->    
-
+  <div id="tablas">
+  </div>
 </section><!-- /.content -->
 
 <script>
-
-// $('#boton').click(function(){
-  //     $.ajax({
-  //         url: 'index.php/Calendario/getTablas',
-  //         type: "POST",
-  //         data: {mes:1},
-  //         success: function(data) {              
-
-  //                 $('#tablas').html(data);   
-  //         },
-  //         error:function(argument) {
-  //           alert('fuiste');
-  //         }
-  //     });
-  // });
-
 
 function getTablas(month_, year_) 
 {
@@ -97,9 +77,9 @@ $(function () {
 
   $('#calendar').fullCalendar({
     header: {
-      left  : 'prev,next today',
+      right  : 'prev,next today',
       center: 'title',
-      right : 'month,agendaWeek,agendaDay'
+      left : 'month,agendaWeek,agendaDay'
     },
     buttonText: {
       today: 'Hoy',
@@ -926,7 +906,7 @@ console.info(ultima_lectura);
         <div class="col-xs-4">Tipo de Evento
           <select class="form-control input-md" id="event_Preventivo">
             <option value="1">Unico</option>
-            <option value="2">Mensual</option>
+            <option value="2">Repetitivo</option>
           </select>
         </div>
         <div class="col-xs-4">Cantidad Meses 
