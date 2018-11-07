@@ -294,6 +294,7 @@ $("#formPreventivo").submit(function (event){
         console.log(respuesta.resPrenvent);
         if (respuesta) {
           alert("Los datos han sido guardados correctamente");
+          cargarVista();
           //$("#msg-error").hide();
           //$("#form-create-empleado")[0].reset();
         }
