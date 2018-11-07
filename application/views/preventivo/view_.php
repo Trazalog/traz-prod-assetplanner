@@ -562,7 +562,6 @@ $("#agregarherr").click(function (e) {
 });
 
 
-
 ////// INSUMOS
 // Trae insumos para llenar el select - Chequeado
 $.ajax({
@@ -645,8 +644,6 @@ $("#agregarins").click(function (e) {
     $('#descript').val(''); 
     $('#cant').val(''); 
 });
-
-
 
 $(".datepicker").datepicker({
     changeMonth: true,
