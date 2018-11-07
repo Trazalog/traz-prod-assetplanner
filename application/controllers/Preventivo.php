@@ -131,8 +131,8 @@ class Preventivo extends CI_Controller {
 	// Trae componente segun id de equipo - Listo
 	public function getcomponente()
 	{
-		$id = $_POST['id_equipo']; 
-		$componente = $this->Preventivos->getcomponente($id);
+		$idEquipo = $this->input->post('id_equipo');
+		$componente = $this->Preventivos->getcomponente($idEquipo);
 		if($componente){	
 			$arre=array();
 	        foreach ($componente as $row ){   
@@ -141,6 +141,12 @@ class Preventivo extends CI_Controller {
 			echo json_encode($arre);
 		}
 		else echo "nada";
+	}
+	public function getCompoEdit()
+	{
+		$prevId = $this->input->post('prevId');
+		$componente = $this->Preventivos->getCompoEdit($prevId);
+		echo json_encode($componente);
 	}
 
 	// Trae herramientas segun empresa logueada - Listo
@@ -191,9 +197,18 @@ class Preventivo extends CI_Controller {
 		$durac      =$this->input->post('duracion');
 		$unidad     =$this->input->post("unidad");
 		$canhm      =$this->input->post('hshombre');
-		$critico1   =$this->input->post('alerta');
-		$lectbase   =$this->input->post('lectura_base');	
 
+		if(isset($critico1)){
+			$critico1 = $this->input->post('alerta');
+		} else {
+			$critico1 = 0;
+		}
+		if(isset($lectbase)){
+			$lectbase   =$this->input->post('lectura_base');
+		} else {
+			$lectbase = 0;
+		}
+			
 		$datos = array(
 				'id_equipo'     => $eq,
 				'id_tarea'      => $ta,

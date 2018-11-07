@@ -121,12 +121,12 @@ class Preventivos extends CI_Model
 	}	
 
 	// Trae componente segun id de equipo - Listo
-	function getcomponente($id){
+	function getcomponente($idEquipo){
 		
 	   	$this->db->select('componentes.id_componente, componentes.descripcion');
     	$this->db->from('componentes');
     	$this->db->join('componenteequipo', 'componenteequipo.id_componente = componentes.id_componente');
-    	$this->db->where('componenteequipo.id_equipo', $id);
+    	$this->db->where('componenteequipo.id_equipo', $idEquipo);
     	$query= $this->db->get();
 
 		if($query->num_rows()>0){
@@ -136,6 +136,20 @@ class Preventivos extends CI_Model
             return false;
         }
 	}
+    function getCompoEdit($prevId)
+    {
+        $this->db->select('preventivo.id_componente');
+        $this->db->from('preventivo');
+        $this->db->where('preventivo.prevId', $prevId);
+        $query= $this->db->get();
+
+        if($query->num_rows()>0){
+            return $query->result();
+        }
+        else{
+            return false;
+        }
+    }
 
 	// Trae periodo de tiempo (dias)
 	function getperiodo(){

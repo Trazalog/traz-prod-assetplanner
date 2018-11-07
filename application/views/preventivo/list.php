@@ -107,7 +107,7 @@
       success: function(data){                         
 
         datos={
-          'idprev':data['datos'][0]['idprev'],
+          'idprev':idprev,//data['datos'][0]['idprev'],
           'codigo' : data['datos'][0]['codigo'],
           'id_equipo':data['datos'][0]['id_equipo'], // id_equipo
           'fecha_ingreso':data['datos'][0]['fecha_ingreso'],
@@ -127,7 +127,7 @@
 
               var herram = data['herramientas'];             
               var insum = data['insumos'];
-
+              console.table(datos);
               console.log(herram);
               console.log(insum);
               completarEdit(datos, herram, insum);                        
@@ -254,7 +254,7 @@
      var cantidadherram = $('#cantidadherram').val();
 
      var tr = "<tr id='"+id_her+"'>"+
-     "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+     "<td ><i class='fa fa-ban elirow text-light-blue' style='cursor: 'pointer'></i></td>"+
      "<td>"+$herramienta+"</td>"+
      "<td>"+marcaherram+"</td>"+
      "<td>"+descripcionherram+"</td>"+
@@ -342,7 +342,7 @@
 
 
       var tr = "<tr id='"+id_in+"'>"+
-      "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+      "<td ><i class='fa fa-ban elirow text-light-blue' style='cursor: 'pointer'></i></td>"+
       "<td>"+$insumo+"</td>"+
       "<td>"+descript+"</td>"+
       "<td>"+cant+"</td>"+
@@ -394,7 +394,7 @@ function eliminaPrevent(){
     data: { idprev: idP},
     url: 'index.php/Preventivo/baja_preventivo', 
     success: function(data){     
-      console.log(data); 
+      console.table(data); 
       cargarVista();
     },                  
     error: function(result){                      
@@ -421,10 +421,10 @@ function completarEdit(datos, herram,insum){
     //$('#codigo').val(datos['codigo']);
     $('#ubicacion').val(datos['ubicacion']);
     $('#descripcion').val(datos['descripcion']);
-    traer_componente(datos['id_equipo']);
+    console.info('id prev:'+datos['idprev']);
+    traer_componente(datos['id_equipo'], datos['idprev']);
     $('#tarea').val(datos['id_tarea']);     
     //$('#periodo').val('0');
-    console.info("periodo a editar: "+datos['perido']);
     traer_periodo(datos['perido']);
     $('#cantidad').val(datos['cantidad']);
     $('#ultimo').val(datos['ultimo']);    
@@ -435,7 +435,7 @@ function completarEdit(datos, herram,insum){
     $('#tablaherramienta tbody tr').remove();
     for (var i = 0; i < herram.length; i++) {
       var tr = "<tr id='"+herram[i]['herrId']+"'>"+
-      "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+      "<td ><i class='fa fa-ban elirow text-light-blue' style='cursor: 'pointer'></i></td>"+
       "<td>"+herram[i]['herrcodigo']+"</td>"+
       "<td>"+herram[i]['herrmarca']+"</td>"+
       "<td>"+herram[i]['herrdescrip']+"</td>"+
@@ -449,7 +449,7 @@ function completarEdit(datos, herram,insum){
     for (var i = 0; i < insum.length; i++){                                             
 
       var tr = "<tr id='"+insum[i]['artId']+"'>"+
-      "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+      "<td ><i class='fa fa-ban elirow text-light-blue' style='cursor: 'pointer'></i></td>"+
       "<td>"+insum[i]['artBarCode']+"</td>"+
       "<td>"+insum[i]['artDescription']+"</td>"+
       "<td>"+insum[i]['cantidad']+"</td>"+                   
@@ -550,13 +550,14 @@ function traer_periodo(periodoId){
     type: 'POST',
     url: 'index.php/Calendario/getperiodo',
     success: function(data){
+      //console.table(data);
       var opcion = "<option value='-1'>Seleccione...</option>" ; 
       $('#periodo').append(opcion); 
       for(var i=0; i < data.length ; i++) 
-      {    
+      {
         var nombre   = data[i]['descripcion'];
         var selected = (periodoId == data[i]['idperiodo']) ? 'selected' : '';
-        var opcion   = "<option value='"+data[i]['idperiodo']+"' " +selected+ "'>" +nombre+ "</option>" ; 
+        var opcion   = "<option value='"+data[i]['idperiodo']+"' "+selected+">" +nombre+ "</option>" ; 
         $('#periodo').append(opcion);                        
       }
     },
@@ -566,36 +567,53 @@ function traer_periodo(periodoId){
   });
 }
 
-function traer_componente(id_equipo){
+function traer_componente(id_equipo, prevId){
+  console.info('prevId2: '+prevId);
   $('#componente').html("");
   $.ajax({
+    dataType: 'json',
+    data: {id_equipo:id_equipo },
     type: 'POST',
-    data: {id_equipo: id_equipo },
-      url: 'index.php/Preventivo/getcomponente', //index.php/
-      async:false,
-      success: function(data){
-
-       $('#componente option').remove();
-       var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-       $('#componente').append(opcion); 
-       for(var i=0; i < data.length ; i++) 
-       {    
+    url: 'index.php/Preventivo/getcomponente', //index.php/
+    async:false,
+    success: function(data){
+      console.table(data);
+      $('#componente option').remove();
+      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+      $('#componente').append(opcion); 
+      console.info('prevId3: '+prevId);
+      for(var i=0; i < data.length ; i++) 
+      {
         var nombre = data[i]['descripcion'];
+        var selected = (prevId == compoEdit(prevId)) ? 'selected' : '';
         var opcion  = "<option value='"+data[i]['id_componente']+"'>" +nombre+ "</option>" ; 
-
         $('#componente').append(opcion); 
-
       }
-             //$('#componente').html("");
+    },
+    error: function(result){
+      console.log(result);
+    },
+  });
+}
 
-             
-           },
-           error: function(result){
-
-            console.log(result);
-          },
-          dataType: 'json'
-        });
+function compoEdit(prevId) {
+  console.log('prevId en funcion: '+prevId);
+  $.ajax({
+    dataType: 'json',
+    data: {prevId:prevId },
+    type: 'POST',
+    url: 'index.php/Preventivo/getCompoEdit', //index.php/
+    async:false,
+    success: function(data){
+      console.table(data);
+      console.info('id:'+data[0]['id_componente'] );
+      return data[0]['id_componente'];
+    },
+    error: function(result){
+      console.error("Error");
+      console.table(result);
+    },
+  });
 }
 
 function guardarEdicion(){
@@ -727,7 +745,7 @@ function guardarEdicion(){
             <div class="row">
               <div class="col-xs-12 col-sm-6 col-md-4">
                 <label for="equipo">Equipos <strong style="color: #dd4b39">*</strong></label>
-                <select  id="equipo" name="componente" class="form-control" value="" disabled></select>
+                <input type="text" id="equipo" name="componente" class="form-control" value="" disabled />
                 <input type="hidden" id="id_equipo" name="id_equipo">
                 <input type="hidden" id="id_preventivo" name="id_preventivo">
               </div>
