@@ -23,7 +23,7 @@ class Ordenservicio extends CI_Controller {
         $data['causa']      = urldecode($causa);  // motivo de la solicitud
         $data['id_solicitudServicio'] = $id_solicitud; // id de orden de servicio. 
         //dump($data);
-        $this->load->view('ordenservicios/view_print',$data);
+        $this->load->view('ordenservicios/view_',$data);
     }
 
     public function getDatosOrdenServicio() // Ok
