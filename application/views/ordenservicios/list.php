@@ -264,6 +264,7 @@ $(".fa-sticky-note-o").click(function () {
 
 // muestra el encabezado de la Orden de servicio en Modal
 function mostrarOrd(row){
+  $("#modOrden tr").remove();
   $("#modOrden tbody").append(row);      
 }
 
@@ -416,6 +417,42 @@ function getRecOrden(id_ord){
   });     
 }
 
+// Cambia el estado de Orden servicio y de solicitud de servicio
+$(".fa-toggle-on").click(function () {  
+
+  var id_orden = $(this).parent('td').parent('tr').attr('id'); // guarda el id de orden en var global id_orden
+  $.ajax({
+        type: 'POST',
+        data: {id_orden: id_orden},
+        url: 'index.php/Ordenservicio/setEstado', 
+        success: function(data){                   
+                setTimeout("cargarView('Ordenservicio', 'index', '"+$('#permission').val()+"');",0);
+              },            
+        error: function(result){
+              alert("Error en cambio de estado");
+            },
+            dataType: 'json'
+        });
+});
+
+// Cambia el estado de solicitud de servicio 
+$(".fa-thumbs-up").click(function () {  
+
+  var id_solServ = $(this).parent('td').parent('tr').attr('id'); // guarda el id de orden en var global id_solServ
+  $.ajax({
+        type: 'POST',
+        data: {id_solServ: id_solServ},
+        url: 'index.php/Ordenservicio/setEstado', 
+        success: function(data){                   
+                setTimeout("cargarView('Ordenservicio', 'index', '"+$('#permission').val()+"');",0);
+              },            
+        error: function(result){
+              alert("Error en cambio de estado");
+            },
+            dataType: 'json'
+        });
+});
+
 //cierro todos los collapse
 $('#modalOrder').on('shown.bs.modal', function () {
   $('.collapse-group').find('.collapse').collapse('hide');
@@ -449,64 +486,3 @@ $('#modLectura, #modTarea, #modHerram, #modInsum, #modRecurso').DataTable({
   "order": [[0, "asc"]],
 });
 </script>
-
-
-
-
-<!-- Cambia el estado de solicitud de servicio  -->
-<script>   
-  $(".fa-thumbs-up").click(function () {  
-
-    var id_solServ = $(this).parent('td').parent('tr').attr('id'); // guarda el id de orden en var global id_solServ
-    $.ajax({
-          type: 'POST',
-          data: {id_solServ: id_solServ},
-          url: 'index.php/Ordenservicio/setEstado', 
-          success: function(data){                   
-                   setTimeout("cargarView('Ordenservicio', 'index', '"+$('#permission').val()+"');",0);
-                },            
-          error: function(result){
-                alert("Error en cambio de estado");
-              },
-              dataType: 'json'
-          });
-  });
-</script>
-<!-- / Cambia el estado de Orden servicio y de solicitud de servicio  -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- Cambia el estado de Orden servicio y de solicitud de servicio  -->
-<script>   
-  $(".fa-toggle-on").click(function () {  
-
-    var id_orden = $(this).parent('td').parent('tr').attr('id'); // guarda el id de orden en var global id_orden
-    $.ajax({
-          type: 'POST',
-          data: {id_orden: id_orden},
-          url: 'index.php/Ordenservicio/setEstado', 
-          success: function(data){                   
-                   setTimeout("cargarView('Ordenservicio', 'index', '"+$('#permission').val()+"');",0);
-                },            
-          error: function(result){
-                alert("Error en cambio de estado");
-              },
-              dataType: 'json'
-          });
-  });
-</script>
-<!-- / Cambia el estado de Orden servicio y de solicitud de servicio  -->
