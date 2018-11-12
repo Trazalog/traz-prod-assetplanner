@@ -27,9 +27,10 @@ class Ordenservicios extends CI_Model {
             solicitud_reparacion.solicitante, 
             solicitud_reparacion.f_solicitado,                     
             solicitud_reparacion.causa,*/
+            //TODO: ACA CAMBIE LA QUERY (se tomo id equipos de OT en vez de orden de trabajo)
         $this->db->from('orden_servicio');
         $this->db->join('orden_trabajo', 'orden_servicio.id_ot = orden_trabajo.id_orden');
-        $this->db->join('equipos', 'orden_servicio.id_equipo = equipos.id_equipo');
+        $this->db->join('equipos', 'orden_trabajo.id_equipo = equipos.id_equipo');
         $this->db->where('orden_servicio.id_empresa', $empresaId);
         //$this->db->join('solicitud_reparacion', 'orden_servicio.id_solicitudreparacion = solicitud_reparacion.id_solicitud');
         //$this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo');
