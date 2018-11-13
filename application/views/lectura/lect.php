@@ -19,18 +19,23 @@
           <form  id="form_order" action="" accept-charset="utf-8">
             <!-- nº factura  -->
             <div class="row">
-              <div class="col-xs-12 col-sm-6 col-md-4">
+              <div class="col-xs-12 col-sm-6 col-md-6">
                 <label for="">Equipos <strong style="color: #dd4b39">*</strong>:</label>
-                <select id="equipo" name="equipo" class="form-control"  />
+                <!-- <select id="equipo" name="equipo" class="form-control"  /> -->
+                <input type="text" class="form-control" id="equipo" name="id_equipo"/>
                 <input type="hidden" id="id_equipo" name="id_equipo"/>
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-4">
+              <div class="col-xs-12 col-sm-6 col-md-6">
                 <label for="">Parametro <strong style="color: #dd4b39">*</strong>:</label>
                 <select id="parametro" name="parametro" class="form-control"  />
                 <input type="hidden" id="id_parametro" name="id_parametro"/>
+              </div> <br>              
+              <div class="col-xs-12 col-sm-6 col-md-6">
+                <label for="">Fecha <strong style="color: #dd4b39">*</strong>:</label>
+                <input type="text" name="fecha" id="fecha" class="form-control" />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-4">
-                <label for="">valor <strong style="color: #dd4b39">*</strong>:</label>
+              <div class="col-xs-12 col-sm-6 col-md-6">
+                <label for="">Valor <strong style="color: #dd4b39">*</strong>:</label>
                 <input type="text" name="valor" id="valor" class="form-control" placeholder="Ingrese Valor"  />
               </div>
             </div><br>
@@ -45,11 +50,11 @@
                 <br><br>
                 <table class="table table-bordered" id="tablaparametro"> 
                   <thead>
-                    <tr>
-                      <!--no encuentro la x <i class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" -->
+                    <tr>                      
                       <th></th>
                       <th>Equipo</th>
-                      <th>Parámetro</th>
+                      <th>Parámetro</th>                      
+                      <th>Fecha</th>
                       <th>Valor</th>
                     </tr>
                   </thead>
@@ -59,9 +64,7 @@
                 </table> 
               </div>
             </div>
-            <div class="modal-footer">
-                   <!--  <button type="button" class="btn btn-danger btn-sm delete" onclick="limpiarModal()">Cancelar</button>
-                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="guardar()">Guardar</button> -->
+            <div class="modal-footer">                   
               <button  type="button" class="btn btn-primary" style="width: 100px; margin-top: 10px;"  data-dismiss="modal"  onclick="regresa()">Limpiar</button>
             </div>  <!-- /.modal footer -->
           </form>
@@ -73,364 +76,190 @@
 </section><!-- /.content -->
 
 
-<!-- Ultimo id table -->
 <script>
-var gloparam="";
-var gloequip="";
-var glovalor="";
-traer_equipo();
 
-$('#equipo').change(function(){
-
-    var id_equipo = $(this).val();
-    console.log(id_equipo);
-    // traer_parametro(id_equipo);
-
-    $('#parametro').html("");
-    console.log("el ultimo ");
-    console.log(id_equipo);
-    $.ajax({
-          type: 'POST',
-          data: { id_equipo: id_equipo},
-          url: 'index.php/Lectura/getparametros',  //index.php/
-          //async:false,
-          success: function(data){
-                  //var data = jQuery.parseJSON( data );
-                  console.log(data);
-                  //console.log(data);
-                  //$('#parametro option').remove();
-                   var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-                  $('#parametro').append(opcion); 
-                  for(var i=0; i < data.length ; i++) 
-                  {   
-                    //console.log( data[i]);
-                    var nombre = data[i]['paramdescrip']; 
-                    var opcion  = "<option value='"+data[i]['paramId']+"'>" +nombre+ "</option>" ; 
-
-                    $('#parametro').append(opcion);                
-                  }
-                },
-          error: function(result){
-                
-                console.log(result);
-              },
-              dataType: 'json'
-          });
-    });
-
-function traer_equipo(){
-   $('#equipo').html(''); 
-      $.ajax({
-        type: 'POST',
-        data: { },
-        url: 'index.php/Lectura/getequipo', //index.php/
-        success: function(data){
-               
-                 var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-                  $('#equipo').append(opcion); 
-                for(var i=0; i < data.length ; i++) 
-                {    
-                      var nombre = data[i]['codigo'];
-                      var opcion  = "<option value='"+data[i]['id_equipo']+"'>" +nombre+ "</option>" ; 
-
-                    $('#equipo').append(opcion); 
-                                   
-                }
-              },
-        error: function(result){
-              
-              console.log(result);
-            },
-            dataType: 'json'
-        });
+// autocompletar equipos   
+autocompEquipo();
+function autocompEquipo() {  
+  $( "#equipo" ).autocomplete({
+    source: "Lectura/getEquipo",
+    minLength: 1,
+    select: function( event, ui ) {        
+            $("#equipo").val(ui.item.label);
+            $("#id_equipo").val(ui.item.id);     
+            llenarSelect();
+            getLecturasCargadas(); 
+            }
+  });  
 }
 
-/*function traer_parametro(id_equipo){
-    $('#parametro').html("");
-    console.log("el ultimo ");
-    console.log(id_equipo);
-    $.ajax({
-          type: 'POST',
-          data: { id_equipo: id_equipo},
-          url: 'index.php/Lectura/getparametros',  //index.php/
-          //async:false,
-          success: function(data){
-                  //var data = jQuery.parseJSON( data );
-                  console.log(data);
-                  //console.log(data);
-                  //$('#parametro option').remove();
-                   var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-                  $('#parametro').append(opcion); 
-                  for(var i=0; i < data.length ; i++) 
-                  {   
-                    //console.log( data[i]);
-                    var nombre = data[i]['paramdescrip']; 
-                    var opcion  = "<option value='"+data[i]['paramId']+"'>" +nombre+ "</option>" ; 
-
-                    $('#parametro').append(opcion);                
-                  }
-                },
-          error: function(result){
-                
-                console.log(result);
-              },
-              dataType: 'json'
-          });
-}*/
-
-
-var valorglob = "";
-var paramglob = "";
-
-$("#add").click(function (e) {
-  var $equipo      = $("select#equipo option:selected").html();
-  var id_equipo    = $('#equipo').val();  //obtengo el valor del select parametro
-  var equipo       = $('#equipo').val();
-  //var parametro  = $('#parametro').val();
-  var $parametro   = $("select#parametro option:selected").html();
-  var parametro    = $('#parametro').val(); //obtengo el valor del select parametro
-  var id_parametro = $('#parametro').val();
-  var valor        = $('#valor').val();  //obtengo el valor de la variable valor
-  //valorglob=valor;
-  //paramglob=parametro;
-  console.log("el quipo seleccionado es:"+ id_equipo);
-  console.log("el valor ingresado es :" + valor);
-  console.log("el parametro seleccionado es :" + parametro);
-  console.log("el id del parametro es :" + id_parametro);
-  //</i><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i>
-  /*var tr = "<tr id='"+id_parametro+"'>"+
-              "<td ><i class='fa fa-fw fa-times-circle' style='color: #A4A4A4' cursor: 'pointer' margin-left: '15px' title='Eliminar' ></td>"+
-              "<td>"+$equipo+"</td>"+
-              "<td>"+$parametro+"</td>"+
-              "<td>"+valor+"</td>"+
-          "</tr>";*/
-  var table = $("#tablaparametro").DataTable();
-  var rowNode = table.row.add( [
-        "<td ><i class='fa fa-fw fa-times-circle' style='color: #A4A4A4' cursor: 'pointer' margin-left: '15px' title='Eliminar'></td>",
-        $equipo,
-        $parametro,
-        valor,
-        ]
-      ).node();
-      rowNode.id = id_parametro;
-  var hayError = false;
-  gloparam = id_equipo;
-  gloequip = id_parametro;
-  glovalor = valor;
- 
-  if (id_parametro >0 && id_equipo >0 ){ 
-    if (valor !=0 ) {
-      //$('#tablaparametro tbody').append(tr);
-      table.draw();
-
-      $.ajax({
-        type: 'POST',
-        data: {id_equipo:id_equipo, id_parametro:id_parametro, valor:valor },
-        url: 'index.php/Lectura/guardar_parametro',  //index.php/
-        success: function(data){
-          console.log(data);
-          console.log("EXITO");
-        },
-        error: function(result){
-          console.log(result);
-        }
-        //dataType: 'json'
-      });
-    }
-    else
-    {  
-      hayError = true;
-      $('#error').fadeIn('slow');
-      return;
-    }
-  }
-  else 
-  {  
-    hayError = true;
-    $('#error').fadeIn('slow');
-    return;
-  }
-   
-  $(document).on("click",".fa-times-circle",function(){
-    //var parent = $(this).closest('tr');
-    var tablerow = $(this).parents('tr');
-    console.log(parent);
-    console.log(gloparam);
-    console.log(gloequip);
-    console.log(glovalor);
-
-    $.ajax({
+// llena select de parametros
+function llenarSelect(){
+  $("#valor").val("");
+  var selector = $('#parametro');
+  var equipoId = $("#id_equipo").val();    
+  $.ajax({
+      async: true,
+      global: false,
+      url: "Lectura/getParametrosAsoc",
       type: 'POST',
-      data: { gloequip: gloequip,gloparam:gloparam, glovalor:glovalor},
-      url: 'index.php/Lectura/bajaparametro', //index.php/
-      success: function(data){
-        console.log("Exito");
-        console.log(data);
-        //$(parent).remove();
-        table.row(tablerow).remove().draw();
-        alert("Lectura ELIMINADA");
-        //regresa();
-        // var parent = $(this).closest('tr');
-      },
-      error: function(result){
-        console.log("Entre por el error");
-        console.log(result);
-      }
-     // dataType: 'json'
-    });
-  });     
-              
-  // $(document).on("click",".elirow",function(){
-  //     var parent = $(this).closest('tr');
-  //     $(parent).remove();
-  // });
-   
-  if(hayError == false){
-    $('#error').fadeOut('slow');
-  }
+      dataType : "json",
+      data: {"equipoId" : equipoId },
+      success: function (result) {
+                
+                selector.html('');
+                //if(result!=null){
+                  var opcion  = "<option value='-1'>Seleccione Parámetro...</option>" ; 
+                  selector.append(opcion); 
+                  for(var i=0; i < result.length ; i++){    
+                    var parametro = result[i]['param'];
+                    var opcion  = "<option value='"+result[i]['id']+"'>" + parametro + "</option>" ; 
+                    selector.append(opcion); 
+                  }
+                  //selector.val(idEstablecimiento);
+                // }
+                // else{
+                //   selector.append("<option value='-1'>No hay parametros asociados</option>");
+                // }
+              },
+      error : function (result){
+                console.log('Funcion: getParametrosAsoc ERROR');
+                alert('no hay parametros asociados');
+            }
+  });
+}
 
-  $('#equipo').val('');
-  $('#parametro').val(''); 
-  $('#valor').val(''); 
- 
+$('#fecha').daterangepicker({
+    "autoApply": true,
+    "singleDatePicker": true,
+    "timePicker": true,
+    "toggleActive":false,
+    "todayHighlight":false,    
+    "locale": {
+              "format":'YYYY/MM/DD h:mm:ss',
+              "applyLabel": "Aplicar",
+              "cancelLabel": "Cancelar"
+              //format: 'MM/DD/YYYY h:mm:ss'
+            }
+    }, function(start, end, label) {
+      console.log('New date range selected: ' + start.format('YYYY-MM-DD hh:mm:ss') + ' to ' + end.format('YYYY-MM-DD hh:mm:ss') + ' (predefined range: ' + label + ')');
 });
 
-// function guardar(){ 
-//   var idparam = new Array();     
-//   $("#tablaparametro tbody tr").each(function (index) 
-//   {
-//       var id_parametro = $(this).attr('id');
-//       idparam.push(id_parametro);
-//   });  
+// trae lecturas cargadas al cambiar de fecha
+$('#fecha').on('change', function(){
+  $("#tablaparametro tr").remove();
+  getLecturasCargadas();
+});
 
-//   comp2 = {};
-//   $("#tablaparametro tbody tr").each(function (index) 
-//   {
-//     var id_parametro = $(this).attr('id'); 
-//    // console.log(id_parametro);  
-//     $(this).children("td").each(function (index2) 
-//     {
-//       if (index2) {
-                  
-//         comp2[id_parametro]=$(this).text();
-//       }
-                
-//     });
+// dibuja en la tabla las lecturas cargadas en esa fecha
+function getLecturasCargadas(){ 
 
-//     console.log(comp2);
-
-//   });
-
-//   var parametros = {
-      
-//       'id_equipo': $('#equipo').val(),
-     
-//   };
-//   console.log("id de Equipos:");
-//   console.log(parametros);
-//   console.log("id del param:");
-//   console.log(idparam);
-//   console.log("id de param:");
-//   console.log(comp2);
-
-//  var hayError = false;
-// if (parametros != -1  && idparam != -1 && comp2 != -1)
-//   { 
-//     $.ajax({
-//         type: 'POST',
-//         data: {data:parametros, idparam:idparam, comp2:comp2 },
-//         url: 'index.php/Lectura/guardar_parametro',  //index.php/
-//         success: function(data){
-//                 console.log(data);
-//                 console.log("EXITO");
-                
-//               },
-//         error: function(result){
-              
-//               console.log(result);
-              
-//             },
-//             dataType: 'json'
-//         });
-
-//     limpiarModal();
-//   }
-//   else 
-//     { 
-//       hayError=true;
-//       $('#error').fadeIn('slow');
-
-//     }
-
-
-//     if(hayError == false){
-//           $('#error').fadeOut('slow');
-//        }
-
-// }
-
-
-</script>
-<script>
-function limpiarModal(){
-  $("#equipo").val("");
-  $("#valor").val("");
-   $("#parametro").val("");
-  //$("#tablacompo").val("");
-  //$("#tablaequipos").val("");
-  //$('#tablacompo tbody tr').remove();
-  $('#tablaparametro tbody tr').remove();
+  var idequipo = $("#id_equipo").val(); 
+  var $equipo = $("#equipo").val();  
+  var $fecha = $('#fecha').val();
+  $.ajax({
+      type: 'POST',
+      data: { fecha: $fecha,
+              idequipo: idequipo},
+      url: 'index.php/Lectura/getLecturasCargadas', 
+      success: function(data){    
+              var tabla = $("#tablaparametro").DataTable();
+              tabla.clear().draw();              
+              for(i = 0; i < data.length; i++) {
+                var valor = data[i]['valor'];
+                var id_insercion = data[i]['id'];
+                var parametro = data[i]['paramdescrip']; 
+                tabla.row.add( [
+                  "<td ><i class='fa fa-fw fa-times-circle' style='color: #A4A4A4' cursor: 'pointer' margin-left: '15px' title='Eliminar' data-toggle='modal' data-target='#modalaviso'></td>",
+                  $equipo,      
+                  parametro,
+                  $fecha,
+                  valor
+                  ]
+                ).node().id = id_insercion;   
+                tabla.draw();
+              }
+      },
+      error: function(result){
+        console.log(result);
+      },
+      dataType: 'json'
+    });  
 }
 
-// function eliminarpred(){
+$("#add").click(function (e) {
+  
+  var id_equipo    = $('#id_equipo').val();      
+  var parametro    = $('#parametro').val();   
+  var fecha        = $('#fecha').val(); 
+  var valor        = $('#valor').val(); 
 
-//   console.log("Estoy por la opcion SI a eliminar")
-//   console.log(gloparam);
-//   console.log(gloequip);
-//   console.log(glovalor);
-          
-//   $.ajax({
-//           type: 'POST',
-//           data: { gloequip: gloequip,gloparam:gloparam, glovalor:glovalor},
-//           url: 'index.php/Lectura/bajaparametro', //index.php/
-//           success: function(data){
-//                   console.log("Exito");
-//                   console.log(data);
-//                   alert("Lectura ELIMINADA");
-//                   regresa();
-                   
-//                 },
-            
-//           error: function(result){
-//                 console.log("Entre por el error");
-//                 console.log(result);
-//               }
-//          // dataType: 'json'
-//   });
+  if ((id_equipo == "")||(parametro == -1)||(fecha == "")||(valor == "")) {
+    $('#error').show();
+    return;
+  } else {
+    $('#error').hide();
+    $.ajax({
+      type: 'POST',
+      data: {id_equipo:id_equipo, 
+              id_parametro:parametro, 
+              fecha:fecha, 
+              valor:valor },
+      url: 'index.php/Lectura/guardar_lectura', 
+      success: function(data){
+                console.log(data);
+                console.log("lectura guarda con exito");
+                getLecturasCargadas();              
+              },
+      error: function(result){
+        console.log(result);
+      },
+      dataType: 'json'
+    });
+  }    
+});
 
-// }
+// levanta modal advertencia borrado y guarda el id de registro en tabla
+$(document).on("click",".fa-times-circle",function(){
+  var idInserc = $(this).parents('tr').attr('id');
+  alert(idInserc);    
+  $('#id_lectura').val(idInserc); 
+});  
+
+function deleteLectura(){
+  var id = $('#id_lectura').val();
+  $.ajax({
+        type: 'POST',
+        data: {id: id},
+        url: 'index.php/Lectura/deleteLectura', 
+        success: function(data){
+          getLecturasCargadas();
+        },
+        error: function(result){
+          console.log("Error en borrado de Lectura...");
+          console.log(result);
+        },
+        dataType: 'json'
+      });
+}
+
 function regresa(){
-
- //$('#content').empty(); //listOrden  modalaviso
-  //$('#modalaviso').empty();
-  $("#content").load("<?php echo base_url(); ?>index.php/Lectura/index/<?php echo $permission; ?>");
- // WaitingClose();
-  // WaitingClose();
+ $("#content").load("<?php echo base_url(); ?>index.php/Lectura/index/<?php echo $permission; ?>");
 }
 
-
+// datatable
 $('#tablaparametro').DataTable({
-    "aLengthMenu": [ 10, 25, 50, 100 ],
-    "columnDefs": [ {
-      "targets": [ 0 ], 
-      "searchable": false
-    },
-    {
-      "targets": [ 0 ], 
-      "orderable": false
-    } ],
-    "order": [[1, "asc"]],
-  });
+   "aLengthMenu": [ 10, 25, 50, 100 ],
+   "columnDefs": [ {
+     "targets": [ 0 ], 
+     "searchable": false
+   },
+   {
+     "targets": [ 0 ], 
+     "orderable": false
+   } ],
+   "order": [[1, "asc"]],
+});
 </script>
 
 
@@ -447,10 +276,11 @@ $('#tablaparametro').DataTable({
         <center>
         <h4><p>¿ DESEA ELIMINAR LECTURA ?</p></h4>
         </center>
+        <input type="hidden" id="id_lectura" name="id_lectura"/>
       </div>
       <div class="modal-footer">
         <center>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminarpred()">SI</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deleteLectura()">SI</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">NO</button>
         </center>
       </div>
@@ -459,26 +289,3 @@ $('#tablaparametro').DataTable({
 </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
