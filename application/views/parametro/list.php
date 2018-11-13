@@ -101,13 +101,16 @@ $(document).ready(function(event) {
     console.log(id_equipo);
     id_equip=id_equipo;
     console.log(id_equip);
-
+    $('#tablaparametros tr').remove();
     /*traer_parametro(id_equipo);*/
     $.ajax({
       type: 'POST',
       data: { id_equipo: id_equipo},
       url: 'index.php/Parametro/getparametros', //index.php/
       success: function(data){
+        
+        //$('#tablaparametros tr').remove();
+
         console.log(data);
         // var j=1;
         var comp={};
@@ -341,7 +344,7 @@ $(document).ready(function(event) {
 
 });
 
-
+// ttrae todos los equipos ok
 traer_equipo();
 function traer_equipo(){
   $.ajax({
@@ -395,6 +398,7 @@ function traer_parametro(){
   });
 }
 
+// funciona OK (BTN NUEVO)
 function guardar(){ 
   var parametros = {
     'paramdescrip': $('#descripcion1').val(),
@@ -423,6 +427,7 @@ function guardar(){
   });
 }
 
+// funciion guarda las nuevas asociaciones de equipo/parametro
 function guardar_todo(){    
   console.log("estoy guardadno");
   var parametros = {

@@ -19,9 +19,8 @@ class parametro extends CI_Controller {
 		//$data = $this->Parametros->getparametros($id);
 	}
 
-	public function getequipo()
-	{
-		$this->load->model('Parametros');
+	public function getequipo(){
+		//$this->load->model('Parametros');
 		$equipo = $this->Parametros->getequipo();
 		if($equipo)
 		{	
@@ -37,7 +36,7 @@ class parametro extends CI_Controller {
 
 	public function getparametros()
 	{
-		$this->load->model('Parametros');
+		//$this->load->model('Parametros');
 		$id         = $_POST['id_equipo'];
 		$parametros = $this->Parametros->getparametros($id);
 		if($parametros)
@@ -54,7 +53,7 @@ class parametro extends CI_Controller {
 
 	public function traerparametro()
 	{
-		$this->load->model('Parametros');
+		//$this->load->model('Parametros');
 		$equipo = $this->Parametros->traerparametro();
 		if($equipo)
 		{	
