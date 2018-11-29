@@ -8113,3 +8113,802 @@ INFO - 2018-11-29 08:44:22 --> Controller Class Initialized
 INFO - 2018-11-29 08:44:22 --> Model Class Initialized
 INFO - 2018-11-29 08:44:22 --> Final output sent to browser
 DEBUG - 2018-11-29 08:44:22 --> Total execution time: 0.0068
+INFO - 2018-11-29 12:28:12 --> Config Class Initialized
+INFO - 2018-11-29 12:28:12 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:28:12 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:28:12 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:28:12 --> URI Class Initialized
+DEBUG - 2018-11-29 12:28:12 --> No URI present. Default controller set.
+INFO - 2018-11-29 12:28:12 --> Router Class Initialized
+INFO - 2018-11-29 12:28:12 --> Output Class Initialized
+INFO - 2018-11-29 12:28:12 --> Security Class Initialized
+DEBUG - 2018-11-29 12:28:12 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:28:12 --> Input Class Initialized
+INFO - 2018-11-29 12:28:12 --> Language Class Initialized
+INFO - 2018-11-29 12:28:12 --> Loader Class Initialized
+INFO - 2018-11-29 12:28:12 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:28:12 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:28:12 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:28:12 --> Helper loaded: form_helper
+ERROR - 2018-11-29 12:28:13 --> Severity: Parsing Error --> syntax error, unexpected '<<' (T_SL) D:\sitios\traz-prod-assetplanner\application\helpers\widget_helper.php 155
+INFO - 2018-11-29 12:32:47 --> Config Class Initialized
+INFO - 2018-11-29 12:32:47 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:32:47 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:32:47 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:32:47 --> URI Class Initialized
+DEBUG - 2018-11-29 12:32:47 --> No URI present. Default controller set.
+INFO - 2018-11-29 12:32:47 --> Router Class Initialized
+INFO - 2018-11-29 12:32:47 --> Output Class Initialized
+INFO - 2018-11-29 12:32:47 --> Security Class Initialized
+DEBUG - 2018-11-29 12:32:47 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:32:47 --> Input Class Initialized
+INFO - 2018-11-29 12:32:47 --> Language Class Initialized
+INFO - 2018-11-29 12:32:47 --> Loader Class Initialized
+INFO - 2018-11-29 12:32:47 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:32:47 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:32:47 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:32:47 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:32:47 --> Helper loaded: widget_helper
+INFO - 2018-11-29 12:32:47 --> Helper loaded: general_helper
+INFO - 2018-11-29 12:32:47 --> Database Driver Class Initialized
+ERROR - 2018-11-29 12:32:47 --> Severity: Warning --> mysqli::real_connect(): (HY000/1045): Access denied for user 'planner_gerente'@'localhost' (using password: YES) D:\sitios\traz-prod-assetplanner\system\database\drivers\mysqli\mysqli_driver.php 201
+ERROR - 2018-11-29 12:32:47 --> Unable to connect to the database
+INFO - 2018-11-29 12:32:47 --> Language file loaded: language/spanish/db_lang.php
+INFO - 2018-11-29 12:34:35 --> Config Class Initialized
+INFO - 2018-11-29 12:34:35 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:34:35 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:34:35 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:34:35 --> URI Class Initialized
+DEBUG - 2018-11-29 12:34:35 --> No URI present. Default controller set.
+INFO - 2018-11-29 12:34:35 --> Router Class Initialized
+INFO - 2018-11-29 12:34:35 --> Output Class Initialized
+INFO - 2018-11-29 12:34:35 --> Security Class Initialized
+DEBUG - 2018-11-29 12:34:35 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:34:35 --> Input Class Initialized
+INFO - 2018-11-29 12:34:35 --> Language Class Initialized
+INFO - 2018-11-29 12:34:35 --> Loader Class Initialized
+INFO - 2018-11-29 12:34:35 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:34:35 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:34:35 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:34:35 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:34:35 --> Helper loaded: widget_helper
+INFO - 2018-11-29 12:34:35 --> Helper loaded: general_helper
+INFO - 2018-11-29 12:34:35 --> Database Driver Class Initialized
+DEBUG - 2018-11-29 12:34:36 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:34:36 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:34:36 --> Controller Class Initialized
+INFO - 2018-11-29 12:34:36 --> Model Class Initialized
+INFO - 2018-11-29 12:34:36 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\header.php
+INFO - 2018-11-29 12:34:36 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\login.php
+INFO - 2018-11-29 12:34:36 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\footer.php
+INFO - 2018-11-29 12:34:36 --> Final output sent to browser
+DEBUG - 2018-11-29 12:34:36 --> Total execution time: 0.4030
+INFO - 2018-11-29 12:35:01 --> Config Class Initialized
+INFO - 2018-11-29 12:35:01 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:35:01 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:35:01 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:35:01 --> URI Class Initialized
+INFO - 2018-11-29 12:35:01 --> Router Class Initialized
+INFO - 2018-11-29 12:35:01 --> Output Class Initialized
+INFO - 2018-11-29 12:35:01 --> Security Class Initialized
+DEBUG - 2018-11-29 12:35:01 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:35:01 --> Input Class Initialized
+INFO - 2018-11-29 12:35:01 --> Language Class Initialized
+INFO - 2018-11-29 12:35:01 --> Loader Class Initialized
+INFO - 2018-11-29 12:35:01 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:35:01 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:35:01 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:35:01 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:35:01 --> Helper loaded: widget_helper
+INFO - 2018-11-29 12:35:01 --> Helper loaded: general_helper
+INFO - 2018-11-29 12:35:01 --> Database Driver Class Initialized
+DEBUG - 2018-11-29 12:35:01 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:35:01 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:35:01 --> Controller Class Initialized
+INFO - 2018-11-29 12:35:01 --> Model Class Initialized
+INFO - 2018-11-29 12:35:02 --> Final output sent to browser
+DEBUG - 2018-11-29 12:35:02 --> Total execution time: 1.2791
+INFO - 2018-11-29 12:36:22 --> Config Class Initialized
+INFO - 2018-11-29 12:36:22 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:36:22 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:36:22 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:36:22 --> URI Class Initialized
+DEBUG - 2018-11-29 12:36:22 --> No URI present. Default controller set.
+INFO - 2018-11-29 12:36:22 --> Router Class Initialized
+INFO - 2018-11-29 12:36:22 --> Output Class Initialized
+INFO - 2018-11-29 12:36:22 --> Security Class Initialized
+DEBUG - 2018-11-29 12:36:22 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:36:22 --> Input Class Initialized
+INFO - 2018-11-29 12:36:22 --> Language Class Initialized
+INFO - 2018-11-29 12:36:22 --> Loader Class Initialized
+INFO - 2018-11-29 12:36:22 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:36:22 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:36:22 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:36:22 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:36:22 --> Helper loaded: widget_helper
+INFO - 2018-11-29 12:36:22 --> Helper loaded: general_helper
+INFO - 2018-11-29 12:36:22 --> Database Driver Class Initialized
+DEBUG - 2018-11-29 12:36:22 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:36:22 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:36:22 --> Controller Class Initialized
+INFO - 2018-11-29 12:36:22 --> Model Class Initialized
+INFO - 2018-11-29 12:36:22 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\header.php
+INFO - 2018-11-29 12:36:22 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\login.php
+INFO - 2018-11-29 12:36:22 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\footer.php
+INFO - 2018-11-29 12:36:22 --> Final output sent to browser
+DEBUG - 2018-11-29 12:36:22 --> Total execution time: 0.2130
+INFO - 2018-11-29 12:36:25 --> Config Class Initialized
+INFO - 2018-11-29 12:36:25 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:36:25 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:36:25 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:36:25 --> URI Class Initialized
+DEBUG - 2018-11-29 12:36:25 --> No URI present. Default controller set.
+INFO - 2018-11-29 12:36:25 --> Router Class Initialized
+INFO - 2018-11-29 12:36:25 --> Output Class Initialized
+INFO - 2018-11-29 12:36:25 --> Security Class Initialized
+DEBUG - 2018-11-29 12:36:25 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:36:25 --> Input Class Initialized
+INFO - 2018-11-29 12:36:25 --> Language Class Initialized
+INFO - 2018-11-29 12:36:25 --> Loader Class Initialized
+INFO - 2018-11-29 12:36:25 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:36:25 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:36:25 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:36:25 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:36:25 --> Helper loaded: widget_helper
+INFO - 2018-11-29 12:36:25 --> Helper loaded: general_helper
+INFO - 2018-11-29 12:36:25 --> Database Driver Class Initialized
+DEBUG - 2018-11-29 12:36:25 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:36:25 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:36:25 --> Controller Class Initialized
+INFO - 2018-11-29 12:36:25 --> Model Class Initialized
+INFO - 2018-11-29 12:36:25 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\header.php
+INFO - 2018-11-29 12:36:25 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\login.php
+INFO - 2018-11-29 12:36:25 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\footer.php
+INFO - 2018-11-29 12:36:25 --> Final output sent to browser
+DEBUG - 2018-11-29 12:36:25 --> Total execution time: 0.1490
+INFO - 2018-11-29 12:36:32 --> Config Class Initialized
+INFO - 2018-11-29 12:36:32 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:36:32 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:36:32 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:36:32 --> URI Class Initialized
+INFO - 2018-11-29 12:36:32 --> Router Class Initialized
+INFO - 2018-11-29 12:36:32 --> Output Class Initialized
+INFO - 2018-11-29 12:36:32 --> Security Class Initialized
+DEBUG - 2018-11-29 12:36:32 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:36:32 --> Input Class Initialized
+INFO - 2018-11-29 12:36:32 --> Language Class Initialized
+INFO - 2018-11-29 12:36:32 --> Loader Class Initialized
+INFO - 2018-11-29 12:36:32 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:36:32 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:36:32 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:36:32 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:36:32 --> Helper loaded: widget_helper
+INFO - 2018-11-29 12:36:32 --> Helper loaded: general_helper
+INFO - 2018-11-29 12:36:32 --> Database Driver Class Initialized
+DEBUG - 2018-11-29 12:36:32 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:36:32 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:36:32 --> Controller Class Initialized
+INFO - 2018-11-29 12:36:32 --> Model Class Initialized
+INFO - 2018-11-29 12:36:32 --> Final output sent to browser
+DEBUG - 2018-11-29 12:36:32 --> Total execution time: 0.2980
+INFO - 2018-11-29 12:37:14 --> Config Class Initialized
+INFO - 2018-11-29 12:37:14 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:37:14 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:37:14 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:37:14 --> URI Class Initialized
+INFO - 2018-11-29 12:37:14 --> Router Class Initialized
+INFO - 2018-11-29 12:37:14 --> Output Class Initialized
+INFO - 2018-11-29 12:37:14 --> Security Class Initialized
+DEBUG - 2018-11-29 12:37:14 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:37:14 --> Input Class Initialized
+INFO - 2018-11-29 12:37:14 --> Language Class Initialized
+INFO - 2018-11-29 12:37:14 --> Loader Class Initialized
+INFO - 2018-11-29 12:37:14 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:37:14 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:37:14 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:37:14 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:37:14 --> Helper loaded: widget_helper
+INFO - 2018-11-29 12:37:14 --> Helper loaded: general_helper
+INFO - 2018-11-29 12:37:14 --> Database Driver Class Initialized
+DEBUG - 2018-11-29 12:37:14 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:37:14 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:37:14 --> Controller Class Initialized
+INFO - 2018-11-29 12:37:14 --> Model Class Initialized
+INFO - 2018-11-29 12:37:14 --> Model Class Initialized
+INFO - 2018-11-29 12:37:14 --> Model Class Initialized
+INFO - 2018-11-29 12:37:15 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\header.php
+INFO - 2018-11-29 12:37:15 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\dash.php
+INFO - 2018-11-29 12:37:15 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\menu.php
+INFO - 2018-11-29 12:37:15 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\content.php
+INFO - 2018-11-29 12:37:15 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\footerdash.php
+INFO - 2018-11-29 12:37:15 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\footer.php
+INFO - 2018-11-29 12:37:15 --> Final output sent to browser
+DEBUG - 2018-11-29 12:37:15 --> Total execution time: 1.1361
+INFO - 2018-11-29 12:38:02 --> Config Class Initialized
+INFO - 2018-11-29 12:38:02 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:38:02 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:38:02 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:38:02 --> URI Class Initialized
+INFO - 2018-11-29 12:38:02 --> Router Class Initialized
+INFO - 2018-11-29 12:38:02 --> Output Class Initialized
+INFO - 2018-11-29 12:38:02 --> Security Class Initialized
+DEBUG - 2018-11-29 12:38:02 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:38:02 --> Input Class Initialized
+INFO - 2018-11-29 12:38:02 --> Language Class Initialized
+INFO - 2018-11-29 12:38:02 --> Loader Class Initialized
+INFO - 2018-11-29 12:38:02 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:38:02 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:38:02 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:38:02 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:38:02 --> Helper loaded: widget_helper
+INFO - 2018-11-29 12:38:02 --> Helper loaded: general_helper
+INFO - 2018-11-29 12:38:02 --> Database Driver Class Initialized
+DEBUG - 2018-11-29 12:38:02 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:38:02 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:38:02 --> Controller Class Initialized
+INFO - 2018-11-29 12:38:02 --> Model Class Initialized
+INFO - 2018-11-29 12:38:02 --> Model Class Initialized
+INFO - 2018-11-29 12:38:02 --> Model Class Initialized
+INFO - 2018-11-29 12:38:03 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\header.php
+INFO - 2018-11-29 12:38:03 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\dash.php
+INFO - 2018-11-29 12:38:03 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\menu.php
+INFO - 2018-11-29 12:38:03 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\content.php
+INFO - 2018-11-29 12:38:03 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\footerdash.php
+INFO - 2018-11-29 12:38:03 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\footer.php
+INFO - 2018-11-29 12:38:03 --> Final output sent to browser
+DEBUG - 2018-11-29 12:38:03 --> Total execution time: 0.6670
+INFO - 2018-11-29 12:38:03 --> Config Class Initialized
+INFO - 2018-11-29 12:38:03 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:38:03 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:38:03 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:38:03 --> URI Class Initialized
+INFO - 2018-11-29 12:38:03 --> Router Class Initialized
+INFO - 2018-11-29 12:38:03 --> Output Class Initialized
+INFO - 2018-11-29 12:38:03 --> Config Class Initialized
+INFO - 2018-11-29 12:38:03 --> Hooks Class Initialized
+INFO - 2018-11-29 12:38:03 --> Security Class Initialized
+DEBUG - 2018-11-29 12:38:03 --> UTF-8 Support Enabled
+DEBUG - 2018-11-29 12:38:03 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:38:03 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:38:03 --> Input Class Initialized
+INFO - 2018-11-29 12:38:03 --> Language Class Initialized
+INFO - 2018-11-29 12:38:03 --> URI Class Initialized
+ERROR - 2018-11-29 12:38:03 --> 404 Page Not Found: Assets/css
+INFO - 2018-11-29 12:38:03 --> Router Class Initialized
+INFO - 2018-11-29 12:38:03 --> Output Class Initialized
+INFO - 2018-11-29 12:38:04 --> Security Class Initialized
+DEBUG - 2018-11-29 12:38:04 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:38:04 --> Input Class Initialized
+INFO - 2018-11-29 12:38:04 --> Language Class Initialized
+ERROR - 2018-11-29 12:38:04 --> 404 Page Not Found: Assets/js
+INFO - 2018-11-29 12:38:04 --> Config Class Initialized
+INFO - 2018-11-29 12:38:04 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:38:04 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:38:04 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:38:04 --> URI Class Initialized
+INFO - 2018-11-29 12:38:04 --> Config Class Initialized
+INFO - 2018-11-29 12:38:04 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:38:04 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:38:04 --> Router Class Initialized
+INFO - 2018-11-29 12:38:04 --> Output Class Initialized
+INFO - 2018-11-29 12:38:04 --> Security Class Initialized
+DEBUG - 2018-11-29 12:38:04 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:38:04 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:38:04 --> URI Class Initialized
+INFO - 2018-11-29 12:38:04 --> Router Class Initialized
+INFO - 2018-11-29 12:38:04 --> Input Class Initialized
+INFO - 2018-11-29 12:38:04 --> Output Class Initialized
+INFO - 2018-11-29 12:38:04 --> Language Class Initialized
+INFO - 2018-11-29 12:38:04 --> Security Class Initialized
+DEBUG - 2018-11-29 12:38:04 --> Global POST, GET and COOKIE data sanitized
+ERROR - 2018-11-29 12:38:04 --> 404 Page Not Found: Assets/plugin
+INFO - 2018-11-29 12:38:04 --> Input Class Initialized
+INFO - 2018-11-29 12:38:04 --> Language Class Initialized
+ERROR - 2018-11-29 12:38:04 --> 404 Page Not Found: Assets/plugin
+INFO - 2018-11-29 12:38:04 --> Config Class Initialized
+INFO - 2018-11-29 12:38:04 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:38:04 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:38:04 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:38:04 --> URI Class Initialized
+INFO - 2018-11-29 12:38:04 --> Router Class Initialized
+INFO - 2018-11-29 12:38:04 --> Output Class Initialized
+INFO - 2018-11-29 12:38:04 --> Security Class Initialized
+DEBUG - 2018-11-29 12:38:04 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:38:04 --> Input Class Initialized
+INFO - 2018-11-29 12:38:04 --> Language Class Initialized
+ERROR - 2018-11-29 12:38:04 --> 404 Page Not Found: Assets/js
+INFO - 2018-11-29 12:38:04 --> Config Class Initialized
+INFO - 2018-11-29 12:38:04 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:38:04 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:38:04 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:38:04 --> URI Class Initialized
+INFO - 2018-11-29 12:38:04 --> Router Class Initialized
+INFO - 2018-11-29 12:38:04 --> Output Class Initialized
+INFO - 2018-11-29 12:38:04 --> Security Class Initialized
+DEBUG - 2018-11-29 12:38:04 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:38:04 --> Input Class Initialized
+INFO - 2018-11-29 12:38:04 --> Language Class Initialized
+ERROR - 2018-11-29 12:38:04 --> 404 Page Not Found: Assets/css
+INFO - 2018-11-29 12:38:05 --> Config Class Initialized
+INFO - 2018-11-29 12:38:05 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:38:05 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:38:05 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:38:05 --> URI Class Initialized
+INFO - 2018-11-29 12:38:05 --> Router Class Initialized
+INFO - 2018-11-29 12:38:05 --> Output Class Initialized
+INFO - 2018-11-29 12:38:05 --> Security Class Initialized
+DEBUG - 2018-11-29 12:38:05 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:38:05 --> Input Class Initialized
+INFO - 2018-11-29 12:38:05 --> Language Class Initialized
+ERROR - 2018-11-29 12:38:05 --> 404 Page Not Found: Assets/js
+INFO - 2018-11-29 12:38:05 --> Config Class Initialized
+INFO - 2018-11-29 12:38:05 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:38:05 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:38:05 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:38:05 --> URI Class Initialized
+INFO - 2018-11-29 12:38:05 --> Router Class Initialized
+INFO - 2018-11-29 12:38:05 --> Output Class Initialized
+INFO - 2018-11-29 12:38:05 --> Security Class Initialized
+DEBUG - 2018-11-29 12:38:05 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:38:05 --> Input Class Initialized
+INFO - 2018-11-29 12:38:05 --> Language Class Initialized
+ERROR - 2018-11-29 12:38:05 --> 404 Page Not Found: Assets/plugin
+INFO - 2018-11-29 12:38:05 --> Config Class Initialized
+INFO - 2018-11-29 12:38:05 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:38:05 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:38:05 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:38:05 --> URI Class Initialized
+INFO - 2018-11-29 12:38:05 --> Router Class Initialized
+INFO - 2018-11-29 12:38:05 --> Output Class Initialized
+INFO - 2018-11-29 12:38:05 --> Security Class Initialized
+DEBUG - 2018-11-29 12:38:05 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:38:05 --> Input Class Initialized
+INFO - 2018-11-29 12:38:05 --> Language Class Initialized
+ERROR - 2018-11-29 12:38:05 --> 404 Page Not Found: Assets/plugin
+INFO - 2018-11-29 12:55:40 --> Config Class Initialized
+INFO - 2018-11-29 12:55:40 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:55:40 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:55:40 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:55:40 --> URI Class Initialized
+INFO - 2018-11-29 12:55:41 --> Router Class Initialized
+INFO - 2018-11-29 12:55:41 --> Output Class Initialized
+INFO - 2018-11-29 12:55:41 --> Security Class Initialized
+DEBUG - 2018-11-29 12:55:41 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:55:41 --> Input Class Initialized
+INFO - 2018-11-29 12:55:41 --> Language Class Initialized
+INFO - 2018-11-29 12:55:41 --> Loader Class Initialized
+INFO - 2018-11-29 12:55:41 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:55:41 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:55:41 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:55:41 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:55:41 --> Helper loaded: widget_helper
+INFO - 2018-11-29 12:55:41 --> Helper loaded: general_helper
+INFO - 2018-11-29 12:55:41 --> Database Driver Class Initialized
+DEBUG - 2018-11-29 12:55:41 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:55:41 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:55:41 --> Controller Class Initialized
+INFO - 2018-11-29 12:55:41 --> Model Class Initialized
+INFO - 2018-11-29 12:55:41 --> Model Class Initialized
+INFO - 2018-11-29 12:55:41 --> Model Class Initialized
+INFO - 2018-11-29 12:55:41 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\header.php
+INFO - 2018-11-29 12:55:41 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\dash.php
+INFO - 2018-11-29 12:55:42 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\menu.php
+INFO - 2018-11-29 12:55:42 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\content.php
+INFO - 2018-11-29 12:55:42 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\footerdash.php
+INFO - 2018-11-29 12:55:42 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\footer.php
+INFO - 2018-11-29 12:55:42 --> Final output sent to browser
+INFO - 2018-11-29 12:55:43 --> Config Class Initialized
+INFO - 2018-11-29 12:55:43 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:55:43 --> Total execution time: 1.1381
+DEBUG - 2018-11-29 12:55:43 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:55:43 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:55:43 --> URI Class Initialized
+INFO - 2018-11-29 12:55:43 --> Router Class Initialized
+INFO - 2018-11-29 12:55:43 --> Output Class Initialized
+INFO - 2018-11-29 12:55:43 --> Security Class Initialized
+DEBUG - 2018-11-29 12:55:43 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:55:43 --> Input Class Initialized
+INFO - 2018-11-29 12:55:43 --> Language Class Initialized
+ERROR - 2018-11-29 12:55:43 --> 404 Page Not Found: Assets/plugin
+INFO - 2018-11-29 12:55:44 --> Config Class Initialized
+INFO - 2018-11-29 12:55:44 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:55:44 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:55:44 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:55:44 --> URI Class Initialized
+INFO - 2018-11-29 12:55:44 --> Router Class Initialized
+INFO - 2018-11-29 12:55:44 --> Output Class Initialized
+INFO - 2018-11-29 12:55:44 --> Security Class Initialized
+DEBUG - 2018-11-29 12:55:44 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:55:44 --> Input Class Initialized
+INFO - 2018-11-29 12:55:44 --> Language Class Initialized
+ERROR - 2018-11-29 12:55:44 --> 404 Page Not Found: Assets/plugin
+INFO - 2018-11-29 12:55:45 --> Config Class Initialized
+INFO - 2018-11-29 12:55:45 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:55:45 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:55:45 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:55:45 --> URI Class Initialized
+INFO - 2018-11-29 12:55:45 --> Router Class Initialized
+INFO - 2018-11-29 12:55:45 --> Output Class Initialized
+INFO - 2018-11-29 12:55:45 --> Security Class Initialized
+DEBUG - 2018-11-29 12:55:45 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:55:45 --> Input Class Initialized
+INFO - 2018-11-29 12:55:45 --> Language Class Initialized
+INFO - 2018-11-29 12:55:45 --> Loader Class Initialized
+INFO - 2018-11-29 12:55:45 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:55:45 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:55:45 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:55:45 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:55:45 --> Helper loaded: widget_helper
+INFO - 2018-11-29 12:55:45 --> Helper loaded: general_helper
+INFO - 2018-11-29 12:55:45 --> Database Driver Class Initialized
+DEBUG - 2018-11-29 12:55:45 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:55:45 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:55:45 --> Controller Class Initialized
+INFO - 2018-11-29 12:55:45 --> Model Class Initialized
+INFO - 2018-11-29 12:55:47 --> Model Class Initialized
+ERROR - 2018-11-29 12:55:47 --> Severity: Warning --> Division by zero D:\sitios\traz-prod-assetplanner\application\models\Equipos.php 1116
+ERROR - 2018-11-29 12:55:47 --> Severity: Warning --> Division by zero D:\sitios\traz-prod-assetplanner\application\models\Equipos.php 1116
+INFO - 2018-11-29 12:55:47 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\otrabajos/dash.php
+INFO - 2018-11-29 12:55:47 --> Final output sent to browser
+DEBUG - 2018-11-29 12:55:47 --> Total execution time: 2.4741
+INFO - 2018-11-29 12:55:49 --> Config Class Initialized
+INFO - 2018-11-29 12:55:49 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:55:49 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:55:49 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:55:49 --> URI Class Initialized
+INFO - 2018-11-29 12:55:49 --> Router Class Initialized
+INFO - 2018-11-29 12:55:49 --> Output Class Initialized
+INFO - 2018-11-29 12:55:49 --> Security Class Initialized
+DEBUG - 2018-11-29 12:55:49 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:55:49 --> Config Class Initialized
+INFO - 2018-11-29 12:55:49 --> Hooks Class Initialized
+INFO - 2018-11-29 12:55:49 --> Input Class Initialized
+DEBUG - 2018-11-29 12:55:49 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:55:49 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:55:49 --> Language Class Initialized
+INFO - 2018-11-29 12:55:49 --> Loader Class Initialized
+INFO - 2018-11-29 12:55:49 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:55:49 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:55:49 --> URI Class Initialized
+INFO - 2018-11-29 12:55:49 --> Router Class Initialized
+INFO - 2018-11-29 12:55:49 --> Config Class Initialized
+INFO - 2018-11-29 12:55:49 --> Output Class Initialized
+INFO - 2018-11-29 12:55:49 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:55:49 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:55:49 --> Hooks Class Initialized
+INFO - 2018-11-29 12:55:49 --> Security Class Initialized
+INFO - 2018-11-29 12:55:49 --> Helper loaded: widget_helper
+DEBUG - 2018-11-29 12:55:49 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:55:49 --> Helper loaded: general_helper
+INFO - 2018-11-29 12:55:49 --> Input Class Initialized
+INFO - 2018-11-29 12:55:49 --> Database Driver Class Initialized
+INFO - 2018-11-29 12:55:49 --> Language Class Initialized
+INFO - 2018-11-29 12:55:49 --> Loader Class Initialized
+INFO - 2018-11-29 12:55:49 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:55:49 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:55:49 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:55:49 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:55:49 --> Helper loaded: widget_helper
+INFO - 2018-11-29 12:55:49 --> Helper loaded: general_helper
+DEBUG - 2018-11-29 12:55:49 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:55:49 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:55:49 --> URI Class Initialized
+INFO - 2018-11-29 12:55:49 --> Router Class Initialized
+INFO - 2018-11-29 12:55:49 --> Output Class Initialized
+INFO - 2018-11-29 12:55:49 --> Security Class Initialized
+DEBUG - 2018-11-29 12:55:49 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:55:49 --> Input Class Initialized
+INFO - 2018-11-29 12:55:49 --> Database Driver Class Initialized
+DEBUG - 2018-11-29 12:55:49 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:55:49 --> Config Class Initialized
+INFO - 2018-11-29 12:55:49 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:55:49 --> Hooks Class Initialized
+INFO - 2018-11-29 12:55:49 --> Controller Class Initialized
+INFO - 2018-11-29 12:55:49 --> Model Class Initialized
+INFO - 2018-11-29 12:55:49 --> Final output sent to browser
+DEBUG - 2018-11-29 12:55:49 --> Total execution time: 0.6870
+DEBUG - 2018-11-29 12:55:49 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:55:49 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:55:49 --> URI Class Initialized
+DEBUG - 2018-11-29 12:55:49 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:55:49 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:55:49 --> Controller Class Initialized
+INFO - 2018-11-29 12:55:49 --> Model Class Initialized
+ERROR - 2018-11-29 12:55:49 --> Severity: Warning --> mysqli::query(): Empty query D:\sitios\traz-prod-assetplanner\system\database\drivers\mysqli\mysqli_driver.php 305
+ERROR - 2018-11-29 12:55:49 --> Query error:  - Invalid query: 
+INFO - 2018-11-29 12:55:49 --> Language file loaded: language/spanish/db_lang.php
+INFO - 2018-11-29 12:55:49 --> Language Class Initialized
+INFO - 2018-11-29 12:55:49 --> Loader Class Initialized
+INFO - 2018-11-29 12:55:49 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:55:49 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:55:49 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:55:49 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:55:49 --> Router Class Initialized
+INFO - 2018-11-29 12:55:49 --> Output Class Initialized
+INFO - 2018-11-29 12:55:49 --> Security Class Initialized
+DEBUG - 2018-11-29 12:55:49 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:55:49 --> Input Class Initialized
+INFO - 2018-11-29 12:55:49 --> Helper loaded: widget_helper
+INFO - 2018-11-29 12:55:49 --> Helper loaded: general_helper
+INFO - 2018-11-29 12:55:49 --> Language Class Initialized
+INFO - 2018-11-29 12:55:49 --> Loader Class Initialized
+INFO - 2018-11-29 12:55:49 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:55:49 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:55:49 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:55:49 --> Database Driver Class Initialized
+INFO - 2018-11-29 12:55:49 --> Config Class Initialized
+INFO - 2018-11-29 12:55:49 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:55:49 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:55:49 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:55:49 --> Helper loaded: widget_helper
+INFO - 2018-11-29 12:55:49 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:55:49 --> Helper loaded: general_helper
+INFO - 2018-11-29 12:55:50 --> URI Class Initialized
+INFO - 2018-11-29 12:55:50 --> Router Class Initialized
+DEBUG - 2018-11-29 12:55:50 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:55:50 --> Output Class Initialized
+INFO - 2018-11-29 12:55:50 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:55:50 --> Controller Class Initialized
+INFO - 2018-11-29 12:55:50 --> Database Driver Class Initialized
+INFO - 2018-11-29 12:55:50 --> Security Class Initialized
+INFO - 2018-11-29 12:55:50 --> Model Class Initialized
+DEBUG - 2018-11-29 12:55:50 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:55:50 --> Final output sent to browser
+INFO - 2018-11-29 12:55:50 --> Input Class Initialized
+DEBUG - 2018-11-29 12:55:50 --> Total execution time: 1.0681
+INFO - 2018-11-29 12:55:50 --> Language Class Initialized
+DEBUG - 2018-11-29 12:55:50 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:55:50 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:55:50 --> Controller Class Initialized
+INFO - 2018-11-29 12:55:50 --> Model Class Initialized
+INFO - 2018-11-29 12:55:50 --> Loader Class Initialized
+INFO - 2018-11-29 12:55:50 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:55:50 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:55:50 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:55:50 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:55:50 --> Helper loaded: widget_helper
+INFO - 2018-11-29 12:55:50 --> Helper loaded: general_helper
+INFO - 2018-11-29 12:55:50 --> Database Driver Class Initialized
+DEBUG - 2018-11-29 12:55:50 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:55:50 --> Final output sent to browser
+DEBUG - 2018-11-29 12:55:50 --> Total execution time: 1.0141
+INFO - 2018-11-29 12:55:50 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:55:50 --> Controller Class Initialized
+INFO - 2018-11-29 12:55:50 --> Model Class Initialized
+ERROR - 2018-11-29 12:55:50 --> Severity: Warning --> mysqli::query(): Empty query D:\sitios\traz-prod-assetplanner\system\database\drivers\mysqli\mysqli_driver.php 305
+ERROR - 2018-11-29 12:55:50 --> Query error:  - Invalid query: 
+INFO - 2018-11-29 12:55:50 --> Language file loaded: language/spanish/db_lang.php
+INFO - 2018-11-29 12:55:53 --> Config Class Initialized
+INFO - 2018-11-29 12:55:53 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:55:53 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:55:53 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:55:53 --> URI Class Initialized
+INFO - 2018-11-29 12:55:53 --> Router Class Initialized
+INFO - 2018-11-29 12:55:53 --> Output Class Initialized
+INFO - 2018-11-29 12:55:53 --> Security Class Initialized
+DEBUG - 2018-11-29 12:55:53 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:55:53 --> Input Class Initialized
+INFO - 2018-11-29 12:55:53 --> Language Class Initialized
+INFO - 2018-11-29 12:55:53 --> Loader Class Initialized
+INFO - 2018-11-29 12:55:53 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:55:53 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:55:53 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:55:53 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:55:53 --> Helper loaded: widget_helper
+INFO - 2018-11-29 12:55:53 --> Helper loaded: general_helper
+INFO - 2018-11-29 12:55:53 --> Database Driver Class Initialized
+DEBUG - 2018-11-29 12:55:53 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:55:53 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:55:53 --> Controller Class Initialized
+INFO - 2018-11-29 12:55:53 --> Model Class Initialized
+INFO - 2018-11-29 12:55:54 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\equipo/list.php
+INFO - 2018-11-29 12:55:54 --> Final output sent to browser
+DEBUG - 2018-11-29 12:55:54 --> Total execution time: 1.0651
+INFO - 2018-11-29 12:56:02 --> Config Class Initialized
+INFO - 2018-11-29 12:56:02 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:56:02 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:56:02 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:56:02 --> URI Class Initialized
+INFO - 2018-11-29 12:56:02 --> Router Class Initialized
+INFO - 2018-11-29 12:56:02 --> Output Class Initialized
+INFO - 2018-11-29 12:56:02 --> Security Class Initialized
+DEBUG - 2018-11-29 12:56:03 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:56:03 --> Input Class Initialized
+INFO - 2018-11-29 12:56:03 --> Language Class Initialized
+INFO - 2018-11-29 12:56:03 --> Loader Class Initialized
+INFO - 2018-11-29 12:56:03 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:56:03 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:56:03 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:56:03 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:56:03 --> Helper loaded: widget_helper
+INFO - 2018-11-29 12:56:03 --> Helper loaded: general_helper
+INFO - 2018-11-29 12:56:03 --> Database Driver Class Initialized
+DEBUG - 2018-11-29 12:56:03 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:56:03 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:56:03 --> Controller Class Initialized
+INFO - 2018-11-29 12:56:03 --> Model Class Initialized
+INFO - 2018-11-29 12:56:03 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\marca/list.php
+INFO - 2018-11-29 12:56:03 --> Final output sent to browser
+DEBUG - 2018-11-29 12:56:03 --> Total execution time: 0.8791
+INFO - 2018-11-29 12:56:07 --> Config Class Initialized
+INFO - 2018-11-29 12:56:07 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:56:07 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:56:07 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:56:07 --> URI Class Initialized
+INFO - 2018-11-29 12:56:07 --> Router Class Initialized
+INFO - 2018-11-29 12:56:07 --> Output Class Initialized
+INFO - 2018-11-29 12:56:07 --> Security Class Initialized
+DEBUG - 2018-11-29 12:56:07 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:56:07 --> Input Class Initialized
+INFO - 2018-11-29 12:56:07 --> Language Class Initialized
+INFO - 2018-11-29 12:56:07 --> Loader Class Initialized
+INFO - 2018-11-29 12:56:07 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:56:07 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:56:07 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:56:07 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:56:07 --> Helper loaded: widget_helper
+INFO - 2018-11-29 12:56:07 --> Helper loaded: general_helper
+INFO - 2018-11-29 12:56:07 --> Database Driver Class Initialized
+DEBUG - 2018-11-29 12:56:08 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:56:08 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:56:08 --> Controller Class Initialized
+INFO - 2018-11-29 12:56:08 --> Model Class Initialized
+INFO - 2018-11-29 12:56:08 --> Model Class Initialized
+ERROR - 2018-11-29 12:56:08 --> Severity: Warning --> Division by zero D:\sitios\traz-prod-assetplanner\application\models\Equipos.php 1116
+ERROR - 2018-11-29 12:56:08 --> Severity: Warning --> Division by zero D:\sitios\traz-prod-assetplanner\application\models\Equipos.php 1116
+INFO - 2018-11-29 12:56:08 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\otrabajos/dash.php
+INFO - 2018-11-29 12:56:08 --> Final output sent to browser
+DEBUG - 2018-11-29 12:56:08 --> Total execution time: 1.1031
+INFO - 2018-11-29 12:56:09 --> Config Class Initialized
+INFO - 2018-11-29 12:56:09 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:56:09 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:56:09 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:56:09 --> URI Class Initialized
+INFO - 2018-11-29 12:56:09 --> Router Class Initialized
+INFO - 2018-11-29 12:56:09 --> Output Class Initialized
+INFO - 2018-11-29 12:56:09 --> Security Class Initialized
+DEBUG - 2018-11-29 12:56:09 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:56:09 --> Input Class Initialized
+INFO - 2018-11-29 12:56:09 --> Config Class Initialized
+INFO - 2018-11-29 12:56:09 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:56:09 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:56:09 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:56:09 --> URI Class Initialized
+INFO - 2018-11-29 12:56:09 --> Router Class Initialized
+INFO - 2018-11-29 12:56:09 --> Output Class Initialized
+INFO - 2018-11-29 12:56:10 --> Security Class Initialized
+DEBUG - 2018-11-29 12:56:10 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:56:10 --> Input Class Initialized
+INFO - 2018-11-29 12:56:10 --> Language Class Initialized
+INFO - 2018-11-29 12:56:10 --> Loader Class Initialized
+INFO - 2018-11-29 12:56:10 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:56:10 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:56:10 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:56:10 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:56:10 --> Config Class Initialized
+INFO - 2018-11-29 12:56:10 --> Hooks Class Initialized
+INFO - 2018-11-29 12:56:10 --> Helper loaded: widget_helper
+DEBUG - 2018-11-29 12:56:10 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:56:10 --> Helper loaded: general_helper
+INFO - 2018-11-29 12:56:10 --> Database Driver Class Initialized
+INFO - 2018-11-29 12:56:10 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:56:10 --> URI Class Initialized
+INFO - 2018-11-29 12:56:10 --> Router Class Initialized
+INFO - 2018-11-29 12:56:10 --> Output Class Initialized
+INFO - 2018-11-29 12:56:10 --> Config Class Initialized
+INFO - 2018-11-29 12:56:10 --> Hooks Class Initialized
+INFO - 2018-11-29 12:56:10 --> Security Class Initialized
+DEBUG - 2018-11-29 12:56:11 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2018-11-29 12:56:11 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:56:11 --> Input Class Initialized
+INFO - 2018-11-29 12:56:11 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:56:11 --> URI Class Initialized
+INFO - 2018-11-29 12:56:11 --> Router Class Initialized
+INFO - 2018-11-29 12:56:11 --> Output Class Initialized
+INFO - 2018-11-29 12:56:11 --> Config Class Initialized
+INFO - 2018-11-29 12:56:11 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:56:11 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:56:11 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:56:11 --> URI Class Initialized
+INFO - 2018-11-29 12:56:11 --> Router Class Initialized
+INFO - 2018-11-29 12:56:11 --> Output Class Initialized
+INFO - 2018-11-29 12:56:11 --> Language Class Initialized
+INFO - 2018-11-29 12:56:11 --> Loader Class Initialized
+INFO - 2018-11-29 12:56:11 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:56:11 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:56:11 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:56:11 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:56:11 --> Helper loaded: widget_helper
+INFO - 2018-11-29 12:56:11 --> Security Class Initialized
+DEBUG - 2018-11-29 12:56:11 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:56:11 --> Input Class Initialized
+INFO - 2018-11-29 12:56:11 --> Language Class Initialized
+INFO - 2018-11-29 12:56:11 --> Loader Class Initialized
+INFO - 2018-11-29 12:56:11 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:56:11 --> Helper loaded: general_helper
+INFO - 2018-11-29 12:56:11 --> Database Driver Class Initialized
+INFO - 2018-11-29 12:56:11 --> Language Class Initialized
+INFO - 2018-11-29 12:56:11 --> Security Class Initialized
+DEBUG - 2018-11-29 12:56:11 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:56:11 --> Loader Class Initialized
+INFO - 2018-11-29 12:56:11 --> Input Class Initialized
+INFO - 2018-11-29 12:56:11 --> Language Class Initialized
+INFO - 2018-11-29 12:56:11 --> Loader Class Initialized
+INFO - 2018-11-29 12:56:11 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:56:11 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:56:11 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:56:11 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:56:11 --> Helper loaded: directory_helper
+DEBUG - 2018-11-29 12:56:11 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:56:11 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:56:11 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:56:11 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:56:11 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:56:11 --> Controller Class Initialized
+INFO - 2018-11-29 12:56:11 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:56:11 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:56:11 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:56:11 --> Model Class Initialized
+INFO - 2018-11-29 12:56:11 --> Helper loaded: widget_helper
+INFO - 2018-11-29 12:56:11 --> Helper loaded: general_helper
+DEBUG - 2018-11-29 12:56:11 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:56:11 --> Database Driver Class Initialized
+INFO - 2018-11-29 12:56:11 --> Helper loaded: widget_helper
+INFO - 2018-11-29 12:56:11 --> Helper loaded: general_helper
+INFO - 2018-11-29 12:56:11 --> Helper loaded: widget_helper
+INFO - 2018-11-29 12:56:11 --> Final output sent to browser
+DEBUG - 2018-11-29 12:56:11 --> Total execution time: 1.9631
+INFO - 2018-11-29 12:56:11 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:56:11 --> Controller Class Initialized
+INFO - 2018-11-29 12:56:11 --> Model Class Initialized
+INFO - 2018-11-29 12:56:11 --> Helper loaded: general_helper
+ERROR - 2018-11-29 12:56:11 --> Severity: Warning --> mysqli::query(): Empty query D:\sitios\traz-prod-assetplanner\system\database\drivers\mysqli\mysqli_driver.php 305
+ERROR - 2018-11-29 12:56:11 --> Query error:  - Invalid query: 
+INFO - 2018-11-29 12:56:11 --> Language file loaded: language/spanish/db_lang.php
+INFO - 2018-11-29 12:56:11 --> Database Driver Class Initialized
+DEBUG - 2018-11-29 12:56:11 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:56:11 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:56:11 --> Controller Class Initialized
+INFO - 2018-11-29 12:56:11 --> Model Class Initialized
+INFO - 2018-11-29 12:56:11 --> Final output sent to browser
+DEBUG - 2018-11-29 12:56:11 --> Total execution time: 1.6971
+INFO - 2018-11-29 12:56:11 --> Database Driver Class Initialized
+DEBUG - 2018-11-29 12:56:11 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:56:11 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:56:11 --> Controller Class Initialized
+INFO - 2018-11-29 12:56:11 --> Model Class Initialized
+INFO - 2018-11-29 12:56:11 --> Final output sent to browser
+DEBUG - 2018-11-29 12:56:11 --> Total execution time: 1.7221
+DEBUG - 2018-11-29 12:56:12 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:56:12 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:56:12 --> Controller Class Initialized
+INFO - 2018-11-29 12:56:12 --> Model Class Initialized
+ERROR - 2018-11-29 12:56:12 --> Severity: Warning --> mysqli::query(): Empty query D:\sitios\traz-prod-assetplanner\system\database\drivers\mysqli\mysqli_driver.php 305
+ERROR - 2018-11-29 12:56:12 --> Query error:  - Invalid query: 
+INFO - 2018-11-29 12:56:12 --> Language file loaded: language/spanish/db_lang.php
+INFO - 2018-11-29 12:56:13 --> Config Class Initialized
+INFO - 2018-11-29 12:56:13 --> Hooks Class Initialized
+DEBUG - 2018-11-29 12:56:13 --> UTF-8 Support Enabled
+INFO - 2018-11-29 12:56:13 --> Utf8 Class Initialized
+INFO - 2018-11-29 12:56:13 --> URI Class Initialized
+INFO - 2018-11-29 12:56:13 --> Router Class Initialized
+INFO - 2018-11-29 12:56:13 --> Output Class Initialized
+INFO - 2018-11-29 12:56:13 --> Security Class Initialized
+DEBUG - 2018-11-29 12:56:13 --> Global POST, GET and COOKIE data sanitized
+INFO - 2018-11-29 12:56:13 --> Input Class Initialized
+INFO - 2018-11-29 12:56:13 --> Language Class Initialized
+INFO - 2018-11-29 12:56:13 --> Loader Class Initialized
+INFO - 2018-11-29 12:56:13 --> Helper loaded: url_helper
+INFO - 2018-11-29 12:56:13 --> Helper loaded: directory_helper
+INFO - 2018-11-29 12:56:14 --> Helper loaded: file_helper
+INFO - 2018-11-29 12:56:14 --> Helper loaded: form_helper
+INFO - 2018-11-29 12:56:14 --> Helper loaded: widget_helper
+INFO - 2018-11-29 12:56:14 --> Helper loaded: general_helper
+INFO - 2018-11-29 12:56:14 --> Database Driver Class Initialized
+DEBUG - 2018-11-29 12:56:14 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+INFO - 2018-11-29 12:56:14 --> Session: Class initialized using 'files' driver.
+INFO - 2018-11-29 12:56:14 --> Controller Class Initialized
+INFO - 2018-11-29 12:56:14 --> Model Class Initialized
+INFO - 2018-11-29 12:56:14 --> File loaded: D:\sitios\traz-prod-assetplanner\application\views\contratistas/list.php
+INFO - 2018-11-29 12:56:14 --> Final output sent to browser
+DEBUG - 2018-11-29 12:56:14 --> Total execution time: 0.7350

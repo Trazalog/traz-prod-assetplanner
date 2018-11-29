@@ -1,0 +1,22 @@
+/* arregla inputs fecha en firefox */
+input[type="date"].form-control, 
+input[type="time"].form-control, 
+input[type="datetime-local"].form-control, 
+input[type="month"].form-control {
+    line-height: 1.42857143;
+}
+
+input[type="file"].form-control {
+    padding-bottom: 40px;
+    line-height: 1.42857143;
+}
+textarea.form-control {
+    resize: none;
+    overflow-y: auto;
+}
+
+.slimScrollBar {
+    background: none repeat scroll 0 0 #3C8DBC !important;
+    opacity:1!important;
+    width: 8px!important;
+}

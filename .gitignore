@@ -1,0 +1,41 @@
+# System Files
+#-------------------------
+\.htaccess
+
+application/config/database\.php
+application/config/config\.php
+
+
+# IDE Files
+#-------------------------
+/nbproject/
+.idea/*
+
+## Sublime Text cache files
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
+
+application/models/bonitas\.php
+
+application/config/conexion\.php
+
+application/logs/log-2018-08-28\.php
+
+\.vscode/settings\.json
+
+MTBA-desa-procprod-1\.0\.code-workspace
+
+scripts/frm_formularios_completados \(1\)\.sql
+
+scripts/frm_tipos_dato\.sql
+
+scripts/hugo\.sql
+
+application 2\.rar
+
+application/logs/log-2018-11-20\.php
+
+application/logs/
