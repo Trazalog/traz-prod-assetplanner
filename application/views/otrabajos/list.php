@@ -204,10 +204,23 @@ function regresa1(){
     WaitingClose();
     //WaitingClose();
 }
+// boton cancelar
+$("#btnAdd").click(function (e) { 
+  $('#btn_guardar').prop("disabled", false);
+});
+// boton guardar 
+$("#btn_cancGuardado").click(function (e) { 
+  $('#btn_guardar').prop("disabled", false);
+  $('#error').fadeOut('slow');
+  $('.text_box').val('');
+  $('.select_box').val('-1');
+});
 
 // Guarda una nueva OT - Ok
 function guardaragregar(){
-  //console.log("Guarda OT");
+  
+  $('#btn_guardar').prop("disabled", true);
+  
   var num           = $('#nro1').val();
   var fecha_entrega = $('#fechaEntrega').val();
   var descripcion   = $('#vsdetal').val();
@@ -241,9 +254,10 @@ function guardaragregar(){
     hayError = true;
   }
   if(hayError == true){
-    $('#error').fadeIn('slow');     
+    $('#error').fadeIn('slow');  
+    $('#btn_guardar').prop("disabled", false);   
     return;
-  }
+  }  
 
   $.ajax({
     type: 'POST', 
@@ -255,7 +269,8 @@ function guardaragregar(){
       regresa1();
     },
     error: function(result){
-      $('#modalagregar').modal('hide');
+      //$('#modalagregar').modal('hide');
+      alert('Ocurrio un error en el guardado...');
       console.error("Error al agregar nueva OT. Ver console.table");
       console.table(result);
     }
@@ -652,17 +667,6 @@ function traer_clientes(id_cliente){
     dataType: 'json'
   });
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 $(document).ready(function(event) {
@@ -1372,7 +1376,7 @@ $(".fa-cart-plus").click(function (e) {
             <label style="margin-top: 7px;">Nro: </label>
           </div>
           <div class="col-xs-12 col-sm-8">
-            <input type="text" class="form-control"  id="nro1" name="nro1" placeholder="Ingrese Numero de OT">
+            <input type="text" class="form-control text_box"  id="nro1" name="nro1" placeholder="Ingrese Numero de OT">
           </div>
         </div><br>
         <div class="row">
@@ -1380,7 +1384,7 @@ $(".fa-cart-plus").click(function (e) {
             <label style="margin-top: 7px;">Equipo <strong style="color: #dd4b39">*</strong>: </label>
           </div>
           <div class="col-xs-12 col-sm-8">
-            <select class="form-control " id="equipo" name="equipo" value="" style="width: 100%;">
+            <select class="form-control select_box" id="equipo" name="equipo" value="" style="width: 100%;">
 
             </select>
           </div>
@@ -1398,7 +1402,7 @@ $(".fa-cart-plus").click(function (e) {
             <label style="margin-top: 7px;">Fecha Entrega<strong style="color: #dd4b39">*</strong>: </label>
           </div>
           <div class="col-xs-12 col-sm-8">
-            <input type="datetime" class="form-control" id="fechaEntrega" name="fechaEntrega" value=""/>
+            <input type="datetime" class="form-control text_box" id="fechaEntrega" name="fechaEntrega" value=""/>
           </div>
         </div><br>
         <div class="row">
@@ -1406,7 +1410,7 @@ $(".fa-cart-plus").click(function (e) {
             <label style="margin-top: 7px;">Nota: </label>
           </div>
           <div class="col-xs-12 col-sm-8">
-            <textarea placeholder="Orden de trabajo" class="form-control" rows="10" id="vsdetal" name="vsdetal" value=""></textarea>
+            <textarea placeholder="Orden de trabajo" class="form-control text_box" rows="10" id="vsdetal" name="vsdetal" value=""></textarea>
           </div>
         </div>
         <br>
@@ -1415,7 +1419,7 @@ $(".fa-cart-plus").click(function (e) {
             <label style="margin-top: 7px;">Sucursal <strong style="color: #dd4b39">*</strong>: </label>
           </div>
           <div class="col-xs-12 col-sm-8">
-            <select class="form-control select2" id="suci" name="suci" style="width: 100%;">
+            <select class="form-control select2 select_box" id="suci" name="suci" style="width: 100%;">
 
             </select>
           </div>
@@ -1426,15 +1430,15 @@ $(".fa-cart-plus").click(function (e) {
             <label style="margin-top: 7px;">Proveedor <strong style="color: #dd4b39">*</strong>: </label>
           </div>
           <div class="col-xs-12 col-sm-8">
-            <select class="form-control select2" id="prov" name="prov"  value="" style="width: 100%;">
+            <select class="form-control select2 select_box" id="prov" name="prov"  value="" style="width: 100%;">
 
             </select>
           </div>
         </div>
         <br>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-primary" onclick="guardaragregar()">Guardar</button> 
+          <button type="button" id="btn_cancGuardado" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="btn_guardar" onclick="guardaragregar()">Guardar</button> 
         </div>  <!-- /.modal footer -->
       </div>  <!-- /.modal-body -->
     </div> <!-- /.modal-content -->

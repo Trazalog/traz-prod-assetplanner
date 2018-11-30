@@ -98,8 +98,8 @@ class Otrabajo extends CI_Controller {
 	 *
 	 * @return
 	 */
-	public function guardar_agregar() // Ok
-	{
+	public function guardar_agregar() {
+		
 		$userdata  = $this->session->userdata('user_data');
 		$usrId     = $userdata[0]['usrId'];
 		$empresaId = $userdata[0]['id_empresa'];
@@ -111,7 +111,7 @@ class Otrabajo extends CI_Controller {
 		$sucursal      = $this->input->post('sucursal');
 		$proveedor     = $this->input->post('proveedor');
     	
-    	$datos2 = array(
+    $datos2 = array(
 			'nro'           => $num,
 			'fecha_inicio'  => date('Y-m-d H:i:S'),
 			'fecha_entrega' => $fecha_entrega,
@@ -126,12 +126,9 @@ class Otrabajo extends CI_Controller {
 			'id_empresa'    => $empresaId
 		);
 
-     	$result = $this->Otrabajos->guardar_agregar($datos2);
-      	/*if($result)
-      		echo $this->db->insert_id();
-      	else echo 0;*/
-      	return true;
-  	}
+		$result = $this->Otrabajos->guardar_agregar($datos2);		
+		echo json_encode($result);
+  }
 
   	/**
   	 * Trae datos para editar
