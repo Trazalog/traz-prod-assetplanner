@@ -206,14 +206,14 @@ if (!function_exists('calcularDisponibilidad')) {
      *
      *
      */
-    function calcularDisponibilidad($idEquipo, $echo = FALSE)
+    function calcularDisponibilidad($idEquipo, $fechaInicio=false, $fechaFin=false, $echo = FALSE)
     {
         // Get a reference to the controller object
         $CI = get_instance();
         // You may need to load the model if it hasn't been pre-loaded
         $CI->load->model('Equipos');
         // Call a function of the model
-        $output = $CI->Equipos->kpiCalcularDisponibilidad($idEquipo);
+        $output = $CI->Equipos->kpiCalcularDisponibilidad($idEquipo, $fechaInicio, $fechaFin);
         //dump($output);
         // Output
         if ($echo == TRUE) {
