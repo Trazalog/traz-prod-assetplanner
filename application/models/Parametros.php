@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class parametros extends CI_Model
+class Parametros extends CI_Model
 {
 
 	function __construct()
@@ -60,7 +60,8 @@ class parametros extends CI_Model
 	function guardar($data)
     {
         $userdata           = $this->session->userdata('user_data');
-        $data['id_empresa'] = $userdata[0]['id_empresa'];
+		$data['id_empresa'] = $userdata[0]['id_empresa'];
+		$data['estado'] = 'AC';
         $query              = $this->db->insert("parametros", $data);
     	return $query;    
     }
