@@ -908,13 +908,6 @@ class Equipos extends CI_Model {
 
 
 
-
-
-
-
-
-
-
     /**
      * Historial de lecturas de los últimos 12 meses.
      * //Si un mes no tiene historial se agraga una lectura default.//
@@ -1125,6 +1118,15 @@ class Equipos extends CI_Model {
         //dump_exit($disponibilidad, "hsOperativas/tiempo");
         return $disponibilidad;
     }
+
+
+
+
+
+
+
+
+
 
 
     /**
