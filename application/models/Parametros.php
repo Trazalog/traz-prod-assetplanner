@@ -114,7 +114,9 @@ class Parametros extends CI_Model
 		$data['id_empresa'] = $userdata[0]['id_empresa'];
 		$data['estado'] = 'AC';
 		$query = $this->db->insert("parametros", $data);
-		return $query;    
+		$id_insercion = $this->db->insert_id();	// devuelve el ultimo id
+		
+		return $id_insercion;    
 	}
 	// trae parametros para asociar
 	function traerparametro(){

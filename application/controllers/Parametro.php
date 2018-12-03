@@ -114,8 +114,8 @@ class Parametro extends CI_Controller {
 	// guarda parametro nuevo
 	public function guardar(){
 		$datos  = $_POST['data'];
-		$result = $this->Parametros->guardar($datos);
-		echo json_encode($result);  
+		$id_insercion = $this->Parametros->guardar($datos);
+		echo json_encode($id_insercion);  
 	}
 	// trae parametros para asociar
 	public function traerparametro(){

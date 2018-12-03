@@ -212,21 +212,21 @@ $(document).ready(function(event) {
     console.log("el maximo es :" +maximo);
     console.log("el minimo es :" +minimo);
    
-    var tr = "<tr id='"+id_equipo+"'>"+
-      "<td > <i class='fa fa-fw fa-times-circle text-light-blue' style='cursor: 'pointer' margin-left: '15px' title='Eliminar'></i> "+
-      "<i class='fa fa-fw fa-pencil text-light-blue' style='cursor: 'pointer' margin-left: '15px' title='Editar'</i></td>"+
-      "<td>"+$equipo +"</td>"+
-      "<td>"+$parametro+"</td>"+
-      "<td>"+maximo+"</td>"+
-      "<td>"+minimo+"</td>"+
-      "</tr>";
+    // var tr = "<tr id='"+id_equipo+"'>"+
+    //   "<td > <i class='fa fa-fw fa-times-circle text-light-blue' style='cursor: 'pointer' margin-left: '15px' title='Eliminar'></i> "+
+    //   "<i class='fa fa-fw fa-pencil text-light-blue' style='cursor: 'pointer' margin-left: '15px' title='Editar'</i></td>"+
+    //   "<td>"+$equipo +"</td>"+
+    //   "<td>"+$parametro+"</td>"+
+    //   "<td>"+maximo+"</td>"+
+    //   "<td>"+minimo+"</td>"+
+    //   "</tr>";
     
     
 
     var hayError = false;
     if (id_equipo >0 && id_parametro >0) {
       if (maximo !=0 && minimo!= 0) {
-        $('#tablaparametros tbody').append(tr);
+        //$('#tablaparametros tbody').append(tr);
         guardar_todo();
       }
       else 
@@ -409,7 +409,7 @@ function guardar_todo(){
     data: {data:parametros},
     url: 'index.php/Parametro/guardar_todo', 
     success: function(data){
-      tabla = $('#tablaparametros').DataTable();
+              tabla = $('#tablaparametros').DataTable();
               tabla.clear().draw();
               
               for(var i=0; i < data.length ; i++){
