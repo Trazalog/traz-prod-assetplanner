@@ -96,134 +96,101 @@ $(document).ready(function(event) {
   id_param = "";
   campo4   = "";
 
+  // $('#equipo').change(function() {
+    //   var id_equipo = $(this).val();
+    //   console.log(id_equipo);
+    //   id_equip=id_equipo;
+    //   console.log(id_equip);
+    //   $('#tablaparametros tbody tr').remove();
+    //   /*traer_parametro(id_equipo);*/
+    //   $.ajax({
+    //     type: 'POST',
+    //     data: { id_equipo: id_equipo},
+    //     url: 'index.php/Parametro/getparametros', //index.php/
+    //     success: function(data){
+
+    //       console.log(data);
+    //       // var j=1;
+    //       var comp={};
+    //       var idparam={};
+    //       for(var i=0; i < data.length ; i++){
+    //         id_param=j;
+    //         idparam[i]=data[i]['id_parametro'];
+    //         var tr = "<tr id='"+id_param+"' class='"+id_equipo+"'>"+
+    //         "<td><i class='fa fa-fw fa-times-circle text-light-blue' style='cursor: 'pointer' margin-left: '15px' title='Eliminar'></i> "+
+    //         "<i class='fa fa-fw fa-pencil text-light-blue' style='cursor: 'pointer' margin-left: '15px' title='Editar'</i> </td>"+
+    //         "<td>"+data[i]['codigo'] +"</td>"+
+    //         "<td >"+data[i]['paramdescrip']+"</td>"+
+    //         "<td class='hidden' id='"+id_param+"'>"+data[i]['id_parametro']+"</td>"+
+    //         "<td>"+data[i]['maximo']+"</td>"+
+    //         "<td>"+data[i]['minimo']+"</td>"+
+    //         "</tr>";
+    //         j++;
+    //         comp[id_param]=data[i]['id_parametro'];
+    //         $('#tablaparametros tbody').append(tr);
+    //         console.log(tr);
+    //         console.log(idparam);
+    //       }
+    //       console.log("para identificar el j es :"+ id_param);
+    //       console.log(comp);
+    //     },
+    //     error: function(result){
+    //       console.log(result);
+    //     },
+    //     dataType: 'json'
+    //   });
+
+    //   /*  var parentid = $(this).closest('tr').attr('id');
+    //   console.log(parentid);         
+    //   if(id_equipo=parentid)       
+    //   { 
+    //     $('#tablaparametros tbody tr').remove();
+    //   }*/
+    // });
+
+
   $('#equipo').change(function() {
     var id_equipo = $(this).val();
     console.log(id_equipo);
     id_equip=id_equipo;
     console.log(id_equip);
-    $('#tablaparametros tr').remove();
-    /*traer_parametro(id_equipo);*/
+    
     $.ajax({
       type: 'POST',
       data: { id_equipo: id_equipo},
-      url: 'index.php/Parametro/getparametros', //index.php/
+      url: 'index.php/Parametro/getparametros', 
       success: function(data){
-        
-        //$('#tablaparametros tr').remove();
 
-        console.log(data);
-        // var j=1;
-        var comp={};
-        var idparam={};
+        tabla = $('#tablaparametros').DataTable();
+        tabla.clear().draw();
         for(var i=0; i < data.length ; i++){
-          id_param=j;
-          idparam[i]=data[i]['id_parametro'];
-          var tr = "<tr id='"+id_param+"' class='"+id_equipo+"'>"+
-          "<td><i class='fa fa-fw fa-times-circle text-light-blue' style='cursor: 'pointer' margin-left: '15px' title='Eliminar'></i> "+
-          "<i class='fa fa-fw fa-pencil text-light-blue' style='cursor: 'pointer' margin-left: '15px' title='Editar'</i> </td>"+
-          "<td>"+data[i]['codigo'] +"</td>"+
-          "<td >"+data[i]['paramdescrip']+"</td>"+
-          "<td class='hidden' id='"+id_param+"'>"+data[i]['id_parametro']+"</td>"+
-          "<td>"+data[i]['maximo']+"</td>"+
-          "<td>"+data[i]['minimo']+"</td>"+
-          "</tr>";
-          j++;
-          comp[id_param]=data[i]['id_parametro'];
-          $('#tablaparametros tbody').append(tr);
-          console.log(tr);
-          console.log(idparam);
+         
+          id_equipo = data[i]['id_equipo'];
+          descripcion = data[i]['descripcion'];
+          id_parametro = data[i]['id_parametro'];
+          parametro = data[i]['paramdescrip'];
+          max = data[i]['maximo'];
+          min = data[i]['minimo'];
+
+          tablaCompleta = tabla.row.add( [
+              '<i class="fa fa-fw fa-pencil text-light-blue " style="cursor: pointer; margin-left: 15px;" data-id_equipo="'+id_equipo+'" data-id_parametro= "'+id_parametro +'"></i>'+
+              '<i class="fa fa-fw fa-times-circle text-light-blue " style="cursor: pointer; margin-left: 15px;" data-id_equipo="'+id_equipo+'" data-id_parametro= "'+id_parametro +'"></i>',
+              descripcion,
+              parametro,
+              max,
+              min
+            ] );
+          tablaCompleta.node().id = id_parametro;
+          tabla.draw();  
         }
-        console.log("para identificar el j es :"+ id_param);
-        console.log(comp);
-
-        $(document).on("click",".fa-times-circle",function(){
-          console.log("Estoy eliminando");
-          var tr = $(this).closest('tr').attr('id');
-          console.log("El registro a eliminar");
-          console.log(tr);
-          var e = $(this).parent('td').parent('tr').attr('class');
-          console.log("El id del equipo es:");
-          console.log(e);
-                                     
-          $.ajax({
-            type: 'POST',
-            data: {tr:tr, comp:comp, e:e},
-            url: 'index.php/Parametro/baja_parametro', //index.php/
-            success: function(data){
-              //var data = jQuery.parseJSON( data );
-              console.log("Exito");
-              console.log(data);
-              $(tr).remove();
-              //alert("Parametro ELIMINADO");
-              cargarVista();
-            },
-            error: function(result){
-              console.log("Entre por el error");
-              console.log(result);
-            },
-            //dataType: 'json'
-          });
-        });
-
-        $(document).on("click",".fa-pencil",function(){
-          $('#modalSale').modal('show');
-          var parent = $(this).closest('tr').attr('id');
-          var e = $(this).parent('td').parent('tr').attr('class');
-          console.log("El id del equipo es:");
-          console.log(e);
-          console.log("se identifica al registro por el numero");
-          console.log(parent);
-          
-          $.ajax({
-              type: 'GET',
-              data: { e:e, parent:parent, comp:comp},
-              url: 'index.php/Parametro/editar', //index.php parent:parent,  comp:comp/
-              success: function(data){
-                //var data = jQuery.parseJSON( data );
-                console.log("exito");
-                console.log(data);
-               
-                datos={
-                  'id_equipo':id_equipo,
-
-                  'codigo':data['datos'][0]['codigo'],
-                  'parametro':data['datos'][0]['paramdescrip'],
-                  'maximo':data['datos'][0]['maximo'],
-                  'minimo':data['datos'][0]['minimo'],
-                  'id_param':data['datos'][0]['id_parametro'],
-                }
-
-                $('#equ').val(datos['codigo']);
-                $('#id_equipo').val(datos['id_equipo']);
-                $('#id_param').val(datos['id_param']);
-                $('#pa').val(datos['parametro']);
-                $('#maxi').val(datos['maximo']);
-                $('#mini').val(datos['minimo']);
-                //cargarVista();
-              },
-              error: function(result){
-                console.log(result);
-                console.log("hola entre por el error");
-                //cargarVista();
-              },
-              dataType: 'json'
-            });
-        });
-
-      
+       
       },
       error: function(result){
         console.log(result);
       },
       dataType: 'json'
     });
-
-    /*  var parentid = $(this).closest('tr').attr('id');
-    console.log(parentid);         
-    if(id_equipo=parentid)       
-    { 
-      $('#tablaparametros tbody tr').remove();
-    }*/
+    
   });
 
   var equipoglob="";
@@ -254,68 +221,7 @@ $(document).ready(function(event) {
       "<td>"+minimo+"</td>"+
       "</tr>";
     
-    $(document).on("click",".fa-times-circle",function(){
-      // agregar esto para que no se repita el evento
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      var parent = $(this).closest('tr');
-      console.log(parent);
-      WaitingOpen('Eliminando...');
-
-      $.ajax({
-        type: 'POST',
-        data: { id_equipo: id_equipo,id_parametro:id_parametro},
-        url: 'index.php/Parametro/bajaparametro', //index.php/
-        success: function(data){
-          WaitingClose();
-          console.log("Exito");
-          console.log(data);
-          $(parent).remove();
-          
-        },
-        error: function(result){
-          console.log("Entre por el error");
-          console.log(result);
-          WaitingClose();
-          alert("ERROR... el Parametro no ha sido Eliminado...");
-        },
-        dataType: 'json'
-      });
-    });     
-                         
-    $(document).on("click",".fa-pencil",function(){
-      $('#modalSale').modal('show');
-      $.ajax({
-        type: 'GET',
-        data: { equipoglob:equipoglob, id_parametro:id_parametro},
-        url: 'index.php/Parametro/geteditar', //index.php/
-        success: function(data){
-          //var data = jQuery.parseJSON( data );
-          console.log("exito");
-          console.log(data);
-          datos={
-            'id_equipo':id_equipo,
-
-            'codigo':data['datos'][0]['codigo'],
-            'parametro':data['datos'][0]['paramdescrip'],
-            'maximo':data['datos'][0]['maximo'],
-            'minimo':data['datos'][0]['minimo'],
-            'id_param':data['datos'][0]['id_parametro'],
-          }
-
-          $('#equ').val(datos['codigo']);
-          $('#id_equipo').val(datos['id_equipo']);
-          $('#id_param').val(datos['id_param']);
-          $('#pa').val(datos['parametro']);
-          $('#maxi').val(datos['maximo']);
-          $('#mini').val(datos['minimo']);
-        },  
-        error: function(result){
-          console.log(result);
-        },
-        dataType: 'json'
-      });
-    });
+    
 
     var hayError = false;
     if (id_equipo >0 && id_parametro >0) {
@@ -349,6 +255,194 @@ $(document).ready(function(event) {
   });
 
 });
+// llena modal para editar
+$(document).on("click",".fa-pencil",function(e){
+  // agregar esto para que no se repita el evento
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  
+  var id_equipo = $(this).data("id_equipo");  
+  var id_parametro =$(this).data("id_parametro");
+  
+  $('#modalSale').modal('show');
+
+  $.ajax({
+      type: 'POST',
+      data: { id_equipo:id_equipo, id_param:id_parametro},
+      url: 'index.php/Parametro/editar', 
+      success: function(data){    
+        datos={
+          'id_equipo':id_equipo,
+          'codigo':data['datos'][0]['codigo'],
+          'parametro':data['datos'][0]['paramdescrip'],
+          'maximo':data['datos'][0]['maximo'],
+          'minimo':data['datos'][0]['minimo'],
+          'id_param':data['datos'][0]['id_parametro'],
+        };
+
+        $('#equ').val(datos['codigo']);
+        $('#id_equipo').val(datos['id_equipo']);
+        $('#id_param').val(datos['id_param']);
+        $('#pa').val(datos['parametro']);
+        $('#maxi').val(datos['maximo']);
+        $('#mini').val(datos['minimo']);          
+      },
+      error: function(result){
+        console.log(result);
+        console.log("hola entre por el error");          
+      },
+      dataType: 'json'
+  });
+});
+// guarda edicion de parametros
+function guardarmodif(){
+  
+  var datos={                                    
+    'maximo': $('#maxi').val(),
+    'minimo': $('#mini').val(),
+    'id_parametro': $('#id_param').val(),
+    'id_equipo':$('#id_equipo').val(),
+  };
+  console.log(datos);
+  $.ajax({
+    type:"POST",
+    url: "index.php/Parametro/guardarmodif",
+    data:{datos:datos},
+    success: function(data){
+      console.table(data);
+            tabla = $('#tablaparametros').DataTable();
+            tabla.clear().draw();
+            for(var i=0; i < data.length ; i++){
+            
+              id_equipo = data[i]['id_equipo'];
+              descripcion = data[i]['descripcion'];
+              id_parametro = data[i]['id_parametro'];
+              parametro = data[i]['paramdescrip'];
+              max = data[i]['maximo'];
+              min = data[i]['minimo'];
+
+              tablaCompleta = tabla.row.add( [
+                  '<i class="fa fa-fw fa-pencil text-light-blue " style="cursor: pointer; margin-left: 15px;" data-id_equipo="'+id_equipo+'" data-id_parametro= "'+id_parametro +'"></i>'+
+                  '<i class="fa fa-fw fa-times-circle text-light-blue " style="cursor: pointer; margin-left: 15px;" data-id_equipo="'+id_equipo+'" data-id_parametro= "'+id_parametro +'"></i>',
+                  descripcion,
+                  parametro,
+                  max,
+                  min
+                ] );
+              tablaCompleta.node().id = id_parametro;
+              tabla.draw();  
+            }
+    },
+    error: function(result){
+      console.log(result);
+      console.log("hola entre por el error");
+      //cargarVista();
+    },
+    dataType: 'json'
+  });
+  //cargarVista();                                                      
+}
+// eliminar asociacion 
+$(document).on("click", ".fa-times-circle", function(e) {       
+  // agregar esto para que no se repita el evento
+  e.preventDefault();
+  e.stopImmediatePropagation();
+
+  var id_equipoElim = $(this).data("id_equipo");  
+  var id_parametroElim =$(this).data("id_parametro");
+  $('#id_equipoElim').val(id_equipoElim);
+  $('#id_parametroElim').val(id_parametroElim);
+  $('#modalaviso').modal('show');
+});
+// elimina asociacion de parametros
+function eliminar(){
+  var id_equipoElim = $('#id_equipoElim').val();
+  var id_parametroElim = $('#id_parametroElim').val();
+  $.ajax({
+      type: 'POST',
+      data: { id_equipoElim:id_equipoElim, id_parametroElim:id_parametroElim},
+      url: 'index.php/Parametro/eliminar', 
+      success: function(data){    
+              tabla = $('#tablaparametros').DataTable();
+              tabla.clear().draw();
+              
+              for(var i=0; i < data.length ; i++){
+              
+                id_equipo = data[i]['id_equipo'];
+                descripcion = data[i]['descripcion'];
+                id_parametro = data[i]['id_parametro'];
+                parametro = data[i]['paramdescrip'];
+                max = data[i]['maximo'];
+                min = data[i]['minimo'];
+
+                tablaCompleta = tabla.row.add( [
+                    '<i class="fa fa-fw fa-pencil text-light-blue " style="cursor: pointer; margin-left: 15px;" data-id_equipo="'+id_equipo+'" data-id_parametro= "'+id_parametro +'"></i>'+
+                    '<i class="fa fa-fw fa-times-circle text-light-blue " style="cursor: pointer; margin-left: 15px;" data-id_equipo="'+id_equipo+'" data-id_parametro= "'+id_parametro +'"></i>',
+                    descripcion,
+                    parametro,
+                    max,
+                    min
+                  ] );
+                tablaCompleta.node().id = id_parametro;
+                tabla.draw();  
+              }
+      },
+      error: function(result){
+        console.log(result);
+        console.log("hola entre por el error");          
+      },
+      dataType: 'json'
+  });
+}
+// funcion guarda las nuevas asociaciones de equipo/parametro
+function guardar_todo(){    
+  
+  var parametros = {
+      'id_equipo': $('#equipo').val(),
+      'id_parametro': $('#parametro').val(),
+      'maximo': $('#maximo').val(),
+      'minimo': $('#minimo').val(),
+  };  
+ 
+  $.ajax({
+    type: 'POST',
+    data: {data:parametros},
+    url: 'index.php/Parametro/guardar_todo', 
+    success: function(data){
+      tabla = $('#tablaparametros').DataTable();
+              tabla.clear().draw();
+              
+              for(var i=0; i < data.length ; i++){
+              
+                id_equipo = data[i]['id_equipo'];
+                descripcion = data[i]['descripcion'];
+                id_parametro = data[i]['id_parametro'];
+                parametro = data[i]['paramdescrip'];
+                max = data[i]['maximo'];
+                min = data[i]['minimo'];
+
+                tablaCompleta = tabla.row.add( [
+                    '<i class="fa fa-fw fa-pencil text-light-blue " style="cursor: pointer; margin-left: 15px;" data-id_equipo="'+id_equipo+'" data-id_parametro= "'+id_parametro +'"></i>'+
+                    '<i class="fa fa-fw fa-times-circle text-light-blue " style="cursor: pointer; margin-left: 15px;" data-id_equipo="'+id_equipo+'" data-id_parametro= "'+id_parametro +'"></i>',
+                    descripcion,
+                    parametro,
+                    max,
+                    min
+                  ] );
+                tablaCompleta.node().id = id_parametro;
+                tabla.draw();  
+              }
+
+    },
+    error: function(result){
+      console.log("entro por el error");
+      console.log(result);
+    },
+    dataType: 'json'
+  });
+}
+
+
 
 // ttrae todos los equipos ok
 traer_equipo();
@@ -403,7 +497,6 @@ function traer_parametro(){
     dataType: 'json'
   });
 }
-
 // funciona OK (BTN NUEVO)
 function guardar(){ 
   var parametros = {
@@ -433,85 +526,9 @@ function guardar(){
   });
 }
 
-// funciion guarda las nuevas asociaciones de equipo/parametro
-function guardar_todo(){    
-  console.log("estoy guardadno");
-  var parametros = {
-      'id_equipo': $('#equipo').val(),
-      'id_parametro': $('#parametro').val(),
-      'maximo': $('#maximo').val(),
-      'minimo': $('#minimo').val(),
-  };
 
-  /*var idsparam = new Array();     
-  $("#tablaparametros tbody tr").each(function (index) 
-  {
-      //var ide = $(this).parent('td').parent('tr').attr('id');
-      var id_equipo = $(this).attr('id');
-      idsparam.push(id_equipo);            
-  }); */
-  console.log(parametros);
-  $.ajax({
-    type: 'POST',
-    data: {data:parametros},
-    url: 'index.php/Parametro/guardar_todo', 
-    success: function(data){
-      console.log("exito");
-      console.log(data);                          
-    },
-    error: function(result){
-      console.log("entro por el error");
-      console.log(result);
-    },
-    dataType: 'json'
-  });
-}
 
-function eliminar(id_equipo, id_parametro){   
-}
 
-function cargarVista(){
-    //WaitingOpen();
-    //$('#tablaparametros').empty();
-    $('#content').empty();
-    $('#modalSale').empty();
-    $("#content").load("<?php echo base_url(); ?>index.php/Parametro/index/<?php echo $permission; ?>");
-    WaitingClose();
-}
-
-function guardarmodif(){
-  console.log("Estoy gurdando lo modificado");
-  var e = $(this).parent('td').parent('tr').attr('class');
-  console.log("El id del equipo es:");
-  console.log(e);
-  var datos={                                    
-    'maximo': $('#maxi').val(),
-    'minimo': $('#mini').val(),
-    'id_parametro': $('#id_param').val(),
-    'id_equipo':$('#id_equipo').val(),
-  };
-  console.log(datos);
-  $.ajax({
-    type:"POST",
-    url: "index.php/Parametro/agregar_componente",
-    data:{datos:datos},
-    success: function(data){
-      console.log(data);
-      console.log("hola estoy en exito");
-      if (data >0) {
-        $('#tablaparametros  tbody ').append(data);
-      }
-      cargarVista(); 
-    },
-    error: function(result){
-      console.log(result);
-      console.log("hola entre por el error");
-      //cargarVista();
-    },
-    dataType: 'json'
-  });
-  //cargarVista();                                                      
-}
 </script>
 
 <!-- Modal -->
@@ -584,6 +601,36 @@ function guardarmodif(){
         <button type="button" class="btn btn-primary" id="reset" data-dismiss="modal" onclick="guardarmodif()">Guardar</button>
       </div>
 
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal aviso eliminar -->
+<div class="modal fade" id="modalaviso">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" ><span class="fa fa-fw fa-times-circle" style="color:#A4A4A4"></span>  Eliminar</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" >&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <center>
+        <h4><p>¿ DESEA ELIMINAR ASOCIACIÓN ?</p></h4>
+        </center>
+      </div>     
+
+      <input type="text" class="hidden" id="id_equipoElim"/>
+      <input type="text" class="hidden" id="id_parametroElim"/> 
+
+      <div class="modal-footer">
+        <center>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminar()">SI</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">NO</button>
+        </center>
+      </div>
     </div>
   </div>
 </div>
