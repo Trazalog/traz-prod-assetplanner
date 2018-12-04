@@ -225,7 +225,7 @@ $("#add").click(function (e) {
 // levanta modal advertencia borrado y guarda el id de registro en tabla
 $(document).on("click",".fa-times-circle",function(){
   var idInserc = $(this).parents('tr').attr('id');
-  alert(idInserc);    
+  //alert(idInserc);    
   $('#id_lectura').val(idInserc); 
 });  
 
@@ -270,7 +270,7 @@ $('#tablaparametro').DataTable({
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" ><span class="fa fa-fw fa-times-circle" style="color:#A4A4A4"></span>  Eliminar</h5>
+        <h5 class="modal-title" >Eliminar</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true" >&times;</span>
         </button>
