@@ -170,7 +170,7 @@ function getLecturasCargadas(){
                 var id_insercion = data[i]['id'];
                 var parametro = data[i]['paramdescrip']; 
                 tabla.row.add( [
-                  "<td ><i class='fa fa-fw fa-times-circle' style='color: #A4A4A4' cursor: 'pointer' margin-left: '15px' title='Eliminar' data-toggle='modal' data-target='#modalaviso'></td>",
+                  "<td ><i class='fa fa-fw fa-times-circle' style='color: #A4A4A4' cursor: 'pointer' margin-left: '15px' title='Eliminar' data-toggle='modal' data-target='#modalaviso' data-id-isercion='"+id_insercion+"'></td>",
                   $equipo,      
                   parametro,
                   $fecha,
@@ -224,7 +224,8 @@ $("#add").click(function (e) {
 
 // levanta modal advertencia borrado y guarda el id de registro en tabla
 $(document).on("click",".fa-times-circle",function(){
-  var idInserc = $(this).parents('tr').attr('id');
+  //var idInserc = $(this).parents('tr').attr('id');
+  var idInserc = $(this).data('id-isercion');
   //alert(idInserc);    
   $('#id_lectura').val(idInserc); 
 });  
