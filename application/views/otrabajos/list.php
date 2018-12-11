@@ -105,7 +105,7 @@
 
 <script>
 // cargo plugin DateTimePicker
-$('#fechaEntrega, #fecha_inicio1, #fecha_entrega1').datetimepicker({
+$('#fechaEntrega, #fecha_inicio1, #fecha_entrega1, #fechaInicio').datetimepicker({
   format: 'YYYY-MM-DD H:mm:ss', //format: 'YYYY-MM-DD', // es igaul a campo date
   locale: 'es',
 });
@@ -222,19 +222,13 @@ function guardaragregar(){
   $('#btn_guardar').prop("disabled", true);
   
   var num           = $('#nro1').val();
+  var fecha_inicio  = $('#fechaInicio').val();
   var fecha_entrega = $('#fechaEntrega').val();
   var descripcion   = $('#vsdetal').val();
   var sucursal      = $('#suci').val();
   var proveedor     = $('#prov').val();
-  var equipo        = $('#equipo').val();;
-  //console.log("Datos a guardar");
-  //console.log(num);
-  //console.log(fecha_entrega);
-  //console.log(descripcion);
-  //console.log(sucursal);
-  //console.log(proveedor);
-  //console.log(equipo);
-
+  var equipo        = $('#equipo').val();
+  
   var hayError = false; 
   $('#error').hide();
   if($('#equipo').val() == '')
@@ -261,7 +255,13 @@ function guardaragregar(){
 
   $.ajax({
     type: 'POST', 
-    data: {num:num, fecha_entrega:fecha_entrega, equipo:equipo, descripcion:descripcion, sucursal:sucursal, proveedor:proveedor},
+    data: {num:num, 
+          fecha_inicio: fecha_inicio,
+          fecha_entrega:fecha_entrega, 
+          equipo:equipo, 
+          descripcion:descripcion, 
+          sucursal:sucursal, 
+          proveedor:proveedor},
     url: 'index.php/Otrabajo/guardar_agregar',
     success: function(data){
       //console.log(data);  
@@ -624,12 +624,6 @@ function orden(){
           dataType: 'json'
   });              
 }
-
-
-
-
-
-
 
 /*/ Refresca    
 function regresa(){
@@ -1116,9 +1110,7 @@ $(document).ready(function(event) {
   });
 
 });
-
-
-    
+  
 function LoadOT(id_, action){
   idArt = id_;
   acArt = action;
@@ -1194,9 +1186,6 @@ function finalOT(id_, action){ //esto es nuevo
             dataType: 'json'
   });
 }
- 
-   
-
 
  
 // Trae proveedores por empresa logueada      
@@ -1394,7 +1383,8 @@ $(".fa-cart-plus").click(function (e) {
             <label style="margin-top: 7px;">Fecha Inicio<strong style="color: #dd4b39">*</strong>: </label>
           </div>
           <div class="col-xs-12 col-sm-8">
-            <input type="text" class="form-control" id="vfech" name="vfech" value="<?php echo date_format(date_create(date("Y-m-d")), 'd-m-Y ') ; ?>"  disabled/>
+            <input type="datetime" class="form-control" id="fechaInicio" name="fechaInicio" />
+            <!-- <input type="text" class="form-control" id="fechaInicio" name="fechaInicio" value="<?php //echo date_format(date_create(date("Y-m-d")), 'd-m-Y ') ; ?>"/> -->
           </div>
         </div><br>
         <div class="row">
