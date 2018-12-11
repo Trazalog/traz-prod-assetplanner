@@ -56,7 +56,61 @@ class Tareas extends CI_Model {
 /* ./ TAREAS ASSET ORIGINALES (TAREAS ESTANDAR)*/	
 
 /* INTEGRACION CON BPM */
-	// trae tareas por ID de usuario
+	
+/*********** funciones nuevas de asset */
+	//devuelve array con subtareas 
+	function getSubtareaseEstandar($nomTarea){
+		
+		$idTarea = $this->getIdTareaSTD($nomTarea);
+		$subtareas= array();
+
+		if($idTarea !=0){
+			$subtareas = $this->getSubtareas($idTarea);
+			return $subtareas;
+		}else{
+			return $subtareas;
+		}
+	}
+	// devuelve id de tarea estandar por nombre
+	function getIdTareaSTD($nomTarea){
+
+		$userdata = $this->session->userdata('user_data');
+		$empId = $userdata[0]['id_empresa'];
+
+		$this->db->select('tareas.id_tarea');
+		$this->db->from('tareas');
+		$this->db->where('tareas.descripcion',$nomTarea);
+		$this->db->where('tareas.id_empresa',$empId);
+		$query = $this->db->get();
+			if ($query->num_rows()!=0){
+				return $query->row('id_tarea');	
+			}else{
+				return 0;
+			}
+	}
+	// devuelve subtareas por 
+	function getSubtareas($idTareaSTD){
+		$this->db->select('asp_subtareas.id_subtarea,
+											asp_subtareas.tareadescrip,
+											asp_subtareas.id_tarea,
+											asp_subtareas.id_usuario,
+											asp_subtareas.fecha,
+											asp_subtareas.duracion_prog,
+											asp_subtareas.bpm_task_id,
+											asp_subtareas.form_asoc');
+		$this->db->from('asp_subtareas');
+		$this->db->where('asp_subtareas.id_tarea',$idTareaSTD);
+		$query = $this->db->get();
+		if ($query->num_rows()!=0){
+			return $query->result_array();	
+		}else{
+			return 0;
+		}
+	}
+
+
+
+// trae tareas por ID de usuario
 	function getTareas($param){
 		
 		$userdata = $this->session->userdata('user_data');
@@ -100,7 +154,7 @@ class Tareas extends CI_Model {
 			return $query->result_array();
 		}
 	}
-	//Verificar si es tarea Std
+	//devuelve datos de tarea por nombre 
 	function getDatosTarea($nombre){
 		$this->db->where('descripcion',$nombre);
 		return $this->db->get('tareas')->result_array()[0];
@@ -126,8 +180,7 @@ class Tareas extends CI_Model {
 	// Trae los datos de la tarea desde BPM
 	function getDatosBPM($idTarBonita,$param){
 
-		// $response = file_get_contents(BONITA_URL.'API/bpm/humanTask/54', false, $param);
-		
+		// $response = file_get_contents(BONITA_URL.'API/bpm/humanTask/54', false, $param);	
 		$urlResource = BONITA_URL.'API/bpm/humanTask/';
 		$data = file_get_contents($urlResource.$idTarBonita , false, $param);
 		return $data;
@@ -146,7 +199,297 @@ class Tareas extends CI_Model {
 			return 0;
 		}
 	}
+	// devuelve ptrId por caseId
+	function getPtrIdPorCaseId($caseId){
 
+		$this->db->select('trj_pedido_trabajo.petr_id');
+		$this->db->from('trj_pedido_trabajo');
+		$this->db->where('trj_pedido_trabajo.bpm_id', $caseId);
+		$query = $this->db->get();
+
+		if ($query->num_rows()!=0){
+	 		return $query->row('petr_id');
+	 	}else{
+	 		return 0;
+	 	}
+	}
+	//devuelve el id de tarea estandar asociada a listarea
+	function getTarea_idListarea($id_listarea){
+
+		$this->db->select('tbl_listarea.id_tarea');
+		$this->db->from('tbl_listarea');
+		$this->db->where('tbl_listarea.id_listarea', $id_listarea);
+		$query = $this->db->get();
+
+		if ($query->num_rows()!=0){
+	 		return $query->row('id_tarea');
+	 	}else{
+	 		return false;
+	 	}
+	}
+	
+	/*FORMULARIOS */
+		// Devuelve form asociado a una tarea std
+		function getIdFormPorIdTareaSTD($idTareaStd){
+
+				$this->db->select('tareas.form_asoc');
+				$this->db->from('tareas');
+				$this->db->where('tareas.id_tarea', $idTareaStd);
+				$query = $this->db->get();
+
+				if ($query->num_rows()!=0){
+					return $query->row('form_asoc');
+				}else{
+					return 0;
+				}
+			}
+		// Comprueba si hay form guardado asoc a id de orden y de tarea
+		function getEstadoForm($bpm_task_id){
+			$this->db->select('frm_formularios_completados.LITA_ID');
+			$this->db->from('frm_formularios_completados');
+			$this->db->where('frm_formularios_completados.LITA_ID', $bpm_task_id);
+			$query = $this->db->get();
+
+			if ($query->num_rows()>0){
+				return true;
+			}else{
+				return false;
+			}
+		}
+		// Trae configuracion de form inicial para guardar en frm_frm_completados
+		function getFormInicial(){
+
+			////  ID DE EMPRESA PARA CLOUD
+			$userdata = $this->session->userdata('user_data');
+			$empId = $userdata[0]['id_empresa'];
+
+			$sql = "SELECT	
+					form.form_id AS FORM_ID,
+					form.nombre AS FORM_NOMBRE,
+					form.fec_creacion AS FEC_CREACION,
+					cate.NOMBRE AS CATE_NOMBRE,						
+					grup.NOMBRE AS GRUP_NOMBRE,
+					tida.NOMBRE AS TIDA_NOMBRE,						
+					valo.NOMBRE AS VALO_NOMBRE,						
+					valo.ORDEN										
+					FROM
+					frm_formularios form, 
+					frm_categorias cate, 
+					frm_grupos grup ,  
+					frm_tipos_dato tida,
+					frm_valores valo
+					where FORM.FORM_ID = CATE.FORM_ID 
+					AND CATE.CATE_ID = GRUP.CATE_ID 
+					AND GRUP.GRUP_ID = VALO.GRUP_ID 
+					AND TIDA.TIDA_ID = VALO.TIDA_ID						
+					ORDER BY cate.ORDEN,grup.ORDEN,valo.ORDEN
+					AND FORM.ID_EMPRESA = $empId";
+
+			$query= $this->db->query($sql);
+
+			if($query->num_rows()>0){
+					return $query->result_array();
+				}
+				else{
+					return false;
+				}
+		}
+		// Guarda la configuracion inicial del formulario
+		function setFormInicial($bpm_task_id,$idFormAsoc,$ot_id) { //$id_listarea){
+
+			$userdata = $this->session->userdata('user_data');
+			$usrId = $userdata[0]['usrId'];     // guarda usuario logueado
+			$empId = $userdata[0]['id_empresa']; 
+			$i=1	;
+			$dat= array();
+			//instancia form y devuelve id  que relaciona form con OT
+			$idInstanciaForm = $this->instanciarForm($ot_id);
+
+			// Trae la info del form sin valores validos desp se actualiza al guardar
+			$form = $this->getFormInicial($idFormAsoc); 
+
+			// Agrego id de usuario y demas datos al array para insertar
+			foreach ($form as $key) {
+
+				$key['USUARIO'] = $usrId;
+				$key['LITA_ID'] = $bpm_task_id; //$id_listarea;
+				$key['INFO_ID'] = $idInstanciaForm;
+				$key['ORDEN'] = $i;
+				$key['ID_EMPRESA'] = $empId; // guarda id de empresa logueada
+				$i++;
+				$dat[$i] =  $key;
+			}
+
+			$response = $this->db->insert_batch('frm_formularios_completados', $dat);
+		}
+		// instancia el form inicial relacionandolo con la OT
+		function instanciarForm($ot_id){
+
+			$data['ortra_id'] = $ot_id;
+			$this->db->insert('frm_instancias_formulario',$data);
+			return $idInstanciaForm = $this->db->insert_id();
+		}
+		// Trae form para dibujar pantalla (agregar where de id de form)
+		function get_form($bpm_task_id,$idFormAsoc){
+
+			$userdata = $this->session->userdata('user_data');
+			$empId = $userdata[0]['id_empresa']; 
+			//dump($bpm_task_id, 'bpm id: ');
+			//dump($idFormAsoc, 'form asoc: ');
+			$sql = "SELECT foco.FOCO_ID AS idValor,
+						foco.FORM_ID,
+						foco.FORM_NOMBRE,
+						'' AS habilitado,
+						foco.FEC_CREACION,
+						foco.CATE_NOMBRE AS nomCategoria,
+						'' AS idCategoria,
+						foco.GRUP_NOMBRE AS nomGrupo,
+						foco.TIDA_NOMBRE AS nomTipoDatos,
+						'' AS idGrupo,
+						foco.VALO_NOMBRE AS nomValor,
+						foco.TIDA_ID,
+
+						foco.VALOR AS valDefecto,
+						'' AS LONGITUD,
+						'' AS PISTA,
+						foco.VALO_ID,
+						foco.OBLIGATORIO as obligatorio,
+						foco.ORDEN
+						FROM
+						frm_formularios_completados foco
+						WHERE foco.FORM_ID = $idFormAsoc
+						AND foco.LITA_ID = $bpm_task_id
+						AND foco.ID_EMPRESA = $empId
+						ORDER BY foco.ORDEN";
+
+			$query= $this->db->query($sql);
+
+			if($query->num_rows()>0){
+					return $query->result_array();
+				}
+				else{
+					return false;
+				}
+		}
+		// valida campos obligatorios en form generico
+		function ValidarObligatorios($form_id,$id_OT){
+			$this->db->select('count(*)=0 as result');
+			$this->db->from('frm_formularios_completados');
+			$this->db->join('frm_instancias_formulario', 'frm_instancias_formulario.info_id = frm_formularios_completados.INFO_ID');
+			$this->db->where('frm_instancias_formulario.ortra_id ',$id_OT);
+			$this->db->where('FORM_ID',$form_id);			
+			$this->db->where('frm_formularios_completados.OBLIGATORIO',true);
+			$this->db->where('frm_formularios_completados.VALIDADO',false);
+			return $this->db->get()->result_array()[0];
+		}
+
+	// Trae id de Ped de Trabajo segun CaseId
+	function getIdPedTrabajo($caseId){
+		$this->db->select('trj_pedido_trabajo.petr_id,trj_pedido_trabajo.cod_interno');
+		$this->db->from('trj_pedido_trabajo');
+		$this->db->where('trj_pedido_trabajo.bpm_id', $caseId);
+
+		$query = $this->db->get();
+
+		if ($query->num_rows()!=0){
+			return $query->result_array();
+			//return $query->row('petr_id');
+	 	}else{
+	 		return false;
+	 	}
+	}
+	// devuelve detalle de tareas para notificacion standart a partir de id_listarea
+	function detaTareas($id_listarea){
+
+		$this->db->select('tbl_listarea.id_listarea,
+							tbl_listarea.id_orden,
+							tareas.duracion_std,
+							tbl_listarea.tareadescrip,
+							tbl_listarea.id_tarea,
+							tbl_listarea.id_usuario,
+							tbl_listarea.estado,
+							tbl_listarea.fecha');
+		$this->db->from('tbl_listarea');
+		$this->db->join('tareas', 'tareas.id_tarea = tbl_listarea.id_tarea');
+		$this->db->where('tbl_listarea.id_listarea', $id_listarea);
+		$query = $this->db->get();
+
+		if ($query->num_rows()!=0){
+				return $query->result_array();
+		}else{
+			return false;
+		}
+	 }
+	 
+
+	// devuelve id tarea y form asociado por nomb de tarea BPM
+	function getidFormTareaBPM($nomtarea){
+
+		$this->db->select('tareas.id_tarea,
+							tareas.form_asoc');
+		$this->db->from('tareas');
+		$this->db->where('tareas.descripcion', $nomtarea);
+		$query = $this->db->get();
+
+		if($query->num_rows()>0){
+				return $query->result_array();
+			}
+			else{
+				return false;
+			}
+	}
+	//obtener Comentarios
+	function ObtenerComentariosBPM($caseId,$param){
+		$processInstance = 'processInstanceId%3D'.$caseId;
+		$comentarios = file_get_contents(BONITA_URL.'API/bpm/comment?f='.$processInstance.'&o=postDate%20DESC&p=0&c=200&d=userId',false,$param);
+		return json_decode($comentarios,true);
+	}
+
+	/* TAREAS BPM */
+		// Tomar Tareas
+		function tomarTarea($idTarBonita,$param){
+
+			try {
+				$resource = 'API/bpm/humanTask/';
+				$url = BONITA_URL.$resource.$idTarBonita;
+
+				file_get_contents($url, false, $param);
+				$response = $this->parseHeaders( $http_response_header );
+
+				return $response;
+			}catch (Exception $e) {
+				var_dump($e->getMessage());
+			}
+		}
+		// Soltar Tareas
+		function soltarTarea($idTarBonita,$param){
+
+			$resource = 'API/bpm/humanTask/';
+			$url = BONITA_URL.$resource.$idTarBonita;
+			file_get_contents($url, false, $param);
+			$response = $this->parseHeaders( $http_response_header );
+			return $response;
+		}
+		// toma la respuesta del server y devuelve el codigo de respuesta solo
+		function parseHeaders( $headers ){
+			$head = array();
+			foreach( $headers as $k=>$v ){
+				$t = explode( ':', $v, 2 );
+				if( isset( $t[1] ) )
+					$head[ trim($t[0]) ] = trim( $t[1] );
+				else{
+					$head[] = $v;
+					if( preg_match( "#HTTP/[0-9\.]+\s+([0-9]+)#",$v, $out ) )
+						$head['reponse_code'] = intval($out[1]);
+				}
+			}
+			return $head;
+		}
+		// Comentarios
+		function GuardarComentarioBPM($param){
+			$respuesta = file_get_contents(BONITA_URL.'API/bpm/comment',false,$param);
+			return $respuesta;
+		}
 
 
 /* ./ INTEGRACION CON BPM */

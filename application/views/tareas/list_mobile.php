@@ -12,7 +12,7 @@
         <div class="box-header">
 
         <center>
-          <h1 class="box-title">Listado de Tareas Mobile</h1>
+          <h1 class="box-title">Mis Tareas</h1>
         </center>
 
         </div><!-- /.box-header -->
@@ -50,10 +50,10 @@
                   echo '<td>';
                     if (strpos($permission,'Del') !== false){
                       if ($asig != "") {
-                        echo '<button type="button" id="btncolor" class="btn btnFin btn-success" >
+                        echo '<button type="button" id="btncolor" class="btn btnFin btn-success  btn-sm" >
                             <span class="glyphicon glyphicon-ok"></span>  </button> ';
                       }else{
-                        echo '<button type="button" id="btncolor" class="btn btn-success" data-toggle="modal" data-target="#finalizar" disabled>
+                        echo '<button type="button" id="btncolor" class="btn btn-success  btn-sm" data-toggle="modal" data-target="#finalizar" disabled>
                             <span class="glyphicon glyphicon-ok"></span>  </button> ';
                       }
                     }
@@ -206,10 +206,10 @@
 
       $('#sector').DataTable({
           "paging": true,
-          "lengthChange": true,
-          "searching": true,
+          "lengthChange": false,
+          "searching": false,
           "ordering": true,
-          "info": true,
+          "info": false,
           "autoWidth": true,
           "language": {
                 "lengthMenu": "Ver _MENU_ filas por página",

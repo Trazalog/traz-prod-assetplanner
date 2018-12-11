@@ -180,47 +180,38 @@ $(document).ready(function(event) {
     }
     //var celda= $(this).parents("tr").find("td").eq(4).html();  
     $(document).on("click",".fa-times-circle",function(){
-      //var parent = $(this).closest('tr');
-      //$(parent).remove();
+      
       $.ajax({
               type: 'POST',
               data: { idtarea: idtarea},
               url: 'index.php/Otrabajo/EliminarTarea', //index.php/
               success: function(data){
                       console.log("TAREA ELIMINADA");
-                      console.log(data);
-                      //alert("ORDEN DE TRABAJO Eliminada");
-                      regresa1();
-                    
+                      console.log(data);                      
+                      regresa1();                    
                     },
                 
               error: function(result){
                     console.log(result);
                  }
       });
-    });
-
-   
+    });  
 
 
-    var parametros = {
-     
+    var parametros = {     
       'id_orden': numord,
       'tareadescrip': tarea1,
       'estado': 'C'   
-    };
-    
+    };    
 
     $.ajax({
       type: 'POST',
       data: { parametros:parametros},
-      url: 'index.php/Otrabajo/agregar_tarea', //index.php/
+      url: 'index.php/Otrabajo/agregar_tarea', 
       success: function(data){
-            console.log(data);
-            var datos= parseInt(data);
-            idtarea= datos;
-                                 
-              
+                console.log(data);
+                var datos= parseInt(data);
+                idtarea= datos;
             },
       error: function(result){
             
