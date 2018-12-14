@@ -119,14 +119,15 @@
                                 if ($idOT != "") {
                                   echo '<h4>Se ha generado la Orden de Trabajo Nº  '.$idOT.', haga click en el boton Orden Trabajo para modificarla</h4>';
                                 } 											
-                              ?>
+                            ?>
+														<div class="col-sm-12 col-md-12" id="infoOT">
+                              												
+																											</div>
                                  </br>
                             <button class="btn btn-primary" id="verOT">Orden Trabajo</button>
                             </div>
 
-                            <div class="col-sm-12 col-md-12" id="infoOT">
-                              												
-                            </div>
+                            
 
 
 													</div>

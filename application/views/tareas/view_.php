@@ -86,7 +86,7 @@
 														</div><br>
 
 
-														<div class="form-group ">
+														<div class="form-group hidden">
 															<div class="col-sm-6 col-md-6 ">
 																<label for="ot ">Orden de Trabajo:</label>
 																<input type="text " class="form-control " id="ot
@@ -95,7 +95,7 @@
 															</div>
 														</div><br>
 
-														<div class="form-group">
+														<div class="form-group hidden">
 															<div class="col-sm-6 col-md-6">
 																<label for="duracion_std">Duracion Estandar (minutos):</label>
 																<input type="text" class="form-control" id="duracion_std" placeholder="" value="<?php echo $datos[0]['duracion_std']  ?>"
@@ -113,6 +113,21 @@
 														</div></br> </br> </br> </br> </br>
 													</div>
 
+													<div class="col-sm-12 col-md-12" style="margin-top:15px;"> 
+                              
+															<?php											
+																if ($idOT != "") {
+																	echo '<h4>Se ha generado la Orden de Trabajo Nº  '.$idOT.', haga click en el boton Orden Trabajo para modificarla</h4>';
+																} 											
+															?>
+															<div class="col-sm-12 col-md-12" id="infoOT"></div>
+																	 </br>
+															<button class="btn btn-primary" id="verOT">Orden Trabajo</button>
+															</div>
+
+																</br>
+
+
 													<div class="form-group">
 														<div class="col-sm-12 col-md-12">
 															<!-- Modal formulario tarea -->
@@ -126,7 +141,7 @@
                         <table id="subtask" class="table table-hover">
 													<thead>
 														<tr>															
-															
+															<th width="2%"></th>
 															<th width="10%">Subtarea</th>
 															<th width="10%">Duración</th>
 															<th width="10%">Formulario</th>
@@ -136,6 +151,12 @@
 													<?php 
 														foreach($subtareas as $subt){
 															echo '<tr>';	
+//echo "<input class='check' type='checkbox' value='tilde' name='".$a['idValor']."' ".($a['valDefecto'] == 'tilde' ? "checked" : "")." style='transform: scale(1.4);'>";	
+echo '<td>';										
+					// echo "<input class='checkSubt' id='".$subt['id_subtarea']."' type='checkbox' data-idSubtarea='".$subt['id_subtarea']."' value=' ".($subt['estado'] == 'Terminada' ? "checked": "")."'>";	
+					echo "<input class='checkSubt' id='".$subt['id_subtarea']."' type='checkbox' data-idSubtarea='".$subt['id_subtarea']."' value='".($subt['estado'] == "T" ? "checked" : "")."'  ".($subt['estado'] == 'T' ? 'checked = checked' : '').">";	
+					echo '</td>';					
+															//echo '<td>'.$subt['tareadescrip'].'</td>';
 																echo '<td>'.$subt['tareadescrip'].'</td>';
 																echo '<td>'.$subt['duracion_prog'].'</td>';
 																echo '<td><i class="fa fa-paperclip text-light-blue" style="cursor: pointer; margin-left: 15px;" aria-hidden="true" data-idformsub="'.$subt["form_asoc"].'"></i></td>';
@@ -178,11 +199,7 @@
 												<div class="panel panel-primary">
 													<div class="panel-heading">Línea de Tiempo</div>
 													<div class="panel-body" style="max-height: 500px;overflow-y: scroll;">
-														<style type="text/css">
-
-
-														</style>
-
+														
 														<div class="container">
 															<ul class="timeline">
 																<?php
@@ -496,6 +513,8 @@
 					// toma a tarea exitosamente
 					if (data['reponse_code'] == 200) {
 						habilitar();
+						// agrega mensaje sobre boton Orden trabajo 
+						$('#infoOT').after('<h4>Se ha generado la Orden de Trabajo Nº ' + data['resInsert'] + ', haga click en el boton Orden Trabajo para modificarla</h4>');
 					}
 
 				},
@@ -531,18 +550,18 @@
 		// terminar tarea
 		function terminarTarea() {
 			
-			if(!validado){alert("Para concluir esta actividad primero debe Validar el Formulario");return;}
+			//if(!validado){alert("Para concluir esta actividad primero debe Validar el Formulario");return;}
 			WaitingOpen('Cerrando Tarea');
 			var idTarBonita = $('#idTarBonita').val();
-			var id_listarea = $('#id_listarea').val();
-			var esTareaStd = $('#esTareaStd').val();
+			// var id_listarea = $('#id_listarea').val();
+			// var esTareaStd = $('#esTareaStd').val();
 			//alert(idTarBonita+'_'+id_listarea+'_'+esTareaStd);
 			$.ajax({
 				type: 'POST',
 				data: {
-					'idTarBonita': idTarBonita,
-					'id_listarea': id_listarea,
-					'esTareaStd': esTareaStd
+					'idTarBonita': idTarBonita//,
+					//'id_listarea': id_listarea,
+					//'esTareaStd': esTareaStd
 				},
 				url: 'index.php/Tarea/terminarTareaStandarenBPM',
 				success: function (data) {
@@ -609,7 +628,7 @@
 	/*  ./ Funciones BPM */
 
 
-	/* Formulario de subareas */
+	/* Formulario de sub Tareas */
 		var click = 0;
 		$('#formulario').click(function () {
 			click = 1;
@@ -622,7 +641,7 @@
 				//var form_id = $(this).data("idformsub");
 				//FIXME:SACAR HARDCODE FORMID
 				var form_id = 1000;
-				var bpm_task_id = 140823;
+				var bpm_task_id = 160501;
 				console.log(form_id);
 				console.log(bpm_task_id);
 				//alert(form_id);
@@ -642,9 +661,9 @@
 					WaitingClose();
 					alert("Error: No se pudo obtener el Formulario");
 				},
-			});
-				
+			});				
 		});
+
 		function ValidarCampos(){
 		//	WaitingOpen('Validando Formulario');
 			$('#genericForm').data('bootstrapValidator').validate();
@@ -659,32 +678,27 @@
 			$('#modalForm').modal('hide');
 			guardarFormulario(false);
 		}
+		// Guarda formulario al cerrar el modal (btn Cerrar)
 		function guardarFormulario(validarOn){
 			console.log("Guardando Formulario...");
 			var imgs = $('input.archivo');
-
 			var formData = new FormData($("#genericForm")[0]);
-
 			// Display the key/value pairs
-			// for(var pair of formData.entries()) {
-			// console.log(pair[0]+ ', '+ pair[1]); 
-			// }
-		
+				// for(var pair of formData.entries()) {
+				// console.log(pair[0]+ ', '+ pair[1]); 
+				// }		
 
 			/** subidad y resubida de imagenes **/
 			// Tomo los inputs auxiliares cargados
 			var aux = $('input.auxiliar');
-
 			var auxArray = [];
 			aux.each(function () {
 				auxArray.push($(this).val());
 			});
-			//console.table(aux);
 			for (var i = 0; i < imgs.length; i++) {
 
 				var inpValor = $(imgs[i]).val();
-				var idValor = $(imgs[i]).attr('name');
-				//console.log("idValor: "+idValor);
+				var idValor = $(imgs[i]).attr('name');				
 				// si tiene algun valor (antes de subir img)
 				if (inpValor != "") {
 					//al subir primera img
@@ -696,33 +710,18 @@
 					//formData.append(idValor, inpValor);
 				}
 			}
-
 			/* text tipo check */
-			var check = $('input.check');
-			//console.log("aux");
-			//console.table(aux);
-			var checkArray = [];
-			// check.each(function() {
-			//     checkArray.push($(this).val());
-			// });
-			//console.log('array de chech: ');
-			//console.table(checkArray);
-
-			for (var i = 0; i < check.length; i++) {
-				//var chekValor = $(check[i]).val();
-				var idCheckValor = $(check[i]).attr('name');
-				//console.log('valor: ');
-				//console.log(idCheckValor);
+			var check = $('input.check');			
+			var checkArray = [];		
+			for (var i = 0; i < check.length; i++) {			
+				var idCheckValor = $(check[i]).attr('name');				
 				if ($(check[i]).is(':checked')) {
 					chekValor = 'tilde';
 				} else {
 					chekValor = 'notilde';
 				}
 				formData.append(idCheckValor, chekValor);
-			}
-			// console.log('array de chech: ');
-			// console.table(check);
-
+			}			
 			/* Ajax de Grabado en BD */
 			$.ajax({
 				url: 'index.php/Tarea/guardarForm',
@@ -731,13 +730,10 @@
 				cache: false,
 				contentType: false,
 				processData: false,
-
 				success: function (respuesta) {
 					WaitingClose();
-					ValidarObligatorios(validarOn);
-					
+					ValidarObligatorios(validarOn);					
 					if (respuesta === "exito") {
-
 					}
 					else if (respuesta === "error") {
 						alert("Los datos no se han podido guardar");
@@ -750,6 +746,42 @@
 				}
 			});
 		}
+		//TODO: REVISAR VAIDACIONES
+		function ValidarObligatorios(validarOn){
+			console.log("Validando Campos Obligatorios...");
+			var form_id = $('#idform').val();
+			var id_OT = $('#id_OT').val();
+			$.ajax({
+				type: 'POST',
+				data: {'form_id':form_id,'id_OT':id_OT},
+				url: 'index.php/Tarea/ValidarObligatorios',
+				success: function (result) {
+					validado = (result == 1);				
+					WaitingClose();
+					if(!validarOn) return;
+					if(validado){
+						$('#modalFormSubtarea').modal('hide');
+					}
+					else {
+						alert("Fallo Validación: Campos Obligatorios Incompletos. Por favor verifique que todos los campos obligatorios marcados con (*) esten completos.");
+					}
+
+				},
+				error: function(result){
+					alert("Fallo la Validación del formularios en el Servidor. Por favor vuelva a intentar.");
+				}
+			});
+		}
+		
+		// Cierra modal y llama a guardar el formulario
+		function CerrarModal(){
+			$('#modalFormSubtarea').modal('hide');
+			//WaitingOpen('Guardando Cambios');
+			guardarFormulario(false);        
+		}
+
+
+
 		// trae valores validos para llenar form asoc.  
 		function getformulario(event) {
 
@@ -844,7 +876,7 @@
 		}
 		// carga inputs auxiliares con url de imagen desde BD
 		function llenarInputFile(data) {
-
+			// FIXME: CAMBIAR URL DE PROCESO
 			var id_listarea = $('inptut.archivo').val();
 			var base_url = "http://35.239.41.196/mtba-desa-procprod-desarrollo/";
 			var imagen = "";
@@ -875,35 +907,49 @@
 			$('#genericForm').data('bootstrapValidator').validateField($(this));
 		});
 		
-		function ValidarObligatorios(validarOn){
-			console.log("Validando Campos Obligatorios...");
-			var form_id = $('#idform').val();
-			var id_OT = $('#id_OT').val();
-			$.ajax({
-				type: 'POST',
-				data: {'form_id':form_id,'id_OT':id_OT},
-				url: 'index.php/Tarea/ValidarObligatorios',
-				success: function (result) {
-					validado=(result==1);
-					//WaitingClose();
-					if(!validarOn) return;
-					if(validado)$('#modalForm').modal('hide');
-					else {
-						alert("Fallo Validación: Campos Obligatorios Incompletos. Por favor verifique que todos los campos obligatorios marcados con (*) esten completos.");
-					}
+		// detecta cambio en checkbox y cambia el estado de la subtarea
+		$('.checkSubt').change(function(){
+			//TODO:CAMBIAR A ID DE LISTAREA
+			var idlistarea = $(this).attr("data-idSubtarea");
+			var estadoInic = $(this).val();
+			alert(estadoInic);
+			
+			if( $(this).attr('checked') ) {				
+				$(this).attr('checked',false);
+			}else{
+				$(this).attr('checked',true);
+			}
+			var tilde = $(this).attr('checked');
+			if (tilde == 'checked') {
+				var estado = 'T';
+			} else {
+				var estado = 'C';
+			}			
+			
+			alert(estado);
+			// TODO: HACER UPDATE DEL ESTADO DE TAREAen tabla listareas
+			// $.ajax({
+			// 	type: 'POST',
+			// 	data: {'idlistarea':idlistarea,'estado':estado},
+			// 	url: 'index.php/Tarea/cambioEstadoSubtarea',
+			// 	success: function (result) {					
 
-				},
-				error: function(result){
-					alert("Fallo la Validación del formularios en el Servidor. Por favor vuelva a intentar.");
-				}
-			});
-		}
+			// 	},
+			// 	error: function(result){
+					
+			// 	},
+			// 	dataType: 'json'
+			// });
 
-		function CerrarModal(){
-			$('#modalForm').modal('hide');
-			WaitingOpen('Guardando Cambios');
-			guardarFormulario(false);        
-		}
+ 		});
+		
+	
+	// $('.checkSubt').iCheck({
+  //   checkboxClass: 'icheckbox_minimal',
+  //   radioClass: 'iradio_minimal'//,
+  //   //increaseArea: '20%' // optional
+  // });
+
 
 	/*  /. Formulario de subareas */	
 

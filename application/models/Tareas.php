@@ -92,11 +92,10 @@ class Tareas extends CI_Model {
 	function getSubtareas($idTareaSTD){
 		$this->db->select('asp_subtareas.id_subtarea,
 											asp_subtareas.tareadescrip,
-											asp_subtareas.id_tarea,
-											asp_subtareas.id_usuario,
+											asp_subtareas.id_tarea,											
 											asp_subtareas.fecha,
 											asp_subtareas.duracion_prog,
-											asp_subtareas.bpm_task_id,
+											asp_subtareas.estado,											
 											asp_subtareas.form_asoc');
 		$this->db->from('asp_subtareas');
 		$this->db->where('asp_subtareas.id_tarea',$idTareaSTD);
@@ -107,10 +106,14 @@ class Tareas extends CI_Model {
 			return 0;
 		}
 	}
+	function cambioEstadoSubtarea($idsubtarea,$estado){
+		$this->db->where('FOCO_ID', $key);
+		$response = $this->db->update('frm_formularios_completados', $datos);
+		return $response;
+	}
 
 
-
-// trae tareas por ID de usuario
+	// trae tareas por ID de usuario
 	function getTareas($param){
 		
 		$userdata = $this->session->userdata('user_data');
@@ -256,8 +259,36 @@ class Tareas extends CI_Model {
 				return false;
 			}
 		}
+		
+		// Guarda la configuracion inicial del formulario
+		function setFormInicial($bpm_task_id,$idFormAsoc,$ot_id) { //$id_listarea){
+
+			$userdata = $this->session->userdata('user_data');
+			$usrId = $userdata[0]['usrId'];     // guarda usuario logueado
+			$empId = $userdata[0]['id_empresa']; 
+			$i=1	;
+			$dat= array();
+			//instancia form y devuelve id  que relaciona form con OT
+			$idInstanciaForm = $this->instanciarForm($ot_id);
+
+			// Trae la info del form sin valores validos desp se actualiza al guardar
+			$form = $this->getFormInicial($idFormAsoc); 
+
+			// Agrego id de usuario y demas datos al array para insertar
+			foreach ($form as $key) {
+				$key['USUARIO'] = $usrId;
+				$key['LITA_ID'] = $bpm_task_id; //$id_listarea;
+				$key['INFO_ID'] = $idInstanciaForm;
+				$key['ORDEN'] = $i;
+				$key['ID_EMPRESA'] = $empId; // guarda id de empresa logueada
+				$i++;
+				$dat[$i] =  $key;
+			}
+
+			$response = $this->db->insert_batch('frm_formularios_completados', $dat);
+		}
 		// Trae configuracion de form inicial para guardar en frm_frm_completados
-		function getFormInicial(){
+		function getFormInicial($idFormAsoc){
 
 			////  ID DE EMPRESA PARA CLOUD
 			$userdata = $this->session->userdata('user_data');
@@ -281,7 +312,8 @@ class Tareas extends CI_Model {
 					where FORM.FORM_ID = CATE.FORM_ID 
 					AND CATE.CATE_ID = GRUP.CATE_ID 
 					AND GRUP.GRUP_ID = VALO.GRUP_ID 
-					AND TIDA.TIDA_ID = VALO.TIDA_ID						
+					AND TIDA.TIDA_ID = VALO.TIDA_ID
+					AND FORM.FORM_ID = $idFormAsoc						
 					ORDER BY cate.ORDEN,grup.ORDEN,valo.ORDEN
 					AND FORM.ID_EMPRESA = $empId";
 
@@ -294,34 +326,7 @@ class Tareas extends CI_Model {
 					return false;
 				}
 		}
-		// Guarda la configuracion inicial del formulario
-		function setFormInicial($bpm_task_id,$idFormAsoc,$ot_id) { //$id_listarea){
 
-			$userdata = $this->session->userdata('user_data');
-			$usrId = $userdata[0]['usrId'];     // guarda usuario logueado
-			$empId = $userdata[0]['id_empresa']; 
-			$i=1	;
-			$dat= array();
-			//instancia form y devuelve id  que relaciona form con OT
-			$idInstanciaForm = $this->instanciarForm($ot_id);
-
-			// Trae la info del form sin valores validos desp se actualiza al guardar
-			$form = $this->getFormInicial($idFormAsoc); 
-
-			// Agrego id de usuario y demas datos al array para insertar
-			foreach ($form as $key) {
-
-				$key['USUARIO'] = $usrId;
-				$key['LITA_ID'] = $bpm_task_id; //$id_listarea;
-				$key['INFO_ID'] = $idInstanciaForm;
-				$key['ORDEN'] = $i;
-				$key['ID_EMPRESA'] = $empId; // guarda id de empresa logueada
-				$i++;
-				$dat[$i] =  $key;
-			}
-
-			$response = $this->db->insert_batch('frm_formularios_completados', $dat);
-		}
 		// instancia el form inicial relacionandolo con la OT
 		function instanciarForm($ot_id){
 
@@ -334,8 +339,6 @@ class Tareas extends CI_Model {
 
 			$userdata = $this->session->userdata('user_data');
 			$empId = $userdata[0]['id_empresa']; 
-			//dump($bpm_task_id, 'bpm id: ');
-			//dump($idFormAsoc, 'form asoc: ');
 			$sql = "SELECT foco.FOCO_ID AS idValor,
 						foco.FORM_ID,
 						foco.FORM_NOMBRE,
@@ -348,7 +351,6 @@ class Tareas extends CI_Model {
 						'' AS idGrupo,
 						foco.VALO_NOMBRE AS nomValor,
 						foco.TIDA_ID,
-
 						foco.VALOR AS valDefecto,
 						'' AS LONGITUD,
 						'' AS PISTA,
@@ -382,6 +384,39 @@ class Tareas extends CI_Model {
 			$this->db->where('frm_formularios_completados.VALIDADO',false);
 			return $this->db->get()->result_array()[0];
 		}
+		// Arma array p/ insertar en frm_formularios_completados por focoId
+		function getDatos($focoId){
+
+			// $sql ="SELECT frm_formularios_completados.*
+			// FROM frm_formularios_completados
+			// WHERE FOCO_ID = $focoId";
+			// $query= $this->db->query($sql);
+
+			$this->db->select('frm_formularios_completados.*');
+			$this->db->from('frm_formularios_completados');
+			$this->db->select('frm_formularios_completados.FOCO_ID',$focoId);
+			$query= $this->db->get();
+
+			foreach ($query->result_array() as $row){
+				$response['FORM_ID'] = $row['FORM_ID'];
+				$response['FORM_NOMBRE'] = $row['FORM_NOMBRE'];
+				$response['CATE_NOMBRE'] = $row['CATE_NOMBRE'];
+				$response['GRUP_NOMBRE'] = $row['GRUP_NOMBRE'];
+				$response['VALO_NOMBRE'] = $row['VALO_NOMBRE'];
+				$response['TIDA_NOMBRE'] = $row['TIDA_NOMBRE'];
+							$response['VALOR'] = $row['VALOR'];
+			}
+
+			return $response;
+		}
+		// Inserta datos de Form en frm_formularios_completados
+		function UpdateForm($datos,$key){
+
+			$this->db->where('FOCO_ID', $key);
+			$response = $this->db->update('frm_formularios_completados', $datos);
+			return $response;
+		}
+	/*	./ FORMULARIOS */	
 
 	// Trae id de Ped de Trabajo segun CaseId
 	function getIdPedTrabajo($caseId){
@@ -470,6 +505,19 @@ class Tareas extends CI_Model {
 			$response = $this->parseHeaders( $http_response_header );
 			return $response;
 		}
+		// Terminar Tarea
+		function terminarTareaStandarenBPM($idTarBonita,$param){
+
+			$userdata = $this->session->userdata('user_data');
+					$usrId = $userdata[0]['usrId'];
+			$method = '/execution';
+			$resource = 'API/bpm/userTask/';
+			$url = BONITA_URL.$resource.$idTarBonita.$method;
+			//$url = BONITA_URL.$resource.$usrId.$method;
+			file_get_contents($url, false, $param);
+			$response = $this->parseHeaders( $http_response_header );
+			return $response;
+		}
 		// toma la respuesta del server y devuelve el codigo de respuesta solo
 		function parseHeaders( $headers ){
 			$head = array();
@@ -490,7 +538,7 @@ class Tareas extends CI_Model {
 			$respuesta = file_get_contents(BONITA_URL.'API/bpm/comment',false,$param);
 			return $respuesta;
 		}
-
+	/* 	./ TAREAS BPM */	
 
 /* ./ INTEGRACION CON BPM */
 }
