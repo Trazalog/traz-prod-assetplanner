@@ -298,6 +298,7 @@ class Otrabajos extends CI_Model {
 											tbl_detanotapedido.remito,
 											tbl_detanotapedido.estado,
 											articles.artDescription,
+											articles.artBarCode,
 											abmproveedores.provnombre,
 											tbl_notapedido.id_ordTrabajo,
 											tbl_notapedido.fecha');

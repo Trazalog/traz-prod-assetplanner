@@ -63,7 +63,7 @@
                           echo '<i class="fa fa-tags text-light-blue" style="cursor: pointer; margin-left: 15px;"  title="Cargar Pedido " data-toggle="modal" data-target="#modalpedido"></i>';
                         }*/
                         if (strpos($permission,'Pedidos') !== false) {
-                          echo '<i class="fa fa-truck text-light-blue" style="cursor: pointer; margin-left: 15px;"  title="Mostrar Perdido " data-toggle="modal" data-target="#modallista"></i>';
+                          echo '<i class="fa fa-truck text-light-blue" style="cursor: pointer; margin-left: 15px;"  title="Mostrar Pedido " data-toggle="modal" data-target="#modallista"></i>';
                           echo '<i class="fa fa-cart-plus text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Agregar Nota de Pedido"></i>';
                         }
                         if(($a['estado'] == 'As' || $a['estado'] == 'P') && ($a['id_usuario_a'] == $usrId)){
@@ -603,7 +603,7 @@ function orden(){
       'fecha_entrega': fecha_entrega,
       'id_usuario_a': usuario,
       'estado': 'As',     
-      'cliId': cliente,
+      'cliId': cliente
   };
   console.log(parametros);
   console.log(id_orden);
@@ -692,8 +692,7 @@ $(document).ready(function(event) {
       type: 'POST',
       url: 'index.php/Otrabajo/getmostrar',
           success: function(data){
-            console.log("llego el detalle");
-            console.table(data);
+            
             $('#tabladetalle').DataTable().clear().draw();
             for (var i = 0; i < data.length; i++) {
 
@@ -712,12 +711,13 @@ $(document).ready(function(event) {
               }
               
               $('#tabladetalle').DataTable().row.add( [
-                data[i]['id_ordTrabajo'],
+                data[i]['artBarCode'],
+                data[i]['artDescription'],
+                data[i]['cantidad'],
                 data[i]['fecha'],
                 data[i]['fechaEntrega'],
                 data[i]['provnombre'],
-                data[i]['artDescription'],
-                estado,
+                estado
               ] ).draw(); 
             }  
             // for (var i = 0; i < data.length; i++) {
@@ -1746,11 +1746,12 @@ $(".fa-cart-plus").click(function (e) {
             <table class="table table-bordered table-hover" id="tabladetalle">
               <thead>
                 <tr>                                
-                  <th>Nro de orden</th>
-                  <th>Fecha</th>
-                  <th>Fecha de Entrega</th>
+                  <th>Cod. Artículo</th>
+                  <th>Detalle</th>
+                  <th>Cantidad</th>
+                  <th>Fecha Creación</th>
+                  <th>Fecha Entrega</th>
                   <th>Proveedor</th>
-                  <th>Descripcion</th>
                   <th>Estado</th>
                 </tr>
               </thead>
