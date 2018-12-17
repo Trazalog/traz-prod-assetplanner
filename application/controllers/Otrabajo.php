@@ -34,23 +34,23 @@ class Otrabajo extends CI_Controller {
 	}
 
 	/**
-  	 * Traer proveedores de empresa con estado AC.
-  	 *
-  	 * @return 	String 	Arreglo con proveedores.
-  	 */
-  	public function getproveedor() // Ok
-  	{	
+	 * Traer proveedores de empresa con estado AC.
+	 *
+	 * @return 	String 	Arreglo con proveedores.
+	 */
+	public function getproveedor() // Ok
+	{	
 		$proveedores = $this->Otrabajos->getproveedor();
 		if($proveedores)
 		{	
 			$arre=array();
-	        foreach ($proveedores as $row ) 
-	        {   
-	           $arre[] = $row;
-	        }
+					foreach ($proveedores as $row ) 
+					{   
+							$arre[] = $row;
+					}
 			echo json_encode($arre);
 		}
-		else echo "nada";
+			else echo "nada";
 	}
 
 	/**
@@ -483,10 +483,10 @@ class Otrabajo extends CI_Controller {
 	      	else echo 0;	
 	   
   	}
-
+		// trae detalle de nota de pedido
   	public function getmostrar(){
 
-	    $idm=$_POST['idorde'];
+	    $idm=$_POST['id'];
 	    $dat= $this->Otrabajos->getdatos($idm); //traigo todos los datos 
 	    echo json_encode($dat);
   	}

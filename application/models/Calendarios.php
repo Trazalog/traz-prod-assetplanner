@@ -29,7 +29,8 @@ class Calendarios extends CI_Model {
             equipos.codigo 
             from orden_trabajo
             INNER JOIN equipos ON equipos.id_equipo = orden_trabajo.id_equipo
-            WHERE orden_trabajo.estado = 'C' 
+            WHERE orden_trabajo.estado = 'C'
+            AND orden_trabajo.id_empresa = $empId
             AND month(orden_trabajo.fecha_program) = $month
             AND year(orden_trabajo.fecha_program) = $year";
         $query= $this->db->query($sql);

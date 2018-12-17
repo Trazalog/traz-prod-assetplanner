@@ -76,7 +76,7 @@
                         <input  id="cantidad" name="" class="form-control" placeholder="Ingrese cantidad..."/>
                       </div>
                       <div class="col-xs-12 col-sm-6 col-md-4"><label>Fecha de Entrega</label> <strong style="color: #dd4b39">*</strong> :  
-                        <input  type="text" id="fechaEnt" name="fechaEnt" class="form-control datepicker" placeholder="Selecciones fecha..."/>
+                        <input  type="date" id="fechaEnt" name="fechaEnt" class="form-control datepicker" placeholder="Selecciones fecha..."/>
                       </div>
                     </div><br>
                     <div class="row">
@@ -134,10 +134,7 @@
 
 <script>
 
-$("#fechaEnt").datetimepicker({
-  format: 'YYYY-MM-DD',
-  locale: 'es',
-});
+$("#fechaEnt").datepicker();
 
 //va listado de OTs
 $("#listadoOT").click(function (e) {
@@ -156,7 +153,7 @@ $("#listado").click(function (e) {
 });
 
 // Trae Ordenes en curso
-/*$.ajax({
+$.ajax({
   type: 'POST',
   url: 'index.php/Notapedido/getOrdenesCursos', 
   success: function(data){
@@ -171,10 +168,10 @@ $("#listado").click(function (e) {
     console.log(result);
   },
   dataType: 'json'
-});*/
+});
 
 // Trae descripcion segun orden de servicio
-/*$('#id_ordTrabajo').change(
+$('#id_ordTrabajo').change(
   function(){   
     var id_orden = $("#id_ordTrabajo").val();
     $.ajax({
@@ -192,7 +189,7 @@ $("#listado").click(function (e) {
       }
     });          
   }
-); */
+); 
 
 //Trae Articulos y autocompleta campo 
 var dataArt = function () {
@@ -281,7 +278,7 @@ function armarTabla(){   // inserta valores de inputs en la tabla
       '<td class=" fecha" id="fecha"><input type="text" name="fechaentrega'+ '['+ regInsum+']' +'" class="celda fechaentrega" id="fechaentrega" value=" '+ $fecha +' " placeholder=""></td>'+
     '<tr>');*/
   $('#tabModInsum').DataTable().row.add( [
-    '<i class="fa fa-ban elimrow text-light-blue" style="cursor: pointer; margin-left: 15px;"></i>',
+    '<i class="fa fa-ban elimrow" style="color: #f39c12; cursor: pointer; margin-left: 15px;"></i>',
     '<input type="text" name="orden_Id'+ '['+ regInsum+']' +'" class="celda ord_Id" id="ord_Id" value=" '+ $id_Orden +' " placeholder="">',
     '<input type="text" class="celda insum_Desc" id="insum_Desc" value=" '+ $desCripInsum +' " placeholder=""><input type="hidden" name="insum_Id'+ '['+ regInsum+']' +'" class="celda insum_Id" id="insum_Id" value=" '+ $id_Insumo +' " placeholder="">',
     '<input type="text" name="cant_insumos'+ '['+ regInsum+']' +'" class="celda cant_insumos" id="cant_insumos" value=" '+ $cantOrdInsum +' " placeholder="">',
@@ -311,7 +308,7 @@ function enviarOrden(){
   var hayError = false;
   $('#error').hide();
 
-  /*console.info( $('#artOrdInsum').val() );
+  console.info( $('#artOrdInsum').val() );
   console.info( $('#proveedor').val() );
   console.info( $('#cantidad').val() );
   console.info( $('#fechaEnt').val() );
@@ -327,11 +324,6 @@ function enviarOrden(){
   }
   if ($('#fechaEnt').val() == '') {
     hayError = true;
-  }*/
-
-  if( ! $('#tabModInsum').DataTable().data().any() ) {
-      console.info("tabla insumos (artículos) vacía");
-      hayError = true;
   }
 
   if(hayError == true){
