@@ -7,6 +7,7 @@
         <div class="box-header">
           <h3 class="box-title">Solicitud de Servicios</h3>
           <?php
+          
            if (strpos($permission,'Add') !== false) {
               echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" data-toggle="modal" data-target="#modalservicio" id="btnAdd">Agregar</button>';
            }          

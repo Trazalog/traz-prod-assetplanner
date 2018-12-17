@@ -58,4 +58,10 @@ class Notapedido extends CI_Controller {
     echo json_encode($response);
   }
   
+  public function getmostrar(){
+ 
+    $response = $this->Notapedidos->getNotaPedidoIds($this->input->post());
+    echo json_encode($response);
+  }
+  
 }

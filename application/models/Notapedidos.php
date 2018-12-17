@@ -2,20 +2,23 @@
 
 class Notapedidos extends CI_Model
 {
-	function __construct()
-	{
-		parent::__construct();
-	}
+    function __construct()
+    {
+      parent::__construct();
+    }
 	
     function notaPedidos_List(){
     
+      $userdata = $this->session->userdata('user_data');
+      $empId = $userdata[0]['id_empresa'];           
+
       $this->db->select('tbl_notapedido.id_notaPedido,
                           tbl_notapedido.fecha,
                           tbl_notapedido.id_ordTrabajo,
                           orden_trabajo.descripcion');     
       $this->db->from('tbl_notapedido');
       $this->db->join('orden_trabajo','tbl_notapedido.id_ordTrabajo = orden_trabajo.id_orden');  
-      
+      $this->db->where('tbl_notapedido.id_empresa', $empId);
       $query= $this->db->get();
     
       if ($query->num_rows()!=0)
@@ -87,42 +90,30 @@ class Notapedidos extends CI_Model
         }   
     }     
             
-    // trae artículos por id de emp logueada.
-    function getArticulos(){
+    function getArticulos()
+    {
+        $query = $this->db->query("SELECT articles.artId, articles.artBarCode,articles.artDescription FROM articles");
+        $i     = 0;
+        foreach ($query->result() as $row){
 
-			$userdata = $this->session->userdata('user_data');
-			$empId = $userdata[0]['id_empresa'];		
-			$this->db->select('articles.artId, 
-											articles.artBarCode,
-											articles.artDescription');
-			$this->db->from('articles');
-			$this->db->where('articles.id_empresa', $empId);
-			$query = $this->db->get();
-			
-			$i = 0;
-			foreach ($query->result() as $row){
-
-					$insumos[$i]['value']       = $row->artId;
-					$insumos[$i]['label']       = $row->artBarCode;
-					$insumos[$i]['descripcion'] = $row->artDescription;
-					$i++;
-			}
-			return $insumos;
+            $insumos[$i]['value']       = $row->artId;
+            $insumos[$i]['label']       = $row->artBarCode;
+            $insumos[$i]['descripcion'] = $row->artDescription;
+            $i++;
+        }
+        return $insumos;
     }  
-		// trae proveedores por id de emp logueada.
-    function getProveedores(){
 
-      $userdata = $this->session->userdata('user_data');
-			$empId = $userdata[0]['id_empresa'];  
-			$this->db->select('abmproveedores.provid, abmproveedores.provnombre');
-			$this->db->from('abmproveedores'); 
-			$this->db->where('abmproveedores.id_empresa', $empId);       
-			$query = $this->db->get();
-			if ($query->num_rows() != 0){
-					
-					return $query->result_array();             
-			}   
-    }    
+    function getProveedores(){
+        
+        $this->db->select('abmproveedores.provid, abmproveedores.provnombre');
+        $this->db->from('abmproveedores');        
+        $query = $this->db->get();
+        if ($query->num_rows() != 0){
+            
+            return $query->result_array();             
+        }   
+    }  
 
     function setNotaPedidos($data)
     {

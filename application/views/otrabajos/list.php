@@ -688,61 +688,82 @@ $(document).ready(function(event) {
 
   $(".fa-truck").click(function (e) { 
 
-   $("#modallista tbody tr").remove();
+    $("#modallista tbody tr").remove();
     var idorde = $(this).parent('td').parent('tr').attr('id');
     
     console.log("ID de orden de trabajo para mostrar pedido es: "+idorde);  
-    /*$.ajax({
+    $.ajax({
       dataType: 'json',
-        data: { idorde:idorde},
+      data: { id:idorde},
       type: 'POST',
       url: 'index.php/Otrabajo/getmostrar',
           success: function(data){
             console.log("llego el detalle");
-        console.table(data);
-           
+            console.table(data);
+            $('#tabladetalle').DataTable().clear().draw();
             for (var i = 0; i < data.length; i++) {
 
-              if (data[i]['estado']== 'P'){
-              var estado= '<small class="label pull-left bg-green">Pedido</small>';
+              switch (data[i]['estado']) {
+                case 'P':
+                  var estado= '<small class="label pull-left bg-green">Pedido</small>';
+                  break;
+                case 'C':
+                  var estado= '<small class="label pull-left bg-blue">Curso</small>';
+                  break;
+                case 'E':
+                  var estado= '<small class="label pull-left bg-red">Entregado</small>'; 
+                default:
+                  var estado= '<small class="label pull-left bg-yellow">Terminado</small>';
+                break;
               }
-          else {
-                if (data[i]['estado']== 'C'){
-                var estado= '<small class="label pull-left bg-blue">Curso</small>';
-                }
-            else {
-                  if (data[i]['estado']== 'E'){ 
-                  var estado= '<small class="label pull-left bg-red">Entregado</small>';
-                  }
-                    else{ 
-                      var estado= '<small class="label pull-left bg-yellow">Terminado</small>';
-                    }
-              $('#tabladetalle').DataTable().clear().draw();
+              
               $('#tabladetalle').DataTable().row.add( [
-                "",
-                data[i]['nro_trabajo'],
+                data[i]['id_ordTrabajo'],
                 data[i]['fecha'],
-                data[i]['fecha_entrega'],
+                data[i]['fechaEntrega'],
                 data[i]['provnombre'],
-                data[i]['descripcion'],
+                data[i]['artDescription'],
                 estado,
-              ] ).draw();
-            }
-            }
-        }
+              ] ).draw(); 
+            }  
+            // for (var i = 0; i < data.length; i++) {
+
+              //   if (data[i]['estado']== 'P'){
+              //   var estado= '<small class="label pull-left bg-green">Pedido</small>';
+              //   }else {
+              //     if (data[i]['estado']== 'C'){
+              //     var estado= '<small class="label pull-left bg-blue">Curso</small>';
+              //     }else {
+              //       if (data[i]['estado']== 'E'){ 
+              //       var estado= '<small class="label pull-left bg-red">Entregado</small>';
+              //       }else{ 
+              //         var estado= '<small class="label pull-left bg-yellow">Terminado</small>';
+              //       }
+              //       $('#tabladetalle').DataTable().clear().draw();
+              //       $('#tabladetalle').DataTable().row.add( [
+              //         //"",
+              //         data[i]['id_ordTrabajo'],
+              //         data[i]['fecha'],
+              //         data[i]['fecha_entrega'],
+              //         data[i]['provnombre'],
+              //         data[i]['descripcion'],
+              //         estado,
+              //       ] ).draw();
+              //     }
+              //   }
+              // }
           },
             
           error: function(result){
-        console.error("Entro x el error de detalle");
-                
-        console.table(result);
-              },
-    });*/
+                console.error("Entro x el error de detalle");                
+                console.table(result);
+          },
+    });
     //iort = id;
-    WaitingOpen();
-    $('#content').empty();
-    $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/getNotasxOT/<?php echo $permission; ?>/"+idorde+"");
-    WaitingClose(); 
+    // WaitingOpen();
+    // $('#content').empty();
+    // $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/getNotasxOT/<?php echo $permission; ?>/"+idorde+"");
+    // WaitingClose(); 
   });
 
   //guardar pedido
@@ -1715,6 +1736,40 @@ $(".fa-cart-plus").click(function (e) {
         <button type="button" class="btn btn-default" data-dismiss="modal" onclick="guardarparcial()"> Parcial</button>     
         <button type="button" class="btn btn-primary" id="btnSave" data-dismiss="modal" onclick="guardartotal()" >Total</button>
       </div>  <!-- /.modal footer -->
+    </div> <!-- /.modal-content -->
+  </div>  <!-- /.modal-dialog modal-lg -->
+</div>  <!-- /.modal fade -->
+<!-- / Modal -->
+
+<!-- Modal mostrar pedido-->
+<div class="modal" id="modallista" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"  id="myModalLabel"><spanclass="fa fa-truck text-light-blue"></span> Lista de Orden de Pedido</h4>
+      </div> <!-- /.modal-header  -->
+      <div class="modal-body" id="modalBodyArticle">
+        <div class="row" >
+          <div class="col-xs-12">
+            <table class="table table-bordered table-hover" id="tabladetalle">
+              <thead>
+                <tr>                                
+                  <th>Nro de orden</th>
+                  <th>Fecha</th>
+                  <th>Fecha de Entrega</th>
+                  <th>Proveedor</th>
+                  <th>Descripcion</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>              
+              </tbody>
+            </table>    
+          </div>
+        </div>  
+      </div>  <!-- /.modal-body -->
     </div> <!-- /.modal-content -->
   </div>  <!-- /.modal-dialog modal-lg -->
 </div>  <!-- /.modal fade -->
