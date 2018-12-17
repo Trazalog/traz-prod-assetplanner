@@ -106,6 +106,7 @@ class Otrabajo extends CI_Controller {
 	    
 		$num           = $this->input->post('num');
 		$descripcion   = $this->input->post('descripcion');
+		$fecha_inicio	 = $this->input->post('fecha_inicio');
 		$fecha_entrega = $this->input->post('fecha_entrega');
 		$equipo        = $this->input->post('equipo');
 		$sucursal      = $this->input->post('sucursal');
@@ -113,7 +114,7 @@ class Otrabajo extends CI_Controller {
     	
     $datos2 = array(
 			'nro'           => $num,
-			'fecha_inicio'  => date('Y-m-d H:i:S'),
+			'fecha_inicio'  => $fecha_inicio,
 			'fecha_entrega' => $fecha_entrega,
 			'descripcion'   => $descripcion,
 			'estado'        => 'C',
