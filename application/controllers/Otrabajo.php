@@ -167,8 +167,8 @@ class Otrabajo extends CI_Controller {
 		$data['list']       = $this->Otrabajos->cargartareas($idglob);
 		$data['permission'] = $permission;
 		$data['id_orden']   = $idglob; 
-        $this->load->view('otrabajos/asignacion',$data);
-    }
+    $this->load->view('otrabajos/asignacion',$data);
+  }
 
     /**
      * Trae datos a mostrar en el Modal Asignar OT.
@@ -364,7 +364,7 @@ class Otrabajo extends CI_Controller {
     }*/
 
 	
-//nuevo
+	//nuevo
 
 
 	//traer grupo
@@ -437,8 +437,7 @@ class Otrabajo extends CI_Controller {
 	    }
   	}
 
-  	public function agregar_pedido()
-	{
+  public function agregar_pedido(){
 
 	    $datos=$_POST['data'];
 	    $idot=$_POST['ido'];
@@ -471,18 +470,14 @@ class Otrabajo extends CI_Controller {
   	}
   	
   	public function agregar_tarea(){
-
 	  
 	    $datos=$_POST['parametros'];
-
-	    //dump_exit($datos);
-
 	    $result = $this->Otrabajos->agregar_tareas($datos);
 	      	//print_r($this->db->insert_id());
 	   
 	   	if($result)
 	      		echo $this->db->insert_id();
-	      	else echo 0;	
+	    else echo 0;	
 	   
   	}
 
@@ -509,7 +504,7 @@ class Otrabajo extends CI_Controller {
       echo json_encode($response);
     }
 
- //mdificado
+ 	//mdificado
 
  	public function EliminarTarea(){
 	

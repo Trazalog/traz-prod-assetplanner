@@ -30,3 +30,5 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 /application/config/config.php
 /application/config/database.php
 scripts/planner_assetcloud1_RMS\.sql
+
+_INFO/
