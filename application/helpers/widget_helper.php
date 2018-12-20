@@ -152,7 +152,7 @@ if (!function_exists('cantTipoOrdenTrabajo')) {
      *
      *
      */
-    function cantTipoOrdenTrabajo()
+    function cantTipoOrdenTrabajo($echo = FALSE)
     {
         // Get a reference to the controller object
         $CI = get_instance();
@@ -180,7 +180,7 @@ if (!function_exists('sacarEquiposOperativos')) {
      *
      *
      */
-    function sacarEquiposOperativos()
+    function sacarEquiposOperativos($echo = FALSE)
     {
         // Get a reference to the controller object
         $CI = get_instance();
