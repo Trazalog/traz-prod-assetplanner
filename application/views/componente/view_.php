@@ -28,9 +28,9 @@
         <div class="box-header">
           <h2 class="box-title ">Asociar Componentes a Equipo</h2>
            <?php
-          if (strpos($permission,'Add') !== false) {
-            echo '<button class="btn btn-block btn-primary" style="width: 240px; margin-top: 10px;" id="listado"> Ver Listado Componentes</button>';
-          }
+            if (strpos($permission,'Add') !== false) {
+              echo '<button class="btn btn-block btn-primary" style="width: 240px; margin-top: 10px;" id="listado"> Ver Listado Componentes</button>';
+            }
           ?>
         </div><!-- /.box-header -->
         <div class="box-body">
