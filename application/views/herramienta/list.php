@@ -95,44 +95,58 @@ $(document).ready(function(event) {
   });
 
   // Eliminar
-  $(".fa-times-circle").click(function (e) { 
-    //console.log("Esto eliminando"); 
-    var id_herr = $(this).parent('td').parent('tr').attr('id');
-    //console.log(id_herr);
+  // $(".fa-times-circle").click(function (e) { 
+  //   //console.log("Esto eliminando"); 
+  //   var id_herr = $(this).parent('td').parent('tr').attr('id');
+  //   //console.log(id_herr);
     
-    $.ajax({
-      type: 'POST',
-      data: { id_herr: id_herr},
-      url: 'index.php/Herramienta/baja_herramienta', //index.php/
-      success: function(data){
-        //var data = jQuery.parseJSON( data );
-        //console.log(data);
-        //$(tr).remove();
-        alert("HERRAMIENTA Eliminado");
-        regresa();
-      },
-      error: function(result){
-        console.log(result);
-      },
-      dataType: 'json'
-    });
-  });
+  //   $.ajax({
+  //     type: 'POST',
+  //     data: { id_herr: id_herr},
+  //     url: 'index.php/Herramienta/baja_herramienta', //index.php/
+  //     success: function(data){
+  //       //var data = jQuery.parseJSON( data );
+  //       //console.log(data);
+  //       //$(tr).remove();
+  //       alert("HERRAMIENTA Eliminado");
+  //       regresa();
+  //     },
+  //     error: function(result){
+  //       console.log(result);
+  //     },
+  //     dataType: 'json'
+  //   });
+  // });   
 
-  // Datatables
-  $('#deposito').DataTable({
-    "aLengthMenu": [ 10, 25, 50, 100 ],
-    "columnDefs": [ {
-      "targets": [ 0 ], 
-      "searchable": false
-    },
-    {
-      "targets": [ 0 ], 
-      "orderable": false
-    } ],
-    "order": [[1, "asc"]],
-  });
+  
 
 });
+
+// Eliminar
+$(".fa-times-circle").click(function (e) { 
+    var id_ = $(this).parent('td').parent('tr').attr('id'); 
+    $('#id_herr').val(id_);
+    $('#modalaviso').modal('show');    
+  });  
+
+function elimHerramienta(){
+
+  var id_herr = $('#id_herr').val();
+  $.ajax({
+    type: 'POST',
+    data: { id_herr: id_herr},
+    url: 'index.php/Herramienta/baja_herramienta', 
+    success: function(data){
+    
+            alert("HERRAMIENTA Eliminado");
+            regresa();
+    },
+    error: function(result){
+            console.log(result);
+    },
+    dataType: 'json'
+  });
+}
 
 traer_deposito();
 traer_modelo();
@@ -385,6 +399,20 @@ function regresa(){
   $("#content").load("<?php echo base_url(); ?>index.php/Herramienta/index/<?php echo $permission; ?>");
   WaitingClose();
 }
+
+// Datatables
+$('#deposito').DataTable({
+    "aLengthMenu": [ 10, 25, 50, 100 ],
+    "columnDefs": [ {
+      "targets": [ 0 ], 
+      "searchable": false
+    },
+    {
+      "targets": [ 0 ], 
+      "orderable": false
+    } ],
+    "order": [[1, "asc"]],
+  });
 </script>
 
 
@@ -536,3 +564,30 @@ function regresa(){
   </div>  <!-- /.modal-dialog modal-lg -->
 </div>  <!-- /.modal -->
 <!-- / Modal -->
+
+<!-- Modal aviso eliminar -->
+<div class="modal fade" id="modalaviso">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" ><span class="fa fa-fw fa-times-circle" style="color:#A4A4A4"></span>  Eliminar</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" >&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <center>
+        <h4><p>¿ DESEA ELIMINAR ESTA HERRAMIENTA ?</p></h4>
+        </center>
+        <input type="text" id="id_herr" class="hidden">
+      </div>
+      <div class="modal-footer">
+        <center>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="elimHerramienta()">SI</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">NO</button>
+        </center>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /  Modal aviso eliminar -->
