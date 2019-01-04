@@ -84,7 +84,7 @@ class Componentes extends CI_Model
 		}
 	}
 
-    // Devuelve descripcion de equipo segun id 
+  // Devuelve descripcion de equipo segun id 
 	function getequipo($id){
 
         $query= $this->db->get_where('equipos',$id);
@@ -106,33 +106,33 @@ class Componentes extends CI_Model
         }	
 	}	
 
-	// Trae componentes segun empresa (no equipos)
-	function getcomponente(){
-		
+  // Trae componentes segun empresa (no equipos)
+	function getcomponente(){	
 		$userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa'];
-		
-        $this->db->select('componentes.*');    	
-    	$this->db->from('componentes');
-		$this->db->where('componentes.id_empresa', $empId); 
-	 	$query= $this->db->get();  
-		
+		$empId    = $userdata[0]['id_empresa'];
+		$this->db->select('componentes.*, marcasequipos.marcadescrip');    	
+		$this->db->from('componentes');
+		$this->db->join('marcasequipos', 'componentes.marcaid=marcasequipos.marcaid');
+		$this->db->where('componentes.id_empresa', $empId);
+		$this->db->where('componentes.estado !=', 'AN');
+		$this->db->order_by('descripcion');
+		$query = $this->db->get();
 		if($query->num_rows()>0){
-            return $query->result();
-        }
-        else{
-            return false;
-        }	
+				return $query->result();
+		}
+		else{
+				return false;
+		}	
 	}
 	
 	// Agrega componente nuevo - Listo
-	function agregar_componente($insert)
-    {
-        $userdata             = $this->session->userdata('user_data');
-        $insert['id_empresa'] = $userdata[0]['id_empresa'];                 
-        $query = $this->db->insert("componentes", $insert);
-    	return $query;    
-    }
+	function agregar_componente($insert){
+		
+		$userdata             = $this->session->userdata('user_data');
+		$insert['id_empresa'] = $userdata[0]['id_empresa'];                 
+		$query = $this->db->insert("componentes", $insert);
+		return $query;    
+	}
 
     // Asocia equipo/componente - Listo
 	function insert_componente($data2)

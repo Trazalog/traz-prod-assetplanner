@@ -336,7 +336,7 @@ class Otrabajos extends CI_Model {
         $this->db->from('admcustomers');
         $this->db->where('admcustomers.id_empresa', $empId);
         $this->db->where('admcustomers.estado', 'C');
-        $query = $this->db->query($sql);   
+        $query = $this->db->get();   
         if( $query->num_rows() > 0)
         {
           return $query->result_array();    
