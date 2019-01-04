@@ -77,9 +77,6 @@
     <!-- Bootstrap Validator -->
     <link rel="stylesheet" href="<?php echo base_url();?>assets/plugin/bootstrapvalidator/bootstrapValidator.min.css">
 
-    <!-- FastClick -->
-    <script src="<?php  echo base_url();?>assets/plugin/fastclick/fastclick.min.js"></script>
-    
     <!-- SlimScroll -->
     <script src="<?php  echo base_url();?>assets/plugin/slimScroll/jquery.slimscroll.min.js"></script>
 
