@@ -29,7 +29,7 @@
           <h2 class="box-title ">Asociar Componentes a Equipo</h2>
            <?php
           if (strpos($permission,'Add') !== false) {
-            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="listado">Ver Listado</button>';
+            echo '<button class="btn btn-block btn-primary" style="width: 240px; margin-top: 10px;" id="listado"> Ver Listado Componentes</button>';
           }
           ?>
         </div><!-- /.box-header -->
@@ -128,7 +128,7 @@
             </div>
 
             <div class="modal-footer">
-              <button type="button" class="btn btn-default delete" onclick="javascript:limpiarModal()">Cancelar</button>
+              <button type="button" class="btn btn-default delete" onclick="volverAsocCompEquipo()">Cancelar</button>
               <button type="button" class="btn btn-primary" onclick="guardar()">Guardar</button>
             </div>  <!-- /.modal footer -->
               <!-- / Modal -->
@@ -241,28 +241,28 @@ function traer_equipo(){
 }
 
 // Trae componentes segun empresa (no equipos)
-// traer_componente();
-// function traer_componente(){
-//   $.ajax({
-//     type: 'POST',
-//     data: { },
-//     url: 'index.php/Componente/getcomponente', //index.php/
-//     success: function(data){
-//            $('#componente').empty();
-//             var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-//             $('#componente').append(opcion); 
-//             for(var i=0; i < data.length ; i++){  
-//               var nombre = data[i]['descripcion'];
-//               var opcion  = "<option value='"+data[i]['id_componente']+"'>" +nombre+ "</option>" ; 
-//               $('#componente').append(opcion);                                
-//             }
-//           },
-//     error: function(result){          
-//           console.log(result);
-//          },
-//         dataType: 'json'
-//     });
-// }
+  // traer_componente();
+  // function traer_componente(){
+  //   $.ajax({
+  //     type: 'POST',
+  //     data: { },
+  //     url: 'index.php/Componente/getcomponente', //index.php/
+  //     success: function(data){
+  //            $('#componente').empty();
+  //             var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+  //             $('#componente').append(opcion); 
+  //             for(var i=0; i < data.length ; i++){  
+  //               var nombre = data[i]['descripcion'];
+  //               var opcion  = "<option value='"+data[i]['id_componente']+"'>" +nombre+ "</option>" ; 
+  //               $('#componente').append(opcion);                                
+  //             }
+  //           },
+  //     error: function(result){          
+  //           console.log(result);
+  //          },
+  //         dataType: 'json'
+  //     });
+  // }
 
 // Trae componentes segun empresa (no equipos)
 traer_componente();
@@ -300,16 +300,13 @@ function traer_marca(){
     data: { },
     url: 'index.php/Componente/getmarca', 
     success: function(data){
-           $('#ma').empty();
-             var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-              $('#ma').append(opcion); 
-            for(var i=0; i < data.length ; i++) 
-            {    
+            $('#ma').empty();
+            var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+            $('#ma').append(opcion); 
+            for(var i=0; i < data.length ; i++){    
                   var nombre = data[i]['marcadescrip'];
-                  var opcion  = "<option value='"+data[i]['marcaid']+"'>" +nombre+ "</option>" ; 
-
-                $('#ma').append(opcion); 
-                               
+                  var opcion  = "<option value='"+data[i]['marcaid']+"'>" +nombre+ "</option>" ;
+                $('#ma').append(opcion);                                
             }
           },
     error: function(result){
@@ -552,6 +549,13 @@ $('#listado').click( function cargarVista(){
     $("#content").load("<?php echo base_url(); ?>index.php/Componente/index/<?php echo $permission; ?>");
     WaitingClose();
 });
+
+function volverAsocCompEquipo(){
+  WaitingOpen();
+    $('#content').empty();
+    $("#content").load("<?php echo base_url(); ?>index.php/Componente/asigna/<?php echo $permission; ?>");
+    WaitingClose();
+}
 
 // Cuando selecciona equipo carga componentes
 var s=0; 
