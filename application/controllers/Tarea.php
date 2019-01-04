@@ -154,6 +154,7 @@ class Tarea extends CI_Controller {
 				//OBTENER DATOS DE TAREA SELECCIONADA DESDE BONITA
 				$data['TareaBPM'] = json_decode($this->getDatosBPM($idTarBonita),true);	
 				$data['idTarBonita'] = $idTarBonita;
+				$caseId = $data['TareaBPM']["caseId"];
 
 				//FIXME: SACAR HARDCODEO A NOMBRE DE TAREA
 				$data['TareaBPM']["displayName"] = 'Revision total de motor';
@@ -193,12 +194,14 @@ class Tarea extends CI_Controller {
 					}	
 				}	
 
-				//FLEIVA COMENTARIOS
-				$data['comentarios'] = $this->ObtenerComentariosBPM($caseId);
-				$data['timeline'] = $this->ObtenerLineaTiempo($caseId);			
-				
-				switch ($data['TareaBPM']['displayName']) {
+				// comentarios y linea de tiempo desde libreria					
+				$idCase = array('caseId'=>$data['TareaBPM']["caseId"]);
+				$this->load->library('BPM',$idCase);
+				$data['timeline'] = $this->bpm->ObtenerLineaTiempo();	
+				$data['comentarios'] = $this->bpm->ObtenerComentariosBPM();
 
+				switch ($data['TareaBPM']['displayName']) {
+ 
 					
 					default:
 						//dump($data, 'datos');
@@ -244,35 +247,41 @@ class Tarea extends CI_Controller {
 		/*	./ FUNCIONES BPM */
 		
 		/* COMENTARIOS */
+		public function GuardarComentario(){
+			$comentario = $this->input->post();
+			$this->load->library('BPM',$idCase);
+			$response = $this->bpm->GuardarComentario($comentario);
+			echo json_encode($response);
+		}	
 			// Comentarios
-			public function ObtenerComentariosBPM($caseId){
-				$parametros = $this->Bonitas->conexiones();
-				$param = stream_context_create($parametros);
-				return $this->Tareas->ObtenerComentariosBPM($caseId,$param);
-			}		
+				// public function ObtenerComentariosBPM($caseId){
+				// 	$parametros = $this->Bonitas->conexiones();
+				// 	$param = stream_context_create($parametros);
+				// 	return $this->Tareas->ObtenerComentariosBPM($caseId,$param);
+				// }		
+				
+				// public function GuardarComentario(){
+				// 	$comentario = $this->input->post();
+				// 	// trae la cabecera
+				// 	$parametros = $this->Bonitas->conexiones();
 			
-			public function GuardarComentario(){
-				$comentario = $this->input->post();
-				// trae la cabecera
-				$parametros = $this->Bonitas->conexiones();
-		
-				// Cambio el metodo de la cabecera a "PUT"
-				$parametros["http"]["method"] = "POST";
-				$parametros["http"]["content"] = json_encode($comentario);
-				// Variable tipo resource referencia a un recurso externo.
-				$param = stream_context_create($parametros);
-				$response = $this->Tareas->GuardarComentarioBPM($param);
-				echo json_encode($response);
-			}	
+				// 	// Cambio el metodo de la cabecera a "PUT"
+				// 	$parametros["http"]["method"] = "POST";
+				// 	$parametros["http"]["content"] = json_encode($comentario);
+				// 	// Variable tipo resource referencia a un recurso externo.
+				// 	$param = stream_context_create($parametros);
+				// 	$response = $this->Tareas->GuardarComentarioBPM($param);
+				// 	echo json_encode($response);
+				// }	
 
-			public function ObtenerLineaTiempo($caseId){
-				$parametros = $this->Bonitas->LoggerAdmin();
-				$parametros["http"]["method"] = "GET";
-				$param = stream_context_create($parametros);
-				$data['listAct'] = $this->Overviews->ObtenerActividades($caseId,$param);
-				$data['listArch'] = $this->Overviews->ObtenerActividadesArchivadas($caseId,$param);
-				return $data;
-			}
+				// public function ObtenerLineaTiempo($caseId){
+				// 	$parametros = $this->Bonitas->LoggerAdmin();
+				// 	$parametros["http"]["method"] = "GET";
+				// 	$param = stream_context_create($parametros);
+				// 	$data['listAct'] = $this->Overviews->ObtenerActividades($caseId,$param);
+				// 	$data['listArch'] = $this->Overviews->ObtenerActividadesArchivadas($caseId,$param);
+				// 	return $data;
+				// }
 		/*	./	COMENTARIOS */
 
 		/*	FORMULARIOS */

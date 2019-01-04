@@ -3,14 +3,12 @@
 if(!function_exists('cargarCabecera')){
     // id de pedido es el petr_id de la tabla trj_pedido_trabajo se obtiene con el bpm_id de esa tabla
     function cargarCabecera($idPedido){
-                    //get main CodeIgniter object
-			$ci =& get_instance();
-			
+      //get main CodeIgniter object
+			$ci =& get_instance();			
 			//load databse library
 			$ci->load->database();
 			
-			//get data from database
-			
+			//get data from database			
 			$ci->db->from('trj_pedido_trabajo as A');
 			$ci->db->join('admcustomers as B','A.clie_id=B.cliId');
 			$ci->db->where('petr_id',$idPedido);

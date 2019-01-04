@@ -1,6 +1,5 @@
 <input type="hidden" id="permission" value="<?php echo $permission;?>"> 
-<section class="content">
-    
+<section class="content">    
   <div class="row">
     <div class="col-xs-12">
       <div class="box box-primary">
@@ -522,26 +521,24 @@
   }
 
   // trae tareas estandar para llenar select
+  getTareasStandar();
   function getTareasStandar(){
-    $.ajax({
-      'data' : {id_sector : id },
+    $.ajax({      
       'async': true,
       'type': "POST",
       'global': false,
       'dataType': 'json',
-      'url': "Sservicio/getEquipSector",
+      'url': "Sservicio/getTareasStandar",
       'success': function (data) {
-        console.log("Entro por getEquiSector ok");
-        console.table(data);//[0]['id_equipo']);
-        // Asigna opciones al select Equipo en modal
-        //console.log("length: "+data.length);
-        var $select = $("#equipSelec");
+        
+        console.table(data);        
+        var $select = $("#tareaSelec");
         for (var i = 0; data.length; i++) {
-          $select.append($('<option />', { value: data[i]['id_equipo'], text: data[i]['descripcion'] }));
+          $select.append($('<option />', { value: data[i]['id_tarea'], text: data[i]['descripcion'] }));
         }
       },
       'error' : function(data){
-        console.log('Error en getEquiSector');
+        console.log('Error en Traer tareas...');
         console.table(data);
       },
     });
@@ -586,17 +583,29 @@
                     hora: $('#vstHora').val(),
                     min: $('#vstMinutos').val(),
                     falla: $('#vstNote').val(),
+                    tarea: $('#tareaSelec').val()
                   },
-        		url: 'index.php/Sservicio/setservicios',
-        		success: function(result){
+        		url: 'index.php/Sservicio/lanzarProcesoBPM',
+        		success: function(data){
                     //WaitingClose('Guardado exitosamente...');
-                    var permisos = '<?php echo $permission; ?>';
-                    cargarView('Sservicio', 'index', permisos) ;
-                    alert("Solicitud generada exitosamente");
+                    console.log(data);
+                    if (data['reponse_code'] == 201){
+                      var permisos = '<?php echo $permission; ?>';
+                      cargarView('Sservicio', 'index', permisos) ;
+                      alert("Solicitud generada exitosamente");
+                    } else{
+                      if(data['reponse_code'] == 400){
+
+                      }else{
+
+                      }
+                      alert("Error en la generacion de la Solicitud de Servicio...");
+                    }                   
         					},
-        		error: function(result){
+        		error: function(data){
         					  //WaitingClose();
         					  alert("Error en generacion de la solicitud");
+                    console.log(data);
         				},
             dataType: 'json'
     		});
@@ -692,7 +701,7 @@
         </style>
         <div class="row">
           <div class="col-xs-12 col-md-3">
-              <label style="margin-top: 7px;">Sector<strong style="color: #dd4b39">*</strong>: </label>
+              <label style="margin-top: 7px;">Sector <strong style="color: #dd4b39">*</strong>: </label>
           </div>
           <div class="col-xs-12 col-md-9">
               <input type="text" class="form-control buscSector" placeholder="Buscar Sector..." id="buscSector" name="buscSector">
@@ -766,20 +775,20 @@
         </div><br>
 
         <div class="row">
-          <div class="col-xs-12 col-md-3">
-            <label style="margin-top: 7px;">Tarea: </label>
+          <!-- <div class="col-xs-12 col-md-3">
+            <label style="margin-top: 7px;">Tarea <strong style="color: #dd4b39">*</strong>: </label>
           </div>
           <div class="col-xs-12 col-md-9">
               <select name="tareaSelec" class="form-control tareaSelec" id="tareaSelec">
-                <option value="-1" placeholder="Seleccione..."></option>
+                <option value="-1" placeholder="Seleccione...">Seleccione tarea...</option>
               </select>
-          </div>
-          <!-- <div class="col-xs-12 col-md-3">
-            <label style="margin-top: 7px;">Falla: </label>
+          </div> -->
+          <div class="col-xs-12 col-md-3">
+            <label style="margin-top: 7px;">Falla <strong style="color: #dd4b39">*</strong>: </label>
           </div>
           <div class="col-xs-12 col-md-9">
               <textarea placeholder="Agregar una Nota" class="form-control" rows="3" id="vstNote" value=""></textarea>
-          </div> -->
+          </div>
         </div>
       </div> <!--/ .modal-body -->
       <div class="modal-footer">

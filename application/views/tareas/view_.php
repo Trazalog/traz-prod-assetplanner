@@ -1,4 +1,9 @@
-<input type="hidden" id="permission" value="<?php echo $permission;?>">
+<!-- <input type="" id="permission" value="<?php //echo $permission;?>"> -->
+<input type="" id="permission" value="Add-Edit-Del-Correctivo-Preventivos-Backlog-Predictivo-">
+<?php 
+$permission = "Add-Edit-Del-Correctivo-Preventivos-Backlog-Predictivo-";
+echo $permission;?>
+
 
 <section class="content">
 	<?php //echo cargarCabecera($idPedTrabajo); ?>
@@ -23,46 +28,44 @@
 
 									<!-- Tab panes -->
 									<div class="tab-content">
-
+										<!-- panel Tareas -->
 										<div role="tabpanel" class="tab-pane active" id="home">
 											<!-- <h4 class="panel-heading">Tarea</h4> -->
 											<div class="panel-body">
 
 												<?php
-												//echo"id de form: ";
-												//dump_exit($TareaBPM["assigned_id"]);
-												//$TareaBPM["assigned_id"] = 'asignado';
-														//echo "<input type='text' class='hidden' id='estadoTarea' value='$estadoTarea' >";
-												//if ($estadoTarea == "noasignado") {´
+													//echo"id de form: ";
+													//dump_exit($TareaBPM["assigned_id"]);
+													//$TareaBPM["assigned_id"] = 'asignado';
+															//echo "<input type='text' class='hidden' id='estadoTarea' value='$estadoTarea' >";
+													//if ($estadoTarea == "noasignado") {´
 
-														echo "<button class='btn btn-block btn-success' id='btontomar' style='width: 100px; margin-top: 10px ;display: inline-block;' onclick='tomarTarea()'>Tomar tarea</button>";
-												//}else{
-														echo "&nbsp"; 
-														echo "&nbsp"; 
-														echo "&nbsp";
-														echo "<button class='btn btn-block btn-danger grupNoasignado' id='btonsoltr' style='width: 100px; margin-top: 10px; display: inline-block;' onclick='soltarTarea()'>Soltar tarea</button>";
-												//}    
-														echo "</br>"; 
-														echo "</br>"; 
+													echo "<button class='btn btn-block btn-success' id='btontomar' style='width: 100px; margin-top: 10px ;display: inline-block;' onclick='tomarTarea()'>Tomar tarea</button>";
+													//}else{
+													echo "&nbsp"; 
+													echo "&nbsp"; 
+													echo "&nbsp";
+													echo "<button class='btn btn-block btn-danger grupNoasignado' id='btonsoltr' style='width: 100px; margin-top: 10px; display: inline-block;' onclick='soltarTarea()'>Soltar tarea</button>";
+													//}    
+													echo "</br>"; 
+													echo "</br>"; 
 
-														$userdata = $this->session->userdata('user_data');
-														$usrId = $userdata[0]['usrId'];     // guarda usuario logueado 
-														$usrName =  $userdata[0]['usrName'];
-														$usrLastName = $userdata[0]["usrLastName"];
-														
-														echo "<input type='text' class='hidden' id='usrName' value='$usrName' >";
-														echo "<input type='text' class='hidden' id='usrLastName' value='$usrLastName' >";
-														echo "<input type='text' class='hidden' id='id_listarea' value='$id_listarea' >";
-														echo "<input type='text' class='hidden' id='id_OT' value='$id_OT' >";
-														//echo "<input type='text' class='hidden' id='idPedTrabajo' value='$idPedTrabajo' >";
+													$userdata = $this->session->userdata('user_data');
+													$usrId = $userdata[0]['usrId'];     // guarda usuario logueado 
+													$usrName =  $userdata[0]['usrName'];
+													$usrLastName = $userdata[0]["usrLastName"];
+													
+													echo "<input type='text' class='hidden' id='usrName' value='$usrName' >";
+													echo "<input type='text' class='hidden' id='usrLastName' value='$usrLastName' >";
+													echo "<input type='text' class='hidden' id='id_listarea' value='$id_listarea' >";
+													echo "<input type='text' class='hidden' id='id_OT' value='$id_OT' >";
+													//echo "<input type='text' class='hidden' id='idPedTrabajo' value='$idPedTrabajo' >";
 												?>
 												<input type="text" class="form-control hidden" id="asignado" value="<?php echo $TareaBPM["assigned_id"] ?>"
 												>
 												<form>
 													<div class="panel panel-default">
 														<h4 class="panel-heading">INFORMACION:</h4>
-
-
 														<div class="form-group">
 															<div class="col-sm-6 col-md-6">
 																<label for="tarea">Tarea</label>
@@ -75,8 +78,6 @@
 																<input type="text" class="hidden" id="esTareaStd" value="<?php echo $infoTarea['visible'] ?>">
 															</div>
 														</div>
-
-
 														<div class="form-group">
 															<div class="col-sm-6 col-md-6">
 																<label for="fecha">Fecha de Creación</label>
@@ -84,8 +85,6 @@
 																 disabled>
 															</div>
 														</div><br>
-
-
 														<div class="form-group hidden">
 															<div class="col-sm-6 col-md-6 ">
 																<label for="ot ">Orden de Trabajo:</label>
@@ -94,7 +93,6 @@
 																 placeholder=" " value="<?php echo $datos[0][ 'id_orden'] ?>" disabled>
 															</div>
 														</div><br>
-
 														<div class="form-group hidden">
 															<div class="col-sm-6 col-md-6">
 																<label for="duracion_std">Duracion Estandar (minutos):</label>
@@ -102,9 +100,7 @@
 																 disabled>
 															</div></br>
 														</div>
-
 														<br>
-
 														<div class="form-group">
 															<div class="col-sm-12 col-md-12">
 																<label for="detalle">Detalle</label>
@@ -112,21 +108,16 @@
 															</div>
 														</div></br> </br> </br> </br> </br>
 													</div>
-
-													<div class="col-sm-12 col-md-12" style="margin-top:15px;"> 
-                              
-															<?php											
-																if ($idOT != "") {
-																	echo '<h4>Se ha generado la Orden de Trabajo Nº  '.$idOT.', haga click en el boton Orden Trabajo para modificarla</h4>';
-																} 											
-															?>
-															<div class="col-sm-12 col-md-12" id="infoOT"></div>
-																	 </br>
-															<button class="btn btn-primary" id="verOT">Orden Trabajo</button>
-															</div>
-
-																</br>
-
+													<div class="col-sm-12 col-md-12" style="margin-top:15px;">  
+														<?php											
+															if ($idOT != "") {
+																echo '<h4>Se ha generado la Orden de Trabajo Nº  '.$idOT.', haga click en el boton Orden Trabajo para modificarla</h4>';
+															} 											
+														?>
+														<div class="col-sm-12 col-md-12" id="infoOT"></div>
+																	</br>
+														<button class="btn btn-primary" id="verOT">Orden Trabajo</button>
+													</div></br>
 
 													<div class="form-group">
 														<div class="col-sm-12 col-md-12">
@@ -134,41 +125,36 @@
 															<?php if($idForm != 0){echo '<button type="button" id="formulario" class="btn btn-primary" data-toggle="modal"data-target=".bs-example-modal-lg" onclick="getformulario()">Completar Formulario </button>';}?>
 														</div>
 													</div>
-
 												</form>
-
-                        
-                        <table id="subtask" class="table table-hover">
-													<thead>
-														<tr>															
-															<th width="2%"></th>
-															<th width="10%">Subtarea</th>
-															<th width="10%">Duración</th>
-															<th width="10%">Formulario</th>
-														</tr>
-													</thead>
-													<tbody>
-													<?php 
-														foreach($subtareas as $subt){
-															echo '<tr>';	
-//echo "<input class='check' type='checkbox' value='tilde' name='".$a['idValor']."' ".($a['valDefecto'] == 'tilde' ? "checked" : "")." style='transform: scale(1.4);'>";	
-echo '<td>';										
-					// echo "<input class='checkSubt' id='".$subt['id_subtarea']."' type='checkbox' data-idSubtarea='".$subt['id_subtarea']."' value=' ".($subt['estado'] == 'Terminada' ? "checked": "")."'>";	
-					echo "<input class='checkSubt' id='".$subt['id_subtarea']."' type='checkbox' data-idSubtarea='".$subt['id_subtarea']."' value='".($subt['estado'] == "T" ? "checked" : "")."'  ".($subt['estado'] == 'T' ? 'checked = checked' : '').">";	
-					echo '</td>';					
-															//echo '<td>'.$subt['tareadescrip'].'</td>';
-																echo '<td>'.$subt['tareadescrip'].'</td>';
-																echo '<td>'.$subt['duracion_prog'].'</td>';
-																echo '<td><i class="fa fa-paperclip text-light-blue" style="cursor: pointer; margin-left: 15px;" aria-hidden="true" data-idformsub="'.$subt["form_asoc"].'"></i></td>';
-															echo '</tr>';
-														}	
-													?>
-													</tbody>
-												</table>
+												<!-- Tabla de Subtareas -->			
+													<table id="subtask" class="table table-hover">
+														<thead>
+															<tr>															
+																<th width="2%"></th>
+																<th width="10%">Subtarea</th>
+																<th width="10%">Duración</th>
+																<th width="10%">Formulario</th>
+															</tr>
+														</thead>
+														<tbody>
+														<?php 
+															foreach($subtareas as $subt){
+																echo '<tr>';																
+																	echo '<td>';
+																		echo "<input class='checkSubt' id='".$subt['id_subtarea']."' type='checkbox' data-idSubtarea='".$subt['id_subtarea']."' value='".($subt['estado'] == "T" ? "checked" : "")."'  ".($subt['estado'] == 'T' ? 'checked = checked' : '').">";
+																	echo '</td>';
+																	echo '<td>'.$subt['tareadescrip'].'</td>';
+																	echo '<td>'.$subt['duracion_prog'].'</td>';
+																	echo '<td><i class="fa fa-paperclip text-light-blue" style="cursor: pointer; margin-left: 15px;" aria-hidden="true" data-idformsub="'.$subt["form_asoc"].'"></i></td>';
+																echo '</tr>';
+															}	
+														?>
+														</tbody>
+													</table>
 
 											</div>
 										</div>
-
+										<!-- panel Comentarios -->					
 										<div role="tabpanel" class="tab-pane" id="profile">
 											<div class="panel-body">
 												<div class="panel panel-primary">
@@ -193,7 +179,7 @@ echo '<td>';
 												<button class="btn btn-primary" id="guardarComentario" onclick="guardarComentario()">Agregar</button>
 											</div>
 										</div>
-
+										<!-- panel Vista global -->						
 										<div role="tabpanel" class="tab-pane" id="messages">
 											<div class="panel-body">
 												<div class="panel panel-primary">
@@ -941,17 +927,18 @@ echo '<td>';
 			// 	dataType: 'json'
 			// });
 
- 		});
-		
-	
-	// $('.checkSubt').iCheck({
-  //   checkboxClass: 'icheckbox_minimal',
-  //   radioClass: 'iradio_minimal'//,
-  //   //increaseArea: '20%' // optional
-  // });
+ 		});	
 
 
 	/*  /. Formulario de subareas */	
+
+// Volver atras
+$('#verOT').click(function cargarVista() {
+		WaitingOpen();
+		$('#content').empty();
+		$("#content").load("<?php echo base_url(); ?>index.php/Calendario/indexot/<?php echo $permission; ?>");
+		WaitingClose();
+	});
 
 
 // Volver atras
