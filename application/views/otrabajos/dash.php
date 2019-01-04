@@ -63,7 +63,7 @@
         </div>
 
       </div><!-- /.box -->
-      <div class="box collapsed-box">
+      <?php /*<div class="box collapsed-box">
 
         <div class="box-header">
           <h3 class="box-title">Orden de trabajo</h3>
@@ -172,7 +172,7 @@
                           }
                          /* if (strpos($permission,'Finalizar') !== false) {
                             echo '<i class="fa fa-thumbs-up" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" title="Finalizar Orden" onclick="finalOT('.$a['id_orden'].',\'View\')"></i>';
-                          }*/
+                          }* /
                           if (strpos($permission,'OP') !== false) {
                             echo '<i class="fa fa-tags" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;"  title="Cargar Pedido " data-toggle="modal" data-target="#modalpedido"></i>';
 
@@ -213,7 +213,7 @@
             </tbody>
           </table>
         </div><!-- /.box-body -->
-      </div><!-- /.box -->
+      </div><!-- /.box -->*/ ?>
     </div><!-- /.col -->
   </div><!-- /.row -->
 </section><!-- /.content -->
