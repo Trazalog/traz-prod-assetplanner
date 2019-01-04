@@ -90,29 +90,34 @@ class Notapedidos extends CI_Model
         }   
     }     
             
-    function getArticulos()
-    {
-        $query = $this->db->query("SELECT articles.artId, articles.artBarCode,articles.artDescription FROM articles");
-        $i     = 0;
-        foreach ($query->result() as $row){
+    function getArticulos(){
 
-            $insumos[$i]['value']       = $row->artId;
-            $insumos[$i]['label']       = $row->artBarCode;
-            $insumos[$i]['descripcion'] = $row->artDescription;
-            $i++;
-        }
-        return $insumos;
+			$userdata = $this->session->userdata('user_data');
+			$empId = $userdata[0]['id_empresa'];
+			
+			$query = $this->db->query("SELECT articles.artId, articles.artBarCode,articles.artDescription FROM articles WHERE articles.id_empresa = $empId AND articles.artEstado = 'AC'");	
+			$i     = 0;
+			foreach ($query->result() as $row){
+				$insumos[$i]['value']       = $row->artId;
+				$insumos[$i]['label']       = $row->artBarCode;
+				$insumos[$i]['descripcion'] = $row->artDescription;
+				$i++;
+			}
+			return $insumos;
     }  
 
     function getProveedores(){
         
-        $this->db->select('abmproveedores.provid, abmproveedores.provnombre');
-        $this->db->from('abmproveedores');        
-        $query = $this->db->get();
-        if ($query->num_rows() != 0){
-            
-            return $query->result_array();             
-        }   
+			$userdata = $this->session->userdata('user_data');
+			$empId = $userdata[0]['id_empresa'];
+			$this->db->select('abmproveedores.provid, abmproveedores.provnombre');
+			$this->db->from('abmproveedores'); 
+			$this->db->where('abmproveedores.id_empresa', $empId); 
+			$this->db->where('abmproveedores.estado', 'AC');      
+			$query = $this->db->get();
+			if ($query->num_rows() != 0){            
+					return $query->result_array();             
+			}   
     }  
 
     function setNotaPedidos($data)
