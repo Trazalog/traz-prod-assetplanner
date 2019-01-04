@@ -14,10 +14,11 @@
         <div class="box-body">
           <div class="row">
               <div class="col-md-6 col-xs-12"> <!-- class="daterange"-->
-                  <?php $disponibilidad = calcularDisponibilidad('all');
+                  <?php $disponibilidad = calcularDisponibilidad();
                   /*
                   echo "<pre>";
-                  echo json_encode($disponibilidad["porcentajeHorasOperativas"]);
+                  //echo json_encode($disponibilidad["porcentajeHorasOperativas"]);
+                  print_r ($disponibilidad);
                   echo "</pre>";
                   */
                   ?>
@@ -221,6 +222,7 @@
 
 <?php
   $cantTipoOT = cantTipoOrdenTrabajo();
+
   // $cantTipoOT[0]['CantidadTipoOT'] = correctivo;
   // $cantTipoOT[2]['CantidadTipoOT'] = preventivo;
   // $cantTipoOT[3]['CantidadTipoOT'] = predictivo;
