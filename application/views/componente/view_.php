@@ -241,28 +241,56 @@ function traer_equipo(){
 }
 
 // Trae componentes segun empresa (no equipos)
+// traer_componente();
+// function traer_componente(){
+//   $.ajax({
+//     type: 'POST',
+//     data: { },
+//     url: 'index.php/Componente/getcomponente', //index.php/
+//     success: function(data){
+//            $('#componente').empty();
+//             var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+//             $('#componente').append(opcion); 
+//             for(var i=0; i < data.length ; i++){  
+//               var nombre = data[i]['descripcion'];
+//               var opcion  = "<option value='"+data[i]['id_componente']+"'>" +nombre+ "</option>" ; 
+//               $('#componente').append(opcion);                                
+//             }
+//           },
+//     error: function(result){          
+//           console.log(result);
+//          },
+//         dataType: 'json'
+//     });
+// }
+
+// Trae componentes segun empresa (no equipos)
 traer_componente();
 function traer_componente(){
   $.ajax({
     type: 'POST',
     data: { },
-    url: 'index.php/Componente/getcomponente', //index.php/
+    url: 'index.php/Componente/getcomponente',
     success: function(data){
-           $('#componente').empty();
-            var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-            $('#componente').append(opcion); 
-            for(var i=0; i < data.length ; i++){  
-              var nombre = data[i]['descripcion'];
-              var opcion  = "<option value='"+data[i]['id_componente']+"'>" +nombre+ "</option>" ; 
-              $('#componente').append(opcion);                                
-            }
-          },
-    error: function(result){          
-          console.log(result);
-         },
-        dataType: 'json'
-    });
+      $('#componente').empty();
+      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+      $('#componente').append(opcion); 
+      for(var i=0; i < data.length ; i++){  
+        var nombre = data[i]['descripcion']+" - "+data[i]['marcadescrip']+" - "+data[i]['informacion'];
+        var opcion  = "<option value='"+data[i]['id_componente']+"'>" +nombre+ "</option>" ; 
+        $('#componente').append(opcion); 
+      }
+    },
+    error: function(result){
+      console.log(result);
+    },
+    dataType: 'json'
+  });
 }
+
+
+
+
 
 // Trae marcas para modal agregar componente - Chequeado
 traer_marca();
