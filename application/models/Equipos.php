@@ -909,79 +909,182 @@ class Equipos extends CI_Model {
 
 
     /**
-     * Historial de lecturas de los últimos 12 meses.
-     * //Si un mes no tiene historial se agraga una lectura default.//
-     * para cada mes, agrego una lectura con el dia 1 a las 00:00:00hs y otro el ultimo dia del mes a las 23:59:59hs
+     * Calcula la disponibilidad de los ultimos 12meses de los equipos.
      *
-     * @param   Array   $historial_lecturas     Historial de lecturas.
+     * @param   Int     $idEquipo   id del equipo a evaluar | todos los equipos.
      *
-     * @return  Array   Lecturas de los últimos 12 meses.
+     * @return  Array|Void  Disponibilidad de equipos x mes de los ultimos 12meses.
      */
-    function historialLectures12Meses( $historial_lecturas ) {
-        $mesActual      = date( 'Y-m', strtotime($historial_lecturas[1]["fecha"] ) ); // mes con formato "año-mes"
-        $fecha2         = date_create($mesActual);
-        $fecha2->modify('last day of this month');
-        $mesActual2     = $fecha2->format('Y-m');
-        $ultimoDiaMes2  = $fecha2->format('d');
-        $punteroFecha   = $mesActual2."-".$ultimoDiaMes2." 23:59:59";
-        //dump_exit( $fecha2 );
+    function kpiCalcularDisponibilidad($idEquipo='all', $fechaInicio=false, $fechaFin=false )
+    {
+        $disponibilidad = array();
 
-        $lecturasPorMes = array();
-        $nroLecturas    = sizeof($historial_lecturas);
-        $j = 0; // lecturas;
-        $k = 0;
-        $arrancaMesActual = true;
-        $estadoInicial = $historial_lecturas[0]["estado"];
-        //dump_exit( $estadoInicial );
+        //saco los intervalos...
+        for ($mes=1; $mes<=12; $mes++)
+        {
+            //saco la fecha inicio y fecha fin de mes
+            $fecha                = date('Y-m', mktime(0,0,0,$mes, 1, date('Y')));
+            $inicio               = date_create($fecha);
+            $inicio->modify('first day of this month');
+            $fin                  = date_create($fecha);
+            $fin->modify('last day of this month');
+            $fechasInicio[$mes-1] = $inicio->format('Y-m-d 00:00:00');
+            $fechasFin[$mes-1]    = $fin->format('Y-m-d 23:59:59');
 
-        // recorro el historial de lecturas
-        for($i=1; $i<$nroLecturas; $i++) {
-            if( $mesActual2 == date( 'Y-m', strtotime($historial_lecturas[$i]["fecha"]) ) ) {
-                //
-                if ($arrancaMesActual == true) {
-                    //agrego lectura con estado mes anterior
-                    //$lecturasPorMes[$mesActual2][$j] = array(
-                    $j=0;
-                    $lecturasPorMes[$k][$j] = array(
-                            'id_lectura' => "0",
-                            'id_equipo'  => "0",
-                            'lectura'    => "0",
-                            'fecha'      => $mesActual2."-01 00:00:00",
-                            'estado'     => $historial_lecturas[$i-1]["estado"]
-                        );
-                    $j++;
-                    $arrancaMesActual = false;
+            //traigo historial de lecturas entre las fechas inicio y fin de mes        
+            $historialLecturasMes = $this->getHistorialLecturasMes($idEquipo, $fechasInicio[$mes-1], $fechasFin[$mes-1]);
+            
+            $estadoaux            = $historialLecturasMes[0]['estado'];
+            //$arrayIntervalos = array();
+            $arrayIntervalos[$mes-1][0]   = $historialLecturasMes[0];
+            //dump($historialLecturasMes, 'historial del mes '.$mes);
+
+            //obtengo arreglo con los intervalos entre cambios de estado
+            $i              = 1;
+            $nroLecturasMes = sizeof($historialLecturasMes);
+            for($j=0; $j<$nroLecturasMes; $j++)
+            {
+                if($historialLecturasMes[$j]['estado'] != $estadoaux)
+                {
+                    $arrayIntervalos[$mes-1][$i] = $historialLecturasMes[$j];
+                    $i++;
+                    $estadoaux = $historialLecturasMes[$j]['estado'];
                 }
-                // cargo el historial de lecturas
-                //$lecturasPorMes[$mesActual2][$j] = $historial_lecturas[$i];
-                $lecturasPorMes[$k][$j] = $historial_lecturas[$i];
-                $j++;
-            } else {
-                $fecha2         = date_create($mesActual2);
-                $fecha2->modify('last day of this month');
-                $mesActual2     = $fecha2->format('Y-m');
-                $ultimoDiaMes2  = $fecha2->format('d');
-                //$lecturasPorMes[$mesActual2][$j] = array(
-                $lecturasPorMes[$k][$j] = array(
-                        'id_lectura' => "0",
-                        'id_equipo'  => "0",
-                        'lectura'    => "0",
-                        'fecha'      => $mesActual2."-".$ultimoDiaMes2." 23:59:59",
-                        'estado'     => $historial_lecturas[$i-1]["estado"]
-                    );
-                $mesActual2 = date( 'Y-m', strtotime($mesActual2." +1 month") );
-                $j++; $k++;
-                $i--; //para volver a la lectura
-                $arrancaMesActual = true;
+            }            
+            $arrayIntervalos[$mes-1][$i] = $historialLecturasMes[$nroLecturasMes-1];
+        }
+        //dump($arrayIntervalos, 'arrayIntervalos'.$mes);
+        
+
+        //Cambio la fecha de finalizacion del intervalo del mes actual
+        $finDeMes = new DateTime(date('Y-m'));
+        $finDeMes->modify('last day of this month')->setTime(23,59,59);
+        $finDeMesString = $finDeMes->format('Y-m-d H:i:s');
+        $mesRealString = $finDeMes->format('m');
+        //dump($mesRealString);
+        if( $finDeMesString == $arrayIntervalos[$mesRealString-1][$nroLecturasMes-1]['fecha'] )
+        {
+            $arrayIntervalos[$mesRealString-1][$nroLecturasMes-1]['fecha'] = date( 'Y-m-d H:i:s' );
+            $ultimaFecha = date( 'Y-m-d H:i:s' );
+            //dump($arrayIntervalos[$mesRealString-1]);
+        }
+        //dump($arrayIntervalos[$mesRealString-1], 'arrayIntervalos'.$mesRealString);
+
+
+
+        //calculo tiempo operativo y disponibilidad
+        for ($mes=1; $mes<=12; $mes++)
+        {
+            $tiempoOperativo[$mes-1] = 0;
+            $nroLecturasMes          = sizeof($arrayIntervalos[$mes-1]);
+
+            for($j=0; $j<$nroLecturasMes; $j++)
+            {
+                if($arrayIntervalos[$mes-1][$j]['estado'] == 'AC')
+                {
+                    if((isset($arrayIntervalos[$mes-1][$j-1])) AND ($arrayIntervalos[$mes-1][$j-1]['estado'] == 'AC'))
+                    {
+                        $fin             = $arrayIntervalos[$mes-1][$j]['fecha'];
+                        $tiempoOperativo[$mes-1] = $tiempoOperativo[$mes-1] + (int)$this->diferencia($inicio, $fin);
+                        $inicio          = $arrayIntervalos[$mes-1][$j]['fecha'];
+                    }
+                    else
+                    {
+                        $inicio = $arrayIntervalos[$mes-1][$j]['fecha'];
+                    }
+                }
+                else
+                {
+                    if((isset($arrayIntervalos[$mes-1][$j-1])) AND ($arrayIntervalos[$mes-1][$j-1]['estado'] == 'AC'))
+                    {
+                        $fin = $arrayIntervalos[$mes-1][$j]['fecha'];
+                        $tiempoOperativo[$mes-1] = $tiempoOperativo[$mes-1] + (int)$this->diferencia($inicio, $fin);
+                    }
+                }
             }
-            //FALTA VER EL ULTIMO MES. TENGO DESDE LA FEHCA ACTUAL
-            //HAY QUE VER QUE PASA DESDE LA FECHA ACTUAL HASTA EL FINAL DE MES.
-            //(PORQUE TOMO FECHA TOTAL DE MES.
-            //CREO ESTO VA CDO CUENTO EL TIEMPO OPERATIVO)
+
+
+            //Tiempo operativo en meses futuros = 0
+            $diferenciaFecha = strtotime($finDeMesString) < strtotime($arrayIntervalos[$mes-1][$nroLecturasMes-1]['fecha']);
+            if( ($nroLecturasMes == '2') AND ($diferenciaFecha) )
+            {
+                $tiempoOperativo[$mes-1] = 0;
+            }
+
+
+            //saco la fecha inicio y fecha fin de mes
+            $mesActual = date( 'Y-'.$mes );
+
+            $fechaInicio = new DateTime(date('Y').'-'.$mes.'-01 00:00:00');
+            $fechaInicioString = $fechaInicio->format('Y-m-d H:i:s');
+
+            $fechaFin = new DateTime(date('Y').'-'.$mes);
+            $fechaFin->modify('last day of this month')->setTime(23,59,59);
+            $fechaFinString    = $fechaFin->format('Y-m-d H:i:s');
+
+
+            $cantSegundosPorMes      = $this->diferencia($fechaInicioString, $fechaFinString);
+            //dump($cantSegundosPorMes);
+            $disponibilidadMes[$mes] = number_format($tiempoOperativo[$mes-1] * 100 / $cantSegundosPorMes, 2, '.', '');
+            $yearMonth[$mes]         = $mesActual;
+
+
+            /*if($mes == 11) {
+                dump($arrayIntervalos[$mes-1]);
+                dump($fechaInicioString, 'inicio');
+                dump($fechaFinString, 'fin');
+                dump($tiempoOperativo[$mes-1], 'TO');
+                dump($cantSegundosPorMes, 'cantidad segundos en el mes');
+            }*/
         }
 
-        //dump_exit($lecturasPorMes);
-        return $lecturasPorMes;
+
+        //calculo disponibilidad de mes actual
+        if( $ultimaFecha == $arrayIntervalos[$mesRealString-1][$nroLecturasMes-1]['fecha'] )
+        {
+            $cantSegundosPorMes      = $this->diferencia($arrayIntervalos[$mesRealString-1][0]['fecha'], $arrayIntervalos[$mesRealString-1][$nroLecturasMes-1]['fecha']);
+            $disponibilidadMes[$mesRealString] = number_format($tiempoOperativo[$mesRealString-1] * 100 / $cantSegundosPorMes, 2, '.', '');
+        }
+
+
+        //dump($tiempoOperativo, 'TO');
+        //dump($disponibilidadMes, 'Disp');
+        //preparo info para mandar
+        $i = 0;
+        foreach ($disponibilidadMes as $value)
+        {
+            $disp[$i] = $value;
+            $i++;
+        }
+        $i = 0;
+        foreach ($yearMonth as $value)
+        {
+            $mesAnio[$i] = $value;
+            $i++;
+        }
+        $disponibilidad["porcentajeHorasOperativas"] = $disp;
+        $disponibilidad["tiempo"] = $mesAnio;
+
+        return $disponibilidad;
+    }
+
+    /**
+     * Calcula el estado inicial del primer periodo.
+     *
+     * @param   String  $fechaInicio    Fecha de inicio.
+     *
+     * @return  String  Estado del último historial de lectura antes de la fecha inicial.
+     */
+    function getEstadoAnterior($fechaInicio) // Ok
+    {
+        $this->db->select('estado');
+        $this->db->from('historial_lecturas');
+        $this->db->where('fecha <=', $fechaInicio);
+        $this->db->order_by('fecha', 'DESC');
+        $this->db->limit(1);
+        $query = $this->db->get();
+        $lecturaAnterior = $query->result_array();
+        return $lecturaAnterior[0]['estado'];
     }
 
     /**
@@ -990,28 +1093,29 @@ class Equipos extends CI_Model {
      * @param   Datetime    $fecha_inicio   Fecha de inicio.
      * @param   Datetime    $fecha_fin      Fecha final de la comparacion.
      *
-     * @return  Datetime    Diferencia de feachas.
+     * @return  Datetime    Diferencia de fechas.
      */
-    function diferencia($fecha_inicio, $fecha_fin, $formato="s"){
+    function diferencia($fecha_inicio, $fecha_fin, $formato="s") // Ok
+    {
         $datetime1 = new DateTime($fecha_inicio);
         $datetime2 = new DateTime($fecha_fin);
         $diferencia = $datetime1->diff($datetime2, false);
         switch( $formato ){
-            case "y":
+            case "y": //años
                 $total = $diferencia->y + $diferencia->m / 12 + $diferencia->d / 365.25; break;
-            case "m":
+            case "m": //meses
                 $total= $diferencia->y * 12 + $diferencia->m + $diferencia->d/30 + $diferencia->h / 24;
                 break;
-            case "d":
+            case "d": //dias
                 $total = $diferencia->y * 365.25 + $diferencia->m * 30 + $diferencia->d + $diferencia->h/24 + $diferencia->i / 60;
                 break;
-            case "h":
+            case "h": //horas
                 $total = ($diferencia->y * 365.25 + $diferencia->m * 30 + $diferencia->d) * 24 + $diferencia->h + $diferencia->i/60;
                 break;
-            case "i":
+            case "i": //minutos
                 $total = (($diferencia->y * 365.25 + $diferencia->m * 30 + $diferencia->d) * 24 + $diferencia->h) * 60 + $diferencia->i + $diferencia->s/60;
                 break;
-            case "s":
+            case "s": //segundos
                 $total = ((($diferencia->y * 365.25 + $diferencia->m * 30 + $diferencia->d) * 24 + $diferencia->h) * 60 + $diferencia->i)*60 + $diferencia->s;
                 break;
         }
@@ -1019,104 +1123,45 @@ class Equipos extends CI_Model {
         return $total;
     }
 
-    /**
-     * Calcula la disponibilidad de los ultimos 12meses de los equipos.
-     *
-     * @param   Int     $idEquipo   id del equipo a evaluar | todos los equipos.
-     *
-     * @return  Array|Void  Disponibilidad de equipos x mes de los ultimos 12meses.
-     */
-    function kpiCalcularDisponibilidad($idEquipo, $fechaInicio=false, $fechaFin=false ) {
-        $disponibilidad = array();
-
-        // Si no hay una fecha específica saco los últimos 12 meses
-        // (13 meses para saber el estado inicial de la primera lectura)
-        if( $fechaInicio==false && $fechaFin==false) {
-            $fechaInicio = date("Y-m-d H:i:s");
-            $fechaFin    = strtotime($fechaInicio.' -12 month');//12 o 13...no me queda claro (si es 12 para atras es 12. pero si pone cada mes en una cajita, serian 13)
-            $fechaFin    = date('Y-m-d H:i:s', $fechaFin);
-            //dump_exit($fechaFin);
-        }
-
-        //trae el historial de lecturas
+    function getHistorialLecturasMes($idEquipo='all', $fechaInicio, $fechaFin)
+    {
+        //saco las lecturas del mes
         $this->db->select('id_lectura, id_equipo, lectura, fecha, estado');
         $this->db->from('historial_lecturas');
         if( $idEquipo != "all" ) // si idequipo = 'all' => traigo todos los datos
             $this->db->where('id_equipo', $idEquipo);
-        $this->db->where('fecha <=', $fechaInicio);
-        $this->db->where('fecha >=', $fechaFin);
+        $this->db->where('fecha >=', $fechaInicio);
+        $this->db->where('fecha <=', $fechaFin);
         $this->db->order_by("fecha", "asc");
         $query = $this->db->get();
-        $historial_lecturas = $query->result_array();
+        $historialLecturas = $query->result_array();
+        //dump($historialLecturas, 'Historial de lecturas del mes');
 
-        /* Saco el historial de los 12 meses a mostrar. */
-        /* para cada mes, agrego una lectura con el dia 1 a las 00:00:00hs y otro el ultimo dia del mes a las 23:59:59hs */
-        /* el estado de esas lecturas se saca del elemento anterior y posterior */
-        $historial_lecturas = $this->historialLectures12Meses($historial_lecturas);
-        //dump_exit($historial_lecturas);
+        //agrego lectura el primer dia del mes a las 00:00hs
+        $estadoInicial = $this->getEstadoAnterior($fechaInicio);
+        //dump($estadoInicial, 'Estado inicial');
+        $lecturaInicio[0] = array(
+            'id_lectura' => '0', 
+            'id_equipo'  => '0', 
+            'lectura'    => '0', 
+            'fecha'      => $fechaInicio, 
+            'estado'     => $estadoInicial
+        );
+        $historialLecturas = array_merge( $lecturaInicio, $historialLecturas);
 
-        $nroMeses = sizeof($historial_lecturas); //12 meses
-        $j = 0;
-        //ordeno las lecturas x meses (los mas viejos primero)
-        for($i=0; $i<$nroMeses; $i++){
-            $lecturasMes[$j] = $historial_lecturas[$i];
-            $j++;
-        }
-        //dump_exit($lecturasMes);
-        // En lugar de $lecturames[2][0] está $lecturames[2][5]
-        //y despues $lecturames[3][6], $lecturames[4][7] ... $lecturames[8][11], $lecturames[9][0]
-        $estado = $historial_lecturas[0][0]["estado"];
-        $inicio = $historial_lecturas[0][0]["fecha"];
-
-        // para cada mes
-        for($i=0; $i<$nroMeses; $i++) {
-            //dump($lecturasMes);
-            $inicio = $lecturasMes[$i][0]["fecha"];
-            $horasOperativas = 0;
-            $fin = false;
-
-            $nroLecturasMes = sizeof($lecturasMes[$i]);
-
-            // Para cada lectura
-            for($j=1; $j<$nroLecturasMes; $j++) {
-                if($lecturasMes[$i][$j]["estado"] == "AC") {
-                    // (B)
-                    if( $lecturasMes[$i][$j-1]["estado"] != "AC") {
-                        $inicio = $lecturasMes[$i][$j]["fecha"];
-                    }
-                } else {
-                    // (C)
-                    if( $lecturasMes[$i][$j-1]["estado"] == "AC") {
-                        $fin = $lecturasMes[$i][$j]["fecha"];
-                        $horasOperativas = $horasOperativas + (int)$this->Equipos->diferencia($inicio, $fin);
-                        //print_r($horasOperativas);
-                    }
-                }
-            } //fin for lecturas
-            if ( $fin == false ) {
-
-                if( $lecturasMes[$i][$j-1]["estado"] != "AC") {
-                    $fin = $lecturasMes[$i][0]["fecha"];
-                } else {
-                    $fin = $lecturasMes[$i][$j-1]["fecha"];
-                }
-            }
-            $horasOperativas = $horasOperativas + (int)$this->Equipos->diferencia($inicio, $fin);
-            //print_r($horasOperativas);
-            //echo "<hr><br><br>";
-            $totalHorasMes = $this->Equipos->diferencia($lecturasMes[$i][0]["fecha"], $lecturasMes[$i][$nroLecturasMes-1]["fecha"]);
-            //$disponibilidadp[$i] = $horasOperativas * 100 / $totalHorasMes ;
-            $disponibilidadp[$i] = number_format($horasOperativas * 100 / $totalHorasMes, 2, '.', '');
-            $tiempo = date( 'Y-m', strtotime($lecturasMes[$i][$nroLecturasMes-1]["fecha"]) );
-            $disponibilidadt[$i] = $tiempo;
-            $inicio = $fin;
-            //echo "<hr>";
-        }//fin for meses
-
-        $disponibilidad["porcentajeHorasOperativas"] = $disponibilidadp;
-        $disponibilidad["tiempo"] = $disponibilidadt;
-        //dump_exit($disponibilidad, "hsOperativas/tiempo");
-        return $disponibilidad;
+        //agrego lectura al final del mes a las 23:59
+        $ultimaLectura = end($historialLecturas);
+        $ultimoEstado = $ultimaLectura['estado'];
+        //dump($ultimoEstado, 'Último estado');
+        $lecturaFin[0] = array(
+            'id_lectura' => '0', 
+            'id_equipo'  => '0', 
+            'lectura'    => '0', 
+            'fecha'      => $fechaFin, 
+            'estado'     => $ultimoEstado
+        );
+        $historialLecturas = array_merge( $historialLecturas, $lecturaFin);
+        return $historialLecturas;
     }
 
 
