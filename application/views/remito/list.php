@@ -69,7 +69,6 @@ $('#btnAgre').click( function cargarVista(){
   WaitingClose();
 });
 
-
 $(".fa-search-plus").click(function (e) { 
     console.log("Estoy Consultando"); 
     var idremito = $(this).parent('td').parent('tr').attr('id');
@@ -135,21 +134,22 @@ $(".fa-search-plus").click(function (e) {
         console.table(result);
       },
     });   
-  });
+});
 
-  $('#tbl-remitos').DataTable({
-    "aLengthMenu": [ 10, 25, 50, 100 ],
-    "columnDefs": [ {
-      "targets": [ 0 ], 
-      "searchable": false
-    },
-    {
-      "targets": [ 0 ], 
-      "orderable": false
-    } ],
-    "order": [[1, "asc"]],
-  });
-  $('#tablaconsulta').DataTable({
+$('#tbl-remitos').DataTable({
+  "aLengthMenu": [ 10, 25, 50, 100 ],
+  "columnDefs": [ {
+    "targets": [ 0 ], 
+    "searchable": false
+  },
+  {
+    "targets": [ 0 ], 
+    "orderable": false
+  } ],
+  "order": [[1, "asc"]],
+});
+
+var table = $('#tablaconsulta').DataTable( {
     "aLengthMenu": [ 10, 25, 50, 100 ],
     "columnDefs": [ {
       "targets": [ 0 ], 
@@ -161,6 +161,37 @@ $(".fa-search-plus").click(function (e) {
     } ],
     "order": [[0, "asc"]],
   });
+var buttons = new $.fn.dataTable.Buttons(table, {
+    buttons: [
+    {
+      extend: 'print',
+      text: 'Imprimir',
+      className: "btn btn-primary",
+      title: '',
+      //messageTop: '<strong>Mensaje entre el titulo y la tabla..</strong>',
+      init: function(api, node, config) {
+        $(node).removeClass('btn-default')
+      },
+
+      customize: function ( win ) {
+        $(win.document.body)
+          .css('font-size', '10pt')
+          /*.prepend(
+          '<img src="http://datatables.net/media/images/logo-fade.png" style="position:absolute; top:0; left:0;" />'
+          )*/;
+        
+        $(win.document.body).find( 'table' )
+          .addClass( 'table-condensed' )
+          .css( 'font-size', 'inherit' );
+
+        $('#infoOI').clone().prependTo( win.document.body );
+        $(win.document.body).prepend('<h1>Remito</h1>');
+      } 
+    }
+    ]
+  }).container().appendTo($('#btn-datatables'));
+
+
 
 </script>
 
@@ -176,23 +207,27 @@ $(".fa-search-plus").click(function (e) {
       </div> <!-- /.modal-header  -->
 
       <div class="modal-body" id="modalBodyArticle">
-        <div class="row">
-          <div class="col-xs-12 col-sm-6 col-md-4">
-            <label for="comprobanteV">Nº de Comprobante:</label>
-            <input type="text" class="form-control" id="comprobanteV" name="comprobanteV" disabled>
-          </div>
-          <div class="col-xs-12 col-sm-6 col-md-4">
-            <label for="fechaV">Fecha:</label>
-            <input type="text" class="form-control" id="fechaV" name="fechaV" disabled>
-          </div>
-          <div class="col-xs-12 col-sm-6 col-md-4">
-            <label for="proveedorV">Proveedor:</label>
-            <input type="text" class="form-control" id="proveedorV" name="proveedorV" disabled>
-          </div>
-        </div><br>
+        
+          <div class="row" id="infoOI">
+            <div class="col-xs-12 col-sm-6 col-md-4">
+              <label for="comprobanteV">Nº de Comprobante:</label>
+              <input type="text" class="form-control" id="comprobanteV" name="comprobanteV" disabled>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-4">
+              <label for="fechaV">Fecha:</label>
+              <input type="text" class="form-control" id="fechaV" name="fechaV" disabled>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-4">
+              <label for="proveedorV">Proveedor:</label>
+              <input type="text" class="form-control" id="proveedorV" name="proveedorV" disabled>
+            </div>
+          </div><br>
       
         <div class="row">
           <div class="col-xs-12">
+            <div class="row">
+              <div class="col-xs-12" id="btn-datatables"></div>
+            </div><br>
             <table class="table table-bordered" id="tablaconsulta"> 
               <thead>
                 <tr>
