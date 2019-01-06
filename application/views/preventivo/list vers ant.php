@@ -1,4 +1,4 @@
-<input type="hidden" id="permission" value="<?php echo $permission;?>">
+﻿<input type="hidden" id="permission" value="<?php echo $permission;?>">
 <section class="content">
 
   <div class="row">
@@ -49,7 +49,7 @@
                   echo '<td>'.$a['des'].'</td>';
                   echo '<td>'.$a['des1'].'</td>';
                   echo '<td>'.$a['descripcion'].'</td>';
-                  echo '<td>'.$a['periodoDesc'].'</td>';
+                  echo '<td>'.$a['perido'].'</td>';
                   echo '<td>'.$a['cantidad'].'</td>';
                   echo '<td>'.date_format(date_create($a['ultimo']), 'd-m-Y').'</td>';
                     //echo '<td>'.$a['descripcion'].'</td>';
@@ -109,21 +109,21 @@
         datos={
           'idprev':data['datos'][0]['idprev'],
           'codigo' : data['datos'][0]['codigo'],
-          'id_equipo':data['datos'][0]['id_equipo'], // id_equipo
-          'fecha_ingreso':data['datos'][0]['fecha_ingreso'],
-          'marca':data['datos'][0]['marca'],
-          'codigo':data['datos'][0]['codigo'],  // nombre del equipo
-          'ubicacion':data['datos'][0]['ubicacion'],
-          'descripcion':data['datos'][0]['descripcion'],                
-          'id_tarea':data['datos'][0]['id_tarea'], //iria  id_tarea descripta
-          'perido':data['datos'][0]['perido'],
-          'cantidad':data['datos'][0]['cantidad'],
-          'ultimo':data['datos'][0]['ultimo'],
-          'id_componente':data['datos'][0]['id_componente'],
-          'critico1':data['datos'][0]['critico1'],
-          'horash':data['datos'][0]['horash'],
-          'ultimo':data['datos'][0]['ultimo'],
-        };             
+                'id_equipo':data['datos'][0]['id_equipo'], // id_equipo
+                'fecha_ingreso':data['datos'][0]['fecha_ingreso'],
+                'marca':data['datos'][0]['marca'],
+                'codigo':data['datos'][0]['codigo'],  // nombre del equipo
+                'ubicacion':data['datos'][0]['ubicacion'],
+                'descripcion':data['datos'][0]['descripcion'],                
+                'id_tarea':data['datos'][0]['id_tarea'], //iria  id_tarea descripta
+                'perido':data['datos'][0]['perido'],
+                'cantidad':data['datos'][0]['cantidad'],
+                'ultimo':data['datos'][0]['ultimo'],
+                'id_componente':data['datos'][0]['id_componente'],
+                'critico1':data['datos'][0]['critico1'],
+                'horash':data['datos'][0]['horash'],
+                'ultimo':data['datos'][0]['ultimo'],
+              };             
 
               var herram = data['herramientas'];             
               var insum = data['insumos'];
@@ -423,9 +423,7 @@ function completarEdit(datos, herram,insum){
     $('#descripcion').val(datos['descripcion']);
     traer_componente(datos['id_equipo']);
     $('#tarea').val(datos['id_tarea']);     
-    //$('#periodo').val('0');
-    console.info("periodo a editar: "+datos['perido']);
-    traer_periodo(datos['perido']);
+    $('#periodo').val('0');    
     $('#cantidad').val(datos['cantidad']);
     $('#ultimo').val(datos['ultimo']);    
     $('#componente').val(datos['id_componente']);    
@@ -539,32 +537,6 @@ function calcularHsHombre(){
 //             dataType: 'json'
 //         });
 // }
-function traer_periodo(periodoId){
-  if (periodoId === undefined) {
-    periodoId = null;
-  }
-  $('#periodo').html(""); 
-  $.ajax({
-    data: {periodoId:periodoId },
-    dataType: 'json',
-    type: 'POST',
-    url: 'index.php/Calendario/getperiodo',
-    success: function(data){
-      var opcion = "<option value='-1'>Seleccione...</option>" ; 
-      $('#periodo').append(opcion); 
-      for(var i=0; i < data.length ; i++) 
-      {    
-        var nombre   = data[i]['descripcion'];
-        var selected = (periodoId == data[i]['idperiodo']) ? 'selected' : '';
-        var opcion   = "<option value='"+data[i]['idperiodo']+"' " +selected+ "'>" +nombre+ "</option>" ; 
-        $('#periodo').append(opcion);                        
-      }
-    },
-    error: function(result){  
-      console.log(result);
-    },
-  });
-}
 
 function traer_componente(id_equipo){
   $('#componente').html("");
@@ -777,7 +749,7 @@ function guardarEdicion(){
             <div class="row">
               <div class="col-xs-12 col-sm-6">Periodo <strong style="color: #dd4b39">*</strong>:
                 <select id="periodo" name="periodo" class=" selectpicker form-control input-md">
-                  <!--<option >Anual</option>- ->
+                  <!--<option >Anual</option>-->
                   <option value="0">Diario</option>
                   <!--<option >Mensual</option>
                   <option >Periodos</option>
