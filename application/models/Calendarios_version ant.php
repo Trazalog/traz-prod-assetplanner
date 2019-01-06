@@ -29,8 +29,8 @@ class Calendarios extends CI_Model {
             equipos.codigo 
             from orden_trabajo
             INNER JOIN equipos ON equipos.id_equipo = orden_trabajo.id_equipo
-            WHERE orden_trabajo.id_empresa = $empId
-            AND orden_trabajo.estado != 'T'
+            WHERE orden_trabajo.estado = 'C'
+            AND orden_trabajo.id_empresa = $empId
             AND month(orden_trabajo.fecha_program) = $month
             AND year(orden_trabajo.fecha_program) = $year";
         $query= $this->db->query($sql);
@@ -45,15 +45,14 @@ class Calendarios extends CI_Model {
         }
     }
 
-    // Preventivos por Hora para la Tabla
-    function getPreventivosHoras($mes, $year)
+        // Preventivos por Hora para la Tabla
+    function getPreventivosHoras($data = null) // No utilizada
     {
         $userdata = $this->session->userdata('user_data');
         $empId    = $userdata[0]['id_empresa'];
-        //$month = $data;//['month'] + 1 ;    
-        //$month = $data['month'] + 1 ; 
-        //$year  = $data['year'] ;
-        $sql = "SELECT preventivo.prevId, 
+
+        $month = $data;//['month'] + 1 ;    
+        $sql   = "SELECT preventivo.prevId, 
             preventivo.id_tarea, 
             preventivo.perido, 
             preventivo.cantidad, 
@@ -69,10 +68,8 @@ class Calendarios extends CI_Model {
             from preventivo 
             join equipos ON preventivo.id_equipo = equipos.id_equipo 
             join tareas ON preventivo.id_tarea = tareas.id_tarea 
-            WHERE preventivo.id_empresa = $empId AND preventivo.estadoprev = 'C' AND ((preventivo.perido = '5') OR (preventivo.perido = '6'))";//horas o ciclos
-            //AND month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $mes 
-            //AND year(orden_trabajo.fecha_program) = $year
-            //";
+            WHERE preventivo.id_empresa = $empId AND preventivo.estadoprev = 'C' AND ((preventivo.perido = 'Horas') OR (preventivo.perido = 'Ciclos'))";
+            //AND month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $month ";
         $query = $this->db->query($sql);
                 if ($query->num_rows()!=0)
         {
@@ -165,7 +162,7 @@ class Calendarios extends CI_Model {
             join tareas ON preventivo.id_tarea = tareas.id_tarea 
             where (preventivo.estadoprev = 'C') AND 
             (month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $month or month(preventivo.ultimo) = $month)";  */
-        $sql = "SELECT preventivo.prevId, 
+        $sql      = "SELECT preventivo.prevId, 
             preventivo.id_tarea, 
             preventivo.perido, 
             preventivo.cantidad, 
@@ -250,46 +247,11 @@ class Calendarios extends CI_Model {
         return $query->result_array();                
     }
 
-    function actualizarFechaBasePreventivos($fecha_limite, $id_orden)
-    {
-        $this->db->set('ultimo', $fecha_limite);
-        $this->db->where('prevId', $id_orden);
-        $resposnse = $this->db->update('preventivo');
-        return $resposnse;
-    }
 
 
 
-    function getperiodo($data = null)
-    {
-        $userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-        /*$sql       = "SELECT articles.artId, abmperiodo.periodoId, abmperiodo.periododescrip
-            FROM articles
-            JOIN tbl_lote ON tbl_lote.artId = articles.artId
-            JOIN abmperiodo ON abmperiodo.periodoId = tbl_lote.periodoid
-            WHERE tbl_lote.artId = $id
-            AND tbl_lote.id_empresa = $empresaId
-            ";
-        $query = $this->db->query($sql);*/
 
-        $this->db->select('periodo.idperiodo, periodo.descripcion');
-        $this->db->from('periodo');
-        if($data == null) {
-            $id = $data['periodoId'];
-            $this->db->where('periodo.idperiodo', $id);
-        }
-        $this->db->where('periodo.id_empresa', $empresaId);
-        $this->db->where('periodo.estado', 'AC');
-        $this->db->order_by('periodo.descripcion');
-        $query = $this->db->get();
-        if($query->num_rows()>0){
-            return $query->result();
-        }
-        else{
-            return false;
-        }
-    }
+
 
 
 
@@ -445,15 +407,15 @@ class Calendarios extends CI_Model {
 
 
 	//Guarda orden de trabajo a partir de Pred/Correc/Backlog/Prevent
-	function guardar_agregar($data)
-    {
+	function guardar_agregar($data){
+                   
         $query = $this->db->insert("orden_trabajo",$data);
     	return $query;        
     }
 
     // Guarda batch de OT 
-    function setOTbatch($data)
-    {
+    function setOTbatch($data){
+
     	$this->db->insert_batch('orden_trabajo', $data);
     }
 
@@ -487,7 +449,7 @@ class Calendarios extends CI_Model {
         $this->db->from('preventivo');
         $this->db->join('equipos', 'equipos.id_equipo = preventivo.id_equipo', 'inner');
         $this->db->join('sector', 'sector.id_sector = equipos.id_sector', 'inner');
-        $this->db->where('preventivo.perido', '5');//horas
+        $this->db->where('preventivo.perido', 'Horas');
         $this->db->where('equipos.estado', 'AC');
 
         $query= $this->db->get();
@@ -596,8 +558,8 @@ class Calendarios extends CI_Model {
     function cambiaEstadoPreventivo($idPreventivo, $estado)
     {
         $data = array(
-           'estadoprev' => $estado
-        );
+               'estadoprev' => $estado
+            );
         $this->db->where('prevId', $idPreventivo);
         $this->db->update('preventivo', $data);
 
