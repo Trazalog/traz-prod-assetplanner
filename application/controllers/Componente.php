@@ -103,6 +103,21 @@ class Componente extends CI_Controller {
 		else echo "nada";
 	}
 
+	// Trae sistemas
+	public function getsistema()
+	{	
+		$compo = $this->Componentes->getsistema();	
+		if($compo){	
+			$arre = array();
+	        foreach ($compo as $row ) 
+	        {   
+	           $arre[] = $row;
+	        }
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}
+
 	// Agrega componente nuevo - Listo
 	public function agregar_componente()
 	{
