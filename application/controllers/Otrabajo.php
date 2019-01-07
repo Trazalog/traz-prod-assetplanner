@@ -34,23 +34,23 @@ class Otrabajo extends CI_Controller {
 	}
 
 	/**
-  	 * Traer proveedores de empresa con estado AC.
-  	 *
-  	 * @return 	String 	Arreglo con proveedores.
-  	 */
-  	public function getproveedor() // Ok
-  	{	
+	 * Traer proveedores de empresa con estado AC.
+	 *
+	 * @return 	String 	Arreglo con proveedores.
+	 */
+	public function getproveedor() // Ok
+	{	
 		$proveedores = $this->Otrabajos->getproveedor();
 		if($proveedores)
 		{	
 			$arre=array();
-	        foreach ($proveedores as $row ) 
-	        {   
-	           $arre[] = $row;
-	        }
+					foreach ($proveedores as $row ) 
+					{   
+							$arre[] = $row;
+					}
 			echo json_encode($arre);
 		}
-		else echo "nada";
+			else echo "nada";
 	}
 
 	/**
@@ -106,6 +106,7 @@ class Otrabajo extends CI_Controller {
 	    
 		$num           = $this->input->post('num');
 		$descripcion   = $this->input->post('descripcion');
+		$fecha_inicio	 = $this->input->post('fecha_inicio');
 		$fecha_entrega = $this->input->post('fecha_entrega');
 		$equipo        = $this->input->post('equipo');
 		$sucursal      = $this->input->post('sucursal');
@@ -113,7 +114,7 @@ class Otrabajo extends CI_Controller {
     	
     $datos2 = array(
 			'nro'           => $num,
-			'fecha_inicio'  => date('Y-m-d H:i:S'),
+			'fecha_inicio'  => $fecha_inicio,
 			'fecha_entrega' => $fecha_entrega,
 			'descripcion'   => $descripcion,
 			'estado'        => 'C',
@@ -482,10 +483,10 @@ class Otrabajo extends CI_Controller {
 	      	else echo 0;	
 	   
   	}
-
+		// trae detalle de nota de pedido
   	public function getmostrar(){
 
-	    $idm=$_POST['idorde'];
+	    $idm=$_POST['id'];
 	    $dat= $this->Otrabajos->getdatos($idm); //traigo todos los datos 
 	    echo json_encode($dat);
   	}

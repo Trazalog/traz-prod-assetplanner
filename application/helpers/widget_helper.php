@@ -152,7 +152,7 @@ if (!function_exists('cantTipoOrdenTrabajo')) {
      *
      *
      */
-    function cantTipoOrdenTrabajo()
+    function cantTipoOrdenTrabajo($echo = FALSE)
     {
         // Get a reference to the controller object
         $CI = get_instance();
@@ -180,7 +180,7 @@ if (!function_exists('sacarEquiposOperativos')) {
      *
      *
      */
-    function sacarEquiposOperativos()
+    function sacarEquiposOperativos($echo = FALSE)
     {
         // Get a reference to the controller object
         $CI = get_instance();
@@ -190,7 +190,19 @@ if (!function_exists('sacarEquiposOperativos')) {
         $output = $CI->Equipos->kpiSacarEquiposOperativos();
         /* En DB tabla equipo, en el campo estado */
             // AC = activo
-            // AN = anulado
+            // RE = reparacion
+
+        // si solo hay un estado (todos activos, o todos en reparacion)
+        if( sizeof($output) == 1 ) {
+            if( $output[0]['estado'] == 'AC' ) { //si solo tiene activos
+                $output[1]['cantEstadoActivo'] = '0';
+                $output[1]['estado'] = 'RE';
+            } else { //si tiene todos en reparacion
+                $output[1]['cantEstadoActivo'] = '0';
+                $output[1]['estado'] = 'AC';
+            }
+        }
+
         // Output
         if ($echo == TRUE) {
             echo $output;
@@ -206,21 +218,21 @@ if (!function_exists('calcularDisponibilidad')) {
      *
      *
      */
-    function calcularDisponibilidad($idEquipo, $fechaInicio=false, $fechaFin=false, $echo = FALSE)
+    function calcularDisponibilidad($echo = FALSE)
     {
         // Get a reference to the controller object
         $CI = get_instance();
         // You may need to load the model if it hasn't been pre-loaded
         $CI->load->model('Equipos');
         // Call a function of the model
-        $output = $CI->Equipos->kpiCalcularDisponibilidad($idEquipo, $fechaInicio, $fechaFin);
-        //dump($output);
+        $output = $CI->Equipos->kpiCalcularDisponibilidad();
+        //dump_exit($output);
         // Output
         if ($echo == TRUE) {
             echo $output;
         }
         else {
             return $output;
-        }
+        }return 0;
     }
 }

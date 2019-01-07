@@ -63,7 +63,7 @@
                           echo '<i class="fa fa-tags text-light-blue" style="cursor: pointer; margin-left: 15px;"  title="Cargar Pedido " data-toggle="modal" data-target="#modalpedido"></i>';
                         }*/
                         if (strpos($permission,'Pedidos') !== false) {
-                          echo '<i class="fa fa-truck text-light-blue" style="cursor: pointer; margin-left: 15px;"  title="Mostrar Perdido " data-toggle="modal" data-target="#modallista"></i>';
+                          echo '<i class="fa fa-truck text-light-blue" style="cursor: pointer; margin-left: 15px;"  title="Mostrar Pedido " data-toggle="modal" data-target="#modallista"></i>';
                           echo '<i class="fa fa-cart-plus text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Agregar Nota de Pedido"></i>';
                         }
                         if(($a['estado'] == 'As' || $a['estado'] == 'P') && ($a['id_usuario_a'] == $usrId)){
@@ -105,7 +105,7 @@
 
 <script>
 // cargo plugin DateTimePicker
-$('#fechaEntrega, #fecha_inicio1, #fecha_entrega1').datetimepicker({
+$('#fechaEntrega, #fecha_inicio1, #fecha_entrega1, #fechaInicio').datetimepicker({
   format: 'YYYY-MM-DD H:mm:ss', //format: 'YYYY-MM-DD', // es igaul a campo date
   locale: 'es',
 });
@@ -222,19 +222,13 @@ function guardaragregar(){
   $('#btn_guardar').prop("disabled", true);
   
   var num           = $('#nro1').val();
+  var fecha_inicio  = $('#fechaInicio').val();
   var fecha_entrega = $('#fechaEntrega').val();
   var descripcion   = $('#vsdetal').val();
   var sucursal      = $('#suci').val();
   var proveedor     = $('#prov').val();
-  var equipo        = $('#equipo').val();;
-  //console.log("Datos a guardar");
-  //console.log(num);
-  //console.log(fecha_entrega);
-  //console.log(descripcion);
-  //console.log(sucursal);
-  //console.log(proveedor);
-  //console.log(equipo);
-
+  var equipo        = $('#equipo').val();
+  
   var hayError = false; 
   $('#error').hide();
   if($('#equipo').val() == '')
@@ -261,7 +255,13 @@ function guardaragregar(){
 
   $.ajax({
     type: 'POST', 
-    data: {num:num, fecha_entrega:fecha_entrega, equipo:equipo, descripcion:descripcion, sucursal:sucursal, proveedor:proveedor},
+    data: {num:num, 
+          fecha_inicio: fecha_inicio,
+          fecha_entrega:fecha_entrega, 
+          equipo:equipo, 
+          descripcion:descripcion, 
+          sucursal:sucursal, 
+          proveedor:proveedor},
     url: 'index.php/Otrabajo/guardar_agregar',
     success: function(data){
       //console.log(data);  
@@ -603,7 +603,7 @@ function orden(){
       'fecha_entrega': fecha_entrega,
       'id_usuario_a': usuario,
       'estado': 'As',     
-      'cliId': cliente,
+      'cliId': cliente
   };
   console.log(parametros);
   console.log(id_orden);
@@ -624,12 +624,6 @@ function orden(){
           dataType: 'json'
   });              
 }
-
-
-
-
-
-
 
 /*/ Refresca    
 function regresa(){
@@ -688,61 +682,82 @@ $(document).ready(function(event) {
 
   $(".fa-truck").click(function (e) { 
 
-   $("#modallista tbody tr").remove();
+    $("#modallista tbody tr").remove();
     var idorde = $(this).parent('td').parent('tr').attr('id');
     
     console.log("ID de orden de trabajo para mostrar pedido es: "+idorde);  
-    /*$.ajax({
+    $.ajax({
       dataType: 'json',
-        data: { idorde:idorde},
+      data: { id:idorde},
       type: 'POST',
       url: 'index.php/Otrabajo/getmostrar',
           success: function(data){
-            console.log("llego el detalle");
-        console.table(data);
-           
+            
+            $('#tabladetalle').DataTable().clear().draw();
             for (var i = 0; i < data.length; i++) {
 
-              if (data[i]['estado']== 'P'){
-              var estado= '<small class="label pull-left bg-green">Pedido</small>';
+              switch (data[i]['estado']) {
+                case 'P':
+                  var estado= '<small class="label pull-left bg-green">Pedido</small>';
+                  break;
+                case 'C':
+                  var estado= '<small class="label pull-left bg-blue">Curso</small>';
+                  break;
+                case 'E':
+                  var estado= '<small class="label pull-left bg-red">Entregado</small>'; 
+                default:
+                  var estado= '<small class="label pull-left bg-yellow">Terminado</small>';
+                break;
               }
-          else {
-                if (data[i]['estado']== 'C'){
-                var estado= '<small class="label pull-left bg-blue">Curso</small>';
-                }
-            else {
-                  if (data[i]['estado']== 'E'){ 
-                  var estado= '<small class="label pull-left bg-red">Entregado</small>';
-                  }
-                    else{ 
-                      var estado= '<small class="label pull-left bg-yellow">Terminado</small>';
-                    }
-              $('#tabladetalle').DataTable().clear().draw();
+              
               $('#tabladetalle').DataTable().row.add( [
-                "",
-                data[i]['nro_trabajo'],
+                data[i]['artBarCode'],
+                data[i]['artDescription'],
+                data[i]['cantidad'],
                 data[i]['fecha'],
-                data[i]['fecha_entrega'],
+                data[i]['fechaEntrega'],
                 data[i]['provnombre'],
-                data[i]['descripcion'],
-                estado,
-              ] ).draw();
-            }
-            }
-        }
+                estado
+              ] ).draw(); 
+            }  
+            // for (var i = 0; i < data.length; i++) {
+
+              //   if (data[i]['estado']== 'P'){
+              //   var estado= '<small class="label pull-left bg-green">Pedido</small>';
+              //   }else {
+              //     if (data[i]['estado']== 'C'){
+              //     var estado= '<small class="label pull-left bg-blue">Curso</small>';
+              //     }else {
+              //       if (data[i]['estado']== 'E'){ 
+              //       var estado= '<small class="label pull-left bg-red">Entregado</small>';
+              //       }else{ 
+              //         var estado= '<small class="label pull-left bg-yellow">Terminado</small>';
+              //       }
+              //       $('#tabladetalle').DataTable().clear().draw();
+              //       $('#tabladetalle').DataTable().row.add( [
+              //         //"",
+              //         data[i]['id_ordTrabajo'],
+              //         data[i]['fecha'],
+              //         data[i]['fecha_entrega'],
+              //         data[i]['provnombre'],
+              //         data[i]['descripcion'],
+              //         estado,
+              //       ] ).draw();
+              //     }
+              //   }
+              // }
           },
             
           error: function(result){
-        console.error("Entro x el error de detalle");
-                
-        console.table(result);
-              },
-    });*/
+                console.error("Entro x el error de detalle");                
+                console.table(result);
+          },
+    });
     //iort = id;
-    WaitingOpen();
-    $('#content').empty();
-    $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/getNotasxOT/<?php echo $permission; ?>/"+idorde+"");
-    WaitingClose(); 
+    // WaitingOpen();
+    // $('#content').empty();
+    // $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/getNotasxOT/<?php echo $permission; ?>/"+idorde+"");
+    // WaitingClose(); 
   });
 
   //guardar pedido
@@ -1116,9 +1131,7 @@ $(document).ready(function(event) {
   });
 
 });
-
-
-    
+  
 function LoadOT(id_, action){
   idArt = id_;
   acArt = action;
@@ -1194,9 +1207,6 @@ function finalOT(id_, action){ //esto es nuevo
             dataType: 'json'
   });
 }
- 
-   
-
 
  
 // Trae proveedores por empresa logueada      
@@ -1394,7 +1404,8 @@ $(".fa-cart-plus").click(function (e) {
             <label style="margin-top: 7px;">Fecha Inicio<strong style="color: #dd4b39">*</strong>: </label>
           </div>
           <div class="col-xs-12 col-sm-8">
-            <input type="text" class="form-control" id="vfech" name="vfech" value="<?php echo date_format(date_create(date("Y-m-d")), 'd-m-Y ') ; ?>"  disabled/>
+            <input type="datetime" class="form-control" id="fechaInicio" name="fechaInicio" />
+            <!-- <input type="text" class="form-control" id="fechaInicio" name="fechaInicio" value="<?php //echo date_format(date_create(date("Y-m-d")), 'd-m-Y ') ; ?>"/> -->
           </div>
         </div><br>
         <div class="row">
@@ -1715,6 +1726,41 @@ $(".fa-cart-plus").click(function (e) {
         <button type="button" class="btn btn-default" data-dismiss="modal" onclick="guardarparcial()"> Parcial</button>     
         <button type="button" class="btn btn-primary" id="btnSave" data-dismiss="modal" onclick="guardartotal()" >Total</button>
       </div>  <!-- /.modal footer -->
+    </div> <!-- /.modal-content -->
+  </div>  <!-- /.modal-dialog modal-lg -->
+</div>  <!-- /.modal fade -->
+<!-- / Modal -->
+
+<!-- Modal mostrar pedido-->
+<div class="modal" id="modallista" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"  id="myModalLabel"><spanclass="fa fa-truck text-light-blue"></span> Lista de Orden de Pedido</h4>
+      </div> <!-- /.modal-header  -->
+      <div class="modal-body" id="modalBodyArticle">
+        <div class="row" >
+          <div class="col-xs-12">
+            <table class="table table-bordered table-hover" id="tabladetalle">
+              <thead>
+                <tr>                                
+                  <th>Cod. Artículo</th>
+                  <th>Detalle</th>
+                  <th>Cantidad</th>
+                  <th>Fecha Creación</th>
+                  <th>Fecha Entrega</th>
+                  <th>Proveedor</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>              
+              </tbody>
+            </table>    
+          </div>
+        </div>  
+      </div>  <!-- /.modal-body -->
     </div> <!-- /.modal-content -->
   </div>  <!-- /.modal-dialog modal-lg -->
 </div>  <!-- /.modal fade -->

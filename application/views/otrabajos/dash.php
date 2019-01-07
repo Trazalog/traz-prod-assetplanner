@@ -14,10 +14,11 @@
         <div class="box-body">
           <div class="row">
               <div class="col-md-6 col-xs-12"> <!-- class="daterange"-->
-                  <?php $disponibilidad = calcularDisponibilidad('all');
+                  <?php $disponibilidad = calcularDisponibilidad();
                   /*
                   echo "<pre>";
-                  echo json_encode($disponibilidad["porcentajeHorasOperativas"]);
+                  //echo json_encode($disponibilidad["porcentajeHorasOperativas"]);
+                  print_r ($disponibilidad);
                   echo "</pre>";
                   */
                   ?>
@@ -63,7 +64,7 @@
         </div>
 
       </div><!-- /.box -->
-      <div class="box collapsed-box">
+      <?php /*<div class="box collapsed-box">
 
         <div class="box-header">
           <h3 class="box-title">Orden de trabajo</h3>
@@ -172,7 +173,7 @@
                           }
                          /* if (strpos($permission,'Finalizar') !== false) {
                             echo '<i class="fa fa-thumbs-up" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" title="Finalizar Orden" onclick="finalOT('.$a['id_orden'].',\'View\')"></i>';
-                          }*/
+                          }* /
                           if (strpos($permission,'OP') !== false) {
                             echo '<i class="fa fa-tags" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;"  title="Cargar Pedido " data-toggle="modal" data-target="#modalpedido"></i>';
 
@@ -213,7 +214,7 @@
             </tbody>
           </table>
         </div><!-- /.box-body -->
-      </div><!-- /.box -->
+      </div><!-- /.box -->*/ ?>
     </div><!-- /.col -->
   </div><!-- /.row -->
 </section><!-- /.content -->
@@ -221,6 +222,7 @@
 
 <?php
   $cantTipoOT = cantTipoOrdenTrabajo();
+
   // $cantTipoOT[0]['CantidadTipoOT'] = correctivo;
   // $cantTipoOT[2]['CantidadTipoOT'] = preventivo;
   // $cantTipoOT[3]['CantidadTipoOT'] = predictivo;
