@@ -909,19 +909,42 @@ class Equipos extends CI_Model {
      */
     function kpiCalcularDisponibilidad($idEquipo=1, $fechaInicio=false, $fechaFin=false )
     {
+        $userdata = $this->session->userdata('user_data');
+        $empId = $userdata[0]['id_empresa'];     // guarda usuario logueado
+
         $disponibilidad = array();
-        
+        //$historialLecturasMes = array();
         //saco los equipos para el mes
-        $this->db->select('equipos.id_equipo');
+        /*$this->db->select('equipos.id_equipo');
         $this->db->from('historial_lecturas');
         $this->db->join('equipos', 'equipos.id_equipo = historial_lecturas.id_equipo');
         $this->db->where('historial_lecturas.estado !=', 'AN');
+        $this->db->order_by('equipos.id_equipo', 'ASC');
         $this->db->group_by('equipos.id_equipo','DESC');
+        */
+
+        $this->db->select('equipos.id_equipo');
+        $this->db->from('historial_lecturas');
+        $this->db->join('equipos', 'equipos.id_equipo = historial_lecturas.id_equipo');
+        $this->db->join('grupo', 'grupo.id_grupo=equipos.id_grupo');
+        $this->db->join('sector', 'sector.id_sector=equipos.id_sector');
+        $this->db->join('empresas', 'empresas.id_empresa=equipos.id_empresa');
+        $this->db->join('unidad_industrial', 'unidad_industrial.id_unidad=equipos.id_unidad');
+        $this->db->join('criticidad', 'criticidad.id_criti=equipos.id_criticidad');
+        $this->db->join('area', 'area.id_area=equipos.id_area');
+        $this->db->join('proceso', 'proceso.id_proceso=equipos.id_proceso');
+        $this->db->join('admcustomers', 'admcustomers.cliId=equipos.id_customer');
+        $this->db->where('equipos.estado !=', 'AN');
+        $this->db->where('equipos.id_empresa', $empId);
+        $this->db->order_by('equipos.id_equipo', 'ASC');
+        $this->db->group_by('equipos.id_equipo','DESC');
+
+
         $query   = $this->db->get();
         $equipos = $query->result_array();
 
         $nroEquipos = sizeof($equipos);
-        dump($nroEquipos, 'equipos');
+        //dump($equipos, 'equipos');
 
         //para cada equipo con lecturas calculo la disponibilidad
         for ($k=0; $k < sizeof($equipos); $k++) 
@@ -944,7 +967,7 @@ class Equipos extends CI_Model {
 
                 //traigo historial de lecturas entre las fechas inicio y fin de mes        
                 $historialLecturasMes[$k] = $this->getHistorialLecturasMes($equipos[$k]["id_equipo"], $fechasInicio[$mes-1], $fechasFin[$mes-1]);
-                //dump($historialLecturasMes, 'historial del mes '.$mes);
+                //dump($historialLecturasMes, 'historial del mes '.$mes.' - equipo '.$equipos[$k]["id_equipo"]);
                 $estadoaux            = $historialLecturasMes[$k][0]['estado'];
                 //$arrayIntervalos = array();
                 $arrayIntervalos[$k][$mes-1][0]   = $historialLecturasMes[$k][0];
@@ -963,22 +986,19 @@ class Equipos extends CI_Model {
                 }            
                 $arrayIntervalos[$k][$mes-1][$i] = $historialLecturasMes[$k][$nroLecturasMes-1];
             }
-            //dump($arrayIntervalos[$k], 'arrayIntervalos'.$mes.' - '.$k);
+            //dump($arrayIntervalos[$k], 'arrayIntervalos'.$mes.' - equipo'.$equipos[$k]["id_equipo"]);
             
 
             //Cambio la fecha de finalizacion del intervalo del mes actual
-            $finDeMes = new DateTime(date('Y-m'));
+            $finDeMes       = new DateTime(date('Y-m'));
             $finDeMes->modify('last day of this month')->setTime(23,59,59);
             $finDeMesString = $finDeMes->format('Y-m-d H:i:s');
-            $mesRealString = $finDeMes->format('m');
-            //dump($arrayIntervalos);
-            if( (isset($arrayIntervalos[$mesRealString-1][$nroLecturasMes-1]['fecha'])) && ($finDeMesString == $arrayIntervalos[$mesRealString-1][$nroLecturasMes-1]['fecha']) )
-            {
-                $arrayIntervalos[$mesRealString-1][$nroLecturasMes-1]['fecha'] = date( 'Y-m-d H:i:s' );
-                //dump($arrayIntervalos[$mesRealString-1]);
-            }
-            $ultimaFecha = date( 'Y-m-d H:i:s' );
-            //dump($arrayIntervalos[$mesRealString-1], 'arrayIntervalos'.$mesRealString);
+            $ultimaFecha    = date( 'Y-m-d H:i:s' );
+            //dump($finDeMesString);
+            //dump($arrayIntervalos[$k][11][$nroLecturasMes-1]['fecha']);
+            //dump($ultimaFecha);
+            $arrayIntervalos[$k][11][$nroLecturasMes-1]['fecha'] = $ultimaFecha;
+            //dump($arrayIntervalos[$k], 'arrayIntervalos '.$mes.' - equipo'.$equipos[$k]["id_equipo"]);
 
 
             //calculo tiempo operativo y disponibilidad
@@ -1013,12 +1033,13 @@ class Equipos extends CI_Model {
                 }
 
 
-                //Tiempo operativo en meses futuros = 0
-                $diferenciaFecha = strtotime($finDeMesString) < strtotime($arrayIntervalos[$k][$mes-1][$nroLecturasMes-1]['fecha']);
+                // Tiempo operativo en meses futuros = 0 
+                // (para perdiodos de tiempo parametrizados)
+                /*$diferenciaFecha = strtotime($finDeMesString) < strtotime($arrayIntervalos[$k][$mes-1][$nroLecturasMes-1]['fecha']);
                 if( ($nroLecturasMes == '2') AND ($diferenciaFecha) )
                 {
                     $tiempoOperativo[$k][$mes-1] = 0;
-                }
+                }*/
 
 
                 //saco la fecha inicio y fecha fin de mes
@@ -1040,25 +1061,21 @@ class Equipos extends CI_Model {
 
                 //dump($disponibilidadMes[$k]);
             }
-//dump_exit('a');
 
             //calculo disponibilidad de mes actual
-            if( $ultimaFecha == $arrayIntervalos[$k][$mesRealString-1][$nroLecturasMes-1]['fecha'] )
+            //dump($arrayIntervalos[$k][11][0]['fecha']);
+            //dump($arrayIntervalos[$k][11][$nroLecturasMes-1]['fecha']);
+            if( $ultimaFecha == $arrayIntervalos[$k][11][$nroLecturasMes-1]['fecha'] )
             {
-                $cantSegundosPorMes      = $this->diferencia($arrayIntervalos[$k][$mesRealString-1][0]['fecha'], $arrayIntervalos[$k][$mesRealString-1][$nroLecturasMes-1]['fecha']);
-                $disponibilidadMes[$k][$mesRealString] = number_format($tiempoOperativo[$k][$mesRealString-1] * 100 / $cantSegundosPorMes, 2, '.', '');
+                $cantSegundosPorMes      = $this->diferencia($arrayIntervalos[$k][11][0]['fecha'], $arrayIntervalos[$k][11][$nroLecturasMes-1]['fecha']);
+                $disponibilidadMes[$k][12] = number_format($tiempoOperativo[$k][11] * 100 / $cantSegundosPorMes, 2, '.', '');
             }
-
-            dump($disponibilidadMes[$k]);
+            //dump($cantSegundosPorMes);
+            dump($disponibilidadMes[$k], 'Disponibilidad equipo '.$equipos[$k]["id_equipo"]);
 
         }
 
         //disponibilidad de todos los equipos        
-        /*for ($l=0; $l < sizeof($disponibilidadMes); $l++) 
-        { 
-            dump($disponibilidadMes[$l], "to");
-        }*/
-
         $dispon = array();
         foreach ($disponibilidadMes as $x=>$disponiEquipos) 
         {
@@ -1078,7 +1095,7 @@ class Equipos extends CI_Model {
         for ($x=1; $x <= 12; $x++) { 
             $dispon[$x] = $dispon[$x] / $nroEquipos;
         }
-        dump($dispon, 'TO');
+        //dump($dispon, 'TO');
 
 
 
@@ -1194,6 +1211,7 @@ class Equipos extends CI_Model {
             'estado'     => $ultimoEstado
         );
         $historialLecturas = array_merge( $historialLecturas, $lecturaFin);
+        //dump($historialLecturas, 'Historial de lecturas del mes');
         return $historialLecturas;
     }
 
