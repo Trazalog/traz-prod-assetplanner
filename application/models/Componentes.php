@@ -124,7 +124,27 @@ class Componentes extends CI_Model
 				return false;
 		}	
 	}
+    
+    // Trae componentes segun empresa (no equipos)
+    function getsistema()
+    {   
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
+        $this->db->select('sistema.*');     
+        $this->db->from('sistema');
+        $this->db->where('sistema.id_empresa', $empId);
+        $this->db->where('sistema.estado', 'AC');
+        $this->db->order_by('descripcion');
+        $query = $this->db->get();
+        if($query->num_rows()>0){
+            return $query->result();
+        }
+        else{
+            return false;
+        }   
+    }
 	
+
 	// Agrega componente nuevo - Listo
 	function agregar_componente($insert){
 		
