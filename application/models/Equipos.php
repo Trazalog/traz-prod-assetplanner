@@ -1071,7 +1071,7 @@ class Equipos extends CI_Model {
                 $disponibilidadMes[$k][12] = number_format($tiempoOperativo[$k][11] * 100 / $cantSegundosPorMes, 2, '.', '');
             }
             //dump($cantSegundosPorMes);
-            dump($disponibilidadMes[$k], 'Disponibilidad equipo '.$equipos[$k]["id_equipo"]);
+            //dump($disponibilidadMes[$k], 'Disponibilidad equipo '.$equipos[$k]["id_equipo"]);
 
         }
 
