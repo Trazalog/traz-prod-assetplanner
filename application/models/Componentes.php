@@ -43,7 +43,8 @@ class Componentes extends CI_Model
 	 					equipos.codigo, 
 	 					equipos.descripcion, 
 	 					componentes.id_componente, 
-	 					componentes.descripcion AS descomp, 
+                        componentes.descripcion AS descomp,
+                        componentes.pdf,  
                         componenteequipo.idcomponenteequipo,
 	 					componenteequipo.estado,
                         componenteequipo.codigo AS codcomponente');
