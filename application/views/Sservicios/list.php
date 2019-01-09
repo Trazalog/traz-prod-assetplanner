@@ -104,7 +104,7 @@
 <script>
   // Elimina Solicitud - Chequeado
   $('.fa-times-circle').click( function eliminarSolicitud(){
-    if (!confirm("Realmente desea eiminar esta Solicitud?")){
+    if (!confirm("Realmente desea eliminar esta Solicitud?")){
       return;
     }else{
         var id_solic = parseInt($(this).parent('td').parent('tr').attr('id'));

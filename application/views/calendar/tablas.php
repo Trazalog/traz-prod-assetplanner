@@ -134,8 +134,29 @@
                 echo "<td style='text-align: center'>".$p['ultimo']."</td>";
                 // 7  //horas hombre
                 //echo "<td style='text-align: center'>".$p['horash']."</td>";
+                
                 // 8  //periodo
-                echo "<td style='text-align: center'>".$p['perido']."</td>";
+                switch ($p['perido']) {
+                  case '1':
+                          $periodo = 'Diario';
+                    break;
+                  case '2':
+                          $periodo = 'Mensual';
+                    break;
+                  case '3':
+                          $periodo = 'Semestral';
+                    break;
+                  case '4':
+                          $periodo = 'Anual';
+                    break;
+                  
+                  default:
+                          $periodo = 'Diario';
+                    break;
+                }
+                
+                //echo "<td style='text-align: center'>".$p['perido']."</td>";
+                echo "<td style='text-align: center'>".$periodo."</td>";
                 // 9  //frecuencia
                 echo "<td style='text-align: center'>".$p['cantidad']."</td>";
               echo "</tr>";
@@ -211,8 +232,24 @@
                   echo "<td style='text-align: center'>".$p['prox']."</td>";
                   // 7  //horas hombre
                   //echo "<td style='text-align: center'>".$p['horash']."</td>";
+
                   // 8  //periodo
-                  echo "<td style='text-align: center'>".$p['perido']."</td>";
+                  switch ($p['perido']) {
+                    case '5':
+                            $periodo = 'Horas';
+                      break;
+                    case '6':
+                            $periodo = 'Ciclos';
+                      break;
+                    case '7':
+                            $periodo = 'Km';
+                      break; 
+                    default:
+                            $periodo = 'Horas';
+                      break;
+                  }
+                  echo "<td style='text-align: center'>".$periodo."</td>";
+                  //echo "<td style='text-align: center'>".$p['perido']."</td>";
                   // 9  //frecuencia
                   echo "<td style='text-align: center'>".$p['cantidad']."</td>";
                   // 10  //proximo Servicio
