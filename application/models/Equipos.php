@@ -11,10 +11,10 @@ class Equipos extends CI_Model {
 		$userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];     // guarda usuario logueado
 
-		$this->db->select('equipos.id_equipo,
+        $this->db->select('equipos.id_equipo,
 					equipos.codigo,
 					equipos.descripcion AS deeq,
-					equipos.estado,
+                    equipos.estado AS estadoEquipo,
 					unidad_industrial.id_unidad,
 					unidad_industrial.descripcion AS deun,
 					grupo.id_grupo,
@@ -43,9 +43,30 @@ class Equipos extends CI_Model {
     	$this->db->where('equipos.id_empresa', $empId);
     	$this->db->order_by('equipos.id_equipo', 'ASC');
     	$query = $this->db->get();
+
 	    if ($query->num_rows()!=0)
 		{
-			return $query->result_array();
+			$equipos = $query->result_array();
+            foreach ($equipos as &$valor) 
+            {
+                if( ($valor['estadoEquipo'] == 'AC') || ($valor['estadoEquipo'] == 'RE'))
+                {
+                    $idEquipo = $valor['id_equipo'];
+                    $this->db->select('estado');
+                    $this->db->from('historial_lecturas');
+                    $this->db->where('id_equipo', $idEquipo);
+                    $this->db->order_by('id_equipo', 'DESC');
+                    $this->db->limit(1);
+                    
+                    $query2 = $this->db->get();
+                    $estado = $query2->result_array();
+                    $valor['estado'] = $estado[0]['estado'];
+                }
+                else {
+                    $valor['estado'] = $valor['estadoEquipo'];   
+                }
+            }
+            return $equipos;
 		}
 		else
 		{
@@ -983,7 +1004,8 @@ class Equipos extends CI_Model {
                         $i++;
                         $estadoaux = $historialLecturasMes[$k][$j]['estado'];
                     }
-                }            
+                }
+                //revisar siguiente linea
                 $arrayIntervalos[$k][$mes-1][$i] = $historialLecturasMes[$k][$nroLecturasMes-1];
             }
             //dump($arrayIntervalos[$k], 'arrayIntervalos'.$mes.' - equipo'.$equipos[$k]["id_equipo"]);
@@ -997,7 +1019,9 @@ class Equipos extends CI_Model {
             //dump($finDeMesString);
             //dump($arrayIntervalos[$k][11][$nroLecturasMes-1]['fecha']);
             //dump($ultimaFecha);
-            $arrayIntervalos[$k][11][$nroLecturasMes-1]['fecha'] = $ultimaFecha;
+            $sizeIntervalos = sizeof($arrayIntervalos[$k][11]);
+            //dump($sizeIntervalos, 'tamaño intervalos');
+            $arrayIntervalos[$k][11][$sizeIntervalos-1]['fecha'] = $ultimaFecha;
             //dump($arrayIntervalos[$k], 'arrayIntervalos '.$mes.' - equipo'.$equipos[$k]["id_equipo"]);
 
 
