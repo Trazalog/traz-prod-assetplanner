@@ -1327,15 +1327,24 @@ function guardarparcial(){
     });
 }
 
+//TODO: DESCOMENTAR EESTE METODO PARA AGREGAR NOTA PEDIDOS DESDE OT
+// $(".fa-cart-plus").click(function (e) { 
+//   var id = $(this).parent('td').parent('tr').attr('id');
+//   console.log("El id de OT es: "+id);
+//   iort = id;
+//   WaitingOpen();
+//   $('#content').empty();
+//   $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/agregarnota/<?php echo $permission; ?>/"+iort);
+//   WaitingClose();  
+// });
 
 $(".fa-cart-plus").click(function (e) { 
   var id = $(this).parent('td').parent('tr').attr('id');
   console.log("El id de OT es: "+id);
   iort = id;
-
   WaitingOpen();
   $('#content').empty();
-  $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/agregarnota/<?php echo $permission; ?>/"+iort);
+  $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/agregarListInsumos/<?php echo $permission; ?>/"+iort);
   WaitingClose();  
 });
 

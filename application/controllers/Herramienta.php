@@ -32,7 +32,7 @@ class Herramienta extends CI_Controller {
 	public function index($permission) // Ok
 	{
         $data['list']       = $this->Herramientas->listar_herramientas();
-        $data['permission'] = $permission;
+        $data['permission'] = $permission;        
 		$this->load->view('herramienta/list', $data);
 	}
 

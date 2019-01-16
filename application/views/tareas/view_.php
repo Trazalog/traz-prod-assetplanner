@@ -119,6 +119,10 @@ echo $permission;?>
 														<button class="btn btn-primary" id="verOT">Orden Trabajo</button>
 													</div></br>
 
+													<div class="col-sm-12 col-md-12" id="isumInfo"></div></br>
+														<button class="btn btn-primary" id="verInsumos">Ver Insumos</button>
+													</div></br>
+
 													<div class="form-group">
 														<div class="col-sm-12 col-md-12">
 															<!-- Modal formulario tarea -->
@@ -934,9 +938,10 @@ echo $permission;?>
 
 // Volver atras
 $('#verOT').click(function cargarVista() {
+		var iort = $('#idOT').val();
 		WaitingOpen();
 		$('#content').empty();
-		$("#content").load("<?php echo base_url(); ?>index.php/Calendario/indexot/<?php echo $permission; ?>");
+		$("#content").load("<?php echo base_url(); ?>index.php/Calendario/indexot/<?php echo $permission; ?>"+ iort + "/");
 		WaitingClose();
 	});
 
@@ -948,6 +953,14 @@ $('#cerrar').click(function cargarVista() {
 		$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
 		WaitingClose();
 	});
+
+// Ir a Orden de Insumos
+$('#verInsumos')click(function verInsumos() {
+	WaitingOpen();
+		$('#content').empty();
+		$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+		WaitingClose();
+});	
 </script>
 
 <!-- Modal Formularios -->

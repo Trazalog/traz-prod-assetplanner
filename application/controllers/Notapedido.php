@@ -34,6 +34,14 @@ class Notapedido extends CI_Controller {
     $this->load->view('notapedido/view_', $data);
   }
 
+
+  // devuelve plantilla de insumos a pedir por cliente 
+  public function agregarListInsumos($permission, $idcliente){
+    $data['permission'] = $permission;    
+    $data['plantilla']  = $this->Notapedidos->getPlantillaPorCliente($idcliente);
+    $this->load->view('notapedido/insumolist', $data);
+  }
+
   public function getOrdenesCursos(){
     $response = $this->Notapedidos->getOrdenesCursos();
     echo json_encode($response);
@@ -60,7 +68,28 @@ class Notapedido extends CI_Controller {
   }
 
   public function setNotaPedido(){
-    $response = $this->Notapedidos->setNotaPedidos($this->input->post());
+    
+    $userdata = $this->session->userdata('user_data');
+    $empId = $userdata[0]['id_empresa'];
+
+    $ids = $this->input->post('idinsumos');
+    $cantidades = $this->input->post('cantidades');
+    $idOT = $this->input->post('idOT');
+    
+    $cabecera['fecha'] = date('Y-m-d');
+    $cabecera['id_ordTrabajo'] = $idOT;
+    $cabecera['id_empresa'] = $empId;
+    $idnota = $this->Notapedidos->setCabeceraNota($cabecera);
+    
+    for ($i=0; $i < count($ids); $i++) { 
+      $deta[$i]['id_notaPedido'] = $idnota;
+      $deta[$i]['artId'] = $ids[$i];
+      $deta[$i]['cantidad'] = $cantidades[$i];
+      $deta[$i]['fechaEntrega'] = date('Y-m-d');
+      $deta[$i]['estado'] = 'P';
+    }
+
+    $response = $this->Notapedidos->setDetaNota($deta);
     echo json_encode($response);
   }
   
