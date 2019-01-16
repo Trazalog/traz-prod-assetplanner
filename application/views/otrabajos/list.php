@@ -302,14 +302,14 @@ $(".fa-pencil").click(function(e) {
   $("#modaleditar tbody").remove();
   var idord = $(this).parent('td').parent('tr').attr('id');
   idp = idord;
-  //console.log("idp: "+idp);
+  console.log("idp: "+idp);
   $.ajax({
     data: { idp:idp },
     dataType: 'json',
     type: 'POST',
     url: 'index.php/Otrabajo/getpencil',
     success: function(data){
-      //console.table(data);
+      console.table(data);
       datos = {
         'id_ot'         : data[0]['id_orden'],
         'nro'           : data[0]['nro'],
