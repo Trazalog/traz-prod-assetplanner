@@ -88,7 +88,7 @@
                 <th>Fecha Entrega</th>
                 <th>Fecha Terminada</th>
                 <th>Detalle</th>
-                <th>Cliente</th>
+                <!--<th>Cliente</th>-->
                 <th>Solicita</th>
                 <th>Asignado</th>
                 <th>Estado</th>
@@ -144,7 +144,7 @@
                         echo '<td style="text-align: right">'.$a['fecha_entrega'].'</td>';
                         echo '<td style="text-align: right">'.$a['fecha_terminada'].'</td>';
                         echo '<td style="text-align: right">'.$a['descripcion'].'</td>';
-                        echo '<td style="text-align: left">'.$a['cliLastName'].' , '.$a['cliName'].'</td>';
+                        //echo '<td style="text-align: left">'.$a['cliLastName'].' , '.$a['cliName'].'</td>';
                         echo '<td style="text-align: right">'.$a['usrName'].'</td>';
                         echo '<td style="text-align: right">'.$a['nombre'].'</td>';
                         echo '<td style="text-align: center">'.($a['estado'] == 'C' ? '<small class="label pull-left bg-green">Curso</small>' : ($a['estado'] == 'P' ? '<small class="label pull-left bg-red">Pedido</small>' : ($a['estado'] == 'As' ? '<small class="label pull-left bg-yellow">Asignado</small>' : '<small class="label pull-left bg-blue">Terminado</small>'))).'</td>';
@@ -197,7 +197,7 @@
                           echo '<td style="text-align: right">'.$a['fecha_entrega'].'</td>';
                           echo '<td style="text-align: right">'.$a['fecha_terminada'].'</td>';
                           echo '<td style="text-align: right">'.$a['descripcion'].'</td>';
-                          echo '<td style="text-align: left">'.$a['cliLastName'].' , '.$a['cliName'].'</td>';
+                          //echo '<td style="text-align: left">'.$a['cliLastName'].' , '.$a['cliName'].'</td>';
                           echo '<td style="text-align: right">'.$a['usrName'].'</td>';
                           echo '<td style="text-align: right">'.$a['nombre'].'</td>';
                           echo '<td style="text-align: center">'.($a['estado'] == 'C' ? '<small class="label pull-left bg-green">Curso</small>' : ($a['estado'] == 'P' ? '<small class="label pull-left bg-red">Pedido</small>' : ($a['estado'] == 'As' ? '<small class="label pull-left bg-yellow">Asignado</small>' : '<small class="label pull-left bg-blue">Terminado</small>'))).'</td>';
@@ -214,7 +214,7 @@
             </tbody>
           </table>
         </div><!-- /.box-body -->
-      </div><!-- /.box -->*/ ?>
+      </div><!-- /.box --> */ ?>
     </div><!-- /.col -->
   </div><!-- /.row -->
 </section><!-- /.content -->
@@ -507,7 +507,7 @@ function graficarParametro() {
     datasets: [{
       backgroundColor: ["#009900"],
       data: porcentajeHorasOperativas,
-      //[80, 66, 70, 71, 75, 81, 77, 78, 77, 82, 81, 78, 80],
+      //data:[80, 66, 70, 71, 75, 81, 77, 78, 77, 82, 81, 78, 80],
       fill: false,
       label: ['Meta'],
       lineTension: 0.2,

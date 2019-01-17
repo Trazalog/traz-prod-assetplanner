@@ -16,7 +16,6 @@ class Otrabajos extends CI_Model {
 	{
 		$userdata = $this->session->userdata('user_data');
 		$empId    = $userdata[0]['id_empresa'];
-
 		$this->db->select('orden_trabajo.id_orden,
 			orden_trabajo.nro,
 			orden_trabajo.fecha_inicio,
@@ -25,34 +24,36 @@ class Otrabajos extends CI_Model {
 			orden_trabajo.fecha_aviso,
 			orden_trabajo.fecha_entregada,
 			orden_trabajo.descripcion,
-						orden_trabajo.id_solicitud,
+			orden_trabajo.id_solicitud,
 			orden_trabajo.cliId,
 			orden_trabajo.estado,
 			orden_trabajo.id_usuario,
 			orden_trabajo.id_usuario_a,
-						tbl_tipoordentrabajo.descripcion AS tipoDescrip,
+			tbl_tipoordentrabajo.descripcion AS tipoDescrip,
 			user1.usrName AS nombre,
 			user1.usrLastName,
-			user1.grpId AS grp,
+			usuarioasempresa.grpId AS grp,
 			orden_trabajo.id_usuario_e,
 			orden_trabajo.id_sucursal,
 			sisusers.usrName,
 			sisusers.usrLastName,
 			sucursal.descripc,
-				equipos.codigo,
-				equipos.id_equipo,
-				sisgroups.grpId');
+    		equipos.codigo,
+    		equipos.id_equipo,
+            usuarioasempresa.grpId');
 		$this->db->from('orden_trabajo');
-				$this->db->join('tbl_tipoordentrabajo', 'tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
+		$this->db->join('tbl_tipoordentrabajo', 'tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
 		$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario');
-		$this->db->join('sisusers AS user1', 'user1.usrId = orden_trabajo.id_usuario_a');
-		$this->db->join('sisgroups', 'sisgroups.grpId = user1.grpId');
+		$this->db->join('sisusers AS user1', 'user1.usrId = orden_trabajo.id_usuario_a');//usuario asignado?
+		$this->db->join('usuarioasempresa', 'usuarioasempresa.usrId = user1.usrId');
 		$this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
 		$this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
 		$this->db->where('equipos.estado !=','AN');
+		$this->db->where('usuarioasempresa.tipo', 1);
 		$this->db->where('orden_trabajo.id_empresa', $empId);
 		$this->db->order_by('orden_trabajo.fecha_inicio', 'DESC');
 		$query = $this->db->get();
+		//dump( $this->db->last_query() ); 
 
 		if ($query->num_rows()!=0)
 		{
@@ -173,7 +174,8 @@ class Otrabajos extends CI_Model {
 					WHERE orden_trabajo.id_orden=$id
 					";
 			$query = $this->db->query($sql);
-
+//$sql= $this->db->last_query(); 
+//dump($sql);
 			if( $query->num_rows() > 0)
 			{
 				return $query->result_array();
@@ -266,7 +268,8 @@ class Otrabajos extends CI_Model {
 			$empId    = $userdata[0]['id_empresa'];
 			$this->db->select('*');
 			$this->db->from('sisusers');
-			$this->db->where('sisusers.id_empresa', $empId);
+			$this->db->join('usuarioasempresa', 'usuarioasempresa.usrId = sisusers.usrId');
+			$this->db->where('usuarioasempresa.empresaid', $empId);
 			$query = $this->db->get();
 			if ($query->num_rows()!=0)
 			{

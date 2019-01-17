@@ -175,17 +175,16 @@ class Calendario extends CI_Controller {
 	    	else // evento repetitivo 
 	    	{
 	    		// Sumo a la fecha de program la cant de meses p/ sacar fecha limite
-				$fecha_limite = strtotime ( '+'.$cant_meses.' month' , strtotime ( $fec_programacion ) );
-				$fecha_limite = date ( 'Y-m-d H:i:s' , $fecha_limite ); /// "2018-06-16 00:00:00"
-				dump($fecha_limite, 'fecha_limite');
-				//busco la frecuencia de la tarea
+					$fecha_limite = strtotime ( '+'.$cant_meses.' month' , strtotime ( $fec_programacion ) );
+					$fecha_limite = date ( 'Y-m-d H:i:s' , $fecha_limite ); /// "2018-06-16 00:00:00"
+					dump($fecha_limite, 'fecha_limite');
+					//busco la frecuencia de la tarea
 	    		$diasFrecuencia = $this->getPeriodTarea($tipo,$id_solicitud);	//bien
 	    		dump($diasFrecuencia, 'dias frecuencia');
 	    		$this->armar_batch($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2);
 
-
-				if($tipo == '3') // si es preventivo
-	    		{
+					// si es preventivo ACTUALIZA NUEVAMENTE LA FECHA BASE_ OK!
+					if($tipo == '3'){	    		
 	    			//pongo nueva fecha base en preventivos
 	    			dump('$id_solicitud', 'id preventivo');
 	    			$this->Calendarios->actualizarFechaBasePreventivos($fecha_limite, $id_solicitud);

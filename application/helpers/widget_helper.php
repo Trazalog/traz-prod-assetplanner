@@ -220,6 +220,7 @@ if (!function_exists('calcularDisponibilidad')) {
      */
     function calcularDisponibilidad($echo = FALSE)
     {
+        //dump($fechaFin);
         // Get a reference to the controller object
         $CI = get_instance();
         // You may need to load the model if it hasn't been pre-loaded
