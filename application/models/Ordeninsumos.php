@@ -353,26 +353,26 @@ class Ordeninsumos extends CI_Model {
             return 0;
 	    }
 	}
+	// devuelve las ot de la empresa y que no esten terminadas o eliminadas
+	function getOT(){
 
-    function getOT()
-    {
-        $userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-        $this->db->select('id_orden, descripcion');
-        $this->db->from('orden_trabajo');
-        $this->db->where('id_empresa', $empresaId); //de la empresa
-        $this->db->where('estado !=', 'AN'); //que no estén anuladas (eliminadas)
-        $this->db->where('estado !=', 'T'); //que no estén terminadas
-        $this->db->order_by('id_orden');
-        $query = $this->db->get();
-        if($query->num_rows()>0){
-            return $query->result();
-        }
-        else
-        {
-            return false;
-        }     
-    }
+			$userdata  = $this->session->userdata('user_data');
+			$empresaId = $userdata[0]['id_empresa'];
+			$this->db->select('id_orden, descripcion');
+			$this->db->from('orden_trabajo');
+			$this->db->where('id_empresa', $empresaId); //de la empresa
+			$this->db->where('estado !=', 'AN'); //que no estén anuladas (eliminadas)
+			$this->db->where('estado !=', 'T'); //que no estén terminadas
+			//$this->db->order_by('id_orden');
+			$query = $this->db->get();
+			if($query->num_rows()>0){
+					return $query->result();
+			}
+			else
+			{
+					return false;
+			}     
+	}
 
 
 }
