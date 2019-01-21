@@ -18,9 +18,10 @@
                 <th>Acciones</th>
                 <th>Código Componente</th> 
                 <th>Descripción Componente</th>   
-                <th>Adjunto Componente</th>
                 <th>Código Equipo</th>
                 <th>Descripción Equipo</th>
+                <th>Sistema</th>
+                <th>Adjunto Componente</th>
               </tr>
             </thead>
             <tbody>
@@ -45,10 +46,11 @@
                   '<input type="hidden" id="id_equipo" name="id_equipo">';
                   echo '<td id="'.$idc.'">'.$a['codcomponente'].'</td>';
                   echo '<td>'.$a['descomp'].'</td>';
-                  $url = base_url().'assets/files/equipos/'.$a['pdf'];
-                  echo '<td><a href="'.$url.'" target="_blank">'.basename($a['pdf']).'</td>';
                   echo '<td>'.$a['codigo'].'</td>';
                   echo '<td>'.$a['descripcion'].'</td>';
+                  echo '<td>'.$a['sistema'].'</td>';
+                  $url = base_url().'assets/files/equipos/'.$a['pdf'];
+                  echo '<td><a href="'.$url.'" target="_blank">'.basename($a['pdf']).'</td>';
                   $idc++;
                 }
               }
@@ -133,8 +135,9 @@ var idequipo     = "";
         $('#componente').empty();
         for(var i=0; i < data.length ; i++) {
           var nombre = data[i]['descripcion'];
+          var marca = data[i]['marcadescrip'];
           var selected = (idComponente == data[i]['id_componente']) ? 'selected' : '';
-          var opcion  = "<option value='"+data[i]['id_componente']+"' " +selected+ ">" +nombre+ "</option>" ; 
+          var opcion  = "<option value='"+data[i]['id_componente']+"' " +selected+ ">" +nombre+ " - " +marca+ "</option>" ; 
           $('#componente').append(opcion); 
         }
       },

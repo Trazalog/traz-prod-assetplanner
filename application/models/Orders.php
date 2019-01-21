@@ -37,9 +37,10 @@ class Orders extends CI_Model {
         $query = $this->db->get();
         $i     = 0;
         foreach ($query->result() as $row){
-            $herramientas[$i]['label']     = $row->herrdescrip;
-            $herramientas[$i]['value']     = $row->herrmarca;
+            $herramientas[$i]['label']     = $row->herrcodigo;
+            $herramientas[$i]['value']     = $row->herrdescrip;
             $herramientas[$i]['codherram'] = $row->herrcodigo;
+            $herramientas[$i]['herrmarca'] = $row->herrmarca;
             $herramientas[$i]['herrId']    = $row->herrId;
             $i++;
         }
