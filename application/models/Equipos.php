@@ -896,26 +896,53 @@ class Equipos extends CI_Model {
     {
         $userdata  = $this->session->userdata('user_data');
         $empresaId = $userdata[0]['id_empresa'];
-        /*$this->db->join('grupo', 'grupo.id_grupo=equipos.id_grupo');
-        $this->db->join('sector', 'sector.id_sector=equipos.id_sector');
-        $this->db->join('empresas', 'empresas.id_empresa=equipos.id_empresa');
-        $this->db->join('unidad_industrial', 'unidad_industrial.id_unidad=equipos.id_unidad');
-        $this->db->join('criticidad', 'criticidad.id_criti=equipos.id_criticidad');
-        $this->db->join('area', 'area.id_area=equipos.id_area');
-        $this->db->join('proceso', 'proceso.id_proceso=equipos.id_proceso');
-        $this->db->join('admcustomers', 'admcustomers.cliId=equipos.id_customer');
-        $this->db->where('equipos.estado !=', 'AN');*/
-        $sql = "SELECT COUNT(equipos.estado) AS cantEstadoActivo, equipos.estado
+        $sql = "SELECT equipos.id_equipo, equipos.estado
+        FROM equipos
+        JOIN grupo ON grupo.id_grupo=equipos.id_grupo
+        JOIN sector ON sector.id_sector=equipos.id_sector
+        JOIN empresas ON empresas.id_empresa=equipos.id_empresa
+        JOIN unidad_industrial ON unidad_industrial.id_unidad=equipos.id_unidad
+        JOIN criticidad ON criticidad.id_criti=equipos.id_criticidad
+        JOIN area ON area.id_area=equipos.id_area
+        JOIN proceso ON proceso.id_proceso=equipos.id_proceso
+        JOIN admcustomers ON admcustomers.cliId=equipos.id_customer
+        WHERE equipos.estado != 'AN'
+        AND equipos.id_empresa = '".$empresaId."'
+        ";
+        //GROUP BY equipos.estado
+        /*$sql = "SELECT COUNT(equipos.estado) AS cantEstadoActivo, equipos.estado
             FROM equipos
             WHERE equipos.id_empresa = '".$empresaId."'
             AND (equipos.estado = 'AC' OR equipos.estado = 'RE')
             GROUP BY equipos.estado
-            ";
+            ";*/
         $query = $this->db->query($sql);
 
         if ($query->num_rows()!=0)
         {
-            return $query->result_array();
+            $equipos = $query->result_array();
+            foreach ($equipos as &$valor) 
+            {
+                if( ($valor['estado'] == 'AC') || ($valor['estado'] == 'RE'))
+                {
+                    $idEquipo = $valor['id_equipo'];
+                    $this->db->select('estado');
+                    $this->db->from('historial_lecturas');
+                    $this->db->where('id_equipo', $idEquipo);
+                    $this->db->order_by('id_equipo', 'DESC');
+                    $this->db->limit(1);
+                    
+                    $query2 = $this->db->get();
+                    $estado = $query2->result_array();
+                    $valor['estado'] = $estado[0]['estado'];
+                    $valor['cantEstadoActivo'] = 0;
+                }
+                else {
+                    $valor['estado'] = $valor['estado'];   
+                    $valor['cantEstadoActivo'] = 0;
+                }
+            }
+            return $equipos;
         }
 
     }
