@@ -16,11 +16,12 @@ class Unloads extends CI_Model {
             tbl_valedesacarga.respons,
             tbl_valedesacarga.dest,
             herramientas.herrcodigo, 
-            herramientas.herrmarca, 
+            marcasequipos.marcadescrip, 
             herramientas.herrdescrip');
         $this->db->from('tbl_valedesacarga');
         $this->db->join('tbl_detavaledescarga', 'tbl_detavaledescarga.valedid = tbl_valedesacarga.valedid');
         $this->db->join('herramientas', 'tbl_detavaledescarga.herrId = herramientas.herrId');
+        $this->db->join('marcasequipos', 'herramientas.modid = marcasequipos.marcaid');
         $this->db->where('tbl_valedesacarga.id_empresa', $empresaId);
         $query = $this->db->get();
         return $query->result_array();
@@ -30,8 +31,9 @@ class Unloads extends CI_Model {
     {
         $userdata  = $this->session->userdata('user_data');
         $empresaId = $userdata[0]['id_empresa'];
-        $this->db->select('herrdescrip, herrmarca, herrcodigo, herrId');
+        $this->db->select('herramientas.herrdescrip, marcasequipos.marcadescrip, herramientas.herrcodigo, herramientas.herrId');
         $this->db->from('herramientas');
+        $this->db->join('marcasequipos', 'herramientas.modid = marcasequipos.marcaid');
         $this->db->where('equip_estad', 'TR');
         $this->db->where('herramientas.id_empresa', $empresaId);
         $query = $this->db->get();
@@ -40,7 +42,7 @@ class Unloads extends CI_Model {
             $herramientas[$i]['label']     = $row->herrcodigo;
             $herramientas[$i]['value']     = $row->herrdescrip;
             $herramientas[$i]['codherram'] = $row->herrcodigo;
-            $herramientas[$i]['herrmarca'] = $row->herrmarca;
+            $herramientas[$i]['herrmarca'] = $row->marcadescrip;
             $herramientas[$i]['herrId']    = $row->herrId;
             $i++;
         }
