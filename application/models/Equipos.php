@@ -896,6 +896,15 @@ class Equipos extends CI_Model {
     {
         $userdata  = $this->session->userdata('user_data');
         $empresaId = $userdata[0]['id_empresa'];
+        /*$this->db->join('grupo', 'grupo.id_grupo=equipos.id_grupo');
+        $this->db->join('sector', 'sector.id_sector=equipos.id_sector');
+        $this->db->join('empresas', 'empresas.id_empresa=equipos.id_empresa');
+        $this->db->join('unidad_industrial', 'unidad_industrial.id_unidad=equipos.id_unidad');
+        $this->db->join('criticidad', 'criticidad.id_criti=equipos.id_criticidad');
+        $this->db->join('area', 'area.id_area=equipos.id_area');
+        $this->db->join('proceso', 'proceso.id_proceso=equipos.id_proceso');
+        $this->db->join('admcustomers', 'admcustomers.cliId=equipos.id_customer');
+        $this->db->where('equipos.estado !=', 'AN');*/
         $sql = "SELECT COUNT(equipos.estado) AS cantEstadoActivo, equipos.estado
             FROM equipos
             WHERE equipos.id_empresa = '".$empresaId."'

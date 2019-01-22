@@ -59,15 +59,17 @@
                     <div class="row">
                       <div class="col-xs-12 col-sm-6 col-md-4">
                         <label for="comprobante">Herramienta</label>
-                        <input type="text" class="form-control herramienta" id="herramienta" value="" placeholder="Buscar...">
+                        <input type="text" class="form-control herramienta" id="herramienta" value="" placeholder="Buscar código...">
+                        <input type="hidden" name="herrId" class="form-control herrId" id="herrId">
+                        <input type="hidden" name="herrcodigo" class="form-control herrcodigo" id="herrcodigo">
                       </div>
                       <div class="col-xs-12 col-sm-6 col-md-4">
-                        <label for="fecha">Marca</label>
-                        <input type="text" class="form-control marcaherram" id="marcaherram" value="" placeholder="">
+                        <label for="fecha">Descripción</label>
+                        <input type="text" class="form-control herrdescrip" id="herrdescrip" value="" disabled>
                       </div>
                       <div class="col-xs-12 col-sm-6 col-md-4">
-                        <label for="comprobante">Código</label>
-                        <input type="text" name="herrId" class="form-control herrId" id="herrId" value="" placeholder="" disabled>
+                        <label for="comprobante">Marca</label>
+                        <input type="text" class="form-control herrmarca" id="herrmarca" value="" disabled>
                       </div>
                     </div><br>
 
@@ -162,8 +164,9 @@ $(function() {
         event.preventDefault();
         // manually update the textbox and hidden field
         $(this).val(ui.item.label);
-        $(".marcaherram").val(ui.item.value);
-        $(".codherram").val(ui.item.codherram);
+        $(".herrdescrip").val(ui.item.value);
+        $(".herrcodigo").val(ui.item.codherram);
+        $(".herrmarca").val(ui.item.herrmarca);
         $(".herrId").val(ui.item.herrId);
         console.log("id de herramienta: ");
         console.log(ui.item.herrId);
@@ -180,9 +183,9 @@ $(function() {
 // HERRAMIENTAS
 var regHerr = 0;                // variable incrementable en func, para diferenciar los inputs
 function armartablistherr(){   // inserta valores de inputs en la tabla 
-  var $herramienta = $("#herramienta").val();
-  var $marcaherram = $("#marcaherram").val();
-  var $codherram = $("#codherram").val(); 
+  var $herramienta = $("#herrdescrip").val();
+  var $marcaherram = $("#herrmarca").val();
+  var $codherram = $("#herrcodigo").val(); 
   var $herrId = $("#herrId").val();
   $(".tablalistherram tbody").append(
     '<tr>'+ 
@@ -228,12 +231,12 @@ function enviarOrden() {
     data: datos,
     type: 'POST',             
     dataType: 'json',
-    url: 'index.php/Order/setHerramienta',
-    //url: 'index.php/Ordenservicio/setOrdenServ',                
+    url: 'index.php/Order/setHerramienta',        
     success: function(result){
+      alert("Guardado con exito...");
+      $('#content').empty();
+      $("#content").load("<?php echo base_url(); ?>index.php/Order/index/<?php echo $permission; ?>");
       WaitingClose();
-        //setTimeout("cargarView('Ordenservicio', 'index', '"+$('#permission').val()+"');",0);
-        alert("Guardado con exito...");
       },
       error: function(result){
         WaitingClose();
