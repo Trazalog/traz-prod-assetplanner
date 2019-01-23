@@ -91,6 +91,7 @@ class Herramientas extends CI_Model
         $this->db->select('marcasequipos.*');   
         $this->db->from('marcasequipos');
         $this->db->where('marcasequipos.id_empresa', $empresaId);
+        $this->db->where('marcasequipos.estado', 'AC');
         $this->db->order_by('marcasequipos.marcadescrip');
         $query     = $this->db->get();
 		if($query->num_rows()>0){
