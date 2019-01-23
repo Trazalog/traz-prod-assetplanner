@@ -4,7 +4,10 @@
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">Nota de Pedido</h3>
+          <h3 class="box-title">Notas de Pedido de OT <?php echo $list[0]['id_ordTrabajo']." - ".$list[0]['descripcion']; ?></h3>
+          <?php
+            echo '<button class="btn btn-block btn-primary" style="width: 250px; margin-top: 10px;" id="listadoOT">Volver a OTs</button>';
+          ?>
         </div><!-- /.box-header -->
         <div class="box-body">
           <table id="deposito" class="table table-bordered table-hover">
@@ -12,8 +15,7 @@
               <tr>
                 <th>Acciones</th>
                 <th>Nota de Pedido</th>
-                <th>Orden de Trabajo</th>
-                <th>Detalle</th>
+                <th>Solicitante</th>
                 <th>Fecha Nota</th>              
               </tr>
             </thead>
@@ -24,24 +26,12 @@
                 {
                   $id = $z['id_notaPedido'];
                   echo '<tr id="'.$id.'" class="'.$id.'" >';
-                  echo '<td>';
-                  /*if (strpos($permission,'Edit') !== false) {
-                    echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar" data-toggle="modal" data-target="#modaleditar"></i>';
-                  }
-                  if (strpos($permission,'Del') !== false) {
-                    echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;"></i>';
-                  } */
-                  //if (strpos($permission,'View') !== false) {
-                    echo '<i class="fa fa-fw fa-search text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Ver Nota Pedido" data-toggle="modal" data-target="#modaltarea"></i>';
-                  //}                     
-                  echo '</td>';
-                  echo '<td>'.$z['id_notaPedido'].'</td>';
-                  echo '<td>'.$z['id_ordTrabajo'].'</td>';
-                  echo '<td>'.$z['descripcion'].'</td>';
-                  echo '<td>'.$z['fecha'].'</td>';
-                  // echo '<td>'.$z['marcadescrip'].'</td>';
-                  // echo '<td>'.$z['depositodescrip'].'</td>';
-                  // echo '<td style="text-align: center">'.($z['equip_estad']  == 'AC' ? '<small class="label pull-left bg-green" >Activa</small>' :'<small class="label pull-left bg-blue">Transito</small>').'</td>';
+                    echo '<td class="details-control">';
+                      echo '<i class="fa fa-plus-square text-light-blue" style="cursor: pointer; margin-left: 15px;"></i>';
+                    echo '</td>';
+                    echo '<td>'.$z['id_notaPedido'].'</td>';
+                    echo '<td>'.$z['solicitante'].'</td>';
+                    echo '<td>'.$z['fecha'].'</td>';
                   echo '</tr>';
                 }
               }
@@ -56,6 +46,14 @@
 
 <script>
 var ed="";
+
+//va listado de OTs
+$("#listadoOT").click(function (e) {
+  WaitingOpen();
+  $('#content').empty();
+  $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/listOrden/<?php echo $permission; ?>");
+  WaitingClose();
+});
 
 //Editar
 $(".fa-pencil").click(function (e) { 
@@ -92,7 +90,7 @@ $(".fa-pencil").click(function (e) {
   });
 });
 
-//Eiminar
+//Eliminar
 $(".fa-times-circle").click(function (e) {                 
   console.log("Esto eliminando"); 
   var id_herr = $(this).parent('td').parent('tr').attr('id');
@@ -148,6 +146,125 @@ $(".fa-times-circle").click(function (e) {
   //                 dataType: 'json'
   //     });
 // });
+// Add event listener for opening and closing details
+
+
+
+
+var table = $('#deposito').DataTable({
+  "aLengthMenu": [ 10, 25, 50, 100 ],
+  "columnDefs": [ {
+    "targets": [ 0 ], 
+    "searchable": false
+  },
+  {
+    "targets": [ 0 ], 
+    "orderable": false
+  } ],
+  "order": [[1, "asc"]],
+});
+
+$('#deposito tbody').on('click', 'td.details-control', function () {
+  var tr = $(this).closest('tr');
+  var tdi = tr.find("i.fa");
+  var row = table.row(tr);
+  var id = tr.attr('id');
+
+  if (row.child.isShown()) {
+    // This row is already open - close it
+    row.child.hide();
+    tr.removeClass('shown');
+    tdi.first().removeClass('fa-minus-square');
+    tdi.first().addClass('fa-plus-square');
+  }
+  else {
+    if ( table.row( '.shown' ).length ) {
+                  $('.details-control', table.row( '.shown' ).node()).click();
+          }
+    // Open this row
+    WaitingOpen();
+    // Open this row
+    $.ajax({
+      data: { id:id },
+      dataType: 'json',
+      type: 'POST',
+      url: 'index.php/Notapedido/getNotaPedidoId',
+      success: function(data){
+        //console.table(data);
+        row.child(format( data )).show();
+        tr.addClass('shown');
+        tdi.first().removeClass('fa-plus-square');
+        tdi.first().addClass('fa-minus-square');
+        /**/
+        cargaTablasHijas();
+        WaitingClose();
+      },
+      error: function(result){
+        console.error("error al traer denuncia");
+        WaitingClose();
+      },
+    });
+    
+  }
+});
+
+table.on("user-select", function (e, dt, type, cell, originalEvent) {
+  if ($(cell.node()).hasClass("details-control")) {
+    e.preventDefault();
+  }
+});
+
+function format(data){
+  $html = '<div class="box box-solid box-default">'+
+    '<div class="box-header"><h3 class="box-title">Nota de pedido '+data[0].id_notaPedido+'</h3></div>'+
+    '<div class="box-body">'+
+      '<table id="tblchild" class="table table-bordered table-hover table-striped">'+
+        '<thead><tr>'+
+          '<th>Artículo</th>'+
+          '<th>cantidad</th>'+
+          '<th>Fecha Nota</th>'+
+          '<th>Fecha de Entrega</th>'+
+          '<th>Fecha Entregado</th>'+
+          '<th>Proveedor</th>'+
+          '<th>Estado</th>'+
+        '</tr></thead>';
+    for(i=0; i<data.length; i++) {
+      $html = $html + 
+        '<tr>'+
+          '<td>'+data[i].artDescription+'</td>'+
+          '<td>'+data[i].cantidad+'</td>'+
+          '<td>'+data[i].fecha+'</td>'+
+          '<td>'+data[i].fechaEntrega+'</td>'+
+          '<td>'+data[i].fechaEntregado+'</td>'+
+          '<td>'+data[i].provnombre+'</td>'+
+          '<td>'+data[i].estado+'</td>'+
+        '</tr>';
+    }
+    $html = $html + '</table>'+
+          '</div></div>';
+  return $html;
+}
+
+
+  /* defino tablas hijas */
+  function cargaTablasHijas(){
+    $('#tblchild').DataTable().destroy();
+    $('#tblchild').DataTable({
+      "aLengthMenu": [ 10, 25, 50, 100 ],
+      "columnDefs": [ {
+        "targets": [ 0 ], 
+        "searchable": false
+      },
+      {
+        "targets": [ 0 ], 
+        "orderable": false
+      } ],
+      "order": [[1, "asc"]],
+    });
+  }
+
+
+
 
 //Ver Orden
 $(".fa-search").click(function (e) { 
@@ -192,18 +309,7 @@ function regresa(){
   WaitingClose();
 }
 
-$('#deposito').DataTable({
-  "aLengthMenu": [ 10, 25, 50, 100 ],
-  "columnDefs": [ {
-    "targets": [ 0 ], 
-    "searchable": false
-  },
-  {
-    "targets": [ 0 ], 
-    "orderable": false
-  } ],
-  "order": [[1, "asc"]],
-});
+
 </script>
 
 

@@ -358,11 +358,20 @@ class Ordeninsumos extends CI_Model {
     {
 		$userdata  = $this->session->userdata('user_data');
 		$empresaId = $userdata[0]['id_empresa'];
-		$this->db->select('id_orden, descripcion');
+		$this->db->select('orden_trabajo.id_orden, orden_trabajo.descripcion');
 		$this->db->from('orden_trabajo');
-		$this->db->where('id_empresa', $empresaId); //de la empresa
-		$this->db->where('estado !=', 'AN'); //que no estén anuladas (eliminadas)
-		$this->db->where('estado !=', 'T'); //que no estén terminadas
+
+        $this->db->join('tbl_tipoordentrabajo', 'tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
+        $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario');
+        $this->db->join('sisusers AS user1', 'user1.usrId = orden_trabajo.id_usuario_a');//usuario asignado?
+        $this->db->join('usuarioasempresa', 'usuarioasempresa.usrId = user1.usrId');
+        $this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
+        $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
+        $this->db->where('usuarioasempresa.tipo', 1);
+
+		$this->db->where('orden_trabajo.id_empresa', $empresaId); //de la empresa
+		$this->db->where('orden_trabajo.estado !=', 'AN'); //que no estén anuladas (eliminadas)
+		$this->db->where('orden_trabajo.estado !=', 'T'); //que no estén terminadas
 		//$this->db->order_by('id_orden');
 		$query = $this->db->get();
 		if($query->num_rows()>0){

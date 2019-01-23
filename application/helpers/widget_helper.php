@@ -187,19 +187,44 @@ if (!function_exists('sacarEquiposOperativos')) {
         // You may need to load the model if it hasn't been pre-loaded
         $CI->load->model('Equipos');
         // Call a function of the model
-        $output = $CI->Equipos->kpiSacarEquiposOperativos();
-        /* En DB tabla equipo, en el campo estado */
+        $equipos = $CI->Equipos->kpiSacarEquiposOperativos();
+        /* En DB tabla historial lectura, en el campo estado */
             // AC = activo
             // RE = reparacion
+        /* en campo equipos: IN, AN, etc... */
+
+        // En un bucle me fijo si el estado de equipos está en el arreglo equipos
+        // Si no está lo agrego en el arreglo estados
+        $estados = [];
+        for ($i=0; $i < sizeof($equipos); $i++) { 
+            if (!in_array( $equipos[$i]['estado'], $estados )) {
+                array_push( $estados, $equipos[$i]['estado'] );
+            }
+        }
+
+        //cuento cantidad de cada estado y agrego esos campos (Estado y cantidad) al arreglo $outuput
+        $output[0]['cantEstadoActivo'] = 0;
+        foreach ($estados as $clave) {
+            if( $clave == 'AC') 
+            {
+                $output[0]['estado'] = 'OP'; //Operativo
+                $output[0]['cantEstadoActivo'] = array_count_values(array_column($equipos, 'estado'))[$clave];
+            }
+            else
+            {
+                $output[1]['estado'] = 'NO';//No Operativo
+                $output[1]['cantEstadoActivo'] += array_count_values(array_column($equipos, 'estado'))[$clave];
+            }
+        }
 
         // si solo hay un estado (todos activos, o todos en reparacion)
-        if( sizeof($output) == 1 ) {
-            if( $output[0]['estado'] == 'AC' ) { //si solo tiene activos
-                $output[1]['cantEstadoActivo'] = '0';
-                $output[1]['estado'] = 'RE';
+        if( sizeof($equipos) == 1 ) {
+            if( $equipos[0]['estado'] == 'OP' ) { //si solo tiene activos
+                $equipos[1]['cantEstadoActivo'] = '0';
+                $equipos[1]['estado'] = 'NO';
             } else { //si tiene todos en reparacion
-                $output[1]['cantEstadoActivo'] = '0';
-                $output[1]['estado'] = 'AC';
+                $equipos[1]['cantEstadoActivo'] = '0';
+                $equipos[1]['estado'] = 'OP';
             }
         }
 

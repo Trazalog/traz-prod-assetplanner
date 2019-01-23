@@ -2,17 +2,23 @@
 
 class Notapedido extends CI_Controller {
 
-	function __construct(){
+  function __construct(){
 
-		parent::__construct();
-		$this->load->model('Notapedidos');
-	}
+    parent::__construct();
+    $this->load->model('Notapedidos');
+  }
 
   public function index($permission){
     $data['list'] = $this->Notapedidos->notaPedidos_List();
     $data['permission'] = $permission;
     $this->load->view('notapedido/list',$data);
     //$this->load->view('notapedido/view_');
+  }
+
+  public function getNotasxOT($permission, $idot){
+    $data['permission'] = $permission;
+    $data['list']       = $this->Notapedidos->getNotasxOT($idot);
+    $this->load->view('notapedido/listOt', $data);
   }
 
   /*public function agregarNota($permission){
@@ -55,12 +61,6 @@ class Notapedido extends CI_Controller {
 
   public function setNotaPedido(){
     $response = $this->Notapedidos->setNotaPedidos($this->input->post());
-    echo json_encode($response);
-  }
-  
-  public function getmostrar(){
- 
-    $response = $this->Notapedidos->getNotaPedidoIds($this->input->post());
     echo json_encode($response);
   }
   
