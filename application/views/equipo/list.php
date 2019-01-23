@@ -76,7 +76,7 @@
                     .($a['estado'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' 
                     :($a['estado'] == 'IN' ? '<small class="label pull-left bg-blue">Inhabilitado</small>'
                     :($a['estado'] == 'RE' ? '<small class="label pull-left bg-yellow">Reparación</small>' 
-                    : '<small class="label pull-left bg-red">Anulado</small>'))).'</td>';
+                    : '<small class="label pull-left bg-teal">Alta</small>'))).'</td>';
                   echo '</tr>';
                 }
               ?>
@@ -778,6 +778,7 @@ function guardar(){
   var id_proceso          = $('#proceso option:selected').val();
   var id_cliente          = $('#cliente option:selected').val();
   var numero_serie        = $('#numse').val();
+  var descrip_tecnica    = $('#destec').val();
 
   var parametros = {
     'descripcion': descripcion,
@@ -796,7 +797,8 @@ function guardar(){
     'numero_serie' : numero_serie,
     'estado' : 'AC',
     'fecha_ultimalectura': fecha_ultimalectura,
-    'ultima_lectura': ultima_lectura,             
+    'ultima_lectura': ultima_lectura,   
+    'descrip_tecnica':descrip_tecnica,
   };
 
   console.log("estoy editando");
@@ -1209,7 +1211,7 @@ function llenarCampos(data) {
   llenar_cliente(data[0]['cliId']);
   $('#descripcion').val( data[0]['deeq'] );
   $('#numse').val( data[0]['numero_serie'] );
-  $('#ubicacion').val( data[0]['id_hubicacion'] );
+  $('#ubicacion').val( data[0]['ubicacion'] );
   $('#fecha_ingreso').val( data[0]['fecha_ingreso'] );
   $('#fecha_garantia').val( data[0]['fecha_garantia'] );
   $('#fecha_ultimalectura').val( data[0]['fecha_ultimalectura'] );

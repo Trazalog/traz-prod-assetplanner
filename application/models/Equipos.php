@@ -923,7 +923,7 @@ class Equipos extends CI_Model {
             $equipos = $query->result_array();
             foreach ($equipos as &$valor) 
             {
-                if( ($valor['estado'] == 'AC') || ($valor['estado'] == 'RE'))
+                if( ($valor['estado'] == 'AL') || ($valor['estado'] == 'AC') || ($valor['estado'] == 'RE'))
                 {
                     $idEquipo = $valor['id_equipo'];
                     $this->db->select('estado');
@@ -1302,7 +1302,7 @@ class Equipos extends CI_Model {
                     equipos.fecha_ingreso,
                     equipos.fecha_garantia,
                     equipos.codigo,
-                    equipos.id_hubicacion,
+                    equipos.ubicacion,
                     equipos.fecha_ultimalectura,
                     equipos.ultima_lectura,
                     equipos.descrip_tecnica,
