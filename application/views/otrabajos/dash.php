@@ -406,11 +406,11 @@ function graficarEquiposOperativos() {
                 data: [ <?php echo $equipoOperativo[0]['cantEstadoActivo']?>,
                         <?php echo $equipoOperativo[1]['cantEstadoActivo']?>],
                 backgroundColor: [
-                "#146bb6",
+                "#008d4c",
                 "#FF9600"
                 ],
                 hoverBackgroundColor: [
-                "#257cc7",
+                "#00a65a",
                 "#ffa711"
                 ]
             }]
