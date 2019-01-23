@@ -327,7 +327,7 @@ function guardar(){
       'id_customer' : id_cliente,
       'id_unidad': unidad,
       'numero_serie' : numero_serie,
-      'estado' : 'AC',
+      'estado' : 'AL',
       'fecha_ultimalectura': fecha_ultimalectura,
       'ultima_lectura': ultima_lectura,             
     };
