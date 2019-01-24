@@ -758,8 +758,18 @@ class  Equipo extends CI_Controller {
   	}
 
 
+  	public function estado_alta()
+  	{
+  		$datos  = $this->input->post();
+  		$result = $this->Equipos->estado_alta( $datos["idequipo"] );
+  	  	echo json_encode($result);
+  	}
 
-
-
+  	public function alta_historial_lectura()
+  	{
+  		$datos  = $this->input->post();
+  		$result = $this->Equipos->alta_historial_lectura( $datos['parametros'] );
+  	  	echo json_encode($result);
+  	}
 
 }
