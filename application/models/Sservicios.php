@@ -43,7 +43,7 @@ class Sservicios extends CI_Model
 					);
 
 			$this->db->where('id_solicitud', $id);
-			$this->db->update('solicitud_reparacion', $estado);
+			$result = $this->db->update('solicitud_reparacion', $estado);
 		}		
 		// Trae equipos segun sector de empresa logueada
 		function getEquipSectores($data = null){
@@ -137,7 +137,7 @@ class Sservicios extends CI_Model
 				$falla    = $data['falla'];//
 				//$idPreventivo = $data['id_prev'];
 				$userdata = $this->session->userdata('user_data');
-						$empId    = $userdata[0]['id_empresa'];
+				$empId    = $userdata[0]['id_empresa'];
 				
 				// if ($idPreventivo !== "") { //actualiza fecha preventivo (fecha sistema)
 				// 	  $fechUltimo['ultimo'] = date('Y-m-d H:i:s');
@@ -161,13 +161,9 @@ class Sservicios extends CI_Model
 				);
 				$this->db->insert('solicitud_reparacion', $insert);
 
-							if ($this->db->trans_status() === FALSE){
-									return false;  
-							}
-							else{
-									return true;
-							} 
-
+				$idSolServicios = $this->db->insert_id();
+				return $idSolServicios;
+				
 					// if($this->db->insert('solicitud_reparacion', $insert) == false) {
 					// 	return false;
 					// }else{

@@ -89,7 +89,7 @@ class Sservicio extends CI_Controller {
 				$parametros = $this->Bonitas->conexiones();
 				$parametros["http"]["method"] = "POST";
 				$idInspector = array (
-					"id_solServicio"	=>	$id_solServicio
+					"idSolicitudServicio"	=>	$id_solServicio
 				);	
 				$parametros["http"]["content"] = json_encode($idInspector);
 				$param = stream_context_create($parametros);

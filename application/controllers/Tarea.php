@@ -142,23 +142,22 @@ class Tarea extends CI_Controller {
 			// trae datos para llenar notificaion estandar y formulario asociado
 			public function detaTarea($permission,$idTarBonita){
 
-				// detecta dispositivo
-				//$this->load->library('Mobile_Detect');
-				$detect = new Mobile_Detect();
-				if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {				
-					$data['device'] = "android";
-				}else{
-					$data['device'] = "pc";				
-				}
+				// detecta dispositivo				
+					$detect = new Mobile_Detect();
+					if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {				
+						$data['device'] = "android";
+					}else{
+						$data['device'] = "pc";				
+					}
 
+				$data['permission'] = $permission;
 				//OBTENER DATOS DE TAREA SELECCIONADA DESDE BONITA
 				$data['TareaBPM'] = json_decode($this->getDatosBPM($idTarBonita),true);	
 				$data['idTarBonita'] = $idTarBonita;
 				$caseId = $data['TareaBPM']["caseId"];
-
+				//dump($caseId, 'caseId:');
 				//FIXME: SACAR HARDCODEO A NOMBRE DE TAREA
 				$data['TareaBPM']["displayName"] = 'Revision total de motor';
-
 				//Devuelve datos de tarea por nombre 
 				$data['infoTarea'] = $this->Tareas->getDatosTarea($data['TareaBPM']["displayName"]);
 				//dump($data['infoTarea'], 'info tarea');
@@ -175,21 +174,27 @@ class Tarea extends CI_Controller {
 				// Formularios para subtareas (las tareas no tienen fomularios)
 				// si hay OT
 				if($id_OT != 0){
-					/* funcion nueva de asset */
-					// trae id de form asociado a tarea std (las tareas de BPM se cargaran para asociar a form).						
+					/* funcion nueva de asset */										
 					// traer subtareas estandar en funcion de tarea estandar					
 					$idTareaSTD = $this->Tareas->getIdTareaSTD($data['TareaBPM']["displayName"]);
 					$data['subtareas'] = $this->Tareas->getSubtareas($idTareaSTD);
-				
+					$i=0;
+					$instanciasForm = $this->Tareas->getInstaciasForm($id_OT);
+					
 					foreach ($data['subtareas'] as $subtarea) {
+						
+						$idForm = $subtarea['form_asoc'];
 						// confirma si hay form guardado de esa
-						if ($this->Tareas->getEstadoForm($idTarBonita)) {
-							//echo "hay form guardado";
+						if ($this->Tareas->getEstadoForm($idTarBonita,$idForm)) {							
+							$data['subtareas'][$i]['infoId'] = $instanciasForm[$i];
+							$i++;
 						}
 						else{
 							// guarda form inicial vacio
-							$idForm = $subtarea['form_asoc'];						
-							$this->Tareas->setFormInicial($idTarBonita,$idForm,$id_OT);
+							$idForm = $subtarea['form_asoc'];	
+							$infoId = $this->Tareas->setFormInicial($idTarBonita,$idForm,$id_OT);
+							$data['subtareas'][$i]['infoId'] = $infoId;
+							$i++;
 						}
 					}	
 				}	
@@ -205,7 +210,11 @@ class Tarea extends CI_Controller {
 					
 					default:
 						//dump($data, 'datos');
+						//dump($data['subtareas'], 'subtareas con info: ');
 						$this->load->view('tareas/view_', $data);
+						$this->load->view('tareas/scripts/tarea_std');
+						$this->load->view('tareas/scripts/abm_forms');
+						$this->load->view('tareas/scripts/validacion_forms');
 					break;
 				}
 			}		
@@ -288,8 +297,9 @@ class Tarea extends CI_Controller {
 			// trae datos para dibujar formulario en modal
 			public function Obtener_Formulario(){
 				$bpm_task_id = $this->input->post('bpm_task_id');	
-				// traer el bpm_task_id para traer el formulario de la subtarea (consulta en formcompletados)
 				$id_form = $this->input->post('form_id');
+				//dump($bpm_task_id, 'bpmIdTarea o infoid:');
+				//dump($id_form, 'id form: ');
 				$data['idForm']	= $this->input->post('form_id');
 				$data['form'] = $this->Tareas->get_form($bpm_task_id,$id_form);
 				//dump($data['form'], 'formulariosss:  ');
@@ -309,19 +319,24 @@ class Tarea extends CI_Controller {
 
 				//  array con id de dato->valor(dato es FOCO_ID)
 				$datos = $this->input->post();
+				//dump($datos, 'datos  de post en controller');
 				$userdata = $this->session->userdata('user_data');
 				$usrId = $userdata[0]['usrId'];     // guarda usuario logueado
+
 				$listarea = $datos['id_listarea'];
 				$idformulario = $datos['idformulario'];
 				$i = 1;// para guardar el orden de categorias, grupos y valores
 				$j = 0;
 
 				foreach ($datos as $key => $value) {
-
+					
 					// Si no son los primeros dos campos id listarea e id formulario
 					if (($key != 'id_listarea') && ($key != 'idformulario')) {
 						//trae array con info de dato por id
+						//dump($key, 'key: ');
 						$data = $this->Tareas->getDatos($key);// en este punto $key = FOCO_ID
+						//dump($data, 'dat por foco id:');
+						
 						// Agrego datos adicionales al formulario
 						$data['USUARIO'] = $usrId;
 

@@ -51,9 +51,9 @@ echo '<th style="display:none">Id tarea bonita</th>';
             <tbody>
               <?php
 
-                //$lista = json_decode($list,true);
+                $lista = json_decode($list,true);
                 // echo "<pre>";
-                // var_dump($lista);
+                 //var_dump($lista);
                 foreach($list as $f)
                 {
                   $id=$f["id"];

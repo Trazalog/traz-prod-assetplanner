@@ -5,7 +5,8 @@ class Notapedido extends CI_Controller {
 	function __construct(){
 
 		parent::__construct();
-		$this->load->model('Notapedidos');
+    $this->load->model('Notapedidos');
+    $this->load->model('Bonitas');
 	}
 
   public function index($permission){
@@ -41,6 +42,41 @@ class Notapedido extends CI_Controller {
     $data['plantilla']  = $this->Notapedidos->getPlantillaPorCliente($idcliente);
     $this->load->view('notapedido/insumolist', $data);
   }
+
+  // agregar pedido especial carga vista
+  public function pedidoEspecial(){
+
+    $this->load->view('notapedido/viewPedidoEspecial_');
+  }
+
+  // guardar pedido especial
+  public function setPedidoEspecial(){
+
+    $pedido = $this->input->post('pedido');
+    $justif = $this->input->post('justif');
+
+dump($pedido, 'pedido');
+dump_exit($justif, 'justif');
+
+    // Lanza proceso (retorna case_id)
+		$result = $this->lanzarProcesoBPM($inspectorid);
+		$caseId = json_decode($result, true)['caseId'];
+
+  }
+  // lanza proceso en BPM (inspección)
+	function lanzarProcesoBPM($inspectorid){
+
+		$parametros = $this->Bonitas->conexiones();
+		$parametros["http"]["method"] = "POST";
+		$idInspector = array (
+		  "idInspector"	=>	$inspectorid
+		);	
+		$parametros["http"]["content"] = json_encode($idInspector);
+		$param = stream_context_create($parametros);
+		$result = $this->Inspecciones->lanzarProcesoBPM($param);
+		//dump($result, 'Result:');
+		return $result;		
+	}
 
   public function getOrdenesCursos(){
     $response = $this->Notapedidos->getOrdenesCursos();

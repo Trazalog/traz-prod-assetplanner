@@ -99,8 +99,8 @@
             </div>
 
             <div class="modal-footer"> 
-                <button type="button" class="botones btn btn-primary" onclick="javascript:enviarOrden()">Hacer Pedido</button>
-                <button type="button" class="botones btn btn-primary" onclick="">Pedido Especial</button>
+                <button type="button" class="botones btn btn-primary" onclick="enviarOrden()">Hacer Pedido</button>
+                <button type="button" class="botones btn btn-primary" onclick="pedidoespecial()">Pedido Especial</button>
             </div>  <!-- /.modal footer -->            
          
         </div><!-- /.box-body -->
@@ -155,15 +155,23 @@ function enviarOrden(){
     var check = $(this).find('input.check');
     var cant = $(this).find('input.cant_insumos');
     console.log(check);
+    // checked y lleno cant
     if( check.prop('checked') && (cant!="")){
       id = check.attr('value');
       idinsumos.push(id);
       cant = check.parents("tr").find("input.cant_insumos").val();      
-      cantidades.push(cant);                 
+      cantidades.push(cant);
+                       
     }
+    // checked y vacio cant
     if(check.prop('checked') && (cant=="")){
       hayError = true;
     }
+    // no checked y lleno cant
+    if(!(check.prop('checked')) && (cant!="")){
+      hayError = true;
+    }
+    // no checked y vacio cant
     if(!(check.prop('checked')) && (cant=="")){
       hayError = true;
     }
@@ -192,7 +200,18 @@ function enviarOrden(){
   });
 }
 
-
+// Pedido especial
+function pedidoespecial(){ 
+  var iort = $('#ot').val();
+	//var iort = 
+  console.log("El id de OT es: " + iort);
+   
+  WaitingOpen();
+  $('#content').empty();
+  $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/pedidoEspecial/");
+  // $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/pedidoEspecial/<?php echo $permission; ?>/"+iort);
+  WaitingClose();  
+}
 
 $('#tabModInsum').DataTable({
   "aLengthMenu": [ 10, 25, 50, 100 ],

@@ -208,18 +208,37 @@ class Notapedidos extends CI_Model
 				return array();
 			}
     }
-    
+    // guarda nota pedido (desde tareas de bpm)
     function setCabeceraNota($cabecera){
 
 			$this->db->insert('tbl_notapedido', $cabecera);
 			$idInsert = $this->db->insert_id();
 			return $idInsert;
 		}
+		// guarda detalle nota pedido (desde tareas de bpm)
 		function setDetaNota($deta){
 			$response = $this->db->insert_batch('tbl_detanotapedido',$deta);
 			return $response;
+		}		
+		// lanza proceso en BPM (pedido especial)
+		function lanzarProcesoBPM($param){
+			$resource = 'API/bpm/process/';
+			$url = BONITA_URL.$resource;
+			$com = '/instantiation';
+			try {
+				$result = file_get_contents($url.BPM_PROCESS_ID.$com, false, $param);
+			} catch (Exception $e) {
+				echo 'Excepción capturada: ',  $e->getMessage(), "\n";
+				echo 'respuestas: ';
+				var_dump( $http_response_header);
+			} 
+				
+			return $result;
 		}
-    //
+		
+		
+		
+		//
     function getOTporId($id)
     {
         $this->db->select('id_orden, nro, descripcion');

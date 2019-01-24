@@ -93,7 +93,9 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 |
 */
 // define('BONITA_URL', 'http://35.239.41.196:7070/bonita/');
-define('BONITA_URL', 'http://192.168.88.178:8080/bonita');
+define('BONITA_URL', 'http://35.225.113.255:8080/bonita/');// SST - 
+//define('BONITA_URL', 'http://pc-pc:8080/bonita/');  //localhost
+//define('BONITA_URL', '192.168.100.114:8080/bonita/');
 
 /*
 |--------------------------------------------------------------------------
@@ -103,8 +105,11 @@ define('BONITA_URL', 'http://192.168.88.178:8080/bonita');
 | Id de proceso productivo (se usa para lanzar proceso)
 |
 */
+ 
+
 // define('BPM_PROCESS_ID', '8159262131949207788');
-define('BPM_PROCESS_ID', '4770260376617207648');
+define('BPM_PROCESS_ID', '8752332739922939857'); // SST - 
+//define('BPM_PROCESS_ID', '7517407473754179601'); // localhost -
 
 /*
 |--------------------------------------------------------------------------
