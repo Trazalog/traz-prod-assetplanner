@@ -198,10 +198,75 @@ $(document).ready(function(event) {
   // Cambiar a estado - Chequeado
   $(".fa-toggle-off").click(function (e) { 
     var idequipo = $(this).parent('td').parent('tr').attr('id');
-    console.log(idequipo);
+    console.log("id de equipo: "+idequipo);
+
+    // Si el estado es Alta (saco lectura de tabla equipo (ultima lectura))
     $.ajax({
+      async: true,
+      data: {idequipo: idequipo},
+      dataType: 'json',
       type: 'POST',
-      data: { idequipo: idequipo},
+      url: 'index.php/Equipo/estado_alta', 
+      success: function(data){
+        console.table(data[0]['estado']);
+        if (data[0]['estado'] == 'AL') {
+          var id_equipo   = idequipo;
+          var lectura     = data[0]['ultima_lectura'];
+          var observacion = 'Lectura automática al habilitar equipo dado de alta';
+          var operario    = 'alta';
+          var turno       = 'alta';
+          var estado      = 'AC';
+          parametros = {
+            'id_equipo' : id_equipo,
+            'lectura' : lectura,
+            'observacion' : observacion,
+            'operario' : operario,
+            'turno' : turno,
+            'estado' : estado,
+          }
+          alta_historial_lectura(parametros);
+        }
+        else {
+          alert("Error al habilitar el equipo");
+        }
+      },
+      error: function(result){
+        console.log(result);
+      }
+    });
+    //y agrego en historial lectura la primer lectura del equipo
+
+    // No esta Ok => exit y mensaje de error
+    // Está Ok => cambio estado
+    //alert('activando equipo en alta ');
+    cambiar_estado(idequipo);
+  });
+
+  function alta_historial_lectura(parametros){
+    console.log("parametros:");
+    console.table(parametros);
+    $.ajax({
+      data: {parametros: parametros},
+      dataType: 'json',
+      type: 'POST',
+      url: 'index.php/Equipo/alta_historial_lectura', 
+      success: function(data){
+        console.log(data);
+        //alert("Se agregó historial lecturas");
+      },
+      error: function(result){
+        console.error("Error al agregar historial lecturas");
+        console.table(result);
+      },
+    });
+  }
+
+  //cambio el estado a activo, sin importar si el anterior es alta, inhabilitado, etc...
+  function cambiar_estado(idequipo){
+    $.ajax({
+      data: {idequipo: idequipo},
+      dataType: 'json',
+      type: 'POST',
       url: 'index.php/Equipo/cambio_estado', 
       success: function(data){
         console.log(data);
@@ -209,11 +274,11 @@ $(document).ready(function(event) {
         regresa();    
       },
       error: function(result){
-        console.log(result);
+        console.error("Error al cambiar el estado");
+        console.table(result);
       },
-      dataType: 'json'
     });
-  });
+  }
  
   // Impresion - Chequeado
   $(".fa-print").click(function (e) {

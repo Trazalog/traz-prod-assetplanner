@@ -1378,4 +1378,49 @@ class Equipos extends CI_Model {
             return array();
         }
     }
+
+
+    function estado_alta($idEquipo)
+    {
+        $this->db->select('equipos.id_equipo, equipos.estado, equipos.ultima_lectura');
+        $this->db->from('equipos');
+        $this->db->where('equipos.id_equipo', $idEquipo);
+        $query = $this->db->get();
+
+        if ($query->num_rows()>0)
+        {
+            return $query->result_array();
+        }
+        else
+        {
+            return array();
+        }
+    }
+
+    function alta_historial_lectura($parametros)
+    {
+        $id_equipo    = $parametros['id_equipo'];
+        $lectura      = $parametros['lectura'];
+        $userdata     = $this->session->userdata('user_data');
+        $usrId        = $userdata[0]['usrId'];
+        $observacion  = $parametros['observacion'];
+        $operario = $parametros['operario'];
+        $turno        = $parametros['turno'];
+        $estado       = $parametros['estado'];
+
+        $datos = array(
+            'id_equipo'    => $id_equipo,
+            'lectura'      => $lectura,
+            'fecha'        => date('Y-m-d H:i:s'),
+            'usrId'        => $usrId,
+            'observacion'  => $observacion,
+            'operario_nom' => $operario,
+            'turno'        => $turno,
+            'estado'       => $estado,
+        );
+        //dump_exit($datos);
+        $this->db->insert('historial_lecturas',$datos);
+        $query = $this->db->insert_id();
+        return $query;
+    }
 }
