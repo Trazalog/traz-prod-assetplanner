@@ -152,7 +152,7 @@ if (!function_exists('cantTipoOrdenTrabajo')) {
      *
      *
      */
-    function cantTipoOrdenTrabajo()
+    function cantTipoOrdenTrabajo($echo = FALSE)
     {
         // Get a reference to the controller object
         $CI = get_instance();
@@ -180,17 +180,54 @@ if (!function_exists('sacarEquiposOperativos')) {
      *
      *
      */
-    function sacarEquiposOperativos()
+    function sacarEquiposOperativos($echo = FALSE)
     {
         // Get a reference to the controller object
         $CI = get_instance();
         // You may need to load the model if it hasn't been pre-loaded
         $CI->load->model('Equipos');
         // Call a function of the model
-        $output = $CI->Equipos->kpiSacarEquiposOperativos();
-        /* En DB tabla equipo, en el campo estado */
+        $equipos = $CI->Equipos->kpiSacarEquiposOperativos();
+        /* En DB tabla historial lectura, en el campo estado */
             // AC = activo
-            // AN = anulado
+            // RE = reparacion
+        /* en campo equipos: IN, AN, etc... */
+
+        // En un bucle me fijo si el estado de equipos está en el arreglo equipos
+        // Si no está lo agrego en el arreglo estados
+        $estados = [];
+        for ($i=0; $i < sizeof($equipos); $i++) { 
+            if (!in_array( $equipos[$i]['estado'], $estados )) {
+                array_push( $estados, $equipos[$i]['estado'] );
+            }
+        }
+
+        //cuento cantidad de cada estado y agrego esos campos (Estado y cantidad) al arreglo $outuput
+        $output[0]['cantEstadoActivo'] = 0;
+        foreach ($estados as $clave) {
+            if( $clave == 'AC') 
+            {
+                $output[0]['estado'] = 'OP'; //Operativo
+                $output[0]['cantEstadoActivo'] = array_count_values(array_column($equipos, 'estado'))[$clave];
+            }
+            else
+            {
+                $output[1]['estado'] = 'NO';//No Operativo
+                $output[1]['cantEstadoActivo'] += array_count_values(array_column($equipos, 'estado'))[$clave];
+            }
+        }
+
+        // si solo hay un estado (todos activos, o todos en reparacion)
+        if( sizeof($equipos) == 1 ) {
+            if( $equipos[0]['estado'] == 'OP' ) { //si solo tiene activos
+                $equipos[1]['cantEstadoActivo'] = '0';
+                $equipos[1]['estado'] = 'NO';
+            } else { //si tiene todos en reparacion
+                $equipos[1]['cantEstadoActivo'] = '0';
+                $equipos[1]['estado'] = 'OP';
+            }
+        }
+
         // Output
         if ($echo == TRUE) {
             echo $output;
@@ -206,21 +243,22 @@ if (!function_exists('calcularDisponibilidad')) {
      *
      *
      */
-    function calcularDisponibilidad($idEquipo, $fechaInicio=false, $fechaFin=false, $echo = FALSE)
+    function calcularDisponibilidad($echo = FALSE)
     {
+        //dump($fechaFin);
         // Get a reference to the controller object
         $CI = get_instance();
         // You may need to load the model if it hasn't been pre-loaded
         $CI->load->model('Equipos');
         // Call a function of the model
-        $output = $CI->Equipos->kpiCalcularDisponibilidad($idEquipo, $fechaInicio, $fechaFin);
-        //dump($output);
+        $output = $CI->Equipos->kpiCalcularDisponibilidad();
+        //dump_exit($output);
         // Output
         if ($echo == TRUE) {
             echo $output;
         }
         else {
             return $output;
-        }
+        }return 0;
     }
 }

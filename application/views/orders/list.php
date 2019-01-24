@@ -31,7 +31,7 @@
   	                echo '<tr>';
                     echo '<td>'.$a['fecha'].'</td>';  	    
                     echo '<td>'.$a['herrcodigo'].'</td>';            
-                    echo '<td>'.$a['herrmarca'].'</td>';
+                    echo '<td>'.$a['marcadescrip'].'</td>';
                     echo '<td>'.$a['herrdescrip'].'</td>';
                     echo '<td>'.$a['respons'].'</td>';
                     echo '<td>'.$a['dest'].'</td>';                             

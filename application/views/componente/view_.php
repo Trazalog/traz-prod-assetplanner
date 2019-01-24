@@ -48,7 +48,7 @@
                     <div class="row">
                       <div class="col-xs-12 col-md-6">
                         <label>Equipo <strong style="color: #dd4b39">*</strong> :</label>
-                        <select id="equipo" name="equipo" class="form-control select2" />
+                        <select id="equipo" name="equipo" class="form-control select" />
                         <input type="hidden" id="id_equipo" name="id_equipo">
                       </div>
                       <br>
@@ -94,8 +94,13 @@
                     <div class="row">
                       <div class="col-xs-12 col-md-6">
                         <br>
-                        <label for="codigo">Código: </label>
+                        <label for="codigo">Código <strong style="color: #dd4b39">*</strong> :</label>
                         <input type="text" name="codigo" id="codigo" class="form-control">
+                      </div>
+                      <div class="col-xs-12 col-md-6">
+                        <br>
+                        <label for="sistema">Sistema <strong style="color: #dd4b39">*</strong> :</label>
+                        <select id="sistema" name="sistema" class="form-control select2" />
                       </div>
                       <div class="col-xs-12">
                         <br>
@@ -113,6 +118,8 @@
                               <th>Equipo</th>
                               <th>Componente</th>
                               <th>Código</th>
+                              <th>Sistema</th>
+                              <th class="hidden"></th>
                               <th class="hidden"></th>
                             </tr>
                           </thead>
@@ -128,7 +135,7 @@
             </div>
 
             <div class="modal-footer">
-              <button type="button" class="btn btn-default delete" onclick="javascript:limpiarModal()">Cancelar</button>
+              <button type="button" class="btn btn-default delete" id="listado2">Cancelar</button>
               <button type="button" class="btn btn-primary" onclick="guardar()">Guardar</button>
             </div>  <!-- /.modal footer -->
               <!-- / Modal -->
@@ -192,18 +199,7 @@
 <!-- / Modal -->
 
 <script>
-$('#tablaequipos').DataTable({
-  "aLengthMenu": [ 10, 25, 50, 100 ],
-  "columnDefs": [ {
-    "targets": [ 0 ], 
-    "searchable": false
-  },
-  {
-    "targets": [ 0 ], 
-    "orderable": false
-  } ],
-  "order": [[1, "asc"]],
-});
+
 
 
 //si abre mas de dos modales...
@@ -218,26 +214,23 @@ var ge="";
 // Completa el select equipos
 traer_equipo();
 function traer_equipo(){
- 
   $.ajax({
     type: 'POST',
     url: 'index.php/Componente/traerequipo', 
     success: function(data){
-           
-            var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-            $('#equipo').append(opcion); 
-            for(var i=0; i < data.length ; i++){    
-                
-                var nombre = data[i]['codigo'];
-                var opcion  = "<option value='"+data[i]['id_equipo']+"'>" +nombre+ "</option>" ;
-                $('#equipo').append(opcion);                                
-            }
-          },
-    error: function(result){          
-          console.log(result);
-        },
-       dataType: 'json'
-    });
+      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+      $('#equipo').append(opcion); 
+      for(var i=0; i < data.length ; i++){
+        var nombre = data[i]['codigo'];
+        var opcion  = "<option value='"+data[i]['id_equipo']+"'>" +nombre+ "</option>" ;
+        $('#equipo').append(opcion);
+      }
+    },
+    error: function(result){
+      console.error(result);
+    },
+    dataType: 'json'
+  });
 }
 
 // Trae componentes segun empresa (no equipos)
@@ -246,22 +239,46 @@ function traer_componente(){
   $.ajax({
     type: 'POST',
     data: { },
-    url: 'index.php/Componente/getcomponente', //index.php/
+    url: 'index.php/Componente/getcomponente',
     success: function(data){
-           $('#componente').empty();
-            var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-            $('#componente').append(opcion); 
-            for(var i=0; i < data.length ; i++){  
-              var nombre = data[i]['descripcion'];
-              var opcion  = "<option value='"+data[i]['id_componente']+"'>" +nombre+ "</option>" ; 
-              $('#componente').append(opcion);                                
-            }
-          },
-    error: function(result){          
-          console.log(result);
-         },
-        dataType: 'json'
-    });
+      $('#componente').empty();
+      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+      $('#componente').append(opcion); 
+      for(var i=0; i < data.length ; i++){  
+        var nombre = data[i]['descripcion']+" - "+data[i]['marcadescrip']+" - "+data[i]['informacion'];
+        var opcion  = "<option value='"+data[i]['id_componente']+"'>" +nombre+ "</option>" ; 
+        $('#componente').append(opcion); 
+      }
+    },
+    error: function(result){
+      console.error(result);
+    },
+    dataType: 'json'
+  });
+}
+
+// Trae sistemas
+traer_sistema();
+function traer_sistema(){
+  $.ajax({
+    type: 'POST',
+    data: { },
+    url: 'index.php/Componente/getsistema',
+    success: function(data){
+      $('#sistema').empty();
+      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+      $('#sistema').append(opcion); 
+      for(var i=0; i < data.length ; i++){  
+        var nombre = data[i]['descripcion'];
+        var opcion  = "<option value='"+data[i]['sistemaid']+"'>" +nombre+ "</option>" ; 
+        $('#sistema').append(opcion); 
+      }
+    },
+    error: function(result){
+      console.error(result);
+    },
+    dataType: 'json'
+  });
 }
 
 // Trae marcas para modal agregar componente - Chequeado
@@ -286,7 +303,7 @@ function traer_marca(){
           },
     error: function(result){
           
-          console.log(result);
+          console.error(result);
         },
         dataType: 'json'
     });
@@ -299,19 +316,16 @@ function traer_descripcion(idequipo){
     data: { idequipo: idequipo},
     url: 'index.php/Componente/getequipo',
     success: function(data){
-            console.log(data);
-            console.log(data.datos);
-
-            
+            //console.log(data);
+            //console.log(data.datos);
             if(data=='nada'){
               var d='No hay Descripcion cargada';
               $('#descrip').append(d);
             }
              $('#descrip').val(data.datos);
-
         },
     error: function(result){
-          console.log(result);
+          console.error(result);
             },
            dataType: 'json'
         });   
@@ -319,10 +333,10 @@ function traer_descripcion(idequipo){
 
 // Limpia modal agregar componente
 function limpiarModal(){
-
   $("#equipo").val("");
   $("#descrip").val("");
   $("#componente").val("");
+  $("#codigo").val("");
   $('#tablacompo tbody tr').remove();
   $('#tablaequipos tbody tr').remove();
 }
@@ -337,10 +351,11 @@ function guardar(){
 
   comp   = {};
   codigo = {};
+  sistemaid = {};
   var j  = 1;
   var f  = 1;
   $("#tablaequipos tbody tr").each(function (index){
-    var campo1, campo2, campo3, campo4;
+    var campo1, campo2, campo3, campo4, campo5, campo6;
     $(this).children("td").each(function (index2){
       switch (index2){
         case 0: 
@@ -353,47 +368,55 @@ function guardar(){
           campo3 = $(this).text();
           break;
         case 3: 
-          campo3    = $(this).text();
-          codigo[j] = campo3; 
+          campo4    = $(this).text();
+          codigo[j] = campo4; 
           break;
         case 4: 
-          campo4  = $(this).text();
-          comp[j] = campo4;
+          campo5  = $(this).text();
+          //sistemaid[j] = campo5;
+          break;
+        case 5: 
+          campo6  = $(this).text();
+          comp[j] = campo6;
+          break;
+        case 6: 
+          campo7  = $(this).text();
+          sistemaid[j] = campo7;
           j++;
           break;
       }
     });
-    console.log(codigo);
+    //console.log(codigo);
   });
 
-  var eq     = $('#equipo').val();
-  //console.log(eq);
-  var parametros = {
-    'id_equipo': $('#equipo').val(),
-  };
-  console.log("parametros (id_equipo): ");
-  console.table(parametros);
-  console.log("componentes: ");
-  console.table(comp);
-  console.log("codigo: ");
-  console.table(codigo);
-  console.log("bandera: "+x);
+  var idequipo = $('#equipo').val();
+  
+  //console.log("idequipo: "+idequipo);
+  //console.log("componentes: ");
+  //console.table(comp);
+  //console.log("codigo: ");
+  //console.table(codigo);
+  //console.log("sistemaid: ");
+  //console.table(sistemaid);
+  //console.log("bandera: "+x);
   var hayError = false;
-  if(eq !== '-1' && comp !== '-1'){   
+
+  if( $('#tablaequipos').DataTable().data().any() ) {
+  //if(eq !== '-1' && comp !== '-1'){   
     $.ajax({
         type: 'POST',
-        data: {data:parametros, codigo:codigo, comp:comp, x:x, ge:ge},
+        data: {idequipo:idequipo, codigo:codigo, sistemaid:sistemaid, comp:comp, x:x, ge:ge},
         url: 'index.php/Componente/guardar_componente',  //index.php/
         success: function(data){
           console.log("entre por el guardado del componente equipo");
-                console.log(data);
+                //console.log(data);
                 alert ("guardado con exito");
                 cargarVista();
               },
         error: function(result){
-          console.log("entre por el error del componente equipo");
+          //console.log("entre por el error del componente equipo");
               
-              console.log(result);
+              console.error(result);
               
             }
            // dataType: 'json'
@@ -408,6 +431,8 @@ function guardar(){
     $('#error').fadeOut('slow');
   }
 }
+
+
 
 // Guarda un componente nuevo
 $('#guardarComponente').click(function(e) { //
@@ -428,11 +453,11 @@ $('#guardarComponente').click(function(e) { //
   $('#errorComponentes').hide();
   if ( marcaid < 0 ) {
     hayError = true;
-    console.log("entro x marcaid");
+    //console.log("entro x marcaid");
   }
   if( descripcion == "" ) {
     hayError = true;
-    console.log("entro x descrip");
+    //console.log("entro x descrip");
   }
 
   if(hayError == true){
@@ -469,37 +494,39 @@ var x=0;
 $('#addcompo').click(function (e) {
   var $equipo       = $("select#equipo option:selected").html();
   var id_equipo     = $('#equipo').val();
-  var $componente   = $("select#componente option:selected").html();
   var codigo        = $('#codigo').val();
+  var $componente   = $("select#componente option:selected").html();
   var id_componente = $('#componente').val();
+  var sistema       = $("select#sistema option:selected").html();
+  var id_sistema    = $('#sistema').val();
   equipoglob        = id_equipo;
-  console.info('codigo: '+codigo);
-  /*var tr = "<tr id='"+id_equipo+"'>"+
-              "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
-              "<td>"+$equipo +"</td>"+
-              "<td>"+$componente+"</td>"+
-              "<td class='hidden' >"+id_componente+"</td>"+
-            "</tr>";*/
+  //console.info('codigo: '+codigo);
+  //console.info('sistema: '+sistema);
+  //console.info('id_sistema: '+id_sistema);
   var table   = $('#tablaequipos').DataTable();
-  if(id_componente >0 && equipoglob >0) {
+  if(id_componente >0 && id_sistema >0 && equipoglob >0) {
     /*$('#tablaequipos tbody').append(tr);*/
     var rowNode = table.row.add( [
-      "<i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i>",
+      "<i class='fa fa-ban elirow text-light-blue' style='cursor: 'pointer'></i>",
       id_equipo,
       $componente,
       codigo,
-      id_componente
+      sistema,
+      id_componente,
+      id_sistema
     ] ).node();
     rowNode.id = id_equipo;
     table.draw();
-    $( rowNode ).find('td').eq(4).addClass('hidden');
+    $( rowNode ).find('td').eq(5).addClass('hidden');
+    $( rowNode ).find('td').eq(6).addClass('hidden');
 
     $('#error').fadeOut('slow');
-    $('#descrip').val('');
-    $('#tablacompo tbody tr').remove('');
-    $('#equipo').val('');
+    //$('#descrip').val('');
+    //$('#tablacompo tbody tr').remove('');
+    //$('#equipo').val('');
     $('#codigo').val('');
     $('#componente').val('');
+    $('#sistema').val('');
   }
   else{
     var hayError = true;
@@ -518,91 +545,69 @@ $('#addcompo').click(function (e) {
 });
 
 // Vuelve al listado al guardar
-$('#listado').click( function cargarVista(){
+$('#listado, #listado2').click( function cargarVista(){
     WaitingOpen();
     $('#content').empty();
-    $("#content").load("<?php echo base_url(); ?>index.php/Componente/index/<?php echo $permission; ?>");
+    $("#content").load("<?php echo base_url(); ?>index.php/Componente/asigna/<?php echo $permission; ?>");
     WaitingClose();
 });
 
 // Cuando selecciona equipo carga componentes
 var s=0; 
 $('#equipo').change(function(){
-
   var idequipo = $(this).val();
-  var d=$(this).parent('td').parent('tr').attr('id');
-  di=d;
-  ge=idequipo;
-  console.log("id de equipo");
-  console.log(idequipo);
+  var d = $(this).parent('td').parent('tr').attr('id');
+  di = d;
+  ge = idequipo;
+  //console.log("id de equipo: "+idequipo);
   $('#tablacompo tbody tr').html("");
   
   $.ajax({
-      type: 'POST',
-      data: { idequipo: idequipo},
-      url: 'Componente/getcompo', 
-      success: function(data){                  
-                  console.log(data); 
-                  if (data!= 0) {
-                    var de = data[0]['descripcion']; 
-                    var comp = data[0]['dee11'];
-                    $('#descrip').val(de); 
-                    
-                    for(var i=0; i < data.length ; i++){
-                      
-                    var  table= "<tr id='"+i+"'>"+   
-                                  // "<td ></td>"+
-                                 "<td>"+data[i]['dee11']+"</td>"+
-                                 "<td class='hidden' id='"+data[i]['id_componente']+"' >"+data[i]['id_componente']+"</td>"+
-                                 
-                               "</tr>";
-                      $('#tablacompo').append(table); 
-                      s++;
-                    }             
-                 
-                    console.log(table);
-                    console.log(s);
-                    $('#tablacompo').val('');
-                  }
-                   else{
-                   traer_descripcion(idequipo); 
-                  } 
-              },
-      error: function(result){
-              //alert("error entr en la otra consulta");
-              console.log(result);
-             traer_descripcion(idequipo);
-            },
-      dataType: 'json'
+    data: { idequipo:idequipo },
+    dataType: 'json',
+    type: 'POST',
+    url: 'Componente/getcompo', 
+    success: function(data){                  
+      //console.table(data); 
+      if (data!= 0) {
+        var de = data[0]['descripcion']; 
+        var comp = data[0]['dee11'];
+        $('#descrip').val(de); 
+        for(var i=0; i < data.length ; i++){
+          var  table = "<tr id='"+i+"'>"+   
+          "<td>"+data[i]['dee11']+" - "+data[i]['marcadescrip']+" - "+data[i]['informacion']+"</td>"+
+          "<td class='hidden' id='"+data[i]['id_componente']+"' >"+data[i]['id_componente']+"</td>"+
+          "</tr>";
+          $('#tablacompo').append(table); 
+          s++;
+        }             
+
+        //console.log(table);
+        //console.log(s);
+        $('#tablacompo').val('');
+      }
+      else{
+        traer_descripcion(idequipo); 
+      } 
+    },
+    error: function(result){
+      console.table(result);
+      traer_descripcion(idequipo);
+    },
   });
+
 });
 
+$('#tablaequipos').DataTable({
+  "aLengthMenu": [ 10, 25, 50, 100 ],
+  "columnDefs": [ {
+    "targets": [ 0 ], 
+    "searchable": false
+  },
+  {
+    "targets": [ 0 ], 
+    "orderable": false
+  } ],
+  "order": [[1, "asc"]],
+});
 </script>
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 

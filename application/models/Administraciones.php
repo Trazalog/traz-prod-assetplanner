@@ -7,9 +7,12 @@ class Administraciones extends CI_Model
 	{
 		parent::__construct();
 	}
-	
+	// trae todas las ot de una empresa
 	function otrabajos_List(){
-
+		
+		$userdata = $this->session->userdata('user_data');
+		$empId = $userdata[0]['id_empresa'];
+		
 		$this->db->select('orden_trabajo.id_orden, orden_trabajo.nro,orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, orden_trabajo.fecha_terminada, orden_trabajo.fecha_aviso, orden_trabajo.fecha_entregada, orden_trabajo.descripcion, orden_trabajo.cliId, orden_trabajo.estado, orden_trabajo. id_usuario, orden_trabajo.id_usuario_a, user1.usrName AS nombre, orden_trabajo.id_usuario_e, orden_trabajo.id_sucursal, admcustomers.cliLastName,admcustomers.cliName, sisusers.usrName,sucursal.descripc');
 		$this->db->from('orden_trabajo');
 		$this->db->join('admcustomers', 'admcustomers.cliId = orden_trabajo.cliId');
@@ -18,11 +21,9 @@ class Administraciones extends CI_Model
 		$this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
 		//$this->db->join('orden_pedido', 'orden_pedido.id_trabajo = orden_trabajo.id_orden');
 		//$this->db->join('tbl_notapedido', 'tbl_notapedido.id_ordTrabajo = orden_trabajo.id_orden');
+		$this->db->where('orden_trabajo.id_empresa', $empId);
 		$this->db->group_by('orden_trabajo.id_orden');
-		//$this->db->order_by('orden_trabajo.id_orden', 'asc');
-
-
-			
+					
 		$query= $this->db->get();
 		
 		if ($query->num_rows()!=0)

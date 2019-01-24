@@ -49,15 +49,22 @@
                                     <a href="#"><i class="fa fa-pencil"></i> Editar Perfil</a>
                                 </li>
                                 <li class="user-body">
-                                    <a href="#" data-ui=""><i class="fa fa-check"></i> U industrial activa</a>
-                                    <?php foreach($unidad_industrial as $uIndustrial){ ?>
-                                    <a href="#" data-ui="<?php echo $uIndustrial['id_unidad'] ?>" ><i class="notFA"></i> <?php echo $uIndustrial['descripcion'] ?></a>
+                                    <?php foreach($empresas as $e){ ?>
+                                        <a href="#" class="btnEmpresa" data-ui="<?php echo $e['id_empresa'] ?>" >
+                                            <?php
+                                            if($e['tipo']==1)
+                                                echo '<i class="fa fa-check"></i>';
+                                            else
+                                                echo '<i class="notFA"></i>';
+                                            ?>
+                                            <?php echo $e['descripcion'] ?>
+                                        </a>
                                     <?php } ?>
                                 </li>
                                 <style>
                                     .notFA { margin-left: 27px; }
                                     .navbar-nav > .user-menu > .dropdown-menu > .user-body { padding: 15px 0; }
-                                   .navbar-nav > .user-menu > .dropdown-menu > .user-footer {padding: 10px 20px; }
+                                    .navbar-nav > .user-menu > .dropdown-menu > .user-footer { padding: 10px 20px; }
                                 </style>
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
@@ -78,3 +85,29 @@
                 </div>
             </nav>
         </header>
+
+<script>
+$(document).on('click', '.btnEmpresa', function () {
+    var idNewEmpresa = $(this).data('ui');
+    cambiarDeEmpresa(idNewEmpresa);
+});
+
+function cambiarDeEmpresa(idNewEmpresa) {
+    console.info("id de empresa nueva: "+idNewEmpresa);
+
+    $.ajax({
+        data: { idNewEmpresa:idNewEmpresa },
+        dataType: 'json',
+        type: 'POST',
+        url: 'index.php/Dash/cambiarDeEmpresa',
+        success: function(result){
+            //console.table(result);
+            window.location.href = 'dash';
+        },
+        error: function(result){
+            console.error("Error al cambiar de empresa");
+            console.table(result);
+        },
+    });
+}
+</script>

@@ -6,26 +6,29 @@ class Sservicios extends CI_Model
 	{
 		parent::__construct();
 	}
-	// Trae solicitudes en estado en Curso	
+	// Trae solicitudes en estado en Curso por empresa logueada 	
 	function servicios_List()
 	{			
 		$userdata = $this->session->userdata('user_data');
 		$usrId    = $userdata[0]['usrId'];   
 		$grupoId  = $userdata[0]["grpId"];
 		$empId    = $userdata[0]['id_empresa'];
+		//$empId    = 7;
 		
 		$this->db->select('solicitud_reparacion.*,
-			equipos.codigo as equipo, 
-			sector.descripcion as sector, 
-			grupo.descripcion as grupo, 
-			equipos.ubicacion');
+											equipos.codigo as equipo, 
+											sector.descripcion as sector, 
+											grupo.descripcion as grupo, 
+											equipos.ubicacion');
 		$this->db->from('solicitud_reparacion');
 		$this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo');
 		$this->db->join('sector', 'equipos.id_sector = sector.id_sector');
 		$this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo');
-		$this->db->where('solicitud_reparacion.estado', 'C');
-		$this->db->or_where('solicitud_reparacion.estado', 'S');
 		$this->db->where('solicitud_reparacion.id_empresa', $empId);
+		$this->db->where('solicitud_reparacion.estado !=', 'T');
+		$this->db->where('solicitud_reparacion.estado !=', 'AN');
+		//$this->db->where('solicitud_reparacion.estado', 'C');
+		//$this->db->or_where('solicitud_reparacion.estado', 'S');
 		$query = $this->db->get();
 		if ($query->num_rows()!=0)
 		{

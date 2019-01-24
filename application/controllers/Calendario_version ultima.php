@@ -107,37 +107,26 @@ class Calendario extends CI_Controller {
 
 	    if($_POST) 
 	    {
-	    	if( isset($_POST['event_tipo']) )
-				$event_tipo       = $_POST['event_tipo'];//evento unico '1' evnto repetitivo '2'
-			$id_solicitud     = $_POST['id_sol'];// id predic - correct - back 
+	    	// evento unico '1' evnto repetitivo '2'
+			$event_tipo       = $_POST['event_tipo']; 
+			$id_solicitud     = $_POST['id_sol'];		// id predic - correct - back 
 			$id_tarea         = $_POST['id_tarea'];
 			$hora_progr       = $_POST['hora_progr'];
 			$fecha_progr      = $_POST['fecha_progr'];
 			$fecha_progr      = explode('-', $fecha_progr);
 			$fec_programacion = $fecha_progr[2].'-'.$fecha_progr[1].'-'.$fecha_progr[0].' '.$hora_progr.':00';
 			$fecha_inicio     = $_POST['fecha_inicio'];
-			$descripcion      = $_POST['descripcion'];//descripcion del predictivo/correc/backlog/etc
-			$tipo             = $_POST['tipo'];//numero de tipo segun tbl orden_trabajo
+			$descripcion      = $_POST['descripcion'];	// descripcion del predictivo/correc/backlog/etc
+			$tipo             = $_POST['tipo'];					// numero de tipo segun tbl_ordentrabajo
 			$equipo           = $_POST['ide'];  
-			$cant_meses       = $_POST['cant_meses'];//cantidad de meses a programar las OT
-
-			if( isset($_POST['lectura_programada']) ) {
-				$lectura_programada = $_POST['lectura_programada'];
-			} else {
-				$lectura_programada = '0000-00-00 00:00:00';
-			}
-
-			if( isset($_POST['lectura_ejecutada']) ) {
-				$lectura_ejecutada  = $_POST['lectura_ejecutada'];
-			} else {
-				$lectura_ejecutada = '0000-00-00 00:00:00';
-			}
+			$cant_meses       = $_POST['cant_meses'];		// cantidad de meses a programar las OT
+			$lectura_programada = $_POST['lectura_programada'];
+			$lectura_ejecutada  = $_POST['lectura_ejecutada'];
 
 	    	// si no es correctivo busca duracion sino pone 60' por defecto	    	
 	    	if ($tipo != '2') 
 	    	{
-	    		$duracion = $this->getDurTarea($tipo,$id_solicitud); 
-	    		dump($duracion, 'duracion');
+	    		$duracion = $this->getDurTarea($tipo,$id_solicitud);   
 	    	}
 	    	else
 	    	{
@@ -145,152 +134,44 @@ class Calendario extends CI_Controller {
 	    	}
 
 	    	$datos2 = array(
-				'id_tarea'      => $id_tarea,// id de tarea a realizar(tabla tareas)
-				'nro'           => 1,//por defecto( no se usa)
+				'id_tarea'      => $id_tarea,					// id de tarea a realizar(tabla tareas)
+				'nro'           => 1,								//por defecto( no se usa)
 				'fecha'         => date('Y-m-d'),				
-				'fecha_program' => $fec_programacion,
+				'fecha_program' =>  $fec_programacion,
 				'fecha_inicio'  => $fecha_inicio,
 				'descripcion'   => $descripcion,
-				'cliId'         => 1,//por defecto( no se usa)
+				'cliId'         => 1,							//por defecto( no se usa)
 				'estado'        =>'C',
 				'id_usuario'    => $usrId,
 				'id_usuario_a'  => 1,
 				'id_usuario_e'  => 1,
 				'id_sucursal'   => 1,
-				'id_solicitud'  => $id_solicitud,// id prev-correct-back-predict
-				'tipo'          => $tipo,// tipo solicitud (prev-correct-back-predict )
+				'id_solicitud'  =>  $id_solicitud,		// id prev-correct-back-predict
+				'tipo'          => $tipo,						// tipo solicitud (prev-correct-back-predict)
 				'id_equipo'     => $equipo,
 				'duracion'      => $duracion,
-				'id_tareapadre' => $id_solicitud,//solic que genera la 1º OT y las repetitivas
+				'id_tareapadre' => $id_solicitud,		// solic que genera la 1º OT y las repetitivas
 				'id_empresa'    => $empId,
 				'lectura_programada' => $lectura_programada,
 				'lectura_ejecutada'  => $lectura_ejecutada,
 	    	);
-	    	dump($datos2, 'datos');
 	    	
-	    	if ($event_tipo == '1') // si el evento es unico lo guarda
-	    	{
+	    	if ($event_tipo == '1') 
+	    	{		// si el evento es unico lo guarda
 	    		$result = $this->Calendarios->guardar_agregar($datos2);
 	    	}
-	    	else // evento repetitivo 
-	    	{
+	    	else{							// evento repetitivo 
 	    		// Sumo a la fecha de program la cant de meses p/ sacar fecha limite
-					$fecha_limite = strtotime ( '+'.$cant_meses.' month' , strtotime ( $fec_programacion ) );
-					$fecha_limite = date ( 'Y-m-d H:i:s' , $fecha_limite ); /// "2018-06-16 00:00:00"
-					dump($fecha_limite, 'fecha_limite');
-					//busco la frecuencia de la tarea
-	    		$diasFrecuencia = $this->getPeriodTarea($tipo,$id_solicitud);	//bien
-	    		dump($diasFrecuencia, 'dias frecuencia');
+				$fecha_limite = strtotime ( '+'.$cant_meses.' month' , strtotime ( $fec_programacion ) );
+				$fecha_limite = date ( 'Y-m-d H:i:s' , $fecha_limite ); /// "2018-06-16 00:00:00"
+				//busco la frecuencia de la tarea
+	    		$diasFrecuencia = $this->getPeriodTarea($tipo,$id_solicitud);	//bien	    		
+	    		//dump_exit($diasFrecuencia);
 	    		$this->armar_batch($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2);
-
-					// si es preventivo ACTUALIZA NUEVAMENTE LA FECHA BASE_ OK!
-					if($tipo == '3'){	    		
-	    			//pongo nueva fecha base en preventivos
-	    			dump('$id_solicitud', 'id preventivo');
-	    			$this->Calendarios->actualizarFechaBasePreventivos($fecha_limite, $id_solicitud);
-	    		}
 	    	}	     	
 	      	return true;
 	    }
   	}
-
-	function getDurTarea($tipo,$id_solicitud)
-	{
-		$duracion = 0;
-		// devuelve la duracion de la taresa segun prde prev o backlog
-		switch ($tipo) {
-			case '1':					// O Trabajo
-				$this->db->select('orden_trabajo.duracion');
-		        $this->db->from('orden_trabajo');        
-		        $this->db->where('orden_trabajo.id_orden', $id_solicitud);
-		        $query = $this->db->get(); 
-        		$duracion = $query->row('duracion');
-				break;
-			case '2':					// Sol de Servicio
-				break;
-			case '3':					// Preventivo
-				$this->db->select('preventivo.prev_duracion');
-		        $this->db->from('preventivo');        
-		        $this->db->where('preventivo.prevId', $id_solicitud);
-		        $query = $this->db->get(); 
-        		$duracion = $query->row('prev_duracion');
-				break;
-			case '4':					// Backlog
-				$this->db->select('tbl_back.back_duracion');
-		        $this->db->from('tbl_back');        
-		        $this->db->where('tbl_back.backId', $id_solicitud);
-		        $query = $this->db->get(); 
-        		$duracion = $query->row('back_duracion');
-				break;
-			case '5':					// Predictivo
-				$this->db->select('predictivo.pred_duracion');
-		        $this->db->from('predictivo');        
-		        $this->db->where('predictivo.predId', $id_solicitud);
-		        $query = $this->db->get(); 
-        		$duracion = $query->row('pred_duracion');
-				break;					
-		}
-		return $duracion;
-	}	
-
-	// Devuelve duracion de la tarea original (backlog, predictivo, preventivo)
-	function getPeriodTarea($tipo,$id_solicitud)
-	{
-		$duracion = 0;
-		// devuelve la duracion de la tarea segun prde prev o backlog	
-		switch ($tipo) {							
-			case '3':					// Preventivo
-				$this->db->select('preventivo.cantidad');
-		        $this->db->from('preventivo');        
-		        $this->db->where('preventivo.prevId', $id_solicitud);
-		        $query = $this->db->get(); 
-        		$duracion = $query->row('cantidad');
-				break;
-			case '5':					// Predictivo
-				$this->db->select('predictivo.cantidad');
-		        $this->db->from('predictivo');        
-		        $this->db->where('predictivo.predId', $id_solicitud);
-		        $query = $this->db->get(); 
-        		$duracion = $query->row('cantidad');
-				break;				
-		}
-		return $duracion;
-	}
-
-  	// arama conjunto de OT para su insercion en la BD
-   	function armar_batch($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2)
-   	{	
-  		$data[] = $datos2;
-    	while ($fecha_limite >= $fec_programacion  ) {
-		 	// a la fecha de programacion le sumo la frecuencia en dias	   	
-	   		$nuev_fecha = strtotime ( '+'.$diasFrecuencia.'day' , strtotime ( $fec_programacion ) ) ;
-	   		$nuev_fecha = date ( 'Y-m-d H:i:s' , $nuev_fecha );
-	   		// guardo la fecha nueva en el array para nuevva OT
-	   		$datos2['fecha_program'] = $nuev_fecha;
-	   		// guardo el componete en el array batch
-	   		$data[] = $datos2;
-	   		// actualizo la fecha de programacion
-	   		$fec_programacion = $nuev_fecha;
-		} 
-
-		$this->Calendarios->setOTbatch($data); 		
-   	}
-
-   	public function getperiodo()
-	{
-		$periodo = $this->Calendarios->getperiodo($this->input->post());
-		if($periodo)
-		{	
-			$arre = array();
-	        foreach ($periodo as $row ) 
-	        {   
-	           $arre[] = $row;
-	        }
-			echo json_encode($arre);
-		}
-		else echo "nada";
-	}
-
 
 
 
@@ -388,9 +269,96 @@ class Calendario extends CI_Controller {
 		echo json_encode($data);
 	}
 
+	function getDurTarea($tipo,$id_solicitud){
+		
+		$duracion = 0;
+		// devuelve la duracion de la taresa segun prde prev o backlog
+		switch ($tipo) {
+			case '1':					// O Trabajo
+				$this->db->select('orden_trabajo.duracion');
+		        $this->db->from('orden_trabajo');        
+		        $this->db->where('orden_trabajo.id_orden', $id_solicitud);
+		        $query = $this->db->get(); 
+        		$duracion = $query->row('duracion');
+				break;
+
+			case '2':					// Sol de Servicio
+				
+				break;
+			case '3':					// Preventivo
+				$this->db->select('preventivo.prev_duracion');
+		        $this->db->from('preventivo');        
+		        $this->db->where('preventivo.prevId', $id_solicitud);
+		        $query = $this->db->get(); 
+        		$duracion = $query->row('prev_duracion');
+				break;
+			case '4':					// Backlog
+				$this->db->select('tbl_back.back_duracion');
+		        $this->db->from('tbl_back');        
+		        $this->db->where('tbl_back.backId', $id_solicitud);
+		        $query = $this->db->get(); 
+        		$duracion = $query->row('back_duracion');
+				break;
+			case '5':					// Predictivo
+				$this->db->select('predictivo.pred_duracion');
+		        $this->db->from('predictivo');        
+		        $this->db->where('predictivo.predId', $id_solicitud);
+		        $query = $this->db->get(); 
+        		$duracion = $query->row('pred_duracion');
+				break;					
+		}
+		return $duracion;
+	}	
+
+	// Devuelve duracion de la tarea original (backlog, predictivo, preventivo)
+	function getPeriodTarea($tipo,$id_solicitud){
+		
+		$duracion = 0;
+
+		// devuelve la duracion de la tarea segun prde prev o backlog	
+		switch ($tipo) {							
+			
+			case '3':					// Preventivo
+				$this->db->select('preventivo.cantidad');
+		        $this->db->from('preventivo');        
+		        $this->db->where('preventivo.prevId', $id_solicitud);
+		        $query = $this->db->get(); 
+        		$duracion = $query->row('cantidad');
+				break;
+
+			case '5':					// Predictivo
+				$this->db->select('predictivo.cantidad');
+		        $this->db->from('predictivo');        
+		        $this->db->where('predictivo.predId', $id_solicitud);
+		        $query = $this->db->get(); 
+        		$duracion = $query->row('cantidad');
+				break;				
+		}
+		return $duracion;
+	}
 
 
 
+  	// arama conjunto de OT para su insercion en la BD
+   	function armar_batch($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2){
+   		
+  		$data[] = $datos2;
+
+    	while ($fecha_limite >= $fec_programacion  ) {
+    		
+		 	// a la fecha de programacion le sumo la frecuencia en dias	   	
+	   		$nuev_fecha = strtotime ( '+'.$diasFrecuencia.'day' , strtotime ( $fec_programacion ) ) ;
+	   		$nuev_fecha = date ( 'Y-m-d H:i:s' , $nuev_fecha );
+	   		// guardo la fecha nueva en el array para nuevva OT
+	   		$datos2['fecha_program'] = $nuev_fecha;
+	   		// guardo el componete en el array batch
+	   		$data[] = $datos2;
+	   		// actualizo la fecha de programacion
+	   		$fec_programacion = $nuev_fecha;
+		} 
+
+		$this->Calendarios->setOTbatch($data); 		
+   	}
 
    	// Cambio de dia nuevo de programacion
    	public function updateDiaProg(){

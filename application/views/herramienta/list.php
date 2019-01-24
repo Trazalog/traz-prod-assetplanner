@@ -17,8 +17,8 @@
               <tr>
                 <th>Acciones</th>
                 <th>Codigo</th>
-                <th>Descripcion</th>
                 <th>Modelo</th>
+                <th>Descripcion</th>
                 <th>Marca</th>
                 <th>Deposito</th>
                 <th>Estado</th>
@@ -39,7 +39,7 @@
                   }
                   echo '</td>';
                   echo '<td>'.$z['herrcodigo'].'</td>';
-                  echo '<td>'.$z['herrmarca'].'</td>';
+                  echo '<td>'.$z['herrmarca'].'</td>';//modelo
                   echo '<td>'.$z['herrdescrip'].'</td>';
                   echo '<td>'.$z['marcadescrip'].'</td>';
                   echo '<td>'.$z['depositodescrip'].'</td>';
@@ -73,17 +73,17 @@ $(document).ready(function(event) {
       url: 'index.php/Herramienta/getpencil', //index.php/
       success: function(data){
         //console.log("Estoy editando");
-        //console.log(data);
+        console.table(data);
         //console.log(data[0]['modid']);             
         datos={
-          'codigode':data[0]['herrcodigo'],
-          'descripcionde':data[0]['herrdescrip'],
-          'modid':data[0]['modid'],
-          'depositoid':data[0]['depositoId'],
-          'marcade':data[0]['herrmarca'], 
-          'descrip': data[0]['depositodescrip'],
+          'codigode'     : data[0]['herrcodigo'],
+          'descripcionde': data[0]['herrdescrip'],
+          'marcaid'      : data[0]['modid'],
+          'depositoid'   : data[0]['depositoId'],
+          'descripmodelo': data[0]['herrmarca'], 
+          'descrip'      : data[0]['depositodescrip'],
           'descripmarca' : data[0]['marcadescrip'],
-          'descripdepo' : data[0]['depositodescrip'],
+          'descripdepo'  : data[0]['depositodescrip'],
         };
         completarEdit(datos);
       },
@@ -94,49 +94,117 @@ $(document).ready(function(event) {
     });
   });
 
-  // Eliminar
-  $(".fa-times-circle").click(function (e) { 
-    //console.log("Esto eliminando"); 
-    var id_herr = $(this).parent('td').parent('tr').attr('id');
-    //console.log(id_herr);
-    
-    $.ajax({
-      type: 'POST',
-      data: { id_herr: id_herr},
-      url: 'index.php/Herramienta/baja_herramienta', //index.php/
-      success: function(data){
-        //var data = jQuery.parseJSON( data );
-        //console.log(data);
-        //$(tr).remove();
-        alert("HERRAMIENTA Eliminado");
-        regresa();
-      },
-      error: function(result){
-        console.log(result);
-      },
-      dataType: 'json'
-    });
-  });
-
-  // Datatables
-  $('#deposito').DataTable({
-    "aLengthMenu": [ 10, 25, 50, 100 ],
-    "columnDefs": [ {
-      "targets": [ 0 ], 
-      "searchable": false
-    },
-    {
-      "targets": [ 0 ], 
-      "orderable": false
-    } ],
-    "order": [[1, "asc"]],
-  });
-
 });
 
-traer_deposito();
-traer_modelo();
+function completarEdit(datos){
+  $('#errorDe').hide();
+  $('#errorExisteDe').hide();
 
+  $('#codigode').val(datos['codigode']);
+  $('#descripcionde').val(datos['descripcionde']);
+  $('#modelode').val(datos['descripmodelo']);
+  fillMarcaEdit(datos['marcaid']);
+  fillDepositoEdit(datos['depositoid']);
+}
+
+function fillMarcaEdit(marcaid){
+  $('#modelode').html(); 
+  $.ajax({
+    type: 'POST',
+    data: { },
+    url: 'index.php/Herramienta/getMarca', 
+    success: function(data){
+      $('#marcade').empty();
+      for(var i=0; i < data.length ; i++) {
+        var nombre = data[i]['marcadescrip'];
+        var selected = (marcaid == data[i]['marcaid']) ? 'selected' : '';
+        var opcion  = "<option value='"+data[i]['marcaid']+"' " +selected+ ">" +nombre+ "</option>" ; 
+        $('#marcade').append(opcion); 
+      }
+    },
+    error: function(result){
+      console.log(result);
+    },
+    dataType: 'json'
+  });
+}
+
+function fillDepositoEdit(depositoid){
+  $('#depode').html('');
+  $.ajax({
+    type: 'POST',
+    data: { },
+    url: 'index.php/Herramienta/getdeposito',
+    success: function(data){
+      $('#depode').empty();
+      for(var i=0; i < data.length ; i++) {
+        var nombre = data[i]['depositodescrip'];
+        var selected = (depositoid == data[i]['depositoId']) ? 'selected' : '';
+        var opcion  = "<option value='"+data[i]['depositoId']+"' " +selected+ ">" +nombre+ "</option>" ; 
+        $('#depode').append(opcion); 
+      }
+    },
+    error: function(result){
+      console.log(result);
+    },
+    dataType: 'json'
+  });
+}
+
+
+  // Eliminar
+  // $(".fa-times-circle").click(function (e) { 
+  //   //console.log("Esto eliminando"); 
+  //   var id_herr = $(this).parent('td').parent('tr').attr('id');
+  //   //console.log(id_herr);
+    
+  //   $.ajax({
+  //     type: 'POST',
+  //     data: { id_herr: id_herr},
+  //     url: 'index.php/Herramienta/baja_herramienta', //index.php/
+  //     success: function(data){
+  //       //var data = jQuery.parseJSON( data );
+  //       //console.log(data);
+  //       //$(tr).remove();
+  //       alert("HERRAMIENTA Eliminado");
+  //       regresa();
+  //     },
+  //     error: function(result){
+  //       console.log(result);
+  //     },
+  //     dataType: 'json'
+  //   });
+  // });   
+
+  
+
+
+// Eliminar
+$(".fa-times-circle").click(function (e) { 
+    var id_ = $(this).parent('td').parent('tr').attr('id'); 
+    $('#id_herr').val(id_);
+    $('#modalaviso').modal('show');    
+  });  
+
+function elimHerramienta(){
+  var id_herr = $('#id_herr').val();
+  $.ajax({
+    type: 'POST',
+    data: { id_herr: id_herr},
+    url: 'index.php/Herramienta/baja_herramienta', 
+    success: function(data){
+      alert("HERRAMIENTA Eliminado");
+      regresa();
+    },
+    error: function(result){
+      console.log(result);
+    },
+    dataType: 'json'
+  });
+}
+
+
+traer_deposito();
 function traer_deposito(){
   $('#depo').html('');
   $.ajax({
@@ -160,42 +228,21 @@ function traer_deposito(){
   });
 }
 
-function traer_deposito2(){
-  $('#depode').html('');
-  $.ajax({
-    type: 'POST',
-    data: { },
-    url: 'index.php/Herramienta/getdeposito',
-    success: function(data){
-      $('#depode').append(opcion); 
-      for(var i=0; i < data.length ; i++) 
-      {    
-        var nombre = data[i]['depositodescrip'];
-        var opcion  = "<option value='"+data[i]['depositoId']+"'>" +nombre+ "</option>" ; 
-        $('#depode').append(opcion); 
-      }
-    },
-    error: function(result){
-      console.log(result);
-    },
-    dataType: 'json'
-  });
-}
-
+traer_modelo();
 function traer_modelo(){
   $('#modelo').html(''); 
   $.ajax({
     type: 'POST',
     data: { },
-    url: 'index.php/Herramienta/getmodelo', 
+    url: 'index.php/Herramienta/getMarca', 
     success: function(data){
       var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-      $('#modelo').append(opcion); 
+      $('#marca').append(opcion); 
       for(var i=0; i < data.length ; i++) 
       {    
         var nombre = data[i]['marcadescrip'];
         var opcion  = "<option value='"+data[i]['marcaid']+"'>" +nombre+ "</option>" ; 
-        $('#modelo').append(opcion); 
+        $('#marca').append(opcion); 
       }
     },
     error: function(result){
@@ -205,46 +252,9 @@ function traer_modelo(){
   });
 }
 
-function traer_modelo2(){
-  $('#modelode').html(); 
-  $.ajax({
-    type: 'POST',
-    data: { },
-    url: 'index.php/Herramienta/getmodelo', 
-    success: function(data){
-      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-      $('#modelode').append(opcion); 
-      for(var i=0; i < data.length ; i++) 
-      {    
-        var nombre = data[i]['marcadescrip'];
-        var opcion  = "<option value='"+data[i]['marcaid']+"'>" +nombre+ "</option>" ; 
-        $('#modelode').append(opcion); 
-      }
-    },
-    error: function(result){
-      console.log(result);
-    },
-    dataType: 'json'
-  });
-}
 
-function completarEdit(datos){
-  $('#errorDe').hide();
-  $('#errorExisteDe').hide();
-  //console.log("datos que llegaron");
-  //console.log(datos);
-  $('#codigode').val(datos['codigode']);
-  $('#marcade').val(datos['marcade']);
-  $('#descripcionde').val(datos['descripcionde']);
-  //$('select#modelode').val(datos['descripmarca']);
-  //$('select#depode').val(datos['descripdepo']);
-  traer_deposito2();
-  $('select#depode').append($('<option />', { value: datos['depositoid'],text: datos['descripdepo']}));
-  edito=datos['descripdepo'];
-  // $('select#depode').append($('<option />', { value: datos['depositoid'], text: datos['descripdepo'] }));                
-  $('select#modelode').append($('<option />', {value: datos['modid'], text: datos['descripmarca']}));
-  traer_modelo2();
-}
+
+
   
 function guardareditar(){
   //console.log("Estoy editando");
@@ -253,18 +263,18 @@ function guardareditar(){
     
   var cod     = $('#codigode').val();
   var descrip = $('#descripcionde').val();
-  var mod     = $('#modelode').val();
-  var mar     = $('#marcade').val();
+  var marcaid = $('#marcade').val();
+  var modelo  = $('#modelode').val();
   var dep     = $('#depode').val();
 
   var parametros = {
     'herrcodigo'  : cod,
     'herrdescrip' : descrip,
-    'herrmarca'   : mar,
-    'modid'       : mod,
+    'herrmarca'   : modelo,
+    'modid'       : marcaid,
     'depositoId'  : dep    
   };                                            
-  //console.log(parametros);
+  console.log(parametros);
   var hayError = false; 
   $('#errorDe').hide();
 
@@ -320,8 +330,8 @@ function guardar(){
   var parametros  = {
     'herrcodigo': codigo,
     'herrdescrip': descripcion,
-    'herrmarca': marca,
-    'modid': modelo,
+    'herrmarca': modelo,
+    'modid': marca,
     'depositoId': deposito,
     'equip_estad' :'AC' 
   };                                              
@@ -385,6 +395,20 @@ function regresa(){
   $("#content").load("<?php echo base_url(); ?>index.php/Herramienta/index/<?php echo $permission; ?>");
   WaitingClose();
 }
+
+// Datatables
+$('#deposito').DataTable({
+    "aLengthMenu": [ 10, 25, 50, 100 ],
+    "columnDefs": [ {
+      "targets": [ 0 ], 
+      "searchable": false
+    },
+    {
+      "targets": [ 0 ], 
+      "orderable": false
+    } ],
+    "order": [[1, "asc"]],
+  });
 </script>
 
 
@@ -431,15 +455,15 @@ function regresa(){
 
           <div class="col-xs-12">
             <div class="form-group">
-              <label for="">Modelo <strong style="color: #dd4b39">*</strong>:</label>
-              <input type="text" id="marca" name="marca" class="form-control" placeholder="Ingrese Modelo...">
+              <label for="modelo">Modelo <strong style="color: #dd4b39">*</strong>:</label>
+              <input type="text" id="modelo" name="modelo" class="form-control" placeholder="Ingrese Modelo...">
             </div>
           </div>
 
           <div class="col-xs-12">
             <div class="form-group">
-              <label for="">Marca <strong style="color: #dd4b39">*</strong>:</label>
-              <select type="text" id="modelo" name="modelo" class="form-control" ></select>
+              <label for="marca">Marca <strong style="color: #dd4b39">*</strong>:</label>
+              <select type="text" id="marca" name="marca" class="form-control" ></select>
             </div>
           </div>
 
@@ -506,15 +530,15 @@ function regresa(){
 
           <div class="col-xs-12">
             <div class="form-group">
-              <label for="marcade">Modelo <strong style="color: #dd4b39">*</strong>:</label>
-              <input type="text" id="marcade" name="marcade" class="form-control" placeholder="Ingrese Marca...">
+              <label for="modelode">Modelo <strong style="color: #dd4b39">*</strong>:</label>
+              <input type="text" id="modelode" name="modelode" class="form-control">
             </div>
           </div>
 
           <div class="col-xs-12">
             <div class="form-group">
-              <label for="modelode">Marca <strong style="color: #dd4b39">*</strong>:</label>
-              <select type="text" id="modelode" name="modelode" class="form-control" ></select>
+              <label for="marcade">Marca <strong style="color: #dd4b39">*</strong>:</label>
+              <select type="text" id="marcade" name="marcade" class="form-control" ></select>
             </div>
           </div>
 
@@ -536,3 +560,28 @@ function regresa(){
   </div>  <!-- /.modal-dialog modal-lg -->
 </div>  <!-- /.modal -->
 <!-- / Modal -->
+
+<!-- Modal aviso eliminar -->
+<div class="modal fade" id="modalaviso">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-trash text-light-blue"></span> Eliminar Herramienta</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-xs-12">
+            <h4>¿ DESEA ELIMINAR ESTA HERRAMIENTA ?</h4>
+            <input type="text" id="id_herr" class="hidden">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="elimHerramienta()">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /  Modal aviso eliminar -->

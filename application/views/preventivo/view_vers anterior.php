@@ -72,7 +72,15 @@
                     <input type="text" class="datepicker form-control ultimo" id="ultimo" name="vfecha" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y') ; ?>" size="27"/>
                   </div> 
                   <div class="col-xs-12 col-sm-6">Periodo <strong style="color: #dd4b39">*</strong>:
-                    <select id="periodo" name="periodo" class=" selectpicker form-control input-md">
+                    <select id="periodo"  name="periodo" class=" selectpicker form-control input-md">
+                      <!--<option >Anual</option>-->
+                      <option value="Diario">Diario</option>
+                      <option value="Mensual">Mensual</option>
+                      <!--<option >Periodos</option>-->
+                      <option value="Kilometro">Kilometros</option>
+                      <option value="Horas">Horas</option>
+                      <option value="Ciclos">Ciclos</option>
+                      <!--<option >Semestral</option>-->
                     </select>
                   </div>
                   <div class="col-xs-12 col-sm-6">Frecuencia <strong style="color: #dd4b39">*</strong>:
@@ -226,33 +234,6 @@
 </section>
 
 <script>
-traer_periodo();
-function traer_periodo(periodoId){
-  if (periodoId === undefined) {
-    periodoId = null;
-  }
-  $('#periodo').html(""); 
-  $.ajax({
-    data: {periodoId:periodoId },
-    dataType: 'json',
-    type: 'POST',
-    url: 'index.php/Calendario/getperiodo',
-    success: function(data){
-      var opcion = "<option value='-1'>Seleccione...</option>" ; 
-      $('#periodo').append(opcion); 
-      for(var i=0; i < data.length ; i++) 
-      {    
-        var nombre   = data[i]['descripcion'];
-        var selected = (periodoId == data[i]['idperiodo']) ? 'selected' : '';
-        var opcion   = "<option value='"+data[i]['idperiodo']+"' " +selected+ "'>" +nombre+ "</option>" ; 
-        $('#periodo').append(opcion);                        
-      }
-    },
-    error: function(result){  
-      console.log(result);
-    },
-  });
-}
 
 // Guarda Preventivo  
 $("#formPreventivo").submit(function (event){   
@@ -448,8 +429,7 @@ function traer_componente(id_equipo){
 }
 
 $('#periodo').change(function(){
-  //alert('hola');
-  if( $('#periodo').val()=='5' || $('#periodo').val()=='6' ) { //horas ó ciclos
+  if( $('#periodo').val()=='horas' || $('#periodo').val()=='ciclos' ) {
     $('#alerta').prop('disabled', false);
     $('#lectura_base').prop('disabled', false);
   } else {

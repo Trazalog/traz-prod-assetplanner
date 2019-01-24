@@ -2,50 +2,82 @@
 
 class Notapedidos extends CI_Model
 {
-	function __construct()
-	{
-		parent::__construct();
-	}
-	
-    function notaPedidos_List(){
-    
-      $this->db->select('tbl_notapedido.id_notaPedido,
-                          tbl_notapedido.fecha,
-                          tbl_notapedido.id_ordTrabajo,
-                          orden_trabajo.descripcion');     
-      $this->db->from('tbl_notapedido');
-      $this->db->join('orden_trabajo','tbl_notapedido.id_ordTrabajo = orden_trabajo.id_orden');  
-      
-      $query= $this->db->get();
-    
-      if ($query->num_rows()!=0)
-      {
-       return $query->result_array();          
-      }
-      else
-      { 
-        return array();
-      }
-    }       
+  function __construct()
+  {
+    parent::__construct();
+  }
+  
+    function notaPedidos_List()
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
+        $this->db->select('tbl_notapedido.id_notaPedido,
+            tbl_notapedido.fecha,
+            tbl_notapedido.id_ordTrabajo,
+            orden_trabajo.descripcion');
+        $this->db->from('tbl_notapedido');
+        $this->db->join('orden_trabajo','tbl_notapedido.id_ordTrabajo = orden_trabajo.id_orden');
+        $this->db->where('tbl_notapedido.id_empresa', $empId);
+        $query = $this->db->get();
 
-      // Trae lista de articulos por id de nota de pedido 
-    function getNotaPedidoIds($data){
-      
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();          
+        }
+        else
+        { 
+            return array();
+        }
+    }
+
+        //
+    function getNotasxOT($id)
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
+        $this->db->select('
+            tbl_notapedido.id_notaPedido,
+            tbl_notapedido.fecha,
+            tbl_notapedido.id_ordTrabajo,
+            solicitud_reparacion.solicitante,
+            orden_trabajo.descripcion
+        ');
+        $this->db->from('tbl_notapedido');
+        $this->db->join('orden_trabajo','tbl_notapedido.id_ordTrabajo = orden_trabajo.id_orden');
+        $this->db->join('solicitud_reparacion', 'orden_trabajo.id_solicitud = solicitud_reparacion.id_solicitud');
+        $this->db->where('tbl_notapedido.id_empresa', $empId);
+        $this->db->where('orden_trabajo.id_orden', $id);
+
+        $query = $this->db->get();
+
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();          
+        }
+        else
+        { 
+            return array();
+        }
+    }
+
+    // Trae lista de articulos por id de nota de pedido 
+    function getNotaPedidoIds($data)
+    {  
       $id = $data['id'];
       
       $this->db->select('tbl_notapedido.id_notaPedido,
-                          tbl_notapedido.fecha,
-                          tbl_notapedido.id_ordTrabajo,
-                          orden_trabajo.descripcion,
-                          tbl_detanotapedido.cantidad,
-                          tbl_detanotapedido.provid,
-                          tbl_detanotapedido.fechaEntrega,
-                          tbl_detanotapedido.fechaEntregado,
-                          tbl_detanotapedido.remito,
-                          tbl_detanotapedido.estado,
-                          abmproveedores.provnombre,
-                          articles.artDescription'
-                        );
+        tbl_notapedido.fecha,
+        tbl_notapedido.id_ordTrabajo,
+        orden_trabajo.descripcion,
+        tbl_detanotapedido.cantidad,
+        tbl_detanotapedido.provid,
+        tbl_detanotapedido.fechaEntrega,
+        tbl_detanotapedido.fechaEntregado,
+        tbl_detanotapedido.remito,
+        tbl_detanotapedido.estado,
+        abmproveedores.provnombre,
+        articles.artDescription'
+      );
       $this->db->from('tbl_notapedido');
       $this->db->join('orden_trabajo', 'tbl_notapedido.id_ordTrabajo = orden_trabajo.id_orden');
       $this->db->join('tbl_detanotapedido', 'tbl_detanotapedido.id_notaPedido = tbl_notapedido.id_notaPedido');
@@ -60,69 +92,75 @@ class Notapedidos extends CI_Model
       else{ 
         return array();
       }
-    }	
+    } 
 
-    function getOrdenesCursos(){
-        
+    function getOrdenesCursos()
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
+
         $this->db->select('orden_trabajo.id_orden,orden_trabajo.descripcion');
         $this->db->from('orden_trabajo');
         $this->db->where('orden_trabajo.estado', 'C');
+        $this->db->where('orden_trabajo.id_empresa', $empId);
         $query = $this->db->get();
-        if ($query->num_rows() != 0){
-            
+        if ($query->num_rows() != 0)
+        {    
             return $query->result_array();             
         }        
     }
 
-    function getDetalles($id_orden){
-        
+    function getDetalles($id_orden)
+    {    
         $id = $id_orden['id_orden'];
         $this->db->select('orden_trabajo.descripcion');
         $this->db->from('orden_trabajo');
         $this->db->where('orden_trabajo.id_orden', $id);
         $query = $this->db->get();
-        if ($query->num_rows() != 0){
-            
+        if ($query->num_rows() != 0)
+        {    
             return $query->result_array();             
         }   
     }     
             
-    // trae artículos por id de emp logueada.
-    function getArticulos(){
+    function getArticulos()
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
 
-			$userdata = $this->session->userdata('user_data');
-			$empId = $userdata[0]['id_empresa'];		
-			$this->db->select('articles.artId, 
-											articles.artBarCode,
-											articles.artDescription');
-			$this->db->from('articles');
-			$this->db->where('articles.id_empresa', $empId);
-			$query = $this->db->get();
-			
-			$i = 0;
-			foreach ($query->result() as $row){
+        $this->db->select('articles.artId, articles.artBarCode, articles.artDescription');
+        $this->db->from('articles');  
+        $this->db->where('articles.id_empresa', $empId);  
+        $this->db->order_by('articles.artBarCode');
+        $query = $this->db->get();
 
-					$insumos[$i]['value']       = $row->artId;
-					$insumos[$i]['label']       = $row->artBarCode;
-					$insumos[$i]['descripcion'] = $row->artDescription;
-					$i++;
-			}
-			return $insumos;
+        //$query = $this->db->query("SELECT articles.artId, articles.artBarCode,articles.artDescription FROM articles");
+        $i     = 0;
+        foreach ($query->result() as $row)
+        {
+            $insumos[$i]['value']       = $row->artId;
+            $insumos[$i]['label']       = $row->artBarCode;
+            $insumos[$i]['descripcion'] = $row->artDescription;
+            $i++;
+        }
+        return $insumos;
     }  
-		// trae proveedores por id de emp logueada.
-    function getProveedores(){
 
-      $userdata = $this->session->userdata('user_data');
-			$empId = $userdata[0]['id_empresa'];  
-			$this->db->select('abmproveedores.provid, abmproveedores.provnombre');
-			$this->db->from('abmproveedores'); 
-			$this->db->where('abmproveedores.id_empresa', $empId);       
-			$query = $this->db->get();
-			if ($query->num_rows() != 0){
-					
-					return $query->result_array();             
-			}   
-    }    
+    function getProveedores()
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
+
+        $this->db->select('abmproveedores.provid, abmproveedores.provnombre');
+        $this->db->from('abmproveedores');  
+        $this->db->where('abmproveedores.id_empresa', $empId);  
+        $this->db->order_by('abmproveedores.provnombre');
+        $query = $this->db->get();
+        if ($query->num_rows() != 0){
+            
+            return $query->result_array();             
+        }   
+    }  
 
     function setNotaPedidos($data)
     {
@@ -147,14 +185,14 @@ class Notapedidos extends CI_Model
             $newDate = date("Y-m-d", strtotime($date));
 
             $nota = array(
-                    'id_notaPedido' => $idNota,
-                    'artId' => $insumo,
-                    'cantidad' => $cant,
-                    'provid' => $proveed,
-                    'fechaEntrega' => $newDate,
+                    'id_notaPedido'  => $idNota,
+                    'artId'          => $insumo,
+                    'cantidad'       => $cant,
+                    'provid'         => $proveed,
+                    'fechaEntrega'   => $newDate,
                     'fechaEntregado' => $newDate,
-                    'remito' => 1,
-                    'estado' => 'P' // Estado Pedido
+                    'remito'         => 1,
+                    'estado'         => 'P' // Estado Pedido
                     );
             $this->db->insert('tbl_detanotapedido', $nota);
         }
@@ -169,7 +207,7 @@ class Notapedidos extends CI_Model
 
     } // fin setNotaPedidos   
     
-	
+  
     //
     function getOTporId($id)
     {

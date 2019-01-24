@@ -7,6 +7,7 @@
         <div class="box-header">
           <h3 class="box-title">Solicitud de Servicios</h3>
           <?php
+          
            if (strpos($permission,'Add') !== false) {
               echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" data-toggle="modal" data-target="#modalservicio" id="btnAdd">Agregar</button>';
            }          
@@ -103,7 +104,7 @@
 <script>
   // Elimina Solicitud - Chequeado
   $('.fa-times-circle').click( function eliminarSolicitud(){
-    if (!confirm("Realmente desea eiminar esta Solicitud?")){
+    if (!confirm("Realmente desea eliminar esta Solicitud?")){
       return;
     }else{
         var id_solic = parseInt($(this).parent('td').parent('tr').attr('id'));

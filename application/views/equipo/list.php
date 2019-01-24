@@ -76,7 +76,7 @@
                     .($a['estado'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' 
                     :($a['estado'] == 'IN' ? '<small class="label pull-left bg-blue">Inhabilitado</small>'
                     :($a['estado'] == 'RE' ? '<small class="label pull-left bg-yellow">Reparación</small>' 
-                    : '<small class="label pull-left bg-red">Anulado</small>'))).'</td>';
+                    : '<small class="label pull-left bg-teal">Alta</small>'))).'</td>';
                   echo '</tr>';
                 }
               ?>
@@ -778,6 +778,7 @@ function guardar(){
   var id_proceso          = $('#proceso option:selected').val();
   var id_cliente          = $('#cliente option:selected').val();
   var numero_serie        = $('#numse').val();
+  var descrip_tecnica    = $('#destec').val();
 
   var parametros = {
     'descripcion': descripcion,
@@ -796,7 +797,8 @@ function guardar(){
     'numero_serie' : numero_serie,
     'estado' : 'AC',
     'fecha_ultimalectura': fecha_ultimalectura,
-    'ultima_lectura': ultima_lectura,             
+    'ultima_lectura': ultima_lectura,   
+    'descrip_tecnica':descrip_tecnica,
   };
 
   console.log("estoy editando");
@@ -1209,7 +1211,7 @@ function llenarCampos(data) {
   llenar_cliente(data[0]['cliId']);
   $('#descripcion').val( data[0]['deeq'] );
   $('#numse').val( data[0]['numero_serie'] );
-  $('#ubicacion').val( data[0]['id_hubicacion'] );
+  $('#ubicacion').val( data[0]['ubicacion'] );
   $('#fecha_ingreso').val( data[0]['fecha_ingreso'] );
   $('#fecha_garantia').val( data[0]['fecha_garantia'] );
   $('#fecha_ultimalectura').val( data[0]['fecha_ultimalectura'] );
@@ -1712,7 +1714,7 @@ function guardarmarca(){
 
 
 <!-- Modal CONTRATISTA -->
-<div id="modalasignar" class="modal fade" role="dialog">
+<div id="modalasignar" class="modal" role="dialog">
   <div class="modal-dialog modal-lg">
 
     <div class="modal-content">
@@ -1812,7 +1814,7 @@ function guardarmarca(){
 <!-- / Modal CONTRATISTA -->
 
 <!-- Modal EDITAR -->
-<div id="modaleditar" class="modal fade" role="dialog">
+<div id="modaleditar" class="modal" role="dialog">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -2027,7 +2029,7 @@ function guardarmarca(){
 <!-- / Modal EDITAR -->
 
 <!-- Modal LECTURA -->
-<div class="modal fade" id="modalectura" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modalectura" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       
@@ -2084,7 +2086,7 @@ function guardarmarca(){
 <!-- / Modal LECTURA -->
 
 <!-- Modal Historial de Lecturas --> 
-<div class="modal fade" id="modalhistlect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modalhistlect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -2124,7 +2126,7 @@ function guardarmarca(){
 
 
 <!-- Modal criticidad-->
-<div class="modal fade" id="modalcrit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modalcrit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
 
@@ -2153,7 +2155,7 @@ function guardarmarca(){
 <!-- / Modal -->
 
 <!-- Modal area-->
-<div class="modal fade" id="modalarea" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modalarea" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
 
@@ -2181,7 +2183,7 @@ function guardarmarca(){
 <!-- / Modal -->
 
 <!-- Modal Proceso-->
-<div class="modal fade" id="modalproceso" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modalproceso" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
 
@@ -2209,7 +2211,7 @@ function guardarmarca(){
 <!-- / Modal -->
 
 <!-- Modal Etapa-->
-<div class="modal fade" id="modaletapa" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modaletapa" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
 
@@ -2237,7 +2239,7 @@ function guardarmarca(){
 <!-- / Modal -->
 
 <!-- Modal Grupo-->
-<div class="modal fade" id="modalgrupo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modalgrupo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
 
@@ -2265,7 +2267,7 @@ function guardarmarca(){
 <!-- / Modal -->
 
 <!-- Modal Marca-->
-<div class="modal fade" id="modalMarca" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modalMarca" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
 

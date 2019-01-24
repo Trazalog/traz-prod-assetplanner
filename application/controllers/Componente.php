@@ -89,10 +89,24 @@ class Componente extends CI_Controller {
 		else echo "nada";
 	}
 
-    // Trae componentes segun empresa (no equipos)
-	public function getcomponente()
-	{	
+	// Trae componentes segun empresa (no equipos)
+	public function getcomponente(){	
 		$compo = $this->Componentes->getcomponente();	
+		if($compo){	
+			$arre = array();
+	        foreach ($compo as $row ) 
+	        {   
+	           $arre[] = $row;
+	        }
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}
+
+	// Trae sistemas
+	public function getsistema()
+	{	
+		$compo = $this->Componentes->getsistema();	
 		if($compo){	
 			$arre = array();
 	        foreach ($compo as $row ) 
@@ -144,28 +158,30 @@ class Componente extends CI_Controller {
   	// Asocia equipo/componente - Listo
 	public function guardar_componente()
 	{	
-		$datos  = $_POST['data'];
-		$compo  = $_POST['comp'];
-		$codigo = $_POST['codigo'];
-		$ba     = $_POST['x'];
-		$ede    = $_POST['ge'];
-		$j      = 1;	
+		$idequipo = $_POST['idequipo'];
+		$compo    = $_POST['comp'];
+		$codigo   = $_POST['codigo'];
+		$sistema  = $_POST['sistemaid'];
+		$ba       = $_POST['x'];
+		$ede      = $_POST['ge'];
+		$j        = 1;	
 	    for ($i=0; $i < $ba ; $i++)
 	    {     
 	 	    if($compo[$j])
 	 	    {
 	        	$datos2 = array(
-					'id_equipo'     => $ede, 
+					'id_equipo'     => $idequipo, 
 					'id_componente' => $compo[$j],
 					'codigo'        => $codigo[$j],
-					'estado'        => 'AC'	        	 
+					'estado'        => 'AC',
+					'sistemaid'     => $sistema[$j]
 	        	);	
 	        	//print_r($datos2);
 	        	$res = $this->Componentes->insert_componente($datos2);	     
 	        }
 	        $j++;
 	    }
-		return $res;    
+		return $res;       
 	}
 
 	// Trae componentes segun id de equipo - Listo

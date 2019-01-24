@@ -82,7 +82,7 @@
     </div>
     <div class="col-xs-8">
         <div class="fileinput fileinput-new" data-provides="fileinput" data-name="profileImage">
-            <div class="fileinput-new thumbnail" style="width: 150; height: 150px;">
+            <div class="fileinput-new thumbnail" style="width: 150px; height: 150px;">
                 <?php $user_image = $data['user']['usrimag'];
                 if( $user_image != '' ) {
                     $user_image = 'data:image/jpg;base64,'.base64_encode($user_image).'" ';

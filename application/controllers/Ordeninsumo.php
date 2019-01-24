@@ -190,17 +190,15 @@ class Ordeninsumo extends CI_Controller {
 	public function getOT()
 	{
 		$solicitante = $this->Ordeninsumos->getOT();
-		if($solicitante)
-		{	
+		if($solicitante){	
 			$arre = array();$i=0;
-	        foreach ($solicitante as $valor ) 
-	        {   
+			foreach ($solicitante as $valor ){   
 				$valorS = (array)$valor;
 				$arre[$i]['value'] = $valorS['id_orden'];
 				$arre[$i]['label'] = $valorS['id_orden'];
 				$arre[$i]['info']  = $valorS['descripcion'];
 				$i++;
-	        }
+			}
 			echo json_encode($arre);
 		}
 		else echo "nada";
