@@ -35,7 +35,7 @@
                   $grupoId = $userdata[0]["grpId"];
 
                     if(count($list) > 0) {
-                      
+
                       foreach($list as $f){
 
                           // usuario logueado o grupo administrador
@@ -589,17 +589,17 @@
         		success: function(data){
                     //WaitingClose('Guardado exitosamente...');
                     console.log(data);
-                    if (data['reponse_code'] == 201){
+                    if (data['responsecabecera']['reponse_code'] == 200){
                       var permisos = '<?php echo $permission; ?>';
                       cargarView('Sservicio', 'index', permisos) ;
                       alert("Solicitud generada exitosamente");
                     } else{
-                      if(data['reponse_code'] == 400){
-
+                      if(data['responsecabecera']['reponse_code'] == 400){
+                        alert("NO se ha generado la Solicitud de Servicios (Error en BPM)");
                       }else{
-
+                        alert("NO se ha generado la Solicitud de Servicios (Error en BD)");
                       }
-                      alert("Error en la generacion de la Solicitud de Servicio...");
+                      //alert("Error en la generacion de la Solicitud de Servicio...");
                     }                   
         					},
         		error: function(data){

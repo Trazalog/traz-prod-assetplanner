@@ -200,16 +200,10 @@ class Sservicios extends CI_Model
 			
 			$resource = 'API/bpm/process/';
 			$url = BONITA_URL.$resource;
-			$com = '/instantiation';
-			try {
-				file_get_contents($url.BPM_PROCESS_ID.$com, false, $param);
-				$response = $this->parseHeaders( $http_response_header );
-			} catch (Exception $e) {
-				echo 'Excepción capturada: ',  $e->getMessage(), "\n";
-				echo 'respuestas: ';
-				var_dump( $http_response_header);
-			} 
-				
+			$com = '/instantiation';			
+			$caseId = file_get_contents($url.BPM_PROCESS_ID.$com, false, $param);
+			$response['responsecabecera'] = $this->parseHeaders( $http_response_header );
+			$response['caseId'] = $caseId;	
 			return $response;
 		}
 
@@ -228,6 +222,16 @@ class Sservicios extends CI_Model
 			}
 			return $head;
 		}
+
+	// guarda CaseId en solic de servicios
+		function setCaseId($caseId,$id_solServicio){			
+			
+			$caseId = array(
+				'case_id' => $caseId		        
+			);
+			$this->db->where('id_solicitud', $id_solServicio);
+			$result = $this->db->update('solicitud_reparacion', $caseId);
+		}	
 
 /*	./ INTEGRACION CON BPM */
 

@@ -1,7 +1,7 @@
-<input type="" id="permission" value="<?php echo $permission;?>">
+<input type="hidden" id="permission" value="<?php echo $permission;?>">
 
 <section class="content">
-	<?php //echo cargarCabecera($idPedTrabajo); ?>
+	<?php cargarCabecera($id_OT,$id_SS,$id_EQ); ?>
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="box">

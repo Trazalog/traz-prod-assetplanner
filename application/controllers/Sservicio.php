@@ -78,22 +78,32 @@ class Sservicio extends CI_Controller {
 			echo json_encode($result);
 		}
 		// lanza proceso en BPM (inspección)
-		function lanzarProcesoBPM(){
-			//TODO: traer id de solicitud de servicio para enviar a bpm
-					//	revisar contract		
+		function lanzarProcesoBPM(){		
 			
 			// inserta registro en  tabla solicitud de reparacion
-			$id_solServicio = $this->Sservicios->setservicios($this->input->post());
-			
+			$id_solServicio  = $this->Sservicios->setservicios($this->input->post());
+			//dump($id_solServicio, 'id solic de servicio');
 			if($id_solServicio){
 				$parametros = $this->Bonitas->conexiones();
 				$parametros["http"]["method"] = "POST";
-				$idInspector = array (
-					"idSolicitudServicio"	=>	$id_solServicio
-				);	
-				$parametros["http"]["content"] = json_encode($idInspector);
+				$contract = array (
+					"idSolicitudServicio"	=>	$id_solServicio,
+												"idOT"  => 	0
+				);					
+				$parametros["http"]["content"] = json_encode($contract);
 				$param = stream_context_create($parametros);
 				$result = $this->Sservicios->lanzarProcesoBPM($param);
+				$caseId = json_decode($result['caseId'],true);
+				
+				if (json_decode($result['caseId'])) {
+					//update de solic de servicio concaseid
+					$this->Sservicios->setCaseId($caseId['caseId'],$id_solServicio);
+				} else{ 
+					$result = $this->Sservicios->elimSolicitudes($id_solServicio);
+					$result = 150;// codigo inventado
+					echo json_encode($result);
+				}
+				
 				echo json_encode($result);		
 			}else{ 
 				$result = $this->Sservicios->elimSolicitudes($id_solServicio);

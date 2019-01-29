@@ -97,23 +97,15 @@
 
 	function GuardarFormulario(validarOn){
 
-		console.log(form_actual_id + ' id form');
-		console.log(form_actual_data.attr("data-formid") + ' id de form en bd');
-		console.log(form_actual_data.attr("data-bpmIdTarea") + ' bpm id');
-		
-		console.log($('#id_listarea').val() + 'id listarrea');
-		
-		//return;
-		
-
-
+		// console.log(form_actual_id + ' id form');
+		// console.log(form_actual_data.attr("data-formid") + ' id de form en bd');
+		// console.log(form_actual_data.attr("data-bpmIdTarea") + ' bpm id');		
+		// console.log($('#id_listarea').val() + 'id listarrea');	
 		var imgs = $('input.archivo');
 		var formData = new FormData($("#"+form_actual_id)[0]);
 		var id_listarea = form_actual_data.attr("data-bpmIdTarea");
 		formData.append('id_listarea', id_listarea);
 		formData.append('idformulario', form_actual_id);
-
-
 
 		/** subidad y resubida de imagenes **/
 		// Tomo los inputs auxiliares cargados
@@ -216,35 +208,7 @@
 								alert("Error: No se pudo obtener el Formulario");
       },
     });
-  });
-
-  // function getformularioDiag() {
-  //   console.log("Obteniendo Formulario Diagnostico...");  
-  //   // llena form una sola vez al primer click
-  //   if (click == 0) {
-  //     var estadoTarea = $('#estadoTarea').val();
-  //     // toma id de form asociado a listarea en TJS
-  //     var idForm = $(form_actual_data).attr("data-formid");
-  //     // guarda el id form asoc a tarea std en modal para guardar
-  //     $('#idformulario').val(idForm);
-
-  //     // trae valores validos para llenar componentes de form asoc.
-  //     $.ajax({
-  //       type: 'POST',
-  //       data: { idForm: idForm},
-  //       url: 'index.php/Tarea/getValValido',
-  //       success: function(data){
-  //         console.log('valores de componentes: ');
-  //         console.table(data);
-  //         llenaComp(data);
-  //       },
-  //       error: function(result){
-  //         console.log(result);
-  //       },
-  //       dataType: 'json'
-  //     });
-  //   }
-  // }
+  }); 
 
   function existFunction(nombre){
 		var fn = window[nombre]; 

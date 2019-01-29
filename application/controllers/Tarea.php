@@ -121,24 +121,25 @@ class Tarea extends CI_Controller {
 			}
 			// termina tareas en BPM
 			public function terminarTareaStandarenBPM(){
-
-				$idTarBonita = $this->input->post('idTarBonita');
-				//$id_listarea = $this->input->post('id_listarea');
-				// trae la cabecera
-				$parametros = $this->Bonitas->conexiones();
-				// Cambio el metodo de la cabecera a "PUT"
-				$parametros["http"]["method"] = "POST";
-				// Variable tipo resource referencia a un recurso externo.
-				$param = stream_context_create($parametros);
-				$response = $this->Tareas->terminarTareaStandarenBPM($idTarBonita,$param);
+				
+				// $idTarBonita = $this->input->post('idTarBonita');
+				// //$id_listarea = $this->input->post('id_listarea');
+				// // trae la cabecera
+				// $parametros = $this->Bonitas->conexiones();
+				// // Cambio el metodo de la cabecera a "PUT"
+				// $parametros["http"]["method"] = "POST";
+				// // Variable tipo resource referencia a un recurso externo.
+				// $param = stream_context_create($parametros);
+				// $response = $this->Tareas->terminarTareaStandarenBPM($idTarBonita,$param);
 	
-				// guarda el taskId de BPM en tbl_listareas
-				if($this->input->post('esTareaStd')==1){
-					$resp = $this->Tareas->updateTaskEnListarea($id_listarea,$idTarBonita);
-				}
-	
+				// // guarda el taskId de BPM en tbl_listareas
+				// if($this->input->post('esTareaStd')==1){
+				// 	$resp = $this->Tareas->updateTaskEnListarea($id_listarea,$idTarBonita);
+				// }
+					
 				echo json_encode($response);
-			}
+			}	
+
 			// trae datos para llenar notificaion estandar y formulario asociado
 			public function detaTarea($permission,$idTarBonita){
 
@@ -157,7 +158,7 @@ class Tarea extends CI_Controller {
 				$caseId = $data['TareaBPM']["caseId"];
 				//dump($caseId, 'caseId:');
 				//FIXME: SACAR HARDCODEO A NOMBRE DE TAREA
-				$data['TareaBPM']["displayName"] = 'Revision total de motor';
+				//$data['TareaBPM']["displayName"] = 'Revision total de motor';
 				//Devuelve datos de tarea por nombre 
 				$data['infoTarea'] = $this->Tareas->getDatosTarea($data['TareaBPM']["displayName"]);
 				//dump($data['infoTarea'], 'info tarea');
@@ -170,7 +171,13 @@ class Tarea extends CI_Controller {
 					$data['id_OT'] = $id_OT;
 					$data['id'] = 160501;
 				}
-				
+				// FIXME: SACAR HARDCODEO
+				$id_OT = 22;
+				$id_SS = 22;
+				$id_EQ = 9;
+				$data['id_OT'] = $id_OT;
+				//$data['id_SS'] = $id_SS;
+				$data['id_EQ'] = $id_EQ;
 				// Formularios para subtareas (las tareas no tienen fomularios)
 				// si hay OT
 				if($id_OT != 0){
@@ -207,11 +214,23 @@ class Tarea extends CI_Controller {
 
 				switch ($data['TareaBPM']['displayName']) {
  
-					
+					// case 'Analisis de Solicitud de Servicio':
+					// 	//dump($data, 'datos de solicitud');
+					// 	$this->load->view('tareas/view_analisisSServicios', $data);
+					// 	$this->load->view('tareas/scripts/tarea_std');
+					// 	$this->load->view('tareas/scripts/abm_forms');
+					// 	$this->load->view('tareas/scripts/validacion_forms');
+					// 	break;
+
+					case 'Analisis de Solicitud de Servicio':
+						$this->load->view('tareas/view_planificar', $data);
+						$this->load->view('tareas/scripts/tarea_std');
+						// $this->load->view('tareas/scripts/abm_forms');
+						// $this->load->view('tareas/scripts/validacion_forms');
+						break;
+
 					default:
-						//dump($data, 'datos');
-						//dump($data['subtareas'], 'subtareas con info: ');
-						$this->load->view('tareas/view_', $data);
+						$this->load->view('tareas/view_resguardoparapruebas', $data);
 						$this->load->view('tareas/scripts/tarea_std');
 						$this->load->view('tareas/scripts/abm_forms');
 						$this->load->view('tareas/scripts/validacion_forms');
@@ -306,14 +325,31 @@ class Tarea extends CI_Controller {
 				$response['html'] = $this->load->view('tareas/viewFormSubtareas', $data, true);
 				echo json_encode($response);
 			}
+
+			public function validarCamposObligatorios(){
+				
+				$info = $this->input->post('formIdOt');
+				//dump($info, 'formularios ids: ');
+				$i=0;
+				foreach ($info as $value) {
+					$idForm = $value['idForm'];
+					$idOT = $value['idOT'];
+				
+					if ($this->Tareas->validarCamposObligatorios($idForm,$idOT)) {
+						$novalidados[$i] = $idForm;
+						$i++;
+					}
+				}
+				echo json_encode($novalidados);
+			}
 			// valida que los campos obligatorios esten completados
-			public function ValidarObligatorios(){
-				$form_id = $this->input->post("form_id");
-				$id_OT = $this->input->post("id_OT");
-				$result = $this->Tareas->ValidarObligatorios($form_id,$id_OT);
-				//dump($result, 'validaaion: ');
-				echo $result['result'];
-			}			
+			// public function ValidarObligatorios(){
+			// 	$form_id = $this->input->post("form_id");
+			// 	$id_OT = $this->input->post("id_OT");
+			// 	$result = $this->Tareas->ValidarObligatorios($form_id,$id_OT);
+			// 	//dump($result, 'validaaion: ');
+			// 	echo $result['result'];
+			// }			
 			// guarda  form commpletado 
 			public function guardarForm(){
 

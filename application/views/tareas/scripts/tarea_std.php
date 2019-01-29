@@ -1,8 +1,7 @@
 <script>  //Script para Vista Standar
           
     evaluarEstado();    
-    function evaluarEstado(){
-       
+    function evaluarEstado(){       
 			var asig = $('#asignado').val();       
 			// si esta tomada la tarea
 			if(asig != ""){
@@ -22,6 +21,12 @@
 			$("#btontomar").hide();
 			$("#formulario").show();
 			$('#acciones_view').show();
+			// deshabilito columna y formulario
+			$(".columheader").show();
+			$(".getFormularioTarea").show();
+			$("#pedidoInsumos").show();
+			$('#decisionSolicitud').show();
+			
     }
     function deshabilitar(){
 			// habilito btn tomar
@@ -33,7 +38,12 @@
 			$("#comentario").hide();
 			$("#formulario").hide();
 			$('#acciones_view').hide();
-    
+			// deshabilito columna y formulario
+			$(".columheader").hide();
+			$(".getFormularioTarea").hide();
+			$("#pedidoInsumos").hide();	
+			$('#decisionSolicitud').hide();	
+				
     }    
     // Volver al atras
     $('#cerrar').click(function cargarVista() {
@@ -69,38 +79,103 @@
 			});
     });
                
-    function terminarTarea(){
-			var ban = true;
+    // function terminarTarea(){
+		// 	var ban = true;
+		// 	$('.getFormularioTarea').each(function( index ) {
+		// 	if($( this ).attr('data-open')=="true"){
+		// 			console.log( index + ": " + $( this ).attr('data-validado'));
+		// 			ban = ban && ($( this ).attr('data-validado') == "true");
+		// 	}
+		// 	});
+		// 	if(ban==false){alert("Para concluir esta actividad primero debe Validar el Formulario");return;}
+		// 	WaitingOpen('Cerrando Tarea');
+		// 	var idTarBonita = $('#idTarBonita').val();
+		// 	//alert(idTarBonita);
+		// 	$.ajax({
+		// 			type: 'POST',
+		// 			data: {
+		// 					'idTarBonita': idTarBonita,
+		// 			},
+		// 			url: 'index.php/Tarea/terminarTarea',
+		// 			success: function(data) {
+		// 								WaitingClose();
+		// 							// toma a tarea exitosamente
+		// 							if(data['reponse_code'] == 204){
+		// 									$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+		// 							}
+		// 			},
+		// 			error: function(data) {
+		// 					//alert("Noo");
+		// 					console.log(data);
+		// 			},
+		// 			dataType: 'json'
+		// 	}); 
+    // }      
+
+		function terminarTarea(){
+			
+			var formOt = [];
+			var i = 0;
 			$('.getFormularioTarea').each(function( index ) {
-			if($( this ).attr('data-open')=="true"){
-					console.log( index + ": " + $( this ).attr('data-validado'));
-					ban = ban && ($( this ).attr('data-validado') == "true");
-			}
+				var data = {};
+				var idForm = $( this ).attr('data-formid');
+				console.log('id form: '+idForm);
+				var idOT = $('#ot').val();
+				data.idForm = idForm;
+				data.idOT = 22;
+
+				formOt.push(data);
 			});
-			if(ban==false){alert("Para concluir esta actividad primero debe Validar el Formulario");return;}
-			WaitingOpen('Cerrando Tarea');
-			var idTarBonita = $('#idTarBonita').val();
-			//alert(idTarBonita);
-			$.ajax({
-					type: 'POST',
-					data: {
-							'idTarBonita': idTarBonita,
-					},
-					url: 'index.php/Tarea/terminarTarea',
-					success: function(data) {
-										WaitingClose();
-									// toma a tarea exitosamente
-									if(data['reponse_code'] == 204){
-											$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
-									}
-					},
-					error: function(data) {
-							//alert("Noo");
-							console.log(data);
-					},
-					dataType: 'json'
-			}); 
-    }            
+			 
+			 if ( validarCamposObligatorios(formOt) ) {
+					$.ajax({
+						type: 'POST',
+						data: {formIdOt:formOt},
+						url: 'index.php/Tarea/terminarTareaStandarenBPM',
+						success: function(data) {
+											WaitingClose();
+										// toma a tarea exitosamente
+										// if(data['reponse_code'] == 204){
+										// 		$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+										// }
+						},
+						error: function(data) {
+								//alert("Noo");
+								console.log(data);
+						},
+						dataType: 'json'
+					}); 
+			 } else {
+				alert('Existen Formularios incompletos, por favor rellenelos para completar la tarea.');
+			 }
+			 
+
+			//console.table(formOt);
+			//if(ban==false){alert("Para concluir esta actividad primero debe Validar el Formulario");return;}
+			//WaitingOpen('Cerrando Tarea');
+			// var idTarBonita = $('#idTarBonita').val();
+			// //alert(idTarBonita);
+			// 
+    }  
+
+		function decidirUrgencia(){
+
+			var opcion = $('input[name="opcion"]:checked').val();
+			var caseId = $('#case_id').val();
+			if(opcion == 'correctivo'){
+					// generar corectivo
+				}else{
+					// generar backlog		mandar caseid			
+					WaitingOpen();
+					$('#content').empty();
+					$("#content").load("<?php echo base_url(); ?>index.php/Backlog/editarNuevo/"+caseId);
+					WaitingClose();
+				}
+
+			
+		}
+
+
     // Boton Hecho generico
     function estado() {
 			var idTarBonita = $('#idTarBonita').val();
@@ -129,18 +204,18 @@
             var nombUsr = $('#usrName').val();
             var apellUsr = $('#usrLastName').val();;
 			$.ajax({
-			type:'POST',
-			data:{'processInstanceId':id, 'content':comentario},
-			url:'index.php/Tarea/GuardarComentario',
-			success:function(result){
-				console.log("Submit");
-				var lista =  $('#listaComentarios');
-				lista.prepend('<hr/><li><h4>'+nombUsr+' '+apellUsr +'<small style="float: right">Hace un momento</small></h4><p>'+comentario+'</p></li>');
-				$('#comentario').val('');
-			},
-			error:function(result){
-				console.log("Error");
-			}
+					type:'POST',
+					data:{'processInstanceId':id, 'content':comentario},
+					url:'index.php/Tarea/GuardarComentario',
+					success:function(result){
+						console.log("Submit");
+						var lista =  $('#listaComentarios');
+						lista.prepend('<hr/><li><h4>'+nombUsr+' '+apellUsr +'<small style="float: right">Hace un momento</small></h4><p>'+comentario+'</p></li>');
+						$('#comentario').val('');
+					},
+					error:function(result){
+						console.log("Error");
+					}
 			});
 		}
     // Toma tarea en BPM

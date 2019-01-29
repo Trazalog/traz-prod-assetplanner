@@ -49,31 +49,26 @@ echo '<th style="display:none">Id tarea bonita</th>';
               </tr>
             </thead>
             <tbody>
-              <?php
-
-                $lista = json_decode($list,true);
-                // echo "<pre>";
-                 //var_dump($lista);
-                foreach($list as $f)
-                {
+              <?php                
+                
+                //dump($list, 'tareas: ');
+                foreach($list as $f){
+                  
                   $id=$f["id"];
                   $asig = $f['assigned_id'];
-                  echo '<tr id="'.$id.'" class="'.$id.'" >';
-                  // td 0
-                  
-                  echo '<td>';
-                    if (strpos($permission,'Del') !== false){
-                      if ($asig != "") {
-                        echo '<button type="button" id="btncolor" class="btn btnFin btn-success btn-sm" >
-                            <span class="glyphicon glyphicon-ok"></span>  </button> ';
-                      }else{
-                        echo '<button type="button" id="btncolor" class="btn btn-success btn-sm" data-toggle="modal" data-target="#finalizar" disabled>
-                            <span class="glyphicon glyphicon-ok"></span>  </button> ';
+                  echo '<tr id="'.$id.'" class="'.$id.'" >';                    
+                    // td 0                  
+                    echo '<td>';
+                      if (strpos($permission,'Del') !== false){
+                        if ($asig != "") {
+                          echo '<button type="button" id="btncolor" class="btn btnFin btn-success btn-sm" >
+                              <span class="glyphicon glyphicon-ok"></span>  </button> ';
+                        }else{
+                          echo '<button type="button" id="btncolor" class="btn btn-success btn-sm" data-toggle="modal" data-target="#finalizar" disabled>
+                              <span class="glyphicon glyphicon-ok"></span>  </button> ';
+                        }
                       }
-                    }
-                  echo '</td>';
-                    
-                                 
+                    echo '</td>';
                     // td 1
                     //echo '<td class="celda" style="text-align: left">'.$f['cod_interno'].'</td>';
                     echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea"').' style="text-align: left">'.$f['cod_interno'].'</td>';                  
@@ -100,11 +95,11 @@ echo '<th style="display:none">Id tarea bonita</th>';
                     echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea"').' style="text-align: left">'.$f['priority'].'</td>';
                     // id de tarea en bonita
                     // td 7
-                    echo '<td class="celda hidden" style="text-align: left">'.$f['id'].'</td>';
+                    echo '<td class="celda" style="text-align: left">'.$f['id'].'</td>';
                     // td 8
                     //FIXME: OCULTAR CELDA NUEVAMENTE
-                    echo '<td class="celda hidden" style="text-align: left">'.$f['assigned_id'].'</td>';
-                     echo '<td class="celda hidden" style="text-align: left">'.($f['estado'] == 'TE' ? '<small class="label pull-left bg-orange">Parcial</small>' : ($f['estado'] == 'C' ? '<small class="label pull-left bg-green">Iniciada</small>' : ($f['estado'] == 'P' ? '<small class="label pull-left bg-blue">Pedido</small>' : ($f['estado'] == 'As' ? '<small class="label pull-left bg-yellow">Asignado</small>' : '<small class="label pull-left bg-red">Entregado</small>')))).'</td>';
+                    echo '<td class="celda" style="text-align: left">'.$f['caseId'].'</td>';
+                    echo '<td class="celda hidden" style="text-align: left">'.($f['estado'] == 'TE' ? '<small class="label pull-left bg-orange">Parcial</small>' : ($f['estado'] == 'C' ? '<small class="label pull-left bg-green">Iniciada</small>' : ($f['estado'] == 'P' ? '<small class="label pull-left bg-blue">Pedido</small>' : ($f['estado'] == 'As' ? '<small class="label pull-left bg-yellow">Asignado</small>' : '<small class="label pull-left bg-red">Entregado</small>')))).'</td>';
                   
                   echo '</tr>';
 
@@ -145,7 +140,8 @@ echo '<th style="display:none">Id tarea bonita</th>';
 //Tomo valor de la celda y carga detalle de la tarea
   $('.celda').click( function () {
 
-    var idTarBonita = $(this).parents('tr').find('td').eq(8).html();    
+   // var idTarBonita = $(this).parents('tr').find('td').eq(9).html();   
+    var idTarBonita = $(this).parents('tr').find('td').eq(8).html();     
     var estado = $(this).parents('tr').find('td').eq(6).html();
 
     // toma nombre y descripcion de tarea para Notific Estandar
@@ -165,7 +161,7 @@ echo '<th style="display:none">Id tarea bonita</th>';
   });
 
 
-  // Carga para cargar notif strandar
+  // Carga para cargar notif estandar
   function verTarea(idTarBonita){
 
     WaitingOpen();

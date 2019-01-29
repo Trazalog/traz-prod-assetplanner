@@ -49,29 +49,59 @@
 			GuardarFormulario(false);
 	}
 	
-	function ValidarObligatorios(validarOn){
-		console.log("Validando Campos Obligatorios..."+form_actual_id);
-		var petr_id = $('#idPedTrabajo').val();
-		var form_id = $('#idform').val();
+	function validarCamposObligatorios(formOt){	
+
 		$.ajax({
 				type: 'POST',
-				data: {'form_id':form_id,'petr_id':petr_id},
-				url: 'index.php/Tarea/ValidarObligatorios',
+				data: {formIdOt:formOt},
+				url: 'index.php/Tarea/validarCamposObligatorios',
 				success: function (result) {
-					console.log(form_actual_id+"...OK");
-					WaitingClose();
-					var validado=(result==1);
-					form_actual_data.attr('data-validado',validado);
-					if(!validarOn){$('.modal').modal('hide');return;}
-					if(validado){$('.modal').modal('hide');}
-					else {
-						alert("Fallo Validación: Campos Obligatorios Incompletos. Por favor verifique que todos los campos obligatorios marcados con (*) esten completos.");
-					}
-			//WaitingClose();
+									var tamaño = result.length;
+									if (tamaño > 0) {
+										for(var i = 0; i < result.length; i++){		
+											var registro = $("*[data-formid = "+result[i]+"]").parents("tr");							
+											registro.css('background-color', '#f2c87b');
+										}	
+										return false;
+									} else {
+										return true;
+									}	
+					 
+					//WaitingClose();
 				},
 				error: function(result){
-					alert("Fallo la Validación del formularios en el Servidor. Por favor vuelva a intentar.");
-				}
+					// alert("Fallo la Validación del formularios en el Servidor. Por favor vuelva a intentar.");
+				},
+				dataType: 'json'
 			});
 	}
+
+
+
+
+	// function ValidarObligatorios(validarOn){
+	// 	console.log("Validando Campos Obligatorios..."+form_actual_id);
+	// 	var petr_id = $('#idPedTrabajo').val();
+	// 	var form_id = $('#idform').val();
+	// 	$.ajax({
+	// 			type: 'POST',
+	// 			data: {'form_id':form_id,'petr_id':petr_id},
+	// 			url: 'index.php/Tarea/ValidarObligatorios',
+	// 			success: function (result) {
+	// 				console.log(form_actual_id+"...OK");
+	// 				WaitingClose();
+	// 				var validado=(result==1);
+	// 				form_actual_data.attr('data-validado',validado);
+	// 				if(!validarOn){$('.modal').modal('hide');return;}
+	// 				if(validado){$('.modal').modal('hide');}
+	// 				else {
+	// 					alert("Fallo Validación: Campos Obligatorios Incompletos. Por favor verifique que todos los campos obligatorios marcados con (*) esten completos.");
+	// 				}
+	// 		//WaitingClose();
+	// 			},
+	// 			error: function(result){
+	// 				alert("Fallo la Validación del formularios en el Servidor. Por favor vuelva a intentar.");
+	// 			}
+	// 		});
+	// }
 </script>

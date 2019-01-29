@@ -1,7 +1,7 @@
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
-
+<?php //dump();?>
 <section class="content">
-	<?php //echo cargarCabecera($idPedTrabajo); ?>
+	<?php echo cargarCabecera($id_OT,$id_SS,$id_EQ); ?>
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="box">
@@ -57,6 +57,7 @@
 																<!-- id de task en bonita -->
 																<input type="text" class="hidden" id="idTarBonita" value="<?php echo $idTarBonita ?>">
 																<input type="text" class="hidden" id="esTareaStd" value="<?php echo $infoTarea['visible'] ?>">
+                                <input type="text" class="hidden" id="case_id" value="<?php echo $TareaBPM['caseId'] ?>">
 															</div>
 														</div>
 
@@ -105,7 +106,7 @@
 
 												</form>
 
-												<table id="subtask" class="table table-hover">
+												<!-- <table id="subtask" class="table table-hover">
 													<thead>
 														<tr>
 															<th width="50%">Subtarea</th>
@@ -115,19 +116,40 @@
 													</thead>
 													<tbody>
 													<?php 
-														foreach($subtareas as $subt){
-															echo '<tr>';	
-																echo '<td>'.$subt['tareadescrip'].'</td>';
-																echo '<td>'.$subt['duracion_prog'].'</td>';	
-																echo '<td><i class="fa fa-paperclip text-light-blue  getFormularioTarea" style="cursor: pointer; margin-left: 15px;" aria-hidden="true" data-open="false" data-validado="false" data-formid="'.$subt["form_asoc"].'" data-bpmIdTarea="'.$subt["infoId"].'"></i></td>';													
-															echo '</tr>';
-														}	
+													//	foreach($subtareas as $subt){
+															// echo '<tr>';	
+															// 	echo '<td>'.$subt['tareadescrip'].'</td>';
+															// 	echo '<td>'.$subt['duracion_prog'].'</td>';	
+															// 	echo '<td><i class="fa fa-paperclip text-light-blue  getFormularioTarea" style="cursor: pointer; margin-left: 15px;" aria-hidden="true" data-open="false" data-validado="false" data-formid="'.$subt["form_asoc"].'" data-bpmIdTarea="'.$subt["infoId"].'"></i></td>';													
+															// echo '</tr>';
+													//	}	
 													?>
 													</tbody>
-												</table>		
+												</table>		 -->
 											</div>
 											</div>
 										</div>
+
+                    <!-- prioridad de la SServicios -->
+                    <!-- <div class="form-group" id="decisionSolicitud">
+                      <div class="radioBtn col-sm-12 col-md-12">
+                        <center>
+                          <label class="control-label">¿La Solicitud de Servicios es Urgente?
+                          </label>
+                          </br>
+                          <div class="col-md-12">
+                            <label class="radio-inline" for="radios-0">
+                              <input type="radio" name="opcion" id="radios-0" value="correctivo" checked="checked"> Si
+                            </label>
+                            <label class="radio-inline" for="radios-1">
+                              <input type="radio" name="opcion" id="radios-1" value="backlog" checked="checked"> No
+                            </label>
+                          </div>
+                        </center>
+                      </div>
+                    </div>         -->
+
+
 
 										<div role="tabpanel" class="tab-pane" id="profile">
 											<div class="panel-body">
@@ -155,7 +177,7 @@
 										</div>
 										
 										<div role="tabpanel" <?php echo ($device == 'android' ? 'class= "hidden"' :'class= "tab-pane"') ?> id="messages" >							
-										<!-- <div role="tabpanel" class="tab-pane" id="messages" > -->
+										  <!-- <div role="tabpanel" class="tab-pane" id="messages" > -->
 											
 											<div class="panel-body">
 												<div class="panel panel-primary">
@@ -229,19 +251,19 @@
 
 					<div class="row">
 						<div class="col-sm-12 col-md-12">
-								<button type="button" id="verOrden" class="btn btn-primary" onclick="verOT()">Ver Orden Trabajo</button>
+								<button type="button" id="verOrden" class="btn btn-primary" onclick="verOT()">Programar Orden de Trabajo</button>
 						</div>
 					</div>	</br>											
 
-					<div class="row">
+					<!-- <div class="row">
 						<div class="col-sm-12 col-md-12">
 								<button type="button" id="pedidoInsumos" class="btn btn-primary" onclick="pedirInsumos()">Pedido de Insumos</button>
 						</div>
-					</div>	
+					</div>	 -->
 					
 					<div class="modal-footer">
 						<button type="button" id="cerrar" class="btn btn-primary" onclick="cargarVista()">Cerrar</button>
-						<button type="button" class="btn btn-success" id="hecho" onclick="terminarTarea()">Hecho</button>
+						<button type="button" class="btn btn-success" id="hecho" onclick="decidirUrgencia()">Hecho</button>
 					</div> <!-- /.modal footer -->
 
 				</div><!-- /.box body -->
@@ -390,28 +412,28 @@ function verOT(){
 }
 
 /* Pantalla pedido de insumos */
-function pedirInsumos(){ 
-	//FIXME: SACAR HARDCODEO
-	var iort = $('#ot').val();
-	var iort = 22;
-	console.log("El id de OT es: " + iort);
+// function pedirInsumos(){ 
+// 	
+// 	var iort = $('#ot').val();
+// 	var iort = 22;
+// 	console.log("El id de OT es: " + iort);
 		
-	WaitingOpen();
-	$('#content').empty();
-	$("#content").load("<?php echo base_url(); ?>index.php/Notapedido/agregarListInsumos/<?php echo $permission; ?>/"+iort);
-	WaitingClose();  
-}
+// 	WaitingOpen();
+// 	$('#content').empty();
+// 	$("#content").load("<?php echo base_url(); ?>index.php/Notapedido/agregarListInsumos/<?php echo $permission; ?>/"+iort);
+// 	WaitingClose();  
+// }
 /* pedido de insumos */
 
 
-$('.fecha').datepicker({
-		autoclose: true
-	}).on('change', function(e) {
-       // $('#genericForm').bootstrapValidator('revalidateField',$(this).attr('name'));
-	   console.log('Validando Campo...'+$(this).attr('name'));
-	   $('#genericForm').data('bootstrapValidator').resetField($(this),false);
-	   $('#genericForm').data('bootstrapValidator').validateField($(this));
-  });
+// $('.fecha').datepicker({
+// 		autoclose: true
+// 	}).on('change', function(e) {
+//        // $('#genericForm').bootstrapValidator('revalidateField',$(this).attr('name'));
+// 	   console.log('Validando Campo...'+$(this).attr('name'));
+// 	   $('#genericForm').data('bootstrapValidator').resetField($(this),false);
+// 	   $('#genericForm').data('bootstrapValidator').validateField($(this));
+//   });
 </script>
 
 
