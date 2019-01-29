@@ -43,7 +43,7 @@ class Sservicios extends CI_Model
 					);
 
 			$this->db->where('id_solicitud', $id);
-			$this->db->update('solicitud_reparacion', $estado);
+			$result = $this->db->update('solicitud_reparacion', $estado);
 		}		
 		// Trae equipos segun sector de empresa logueada
 		function getEquipSectores($data = null){
@@ -137,7 +137,7 @@ class Sservicios extends CI_Model
 				$falla    = $data['falla'];//
 				//$idPreventivo = $data['id_prev'];
 				$userdata = $this->session->userdata('user_data');
-						$empId    = $userdata[0]['id_empresa'];
+				$empId    = $userdata[0]['id_empresa'];
 				
 				// if ($idPreventivo !== "") { //actualiza fecha preventivo (fecha sistema)
 				// 	  $fechUltimo['ultimo'] = date('Y-m-d H:i:s');
@@ -161,13 +161,9 @@ class Sservicios extends CI_Model
 				);
 				$this->db->insert('solicitud_reparacion', $insert);
 
-							if ($this->db->trans_status() === FALSE){
-									return false;  
-							}
-							else{
-									return true;
-							} 
-
+				$idSolServicios = $this->db->insert_id();
+				return $idSolServicios;
+				
 					// if($this->db->insert('solicitud_reparacion', $insert) == false) {
 					// 	return false;
 					// }else{
@@ -181,21 +177,61 @@ class Sservicios extends CI_Model
 
 	
 /* INTEGRACION CON BPM */
+	// trae tareas STD para llenar select por empresa logueada
+		function getTareasStandar(){
+
+			$userdata = $this->session->userdata('user_data');
+      $empId = $userdata[0]['id_empresa'];   
+			$this->db->select('tareas.id_tarea,tareas.descripcion');		
+			$this->db->from('tareas');			
+			$this->db->where('tareas.estado !=', 'AN');
+			$this->db->where('tareas.id_empresa', $empId);
+			$this->db->where('tareas.visible', 1);
+			$query= $this->db->get();
+
+			if ($query->num_rows()!=0){
+				return $query->result_array();	
+			}else{
+				return array();
+			}
+		}
 	// Lanza proceso en BPM
-	function lanzarProcesoBPM($param){
-		$resource = 'API/bpm/process/';
-		$url = BONITA_URL.$resource;
-		$com = '/instantiation';
-		try {
-			$result = file_get_contents($url.BPM_PROCESS_ID.$com, false, $param);
-		} catch (Exception $e) {
-			echo 'Excepción capturada: ',  $e->getMessage(), "\n";
-			echo 'respuestas: ';
-			var_dump( $http_response_header);
-		} 
+		function lanzarProcesoBPM($param){
 			
-		return $result;
-	}
+			$resource = 'API/bpm/process/';
+			$url = BONITA_URL.$resource;
+			$com = '/instantiation';			
+			$caseId = file_get_contents($url.BPM_PROCESS_ID.$com, false, $param);
+			$response['responsecabecera'] = $this->parseHeaders( $http_response_header );
+			$response['caseId'] = $caseId;	
+			return $response;
+		}
+
+	// toma la respuesta del server y devuelve el codigo de respuesta solo
+		function parseHeaders( $headers ){
+			$head = array();
+			foreach( $headers as $k=>$v ){
+				$t = explode( ':', $v, 2 );
+				if( isset( $t[1] ) )
+					$head[ trim($t[0]) ] = trim( $t[1] );
+				else{
+					$head[] = $v;
+					if( preg_match( "#HTTP/[0-9\.]+\s+([0-9]+)#",$v, $out ) )
+						$head['reponse_code'] = intval($out[1]);
+				}
+			}
+			return $head;
+		}
+
+	// guarda CaseId en solic de servicios
+		function setCaseId($caseId,$id_solServicio){			
+			
+			$caseId = array(
+				'case_id' => $caseId		        
+			);
+			$this->db->where('id_solicitud', $id_solServicio);
+			$result = $this->db->update('solicitud_reparacion', $caseId);
+		}	
 
 /*	./ INTEGRACION CON BPM */
 

@@ -135,13 +135,13 @@ class Notapedidos extends CI_Model
 
     function getProveedores(){
         
-        $this->db->select('abmproveedores.provid, abmproveedores.provnombre');
-        $this->db->from('abmproveedores');        
-        $query = $this->db->get();
-        if ($query->num_rows() != 0){
-            
-            return $query->result_array();             
-        }   
+			$this->db->select('abmproveedores.provid, abmproveedores.provnombre');
+			$this->db->from('abmproveedores');        
+			$query = $this->db->get();
+			if ($query->num_rows() != 0){
+					
+					return $query->result_array();             
+			}   
     }  
 
     function setNotaPedidos($data)
@@ -189,8 +189,56 @@ class Notapedidos extends CI_Model
 
     } // fin setNotaPedidos   
     
-	
-    //
+    // devuelve plantilla por Id de cliente
+    function getPlantillaPorCliente($idcliente){
+			//FIXME: DESHARDCODEAR ESTE CLIENTE!!!!
+			$idcliente = 21;
+			$this->db->select('asp_detaplantillainsumos.artId,
+												articles.artDescription,
+												asp_plantillainsumos.plant_id');
+			$this->db->from('asp_detaplantillainsumos'); 
+			$this->db->join('asp_plantillainsumos', 'asp_detaplantillainsumos.plant_id = asp_plantillainsumos.plant_id');
+			$this->db->join('articles', 'articles.artId = asp_detaplantillainsumos.artId');
+			$this->db->join('admcustomers', 'asp_plantillainsumos.plant_id = admcustomers.plant_id');
+			$this->db->where('admcustomers.plant_id','(SELECT admcustomers.plant_id WHERE admcustomers.cliId = '.$idcliente.')', false);       
+			$query = $this->db->get();
+			if ($query->num_rows() != 0){					
+				return $query->result_array();             
+			}else {
+				return array();
+			}
+    }
+    // guarda nota pedido (desde tareas de bpm)
+    function setCabeceraNota($cabecera){
+
+			$this->db->insert('tbl_notapedido', $cabecera);
+			$idInsert = $this->db->insert_id();
+			return $idInsert;
+		}
+		// guarda detalle nota pedido (desde tareas de bpm)
+		function setDetaNota($deta){
+			$response = $this->db->insert_batch('tbl_detanotapedido',$deta);
+			return $response;
+		}		
+		// lanza proceso en BPM (pedido especial)
+		function lanzarProcesoBPM($param){
+			$resource = 'API/bpm/process/';
+			$url = BONITA_URL.$resource;
+			$com = '/instantiation';
+			try {
+				$result = file_get_contents($url.BPM_PROCESS_ID.$com, false, $param);
+			} catch (Exception $e) {
+				echo 'Excepción capturada: ',  $e->getMessage(), "\n";
+				echo 'respuestas: ';
+				var_dump( $http_response_header);
+			} 
+				
+			return $result;
+		}
+		
+		
+		
+		//
     function getOTporId($id)
     {
         $this->db->select('id_orden, nro, descripcion');

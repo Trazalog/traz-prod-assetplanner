@@ -122,15 +122,15 @@ class Backlog extends CI_Controller {
 	public function cargarback($permission){ 
         $data['permission'] = $permission;       
         $this->load->view('backlog/view_',$data);
-    }
+  }
   	
   	//Inserta  Backlog nuevo - Listo
 	public function guardar_backlog(){
 			
 		$userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa']; 
+    $empId = $userdata[0]['id_empresa']; 
 
-        $idce=$_POST['idce'];
+    $idce=$_POST['idce'];
 		$eq=$_POST['equipo'];
 		$fe=$_POST['fecha'];
 		$ta=$_POST['tarea'];
@@ -155,8 +155,7 @@ class Backlog extends CI_Controller {
 		echo json_encode($result);
 	}
 
-	public function getComponente()
-	{
+	public function getComponente(){
 		$idEquipo = $this->input->post('idEquipo');
 		$componentes = $this->Backlogs->getComponentes($idEquipo);
 		if($componentes)
@@ -176,4 +175,14 @@ class Backlog extends CI_Controller {
 		}
 		else echo json_encode(0);
 	}
+/* Funciones para BPM */
+	public function editarNuevo($caseId){ 
+		$idSolServicios = $this->Backlogs->getIdSolServiciosporIdCase($caseId);
+		dump($idSolServicios, 'id sol de serv');
+		$data['idequipo'] = $this->Backlogs->getIdEquipoSolicitud($idSolServicios);
+		//$data['permission'] = $permission;   
+		dump($data['idequipo'], 'id equipo: ');    
+		$this->load->view('backlog/nuevo_edicion_view_',	$data);
+	}
+/* Fin Funciones para BPM */
 }

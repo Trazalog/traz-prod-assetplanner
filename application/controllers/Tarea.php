@@ -121,43 +121,44 @@ class Tarea extends CI_Controller {
 			}
 			// termina tareas en BPM
 			public function terminarTareaStandarenBPM(){
-
-				$idTarBonita = $this->input->post('idTarBonita');
-				//$id_listarea = $this->input->post('id_listarea');
-				// trae la cabecera
-				$parametros = $this->Bonitas->conexiones();
-				// Cambio el metodo de la cabecera a "PUT"
-				$parametros["http"]["method"] = "POST";
-				// Variable tipo resource referencia a un recurso externo.
-				$param = stream_context_create($parametros);
-				$response = $this->Tareas->terminarTareaStandarenBPM($idTarBonita,$param);
+				
+				// $idTarBonita = $this->input->post('idTarBonita');
+				// //$id_listarea = $this->input->post('id_listarea');
+				// // trae la cabecera
+				// $parametros = $this->Bonitas->conexiones();
+				// // Cambio el metodo de la cabecera a "PUT"
+				// $parametros["http"]["method"] = "POST";
+				// // Variable tipo resource referencia a un recurso externo.
+				// $param = stream_context_create($parametros);
+				// $response = $this->Tareas->terminarTareaStandarenBPM($idTarBonita,$param);
 	
-				// guarda el taskId de BPM en tbl_listareas
-				if($this->input->post('esTareaStd')==1){
-					$resp = $this->Tareas->updateTaskEnListarea($id_listarea,$idTarBonita);
-				}
-	
+				// // guarda el taskId de BPM en tbl_listareas
+				// if($this->input->post('esTareaStd')==1){
+				// 	$resp = $this->Tareas->updateTaskEnListarea($id_listarea,$idTarBonita);
+				// }
+					
 				echo json_encode($response);
-			}
+			}	
+
 			// trae datos para llenar notificaion estandar y formulario asociado
 			public function detaTarea($permission,$idTarBonita){
 
-				// detecta dispositivo
-				//$this->load->library('Mobile_Detect');
-				$detect = new Mobile_Detect();
-				if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {				
-					$data['device'] = "android";
-				}else{
-					$data['device'] = "pc";				
-				}
+				// detecta dispositivo				
+					$detect = new Mobile_Detect();
+					if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {				
+						$data['device'] = "android";
+					}else{
+						$data['device'] = "pc";				
+					}
 
+				$data['permission'] = $permission;
 				//OBTENER DATOS DE TAREA SELECCIONADA DESDE BONITA
 				$data['TareaBPM'] = json_decode($this->getDatosBPM($idTarBonita),true);	
 				$data['idTarBonita'] = $idTarBonita;
-
+				$caseId = $data['TareaBPM']["caseId"];
+				//dump($caseId, 'caseId:');
 				//FIXME: SACAR HARDCODEO A NOMBRE DE TAREA
-				$data['TareaBPM']["displayName"] = 'Revision total de motor';
-
+				//$data['TareaBPM']["displayName"] = 'Revision total de motor';
 				//Devuelve datos de tarea por nombre 
 				$data['infoTarea'] = $this->Tareas->getDatosTarea($data['TareaBPM']["displayName"]);
 				//dump($data['infoTarea'], 'info tarea');
@@ -170,39 +171,69 @@ class Tarea extends CI_Controller {
 					$data['id_OT'] = $id_OT;
 					$data['id'] = 160501;
 				}
-				
+				// FIXME: SACAR HARDCODEO
+				$id_OT = 22;
+				$id_SS = 22;
+				$id_EQ = 9;
+				$data['id_OT'] = $id_OT;
+				//$data['id_SS'] = $id_SS;
+				$data['id_EQ'] = $id_EQ;
 				// Formularios para subtareas (las tareas no tienen fomularios)
 				// si hay OT
 				if($id_OT != 0){
-					/* funcion nueva de asset */
-					// trae id de form asociado a tarea std (las tareas de BPM se cargaran para asociar a form).						
+					/* funcion nueva de asset */										
 					// traer subtareas estandar en funcion de tarea estandar					
 					$idTareaSTD = $this->Tareas->getIdTareaSTD($data['TareaBPM']["displayName"]);
 					$data['subtareas'] = $this->Tareas->getSubtareas($idTareaSTD);
-				
+					$i=0;
+					$instanciasForm = $this->Tareas->getInstaciasForm($id_OT);
+					
 					foreach ($data['subtareas'] as $subtarea) {
+						
+						$idForm = $subtarea['form_asoc'];
 						// confirma si hay form guardado de esa
-						if ($this->Tareas->getEstadoForm($idTarBonita)) {
-							//echo "hay form guardado";
+						if ($this->Tareas->getEstadoForm($idTarBonita,$idForm)) {							
+							$data['subtareas'][$i]['infoId'] = $instanciasForm[$i];
+							$i++;
 						}
 						else{
 							// guarda form inicial vacio
-							$idForm = $subtarea['form_asoc'];						
-							$this->Tareas->setFormInicial($idTarBonita,$idForm,$id_OT);
+							$idForm = $subtarea['form_asoc'];	
+							$infoId = $this->Tareas->setFormInicial($idTarBonita,$idForm,$id_OT);
+							$data['subtareas'][$i]['infoId'] = $infoId;
+							$i++;
 						}
 					}	
 				}	
 
-				//FLEIVA COMENTARIOS
-				$data['comentarios'] = $this->ObtenerComentariosBPM($caseId);
-				$data['timeline'] = $this->ObtenerLineaTiempo($caseId);			
-				
-				switch ($data['TareaBPM']['displayName']) {
+				// comentarios y linea de tiempo desde libreria					
+				$idCase = array('caseId'=>$data['TareaBPM']["caseId"]);
+				$this->load->library('BPM',$idCase);
+				$data['timeline'] = $this->bpm->ObtenerLineaTiempo();	
+				$data['comentarios'] = $this->bpm->ObtenerComentariosBPM();
 
-					
+				switch ($data['TareaBPM']['displayName']) {
+ 
+					// case 'Analisis de Solicitud de Servicio':
+					// 	//dump($data, 'datos de solicitud');
+					// 	$this->load->view('tareas/view_analisisSServicios', $data);
+					// 	$this->load->view('tareas/scripts/tarea_std');
+					// 	$this->load->view('tareas/scripts/abm_forms');
+					// 	$this->load->view('tareas/scripts/validacion_forms');
+					// 	break;
+
+					case 'Analisis de Solicitud de Servicio':
+						$this->load->view('tareas/view_planificar', $data);
+						$this->load->view('tareas/scripts/tarea_std');
+						// $this->load->view('tareas/scripts/abm_forms');
+						// $this->load->view('tareas/scripts/validacion_forms');
+						break;
+
 					default:
-						//dump($data, 'datos');
-						$this->load->view('tareas/view_', $data);
+						$this->load->view('tareas/view_resguardoparapruebas', $data);
+						$this->load->view('tareas/scripts/tarea_std');
+						$this->load->view('tareas/scripts/abm_forms');
+						$this->load->view('tareas/scripts/validacion_forms');
 					break;
 				}
 			}		
@@ -244,75 +275,104 @@ class Tarea extends CI_Controller {
 		/*	./ FUNCIONES BPM */
 		
 		/* COMENTARIOS */
+		public function GuardarComentario(){
+			$comentario = $this->input->post();
+			$this->load->library('BPM',$idCase);
+			$response = $this->bpm->GuardarComentario($comentario);
+			echo json_encode($response);
+		}	
 			// Comentarios
-			public function ObtenerComentariosBPM($caseId){
-				$parametros = $this->Bonitas->conexiones();
-				$param = stream_context_create($parametros);
-				return $this->Tareas->ObtenerComentariosBPM($caseId,$param);
-			}		
+				// public function ObtenerComentariosBPM($caseId){
+				// 	$parametros = $this->Bonitas->conexiones();
+				// 	$param = stream_context_create($parametros);
+				// 	return $this->Tareas->ObtenerComentariosBPM($caseId,$param);
+				// }		
+				
+				// public function GuardarComentario(){
+				// 	$comentario = $this->input->post();
+				// 	// trae la cabecera
+				// 	$parametros = $this->Bonitas->conexiones();
 			
-			public function GuardarComentario(){
-				$comentario = $this->input->post();
-				// trae la cabecera
-				$parametros = $this->Bonitas->conexiones();
-		
-				// Cambio el metodo de la cabecera a "PUT"
-				$parametros["http"]["method"] = "POST";
-				$parametros["http"]["content"] = json_encode($comentario);
-				// Variable tipo resource referencia a un recurso externo.
-				$param = stream_context_create($parametros);
-				$response = $this->Tareas->GuardarComentarioBPM($param);
-				echo json_encode($response);
-			}	
+				// 	// Cambio el metodo de la cabecera a "PUT"
+				// 	$parametros["http"]["method"] = "POST";
+				// 	$parametros["http"]["content"] = json_encode($comentario);
+				// 	// Variable tipo resource referencia a un recurso externo.
+				// 	$param = stream_context_create($parametros);
+				// 	$response = $this->Tareas->GuardarComentarioBPM($param);
+				// 	echo json_encode($response);
+				// }	
 
-			public function ObtenerLineaTiempo($caseId){
-				$parametros = $this->Bonitas->LoggerAdmin();
-				$parametros["http"]["method"] = "GET";
-				$param = stream_context_create($parametros);
-				$data['listAct'] = $this->Overviews->ObtenerActividades($caseId,$param);
-				$data['listArch'] = $this->Overviews->ObtenerActividadesArchivadas($caseId,$param);
-				return $data;
-			}
+				// public function ObtenerLineaTiempo($caseId){
+				// 	$parametros = $this->Bonitas->LoggerAdmin();
+				// 	$parametros["http"]["method"] = "GET";
+				// 	$param = stream_context_create($parametros);
+				// 	$data['listAct'] = $this->Overviews->ObtenerActividades($caseId,$param);
+				// 	$data['listArch'] = $this->Overviews->ObtenerActividadesArchivadas($caseId,$param);
+				// 	return $data;
+				// }
 		/*	./	COMENTARIOS */
 
 		/*	FORMULARIOS */
 			// trae datos para dibujar formulario en modal
 			public function Obtener_Formulario(){
 				$bpm_task_id = $this->input->post('bpm_task_id');	
-				// traer el bpm_task_id para traer el formulario de la subtarea (consulta en formcompletados)
 				$id_form = $this->input->post('form_id');
+				//dump($bpm_task_id, 'bpmIdTarea o infoid:');
+				//dump($id_form, 'id form: ');
 				$data['idForm']	= $this->input->post('form_id');
 				$data['form'] = $this->Tareas->get_form($bpm_task_id,$id_form);
 				//dump($data['form'], 'formulariosss:  ');
 				$response['html'] = $this->load->view('tareas/viewFormSubtareas', $data, true);
 				echo json_encode($response);
 			}
+
+			public function validarCamposObligatorios(){
+				
+				$info = $this->input->post('formIdOt');
+				//dump($info, 'formularios ids: ');
+				$i=0;
+				foreach ($info as $value) {
+					$idForm = $value['idForm'];
+					$idOT = $value['idOT'];
+				
+					if ($this->Tareas->validarCamposObligatorios($idForm,$idOT)) {
+						$novalidados[$i] = $idForm;
+						$i++;
+					}
+				}
+				echo json_encode($novalidados);
+			}
 			// valida que los campos obligatorios esten completados
-			public function ValidarObligatorios(){
-				$form_id = $this->input->post("form_id");
-				$id_OT = $this->input->post("id_OT");
-				$result = $this->Tareas->ValidarObligatorios($form_id,$id_OT);
-				//dump($result, 'validaaion: ');
-				echo $result['result'];
-			}			
+			// public function ValidarObligatorios(){
+			// 	$form_id = $this->input->post("form_id");
+			// 	$id_OT = $this->input->post("id_OT");
+			// 	$result = $this->Tareas->ValidarObligatorios($form_id,$id_OT);
+			// 	//dump($result, 'validaaion: ');
+			// 	echo $result['result'];
+			// }			
 			// guarda  form commpletado 
 			public function guardarForm(){
 
 				//  array con id de dato->valor(dato es FOCO_ID)
 				$datos = $this->input->post();
+				//dump($datos, 'datos  de post en controller');
 				$userdata = $this->session->userdata('user_data');
 				$usrId = $userdata[0]['usrId'];     // guarda usuario logueado
+
 				$listarea = $datos['id_listarea'];
 				$idformulario = $datos['idformulario'];
 				$i = 1;// para guardar el orden de categorias, grupos y valores
 				$j = 0;
 
 				foreach ($datos as $key => $value) {
-
+					
 					// Si no son los primeros dos campos id listarea e id formulario
 					if (($key != 'id_listarea') && ($key != 'idformulario')) {
 						//trae array con info de dato por id
+						//dump($key, 'key: ');
 						$data = $this->Tareas->getDatos($key);// en este punto $key = FOCO_ID
+						//dump($data, 'dat por foco id:');
+						
 						// Agrego datos adicionales al formulario
 						$data['USUARIO'] = $usrId;
 

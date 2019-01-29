@@ -21,8 +21,7 @@
 
 <script>
 
-function getTablas(month_, year_) 
-{
+function getTablas(month_, year_) {
   var mes = parseInt(month_) + 1;
   var year = parseInt(year_);
   var permission = '<?php echo $permission ?>';
@@ -438,22 +437,22 @@ var id_eq         = "";
 var desc_causa    = "";
 
   // Genera Orden de Trabajo y la guarda automaticamente
-  $('.fa-stop-circle').click( function(){
+  // $('.fa-stop-circle').click( function(){
 
-    // Mes segun cambia el calendario se va corriendo
-      //var date_ = new Date($("#calendar").fullCalendar('getDate'));
-      //var month_ = date_.getMonth() + 1;
-      //alert(month_);
+  //   // Mes segun cambia el calendario se va corriendo
+  //     //var date_ = new Date($("#calendar").fullCalendar('getDate'));
+  //     //var month_ = date_.getMonth() + 1;
+  //     //alert(month_);
 
-    //tarea = 1; // id_tarea (por defecto 1)
-    //  nro no va.
-    //  fecha (fecha de hoy)
-    //  fecha_progr_pred  lo toma del modal
-    // fecha_solicit = $(this).parents("tr").find("td").eq(5).html();
-    // desc_causa = $(this).parents("tr").find("td").eq(4).html();
-    // id_sol = $(this).parents("tr").find("td").eq(2).html();
-    // id_eq = $(this).parents("tr").find("td").eq(1).html();
-  });
+  //   //tarea = 1; // id_tarea (por defecto 1)
+  //   //  nro no va.
+  //   //  fecha (fecha de hoy)
+  //   //  fecha_progr_pred  lo toma del modal
+  //   // fecha_solicit = $(this).parents("tr").find("td").eq(5).html();
+  //   // desc_causa = $(this).parents("tr").find("td").eq(4).html();
+  //   // id_sol = $(this).parents("tr").find("td").eq(2).html();
+  //   // id_eq = $(this).parents("tr").find("td").eq(1).html();
+  // });
 
   function fill_Correc(dato){
     //alert(dato);

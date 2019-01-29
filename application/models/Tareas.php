@@ -117,14 +117,14 @@ class Tareas extends CI_Model {
 	function getTareas($param){
 		
 		$userdata = $this->session->userdata('user_data');
-		$usrId= $userdata[0]["usrId"];
+		$usrId= $userdata[0]["usrId"];		
 		//$tareas = file_get_contents(BONITA_URL.'API/bpm/humanTask?p=0&c=10&f=user_id%3D5', false, $param);
 		$resource = 'API/bpm/humanTask?p=0&c=1000&f=user_id%3D';
 		$url = BONITA_URL.$resource.$usrId;
 		$tareas = file_get_contents($url, false, $param);
 		
 		$tar = json_decode($tareas,true);
-		//dump($tar,'tareas bpm: ');
+	
 		return $tar;
 		// TODO: AGREGAR DESDE ACA LOS DATOS A MOSTRAR DE LA ORDEN TRABAJO
 		//$tar = $this->AgregarDatos($tareas);
@@ -245,12 +245,14 @@ class Tareas extends CI_Model {
 				}else{
 					return 0;
 				}
-			}
+		}
 		// Comprueba si hay form guardado asoc a id de orden y de tarea
-		function getEstadoForm($bpm_task_id){
+		function getEstadoForm($bpm_task_id, $idForm){
+			
 			$this->db->select('frm_formularios_completados.LITA_ID');
 			$this->db->from('frm_formularios_completados');
 			$this->db->where('frm_formularios_completados.LITA_ID', $bpm_task_id);
+			$this->db->where('frm_formularios_completados.FORM_ID', $idForm);			
 			$query = $this->db->get();
 
 			if ($query->num_rows()>0){
@@ -268,7 +270,8 @@ class Tareas extends CI_Model {
 			$empId = $userdata[0]['id_empresa']; 
 			$i=1	;
 			$dat= array();
-			//instancia form y devuelve id  que relaciona form con OT
+			//	instancia form y devuelve id  para relacionar form con OT 
+			//	en form_completados(desp se toca frm_instanciasform)
 			$idInstanciaForm = $this->instanciarForm($ot_id);
 
 			// Trae la info del form sin valores validos desp se actualiza al guardar
@@ -278,7 +281,7 @@ class Tareas extends CI_Model {
 			foreach ($form as $key) {
 				$key['USUARIO'] = $usrId;
 				$key['LITA_ID'] = $bpm_task_id; //$id_listarea;
-				$key['INFO_ID'] = $idInstanciaForm;
+				$key['INFO_ID'] = $idInstanciaForm;//  
 				$key['ORDEN'] = $i;
 				$key['ID_EMPRESA'] = $empId; // guarda id de empresa logueada
 				$i++;
@@ -286,7 +289,12 @@ class Tareas extends CI_Model {
 			}
 
 			$response = $this->db->insert_batch('frm_formularios_completados', $dat);
+
+			return $idInstanciaForm;		
 		}
+
+		
+
 		// Trae configuracion de form inicial para guardar en frm_frm_completados
 		function getFormInicial($idFormAsoc){
 
@@ -334,6 +342,21 @@ class Tareas extends CI_Model {
 			$this->db->insert('frm_instancias_formulario',$data);
 			return $idInstanciaForm = $this->db->insert_id();
 		}
+
+		// trae instancias de form guardado por id de OT
+		function getInstaciasForm($id_OT){
+			
+			$this->db->select('frm_instancias_formulario.*');
+			$this->db->from('frm_instancias_formulario');
+			$this->db->where('ortra_id',$id_OT);
+			$query = $this->db->get();			
+			$i=0;
+			foreach ($query->result() as $row){
+        $inst[$i] = $row->info_id;				   
+				$i++;    
+			}
+			return $inst;
+		}
 		// Trae form para dibujar pantalla (agregar where de id de form)
 		function get_form($bpm_task_id,$idFormAsoc){
 
@@ -360,7 +383,7 @@ class Tareas extends CI_Model {
 						FROM
 						frm_formularios_completados foco
 						WHERE foco.FORM_ID = $idFormAsoc
-						AND foco.LITA_ID = $bpm_task_id
+						AND foco.INFO_ID = $bpm_task_id
 						AND foco.ID_EMPRESA = $empId
 						ORDER BY foco.ORDEN";
 
@@ -374,27 +397,39 @@ class Tareas extends CI_Model {
 				}
 		}
 		// valida campos obligatorios en form generico
-		function ValidarObligatorios($form_id,$id_OT){
-			$this->db->select('count(*)=0 as result');
+			// function ValidarObligatorios($form_id,$id_OT){
+			// 	$this->db->select('count(*)=0 as result');
+			// 	$this->db->from('frm_formularios_completados');
+			// 	$this->db->join('frm_instancias_formulario', 'frm_instancias_formulario.info_id = frm_formularios_completados.INFO_ID');
+			// 	$this->db->where('frm_instancias_formulario.ortra_id ',$id_OT);
+			// 	$this->db->where('FORM_ID',$form_id);			
+			// 	$this->db->where('frm_formularios_completados.OBLIGATORIO',true);
+			// 	$this->db->where('frm_formularios_completados.VALIDADO',false);
+			// 	return $this->db->get()->result_array()[0];
+			// }
+		
+		function validarCamposObligatorios($idForm,$idOT){
+			
+			$this->db->select('count(*) > 0 AS result');
 			$this->db->from('frm_formularios_completados');
-			$this->db->join('frm_instancias_formulario', 'frm_instancias_formulario.info_id = frm_formularios_completados.INFO_ID');
-			$this->db->where('frm_instancias_formulario.ortra_id ',$id_OT);
-			$this->db->where('FORM_ID',$form_id);			
-			$this->db->where('frm_formularios_completados.OBLIGATORIO',true);
-			$this->db->where('frm_formularios_completados.VALIDADO',false);
-			return $this->db->get()->result_array()[0];
+			$this->db->join('frm_instancias_formulario', 'frm_instancias_formulario.info_id = 																				frm_formularios_completados.INFO_ID');
+			$this->db->where('frm_instancias_formulario.ortra_id', $idOT);
+			$this->db->where('FORM_ID',$idForm);
+			$this->db->where('frm_formularios_completados.OBLIGATORIO', TRUE);
+			$this->db->where('frm_formularios_completados.VALIDADO', FALSE);
+			$query = $this->db->get();
+			return $query->row('result');
 		}
+		
+		
+		
+		
 		// Arma array p/ insertar en frm_formularios_completados por focoId
 		function getDatos($focoId){
-
-			// $sql ="SELECT frm_formularios_completados.*
-			// FROM frm_formularios_completados
-			// WHERE FOCO_ID = $focoId";
-			// $query= $this->db->query($sql);
-
+			//dump($focoId, 'en getdatos: ');
 			$this->db->select('frm_formularios_completados.*');
 			$this->db->from('frm_formularios_completados');
-			$this->db->select('frm_formularios_completados.FOCO_ID',$focoId);
+			$this->db->where('frm_formularios_completados.FOCO_ID',$focoId);
 			$query= $this->db->get();
 
 			foreach ($query->result_array() as $row){

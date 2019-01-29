@@ -18,13 +18,14 @@ if (!function_exists('cargarFormulario')) {
               <button class="btn btn-success" type="button" onclick="CerrarModal()">Cerrar</button>
             </div>';
 
-    echo'<form enctype="multipart/form-data" id="genericForm'.$id.'" class="form-horizontal" style="padding:0px 15px;" role="form" action="" method="" >';
-
+     echo'<form enctype="multipart/form-data" id="genericForm'.$id.'" class="form-horizontal" style="padding:0px 15px;" role="form" action="" method="" >';
+    // echo'<form enctype="multipart/form-data" id="" class="form-horizontal formgenerico" style="padding:0px 15px;" role="form" action="" method="" >';
+dump($id, 'id de form en helper');
 
         // guarda el id_listarea para actualizarla tabla frm formcompletados
-        echo "<input type='text' class='hidden' name='id_listarea' id='id_listarea' style='width: 100%'>";
+        echo "<input type='text' class='' name='id_listarea' id='id_info' style='width: 100%'>";
         //echo "id form";
-        echo "<input type='text' class='hidden' name='idformulario' id='idformulario' style='width: 100%'>";
+        echo "<input type='text' class='' name='idformulario' id='idformulario' style='width: 100%'>";
 
         echo "<table id='tabla' class='table table-bordered table-hover'>";
           echo "<tbody>";

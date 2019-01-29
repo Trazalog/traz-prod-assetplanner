@@ -1,7 +1,7 @@
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
 
 <section class="content">
-	<?php cargarCabecera($idPedTrabajo); ?>
+	<?php cargarCabecera($id_OT,$id_SS,$id_EQ); ?>
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="box">
@@ -14,9 +14,9 @@
 
 									<!-- Nav tabs -->
 									<ul class="nav nav-tabs" role="tablist">
-										<li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Tareasvista 3</a></li>
+										<li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Tareas</a></li>
 										<li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Comentarios</a></li>
-										<li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Vista
+										<li <?php echo ($device == 'android' ? 'class= "hidden"' :'class= ""') ?>role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Vista
 												Global
 											</a></li>
 									</ul>
@@ -26,41 +26,18 @@
 
 										<div role="tabpanel" class="tab-pane active" id="home">
 											<!-- <h4 class="panel-heading">Tarea</h4> -->
+											
 											<div class="panel-body">
 
 												<?php
-												//echo"id de form: ";
-												//dump_exit($TareaBPM["assigned_id"]);
-												//$TareaBPM["assigned_id"] = 'asignado';
-														//echo "<input type='text' class='hidden' id='estadoTarea' value='$estadoTarea' >";
-												//if ($estadoTarea == "noasignado") {´
-
-														echo "<button class='btn btn-block btn-success' id='btontomar' style='width: 100px; margin-top: 10px ;display: inline-block;' onclick='tomarTarea()'>Tomar tarea</button>";
-												//}else{
-														echo "&nbsp"; 
-														echo "&nbsp"; 
-														echo "&nbsp";
-														echo "<button class='btn btn-block btn-danger grupNoasignado' id='btonsoltr' style='width: 100px; margin-top: 10px; display: inline-block;' onclick='soltarTarea()'>Soltar tarea</button>";
-												//}    
-														echo "</br>"; 
-														echo "</br>"; 
-
-														$userdata = $this->session->userdata('user_data');
-														$usrId = $userdata[0]['usrId'];     // guarda usuario logueado 
-														$usrName =  $userdata[0]['usrName'];
-														$usrLastName = $userdata[0]["usrLastName"];
-														
-														echo "<input type='text' class='hidden' id='usrName' value='$usrName' >";
-														echo "<input type='text' class='hidden' id='usrLastName' value='$usrLastName' >";
-														echo "<input type='text' class='hidden' id='id_listarea' value='$id_listarea' >";
-														echo "<input type='text' class='hidden' id='idPedTrabajo' value='$idPedTrabajo' >";
+												//dump($subtareas, 'subtareas: ');
 												?>
-												<input type="text" class="form-control hidden" id="asignado" value="<?php echo $TareaBPM[" assigned_id"] ?>"
+												<input type="text" class="form-control hidden" id="asignado" value="<?php echo $TareaBPM["assigned_id"] ?>"
 												>
 												<form>
 													<div class="panel panel-default">
-														<h4 class="panel-heading">INFORMACION:</h4>
-
+														<!-- <h4 class="panel-heading">INFORMACION:</h4> -->
+														<div class="panel-heading">INFORMACION:</div>
 
 														<div class="form-group">
 															<div class="col-sm-6 col-md-6">
@@ -88,8 +65,7 @@
 														<div class="form-group ">
 															<div class="col-sm-6 col-md-6 ">
 																<label for="ot ">Orden de Trabajo:</label>
-																<input type="text " class="form-control " id="ot
-                                                                    "
+																<input type="text " class="form-control " id="ot"
 																 placeholder=" " value="<?php echo $datos[0][ 'id_orden'] ?>" disabled>
 															</div>
 														</div><br>
@@ -110,37 +86,39 @@
 																<textarea class="form-control" id="detalle" rows="3" disabled><?php echo $TareaBPM['displayDescription']?></textarea>
 															</div>
 														</div></br> </br> </br> </br> </br>
-													</div>
+													
 
 													<div class="form-group">
 														<div class="col-sm-12 col-md-12">
 															<!-- Modal formulario tarea -->
 															<?php if($idForm != 0){echo '<button type="button" id="formulario" class="btn btn-primary" data-toggle="modal"data-target=".bs-example-modal-lg" onclick="getformulario()">Completar Formulario </button>';}?>
-                                                    <!-- Precisa Anticipo(inline) -->
-                              <div class="form-group">
-                                <div class="col-sm-12 col-md-12">
-                                  <center>
-																	<label class="control-label">
-																			¿Precisa anticipo?
-																	</label>
-																	</br>
-																</div>		
-																<div class="col-md-12">
-																	<label class="radio-inline" for="radios-0">
-																		<input type="radio" name="precisa" id="radios-0"
-																				value="true" checked="checked"> Si
-																	</label>
-																	<label class="radio-inline" for="radios-1">
-																		<input type="radio" name="precisa" id="radios-1"
-																				value="false" checked="checked"> No
-																	</label>
-																</div>
-                                  </center>
-															</div>
 														</div>
 													</div>
+
 												</form>
 
+												<table id="subtask" class="table table-hover">
+													<thead>
+														<tr>															
+															
+															<th width="10%">Subtarea</th>
+															<th width="10%">Duración</th>
+															<th width="10%">Formulario</th>
+														</tr>
+													</thead>
+													<tbody>
+													<?php 
+														foreach($subtareas as $subt){
+															echo '<tr>';	
+																echo '<td>'.$subt['tareadescrip'].'</td>';
+																echo '<td>'.$subt['duracion_prog'].'</td>';
+																echo '<td><i class="fa fa-paperclip text-light-blue" style="cursor: pointer; margin-left: 15px;" aria-hidden="true" data-idformsub="'.$subt["form_asoc"].'"></i></td>';
+															echo '</tr>';
+														}	
+													?>
+													</tbody>
+												</table>		
+											</div>
 											</div>
 										</div>
 
@@ -168,21 +146,20 @@
 												<button class="btn btn-primary" id="guardarComentario" onclick="guardarComentario()">Agregar</button>
 											</div>
 										</div>
-
-										<div role="tabpanel" class="tab-pane" id="messages">
+										
+										<div role="tabpanel" <?php echo ($device == 'android' ? 'class= "hidden"' :'class= "tab-pane"') ?> id="messages" >							
+										<!-- <div role="tabpanel" class="tab-pane" id="messages" > -->
+											
 											<div class="panel-body">
 												<div class="panel panel-primary">
 													<div class="panel-heading">Línea de Tiempo</div>
 													<div class="panel-body" style="max-height: 500px;overflow-y: scroll;">
-														<style type="text/css">
-
-
-														</style>
-
-														<div class="container">
+													
+													<div class="container" >
 															<ul class="timeline">
 																<?php
-																	echo '<h2 style="margin-left:50px;">Actividades Pendientes</h2>';
+																	//echo '<h2 style="margin-left:50px;">Actividades Pendientes</h2>';
+																	echo '<h3 style="margin-left:50px;">Actividades Pendientes</h3>';
 																	foreach ($timeline['listAct'] as $f) {       
 																		echo '<li>
 																				<div class="timeline-badge info"><i class="glyphicon glyphicon-time"></i></div>
@@ -203,7 +180,8 @@
 																				</div>
 																				</li>';
 																		}
-																		echo '<h2 style="margin-left:50px;">Actividades Terminadas</h2>';
+																		//echo '<h2 style="margin-left:50px;">Actividades Terminadas</h2>';
+																		echo '<h3 style="margin-left:50px;">Actividades Terminadas</h3>';
 																		foreach ($timeline['listArch'] as $f) {
 																		
 																		echo '<li>
@@ -242,9 +220,15 @@
 
 					</div><!-- /.row -->
 
+					<div class="row">
+						<div class="col-sm-12 col-md-12">
+								<button type="button" id="pedidoInsumos" class="btn btn-primary" onclick="pedirInsumos()">Pedido de Insumos</button>
+						</div>
+					</div>	
+					
 					<div class="modal-footer">
 						<button type="button" id="cerrar" class="btn btn-primary" onclick="cargarVista()">Cerrar</button>
-                                <button type="button" class="btn btn-success" onclick="precisaAnti()">Hecho</button>
+						<button type="button" class="btn btn-success" id="hecho" onclick="terminarTarea()">Hecho</button>
 					</div> <!-- /.modal footer -->
 
 				</div><!-- /.box body -->
@@ -382,6 +366,9 @@
 
 
 <script>
+
+
+
   $('#genericForm').bootstrapValidator({ //VALIDADOR
         message: 'This value is not valid',
         feedbackIcons: {
@@ -414,7 +401,7 @@
             e.preventDefault();
 			guardarFormulario(true);
            
-  });
+    });
 
 	evaluarEstado();
 	function evaluarEstado() {
@@ -460,33 +447,6 @@
 
 	/* Funciones BPM */
 	//Ckeck Tarea realizada
-
-  // cierra tarea
-  // Precisa Anticipo
-  function precisaAnti() {
-		var idTarBonita = $('#idTarBonita').val();
-		var $precisa = $('input[name="precisa"]:checked').val();
-		$.ajax({
-				type: 'POST',
-				data: {
-						'idTarBonita': idTarBonita,
-						'precisa': $precisa
-				},
-				url: 'index.php/Tarea/precisaAnticipo',
-				success: function(result) {
-						console.log(result);
-						//alert("SII");
-				},
-				error: function(result) {
-						//alert("Noo");
-						console.log(result);
-				},
-				dataType: 'json'
-		});
-  }
-
-
-
 	$('.btncolor').click(function (e) {
 		//var id = <?php //echo $idorden?>; //tomo valor de id_orden
 		console.log(id);
@@ -510,7 +470,6 @@
 			}
 		});
 	});
-
 	var validado=($('#idform').val()==0);
 	function terminarTarea() {
 		if(!validado){alert("Para concluir esta actividad primero debe Validar el Formulario");return;}
@@ -552,10 +511,10 @@
 			url: 'index.php/Tarea/estadoCuenta',
 			success: function (result) {
 				console.log(result);
-				//alert("SII");
+				alert("SII");
 			},
 			error: function (result) {
-				//alert("Noo");
+				alert("Noo");
 				console.log(result);
 			},
 			dataType: 'json'
@@ -651,7 +610,6 @@
 			alert('Error de Validación.\nCompruebe que los Datos esten cargados Correctamente.');
 		}	
 	}
-
 	function OcultarModal(){
 		$('#genericForm').data('bootstrapValidator').resetForm();
 		$('#modalForm').modal('hide');
@@ -802,13 +760,19 @@
 			var i = 0;
 			var valor = "";
 			var valorSig = "";
-
-			$('#' + idSelect).append($('<option>',
-				{ value: data[index]['VALOR'], text: data[index]['VALOR'] }));
-
+			if(data[index]['VALOR']!=$('#' + idSelect).val()){
+				$('#' + idSelect).append($('<option>',
+					{ value: data[index]['VALOR'], text: data[index]['VALOR'] }));
+			}
 			valor = data[index]['idValor'];
 			valorSig = data[index]['idValor'];
+			// $('#' + idSelect+" option").val(function(idx, val) {
+			// 	//if(!$(this).is(':selected')){
+			// 		$(this).siblings('[value="'+ val +'"]').remove();
+			// 	//}
+			// });
 		});
+		
 	}
 
 	//Trae valor de las imagenes
@@ -864,7 +828,7 @@
 
 	$('.fecha').datepicker({
 		autoclose: true
-	  }).on('change', function(e) {
+	}).on('change', function(e) {
        // $('#genericForm').bootstrapValidator('revalidateField',$(this).attr('name'));
 	   console.log('Validando Campo...'+$(this).attr('name'));
 	   $('#genericForm').data('bootstrapValidator').resetField($(this),false);
@@ -892,11 +856,64 @@
 			}
 		});
 	}
+
+
+/* Formulario de subareas */
+
+	// levanta cada formulario por id 
+	$(document).on("click", ".fa-paperclip", function(e) {       
+      // agregar esto para que no se repita el evento
+      e.preventDefault();
+      e.stopImmediatePropagation();
+			var form_id = $(this).data("idformsub");
+			alert(form_id);
+			//FIXME:SACAR HARDCODE FORMID
+			var form_id = 1000;
+			var bpm_task_id = 2;
+			console.log('form id: '+ form_id);
+			console.log('task id: '+bpm_task_id);
+			//alert(form_id);
+			WaitingOpen();
+			$.ajax({
+      data: {form_id:form_id, bpm_task_id: bpm_task_id},
+      dataType: 'json',
+      type: 'POST',
+      url: 'index.php/Tarea/Obtener_Formulario',
+      success: function(result){   
+        //form_actual_id = 'genericForm'+idListTarea;        
+        $("#contFormSubtarea").html(result.html);
+        $('#modalFormSubtarea').modal('show');
+        WaitingClose();
+      },
+      error: function(result){
+        WaitingClose();
+        alert("Error: No se pudo obtener el Formulario");
+      },
+    });
+			
+  });
+
+/*  /. Formulario de subareas */
+
+/* Pantalla pedido de insumos */
+function pedirInsumos(){ 
+  var iort = $('#ot').val();
+	var iort = 22;
+  console.log("El id de OT es: " + iort);
+   
+  WaitingOpen();
+  $('#content').empty();
+  $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/agregarListInsumos/<?php echo $permission; ?>/"+iort);
+  WaitingClose();  
+}
+
+/* pedido de insumos */
+
 </script>
 
 
 
-<div class="modal fade bs-example-modal-lg" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<!-- <div class="modal fade bs-example-modal-lg" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 			<div class="row">
@@ -906,17 +923,36 @@
 							<div class="row">
 								<div class="col-sm-12 col-md-12">
 									<?php
-                    if($form != ''){
-                        cargarFormulario($form);
-                    }                                    
-                  ?>
+										//if($form != ''){
+										//	cargarFormulario($form);
+										//}                                    
+									?>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+		</div>
+	</div>
+</div> -->
 
+<div class="modal fade bs-example-modal-lg" id="modalFormSubtarea" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="box">
+						<div class="box-body">
+							<div class="row">
+								<div class="col-sm-12 col-md-12" id="contFormSubtarea">
+									
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

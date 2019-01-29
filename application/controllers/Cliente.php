@@ -31,6 +31,7 @@ class Cliente extends CI_Controller {
 		$cliPhone       = $this->input->post('cliPhone');
 		$cliEmail       = $this->input->post('cliEmail');
 		$cliRazonSocial = $this->input->post('cliRazonSocial');
+		$plant_id				= $this->input->post('plant_id');
 	    $data = array(
 	    	'cliName'        => $cliName,
 	    	'cliLastName'    => $cliLastName,
@@ -39,7 +40,8 @@ class Cliente extends CI_Controller {
 	    	'cliPhone'       => $cliPhone,
 	    	'cliEmail'       => $cliEmail,
 	    	'cliRazonSocial' => $cliRazonSocial,
-	    	'estado'         => "AC"
+				'estado'         => "AC",
+				'plant_id'			 =>	$plant_id
 	    );
 	    $sql = $this->Clientes->Guardar_Clientes($data);
 	    print_r($sql);
@@ -53,16 +55,18 @@ class Cliente extends CI_Controller {
 	    $cliAddress=$this->input->post('cliAddress');
 	    $cliPhone=$this->input->post('cliPhone');
 	    $cliEmail=$this->input->post('cliEmail');
-	    $cliRazonSocial=$this->input->post('cliRazonSocial');
+			$cliRazonSocial=$this->input->post('cliRazonSocial');
+			$plant_id				= $this->input->post('plant_id');
 	    $data = array(
 	    	    		   'cliId' => $id,
-						    'cliName' => $cliName,
-						    'cliDni' => $cliDni,
-						    'cliAddress' => $cliAddress,
-						    'cliPhone' => $cliPhone,
-						    'cliEmail' => $cliEmail,
-						    'cliRazonSocial' => $cliRazonSocial
-					   );
+										'cliName' => $cliName,
+										'cliDni' => $cliDni,
+										'cliAddress' => $cliAddress,
+										'cliPhone' => $cliPhone,
+										'cliEmail' => $cliEmail,
+										'cliRazonSocial' => $cliRazonSocial,
+										'plant_id'			 =>	$plant_id
+								);
 	    $sql = $this->Clientes->Modificar_Clientes($data);
 	     echo json_encode($sql);
   	}

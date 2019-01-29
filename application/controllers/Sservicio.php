@@ -6,6 +6,7 @@ class Sservicio extends CI_Controller {
 	function __construct(){
 		parent::__construct();
 		$this->load->model('Sservicios');
+		$this->load->model('Bonitas');
 	}
 	/* FUNCIONES ORIGINALES DE ASSET	*/
 		// public function index($permission){
@@ -71,18 +72,45 @@ class Sservicio extends CI_Controller {
 			$data['permission'] = $permission;
 			$this->load->view('Sservicios/list_bpm', $data);
 		}
+		// trae tareas estandar para select de nueva solicitud
+		public function getTareasStandar(){
+			$result = $this->Sservicios->getTareasStandar();
+			echo json_encode($result);
+		}
 		// lanza proceso en BPM (inspección)
-		function lanzarProcesoBPM($inspectorid){
-
-			$parametros = $this->Bonitas->conexiones();
-			$parametros["http"]["method"] = "POST";
-			$idInspector = array (
-				"idInspector"	=>	$inspectorid
-			);	
-			$parametros["http"]["content"] = json_encode($idInspector);
-			$param = stream_context_create($parametros);
-			$result = $this->Inspecciones->lanzarProcesoBPM($param);
-			return $result;		
+		function lanzarProcesoBPM(){		
+			
+			// inserta registro en  tabla solicitud de reparacion
+			$id_solServicio  = $this->Sservicios->setservicios($this->input->post());
+			//dump($id_solServicio, 'id solic de servicio');
+			if($id_solServicio){
+				$parametros = $this->Bonitas->conexiones();
+				$parametros["http"]["method"] = "POST";
+				$contract = array (
+					"idSolicitudServicio"	=>	$id_solServicio,
+												"idOT"  => 	0
+				);					
+				$parametros["http"]["content"] = json_encode($contract);
+				$param = stream_context_create($parametros);
+				$result = $this->Sservicios->lanzarProcesoBPM($param);
+				$caseId = json_decode($result['caseId'],true);
+				
+				if (json_decode($result['caseId'])) {
+					//update de solic de servicio concaseid
+					$this->Sservicios->setCaseId($caseId['caseId'],$id_solServicio);
+				} else{ 
+					$result = $this->Sservicios->elimSolicitudes($id_solServicio);
+					$result = 150;// codigo inventado
+					echo json_encode($result);
+				}
+				
+				echo json_encode($result);		
+			}else{ 
+				$result = $this->Sservicios->elimSolicitudes($id_solServicio);
+				$result = 100;// codigo inventado
+				echo json_encode($result);
+			}
+			
 		}
 
 
