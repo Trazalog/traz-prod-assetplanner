@@ -56,7 +56,7 @@ class Sservicios extends CI_Model
 		$id = $data["id_sector"];
 		$this->db->select('equipos.id_equipo, equipos.codigo');
         $this->db->from('equipos');
-        $this->db->where('equipos.estado', 'AC');
+        $this->db->where('equipos.estado !=', 'AN');
         $this->db->where('equipos.id_sector', $id);
         $query = $this->db->get();
 		if ($query->num_rows()!=0)
