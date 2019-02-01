@@ -51,26 +51,28 @@ class Sservicios extends CI_Model
 	}			
 	
 	// Trae equipos segun sector de empresa logueada
-	function getEquipSectores($data = null)
-	{
-		$id = $data["id_sector"];
-		$this->db->select('equipos.id_equipo, equipos.codigo');
+    function getEquipSectores($data = null)
+    {
+        $id = $data["id_sector"];
+        $this->db->select('equipos.id_equipo, equipos.codigo');
         $this->db->from('equipos');
         $this->db->where('equipos.estado !=', 'AN');
         $this->db->where('equipos.id_sector', $id);
         $query = $this->db->get();
-		if ($query->num_rows()!=0)
-		{
-			$i = 0;
-			foreach ($query->result() as $row)
-			{   
-			   $data2[$i]["descripcion"] = $row->codigo;
-			   $data2[$i]["id_equipo"]   = $row->id_equipo;
-			   $i++;
-			}		
-	        return $data2;
-	    }	    
-	}	
+        if ($query->num_rows()!=0)
+        {
+            $i = 0;
+            foreach ($query->result() as $row)
+            {   
+               $data2[$i]["descripcion"] = $row->codigo;
+               $data2[$i]["id_equipo"]   = $row->id_equipo;
+               $i++;
+            }       
+            return $data2;
+        } else {
+            return null;
+        }
+    }   
 	
 	// Trae sectores por empresa logueada - Listo
 	function getSectores()
