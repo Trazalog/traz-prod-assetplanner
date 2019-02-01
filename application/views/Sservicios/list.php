@@ -538,14 +538,17 @@
       'url': "Sservicio/getEquipSector",
     })
     .done( (data) => {
-      //console.table(data);
-      // Asigna opciones al select Equipo en modal
+      console.table(data);
       let $select = $("#equipSelec");
       $select.html("");
-
-      for (let i=0; i<data.length; i++) {
-        let opcion = "<option value='"+data[i]['id_equipo']+"'>" +data[i]['descripcion']+ "</option>";
-        $select.append(opcion);
+      if(data == null) {
+        alert("El sector no tiene equipos asociados.");
+        $('#buscSector').val('');
+      } else {
+        for (let i=0; i<data.length; i++) {
+          let opcion = "<option value='"+data[i]['id_equipo']+"'>" +data[i]['descripcion']+ "</option>";
+          $select.append(opcion);
+        }
       }
     })
     .fail( () => alert( "Error al traer los equipos del Sector." ) )
