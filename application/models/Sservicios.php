@@ -69,7 +69,9 @@ class Sservicios extends CI_Model
 			   $i++;
 			}		
 	        return $data2;
-	    }	    
+	    } else {
+	    	return null;
+	    }
 	}	
 	
 	// Trae sectores por empresa logueada - Listo
@@ -81,6 +83,7 @@ class Sservicios extends CI_Model
 		$this->db->select('sector.id_Sector, sector.descripcion');
     	$this->db->from('sector');    	
     	$this->db->where('sector.id_empresa', $empId);
+    	$this->db->where('sector.estado !=', 'AN');
 		$query = $this->db->get();
 
 		$i     = 0;
