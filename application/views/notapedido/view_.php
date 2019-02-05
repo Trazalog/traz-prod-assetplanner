@@ -32,8 +32,8 @@
           <h2 class="box-title">Nota de Pedido</h2>
             <?php
             //if (strpos($permission,'Add') !== false) {
-            echo '<button class="btn btn-block btn-primary" style="width: 250px; margin-top: 10px;" id="listadoOT">Ver Listado Ordenes de Trabajo</button>';
-            echo '<button class="btn btn-block btn-primary" style="width: 250px; margin-top: 10px;" id="listado">Ver Listado de Notas de pedido</button>';
+            echo '<button class="btn btn-block btn-primary" style="width: 250px; margin-top: 10px;" id="listadoOT">Volver a OTs</button>';
+            /*echo '<button class="btn btn-block btn-primary" style="width: 250px; margin-top: 10px;" id="listado">Ver Listado de Notas de pedido</button>';*/
             //}
           ?>
         </div><!-- /.box-header -->
@@ -147,13 +147,13 @@ $("#listadoOT").click(function (e) {
   WaitingClose();
 });
 
-//va a listado de nota de pedido
+/*/va a listado de nota de pedido
 $("#listado").click(function (e) {
   WaitingOpen();
   $('#content').empty();
   $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/index/<?php echo $permission; ?>");
   WaitingClose();
-});
+});*/
 
 // Trae Ordenes en curso
 /*$.ajax({

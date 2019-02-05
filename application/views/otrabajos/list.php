@@ -63,7 +63,7 @@
                           echo '<i class="fa fa-tags text-light-blue" style="cursor: pointer; margin-left: 15px;"  title="Cargar Pedido " data-toggle="modal" data-target="#modalpedido"></i>';
                         }*/
                         if (strpos($permission,'Pedidos') !== false) {
-                          echo '<i class="fa fa-truck text-light-blue" style="cursor: pointer; margin-left: 15px;"  title="Mostrar Pedido " data-toggle="modal" data-target="#modallista"></i>';
+                          echo '<i class="fa fa-truck text-light-blue" style="cursor: pointer; margin-left: 15px;"  title="Mostrar Nota de Pedido" data-toggle="modal" data-target="#modallista"></i>';
                           echo '<i class="fa fa-cart-plus text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Agregar Nota de Pedido"></i>';
                         }
                         if(($a['estado'] == 'As' || $a['estado'] == 'P') && ($a['id_usuario_a'] == $usrId)){
@@ -302,14 +302,14 @@ $(".fa-pencil").click(function(e) {
   $("#modaleditar tbody").remove();
   var idord = $(this).parent('td').parent('tr').attr('id');
   idp = idord;
-  //console.log("idp: "+idp);
+  console.log("idp: "+idp);
   $.ajax({
     data: { idp:idp },
     dataType: 'json',
     type: 'POST',
     url: 'index.php/Otrabajo/getpencil',
     success: function(data){
-      //console.table(data);
+      console.table(data);
       datos = {
         'id_ot'         : data[0]['id_orden'],
         'nro'           : data[0]['nro'],
@@ -685,7 +685,7 @@ $(document).ready(function(event) {
     $("#modallista tbody tr").remove();
     var idorde = $(this).parent('td').parent('tr').attr('id');
     
-    console.log("ID de orden de trabajo para mostrar pedido es: "+idorde);  
+    /*console.log("ID de orden de trabajo para mostrar pedido es: "+idorde);  
     $.ajax({
       dataType: 'json',
       data: { id:idorde},
@@ -752,12 +752,12 @@ $(document).ready(function(event) {
                 console.error("Entro x el error de detalle");                
                 console.table(result);
           },
-    });
+    });*/
     //iort = id;
-    // WaitingOpen();
-    // $('#content').empty();
-    // $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/getNotasxOT/<?php echo $permission; ?>/"+idorde+"");
-    // WaitingClose(); 
+    WaitingOpen();
+    $('#content').empty();
+    $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/getNotasxOT/<?php echo $permission; ?>/"+idorde+"");
+    WaitingClose(); 
   });
 
   //guardar pedido

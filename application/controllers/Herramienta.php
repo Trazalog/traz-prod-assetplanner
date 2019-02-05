@@ -67,12 +67,10 @@ class Herramienta extends CI_Controller {
         print_r($result);
     }
 
-
-
-	public function getmodelo()
+	public function getMarca()
     {
 		$this->load->model('Herramientas');
-		$empresa = $this->Herramientas->getmodelos();
+		$empresa = $this->Herramientas->getMarcas();
 		if($empresa)
 		{	
 			$arre=array();

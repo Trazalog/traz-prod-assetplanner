@@ -164,6 +164,34 @@ class Groups extends CI_Model {
 	}
 
 
+	/**
+	 *
+	 *
+	 */
+	function traeEmpresas()
+	{
+		$userdata  = $this->session->userdata('user_data');
+		$idUsuario = $userdata[0]['usrId'];
+		$this->db->select('empresas.id_empresa, empresas.descripcion, 
+			usuarioasempresa.tipo');
+		$this->db->from('usuarioasempresa');
+		$this->db->join('empresas', 'empresas.id_empresa = usuarioasempresa.empresaid', 'inner');
+		$this->db->where('usuarioasempresa.usrId', $idUsuario);
+		$this->db->order_by("empresas.descripcion", "asc");
+
+		$query = $this->db->get();
+		if ($query->num_rows()!=0)
+		{
+			$datosEmpresas = $query->result_array();
+			//$this->session->set_userdata('enterprise_data', $datosEmpresas);
+			return $datosEmpresas;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 
 	/**
 	 * Trae todos los elementos del menu.

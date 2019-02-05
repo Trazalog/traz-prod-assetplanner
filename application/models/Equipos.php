@@ -896,17 +896,53 @@ class Equipos extends CI_Model {
     {
         $userdata  = $this->session->userdata('user_data');
         $empresaId = $userdata[0]['id_empresa'];
-        $sql = "SELECT COUNT(equipos.estado) AS cantEstadoActivo, equipos.estado
+        $sql = "SELECT equipos.id_equipo, equipos.estado
+        FROM equipos
+        JOIN grupo ON grupo.id_grupo=equipos.id_grupo
+        JOIN sector ON sector.id_sector=equipos.id_sector
+        JOIN empresas ON empresas.id_empresa=equipos.id_empresa
+        JOIN unidad_industrial ON unidad_industrial.id_unidad=equipos.id_unidad
+        JOIN criticidad ON criticidad.id_criti=equipos.id_criticidad
+        JOIN area ON area.id_area=equipos.id_area
+        JOIN proceso ON proceso.id_proceso=equipos.id_proceso
+        JOIN admcustomers ON admcustomers.cliId=equipos.id_customer
+        WHERE equipos.estado != 'AN'
+        AND equipos.id_empresa = '".$empresaId."'
+        ";
+        //GROUP BY equipos.estado
+        /*$sql = "SELECT COUNT(equipos.estado) AS cantEstadoActivo, equipos.estado
             FROM equipos
             WHERE equipos.id_empresa = '".$empresaId."'
             AND (equipos.estado = 'AC' OR equipos.estado = 'RE')
             GROUP BY equipos.estado
-            ";
+            ";*/
         $query = $this->db->query($sql);
 
         if ($query->num_rows()!=0)
         {
-            return $query->result_array();
+            $equipos = $query->result_array();
+            foreach ($equipos as &$valor) 
+            {
+                if( ($valor['estado'] == 'AL') || ($valor['estado'] == 'AC') || ($valor['estado'] == 'RE'))
+                {
+                    $idEquipo = $valor['id_equipo'];
+                    $this->db->select('estado');
+                    $this->db->from('historial_lecturas');
+                    $this->db->where('id_equipo', $idEquipo);
+                    $this->db->order_by('id_equipo', 'DESC');
+                    $this->db->limit(1);
+                    
+                    $query2 = $this->db->get();
+                    $estado = $query2->result_array();
+                    $valor['estado'] = $estado[0]['estado'];
+                    $valor['cantEstadoActivo'] = 0;
+                }
+                else {
+                    $valor['estado'] = $valor['estado'];   
+                    $valor['cantEstadoActivo'] = 0;
+                }
+            }
+            return $equipos;
         }
 
     }
@@ -1266,7 +1302,7 @@ class Equipos extends CI_Model {
                     equipos.fecha_ingreso,
                     equipos.fecha_garantia,
                     equipos.codigo,
-                    equipos.id_hubicacion,
+                    equipos.ubicacion,
                     equipos.fecha_ultimalectura,
                     equipos.ultima_lectura,
                     equipos.descrip_tecnica,
@@ -1341,5 +1377,50 @@ class Equipos extends CI_Model {
         {
             return array();
         }
+    }
+
+
+    function estado_alta($idEquipo)
+    {
+        $this->db->select('equipos.id_equipo, equipos.estado, equipos.ultima_lectura');
+        $this->db->from('equipos');
+        $this->db->where('equipos.id_equipo', $idEquipo);
+        $query = $this->db->get();
+
+        if ($query->num_rows()>0)
+        {
+            return $query->result_array();
+        }
+        else
+        {
+            return array();
+        }
+    }
+
+    function alta_historial_lectura($parametros)
+    {
+        $id_equipo    = $parametros['id_equipo'];
+        $lectura      = $parametros['lectura'];
+        $userdata     = $this->session->userdata('user_data');
+        $usrId        = $userdata[0]['usrId'];
+        $observacion  = $parametros['observacion'];
+        $operario = $parametros['operario'];
+        $turno        = $parametros['turno'];
+        $estado       = $parametros['estado'];
+
+        $datos = array(
+            'id_equipo'    => $id_equipo,
+            'lectura'      => $lectura,
+            'fecha'        => date('Y-m-d H:i:s'),
+            'usrId'        => $usrId,
+            'observacion'  => $observacion,
+            'operario_nom' => $operario,
+            'turno'        => $turno,
+            'estado'       => $estado,
+        );
+        //dump_exit($datos);
+        $this->db->insert('historial_lecturas',$datos);
+        $query = $this->db->insert_id();
+        return $query;
     }
 }

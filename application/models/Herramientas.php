@@ -24,7 +24,7 @@ class Herramientas extends CI_Model
 		$this->db->join('abmdeposito','abmdeposito.depositoId = herramientas.depositoId');	
 		$this->db->join('marcasequipos','marcasequipos.marcaid = herramientas.modid');
 		$this->db->where('herramientas.id_empresa', $empresaId);
-       //$this->db->where('herramientas.estado !=', 'AC');
+        $this->db->where('herramientas.equip_estad !=', 'AN');
         $query = $this->db->get();
 		if ($query->num_rows()!=0)
 		{
@@ -62,8 +62,9 @@ class Herramientas extends CI_Model
     // elimina herramienta
     function eliminacion($data)
     {
+        $datos = array('equip_estad'=>"AN");
         $this->db->where('herrId', $data);
-        $query = $this->db->delete('herramientas');
+        $query = $this->db->update('herramientas', $datos);
         return $query;
     }
 
@@ -83,12 +84,16 @@ class Herramientas extends CI_Model
     }
 
     // trae marca de equipos
-	function getmodelos()
+	function getMarcas()
     {
         $userdata  = $this->session->userdata('user_data');
         $empresaId = $userdata[0]['id_empresa'];
-        $sql       = "SELECT * FROM marcasequipos WHERE marcasequipos.id_empresa = $empresaId";
-        $query     = $this->db->query($sql);
+        $this->db->select('marcasequipos.*');   
+        $this->db->from('marcasequipos');
+        $this->db->where('marcasequipos.id_empresa', $empresaId);
+        $this->db->where('marcasequipos.estado', 'AC');
+        $this->db->order_by('marcasequipos.marcadescrip');
+        $query     = $this->db->get();
 		if($query->num_rows()>0){
 		    return $query->result();
 		}
@@ -102,8 +107,11 @@ class Herramientas extends CI_Model
     {
         $userdata  = $this->session->userdata('user_data');
         $empresaId = $userdata[0]['id_empresa'];
-        $sql       = "SELECT * FROM abmdeposito WHERE abmdeposito.id_empresa = $empresaId";
-		$query     = $this->db->query($sql);
+		$this->db->select('abmdeposito.*');   
+        $this->db->from('abmdeposito');
+        $this->db->where('abmdeposito.id_empresa', $empresaId);
+        $this->db->order_by('abmdeposito.depositodescrip');
+        $query     = $this->db->get();
 		if($query->num_rows()>0){
 		    return $query->result();
 		}

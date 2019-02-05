@@ -7,11 +7,11 @@ class dash extends CI_Controller {
 	function __construct()
     {
 		parent::__construct();
+		$this->load->model('Dashs');
 		$this->load->model('Groups');
 		$this->load->model('Customers');
 		$this->load->model('Calendar');
-
-		$this->_init_Menu();	// Inicializa el menu
+		//$this->_init_Menu();	// Inicializa el menu
 		//$this->output->enable_profiler(true);
 	}
 
@@ -20,7 +20,8 @@ class dash extends CI_Controller {
 	 *
 	 * @return	void
 	 */
-	private function _init_Menu() {
+	private function _init_Menu()
+	{
 		// Ejecuta la consulta y obtiene el arreglo de datos
 		$items = $this->Groups->mnuAll();
 		//dump_exit($items);
@@ -32,10 +33,27 @@ class dash extends CI_Controller {
 		$this->multi_menu->set_items($this->items);
 	}
 
+	/**
+	 *
+	 *
+	 */
+	private function _trae_empresas() {
+		$empresas = $this->Groups->traeEmpresas();
+		if($empresas) {
+			$enterprisedata[0]['empresas'] = $empresas;
+			$this->session->set_userdata('enterprise_data', $enterprisedata);
+		}
+	}
+
 	public function index()
 	{
+		$this->_init_Menu();// Inicializa el menu
+		$this->_trae_empresas();// trae las empresas del usuario
+
 		$this->load->view('header');
-		$userdata = $this->session->userdata('user_data');
+		$userdata       = $this->session->userdata('user_data');
+		$enterprisedata = $this->session->userdata('enterprise_data');
+		//dump_exit($enterprisedata);
 
 		if( !$userdata )
 		{
@@ -48,7 +66,7 @@ class dash extends CI_Controller {
 			$data['userName']     = $userdata[0]['usrNick'];
 			$data['grpId']        = $userdata[0]['grpId'];
 			$data['descEmpresas'] = $userdata[0]['descripcion'];
-			$data['unidad_industrial'] = $userdata[0]['unidad_industrial'];
+			$data['empresas']     = $enterprisedata[0]['empresas'];
 			//para el dash x defecto segun grupo de usr
 			$data['grpDash']    = $this->Groups->grpDash($userdata[0]['grpId']);
 			//$data['permission'] = $this->items['seguridad'];
@@ -58,6 +76,23 @@ class dash extends CI_Controller {
 			$this->load->view('content');
 			$this->load->view('footerdash');
 			$this->load->view('footer');
+		}
+	}
+
+	/**
+	 *
+	 */
+	public function cambiarDeEmpresa()
+	{
+		$idNewEmpresa = $this->input->post('idNewEmpresa');
+		$cambioOk     = $this->Dashs->cambiarDeEmpresa($idNewEmpresa);
+		if($cambioOk) {
+			//cambio grpId, empresaId y descripcion(empresa) en datos de sesion
+
+			echo json_encode(true);
+		}
+		else {
+			echo json_encode(false);
 		}
 	}
 

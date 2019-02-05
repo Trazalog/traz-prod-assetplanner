@@ -20,3 +20,10 @@ textarea.form-control {
     opacity:1!important;
     width: 8px!important;
 }
+
+.ui-autocomplete {
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index:1000 !important;
+}

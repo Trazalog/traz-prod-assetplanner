@@ -135,7 +135,7 @@
             </div>
 
             <div class="modal-footer">
-              <button type="button" class="btn btn-default delete" onclick="javascript:limpiarModal()">Cancelar</button>
+              <button type="button" class="btn btn-default delete" id="listado2">Cancelar</button>
               <button type="button" class="btn btn-primary" onclick="guardar()">Guardar</button>
             </div>  <!-- /.modal footer -->
               <!-- / Modal -->
@@ -227,7 +227,7 @@ function traer_equipo(){
       }
     },
     error: function(result){
-      console.log(result);
+      console.error(result);
     },
     dataType: 'json'
   });
@@ -251,7 +251,7 @@ function traer_componente(){
       }
     },
     error: function(result){
-      console.log(result);
+      console.error(result);
     },
     dataType: 'json'
   });
@@ -275,7 +275,7 @@ function traer_sistema(){
       }
     },
     error: function(result){
-      console.log(result);
+      console.error(result);
     },
     dataType: 'json'
   });
@@ -303,7 +303,7 @@ function traer_marca(){
           },
     error: function(result){
           
-          console.log(result);
+          console.error(result);
         },
         dataType: 'json'
     });
@@ -316,8 +316,8 @@ function traer_descripcion(idequipo){
     data: { idequipo: idequipo},
     url: 'index.php/Componente/getequipo',
     success: function(data){
-            console.log(data);
-            console.log(data.datos);
+            //console.log(data);
+            //console.log(data.datos);
             if(data=='nada'){
               var d='No hay Descripcion cargada';
               $('#descrip').append(d);
@@ -325,7 +325,7 @@ function traer_descripcion(idequipo){
              $('#descrip').val(data.datos);
         },
     error: function(result){
-          console.log(result);
+          console.error(result);
             },
            dataType: 'json'
         });   
@@ -391,14 +391,14 @@ function guardar(){
 
   var idequipo = $('#equipo').val();
   
-  console.log("idequipo: "+idequipo);
-  console.log("componentes: ");
-  console.table(comp);
-  console.log("codigo: ");
-  console.table(codigo);
-  console.log("sistemaid: ");
-  console.table(sistemaid);
-  console.log("bandera: "+x);
+  //console.log("idequipo: "+idequipo);
+  //console.log("componentes: ");
+  //console.table(comp);
+  //console.log("codigo: ");
+  //console.table(codigo);
+  //console.log("sistemaid: ");
+  //console.table(sistemaid);
+  //console.log("bandera: "+x);
   var hayError = false;
 
   if( $('#tablaequipos').DataTable().data().any() ) {
@@ -409,14 +409,14 @@ function guardar(){
         url: 'index.php/Componente/guardar_componente',  //index.php/
         success: function(data){
           console.log("entre por el guardado del componente equipo");
-                console.log(data);
+                //console.log(data);
                 alert ("guardado con exito");
                 cargarVista();
               },
         error: function(result){
-          console.log("entre por el error del componente equipo");
+          //console.log("entre por el error del componente equipo");
               
-              console.log(result);
+              console.error(result);
               
             }
            // dataType: 'json'
@@ -453,11 +453,11 @@ $('#guardarComponente').click(function(e) { //
   $('#errorComponentes').hide();
   if ( marcaid < 0 ) {
     hayError = true;
-    console.log("entro x marcaid");
+    //console.log("entro x marcaid");
   }
   if( descripcion == "" ) {
     hayError = true;
-    console.log("entro x descrip");
+    //console.log("entro x descrip");
   }
 
   if(hayError == true){
@@ -500,9 +500,9 @@ $('#addcompo').click(function (e) {
   var sistema       = $("select#sistema option:selected").html();
   var id_sistema    = $('#sistema').val();
   equipoglob        = id_equipo;
-  console.info('codigo: '+codigo);
-  console.info('sistema: '+sistema);
-  console.info('id_sistema: '+id_sistema);
+  //console.info('codigo: '+codigo);
+  //console.info('sistema: '+sistema);
+  //console.info('id_sistema: '+id_sistema);
   var table   = $('#tablaequipos').DataTable();
   if(id_componente >0 && id_sistema >0 && equipoglob >0) {
     /*$('#tablaequipos tbody').append(tr);*/
@@ -545,7 +545,7 @@ $('#addcompo').click(function (e) {
 });
 
 // Vuelve al listado al guardar
-$('#listado').click( function cargarVista(){
+$('#listado, #listado2').click( function cargarVista(){
     WaitingOpen();
     $('#content').empty();
     $("#content").load("<?php echo base_url(); ?>index.php/Componente/asigna/<?php echo $permission; ?>");
@@ -559,7 +559,7 @@ $('#equipo').change(function(){
   var d = $(this).parent('td').parent('tr').attr('id');
   di = d;
   ge = idequipo;
-  console.log("id de equipo: "+idequipo);
+  //console.log("id de equipo: "+idequipo);
   $('#tablacompo tbody tr').html("");
   
   $.ajax({
@@ -568,7 +568,7 @@ $('#equipo').change(function(){
     type: 'POST',
     url: 'Componente/getcompo', 
     success: function(data){                  
-      console.table(data); 
+      //console.table(data); 
       if (data!= 0) {
         var de = data[0]['descripcion']; 
         var comp = data[0]['dee11'];
@@ -582,8 +582,8 @@ $('#equipo').change(function(){
           s++;
         }             
 
-        console.log(table);
-        console.log(s);
+        //console.log(table);
+        //console.log(s);
         $('#tablacompo').val('');
       }
       else{

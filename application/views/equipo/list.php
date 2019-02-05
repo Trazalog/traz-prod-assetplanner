@@ -76,7 +76,7 @@
                     .($a['estado'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' 
                     :($a['estado'] == 'IN' ? '<small class="label pull-left bg-blue">Inhabilitado</small>'
                     :($a['estado'] == 'RE' ? '<small class="label pull-left bg-yellow">Reparación</small>' 
-                    : '<small class="label pull-left bg-red">Anulado</small>'))).'</td>';
+                    : '<small class="label pull-left bg-teal">Alta</small>'))).'</td>';
                   echo '</tr>';
                 }
               ?>
@@ -198,10 +198,75 @@ $(document).ready(function(event) {
   // Cambiar a estado - Chequeado
   $(".fa-toggle-off").click(function (e) { 
     var idequipo = $(this).parent('td').parent('tr').attr('id');
-    console.log(idequipo);
+    console.log("id de equipo: "+idequipo);
+
+    // Si el estado es Alta (saco lectura de tabla equipo (ultima lectura))
     $.ajax({
+      async: true,
+      data: {idequipo: idequipo},
+      dataType: 'json',
       type: 'POST',
-      data: { idequipo: idequipo},
+      url: 'index.php/Equipo/estado_alta', 
+      success: function(data){
+        console.table(data[0]['estado']);
+        if (data[0]['estado'] == 'AL') {
+          var id_equipo   = idequipo;
+          var lectura     = data[0]['ultima_lectura'];
+          var observacion = 'Lectura automática al habilitar equipo dado de alta';
+          var operario    = 'alta';
+          var turno       = 'alta';
+          var estado      = 'AC';
+          parametros = {
+            'id_equipo' : id_equipo,
+            'lectura' : lectura,
+            'observacion' : observacion,
+            'operario' : operario,
+            'turno' : turno,
+            'estado' : estado,
+          }
+          alta_historial_lectura(parametros);
+        }
+        else {
+          alert("Error al habilitar el equipo");
+        }
+      },
+      error: function(result){
+        console.log(result);
+      }
+    });
+    //y agrego en historial lectura la primer lectura del equipo
+
+    // No esta Ok => exit y mensaje de error
+    // Está Ok => cambio estado
+    //alert('activando equipo en alta ');
+    cambiar_estado(idequipo);
+  });
+
+  function alta_historial_lectura(parametros){
+    console.log("parametros:");
+    console.table(parametros);
+    $.ajax({
+      data: {parametros: parametros},
+      dataType: 'json',
+      type: 'POST',
+      url: 'index.php/Equipo/alta_historial_lectura', 
+      success: function(data){
+        console.log(data);
+        //alert("Se agregó historial lecturas");
+      },
+      error: function(result){
+        console.error("Error al agregar historial lecturas");
+        console.table(result);
+      },
+    });
+  }
+
+  //cambio el estado a activo, sin importar si el anterior es alta, inhabilitado, etc...
+  function cambiar_estado(idequipo){
+    $.ajax({
+      data: {idequipo: idequipo},
+      dataType: 'json',
+      type: 'POST',
       url: 'index.php/Equipo/cambio_estado', 
       success: function(data){
         console.log(data);
@@ -209,11 +274,11 @@ $(document).ready(function(event) {
         regresa();    
       },
       error: function(result){
-        console.log(result);
+        console.error("Error al cambiar el estado");
+        console.table(result);
       },
-      dataType: 'json'
     });
-  });
+  }
  
   // Impresion - Chequeado
   $(".fa-print").click(function (e) {
@@ -778,6 +843,7 @@ function guardar(){
   var id_proceso          = $('#proceso option:selected').val();
   var id_cliente          = $('#cliente option:selected').val();
   var numero_serie        = $('#numse').val();
+  var descrip_tecnica    = $('#destec').val();
 
   var parametros = {
     'descripcion': descripcion,
@@ -796,7 +862,8 @@ function guardar(){
     'numero_serie' : numero_serie,
     'estado' : 'AC',
     'fecha_ultimalectura': fecha_ultimalectura,
-    'ultima_lectura': ultima_lectura,             
+    'ultima_lectura': ultima_lectura,   
+    'descrip_tecnica':descrip_tecnica,
   };
 
   console.log("estoy editando");
@@ -1209,7 +1276,7 @@ function llenarCampos(data) {
   llenar_cliente(data[0]['cliId']);
   $('#descripcion').val( data[0]['deeq'] );
   $('#numse').val( data[0]['numero_serie'] );
-  $('#ubicacion').val( data[0]['id_hubicacion'] );
+  $('#ubicacion').val( data[0]['ubicacion'] );
   $('#fecha_ingreso').val( data[0]['fecha_ingreso'] );
   $('#fecha_garantia').val( data[0]['fecha_garantia'] );
   $('#fecha_ultimalectura').val( data[0]['fecha_ultimalectura'] );
@@ -1712,7 +1779,7 @@ function guardarmarca(){
 
 
 <!-- Modal CONTRATISTA -->
-<div id="modalasignar" class="modal fade" role="dialog">
+<div id="modalasignar" class="modal" role="dialog">
   <div class="modal-dialog modal-lg">
 
     <div class="modal-content">
@@ -1812,7 +1879,7 @@ function guardarmarca(){
 <!-- / Modal CONTRATISTA -->
 
 <!-- Modal EDITAR -->
-<div id="modaleditar" class="modal fade" role="dialog">
+<div id="modaleditar" class="modal" role="dialog">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -2027,7 +2094,7 @@ function guardarmarca(){
 <!-- / Modal EDITAR -->
 
 <!-- Modal LECTURA -->
-<div class="modal fade" id="modalectura" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modalectura" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       
@@ -2084,7 +2151,7 @@ function guardarmarca(){
 <!-- / Modal LECTURA -->
 
 <!-- Modal Historial de Lecturas --> 
-<div class="modal fade" id="modalhistlect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modalhistlect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -2124,7 +2191,7 @@ function guardarmarca(){
 
 
 <!-- Modal criticidad-->
-<div class="modal fade" id="modalcrit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modalcrit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
 
@@ -2153,7 +2220,7 @@ function guardarmarca(){
 <!-- / Modal -->
 
 <!-- Modal area-->
-<div class="modal fade" id="modalarea" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modalarea" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
 
@@ -2181,7 +2248,7 @@ function guardarmarca(){
 <!-- / Modal -->
 
 <!-- Modal Proceso-->
-<div class="modal fade" id="modalproceso" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modalproceso" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
 
@@ -2209,7 +2276,7 @@ function guardarmarca(){
 <!-- / Modal -->
 
 <!-- Modal Etapa-->
-<div class="modal fade" id="modaletapa" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modaletapa" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
 
@@ -2237,7 +2304,7 @@ function guardarmarca(){
 <!-- / Modal -->
 
 <!-- Modal Grupo-->
-<div class="modal fade" id="modalgrupo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modalgrupo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
 
@@ -2265,7 +2332,7 @@ function guardarmarca(){
 <!-- / Modal -->
 
 <!-- Modal Marca-->
-<div class="modal fade" id="modalMarca" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modalMarca" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
 

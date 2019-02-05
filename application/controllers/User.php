@@ -18,7 +18,7 @@ class user extends CI_Controller {
 
 	public function getUser()
 	{
-		$data['data'] = $this->Users->getUser($this->input->post());
+		$data['data']     = $this->Users->getUser($this->input->post());
 		$response['html'] = $this->load->view('users/view_', $data, true);
 
 		echo json_encode($response);
@@ -42,18 +42,18 @@ class user extends CI_Controller {
 	public function test()
 	{
 		//Creamos las variables necesarias
-		$dataForm['id'] = $_POST['id'];
-		$dataForm['act'] = $_POST['act'];
-		$dataForm['usrNick'] = $_POST['usrNick'];
-		$dataForm['usrName'] = $_POST['usrName'];
+		$dataForm['id']          = $_POST['id'];
+		$dataForm['act']         = $_POST['act'];
+		$dataForm['usrNick']     = $_POST['usrNick'];
+		$dataForm['usrName']     = $_POST['usrName'];
 		$dataForm['usrLastName'] = $_POST['usrLastName'];
 		//$dataForm['usrComision'] = $_POST['usrComision'];
 		$dataForm['usrPassword'] = $_POST['usrPassword'];
-		$dataForm['grpId'] = $_POST['grpId'];
+		$dataForm['grpId']       = $_POST['grpId'];
 
 		//Convertimos la información de la imagen en binario para insertarla en la BBDD
 		if( $_FILES['imagen']['size'] != 0 ) {
-			$imagenBinaria = file_get_contents($_FILES['imagen']['tmp_name']);
+			$imagenBinaria       = file_get_contents($_FILES['imagen']['tmp_name']);
 			$dataForm['usrimag'] = $imagenBinaria;
 		} else {
 			$dataForm['usrimag'] = '';
