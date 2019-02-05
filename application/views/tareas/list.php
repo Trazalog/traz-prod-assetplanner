@@ -51,7 +51,7 @@ echo '<th style="display:none">Id tarea bonita</th>';
             <tbody>
               <?php                
                 
-                //dump($list, 'tareas: ');
+                dump($list, 'tareas: ');
                 foreach($list as $f){
                   
                   $id=$f["id"];

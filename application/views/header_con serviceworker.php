@@ -1,6 +1,22 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#673ab6"/>
+
+    <script>
+    if('serviceWorker' in navigator) {
+    navigator.serviceWorker
+           .register('/sw.js')
+           .then(function() { console.log("Service Worker Registered"); });
+    }
+
+    navigator.serviceWorker && navigator.serviceWorker.register('./sw.js').then(function(registration) {
+    console.log('Excellent, registered with scope: ', registration.scope);
+    });
+    </script>
+    
     <meta charset="UTF-8">
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">

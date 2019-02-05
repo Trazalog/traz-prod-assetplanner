@@ -7,7 +7,7 @@
 
 
 INFORME DE SERVICIOS:
-  ☐ Mantenimiento -> OT -> ordenes de servicio: Buscar herramienta por codigo, y mostrar marca y modelo
+  ✔ Mantenimiento -> OT -> ordenes de servicio: Buscar herramienta por codigo, y mostrar marca y modelo @done(19-01-30 13:02)
 
 
 Almacen -> orden insumos - agregar:

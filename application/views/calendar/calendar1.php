@@ -1,27 +1,48 @@
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
 <section class="content">
   <style>
-    input.prevent{border: none; padding-left: 5px; width: 100%;} 
-    .selmes{margin-bottom: 10px;}
-  </style>
+  input.prevent{border: none; padding-left: 5px; width: 100%;} 
+  .selmes{margin-bottom: 10px;}     
+</style>
 
-  <!-- CALENDARIO -->
-  <div class="col-md-6">
-    <div class="box box-primary">
-      <div class="box-body">
-        <div class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left:10px;" title="Imprimir"></div>
-        <div id="calendar"></div>
-      </div><!-- /.box-body -->
-    </div><!-- /. box -->
-  </div><!-- /.col --> 
+<!-- CALENDARIO -->
+<div class="col-md-6">
+  <div class="box box-primary">
+    <div class="box-body">
+      <div class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left:10px;" title="Imprimir"></div>
+      <div id="calendar"></div>
+    </div><!-- /.box-body -->
+  </div><!-- /. box -->
+</div><!-- /.col --> 
 
-  <div id="tablas">
-  </div>
+<div id="tablas">
+
+</div>    
+
+<!-- <button id="boton">boton</button> -->    
+
 </section><!-- /.content -->
 
 <script>
 
-function getTablas(month_, year_) {
+// $('#boton').click(function(){
+  //     $.ajax({
+  //         url: 'index.php/Calendario/getTablas',
+  //         type: "POST",
+  //         data: {mes:1},
+  //         success: function(data) {              
+
+  //                 $('#tablas').html(data);   
+  //         },
+  //         error:function(argument) {
+  //           alert('fuiste');
+  //         }
+  //     });
+  // });
+
+
+function getTablas(month_, year_) 
+{
   var mes = parseInt(month_) + 1;
   var year = parseInt(year_);
   var permission = '<?php echo $permission ?>';
@@ -76,9 +97,9 @@ $(function () {
 
   $('#calendar').fullCalendar({
     header: {
-      right  : 'prev,next today',
+      left  : 'prev,next today',
       center: 'title',
-      left : 'month,agendaWeek,agendaDay'
+      right : 'month,agendaWeek,agendaDay'
     },
     buttonText: {
       today: 'Hoy',
@@ -430,29 +451,29 @@ $("#fecha_progr_prevent_horas").datepicker({
 
 
 //////////  CORRECTIVO (Listoooo)
-var tarea         = "";
-var fecha_solicit = "";
-var id_sol        = "";
-var id_eq         = "";
-var desc_causa    = "";
+  var tarea         = "";
+  var fecha_solicit = "";
+  var id_sol        = "";
+  var id_eq         = "";
+  var desc_causa    = "";
 
   // Genera Orden de Trabajo y la guarda automaticamente
-  // $('.fa-stop-circle').click( function(){
+  $('.fa-stop-circle').click( function(){
 
-  //   // Mes segun cambia el calendario se va corriendo
-  //     //var date_ = new Date($("#calendar").fullCalendar('getDate'));
-  //     //var month_ = date_.getMonth() + 1;
-  //     //alert(month_);
+    // Mes segun cambia el calendario se va corriendo
+      //var date_ = new Date($("#calendar").fullCalendar('getDate'));
+      //var month_ = date_.getMonth() + 1;
+      //alert(month_);
 
-  //   //tarea = 1; // id_tarea (por defecto 1)
-  //   //  nro no va.
-  //   //  fecha (fecha de hoy)
-  //   //  fecha_progr_pred  lo toma del modal
-  //   // fecha_solicit = $(this).parents("tr").find("td").eq(5).html();
-  //   // desc_causa = $(this).parents("tr").find("td").eq(4).html();
-  //   // id_sol = $(this).parents("tr").find("td").eq(2).html();
-  //   // id_eq = $(this).parents("tr").find("td").eq(1).html();
-  // });
+    //tarea = 1; // id_tarea (por defecto 1)
+    //  nro no va.
+    //  fecha (fecha de hoy)
+    //  fecha_progr_pred  lo toma del modal
+    // fecha_solicit = $(this).parents("tr").find("td").eq(5).html();
+    // desc_causa = $(this).parents("tr").find("td").eq(4).html();
+    // id_sol = $(this).parents("tr").find("td").eq(2).html();
+    // id_eq = $(this).parents("tr").find("td").eq(1).html();
+  });
 
   function fill_Correc(dato){
     //alert(dato);
@@ -523,78 +544,78 @@ var desc_causa    = "";
 //////////  / CORRECTIVO (Listoooo)
 
 //////////  PREVENTIVO (Listoooo)
-var id_tar       = "";
-var fec_sol_prev = "";
-var id_prev      = "";
-var id_equ       = "";
-var desc_tarea   = "";  
+  var id_tar       = "";
+  var fec_sol_prev = "";
+  var id_prev      = "";
+  var id_equ       = "";
+  var desc_tarea   = "";  
 
-function fill_Prevent(dato){    
-  $.ajax({
-    data: {id:dato},
-    dataType: 'json',
-    type: 'POST',
-    url: 'index.php/Calendario/getPrevPorId',          
-    success: function(data){
-      id_tar       = data[0]['id_tarea'];
-      fec_sol_prev = data[0]['ultimo'];
-      id_prev      = data[0]['prevId'];
-      id_equ       = data[0]['id_equipo'];
-      desc_tarea   = data[0]['descripcion'];
-    },
-    error: function(data){
-      console.error("Error al trear preventivos por Id");
-      console.table(data);
-    },
-  });      
-}
+  function fill_Prevent(dato){    
+    $.ajax({
+      data: {id:dato},
+      dataType: 'json',
+      type: 'POST',
+      url: 'index.php/Calendario/getPrevPorId',          
+      success: function(data){
+        id_tar       = data[0]['id_tarea'];
+        fec_sol_prev = data[0]['ultimo'];
+        id_prev      = data[0]['prevId'];
+        id_equ       = data[0]['id_equipo'];
+        desc_tarea   = data[0]['descripcion'];
+      },
+      error: function(data){
+        console.error("Error al trear preventivos por Id");
+        console.table(data);
+      },
+    });      
+  }
 
-function setOtPreventivo() {
-  var progr_corr        = $('#fecha_progr_prevent').val();
-  var hora_prog_prevent = $('#hora_prog_prevent').val();
-  var event_Preventivo  = $('#event_Preventivo').val();
-  var cant_meses_prev   = $('#cant_meses_prev').val();
+  function setOtPreventivo() {
+    var progr_corr        = $('#fecha_progr_prevent').val();
+    var hora_prog_prevent = $('#hora_prog_prevent').val();
+    var event_Preventivo  = $('#event_Preventivo').val();
+    var cant_meses_prev   = $('#cant_meses_prev').val();
 
-  $.ajax({
-    type: 'POST',
-    data: {
-      id_sol       : id_prev,
-      id_tarea     : id_tar,
-      fecha_progr  : progr_corr,
-      hora_progr   : hora_prog_prevent,
-      fecha_inicio : fec_sol_prev,
-      descripcion  : desc_tarea,
-      tipo         : 3, // preventivo
-      ide          : id_equ,
-      event_tipo   : event_Preventivo,
-      cant_meses   : cant_meses_prev
-    },
-    url: 'index.php/Calendario/guardar_agregar',
-    success: function(data){
-      setTimeout("cargarView('Calendario', 'indexot', '"+$('#permission').val()+"');",0);
-    },
-    error: function(result){
-     console.log(result);
-    }
+    $.ajax({
+      type: 'POST',
+      data: {
+        id_sol       : id_prev,
+        id_tarea     : id_tar,
+        fecha_progr  : progr_corr,
+        hora_progr   : hora_prog_prevent,
+        fecha_inicio : fec_sol_prev,
+        descripcion  : desc_tarea,
+        tipo         : 3, // preventivo
+        ide          : id_equ,
+        event_tipo   : event_Preventivo,
+        cant_meses   : cant_meses_prev
+      },
+      url: 'index.php/Calendario/guardar_agregar',
+      success: function(data){
+        setTimeout("cargarView('Calendario', 'indexot', '"+$('#permission').val()+"');",0);
+      },
+      error: function(result){
+      console.log(result);
+      }
+    });
+  }
+
+  function CancPrevent(){
+    id_tar = "";
+    fec_sol_prev = "";
+    id_prev = "";
+    id_equ = "";
+    desc_tarea = "";
+  }
+    
+  //habilita/deshabilita el campo cantidad
+  $('#event_Preventivo').change(function(){
+      if ( $(this).val() == 0 ) {
+        $('#cant_meses_prev').attr('disabled',true);
+      }else{
+        $('#cant_meses_prev').attr('disabled',false);
+      }    
   });
-}
-
-function CancPrevent(){
-   id_tar = "";
-   fec_sol_prev = "";
-   id_prev = "";
-   id_equ = "";
-   desc_tarea = "";
-}
-  
-//habilita/deshabilita el campo cantidad
-$('#event_Preventivo').change(function(){
-    if ( $(this).val() == 0 ) {
-      $('#cant_meses_prev').attr('disabled',true);
-    }else{
-      $('#cant_meses_prev').attr('disabled',false);
-    }    
-});
 //////////  / PREVENTIVO 
 
 //////////  PREVENTIVO POR HORAS CAMBIAR VARIABLE IDP UREGNTTE
@@ -620,8 +641,8 @@ $('#event_Preventivo').change(function(){
   function setOtPrevHoras() {
     var progr_corr_hs    = $('#fecha_progr_prevent_horas').val();
     var hora_progr_prevH = $('#hora_progr_prevH').val();
-console.info(fec_sol_prevhs);
-console.info(ultima_lectura);
+  console.info(fec_sol_prevhs);
+  console.info(ultima_lectura);
 
     $.ajax({
       type: 'POST', //parametros:parametros
@@ -905,7 +926,7 @@ console.info(ultima_lectura);
         <div class="col-xs-4">Tipo de Evento
           <select class="form-control input-md" id="event_Preventivo">
             <option value="1">Unico</option>
-            <option value="2">Repetitivo</option>
+            <option value="2">Mensual</option>
           </select>
         </div>
         <div class="col-xs-4">Cantidad Meses 

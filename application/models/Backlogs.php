@@ -217,17 +217,17 @@ class Backlogs extends CI_Model
 			return 0;
 		}
 	}
-	function getIdEquipoSolicitud($idSolServicios){
-		$this->db->select('solicitud_reparacion.id_equipo');
-		$this->db->from('solicitud_reparacion');
-		$this->db->where('solicitud_reparacion.id_solicitud', $idSolServicios);
-		$query = $this->db->get();
+	// function getIdEquipoSolicitud($idSolServicios){
+	// 	$this->db->select('solicitud_reparacion.id_equipo');
+	// 	$this->db->from('solicitud_reparacion');
+	// 	$this->db->where('solicitud_reparacion.id_solicitud', $idSolServicios);
+	// 	$query = $this->db->get();
 
-		if ($query->num_rows()!=0){
-			return $query->row('id_equipo');
-		}else{
-			return 0;
-		}
-	}
+	// 	if ($query->num_rows()!=0){
+	// 		return $query->row('id_equipo');
+	// 	}else{
+	// 		return 0;
+	// 	}
+	// }
 	/* funciones para BPM */
 }	

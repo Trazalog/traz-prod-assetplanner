@@ -30,44 +30,44 @@
                 <div class="row">
                   <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="equipo">Equipos <strong style="color: #dd4b39">*</strong></label>
-                    <input  id="equipoDescrip" name="equipoDescrip" class="form-control" disabled />
-                    <input  type="hidden" id="equipo" name="equipo" class="form-control" value="<?php echo $idequipo ?>" />
+                    <input  id="equipoDescrip" name="equipoDescrip" class="form-control" value="<?php echo $info[0]["codigo"] ?>" disabled />
+                    <input  type="hidden" id="equipo" name="equipo" class="form-control" value="<?php echo $info[0]["id_equipo"] ?>" />
                     <!-- <input type="hidden" id="id_equipo" name="id_equipo">-->
                   </div>
 
                   <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="fecha_ingreso">Fecha:</label>
-                    <input type="text" id="fecha_ingreso" name="fecha_ingreso" class="form-control input-md" disabled />
+                    <input type="text" id="fecha_ingreso" name="fecha_ingreso" class="form-control input-md" value="<?php echo $info[0]["fecha_ingreso"] ?>" disabled />
                   </div>
 
                   <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="marca">Marca:</label>
-                    <input type="text" id="marca" name="marca" class="form-control input-md"  disabled />
+                    <input type="text" id="marca" name="marca" class="form-control input-md" value="<?php echo $info[0]["marca"] ?>" disabled />
                   </div>
 
                   <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="ubicacion">Ubicación:</label>
-                    <input type="text" id="ubicacion" name="ubicacion" class="form-control input-md" disabled/>
+                    <input type="text" id="ubicacion" name="ubicacion" class="form-control input-md" value="<?php echo $info[0]["ubicacion"] ?>" disabled/>
                   </div>
 
                   <div class="col-xs-12">
                     <label for="descripcion">Descripción: </label>
-                    <textarea class="form-control" id="descripcion" name="descripcion" disabled></textarea>
+                    <textarea class="form-control" id="descripcion" name="descripcion" value="<?php echo $info[0]["tareadescrip"] ?>" disabled></textarea>
                   </div> 
 
                   <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="codigo_componente">Código de componente-equipo :</label>
-                    <input type="text" id="codigo_componente" name="codigo_componente" class="form-control input-md" placeholder="Ingrese código de componente"/>
-                    <input type="hidden" id="idcomponenteequipo" name="idcomponenteequipo" value=""/>
+                    <input type="text" id="codigo_componente" name="codigo_componente" class="form-control input-md" name="descripcion" value="<?php echo $info[0]["componentecodigo"] ?>" placeholder="Ingrese código de componente"/>
+                    <input type="hidden" id="idcomponenteequipo" name="idcomponenteequipo" value="<?php echo $info[0]["idcomponenteequipo"] ?>"/>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="descrip_componente">Descripción de componente:</label>
-                    <input type="text" id="descrip_componente" name="descrip_componente" class="form-control input-md"  disabled />
+                    <input type="text" id="descrip_componente" name="descrip_componente" class="form-control input-md" value="<?php echo $info[0]["componentedescrip"] ?>" disabled />
                   </div>
 
                   <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="sistema_componente">Sistema:</label>
-                    <input type="text" id="sistema_componente" name="sistema_componente" class="form-control input-md"  disabled />
+                    <input type="text" id="sistema_componente" name="sistema_componente" class="form-control input-md" value="<?php echo $info[0]["sistemadescrip"] ?>" disabled />
                   </div>
             
                 </div><!-- /.row -->
@@ -78,24 +78,24 @@
               <div class="panel-heading">
                 <h4 class="panel-title"><span class="fa fa-building-o"></span> Programación</h4>
               </div>
-
+              
               <div class="panel-body">  
                 <div class="row">
                   <div class="col-xs-12 col-sm-6">
                     <label for="tarea">Tarea <strong style="color: #dd4b39">*</strong>:</label>
-                    <select id="tarea" name="tarea" value="" class="form-control" >
+                    <select id="tarea" name="tarea" value="<?php echo $info[0]["tarea_descrip"] ?>" class="form-control" >
                     </select>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-xs-12 col-sm-6">
                     <label for="vfecha">Fecha:</label>
-                    <input type="text" class="datepicker form-control fecha" id="fecha" name="vfecha" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>                         
+                    <input type="text" class="datepicker form-control fecha" id="fecha" name="vfecha" value="<?php echo date_format(date_create($info[0]["fecha"]), 'd-m-Y') ; ?>" size="27"/> 
                   </div>
-
+                  
                   <div class="col-xs-12 col-sm-6">
                     <label for="back_duracion">Duración (minutos)<strong style="color: #dd4b39">*</strong>:</label>
-                    <input type="text" class="form-control" id="back_duracion" name="back_duracion" />
+                    <input type="text" class="form-control" id="back_duracion" name="back_duracion" value="<?php echo $info[0]["back_duracion"] ?>"/>
                   </div>                         
                 </div><!-- /.row -->
               </div>
@@ -131,44 +131,44 @@ $(".datepicker").datepicker({
 });
 
 // trae info de equipo por id para completar los campos - Chequeado
-completarEquipo();
-function completarEquipo(){
-  var id_equipo = $("#equipo").val();
-  $.ajax({
-    data: { id_equipo:id_equipo },
-    dataType: 'json',
-    type: 'POST',
-    url: 'index.php/Backlog/getInfoEquipo',
-    success: function(data){
-      //console.table(data);
-      var codigo        = data[0]['codigo'];
-      var fecha_ingreso = data[0]['fecha_ingreso']; 
-      var marca         = data[0]['marca']; 
-      var ubicacion     = data[0]['ubicacion']; 
-      var criterio1     = data[0]['criterio1']; 
-      var descripcion   = data[0]['descripcion']; 
-      $('#equipoDescrip').val(codigo);
-      $('#fecha_ingreso').val(fecha_ingreso);       
-      $('#marca').val(marca);   
-      $('#descripcion').val(descripcion);       
-      $('#ubicacion').val(ubicacion);
-      refrescarAutocompletar();
-      $('#codigo_componente').val("");
-      $('#descrip_componente').val("");
-      $('#sistema_componente').val("");
-    },
-    error: function(result){
-      console.error("Error al traer info de equipo.");
-      console.table(result);
-    },
-  });   
-}
+//completarEquipo();
+// function completarEquipo(){
+//   var id_equipo = $("#equipo").val();
+//   $.ajax({
+//     data: { id_equipo:id_equipo },
+//     dataType: 'json',
+//     type: 'POST',
+//     url: 'index.php/Backlog/getInfoEquipo',
+//     success: function(data){
+//       //console.table(data);
+//       var codigo        = data[0]['codigo'];
+//       var fecha_ingreso = data[0]['fecha_ingreso']; 
+//       var marca         = data[0]['marca']; 
+//       var ubicacion     = data[0]['ubicacion']; 
+//       var criterio1     = data[0]['criterio1']; 
+//       var descripcion   = data[0]['descripcion']; 
+//       $('#equipoDescrip').val(codigo);
+//       $('#fecha_ingreso').val(fecha_ingreso);       
+//       $('#marca').val(marca);   
+//       $('#descripcion').val(descripcion);       
+//       $('#ubicacion').val(ubicacion);
+//       //refrescarAutocompletar();
+//       $('#codigo_componente').val("");
+//       $('#descrip_componente').val("");
+//       $('#sistema_componente').val("");
+//     },
+//     error: function(result){
+//       console.error("Error al traer info de equipo.");
+//       console.table(result);
+//     },
+//   });   
+// }
 
 $("#fecha").datepicker({
   format: 'dd/mm/yy',
   startDate: '-3d'
   //firstDay: 1
-}).datepicker("setDate", new Date());
+}).datepicker();
 
 
 // Trae equipos llena select - Chequeado
@@ -210,7 +210,7 @@ function traer_tarea(){
       url: 'index.php/Backlog/gettarea', //index.php/
       success: function(data){
              
-                var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+                //var opcion  = "<option value='-1'>Seleccione...</option>" ; 
                   $('#tarea').append(opcion); 
                 for(var i=0; i < data.length ; i++) { 
 

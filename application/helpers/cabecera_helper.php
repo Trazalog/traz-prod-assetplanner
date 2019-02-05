@@ -5,7 +5,7 @@ if(!function_exists('cargarCabecera')){
     function cargarCabecera($id_OT = null, $id_SS = null, $id_EQ = null){
 			// equipo
 			if($id_EQ != null){
-				//$id_EQ = 9;
+				
 				//get main CodeIgniter object
 				$ci =& get_instance();			
 				//load databse library
@@ -24,26 +24,7 @@ if(!function_exists('cargarCabecera')){
 						$result = $query->row_array();
 				}
 			}
-
-			// OT
-			if($id_OT != null){
-				//$id_OT = 570;
-				$ci->db->select('tareas.descripcion AS tareaDescrip,
-												orden_trabajo.descripcion AS otDescrip,
-												orden_trabajo.fecha,
-												orden_trabajo.id_orden,
-												orden_trabajo.duracion,
-												orden_trabajo.estado');	
-				$ci->db->from('orden_trabajo');		
-				$ci->db->join('tareas', 'tareas.id_tarea = orden_trabajo.id_tarea');			
-				$ci->db->where('orden_trabajo.id_orden', $id_OT);
-				$queryOT = $ci->db->get();			
-				if($queryOT->num_rows() > 0){
-						$resultOT = $queryOT->row_array();
-				}
-			}
-			// Solic Servicios
-			//$id_SS = 22 ;
+			// Solic Servicios			
 			if($id_SS != null){
 				$ci->db->select('solicitud_reparacion.id_solicitud,
 												solicitud_reparacion.solicitante,
@@ -61,10 +42,26 @@ if(!function_exists('cargarCabecera')){
 				if($querySS->num_rows() > 0){
 						$resultSS = $querySS->row_array();
 				}
-			}
-			
+			}	
+			// OT
+			if($id_OT != null){
+				//$id_OT = 570;
+				$ci->db->select('tareas.descripcion AS tareaDescrip,
+												orden_trabajo.descripcion AS otDescrip,
+												orden_trabajo.fecha,
+												orden_trabajo.id_orden,
+												orden_trabajo.duracion,
+												orden_trabajo.estado');	
+				$ci->db->from('orden_trabajo');		
+				$ci->db->join('tareas', 'tareas.id_tarea = orden_trabajo.id_tarea');			
+				$ci->db->where('orden_trabajo.id_orden', $id_OT);
+				$queryOT = $ci->db->get();			
+				if($queryOT->num_rows() > 0){
+						$resultOT = $queryOT->row_array();
+				}
+			}		
 
-			// Equipo Info
+			// Info Equipo 
 			echo '        
 						<div id="collapseDivCli" class="box box-default collapsed-box box-solid">
 							<div class="box-header with-border">
@@ -119,79 +116,7 @@ if(!function_exists('cargarCabecera')){
 				</div>
 			<!-- /.box-body -->';
 
-
-			// Orden Trabajo
-
-			if($id_OT != null){
-				echo '        
-				<div id="collapseDivCli" class="box box-default collapsed-box box-solid">
-					<div class="box-header with-border">
-						<h3 id="tituloInfo" class="box-title">Orden de Trabajo: '.$resultOT['id_orden'].' / Mas Detalles</h3>
-						<div class="box-tools pull-right">
-						<button id="infoCliente" type="button" class="btn btn-box-tool" data-widget="collapse" onclick="mostrarCliente()">
-								<i class="fa fa-plus"></i>
-						</button>
-					</div>
-							<!-- /.box-tools -->
-					</div>
-						<!-- /.box-header -->
-						<div class="box-body">
-
-							<div class="col-xs-12 col-sm-4">
-								<div class="form-group">
-										<label style="margin-top: 7px;">Nº Orden Trabajo: </label>
-										<input type="text" id="marca" class="form-control" value="'.$resultOT['id_orden'].'" disabled/>
-								</div>						
-							</div>
-								
-							<div class="col-xs-12 col-sm-4">
-								<div class="form-group">
-										<label style="margin-top: 7px;">Descripción: </label>
-										<input type="text" id="marca" class="form-control" value="'.$resultOT['otDescrip'].'" disabled/>
-								</div>						
-							</div>
-							<div class="col-xs-12 col-sm-4">
-								<div class="form-group">
-										<label style="margin-top: 7px;">Fecha: </label>
-										<input type="text" id="codigo" class="form-control" value="'.$resultOT['fecha'].'" disabled/>
-								</div>
-							</div>
-							<div class="col-xs-12 col-sm-4">
-								<label style="margin-top: 7px;">Duración: </label>
-								<input type="text" id="domicilio" class="form-control"  value="'.$resultOT['duracion'].'" disabled/>
-							</div>
-							
-							<div class="col-xs-12 col-sm-4">
-								<label style="margin-top: 7px;">Tarea: </label>
-								<input type="text" id="domicilio" class="form-control"  value="'.$resultOT['tareaDescrip'].'" disabled/>
-							</div>
-							
-							<div class="col-xs-12 col-sm-4">
-								<label style="margin-top: 7px;">Estado: </label>
-								<input type="text" id="domicilio" class="form-control"  value="'.$resultOT['estado'].'" disabled/>
-							</div>
-							
-							
-
-							
-
-						</div>
-						<!-- /.box-body -->
-				</div>
-			
-					<!-- /.box-body -->
-				</div>
-				<!-- /.box-body -->';
-			}
-
-
-
-
-
-
-
-			// Solicitud Servicios	
-
+			// Solicitud Servicios
 			if($id_SS != null){
 				echo '        
 				<div id="collapseDivCli" class="box box-default collapsed-box box-solid">
@@ -253,20 +178,68 @@ if(!function_exists('cargarCabecera')){
 				<!-- /.box-body -->';
 			}
 
+			// Orden Trabajo
+			if($id_OT != null){
+				echo '        
+				<div id="collapseDivCli" class="box box-default collapsed-box box-solid">
+					<div class="box-header with-border">
+						<h3 id="tituloInfo" class="box-title">Orden de Trabajo: '.$resultOT['id_orden'].' / Mas Detalles</h3>
+						<div class="box-tools pull-right">
+						<button id="infoCliente" type="button" class="btn btn-box-tool" data-widget="collapse" onclick="mostrarCliente()">
+								<i class="fa fa-plus"></i>
+						</button>
+					</div>
+							<!-- /.box-tools -->
+					</div>
+						<!-- /.box-header -->
+						<div class="box-body">
 
+							<div class="col-xs-12 col-sm-4">
+								<div class="form-group">
+										<label style="margin-top: 7px;">Nº Orden Trabajo: </label>
+										<input type="text" id="marca" class="form-control" value="'.$resultOT['id_orden'].'" disabled/>
+								</div>						
+							</div>
+								
+							<div class="col-xs-12 col-sm-4">
+								<div class="form-group">
+										<label style="margin-top: 7px;">Descripción: </label>
+										<input type="text" id="marca" class="form-control" value="'.$resultOT['otDescrip'].'" disabled/>
+								</div>						
+							</div>
+							<div class="col-xs-12 col-sm-4">
+								<div class="form-group">
+										<label style="margin-top: 7px;">Fecha: </label>
+										<input type="text" id="codigo" class="form-control" value="'.$resultOT['fecha'].'" disabled/>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-4">
+								<label style="margin-top: 7px;">Duración: </label>
+								<input type="text" id="domicilio" class="form-control"  value="'.$resultOT['duracion'].'" disabled/>
+							</div>
+							
+							<div class="col-xs-12 col-sm-4">
+								<label style="margin-top: 7px;">Tarea: </label>
+								<input type="text" id="domicilio" class="form-control"  value="'.$resultOT['tareaDescrip'].'" disabled/>
+							</div>
+							
+							<div class="col-xs-12 col-sm-4">
+								<label style="margin-top: 7px;">Estado: </label>
+								<input type="text" id="domicilio" class="form-control"  value="'.$resultOT['estado'].'" disabled/>
+							</div>
+							
+							
+
+							
+
+						</div>
+						<!-- /.box-body -->
+				</div>
 			
-
-
-			
-			
-
-
-
-
-
-
-
-				
+					<!-- /.box-body -->
+				</div>
+				<!-- /.box-body -->';
+			}				
 } } 
 
 ?>

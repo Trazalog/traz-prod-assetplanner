@@ -624,34 +624,34 @@ function regresa(){
 }*/
 
 // llena select clientes en modal Asignar OT - 
-function traer_clientes(id_cliente){
-  $.ajax({
-    type: 'POST',
-    data: {},
-    url: 'index.php/Otrabajo/traer_cli',
-    success: function(data){
-      console.info(data);
-      /*var selectAttr = '';
-      if(data[i]['cliId'] == id_cliente) { var selectAttr = 'selected'; console.log("sel")}
-      var nombre = data[i]['cliLastName']+'. .'+datos['cliName'];
-      var opcion = "<option value='"+data[i]['cliId']+"' "+selectAttr+">" +nombre+ "</option>";
-      $('#cli').append(opcion); 
+// function traer_clientes(id_cliente){
+//   $.ajax({
+//     type: 'POST',
+//     data: {},
+//     url: 'index.php/Otrabajo/traer_cli',
+//     success: function(data){
+//       console.info(data);
+//       /*var selectAttr = '';
+//       if(data[i]['cliId'] == id_cliente) { var selectAttr = 'selected'; console.log("sel")}
+//       var nombre = data[i]['cliLastName']+'. .'+datos['cliName'];
+//       var opcion = "<option value='"+data[i]['cliId']+"' "+selectAttr+">" +nombre+ "</option>";
+//       $('#cli').append(opcion); 
 
-      /*var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-      $('#cli').append(opcion); 
-      for(var i=0; i < data.length ; i++) 
-      {    
-        var nombre = data[i]['cliLastName']+'. .'+datos['cliName'];
-        var opcion = "<option value='"+data[i]['cliId']+"'>" +nombre+ "</option>" ; 
-        $('#cli').append(opcion);          
-      }*/
-    },
-    error: function(result){
-      console.log(result);
-    },
-    dataType: 'json'
-  });
-}
+//       /*var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+//       $('#cli').append(opcion); 
+//       for(var i=0; i < data.length ; i++) 
+//       {    
+//         var nombre = data[i]['cliLastName']+'. .'+datos['cliName'];
+//         var opcion = "<option value='"+data[i]['cliId']+"'>" +nombre+ "</option>" ; 
+//         $('#cli').append(opcion);          
+//       }*/
+//     },
+//     error: function(result){
+//       console.log(result);
+//     },
+//     dataType: 'json'
+//   });
+// }
 
 
 

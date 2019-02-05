@@ -139,10 +139,10 @@
                           </br>
                           <div class="col-md-12">
                             <label class="radio-inline" for="radios-0">
-                              <input type="radio" name="opcion" id="radios-0" value="correctivo" checked="checked"> Si
+                              <input type="radio" name="opcion" id="radios-0" value="S" checked="checked"> Si
                             </label>
                             <label class="radio-inline" for="radios-1">
-                              <input type="radio" name="opcion" id="radios-1" value="backlog" checked="checked"> No
+                              <input type="radio" name="opcion" id="radios-1" value="N" checked="checked"> No
                             </label>
                           </div>
                         </center>

@@ -412,18 +412,18 @@ class Calendarios extends CI_Model {
 	function getBackPorIds($data){
 		$id = $data;
     
-		$this->db->select('tareas.descripcion,
-				tbl_back.id_equipo,
-				tbl_back.tarea_descrip,
-				tbl_back.fecha,
-				tbl_back.backId						
-				');
-		$this->db->from('tbl_back'); 
-		$this->db->join('tareas', 'tareas.id_tarea = tbl_back.tarea_descrip');       
-		$this->db->where('tbl_back.backId', $id);
-		$query = $this->db->get();      
-		
-		return $query->result_array(); 
+        $this->db->select('tareas.descripcion,
+						tbl_back.id_equipo,
+						tbl_back.tarea_descrip,
+						tbl_back.fecha,
+						tbl_back.backId						
+						');
+        $this->db->from('tbl_back'); 
+        $this->db->join('tareas', 'tareas.id_tarea = tbl_back.tarea_descrip');       
+        $this->db->where('tbl_back.backId', $id);
+        $query = $this->db->get();      
+        
+        return $query->result_array(); 
 	}
 
 	function getPredictPorIds($data){
@@ -445,47 +445,16 @@ class Calendarios extends CI_Model {
 
 
 	//Guarda orden de trabajo a partir de Pred/Correc/Backlog/Prevent
-	function guardar_agregar($data){
-		$query = $this->db->insert("orden_trabajo",$data);
-		if($query){
-			$idOT = $this->db->insert_id();
-		}else{
-			$idOT = 0;
-		}
-		return $idOT;        
-	}
-
-	// devuelve subtareas por 
-	function getSubtareas($idTareaSTD){
-		$this->db->select('asp_subtareas.id_subtarea,
-											asp_subtareas.tareadescrip,
-											asp_subtareas.id_tarea,											
-											asp_subtareas.fecha,
-											asp_subtareas.duracion_prog,
-											asp_subtareas.estado,											
-											asp_subtareas.form_asoc');
-		$this->db->from('asp_subtareas');
-		$this->db->where('asp_subtareas.id_tarea',$idTareaSTD);
-		$query = $this->db->get();
-		if ($query->num_rows()!=0){
-			return $query->result_array();	
-		}else{
-			return array();
-		}
-	}
+	function guardar_agregar($data)
+    {
+        $query = $this->db->insert("orden_trabajo",$data);
+    	return $query;        
+    }
 
     // Guarda batch de OT 
     function setOTbatch($data)
     {
-			$response = $this->db->insert_batch('orden_trabajo', $data);
-			return $response;
-		}
-		
-		// Guarda batch de OT 
-    function setSubtareasBatch($batch_subtareas)
-    {
-			$response = $this->db->insert_batch('asp_instanciasubtareas', $batch_subtareas);
-			return $response;
+    	$this->db->insert_batch('orden_trabajo', $data);
     }
 
     // Actualiza dia nueva fecha de programacion en OT

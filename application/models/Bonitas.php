@@ -190,11 +190,12 @@ class Bonitas extends CI_Model
 	}
 
 	function LoggerAdmin(){	
-
+		//FIXME: PONER USUARIO ADMINISTRADOR!!
 		//$userdata = $this->session->userdata('user_data');
 		//$usrNick= $userdata[0]["usrNick"];
 
-		$usrNick = 'admin';
+		//$usrNick = 'admin';
+		$usrNick = 'supervisor1';
 		//dump_exit($userdata);
 		// Array de parametros (cabecera HTTP)
 		$opciones = array(

@@ -158,20 +158,42 @@
 			// 
     }  
 
+		// cerrar tarea Analisis de urgencia
 		function decidirUrgencia(){
 
 			var opcion = $('input[name="opcion"]:checked').val();
-			var caseId = $('#case_id').val();
-			if(opcion == 'correctivo'){
-					// generar corectivo
-				}else{
-					// generar backlog		mandar caseid			
-					WaitingOpen();
-					$('#content').empty();
-					$("#content").load("<?php echo base_url(); ?>index.php/Backlog/editarNuevo/"+caseId);
-					WaitingClose();
-				}
+			var caseId = $('#case_id').val();	
 
+			$.ajax({
+				type: 'POST',
+				data: {opcion:opcion,
+								caseId:caseId},
+				url: 'index.php/Tarea/decidirUrgencia',
+				success: function(data) {
+					console.table(data);
+								//	WaitingClose();
+								// toma a tarea exitosamente
+								// if(data['reponse_code'] == 204){
+								// 		$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+								// }
+				},
+				error: function(data) {
+						//alert("Noo");
+						console.log(data);
+				},
+				dataType: 'json'
+			});
+
+
+					// if(opcion == 'correctivo'){
+					// // generar corectivo
+					// 	}else{
+					// 		// generar backlog		mandar caseid			
+					// 		WaitingOpen();
+					// 		$('#content').empty();
+					// 		$("#content").load("<?php echo base_url(); ?>index.php/Backlog/editarNuevo/"+caseId);
+					// 		WaitingClose();
+					// 	}
 			
 		}
 

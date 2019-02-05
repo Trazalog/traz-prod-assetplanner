@@ -218,20 +218,20 @@ class Otrabajo extends CI_Controller {
 	 *
 	 *
 	 */
-	public function traer_cli()
-	{
-		$usuario = $this->Otrabajos->traer_cli();
-		if($usuario)
-		{	
-			$arre = array();
-	        foreach ($usuario as $row ) 
-	        {   
-	           $arre[] = $row;
-	        }
-			echo json_encode($arre);
-		}
-		else echo "nada";
-	}
+	// public function traer_cli()
+	// {
+	// 	$usuario = $this->Otrabajos->traer_cli();
+	// 	if($usuario)
+	// 	{	
+	// 		$arre = array();
+	//         foreach ($usuario as $row ) 
+	//         {   
+	//            $arre[] = $row;
+	//         }
+	// 		echo json_encode($arre);
+	// 	}
+	// 	else echo "nada";
+	// }
 
 
 	// Cargar orden de servicios(Informe de servicios)
