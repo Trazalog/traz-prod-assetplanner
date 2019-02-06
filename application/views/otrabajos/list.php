@@ -41,7 +41,7 @@
                     //echo "grupo: ".$gr;
                     if ($gr=='1') { 
                       if (($a['estado'] =='As') || ($a['estado'] =='P') || ($a['estado'] =='C')) {
-                        $id          = $a['id_orden'];
+                        $id          = (int)$a['id_orden'];
                         $id_equipo   = $a['id_equipo'];
                         $causa       = $a['descripcion'];
                         $idsolicitud = $a['id_solicitud'];
@@ -75,7 +75,7 @@
                           echo '<i class="fa fa-sticky-note-o text-light-blue" id="cargOrden" style="cursor: pointer; margin-left: 15px;" title="Informe de Servicios" ></i>';
                         }
       	                echo '</td>';
-                        echo '<td>'.$a['id_orden'].'</td>';
+                        echo '<td>'.$id.'</td>';
                         $fecha_inicio = ($a['fecha_inicio'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_inicio']), 'd-m-Y');
                         echo '<td>'.$fecha_inicio.'</td>';
                         $fecha_entrega = ($a['fecha_entrega'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_entrega']), 'd-m-Y');
@@ -1106,27 +1106,35 @@ $(document).ready(function(event) {
 
   $('#otrabajo').DataTable({
     "aLengthMenu": [ 10, 25, 50, 100 ],
-    "columnDefs": [ {
-      "targets": [ 0 ], 
-      "searchable": false
-    },
-    {
-      "targets": [ 0 ], 
-      "orderable": false
-    } ],
-    "order": [[1, "asc"]],
+    "columnDefs": [ 
+      {
+        "targets": [ 0 ], 
+        "searchable": false,
+      },
+      {
+        "targets": [ 0 ], 
+        "orderable": false,
+      },
+      { 
+        "targets": [ 1, 8 ],
+        "type": "num",
+      }
+    ],
+    "order": [[1, "desc"]],
   });
  
   $('#tabladetalle').DataTable({
     "aLengthMenu": [ 10, 25, 50, 100 ],
-    "columnDefs": [ {
-      "targets": [ 0 ], 
-      "searchable": false
-    },
-    {
-      "targets": [ 0 ], 
-      "orderable": false
-    } ],
+    "columnDefs": [ 
+      {
+        "targets": [ 0 ], 
+        "searchable": false
+      },
+      {
+        "targets": [ 0 ], 
+        "orderable": false
+      }
+    ],
     "order": [[1, "asc"]],
   });
 
