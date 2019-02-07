@@ -589,29 +589,18 @@ class Tareas extends CI_Model {
 			}
 		}
 
-		// Trae datos de backlog para editar
-	function geteditar($idBack){
-	
+	// Trae datos de backlog para editar
+	function geteditar($id_SS){
+			
 		$this->db->select('tbl_back.*,		
 											equipos.descripcion AS codigo,
 											equipos.id_equipo,
 											equipos.fecha_ingreso,
 											equipos.marca,
-											equipos.ubicacion,
-											componenteequipo.id_componente,
-											componenteequipo.codigo AS componentecodigo,
-											componentes.descripcion AS componentedescrip,
-											tareas.descripcion AS tareadescrip,
-											sistema.sistemaid,
-											sistema.descripcion AS sistemadescrip,
-											componenteequipo.id_equipo');	
+											equipos.ubicacion');	
 		$this->db->from('tbl_back');
-		$this->db->join('equipos', 'tbl_back.id_equipo = equipos.id_equipo');
-		$this->db->join('componenteequipo', 'tbl_back.idcomponenteequipo = componenteequipo.idcomponenteequipo');
-		$this->db->join('componentes', 'componentes.id_componente = componenteequipo.id_componente');
-		$this->db->join('tareas', 'tareas.id_tarea = tbl_back.tarea_descrip');
-		$this->db->join('sistema', 'sistema.sistemaid = componenteequipo.sistemaid');
-		$this->db->where('tbl_back.backId=(SELECT orden_trabajo.id_solicitud FROM orden_trabajo WHERE orden_trabajo.id_orden = '.$idBack.' AND orden_trabajo.tipo = 4)');	    
+		$this->db->join('equipos', 'tbl_back.id_equipo = equipos.id_equipo');		
+		$this->db->where('tbl_back.sore_id',$id_SS);
 		$query= $this->db->get();
 		
 		if( $query->num_rows() > 0)
@@ -623,28 +612,26 @@ class Tareas extends CI_Model {
 		}
 	}
 
-	// Terminar Tarea
-	function terminarTareaStandarenBPM($idTarBonita,$param){
-
-		$userdata = $this->session->userdata('user_data');
-		$usrId = $userdata[0]['usrId'];
+	// terminar tarea analisis de Solicitud de Servicios
+	function cerrarTarea($idTarBonita,$param){
+		///API/bpm/userTask/:userTaskId/execution
 		$method = '/execution';
 		$resource = 'API/bpm/userTask/';
 		$url = BONITA_URL.$resource.$idTarBonita.$method;
-		//$url = BONITA_URL.$resource.$usrId.$method;
 		file_get_contents($url, false, $param);
 		$response = $this->parseHeaders( $http_response_header );
 		return $response;
 	}
 
-	// terminar tarea analisis de Solicitud de Servicios
-	function decidirUrgencia($caseId, $param){
-		$resource = 'API/bpm/userTask/';
-		$com = '/execution';
-		$url = BONITA_URL.$resource.$caseId.$com;
-		file_get_contents($url,false, $param);
-		$response = $this->parseHeaders( $http_response_header );
-		return $response;
+	function actualizarIdOTenBPM($caseId, $param){
+		
+		// /API/bpm/caseVariable/:caseId/:variableName	
+		$variableName = '/execution';
+		$resource = 'API/bpm/caseVariable/';
+		$variableName = 'gIdOT';
+		$url = BONITA_URL.$resource.$caseId."/".$variableName;	
+		file_get_contents($url, false, $param);
+		$response = $this->parseHeaders( $http_response_header );		
 	}
 	// toma la respuesta del server y devuelve el codigo de respuesta solo
 	function parseHeaders( $headers ){

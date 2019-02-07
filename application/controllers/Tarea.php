@@ -117,44 +117,24 @@ class Tarea extends CI_Controller {
 				$param = stream_context_create($parametros);
 				$response = $this->Tareas->soltarTarea($idTarBonita,$param);
 				echo json_encode($response);
-			}
-			// termina tareas en BPM
-			public function terminarTareaStandarenBPM(){
-				
-				$idTarBonita = $this->input->post('idTarBonita');
-				//$id_listarea = $this->input->post('id_listarea');
-				// trae la cabecera
-				$parametros = $this->Bonitas->conexiones();
-				// Cambio el metodo de la cabecera a "PUT"
-				$parametros["http"]["method"] = "POST";
-				// Variable tipo resource referencia a un recurso externo.
-				$param = stream_context_create($parametros);
-				$response = $this->Tareas->terminarTareaStandarenBPM($idTarBonita,$param);
-	
-				// guarda el taskId de BPM en tbl_listareas
-				if($this->input->post('esTareaStd')==1){
-					$resp = $this->Tareas->updateTaskEnListarea($id_listarea,$idTarBonita);
-				}
-					
-				echo json_encode($response);
-			}	
+			}		
 
 			// terminar tarea analisis de Solicitud de Servicios
 			public function decidirUrgencia(){
-				$caseId = $this->input->post('caseId');
-				$opcion = $this->input->post('opcion');
-				$opcion = array(
+
+				$idTarBonita = $this->input->post('idTarBonita');
+				$opcion = $this->input->post('opcion');				
+				$opcionSel = array(
 					"esUrgente" => $opcion
 				);
 				// trae la cabecera
 				$parametros = $this->Bonitas->conexiones();
-
 				// Cambio el metodo de la cabecera a "PUT"
 				$parametros["http"]["method"] = "POST";
-				$parametros["http"]["content"] = json_encode($opcion);
+				$parametros["http"]["content"] = json_encode($opcionSel);
 				// Variable tipo resource referencia a un recurso externo.
 				$param = stream_context_create($parametros);
-				$result = $this->Tareas->decidirUrgencia($caseId, $param);
+				$result = $this->Tareas->cerrarTarea($idTarBonita, $param);
 				echo json_encode($result);
 			}
 
@@ -245,34 +225,36 @@ class Tarea extends CI_Controller {
 
 				switch ($data['TareaBPM']['displayName']) {
  
-					// case 'Analisis de Solicitud de Servicio':
-					// 		$this->load->view('tareas/view_analisisSServicios', $data);
-					// 		$this->load->view('tareas/scripts/tarea_std');							
-					// 		break;
+					case 'Analisis de Solicitud de Servicio':
+							$this->load->view('tareas/view_analisisSServicios', $data);
+							$this->load->view('tareas/scripts/tarea_std');							
+							break;
 
-					// case 'Planificar Solicitud':
-					// 	dump($data['TareaBPM'], 'datos de tarea: ');
-					// 		$this->load->view('tareas/view_planificar', $data);
-					// 		$this->load->view('tareas/scripts/tarea_std');													
-					// 		break;
+					case 'Planificar Solicitud':					
+							$this->load->view('tareas/view_planificar', $data);
+							$this->load->view('tareas/scripts/tarea_std');													
+							break;
 
-					// case 'Editar Backlog':
-					// //case 'Analisis de Solicitud de Servicio':		
-					// 		$tipo = 4;//backlog 
-					// 		$idBack = $this->Tareas->getIdBackporid_OT($id_OT, $tipo);
-					// 		$idBack = 624;
-					// 		$data['info'] = $this->getEditarBacklog($idBack);
-
-					// 		$this->load->view('backlog/nuevo_edicion_view_',	$data);
-					// 		$this->load->view('tareas/scripts/tarea_std');
-					// 		break;	
-
-					// case 'Ejecutar OT':
-					// 		$this->load->view('tareas/view_ejecutarOT', $data);
-					// 		$this->load->view('tareas/scripts/tarea_std');
-					// 		$this->load->view('tareas/scripts/abm_forms');
-					// 		$this->load->view('tareas/scripts/validacion_forms');							
-					// 		break;		
+					case 'Editar Backlog':
+				
+							$id_SS = $id_SS;						
+							$data['info'] = $this->getEditarBacklog($id_SS);						
+							$this->load->view('backlog/nuevo_edicion_view_',	$data);
+							$this->load->view('tareas/scripts/tarea_std');
+							break;	
+					
+					case 'Planificar Backlog':					
+						$this->load->view('tareas/view_planificar', $data);
+						$this->load->view('tareas/scripts/tarea_std');													
+						break;		
+							
+					case 'Ejecutar OT':
+					dump($data, 'datos de tarea');
+							$this->load->view('tareas/view_ejecutarOT', $data);
+							$this->load->view('tareas/scripts/tarea_std');
+							$this->load->view('tareas/scripts/abm_forms');
+							$this->load->view('tareas/scripts/validacion_forms');							
+							break;		
 
 					default:
 							$this->load->view('tareas/view_analisisSServicios', $data);					
@@ -307,9 +289,9 @@ class Tarea extends CI_Controller {
 
 
 			// Trae datos de backlog para editar
-			function getEditarBacklog($idBack){
+			function getEditarBacklog($id_SS){
 
-				$result = $this->Tareas->geteditar($idBack);	
+				$result = $this->Tareas->geteditar($id_SS);	
 				return $result;
 			}	
 

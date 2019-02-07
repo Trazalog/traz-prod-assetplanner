@@ -7,6 +7,8 @@ class Backlog extends CI_Controller {
         {
 		parent::__construct();
 		$this->load->model('Backlogs');
+		$this->load->model('Tareas');
+		$this->load->model('Bonitas');
 	}
 
 	public function index($permission){
@@ -135,7 +137,9 @@ class Backlog extends CI_Controller {
 		$fe=$_POST['fecha'];
 		$ta=$_POST['tarea'];
 		$hs=$_POST['horas'];		
-		
+		$tarOpc = $_POST['tarea_opcional'];
+		$idBacklog = $_POST['idBacklog'];
+
 		$uno=substr($fe, 0, 2); 
         $dos=substr($fe, 3, 2); 
         $tres=substr($fe, 6, 4); 
@@ -148,7 +152,8 @@ class Backlog extends CI_Controller {
 				'estado'        => 'C',
 				'back_duracion' => $hs,
 				'id_empresa'    => $empId,
-				'idcomponenteequipo' => $idce
+				'idcomponenteequipo' => $idce,
+				'tarea_opcional'=> $tarOpc
 			);
 
 		$result = $this->Backlogs->insert_backlog($datos);
@@ -175,14 +180,45 @@ class Backlog extends CI_Controller {
 		}
 		else echo json_encode(0);
 	}
+
 /* Funciones para BPM */
-	public function editarNuevo($caseId){ 
-		$idSolServicios = $this->Backlogs->getIdSolServiciosporIdCase($caseId);
-		dump($idSolServicios, 'id sol de serv');
-		$data['idequipo'] = $this->Backlogs->getIdEquipoSolicitud($idSolServicios);
-		//$data['permission'] = $permission;   
-		dump($data['idequipo'], 'id equipo: ');    
-		$this->load->view('backlog/nuevo_edicion_view_',	$data);
+	public function editarNuevo(){ 
+
+		$userdata = $this->session->userdata('user_data');
+    $empId = $userdata[0]['id_empresa']; 
+    $idce = $this->input->post('idce');
+		$eq = $this->input->post('equipo');
+		$fe = $this->input->post('fecha');
+		$ta = $this->input->post('tarea');
+		$hs = $this->input->post('horas');
+		$tarOpc = $this->input->post('tarea_opcional');
+		$idBacklog = $this->input->post('idBacklog');
+		$idTarBonita = $this->input->post('idTarBonita');
+		
+		$datos = array(
+				'id_equipo'     => $eq,
+				'tarea_descrip' => $ta,						
+				'fecha'         => $fe,
+				'estado'        => 'C',
+				'back_duracion' => $hs,
+				'id_empresa'    => $empId,
+				'idcomponenteequipo' => $idce,
+				'tarea_opcional'=> $tarOpc
+			);
+
+		$result = $this->Backlogs->editarNuevo($datos,$idBacklog);
+		
+		// trae la cabecera
+		$parametros = $this->Bonitas->conexiones();
+		// Cambio el metodo de la cabecera a "PUT"
+		$parametros["http"]["method"] = "POST";	
+		// Variable tipo resource referencia a un recurso externo.
+		$param = stream_context_create($parametros);
+		$result = $this->Tareas->cerrarTarea($idTarBonita, $param);
+
+
+		echo json_encode($result);
 	}
+
 /* Fin Funciones para BPM */
 }

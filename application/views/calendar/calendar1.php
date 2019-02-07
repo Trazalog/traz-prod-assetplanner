@@ -710,8 +710,7 @@ $("#fecha_progr_prevent_horas").datepicker({
 
   function setOtBacklog() {
     var progr_back = $('#fecha_progr_back').val();
-    var hora_progr_back = $('#hora_progr_back').val();
-    
+    var hora_progr_back = $('#hora_progr_back').val();   
 
     $.ajax({
           type: 'POST', //parametros:parametros

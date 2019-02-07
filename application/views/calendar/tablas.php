@@ -288,7 +288,12 @@
                 // 3 // codigo de equipo
                 echo "<td style='text-align: center'>".$b['codigo']."</td>";
                 // 4 // descripcion causa solicitud
-                echo "<td style='text-align: center'>".$b['tarea']."</td>";
+                if($b['tarea'] != null){
+                  echo "<td style='text-align: center'>".$b['tarea']."</td>";
+                } else{
+                  echo "<td style='text-align: center'>".$b['tarea_opcional']."</td>";
+                }
+                
                 // 5 // fecha guardada anteriromente
                 echo "<td style='text-align: center'>".$b['fecha']."</td>";
                 // 6 // id de tarea

@@ -133,21 +133,21 @@ class Backlogs extends CI_Model
 	function traerequiposprev($ide,$id){
 
 	    $this->db->select('tbl_back.backId, 
-	    				   tbl_back.id_equipo,
-	    				   tbl_back.tarea_descrip, 
-	    				   tbl_back.fecha, 
-	    				   tbl_back.estado,
-	    				   tbl_back.horash, 
-	    				   equipos.descripcion AS des, 
-	    				   equipos.marca, 
-	    				   equipos.codigo, 
-	    				   equipos.ubicacion, 
-	    				   equipos.fecha_ingreso, 
-	    				   tareas.id_tarea, 
-	    				   tareas.descripcion as de1,
-                           componenteequipo.codigo as codcompeq,
-                           componentes.descripcion as componente,
-                           sistema.descripcion as sistema');
+												tbl_back.id_equipo,
+												tbl_back.tarea_descrip, 
+												tbl_back.fecha, 
+												tbl_back.estado,
+												tbl_back.horash, 
+												equipos.descripcion AS des, 
+												equipos.marca, 
+												equipos.codigo, 
+												equipos.ubicacion, 
+												equipos.fecha_ingreso, 
+												tareas.id_tarea, 
+												tareas.descripcion as de1,
+												componenteequipo.codigo as codcompeq,
+												componentes.descripcion as componente,
+												sistema.descripcion as sistema');
 	    $this->db->from('tbl_back');
 	    $this->db->join('equipos', 'equipos.id_equipo = tbl_back.id_equipo');
         $this->db->join('tareas', 'tareas.id_tarea = tbl_back.tarea_descrip');
@@ -205,29 +205,22 @@ class Backlogs extends CI_Model
 	}
 	
 	/* funciones para BPM */
-	function getIdSolServiciosporIdCase($caseId){
-		$this->db->select('solicitud_reparacion.id_solicitud');
-		$this->db->from('solicitud_reparacion');
-		$this->db->where('solicitud_reparacion.case_id', $caseId);		
-		$query = $this->db->get();
+		function getIdSolServiciosporIdCase($caseId){
+			$this->db->select('solicitud_reparacion.id_solicitud');
+			$this->db->from('solicitud_reparacion');
+			$this->db->where('solicitud_reparacion.case_id', $caseId);		
+			$query = $this->db->get();
 
-		if ($query->num_rows()!=0){
-			return $query->row('id_solicitud');
-		}else{
-			return 0;
+			if ($query->num_rows()!=0){
+				return $query->row('id_solicitud');
+			}else{
+				return 0;
+			}
 		}
-	}
-	// function getIdEquipoSolicitud($idSolServicios){
-	// 	$this->db->select('solicitud_reparacion.id_equipo');
-	// 	$this->db->from('solicitud_reparacion');
-	// 	$this->db->where('solicitud_reparacion.id_solicitud', $idSolServicios);
-	// 	$query = $this->db->get();
-
-	// 	if ($query->num_rows()!=0){
-	// 		return $query->row('id_equipo');
-	// 	}else{
-	// 		return 0;
-	// 	}
-	// }
+		function editarNuevo($datos,$idBacklog){
+			$this->db->where('backId', $idBacklog);
+			$query = $this->db->update("tbl_back",$datos);
+			return $query;
+		}
 	/* funciones para BPM */
 }	

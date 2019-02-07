@@ -129,15 +129,16 @@ class Calendarios extends CI_Model {
             tbl_back.backId,
             tbl_back.estado,
             tbl_back.fecha,
-            tbl_back.tarea_descrip,
+            tbl_back.id_tarea,
             tbl_back.id_equipo,
             tbl_back.back_duracion,
+            tbl_back.tarea_opcional,
             equipos.descripcion,
             equipos.codigo,
             tareas.descripcion AS tarea
             FROM tbl_back
             INNER JOIN equipos ON equipos.id_equipo = tbl_back.id_equipo
-            INNER JOIN tareas ON tareas.id_tarea = tbl_back.tarea_descrip
+            LEFT JOIN tareas ON tareas.id_tarea = tbl_back.id_tarea
             WHERE tbl_back.id_empresa = $empId
             AND year(tbl_back.fecha) = $year 
             AND month(tbl_back.fecha) = $month 
@@ -412,14 +413,9 @@ class Calendarios extends CI_Model {
 	function getBackPorIds($data){
 		$id = $data;
     
-        $this->db->select('tareas.descripcion,
-						tbl_back.id_equipo,
-						tbl_back.tarea_descrip,
-						tbl_back.fecha,
-						tbl_back.backId						
-						');
+        $this->db->select('tbl_back.*, tareas.descripcion');
         $this->db->from('tbl_back'); 
-        $this->db->join('tareas', 'tareas.id_tarea = tbl_back.tarea_descrip');       
+        $this->db->join('tareas', 'tareas.id_tarea = tbl_back.id_tarea','left');       
         $this->db->where('tbl_back.backId', $id);
         $query = $this->db->get();      
         
@@ -448,7 +444,8 @@ class Calendarios extends CI_Model {
 	function guardar_agregar($data)
     {
         $query = $this->db->insert("orden_trabajo",$data);
-    	return $query;        
+        $id = $this->db->insert_id();
+    	return $id;        
     }
 
     // Guarda batch de OT 
@@ -610,4 +607,22 @@ class Calendarios extends CI_Model {
             return true;
         }
     }
+
+
+    /* funciones para BPM */
+    function getCaseIdporIdSolServicios($id_solicitud){
+			$this->db->select('solicitud_reparacion.case_id');
+			$this->db->from('tbl_back');
+			$this->db->join('solicitud_reparacion', 'tbl_back.sore_id = solicitud_reparacion.id_solicitud');
+			$this->db->where('tbl_back.backId', $id_solicitud);
+			$query = $this->db->get();
+			if ($query->num_rows() > 0){
+				return $query->row('case_id');				
+			}
+			else{
+				return 0;
+			}
+    }
+
+
 }
