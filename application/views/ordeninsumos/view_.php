@@ -318,48 +318,30 @@ var dataOT = function () {
   });
   return tmp;
 }();
-$("#idOT").autocomplete({
-  autoFocus: true,
-  source: dataOT,
-  delay: 500,
-  minLength: 1,
-  response: function(event, ui) {
-    var noResult = { value:"",label:"No se encontraron resultados" };
-    ui.content.push(noResult);
-  },
-  focus: function(event, ui) {
-    // prevent autocomplete from updating the textbox
-    event.preventDefault();
-    // manually update the textbox
-    $(this).val(ui.item.value);
-    if(ui.item.value=="")
-      $('#ot').html("");
-    $('#ot').html(ui.item.info);
-  },
-  select: function(event, ui) {
-    // prevent autocomplete from updating the textbox
-    event.preventDefault();
-    // manually update the textbox and hidden field
-    $(this).val(ui.item.value);//label
-    if(ui.item.value=="")
-      $('#ot').html("");
-    $("#ot").html(ui.item.info);
-    //console.log("id articulo de orden insumo: ") 
-    //console.log(ui.item.value);                
-  },
-  /*change: function (event, ui) {
-    if (!ui.item) {
-      this.value = '';
-      $("#ot").val("");
-    }
-  }*/
-}).autocomplete( "widget" ).addClass( "hidden" );
-/*.autocomplete("instance")._renderItem = function(ul, item) {
-  console.log('test');
-  var item = $('<div class="list_item_container"><div class="label"><h3> Reputation:  ' + item.label + '</h3></div><div class="description">' + item.info + '</div></div>')
-  return $("<li>").append(item).appendTo(ul);
-};*/
 
+$("#idOT").keypress(function( event ) {
+  if ( event.which == 13 ) {
+    event.preventDefault();
+    var ordenTrabajo = buscarOT(dataOT);
+    if( ordenTrabajo == '-1')
+      $('#ot').html("");
+    else
+      $('#ot').html(ordenTrabajo.info);
+  }
+});
+
+function buscarOT(Objeto){
+    var objetoOt = [];
+    for (propiedad in Objeto){
+        if ( Objeto[propiedad]['value'] === $('#idOT').val() ){
+            objetoOt.push(Objeto[propiedad]);
+        }
+    }
+    if (objetoOt[0] == null) {
+      objetoOt[0] = '-1';
+    }
+    return objetoOt[0];
+}
 
 //traer_deposito();
 function traer_deposito(artId){
@@ -469,7 +451,7 @@ function guardar(){
   console.log(art);
   var hayError = false;
 
-  if(parametros !=0 && idsinsumo !=0 && $('#comprobante').val()!="" && $('#fecha').val()!="" && $('#solicitante').val()!=""){
+  if(parametros !=0 && idsinsumo !=0 && $('#comprobante').val()!="" && $('#fecha').val()!="" && $('#solicitante').val()!="" && $('#ot').val()!="" ){
     //&& depo !=0 && idsinsumo >0 && comp >0
     $.ajax({
       type: 'POST',

@@ -54,7 +54,7 @@
                                 echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar"></i>';
                             }                                      
 
-                            echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"  ></i> ';
+                            //echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"  ></i> ';
 
                             echo '<i class="fa fa-picture-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imagen" data-imagen ="'.$f['foto'].'" data-toggle="modal" data-target="#foto"></i> '; 
 
@@ -88,7 +88,41 @@
   </div><!-- /.row -->
 
 </section><!-- /.content -->
+<style>
+.ui-autocomplete {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1510 !important;
+  float: left;
+  display: none;
+  min-width: 160px;
+  width: 160px;
+  padding: 4px 0;
+  margin: 2px 0 0 0;
+  list-style: none;
+  background-color: #ffffff;
+  border-color: #ccc;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-style: solid;
+  border-width: 1px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding;
+  background-clip: padding-box;
+  *border-right-width: 2px;
+  *border-bottom-width: 2px;
+}
 
+.ui-autocomplete{
+    z-index:1050;
+}
+</style>
 
 <!-- carga solicitudes inactivas -->
 <script>
@@ -457,86 +491,75 @@
   }).datepicker("setDate", new Date());
 
   // Trae Sectores y autocompleta el campo
-  $( function() {
-
-      var dataF = function () {
-          var tmp = null;
-          $.ajax({
-              'async': false,
-              'type': "POST",
-              'global': false,
-              'dataType': 'json',
-              'url': "Sservicio/getSector",
-              'success': function (data) {
-                  tmp = data;
-              }
-          });
-          return tmp;
-      }();
-
-      $(function() {
-          $(".buscSector").autocomplete({
-              source: dataF,
-              delay: 100,
-              minLength: 1,
-              focus: function(event, ui) {
-                  // prevent autocomplete from updating the textbox
-                  event.preventDefault();
-                  // manually update the textbox
-                  $(this).val(ui.item.label);
-              },
-              select: function(event, ui) {
-                  // prevent autocomplete from updating the textbox
-                  event.preventDefault();
-                  // manually update the textbox and hidden field
-                  $(this).val(ui.item.label);
-                  $("#idSector").val(ui.item.value);
-
-                  $("#equipSelec").html("");
-                  // guardo el id de sector
-                  var idSect =  $("#idSector").val();
-                  getEquiSector(idSect);
-
-                  //console.log("id sector en autocompletar: ");
-                  //console.log(ui.item.value);
-              },
-          });
-      });
-
-      function getEquiSector(idSect){
-
-        var id =  idSect;
-        console.log("id de sector para traer equipos");
-        console.log(id);
-
-        $.ajax({
-                'data' : {id_sector : id },
-                'async': true,
-                'type': "POST",
-                'global': false,
-                'dataType': 'json',
-                'url': "Sservicio/getEquipSector",
-                'success': function (data) {
-                    console.log("Entro por getEquiSector ok");
-                    //console.log(data[0]['id_equipo']);
-
-                     // Asigna opciones al select Equipo en modal
-                    var $select = $("#equipSelec");
-
-                    for (var i = 0; data[i]['id_equipo'].length; i++) {
-
-                      $select.append($('<option />', { value: data[i]['id_equipo'], text: data[i]['descripcion'] }));
-                    }
-
-                 },
-                'error' : function (data){
-                  console.log('Error en getEquiSector');
-                  alert('error');
-                 },
-
-        });
+  var dataF = function () {
+    let tmp = null;
+    $.ajax({
+      'async': false,
+      'type': "POST",
+      'global': false,
+      'dataType': 'json',
+      'url': "Sservicio/getSector", //'url': "index.php/Sservicio/getSector",
+      'success': function (data) {
+        tmp = data;
       }
+    });
+    return tmp;
+  }();
+  $(".buscSector").autocomplete({
+    source: dataF,
+    delay: 100,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      // Actualiza textbox .buscSector
+      $(this).val(ui.item.label);
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      // Actualiza textbox .buscSector y completo #idSector
+      $(this).val(ui.item.label);
+      $("#idSector").val(ui.item.value);
+      // trae equipos del sector obtenido en autocomplete
+      var idSect =  $("#idSector").val();
+      getEquiSector(idSect);
+    },
   });
+
+  // Trae y carga equipos del sector
+  function getEquiSector(idSect){
+    console.log("id de sector para traer equipos: "+idSect);
+    WaitingOpen();
+    $.ajax({
+      'data' : {id_sector : idSect },
+      'async': true,
+      'method': "POST",
+      'global': false,
+      'dataType': 'json',
+      'url': "Sservicio/getEquipSector",
+    })
+    .done( (data) => {
+      console.table(data);
+      let $select = $("#equipSelec");
+      $select.html("");
+      if(data == null) {
+        alert("El sector no tiene equipos asociados.");
+        $('#buscSector').val('');
+      } else {
+        for (let i=0; i<data.length; i++) {
+          let opcion = "<option value='"+data[i]['id_equipo']+"'>" +data[i]['descripcion']+ "</option>";
+          $select.append(opcion);
+        }
+      }
+    })
+    .fail( () => alert( "Error al traer los equipos del Sector." ) )
+    .always( () => WaitingClose() );
+  }
+
+
+
+
+
+
 
   // Guardado de datos y validaciones
   $("#btnSave").click(function(){
@@ -675,11 +698,6 @@ $(function () {
             </div>
           </div>
         </div>
-        <style>
-          .ui-autocomplete{
-              z-index:1050;
-          }
-        </style>
         <div class="row">
           <div class="col-xs-12 col-md-3">
               <label style="margin-top: 7px;">Sector<strong style="color: #dd4b39">*</strong>: </label>

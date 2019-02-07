@@ -879,7 +879,7 @@ console.info(ultima_lectura);
 <!-- Guardado de datos y validaciones -->
 
 <!-- Modal Correctivo-->
-<div class="modal fade" id="modal-correctivo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modal-correctivo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -905,7 +905,7 @@ console.info(ultima_lectura);
 </div>
 
 <!-- Modal Preventivo-->
-<div class="modal fade" id="modal-preventivo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modal-preventivo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -943,7 +943,7 @@ console.info(ultima_lectura);
 </div>
 
 <!-- Modal Preventivo P/ Horas-->
-<div class="modal fade" id="modal-preventivoH" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modal-preventivoH" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -972,7 +972,7 @@ console.info(ultima_lectura);
 </div>
 
 <!-- Modal Backlog-->
-<div class="modal fade" id="modal-backlog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modal-backlog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -1000,7 +1000,7 @@ console.info(ultima_lectura);
 </div>
 
 <!-- Modal Predictivo-->
-<div class="modal fade" id="modal-fecha" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modal-fecha" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -1038,7 +1038,7 @@ console.info(ultima_lectura);
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="modalPrevent" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modalPrevent" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">

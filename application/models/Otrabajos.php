@@ -51,7 +51,6 @@ class Otrabajos extends CI_Model {
 		$this->db->where('equipos.estado !=','AN');
 		$this->db->where('usuarioasempresa.tipo', 1);
 		$this->db->where('orden_trabajo.id_empresa', $empId);
-		$this->db->order_by('orden_trabajo.fecha_inicio', 'DESC');
 		$query = $this->db->get();
 		//dump( $this->db->last_query() ); 
 
