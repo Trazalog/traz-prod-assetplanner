@@ -16,7 +16,7 @@ class Reporteorden extends CI_Controller {
 
 	public function getEquipo()
 	{
-		$response = $this->Sservicios->getEquipos();
+		$response = $this->Reporteordenes->getEquipos();
 		echo json_encode($response);
 	}
 
