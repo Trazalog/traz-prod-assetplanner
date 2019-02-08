@@ -36,16 +36,6 @@
                 <div class="col-xs-12 col-sm-6">
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" class="check" id="selOt"><strong>Orden de Trabajo</strong>
-                    </label>
-                  </div>
-                  <select class="form-control" id="otSelec" placeholder="Seleccione tipo..." >
-                    <option value=""></option>                      
-                  </select>                   
-                </div>
-                <div class="col-xs-12 col-sm-6">
-                  <div class="checkbox">
-                    <label>
                       <input type="checkbox" class="check" id="selestado"><strong>Estado</strong>
                     </label>
                   </div>
@@ -124,8 +114,6 @@ $("#panelReporteOT").css("display", "none");
 
 // cargo plugin DateTimePicker
 $('#desde, #hasta').datetimepicker({
-  //format: 'YYYY-MM-DD H:mm:ss', // datetime
-  //format: 'YYYY-MM-DD', // es igual al campo date
   format: 'YYYY-MM-DD', 
   locale: 'es',
 });
@@ -134,7 +122,6 @@ $('#desde, #hasta').datetimepicker({
 
 // Habilito y deshabilito los select de opciones de busqueda
 var opcionEquipo = 0;
-var opcionOT     = 0;
 var opcionEstado = 0;
 var opcionFecha  = 0;
 
@@ -146,17 +133,6 @@ function enabDisabEquipo() {
     opcionEquipo = 0;
     $("select#equipSelec").attr("disabled", true);
     $("select#equipSelec").val('');
-  }
-}
-
-function enabDisabOT() {
-  if (this.checked) {
-    opcionOT = 1;
-    $("select#otSelec").removeAttr("disabled");
-  } else {
-    opcionOT = 0;
-    $("select#otSelec").attr("disabled", true);
-    $("select#otSelec").val('');
   }
 }
 
@@ -184,8 +160,6 @@ function enabDisabFecha() {
 
 enabDisabEquipo();
 $("#selEquipo").click(enabDisabEquipo);
-enabDisabOT();
-$("#selOt").click(enabDisabOT);
 enabDisabEstado();
 $("#selestado").click(enabDisabEstado);
 enabDisabFecha();
@@ -207,41 +181,13 @@ function traeEquipos(){
 }
 traeEquipos().then(
   function resolve(data){
-    //console.table(data);
     var $select = $("#equipSelec");
     for (var i = 0; i < data.length; i++) {
-      $select.append($('<option />', { value: data[i]['id_equipo'], text: data[i]['descripcion'] }));
+      $select.append($('<option />', { value: data[i]['id_equipo'], text: data[i]['codigo']+' - '+data[i]['descripcion'] }));
     }
   },
   function reject(reason){
     alert("Error al traer los equipos");
-    console.table(reason);
-  }
-);
-
-
-
-// Trae OTs y llena su select
-function traeOTs(){
-  return new Promise( function(resolve, reject){
-    $.ajax({
-      'dataType': 'json',
-      'type'    : "POST",
-      'url'     : "Reporteorden/getorden",
-    })
-    .done(resolve)
-    .fail(reject)
-  });
-}
-traeOTs().then(
-  function resolve(data){
-    var $select = $("#otSelec");
-    for (var i = 0; i < data.length; i++) {
-      $select.append($('<option/>', { value: data[i]['id_orden'], text: data[i]['descripcion'] }));
-    }
-  },
-  function reject(reason){
-    alert("Error al traer las OTs");
     console.table(reason);
   }
 );
@@ -283,11 +229,6 @@ function validaDatos(){
     alert("Seleccione un equipo.");
     return false;
   }
-  //si OT está tildado y está vacío
-  if(opcionOT && $("select#otSelec").val() == ""){
-    alert("Seleccione una OT.");
-    return false;
-  }
   //si estado está tildado y está vacío
   if(opcionEstado && $("select#estSelec").val() == ""){
     alert("Seleccione un estado.");
@@ -305,7 +246,7 @@ function llenarTabla(data){
         data[i].id_orden,
         data[i].descripcionOT,
         data[i].descripcioTarea,
-        data[i].codigoEquipo,
+        data[i].codigoEquipo +' - '+ data[i].descripcionEquipo,
         data[i].fecha,
         data[i].fecha_program,
         data[i].fecha_terminada,
@@ -320,17 +261,14 @@ function llenarTabla(data){
 // trae datos del reporte
 function traeDatosReporte(){
   let idEquipo = $('#equipSelec').val();
-  let idOT     = $('#otSelec').val();
   let estado   = $('#estSelec').val();
   let desde    = $('#desde').val();
   let hasta    = $('#hasta').val();
   let parametros = {
     'opcionEquipo' : opcionEquipo,
-    'opcionOT'     : opcionOT,
     'opcionEstado' : opcionEstado,
     'opcionFecha'  : opcionFecha,
     'idEquipo'     : idEquipo,
-    'idOT'         : idOT,
     'estado'       : estado,
     'desde'        : desde,
     'hasta'        : hasta,
@@ -362,19 +300,10 @@ $("#consultar").click(function(evento){
 });
 
 
+var d    = new Date();
+var date = getFechaHoraFormateada(d);
 
 // Inicializo DataTable
-/*$('#tablaReporteOT').DataTable({
-  "aLengthMenu": [ 10, 25, 50, 100 ],
-  "columnDefs": [ 
-      { 
-        "targets": [ 0 ],
-        "type": "num",
-      }
-    ],
-  "order": [[0, "asc"]],
-});*/
-//<i class="fa fa-download" aria-hidden="true"></i>
 var table = $('#tablaReporteOT').DataTable({
   dom: 'Bfrtip',
   buttons: [
@@ -382,6 +311,9 @@ var table = $('#tablaReporteOT').DataTable({
       extend: 'print',
       className: 'btn btn-primary',
       text: '<i class="fa fa-print"></i>',
+      title: function(){
+         return 'Reporte de Orden de Trabajo'
+      },
       init: function(api, node, config) {
        $(node).removeClass('btn-default')
       }
@@ -390,13 +322,14 @@ var table = $('#tablaReporteOT').DataTable({
       extend: 'excel',
       className: 'btn btn-primary',
       text: '<i class="fa fa-download"></i> Excel',
+      title: function(){
+         return 'Reporte de Orden de Trabajo'
+      },
       init: function(api, node, config) {
        $(node).removeClass('btn-default')
       },
       filename: function(){
-        var date = new Date();
-        var n = getFechaHoraFormateada(date);
-        return n + ' reporte OT';
+        return date + ' reporte OT';
       },
     }
   ],
@@ -408,9 +341,4 @@ var table = $('#tablaReporteOT').DataTable({
   ],
   "order": [[0, "asc"]],
 });
-/*new $.fn.dataTable.Buttons( table, {
-    buttons: [
-        'copy', 'excel', 'pdf'
-    ]
-} );*/
 </script>

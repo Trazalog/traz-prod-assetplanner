@@ -19,12 +19,6 @@ class Reporteorden extends CI_Controller {
 		$response = $this->Sservicios->getEquipos();
 		echo json_encode($response);
 	}
-	
-	public function getorden()
-	{
-		$response = $this->Reporteordenes->getordenes();
-		echo json_encode($response);
-	}
 
 	public function getestado()
 	{
