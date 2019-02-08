@@ -54,8 +54,10 @@
     <!-- DataTables 1.10.7 -->
     <script src="<?php echo base_url();?>assets/plugin/datatables/jquery.dataTables.min.js"></script>
     <script src="<?php echo base_url();?>assets/plugin/datatables/dataTables.bootstrap.min.js"></script>
-    <script src="<?php echo base_url();?>assets/plugin/datatables/extensions/Buttons/js/dataTables.buttons.js"></script>
-    <script src="<?php echo base_url();?>assets/plugin/datatables/extensions/Buttons/js/buttons.print.js"></script>
+    <script src="<?php echo base_url();?>assets/plugin/datatables/extensions/Buttons/js/dataTables.buttons.min.js"></script>
+    <script src="<?php echo base_url();?>assets/plugin/datatables/extensions/Buttons/js/jszip.min.js"></script>
+    <script src="<?php echo base_url();?>assets/plugin/datatables/extensions/Buttons/js/buttons.html5.min.js"></script>
+    <script src="<?php echo base_url();?>assets/plugin/datatables/extensions/Buttons/js/buttons.print.min.js"></script>
     <script src="<?php echo base_url();?>assets/plugin/datatables/extensions/Buttons/js/buttons.bootstrap.js"></script>
     
     <!-- Jquery UI 1.12.1 -->
