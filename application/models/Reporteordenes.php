@@ -10,7 +10,7 @@ class Reporteordenes extends CI_Model
     function getequipos()
     {
         $userdata = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];     // guarda usuario logueado
+        $empresaId = $userdata[0]['id_empresa'];
         $this->db->select('equipos.id_equipo,
                     equipos.codigo,
                     equipos.descripcion');
@@ -26,24 +26,6 @@ class Reporteordenes extends CI_Model
         }
         else
         {
-            return false;
-        }
-    }
-
-    function getordenes()
-    {
-        $userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-        $this->db->select('orden_trabajo.id_orden, orden_trabajo.descripcion');
-        $this->db->from('orden_trabajo');
-        $this->db->where('orden_trabajo.id_empresa', $empresaId);
-        $this->db->order_by('orden_trabajo.descripcion', 'ASC');
-        $query = $this->db->get();
-        if($query->num_rows()>0)
-        {
-            return $query->result_array();
-        }
-        else{
             return false;
         }
     }
@@ -77,6 +59,7 @@ class Reporteordenes extends CI_Model
             orden_trabajo.descripcion as descripcionOT, 
             tareas.descripcion AS descripcioTarea,
             equipos.codigo AS codigoEquipo,
+            equipos.descripcion AS descripcionEquipo,
             orden_trabajo.fecha,
             orden_trabajo.fecha_program,
             orden_trabajo.fecha_terminada,
@@ -94,11 +77,6 @@ class Reporteordenes extends CI_Model
         if( $parametros['opcionEquipo'] == 1 )
         {
             $this->db->where('orden_trabajo.id_equipo', $parametros['idEquipo']);
-        }
-        
-        if( $parametros['opcionOT'] == 1 )
-        {
-            $this->db->where('orden_trabajo.id_orden', $parametros['idOT']);
         }
 
         if( $parametros['opcionEstado'] == 1 )
