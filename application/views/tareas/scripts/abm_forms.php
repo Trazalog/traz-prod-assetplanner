@@ -103,9 +103,9 @@
 		// console.log($('#id_listarea').val() + 'id listarrea');	
 		var imgs = $('input.archivo');
 		var formData = new FormData($("#"+form_actual_id)[0]);
-		var id_listarea = form_actual_data.attr("data-bpmIdTarea");
-		formData.append('id_listarea', id_listarea);
-		formData.append('idformulario', form_actual_id);
+		//var id_listarea = form_actual_data.attr("data-bpmIdTarea");
+		// formData.append('id_listarea', id_listarea);
+		// formData.append('idformulario', form_actual_id);
 
 		/** subidad y resubida de imagenes **/
 		// Tomo los inputs auxiliares cargados

@@ -72,43 +72,70 @@ class Tareas extends CI_Model {
 		}
 	}
 	// devuelve id de tarea estandar por nombre
-	function getIdTareaSTD($nomTarea){
+	function getIdTareaSTD($id_OT){
 
 		$userdata = $this->session->userdata('user_data');
 		$empId = $userdata[0]['id_empresa'];
 
-		$this->db->select('tareas.id_tarea');
+		$this->db->select('tareas.id_tarea,
+											tareas.descripcion,
+											tareas.id_empresa');
 		$this->db->from('tareas');
-		$this->db->where('tareas.descripcion',$nomTarea);
-		$this->db->where('tareas.id_empresa',$empId);
+		$this->db->join('orden_trabajo', 'tareas.id_tarea = orden_trabajo.id_tarea');
+		$this->db->where('orden_trabajo.id_orden',$id_OT);
 		$query = $this->db->get();
 			if ($query->num_rows()!=0){
-				return $query->row('id_tarea');	
+				return $query->result_array();	
 			}else{
 				return 0;
 			}
 	}
 	// devuelve subtareas por 
 	function getSubtareas($idTareaSTD){
-		$this->db->select('asp_subtareas.id_subtarea,
-											asp_subtareas.tareadescrip,
-											asp_subtareas.id_tarea,											
-											asp_subtareas.fecha,
-											asp_subtareas.duracion_prog,
-											asp_subtareas.estado,											
-											asp_subtareas.form_asoc');
-		$this->db->from('asp_subtareas');
-		$this->db->where('asp_subtareas.id_tarea',$idTareaSTD);
+		$this->db->select('tbl_listarea.id_listarea,
+											tbl_listarea.id_orden,
+											tbl_listarea.tareadescrip,
+											tbl_listarea.id_usuario,
+											tbl_listarea.fecha,
+											tbl_listarea.estado,
+											tbl_listarea.info_id,
+											tbl_listarea.id_subtarea,
+											asp_subtareas.tareadescrip AS subtareadescrip,
+											asp_subtareas.id_subtarea,
+											asp_subtareas.form_asoc');		
+		$this->db->from('tbl_listarea');
+		$this->db->join('asp_subtareas', 'asp_subtareas.id_subtarea = tbl_listarea.id_subtarea','left');
+		$this->db->where('tbl_listarea.id_orden',$idTareaSTD);
 		$query = $this->db->get();
 		if ($query->num_rows()!=0){
 			return $query->result_array();	
 		}else{
-			return 0;
+			return array();
 		}
+
+
+
+
+
+
+
 	}
-	function cambioEstadoSubtarea($idsubtarea,$estado){
-		$this->db->where('FOCO_ID', $key);
-		$response = $this->db->update('frm_formularios_completados', $datos);
+	function cambiarEstadoSubtask($idlistarea,$estado){
+		$dato = array('estado'=>$estado); 
+		$this->db->where('tbl_listarea.id_listarea', $idlistarea);
+		$response = $this->db->update('tbl_listarea', $dato);
+		return $response;
+	}
+
+	function terminarTareaStandarenBPM($idTarBonita,$param){
+		
+		$method = '/execution';
+		$resource = 'API/bpm/userTask/';
+		$url = BONITA_URL.$resource.$idTarBonita.$method;
+		dump($url, 'url de file a abrir');
+		//$url = BONITA_URL.$resource.$usrId.$method;
+		file_get_contents($url, false, $param);
+		$response = $this->parseHeaders( $http_response_header );
 		return $response;
 	}
 
@@ -143,20 +170,7 @@ class Tareas extends CI_Model {
 		}
 		return $tar;
 	}
-	// trae cod interno de pedido trabajo en funcion del caseId de BPM
-	function getDatPedidoTrabajo($caseId){
-		$this->db->select('trj_pedido_trabajo.petr_id,
-							trj_pedido_trabajo.cod_interno');
-		$this->db->from('trj_pedido_trabajo');
-		$this->db->where('trj_pedido_trabajo.bpm_id',$caseId);
-
-		$query = $this->db->get();
-
-		if ($query->num_rows()!=0)
-		{
-			return $query->result_array();
-		}
-	}
+	
 	//devuelve datos de tarea por nombre 
 	function getDatosTarea($nombre){
 		$this->db->where('descripcion',$nombre);
@@ -374,7 +388,7 @@ class Tareas extends CI_Model {
 			return $inst;
 		}
 		// Trae form para dibujar pantalla (agregar where de id de form)
-		function get_form($bpm_task_id,$idFormAsoc){
+		function get_form($infoId){
 
 			$userdata = $this->session->userdata('user_data');
 			$empId = $userdata[0]['id_empresa']; 
@@ -398,8 +412,7 @@ class Tareas extends CI_Model {
 						foco.ORDEN
 						FROM
 						frm_formularios_completados foco
-						WHERE foco.FORM_ID = $idFormAsoc
-						AND foco.INFO_ID = $bpm_task_id
+						WHERE foco.INFO_ID = $infoId
 						AND foco.ID_EMPRESA = $empId
 						ORDER BY foco.ORDEN";
 
@@ -469,21 +482,7 @@ class Tareas extends CI_Model {
 		}
 	/*	./ FORMULARIOS */	
 
-	// Trae id de Ped de Trabajo segun CaseId
-	function getIdPedTrabajo($caseId){
-		$this->db->select('trj_pedido_trabajo.petr_id,trj_pedido_trabajo.cod_interno');
-		$this->db->from('trj_pedido_trabajo');
-		$this->db->where('trj_pedido_trabajo.bpm_id', $caseId);
-
-		$query = $this->db->get();
-
-		if ($query->num_rows()!=0){
-			return $query->result_array();
-			//return $query->row('petr_id');
-	 	}else{
-	 		return false;
-	 	}
-	}
+	
 	// devuelve detalle de tareas para notificacion standart a partir de id_listarea
 	function detaTareas($id_listarea){
 
@@ -557,14 +556,20 @@ class Tareas extends CI_Model {
 			return $response;
 		}
 
-		// function getIdOtPorIdCase($caseId, $param){
-		// 	// [URL_BONITA]/API/bpm/caseVariable/:caseId/gIdOT
-		// 	$urlResource = BONITA_URL.'API/bpm/caseVariable/';
-		// 	$var = '/gIdOT';
 
-		// 	$data = file_get_contents($urlResource.$caseId.$var , false, $param);
-		// 	return $data;
-		// }
+		function getIdOtPorid_SS($id_SS){
+			$this->db->select('orden_trabajo.id_orden');
+			$this->db->from('orden_trabajo');
+			$this->db->where('orden_trabajo.id_solicitud',$id_SS);
+			$query= $this->db->get();
+			if( $query->num_rows() > 0){
+				return $query->row('id_orden');	
+			} 
+			else {
+				return 0;
+			}
+
+		}
 		function getIdSolServPorIdCase($caseId, $param){
 				// [URL_BONITA]/API/bpm/caseVariable/:caseId/gIdOT
 			$urlResource = BONITA_URL.'API/bpm/caseVariable/';

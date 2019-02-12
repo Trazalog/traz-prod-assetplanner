@@ -197,7 +197,7 @@ class Backlog extends CI_Controller {
 		
 		$datos = array(
 				'id_equipo'     => $eq,
-				'tarea_descrip' => $ta,						
+				'id_tarea' => $ta,						
 				'fecha'         => $fe,
 				'estado'        => 'C',
 				'back_duracion' => $hs,

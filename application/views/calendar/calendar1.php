@@ -698,7 +698,14 @@ $("#fecha_progr_prevent_horas").datepicker({
                    fec_sol_back = data[0]['fecha'];
                    id_back = data[0]['backId'];
                    id_equi = data[0]['id_equipo'];
-                   desc_tarea_back = data[0]['descripcion'];///////ACAAAAAA FALTAAAAA
+                   tarea = data[0]['descripcion'];
+                   // si tiene tarea estandar grava eso sino la tarea custom
+                   if(id_de_tar != null){
+                    desc_tarea_back = data[0]['descripcion'];
+                   }else{
+                    desc_tarea_back = data[0]['tarea_opcional']; 
+                   }
+                  
                 },
           error: function(data){
 
@@ -715,6 +722,7 @@ $("#fecha_progr_prevent_horas").datepicker({
     $.ajax({
           type: 'POST', //parametros:parametros
           data: {
+                  event_tipo: 1, // evento unico
                   id_sol : id_back,
                   id_tarea : id_de_tar,
                   fecha_progr : progr_back,

@@ -336,6 +336,8 @@ class Calendario extends CI_Controller {
 		$userdata = $this->session->userdata('user_data');
 		$usrId    = $userdata[0]['usrId'];
 		$empId    = $userdata[0]['id_empresa'];
+		
+		$response = false;
 
 	  if($_POST){
 	    	if( isset($_POST['event_tipo']) )
@@ -368,7 +370,7 @@ class Calendario extends CI_Controller {
 			if ($tipo != '2') 
 			{
 				$duracion = $this->getDurTarea($tipo,$id_solicitud); 
-				dump($duracion, 'duracion');
+				//dump($duracion, 'duracion');
 			}
 			else
 			{
@@ -398,55 +400,91 @@ class Calendario extends CI_Controller {
 											'lectura_ejecutada'  => $lectura_ejecutada,
 											);
 			//dump($datos2, 'datos');
-	    	
+			
 			if ($event_tipo == '1') // si el evento es unico lo guarda
 			{
+				/// Interacción con BPM ///
+				$estado = 'OT';
+				// $tipo == '2' -> S.Servicios
+				if($tipo == '2'){
+					// si es correctivo o S.Servicio
+					$tipo = 'correctivo';				
+					$infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);						
+					
+					$respCerrar = $this->cerrarTarea($infoTarea['taskId']);			
+					if($respCerrar == 204 ){
+						$resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);
+					}
+					//if($resActualizar == 200){					
+						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);
+						$response = true;
+					//}
+				}
+				// $tipo == '4' -> Backlog
+			
+				if($tipo == '4'){	
+					dump($tipo, 'entre por tipo 4');	
+					// actualizo estado del backlog
+					$tipo = 'backlog';
+					$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);	
+					$infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);			
+					dump($infoTarea, 'info tarea');
+					//if($respCerrar == 204 ){
+						$respCerrar = $this->cerrarTarea($infoTarea['taskId']);			
+					//}	
+					//if($resActualizar == 200){
+						$resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);
+						$response = true;
+					//}	
+				}
+
+				//TODO: VALIDAR EL LANZAMIENTO DE LA TAREA EN BONITA Y DESPUES GUARDAR OT
+
 				$idOTnueva = $this->Calendarios->guardar_agregar($datos2);
 			}
 			else // evento repetitivo 
 			{
+				dump($tipo, 'entre por donde no debo forro');
 				// Sumo a la fecha de program la cant de meses p/ sacar fecha limite
 				$fecha_limite = strtotime ( '+'.$cant_meses.' month' , strtotime ( $fec_programacion ) );
 				$fecha_limite = date ( 'Y-m-d H:i:s' , $fecha_limite ); /// "2018-06-16 00:00:00"
-				dump($fecha_limite, 'fecha_limite');
+				//dump($fecha_limite, 'fecha_limite');
 				//busco la frecuencia de la tarea
 				$diasFrecuencia = $this->getPeriodTarea($tipo,$id_solicitud);	//bien
-				dump($diasFrecuencia, 'dias frecuencia');
+				//dump($diasFrecuencia, 'dias frecuencia');
 				$this->armar_batch($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2);
 
 				// si es preventivo ACTUALIZA NUEVAMENTE LA FECHA BASE_ OK!
 				if($tipo == '3'){	    		
 					//pongo nueva fecha base en preventivos
-					dump('$id_solicitud', 'id preventivo');
+					//dump('$id_solicitud', 'id preventivo');
 					$this->Calendarios->actualizarFechaBasePreventivos($fecha_limite, $id_solicitud);
 				}
-			}	     	
-				
-			/// Interacción con BPM ///
-				// $tipo == '2' -> S.Servicios
-				if($tipo == '2'){
-					// si es correctivo o S.Servicio
-				}
-				// $tipo == '4' -> Backlog
-				if($tipo == '4'){			
-					$infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud);			
-					$respCerrar = $this->cerrarTarea($infoTarea['taskId']);			
-					$resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);
-				}
+				$response = true;
+			}	     				
 
 		}
 		
-
+		echo json_encode($response);
   }
 
 
 
 	/* INTEGRACION CON BPM */
-		function getInfoTareaporIdSolicitud($id_solicitud){
+		function getInfoTareaporIdSolicitud($id_solicitud, $tipo){
 			//TODO: TRAER ID DE BACKLOG GENERADO EN BPM(TRAER POR REST O GUARDAR EN TABLA BACKLOG)
 			
-			//$id_solicitud	-> id de backlog
-			$caseId = $this->Calendarios->getCaseIdporIdSolServicios($id_solicitud);
+			dump($id_solicitud, 'id solicitud en 1: ');
+			dump($tipo, 'tipo en 1: ');
+
+			if ($tipo == 'correctivo') {
+				//$id_solicitud	-> id sol de servicios
+				$caseId = $this->Calendarios->getCaseIdporIdSolServicios($id_solicitud);
+			}
+			if ($tipo == 'backlog') {
+				//$id_solicitud	-> id de backlog
+				$caseId = $this->Calendarios->getCaseIdporIdBacklog($id_solicitud);
+			}
 
 			dump($caseId, 'case id en controller');			
 			// traer de bpm el id de tarea (id)			
@@ -455,14 +493,23 @@ class Calendario extends CI_Controller {
 			$param = stream_context_create($parametros);
 			//dump($param, 'param: ');
 			$actividades = $this->Overviews->ObtenerActividades($caseId,$param);			
-			$infoTarea['taskId'] = json_decode($this->getIdTask($actividades),true);
+			$infoTarea['taskId'] = json_decode($this->getIdTask($actividades,$tipo),true);
 			$infoTarea['caseId'] = $caseId;			
 			return $infoTarea;		
 		}
 		// devuelve task_id coincidente con la actividad 'Analisis de Solicitud de Servicio'
-		function getIdTask($actividades){
+		function getIdTask($actividades,$tipo){
+
+			if($tipo == 'correctivo'){
+				$actividad = 'Planificar Solicitud';
+			}
+			if($tipo == 'backlog'){
+				$actividad = 'Planificar Backlog';
+			}	
+
+
 			for ($i=0; $i < count($actividades); $i++) { 				
-				if ($actividades[$i]["displayName"] == 'Planificar Backlog') {
+				if ($actividades[$i]["displayName"] == $actividad) {
 					$id = $actividades[$i]["id"];
 				}
 			}

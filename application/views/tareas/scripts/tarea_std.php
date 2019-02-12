@@ -129,7 +129,7 @@
 			 
 
 
-			 if ( validarCamposObligatorios(formOt) ) {
+			 //if ( validarCamposObligatorios(formOt) ) {
 					$.ajax({
 						type: 'POST',
 						data: {formIdOt:formOt},
@@ -147,9 +147,9 @@
 						},
 						dataType: 'json'
 					}); 
-			 } else {
-				alert('Existen Formularios incompletos, por favor rellenelos para completar la tarea.');
-			 }
+			 //} else {
+			//	alert('Existen Formularios incompletos, por favor rellenelos para completar la tarea.');
+			 //}
 			 
 
 			//console.table(formOt);
@@ -171,6 +171,29 @@
 				data: {opcion:opcion,
 								idTarBonita:idTarBonita},
 				url: 'index.php/Tarea/decidirUrgencia',
+				success: function(data) {
+								console.table(data);
+								//	WaitingClose();
+								// toma a tarea exitosamente
+								if(data['reponse_code'] == 204){
+										$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+								}
+				},
+				error: function(data) {
+						//alert("Noo");
+						console.log(data);
+				},
+				dataType: 'json'
+			});
+		}
+
+		function ejecutarOT(){
+			
+			var idTarBonita = $('#idTarBonita').val();	
+			$.ajax({
+				type: 'POST',
+				data: {idTarBonita:idTarBonita},
+				url: 'index.php/Tarea/ejecutarOT',
 				success: function(data) {
 								console.table(data);
 								//	WaitingClose();

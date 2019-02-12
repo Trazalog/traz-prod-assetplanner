@@ -138,6 +138,20 @@ class Tarea extends CI_Controller {
 				echo json_encode($result);
 			}
 
+			public function ejecutarOT(){
+				$idTarBonita = $this->input->post('idTarBonita');
+				dump($idTarBonita, 'id bonita');
+				// $id_listarea = $this->input->post('id_listarea');
+				// trae la cabecera
+				$parametros = $this->Bonitas->conexiones();
+				// Cambio el metodo de la cabecera a "PUT"
+				$parametros["http"]["method"] = "POST";
+				// Variable tipo resource referencia a un recurso externo.
+				$param = stream_context_create($parametros);
+				$response = $this->Tareas->terminarTareaStandarenBPM($idTarBonita, $param);
+				echo json_encode($response);
+			}
+
 			// trae datos para llenar notificaion estandar y formulario asociado
 			public function detaTarea($permission,$idTarBonita){
 
@@ -148,119 +162,80 @@ class Tarea extends CI_Controller {
 					}else{
 						$data['device'] = "pc";				
 					}
-
+				//dump($idTarBonita, 'id tarea bonita en controller:');
 				$data['permission'] = $permission;
 				//OBTENER DATOS DE TAREA SELECCIONADA DESDE BONITA
 				$data['TareaBPM'] = json_decode($this->getDatosBPM($idTarBonita),true);	
 				$data['idTarBonita'] = $idTarBonita;
 				$caseId = $data['TareaBPM']["caseId"];
-				//FIXME: SACAR HARDCODEO A NOMBRE DE TAREA
-				//$data['TareaBPM']["displayName"] = 'Revision total de motor';
-				//Devuelve datos de tarea por nombre 
-				$data['infoTarea'] = $this->Tareas->getDatosTarea($data['TareaBPM']["displayName"]);
-
-				if($data['infoTarea']['visible']==1){// Pregunta si es Una TareasSTD o de BPM
-					//FIXME: FUNCION Q DEVOLVERA id de OT desde BPM
-					//$id_listarea = $this->getIdTareaTraJobs($idTarBonita); 
-					//$id_OT = $this->getIdOT($idTarBonita);
-					$id_OT = 22;
-					$data['id_OT'] = $id_OT;
-					$data['id'] = 160501;
-				}
-
-				//TODO: PROBAR ESTOS METODOS
+			
 				// Trae id de OT y de Sol Serv por CaseId			
-				$id_SS = $this->getIdSolServPorIdCase($caseId);				
-				//	$id_OT = $this->getIdOtPorIdCase($caseId);
-				
+				$id_SS = $this->getIdSolServPorIdCase($caseId);		
+				$id_OT = $this->Tareas->getIdOtPorid_SS($id_SS);
+
 				// Si hay Sol Serv trae el id de equpo sino por id de Ot
 				if($id_SS!= null){
 					$id_EQ = $this->Tareas->getIdEquipoPorIdSolServ($id_SS);
 				}
-				// if($id_OT!= null){
-				// 	$id_EQ = $this->Tareas->getIdEquipoPorIdOT($id_OT);
-				// }
-
-				// FIXME: SACAR HARDCODEO
-				//	$id_OT = 22;
-				
+				if($id_OT!= null){
+					$id_EQ = $this->Tareas->getIdEquipoPorIdOT($id_OT);				
+				}
+	
 				$data['id_OT'] = $id_OT;
 				$data['id_SS'] = $id_SS;
 				$data['id_EQ'] = $id_EQ;
-				// Formularios para subtareas (las tareas no tienen fomularios)
-				// si hay OT
+				
+				//$id_OT = 1;
+				/* Bloque subtareas estandar */	
 				if($id_OT != 0){
 					/* funcion nueva de asset */										
 					// traer subtareas estandar en funcion de tarea estandar					
-					$idTareaSTD = $this->Tareas->getIdTareaSTD($data['TareaBPM']["displayName"]);
-					$data['subtareas'] = $this->Tareas->getSubtareas($idTareaSTD);
-					$i=0;
-					$instanciasForm = $this->Tareas->getInstaciasForm($id_OT);
-					
-					foreach ($data['subtareas'] as $subtarea) {
-						
-						$idForm = $subtarea['form_asoc'];
-						// confirma si hay form guardado de esa
-						if ($this->Tareas->getEstadoForm($idTarBonita,$idForm)) {							
-							$data['subtareas'][$i]['infoId'] = $instanciasForm[$i];
-							$i++;
-						}
-						else{
-							// guarda form inicial vacio
-							$idForm = $subtarea['form_asoc'];	
-							$infoId = $this->Tareas->setFormInicial($idTarBonita,$idForm,$id_OT);
-							$data['subtareas'][$i]['infoId'] = $infoId;
-							$i++;
-						}
-					}	
+					$tareaSTD = $this->Tareas->getIdTareaSTD($id_OT);
+					$data['subtareas'] = $this->Tareas->getSubtareas($id_OT);
 				}	
 
-
-				//$data['TareaBPM']['displayName'] = 'Planificar Solicitud';
 				// comentarios y linea de tiempo desde libreria					
 					$idCase = array('caseId'=>$data['TareaBPM']["caseId"]);
 					$this->load->library('BPM',$idCase);
 					$data['timeline'] = $this->bpm->ObtenerLineaTiempo();	
 					$data['comentarios'] = $this->bpm->ObtenerComentariosBPM();
-
+					
 				switch ($data['TareaBPM']['displayName']) {
  
 					case 'Analisis de Solicitud de Servicio':
 							$this->load->view('tareas/view_analisisSServicios', $data);
 							$this->load->view('tareas/scripts/tarea_std');							
 							break;
-
 					case 'Planificar Solicitud':					
 							$this->load->view('tareas/view_planificar', $data);
 							$this->load->view('tareas/scripts/tarea_std');													
 							break;
-
-					case 'Editar Backlog':
-				
-							$id_SS = $id_SS;						
+					case 'Asignar Responsable OT Urgente ':					
+							$this->load->view('tareas/view_asignar', $data);
+							$this->load->view('tareas/scripts/tarea_std');													
+							break;						
+					case 'Asignar Resonsable OT':					
+							$this->load->view('tareas/view_asignar', $data);
+							$this->load->view('tareas/scripts/tarea_std');													
+							break;
+					case 'Editar Backlog':									
 							$data['info'] = $this->getEditarBacklog($id_SS);						
 							$this->load->view('backlog/nuevo_edicion_view_',	$data);
 							$this->load->view('tareas/scripts/tarea_std');
-							break;	
-					
+							break;					
 					case 'Planificar Backlog':					
-						$this->load->view('tareas/view_planificar', $data);
-						$this->load->view('tareas/scripts/tarea_std');													
-						break;		
-							
+							$this->load->view('tareas/view_planificar', $data);
+							$this->load->view('tareas/scripts/tarea_std');													
+							break;							
 					case 'Ejecutar OT':
-					dump($data, 'datos de tarea');
 							$this->load->view('tareas/view_ejecutarOT', $data);
 							$this->load->view('tareas/scripts/tarea_std');
 							$this->load->view('tareas/scripts/abm_forms');
 							$this->load->view('tareas/scripts/validacion_forms');							
-							break;		
-
+							break;
 					default:
-							$this->load->view('tareas/view_analisisSServicios', $data);					
-							$this->load->view('tareas/scripts/tarea_std');							
-							$idSolServicios = $this->Backlogs->getIdSolServiciosporIdCase($caseId);
-							dump($idSolServicios, 'id sol de serv');							
+							$this->load->view('tareas/view_', $data);					
+							$this->load->view('tareas/scripts/tarea_std');	
 							break;
 				}
 			}	
@@ -274,32 +249,13 @@ class Tarea extends CI_Controller {
 				$response = $this->Tareas->getIdSolServPorIdCase($caseId, $param);
 				//dump($response["value"], 'respuesta bonita');
 				return $response["value"];
-			}
-			
-			// function getIdOtPorIdCase($caseId){
-				// 	// trae la cabecera
-				// 	$parametros = $this->Bonitas->conexiones();
-				// 	// Cambio el metodo de la cabecera a "GET"
-				// 	$parametros["http"]["method"] = "GET";				
-				// 	$param = stream_context_create($parametros);
-				// 	$response = $this->Tareas->getIdOtPorIdCase($caseId, $param);
-				// 	dump($response, 'respuesta bonita');
-				// 	return $response;
-				// }
-
-
+			}			
+		
 			// Trae datos de backlog para editar
 			function getEditarBacklog($id_SS){
-
 				$result = $this->Tareas->geteditar($id_SS);	
 				return $result;
 			}	
-
-
-
-
-
-
 			
 			// Trae datos de BPM para notif estandar
 			public function getDatosBPM($idTarBonita){
@@ -332,9 +288,10 @@ class Tarea extends CI_Controller {
 				return $idTJobs;
 			}
 			// cambia el estado de cada subtarea 
-			public function cambioEstadoSubtarea(){
-				$idlistarea = $this->input->post('idlistarea');
+			public function cambiarEstadoSubtask(){
+				$idlistarea = $this->input->post('idListarea');
 				$estado = $this->input->post('estado');
+				$response = $this->Tareas->cambiarEstadoSubtask($idlistarea,$estado);
 			}
 		/*	./ FUNCIONES BPM */
 		
@@ -379,13 +336,10 @@ class Tarea extends CI_Controller {
 		/*	FORMULARIOS */
 			// trae datos para dibujar formulario en modal
 			public function Obtener_Formulario(){
-				$bpm_task_id = $this->input->post('bpm_task_id');	
-				$id_form = $this->input->post('form_id');
-				//dump($bpm_task_id, 'bpmIdTarea o infoid:');
-				//dump($id_form, 'id form: ');
-				$data['idForm']	= $this->input->post('form_id');
-				$data['form'] = $this->Tareas->get_form($bpm_task_id,$id_form);
-				//dump($data['form'], 'formulariosss:  ');
+				
+				$infoId = $this->input->post('infoId');
+				//$id_form	= $this->input->post('form_id');
+				$data['form'] = $this->Tareas->get_form($infoId);				
 				$response['html'] = $this->load->view('tareas/viewFormSubtareas', $data, true);
 				echo json_encode($response);
 			}

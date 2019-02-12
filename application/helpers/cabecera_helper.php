@@ -45,7 +45,6 @@ if(!function_exists('cargarCabecera')){
 			}	
 			// OT
 			if($id_OT != null){
-				//$id_OT = 570;
 				$ci->db->select('tareas.descripcion AS tareaDescrip,
 												orden_trabajo.descripcion AS otDescrip,
 												orden_trabajo.fecha,

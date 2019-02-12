@@ -14,9 +14,31 @@ class Backlogs extends CI_Model
 		$userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa']; 
           
-	    $this->db->select('tbl_back.backId, 
+	    // $this->db->select('tbl_back.backId, 
+	    // 				   tbl_back.id_equipo,
+	    // 				   tbl_back.tarea_descrip, 
+	    // 				   tbl_back.fecha, 
+	    // 				   tbl_back.estado,
+	    // 				   tbl_back.back_duracion, 
+	    // 				   equipos.descripcion AS des, 
+	    // 				   equipos.marca, equipos.codigo, 
+	    // 				   equipos.ubicacion, 
+	    // 				   equipos.fecha_ingreso, 
+	    // 				   tareas.id_tarea, 
+	    // 				   tareas.descripcion as de1,
+      //                      componentes.descripcion AS componente,
+      //                      sistema.descripcion as sistema');	 
+	    // $this->db->from('tbl_back'); 
+	    // $this->db->join('equipos', 'equipos.id_equipo = tbl_back.id_equipo');
+	    // $this->db->join('tareas', 'tareas.id_tarea = tbl_back.tarea_descrip');
+      //   $this->db->join('componenteequipo', 'componenteequipo.idcomponenteequipo = tbl_back.idcomponenteequipo');
+      //   $this->db->join('componentes', 'componentes.id_componente = componenteequipo.id_componente');
+      //   $this->db->join('sistema', 'sistema.sistemaid = componenteequipo.sistemaid');
+			// $this->db->where('tbl_back.id_empresa', $empId);
+			
+			$this->db->select('tbl_back.backId, 
 	    				   tbl_back.id_equipo,
-	    				   tbl_back.tarea_descrip, 
+	    				   tbl_back.id_tarea, 
 	    				   tbl_back.fecha, 
 	    				   tbl_back.estado,
 	    				   tbl_back.back_duracion, 
@@ -24,16 +46,14 @@ class Backlogs extends CI_Model
 	    				   equipos.marca, equipos.codigo, 
 	    				   equipos.ubicacion, 
 	    				   equipos.fecha_ingreso, 
-	    				   tareas.id_tarea, 
-	    				   tareas.descripcion as de1,
-                           componentes.descripcion AS componente,
-                           sistema.descripcion as sistema');	 
+								 tareas.id_tarea,
+	    				   tareas.descripcion as de1');	 
 	    $this->db->from('tbl_back'); 
 	    $this->db->join('equipos', 'equipos.id_equipo = tbl_back.id_equipo');
-	    $this->db->join('tareas', 'tareas.id_tarea = tbl_back.tarea_descrip');
-        $this->db->join('componenteequipo', 'componenteequipo.idcomponenteequipo = tbl_back.idcomponenteequipo');
-        $this->db->join('componentes', 'componentes.id_componente = componenteequipo.id_componente');
-        $this->db->join('sistema', 'sistema.sistemaid = componenteequipo.sistemaid');
+	    $this->db->join('tareas', 'tareas.id_tarea = tbl_back.id_tarea', 'left');
+      //$this->db->join('componenteequipo', 'componenteequipo.idcomponenteequipo = tbl_back.idcomponenteequipo');
+      //$this->db->join('componentes', 'componentes.id_componente = componenteequipo.id_componente', 'left');
+      //$this->db->join('sistema', 'sistema.sistemaid = componenteequipo.sistemaid');
 	    $this->db->where('tbl_back.id_empresa', $empId);
 	    $query= $this->db->get();
 	    

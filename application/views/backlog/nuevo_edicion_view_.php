@@ -8,7 +8,7 @@
   </div>
 </div>
 <section class="content">
-<?php echo cargarCabecera($id_OT,$id_SS,$id_EQ); ?>
+<?php //echo cargarCabecera($id_OT,$id_SS,$id_EQ); ?>
   <div class="row">
     <div class="col-xs-12">
 
@@ -367,7 +367,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-6">
                   <label for="tareaOpcional">Tarea No Estandar<strong style="color: #dd4b39">*</strong>:</label>
-                  <input type="text" class="form-control" id="tareaOpcional" name="tareaOpcional" value=""/>
+                  <input type="text" class="form-control" id="tareaOpcional" name="tareaOpcional" value="<?php echo $info[0]["tarea_opcional"] ?>"/>
                 </div>
               </div>
               <div class="row">

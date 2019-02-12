@@ -412,29 +412,7 @@ function verOT(){
 	//WaitingClose();	
 }
 
-/* Pantalla pedido de insumos */
-// function pedirInsumos(){ 
-// 	
-// 	var iort = $('#ot').val();
-// 	var iort = 22;
-// 	console.log("El id de OT es: " + iort);
-		
-// 	WaitingOpen();
-// 	$('#content').empty();
-// 	$("#content").load("<?php echo base_url(); ?>index.php/Notapedido/agregarListInsumos/<?php echo $permission; ?>/"+iort);
-// 	WaitingClose();  
-// }
-/* pedido de insumos */
 
-
-// $('.fecha').datepicker({
-// 		autoclose: true
-// 	}).on('change', function(e) {
-//        // $('#genericForm').bootstrapValidator('revalidateField',$(this).attr('name'));
-// 	   console.log('Validando Campo...'+$(this).attr('name'));
-// 	   $('#genericForm').data('bootstrapValidator').resetField($(this),false);
-// 	   $('#genericForm').data('bootstrapValidator').validateField($(this));
-//   });
 </script>
 
 
