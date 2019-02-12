@@ -47,7 +47,13 @@
                 echo "<td>";
                       //  if (strpos($permission,'Del') !== false) {
                             //alternativa a orden hecha fa fa-stop-circle-o
-                echo '<i class="fa fa-stop-circle" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-correctivo" onclick="fill_Correc('.$c['id_solicitud'].')"></i>';
+               //dump($c, 'backlog:');
+                if ($c['estado'] != 'OT') {
+                  echo '<i class="fa fa-stop-circle" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-correctivo" onclick="fill_Correc('.$c['id_solicitud'].')"></i>';
+                } else {
+                  echo '<i class="fa fa-stop-circle-o" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden Generada"></i>';
+                }                          
+                            
                       //  }
                 echo "</td>";
                       // 1 // id equipo
@@ -278,7 +284,12 @@
                 echo "<td>";
                 // if (strpos($permission,'Del') !== false) {
                 //alternativa a orden hecha fa fa-stop-circle-o
-                echo '<i class="fa fa-check-square" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-backlog" onclick="fill_Backlog('.$b['backId'].')"></i>';
+                if($b['estado'] != 'OT'){
+                  echo '<i class="fa fa-check-square" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-backlog" onclick="fill_Backlog('.$b['backId'].')"></i>';
+                }else{
+                  echo '<i class="fa fa-check-square-o" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden Generada"></i>';
+                }
+                
                 // }
                 echo "</td>";
                 // 1 // id equipo
@@ -288,7 +299,12 @@
                 // 3 // codigo de equipo
                 echo "<td style='text-align: center'>".$b['codigo']."</td>";
                 // 4 // descripcion causa solicitud
-                echo "<td style='text-align: center'>".$b['tarea']."</td>";
+                if($b['tarea'] != null){
+                  echo "<td style='text-align: center'>".$b['tarea']."</td>";
+                } else{
+                  echo "<td style='text-align: center'>".$b['tarea_opcional']."</td>";
+                }
+                
                 // 5 // fecha guardada anteriromente
                 echo "<td style='text-align: center'>".$b['fecha']."</td>";
                 // 6 // id de tarea

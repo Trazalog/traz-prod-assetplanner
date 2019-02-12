@@ -1,5 +1,4 @@
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
-<?php //dump();?>
 <section class="content">
 	<?php echo cargarCabecera($id_OT,$id_SS,$id_EQ); ?>
 	<div class="row">
@@ -100,7 +99,7 @@
 													<div class="form-group">
 														<div class="col-sm-12 col-md-12">
 															<!-- Modal formulario tarea -->
-															<?php if($idForm != 0){echo '<button type="button" id="formulario" class="btn btn-primary" data-toggle="modal"data-target=".bs-example-modal-lg" onclick="getformulario()">Completar Formulario </button>';}?>
+															<?php if($idForm != 0){echo '<button type="button" id="formulario" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg" onclick="getformulario()">Completar Formulario </button>';}?>
 														</div>
 													</div>
 
@@ -249,7 +248,7 @@
 
 					</div><!-- /.row -->
 
-					<div class="row">
+					<div class="modal-footer">
 						<div class="col-sm-12 col-md-12">
 								<button type="button" id="verOrden" class="btn btn-primary" onclick="verOT()">Programar Orden de Trabajo</button>
 						</div>
@@ -261,10 +260,11 @@
 						</div>
 					</div>	 -->
 					
-					<div class="modal-footer">
+					<!-- <div class="modal-footer">
 						<button type="button" id="cerrar" class="btn btn-primary" onclick="cargarVista()">Cerrar</button>
 						<button type="button" class="btn btn-success" id="hecho" onclick="decidirUrgencia()">Hecho</button>
-					</div> <!-- /.modal footer -->
+					</div>  -->
+					<!-- /.modal footer -->
 
 				</div><!-- /.box body -->
 			</div> <!-- /.box  -->
@@ -402,38 +402,17 @@
 
 <script>  
 	
+    
 /* ver calendario Ot */
 function verOT(){
 
-	WaitingOpen();
+	//WaitingOpen();
 	$('#content').empty();
 	$("#content").load("<?php echo base_url(); ?>index.php/Calendario/indexot/<?php echo $permission; ?>");
-	WaitingClose();	
+	//WaitingClose();	
 }
 
-/* Pantalla pedido de insumos */
-// function pedirInsumos(){ 
-// 	
-// 	var iort = $('#ot').val();
-// 	var iort = 22;
-// 	console.log("El id de OT es: " + iort);
-		
-// 	WaitingOpen();
-// 	$('#content').empty();
-// 	$("#content").load("<?php echo base_url(); ?>index.php/Notapedido/agregarListInsumos/<?php echo $permission; ?>/"+iort);
-// 	WaitingClose();  
-// }
-/* pedido de insumos */
 
-
-// $('.fecha').datepicker({
-// 		autoclose: true
-// 	}).on('change', function(e) {
-//        // $('#genericForm').bootstrapValidator('revalidateField',$(this).attr('name'));
-// 	   console.log('Validando Campo...'+$(this).attr('name'));
-// 	   $('#genericForm').data('bootstrapValidator').resetField($(this),false);
-// 	   $('#genericForm').data('bootstrapValidator').validateField($(this));
-//   });
 </script>
 
 

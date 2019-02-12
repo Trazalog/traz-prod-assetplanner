@@ -72,43 +72,70 @@ class Tareas extends CI_Model {
 		}
 	}
 	// devuelve id de tarea estandar por nombre
-	function getIdTareaSTD($nomTarea){
+	function getIdTareaSTD($id_OT){
 
 		$userdata = $this->session->userdata('user_data');
 		$empId = $userdata[0]['id_empresa'];
 
-		$this->db->select('tareas.id_tarea');
+		$this->db->select('tareas.id_tarea,
+											tareas.descripcion,
+											tareas.id_empresa');
 		$this->db->from('tareas');
-		$this->db->where('tareas.descripcion',$nomTarea);
-		$this->db->where('tareas.id_empresa',$empId);
+		$this->db->join('orden_trabajo', 'tareas.id_tarea = orden_trabajo.id_tarea');
+		$this->db->where('orden_trabajo.id_orden',$id_OT);
 		$query = $this->db->get();
 			if ($query->num_rows()!=0){
-				return $query->row('id_tarea');	
+				return $query->result_array();	
 			}else{
 				return 0;
 			}
 	}
 	// devuelve subtareas por 
 	function getSubtareas($idTareaSTD){
-		$this->db->select('asp_subtareas.id_subtarea,
-											asp_subtareas.tareadescrip,
-											asp_subtareas.id_tarea,											
-											asp_subtareas.fecha,
-											asp_subtareas.duracion_prog,
-											asp_subtareas.estado,											
-											asp_subtareas.form_asoc');
-		$this->db->from('asp_subtareas');
-		$this->db->where('asp_subtareas.id_tarea',$idTareaSTD);
+		$this->db->select('tbl_listarea.id_listarea,
+											tbl_listarea.id_orden,
+											tbl_listarea.tareadescrip,
+											tbl_listarea.id_usuario,
+											tbl_listarea.fecha,
+											tbl_listarea.estado,
+											tbl_listarea.info_id,
+											tbl_listarea.id_subtarea,
+											asp_subtareas.tareadescrip AS subtareadescrip,
+											asp_subtareas.id_subtarea,
+											asp_subtareas.form_asoc');		
+		$this->db->from('tbl_listarea');
+		$this->db->join('asp_subtareas', 'asp_subtareas.id_subtarea = tbl_listarea.id_subtarea','left');
+		$this->db->where('tbl_listarea.id_orden',$idTareaSTD);
 		$query = $this->db->get();
 		if ($query->num_rows()!=0){
 			return $query->result_array();	
 		}else{
-			return 0;
+			return array();
 		}
+
+
+
+
+
+
+
 	}
-	function cambioEstadoSubtarea($idsubtarea,$estado){
-		$this->db->where('FOCO_ID', $key);
-		$response = $this->db->update('frm_formularios_completados', $datos);
+	function cambiarEstadoSubtask($idlistarea,$estado){
+		$dato = array('estado'=>$estado); 
+		$this->db->where('tbl_listarea.id_listarea', $idlistarea);
+		$response = $this->db->update('tbl_listarea', $dato);
+		return $response;
+	}
+
+	function terminarTareaStandarenBPM($idTarBonita,$param){
+		
+		$method = '/execution';
+		$resource = 'API/bpm/userTask/';
+		$url = BONITA_URL.$resource.$idTarBonita.$method;
+		dump($url, 'url de file a abrir');
+		//$url = BONITA_URL.$resource.$usrId.$method;
+		file_get_contents($url, false, $param);
+		$response = $this->parseHeaders( $http_response_header );
 		return $response;
 	}
 
@@ -143,20 +170,7 @@ class Tareas extends CI_Model {
 		}
 		return $tar;
 	}
-	// trae cod interno de pedido trabajo en funcion del caseId de BPM
-	function getDatPedidoTrabajo($caseId){
-		$this->db->select('trj_pedido_trabajo.petr_id,
-							trj_pedido_trabajo.cod_interno');
-		$this->db->from('trj_pedido_trabajo');
-		$this->db->where('trj_pedido_trabajo.bpm_id',$caseId);
-
-		$query = $this->db->get();
-
-		if ($query->num_rows()!=0)
-		{
-			return $query->result_array();
-		}
-	}
+	
 	//devuelve datos de tarea por nombre 
 	function getDatosTarea($nombre){
 		$this->db->where('descripcion',$nombre);
@@ -202,20 +216,7 @@ class Tareas extends CI_Model {
 			return 0;
 		}
 	}
-	// devuelve ptrId por caseId
-	function getPtrIdPorCaseId($caseId){
 
-		$this->db->select('trj_pedido_trabajo.petr_id');
-		$this->db->from('trj_pedido_trabajo');
-		$this->db->where('trj_pedido_trabajo.bpm_id', $caseId);
-		$query = $this->db->get();
-
-		if ($query->num_rows()!=0){
-	 		return $query->row('petr_id');
-	 	}else{
-	 		return 0;
-	 	}
-	}
 	//devuelve el id de tarea estandar asociada a listarea
 	function getTarea_idListarea($id_listarea){
 
@@ -226,6 +227,35 @@ class Tareas extends CI_Model {
 
 		if ($query->num_rows()!=0){
 	 		return $query->row('id_tarea');
+	 	}else{
+	 		return false;
+	 	}
+	}
+	// devuelve id de equipo por id Sol Servicios
+	function getIdEquipoPorIdSolServ($id_SS){
+		
+		$this->db->select('solicitud_reparacion.id_equipo');
+		$this->db->from('solicitud_reparacion');
+		$this->db->where('solicitud_reparacion.id_solicitud', $id_SS);
+		$query = $this->db->get();
+
+		if ($query->num_rows()!=0){
+	 		return $query->row('id_equipo');
+	 	}else{
+	 		return false;
+	 	}
+	}
+
+	// devuelve id de equipo por id OT
+	function getIdEquipoPorIdOT($id_OT){
+		
+		$this->db->select('orden_trabajo.id_equipo');
+		$this->db->from('orden_trabajo');
+		$this->db->where('orden_trabajo.id_orden', $id_OT);
+		$query = $this->db->get();
+
+		if ($query->num_rows()!=0){
+	 		return $query->row('id_equipo');
 	 	}else{
 	 		return false;
 	 	}
@@ -358,7 +388,7 @@ class Tareas extends CI_Model {
 			return $inst;
 		}
 		// Trae form para dibujar pantalla (agregar where de id de form)
-		function get_form($bpm_task_id,$idFormAsoc){
+		function get_form($infoId){
 
 			$userdata = $this->session->userdata('user_data');
 			$empId = $userdata[0]['id_empresa']; 
@@ -382,8 +412,7 @@ class Tareas extends CI_Model {
 						foco.ORDEN
 						FROM
 						frm_formularios_completados foco
-						WHERE foco.FORM_ID = $idFormAsoc
-						AND foco.INFO_ID = $bpm_task_id
+						WHERE foco.INFO_ID = $infoId
 						AND foco.ID_EMPRESA = $empId
 						ORDER BY foco.ORDEN";
 
@@ -453,21 +482,7 @@ class Tareas extends CI_Model {
 		}
 	/*	./ FORMULARIOS */	
 
-	// Trae id de Ped de Trabajo segun CaseId
-	function getIdPedTrabajo($caseId){
-		$this->db->select('trj_pedido_trabajo.petr_id,trj_pedido_trabajo.cod_interno');
-		$this->db->from('trj_pedido_trabajo');
-		$this->db->where('trj_pedido_trabajo.bpm_id', $caseId);
-
-		$query = $this->db->get();
-
-		if ($query->num_rows()!=0){
-			return $query->result_array();
-			//return $query->row('petr_id');
-	 	}else{
-	 		return false;
-	 	}
-	}
+	
 	// devuelve detalle de tareas para notificacion standart a partir de id_listarea
 	function detaTareas($id_listarea){
 
@@ -540,39 +555,109 @@ class Tareas extends CI_Model {
 			$response = $this->parseHeaders( $http_response_header );
 			return $response;
 		}
-		// Terminar Tarea
-		function terminarTareaStandarenBPM($idTarBonita,$param){
 
-			$userdata = $this->session->userdata('user_data');
-					$usrId = $userdata[0]['usrId'];
-			$method = '/execution';
-			$resource = 'API/bpm/userTask/';
-			$url = BONITA_URL.$resource.$idTarBonita.$method;
-			//$url = BONITA_URL.$resource.$usrId.$method;
-			file_get_contents($url, false, $param);
-			$response = $this->parseHeaders( $http_response_header );
-			return $response;
-		}
-		// toma la respuesta del server y devuelve el codigo de respuesta solo
-		function parseHeaders( $headers ){
-			$head = array();
-			foreach( $headers as $k=>$v ){
-				$t = explode( ':', $v, 2 );
-				if( isset( $t[1] ) )
-					$head[ trim($t[0]) ] = trim( $t[1] );
-				else{
-					$head[] = $v;
-					if( preg_match( "#HTTP/[0-9\.]+\s+([0-9]+)#",$v, $out ) )
-						$head['reponse_code'] = intval($out[1]);
-				}
+
+		function getIdOtPorid_SS($id_SS){
+			$this->db->select('orden_trabajo.id_orden');
+			$this->db->from('orden_trabajo');
+			$this->db->where('orden_trabajo.id_solicitud',$id_SS);
+			$query= $this->db->get();
+			if( $query->num_rows() > 0){
+				return $query->row('id_orden');	
+			} 
+			else {
+				return 0;
 			}
-			return $head;
+
 		}
-		// Comentarios
-		function GuardarComentarioBPM($param){
-			$respuesta = file_get_contents(BONITA_URL.'API/bpm/comment',false,$param);
-			return $respuesta;
+		function getIdSolServPorIdCase($caseId, $param){
+				// [URL_BONITA]/API/bpm/caseVariable/:caseId/gIdOT
+			$urlResource = BONITA_URL.'API/bpm/caseVariable/';
+			$var = '/gIdSolicitudServicio';
+			$data =json_decode(file_get_contents($urlResource.$caseId.$var , false, $param), true);
+
+			return $data;
 		}
+		// devuelve id de backlog
+		function getIdBackporid_OT($id_OT, $tipo){
+			
+			$this->db->select('orden_trabajo.id_solicitud AS idBacklog');
+			$this->db->from('orden_trabajo');
+			$this->db->where('orden_trabajo.id_orden',$id_OT);
+			$this->db->where('orden_trabajo.tipo',$tipo);
+			$query = $this->db->get();
+			
+			if ($query->num_rows()!=0){
+				return $query->row('idBacklog');	
+			}else{
+				return 0;
+			}
+		}
+
+	// Trae datos de backlog para editar
+	function geteditar($id_SS){
+			
+		$this->db->select('tbl_back.*,		
+											equipos.descripcion AS codigo,
+											equipos.id_equipo,
+											equipos.fecha_ingreso,
+											equipos.marca,
+											equipos.ubicacion');	
+		$this->db->from('tbl_back');
+		$this->db->join('equipos', 'tbl_back.id_equipo = equipos.id_equipo');		
+		$this->db->where('tbl_back.sore_id',$id_SS);
+		$query= $this->db->get();
+		
+		if( $query->num_rows() > 0)
+		{
+			return $query->result_array();	
+		} 
+		else {
+			return 0;
+		}
+	}
+
+	// terminar tarea analisis de Solicitud de Servicios
+	function cerrarTarea($idTarBonita,$param){
+		///API/bpm/userTask/:userTaskId/execution
+		$method = '/execution';
+		$resource = 'API/bpm/userTask/';
+		$url = BONITA_URL.$resource.$idTarBonita.$method;
+		file_get_contents($url, false, $param);
+		$response = $this->parseHeaders( $http_response_header );
+		return $response;
+	}
+
+	function actualizarIdOTenBPM($caseId, $param){
+		
+		// /API/bpm/caseVariable/:caseId/:variableName	
+		$variableName = '/execution';
+		$resource = 'API/bpm/caseVariable/';
+		$variableName = 'gIdOT';
+		$url = BONITA_URL.$resource.$caseId."/".$variableName;	
+		file_get_contents($url, false, $param);
+		$response = $this->parseHeaders( $http_response_header );		
+	}
+	// toma la respuesta del server y devuelve el codigo de respuesta solo
+	function parseHeaders( $headers ){
+		$head = array();
+		foreach( $headers as $k=>$v ){
+			$t = explode( ':', $v, 2 );
+			if( isset( $t[1] ) )
+				$head[ trim($t[0]) ] = trim( $t[1] );
+			else{
+				$head[] = $v;
+				if( preg_match( "#HTTP/[0-9\.]+\s+([0-9]+)#",$v, $out ) )
+					$head['reponse_code'] = intval($out[1]);
+			}
+		}
+		return $head;
+	}
+	// Comentarios
+	function GuardarComentarioBPM($param){
+		$respuesta = file_get_contents(BONITA_URL.'API/bpm/comment',false,$param);
+		return $respuesta;
+	}
 	/* 	./ TAREAS BPM */	
 
 /* ./ INTEGRACION CON BPM */

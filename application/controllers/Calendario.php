@@ -7,6 +7,9 @@ class Calendario extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->model('Calendarios');
+		$this->load->model('Bonitas');
+		$this->load->model('Overviews');
+		$this->load->model('Tareas');
 	}	
 
 	public function indexot($permission) // Ok
@@ -98,123 +101,7 @@ class Calendario extends CI_Controller {
 
 
 		// Guarda la OT simple o redirije para guardar varias
-	public function guardar_agregar(){
 
-		$data     = $this->input->post();
-		$userdata = $this->session->userdata('user_data');
-		$usrId    = $userdata[0]['usrId'];
-		$empId    = $userdata[0]['id_empresa'];
-
-		if($_POST) {
-
-			if( isset($_POST['event_tipo']) ){
-				$event_tipo       = $_POST['event_tipo'];//evento unico '1' evento repetitivo '2'				
-				$id_solicitud     = $_POST['id_sol'];// id predic - correct - back 
-				$id_tarea         = $_POST['id_tarea'];
-				$hora_progr       = $_POST['hora_progr'];
-				$fecha_progr      = $_POST['fecha_progr'];
-				$fecha_progr      = explode('-', $fecha_progr);
-				$fec_programacion = $fecha_progr[2].'-'.$fecha_progr[1].'-'.$fecha_progr[0].' '.$hora_progr.':00';
-				$fecha_inicio     = $_POST['fecha_inicio'];
-				$descripcion      = $_POST['descripcion'];//descripcion del predictivo/correc/backlog/etc
-				$tipo             = $_POST['tipo'];//numero de tipo segun tbl orden_trabajo
-				$equipo           = $_POST['ide'];  
-				$cant_meses       = $_POST['cant_meses'];//cantidad de meses a programar las OT
-			}	
-
-			if( isset($_POST['lectura_programada']) ) {
-				$lectura_programada = $_POST['lectura_programada'];
-			} else {
-				$lectura_programada = '0000-00-00 00:00:00';
-			}
-
-			if( isset($_POST['lectura_ejecutada']) ) {
-				$lectura_ejecutada  = $_POST['lectura_ejecutada'];
-			} else {
-				$lectura_ejecutada = '0000-00-00 00:00:00';
-			}
-
-			// si no es correctivo busca duracion sino pone 60' por defecto	    	
-			if ($tipo != '2'){
-				$duracion = $this->getDurTarea($tipo,$id_solicitud); 
-				dump($duracion, 'duracion');
-			} else {
-				$duracion =  60;	
-			}
-
-			$datos2 = array(
-											'id_tarea'      => $id_tarea,// id de tarea a realizar(tabla tareas)
-											'nro'           => 1,//por defecto( no se usa)
-											'fecha'         => date('Y-m-d'),				
-											'fecha_program' => $fec_programacion,
-											'fecha_inicio'  => $fecha_inicio,
-											'descripcion'   => $descripcion,
-											'cliId'         => 1,//por defecto( no se usa)
-											'estado'        =>'C',
-											'id_usuario'    => $usrId,
-											'id_usuario_a'  => 1,
-											'id_usuario_e'  => 1,
-											'id_sucursal'   => 1,
-											'id_solicitud'  => $id_solicitud,// id prev-correct-back-predict
-											'tipo'          => $tipo,// tipo solicitud (prev-correct-back-predict )
-											'id_equipo'     => $equipo,
-											'duracion'      => $duracion,
-											'id_tareapadre' => $id_solicitud,//solic que genera la 1º OT y las repetitivas
-											'id_empresa'    => $empId,
-											'lectura_programada' => $lectura_programada,
-											'lectura_ejecutada'  => $lectura_ejecutada,
-										);
-			//dump($datos2, 'datos');
-			// si el evento es unico lo guarda
-			if ($event_tipo == '1') {
-				// guarda la OT y devuelve el id de insercion en BD (ID de OT)
-				$idOT = $this->Calendarios->guardar_agregar($datos2);
-
-				if($idOT){
-					//FIXME: SACAR HARDCODEO!!
-					$id_tarea = 231;
-					$subtareas =  $this->Calendarios->getSubtareas($id_tarea);
-					//dump($subtareas, 'subtareas: ');
-					$batch_subtareas = $this->armarBatchSubtareas($subtareas,$idOT);
-					//dump($batch_subtareas, 'batch subtareas:');
-					$response = $this->Calendarios->setSubtareasBatch($batch_subtareas);
-				}
-				// TODO: ACA GUARDAR EL CORRECTIVO Y ADEMAS GUARDAR EN ASPINSTANCIASUBTAREA  LOS DATSO DE LAS SUBTAREAS TRAIDOS DESDE LA TABLA(ASP_SUBTAREAS) ENTENDER SI ESO ESTA BIEN O HACER PLANTILLA DE SUBTAREAS/TAREAS
-			} else {	// evento repetitivo
-				// Sumo a la fecha de program la cant de meses p/ sacar fecha limite
-				$fecha_limite = strtotime ( '+'.$cant_meses.' month' , strtotime ( $fec_programacion ) );
-				$fecha_limite = date ( 'Y-m-d H:i:s' , $fecha_limite ); /// "2018-06-16 00:00:00"
-				dump($fecha_limite, 'fecha_limite');
-				//busco la frecuencia de la tarea
-				$diasFrecuencia = $this->getPeriodTarea($tipo,$id_solicitud);	//bien
-				dump($diasFrecuencia, 'dias frecuencia');
-				$this->armar_batch($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2);
-
-				// si es preventivo
-				if($tipo == '3'){
-					//pongo nueva fecha base en preventivos
-					dump('$id_solicitud', 'id preventivo');
-					$this->Calendarios->actualizarFechaBasePreventivos($fecha_limite, $id_solicitud);
-				}
-			}	     	
-			return true;
-		}
-  }
-	// arma batch subtareas para insertar en asp_instaciasubtareas
-	function armarBatchSubtareas($subtareas,$idOT){
-		$userdata = $this->session->userdata('user_data');
-    $usrId = $userdata[0]['usrId']; 
-		
-		for ($i=0; $i < count($subtareas); $i++) { 
-			
-			$batchSubt[$i]['id_orden'] = $idOT;
-			$batchSubt[$i]['tareadescrip'] = $subtareas[$i]['tareadescrip'];
-			$batchSubt[$i]['id_usuario'] = $usrId;
-			$batchSubt[$i]['fecha'] = date ('Y-m-d');
-			$batchSubt[$i]['estado'] = 'C';
-		}
-		return $batchSubt;
-	}
 
 	function getDurTarea($tipo,$id_solicitud)
 	{
@@ -279,24 +166,24 @@ class Calendario extends CI_Controller {
 		return $duracion;
 	}
 
-	// arama conjunto de OT para su insercion en la BD
-	function armar_batch($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2)
-	{	
-		$data[] = $datos2;
-		while ($fecha_limite >= $fec_programacion  ) {
-		// a la fecha de programacion le sumo la frecuencia en dias	   	
-			$nuev_fecha = strtotime ( '+'.$diasFrecuencia.'day' , strtotime ( $fec_programacion ) ) ;
-			$nuev_fecha = date ( 'Y-m-d H:i:s' , $nuev_fecha );
-			// guardo la fecha nueva en el array para nuevva OT
-			$datos2['fecha_program'] = $nuev_fecha;
-			// guardo el componete en el array batch
-			$data[] = $datos2;
-			// actualizo la fecha de programacion
-			$fec_programacion = $nuev_fecha;
-		} 
+  	// arama conjunto de OT para su insercion en la BD
+   	function armar_batch($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2)
+   	{	
+  		$data[] = $datos2;
+    	while ($fecha_limite >= $fec_programacion  ) {
+		 	// a la fecha de programacion le sumo la frecuencia en dias	   	
+	   		$nuev_fecha = strtotime ( '+'.$diasFrecuencia.'day' , strtotime ( $fec_programacion ) ) ;
+	   		$nuev_fecha = date ( 'Y-m-d H:i:s' , $nuev_fecha );
+	   		// guardo la fecha nueva en el array para nuevva OT
+	   		$datos2['fecha_program'] = $nuev_fecha;
+	   		// guardo el componete en el array batch
+	   		$data[] = $datos2;
+	   		// actualizo la fecha de programacion
+	   		$fec_programacion = $nuev_fecha;
+			} 
 
-		$this->Calendarios->setOTbatch($data); 		
-	}
+			$this->Calendarios->setOTbatch($data); 		
+   	}
 
    	public function getperiodo()
 	{
@@ -383,9 +270,6 @@ class Calendario extends CI_Controller {
 
 
 
-
-
-
 	public function getCorrectPorId(){
 
 		$id = $_POST['id'];
@@ -414,37 +298,253 @@ class Calendario extends CI_Controller {
 
 
 
-   	// Cambio de dia nuevo de programacion
-   	public function updateDiaProg(){
+	// Cambio de dia nuevo de programacion
+	public function updateDiaProg(){
 
-   		$id = $this->input->post('id');
-   		$diaNuevo = $this->input->post('prog');
-   		$response = $this->Calendarios->updateDiaProgramacion($id, $diaNuevo);
+		$id = $this->input->post('id');
+		$diaNuevo = $this->input->post('prog');
+		$response = $this->Calendarios->updateDiaProgramacion($id, $diaNuevo);
 
+	echo json_encode($response);
+	}
+
+	// Devuelve duracion de tarea de acuerdo a un id de OT
+	function getDuracionOTrabajo($id){
+
+		$this->db->select('orden_trabajo.duracion');
+		$this->db->from('orden_trabajo');
+		$this->db->where('orden_trabajo.id_orden', $id);
+		$query = $this->db->get(); 
+			$duracion = $query->row('duracion');
+			return $duracion;
+	}
+
+	public function updateDuracion(){
+
+		$id = $this->input->post('id');
+		$duracion = $this->input->post('duracion');		// duracion adicional
+		
+		$nueva = $this->getDuracionOTrabajo($id, $duracion);
+		$nueva = $nueva + $duracion;		
+
+		$response = $this->Calendarios->updateDuraciones($id, $nueva);
+	echo json_encode($response);
+	}
+
+	public function guardar_agregar(){
+		$data     = $this->input->post();
+		$userdata = $this->session->userdata('user_data');
+		$usrId    = $userdata[0]['usrId'];
+		$empId    = $userdata[0]['id_empresa'];
+		
+		$response = false;
+
+	  if($_POST){
+	    	if( isset($_POST['event_tipo']) )
+				$event_tipo       = $_POST['event_tipo'];//evento unico '1' evnto repetitivo '2'
+			$id_solicitud     = $_POST['id_sol'];// id predic - correct - back 
+			$id_tarea         = $_POST['id_tarea'];
+			$hora_progr       = $_POST['hora_progr'];
+			$fecha_progr      = $_POST['fecha_progr'];
+			$fecha_progr      = explode('-', $fecha_progr);
+			$fec_programacion = $fecha_progr[2].'-'.$fecha_progr[1].'-'.$fecha_progr[0].' '.$hora_progr.':00';
+			$fecha_inicio     = $_POST['fecha_inicio'];
+			$descripcion      = $_POST['descripcion'];//descripcion del predictivo/correc/backlog/etc
+			$tipo             = $_POST['tipo'];//numero de tipo segun tbl orden_trabajo
+			$equipo           = $_POST['ide'];  
+			$cant_meses       = $_POST['cant_meses'];//cantidad de meses a programar las OT
+
+			if( isset($_POST['lectura_programada']) ) {
+				$lectura_programada = $_POST['lectura_programada'];
+			} else {
+				$lectura_programada = '0000-00-00 00:00:00';
+			}
+
+			if( isset($_POST['lectura_ejecutada']) ) {
+				$lectura_ejecutada  = $_POST['lectura_ejecutada'];
+			} else {
+				$lectura_ejecutada = '0000-00-00 00:00:00';
+			}
+
+			// si no es correctivo busca duracion sino pone 60' por defecto	    	
+			if ($tipo != '2') 
+			{
+				$duracion = $this->getDurTarea($tipo,$id_solicitud); 
+				//dump($duracion, 'duracion');
+			}
+			else
+			{
+				$duracion =  60;	
+			}
+
+			$datos2 = array(
+											'id_tarea'      => $id_tarea,// id de tarea a realizar(tabla tareas)
+											'nro'           => 1,//por defecto( no se usa)
+											'fecha'         => date('Y-m-d'),				
+											'fecha_program' => $fec_programacion,
+											'fecha_inicio'  => $fecha_inicio,
+											'descripcion'   => $descripcion,
+											'cliId'         => 1,//por defecto( no se usa)
+											'estado'        =>'C',
+											'id_usuario'    => $usrId,
+											'id_usuario_a'  => 1,
+											'id_usuario_e'  => 1,
+											'id_sucursal'   => 1,
+											'id_solicitud'  => $id_solicitud,// id prev-correct-back-predict
+											'tipo'          => $tipo,// tipo solicitud (prev-correct-back-predict )
+											'id_equipo'     => $equipo,
+											'duracion'      => $duracion,
+											'id_tareapadre' => $id_solicitud,//solic que genera la 1º OT y las repetitivas
+											'id_empresa'    => $empId,
+											'lectura_programada' => $lectura_programada,
+											'lectura_ejecutada'  => $lectura_ejecutada,
+											);
+			//dump($datos2, 'datos');
+			
+			if ($event_tipo == '1') // si el evento es unico lo guarda
+			{
+				/// Interacción con BPM ///
+				$estado = 'OT';
+				// $tipo == '2' -> S.Servicios
+				if($tipo == '2'){
+					// si es correctivo o S.Servicio
+					$tipo = 'correctivo';				
+					$infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);						
+					
+					$respCerrar = $this->cerrarTarea($infoTarea['taskId']);			
+					if($respCerrar == 204 ){
+						$resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);
+					}
+					//if($resActualizar == 200){					
+						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);
+						$response = true;
+					//}
+				}
+				// $tipo == '4' -> Backlog
+			
+				if($tipo == '4'){	
+					dump($tipo, 'entre por tipo 4');	
+					// actualizo estado del backlog
+					$tipo = 'backlog';
+					$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);	
+					$infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);			
+					dump($infoTarea, 'info tarea');
+					//if($respCerrar == 204 ){
+						$respCerrar = $this->cerrarTarea($infoTarea['taskId']);			
+					//}	
+					//if($resActualizar == 200){
+						$resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);
+						$response = true;
+					//}	
+				}
+
+				//TODO: VALIDAR EL LANZAMIENTO DE LA TAREA EN BONITA Y DESPUES GUARDAR OT
+
+				$idOTnueva = $this->Calendarios->guardar_agregar($datos2);
+			}
+			else // evento repetitivo 
+			{
+				dump($tipo, 'entre por donde no debo forro');
+				// Sumo a la fecha de program la cant de meses p/ sacar fecha limite
+				$fecha_limite = strtotime ( '+'.$cant_meses.' month' , strtotime ( $fec_programacion ) );
+				$fecha_limite = date ( 'Y-m-d H:i:s' , $fecha_limite ); /// "2018-06-16 00:00:00"
+				//dump($fecha_limite, 'fecha_limite');
+				//busco la frecuencia de la tarea
+				$diasFrecuencia = $this->getPeriodTarea($tipo,$id_solicitud);	//bien
+				//dump($diasFrecuencia, 'dias frecuencia');
+				$this->armar_batch($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2);
+
+				// si es preventivo ACTUALIZA NUEVAMENTE LA FECHA BASE_ OK!
+				if($tipo == '3'){	    		
+					//pongo nueva fecha base en preventivos
+					//dump('$id_solicitud', 'id preventivo');
+					$this->Calendarios->actualizarFechaBasePreventivos($fecha_limite, $id_solicitud);
+				}
+				$response = true;
+			}	     				
+
+		}
+		
 		echo json_encode($response);
-   	}
+  }
 
-   	// Devuelve duracion de tarea de acuerdo a un id de OT
-   	function getDuracionOTrabajo($id){
 
-   		$this->db->select('orden_trabajo.duracion');
-   		$this->db->from('orden_trabajo');
-   		$this->db->where('orden_trabajo.id_orden', $id);
-   		$query = $this->db->get(); 
-        $duracion = $query->row('duracion');
-        return $duracion;
-   	}
 
-   	public function updateDuracion(){
+	/* INTEGRACION CON BPM */
+		function getInfoTareaporIdSolicitud($id_solicitud, $tipo){
+			//TODO: TRAER ID DE BACKLOG GENERADO EN BPM(TRAER POR REST O GUARDAR EN TABLA BACKLOG)
+			
+			dump($id_solicitud, 'id solicitud en 1: ');
+			dump($tipo, 'tipo en 1: ');
 
-   		$id = $this->input->post('id');
-   		$duracion = $this->input->post('duracion');		// duracion adicional
-   		
-   		$nueva = $this->getDuracionOTrabajo($id, $duracion);
-   		$nueva = $nueva + $duracion;		
+			if ($tipo == 'correctivo') {
+				//$id_solicitud	-> id sol de servicios
+				$caseId = $this->Calendarios->getCaseIdporIdSolServicios($id_solicitud);
+			}
+			if ($tipo == 'backlog') {
+				//$id_solicitud	-> id de backlog
+				$caseId = $this->Calendarios->getCaseIdporIdBacklog($id_solicitud);
+			}
 
-   		$response = $this->Calendarios->updateDuraciones($id, $nueva);
-		echo json_encode($response);
-   	}
+			dump($caseId, 'case id en controller');			
+			// traer de bpm el id de tarea (id)			
+			$parametros = $this->Bonitas->LoggerAdmin();
+			$parametros["http"]["method"] = "GET";
+			$param = stream_context_create($parametros);
+			//dump($param, 'param: ');
+			$actividades = $this->Overviews->ObtenerActividades($caseId,$param);			
+			$infoTarea['taskId'] = json_decode($this->getIdTask($actividades,$tipo),true);
+			$infoTarea['caseId'] = $caseId;			
+			return $infoTarea;		
+		}
+		// devuelve task_id coincidente con la actividad 'Analisis de Solicitud de Servicio'
+		function getIdTask($actividades,$tipo){
+
+			if($tipo == 'correctivo'){
+				$actividad = 'Planificar Solicitud';
+			}
+			if($tipo == 'backlog'){
+				$actividad = 'Planificar Backlog';
+			}	
+
+
+			for ($i=0; $i < count($actividades); $i++) { 				
+				if ($actividades[$i]["displayName"] == $actividad) {
+					$id = $actividades[$i]["id"];
+				}
+			}
+			return $id;
+		}
+
+		function cerrarTarea($idTask){			
+			$parametros = $this->Bonitas->conexiones();				
+			$parametros["http"]["method"] = "POST";			
+			$param = stream_context_create($parametros);	
+			$response = $this->Tareas->cerrarTarea($idTask,$param);
+			return $response;
+		}
+
+		function actualizarIdOTenBPM($caseId, $idOTnueva){
+
+			dump($caseId, 'id de case en actualizar');
+			dump($idOTnueva, 'id ot en actuallizar');
+			
+			$idOT = (integer)$idOTnueva;
+			$contract = array(
+				"type" => "java.lang.Integer",
+  			"value" => $idOT
+			);		
+			// trae la cabecera
+			$parametros = $this->Bonitas->conexiones();
+			// Cambio el metodo de la cabecera a "PUT"
+			$parametros["http"]["method"] = "PUT";
+			$parametros["http"]["content"] = json_encode($contract);
+			// Variable tipo resource referencia a un recurso externo.
+			$param = stream_context_create($parametros);
+			$response = $this->Tareas->actualizarIdOTenBPM($caseId, $param);
+		}
+		
+
+	/*	./ INTEGRACION CON BPM */
 
 }

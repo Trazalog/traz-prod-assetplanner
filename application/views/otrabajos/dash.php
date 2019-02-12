@@ -907,63 +907,63 @@ function traer_usuario(){
       });
 }
 
-traer_cli();
-function traer_cli(){
+//traer_cli();
+// function traer_cli(){
 
-    $('#cli').html('');
-    $.ajax({
-        type: 'POST',
-        data: { },
-        url: 'index.php/Otrabajo/traer_cli', //index.php/
-        success: function(data){
-          console.log(data);
+//     $('#cli').html('');
+//     $.ajax({
+//         type: 'POST',
+//         data: { },
+//         url: 'index.php/Otrabajo/traer_cli', //index.php/
+//         success: function(data){
+//           console.log(data);
 
-                 //var opcion  = "<option value='-1'>Seleccione...</option>" ;
-                  $('#cli').append(opcion);
-                for(var i=0; i < data.length ; i++)
-                {
-                      var nombre = data[i]['cliLastName']+' '+data[i]['cliName'];
-                      var opcion  = "<option value='"+data[i]['cliId']+"'>" +nombre+ "</option>" ;
+//                  //var opcion  = "<option value='-1'>Seleccione...</option>" ;
+//                   $('#cli').append(opcion);
+//                 for(var i=0; i < data.length ; i++)
+//                 {
+//                       var nombre = data[i]['cliLastName']+' '+data[i]['cliName'];
+//                       var opcion  = "<option value='"+data[i]['cliId']+"'>" +nombre+ "</option>" ;
 
-                    $('#cli').append(opcion);
+//                     $('#cli').append(opcion);
 
-                }
-              },
-        error: function(result){
+//                 }
+//               },
+//         error: function(result){
 
-              console.log(result);
-            },
-            dataType: 'json'
-        });
-}
+//               console.log(result);
+//             },
+//             dataType: 'json'
+//         });
+// }
 
-function traer_cli2(){
-  $('#cli').html('');
-  $.ajax({
-    type: 'POST',
-    data: { },
-    url: 'index.php/Otrabajo/traer_cli', //index.php/
-    success: function(data){
-      console.log(data);
+// function traer_cli2(){
+//   $('#cli').html('');
+//   $.ajax({
+//     type: 'POST',
+//     data: { },
+//     url: 'index.php/Otrabajo/traer_cli', //index.php/
+//     success: function(data){
+//       console.log(data);
 
-             //var opcion  = "<option value='-1'>Seleccione...</option>" ;
-              $('#cliidedit').append(opcion);
-            for(var i=0; i < data.length ; i++)
-            {
-                  var nombre = data[i]['cliLastName']+' '+data[i]['cliName'];
-                  var opcion  = "<option value='"+data[i]['cliId']+"'>" +nombre+ "</option>" ;
+//              //var opcion  = "<option value='-1'>Seleccione...</option>" ;
+//               $('#cliidedit').append(opcion);
+//             for(var i=0; i < data.length ; i++)
+//             {
+//                   var nombre = data[i]['cliLastName']+' '+data[i]['cliName'];
+//                   var opcion  = "<option value='"+data[i]['cliId']+"'>" +nombre+ "</option>" ;
 
-                $('#cliidedit').append(opcion);
+//                 $('#cliidedit').append(opcion);
 
-            }
-          },
-    error: function(result){
+//             }
+//           },
+//     error: function(result){
 
-          console.log(result);
-        },
-        dataType: 'json'
-    });
-  }
+//           console.log(result);
+//         },
+//         dataType: 'json'
+//     });
+//   }
 
 function traer_sucursal2(){
   $('#sucidedit').html('');
@@ -1018,32 +1018,32 @@ function traer_proveedor(){
     });
 }
 
-traer_clientes();
-function traer_clientes(){
-  $.ajax({
-    type: 'POST',
-    data: { },
-    url: 'index.php/Otrabajo/traer_cli', //index.php/
-    success: function(data){
+//traer_clientes();
+// function traer_clientes(){
+//   $.ajax({
+//     type: 'POST',
+//     data: { },
+//     url: 'index.php/Otrabajo/traer_cli', //index.php/
+//     success: function(data){
 
-             var opcion  = "<option value='-1'>Seleccione...</option>" ;
-              $('#cli').append(opcion);
-            for(var i=0; i < data.length ; i++)
-            {
-                  var nombre = data[i]['cliLastName']+'.,.'+datos['cliName'];
-                  var opcion  = "<option value='"+data[i]['cliId']+"'>" +nombre+ "</option>" ;
+//              var opcion  = "<option value='-1'>Seleccione...</option>" ;
+//               $('#cli').append(opcion);
+//             for(var i=0; i < data.length ; i++)
+//             {
+//                   var nombre = data[i]['cliLastName']+'.,.'+datos['cliName'];
+//                   var opcion  = "<option value='"+data[i]['cliId']+"'>" +nombre+ "</option>" ;
 
-                $('#cli').append(opcion);
+//                 $('#cli').append(opcion);
 
-            }
-          },
-    error: function(result){
+//             }
+//           },
+//     error: function(result){
 
-          console.log(result);
-        },
-        dataType: 'json'
-    });
-  }
+//           console.log(result);
+//         },
+//         dataType: 'json'
+//     });
+//   }
 
 traer_sucursal();
 function traer_sucursal(){

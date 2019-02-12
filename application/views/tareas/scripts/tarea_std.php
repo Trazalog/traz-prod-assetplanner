@@ -3,7 +3,7 @@
     evaluarEstado();    
     function evaluarEstado(){       
 			var asig = $('#asignado').val();       
-			// si esta tomada la tarea
+			// si esta tomada la tarea		
 			if(asig != ""){
 					habilitar();
 			}else{
@@ -26,7 +26,7 @@
 			$(".getFormularioTarea").show();
 			$("#pedidoInsumos").show();
 			$('#decisionSolicitud').show();
-			
+			$('#verOrden').show();
     }
     function deshabilitar(){
 			// habilito btn tomar
@@ -43,7 +43,7 @@
 			$(".getFormularioTarea").hide();
 			$("#pedidoInsumos").hide();	
 			$('#decisionSolicitud').hide();	
-				
+			$('#verOrden').hide();	
     }    
     // Volver al atras
     $('#cerrar').click(function cargarVista() {
@@ -127,7 +127,9 @@
 				formOt.push(data);
 			});
 			 
-			 if ( validarCamposObligatorios(formOt) ) {
+
+
+			 //if ( validarCamposObligatorios(formOt) ) {
 					$.ajax({
 						type: 'POST',
 						data: {formIdOt:formOt},
@@ -145,9 +147,9 @@
 						},
 						dataType: 'json'
 					}); 
-			 } else {
-				alert('Existen Formularios incompletos, por favor rellenelos para completar la tarea.');
-			 }
+			 //} else {
+			//	alert('Existen Formularios incompletos, por favor rellenelos para completar la tarea.');
+			 //}
 			 
 
 			//console.table(formOt);
@@ -158,21 +160,54 @@
 			// 
     }  
 
+		// cerrar tarea Analisis de urgencia
 		function decidirUrgencia(){
 
 			var opcion = $('input[name="opcion"]:checked').val();
-			var caseId = $('#case_id').val();
-			if(opcion == 'correctivo'){
-					// generar corectivo
-				}else{
-					// generar backlog		mandar caseid			
-					WaitingOpen();
-					$('#content').empty();
-					$("#content").load("<?php echo base_url(); ?>index.php/Backlog/editarNuevo/"+caseId);
-					WaitingClose();
-				}
+			var idTarBonita = $('#idTarBonita').val();	
 
+			$.ajax({
+				type: 'POST',
+				data: {opcion:opcion,
+								idTarBonita:idTarBonita},
+				url: 'index.php/Tarea/decidirUrgencia',
+				success: function(data) {
+								console.table(data);
+								//	WaitingClose();
+								// toma a tarea exitosamente
+								if(data['reponse_code'] == 204){
+										$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+								}
+				},
+				error: function(data) {
+						//alert("Noo");
+						console.log(data);
+				},
+				dataType: 'json'
+			});
+		}
+
+		function ejecutarOT(){
 			
+			var idTarBonita = $('#idTarBonita').val();	
+			$.ajax({
+				type: 'POST',
+				data: {idTarBonita:idTarBonita},
+				url: 'index.php/Tarea/ejecutarOT',
+				success: function(data) {
+								console.table(data);
+								//	WaitingClose();
+								// toma a tarea exitosamente
+								if(data['reponse_code'] == 204){
+										$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+								}
+				},
+				error: function(data) {
+						//alert("Noo");
+						console.log(data);
+				},
+				dataType: 'json'
+			});
 		}
 
 

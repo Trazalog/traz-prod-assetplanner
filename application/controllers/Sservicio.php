@@ -29,19 +29,19 @@ class Sservicio extends CI_Controller {
 			$response = $this->Sservicios->elimSolicitudes($id);
 			echo json_encode($response);
 		}	
-		// Guarda solicitud de Servicio - Listo
-		public function setservicios(){
+		// // Guarda solicitud de Servicio - Listo
+		// public function setservicios(){
 
-			$data = $this->Sservicios->setservicios($this->input->post());
-			if($data  == false)
-			{
-				echo json_encode(false);
-			}
-			else
-			{
-				echo json_encode(true);	
-			}
-		}
+		// 	$data = $this->Sservicios->setservicios($this->input->post());
+		// 	if($data  == false)
+		// 	{
+		// 		echo json_encode(false);
+		// 	}
+		// 	else
+		// 	{
+		// 		echo json_encode(true);	
+		// 	}
+		// }
 		// Trae equipos segun sector de empresa logueada - Listo
 		public function getEquipSector(){
 			$response = $this->Sservicios->getEquipSectores($this->input->post());
@@ -77,12 +77,12 @@ class Sservicio extends CI_Controller {
 			$result = $this->Sservicios->getTareasStandar();
 			echo json_encode($result);
 		}
-		// lanza proceso en BPM (inspección)
+		// GUARDA SSERVICIOS y lanza proceso en BPM (inspección)
 		function lanzarProcesoBPM(){		
 			
 			// inserta registro en  tabla solicitud de reparacion
 			$id_solServicio  = $this->Sservicios->setservicios($this->input->post());
-			//dump($id_solServicio, 'id solic de servicio');
+		
 			if($id_solServicio){
 				$parametros = $this->Bonitas->conexiones();
 				$parametros["http"]["method"] = "POST";

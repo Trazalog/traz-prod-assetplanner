@@ -126,23 +126,23 @@ class Calendarios extends CI_Model {
         $userdata = $this->session->userdata('user_data');
         $empId    = $userdata[0]['id_empresa'];    
         $sql      = "SELECT
-            tbl_back.backId,
-            tbl_back.estado,
-            tbl_back.fecha,
-            tbl_back.tarea_descrip,
-            tbl_back.id_equipo,
-            tbl_back.back_duracion,
-            equipos.descripcion,
-            equipos.codigo,
-            tareas.descripcion AS tarea
-            FROM tbl_back
-            INNER JOIN equipos ON equipos.id_equipo = tbl_back.id_equipo
-            INNER JOIN tareas ON tareas.id_tarea = tbl_back.tarea_descrip
-            WHERE tbl_back.id_empresa = $empId
-            AND year(tbl_back.fecha) = $year 
-            AND month(tbl_back.fecha) = $month 
-            AND tbl_back.estado = 'C' 
-            "; 
+                    tbl_back.backId,
+                    tbl_back.estado,
+                    tbl_back.fecha,
+                    tbl_back.id_tarea,
+                    tbl_back.id_equipo,
+                    tbl_back.back_duracion,
+                    tbl_back.tarea_opcional,
+                    equipos.descripcion,
+                    equipos.codigo,
+                    tareas.descripcion AS tarea
+                    FROM tbl_back
+                    INNER JOIN equipos ON equipos.id_equipo = tbl_back.id_equipo
+                    LEFT JOIN tareas ON tareas.id_tarea = tbl_back.id_tarea
+                    WHERE tbl_back.id_empresa = $empId
+                    AND year(tbl_back.fecha) = $year 
+                    AND month(tbl_back.fecha) = $month 
+                    AND tbl_back.estado != 'AN'"; 
         $query= $this->db->query($sql);
         if ($query->num_rows()!=0)
         {
@@ -207,6 +207,7 @@ class Calendarios extends CI_Model {
                 solicitud_reparacion.f_solicitado,
                 solicitud_reparacion.f_sugerido,
                 solicitud_reparacion.hora_sug,
+								solicitud_reparacion.estado,
                 equipos.descripcion,
                 equipos.codigo,
                 equipos.id_equipo,
@@ -217,6 +218,7 @@ class Calendarios extends CI_Model {
             INNER JOIN equipos ON equipos.id_equipo = solicitud_reparacion.id_equipo
             INNER JOIN sector ON sector.id_sector = equipos.id_sector
             WHERE solicitud_reparacion.id_empresa = $empId
+						AND solicitud_reparacion.estado != 'AN'
             AND year(solicitud_reparacion.f_solicitado) = $year
             AND month(solicitud_reparacion.f_solicitado) = $month
             ";
@@ -412,18 +414,13 @@ class Calendarios extends CI_Model {
 	function getBackPorIds($data){
 		$id = $data;
     
-		$this->db->select('tareas.descripcion,
-				tbl_back.id_equipo,
-				tbl_back.tarea_descrip,
-				tbl_back.fecha,
-				tbl_back.backId						
-				');
-		$this->db->from('tbl_back'); 
-		$this->db->join('tareas', 'tareas.id_tarea = tbl_back.tarea_descrip');       
-		$this->db->where('tbl_back.backId', $id);
-		$query = $this->db->get();      
-		
-		return $query->result_array(); 
+        $this->db->select('tbl_back.*, tareas.descripcion');
+        $this->db->from('tbl_back'); 
+        $this->db->join('tareas', 'tareas.id_tarea = tbl_back.id_tarea','left');       
+        $this->db->where('tbl_back.backId', $id);
+        $query = $this->db->get();      
+        
+        return $query->result_array(); 
 	}
 
 	function getPredictPorIds($data){
@@ -445,47 +442,33 @@ class Calendarios extends CI_Model {
 
 
 	//Guarda orden de trabajo a partir de Pred/Correc/Backlog/Prevent
-	function guardar_agregar($data){
-		$query = $this->db->insert("orden_trabajo",$data);
-		if($query){
-			$idOT = $this->db->insert_id();
-		}else{
-			$idOT = 0;
-		}
-		return $idOT;        
-	}
+	function guardar_agregar($data)
+    {
+        $query = $this->db->insert("orden_trabajo",$data);
+        $id = $this->db->insert_id();
+    	return $id;        
+    }
 
-	// devuelve subtareas por 
-	function getSubtareas($idTareaSTD){
-		$this->db->select('asp_subtareas.id_subtarea,
-											asp_subtareas.tareadescrip,
-											asp_subtareas.id_tarea,											
-											asp_subtareas.fecha,
-											asp_subtareas.duracion_prog,
-											asp_subtareas.estado,											
-											asp_subtareas.form_asoc');
-		$this->db->from('asp_subtareas');
-		$this->db->where('asp_subtareas.id_tarea',$idTareaSTD);
-		$query = $this->db->get();
-		if ($query->num_rows()!=0){
-			return $query->result_array();	
-		}else{
-			return array();
-		}
-	}
+    function cambiarEstado($id_solicitud, $estado, $tipo){
+
+			$this->db->set('estado', $estado);			
+			
+			if ($tipo == 'backlog') {
+				$this->db->where('backId', $id_solicitud);
+				$resposnse = $this->db->update('tbl_back');
+			}
+
+			if ($tipo == 'correctivo') {
+				$this->db->where('id_solicitud', $id_solicitud);
+				$resposnse = $this->db->update('solicitud_reparacion');
+			}
+			return $resposnse;
+    }
 
     // Guarda batch de OT 
     function setOTbatch($data)
     {
-			$response = $this->db->insert_batch('orden_trabajo', $data);
-			return $response;
-		}
-		
-		// Guarda batch de OT 
-    function setSubtareasBatch($batch_subtareas)
-    {
-			$response = $this->db->insert_batch('asp_instanciasubtareas', $batch_subtareas);
-			return $response;
+    	$this->db->insert_batch('orden_trabajo', $data);
     }
 
     // Actualiza dia nueva fecha de programacion en OT
@@ -641,4 +624,37 @@ class Calendarios extends CI_Model {
             return true;
         }
     }
+
+
+    /* funciones para BPM */
+    function getCaseIdporIdBacklog($id_solicitud){
+			$this->db->select('solicitud_reparacion.case_id');
+			$this->db->from('tbl_back');
+			$this->db->join('solicitud_reparacion', 'tbl_back.sore_id = solicitud_reparacion.id_solicitud');
+			$this->db->where('tbl_back.backId', $id_solicitud);
+			$query = $this->db->get();
+			if ($query->num_rows() > 0){
+				return $query->row('case_id');				
+			}
+			else{
+				return 0;
+			}
+		}
+
+		function getCaseIdporIdSolServicios($id_solicitud){
+			$this->db->select('solicitud_reparacion.case_id');
+			$this->db->from('solicitud_reparacion');			
+			$this->db->where('solicitud_reparacion.id_solicitud', $id_solicitud);
+			$query = $this->db->get();
+			if ($query->num_rows() > 0){
+				return $query->row('case_id');				
+			}
+			else{
+				return 0;
+			}
+		}
+		
+
+
+
 }

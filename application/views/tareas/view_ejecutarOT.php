@@ -1,7 +1,7 @@
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
 
 <section class="content">
-	<?php echo cargarCabecera($id_OT,$id_SS,$id_EQ); ?>
+	<?php cargarCabecera($id_OT,$id_SS,$id_EQ); ?>
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="box">
@@ -29,17 +29,9 @@
 											
 											<div class="panel-body">
 
-												<!-- botones Tomar y soltar tareas -->
 												<?php
-													echo "<button class='btn btn-block btn-success' id='btontomar' style='width: 100px; margin-top: 10px ;display: inline-block;' onclick='tomarTarea()'>Tomar tarea</button>";
-													echo "&nbsp"; 
-													echo "&nbsp"; 
-													echo "&nbsp";
-													echo "<button class='btn btn-block btn-danger grupNoasignado' id='btonsoltr' style='width: 100px; margin-top: 10px; display: inline-block;' onclick='soltarTarea()'>Soltar tarea</button>";											
-													echo "</br>"; 
-													echo "</br>"; 			
+												//dump($subtareas, 'subtareas: ');
 												?>
-
 												<input type="text" class="form-control hidden" id="asignado" value="<?php echo $TareaBPM["assigned_id"] ?>"
 												>
 												<form>
@@ -105,7 +97,42 @@
 
 												</form>
 
-													
+												<table id="subtask" class="table table-hover">
+													<thead>
+														<tr>
+															<th width="2%">Estado</th>
+															<th width="10%">Subtarea</th>
+															<th width="10%">Duración</th>
+															<th width="10%">Formulario</th>
+														</tr>
+													</thead>
+													<tbody>
+														<?php 
+														//dump($subtareas, 'subtareas');
+															foreach($subtareas as $subt){
+																echo '<tr>';
+																	echo '<td>';			
+																		if( $subt["estado"] != 'T' )
+																			echo '<input class="check" type="checkbox" name="estado" value="" id="'.$subt["id_listarea"].'">';
+																		else
+																			echo '<input class="check" type="checkbox" name="estado" value="" id="'.$subt["id_listarea"].'" checked>';
+																	echo '</td>';
+
+																	if($subt['tareadescrip']!= null){
+																		echo '<td>'.$subt['tareadescrip'].'</td>';
+																	}	else{
+																		echo '<td>'.$subt['subtareadescrip'].'</td>';
+																	}
+																	echo '<td>'.$subt['duracion_prog'].'</td>';
+																	if($subt['subtareadescrip']!= null){				
+																		echo '<td><i class="fa fa-paperclip text-light-blue" style="cursor: pointer; margin-left: 15px;" aria-hidden="true" id="'.$subt["id_listarea"].'" data-infoId="'.$subt["info_id"].'"></i></td>';
+																	}	
+																	
+																echo '</tr>';
+															}	
+														?>
+													</tbody>
+												</table>		
 											</div>
 											</div>
 										</div>
@@ -207,10 +234,16 @@
 						</div>
 
 					</div><!-- /.row -->
+
+					<div class="row">
+						<div class="col-sm-12 col-md-12">
+								<button type="button" id="pedidoInsumos" class="btn btn-primary" onclick="pedirInsumos()">Pedido de Insumos</button>
+						</div>
+					</div>	
 					
 					<div class="modal-footer">
 						<button type="button" id="cerrar" class="btn btn-primary" onclick="cargarVista()">Cerrar</button>
-						<button type="button" class="btn btn-success" id="hecho" onclick="terminarTarea()">Hecho</button>
+						<button type="button" class="btn btn-success" id="hecho" onclick="validarSubtareas()">Hecho</button>
 					</div> <!-- /.modal footer -->
 
 				</div><!-- /.box body -->
@@ -347,17 +380,109 @@
 </style>
 
 
-<script>  
+<script>
 
-	$('.fecha').datepicker({
-		autoclose: true
-	}).on('change', function(e) {
-       // $('#genericForm').bootstrapValidator('revalidateField',$(this).attr('name'));
-	   console.log('Validando Campo...'+$(this).attr('name'));
-	   $('#genericForm').data('bootstrapValidator').resetField($(this),false);
-	   $('#genericForm').data('bootstrapValidator').validateField($(this));
+/* verifica estado de subrtareas para cerrar OT */
+	function validarSubtareas(){
+		if( validarEstSubTareas() ){
+			ejecutarOT();
+		}else{
+			alert("Por favor cierre las Tareas que faltan antes de Terminar");
+		}
+	}
+
+/* camba el estado de las subtareas en BD (tblListareas) */
+	$('.check').change(function() {
+		var idListarea = $(this).attr("id");
+		if(this.checked) {		
+			var estado = 'T';
+			cambiarEstadoSubtask(estado, idListarea);
+		}else{		
+			var estado = 'C';
+			cambiarEstadoSubtask(estado, idListarea);
+		}
+	});	
+
+	function cambiarEstadoSubtask(estado, idListarea){
+
+		WaitingOpen();
+				$.ajax({
+				data: {estado: estado,
+								idListarea:idListarea},
+				dataType: 'json',
+				type: 'POST',
+				url: 'index.php/Tarea/cambiarEstadoSubtask',
+				success: function(result){  
+								WaitingClose();
+				},
+				error: function(result){
+					WaitingClose();
+					//alert("Error: No se pudo obtener el Formulario");
+				},
+			});
+	} 
+	// devueve bool si estan todas las subt tildadas
+	function validarEstSubTareas(){
+		var tabla = $('#subtask tbody tr');
+		var band = '';
+		$.each(tabla, function (index) {
+    	var check = $(this).find('input.check');
+			if( check.prop('checked')){
+				band = true;
+			}else{
+				band = false;
+				return band;
+			}
+		});	
+		return band;
+	}
+/* /. camba el estado de las subtareas en BD (tblListareas) */
+
+/* Formulario de subareas */
+
+	// levanta cada formulario por id 
+	$(document).on("click", ".fa-paperclip", function(e) {    
+      e.preventDefault();
+      e.stopImmediatePropagation();		
+			infoId = $(this).attr("data-infoId");			
+			WaitingOpen();
+			$.ajax({
+      data: {infoId: infoId},
+      dataType: 'json',
+      type: 'POST',
+      url: 'index.php/Tarea/Obtener_Formulario',
+      success: function(result){       
+        $("#contFormSubtarea").html(result.html);
+        $('#modalFormSubtarea').modal('show');
+        WaitingClose();
+      },
+      error: function(result){
+        WaitingClose();
+        alert("Error: No se pudo obtener el Formulario");
+      },
+    });
+			
   });
+
+/*  /. Formulario de subareas */
+
+/* Pantalla pedido de insumos */
+	function pedirInsumos(){ 
+		var iort = $('#ot').val();
+		var iort = 22;
+		console.log("El id de OT es: " + iort);
+		
+		WaitingOpen();
+		$('#content').empty();
+		$("#content").load("<?php echo base_url(); ?>index.php/Notapedido/agregarListInsumos/<?php echo $permission; ?>/"+iort);
+		WaitingClose();  
+	}
+/* pedido de insumos */
+
 </script>
+
+
+
 
 
 <div class="modal fade bs-example-modal-lg" id="modalFormSubtarea" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">

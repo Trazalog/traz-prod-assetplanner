@@ -6,7 +6,7 @@ class Overviews extends CI_Model
 	function __construct(){
 
 		parent::__construct();
-    }
+  }
    
     public function ObtenerActividades($caseId,$param){
 			$respuesta = file_get_contents(BONITA_URL.'API/bpm/activity?p=0&c=200&f=processId%3D'.BPM_PROCESS_ID.'&f=rootCaseId%3D'.$caseId.'&d=assigned_id',false,$param);

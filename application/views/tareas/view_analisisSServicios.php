@@ -2,6 +2,7 @@
 <?php //dump();?>
 <section class="content">
 	<?php echo cargarCabecera($id_OT,$id_SS,$id_EQ); ?>
+	<?php //dump($TareaBPM); ?>
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="box">
@@ -55,7 +56,7 @@
 																<input type="text" class="hidden" id="tbl_listarea" value="<?php echo $datos[0]['id_listarea'] ?>">
 																<input type="text" class="hidden" id="idform" value="<?php echo $idForm ?>">
 																<!-- id de task en bonita -->
-																<input type="text" class="hidden" id="idTarBonita" value="<?php echo $idTarBonita ?>">
+																<input type="text" class="hidden" id="idTarBonita" value="<?php echo $TareaBPM['id'] ?>">
 																<input type="text" class="hidden" id="esTareaStd" value="<?php echo $infoTarea['visible'] ?>">
                                 <input type="text" class="hidden" id="case_id" value="<?php echo $TareaBPM['caseId'] ?>">
 															</div>
@@ -139,10 +140,10 @@
                           </br>
                           <div class="col-md-12">
                             <label class="radio-inline" for="radios-0">
-                              <input type="radio" name="opcion" id="radios-0" value="correctivo" checked="checked"> Si
+                              <input type="radio" name="opcion" id="radios-0" value="true" checked="checked"> Si
                             </label>
                             <label class="radio-inline" for="radios-1">
-                              <input type="radio" name="opcion" id="radios-1" value="backlog" checked="checked"> No
+                              <input type="radio" name="opcion" id="radios-1" value="false" checked="checked"> No
                             </label>
                           </div>
                         </center>

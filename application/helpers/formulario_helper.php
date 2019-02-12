@@ -1,7 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 if (!function_exists('cargarFormulario')) {
-  function cargarFormulario ($form,$id=''){
+  function cargarFormulario ($form,$id){
 
     echo '<div class="row">
             <div class="col-xs-12">
