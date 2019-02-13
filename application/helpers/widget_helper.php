@@ -243,7 +243,7 @@ if (!function_exists('calcularDisponibilidad')) {
      *
      *
      */
-    function calcularDisponibilidad($echo = FALSE)
+    function calcularDisponibilidad($idEquipo)
     {
         //dump($fechaFin);
         // Get a reference to the controller object
@@ -251,14 +251,8 @@ if (!function_exists('calcularDisponibilidad')) {
         // You may need to load the model if it hasn't been pre-loaded
         $CI->load->model('Equipos');
         // Call a function of the model
-        $output = $CI->Equipos->kpiCalcularDisponibilidad();
+        $output = $CI->Equipos->kpiCalcularDisponibilidad($idEquipo);
         //dump_exit($output);
-        // Output
-        if ($echo == TRUE) {
-            echo $output;
-        }
-        else {
-            return $output;
-        }return 0;
+        return $output;
     }
 }
