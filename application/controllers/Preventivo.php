@@ -318,7 +318,7 @@ class Preventivo extends CI_Controller {
 		$id_preventivo = $this->input->post('id_prevent');		
 		$eq = $this->input->post('id_equipo');///
 		$ta = $this->input->post('id_tarea');/// 
-		$pe = "Diario";///	
+		$pe = $this->input->post('perido');;///	
 		$can = $this->input->post('cantidad');///		
 		$ultm = $this->input->post('ultimo');///
 		$com = $this->input->post('id_componente');///

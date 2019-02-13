@@ -700,7 +700,7 @@ function guardarEdicion(){
 </script>
 
 <!-- Modal editar-->
-<div class="modal fade" id="modalSale" tabindex="2000" aria-labelledby="myModalLabel" style="display: none;">
+<div class="modal" id="modalSale" tabindex="2000" aria-labelledby="myModalLabel" style="display: none;">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
 
@@ -935,7 +935,7 @@ function guardarEdicion(){
 
 
   <!-- Modal Eliminar Warning -->
-  <div class="modal fade" id="modalaviso">
+  <div class="modal" id="modalaviso">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
