@@ -35,7 +35,7 @@
                 {
                   $userdata = $this->session->userdata('user_data');
                   $usrId    = $userdata[0]['usrId']; 
-               	  foreach($list as $a)
+                  foreach($list as $a)
                   {
                     $gr = $a['grpId'];
                     //echo "grupo: ".$gr;
@@ -46,13 +46,13 @@
                         $causa       = $a['descripcion'];
                         $idsolicitud = $a['id_solicitud'];
                         echo '<tr id="'.$id.'" class="'.$id.'" data-id_equipo="'.$id_equipo.'" data-causa="'.$causa.'" data-idsolicitud="'.$idsolicitud.'">';
-      	                echo '<td>';
+                        echo '<td>';
                         if (strpos($permission,'Del') !== false) {
                           echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar" data-toggle="modal" data-target="#modalaviso"></i>';
                           //echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"  ></i> '; 
                         }
                         if (strpos($permission,'Edit') !== false) {
-      	                	echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar" data-toggle="modal" data-target="#modaleditar" ></i>';
+                          echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar" data-toggle="modal" data-target="#modaleditar" ></i>';
                         }
                         if (strpos($permission,'Asignar') !== false) {
                           echo '<i class="fa fa-check-square-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar tarea" id="btnAddtarea"></i>';
@@ -78,7 +78,7 @@
                         
                         echo '<i class="fa fa-fw fa-search text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Ver Orden de Trabajo"></i>';
 
-      	                echo '</td>';
+                        echo '</td>';
                         echo '<td>'.$id.'</td>';
                         $fecha_inicio = ($a['fecha_inicio'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_inicio']), 'd-m-Y');
                         echo '<td>'.$fecha_inicio.'</td>';
@@ -93,8 +93,8 @@
                         echo '<td>'.$a['id_solicitud'].'</td>';
                         echo '<td>'.$a['nombre'].'</td>';
                         echo '<td>'.($a['estado'] == 'C' ? '<small class="label pull-left bg-green">Curso</small>' : ($a['estado'] == 'P' ? '<small class="label pull-left bg-red">Pedido</small>' : '<small class="label pull-left bg-yellow">Asignado</small>')).'</td>';
-      	                echo '</tr>';
-        		          }
+                        echo '</tr>';
+                      }
                     }
                   }
                 }
@@ -1118,21 +1118,21 @@ function LoadOT(id_, action){
   $.ajax({
           type: 'POST',
           data: { id : id_, act: action },
-    		  url: 'index.php/otrabajo/getotrabajo', 
-    		    success: function(result){
-			                WaitingClose();
-			                $("#modalBodyOT").html(result.html);
+          url: 'index.php/otrabajo/getotrabajo', 
+            success: function(result){
+                      WaitingClose();
+                      $("#modalBodyOT").html(result.html);
                       $('#vfech').datepicker({
                         changeMonth: true,
                         changeYear: true
                       });
-			                setTimeout("$('#modalOT').modal('show')",800);
+                      setTimeout("$('#modalOT').modal('show')",800);
                       
-    					},
-    		    error: function(result){
-    					WaitingClose();
-    					alert("error");
-    				},
+              },
+            error: function(result){
+              WaitingClose();
+              alert("error");
+            },
           dataType: 'json'
   });
 }
@@ -1379,19 +1379,19 @@ function traerDatosOt(idOt, tipo, idSolicitud) {
   console.info(idOt+' - '+idSolicitud);
   switch (tipo) {
     case '1': //Orden de trabajo
-      getDataOt(idOt);
+      getDataOt(idOt, "orden de Trabajo");
       break;
     case '2': //Solicitud de servicio
-      getDataOtSolServicio(idOt, idSolicitud);
+      getDataOtSolServicio(idOt, idSolicitud, "Solicitud de Servicio");
       break;
     case '3': //preventivo
-      getDataOtPreventivo(idOt, idSolicitud);
+      getDataOtPreventivo(idOt, idSolicitud, "Preventivo");
       break;
     case '4': //Backlog
-      getDataOtBacklog(idOt, idSolicitud);
+      getDataOtBacklog(idOt, idSolicitud, "Backlog");
       break;
     case '5': //predictivo
-      getDataOtPredictivo(idOt, idSolicitud);
+      getDataOtPredictivo(idOt, idSolicitud, "Predictivo");
       break;
     case '6': //correctivo programado
       //break;
@@ -1403,10 +1403,10 @@ function traerDatosOt(idOt, tipo, idSolicitud) {
 
 
 
-/* 1 OT */
+/***** 1 OT *****/
 
-// Trae datos de OT con origen Backlog
-function getDataOt(idOt) {
+// Trae datos de OT 
+function getDataOt(idOt, origen) {
   WaitingOpen('Cargando datos...');
   $.ajax({
     data: { idOt:idOt },
@@ -1425,9 +1425,12 @@ function getDataOt(idOt) {
       'fecha_entrega'  : data['fecha_entrega'],
       'sucursal'       : data['descripc'],
       'nombreprov'     : data['provnombre'],
+      'origen'         : origen,
+      'fecha_program'  : data['fecha_program'],
+      'asignado'       : data['usrLastName']+' '+data['usrLastName'],
+      'estado'         : data['estado'],
       //Panel datos de equipos
       'codigo'         : data['codigo'],
-      'fecha_ingreso'  : data['fecha_ingreso'],
       'marca'          : data['marca'],
       'ubicacion'      : data['ubicacion'],
       'descripcion_eq' : data['descripcionEquipo'],
@@ -1448,9 +1451,14 @@ function fillModalView(datos){
   $('#vFechaEntrega').val(datos['fecha_entrega']);
   $('#vSucursal').val(datos['sucursal']);
   $('#vProveedor').val(datos['nombreprov']);
+
+  $('#vIdOt').val(datos['id_ot']);
+  $('#vOrigen').val(datos['origen']);
+  $('#vFechaProgram').val(datos['fecha_program']);
+  $('#vAsignado').val(datos['asignado']);
+  $('#vEstado').val(datos['estado']);
   //llenar datos de equipo
   $('#vCodigoEquipo').val(datos['codigo']);
-  $('#vFechaEquipo').val(datos['fecha_ingreso']);
   $('#vMarcaEquipo').val(datos['marca']);
   $('#vUbicacionEquipo').val(datos['ubicacion']);
   $('#vDescripcionEquipo').val(datos['descripcion_eq']);
@@ -1458,10 +1466,10 @@ function fillModalView(datos){
 
 
 
-/* 1 Solicitud de Servicios */
+/***** 2 Solicitud de Servicios *****/
 
 // Trae datos de Solicitud de Servicios con origen Backlog
-function getDataOtSolServicio(idOt, idSolServicio) {
+function getDataOtSolServicio(idOt, idSolServicio, origen) {
   WaitingOpen('Cargando datos...');
   $.ajax({
     data: { idOt:idOt, idSolServicio:idSolServicio },
@@ -1480,9 +1488,12 @@ function getDataOtSolServicio(idOt, idSolServicio) {
       'fecha_entrega'  : data['fecha_entrega'],
       'sucursal'       : data['descripc'],
       'nombreprov'     : data['provnombre'],
+      'origen'         : origen,
+      'fecha_program'  : data['fecha_program'],
+      'asignado'       : data['usrLastName']+' '+data['usrLastName'],
+      'estado'         : data['estado'],
       //Panel datos de equipos
       'codigo'         : data['codigo'],
-      'fecha_ingreso'  : data['fecha_ingreso'],
       'marca'          : data['marca'],
       'ubicacion'      : data['ubicacion'],
       'descripcion_eq' : data['descripcionEquipo'],
@@ -1504,9 +1515,14 @@ function fillModalViewSolServicio(datos){
   $('#vFechaEntregaSolServicio').val(datos['fecha_entrega']);
   $('#vSucursalSolServicio').val(datos['sucursal']);
   $('#vProveedorSolServicio').val(datos['nombreprov']);
+
+  $('#vIdOtSolServicio').val(datos['id_ot']);
+  $('#vOrigenSolServicio').val(datos['origen']);
+  $('#vFechaProgramSolServicio').val(datos['fecha_program']);
+  $('#vAsignadoSolServicio').val(datos['asignado']);
+  $('#vEstadoSolServicio').val(datos['estado']);
   //llenar datos de equipo
   $('#vCodigoEquipoSolServicio').val(datos['codigo']);
-  $('#vFechaEquipoSolServicio').val(datos['fecha_ingreso']);
   $('#vMarcaEquipoSolServicio').val(datos['marca']);
   $('#vUbicacionEquipoSolServicio').val(datos['ubicacion']);
   $('#vDescripcionEquipoSolServicio').val(datos['descripcion_eq']);
@@ -1524,7 +1540,7 @@ function fillModalViewSolServicio(datos){
 /***** 3 preventivo *****/
 
 // Trae datos de OT con origen Preventivo
-function getDataOtPreventivo(idOt, idPreventivo) {
+function getDataOtPreventivo(idOt, idPreventivo, origen) {
   WaitingOpen('Cargando datos...');
   $.ajax({
     data: { idOt:idOt, idPreventivo:idPreventivo },
@@ -1543,9 +1559,12 @@ function getDataOtPreventivo(idOt, idPreventivo) {
       'fecha_entrega'  : data['fecha_entrega'],
       'sucursal'       : data['descripc'],
       'nombreprov'     : data['provnombre'],
+      'origen'         : origen,
+      'fecha_program'  : data['fecha_program'],
+      'asignado'       : data['usrLastName']+' '+data['usrLastName'],
+      'estado'         : data['estado'],
       //Panel datos de equipos
       'codigo'         : data['codigo'],
-      'fecha_ingreso'  : data['fecha_ingreso'],
       'marca'          : data['marca'],
       'ubicacion'      : data['ubicacion'],
       'descripcion_eq' : data['descripcionEquipo'],
@@ -1566,9 +1585,14 @@ function fillModalViewPreventivo(datos){
   $('#vFechaEntregaPrev').val(datos['fecha_entrega']);
   $('#vSucursalPrev').val(datos['sucursal']);
   $('#vProveedorPrev').val(datos['nombreprov']);
+
+  $('#vIdOtPrev').val(datos['id_ot']);
+  $('#vOrigenPrev').val(datos['origen']);
+  $('#vFechaProgramPrev').val(datos['fecha_program']);
+  $('#vAsignadoPrev').val(datos['asignado']);
+  $('#vEstadoPrev').val(datos['estado']);
   //llenar datos de equipo
   $('#vCodigoEquipoPrev').val(datos['codigo']);
-  $('#vFechaEquipoPrev').val(datos['fecha_ingreso']);
   $('#vMarcaEquipoPrev').val(datos['marca']);
   $('#vUbicacionEquipoPrev').val(datos['ubicacion']);
   $('#vDescripcionEquipoPrev').val(datos['descripcion_eq']);
@@ -1627,7 +1651,7 @@ function llenarAdjuntos(adjunto) {
 /* 4 Backlog */
 
 // Trae datos de OT con origen Backlog
-function getDataOtBacklog(idOt, idBacklog) {
+function getDataOtBacklog(idOt, idBacklog, origen) {
   WaitingOpen('Cargando datos...');
   $.ajax({
     data: { idOt:idOt, idBacklog:idBacklog },
@@ -1646,9 +1670,12 @@ function getDataOtBacklog(idOt, idBacklog) {
       'fecha_entrega'  : data['fecha_entrega'],
       'sucursal'       : data['descripc'],
       'nombreprov'     : data['provnombre'],
+      'origen'         : origen,
+      'fecha_program'  : data['fecha_program'],
+      'asignado'       : data['usrLastName']+' '+data['usrLastName'],
+      'estado'         : data['estado'],
       //Panel datos de equipos
       'codigo'         : data['codigo'],
-      'fecha_ingreso'  : data['fecha_ingreso'],
       'marca'          : data['marca'],
       'ubicacion'      : data['ubicacion'],
       'descripcion_eq' : data['descripcionEquipo'],
@@ -1670,9 +1697,14 @@ function fillModalViewBacklog(datos){
   $('#vFechaEntregaBack').val(datos['fecha_entrega']);
   $('#vSucursalBack').val(datos['sucursal']);
   $('#vProveedorBack').val(datos['nombreprov']);
+
+  $('#vIdOtBack').val(datos['id_ot']);
+  $('#vOrigenBack').val(datos['origen']);
+  $('#vFechaProgramBack').val(datos['fecha_program']);
+  $('#vAsignadoBack').val(datos['asignado']);
+  $('#vEstadoBack').val(datos['estado']);
   //llenar datos de equipo
   $('#vCodigoEquipoBack').val(datos['codigo']);
-  $('#vFechaEquipoBack').val(datos['fecha_ingreso']);
   $('#vMarcaEquipoBack').val(datos['marca']);
   $('#vUbicacionEquipoBack').val(datos['ubicacion']);
   $('#vDescripcionEquipoBack').val(datos['descripcion_eq']);
@@ -1691,7 +1723,7 @@ function fillModalViewBacklog(datos){
 /* 5 Predictivo */
 
 // Trae datos de OT con origen Predictivo
-function getDataOtPredictivo(idOt, idPredictivo) {
+function getDataOtPredictivo(idOt, idPredictivo, origen) {
   WaitingOpen('Cargando datos...');
   $.ajax({
     data: { idOt:idOt, idPredictivo:idPredictivo },
@@ -1710,9 +1742,12 @@ function getDataOtPredictivo(idOt, idPredictivo) {
       'fecha_entrega'  : data['fecha_entrega'],
       'sucursal'       : data['descripc'],
       'nombreprov'     : data['provnombre'],
+      'origen'         : origen,
+      'fecha_program'  : data['fecha_program'],
+      'asignado'       : data['usrLastName']+' '+data['usrLastName'],
+      'estado'         : data['estado'],
       //Panel datos de equipos
       'codigo'         : data['codigo'],
-      'fecha_ingreso'  : data['fecha_ingreso'],
       'marca'          : data['marca'],
       'ubicacion'      : data['ubicacion'],
       'descripcion_eq' : data['descripcionEquipo'],
@@ -1733,9 +1768,14 @@ function fillModalViewPredictivo(datos){
   $('#vFechaEntregaPred').val(datos['fecha_entrega']);
   $('#vSucursalPred').val(datos['sucursal']);
   $('#vProveedorPred').val(datos['nombreprov']);
+
+  $('#vIdOtPred').val(datos['id_ot']);
+  $('#vOrigenPred').val(datos['origen']);
+  $('#vFechaProgramPred').val(datos['fecha_program']);
+  $('#vAsignadoPred').val(datos['asignado']);
+  $('#vEstadoPred').val(datos['estado']);
   //llenar datos de equipo
   $('#vCodigoEquipoPred').val(datos['codigo']);
-  $('#vFechaEquipoPred').val(datos['fecha_ingreso']);
   $('#vMarcaEquipoPred').val(datos['marca']);
   $('#vUbicacionEquipoPred').val(datos['ubicacion']);
   $('#vDescripcionEquipoPred').val(datos['descripcion_eq']);
@@ -2157,15 +2197,23 @@ $('#vTablaInsumos').DataTable({
               <div class="panel-body">
 
                 <div class="row">
-                  <div class="col-xs-12 col-sm-4">
+                  <div class="col-xs-12 col-sm-3">
+                    <label for="vIdOt">Id de OT:</label>
+                    <input type="text" class="form-control " name="vIdOt" id="vIdOt" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-3">
                     <label for="vNroOt">Número de OT:</label>
                     <input type="text" class="form-control " name="vNroOt" id="vNroOt" disabled>
                   </div>
-                  <div class="col-xs-12 col-sm-8">
+                  <div class="col-xs-12 col-sm-6">
                     <label for="vDescripFalla">Descripción:</label>
                     <input type="text" class="form-control vDescripFalla" id="vDescripFalla" disabled>
                   </div>
 
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vFechaProgram">Fecha Programación:</label>
+                    <input type="text" class="form-control " name="vFechaProgram" id="vFechaProgram" disabled>
+                  </div>
                   <div class="col-xs-12 col-sm-6 col-md-3">
                     <label for="vFechaCreacion">Fecha Inicio:</label>
                     <input type="text" class="form-control " name="vFechaCreacion" id="vFechaCreacion" disabled>
@@ -2175,12 +2223,25 @@ $('#vTablaInsumos').DataTable({
                     <input type="text" class="form-control " name="vFechaEntrega" id="vFechaEntrega" disabled>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vEstado">Estado:</label>
+                    <input type="text" class="form-control " name="vEstado" id="vEstado" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-3">
                     <label for="vSucursal">Sucursal:</label>
                     <input type="text" class="form-control " name="vSucursal" id="vSucursal" disabled>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3">
                     <label for="vProveedor">Proveedor:</label>
                     <input type="text" class="form-control " name="vProveedor" id="vProveedor" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vOrigen">Origen:</label>
+                    <input type="text" class="form-control " name="vOrigen" id="vOrigen" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vAsignado">Asignado:</label>
+                    <input type="text" class="form-control " name="vAsignado" id="vAsignado" disabled>
                   </div>
                 </div>
 
@@ -2199,19 +2260,15 @@ $('#vTablaInsumos').DataTable({
               <div class="panel-body">
                 
                 <div class="row">
-                  <div class="col-xs-12 col-sm-6 col-md-3">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="vCodigoEquipo">Equipo:</label>
                     <input type="text" class="form-control " name="vCodigoEquipo" id="vCodigoEquipo" disabled>
                   </div>
-                  <div class="col-xs-12 col-sm-6 col-md-3">
-                    <label for="vFechaEquipo">Fecha:</label>
-                    <input type="text" class="form-control " name="vFechaEquipo" id="vFechaEquipo" disabled>
-                  </div>
-                  <div class="col-xs-12 col-sm-6 col-md-3">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="vMarcaEquipo">Marca:</label>
                     <input type="text" class="form-control " name="vMarcaEquipo" id="vMarcaEquipo" disabled>
                   </div>
-                  <div class="col-xs-12 col-sm-6 col-md-3">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="vUbicacionEquipo">Ubicación:</label>
                     <input type="text" class="form-control " name="vUbicacionEquipo" id="vUbicacionEquipo" disabled>
                   </div>
@@ -2259,15 +2316,23 @@ $('#vTablaInsumos').DataTable({
               <div class="panel-body">
 
                 <div class="row">
-                  <div class="col-xs-12 col-sm-4">
+                  <div class="col-xs-12 col-sm-3">
+                    <label for="vIdOtSolServicio">Id de OT:</label>
+                    <input type="text" class="form-control " name="vIdOtSolServicio" id="vIdOtSolServicio" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-3">
                     <label for="vNroOtSolServicio">Número de OT:</label>
                     <input type="text" class="form-control " name="vNroOtSolServicio" id="vNroOtSolServicio" disabled>
                   </div>
-                  <div class="col-xs-12 col-sm-8">
+                  <div class="col-xs-12 col-sm-6">
                     <label for="vDescripFallaSolServicio">Descripción:</label>
                     <input type="text" class="form-control vDescripFallaSolServicio" id="vDescripFallaSolServicio" disabled>
                   </div>
 
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vFechaProgramSolServicio">Fecha Programación:</label>
+                    <input type="text" class="form-control " name="vFechaProgramSolServicio" id="vFechaProgramSolServicio" disabled>
+                  </div>
                   <div class="col-xs-12 col-sm-6 col-md-3">
                     <label for="vFechaCreacionSolServicio">Fecha Inicio:</label>
                     <input type="text" class="form-control " name="vFechaCreacionSolServicio" id="vFechaCreacionSolServicio" disabled>
@@ -2277,12 +2342,25 @@ $('#vTablaInsumos').DataTable({
                     <input type="text" class="form-control " name="vFechaEntregaSolServicio" id="vFechaEntregaSolServicio" disabled>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vEstadoSolServicio">Estado:</label>
+                    <input type="text" class="form-control " name="vEstadoSolServicio" id="vEstadoSolServicio" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-3">
                     <label for="vSucursalSolServicio">Sucursal:</label>
                     <input type="text" class="form-control " name="vSucursalSolServicio" id="vSucursalSolServicio" disabled>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3">
                     <label for="vProveedorSolServicio">Proveedor:</label>
                     <input type="text" class="form-control " name="vProveedorSolServicio" id="vProveedorSolServicio" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vOrigenSolServicio">Origen:</label>
+                    <input type="text" class="form-control " name="vOrigenSolServicio" id="vOrigenSolServicio" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vAsignadoSolServicio">Asignado:</label>
+                    <input type="text" class="form-control " name="vAsignadoSolServicio" id="vAsignadoSolServicio" disabled>
                   </div>
                 </div>
 
@@ -2301,19 +2379,15 @@ $('#vTablaInsumos').DataTable({
               <div class="panel-body">
                 
                 <div class="row">
-                  <div class="col-xs-12 col-sm-6 col-md-3">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="vCodigoEquipoSolServicio">Equipo:</label>
                     <input type="text" class="form-control " name="vCodigoEquipoSolServicio" id="vCodigoEquipoSolServicio" disabled>
                   </div>
-                  <div class="col-xs-12 col-sm-6 col-md-3">
-                    <label for="vFechaEquipoSolServicio">Fecha:</label>
-                    <input type="text" class="form-control " name="vFechaEquipoSolServicio" id="vFechaEquipoSolServicio" disabled>
-                  </div>
-                  <div class="col-xs-12 col-sm-6 col-md-3">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="vMarcaEquipoSolServicio">Marca:</label>
                     <input type="text" class="form-control " name="vMarcaEquipoSolServicio" id="vMarcaEquipoSolServicio" disabled>
                   </div>
-                  <div class="col-xs-12 col-sm-6 col-md-3">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="vUbicacionEquipoSolServicio">Ubicación:</label>
                     <input type="text" class="form-control " name="vUbicacionEquipoSolServicio" id="vUbicacionEquipoSolServicio" disabled>
                   </div>
@@ -2405,15 +2479,23 @@ $('#vTablaInsumos').DataTable({
               <div class="panel-body">
 
                 <div class="row">
-                  <div class="col-xs-12 col-sm-4">
+                  <div class="col-xs-12 col-sm-3">
+                    <label for="vIdOtPrev">Id de OT:</label>
+                    <input type="text" class="form-control " name="vIdOtPrev" id="vIdOtPrev" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-3">
                     <label for="vNroOtPrev">Número de OT:</label>
                     <input type="text" class="form-control " name="vNroOtPrev" id="vNroOtPrev" disabled>
                   </div>
-                  <div class="col-xs-12 col-sm-8">
+                  <div class="col-xs-12 col-sm-6">
                     <label for="vDescripFallaPrev">Descripción:</label>
                     <input type="text" class="form-control vDescripFallaPrev" id="vDescripFallaPrev" disabled>
                   </div>
 
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vFechaProgramPrev">Fecha Programación:</label>
+                    <input type="text" class="form-control " name="vFechaProgramPrev" id="vFechaProgramPrev" disabled>
+                  </div>
                   <div class="col-xs-12 col-sm-6 col-md-3">
                     <label for="vFechaCreacionPrev">Fecha Inicio:</label>
                     <input type="text" class="form-control " name="vFechaCreacionPrev" id="vFechaCreacionPrev" disabled>
@@ -2423,12 +2505,25 @@ $('#vTablaInsumos').DataTable({
                     <input type="text" class="form-control " name="vFechaEntregaPrev" id="vFechaEntregaPrev" disabled>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vEstadoPrev">Estado:</label>
+                    <input type="text" class="form-control " name="vEstadoPrev" id="vEstadoPrev" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-3">
                     <label for="vSucursalPrev">Sucursal:</label>
                     <input type="text" class="form-control " name="vSucursalPrev" id="vSucursalPrev" disabled>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3">
                     <label for="vProveedorPrev">Proveedor:</label>
                     <input type="text" class="form-control " name="vProveedorPrev" id="vProveedorPrev" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vOrigenPrev">Origen:</label>
+                    <input type="text" class="form-control " name="vOrigenPrev" id="vOrigenPrev" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vAsignadoPrev">Asignado:</label>
+                    <input type="text" class="form-control " name="vAsignadoPrev" id="vAsignadoPrev" disabled>
                   </div>
                 </div>
 
@@ -2447,19 +2542,15 @@ $('#vTablaInsumos').DataTable({
               <div class="panel-body">
                 
                 <div class="row">
-                  <div class="col-xs-12 col-sm-6 col-md-3">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="vCodigoEquipoPrev">Equipo:</label>
                     <input type="text" class="form-control " name="vCodigoEquipoPrev" id="vCodigoEquipoPrev" disabled>
                   </div>
-                  <div class="col-xs-12 col-sm-6 col-md-3">
-                    <label for="vFechaEquipoPrev">Fecha:</label>
-                    <input type="text" class="form-control " name="vFechaEquipoPrev" id="vFechaEquipoPrev" disabled>
-                  </div>
-                  <div class="col-xs-12 col-sm-6 col-md-3">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="vMarcaEquipoPrev">Marca:</label>
                     <input type="text" class="form-control " name="vMarcaEquipoPrev" id="vMarcaEquipoPrev" disabled>
                   </div>
-                  <div class="col-xs-12 col-sm-6 col-md-3">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="vUbicacionEquipoPrev">Ubicación:</label>
                     <input type="text" class="form-control " name="vUbicacionEquipoPrev" id="vUbicacionEquipoPrev" disabled>
                   </div>
@@ -2648,15 +2739,23 @@ $('#vTablaInsumos').DataTable({
               <div class="panel-body">
 
                 <div class="row">
-                  <div class="col-xs-12 col-sm-4">
+                  <div class="col-xs-12 col-sm-3">
+                    <label for="vIdOtBack">Id de OT:</label>
+                    <input type="text" class="form-control " name="vIdOtBack" id="vIdOtBack" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-3">
                     <label for="vNroOtBack">Número de OT:</label>
                     <input type="text" class="form-control " name="vNroOtBack" id="vNroOtBack" disabled>
                   </div>
-                  <div class="col-xs-12 col-sm-8">
+                  <div class="col-xs-12 col-sm-6">
                     <label for="vDescripFallaBack">Descripción:</label>
                     <input type="text" class="form-control vDescripFallaBack" id="vDescripFallaBack" disabled>
                   </div>
 
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vFechaProgram">Fecha Programación:</label>
+                    <input type="text" class="form-control " name="vFechaProgram" id="vFechaProgram" disabled>
+                  </div>
                   <div class="col-xs-12 col-sm-6 col-md-3">
                     <label for="vFechaCreacionBack">Fecha Inicio:</label>
                     <input type="text" class="form-control " name="vFechaCreacionBack" id="vFechaCreacionBack" disabled>
@@ -2666,12 +2765,25 @@ $('#vTablaInsumos').DataTable({
                     <input type="text" class="form-control " name="vFechaEntregaBack" id="vFechaEntregaBack" disabled>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vEstadoBack">Estado:</label>
+                    <input type="text" class="form-control " name="vEstadoBack" id="vEstadoBack" disabled>
+                  </div>
+                  
+                  <div class="col-xs-12 col-sm-6 col-md-3">
                     <label for="vSucursalBack">Sucursal:</label>
                     <input type="text" class="form-control " name="vSucursalBack" id="vSucursalBack" disabled>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3">
                     <label for="vProveedorBack">Proveedor:</label>
                     <input type="text" class="form-control " name="vProveedorBack" id="vProveedorBack" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vOrigenBack">Origen:</label>
+                    <input type="text" class="form-control " name="vOrigenBack" id="vOrigenBack" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vAsignadoBack">Asignado:</label>
+                    <input type="text" class="form-control " name="vAsignadoBack" id="vAsignadoBack" disabled>
                   </div>
                 </div>
 
@@ -2690,19 +2802,15 @@ $('#vTablaInsumos').DataTable({
               <div class="panel-body">
                 
                 <div class="row">
-                  <div class="col-xs-12 col-sm-6 col-md-3">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="vCodigoEquipoBack">Equipo:</label>
                     <input type="text" class="form-control " name="vCodigoEquipoBack" id="vCodigoEquipoBack" disabled>
                   </div>
-                  <div class="col-xs-12 col-sm-6 col-md-3">
-                    <label for="vFechaEquipoBack">Fecha:</label>
-                    <input type="text" class="form-control " name="vFechaEquipoBack" id="vFechaEquipoBack" disabled>
-                  </div>
-                  <div class="col-xs-12 col-sm-6 col-md-3">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="vMarcaEquipoBack">Marca:</label>
                     <input type="text" class="form-control " name="vMarcaEquipoBack" id="vMarcaEquipoBack" disabled>
                   </div>
-                  <div class="col-xs-12 col-sm-6 col-md-3">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="vUbicacionEquipoBack">Ubicación:</label>
                     <input type="text" class="form-control " name="vUbicacionEquipoBack" id="vUbicacionEquipoBack" disabled>
                   </div>
@@ -2792,15 +2900,23 @@ $('#vTablaInsumos').DataTable({
               <div class="panel-body">
 
                 <div class="row">
-                  <div class="col-xs-12 col-sm-4">
+                  <div class="col-xs-12 col-sm-3">
+                    <label for="vIdOt">Id de OT:</label>
+                    <input type="text" class="form-control " name="vIdOt" id="vIdOt" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-3">
                     <label for="vNroOtPred">Número de OT:</label>
                     <input type="text" class="form-control " name="vNroOtPred" id="vNroOtPred" disabled>
                   </div>
-                  <div class="col-xs-12 col-sm-8">
+                  <div class="col-xs-12 col-sm-6">
                     <label for="vDescripFallaPred">Descripción:</label>
                     <input type="text" class="form-control vDescripFallaPred" id="vDescripFallaPred" disabled>
                   </div>
 
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vFechaProgramPred">Fecha Programación:</label>
+                    <input type="text" class="form-control " name="vFechaProgramPred" id="vFechaProgramPred" disabled>
+                  </div>
                   <div class="col-xs-12 col-sm-6 col-md-3">
                     <label for="vFechaCreacionPred">Fecha Inicio:</label>
                     <input type="text" class="form-control " name="vFechaCreacionPred" id="vFechaCreacionPred" disabled>
@@ -2810,12 +2926,25 @@ $('#vTablaInsumos').DataTable({
                     <input type="text" class="form-control " name="vFechaEntregaPred" id="vFechaEntregaPred" disabled>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vEstadoPred">Estado:</label>
+                    <input type="text" class="form-control " name="vEstadoPred" id="vEstadoPred" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-3">
                     <label for="vSucursalPred">Sucursal:</label>
                     <input type="text" class="form-control " name="vSucursalPred" id="vSucursalPred" disabled>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3">
                     <label for="vProveedorPred">Proveedor:</label>
                     <input type="text" class="form-control " name="vProveedorPred" id="vProveedorPred" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vOrigenPred">Origen:</label>
+                    <input type="text" class="form-control " name="vOrigenPred" id="vOrigenPred" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vAsignadoPred">Asignado:</label>
+                    <input type="text" class="form-control " name="vAsignadoPred" id="vAsignadoPred" disabled>
                   </div>
                 </div>
 
@@ -2834,19 +2963,15 @@ $('#vTablaInsumos').DataTable({
               <div class="panel-body">
                 
                 <div class="row">
-                  <div class="col-xs-12 col-sm-6 col-md-3">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="vCodigoEquipoPred">Equipo:</label>
                     <input type="text" class="form-control " name="vCodigoEquipoPred" id="vCodigoEquipoPred" disabled>
                   </div>
-                  <div class="col-xs-12 col-sm-6 col-md-3">
-                    <label for="vFechaEquipoPred">Fecha:</label>
-                    <input type="text" class="form-control " name="vFechaEquipoPred" id="vFechaEquipoPred" disabled>
-                  </div>
-                  <div class="col-xs-12 col-sm-6 col-md-3">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="vMarcaEquipoPred">Marca:</label>
                     <input type="text" class="form-control " name="vMarcaEquipoPred" id="vMarcaEquipoPred" disabled>
                   </div>
-                  <div class="col-xs-12 col-sm-6 col-md-3">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="vUbicacionEquipoPred">Ubicación:</label>
                     <input type="text" class="form-control " name="vUbicacionEquipoPred" id="vUbicacionEquipoPred" disabled>
                   </div>
