@@ -90,7 +90,9 @@
     $('#id').val(idprev);
   });   
 
-  //Editar
+
+
+  // Editar Preventivo
   $(".fa-pencil").click(function (e) { 
 
     $('#error').fadeOut('fast');        
@@ -107,22 +109,22 @@
       success: function(data){                         
 
         datos={
-          'idprev':data['datos'][0]['idprev'],
-          'codigo' : data['datos'][0]['codigo'],
-          'id_equipo':data['datos'][0]['id_equipo'], // id_equipo
+          'idprev'       :data['datos'][0]['idprev'],
+          'codigo'       : data['datos'][0]['codigo'],
+          'id_equipo'    :data['datos'][0]['id_equipo'], // id_equipo
           'fecha_ingreso':data['datos'][0]['fecha_ingreso'],
-          'marca':data['datos'][0]['marca'],
-          'codigo':data['datos'][0]['codigo'],  // nombre del equipo
-          'ubicacion':data['datos'][0]['ubicacion'],
-          'descripcion':data['datos'][0]['descripcion'],                
-          'id_tarea':data['datos'][0]['id_tarea'], //iria  id_tarea descripta
-          'perido':data['datos'][0]['perido'],
-          'cantidad':data['datos'][0]['cantidad'],
-          'ultimo':data['datos'][0]['ultimo'],
+          'marca'        :data['datos'][0]['marca'],
+          'codigo'       :data['datos'][0]['codigo'],  // nombre del equipo
+          'ubicacion'    :data['datos'][0]['ubicacion'],
+          'descripcion'  :data['datos'][0]['descripcion'],                
+          'id_tarea'     :data['datos'][0]['id_tarea'], //iria  id_tarea descripta
+          'perido'       :data['datos'][0]['perido'],
+          'cantidad'     :data['datos'][0]['cantidad'],
+          'ultimo'       :data['datos'][0]['ultimo'],
           'id_componente':data['datos'][0]['id_componente'],
-          'critico1':data['datos'][0]['critico1'],
-          'horash':data['datos'][0]['horash'],
-          'ultimo':data['datos'][0]['ultimo'],
+          'critico1'     :data['datos'][0]['critico1'],
+          'horash'       :data['datos'][0]['horash'],
+          'ultimo'       :data['datos'][0]['ultimo'],
         };             
 
               var herram = data['herramientas'];             
@@ -138,6 +140,8 @@
             dataType: 'json'
           });      
   });  
+
+
 
   // Trae unidades de tiempo - Chequeado
   $(function(){  
@@ -445,9 +449,7 @@ function completarEdit(datos, herram,insum){
     }
 
     $('#tablainsumo tbody tr').remove();
-    
     for (var i = 0; i < insum.length; i++){                                             
-
       var tr = "<tr id='"+insum[i]['artId']+"'>"+
       "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
       "<td>"+insum[i]['artBarCode']+"</td>"+
@@ -601,16 +603,16 @@ function traer_componente(id_equipo){
 function guardarEdicion(){
 
     var id_prevent = $('#id_preventivo').val();//
-    var id_equipo = $('#id_equipo').val();//
-    var tarea = $('#tarea').val();//
+    var id_equipo  = $('#id_equipo').val();//
+    var tarea      = $('#tarea').val();//
     var componente = $('#componente').val();
-    var ultimo = $('#ultimo').val();
-    var periodo = $('#periodo').text();    
-    var cantidad = $('#cantidad').val();
-    var cantidadhm= $('#hshombre').val();    
-    var duracion = $('#duracion').val();
-    var unidad = $('#unidad').val();
-    var cantOper = $('#cantOper').val();   
+    var ultimo     = $('#ultimo').val();
+    var periodo    = $('#periodo').val();    
+    var cantidad   = $('#cantidad').val();
+    var cantidadhm = $('#hshombre').val();    
+    var duracion   = $('#duracion').val();
+    var unidad     = $('#unidad').val();
+    var cantOper   = $('#cantOper').val();   
     
     // Arma array de herramientas y cantidades
     var idsherramienta = new Array();     
@@ -698,7 +700,7 @@ function guardarEdicion(){
 </script>
 
 <!-- Modal editar-->
-<div class="modal fade" id="modalSale" tabindex="2000" aria-labelledby="myModalLabel" style="display: none;">
+<div class="modal" id="modalSale" tabindex="2000" aria-labelledby="myModalLabel" style="display: none;">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
 
@@ -933,7 +935,7 @@ function guardarEdicion(){
 
 
   <!-- Modal Eliminar Warning -->
-  <div class="modal fade" id="modalaviso">
+  <div class="modal" id="modalaviso">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
