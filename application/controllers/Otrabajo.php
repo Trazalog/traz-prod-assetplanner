@@ -603,6 +603,19 @@ class Otrabajo extends CI_Controller {
 	}
 
 
+	public function getDisponibilidad()
+	{
+		$idEquipo = $this->input->post('idEquipo');
+		$result   = calcularDisponibilidad($idEquipo);
+		echo json_encode($result);
+	}
+ 
+ 	public function getEquipoDisponibilidad()
+ 	{
+		$result = $this->Otrabajos->getEquipoDisponibilidad();
+		echo json_encode($result);
+ 	}
+
 
 
 

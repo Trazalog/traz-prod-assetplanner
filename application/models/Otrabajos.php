@@ -753,6 +753,27 @@ class Otrabajos extends CI_Model {
         }
     }
 
+    function getEquipoDisponibilidad() // Ok
+    {
+    	$userdata = $this->session->userdata('user_data');
+    	$empId    = $userdata[0]['id_empresa'];
+
+    	$this->db->select('equipos.id_equipo AS value, equipos.codigo AS label');
+    	$this->db->from('equipos');
+    	$this->db->where('id_empresa', $empId);
+    	$this->db->where('estado !=', 'AN');
+    	$query = $this->db->get();
+
+    	if($query->num_rows()>0)
+    	{
+    		return $query->result();
+    	}
+    	else
+    	{
+    		return false;
+    	}
+    }
+
 
 
 
