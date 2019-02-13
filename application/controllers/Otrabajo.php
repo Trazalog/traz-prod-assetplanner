@@ -602,6 +602,61 @@ class Otrabajo extends CI_Controller {
 		}
 	}
 
+
+
+
+
+
+	//devuelve valores de todos los datos de la OT para mostrar en modal.
+	public function getOrigenOt()
+	{
+		$idot     = $_POST['idot'];
+		$response = $this->Otrabajos->getOrigenOt($idot);
+      	echo json_encode($response[0]);
+	}
 	
- 
+
+	//devuelve valores de todos los datos de la OT para mostrar en modal.
+	public function getViewDataOt()
+	{
+		$idOt         = $_POST['idOt'];
+		$response     = $this->Otrabajos->getViewDataPreventivo($idOt);
+		echo json_encode($response[0]);
+	}
+
+	//devuelve valores de todos los datos de la OT desde Preventivos para mostrar en modal.
+	public function getViewDataSolServicio()
+	{
+		$idOt          = $_POST['idOt'];
+		$idSolServicio = $_POST['idSolServicio'];
+		$response      = $this->Otrabajos->getViewDataSolServicio($idOt, $idSolServicio);
+		echo json_encode($response[0]);
+	}
+
+	//devuelve valores de todos los datos de la OT desde Preventivos para mostrar en modal.
+	public function getViewDataPreventivo()
+	{
+		$idOt         = $_POST['idOt'];
+		$idPreventivo = $_POST['idPreventivo'];
+		$response     = $this->Otrabajos->getViewDataPreventivo($idOt, $idPreventivo);
+		echo json_encode($response[0]);
+	}
+
+	//devuelve valores de todos los datos de la OT desde Backlog para mostrar en modal.
+	public function getViewDataBacklog()
+	{
+		$idOt      = $_POST['idOt'];
+		$idBacklog = $_POST['idBacklog'];
+		$response  = $this->Otrabajos->getViewDataBacklog($idOt, $idBacklog);
+      	echo json_encode($response[0]);
+	}
+
+	//devuelve valores de todos los datos de la OT desde Predictivo para mostrar en modal.
+	public function getViewDataPredictivo()
+	{
+		$idOt         = $_POST['idOt'];
+		$idPredictivo = $_POST['idPredictivo'];
+		$response     = $this->Otrabajos->getViewDataPredictivo($idOt, $idPredictivo);
+		echo json_encode($response[0]);
+	}
 }

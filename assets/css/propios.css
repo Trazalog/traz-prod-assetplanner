@@ -6,21 +6,26 @@ input[type="month"].form-control {
     line-height: 1.42857143;
 }
 
+/* estilos de input flies */
 input[type="file"].form-control {
     padding-bottom: 40px;
     line-height: 1.42857143;
 }
+
+/* No permite cambiar de tamaño los textarea */
 textarea.form-control {
     resize: none;
     overflow-y: auto;
 }
 
+/* estilos del scroll del menu */
 .slimScrollBar {
     background: none repeat scroll 0 0 #3C8DBC !important;
     opacity:1!important;
     width: 8px!important;
 }
 
+/* estilos de plugin de jquery-ui autocomplete */
 .ui-autocomplete {
     max-height: 300px;
     overflow-y: auto;
