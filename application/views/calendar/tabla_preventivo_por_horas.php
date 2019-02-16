@@ -74,5 +74,3 @@
 
     </div><!-- /.box collapsed-box-->
   </div><!-- /.col --> 
-  <?php
-}

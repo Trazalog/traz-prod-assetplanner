@@ -1017,7 +1017,7 @@ $(document).ready(function(event) {
               url: 'index.php/Equipo/guardar_equipo',  //index.php/
               success: function(data){
 
-                      /*var permisos = '<?php// echo $permission; ?>';
+                      /*var permisos = '';
                       cargarView('Equipo', 'index', permisos );*/
                      cargarVista();
                     },

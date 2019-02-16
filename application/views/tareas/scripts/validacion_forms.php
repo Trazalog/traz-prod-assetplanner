@@ -40,6 +40,7 @@
 	var validado=false;
 	function ValidarCampos(){
 			WaitingOpen('Validando Formulario');
+			ValidarObligatorios();
 			GuardarFormulario(true);
 	}
 
@@ -76,32 +77,15 @@
 			});
 	}
 
+	function ValidarObligatorios(){	//Valida Campos los Obligatorios offline
+		var ban = true;
+		$('.requerido').each(function(i){//numerico/select/check/text/input_text
+			console.log(i+" >> "+($(this).val()!=""));
+			ban = ban && ($(this).val()!="");
+		});
+		console.log("Resultado Validacion >>" + ban);
+		return ban;	
+	}
 
 
-
-	// function ValidarObligatorios(validarOn){
-	// 	console.log("Validando Campos Obligatorios..."+form_actual_id);
-	// 	var petr_id = $('#idPedTrabajo').val();
-	// 	var form_id = $('#idform').val();
-	// 	$.ajax({
-	// 			type: 'POST',
-	// 			data: {'form_id':form_id,'petr_id':petr_id},
-	// 			url: 'index.php/Tarea/ValidarObligatorios',
-	// 			success: function (result) {
-	// 				console.log(form_actual_id+"...OK");
-	// 				WaitingClose();
-	// 				var validado=(result==1);
-	// 				form_actual_data.attr('data-validado',validado);
-	// 				if(!validarOn){$('.modal').modal('hide');return;}
-	// 				if(validado){$('.modal').modal('hide');}
-	// 				else {
-	// 					alert("Fallo Validación: Campos Obligatorios Incompletos. Por favor verifique que todos los campos obligatorios marcados con (*) esten completos.");
-	// 				}
-	// 		//WaitingClose();
-	// 			},
-	// 			error: function(result){
-	// 				alert("Fallo la Validación del formularios en el Servidor. Por favor vuelva a intentar.");
-	// 			}
-	// 		});
-	// }
 </script>

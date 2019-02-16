@@ -50,12 +50,11 @@ echo '<th style="display:none">Id tarea bonita</th>';
             </thead>
             <tbody>
               <?php                
-                
-                //dump($list, 'tareas: ');
                 foreach($list as $f){
                   
                   $id=$f["id"];
                   $asig = $f['assigned_id'];
+
                   echo '<tr id="'.$id.'" class="'.$id.'" >';                    
                     // td 0                  
                     echo '<td>';
@@ -137,6 +136,18 @@ echo '<th style="display:none">Id tarea bonita</th>';
   var tareaDesc = "";
   var fechaCreacion = "";
 
+  actualizar_terminadas();
+  function actualizar_terminadas(){
+    var aux = sessionStorage.getItem("tareas_cerradas");
+    if(aux==null || aux.length==0) return;
+    var aux = aux.split("-");
+    for(var i=0 ;i<aux.length-1;i++){
+      $("#"+aux[i]).remove();
+    }
+  }
+
+ 
+
 //Tomo valor de la celda y carga detalle de la tarea
   $('.celda').click( function () {
 
@@ -166,7 +177,7 @@ echo '<th style="display:none">Id tarea bonita</th>';
 
     WaitingOpen();
 
-    $(".content").load("<?php echo base_url(); ?>index.php/Tarea/detaTarea/<?php echo $permission; ?>/" + idTarBonita+ "/"  );
+    $(".content").load("<?php echo base_url(); ?>index.php/Tarea/detaTarea/<?php echo $permission; ?>/" + idTarBonita);
     WaitingClose();
   }
 

@@ -40,7 +40,8 @@ class Notapedido extends CI_Controller {
   public function agregarListInsumos($permission, $idcliente){
     $data['permission'] = $permission;    
     $data['plantilla']  = $this->Notapedidos->getPlantillaPorCliente($idcliente);
-    $this->load->view('notapedido/insumolist', $data);
+    $this->load->view('notapedido/insumolist',$data);
+    
   }
 
   // agregar pedido especial carga vista

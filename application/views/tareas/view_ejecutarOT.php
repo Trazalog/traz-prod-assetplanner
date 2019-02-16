@@ -125,7 +125,7 @@
 																	}
 																	echo '<td>'.$subt['duracion_prog'].'</td>';
 																	if($subt['subtareadescrip']!= null){				
-																		echo '<td><i class="fa fa-paperclip text-light-blue" style="cursor: pointer; margin-left: 15px;" aria-hidden="true" id="'.$subt["id_listarea"].'" data-infoId="'.$subt["info_id"].'"></i></td>';
+																		echo '<td><i class="fa fa-paperclip text-light-blue btn-form" style="cursor: pointer; margin-left: 15px;" aria-hidden="true" id="'.$subt["id_listarea"].'" data-infoId="'.$subt["info_id"].'" data-valido="true"></i></td>';
 																	}	
 																	
 																echo '</tr>';
@@ -382,9 +382,23 @@
 
 <script>
 
+function validarFormularios(){
+	console.log('Validando Formularios...');
+	ban = true;
+
+	$('.btn-form').each(function(i){
+		ban = ban && $(this).data('valido');
+	});
+
+	if(ban) alert('Valido'); else alert('Invalido');
+
+	return ban;
+}
+
 /* verifica estado de subrtareas para cerrar OT */
 	function validarSubtareas(){
-		if( validarEstSubTareas() ){
+
+		if(validarFormularios() && validarEstSubTareas()){
 			ejecutarOT();
 		}else{
 			alert("Por favor cierre las Tareas que faltan antes de Terminar");
@@ -455,33 +469,36 @@
         $("#contFormSubtarea").html(result.html);
         $('#modalFormSubtarea').modal('show');
         WaitingClose();
+		ValidarObligatorios();
       },
       error: function(result){
         WaitingClose();
         alert("Error: No se pudo obtener el Formulario");
       },
     });
-			
+
   });
 
 /*  /. Formulario de subareas */
 
 /* Pantalla pedido de insumos */
 	function pedirInsumos(){ 
-		var iort = $('#ot').val();
-		var iort = 22;
-		console.log("El id de OT es: " + iort);
-		
-		WaitingOpen();
-		$('#content').empty();
-		$("#content").load("<?php echo base_url(); ?>index.php/Notapedido/agregarListInsumos/<?php echo $permission; ?>/"+iort);
-		WaitingClose();  
+		 var iort = $('#ot').val();
+		 var iort = 22;
+		 $('#body-pedidos').empty();
+		 $("#body-pedidos").load("<?php echo base_url(); ?>index.php/Notapedido/agregarListInsumos/<?php echo $permission; ?>/"+iort);
+		 $('.modal#pedidos').modal('show');
 	}
+	
 /* pedido de insumos */
 
 </script>
 
+<div class="modal" id="pedidos" tabindex="-1" role="dialog">
+  <div class="modal-dialog" id="body-pedidos" role="document">
 
+  </div>
+</div>
 
 
 
@@ -504,3 +521,4 @@
 		</div>
 	</div>
 </div>
+
