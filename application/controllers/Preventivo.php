@@ -67,20 +67,10 @@ class Preventivo extends CI_Controller {
 	}
 
 	// Trae tareas por empresa logueada - Listo
-	public function gettarea(){
-		
-		$tarea = $this->Preventivos->gettarea();
-
-		if($tarea)
-		{	
-			$arre=array();
-	        foreach ($tarea as $row ) 
-	        {   
-	           $arre[]=$row;
-	        }
-			echo json_encode($arre);
-		}
-		else echo "nada";
+	public function gettarea()
+	{	
+		$tareas = $this->Preventivos->gettarea();
+		echo json_encode($tareas);
 	}
 	
 	//Trae insumo por id 
@@ -131,16 +121,9 @@ class Preventivo extends CI_Controller {
 	// Trae componente segun id de equipo - Listo
 	public function getcomponente()
 	{
-		$id = $_POST['id_equipo']; 
-		$componente = $this->Preventivos->getcomponente($id);
-		if($componente){	
-			$arre=array();
-	        foreach ($componente as $row ){   
-	           $arre[]=$row;
-	        }	        
-			echo json_encode($arre);
-		}
-		else echo "nada";
+		$idEquipo   = $_POST['id_equipo']; 
+		$componente = $this->Preventivos->getcomponente($idEquipo);
+		echo json_encode($componente);
 	}
 
 	// Trae herramientas segun empresa logueada - Listo
@@ -156,6 +139,12 @@ class Preventivo extends CI_Controller {
 		}
 		else echo "nada";
 	}
+
+	public function getHerramientasB()
+    {
+        $herramientas = $this->Preventivos->getHerramientasB();     
+        echo json_encode($herramientas);
+    }
 
 	// Trae insumos segun empresa logueada
 	public function getinsumo(){
