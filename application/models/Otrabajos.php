@@ -809,15 +809,17 @@ class Otrabajos extends CI_Model {
     function getViewDataOt($idOt)
     {
     	$this->db->select('orden_trabajo.id_orden, orden_trabajo.nro, orden_trabajo.descripcion AS descripcionFalla, orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, 
+    		orden_trabajo.fecha_program, tbl_estado.descripcion AS estado, sisusers.usrName, sisusers.usrLastName, 
     		orden_trabajo.tipo, orden_trabajo.id_solicitud,
     		sucursal.id_sucursal, sucursal.descripc,
     		abmproveedores.provid, abmproveedores.provnombre,
     		equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, equipos.descripcion AS descripcionEquipo');
         $this->db->from('orden_trabajo');
+        $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
         $this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
         $this->db->join('abmproveedores', 'abmproveedores.provid = orden_trabajo.id_proveedor');
         $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
-
+        $this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
         $this->db->where('orden_trabajo.id_orden', $idOt);
 
         $query = $this->db->get();
@@ -837,15 +839,17 @@ class Otrabajos extends CI_Model {
     function getViewDataSolServicio($idOt, $idSolicitud)
     {
     	$this->db->select('orden_trabajo.id_orden, orden_trabajo.nro, orden_trabajo.descripcion AS descripcionFalla, orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, 
+    		orden_trabajo.fecha_program, tbl_estado.descripcion AS estado, sisusers.usrName, sisusers.usrLastName, 
     		orden_trabajo.tipo, orden_trabajo.id_solicitud,
     		sucursal.id_sucursal, sucursal.descripc,
     		abmproveedores.provid, abmproveedores.provnombre,
     		equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, equipos.descripcion AS descripcionEquipo');
         $this->db->from('orden_trabajo');
+        $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
         $this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
         $this->db->join('abmproveedores', 'abmproveedores.provid = orden_trabajo.id_proveedor');
         $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
-
+        $this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
         $this->db->where('orden_trabajo.id_orden', $idOt);
 
         $query = $this->db->get();
@@ -891,15 +895,17 @@ class Otrabajos extends CI_Model {
     function getViewDataPreventivo($idOt, $idSolicitud)
     {
     	$this->db->select('orden_trabajo.id_orden, orden_trabajo.nro, orden_trabajo.descripcion AS descripcionFalla, orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, 
+    		orden_trabajo.fecha_program, tbl_estado.descripcion AS estado, sisusers.usrName, sisusers.usrLastName, 
     		orden_trabajo.tipo, orden_trabajo.id_solicitud,
     		sucursal.id_sucursal, sucursal.descripc,
     		abmproveedores.provid, abmproveedores.provnombre,
     		equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, equipos.descripcion AS descripcionEquipo');
         $this->db->from('orden_trabajo');
+        $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
         $this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
         $this->db->join('abmproveedores', 'abmproveedores.provid = orden_trabajo.id_proveedor');
         $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
-
+        $this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
         $this->db->where('orden_trabajo.id_orden', $idOt);
 
         $query = $this->db->get();
@@ -1002,15 +1008,17 @@ class Otrabajos extends CI_Model {
     function getViewDataBacklog($idOt, $idSolicitud)
     {
     	$this->db->select('orden_trabajo.id_orden, orden_trabajo.nro, orden_trabajo.descripcion AS descripcionFalla, orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, 
+    		orden_trabajo.fecha_program, tbl_estado.descripcion AS estado, sisusers.usrName, sisusers.usrLastName, 
     		orden_trabajo.tipo, orden_trabajo.id_solicitud,
     		sucursal.id_sucursal, sucursal.descripc,
     		abmproveedores.provid, abmproveedores.provnombre,
     		equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, equipos.descripcion AS descripcionEquipo');
         $this->db->from('orden_trabajo');
+        $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
         $this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
         $this->db->join('abmproveedores', 'abmproveedores.provid = orden_trabajo.id_proveedor');
         $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
-
+        $this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
         $this->db->where('orden_trabajo.id_orden', $idOt);
 
         $query = $this->db->get();
@@ -1075,15 +1083,17 @@ class Otrabajos extends CI_Model {
     function getViewDataPredictivo($idOt, $idSolicitud)
     {
     	$this->db->select('orden_trabajo.id_orden, orden_trabajo.nro, orden_trabajo.descripcion AS descripcionFalla, orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, 
+    		orden_trabajo.fecha_program, tbl_estado.descripcion AS estado, sisusers.usrName, sisusers.usrLastName, 
     		orden_trabajo.tipo, orden_trabajo.id_solicitud,
     		sucursal.id_sucursal, sucursal.descripc,
     		abmproveedores.provid, abmproveedores.provnombre,
     		equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, equipos.descripcion AS descripcionEquipo');
         $this->db->from('orden_trabajo');
+        $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
         $this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
         $this->db->join('abmproveedores', 'abmproveedores.provid = orden_trabajo.id_proveedor');
         $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
-
+        $this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
         $this->db->where('orden_trabajo.id_orden', $idOt);
 
         $query = $this->db->get();

@@ -28,7 +28,12 @@ textarea.form-control {
 /* estilos de plugin de jquery-ui autocomplete */
 .ui-autocomplete {
     max-height: 300px;
+    max-width: 600px;
     overflow-y: auto;
     overflow-x: hidden;
-    z-index:1000 !important;
+    z-index: 10000 !important;
+}
+/* para busquedas con listas de resultados personalizadas */
+.ui-autocomplete a {
+    display: block;
 }
