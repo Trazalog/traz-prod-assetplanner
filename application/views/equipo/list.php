@@ -227,7 +227,7 @@ $(document).ready(function(event) {
           alta_historial_lectura(parametros);
         }
         else {
-          alert("Error al habilitar el equipo");
+          //alert("Error al habilitar el equipo");
         }
       },
       error: function(result){
