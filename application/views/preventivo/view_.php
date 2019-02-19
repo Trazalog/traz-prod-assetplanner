@@ -390,7 +390,9 @@ function traer_periodo(periodoId){
 //Habilita lectura base y alerta si el periodo es horas ó ciclos
 $('#periodo').change(function(){
   //alert('hola');
-  if( $('#periodo').val()=='5' || $('#periodo').val()=='6' ) { //horas=5 ciclos=6
+  let optionText = $('#periodo option:selected').text().toLowerCase();
+  console.info( optionText );
+  if( optionText=='horas' || optionText=='ciclos' ) { //horas=5 ciclos=6
     $('#alerta').prop('disabled', false);
     $('#lectura_base').prop('disabled', false);
   } else {
