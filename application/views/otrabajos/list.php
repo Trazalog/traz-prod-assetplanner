@@ -837,263 +837,12 @@ $(document).ready(function(event) {
   }); 
   var origen="";
 
-  $(".fa-print").click(function (e) {
-        e.preventDefault();
-        var ido = $(this).parent('td').parent('tr').attr('id');
-        console.log("El id de orden al imprimir es :");
-        console.log(ido);
-        
-
-        $.ajax({
-              type: 'POST',
-              data: { ido: ido},
-              url: 'index.php/Otrabajo/getprint', //index.php/
-              success: function(data){
-                   
-                    console.log("Entre a la impresion");
-                    console.log(data);
-                    // console.log(data.datos.codigo);
-                     console.log(data[0]['codigo']);
-                    // console.log(data.equipos.asegurado);
-                    // console.log(data.orden.nombre);
-
-                    var fecha = new Date(data[0]['fecha']);
-                    var day = fecha.getDate();
-                    var month = fecha.getMonth();
-                    var year = fecha.getUTCFullYear();
-                    fecha = day + '-' + (month+1) + '-' + year;
-                    //data.equipos.fecha_vigencia
-                    //data.equipos.fecha_inicio
-                    var fechapro = new Date(data[0]['fecha_program']);
-                    var day = fechapro.getDate();
-                    var month = fechapro.getMonth();
-                    var year = fechapro.getUTCFullYear();
-                    fechapro = day + '-' + (month+1) + '-' + year;
-
-                    var fechaent = new Date(data[0]['fecha_entrega']);
-                    var day = fechaent.getDate();
-                    var month = fechaent.getMonth();
-                    var year = fechaent.getUTCFullYear();
-                    fechaent = day + '-' + (month+1) + '-' + year;
-
-                    var fechater = new Date(data[0]['fecha_terminada']);
-                    var day = fechater.getDate();
-                    var month = fechater.getMonth();
-                    var year = fechater.getUTCFullYear();
-                    fechater = day + '-' + (month+1) + '-' + year;
-
-                    var fechaentregada = new Date(data[0]['fecha_entregada']);
-                    var day = fechaentregada.getDate();
-                    var month = fechaentregada.getMonth();
-                    var year = fechaentregada.getUTCFullYear();
-                    fechaentregada = day + '-' + (month+1) + '-' + year;
-                    
-                    if(data[0]['id']==1){
-                      origen='OT';
-
-                    }
-                    else{
-                      if(data[0]['id']==2){
-                      origen='Solicitud de Servicio';
-                      }
-
-                    }
-                     if(data[0]['id']==3){
-                      origen='Preventivo';
-
-                    }
-                    else{
-                      if(data[0]['id']==4){
-                      origen='Backlog';
-                      }
-                     
-                    }
-                     if(data[0]['id']==5){
-                      origen='Predictivo';
-
-                    }
-                    else{
-                      if(data[0]['id']==6){
-                      origen='Correctivo Programado';
-                      }
-                     
-                    }
-
-                     var  texto =
-
-                                '<div class="" id="vistaimprimir">'+
-                                  '<div class="container">'+
-                                    '<div class="thumbnail">'+
-
-                                      '<div class="caption">'+
-                                        '<div class="row" >'+
-                                          '<div class="panel panel-default">'+
-                                            '<div class="form-group">'+
-                                              '<h3 class="text-center" align="center"></h3>'+
-                                            '</div>'+
-                                            '<hr/>'+
-                                            '<div class="panel-body">'+
-                                              '<div class="container">'+
-                                                '<div class="thumbnail">'+
-                                                  '<div class="row">'+
-                                                    '<div class="col-sm-12 col-md-12">'+
-                                                      '<table width="100%" style="text-align:justify" >'+
-                                                        '<tr>'+
-                                                        '<tr>'+
-                                                          '<td  colspan="1"  align="left" >'+
-                                                            '<div class="text-left"> <img src="img/LOGO.jpg" width="280" height="80" /> </div></td>'+
-                                                          '</td>'+ 
-                                                          '<td >'+
-                                                            '<div  class="col-md-4 "><h3> ORDEN DE TRABAJO</h3>'+
-                                                            '</div>'+
-                                                            
-                                                          '</td>'+
-
-                                                        '</tr>'+
-                                                        '</tr>'+
-                                                      '</table>'+
-                                                    '</div>'+
-                                                  '</div>'+
-                                                  '<br>'+
-                                                  '<br>'+
-                                                  '<div class="row">'+
-                                                    '<div class="col-sm-12 col-md-12">'+
-                                                      '<table width="100%" style="text-align:justify" border="1px solid black" >'+  
-                                                        '<tr>'+
-                                                            '<td>ID de Orden de trabajo</td>'+
-                                                            '<td>'+data[0]['id_orden']+'</td>'+
-                                                            '</tr>'+
-                                                            '<tr>'+
-                                                            '<td style="text-align: left"" >fecha</td>'+
-                                                            '<td>'+fecha+'</td>'+
-                                                            '</tr>'+
-
-                                                            '<tr>'+
-                                                            '<td>Fecha de programación</td>'+
-                                                            '<td>'+fechapro+'</td>'+
-                                                            '</tr>'+
-                                                            '<tr>'+
-                                                            '<td align="left" >Fecha de Entrega</td>'+
-                                                            '<td>'+fechaent+'</td>'+
-                                                            '</tr>'+
-
-                                                            '<tr>'+
-                                                            '<td>Fecha Entregada</td>'+
-                                                            '<td>'+fechaentregada+'</td>'+
-                                                            '</tr>'+
-                                                            '<tr>'+
-                                                            '<td>Fecha Terminada</td>'+
-                                                            '<td>'+fechater+'</td>'+
-                                                            '</tr>'+
-
-                                                            '<tr>'+
-                                                            '<td>Tarea</td>'+
-                                                            '<td>'+data[0]['detarea']+'</td>'+
-                                                            '</tr>'+
-                                                            '<tr>'+
-                                                            '<td>Equipo</td>'+
-                                                            '<td>'+data[0]['codigo']+'</td>'+
-                                                            '</tr>'+
-
-                                                            '<tr>'+
-                                                            '<td>Diración</td>'+
-                                                            '<td>'+data[0]['duracion']+'</td>'+
-                                                            '</tr>'+
-                                                            '<tr>'+
-                                                            '<td>Origen de OT</td>'+
-                                                            '<td>'+origen+'</td>'+
-                                                            '</tr>'+
-
-                                                            
-
-                                                            
-                                                      
-                                                      '</table>'+
-                                                    '</div>'+
-                                                  '</div>'+
-                                                  '<br>'+
-                                                  '<br>'+
-                                                 
-                                              
-                                                  '<br>'+
-                                                  '<br>'+
-
-                                                 //aca va la tabla 
-
-                                              
-                                           
-                                                '</div>'+
-                                              '</div>'+
-                                            '</div>'+
-
-                                           
-                                          '</div>'+
-                                        '</div>'+
-                                      '</div>'+
-                                      '<style>'+
-                                         '.table, .table>tr, .table>td  {} '+
-                                      '</style>';
-                                      //border:  1px solid black;
-
-
-                                       var mywindow = window.open('', 'Imprimir', 'height=700,width=900');
-                                        mywindow.document.write('<html><head><title></title>');
-                                        //mywindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
-                                        //mywindow.document.write('<link rel="stylesheet" href="main.css">
-                                        mywindow.document.write('</head><body onload="window.print();">');
-                                        mywindow.document.write(texto);
-                                        mywindow.document.write('</body></html>');
-
-                                        mywindow.document.close(); // necessary for IE >= 10
-                                        mywindow.focus(); // necessary for IE >= 10
-                                        //mywindow.print();
-                                        //mywindow.close();
-                                        return true; 
-                 
-
-                  
-                   
-                    },
-              error: function(result){
-
-                        console.log(result);
-                        console.log("error en la vistaimprimir");
-                                      },
-                    dataType: 'json'
-        });
-  });    
-
   $(".fa-toggle-on").click(function (e) { 
     var idord = $(this).parent('td').parent('tr').attr('id');
     console.log(idord);  
     idfin=idord;
   });
   
-  /*$('#vfecha').datepicker({
-      changeMonth: true,
-      changeYear: true
-  }); 
-
-  $("#fecha_entrega").datepicker({
-    dateFormat: 'dd/mm/yy',
-    firstDay: 1
-  }).datepicker("setDate", new Date());
-
-  $("#fecha1").datepicker({
-    dateFormat: 'dd/mm/yy',
-    firstDay: 1
-  }).datepicker("setDate", new Date()); 
-
-  $("#fecha_inicio1").datepicker({
-    dateFormat: 'dd/mm/yy',
-    firstDay: 1
-  }).datepicker("setDate", new Date()); 
-
-  $(".datepicker").datepicker({    
-      changeMonth: true,
-      changeYear: true
-  });*/
-
 
   // Genera Informe de Servicio - Hugo
   $('.fa-sticky-note-o').click( function cargarVista(){
@@ -1367,7 +1116,7 @@ $(".fa-search").click( function(e){
     url: 'index.php/Otrabajo/getOrigenOt',
   })
   .done( (data) => {
-    console.table(data);
+    //console.table(data);
     traerDatosOt(idot, data.tipo, data.id_solicitud);
   })
   .fail( () => alert( "Error al traer los datos de la OT." ) )
@@ -1377,26 +1126,43 @@ $(".fa-search").click( function(e){
 // Elige a que fcion que trae datos de OT llamar, según su origen
 function traerDatosOt(idOt, tipo, idSolicitud) {
   console.info(idOt+' - '+idSolicitud);
+  var datos = null;
   switch (tipo) {
     case '1': //Orden de trabajo
-      getDataOt(idOt, "orden de Trabajo");
+      datos = getDataOt(idOt, "orden de Trabajo");
+      fillModalView(datos);
+      $('#verOt').modal('show');
+      WaitingClose();
       break;
     case '2': //Solicitud de servicio
-      getDataOtSolServicio(idOt, idSolicitud, "Solicitud de Servicio");
+      datos = getDataOtSolServicio(idOt, idSolicitud, "Solicitud de Servicio");
+      fillModalViewSolServicio(datos);
+      $('#verOtSolServicio').modal('show');
+      WaitingClose();
       break;
     case '3': //preventivo
-      getDataOtPreventivo(idOt, idSolicitud, "Preventivo");
+      datos = getDataOtPreventivo(idOt, idSolicitud, "Preventivo");
+      fillModalViewPreventivo(datos);
+      $('#verOtPreventivo').modal('show');
+      WaitingClose();
       break;
     case '4': //Backlog
-      getDataOtBacklog(idOt, idSolicitud, "Backlog");
+      datos = getDataOtBacklog(idOt, idSolicitud, "Backlog");
+      fillModalViewBacklog(datos);
+      $('#verOtBacklog').modal('show');
+      WaitingClose();
       break;
     case '5': //predictivo
-      getDataOtPredictivo(idOt, idSolicitud, "Predictivo");
+      datos = getDataOtPredictivo(idOt, idSolicitud, "Predictivo");
+      fillModalViewPredictivo(datos);
+      $('#verOtPredictivo').modal('show');
+      WaitingClose();
       break;
     case '6': //correctivo programado
       //break;
     default:
-    console.error('Tipo de dato desconocido')
+      console.error('Tipo de dato desconocido');
+      WaitingClose();
       break;
   }
 }
@@ -1408,7 +1174,9 @@ function traerDatosOt(idOt, tipo, idSolicitud) {
 // Trae datos de OT 
 function getDataOt(idOt, origen) {
   WaitingOpen('Cargando datos...');
+  var datos = null;
   $.ajax({
+    async:false,
     data: { idOt:idOt },
     dataType: 'json',
     method: 'POST',
@@ -1416,7 +1184,7 @@ function getDataOt(idOt, origen) {
   })
   .done( (data) => {
     //console.table(data);
-    let datos = {
+    datos = {
       //Panel datos de OT
       'id_ot'          : data['id_orden'],
       'nro'            : data['nro'],
@@ -1438,11 +1206,9 @@ function getDataOt(idOt, origen) {
       'descripcion_eq' : data['descripcionEquipo'],
       'comp_equipo'    : data['compEquipo'],
     }
-    fillModalView(datos);
-    $('#verOt').modal('show');
-    WaitingClose();
   })
   .fail( () => alert( "Error al traer los datos de la OT." ) );
+  return datos;
 }
 //llena datos del modal preventivo
 function fillModalView(datos){
@@ -1473,7 +1239,9 @@ function fillModalView(datos){
 // Trae datos de Solicitud de Servicios con origen Backlog
 function getDataOtSolServicio(idOt, idSolServicio, origen) {
   WaitingOpen('Cargando datos...');
+  var datos = null;
   $.ajax({
+    async: false,
     data: { idOt:idOt, idSolServicio:idSolServicio },
     dataType: 'json',
     method: 'POST',
@@ -1481,7 +1249,7 @@ function getDataOtSolServicio(idOt, idSolServicio, origen) {
   })
   .done( (data) => {
     console.table(data);
-    let datos = {
+    datos = {
       //Panel datos de OT
       'id_ot'          : data['id_orden'],
       'nro'            : data['nro'],
@@ -1503,12 +1271,10 @@ function getDataOtSolServicio(idOt, idSolServicio, origen) {
       'descripcion_eq' : data['descripcionEquipo'],
       'comp_equipo'    : data['compEquipo'],
       'solServicio'   : data['solServicio'],
-    }
-    fillModalViewSolServicio(datos);
-    $('#verOtSolServicio').modal('show');
-    WaitingClose();
+    };
   })
   .fail( () => alert( "Error al traer los datos de la OT." ) );
+  return datos;
 }
 //llena datos del modal preventivo
 function fillModalViewSolServicio(datos){
@@ -1546,7 +1312,9 @@ function fillModalViewSolServicio(datos){
 // Trae datos de OT con origen Preventivo
 function getDataOtPreventivo(idOt, idPreventivo, origen) {
   WaitingOpen('Cargando datos...');
+  var datos = null;
   $.ajax({
+    async: false,
     data: { idOt:idOt, idPreventivo:idPreventivo },
     dataType: 'json',
     method: 'POST',
@@ -1554,7 +1322,7 @@ function getDataOtPreventivo(idOt, idPreventivo, origen) {
   })
   .done( (data) => {
     //console.table(data);
-    let datos = {
+    datos = {
       //Panel datos de OT
       'id_ot'          : data['id_orden'],
       'nro'            : data['nro'],
@@ -1575,12 +1343,10 @@ function getDataOtPreventivo(idOt, idPreventivo, origen) {
       'ubicacion'      : data['ubicacion'],
       'descripcion_eq' : data['descripcionEquipo'],
       'tarea' : data['tarea'],
-    }
-    fillModalViewPreventivo(datos);
-    $('#verOtPreventivo').modal('show');
-    WaitingClose();
+    };
   })
   .fail( () => alert( "Error al traer los datos de la OT." ) );
+  return datos;
 }
 //llena datos del modal preventivo
 function fillModalViewPreventivo(datos){
@@ -1659,7 +1425,9 @@ function llenarAdjuntos(adjunto) {
 // Trae datos de OT con origen Backlog
 function getDataOtBacklog(idOt, idBacklog, origen) {
   WaitingOpen('Cargando datos...');
+  var datos = null;
   $.ajax({
+    async: false,
     data: { idOt:idOt, idBacklog:idBacklog },
     dataType: 'json',
     method: 'POST',
@@ -1667,7 +1435,7 @@ function getDataOtBacklog(idOt, idBacklog, origen) {
   })
   .done( (data) => {
     //console.table(data);
-    let datos = {
+    datos = {
       //Panel datos de OT
       'id_ot'          : data['id_orden'],
       'nro'            : data['nro'],
@@ -1689,12 +1457,10 @@ function getDataOtBacklog(idOt, idBacklog, origen) {
       'descripcion_eq' : data['descripcionEquipo'],
       'comp_equipo'    : data['compEquipo'],
       'tarea'          : data['tarea'],
-    }
-    fillModalViewBacklog(datos);
-    $('#verOtBacklog').modal('show');
-    WaitingClose();
+    };
   })
   .fail( () => alert( "Error al traer los datos de la OT." ) );
+  return datos;
 }
 //llena datos del modal preventivo
 function fillModalViewBacklog(datos){
@@ -1733,7 +1499,9 @@ function fillModalViewBacklog(datos){
 // Trae datos de OT con origen Predictivo
 function getDataOtPredictivo(idOt, idPredictivo, origen) {
   WaitingOpen('Cargando datos...');
+  var datos = null;
   $.ajax({
+    async: false,
     data: { idOt:idOt, idPredictivo:idPredictivo },
     dataType: 'json',
     method: 'POST',
@@ -1741,7 +1509,7 @@ function getDataOtPredictivo(idOt, idPredictivo, origen) {
   })
   .done( (data) => {
     console.table(data);
-    let datos = {
+    datos = {
       //Panel datos de OT
       'id_ot'          : data['id_orden'],
       'nro'            : data['nro'],
@@ -1762,12 +1530,10 @@ function getDataOtPredictivo(idOt, idPredictivo, origen) {
       'ubicacion'      : data['ubicacion'],
       'descripcion_eq' : data['descripcionEquipo'],
       'tarea'          : data['tarea'],
-    }
-    fillModalViewPredictivo(datos);
-    $('#verOtPredictivo').modal('show');
-    WaitingClose();
+    };
   })
   .fail( () => alert( "Error al traer los datos de la OT." ) );
+  return datos;
 }
 //llena datos del modal preventivo
 function fillModalViewPredictivo(datos){
@@ -1809,6 +1575,99 @@ $('#verOtPreventivo').on('shown.bs.modal', function (e) {
 $('#collapseHerramientas, #collapseInsumos').on('shown.bs.collapse', function () {
   $( $.fn.dataTable.tables( true ) ).DataTable().columns.adjust();
 })
+
+
+
+
+
+
+// ver Orden de Trabajo
+$(".fa-print").click( function(e){
+  let idot = $(this).parent('td').parent('tr').attr('id');
+  //console.log("id Orden de trabajo: "+idot);
+  
+  WaitingOpen('Obteniendo datos de OT...');
+  //buscar datos 
+  $.ajax({
+    data: { idot:idot },
+    dataType: 'json',
+    method: 'POST',
+    url: 'index.php/Otrabajo/getOrigenOt',
+  })
+  .done( (data) => {
+    console.table(data);
+    traerDatosImprimirOt(idot, data.tipo, data.id_solicitud);
+  })
+  .fail( () => alert( "Error al traer los datos de la OT." ) )
+  .always( () => WaitingClose() );
+});
+
+// Elige a que fcion que trae datos de OT llamar, según su origen
+function traerDatosImprimirOt(idOt, tipo, idSolicitud) {
+  console.info(idOt+' - '+idSolicitud);
+  var datos = null;
+  switch (tipo) {
+    case '1': //Orden de trabajo
+      datos = getDataOt(idOt, "orden de Trabajo");
+      fillPrintView(datos, tipo);
+      WaitingClose();
+      break;
+    case '2': //Solicitud de servicio
+      datos = getDataOtSolServicio(idOt, idSolicitud, "Solicitud de Servicio");
+      fillPrintView(datos, tipo);
+      WaitingClose();
+      break;
+    case '3': //preventivo
+      datos = getDataOtPreventivo(idOt, idSolicitud, "Preventivo");
+      fillPrintView(datos, tipo);
+      WaitingClose();
+      break;
+    case '4': //Backlog
+      datos = getDataOtBacklog(idOt, idSolicitud, "Backlog");
+      fillPrintView(datos, tipo);
+      WaitingClose();
+      break;
+    case '5': //predictivo
+      datos = getDataOtPredictivo(idOt, idSolicitud, "Predictivo");
+      fillPrintView(datos, tipo);
+      WaitingClose();
+      break;
+    case '6': //correctivo programado
+      //break;
+    default:
+      console.error('Tipo de dato desconocido');
+      WaitingClose();
+      break;
+  }
+}
+
+
+//llena datos del modal preventivo
+function fillPrintView(datos, tipo){
+  console.table(datos);
+  $.ajax({
+    type: 'POST',
+    data: { datos:datos, tipo:tipo },
+    dataType: 'text',
+    url: 'index.php/Otrabajo/printOT',
+    success: function(data){
+      texto = data;
+      var mywindow = window.open('', 'Imprimir', 'height=700,width=900');
+      mywindow.document.write('<html><head><title></title>');
+      mywindow.document.write('</head><body onload="window.print();">');
+      mywindow.document.write(texto);
+      mywindow.document.write('</body></html>');
+      mywindow.document.close(); // necessary for IE >= 10
+      mywindow.focus(); // necessary for IE >= 10
+      return true; 
+    },
+    error: function(result){
+      console.log(result);
+      console.log("error en la vista imprimir");
+    },
+  });
+}
+
 
 
 

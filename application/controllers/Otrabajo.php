@@ -672,4 +672,33 @@ class Otrabajo extends CI_Controller {
 		$response     = $this->Otrabajos->getViewDataPredictivo($idOt, $idPredictivo);
 		echo json_encode($response[0]);
 	}
+
+
+	public function printOT()
+	{
+		$datos = $this->input->post('datos');
+		$tipo = $this->input->post('tipo');
+		switch ($tipo) {
+		case '1': //Orden de trabajo
+			$this->load->view('otrabajos/printot', $datos);
+			break;
+		case '2': //Solicitud de servicio
+			$this->load->view('otrabajos/printotsolserv', $datos);
+			break;
+		case '3': //preventivo
+			$this->load->view('otrabajos/printotprev', $datos);
+			break;
+		case '4': //Backlog
+			$this->load->view('otrabajos/printotback', $datos);
+			break;
+		case '5': //predictivo
+			$this->load->view('otrabajos/printotpred', $datos);
+			break;
+		case '6': //correctivo programado
+			//break;
+		default:
+			break;
+		}
+	}
+
 }
