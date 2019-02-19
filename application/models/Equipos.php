@@ -271,6 +271,7 @@ class Equipos extends CI_Model {
         $this->db->select('marcasequipos.*');
         $this->db->from('marcasequipos');
         $this->db->where('marcasequipos.id_empresa', $empId);
+        $this->db->where('marcasequipos.estado', 'AC');
         $query = $this->db->get();
         if($query->num_rows()>0){
             return $query->result();
@@ -287,6 +288,7 @@ class Equipos extends CI_Model {
 
         $this->db->select('admcustomers.*');
         $this->db->from('admcustomers');
+        $this->db->where('admcustomers.estado !=', 'AN');
         $this->db->where('admcustomers.id_empresa', $empId);
         $query = $this->db->get();
         if($query->num_rows()>0){

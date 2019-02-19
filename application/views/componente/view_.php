@@ -343,6 +343,7 @@ function limpiarModal(){
 
 // Guarda asociacion Equipo/componente 
 function guardar(){ 
+  WaitingOpen("Guardando asociación a equipo");
   var id_equipo = new Array();     
   $("#tablaequipos tbody tr").each(function (index){
     var idequipo = $(this).attr('id');
@@ -390,39 +391,25 @@ function guardar(){
   });
 
   var idequipo = $('#equipo').val();
-  
-  //console.log("idequipo: "+idequipo);
-  //console.log("componentes: ");
-  //console.table(comp);
-  //console.log("codigo: ");
-  //console.table(codigo);
-  //console.log("sistemaid: ");
-  //console.table(sistemaid);
-  //console.log("bandera: "+x);
   var hayError = false;
 
   if( $('#tablaequipos').DataTable().data().any() ) {
-  //if(eq !== '-1' && comp !== '-1'){   
     $.ajax({
-        type: 'POST',
-        data: {idequipo:idequipo, codigo:codigo, sistemaid:sistemaid, comp:comp, x:x, ge:ge},
-        url: 'index.php/Componente/guardar_componente',  //index.php/
-        success: function(data){
-          console.log("entre por el guardado del componente equipo");
-                //console.log(data);
-                alert ("guardado con exito");
-                cargarVista();
-              },
-        error: function(result){
-          //console.log("entre por el error del componente equipo");
-              
-              console.error(result);
-              
-            }
-           // dataType: 'json'
-        });
-        limpiarModal();
-        }
+      type: 'POST',
+      data: {idequipo:idequipo, codigo:codigo, sistemaid:sistemaid, comp:comp, x:x, ge:ge},
+      url: 'index.php/Componente/guardar_componente',
+      success: function(data){
+        console.log("entre por el guardado del componente equipo");
+        //alert ("guardado con exito");
+        cargarVista();
+      },
+      error: function(result){
+        console.error(result);
+      }
+    });
+    limpiarModal();
+    WaitingClose();
+  }
   else{
     hayError=true;
     $('#error').fadeIn('slow');
@@ -551,6 +538,13 @@ $('#listado, #listado2').click( function cargarVista(){
     $("#content").load("<?php echo base_url(); ?>index.php/Componente/asigna/<?php echo $permission; ?>");
     WaitingClose();
 });
+
+function cargarVista(){
+    WaitingOpen();
+    $('#content').empty();
+    $("#content").load("<?php echo base_url(); ?>index.php/Componente/asigna/<?php echo $permission; ?>");
+    WaitingClose();
+}
 
 // Cuando selecciona equipo carga componentes
 var s=0; 
