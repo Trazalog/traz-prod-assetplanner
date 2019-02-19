@@ -173,7 +173,7 @@ function traeEquipos(){
     $.ajax({
       'dataType': 'json',
       'type'    : "POST",
-      'url'     : "Sservicio/getEquipo",
+      'url'     : "Reporteorden/getEquipo",
     })
     .done(resolve)
     .fail(reject)
@@ -298,6 +298,7 @@ $("#consultar").click(function(evento){
     traeDatosReporte();
   }
 });
+
 
 
 var d    = new Date();

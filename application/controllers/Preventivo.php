@@ -67,20 +67,10 @@ class Preventivo extends CI_Controller {
 	}
 
 	// Trae tareas por empresa logueada - Listo
-	public function gettarea(){
-		
-		$tarea = $this->Preventivos->gettarea();
-
-		if($tarea)
-		{	
-			$arre=array();
-	        foreach ($tarea as $row ) 
-	        {   
-	           $arre[]=$row;
-	        }
-			echo json_encode($arre);
-		}
-		else echo "nada";
+	public function gettarea()
+	{	
+		$tareas = $this->Preventivos->gettarea();
+		echo json_encode($tareas);
 	}
 	
 	//Trae insumo por id 
@@ -131,16 +121,9 @@ class Preventivo extends CI_Controller {
 	// Trae componente segun id de equipo - Listo
 	public function getcomponente()
 	{
-		$id = $_POST['id_equipo']; 
-		$componente = $this->Preventivos->getcomponente($id);
-		if($componente){	
-			$arre=array();
-	        foreach ($componente as $row ){   
-	           $arre[]=$row;
-	        }	        
-			echo json_encode($arre);
-		}
-		else echo "nada";
+		$idEquipo   = $_POST['id_equipo']; 
+		$componente = $this->Preventivos->getcomponente($idEquipo);
+		echo json_encode($componente);
 	}
 
 	// Trae herramientas segun empresa logueada - Listo
@@ -156,6 +139,12 @@ class Preventivo extends CI_Controller {
 		}
 		else echo "nada";
 	}
+
+	public function getHerramientasB()
+    {
+        $herramientas = $this->Preventivos->getHerramientasB();     
+        echo json_encode($herramientas);
+    }
 
 	// Trae insumos segun empresa logueada
 	public function getinsumo(){
@@ -181,8 +170,7 @@ class Preventivo extends CI_Controller {
 		$eq         =$this->input->post('id_equipo');
 		$ta         =$this->input->post('id_tarea');
 		$com        =$this->input->post('id_componente');
-		$ultm       =$this->input->post('vfecha');
-		$ultm       = explode('-', $ultm);		
+		$ultimo     =$this->input->post('ultimo');
 		$pe         =$this->input->post('periodo');
 		$can        =$this->input->post('cantidad');
 		$oper       = $this->input->post('cantOper');
@@ -199,7 +187,7 @@ class Preventivo extends CI_Controller {
 				'id_tarea'      => $ta,
 				'perido'        => $pe,
 				'cantidad'      => $can,
-				'ultimo'        => $ultm[2].'-'.$ultm[1].'-'.$ultm[0],
+				'ultimo'        => $ultimo,
 				'id_componente' => $com,
 				'critico1'      => $critico1,
 				'horash'        => $canhm,
@@ -318,7 +306,7 @@ class Preventivo extends CI_Controller {
 		$id_preventivo = $this->input->post('id_prevent');		
 		$eq = $this->input->post('id_equipo');///
 		$ta = $this->input->post('id_tarea');/// 
-		$pe = "Diario";///	
+		$pe = $this->input->post('perido');;///	
 		$can = $this->input->post('cantidad');///		
 		$ultm = $this->input->post('ultimo');///
 		$com = $this->input->post('id_componente');///

@@ -35,7 +35,7 @@
                 {
                   $userdata = $this->session->userdata('user_data');
                   $usrId    = $userdata[0]['usrId']; 
-               	  foreach($list as $a)
+                  foreach($list as $a)
                   {
                     $gr = $a['grpId'];
                     //echo "grupo: ".$gr;
@@ -46,13 +46,13 @@
                         $causa       = $a['descripcion'];
                         $idsolicitud = $a['id_solicitud'];
                         echo '<tr id="'.$id.'" class="'.$id.'" data-id_equipo="'.$id_equipo.'" data-causa="'.$causa.'" data-idsolicitud="'.$idsolicitud.'">';
-      	                echo '<td>';
+                        echo '<td>';
                         if (strpos($permission,'Del') !== false) {
                           echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar" data-toggle="modal" data-target="#modalaviso"></i>';
                           //echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"  ></i> '; 
                         }
                         if (strpos($permission,'Edit') !== false) {
-      	                	echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar" data-toggle="modal" data-target="#modaleditar" ></i>';
+                          echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar" data-toggle="modal" data-target="#modaleditar" ></i>';
                         }
                         if (strpos($permission,'Asignar') !== false) {
                           echo '<i class="fa fa-check-square-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar tarea" id="btnAddtarea"></i>';
@@ -74,7 +74,11 @@
                         if (strpos($permission,'Del') !== false) {
                           echo '<i class="fa fa-sticky-note-o text-light-blue" id="cargOrden" style="cursor: pointer; margin-left: 15px;" title="Informe de Servicios" ></i>';
                         }
-      	                echo '</td>';
+                        echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir Orden de Trabajo"></i>';
+                        
+                        echo '<i class="fa fa-fw fa-search text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Ver Orden de Trabajo"></i>';
+
+                        echo '</td>';
                         echo '<td>'.$id.'</td>';
                         $fecha_inicio = ($a['fecha_inicio'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_inicio']), 'd-m-Y');
                         echo '<td>'.$fecha_inicio.'</td>';
@@ -89,8 +93,8 @@
                         echo '<td>'.$a['id_solicitud'].'</td>';
                         echo '<td>'.$a['nombre'].'</td>';
                         echo '<td>'.($a['estado'] == 'C' ? '<small class="label pull-left bg-green">Curso</small>' : ($a['estado'] == 'P' ? '<small class="label pull-left bg-red">Pedido</small>' : '<small class="label pull-left bg-yellow">Asignado</small>')).'</td>';
-      	                echo '</tr>';
-        		          }
+                        echo '</tr>';
+                      }
                     }
                   }
                 }
@@ -833,263 +837,12 @@ $(document).ready(function(event) {
   }); 
   var origen="";
 
-  $(".fa-print").click(function (e) {
-        e.preventDefault();
-        var ido = $(this).parent('td').parent('tr').attr('id');
-        console.log("El id de orden al imprimir es :");
-        console.log(ido);
-        
-
-        $.ajax({
-              type: 'POST',
-              data: { ido: ido},
-              url: 'index.php/Otrabajo/getprint', //index.php/
-              success: function(data){
-                   
-                    console.log("Entre a la impresion");
-                    console.log(data);
-                    // console.log(data.datos.codigo);
-                     console.log(data[0]['codigo']);
-                    // console.log(data.equipos.asegurado);
-                    // console.log(data.orden.nombre);
-
-                    var fecha = new Date(data[0]['fecha']);
-                    var day = fecha.getDate();
-                    var month = fecha.getMonth();
-                    var year = fecha.getUTCFullYear();
-                    fecha = day + '-' + (month+1) + '-' + year;
-                    //data.equipos.fecha_vigencia
-                    //data.equipos.fecha_inicio
-                    var fechapro = new Date(data[0]['fecha_program']);
-                    var day = fechapro.getDate();
-                    var month = fechapro.getMonth();
-                    var year = fechapro.getUTCFullYear();
-                    fechapro = day + '-' + (month+1) + '-' + year;
-
-                    var fechaent = new Date(data[0]['fecha_entrega']);
-                    var day = fechaent.getDate();
-                    var month = fechaent.getMonth();
-                    var year = fechaent.getUTCFullYear();
-                    fechaent = day + '-' + (month+1) + '-' + year;
-
-                    var fechater = new Date(data[0]['fecha_terminada']);
-                    var day = fechater.getDate();
-                    var month = fechater.getMonth();
-                    var year = fechater.getUTCFullYear();
-                    fechater = day + '-' + (month+1) + '-' + year;
-
-                    var fechaentregada = new Date(data[0]['fecha_entregada']);
-                    var day = fechaentregada.getDate();
-                    var month = fechaentregada.getMonth();
-                    var year = fechaentregada.getUTCFullYear();
-                    fechaentregada = day + '-' + (month+1) + '-' + year;
-                    
-                    if(data[0]['id']==1){
-                      origen='OT';
-
-                    }
-                    else{
-                      if(data[0]['id']==2){
-                      origen='Solicitud de Servicio';
-                      }
-
-                    }
-                     if(data[0]['id']==3){
-                      origen='Preventivo';
-
-                    }
-                    else{
-                      if(data[0]['id']==4){
-                      origen='Backlog';
-                      }
-                     
-                    }
-                     if(data[0]['id']==5){
-                      origen='Predictivo';
-
-                    }
-                    else{
-                      if(data[0]['id']==6){
-                      origen='Correctivo Programado';
-                      }
-                     
-                    }
-
-                     var  texto =
-
-                                '<div class="" id="vistaimprimir">'+
-                                  '<div class="container">'+
-                                    '<div class="thumbnail">'+
-
-                                      '<div class="caption">'+
-                                        '<div class="row" >'+
-                                          '<div class="panel panel-default">'+
-                                            '<div class="form-group">'+
-                                              '<h3 class="text-center" align="center"></h3>'+
-                                            '</div>'+
-                                            '<hr/>'+
-                                            '<div class="panel-body">'+
-                                              '<div class="container">'+
-                                                '<div class="thumbnail">'+
-                                                  '<div class="row">'+
-                                                    '<div class="col-sm-12 col-md-12">'+
-                                                      '<table width="100%" style="text-align:justify" >'+
-                                                        '<tr>'+
-                                                        '<tr>'+
-                                                          '<td  colspan="1"  align="left" >'+
-                                                            '<div class="text-left"> <img src="img/LOGO.jpg" width="280" height="80" /> </div></td>'+
-                                                          '</td>'+ 
-                                                          '<td >'+
-                                                            '<div  class="col-md-4 "><h3> ORDEN DE TRABAJO</h3>'+
-                                                            '</div>'+
-                                                            
-                                                          '</td>'+
-
-                                                        '</tr>'+
-                                                        '</tr>'+
-                                                      '</table>'+
-                                                    '</div>'+
-                                                  '</div>'+
-                                                  '<br>'+
-                                                  '<br>'+
-                                                  '<div class="row">'+
-                                                    '<div class="col-sm-12 col-md-12">'+
-                                                      '<table width="100%" style="text-align:justify" border="1px solid black" >'+  
-                                                        '<tr>'+
-                                                            '<td>ID de Orden de trabajo</td>'+
-                                                            '<td>'+data[0]['id_orden']+'</td>'+
-                                                            '</tr>'+
-                                                            '<tr>'+
-                                                            '<td style="text-align: left"" >fecha</td>'+
-                                                            '<td>'+fecha+'</td>'+
-                                                            '</tr>'+
-
-                                                            '<tr>'+
-                                                            '<td>Fecha de programación</td>'+
-                                                            '<td>'+fechapro+'</td>'+
-                                                            '</tr>'+
-                                                            '<tr>'+
-                                                            '<td align="left" >Fecha de Entrega</td>'+
-                                                            '<td>'+fechaent+'</td>'+
-                                                            '</tr>'+
-
-                                                            '<tr>'+
-                                                            '<td>Fecha Entregada</td>'+
-                                                            '<td>'+fechaentregada+'</td>'+
-                                                            '</tr>'+
-                                                            '<tr>'+
-                                                            '<td>Fecha Terminada</td>'+
-                                                            '<td>'+fechater+'</td>'+
-                                                            '</tr>'+
-
-                                                            '<tr>'+
-                                                            '<td>Tarea</td>'+
-                                                            '<td>'+data[0]['detarea']+'</td>'+
-                                                            '</tr>'+
-                                                            '<tr>'+
-                                                            '<td>Equipo</td>'+
-                                                            '<td>'+data[0]['codigo']+'</td>'+
-                                                            '</tr>'+
-
-                                                            '<tr>'+
-                                                            '<td>Diración</td>'+
-                                                            '<td>'+data[0]['duracion']+'</td>'+
-                                                            '</tr>'+
-                                                            '<tr>'+
-                                                            '<td>Origen de OT</td>'+
-                                                            '<td>'+origen+'</td>'+
-                                                            '</tr>'+
-
-                                                            
-
-                                                            
-                                                      
-                                                      '</table>'+
-                                                    '</div>'+
-                                                  '</div>'+
-                                                  '<br>'+
-                                                  '<br>'+
-                                                 
-                                              
-                                                  '<br>'+
-                                                  '<br>'+
-
-                                                 //aca va la tabla 
-
-                                              
-                                           
-                                                '</div>'+
-                                              '</div>'+
-                                            '</div>'+
-
-                                           
-                                          '</div>'+
-                                        '</div>'+
-                                      '</div>'+
-                                      '<style>'+
-                                         '.table, .table>tr, .table>td  {} '+
-                                      '</style>';
-                                      //border:  1px solid black;
-
-
-                                       var mywindow = window.open('', 'Imprimir', 'height=700,width=900');
-                                        mywindow.document.write('<html><head><title></title>');
-                                        //mywindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
-                                        //mywindow.document.write('<link rel="stylesheet" href="main.css">
-                                        mywindow.document.write('</head><body onload="window.print();">');
-                                        mywindow.document.write(texto);
-                                        mywindow.document.write('</body></html>');
-
-                                        mywindow.document.close(); // necessary for IE >= 10
-                                        mywindow.focus(); // necessary for IE >= 10
-                                        //mywindow.print();
-                                        //mywindow.close();
-                                        return true; 
-                 
-
-                  
-                   
-                    },
-              error: function(result){
-
-                        console.log(result);
-                        console.log("error en la vistaimprimir");
-                                      },
-                    dataType: 'json'
-        });
-  });    
-
   $(".fa-toggle-on").click(function (e) { 
     var idord = $(this).parent('td').parent('tr').attr('id');
     console.log(idord);  
     idfin=idord;
   });
   
-  /*$('#vfecha').datepicker({
-      changeMonth: true,
-      changeYear: true
-  }); 
-
-  $("#fecha_entrega").datepicker({
-    dateFormat: 'dd/mm/yy',
-    firstDay: 1
-  }).datepicker("setDate", new Date());
-
-  $("#fecha1").datepicker({
-    dateFormat: 'dd/mm/yy',
-    firstDay: 1
-  }).datepicker("setDate", new Date()); 
-
-  $("#fecha_inicio1").datepicker({
-    dateFormat: 'dd/mm/yy',
-    firstDay: 1
-  }).datepicker("setDate", new Date()); 
-
-  $(".datepicker").datepicker({    
-      changeMonth: true,
-      changeYear: true
-  });*/
-
 
   // Genera Informe de Servicio - Hugo
   $('.fa-sticky-note-o').click( function cargarVista(){
@@ -1104,40 +857,6 @@ $(document).ready(function(event) {
       WaitingClose();
   });
 
-  $('#otrabajo').DataTable({
-    "aLengthMenu": [ 10, 25, 50, 100 ],
-    "columnDefs": [ 
-      {
-        "targets": [ 0 ], 
-        "searchable": false,
-      },
-      {
-        "targets": [ 0 ], 
-        "orderable": false,
-      },
-      { 
-        "targets": [ 1, 8 ],
-        "type": "num",
-      }
-    ],
-    "order": [[1, "desc"]],
-  });
- 
-  $('#tabladetalle').DataTable({
-    "aLengthMenu": [ 10, 25, 50, 100 ],
-    "columnDefs": [ 
-      {
-        "targets": [ 0 ], 
-        "searchable": false
-      },
-      {
-        "targets": [ 0 ], 
-        "orderable": false
-      }
-    ],
-    "order": [[1, "asc"]],
-  });
-
 });
   
 function LoadOT(id_, action){
@@ -1148,21 +867,21 @@ function LoadOT(id_, action){
   $.ajax({
           type: 'POST',
           data: { id : id_, act: action },
-    		  url: 'index.php/otrabajo/getotrabajo', 
-    		    success: function(result){
-			                WaitingClose();
-			                $("#modalBodyOT").html(result.html);
+          url: 'index.php/otrabajo/getotrabajo', 
+            success: function(result){
+                      WaitingClose();
+                      $("#modalBodyOT").html(result.html);
                       $('#vfech').datepicker({
                         changeMonth: true,
                         changeYear: true
                       });
-			                setTimeout("$('#modalOT').modal('show')",800);
+                      setTimeout("$('#modalOT').modal('show')",800);
                       
-    					},
-    		    error: function(result){
-    					WaitingClose();
-    					alert("error");
-    				},
+              },
+            error: function(result){
+              WaitingClose();
+              alert("error");
+            },
           dataType: 'json'
   });
 }
@@ -1216,7 +935,6 @@ function finalOT(id_, action){ //esto es nuevo
   });
 }
 
- 
 // Trae proveedores por empresa logueada      
 function traer_proveedor(){
   $('#proveedor').html('');
@@ -1244,7 +962,6 @@ function traer_proveedor(){
     });
 }
 
-
 function click_pedent(){  
   var fechai= $("#fecha_inicio").val(); //optengo el valor del campo fecha 
   $.ajax({
@@ -1267,7 +984,6 @@ function click_pedent(){
             dataType: 'json'
         });
 }
-
 
 function guardarpedido(){
   console.log("si guardo pedido");
@@ -1312,7 +1028,6 @@ function guardarpedido(){
            // dataType: 'json'
   });                 
 }
-
 
 //OT TOTAL, pasa a la partalla de ot terminadas 
 function guardartotal(){
@@ -1366,6 +1081,645 @@ $(".fa-cart-plus").click(function (e) {
   $('#content').empty();
   $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/agregarnota/<?php echo $permission; ?>/"+iort);
   WaitingClose();  
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ver Orden de Trabajo
+$(".fa-search").click( function(e){
+  let idot = $(this).parent('td').parent('tr').attr('id');
+  //console.log("id Orden de trabajo: "+idot);
+  
+  WaitingOpen('Obteniendo datos de OT...');
+  //buscar datos 
+  $.ajax({
+    data: { idot:idot },
+    dataType: 'json',
+    method: 'POST',
+    url: 'index.php/Otrabajo/getOrigenOt',
+  })
+  .done( (data) => {
+    //console.table(data);
+    traerDatosOt(idot, data.tipo, data.id_solicitud);
+  })
+  .fail( () => alert( "Error al traer los datos de la OT." ) )
+  .always( () => WaitingClose() );
+});
+
+// Elige a que fcion que trae datos de OT llamar, según su origen
+function traerDatosOt(idOt, tipo, idSolicitud) {
+  console.info(idOt+' - '+idSolicitud);
+  var datos = null;
+  switch (tipo) {
+    case '1': //Orden de trabajo
+      datos = getDataOt(idOt, "orden de Trabajo");
+      fillModalView(datos);
+      $('#verOt').modal('show');
+      WaitingClose();
+      break;
+    case '2': //Solicitud de servicio
+      datos = getDataOtSolServicio(idOt, idSolicitud, "Solicitud de Servicio");
+      fillModalViewSolServicio(datos);
+      $('#verOtSolServicio').modal('show');
+      WaitingClose();
+      break;
+    case '3': //preventivo
+      datos = getDataOtPreventivo(idOt, idSolicitud, "Preventivo");
+      fillModalViewPreventivo(datos);
+      $('#verOtPreventivo').modal('show');
+      WaitingClose();
+      break;
+    case '4': //Backlog
+      datos = getDataOtBacklog(idOt, idSolicitud, "Backlog");
+      fillModalViewBacklog(datos);
+      $('#verOtBacklog').modal('show');
+      WaitingClose();
+      break;
+    case '5': //predictivo
+      datos = getDataOtPredictivo(idOt, idSolicitud, "Predictivo");
+      fillModalViewPredictivo(datos);
+      $('#verOtPredictivo').modal('show');
+      WaitingClose();
+      break;
+    case '6': //correctivo programado
+      //break;
+    default:
+      console.error('Tipo de dato desconocido');
+      WaitingClose();
+      break;
+  }
+}
+
+
+
+/***** 1 OT *****/
+
+// Trae datos de OT 
+function getDataOt(idOt, origen) {
+  WaitingOpen('Cargando datos...');
+  var datos = null;
+  $.ajax({
+    async:false,
+    data: { idOt:idOt },
+    dataType: 'json',
+    method: 'POST',
+    url: 'index.php/Otrabajo/getViewDataOt',
+  })
+  .done( (data) => {
+    //console.table(data);
+    datos = {
+      //Panel datos de OT
+      'id_ot'          : data['id_orden'],
+      'nro'            : data['nro'],
+      'descripcion_ot' : data['descripcionFalla'],
+      'fecha_inicio'   : data['fecha_inicio'],
+      'fecha_entrega'  : data['fecha_entrega'],
+      'fecha_program'  : data['fecha_program'],
+      'estado'         : data['estado'],
+      'sucursal'       : data['descripc'],
+      'nombreprov'     : data['provnombre'],
+      'origen'         : origen,
+      'fecha_program'  : data['fecha_program'],
+      'asignado'       : data['usrLastName']+' '+data['usrLastName'],
+      'estado'         : data['estado'],
+      //Panel datos de equipos
+      'codigo'         : data['codigo'],
+      'marca'          : data['marca'],
+      'ubicacion'      : data['ubicacion'],
+      'descripcion_eq' : data['descripcionEquipo'],
+      'comp_equipo'    : data['compEquipo'],
+    }
+  })
+  .fail( () => alert( "Error al traer los datos de la OT." ) );
+  return datos;
+}
+//llena datos del modal preventivo
+function fillModalView(datos){
+  //llenar datos de ot
+  $('#vNroOt').val(datos['nro']);
+  $('#vDescripFalla').val(datos['descripcion_ot']);
+  $('#vFechaCreacion').val(datos['fecha_inicio']);
+  $('#vFechaEntrega').val(datos['fecha_entrega']);
+  $('#vSucursal').val(datos['sucursal']);
+  $('#vProveedor').val(datos['nombreprov']);
+
+  $('#vIdOt').val(datos['id_ot']);
+  $('#vOrigen').val(datos['origen']);
+  $('#vFechaProgram').val(datos['fecha_program']);
+  $('#vAsignado').val(datos['asignado']);
+  $('#vEstado').val(datos['estado']);
+  //llenar datos de equipo
+  $('#vCodigoEquipo').val(datos['codigo']);
+  $('#vMarcaEquipo').val(datos['marca']);
+  $('#vUbicacionEquipo').val(datos['ubicacion']);
+  $('#vDescripcionEquipo').val(datos['descripcion_eq']);
+}
+
+
+
+/***** 2 Solicitud de Servicios *****/
+
+// Trae datos de Solicitud de Servicios con origen Backlog
+function getDataOtSolServicio(idOt, idSolServicio, origen) {
+  WaitingOpen('Cargando datos...');
+  var datos = null;
+  $.ajax({
+    async: false,
+    data: { idOt:idOt, idSolServicio:idSolServicio },
+    dataType: 'json',
+    method: 'POST',
+    url: 'index.php/Otrabajo/getViewDataSolServicio',
+  })
+  .done( (data) => {
+    console.table(data);
+    datos = {
+      //Panel datos de OT
+      'id_ot'          : data['id_orden'],
+      'nro'            : data['nro'],
+      'descripcion_ot' : data['descripcionFalla'],
+      'fecha_inicio'   : data['fecha_inicio'],
+      'fecha_entrega'  : data['fecha_entrega'],
+      'fecha_program'  : data['fecha_program'],
+      'estado'         : data['estado'],
+      'sucursal'       : data['descripc'],
+      'nombreprov'     : data['provnombre'],
+      'origen'         : origen,
+      'fecha_program'  : data['fecha_program'],
+      'asignado'       : data['usrLastName']+' '+data['usrLastName'],
+      'estado'         : data['estado'],
+      //Panel datos de equipos
+      'codigo'         : data['codigo'],
+      'marca'          : data['marca'],
+      'ubicacion'      : data['ubicacion'],
+      'descripcion_eq' : data['descripcionEquipo'],
+      'comp_equipo'    : data['compEquipo'],
+      'solServicio'   : data['solServicio'],
+    };
+  })
+  .fail( () => alert( "Error al traer los datos de la OT." ) );
+  return datos;
+}
+//llena datos del modal preventivo
+function fillModalViewSolServicio(datos){
+  //llenar datos de ot
+  $('#vNroOtSolServicio').val(datos['nro']);
+  $('#vDescripFallaSolServicio').val(datos['descripcion_ot']);
+  $('#vFechaCreacionSolServicio').val(datos['fecha_inicio']);
+  $('#vFechaEntregaSolServicio').val(datos['fecha_entrega']);
+  $('#vSucursalSolServicio').val(datos['sucursal']);
+  $('#vProveedorSolServicio').val(datos['nombreprov']);
+
+  $('#vIdOtSolServicio').val(datos['id_ot']);
+  $('#vOrigenSolServicio').val(datos['origen']);
+  $('#vFechaProgramSolServicio').val(datos['fecha_program']);
+  $('#vAsignadoSolServicio').val(datos['asignado']);
+  $('#vEstadoSolServicio').val(datos['estado']);
+  //llenar datos de equipo
+  $('#vCodigoEquipoSolServicio').val(datos['codigo']);
+  $('#vMarcaEquipoSolServicio').val(datos['marca']);
+  $('#vUbicacionEquipoSolServicio').val(datos['ubicacion']);
+  $('#vDescripcionEquipoSolServicio').val(datos['descripcion_eq']);
+  //llenar datos de soolicitud de servicios
+  $('#vSectorSolServicio').val( datos['solServicio']['sector'] );
+  $('#vGrupoSolServicio').val( datos['solServicio']['grupo'] );
+  $('#vSolicitanteSolServicio').val( datos['solServicio']['solicitante'] );
+  $('#vFechaSugeridaSolServicio').val( datos['solServicio']['fechaSugerida'] );
+  $('#vHorarioSugeridoSolServicio').val( datos['solServicio']['horarioSugerido'] );
+  $('#vFallaSolServicio').val( datos['solServicio']['falla'] );
+}
+
+
+
+/***** 3 preventivo *****/
+
+// Trae datos de OT con origen Preventivo
+function getDataOtPreventivo(idOt, idPreventivo, origen) {
+  WaitingOpen('Cargando datos...');
+  var datos = null;
+  $.ajax({
+    async: false,
+    data: { idOt:idOt, idPreventivo:idPreventivo },
+    dataType: 'json',
+    method: 'POST',
+    url: 'index.php/Otrabajo/getViewDataPreventivo',
+  })
+  .done( (data) => {
+    //console.table(data);
+    datos = {
+      //Panel datos de OT
+      'id_ot'          : data['id_orden'],
+      'nro'            : data['nro'],
+      'descripcion_ot' : data['descripcionFalla'],
+      'fecha_inicio'   : data['fecha_inicio'],
+      'fecha_entrega'  : data['fecha_entrega'],
+      'fecha_program'  : data['fecha_program'],
+      'estado'         : data['estado'],
+      'sucursal'       : data['descripc'],
+      'nombreprov'     : data['provnombre'],
+      'origen'         : origen,
+      'fecha_program'  : data['fecha_program'],
+      'asignado'       : data['usrLastName']+' '+data['usrLastName'],
+      'estado'         : data['estado'],
+      //Panel datos de equipos
+      'codigo'         : data['codigo'],
+      'marca'          : data['marca'],
+      'ubicacion'      : data['ubicacion'],
+      'descripcion_eq' : data['descripcionEquipo'],
+      'tarea' : data['tarea'],
+    };
+  })
+  .fail( () => alert( "Error al traer los datos de la OT." ) );
+  return datos;
+}
+//llena datos del modal preventivo
+function fillModalViewPreventivo(datos){
+  //llenar datos de ot
+  $('#vNroOtPrev').val(datos['nro']);
+  $('#vDescripFallaPrev').val(datos['descripcion_ot']);
+  $('#vFechaCreacionPrev').val(datos['fecha_inicio']);
+  $('#vFechaEntregaPrev').val(datos['fecha_entrega']);
+  $('#vSucursalPrev').val(datos['sucursal']);
+  $('#vProveedorPrev').val(datos['nombreprov']);
+
+  $('#vIdOtPrev').val(datos['id_ot']);
+  $('#vOrigenPrev').val(datos['origen']);
+  $('#vFechaProgramPrev').val(datos['fecha_program']);
+  $('#vAsignadoPrev').val(datos['asignado']);
+  $('#vEstadoPrev').val(datos['estado']);
+  //llenar datos de equipo
+  $('#vCodigoEquipoPrev').val(datos['codigo']);
+  $('#vMarcaEquipoPrev').val(datos['marca']);
+  $('#vUbicacionEquipoPrev').val(datos['ubicacion']);
+  $('#vDescripcionEquipoPrev').val(datos['descripcion_eq']);
+  //llenar campos de tarea
+  $('#vTareaPrev').val( datos['tarea']['tareadescrip'] );
+  $('#vComponentePrev').val( datos['tarea']['descripComponente'] );
+  $('#vFechaBasePrev').val( datos['tarea']['ultimo'] );
+  $('#vPeriodoPrev').val( datos['tarea']['perido'] );
+  $('#vFrecuenciaPrev').val( datos['tarea']['frecuencia'] );
+  $('#vLecturaBasePrev').val( datos['tarea']['lectura_base'] );
+  $('#vAlertaPrev').val( datos['tarea']['alerta'] );
+  $('#vDuraciónPrev').val( datos['tarea']['prev_duracion'] );
+  $('#vUnidadTiempoPrev').val( datos['tarea']['unidaddescrip'] );
+  $('#vCantOperariosPrev').val( datos['tarea']['prev_canth'] );
+  //llenar tabla herramientas
+  llenarTablaHerramientas(datos['tarea']);
+  llenarTablaInsumos(datos['tarea']);
+  llenarAdjuntos(datos['tarea'].prev_adjunto);
+}
+//llena tabla herramientas del modal preventivo
+function llenarTablaHerramientas(tareas) {
+  //console.table(tareas['herramientas'][0]);
+  $('#vTablaHerramientas').DataTable().clear().draw();
+  for (var i = 0; i < tareas['herramientas'][0].length; i++) {
+    //console.info('Herramientas: '+tareas['herramientas'][0][i]);
+    $('#vTablaHerramientas').DataTable().row.add( [
+        tareas['herramientas'][0][i].herrcodigo,
+        tareas['herramientas'][0][i].herrmarca,
+        tareas['herramientas'][0][i].herrdescrip,
+        tareas['herramientas'][0][i].cantidad,
+      ]
+    ).draw();
+  }
+}
+//llena tabla insumos del modal preventivo
+function llenarTablaInsumos(tareas) {
+  //console.table(tareas['insumos'][0]);
+  $('#vTablaInsumos').DataTable().clear().draw();
+  for (var i = 0; i < tareas['insumos'][0].length; i++) {
+    $('#vTablaInsumos').DataTable().row.add( [
+        tareas['insumos'][0][i].artBarCode,
+        tareas['insumos'][0][i].artDescription,
+        tareas['insumos'][0][i].cantidad,
+      ]
+    ).draw();
+  }
+}
+//muestra adjunto del modal preventivo
+function llenarAdjuntos(adjunto) {
+  pdfEmbeded = '<embed src="./assets/filespreventivos/'+adjunto+'" type="application/pdf" style="width:100%;height:800px"></embed>';
+  $('#collapseAdjunto .panel-body').html(pdfEmbeded);
+}
+
+
+
+/* 4 Backlog */
+
+// Trae datos de OT con origen Backlog
+function getDataOtBacklog(idOt, idBacklog, origen) {
+  WaitingOpen('Cargando datos...');
+  var datos = null;
+  $.ajax({
+    async: false,
+    data: { idOt:idOt, idBacklog:idBacklog },
+    dataType: 'json',
+    method: 'POST',
+    url: 'index.php/Otrabajo/getViewDataBacklog',
+  })
+  .done( (data) => {
+    //console.table(data);
+    datos = {
+      //Panel datos de OT
+      'id_ot'          : data['id_orden'],
+      'nro'            : data['nro'],
+      'descripcion_ot' : data['descripcionFalla'],
+      'fecha_inicio'   : data['fecha_inicio'],
+      'fecha_entrega'  : data['fecha_entrega'],
+      'fecha_program'  : data['fecha_program'],
+      'estado'         : data['estado'],
+      'sucursal'       : data['descripc'],
+      'nombreprov'     : data['provnombre'],
+      'origen'         : origen,
+      'fecha_program'  : data['fecha_program'],
+      'asignado'       : data['usrLastName']+' '+data['usrLastName'],
+      'estado'         : data['estado'],
+      //Panel datos de equipos
+      'codigo'         : data['codigo'],
+      'marca'          : data['marca'],
+      'ubicacion'      : data['ubicacion'],
+      'descripcion_eq' : data['descripcionEquipo'],
+      'comp_equipo'    : data['compEquipo'],
+      'tarea'          : data['tarea'],
+    };
+  })
+  .fail( () => alert( "Error al traer los datos de la OT." ) );
+  return datos;
+}
+//llena datos del modal preventivo
+function fillModalViewBacklog(datos){
+  //llenar datos de ot
+  $('#vNroOtBack').val(datos['nro']);
+  $('#vDescripFallaBack').val(datos['descripcion_ot']);
+  $('#vFechaCreacionBack').val(datos['fecha_inicio']);
+  $('#vFechaEntregaBack').val(datos['fecha_entrega']);
+  $('#vSucursalBack').val(datos['sucursal']);
+  $('#vProveedorBack').val(datos['nombreprov']);
+
+  $('#vIdOtBack').val(datos['id_ot']);
+  $('#vOrigenBack').val(datos['origen']);
+  $('#vFechaProgramBack').val(datos['fecha_program']);
+  $('#vAsignadoBack').val(datos['asignado']);
+  $('#vEstadoBack').val(datos['estado']);
+  //llenar datos de equipo
+  $('#vCodigoEquipoBack').val(datos['codigo']);
+  $('#vMarcaEquipoBack').val(datos['marca']);
+  $('#vUbicacionEquipoBack').val(datos['ubicacion']);
+  $('#vDescripcionEquipoBack').val(datos['descripcion_eq']);
+  //llenar campos de componente-equipo
+  $('#vCodigoCompBack').val( datos['tarea']['compEquipo']['codigoComponente'] );
+  $('#vDescripCompBack').val( datos['tarea']['compEquipo']['descripComponente'] );
+  $('#vSistemaBack').val( datos['tarea']['compEquipo']['descripSistema'] );
+  //llenar campos de tarea
+  $('#vTareaBack').val( datos['tarea']['tareadescrip'] );
+  $('#vFechaBack').val( datos['tarea']['fecha'] );
+  $('#vDuracionBack').val( datos['tarea']['back_duracion'] );
+}
+
+
+
+/* 5 Predictivo */
+
+// Trae datos de OT con origen Predictivo
+function getDataOtPredictivo(idOt, idPredictivo, origen) {
+  WaitingOpen('Cargando datos...');
+  var datos = null;
+  $.ajax({
+    async: false,
+    data: { idOt:idOt, idPredictivo:idPredictivo },
+    dataType: 'json',
+    method: 'POST',
+    url: 'index.php/Otrabajo/getViewDataPredictivo',
+  })
+  .done( (data) => {
+    console.table(data);
+    datos = {
+      //Panel datos de OT
+      'id_ot'          : data['id_orden'],
+      'nro'            : data['nro'],
+      'descripcion_ot' : data['descripcionFalla'],
+      'fecha_inicio'   : data['fecha_inicio'],
+      'fecha_entrega'  : data['fecha_entrega'],
+      'fecha_program'  : data['fecha_program'],
+      'estado'         : data['estado'],
+      'sucursal'       : data['descripc'],
+      'nombreprov'     : data['provnombre'],
+      'origen'         : origen,
+      'fecha_program'  : data['fecha_program'],
+      'asignado'       : data['usrLastName']+' '+data['usrLastName'],
+      'estado'         : data['estado'],
+      //Panel datos de equipos
+      'codigo'         : data['codigo'],
+      'marca'          : data['marca'],
+      'ubicacion'      : data['ubicacion'],
+      'descripcion_eq' : data['descripcionEquipo'],
+      'tarea'          : data['tarea'],
+    };
+  })
+  .fail( () => alert( "Error al traer los datos de la OT." ) );
+  return datos;
+}
+//llena datos del modal preventivo
+function fillModalViewPredictivo(datos){
+  //llenar datos de ot
+  $('#vNroOtPred').val(datos['nro']);
+  $('#vDescripFallaPred').val(datos['descripcion_ot']);
+  $('#vFechaCreacionPred').val(datos['fecha_inicio']);
+  $('#vFechaEntregaPred').val(datos['fecha_entrega']);
+  $('#vSucursalPred').val(datos['sucursal']);
+  $('#vProveedorPred').val(datos['nombreprov']);
+
+  $('#vIdOtPred').val(datos['id_ot']);
+  $('#vOrigenPred').val(datos['origen']);
+  $('#vFechaProgramPred').val(datos['fecha_program']);
+  $('#vAsignadoPred').val(datos['asignado']);
+  $('#vEstadoPred').val(datos['estado']);
+  //llenar datos de equipo
+  $('#vCodigoEquipoPred').val(datos['codigo']);
+  $('#vMarcaEquipoPred').val(datos['marca']);
+  $('#vUbicacionEquipoPred').val(datos['ubicacion']);
+  $('#vDescripcionEquipoPred').val(datos['descripcion_eq']);
+  //llenar campos de tarea
+  $('#vTareaPred').val( datos['tarea']['tareadescrip'] );
+  $('#vFechaPred').val( datos['tarea']['fecha'] );
+  $('#vPeriodoPred').val( datos['tarea']['periodo'] );
+  $('#vFrecuenciaPred').val( datos['tarea']['frecuencia'] );
+  $('#vDuraciónPred').val( datos['tarea']['duracion']+' '+datos['tarea']['unidaddescrip'] );
+  $('#vCantOperariosPred').val( datos['tarea']['cantOperarios'] );
+  $('#vCantHsHombrePred').val( datos['tarea']['horash'] );
+}
+
+
+
+// ajusto el ancho de la cabecera de las tablas al cargar el modal
+$('#verOtPreventivo').on('shown.bs.modal', function (e) {
+  $( $.fn.dataTable.tables( true ) ).DataTable().columns.adjust();
+});
+//y al mostrar panel de acordeon
+$('#collapseHerramientas, #collapseInsumos').on('shown.bs.collapse', function () {
+  $( $.fn.dataTable.tables( true ) ).DataTable().columns.adjust();
+})
+
+
+
+
+
+
+// ver Orden de Trabajo
+$(".fa-print").click( function(e){
+  let idot = $(this).parent('td').parent('tr').attr('id');
+  //console.log("id Orden de trabajo: "+idot);
+  
+  WaitingOpen('Obteniendo datos de OT...');
+  //buscar datos 
+  $.ajax({
+    data: { idot:idot },
+    dataType: 'json',
+    method: 'POST',
+    url: 'index.php/Otrabajo/getOrigenOt',
+  })
+  .done( (data) => {
+    console.table(data);
+    traerDatosImprimirOt(idot, data.tipo, data.id_solicitud);
+  })
+  .fail( () => alert( "Error al traer los datos de la OT." ) )
+  .always( () => WaitingClose() );
+});
+
+// Elige a que fcion que trae datos de OT llamar, según su origen
+function traerDatosImprimirOt(idOt, tipo, idSolicitud) {
+  console.info(idOt+' - '+idSolicitud);
+  var datos = null;
+  switch (tipo) {
+    case '1': //Orden de trabajo
+      datos = getDataOt(idOt, "orden de Trabajo");
+      fillPrintView(datos, tipo);
+      WaitingClose();
+      break;
+    case '2': //Solicitud de servicio
+      datos = getDataOtSolServicio(idOt, idSolicitud, "Solicitud de Servicio");
+      fillPrintView(datos, tipo);
+      WaitingClose();
+      break;
+    case '3': //preventivo
+      datos = getDataOtPreventivo(idOt, idSolicitud, "Preventivo");
+      fillPrintView(datos, tipo);
+      WaitingClose();
+      break;
+    case '4': //Backlog
+      datos = getDataOtBacklog(idOt, idSolicitud, "Backlog");
+      fillPrintView(datos, tipo);
+      WaitingClose();
+      break;
+    case '5': //predictivo
+      datos = getDataOtPredictivo(idOt, idSolicitud, "Predictivo");
+      fillPrintView(datos, tipo);
+      WaitingClose();
+      break;
+    case '6': //correctivo programado
+      //break;
+    default:
+      console.error('Tipo de dato desconocido');
+      WaitingClose();
+      break;
+  }
+}
+
+
+//llena datos del modal preventivo
+function fillPrintView(datos, tipo){
+  console.table(datos);
+  $.ajax({
+    type: 'POST',
+    data: { datos:datos, tipo:tipo },
+    dataType: 'text',
+    url: 'index.php/Otrabajo/printOT',
+    success: function(data){
+      texto = data;
+      var mywindow = window.open('', 'Imprimir', 'height=700,width=900');
+      mywindow.document.write('<html><head><title></title>');
+      mywindow.document.write('</head><body onload="window.print();">');
+      mywindow.document.write(texto);
+      mywindow.document.write('</body></html>');
+      mywindow.document.close(); // necessary for IE >= 10
+      mywindow.focus(); // necessary for IE >= 10
+      return true; 
+    },
+    error: function(result){
+      console.log(result);
+      console.log("error en la vista imprimir");
+    },
+  });
+}
+
+
+
+
+$('#otrabajo').DataTable({
+  "aLengthMenu": [ 10, 25, 50, 100 ],
+  "columnDefs": [ 
+    {
+      "targets": [ 0 ], 
+      "searchable": false,
+    },
+    {
+      "targets": [ 0 ], 
+      "orderable": false,
+    },
+    { 
+      "targets": [ 1, 8 ],
+      "type": "num",
+    }
+  ],
+  "order": [[1, "desc"]],
+});
+ 
+$('#tabladetalle').DataTable({
+  "aLengthMenu": [ 10, 25, 50, 100 ],
+  "columnDefs": [ 
+    {
+      "targets": [ 0 ], 
+      "searchable": false
+    },
+    {
+      "targets": [ 0 ], 
+      "orderable": false
+    }
+  ],
+  "order": [[1, "asc"]],
+});
+
+
+$('#vTablaHerramientas').DataTable({
+  "aLengthMenu": [ 10, 25, 50, 100 ],
+  "columnDefs": [ 
+    { 
+      "targets": [ 3 ],
+      "type": "num",
+    }
+  ],
+  "order": [[0, "asc"]],
+});
+
+$('#vTablaInsumos').DataTable({
+  "aLengthMenu": [ 10, 25, 50, 100 ],
+  "order": [[0, "asc"]],
 });
 
 </script>
@@ -1629,92 +1983,6 @@ $(".fa-cart-plus").click(function (e) {
 <!-- / Modal -->
 
 
-
-<?php /*<!-- Modal Pedido-->
-<div class="modal" id="modalpedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"  id="myModalLabel"><span class="fa fa-tags text-light-blue"></span> Orden de Pedido</h4>
-       </div> <!-- /.modal-header  -->
-
-      <div class="modal-body" id="modalBodyArticle">
-        <div class="row" >
-
-            <div class="col-xs-12">
-              <label for="num1">Nro:</label>
-              <input type="text"  class="form-control" id="num1" name="num1" placeholder="Ingrese nro de orden de pedido..">
-              <!--align=\"right\" -->
-            </div>
-            <div class="col-xs-12">
-              <label for="fecha1">Fecha:</label>
-              <input type="date"  class="datepicker fecha1 form-control" id="fecha1"  name="fecha1" size= "36" value="<?php echo date_format(date_create(date("Y-m-d ")), 'd/m/Y') ; ?>"  />
-            </div>
-            <div class="col-xs-12">
-              <label for="fecha_entrega2">Fecha de Entrega:</label>
-              <input type="date"  class="form-control" id="fecha_entrega2" name="fecha_entrega2" />
-            </div>
-            <div class="col-xs-12">
-              <label for="proveedor">Proveedor:</label>
-              <select type="text"  id="proveedor" name="proveedor" class="form-control" value="" ></select>
-              <input type="hidden" id="id_proveedor" name="id_proveedor">
-            </div>
-            
-            <div class="col-xs-12">
-              <label for="">Detalle del pedido:</label>
-              <textarea  class="form-control input-md" rows="6" cols="500" id="descripcion2" name="descripcion2"
-              value="" placeholder="Ingrese detalle del pedido..."></textarea>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal" onclick="cerro()">Cancelar</button>     
-          <button type="button" class="btn btn-primary" id="btnSave" data-dismiss="modal" onclick="guardarpedido()" >Guardar</button>
-        </div>  <!-- /.modal footer -->
-      </div>  <!-- /.modal-body -->
-    </div> <!-- /.modal-content -->
-  </div>  <!-- /.modal-dialog modal-lg -->
-</div>  <!-- /.modal fade -->
-<!-- / Modal -->
-
-<!-- Modal mostrar pedido-->
-<div class="modal" id="modallista" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"  id="myModalLabel"><spanclass="fa fa-truck text-light-blue"></span> Lista de Orden de Pedido</h4>
-      </div> <!-- /.modal-header  -->
-
-      <div class="modal-body" id="modalBodyArticle">
-        <div class="row" >
-          <div class="col-xs-12">
-            <table class="table table-bordered table-hover" id="tabladetalle">
-              <thead>
-                <tr>
-                  <th></th>                  
-                  <th>Nro de orden</th>
-                  <th>Fecha</th>
-                  <th>Fecha de Entrega</th>
-                  <th>Proveedor</th>
-                  <th>Descripcion</th>
-                  <th>Estado</th>
-                </tr>
-              </thead>
-              <tbody>              
-              </tbody>
-            </table>    
-          </div>
-        </div>  
-      </div>  <!-- /.modal-body -->
-    </div> <!-- /.modal-content -->
-  </div>  <!-- /.modal-dialog modal-lg -->
-</div>  <!-- /.modal fade -->
-<!-- / Modal -->*/ ?>
-
 <!-- Modal FINALIZAR-->
 <div class="modal" id="modalfinalizar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog modal-lg" role="document">
@@ -1773,3 +2041,873 @@ $(".fa-cart-plus").click(function (e) {
   </div>  <!-- /.modal-dialog modal-lg -->
 </div>  <!-- /.modal fade -->
 <!-- / Modal -->
+
+
+<!-- Modal Ver Orden de Trabajo -->
+<div class="modal" id="verOt" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Orden de Trabajo</h4>
+      </div>
+      <div class="modal-body">
+        
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingOne">
+              <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOt" aria-expanded="true" aria-controls="collapseOt">
+                  Datos de OT
+                </a>
+              </h4>
+            </div>
+            <div id="collapseOt" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+              <div class="panel-body">
+
+                <div class="row">
+                  <div class="col-xs-12 col-sm-3">
+                    <label for="vIdOt">Id de OT:</label>
+                    <input type="text" class="form-control " name="vIdOt" id="vIdOt" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-3">
+                    <label for="vNroOt">Número de OT:</label>
+                    <input type="text" class="form-control " name="vNroOt" id="vNroOt" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6">
+                    <label for="vDescripFalla">Descripción:</label>
+                    <input type="text" class="form-control vDescripFalla" id="vDescripFalla" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vFechaProgram">Fecha Programación:</label>
+                    <input type="text" class="form-control " name="vFechaProgram" id="vFechaProgram" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vFechaCreacion">Fecha Inicio:</label>
+                    <input type="text" class="form-control " name="vFechaCreacion" id="vFechaCreacion" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vFechaEntrega">Fecha Entrega:</label>
+                    <input type="text" class="form-control " name="vFechaEntrega" id="vFechaEntrega" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vEstado">Estado:</label>
+                    <input type="text" class="form-control " name="vEstado" id="vEstado" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vSucursal">Sucursal:</label>
+                    <input type="text" class="form-control " name="vSucursal" id="vSucursal" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vProveedor">Proveedor:</label>
+                    <input type="text" class="form-control " name="vProveedor" id="vProveedor" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vOrigen">Origen:</label>
+                    <input type="text" class="form-control " name="vOrigen" id="vOrigen" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vAsignado">Asignado:</label>
+                    <input type="text" class="form-control " name="vAsignado" id="vAsignado" disabled>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingTwo">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEquipo" aria-expanded="false" aria-controls="collapseEquipo">
+                  Datos de equipo
+                </a>
+              </h4>
+            </div>
+            <div id="collapseEquipo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+              <div class="panel-body">
+                
+                <div class="row">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vCodigoEquipo">Equipo:</label>
+                    <input type="text" class="form-control " name="vCodigoEquipo" id="vCodigoEquipo" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vMarcaEquipo">Marca:</label>
+                    <input type="text" class="form-control " name="vMarcaEquipo" id="vMarcaEquipo" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vUbicacionEquipo">Ubicación:</label>
+                    <input type="text" class="form-control " name="vUbicacionEquipo" id="vUbicacionEquipo" disabled>
+                  </div>
+
+                  <div class="col-xs-12">
+                    <label for="vDescripcionEquipo">Descripción:</label>
+                    <Textarea class="form-control " name="vDescripcionEquipo" id="vDescripcionEquipo" disabled></Textarea>
+                  </div>              
+                </div>
+
+              </div>
+            </div>
+          </div> 
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<!-- Modal Ver Orden de Trabajo Solicitud de Servicio-->
+<div class="modal" id="verOtSolServicio" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Orden de Trabajo</h4>
+      </div>
+      <div class="modal-body">
+        
+        <div class="panel-group" id="accordionSolServicio" role="tablist" aria-multiselectable="true">
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingOneSolServicio">
+              <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordionSolServicio" href="#collapseOtSolServicio" aria-expanded="true" aria-controls="collapseOtSolServicio">
+                  Datos de OT
+                </a>
+              </h4>
+            </div>
+            <div id="collapseOtSolServicio" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOneSolServicio">
+              <div class="panel-body">
+
+                <div class="row">
+                  <div class="col-xs-12 col-sm-3">
+                    <label for="vIdOtSolServicio">Id de OT:</label>
+                    <input type="text" class="form-control " name="vIdOtSolServicio" id="vIdOtSolServicio" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-3">
+                    <label for="vNroOtSolServicio">Número de OT:</label>
+                    <input type="text" class="form-control " name="vNroOtSolServicio" id="vNroOtSolServicio" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6">
+                    <label for="vDescripFallaSolServicio">Descripción:</label>
+                    <input type="text" class="form-control vDescripFallaSolServicio" id="vDescripFallaSolServicio" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vFechaProgramSolServicio">Fecha Programación:</label>
+                    <input type="text" class="form-control " name="vFechaProgramSolServicio" id="vFechaProgramSolServicio" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vFechaCreacionSolServicio">Fecha Inicio:</label>
+                    <input type="text" class="form-control " name="vFechaCreacionSolServicio" id="vFechaCreacionSolServicio" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vFechaEntregaSolServicio">Fecha Entrega:</label>
+                    <input type="text" class="form-control " name="vFechaEntregaSolServicio" id="vFechaEntregaSolServicio" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vEstadoSolServicio">Estado:</label>
+                    <input type="text" class="form-control " name="vEstadoSolServicio" id="vEstadoSolServicio" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vSucursalSolServicio">Sucursal:</label>
+                    <input type="text" class="form-control " name="vSucursalSolServicio" id="vSucursalSolServicio" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vProveedorSolServicio">Proveedor:</label>
+                    <input type="text" class="form-control " name="vProveedorSolServicio" id="vProveedorSolServicio" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vOrigenSolServicio">Origen:</label>
+                    <input type="text" class="form-control " name="vOrigenSolServicio" id="vOrigenSolServicio" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vAsignadoSolServicio">Asignado:</label>
+                    <input type="text" class="form-control " name="vAsignadoSolServicio" id="vAsignadoSolServicio" disabled>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingTwoSolServicio">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionSolServicio" href="#collapseEquipoSolServicio" aria-expanded="false" aria-controls="collapseEquipoSolServicio">
+                  Datos de equipo
+                </a>
+              </h4>
+            </div>
+            <div id="collapseEquipoSolServicio" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwoSolServicio">
+              <div class="panel-body">
+                
+                <div class="row">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vCodigoEquipoSolServicio">Equipo:</label>
+                    <input type="text" class="form-control " name="vCodigoEquipoSolServicio" id="vCodigoEquipoSolServicio" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vMarcaEquipoSolServicio">Marca:</label>
+                    <input type="text" class="form-control " name="vMarcaEquipoSolServicio" id="vMarcaEquipoSolServicio" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vUbicacionEquipoSolServicio">Ubicación:</label>
+                    <input type="text" class="form-control " name="vUbicacionEquipoSolServicio" id="vUbicacionEquipoSolServicio" disabled>
+                  </div>
+
+                  <div class="col-xs-12">
+                    <label for="vDescripcionEquipoSolServicio">Descripción:</label>
+                    <Textarea class="form-control " name="vDescripcionEquipoSolServicio" id="vDescripcionEquipoSolServicio" disabled></Textarea>
+                  </div>              
+                </div>
+
+              </div>
+            </div>
+          </div> 
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingThreeSolServicio">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionSolServicio" href="#collapseSolServicio" aria-expanded="false" aria-controls="collapseSolServicio">
+                  Solicitud de Servicio
+                </a>
+              </h4>
+            </div>
+            <div id="collapseSolServicio" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThreeSolServicio">
+              <div class="panel-body">
+                
+                <div class="row">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vSectorSolServicio">Sector:</label>
+                    <input type="text" class="form-control " name="vSectorSolServicio" id="vSectorSolServicio" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vGrupoSolServicio">Grupo:</label>
+                    <input type="text" class="form-control " name="vGrupoSolServicio" id="vGrupoSolServicio" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vSolicitanteSolServicio">Solicitante:</label>
+                    <input type="text" class="form-control " name="vSolicitanteSolServicio" id="vSolicitanteSolServicio" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vFechaSugeridaSolServicio">Fecha sugerida:</label>
+                    <input type="text" class="form-control " name="vFechaSugeridaSolServicio" id="vFechaSugeridaSolServicio" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vHorarioSugeridoSolServicio">Horario sugerido:</label>
+                    <input type="text" class="form-control " name="vHorarioSugeridoSolServicio" id="vHorarioSugeridoSolServicio" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vFallaSolServicio">Causa:</label>
+                    <input type="text" class="form-control " name="vFallaSolServicio" id="vFallaSolServicio" disabled>
+                  </div>
+
+         
+                </div>
+
+              </div>
+            </div>
+          </div> 
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<!-- Modal Ver Orden de Trabajo Preventivo -->
+<div class="modal" id="verOtPreventivo" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Orden de Trabajo</h4>
+      </div>
+      <div class="modal-body">
+        
+        <div class="panel-group" id="accordionPrev" role="tablist" aria-multiselectable="true">
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingOnePrev">
+              <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordionPrev" href="#collapseOtPrev" aria-expanded="true" aria-controls="collapseOtPrev">
+                  Datos de OT
+                </a>
+              </h4>
+            </div>
+            <div id="collapseOtPrev" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOnePrev">
+              <div class="panel-body">
+
+                <div class="row">
+                  <div class="col-xs-12 col-sm-3">
+                    <label for="vIdOtPrev">Id de OT:</label>
+                    <input type="text" class="form-control " name="vIdOtPrev" id="vIdOtPrev" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-3">
+                    <label for="vNroOtPrev">Número de OT:</label>
+                    <input type="text" class="form-control " name="vNroOtPrev" id="vNroOtPrev" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6">
+                    <label for="vDescripFallaPrev">Descripción:</label>
+                    <input type="text" class="form-control vDescripFallaPrev" id="vDescripFallaPrev" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vFechaProgramPrev">Fecha Programación:</label>
+                    <input type="text" class="form-control " name="vFechaProgramPrev" id="vFechaProgramPrev" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vFechaCreacionPrev">Fecha Inicio:</label>
+                    <input type="text" class="form-control " name="vFechaCreacionPrev" id="vFechaCreacionPrev" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vFechaEntregaPrev">Fecha Entrega:</label>
+                    <input type="text" class="form-control " name="vFechaEntregaPrev" id="vFechaEntregaPrev" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vEstadoPrev">Estado:</label>
+                    <input type="text" class="form-control " name="vEstadoPrev" id="vEstadoPrev" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vSucursalPrev">Sucursal:</label>
+                    <input type="text" class="form-control " name="vSucursalPrev" id="vSucursalPrev" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vProveedorPrev">Proveedor:</label>
+                    <input type="text" class="form-control " name="vProveedorPrev" id="vProveedorPrev" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vOrigenPrev">Origen:</label>
+                    <input type="text" class="form-control " name="vOrigenPrev" id="vOrigenPrev" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vAsignadoPrev">Asignado:</label>
+                    <input type="text" class="form-control " name="vAsignadoPrev" id="vAsignadoPrev" disabled>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingTwoPrev">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionPrev" href="#collapseEquipoPrev" aria-expanded="false" aria-controls="collapseEquipoPrev">
+                  Datos de equipo
+                </a>
+              </h4>
+            </div>
+            <div id="collapseEquipoPrev" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwoPrev">
+              <div class="panel-body">
+                
+                <div class="row">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vCodigoEquipoPrev">Equipo:</label>
+                    <input type="text" class="form-control " name="vCodigoEquipoPrev" id="vCodigoEquipoPrev" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vMarcaEquipoPrev">Marca:</label>
+                    <input type="text" class="form-control " name="vMarcaEquipoPrev" id="vMarcaEquipoPrev" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vUbicacionEquipoPrev">Ubicación:</label>
+                    <input type="text" class="form-control " name="vUbicacionEquipoPrev" id="vUbicacionEquipoPrev" disabled>
+                  </div>
+
+                  <div class="col-xs-12">
+                    <label for="vDescripcionEquipoPrev">Descripción:</label>
+                    <Textarea class="form-control " name="vDescripcionEquipoPrev" id="vDescripcionEquipoPrev" disabled></Textarea>
+                  </div>                  
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingThreePrev">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionPrev" href="#collapseTareaPrev" aria-expanded="false" aria-controls="collapseTareaPrev">
+                  Datos de la Tarea
+                </a>
+              </h4>
+            </div>
+            <div id="collapseTareaPrev" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThreePrev">
+              <div class="panel-body">
+                
+                <div class="row">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vTareaPrev">Tarea:</label>
+                    <input type="text" class="form-control " name="vTareaPrev" id="vTareaPrev" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vComponentePrev">Componente:</label>
+                    <input type="text" class="form-control " name="vComponentePrev" id="vComponentePrev" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vPeriodoPrev">Periodo:</label>
+                    <input type="text" class="form-control " name="vPeriodoPrev" id="vPeriodoPrev" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vFrecuenciaPrev">Frecuencia:</label>
+                    <input type="text" class="form-control " name="vFrecuenciaPrev" id="vFrecuenciaPrev" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vLecturaBasePrev">Lectura Base:</label>
+                    <input type="text" class="form-control " name="vLecturaBasePrev" id="vLecturaBasePrev" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vAlertaPrev">Alerta:</label>
+                    <input type="text" class="form-control " name="vAlertaPrev" id="vAlertaPrev" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vDuraciónPrev">Duración:</label>
+                    <input type="text" class="form-control " name="vDuraciónPrev" id="vDuraciónPrev" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vUnidadTiempoPrev">Unidad de tiempo:</label>
+                    <input type="text" class="form-control " name="vUnidadTiempoPrev" id="vUnidadTiempoPrev" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vCantOperariosPrev">Cantidad Operarios:</label>
+                    <input type="text" class="form-control " name="vCantOperariosPrev" id="vCantOperariosPrev" disabled>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>  
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingFourPrev">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionPrev" href="#collapseHerramientas" aria-expanded="false" aria-controls="collapseHerramientas">
+                  Herramientas
+                </a>
+              </h4>
+            </div>
+            <div id="collapseHerramientas" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFourPrev">
+              <div class="panel-body">
+                
+                <!-- tabla -->
+                <div class="row" >
+                  <div class="col-xs-12">
+                    <form id = "form_order">
+                      <table class="table table-bordered" id="vTablaHerramientas" border="1px">
+                        <thead>
+                           <tr>
+                            <th>Código</th>
+                            <th>Marca</th>
+                            <th>descripción</th>
+                            <th>Cantidad</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                      </table>
+                    </form>  
+                  </div>
+                </div>
+                <!-- / tabla-->
+
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingFivePrev">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionPrev" href="#collapseInsumos" aria-expanded="false" aria-controls="collapseInsumos">
+                  Insumos
+                </a>
+              </h4>
+            </div>
+            <div id="collapseInsumos" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFivePrev">
+              <div class="panel-body">
+                
+                <!-- tabla -->
+                <div class="row" >
+                  <div class="col-xs-12">
+                    <form id = "form_order">
+                      <table class="table table-bordered" id="vTablaInsumos" border="1px">
+                        <thead>
+                           <tr>
+                            <th>Código</th>
+                            <th>descripción</th>
+                            <th>Cantidad</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                      </table>
+                    </form>  
+                  </div>
+                </div>
+                <!-- / tabla-->
+
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingSix">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionPrev" href="#collapseAdjunto" aria-expanded="false" aria-controls="collapseAdjunto">
+                  Adjunto
+                </a>
+              </h4>
+            </div>
+            <div id="collapseAdjunto" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
+              <div class="panel-body">
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<!-- Modal Ver Orden de Trabajo Backlog -->
+<div class="modal" id="verOtBacklog" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Orden de Trabajo</h4>
+      </div>
+      <div class="modal-body">
+        
+        <div class="panel-group" id="accordionBack" role="tablist" aria-multiselectable="true">
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingOneBack">
+              <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordionBack" href="#collapseOtBack" aria-expanded="true" aria-controls="collapseOtBack">
+                  Datos de OT
+                </a>
+              </h4>
+            </div>
+            <div id="collapseOtBack" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOneBack">
+              <div class="panel-body">
+
+                <div class="row">
+                  <div class="col-xs-12 col-sm-3">
+                    <label for="vIdOtBack">Id de OT:</label>
+                    <input type="text" class="form-control " name="vIdOtBack" id="vIdOtBack" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-3">
+                    <label for="vNroOtBack">Número de OT:</label>
+                    <input type="text" class="form-control " name="vNroOtBack" id="vNroOtBack" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6">
+                    <label for="vDescripFallaBack">Descripción:</label>
+                    <input type="text" class="form-control vDescripFallaBack" id="vDescripFallaBack" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vFechaProgram">Fecha Programación:</label>
+                    <input type="text" class="form-control " name="vFechaProgram" id="vFechaProgram" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vFechaCreacionBack">Fecha Inicio:</label>
+                    <input type="text" class="form-control " name="vFechaCreacionBack" id="vFechaCreacionBack" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vFechaEntregaBack">Fecha Entrega:</label>
+                    <input type="text" class="form-control " name="vFechaEntregaBack" id="vFechaEntregaBack" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vEstadoBack">Estado:</label>
+                    <input type="text" class="form-control " name="vEstadoBack" id="vEstadoBack" disabled>
+                  </div>
+                  
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vSucursalBack">Sucursal:</label>
+                    <input type="text" class="form-control " name="vSucursalBack" id="vSucursalBack" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vProveedorBack">Proveedor:</label>
+                    <input type="text" class="form-control " name="vProveedorBack" id="vProveedorBack" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vOrigenBack">Origen:</label>
+                    <input type="text" class="form-control " name="vOrigenBack" id="vOrigenBack" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vAsignadoBack">Asignado:</label>
+                    <input type="text" class="form-control " name="vAsignadoBack" id="vAsignadoBack" disabled>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingTwoBack">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionBack" href="#collapseEquipoBack" aria-expanded="false" aria-controls="collapseEquipoBack">
+                  Datos de equipo
+                </a>
+              </h4>
+            </div>
+            <div id="collapseEquipoBack" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwoBack">
+              <div class="panel-body">
+                
+                <div class="row">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vCodigoEquipoBack">Equipo:</label>
+                    <input type="text" class="form-control " name="vCodigoEquipoBack" id="vCodigoEquipoBack" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vMarcaEquipoBack">Marca:</label>
+                    <input type="text" class="form-control " name="vMarcaEquipoBack" id="vMarcaEquipoBack" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vUbicacionEquipoBack">Ubicación:</label>
+                    <input type="text" class="form-control " name="vUbicacionEquipoBack" id="vUbicacionEquipoBack" disabled>
+                  </div>
+
+                  <div class="col-xs-12">
+                    <label for="vDescripcionEquipoBack">Descripción:</label>
+                    <Textarea class="form-control " name="vDescripcionEquipoBack" id="vDescripcionEquipoBack" disabled></Textarea>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vCodigoCompBack">Código de componente-equipo:</label>
+                    <input type="text" class="form-control " name="vCodigoCompBack" id="vCodigoCompBack" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vDescripCompBack">Descripción de componente:</label>
+                    <input type="text" class="form-control " name="vDescripCompBack" id="vDescripCompBack" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vSistemaBack">Sistema:</label>
+                    <input type="text" class="form-control " name="vSistemaBack" id="vSistemaBack" disabled>
+                  </div>               
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingThreeBack">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionBack" href="#collapseTareaBack" aria-expanded="false" aria-controls="collapseTareaBack">
+                  Datos de la Tarea
+                </a>
+              </h4>
+            </div>
+            <div id="collapseTareaBack" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThreeBack">
+              <div class="panel-body">
+                
+                <div class="row">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vTareaBack">Tarea:</label>
+                    <input type="text" class="form-control " name="vTareaBack" id="vTareaBack" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vFechaBack">Fecha:</label>
+                    <input type="text" class="form-control " name="vFechaBack" id="vFechaBack" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vDuracionBack">Duración:</label>
+                    <input type="text" class="form-control " name="vDuracionBack" id="vDuracionBack" disabled>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>  
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<!-- Modal Ver Orden de Trabajo Predictivo -->
+<div class="modal" id="verOtPredictivo" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Orden de Trabajo</h4>
+      </div>
+      <div class="modal-body">
+        
+        <div class="panel-group" id="accordionPred" role="tablist" aria-multiselectable="true">
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingOnePred">
+              <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordionPred" href="#collapseOtPred" aria-expanded="true" aria-controls="collapseOtPred">
+                  Datos de OT
+                </a>
+              </h4>
+            </div>
+            <div id="collapseOtPred" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOnePred">
+              <div class="panel-body">
+
+                <div class="row">
+                  <div class="col-xs-12 col-sm-3">
+                    <label for="vIdOt">Id de OT:</label>
+                    <input type="text" class="form-control " name="vIdOt" id="vIdOt" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-3">
+                    <label for="vNroOtPred">Número de OT:</label>
+                    <input type="text" class="form-control " name="vNroOtPred" id="vNroOtPred" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6">
+                    <label for="vDescripFallaPred">Descripción:</label>
+                    <input type="text" class="form-control vDescripFallaPred" id="vDescripFallaPred" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vFechaProgramPred">Fecha Programación:</label>
+                    <input type="text" class="form-control " name="vFechaProgramPred" id="vFechaProgramPred" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vFechaCreacionPred">Fecha Inicio:</label>
+                    <input type="text" class="form-control " name="vFechaCreacionPred" id="vFechaCreacionPred" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vFechaEntregaPred">Fecha Entrega:</label>
+                    <input type="text" class="form-control " name="vFechaEntregaPred" id="vFechaEntregaPred" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vEstadoPred">Estado:</label>
+                    <input type="text" class="form-control " name="vEstadoPred" id="vEstadoPred" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vSucursalPred">Sucursal:</label>
+                    <input type="text" class="form-control " name="vSucursalPred" id="vSucursalPred" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vProveedorPred">Proveedor:</label>
+                    <input type="text" class="form-control " name="vProveedorPred" id="vProveedorPred" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vOrigenPred">Origen:</label>
+                    <input type="text" class="form-control " name="vOrigenPred" id="vOrigenPred" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label for="vAsignadoPred">Asignado:</label>
+                    <input type="text" class="form-control " name="vAsignadoPred" id="vAsignadoPred" disabled>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingTwoPred">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionPred" href="#collapseEquipoPred" aria-expanded="false" aria-controls="collapseEquipoPred">
+                  Datos de equipo
+                </a>
+              </h4>
+            </div>
+            <div id="collapseEquipoPred" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwoPred">
+              <div class="panel-body">
+                
+                <div class="row">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vCodigoEquipoPred">Equipo:</label>
+                    <input type="text" class="form-control " name="vCodigoEquipoPred" id="vCodigoEquipoPred" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vMarcaEquipoPred">Marca:</label>
+                    <input type="text" class="form-control " name="vMarcaEquipoPred" id="vMarcaEquipoPred" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vUbicacionEquipoPred">Ubicación:</label>
+                    <input type="text" class="form-control " name="vUbicacionEquipoPred" id="vUbicacionEquipoPred" disabled>
+                  </div>
+
+                  <div class="col-xs-12">
+                    <label for="vDescripcionEquipoPred">Descripción:</label>
+                    <Textarea class="form-control " name="vDescripcionEquipoPred" id="vDescripcionEquipoPred" disabled></Textarea>
+                  </div>                  
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingThreePred">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionPred" href="#collapseTareaPred" aria-expanded="false" aria-controls="collapseTareaPred">
+                  Datos de la Tarea
+                </a>
+              </h4>
+            </div>
+            <div id="collapseTareaPred" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThreePred">
+              <div class="panel-body">
+                
+                <div class="row">
+                  <div class="col-xs-12">
+                    <label for="vTareaPred">Tarea:</label>
+                    <input type="text" class="form-control " name="vTareaPred" id="vTareaPred" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vFechaPred">Fecha:</label>
+                    <input type="text" class="form-control " name="vFechaPred" id="vFechaPred" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vPeriodoPred">Periodo:</label>
+                    <input type="text" class="form-control " name="vPeriodoPred" id="vPeriodoPred" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vFrecuenciaPred">Frecuencia:</label>
+                    <input type="text" class="form-control " name="vFrecuenciaPred" id="vFrecuenciaPred" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vDuraciónPred">Duración:</label>
+                    <input type="text" class="form-control " name="vDuraciónPred" id="vDuraciónPred" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vCantOperariosPred">Cantidad Operarios:</label>
+                    <input type="text" class="form-control " name="vCantOperariosPred" id="vCantOperariosPred" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vCantHsHombrePred">Cantidad horas hombre:</label>
+                    <input type="text" class="form-control " name="vCantHsHombrePred" id="vCantHsHombrePred" disabled>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

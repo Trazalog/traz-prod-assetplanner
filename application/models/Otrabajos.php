@@ -349,15 +349,16 @@ class Otrabajos extends CI_Model {
     }
 
 	function getprint($id){ //JOIN grupo ON grupo.id_grupo=equipos.id_grupo
-	    $sql="SELECT orden_trabajo.id_orden, orden_trabajo.id_tarea, orden_trabajo.nro, orden_trabajo.fecha, orden_trabajo.fecha_program, orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, orden_trabajo.fecha_terminada, orden_trabajo.fecha_aviso, orden_trabajo.fecha_entregada, orden_trabajo.descripcion, orden_trabajo.estado, orden_trabajo.id_usuario, orden_trabajo.id_usuario_a, orden_trabajo.id_solicitud, orden_trabajo.tipo, orden_trabajo.id_equipo, orden_trabajo.duracion, orden_trabajo.id_tareapadre, tareas.descripcion AS detarea, orden_trabajo.id_equipo, equipos.codigo, equipos.descripcion AS deequipos, user1.usrName AS nombre,user1.usrLastName, user1.grpId AS grp, sisusers.usrName, sisusers.usrLastName, sisgroups.grpId, tbl_tipoordentrabajo.id
+	    $sql="SELECT orden_trabajo.id_orden, orden_trabajo.id_tarea, orden_trabajo.nro, orden_trabajo.fecha, orden_trabajo.fecha_program, orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, orden_trabajo.fecha_terminada, orden_trabajo.fecha_aviso, orden_trabajo.fecha_entregada, orden_trabajo.descripcion, orden_trabajo.estado, orden_trabajo.id_usuario, orden_trabajo.id_usuario_a, orden_trabajo.id_solicitud, orden_trabajo.tipo, orden_trabajo.id_equipo, orden_trabajo.duracion, orden_trabajo.id_tareapadre, tareas.descripcion AS detarea, orden_trabajo.id_equipo, equipos.codigo, equipos.descripcion AS deequipos, user1.usrName AS nombre,user1.usrLastName, sisgroups.grpId AS grp, sisusers.usrName, sisusers.usrLastName, sisgroups.grpId, tbl_tipoordentrabajo.id
 	    	FROM orden_trabajo
 	    	JOIN tareas ON tareas.id_tarea=orden_trabajo.id_tarea
 	    	JOIN tbl_tipoordentrabajo ON tbl_tipoordentrabajo.id=orden_trabajo.tipo
 	    	JOIN equipos ON equipos.id_equipo=orden_trabajo.id_equipo
 	    	JOIN sisusers ON sisusers.usrId = orden_trabajo.id_usuario
 			join sisusers AS user1 ON user1.usrId = orden_trabajo.id_usuario_a
-			join sisgroups ON sisgroups.grpId = user1.grpId
-	    	  WHERE equipos.estado !='AN' AND orden_trabajo.id_orden=$id";
+			JOIN usuarioasempresa ON usuarioasempresa.usrId = user1.usrId
+			join sisgroups ON sisgroups.grpId = usuarioasempresa.grpId
+	    	  WHERE equipos.estado !='AN' AND orden_trabajo.id_orden=$id AND usuarioasempresa.tipo = 1";
 
 	    $query= $this->db->query($sql);
 
@@ -752,4 +753,384 @@ class Otrabajos extends CI_Model {
         }
     }
 
+    function getEquipoDisponibilidad() // Ok
+    {
+    	$userdata = $this->session->userdata('user_data');
+    	$empId    = $userdata[0]['id_empresa'];
+
+    	$this->db->select('equipos.id_equipo AS value, equipos.codigo AS label');
+    	$this->db->from('equipos');
+    	$this->db->where('id_empresa', $empId);
+    	$this->db->where('estado !=', 'AN');
+    	$query = $this->db->get();
+
+    	if($query->num_rows()>0)
+    	{
+    		return $query->result();
+    	}
+    	else
+    	{
+    		return false;
+    	}
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    //devuelve valores de todos los datos de la OT para mostrar en modal.
+    function getOrigenOt($idot)
+    {
+    	$this->db->select('orden_trabajo.tipo, orden_trabajo.id_solicitud');
+        $this->db->from('orden_trabajo');
+        $this->db->where('orden_trabajo.id_orden', $idot);
+
+        $query = $this->db->get();
+        if($query->num_rows()!=0)
+        {
+            return $query->result();
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+
+    //devuelve valores de todos los datos de la OT para mostrar en modal.
+    function getViewDataOt($idOt)
+    {
+    	$this->db->select('orden_trabajo.id_orden, orden_trabajo.nro, orden_trabajo.descripcion AS descripcionFalla, orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, 
+    		orden_trabajo.fecha_program, tbl_estado.descripcion AS estado, sisusers.usrName, sisusers.usrLastName, 
+    		orden_trabajo.tipo, orden_trabajo.id_solicitud,
+    		sucursal.id_sucursal, sucursal.descripc,
+    		abmproveedores.provid, abmproveedores.provnombre,
+    		equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, equipos.descripcion AS descripcionEquipo');
+        $this->db->from('orden_trabajo');
+        $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
+        $this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
+        $this->db->join('abmproveedores', 'abmproveedores.provid = orden_trabajo.id_proveedor');
+        $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
+        $this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
+        $this->db->where('orden_trabajo.id_orden', $idOt);
+
+        $query = $this->db->get();
+        if($query->num_rows()!=0)
+        {
+            $datos = $query->result_array();
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+
+    	//devuelve valores de todos los datos de la OT para mostrar en modal.
+    function getViewDataSolServicio($idOt, $idSolicitud)
+    {
+    	$this->db->select('orden_trabajo.id_orden, orden_trabajo.nro, orden_trabajo.descripcion AS descripcionFalla, orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, 
+    		orden_trabajo.fecha_program, tbl_estado.descripcion AS estado, sisusers.usrName, sisusers.usrLastName, 
+    		orden_trabajo.tipo, orden_trabajo.id_solicitud,
+    		sucursal.id_sucursal, sucursal.descripc,
+    		abmproveedores.provid, abmproveedores.provnombre,
+    		equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, equipos.descripcion AS descripcionEquipo');
+        $this->db->from('orden_trabajo');
+        $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
+        $this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
+        $this->db->join('abmproveedores', 'abmproveedores.provid = orden_trabajo.id_proveedor');
+        $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
+        $this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
+        $this->db->where('orden_trabajo.id_orden', $idOt);
+
+        $query = $this->db->get();
+        if($query->num_rows()!=0)
+        {
+            $datos = $query->result_array();
+            //dump_exit($datos);
+            $datos[0]['solServicio'] = $this->getViewDataInfoSolServicio( $datos[0]['id_solicitud']);
+            return $datos;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    	//
+    	function getViewDataInfoSolServicio($id_solicitud)
+	    {
+	    	$this->db->select('sector.descripcion AS sector, 
+	    		grupo.descripcion AS grupo, 
+	    		solicitud_reparacion.solicitante, solicitud_reparacion.f_sugerido AS fechaSugerida, solicitud_reparacion.hora_sug AS horarioSugerido, solicitud_reparacion.causa AS falla');
+	        $this->db->from('solicitud_reparacion');
+	        $this->db->where('solicitud_reparacion.id_solicitud', $id_solicitud);
+	        $this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo');
+			$this->db->join('sector', 'equipos.id_sector = sector.id_sector');
+			$this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo');
+	        $query = $this->db->get();
+	        if($query->num_rows()!=0)
+	        {
+	            $solServicio = $query->result_array();
+	            return $solServicio[0];
+	        }
+	        else
+	        {
+	            return null;
+	        }
+	    }
+
+
+
+    //devuelve valores de todos los datos de la OT para mostrar en modal.
+    function getViewDataPreventivo($idOt, $idSolicitud)
+    {
+    	$this->db->select('orden_trabajo.id_orden, orden_trabajo.nro, orden_trabajo.descripcion AS descripcionFalla, orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, 
+    		orden_trabajo.fecha_program, tbl_estado.descripcion AS estado, sisusers.usrName, sisusers.usrLastName, 
+    		orden_trabajo.tipo, orden_trabajo.id_solicitud,
+    		sucursal.id_sucursal, sucursal.descripc,
+    		abmproveedores.provid, abmproveedores.provnombre,
+    		equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, equipos.descripcion AS descripcionEquipo');
+        $this->db->from('orden_trabajo');
+        $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
+        $this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
+        $this->db->join('abmproveedores', 'abmproveedores.provid = orden_trabajo.id_proveedor');
+        $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
+        $this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
+        $this->db->where('orden_trabajo.id_orden', $idOt);
+
+        $query = $this->db->get();
+        if($query->num_rows()!=0)
+        {
+            $datos = $query->result_array();
+            //dump_exit($datos);
+            $datos[0]['tarea'] = $this->getViewDataTareaPreventivo( $datos[0]['id_solicitud']);
+            return $datos;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+	    function getViewDataTareaPreventivo($id_solicitud)
+	    {
+	    	$this->db->select('preventivo.prevId, preventivo.ultimo, preventivo.perido, preventivo.cantidad AS frecuencia, preventivo.lectura_base, preventivo.critico1 AS alerta, preventivo.prev_duracion, preventivo.prev_canth, preventivo.prev_adjunto,
+	    		tareas.descripcion AS tareadescrip,
+	    		unidad_tiempo.unidaddescrip,
+	    		componentes.descripcion AS descripComponente');
+	        $this->db->from('preventivo');
+	        $this->db->where('preventivo.prevId', $id_solicitud);
+	        $this->db->join('tareas', 'tareas.id_tarea = preventivo.id_tarea');
+	        $this->db->join('unidad_tiempo', 'unidad_tiempo.id_unidad = preventivo.id_unidad');
+	        $this->db->join('componentes', 'componentes.id_componente = preventivo.id_componente');
+	        $query = $this->db->get();
+	        if($query->num_rows()!=0)
+	        {
+	            $preventivos = $query->result_array();
+	            for ($i=0; $i < sizeof($preventivos) ; $i++) { 
+		            $herramientas = null;
+		            $insumos      = null;
+
+		            $herramientas[$i] = $this->getPreventivoHerramientas( $preventivos[$i]['prevId'] );
+		            $insumos[$i]      = $this->getPreventivoInsumos( $preventivos[$i]['prevId'] );
+	            }
+	            $preventivos[0]['herramientas'] = $herramientas;
+	            $preventivos[0]['insumos']  = $insumos;
+
+	            return $preventivos[0];
+	        }
+	        else
+	        {
+	            return null;
+	        }
+	    }
+
+		    // Trae herramientas ppor id de preventivo para Editar
+		    function getPreventivoHerramientas($id)
+		    {
+		        $this->db->select('tbl_preventivoherramientas.cantidad,
+		                            herramientas.herrcodigo,
+		                            herramientas.herrmarca,
+		                            herramientas.herrdescrip,
+		                            herramientas.herrId');
+		        $this->db->from('tbl_preventivoherramientas');
+		        $this->db->join('herramientas', 'herramientas.herrId = tbl_preventivoherramientas.herrId');   
+		        $this->db->where('tbl_preventivoherramientas.prevId', $id);   
+		             
+		        $query = $this->db->get();
+		        if( $query->num_rows() > 0)
+		        {
+		        	$herramientas = $query->result_array();
+		          	return $herramientas;
+		        }
+		        else {
+		          return 0;
+		        }
+		    }
+
+		    // Trae insumos por id de preventivo para Editar
+		    function getPreventivoInsumos($id)
+		    {    
+		        $this->db->select('tbl_preventivoinsumos.id,
+		                            tbl_preventivoinsumos.cantidad,
+		                            articles.artBarCode,
+		                            articles.artId,
+		                            articles.artDescription,
+		                            articles.id_empresa');                            
+		        $this->db->from('tbl_preventivoinsumos');
+		        $this->db->join('articles', 'articles.artId = tbl_preventivoinsumos.artId');   
+		        $this->db->where('tbl_preventivoinsumos.prevId', $id);        
+		        $query= $this->db->get(); 
+
+		        if( $query->num_rows() > 0)
+		        {
+		          	$insumos = $query->result_array();
+		          	return $insumos;
+		        }
+		        else {
+		          return 0;
+		        }
+		    }
+
+
+
+	//devuelve valores de todos los datos de la OT para mostrar en modal.
+    function getViewDataBacklog($idOt, $idSolicitud)
+    {
+    	$this->db->select('orden_trabajo.id_orden, orden_trabajo.nro, orden_trabajo.descripcion AS descripcionFalla, orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, 
+    		orden_trabajo.fecha_program, tbl_estado.descripcion AS estado, sisusers.usrName, sisusers.usrLastName, 
+    		orden_trabajo.tipo, orden_trabajo.id_solicitud,
+    		sucursal.id_sucursal, sucursal.descripc,
+    		abmproveedores.provid, abmproveedores.provnombre,
+    		equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, equipos.descripcion AS descripcionEquipo');
+        $this->db->from('orden_trabajo');
+        $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
+        $this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
+        $this->db->join('abmproveedores', 'abmproveedores.provid = orden_trabajo.id_proveedor');
+        $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
+        $this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
+        $this->db->where('orden_trabajo.id_orden', $idOt);
+
+        $query = $this->db->get();
+        if($query->num_rows()!=0)
+        {
+            $datos = $query->result_array();
+            $datos[0]['tarea'] = $this->getViewDataTareaBacklog( $datos[0]['id_solicitud']);
+            //dump_exit($datos);
+            return $datos;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+		function getViewDataTareaBacklog($idBacklog)
+	    {
+	    	$this->db->select('tbl_back.fecha, tbl_back.back_duracion, tbl_back.idcomponenteequipo,
+	    		tareas.descripcion AS tareadescrip');
+	        $this->db->from('tbl_back');
+	        $this->db->join('tareas', 'tareas.id_tarea = tbl_back.tarea_descrip');
+	        $this->db->where('tbl_back.backId', $idBacklog);
+	        $query = $this->db->get();
+	        if($query->num_rows()!=0)
+	        {
+	            $tarea = $query->result_array();
+	            $tarea[0]['compEquipo'] = $this->getViewDataComponenteEquipoBacklog( $tarea[0]['idcomponenteequipo']);
+	            return $tarea[0];
+	        }
+	        else
+	        {
+	            return null;
+	        }
+	    }
+
+	    function getViewDataComponenteEquipoBacklog($idComponenteEquipo)
+	    {
+	    	$this->db->select('componenteequipo.codigo AS codigoComponente, 
+	    		componentes.descripcion AS descripComponente,
+	    		sistema.descripcion AS descripSistema');
+	        $this->db->from('componenteequipo');
+	        $this->db->join('componentes', 'componentes.id_componente = componenteequipo.id_componente');
+	        $this->db->join('sistema', 'sistema.sistemaid = componenteequipo.sistemaid');
+	        $this->db->where('componenteequipo.idcomponenteequipo', $idComponenteEquipo);
+
+	        $query = $this->db->get();
+	        if($query->num_rows()!=0)
+	        {
+	            $compEquipo = $query->result_array();
+	            return $compEquipo[0];
+	        }
+	        else
+	        {
+	            return null;
+	        }
+	    }
+
+
+
+	//devuelve valores de todos los datos de la OT para mostrar en modal.
+    function getViewDataPredictivo($idOt, $idSolicitud)
+    {
+    	$this->db->select('orden_trabajo.id_orden, orden_trabajo.nro, orden_trabajo.descripcion AS descripcionFalla, orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, 
+    		orden_trabajo.fecha_program, tbl_estado.descripcion AS estado, sisusers.usrName, sisusers.usrLastName, 
+    		orden_trabajo.tipo, orden_trabajo.id_solicitud,
+    		sucursal.id_sucursal, sucursal.descripc,
+    		abmproveedores.provid, abmproveedores.provnombre,
+    		equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, equipos.descripcion AS descripcionEquipo');
+        $this->db->from('orden_trabajo');
+        $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
+        $this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
+        $this->db->join('abmproveedores', 'abmproveedores.provid = orden_trabajo.id_proveedor');
+        $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
+        $this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
+        $this->db->where('orden_trabajo.id_orden', $idOt);
+
+        $query = $this->db->get();
+        if($query->num_rows()!=0)
+        {
+            $datos = $query->result_array();
+            //dump_exit($datos);
+            $datos[0]['tarea'] = $this->getViewDataTareaPredictivo( $datos[0]['id_solicitud']);
+            return $datos;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    	//
+    	function getViewDataTareaPredictivo($id_solicitud)
+	    {
+	    	$this->db->select('tareas.descripcion AS tareadescrip,
+	    		predictivo.fecha, predictivo.periodo, 
+	    		predictivo.cantidad AS frecuencia, predictivo.pred_duracion AS duracion,
+	    		unidad_tiempo.unidaddescrip,
+	    		predictivo.pred_canth AS cantOperarios, predictivo.horash');
+	        $this->db->from('predictivo');
+	        $this->db->where('predictivo.predId', $id_solicitud);
+	        $this->db->join('tareas', 'tareas.id_tarea = predictivo.tarea_descrip');
+	        $this->db->join('unidad_tiempo', 'unidad_tiempo.id_unidad = predictivo.id_unidad');
+	        $query = $this->db->get();
+	        if($query->num_rows()!=0)
+	        {
+	            $predictivos = $query->result_array();
+	            return $predictivos[0];
+	        }
+	        else
+	        {
+	            return null;
+	        }
+	    }
 }	

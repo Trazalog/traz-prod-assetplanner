@@ -964,21 +964,12 @@ class Equipos extends CI_Model {
      *
      * @return  Array|Void  Disponibilidad de equipos x mes de los ultimos 12meses.
      */
-    function kpiCalcularDisponibilidad($idEquipo=1, $fechaInicio=false, $fechaFin=false )
+    function kpiCalcularDisponibilidad($idEquipo, $fechaInicio=false, $fechaFin=false )
     {
         $userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];     // guarda usuario logueado
 
         $disponibilidad = array();
-        //$historialLecturasMes = array();
-        //saco los equipos para el mes
-        /*$this->db->select('equipos.id_equipo');
-        $this->db->from('historial_lecturas');
-        $this->db->join('equipos', 'equipos.id_equipo = historial_lecturas.id_equipo');
-        $this->db->where('historial_lecturas.estado !=', 'AN');
-        $this->db->order_by('equipos.id_equipo', 'ASC');
-        $this->db->group_by('equipos.id_equipo','DESC');
-        */
 
         $this->db->select('equipos.id_equipo');
         $this->db->from('historial_lecturas');
@@ -993,9 +984,14 @@ class Equipos extends CI_Model {
         $this->db->join('admcustomers', 'admcustomers.cliId=equipos.id_customer');
         $this->db->where('equipos.estado !=', 'AN');
         $this->db->where('equipos.id_empresa', $empId);
-        $this->db->order_by('equipos.id_equipo', 'ASC');
-        $this->db->group_by('equipos.id_equipo','DESC');
+        
+        if($idEquipo != 'all')
+        {
+            $this->db->where('equipos.id_equipo', $idEquipo);
+        }
 
+        $this->db->order_by('equipos.id_equipo', 'ASC');
+        $this->db->group_by('equipos.id_equipo');
 
         $query   = $this->db->get();
         $equipos = $query->result_array();

@@ -22,7 +22,8 @@ class Preventivos extends CI_Model
             componentes.descripcion,
             periodo.descripcion AS periodoDesc,
             preventivo.cantidad,
-            preventivo.ultimo');
+            preventivo.ultimo,
+            preventivo.prev_adjunto');
     	$this->db->from('preventivo');
     	$this->db->join('equipos', 'equipos.id_equipo = preventivo.id_equipo');
     	$this->db->join('grupo', 'equipos.id_grupo=grupo.id_grupo');
@@ -31,6 +32,7 @@ class Preventivos extends CI_Model
         $this->db->join('periodo', 'periodo.idperiodo = preventivo.perido');
     	$this->db->where('preventivo.estadoprev', 'C');
         $this->db->where('preventivo.id_empresa', $empId);	
+        //dump_exit( $this->db->get_compiled_select() );
     	$query= $this->db->get();
 
 	    if( $query->num_rows() > 0)
@@ -43,25 +45,33 @@ class Preventivos extends CI_Model
 //// Edicion	
 
 	// Trae equipos por empresa logueada - Listo
-	function getequipo(){
-
+	function getequipo()
+    {
 		$userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa']; 
-        
-    	$this->db->select('equipos.*');
-    	$this->db->from('equipos');
-    	$this->db->where('equipos.estado', 'AC');
-    	$this->db->where('equipos.id_empresa', $empId);    	
-    	$query= $this->db->get();   
+        $empId    = $userdata[0]['id_empresa']; 
+        $this->db->select('equipos.*');
+        $this->db->from('equipos');
+        $this->db->join('grupo', 'grupo.id_grupo=equipos.id_grupo');
+        $this->db->join('sector', 'sector.id_sector=equipos.id_sector');
+        $this->db->join('empresas', 'empresas.id_empresa=equipos.id_empresa');
+        $this->db->join('unidad_industrial', 'unidad_industrial.id_unidad=equipos.id_unidad');
+        $this->db->join('criticidad', 'criticidad.id_criti=equipos.id_criticidad');
+        $this->db->join('area', 'area.id_area=equipos.id_area');
+        $this->db->join('proceso', 'proceso.id_proceso=equipos.id_proceso');
+        $this->db->join('admcustomers', 'admcustomers.cliId=equipos.id_customer');
+        $this->db->where('equipos.estado !=', 'AN');
+        $this->db->where('equipos.id_empresa', $empId);
+        $this->db->order_by('equipos.codigo', 'ASC');   
+        $query= $this->db->get();   
 
-		if ($query->num_rows()!=0)
-		{
-			return $query->result_array();
-		}
-		else
-		{
-			return false;
-		}
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();
+        }
+        else
+        {
+            return false;
+        }
 	}
 
     // Trae unidades de tiempo  - Listo
@@ -102,18 +112,19 @@ class Preventivos extends CI_Model
 	}
 
 	// Trae tareas por empresa logueada - Listo
-	function gettarea(){
-
+	function gettarea()
+    {
 		$userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa']; 
-        
-    	$this->db->select('tareas.*');
+    	$this->db->select('tareas.id_tarea AS value, tareas.descripcion AS label');
     	$this->db->from('tareas');    	
     	$this->db->where('tareas.id_empresa', $empId);
+        $this->db->where('estado', 'AC');
+        $this->db->order_by('label', 'ASC');
     	$query= $this->db->get();
 
 		if($query->num_rows()>0){
-            return $query->result();
+            return $query->result_array();
         }
         else{
             return false;
@@ -121,16 +132,19 @@ class Preventivos extends CI_Model
 	}	
 
 	// Trae componente segun id de equipo - Listo
-	function getcomponente($id){
-		
+	function getcomponente($id)
+    {
 	   	$this->db->select('componentes.id_componente, componentes.descripcion');
     	$this->db->from('componentes');
     	$this->db->join('componenteequipo', 'componenteequipo.id_componente = componentes.id_componente');
+        $this->db->join('marcasequipos', 'componentes.marcaid = marcasequipos.marcaid');
     	$this->db->where('componenteequipo.id_equipo', $id);
-    	$query= $this->db->get();
-
+        $this->db->where('componentes.estado', 'AC');
+        $this->db->where('marcasequipos.estado', 'AC');
+        $this->db->order_by('componentes.descripcion', 'ASC');
+    	$query = $this->db->get();
 		if($query->num_rows()>0){
-            return $query->result();
+            return $query->result_array();
         }
         else{
             return false;
@@ -164,13 +178,42 @@ class Preventivos extends CI_Model
         }
 	}
 
-	//Trae insumos (articles) por empresa logueada
-	function getinsumo(){
+    function getHerramientasB()
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId = $userdata[0]['id_empresa']; 
+        $this->db->select('herramientas.herrId AS value, 
+            herramientas.herrcodigo AS codigo,
+            herramientas.herrmarca AS marca,
+            herramientas.herrdescrip AS label');
+        $this->db->from('herramientas');      
+        $this->db->where('herramientas.id_empresa', $empId);
+        //$this->db->where('herramientas.estado !=', 'AN');
+        $this->db->order_by('label', 'ASC');
+        $query = $this->db->get();
 
+        if($query->num_rows()>0){
+            return $query->result_array();
+        }
+        else{
+            return false;
+        }
+    }
+
+	//Trae insumos (articles) por empresa logueada
+	function getinsumo()
+    {
 		$userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];
-
-        $query= $this->db->get_where('articles',array('id_empresa' => $empId));
+        //$query= $this->db->get_where('articles',array('id_empresa' => $empId));
+        $this->db->select('articles.artId AS value, 
+            articles.artBarCode AS codigo,
+            articles.artDescription AS label');
+        $this->db->from('articles');      
+        $this->db->where('articles.id_empresa', $empId);
+        $this->db->where('articles.artEstado !=', 'AN');
+        $this->db->order_by('label', 'ASC');
+        $query = $this->db->get();
 		if($query->num_rows()>0){
             return $query->result();
         }
@@ -247,6 +290,9 @@ class Preventivos extends CI_Model
                             preventivo.critico1, 
                             preventivo.estadoprev, 
                             preventivo.horash, 
+                            preventivo.prev_duracion,
+                            preventivo.prev_canth,
+                            preventivo.id_unidad,
                             equipos.id_equipo, 
                             equipos.codigo, 
                             equipos.marca, 
