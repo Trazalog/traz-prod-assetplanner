@@ -170,8 +170,7 @@ class Preventivo extends CI_Controller {
 		$eq         =$this->input->post('id_equipo');
 		$ta         =$this->input->post('id_tarea');
 		$com        =$this->input->post('id_componente');
-		$ultm       =$this->input->post('vfecha');
-		$ultm       = explode('-', $ultm);		
+		$ultimo     =$this->input->post('ultimo');
 		$pe         =$this->input->post('periodo');
 		$can        =$this->input->post('cantidad');
 		$oper       = $this->input->post('cantOper');
@@ -188,7 +187,7 @@ class Preventivo extends CI_Controller {
 				'id_tarea'      => $ta,
 				'perido'        => $pe,
 				'cantidad'      => $can,
-				'ultimo'        => $ultm[2].'-'.$ultm[1].'-'.$ultm[0],
+				'ultimo'        => $ultimo,
 				'id_componente' => $com,
 				'critico1'      => $critico1,
 				'horash'        => $canhm,

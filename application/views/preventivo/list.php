@@ -179,6 +179,7 @@
 
   // Trae unidades de tiempo - Chequeado
   $(function(){  
+    $('#unidad').html(""); 
     $.ajax({
       type: 'POST',
       data: { },
@@ -201,6 +202,7 @@
 
   //Trae herramientas
   $(function(){
+    $('#herramienta').html("");
     $.ajax({
       type: 'POST',
       data: { },
@@ -288,21 +290,19 @@
 
   // trae insumos
   $(function(){
+    $('#insumo').html("");
     $.ajax({
       type: 'POST',
       data: { },
       url: 'index.php/Preventivo/getinsumo', 
       success: function(data){
-
        var opcion  = "<option value='-1'>Seleccione...</option>" ; 
        $('#insumo').append(opcion); 
        for(var i=0; i < data.length ; i++) 
        {    
         var nombre = data[i]['artBarCode'];
         var opcion  = "<option value='"+data[i]['artId']+"'>" +nombre+ "</option>" ; 
-
         $('#insumo').append(opcion); 
-
       }
     },
     error: function(result){
@@ -804,45 +804,42 @@ function guardarEdicion(){
                   <option >Semestral</option>-->
                 </select>
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-4">Frecuencia <strong style="color: #dd4b39">*</strong>:
+              <div class="col-xs-12 col-sm-6">Frecuencia <strong style="color: #dd4b39">*</strong>:
                 <input type="text"  id="cantidad" name="cantidad" class="form-control input-md" placeholder="Ingrese valor" />
               </div>
             </div><!-- /.row -->
+            <div class="row">
+              <div class="col-xs-12 col-sm-6 col-md-4">
+                <label for="">Duración <strong style="color: #dd4b39">*</strong>:</label>
+                <input type="text" class="form-control" id="duracion" name="duracion"/>
+              </div> 
+              <div class="col-xs-12 col-sm-6 col-md-4">
+                <label for="">U. de tiempo <strong style="color: #dd4b39">*</strong></label>
+                <select  id="unidad" name="unidad" class="form-control" />
+              </div>
+              <div class="col-xs-12 col-sm-6 col-md-4">
+                <label for="">Cant. Operarios <strong style="color: #dd4b39">*</strong>:</label>
+                <input type="text" class="form-control" id="cantOper" name="cantOper"/>
+              </div>  
+              <div class="col-xs-12 col-sm-6 col-md-4">
+                <label for="">Horas Hombre <strong style="color: #dd4b39">*</strong>:</label>
+                <input type="text" class="form-control" name="hshombre" id="hshombre" disabled>
+              </div> 
+            </div>
           </div>
         </div>
 
         <div class="nav-tabs-custom">
           <!--tabs -->
           <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#choras" aria-controls="home" role="tab" data-toggle="tab">Cantidad Horas/Hombres</a></li>
-            <li role="presentation"><a href="#herramin" aria-controls="profile" role="tab" data-toggle="tab">Herramientas</a></li>
+            <li role="presentation" class="active"><a href="#herramin" aria-controls="profile" role="tab" data-toggle="tab">Herramientas</a></li>
             <li role="presentation"><a href="#insum" aria-controls="messages" role="tab" data-toggle="tab">Insumos</a></li>
+            <!--<li role="presentation"><a href="#TabAdjunto" aria-controls="home" role="tab" data-toggle="tab">Adjunto</a></li>-->
           </ul>
 
-          <!-- Tab panes -->
+          <?php /*<!-- Tab panes -->
           <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="choras">
-              <div class="row" >
-                <div class="col-xs-12 col-sm-6 col-md-4">
-                  <label for="">Horas Hombre <strong style="color: #dd4b39">*</strong>:</label>
-                  <input type="text" class="form-control" name="hshombre" id="hshombre" disabled>
-                </div> 
-                <div class="col-xs-12 col-sm-6 col-md-4">
-                  <label for="">Duración <strong style="color: #dd4b39">*</strong>:</label>
-                  <input type="text" class="form-control" id="duracion" name="duracion"/>
-                </div> 
-                <div class="col-xs-12 col-sm-6 col-md-4">
-                  <label for="">U. de tiempo <strong style="color: #dd4b39">*</strong></label>
-                  <select  id="unidad" name="unidad" class="form-control" />
-                </div>
-                <div class="col-xs-12 col-sm-6 col-md-4">
-                  <label for="">Cant. Operarios <strong style="color: #dd4b39">*</strong>:</label>
-                  <input type="text" class="form-control" id="cantOper" name="cantOper"/>
-                </div>          
-              </div>
-            </div><!--cierre de choras-->
-
-            <div role="tabpanel" class="tab-pane" id="herramin">
+            <div role="tabpanel" class="tab-pane active" id="herramin">
               <div class="panel panel-default">
                 <div class="panel-body">
                   <div class="row">
@@ -933,8 +930,25 @@ function guardarEdicion(){
                   </div>
                 </div>
               </div>
-            </div><!--cierre div insum-->                       
+            </div><!--cierre div insum--> 
+
+            <div role="tabpanel" class="tab-pane" id="TabAdjunto">
+              <div class="row" >
+                <div class="col-xs-12">
+                  <i class="fa fa-ban" style="color: #f39c12" ;="" cursor:="" 'pointer'=""></i> <a href="">Archivo</a>
+                </div>
+                <div class="col-xs-12">
+                  <input id="inputPDF" name="inputPDF" type="file" class="form-control input-md" disabled>
+                  <style type="text/css">
+                    #inputPDF {
+                      padding-bottom: 40px;
+                    }
+                  </style>
+                </div>
+              </div>
+            </div><!--cierre de TabAdjunto-->                      
           </div><!--tab-content-->
+          */ ?>
         </div>
       </div>
 

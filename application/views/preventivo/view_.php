@@ -68,7 +68,7 @@
                     <!--<input type="hidden" id="id_componente" name="id_componente" />-->
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-4">Fecha Base:
-                    <input type="text" class="form-control ultimo" id="ultimo" name="vfecha" value="<?php echo date("Y-m-d"); ?>" size="27"/>
+                    <input type="text" class="form-control ultimo" id="ultimo" name="ultimo" value="<?php echo date("Y-m-d"); ?>" size="27"/>
                   </div> 
                   <div class="col-xs-12 col-sm-6">Periodo <strong style="color: #dd4b39">*</strong>:
                     <select id="periodo" name="periodo" class=" selectpicker form-control input-md">
@@ -275,8 +275,14 @@ function traer_componente(id_equipo){
     dataType: 'json',
     url: 'index.php/Preventivo/getcomponente',
     success: function(data){
+      //console.log(data);
       $('#componente option').remove();
-      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+      if(data == false){
+        //alert("El equipo no tiene componentes");
+        var opcion = "<option value='-1'>No tiene componente asociado</option>" ; 
+      } else {
+        var opcion = "<option value='-1'>Seleccione...</option>" ; 
+      }
       $('#componente').append(opcion); 
       for(var i=0; i < data.length ; i++){    
         var nombre = data[i]['descripcion'];
@@ -396,6 +402,7 @@ $('#periodo').change(function(){
 
 
 // Trae unidades de tiempo y llena select
+$('#unidad').html("");
 $.ajax({
   type: 'POST',
   data: { },
