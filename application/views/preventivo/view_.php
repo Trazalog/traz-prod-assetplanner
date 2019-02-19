@@ -68,7 +68,7 @@
                     <!--<input type="hidden" id="id_componente" name="id_componente" />-->
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-4">Fecha Base:
-                    <input type="text" class="form-control ultimo" id="ultimo" name="vfecha" value="<?php echo date("Y-m-d"); ?>" size="27"/>
+                    <input type="text" class="form-control ultimo" id="ultimo" name="ultimo" value="<?php echo date("Y-m-d"); ?>" size="27"/>
                   </div> 
                   <div class="col-xs-12 col-sm-6">Periodo <strong style="color: #dd4b39">*</strong>:
                     <select id="periodo" name="periodo" class=" selectpicker form-control input-md">
