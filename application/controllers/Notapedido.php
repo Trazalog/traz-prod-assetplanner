@@ -18,8 +18,8 @@ class Notapedido extends CI_Controller {
 
   public function getNotasxOT($permission, $idot){
     $data['permission'] = $permission;
-    $data['list']       = $this->Notapedidos->getNotasxOT($idot);
-    $this->load->view('notapedido/listOt', $data);
+    $data['list']  = $this->Notapedidos->getNotasxOT($idot);
+    $this->load->view('notapedido/plegable_list', $data);
   }
 
   /*public function agregarNota($permission){

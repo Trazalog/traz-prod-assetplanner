@@ -1,12 +1,16 @@
-<input type="hidden" id="permission" value="<?php echo $permission;?>">
-<section class="content">
-  <div class="row">
-    <div class="col-xs-12">
-      <div class="box">
-        <div class="box-header">
-          <h3 class="box-title">Notas de Pedido de OT <?php echo $list[0]['id_ordTrabajo']." - ".$list[0]['descripcion']; ?></h3>
-        </div><!-- /.box-header -->
-        <div class="box-body">
+<div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingFour">
+        <h4 class="panel-title">
+            <a class=" insumos collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                <!-- Titulo Panel-->
+                Nota Pedidos
+            </a>
+        </h4>
+    </div>
+    <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+        <div class="panel-body">
+          <!-- Cuerpo Panel -->
           <table id="deposito" class="table table-bordered table-hover">
             <thead>
               <tr>
@@ -35,11 +39,10 @@
               ?>
             </tbody>
           </table>
-        </div><!-- /.box-body -->
-      </div><!-- /.box -->
-    </div><!-- /.col -->
-  </div><!-- /.row -->
-</section><!-- /.content -->
+       </div>  <!-- Panel Body -->
+    </div>
+</div>
+
 
 <script>
 var ed="";
@@ -134,7 +137,7 @@ $('#deposito tbody').on('click', 'td.details-control', function () {
                   $('.details-control', table.row( '.shown' ).node()).click();
           }
     // Open this row
-    WaitingOpen();
+    //WaitingOpen();
     // Open this row
     $.ajax({
       data: { id:id },
@@ -253,7 +256,7 @@ $(".fa-search").click(function (e) {
 
   
 function regresa(){
-  //WaitingOpen();
+  ////WaitingOpen();
   //$('#modaldeposito').empty();
   //$('#modaleditar').empty(); 
   //$('#content').empty();

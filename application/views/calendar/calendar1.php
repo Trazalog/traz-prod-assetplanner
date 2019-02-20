@@ -48,7 +48,6 @@ function getTablas(month_, year_)
   var year = parseInt(year_);
   var permission = '<?php echo $permission ?>';
   //var permission = $('#permission').val();
-  alert(permission);
   $.ajax({
     url: 'index.php/Calendario/getTablas',
     type: "POST",
@@ -65,7 +64,6 @@ function getTablas(month_, year_)
 var mes = "";
 
 //$(function () {    
-alert("Desplegando Calendario");
 //  CALENDARIO
 /* initialize the external events
 -----------------------------------------------------------------*/

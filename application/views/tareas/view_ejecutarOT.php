@@ -240,6 +240,9 @@
 								<button type="button" id="pedidoInsumos" class="btn btn-primary" onclick="pedirInsumos()">Pedido de Insumos</button>
 						</div>
 					</div>	
+					<br>
+
+					<div id="nota_pedido"></div>						
 					
 					<div class="modal-footer">
 						<button type="button" id="cerrar" class="btn btn-primary" onclick="cargarVista()">Cerrar</button>
@@ -381,6 +384,14 @@
 
 
 <script>
+
+	cargarPedidos();
+
+	function cargarPedidos(){
+		var iort = $('#ot').val();
+		$('#nota_pedido').empty();
+		$("#nota_pedido").load("<?php echo base_url(); ?>index.php/Notapedido/getNotasxOT/<?php echo $permission; ?>/1");
+	}
 
 function validarFormularios(){
 	console.log('Validando Formularios...');
