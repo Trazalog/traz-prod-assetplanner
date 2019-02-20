@@ -212,7 +212,8 @@ function traer_marca(){ // Ok
 // Guarda un componente nuevo
 $('#guardarComponente').click(function(e) { //
   e.preventDefault();
-
+  WaitingOpen("Guardando Componente");
+  
   var descripcion = $('#descrip1').val();
   var informacion = $('#informacion').val();
   var marcaid     = $('#ma').val();
@@ -332,6 +333,7 @@ function llena_marca(idMarca){ // Ok
 $("#editarComponente").click(function(e){
   e.preventDefault();
 
+  WaitingOpen("Guardando Componente");
   idComponente = $("#idComponenteE").val();
   idmarca      = $("#marcaE").val();
   descripcion  = $("#descripcionE").val();
