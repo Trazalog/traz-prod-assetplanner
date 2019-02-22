@@ -43,8 +43,8 @@ class Form extends CI_Controller {
         $usrId = $userdata[0]['usrId'];     // guarda usuario logueado
 
 		$id_listarea = array_shift($datos);
-		$response = $this->Forms->deleteFormComp($id_listarea)
-		if ($response) {
+		$response = $this->Forms->deleteFormComp($id_listarea);
+		if($response) {
 			echo "respuesta de delete: ";
 			echo $response;
 		}

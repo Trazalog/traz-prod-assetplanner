@@ -14,7 +14,7 @@ class Calendario extends CI_Controller {
 
 	public function indexot($permission) // Ok
 	{
-		$data['permission'] = $permission;
+		$data['permission'] = $permission."Correctivo-Preventivos-Backlog-Predictivo-";
 		$this->load->view('calendar/calendar1', $data);
 	}
 

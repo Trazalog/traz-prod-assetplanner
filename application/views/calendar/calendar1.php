@@ -1,4 +1,5 @@
-<input type="hidden" id="permission" value="<?php echo $permission;?>">
+<input type="hidden" id="permission" value="<?php echo $permission;?>"><script>console.log($('#permission').val())
+</script>
 <section class="content">
   <style>
   input.prevent{border: none; padding-left: 5px; width: 100%;} 
@@ -47,7 +48,6 @@ function getTablas(month_, year_)
   var year = parseInt(year_);
   var permission = '<?php echo $permission ?>';
   //var permission = $('#permission').val();
-  //alert(permission);
   $.ajax({
     url: 'index.php/Calendario/getTablas',
     type: "POST",
@@ -63,8 +63,7 @@ function getTablas(month_, year_)
 
 var mes = "";
 
-$(function () {    
-
+//$(function () {    
 //  CALENDARIO
 /* initialize the external events
 -----------------------------------------------------------------*/
@@ -303,13 +302,13 @@ $(function () {
     //Remove event from text input
     $("#new-event").val("");
   });    
-});
+//});
 
 $(".fa-print").click(function (e) {
   $("#calendar").printArea();
 });
 
-$(function(){
+//$(function(){
   //  Datatables listas
   $('#correctivo').DataTable({
     "paging": true,
@@ -415,7 +414,7 @@ $(function(){
       }
     }
   });
-});
+//});
 
 
 ///// Datepicker para modales

@@ -1,5 +1,4 @@
-<script>  //Script para Vista Standar
-          
+<script>  //Script para Vista Standar  
     evaluarEstado();    
     function evaluarEstado(){       
 			var asig = $('#asignado').val();       
@@ -190,6 +189,7 @@
 		function ejecutarOT(){
 			
 			var idTarBonita = $('#idTarBonita').val();	
+	
 			$.ajax({
 				type: 'POST',
 				data: {idTarBonita:idTarBonita},
@@ -198,12 +198,14 @@
 								console.table(data);
 								//	WaitingClose();
 								// toma a tarea exitosamente
+								sessionStorage.setItem("tareas_cerradas",idTareaBonita + "-");
 								if(data['reponse_code'] == 204){
+								  
 										$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
 								}
 				},
 				error: function(data) {
-						//alert("Noo");
+	
 						console.log(data);
 				},
 				dataType: 'json'

@@ -109,7 +109,7 @@ define('BONITA_URL', 'http://localhost:8080/bonita/');  //localhost
 
 // define('BPM_PROCESS_ID', '8159262131949207788');
 //define('BPM_PROCESS_ID', '8752332739922939857'); // SST - 
-define('BPM_PROCESS_ID', '7858378447871369851'); // localhost -
+define('BPM_PROCESS_ID', '9079653342029912696'); // localhost -
 
 /*
 |--------------------------------------------------------------------------

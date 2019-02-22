@@ -31,6 +31,7 @@
 				dataType: 'json'
 			});
 		}
+	
 	}
 
   // llena los componentes de form asoc con valores validos
@@ -150,11 +151,10 @@
 			contentType: false,
 			processData: false,
 			success: function (respuesta) {
-							console.log(form_actual_id+"...OK");
-							WaitingClose();
-							if(existFunction("after_save_form"))after_save_form();
-							ValidarObligatorios(validarOn);
-    	}
+				console.log(form_actual_id+"...OK");
+				WaitingClose();
+				if(existFunction("after_save_form"))after_save_form();
+    		}
 		});
 	}
 
@@ -202,6 +202,7 @@
 								$('.formgenerico').attr("id", form_id); // agrega id de form al form cargado
 								
 								WaitingClose();
+							
       },
       error: function(result){
 								WaitingClose();

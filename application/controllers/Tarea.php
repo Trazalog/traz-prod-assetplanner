@@ -23,7 +23,22 @@ class Tarea extends CI_Controller {
         $id     =$_POST['id_tarea'];
         $result = $this->Tareas->Obtener_Tareas($id);
         echo json_encode($result);
-    }
+	}
+	
+	/*Fernando Leiva */
+	public function Obtener_Todas(){
+		echo json_encode($this->Tareas->Listado_Tareas());
+	}
+
+	public function Obtener_Subtareas(){
+		echo json_encode($this->Tareas->getSubtareas($this->input->post('tarea_std')));
+	}
+
+	public function Guardar_Subtareas(){
+		$datos = $this->input->post();
+		echo $this->Tareas->Guardar_Subtareas($datos);
+	}
+
     public function Guardar_Tarea(){
         
 			$descripcion =$this->input->post('descripcion');
@@ -67,7 +82,7 @@ class Tarea extends CI_Controller {
 				$parametros = $this->Bonitas->conexiones();
 				$param = stream_context_create($parametros);
 				$data['list'] = $this->Tareas->getTareas($param);
-				$data['permission'] = "Add-Edit-Del-View-";		
+				$data['permission'] = $permission;		
 
 				if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {				
 					//$this->load->view('tareas/list_mobile',$data);
@@ -164,6 +179,7 @@ class Tarea extends CI_Controller {
 					}
 				//dump($idTarBonita, 'id tarea bonita en controller:');
 				$data['permission'] = $permission;
+
 				//OBTENER DATOS DE TAREA SELECCIONADA DESDE BONITA
 				$data['TareaBPM'] = json_decode($this->getDatosBPM($idTarBonita),true);	
 				$data['idTarBonita'] = $idTarBonita;

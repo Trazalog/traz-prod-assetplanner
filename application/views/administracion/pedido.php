@@ -201,7 +201,7 @@ function regresa(){
 //     $('#content').empty();
 //     $('#modalOT').empty();
 //     $('#modalAsig').empty();
-//     $("#content").load("<?php //echo base_url(); ?>index.php/Administracion/cargartarea/<?php// echo $permission; ?>");
+//     $("#content").load("index.php/Administracion/cargartarea/");
 //     WaitingClose();
 //     WaitingClose();
 // }
