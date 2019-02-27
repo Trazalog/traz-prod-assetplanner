@@ -142,7 +142,8 @@ class Calendarios extends CI_Model {
                     WHERE tbl_back.id_empresa = $empId
                     AND year(tbl_back.fecha) = $year 
                     AND month(tbl_back.fecha) = $month 
-                    AND tbl_back.estado != 'AN'"; 
+                    AND tbl_back.estado != 'AN' 
+                    AND tbl_back.estado != 'OT'";
         $query= $this->db->query($sql);
         if ($query->num_rows()!=0)
         {
@@ -218,7 +219,8 @@ class Calendarios extends CI_Model {
             INNER JOIN equipos ON equipos.id_equipo = solicitud_reparacion.id_equipo
             INNER JOIN sector ON sector.id_sector = equipos.id_sector
             WHERE solicitud_reparacion.id_empresa = $empId
-						AND solicitud_reparacion.estado != 'AN'
+			AND solicitud_reparacion.estado != 'AN'
+            AND solicitud_reparacion.estado != 'OT'
             AND year(solicitud_reparacion.f_solicitado) = $year
             AND month(solicitud_reparacion.f_solicitado) = $month
             ";
