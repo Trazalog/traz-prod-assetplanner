@@ -16,6 +16,12 @@ class Notapedido extends CI_Controller {
     //$this->load->view('notapedido/view_');
   }
 
+  public function ObtenerNotasPedidosxOT($permission,$idot){
+    $data['permission'] = $permission;
+    $data['list']  = $this->Notapedidos->getNotasxOT($idot);
+    $this->load->view('notapedido/list',$data);
+  }
+
   public function getNotasxOT($permission, $idot){
     $data['permission'] = $permission;
     $data['list']  = $this->Notapedidos->getNotasxOT($idot);
@@ -37,9 +43,10 @@ class Notapedido extends CI_Controller {
 
 
   // devuelve plantilla de insumos a pedir por cliente 
-  public function agregarListInsumos($permission, $idcliente){
+  public function agregarListInsumos($permission, $ot ,$idcliente){
     $data['permission'] = $permission;    
     $data['plantilla']  = $this->Notapedidos->getPlantillaPorCliente($idcliente);
+    $data['ot'] = $ot;
     $this->load->view('notapedido/insumolist',$data);
     
   }
@@ -56,8 +63,8 @@ class Notapedido extends CI_Controller {
     $pedido = $this->input->post('pedido');
     $justif = $this->input->post('justif');
 
-dump($pedido, 'pedido');
-dump_exit($justif, 'justif');
+    dump($pedido, 'pedido');
+    dump_exit($justif, 'justif');
 
     // Lanza proceso (retorna case_id)
 		$result = $this->lanzarProcesoBPM($inspectorid);

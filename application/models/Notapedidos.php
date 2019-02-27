@@ -75,13 +75,13 @@ class Notapedidos extends CI_Model
                           tbl_detanotapedido.fechaEntregado,
                           tbl_detanotapedido.remito,
                           tbl_detanotapedido.estado,
-                          abmproveedores.provnombre,
+              
                           articles.artDescription'
                         );
       $this->db->from('tbl_notapedido');
       $this->db->join('orden_trabajo', 'tbl_notapedido.id_ordTrabajo = orden_trabajo.id_orden');
       $this->db->join('tbl_detanotapedido', 'tbl_detanotapedido.id_notaPedido = tbl_notapedido.id_notaPedido');
-      $this->db->join('abmproveedores', 'abmproveedores.provid = tbl_detanotapedido.provid');
+     // $this->db->join('abmproveedores', 'abmproveedores.provid = tbl_detanotapedido.provid');
       $this->db->join('articles', 'tbl_detanotapedido.artId = articles.artId');
       $this->db->where('tbl_notapedido.id_notaPedido', $id);
       $query = $this->db->get();
