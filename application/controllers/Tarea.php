@@ -214,7 +214,6 @@ class Tarea extends CI_Controller {
 					$idCase = array('caseId'=>$data['TareaBPM']["caseId"]);
 					$this->load->library('BPM',$idCase);
 					$data['timeline'] = $this->bpm->ObtenerLineaTiempo();	
-					$data['comentarios'] = $this->bpm->ObtenerComentariosBPM();
 					
 				switch ($data['TareaBPM']['displayName']) {
  
@@ -318,6 +317,13 @@ class Tarea extends CI_Controller {
 			$response = $this->bpm->GuardarComentario($comentario);
 			echo json_encode($response);
 		}	
+
+		public function ObtenerComentariosBPM($case_id){
+			$this->load->library('BPM',$case_id);
+			$data['comentarios'] = $this->bpm->ObtenerComentariosBPM();
+			$data['case_id'] = $case_id;
+			$this->load->view('tareas/componentes/comentarios',$data);
+		}
 			// Comentarios
 				// public function ObtenerComentariosBPM($caseId){
 				// 	$parametros = $this->Bonitas->conexiones();

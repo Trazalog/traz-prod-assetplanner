@@ -50,7 +50,7 @@
       <div class="tab-pane fade in active" id="one">
         <!-- sacar u ocultar -->
         <input type="text" id="id_ordTrabajo" name="id_ordTrabajo" class="form-control"
-            value="<?php //echo $ot[0]['id_orden'] ?>" disabled>
+            value="<?php echo $ot ?>" disabled>
         <form id="form_insumos">
             <table id="tbl_insumos" class="table table-bordered table-hover">
                 <thead>
@@ -151,6 +151,7 @@
 
         var tabla = $('#tbl_insumos tbody tr');
         //console.table(tabla);
+        var nombreIns = new Array();
         var idinsumos = new Array();
         var cantidades = new Array();
         id = '';
@@ -159,14 +160,17 @@
         $.each(tabla, function (index) {
           var check = $(this).find('input.check');
           var cant = $(this).find('input.cant_insumos');
-          console.log(check);
+       //   console.log(check);
           // checked y lleno cant
           if (check.prop('checked') && (cant != "")) {
             id = check.attr('value');
             idinsumos.push(id);
             cant = check.parents("tr").find("input.cant_insumos").val();
             cantidades.push(cant);
-
+            nom = check.parents("tr").find("input.insum_Desc").val();
+            nombreIns.push(nom);
+            //Vaciar Campos
+            check.parents("tr").find("input.cant_insumos").val('');
           }
           // checked y vacio cant
           if (check.prop('checked') && (cant == "")) {
@@ -182,13 +186,24 @@
           }
         });
         //FIXME: DESHARDCODEAR !!!!
-        var idOT = 44;
+        var idOT = $('#id_ordTrabajo').val();
 
         if (hayError == true) {
           $('#error').fadeIn('slow');
           return;
         }
         WaitingOpen("Guardando pedido...");
+
+        if(!navigator.onLine){//SI NO HAY CONEXION LO GUARDA EN SESSION STORAGE
+          console.log("Sin Conexión");
+          var aux = sessionStorage.getItem('list_pedidos_'+idOT);
+          if(aux==null)aux=[];else aux = JSON.parse(aux);
+          aux.push({nombreIns, idinsumos, cantidades, idOT });
+          sessionStorage.setItem('list_pedidos_'+idOT,JSON.stringify(aux));
+          console.log(sessionStorage.getItem('list_pedidos_'+idOT));
+          cargarNotasOffline();
+        }
+        
         $.ajax({
           data: { idinsumos, cantidades, idOT },
           type: 'POST',
@@ -196,7 +211,8 @@
           url: 'index.php/Notapedido/setNotaPedido',
           success: function (result) {
             WaitingClose();
-            setTimeout("cargarView('Tarea', 'index', '" + $('#permission').val() + "');", 0);
+            cargarPedidos();
+            $('.modal').modal('hide');
           },
           error: function (result) {
             WaitingClose();

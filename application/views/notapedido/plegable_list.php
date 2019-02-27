@@ -18,6 +18,8 @@
                 <th>Nota de Pedido</th>
                 <th>Solicitante</th>
                 <th>Fecha Nota</th>              
+                <!-- <th>Solicitante</th>              
+                <th>Fecha</th>               -->
               </tr>
             </thead>
             <tbody>
@@ -116,7 +118,7 @@ var table = $('#deposito').DataTable({
     "targets": [ 0 ], 
     "orderable": false
   } ],
-  "order": [[1, "asc"]],
+  "order": [[1, "asc"]]
 });
 
 $('#deposito tbody').on('click', 'td.details-control', function () {
@@ -171,7 +173,7 @@ table.on("user-select", function (e, dt, type, cell, originalEvent) {
 
 function format(data){
   $html = '<div class="box box-solid box-default">'+
-    '<div class="box-header"><h3 class="box-title">Nota de pedido '+data[0].id_notaPedido+'</h3></div>'+
+    '<div class="box-header"><h3 class="box-title">Nota de pedido #'+data[0].id_notaPedido+'</h3></div>'+
     '<div class="box-body">'+
       '<table id="tblchild" class="table table-bordered table-hover table-striped">'+
         '<thead><tr>'+

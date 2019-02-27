@@ -52,7 +52,7 @@ if(!function_exists('cargarCabecera')){
 												orden_trabajo.duracion,
 												orden_trabajo.estado');	
 				$ci->db->from('orden_trabajo');		
-				$ci->db->join('tareas', 'tareas.id_tarea = orden_trabajo.id_tarea');			
+				$ci->db->join('tareas', 'tareas.id_tarea = orden_trabajo.id_tarea','left');			
 				$ci->db->where('orden_trabajo.id_orden', $id_OT);
 				$queryOT = $ci->db->get();			
 				if($queryOT->num_rows() > 0){

@@ -43,6 +43,8 @@ echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Prioridad
                 
 echo '<th style="display:none">Id tarea bonita</th>';
 
+echo '<th>?</th>'
+
 //echo '<th>Estado:</th>';
               
               ?>  
