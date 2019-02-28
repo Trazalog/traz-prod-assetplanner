@@ -118,7 +118,7 @@ class Otrabajo extends CI_Controller {
 			'descripcion'   => $descripcion,
 			'estado'        => 'C',
 			'id_usuario'    => $usrId,
-			'id_usuario_a'  => 1,
+			'id_usuario_a'  => $usrId,
 			'id_sucursal'   => $sucursal,
 			'id_proveedor'  => $proveedor,
 			'id_equipo'     => $equipo,

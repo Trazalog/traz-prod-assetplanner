@@ -127,6 +127,7 @@ class Calendarios extends CI_Model {
         $empId    = $userdata[0]['id_empresa'];    
         $sql      = "SELECT
                     tbl_back.backId,
+                    tbl_back.sore_id,
                     tbl_back.estado,
                     tbl_back.fecha,
                     tbl_back.id_tarea,
