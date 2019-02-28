@@ -12,6 +12,8 @@ class Sservicio extends CI_Controller {
 	public function index($permission)
 	{
 		$data['list']       = $this->Sservicios->servicios_List();
+		
+		//dump($data['list'], 'solicitudes');
 		$data['permission'] = $permission;
 		$this->load->view('Sservicios/list', $data);
 	}	
