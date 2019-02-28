@@ -72,13 +72,8 @@
                 </div> 
                 <div class="col-xs-12 col-sm-6 col-md-4">
                   <label for="periodo">Periodo:                       </label>
-                  <select id="periodo"  name="periodo" class=" selectpicker form-control input-md">
-                    <!-- <option >Anual</option> -->
-                    <option >Diario</option>
-                    <!-- <option >Mensual</option> -->
-                    <!--  <option >Periodos</option> -->
-                    <!-- <option >Ciclos</option> -->
-                    <!--  <option >Semestral</option> -->                                      
+                  <select id="periodo" name="periodo" class=" selectpicker form-control">
+                    <!-- -->
                   </select>
                 </div> 
                 <div class="col-xs-12 col-sm-6 col-md-4">
@@ -229,6 +224,35 @@ $(function(){
         dataType: 'json'
   });
 });    
+
+// Trae periodo y llena select
+traer_periodo();
+function traer_periodo(periodoId){
+  if (periodoId === undefined) {
+    periodoId = null;
+  }
+  $('#periodo').html(""); 
+  $.ajax({
+    data: {periodoId:periodoId },
+    dataType: 'json',
+    type: 'POST',
+    url: 'index.php/Calendario/getperiodo',
+    success: function(data){
+      var opcion = "<option value='-1'>Seleccione...</option>" ; 
+      $('#periodo').append(opcion); 
+      for(var i=0; i < data.length ; i++) 
+      {    
+        var nombre   = data[i]['descripcion'];
+        var selected = (periodoId == data[i]['idperiodo']) ? 'selected' : '';
+        var opcion   = "<option value='"+data[i]['idperiodo']+"' " +selected+ "'>" +nombre+ "</option>" ; 
+        $('#periodo').append(opcion);                        
+      }
+    },
+    error: function(result){  
+      console.log(result);
+    },
+  });
+}
 
 // Calcula horas hombre por tiempo y unidades
 function calcularHsHombre(){

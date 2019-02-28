@@ -602,6 +602,103 @@ class Otrabajo extends CI_Controller {
 		}
 	}
 
-	
+
+	public function getDisponibilidad()
+	{
+		$idEquipo = $this->input->post('idEquipo');
+		$result   = calcularDisponibilidad($idEquipo);
+		echo json_encode($result);
+	}
  
+ 	public function getEquipoDisponibilidad()
+ 	{
+		$result = $this->Otrabajos->getEquipoDisponibilidad();
+		echo json_encode($result);
+ 	}
+
+
+
+
+
+	//devuelve valores de todos los datos de la OT para mostrar en modal.
+	public function getOrigenOt()
+	{
+		$idot     = $_POST['idot'];
+		$response = $this->Otrabajos->getOrigenOt($idot);
+      	echo json_encode($response[0]);
+	}
+	
+
+	//devuelve valores de todos los datos de la OT para mostrar en modal.
+	public function getViewDataOt()
+	{
+		$idOt         = $_POST['idOt'];
+		$response     = $this->Otrabajos->getViewDataPreventivo($idOt);
+		echo json_encode($response[0]);
+	}
+
+	//devuelve valores de todos los datos de la OT desde Preventivos para mostrar en modal.
+	public function getViewDataSolServicio()
+	{
+		$idOt          = $_POST['idOt'];
+		$idSolServicio = $_POST['idSolServicio'];
+		$response      = $this->Otrabajos->getViewDataSolServicio($idOt, $idSolServicio);
+		echo json_encode($response[0]);
+	}
+
+	//devuelve valores de todos los datos de la OT desde Preventivos para mostrar en modal.
+	public function getViewDataPreventivo()
+	{
+		$idOt         = $_POST['idOt'];
+		$idPreventivo = $_POST['idPreventivo'];
+		$response     = $this->Otrabajos->getViewDataPreventivo($idOt, $idPreventivo);
+		echo json_encode($response[0]);
+	}
+
+	//devuelve valores de todos los datos de la OT desde Backlog para mostrar en modal.
+	public function getViewDataBacklog()
+	{
+		$idOt      = $_POST['idOt'];
+		$idBacklog = $_POST['idBacklog'];
+		$response  = $this->Otrabajos->getViewDataBacklog($idOt, $idBacklog);
+      	echo json_encode($response[0]);
+	}
+
+	//devuelve valores de todos los datos de la OT desde Predictivo para mostrar en modal.
+	public function getViewDataPredictivo()
+	{
+		$idOt         = $_POST['idOt'];
+		$idPredictivo = $_POST['idPredictivo'];
+		$response     = $this->Otrabajos->getViewDataPredictivo($idOt, $idPredictivo);
+		echo json_encode($response[0]);
+	}
+
+
+	public function printOT()
+	{
+		$datos = $this->input->post('datos');
+		$tipo = $this->input->post('tipo');
+		switch ($tipo) {
+		case '1': //Orden de trabajo
+			$this->load->view('otrabajos/printot', $datos);
+			break;
+		case '2': //Solicitud de servicio
+			$this->load->view('otrabajos/printotsolserv', $datos);
+			break;
+		case '3': //preventivo
+			$this->load->view('otrabajos/printotprev', $datos);
+			break;
+		case '4': //Backlog
+			$this->load->view('otrabajos/printotback', $datos);
+			break;
+		case '5': //predictivo
+			$this->load->view('otrabajos/printotpred', $datos);
+			break;
+		case '6': //correctivo programado
+			//break;
+		default:
+			break;
+		}
+	}
+
 }

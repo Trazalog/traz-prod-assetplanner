@@ -14,6 +14,7 @@ class  Equipo extends CI_Controller {
 		$data['empresa']    = $userdata[0]['id_empresa'];
 		$data['list']       = $this->Equipos->equipos_List();
 		$data['permission'] = $permission;
+		//dump( $data['list'] );
 		$this->load->view('equipo/list', $data);		     
     }
 

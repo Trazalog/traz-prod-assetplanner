@@ -26,6 +26,7 @@
                 <th>Periodo</th>
                 <th>Frecuencia</th>
                 <th>Fecha Base</th>
+                <th>Adjunto</th>
               </tr>
             </thead>
             <tbody>
@@ -53,6 +54,13 @@
                   echo '<td>'.$a['cantidad'].'</td>';
                   echo '<td>'.date_format(date_create($a['ultimo']), 'd-m-Y').'</td>';
                     //echo '<td>'.$a['descripcion'].'</td>';
+                  if( $a['prev_adjunto'] != "")
+                  {
+                    echo '<td><a href="./assets/filespreventivos/'.$a['prev_adjunto'].'" alt="adjunto" target="_blank">'.$a['prev_adjunto'].'</a></td>';
+                  }
+                  else {
+                    echo '<td></td>';
+                  }
                   echo '</tr>';
                     //}
                 }
@@ -90,11 +98,13 @@
     $('#id').val(idprev);
   });   
 
-  //Editar
-  $(".fa-pencil").click(function (e) { 
 
+
+  // Editar Preventivo
+  $(".fa-pencil").click(function (e) { 
     $('#error').fadeOut('fast');        
     $('#modalSale').modal('show');
+    $('#tarea').autocomplete( "option", "appendTo", ".eventInsForm" );
 
     var idprev = $(this).parent('td').parent('tr').attr('id');
     $('#id_preventivo').val(idprev);  
@@ -102,52 +112,79 @@
 
     $.ajax({
       type: 'POST',
-      data: { idprev: idprev},
+      data: { idprev:idprev },
+      dataType: 'json',
       url: 'index.php/Preventivo/geteditar',
       success: function(data){                         
-
-        datos={
-          'idprev':data['datos'][0]['idprev'],
-          'codigo' : data['datos'][0]['codigo'],
-          'id_equipo':data['datos'][0]['id_equipo'], // id_equipo
+        datos = {
+          'idprev'       :data['datos'][0]['idprev'],
+          'codigo'       :data['datos'][0]['codigo'],
+          'id_equipo'    :data['datos'][0]['id_equipo'], // id_equipo
           'fecha_ingreso':data['datos'][0]['fecha_ingreso'],
-          'marca':data['datos'][0]['marca'],
-          'codigo':data['datos'][0]['codigo'],  // nombre del equipo
-          'ubicacion':data['datos'][0]['ubicacion'],
-          'descripcion':data['datos'][0]['descripcion'],                
-          'id_tarea':data['datos'][0]['id_tarea'], //iria  id_tarea descripta
-          'perido':data['datos'][0]['perido'],
-          'cantidad':data['datos'][0]['cantidad'],
-          'ultimo':data['datos'][0]['ultimo'],
+          'marca'        :data['datos'][0]['marca'],
+          'codigo'       :data['datos'][0]['codigo'],  // nombre del equipo
+          'ubicacion'    :data['datos'][0]['ubicacion'],
+          'descripcion'  :data['datos'][0]['descripcion'],                
+          'id_tarea'     :data['datos'][0]['id_tarea'], //iria  id_tarea descripta
+          'descrip_tarea':data['datos'][0]['descripta'],
+          'perido'       :data['datos'][0]['perido'],
+          'cantidad'     :data['datos'][0]['cantidad'],
+          'ultimo'       :data['datos'][0]['ultimo'],
           'id_componente':data['datos'][0]['id_componente'],
-          'critico1':data['datos'][0]['critico1'],
-          'horash':data['datos'][0]['horash'],
-          'ultimo':data['datos'][0]['ultimo'],
+          'critico1'     :data['datos'][0]['critico1'],
+          'horash'       :data['datos'][0]['horash'],
+          'prev_duracion':data['datos'][0]['prev_duracion'],
+          'id_unidad'    :data['datos'][0]['id_unidad'],
+          'prev_canth'   :data['datos'][0]['prev_canth'],
+          'ultimo'       :data['datos'][0]['ultimo'],
         };             
-
-              var herram = data['herramientas'];             
-              var insum = data['insumos'];
-
-              console.log(herram);
-              console.log(insum);
-              completarEdit(datos, herram, insum);                        
-            },        
-            error: function(result){            
-              console.log(result);
-            },
-            dataType: 'json'
-          });      
+        var herram = data['herramientas'];             
+        var insum  = data['insumos'];
+        completarEdit(datos, herram, insum);                        
+      },        
+      error: function(result){            
+        console.log(result);
+      },
+    });
   });  
+
+  //Trae tareas y permite busqueda en el input
+  var dataTarea = function() {
+    var tmp = null;
+    $.ajax({
+      'async': false,
+      'type': "POST",
+      'dataType': 'json',
+      'url': 'index.php/Preventivo/gettarea',
+    })
+    .done( (data) => { tmp = data } )
+    .fail( () => alert("Error al traer tareas") );
+    return tmp;
+  }();
+  $("#tarea").autocomplete({
+    source:    dataTarea,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_tarea').val(ui.item.value);
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_tarea').val(ui.item.value);
+    },
+  });
 
   // Trae unidades de tiempo - Chequeado
   $(function(){  
-
+    $('#unidad').html(""); 
     $.ajax({
       type: 'POST',
       data: { },
       url: 'index.php/Preventivo/getUnidTiempo', 
       success: function(data){
-
         var opcion  = "<option value='-1'>Seleccione...</option>" ; 
         $('#unidad').append(opcion); 
         for(var i=0; i < data.length ; i++){    
@@ -157,38 +194,15 @@
         }
       },
       error: function(result){
-
         console.log(result);
       },
       dataType: 'json'
     });
   });   
 
-  // Trae tareas
+  //Trae herramientas
   $(function(){
-    $.ajax({
-      type: 'POST',
-      data: { },
-      url: 'index.php/Preventivo/gettarea', //index.php/
-      success: function(data){             
-        var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-        $('#tarea').append(opcion); 
-        for(var i=0; i < data.length ; i++){    
-          var nombre = data[i]['descripcion'];
-          var opcion  = "<option value='"+data[i]['id_tarea']+"'>" +nombre+ "</option>" ; 
-          $('#tarea').append(opcion);                                  
-        }
-      },
-      error: function(result){
-
-        console.log(result);
-      },
-      dataType: 'json'
-    });
-  });
-
-   //Trae herramientas
-   $(function(){
+    $('#herramienta').html("");
     $.ajax({
       type: 'POST',
       data: { },
@@ -210,7 +224,7 @@
         });
   });
 
-   $("#herramienta").change(function(){     
+  $("#herramienta").change(function(){     
     var id_herramienta = $(this).val();
     console.log("El id de la herramienta que seleccione es:");
     console.log(id_herramienta); 
@@ -276,21 +290,19 @@
 
   // trae insumos
   $(function(){
+    $('#insumo').html("");
     $.ajax({
       type: 'POST',
       data: { },
       url: 'index.php/Preventivo/getinsumo', 
       success: function(data){
-
        var opcion  = "<option value='-1'>Seleccione...</option>" ; 
        $('#insumo').append(opcion); 
        for(var i=0; i < data.length ; i++) 
        {    
         var nombre = data[i]['artBarCode'];
         var opcion  = "<option value='"+data[i]['artId']+"'>" +nombre+ "</option>" ; 
-
         $('#insumo').append(opcion); 
-
       }
     },
     error: function(result){
@@ -405,63 +417,70 @@ function eliminaPrevent(){
 }
 
 // commpleta los campos de modal de edicion
-function completarEdit(datos, herram,insum){
+function completarEdit(datos, herram, insum){
+  //console.table(datos);
+  $('#id_equipo').val(datos['id_equipo']);
+  $('#equipo option').remove();
+  $('#equipo').append( '<option value="'+datos['id_equipo']+'" selected>'+datos['codigo']+'</option>' );
+  $('#fecha_ingreso').val(datos['fecha_ingreso']);
+  $('#marca').val(datos['marca']);
+  $('#ubicacion').val(datos['ubicacion']);
+  $('#descripcion').val(datos['descripcion']);
 
+  $('#id_tarea').val(datos['id_tarea']);
+  $('#tarea').val(datos['descrip_tarea']);
+
+  traer_componente(datos['id_equipo'], datos['id_componente']);
+  $('#ultimo').val(datos['ultimo']);    
+  traer_periodo( datos['perido'] );
+  $('#cantidad').val(datos['cantidad']);
+
+
+
+  $('#hshombre').val(datos['horash']);    
+  $('#duracion').val(datos['prev_duracion']);
+  $('#unidad').val(datos['id_unidad']);
+  $('#cantOper').val(datos['prev_canth']);
+
+
+/*
   $('#hshombre').val(" ");
-  $('#duracion').val(" ");
-  $('#cantOper').val(" ");
-  $('#unidad').val('-1');
   $('#tarea').val('-1');
   $('#herramienta').val('-1');
   $('#insumo').val('-1');    
-  $('#equipo').val(datos['codigo']);
-  $('#id_equipo').val(datos['id_equipo']);
-  $('#fecha_ingreso').val(datos['fecha_ingreso']);
-  $('#marca').val(datos['marca']);
-    //$('#codigo').val(datos['codigo']);
-    $('#ubicacion').val(datos['ubicacion']);
-    $('#descripcion').val(datos['descripcion']);
-    traer_componente(datos['id_equipo']);
-    $('#tarea').val(datos['id_tarea']);     
-    //$('#periodo').val('0');
-    console.info("periodo a editar: "+datos['perido']);
-    traer_periodo(datos['perido']);
-    $('#cantidad').val(datos['cantidad']);
-    $('#ultimo').val(datos['ultimo']);    
-    $('#componente').val(datos['id_componente']);    
-    $('#critico1').val(datos['critico1']);
-    $('#hshombre').val(datos['horash']);    
-
-    $('#tablaherramienta tbody tr').remove();
-    for (var i = 0; i < herram.length; i++) {
-      var tr = "<tr id='"+herram[i]['herrId']+"'>"+
-      "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
-      "<td>"+herram[i]['herrcodigo']+"</td>"+
-      "<td>"+herram[i]['herrmarca']+"</td>"+
-      "<td>"+herram[i]['herrdescrip']+"</td>"+
-      "<td>"+herram[i]['cantidad']+"</td>"+                   
-      "</tr>";
-      $('#tablaherramienta tbody').append(tr);
-    }
-
-    $('#tablainsumo tbody tr').remove();
-    
-    for (var i = 0; i < insum.length; i++){                                             
-
-      var tr = "<tr id='"+insum[i]['artId']+"'>"+
-      "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
-      "<td>"+insum[i]['artBarCode']+"</td>"+
-      "<td>"+insum[i]['artDescription']+"</td>"+
-      "<td>"+insum[i]['cantidad']+"</td>"+                   
-      "</tr>";
-      $('#tablainsumo tbody').append(tr);
-    }
-
-    $(document).on("click",".elirow",function(){
-      var parent = $(this).closest('tr');
-      $(parent).remove();
-    });
+  //$('#codigo').val(datos['codigo']);
+  //$('#periodo').val('0');
+  $('#componente').val(datos['id_componente']);    
+  $('#critico1').val(datos['critico1']);
+*/
+  $('#tablaherramienta tbody tr').remove();
+  for (var i = 0; i < herram.length; i++) {
+    var tr = "<tr id='"+herram[i]['herrId']+"'>"+
+    "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+    "<td>"+herram[i]['herrcodigo']+"</td>"+
+    "<td>"+herram[i]['herrmarca']+"</td>"+
+    "<td>"+herram[i]['herrdescrip']+"</td>"+
+    "<td>"+herram[i]['cantidad']+"</td>"+                   
+    "</tr>";
+    $('#tablaherramienta tbody').append(tr);
   }
+
+  $('#tablainsumo tbody tr').remove();
+  for (var i = 0; i < insum.length; i++){                                             
+    var tr = "<tr id='"+insum[i]['artId']+"'>"+
+    "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+    "<td>"+insum[i]['artBarCode']+"</td>"+
+    "<td>"+insum[i]['artDescription']+"</td>"+
+    "<td>"+insum[i]['cantidad']+"</td>"+                   
+    "</tr>";
+    $('#tablainsumo tbody').append(tr);
+  }
+
+  $(document).on("click",".elirow",function(){
+    var parent = $(this).closest('tr');
+    $(parent).remove();
+  });
+}
 
 // Calcula horas hombre por tiempo y unidades -chequeado
 function calcularHsHombre(){
@@ -489,6 +508,11 @@ function calcularHsHombre(){
     }  
   }
 
+// Calcula hs hombre si están los 3 parametros y cambia alguno de ellos
+$('#duracion, #unidad, #cantOper').change(function(){
+  if( $('#duracion').val()!="" && $('#unidad').val()!="-1" && $('#cantOper').val()!="")
+    calcularHsHombre();
+});
 //traer_herramienta();
     //traer_insumo(); 
 
@@ -539,13 +563,13 @@ function calcularHsHombre(){
 //             dataType: 'json'
 //         });
 // }
-function traer_periodo(periodoId){
-  if (periodoId === undefined) {
-    periodoId = null;
+function traer_periodo(periodoE) {
+  if (periodoE === undefined) {
+    periodoE = null;
   }
   $('#periodo').html(""); 
   $.ajax({
-    data: {periodoId:periodoId },
+    data: {periodoE:periodoE },
     dataType: 'json',
     type: 'POST',
     url: 'index.php/Calendario/getperiodo',
@@ -554,9 +578,10 @@ function traer_periodo(periodoId){
       $('#periodo').append(opcion); 
       for(var i=0; i < data.length ; i++) 
       {    
-        var nombre   = data[i]['descripcion'];
-        var selected = (periodoId == data[i]['idperiodo']) ? 'selected' : '';
-        var opcion   = "<option value='"+data[i]['idperiodo']+"' " +selected+ "'>" +nombre+ "</option>" ; 
+        let selectAttr = '';
+        if( (typeof periodoE !== 'undefined') && (data[i]['idperiodo'] == periodoE) ) { selectAttr = 'selected';}
+        let nombre = data[i]['descripcion'];
+        let opcion = "<option value='"+data[i]['idperiodo']+"' "+selectAttr+">" +nombre+ "</option>";
         $('#periodo').append(opcion);                        
       }
     },
@@ -566,51 +591,45 @@ function traer_periodo(periodoId){
   });
 }
 
-function traer_componente(id_equipo){
+function traer_componente(id_equipo, id_componente){
+  console.info("id de equipo: "+id_equipo);
   $('#componente').html("");
   $.ajax({
+    data: {id_equipo:id_equipo },
+    dataType: 'json',
     type: 'POST',
-    data: {id_equipo: id_equipo },
-      url: 'index.php/Preventivo/getcomponente', //index.php/
-      async:false,
-      success: function(data){
-
-       $('#componente option').remove();
-       var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-       $('#componente').append(opcion); 
-       for(var i=0; i < data.length ; i++) 
-       {    
-        var nombre = data[i]['descripcion'];
-        var opcion  = "<option value='"+data[i]['id_componente']+"'>" +nombre+ "</option>" ; 
-
-        $('#componente').append(opcion); 
-
+    url: 'index.php/Preventivo/getcomponente',
+    async:false,
+    success: function(data){
+      $('#componente option').remove();
+      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+      $('#componente').append(opcion); 
+      for(var i=0; i < data.length ; i++) {
+        let selectAttr = '';
+        if( (typeof id_componente !== 'undefined') && (data[i]['id_componente'] == id_componente) ) { selectAttr = 'selected';}
+        let nombre = data[i]['descripcion'];
+        let opcion = "<option value='"+data[i]['id_componente']+"' "+selectAttr+">" +nombre+ "</option>";
+        $('#componente').append(opcion);    
       }
-             //$('#componente').html("");
-
-             
-           },
-           error: function(result){
-
-            console.log(result);
-          },
-          dataType: 'json'
-        });
+    },
+    error: function(result){
+      console.log(result);
+    },
+  });
 }
 
 function guardarEdicion(){
-
     var id_prevent = $('#id_preventivo').val();//
-    var id_equipo = $('#id_equipo').val();//
-    var tarea = $('#tarea').val();//
+    var id_equipo  = $('#id_equipo').val();//
+    var id_tarea   = $('#id_tarea').val();//
     var componente = $('#componente').val();
-    var ultimo = $('#ultimo').val();
-    var periodo = $('#periodo').text();    
-    var cantidad = $('#cantidad').val();
-    var cantidadhm= $('#hshombre').val();    
-    var duracion = $('#duracion').val();
-    var unidad = $('#unidad').val();
-    var cantOper = $('#cantOper').val();   
+    var ultimo     = $('#ultimo').val();
+    var periodo    = $('#periodo').val();    
+    var cantidad   = $('#cantidad').val();
+    var cantidadhm = $('#hshombre').val();    
+    var duracion   = $('#duracion').val();
+    var unidad     = $('#unidad').val();
+    var cantOper   = $('#cantOper').val();   
     
     // Arma array de herramientas y cantidades
     var idsherramienta = new Array();     
@@ -649,7 +668,7 @@ function guardarEdicion(){
         $.ajax({
           type: 'POST',
           data: { id_equipo: id_equipo,
-            id_tarea: tarea,
+            id_tarea: id_tarea,
             perido: periodo,
             cantidad: cantidad,
             ultimo : ultimo,
@@ -698,7 +717,7 @@ function guardarEdicion(){
 </script>
 
 <!-- Modal editar-->
-<div class="modal fade" id="modalSale" tabindex="2000" aria-labelledby="myModalLabel" style="display: none;">
+<div class="modal" id="modalSale" tabindex="2000" aria-labelledby="myModalLabel" style="display: none;">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
 
@@ -762,7 +781,7 @@ function guardarEdicion(){
             <div class="row">
               <input type="hidden" id="id" name="id">
               <div class="col-xs-12 col-sm-6 col-md-4">Tarea <strong style="color: #dd4b39">*</strong>:
-                <select id="tarea" name="tarea" class="form-control" value=""></select>
+                <input type="text" id="tarea" name="tarea" class="form-control">
                 <input type="hidden" id="id_tarea" name="id_tarea">
               </div>  
               <input type="hidden" id="id" name="id">
@@ -785,48 +804,42 @@ function guardarEdicion(){
                   <option >Semestral</option>-->
                 </select>
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-4">Frecuencia <strong style="color: #dd4b39">*</strong>:
+              <div class="col-xs-12 col-sm-6">Frecuencia <strong style="color: #dd4b39">*</strong>:
                 <input type="text"  id="cantidad" name="cantidad" class="form-control input-md" placeholder="Ingrese valor" />
               </div>
             </div><!-- /.row -->
+            <div class="row">
+              <div class="col-xs-12 col-sm-6 col-md-4">
+                <label for="">Duración <strong style="color: #dd4b39">*</strong>:</label>
+                <input type="text" class="form-control" id="duracion" name="duracion"/>
+              </div> 
+              <div class="col-xs-12 col-sm-6 col-md-4">
+                <label for="">U. de tiempo <strong style="color: #dd4b39">*</strong></label>
+                <select  id="unidad" name="unidad" class="form-control" />
+              </div>
+              <div class="col-xs-12 col-sm-6 col-md-4">
+                <label for="">Cant. Operarios <strong style="color: #dd4b39">*</strong>:</label>
+                <input type="text" class="form-control" id="cantOper" name="cantOper"/>
+              </div>  
+              <div class="col-xs-12 col-sm-6 col-md-4">
+                <label for="">Horas Hombre <strong style="color: #dd4b39">*</strong>:</label>
+                <input type="text" class="form-control" name="hshombre" id="hshombre" disabled>
+              </div> 
+            </div>
           </div>
         </div>
 
         <div class="nav-tabs-custom">
           <!--tabs -->
           <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#choras" aria-controls="home" role="tab" data-toggle="tab">Cantidad Horas/Hombres</a></li>
-            <li role="presentation"><a href="#herramin" aria-controls="profile" role="tab" data-toggle="tab">Herramientas</a></li>
+            <li role="presentation" class="active"><a href="#herramin" aria-controls="profile" role="tab" data-toggle="tab">Herramientas</a></li>
             <li role="presentation"><a href="#insum" aria-controls="messages" role="tab" data-toggle="tab">Insumos</a></li>
+            <!--<li role="presentation"><a href="#TabAdjunto" aria-controls="home" role="tab" data-toggle="tab">Adjunto</a></li>-->
           </ul>
 
-          <!-- Tab panes -->
+          <?php /*<!-- Tab panes -->
           <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="choras">
-              <div class="row" >
-                <div class="col-xs-12 col-sm-6 col-md-4">
-                  <label for="">Horas Hombre <strong style="color: #dd4b39">*</strong>:</label>
-                  <input type="text" class="form-control" name="hshombre" id="hshombre">
-                </div> 
-                <div class="col-xs-12 col-sm-6 col-md-4">
-                  <label for="">Duración <strong style="color: #dd4b39">*</strong>:</label>
-                  <input type="text" class="form-control" id="duracion" name="duracion"/>
-                </div> 
-                <div class="col-xs-12 col-sm-6 col-md-4">
-                  <label for="">U. de tiempo <strong style="color: #dd4b39">*</strong></label>
-                  <select  id="unidad" name="unidad" class="form-control" />
-                </div>
-                <div class="col-xs-12 col-sm-6 col-md-4">
-                  <label for="">Cant. Operarios <strong style="color: #dd4b39">*</strong>:</label>
-                  <input type="text" class="form-control" id="cantOper" name="cantOper"/>
-                </div>          
-                <div class="col-xs-12">
-                  <button type="button" class="btn btn-primary" onclick="calcularHsHombre();"style="margin-top: 19px;">Calcular</button>
-                </div>                              
-              </div>
-            </div><!--cierre de choras-->
-
-            <div role="tabpanel" class="tab-pane" id="herramin">
+            <div role="tabpanel" class="tab-pane active" id="herramin">
               <div class="panel panel-default">
                 <div class="panel-body">
                   <div class="row">
@@ -917,8 +930,25 @@ function guardarEdicion(){
                   </div>
                 </div>
               </div>
-            </div><!--cierre div insum-->                       
+            </div><!--cierre div insum--> 
+
+            <div role="tabpanel" class="tab-pane" id="TabAdjunto">
+              <div class="row" >
+                <div class="col-xs-12">
+                  <i class="fa fa-ban" style="color: #f39c12" ;="" cursor:="" 'pointer'=""></i> <a href="">Archivo</a>
+                </div>
+                <div class="col-xs-12">
+                  <input id="inputPDF" name="inputPDF" type="file" class="form-control input-md" disabled>
+                  <style type="text/css">
+                    #inputPDF {
+                      padding-bottom: 40px;
+                    }
+                  </style>
+                </div>
+              </div>
+            </div><!--cierre de TabAdjunto-->                      
           </div><!--tab-content-->
+          */ ?>
         </div>
       </div>
 
@@ -932,24 +962,24 @@ function guardarEdicion(){
 </div>
 
 
-  <!-- Modal Eliminar Warning -->
-  <div class="modal fade" id="modalaviso">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" ><span class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true" >&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <input type="hidden" id="id">
-            <h4>¿Desea eliminar Preventivo?</h4>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminaPrevent();">Eliminar</button>
-        </div>
+<!-- Modal Eliminar Warning -->
+<div class="modal" id="modalaviso">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" ><span class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" >&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="id">
+          <h4>¿Desea eliminar Preventivo?</h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminaPrevent();">Eliminar</button>
       </div>
     </div>
   </div>
+</div>
