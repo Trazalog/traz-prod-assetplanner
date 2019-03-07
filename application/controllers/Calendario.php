@@ -170,7 +170,10 @@ class Calendario extends CI_Controller {
 	    	
 	    	if ($event_tipo == '1') // si el evento es unico lo guarda
 	    	{
-	    		$result = $this->Calendarios->guardar_agregar($datos2);
+					$result = $this->Calendarios->guardar_agregar($datos2);
+					if($result){
+						$this->Calendarios->setEstadoSServicio($id_solicitud);
+					}
 	    	}
 	    	else // evento repetitivo 
 	    	{
@@ -257,26 +260,26 @@ class Calendario extends CI_Controller {
 		return $duracion;
 	}
 
-  	// arama conjunto de OT para su insercion en la BD
-   	function armar_batch($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2)
-   	{	
-  		$data[] = $datos2;
-    	while ($fecha_limite >= $fec_programacion  ) {
-		 	// a la fecha de programacion le sumo la frecuencia en dias	   	
-	   		$nuev_fecha = strtotime ( '+'.$diasFrecuencia.'day' , strtotime ( $fec_programacion ) ) ;
-	   		$nuev_fecha = date ( 'Y-m-d H:i:s' , $nuev_fecha );
-	   		// guardo la fecha nueva en el array para nuevva OT
-	   		$datos2['fecha_program'] = $nuev_fecha;
-	   		// guardo el componete en el array batch
-	   		$data[] = $datos2;
-	   		// actualizo la fecha de programacion
-	   		$fec_programacion = $nuev_fecha;
+	// arama conjunto de OT para su insercion en la BD
+	function armar_batch($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2)
+	{	
+		$data[] = $datos2;
+		while ($fecha_limite >= $fec_programacion  ) {
+		// a la fecha de programacion le sumo la frecuencia en dias	   	
+			$nuev_fecha = strtotime ( '+'.$diasFrecuencia.'day' , strtotime ( $fec_programacion ) ) ;
+			$nuev_fecha = date ( 'Y-m-d H:i:s' , $nuev_fecha );
+			// guardo la fecha nueva en el array para nuevva OT
+			$datos2['fecha_program'] = $nuev_fecha;
+			// guardo el componete en el array batch
+			$data[] = $datos2;
+			// actualizo la fecha de programacion
+			$fec_programacion = $nuev_fecha;
 		} 
 
 		$this->Calendarios->setOTbatch($data); 		
-   	}
+	}
 
-   	public function getperiodo()
+  public function getperiodo()
 	{
 		$periodo = $this->Calendarios->getperiodo($this->input->post());
 		if($periodo)

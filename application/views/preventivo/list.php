@@ -426,33 +426,17 @@ function completarEdit(datos, herram, insum){
   $('#marca').val(datos['marca']);
   $('#ubicacion').val(datos['ubicacion']);
   $('#descripcion').val(datos['descripcion']);
-
   $('#id_tarea').val(datos['id_tarea']);
   $('#tarea').val(datos['descrip_tarea']);
-
   traer_componente(datos['id_equipo'], datos['id_componente']);
   $('#ultimo').val(datos['ultimo']);    
   traer_periodo( datos['perido'] );
   $('#cantidad').val(datos['cantidad']);
-
-
-
   $('#hshombre').val(datos['horash']);    
   $('#duracion').val(datos['prev_duracion']);
   $('#unidad').val(datos['id_unidad']);
   $('#cantOper').val(datos['prev_canth']);
 
-
-/*
-  $('#hshombre').val(" ");
-  $('#tarea').val('-1');
-  $('#herramienta').val('-1');
-  $('#insumo').val('-1');    
-  //$('#codigo').val(datos['codigo']);
-  //$('#periodo').val('0');
-  $('#componente').val(datos['id_componente']);    
-  $('#critico1').val(datos['critico1']);
-*/
   $('#tablaherramienta tbody tr').remove();
   for (var i = 0; i < herram.length; i++) {
     var tr = "<tr id='"+herram[i]['herrId']+"'>"+
@@ -833,122 +817,8 @@ function guardarEdicion(){
           <!--tabs -->
           <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active"><a href="#herramin" aria-controls="profile" role="tab" data-toggle="tab">Herramientas</a></li>
-            <li role="presentation"><a href="#insum" aria-controls="messages" role="tab" data-toggle="tab">Insumos</a></li>
-            <!--<li role="presentation"><a href="#TabAdjunto" aria-controls="home" role="tab" data-toggle="tab">Adjunto</a></li>-->
+            <li role="presentation"><a href="#insum" aria-controls="messages" role="tab" data-toggle="tab">Insumos</a></li>            
           </ul>
-
-          <?php /*<!-- Tab panes -->
-          <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="herramin">
-              <div class="panel panel-default">
-                <div class="panel-body">
-                  <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="herramienta">Codigo <strong style="color: #dd4b39">*</strong>:</label>
-                      <select  id="herramienta"  name="herramienta" class="form-control input-md" value=""></select>
-                      <input type="hidden" id="id_herramienta" name="id_herramienta">
-                    </div>       
-                    <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="marcaherram">Marca:</label>
-                      <input type="text" id="marcaherram" name="marcaherram" class="form-control input-md" />
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="descripcionherram">Descripcion:</label>
-                      <input type="text" id="descripcionherram" name="descripcionherram" class="form-control input-md" />
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="cantidadherram">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
-                      <input type="text" id="cantidadherram" name="cantidadherram" class="form-control input-md" placeholder="Ingrese Cantidad" />
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-xs-12"> 
-                      <br>
-                      <button type="button" class="btn btn-primary" id="agregarherr"><i class="fa fa-check">Agregar</i></button>
-                    </div>
-                  </div>
-                  <hr>
-                  <div class="row">
-                    <div class="col-xs-12">
-                      <table class="table table-bordered" id="tablaherramienta"> 
-                        <thead>
-                          <tr>                      
-                            <th></th>
-                            <th>Código</th>
-                            <th>Marca</th>
-                            <th>Descripcion</th>
-                            <th>Cantidad</th>
-                          </tr>
-                        </thead>
-                        <tbody></tbody>
-                      </table>  
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> <!-- cierre div herram -->
-
-            <div role="tabpanel" class="tab-pane" id="insum">
-              <div class="panel panel-default">
-                <div class="panel-body">
-                  <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="insumo">Codigo:</label>
-                      <select  id="insumo"  name="insumo" class="form-control input-md" value=""></select>
-                      <input type="hidden" id="id_insumo" name="id_insumo">
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="descript">Descripcion:</label>
-                      <input type="text" id="descript"  name="descript" class="form-control input-md" />
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="cant">Cantidad:</label>
-                      <input type="text" id="cant"  name="cant" class="form-control input-md" placeholder="Ingrese Cantidad"/>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-xs-12">
-                      <br>
-                      <button type="button" class="btn btn-primary" id="agregarins"><i class="fa fa-check">Agregar</i></button>
-                    </div>
-                  </div>
-                  <hr>
-                  <div class="row">
-                    <div class="col-xs-12">
-                      <table class="table table-bordered" id="tablainsumo"> 
-                        <thead>
-                          <tr>
-                            <th></th>
-                            <th>Código</th>
-                            <th>Descripcion</th>
-                            <th>Cantidad</th>
-                          </tr>
-                        </thead>
-                        <tbody></tbody>
-                      </table>  
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div><!--cierre div insum--> 
-
-            <div role="tabpanel" class="tab-pane" id="TabAdjunto">
-              <div class="row" >
-                <div class="col-xs-12">
-                  <i class="fa fa-ban" style="color: #f39c12" ;="" cursor:="" 'pointer'=""></i> <a href="">Archivo</a>
-                </div>
-                <div class="col-xs-12">
-                  <input id="inputPDF" name="inputPDF" type="file" class="form-control input-md" disabled>
-                  <style type="text/css">
-                    #inputPDF {
-                      padding-bottom: 40px;
-                    }
-                  </style>
-                </div>
-              </div>
-            </div><!--cierre de TabAdjunto-->                      
-          </div><!--tab-content-->
-          */ ?>
         </div>
       </div>
 

@@ -219,6 +219,7 @@ class Calendarios extends CI_Model {
             WHERE solicitud_reparacion.id_empresa = $empId
             AND year(solicitud_reparacion.f_solicitado) = $year
             AND month(solicitud_reparacion.f_solicitado) = $month
+            AND solicitud_reparacion.estado != 'OT'
             ";
         $query = $this->db->query($sql);
         if ($query->num_rows()!=0)
@@ -263,15 +264,7 @@ class Calendarios extends CI_Model {
     function getperiodo($data = null)
     {
         $userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-        /*$sql       = "SELECT articles.artId, abmperiodo.periodoId, abmperiodo.periododescrip
-            FROM articles
-            JOIN tbl_lote ON tbl_lote.artId = articles.artId
-            JOIN abmperiodo ON abmperiodo.periodoId = tbl_lote.periodoid
-            WHERE tbl_lote.artId = $id
-            AND tbl_lote.id_empresa = $empresaId
-            ";
-        $query = $this->db->query($sql);*/
+        $empresaId = $userdata[0]['id_empresa'];      
 
         $this->db->select('periodo.idperiodo, periodo.descripcion');
         $this->db->from('periodo');
@@ -446,10 +439,18 @@ class Calendarios extends CI_Model {
 
 	//Guarda orden de trabajo a partir de Pred/Correc/Backlog/Prevent
 	function guardar_agregar($data)
-    {
-        $query = $this->db->insert("orden_trabajo",$data);
-    	return $query;        
-    }
+	{
+			$query = $this->db->insert("orden_trabajo",$data);
+		return $query;        
+	}
+
+	// Actuaiza estado 'C' la Sol de Servicios
+	function setEstadoSServicio($id_solicitud){
+		$this->db->set('estado', 'OT');
+		$this->db->where('id_solicitud', $id_solicitud);
+		$resposnse = $this->db->update('solicitud_reparacion');
+		return $response;
+	}
 
     // Guarda batch de OT 
     function setOTbatch($data)
@@ -461,9 +462,9 @@ class Calendarios extends CI_Model {
     function updateDiaProgramacion($id, $diaNuevo){   		
    		
    		$this->db->set('fecha_program', $diaNuevo);
-		$this->db->where('id_orden', $id);
-		$resposnse = $this->db->update('orden_trabajo');
-		return $resposnse;
+			$this->db->where('id_orden', $id);
+			$resposnse = $this->db->update('orden_trabajo');
+			return $resposnse;
    	}
 
    	// Actualiza la nueva duracion de la OT 

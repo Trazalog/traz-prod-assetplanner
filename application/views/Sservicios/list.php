@@ -72,7 +72,7 @@
                             echo '<td style="text-align: left">'.$f['ubicacion'].'</td>';
                             echo '<td style="text-align: left">'.$f['causa'].'</td>';
                             /*echo '<td style="text-align: center">'.($f['estado'] == 'C' ? '<small class="label pull-left bg-green">Curso</small>' : '<small class="label pull-left bg-yellow">Solicitado</small>').'</td>';*/
-                            echo '<td style="text-align: center">'.($f['estado'] == 'C' ? '<small class="label pull-left bg-green">Curso</small>' :($f['estado'] == 'T' ? '<small class="label pull-left bg-blue">Terminado</small>' : '<small class="label pull-left bg-red">Solicitado</small>')).'</td>';
+                            echo '<td style="text-align: center">'.($f['estado'] == 'OT' ? '<small class="label pull-left bg-yellow">Curso</small>' :($f['estado'] == 'T' ? '<small class="label pull-left bg-green">Conforme</small>' : '<small class="label pull-left bg-red">Solicitado</small>')).'</td>';
                             echo '</tr>';
 
                         } // if ($f['usrId'] == $usrId)
