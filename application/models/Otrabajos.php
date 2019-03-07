@@ -17,30 +17,30 @@ class Otrabajos extends CI_Model {
 		$userdata = $this->session->userdata('user_data');
 		$empId    = $userdata[0]['id_empresa'];
 		$this->db->select('orden_trabajo.id_orden,
-			orden_trabajo.nro,
-			orden_trabajo.fecha_inicio,
-			orden_trabajo.fecha_entrega,
-			orden_trabajo.fecha_terminada,
-			orden_trabajo.fecha_aviso,
-			orden_trabajo.fecha_entregada,
-			orden_trabajo.descripcion,
-			orden_trabajo.id_solicitud,
-			orden_trabajo.cliId,
-			orden_trabajo.estado,
-			orden_trabajo.id_usuario,
-			orden_trabajo.id_usuario_a,
-			tbl_tipoordentrabajo.descripcion AS tipoDescrip,
-			user1.usrName AS nombre,
-			user1.usrLastName,
-			usuarioasempresa.grpId AS grp,
-			orden_trabajo.id_usuario_e,
-			orden_trabajo.id_sucursal,
-			sisusers.usrName,
-			sisusers.usrLastName,
-			sucursal.descripc,
-    		equipos.codigo,
-    		equipos.id_equipo,
-            usuarioasempresa.grpId');
+											orden_trabajo.nro,
+											orden_trabajo.fecha_inicio,
+											orden_trabajo.fecha_entrega,
+											orden_trabajo.fecha_terminada,
+											orden_trabajo.fecha_aviso,
+											orden_trabajo.fecha_entregada,
+											orden_trabajo.descripcion,
+											orden_trabajo.id_solicitud,
+											orden_trabajo.cliId,
+											orden_trabajo.estado,
+											orden_trabajo.id_usuario,
+											orden_trabajo.id_usuario_a,
+											tbl_tipoordentrabajo.descripcion AS tipoDescrip,
+											user1.usrName AS nombre,
+											user1.usrLastName,
+											usuarioasempresa.grpId AS grp,
+											orden_trabajo.id_usuario_e,
+											orden_trabajo.id_sucursal,
+											sisusers.usrName,
+											sisusers.usrLastName,
+											sucursal.descripc,
+											equipos.codigo,
+											equipos.id_equipo,
+											usuarioasempresa.grpId');
 		$this->db->from('orden_trabajo');
 		$this->db->join('tbl_tipoordentrabajo', 'tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
 		$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario');
@@ -49,7 +49,7 @@ class Otrabajos extends CI_Model {
 		$this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
 		$this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
 		$this->db->where('equipos.estado !=','AN');
-		$this->db->where('usuarioasempresa.tipo', 1);
+		$this->db->where('usuarioasempresa.tipo', 1);//TODO: ACA VER COMO FUNCIONA !!!
 		$this->db->where('orden_trabajo.id_empresa', $empId);
 		$query = $this->db->get();
 		//dump( $this->db->last_query() ); 

@@ -547,342 +547,309 @@ function ordenaArregloDeObjetosPor(propiedad) {
 } 
 ////// HERRAMIENTAS //////
 
-//Trae herramientas
-var dataHerramientas = function() {
-  var tmp = null;
-  $.ajax({
-    'async': false,
-    'type': "POST",
-    'dataType': 'json',
-    'url': 'index.php/Preventivo/getHerramientasB',
+  //Trae herramientas
+  var dataHerramientas = function() {
+    var tmp = null;
+    $.ajax({
+      'async': false,
+      'type': "POST",
+      'dataType': 'json',
+      'url': 'index.php/Preventivo/getHerramientasB',
+    })
+    .done( (data) => { tmp = data } )
+    .fail( () => alert("Error al traer Herramientas") );
+    return tmp;
+  }();
+
+  // data busqueda por codigo de herramientas
+  function dataCodigoHerr(request, response) {
+    function hasMatch(s) {
+      return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
+    }
+    var i, l, obj, matches = [];
+
+    if (request.term==="") {
+      response([]);
+      return;
+    }
+    
+    //ordeno por codigo de herramientas
+    dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("codigo"));
+
+    for  (i = 0, l = dataHerramientas.length; i<l; i++) {
+      obj = dataHerramientas[i];
+      if (hasMatch(obj.codigo)) {
+        matches.push(obj);
+      }
+    }
+    response(matches);
+  }
+  // data busqueda por marca de herramientas
+  function dataMarcaHerr(request, response) {
+    function hasMatch(s) {
+      return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
+    }
+    var i, l, obj, matches = [];
+
+    if (request.term==="") {
+      response([]);
+      return;
+    }
+
+    //ordeno por marca de herramientas
+    dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("marca"));
+
+    for  (i = 0, l = dataHerramientas.length; i<l; i++) {
+      obj = dataHerramientas[i];
+      if (hasMatch(obj.marca)) {
+        matches.push(obj);
+      }
+    }
+    response(matches);
+  }
+
+
+  //busqueda por marcas de herramientas
+  $("#herramienta").autocomplete({
+    source:    dataCodigoHerr,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.codigo);
+      $('#id_herramienta').val(ui.item.value);
+      $('#marcaherram').val(ui.item.marca);
+      $('#descripcionherram').val(ui.item.label);
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.codigo);
+      $('#id_herramienta').val(ui.item.value);
+      $('#marcaherram').val(ui.item.marca);
+      $('#descripcionherram').val(ui.item.label);
+    },
   })
-  .done( (data) => { tmp = data } )
-  .fail( () => alert("Error al traer Herramientas") );
-  return tmp;
-}();
+  //muestro marca en listado de resultados
+  .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+    .append( "<a>" + item.codigo + "</a>" )
+    .appendTo( ul );
+  };
 
-// data busqueda por codigo de herramientas
-function dataCodigoHerr(request, response) {
-  function hasMatch(s) {
-    return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
-  }
-  var i, l, obj, matches = [];
+  //busqueda por marcas de herramientas
+  $("#marcaherram").autocomplete({
+    source:    dataMarcaHerr,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.marca);
+      $('#id_herramienta').val(ui.item.value);
+      $('#herramienta').val(ui.item.codigo);
+      $('#descripcionherram').val(ui.item.label);
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.marca);
+      $('#id_herramienta').val(ui.item.value);
+      $('#herramienta').val(ui.item.codigo);
+      $('#descripcionherram').val(ui.item.label);
+    },
+  })
+  //muestro marca en listado de resultados
+  .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+    .append( "<a>" + item.marca + "</a>" )
+    .appendTo( ul );
+  };
 
-  if (request.term==="") {
-    response([]);
-    return;
-  }
-  
-  //ordeno por codigo de herramientas
-  dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("codigo"));
-
-  for  (i = 0, l = dataHerramientas.length; i<l; i++) {
-    obj = dataHerramientas[i];
-    if (hasMatch(obj.codigo)) {
-      matches.push(obj);
-    }
-  }
-  response(matches);
-}
-// data busqueda por marca de herramientas
-function dataMarcaHerr(request, response) {
-  function hasMatch(s) {
-    return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
-  }
-  var i, l, obj, matches = [];
-
-  if (request.term==="") {
-    response([]);
-    return;
-  }
-
-  //ordeno por marca de herramientas
-  dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("marca"));
-
-  for  (i = 0, l = dataHerramientas.length; i<l; i++) {
-    obj = dataHerramientas[i];
-    if (hasMatch(obj.marca)) {
-      matches.push(obj);
-    }
-  }
-  response(matches);
-}
-
-
-//busqueda por marcas de herramientas
-$("#herramienta").autocomplete({
-  source:    dataCodigoHerr,
-  delay:     500,
-  minLength: 1,
-  focus: function(event, ui) {
-    event.preventDefault();
-    $(this).val(ui.item.codigo);
-    $('#id_herramienta').val(ui.item.value);
-    $('#marcaherram').val(ui.item.marca);
-    $('#descripcionherram').val(ui.item.label);
-  },
-  select: function(event, ui) {
-    event.preventDefault();
-    $(this).val(ui.item.codigo);
-    $('#id_herramienta').val(ui.item.value);
-    $('#marcaherram').val(ui.item.marca);
-    $('#descripcionherram').val(ui.item.label);
-  },
-})
-//muestro marca en listado de resultados
-.data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-  return $( "<li>" )
-  .append( "<a>" + item.codigo + "</a>" )
-  .appendTo( ul );
-};
-
-//busqueda por marcas de herramientas
-$("#marcaherram").autocomplete({
-  source:    dataMarcaHerr,
-  delay:     500,
-  minLength: 1,
-  focus: function(event, ui) {
-    event.preventDefault();
-    $(this).val(ui.item.marca);
-    $('#id_herramienta').val(ui.item.value);
-    $('#herramienta').val(ui.item.codigo);
-    $('#descripcionherram').val(ui.item.label);
-  },
-  select: function(event, ui) {
-    event.preventDefault();
-    $(this).val(ui.item.marca);
-    $('#id_herramienta').val(ui.item.value);
-    $('#herramienta').val(ui.item.codigo);
-    $('#descripcionherram').val(ui.item.label);
-  },
-})
-//muestro marca en listado de resultados
-.data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-  return $( "<li>" )
-  .append( "<a>" + item.marca + "</a>" )
-  .appendTo( ul );
-};
-
-//busqueda por descripcion de herramientas
-$("#descripcionherram").autocomplete({
-  source:    dataHerramientas,
-  delay:     500,
-  minLength: 1,
-  focus: function(event, ui) {
-    event.preventDefault();
-    $(this).val(ui.item.label);
-    $('#id_herramienta').val(ui.item.value);
-    $('#herramienta').val(ui.item.codigo);
-    $('#marcaherram').val(ui.item.marca);
-  },
-  select: function(event, ui) {
-    event.preventDefault();
-    $(this).val(ui.item.label);
-    $('#id_herramienta').val(ui.item.value);
-    $('#herramienta').val(ui.item.codigo);
-    $('#marcaherram').val(ui.item.marca);
-  },
-});
-
-
-// Agrega herramientas a la tabla - Chequeado
-var nrofila = 0;  // hace cada fila unica
-$("#agregarherr").click(function (e) {
-  // FALTA HACER VALIDACION
-  var id_her            = $('#id_herramienta').val();
-  var herramienta       = $("#herramienta").val(); 
-  var marcaherram       = $('#marcaherram').val();
-  var descripcionherram = $('#descripcionherram').val();
-  var cantidadherram    = $('#cantidadherram').val();
-  
-  nrofila = nrofila + 1;
-  var tr = "<tr id='"+id_her+"' data-nrofila='"+nrofila+"'>"+
-              "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
-              "<td class='herr'>"+herramienta+"</td>"+
-              "<td class='marca'>"+marcaherram+"</td>"+
-              "<td class='descrip'>"+descripcionherram+"</td>"+
-              "<td class='cant'>"+cantidadherram+"</td>"+ 
-              // guardo id de herram y cantidades
-              "<input type='hidden' name='id_her["+nrofila+"]' value='"+id_her+"'>" +                
-              "<input type='hidden' name='cant_herr["+nrofila+"]' value='"+cantidadherram+"'>" +
-            "</tr>";
-  if(id_her > 0 && cantidadherram > 0){
-    $('#tablaherramienta tbody').append(tr);
-  }
-  else{
-    return;
-  } 
-
-  $(document).on("click",".elirow",function(){
-    var parent = $(this).closest('tr');
-    $(parent).remove();
+  //busqueda por descripcion de herramientas
+  $("#descripcionherram").autocomplete({
+    source:    dataHerramientas,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_herramienta').val(ui.item.value);
+      $('#herramienta').val(ui.item.codigo);
+      $('#marcaherram').val(ui.item.marca);
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_herramienta').val(ui.item.value);
+      $('#herramienta').val(ui.item.codigo);
+      $('#marcaherram').val(ui.item.marca);
+    },
   });
 
-  $('#herramienta').val('');
-  $('#marcaherram').val(''); 
-  $('#descripcionherram').val(''); 
-  $('#cantidadherram').val('');        
-});
-////// HERRAMIENTAS //////
 
-
-////// INSUMOS //////
-
-//Trae insumos
-var dataInsumos = function() {
-  var tmp = null;
-  $.ajax({
-    'async': false,
-    'type': "POST",
-    'dataType': 'json',
-    'url': 'index.php/Preventivo/getinsumo',
-  })
-  .done( (data) => { tmp = data } )
-  .fail( () => alert("Error al traer Herramientas") );
-  return tmp;
-}();
-
-// data busqueda por codigo de herramientas
-function dataCodigoInsumo(request, response) {
-  function hasMatch(s) {
-    return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
-  }
-  var i, l, obj, matches = [];
-
-  if (request.term==="") {
-    response([]);
-    return;
-  }
-
-  //ordeno por codigo de herramientas
-  dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("codigo"));
-
-  for  (i = 0, l = dataInsumos.length; i<l; i++) {
-    obj = dataInsumos[i];
-    if (hasMatch(obj.codigo)) {
-      matches.push(obj);
-    }
-  }
-  response(matches);
-}
-
-
-//busqueda por marcas de herramientas
-$("#insumo").autocomplete({
-  source:    dataCodigoInsumo,
-  delay:     500,
-  minLength: 1,
-  focus: function(event, ui) {
-    event.preventDefault();
-    $(this).val(ui.item.codigo);
-    $('#id_insumo').val(ui.item.value);
-    $('#descript').val(ui.item.label);
-  },
-  select: function(event, ui) {
-    event.preventDefault();
-    $(this).val(ui.item.codigo);
-    $('#id_insumo').val(ui.item.value);
-    $('#descript').val(ui.item.label);
-  },
-})
-//muestro marca en listado de resultados
-.data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-  return $( "<li>" )
-  .append( "<a>" + item.codigo + "</a>" )
-  .appendTo( ul );
-};
-
-//busqueda por descripcion de herramientas
-$("#descript").autocomplete({
-  source:    dataInsumos,
-  delay:     500,
-  minLength: 1,
-  focus: function(event, ui) {
-    event.preventDefault();
-    $(this).val(ui.item.label);
-    $('#id_insumo').val(ui.item.value);
-    $('#insumo').val(ui.item.codigo);
-  },
-  select: function(event, ui) {
-    event.preventDefault();
-    $(this).val(ui.item.label);
-    $('#id_herramienta').val(ui.item.value);
-    $('#herramienta').val(ui.item.codigo);
-    $('#marcaherram').val(ui.item.marca);
-  },
-});
-
-// Agrega insumos a la tabla 
-var nrofilaIns = 0; 
-$("#agregarins").click(function (e) {
-    var id_insumo = $('#id_insumo').val(); 
-    var $insumo   = $("#insumo").val();
-    var descript = $('#descript').val();
-    var cant = $('#cant').val();     
-    console.log("El id  del insumo");
-    console.log(id_insumo);
-    var hayError = false;
-    var tr = "<tr id='"+id_insumo+"'>"+
-                  "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
-                  "<td>"+$insumo+"</td>"+
-                  "<td>"+descript+"</td>"+
-                  "<td>"+cant+"</td>"+
-
-                  // guardo id de insumos y cantidades
-                  "<input type='hidden' name='id_insumo["+nrofilaIns+"]' value='"+id_insumo+"'>" +
-                  "<input type='hidden' name='cant_insumo["+nrofilaIns+"]' value='"+cant+"'>" +
+  // Agrega herramientas a la tabla - Chequeado
+  var nrofila = 0;  // hace cada fila unica
+  $("#agregarherr").click(function (e) {
+    // FALTA HACER VALIDACION
+    var id_her            = $('#id_herramienta').val();
+    var herramienta       = $("#herramienta").val(); 
+    var marcaherram       = $('#marcaherram').val();
+    var descripcionherram = $('#descripcionherram').val();
+    var cantidadherram    = $('#cantidadherram').val();
+    
+    nrofila = nrofila + 1;
+    var tr = "<tr id='"+id_her+"' data-nrofila='"+nrofila+"'>"+
+                "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+                "<td class='herr'>"+herramienta+"</td>"+
+                "<td class='marca'>"+marcaherram+"</td>"+
+                "<td class='descrip'>"+descripcionherram+"</td>"+
+                "<td class='cant'>"+cantidadherram+"</td>"+ 
+                // guardo id de herram y cantidades
+                "<input type='hidden' name='id_her["+nrofila+"]' value='"+id_her+"'>" +                
+                "<input type='hidden' name='cant_herr["+nrofila+"]' value='"+cantidadherram+"'>" +
               "</tr>";
-    nrofilaIns = nrofilaIns + 1;          
-    if(id_insumo > 0 && cant > 0){
-      $('#tablainsumo tbody').append(tr); 
+    if(id_her > 0 && cantidadherram > 0){
+      $('#tablaherramienta tbody').append(tr);
     }
-    else {
-           return;
-    }    
+    else{
+      return;
+    } 
 
     $(document).on("click",".elirow",function(){
       var parent = $(this).closest('tr');
       $(parent).remove();
     });
-     
-    $('#insumo').val('');
-    $('#descript').val(''); 
-    $('#cant').val(''); 
-});
+
+    $('#herramienta').val('');
+    $('#marcaherram').val(''); 
+    $('#descripcionherram').val(''); 
+    $('#cantidadherram').val('');        
+  });
+////// HERRAMIENTAS //////
 
 
 ////// INSUMOS //////
 
+  //Trae insumos
+  var dataInsumos = function() {
+    var tmp = null;
+    $.ajax({
+      'async': false,
+      'type': "POST",
+      'dataType': 'json',
+      'url': 'index.php/Preventivo/getinsumo',
+    })
+    .done( (data) => { tmp = data } )
+    .fail( () => alert("Error al traer Herramientas") );
+    return tmp;
+  }();
 
+  // data busqueda por codigo de herramientas
+  function dataCodigoInsumo(request, response) {
+    function hasMatch(s) {
+      return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
+    }
+    var i, l, obj, matches = [];
 
+    if (request.term==="") {
+      response([]);
+      return;
+    }
 
+    //ordeno por codigo de herramientas
+    dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("codigo"));
 
-
-
-
-
-/*
-  $(".datepicker").datepicker({
-      changeMonth: true,
-      changeYear: true
-  });
-
-
-
-  function limpiar(){
-        $("#equipo").val("");
-        $("#tarea").val("");
-        $("#componente").val("");
-        $("#periodo").val("");
-        $("#cantidad").val("");
-        $("#ultimo").val("");
-        $("#critico1").val("");
-        $("#cantidadhm").val("");
+    for  (i = 0, l = dataInsumos.length; i<l; i++) {
+      obj = dataInsumos[i];
+      if (hasMatch(obj.codigo)) {
+        matches.push(obj);
+      }
+    }
+    response(matches);
   }
 
-  $("#fecha").datepicker({
-      dateFormat: 'dd/mm/yy',
-      firstDay: 1
-  }).datepicker("setDate", new Date());
-*/
+
+  //busqueda por marcas de herramientas
+  $("#insumo").autocomplete({
+    source:    dataCodigoInsumo,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.codigo);
+      $('#id_insumo').val(ui.item.value);
+      $('#descript').val(ui.item.label);
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.codigo);
+      $('#id_insumo').val(ui.item.value);
+      $('#descript').val(ui.item.label);
+    },
+  })
+  //muestro marca en listado de resultados
+  .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+    .append( "<a>" + item.codigo + "</a>" )
+    .appendTo( ul );
+  };
+
+  //busqueda por descripcion de herramientas
+  $("#descript").autocomplete({
+    source:    dataInsumos,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_insumo').val(ui.item.value);
+      $('#insumo').val(ui.item.codigo);
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_herramienta').val(ui.item.value);
+      $('#herramienta').val(ui.item.codigo);
+      $('#marcaherram').val(ui.item.marca);
+    },
+  });
+
+  // Agrega insumos a la tabla 
+  var nrofilaIns = 0; 
+  $("#agregarins").click(function (e) {
+      var id_insumo = $('#id_insumo').val(); 
+      var $insumo   = $("#insumo").val();
+      var descript = $('#descript').val();
+      var cant = $('#cant').val();     
+      console.log("El id  del insumo");
+      console.log(id_insumo);
+      var hayError = false;
+      var tr = "<tr id='"+id_insumo+"'>"+
+                    "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+                    "<td>"+$insumo+"</td>"+
+                    "<td>"+descript+"</td>"+
+                    "<td>"+cant+"</td>"+
+
+                    // guardo id de insumos y cantidades
+                    "<input type='hidden' name='id_insumo["+nrofilaIns+"]' value='"+id_insumo+"'>" +
+                    "<input type='hidden' name='cant_insumo["+nrofilaIns+"]' value='"+cant+"'>" +
+                "</tr>";
+      nrofilaIns = nrofilaIns + 1;          
+      if(id_insumo > 0 && cant > 0){
+        $('#tablainsumo tbody').append(tr); 
+      }
+      else {
+             return;
+      }    
+
+      $(document).on("click",".elirow",function(){
+        var parent = $(this).closest('tr');
+        $(parent).remove();
+      });
+       
+      $('#insumo').val('');
+      $('#descript').val(''); 
+      $('#cant').val(''); 
+  });
+////// INSUMOS //////
+
+
 </script>

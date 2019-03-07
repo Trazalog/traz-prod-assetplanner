@@ -264,15 +264,7 @@ class Calendarios extends CI_Model {
     function getperiodo($data = null)
     {
         $userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-        /*$sql       = "SELECT articles.artId, abmperiodo.periodoId, abmperiodo.periododescrip
-            FROM articles
-            JOIN tbl_lote ON tbl_lote.artId = articles.artId
-            JOIN abmperiodo ON abmperiodo.periodoId = tbl_lote.periodoid
-            WHERE tbl_lote.artId = $id
-            AND tbl_lote.id_empresa = $empresaId
-            ";
-        $query = $this->db->query($sql);*/
+        $empresaId = $userdata[0]['id_empresa'];      
 
         $this->db->select('periodo.idperiodo, periodo.descripcion');
         $this->db->from('periodo');
