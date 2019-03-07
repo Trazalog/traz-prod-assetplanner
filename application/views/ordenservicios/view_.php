@@ -146,7 +146,7 @@
             <ul class="nav nav-tabs nav-justified" role="tablist">
               <li role="presentation" class="active"><a href="#lecturaTab" aria-controls="lecturaTab" role="tab" data-toggle="tab">Lecturas</a></li>
               <li role="presentation"><a href="#tar" aria-controls="tar" role="tab" data-toggle="tab">Tareas</a></li>
-              <!-- <li role="presentation"><a href="#herramientas" aria-controls="herramientas" role="tab" data-toggle="tab">Herramientas</a></li> -->
+              <li role="presentation"><a href="#herramientas" aria-controls="herramientas" role="tab" data-toggle="tab">Herramientas</a></li>
               <li role="presentation"><a href="#rrhh" aria-controls="rrhh" role="tab" data-toggle="tab">Recursos Humanos</a></li> 
               <li role="presentation"><a href="#insumosPed" aria-controls="insumosPed" role="tab" data-toggle="tab">Insumos </a></li>       
             </ul>
@@ -244,7 +244,7 @@
                 </div><!-- end .panel-default -->
               </div><!-- end .tabpanel -->
 
-              <!-- <div role="tabpanel" class="tab-pane" id="herramientas">
+              <div role="tabpanel" class="tab-pane" id="herramientas">
                 <!- -  ORDEN DE HERRAMIENTAS  - ->
                 <div class="panel panel-default">
                   <div class="panel-heading"><span class="fa fa-file-text-o icotitulo" aria-hidden="true"></span> Orden de Herramientas</div>
@@ -301,7 +301,7 @@
                     </div>
                   </div>
                 </div>
-              </div><!- - end .tabpanel - -> -->
+              </div><!- - end .tabpanel - ->
 
               <div role="tabpanel" class="tab-pane" id="rrhh">
                 <!--  ORDEN DE RECURSOS HUMANOS  -->
@@ -527,92 +527,92 @@ $(document).on("click",".elirow",function(){
 });  
 
 // Trae herramientas
-// var dataH = function () {
-//   var tmp = null;
-//   $.ajax({
-//     'async': false,
-//     'type': "POST",
-//     'global': false,
-//     'dataType': 'json',
-//     'url': "ordenservicio/getHerramienta",
-//     'success': function (data) {
-//         tmp = data;
-//     }
-//   });
-//   return tmp;
-// }();
-// $("#herramienta").autocomplete({
-//   //autoFocus: true,
-//   delay: 300,
-//   minLength: 1,
-//   source: dataH,
-//   focus: function(event, ui) {
-//     // prevent autocomplete from updating the textbox
-//     event.preventDefault();
-//     // manually update the textbox
-//     $(this).val(ui.item.label);
-//     $("#herrId").val(ui.item.herrId);
-//     $("#marcaherram").val(ui.item.value);
-//     $("#codherram").val(ui.item.codherram);
-//   },
-//   select: function(event, ui) {
-//     // prevent autocomplete from updating the textbox
-//     event.preventDefault();
-//     // manually update the textbox and hidden field
-//     $(this).val(ui.item.label);
-//     $("#herrId").val(ui.item.herrId);
-//     $("#marcaherram").val(ui.item.value);
-//     $("#codherram").val(ui.item.codherram);
-//   },
-//   change: function (event, ui) {
-//     if (!ui.item) {
-//       this.value = '';
-//       $("#herrId").val("");
-//       $("#marcaherram").val("");
-//       $("#codherram").val("");
-//     }
-//   }
-// });
+var dataH = function () {
+  var tmp = null;
+  $.ajax({
+    'async': false,
+    'type': "POST",
+    'global': false,
+    'dataType': 'json',
+    'url': "ordenservicio/getHerramienta",
+    'success': function (data) {
+        tmp = data;
+    }
+  });
+  return tmp;
+}();
+$("#herramienta").autocomplete({
+  //autoFocus: true,
+  delay: 300,
+  minLength: 1,
+  source: dataH,
+  focus: function(event, ui) {
+    // prevent autocomplete from updating the textbox
+    event.preventDefault();
+    // manually update the textbox
+    $(this).val(ui.item.label);
+    $("#herrId").val(ui.item.herrId);
+    $("#marcaherram").val(ui.item.value);
+    $("#codherram").val(ui.item.codherram);
+  },
+  select: function(event, ui) {
+    // prevent autocomplete from updating the textbox
+    event.preventDefault();
+    // manually update the textbox and hidden field
+    $(this).val(ui.item.label);
+    $("#herrId").val(ui.item.herrId);
+    $("#marcaherram").val(ui.item.value);
+    $("#codherram").val(ui.item.codherram);
+  },
+  change: function (event, ui) {
+    if (!ui.item) {
+      this.value = '';
+      $("#herrId").val("");
+      $("#marcaherram").val("");
+      $("#codherram").val("");
+    }
+  }
+});
 
-// Llenar tabla herramientas
-// function armartablistherr() {   // inserta valores de inputs en la tabla 
-//   var herrId      = $("#herrId").val();
-//   var herramienta = $("#herramienta").val();
-//   var marcaherram = $("#marcaherram").val();
-//   var codherram   = $("#codherram").val(); 
+//Llenar tabla herramientas
+function armartablistherr() {   // inserta valores de inputs en la tabla 
+  var herrId      = $("#herrId").val();
+  var herramienta = $("#herramienta").val();
+  var marcaherram = $("#marcaherram").val();
+  var codherram   = $("#codherram").val(); 
 
-//   var hayError = false;
-//   if (herramienta == '') {
-//     hayError = true;
-//   }
+  var hayError = false;
+  if (herramienta == '') {
+    hayError = true;
+  }
 
-//   if(hayError == true){
-//      $('#errorHerramientas').fadeIn('slow');
-//      return;
-//   }
-//   else{
-//     $('#errorHerramientas').fadeOut('slow');
-//     //agrego valores a la tabla
-//     $('#tablalistherram').DataTable().row.add( [
-//         "<i class ='fa fa-ban elirow text-primary' id='delFileH' style='cursor:pointer'></i>",
-//         herramienta,
-//         marcaherram,
-//         codherram
-//       ]
-//     ).node().id = herrId;
-//     $('#tablalistherram').DataTable().draw();
+  if(hayError == true){
+     $('#errorHerramientas').fadeIn('slow');
+     return;
+  }
+  else{
+    $('#errorHerramientas').fadeOut('slow');
+    //agrego valores a la tabla
+    $('#tablalistherram').DataTable().row.add( [
+        "<i class ='fa fa-ban elirow text-primary' id='delFileH' style='cursor:pointer'></i>",
+        herramienta,
+        marcaherram,
+        codherram
+      ]
+    ).node().id = herrId;
+    $('#tablalistherram').DataTable().draw();
 
-//     //limpio formulario
-//     $('#herramienta').val('');
-//     $('#marcaherram').val('');
-//     $('#codherram').val('');
-//   }
-// }
+    //limpio formulario
+    $('#herramienta').val('');
+    $('#marcaherram').val('');
+    $('#codherram').val('');
+  }
+}
 
-// elimina fila de la tabla listareas
-// $(document).on("click","#delFileH",function(){
-//   $('#tablalistherram').DataTable().row( $(this).closest('tr') ).remove().draw();
-// });
+//elimina fila de la tabla listareas
+$(document).on("click","#delFileH",function(){
+  $('#tablalistherram').DataTable().row( $(this).closest('tr') ).remove().draw();
+});
 
 
 // Trae Operarios
@@ -817,7 +817,7 @@ function enviarOrden() {
         herramienta[j] = act;
         j++;
     });
-    //console.table(herramienta);
+    console.table(herramienta);
 
     // operario 
     var operario = new Array(); 
@@ -855,9 +855,12 @@ function enviarOrden() {
     //console.table( datosInfoServicio );
 
     WaitingOpen('Guardando cambios');
-    //herramienta:herramienta,
+    
     $.ajax({
-      data: {datosInfoServicio:datosInfoServicio, tarea:tarea,  operario:operario},
+      data: {datosInfoServicio:datosInfoServicio, 
+              tarea:tarea,  
+              operario:operario, 
+              herramienta:herramienta},
       type: 'POST',
       dataType: 'json',
       url: 'index.php/Ordenservicio/setOrdenServ',

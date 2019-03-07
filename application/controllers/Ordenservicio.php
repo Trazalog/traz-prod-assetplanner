@@ -67,7 +67,7 @@ class Ordenservicio extends CI_Controller {
       $data['fecha_fin']              = $datosInfoServicio['fecha_fin'];
       //dump_exit($data);
       $data['tarea']       = $this->input->post('tarea');
-      //$data['herramienta'] = $this->input->post('herramienta');
+      $data['herramienta'] = $this->input->post('herramienta');
       $data['operario']    = $this->input->post('operario');
 
       $response = $this->Ordenservicios->setOrdenServicios($data);
@@ -138,10 +138,10 @@ class Ordenservicio extends CI_Controller {
       echo json_encode($response);
     }
 
-    // public function getHerramOrden(){
-    //   $response = $this->Ordenservicios->getHerramOrdenes($this->input->post());
-    //   echo json_encode($response);
-    // }
+    public function getHerramOrden(){
+      $response = $this->Ordenservicios->getHerramOrdenes($this->input->post());
+      echo json_encode($response);
+    }
 
     public function getTarea(){
       $response = $this->Ordenservicios->getTareas($this->input->post());

@@ -92,7 +92,7 @@ class Predictivo extends CI_Controller {
 		$fe = $this->input->post('vfecha');//
 		$per = $this->input->post('periodo');//
 		$can = $this->input->post('cantidad');//
-		$hh = $this->input->post('hshombre');//
+		$hh = floatval($this->input->post('hshombre'));//
 		$dur = $this->input->post('duracion');//
 		$uTi = $this->input->post('unidad');//
 		$op = $this->input->post('cantOper');//
@@ -103,17 +103,17 @@ class Predictivo extends CI_Controller {
         $resul = ($tres."/".$dos."/".$uno); 
 		
 		$datos = array(	'id_equipo'=>$eq,
-						'tarea_descrip'=>$ta,
-						'fecha'=>$resul,
-						'periodo'=>$per,
-						'cantidad'=>$can,
-						'horash'=>$hh,
-						'estado'=>'C',
-						'pred_duracion'=>$dur,
-						'pred_canth'=>$op,
-						'id_empresa'=>$empId,
-						'id_unidad'=>$uTi
-					);
+										'tarea_descrip'=>$ta,
+										'fecha'=>$resul,
+										'periodo'=>$per,
+										'cantidad'=>$can,
+										'horash'=>$hh,
+										'estado'=>'C',
+										'pred_duracion'=>$dur,
+										'pred_canth'=>$op,
+										'id_empresa'=>$empId,
+										'id_unidad'=>$uTi
+									);
 
 		$response['respPredictivo'] = $this->Predictivos->insert_predictivo($datos);
 
