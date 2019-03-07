@@ -98,27 +98,16 @@ $(document).ready(function(event) {
 
     var idpred = $(this).parent('td').parent('tr').attr('id');
     var ide = $(this).parent('td').parent('tr').attr('class');
-    console.log("Id de predictivo");
-    console.log(idpred);
-
     //guardo id de predictivo en modal para editar 
     $('#id_Predictivo').val(idpred);
-
-    //globi=idpred;
-    console.log("Id de equipo");
-    console.log(ide);  
     datos= parseInt(ide);
-    console.log(datos); 
 
     $.ajax({
       type: 'POST',
       data: { idpred: idpred, datos:datos},
-      url: 'index.php/Predictivo/getEditar', //index.php/
+      url: 'index.php/Predictivo/getEditar', 
       success: function(data){             
-              console.table(data);
-              // console.log(data);
-              // console.log("codigo");
-              // console.log(data['datos'][0]['tarea_descrip']);
+              
               datos = {             
                         'id_equipo':data['datos'][0]['id_equipo'], 
                         'ubicacion':data['datos'][0]['ubicacion'],
@@ -429,12 +418,9 @@ function calcularHsHombre(){
     hs = entrada * 24;
   }
 
-  hsHombre = hs * operarios;
+  hsHombre =  parseFloat(hs * operarios);
   $('#hshombre').val(hsHombre);
-  //var mens=$("<h4 class='before'>HH: <span class='hh'>" + hsHombre + "</span></h4>");
- // var mens=$("<input class='before' value='"+ hsHombre +"' style='border:none;'/>");
-  //$('#dato').html(mens);
-  //alert("horas hombre: " + hsHombre);  
+  
 }
 
 // Calcula hs hombre si están los 3 parametros y cambia alguno de ellos
@@ -699,7 +685,7 @@ function Refrescar(){
                 <label for="tarea">Tarea <strong style="color: #dd4b39">*</strong>:</label>
                   <!-- <select id="tarea" name="tarea" class="form-control"   />                  -->
                   <input type="text" id="tarea" name="tarea" class="form-control">
-                  <input type="" id="id_tarea" name="id_tarea">                                           
+                  <input type="hidden" id="id_tarea" name="id_tarea">                                           
               </div> 
               <div class="col-xs-12 col-sm-6 col-md-4">
                 <label for="vfecha">Fecha <strong style="color: #dd4b39">*</strong>:</label>

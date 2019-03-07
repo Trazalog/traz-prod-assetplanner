@@ -126,7 +126,7 @@
               </div>
             </div>
           </div>
-          <!-- <div class="panel panel-default">
+          <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingTwo">
               <h4 class="panel-title">
                 <a class="herramientas collapsed" id="herramientas" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
@@ -149,7 +149,7 @@
                 </table>
               </div>
             </div>
-          </div> -->
+          </div>
           <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingThree">
               <h4 class="panel-title">
@@ -241,7 +241,7 @@ $(".fa-sticky-note-o").click(function () {
       mostrarOrd(row); 
       getLecturaOrden(id_ord);
       getTarOrden(id_ord);
-      //getHerrramOrden(id_ord);
+      getHerrramOrden(id_ord);
       getInsumOrd(id_ot);
       getRecOrden(id_ord);             
       $flag = 1;
@@ -255,7 +255,7 @@ $(".fa-sticky-note-o").click(function () {
       mostrarOrd(row);
       getLecturaOrden(id_ord);
       getTarOrden(id_ord);
-      //getHerrramOrden(id_ord);
+      getHerrramOrden(id_ord);
       getInsumOrd(id_ot);  
       getRecOrden(id_ord);      
       $flag = 1;
@@ -328,33 +328,33 @@ function getTarOrden(id_ord){
 }
 
 // trae herramientas segun id de orden y arma tabla en modal 
-// function getHerrramOrden(id_ord){
-//   var dataF = function () {
-//     var tmp = null;
-//     $.ajax({
-//       'data' : {id_orden:id_ord },
-//       'async': false,
-//       'type': "POST",
-//       'global': false,
-//       'dataType': 'json',
-//       'url': "Ordenservicio/getHerramOrden",
-//       'success': function (data) {
-//         tmp = data;
-//         console.table(data);
-//       }
-//     });
-//     return tmp;
-//   }();        
-//   tabla = $('#modHerram').DataTable(); 
-//   tabla.clear().draw();
-//   $.each(dataF, function(i, val){           
-//     $('#modHerram').DataTable().row.add( [
-//       val.herrdescrip,
-//       val.herrmarca,
-//       val.herrcodigo
-//     ]).draw();
-//   });
-// }
+function getHerrramOrden(id_ord){
+  var dataF = function () {
+    var tmp = null;
+    $.ajax({
+      'data' : {id_orden:id_ord },
+      'async': false,
+      'type': "POST",
+      'global': false,
+      'dataType': 'json',
+      'url': "Ordenservicio/getHerramOrden",
+      'success': function (data) {
+        tmp = data;
+        console.table(data);
+      }
+    });
+    return tmp;
+  }();        
+  tabla = $('#modHerram').DataTable(); 
+  tabla.clear().draw();
+  $.each(dataF, function(i, val){           
+    $('#modHerram').DataTable().row.add( [
+      val.herrdescrip,
+      val.herrmarca,
+      val.herrcodigo
+    ]).draw();
+  });
+}
 
 // trae Insumos segun id de orden y arma tabla en modal 
 function getInsumOrd(id_ot){
