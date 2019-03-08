@@ -132,6 +132,67 @@ class Otrabajos extends CI_Model {
 					return false;
 			}   
 	}
+
+	// function getHerramientas(){
+
+	// 	$userdata  = $this->session->userdata('user_data');
+	// 	$empresaId = $userdata[0]['id_empresa'];
+	// 	//$this->db->select('herrdescrip, herrmarca, herrcodigo, herrId');
+	// 	$this->db->select('codigo,
+	// 										descripcion,
+	// 										estado,
+	// 										marca,
+	// 										sector,
+	// 										ubicacion,
+	// 										fecha_ingreso,
+	// 										fecha_baja,
+	// 										fecha_garantia,
+	// 										grupo_desc');
+	// 	$this->db->from('equipos');
+	// 	$this->db->where('id_empresa', $empresaId);
+	// 	$this->db->where('estado !=', 'AN');
+	// 	$query = $this->db->get();
+	// 	$i     = 0;
+	// 	foreach ($query->result() as $row)
+	// 	{
+	// 			$herramientas[$i]['label'] = $row->codigo;
+	// 			$herramientas[$i]['value'] = $row->desc_equipo;
+	// 			// $herramientas[$i]['codherram'] = $row->herrcodigo;
+	// 			// $herramientas[$i]['herrId'] = $row->herrId;
+	// 			$i++;
+	// 	}
+	// 	return $herramientas;
+	// }
+
+	// Guarda el bacht de datos de herramientas de OT - Listo
+	function insertOTHerram($herram){
+		$query = $this->db->insert_batch("tbl_otherramientas",$herram);
+		return $query;
+	}
+	// Guarda insumos del Preventivo - Listo 
+	function insertOTInsum($insumo){
+		$query = $this->db->insert_batch("tbl_otinsumos",$insumo);
+		return $query;
+	}
+
+	function updateAdjunto($adjunto,$ultimoId){
+		$this->db->where('id_orden', $ultimoId);
+		$query = $this->db->update("orden_trabajo",$adjunto);
+		return $query;
+	}
+
+	function getDescTareaSTD($id_tar){
+		$this->db->select('tareas.descripcion');
+		$this->db->from('tareas');
+		$this->db->where('tareas.id_tarea', $id_tar);
+		$query = $this->db->get();
+		$row = $query->row();	
+		
+		return $row->descripcion; 
+	}
+
+
+
 	/**
 	 * Guarda Orden de Trabajo
 	 *
@@ -149,39 +210,39 @@ class Otrabajos extends CI_Model {
 	 */
 	function getpencil($id) // Ok
 	{
-			$sql = "SELECT orden_trabajo.id_orden,
-							orden_trabajo.nro,
-							orden_trabajo.fecha_inicio,
-							orden_trabajo.fecha_entrega,
-							orden_trabajo.descripcion,
-							orden_trabajo.estado,
-							orden_trabajo.id_usuario,
-							orden_trabajo.id_usuario_a,
-							orden_trabajo.id_usuario,
-							orden_trabajo.id_sucursal,
-							sucursal.descripc,
-							sisusers.usrNick,
-							abmproveedores.provnombre,
-							abmproveedores.provid,
-							equipos.id_equipo,
-							equipos.codigo
-					FROM orden_trabajo
-					JOIN equipos ON equipos.id_equipo=orden_trabajo.id_equipo
-					JOIN sucursal ON sucursal.id_sucursal=orden_trabajo.id_sucursal
-					jOIN sisusers ON sisusers.usrId=orden_trabajo.id_usuario
-					JOIN abmproveedores ON abmproveedores.provid=orden_trabajo.id_proveedor
-					WHERE orden_trabajo.id_orden=$id
-					";
-			$query = $this->db->query($sql);
-//$sql= $this->db->last_query(); 
-//dump($sql);
-			if( $query->num_rows() > 0)
-			{
-				return $query->result_array();
-			}
-			else {
-				return 0;
-			}
+		$sql = "SELECT orden_trabajo.id_orden,
+						orden_trabajo.nro,
+						orden_trabajo.fecha_inicio,
+						orden_trabajo.fecha_entrega,
+						orden_trabajo.descripcion,
+						orden_trabajo.estado,
+						orden_trabajo.id_usuario,
+						orden_trabajo.id_usuario_a,
+						orden_trabajo.id_usuario,
+						orden_trabajo.id_sucursal,
+						sucursal.descripc,
+						sisusers.usrNick,
+						abmproveedores.provnombre,
+						abmproveedores.provid,
+						equipos.id_equipo,
+						equipos.codigo
+				FROM orden_trabajo
+				JOIN equipos ON equipos.id_equipo=orden_trabajo.id_equipo
+				JOIN sucursal ON sucursal.id_sucursal=orden_trabajo.id_sucursal
+				jOIN sisusers ON sisusers.usrId=orden_trabajo.id_usuario
+				JOIN abmproveedores ON abmproveedores.provid=orden_trabajo.id_proveedor
+				WHERE orden_trabajo.id_orden=$id
+				";
+		$query = $this->db->query($sql);
+		//$sql= $this->db->last_query(); 
+		//dump($sql);
+		if( $query->num_rows() > 0)
+		{
+			return $query->result_array();
+		}
+		else {
+			return 0;
+		}
 	}
 	/**
 	 * Guarda le edicion de una OT (actualiza OT).
@@ -192,7 +253,6 @@ class Otrabajos extends CI_Model {
 	function update_edita($idequipo,$data) // Ok
 	{
 			$this->db->where('id_orden', $idequipo);
-			dump($data);
 			$query = $this->db->update("orden_trabajo",$data);
 			return $query;
 	}

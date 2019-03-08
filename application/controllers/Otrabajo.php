@@ -21,6 +21,20 @@ class Otrabajo extends CI_Controller {
 		$this->load->view('otrabajos/dash', $data);
 	}
 
+
+	/**
+	 * Muestra pantalla de Nueva Orden de Trabajo.
+	 *
+	 * @param 	String 	$permission 	Permisos de ejecución.
+	 */
+	public function nuevaOT($permission) // Ok
+	{
+		// $data['list']       = $this->Otrabajos->otrabajos_List();
+		$data['permission'] = $permission;
+		$this->load->view('otrabajos/view_agregarOT', $data);
+	}
+
+
 	/**
 	 * Muestra pantalla de listado de Ordenes de Trabajo.
 	 *
@@ -93,27 +107,42 @@ class Otrabajo extends CI_Controller {
 		else echo "nada";
 	}
 
+	// public function getHerramienta() //Ok
+  //   {
+  //     $response = $this->Otrabajos->getHerramientas($this->input->post());
+  //     echo json_encode($response);
+  //   }
+
+
 	/**
 	 * Agrega nueva OTs.
 	 *
 	 * @return
 	 */
 	public function guardar_agregar() {
-		
+	
 		$userdata  = $this->session->userdata('user_data');
 		$usrId     = $userdata[0]['usrId'];
 		$empresaId = $userdata[0]['id_empresa'];
-	    
-		$num           = $this->input->post('num');
-		$descripcion   = $this->input->post('descripcion');
-		$fecha_inicio	 = $this->input->post('fecha_inicio');
-		$fecha_entrega = $this->input->post('fecha_entrega');
+	
+		$data					 = $this->input->post(); 
+		$id_tareaestd	 = $this->input->post('id_tarea');	
+		if(!empty($id_tareaestd)){
+			$id_tar	 = $id_tareaestd;
+			$descripcion	=	$this->Otrabajos->getDescTareaSTD($id_tar);			
+		}else{
+			$id_tar = 0;
+			$descripcion   = $this->input->post('tareacustom');
+		}
+		
+		$fecha_inicio	 = $this->input->post('fechaInicio');
+		$fecha_entrega = $this->input->post('fechaEntrega');
 		$equipo        = $this->input->post('equipo');
-		$sucursal      = $this->input->post('sucursal');
-		$proveedor     = $this->input->post('proveedor');
+		$sucursal      = $this->input->post('suci');
+		$proveedor     = $this->input->post('prov');
     	
     $datos2 = array(
-			'nro'           => $num,
+			'id_tarea'			=> $id_tar,
 			'fecha_inicio'  => $fecha_inicio,
 			'fecha_entrega' => $fecha_entrega,
 			'descripcion'   => $descripcion,
@@ -127,16 +156,109 @@ class Otrabajo extends CI_Controller {
 			'id_empresa'    => $empresaId
 		);
 
-		$result = $this->Otrabajos->guardar_agregar($datos2);		
+		$result['respOT'] = $this->Otrabajos->guardar_agregar($datos2);	
+
+		if($result['respOT']){
+
+			$ultimoId = $this->db->insert_id(); 	
+			////////// para guardar herramientas                 
+				if ( !empty($data['id_her']) ){
+					//saco array con herramientas y el id de empresa
+					$herr = $data["id_her"]; 
+					$i = 0;
+					foreach ($herr as $h) {
+						$herram[$i]['herrId']= $h;
+						$herram[$i]['id_empresa']= $empresaId;
+						$i++;                                
+					} 
+					//saco array con cant de herramientas y el id de preventivo 
+					$cantHerr = $data["cant_herr"];
+					$z = 0;
+					foreach ($cantHerr as $c) {
+						$herram[$z]['cantidad']= $c;
+						$herram[$z]['otId']= $ultimoId;
+						$z++;                                
+					}				
+					// Guarda el bacht de datos de herramientas
+					$result['respHerram'] = $this->Otrabajos->insertOTHerram($herram);
+				}else{
+					$result['respHerram'] = "vacio";	// no habia herramientas
+				}	
+
+			////////// para guardar insumos
+				if ( !empty($data['id_insumo']) ){
+					//saco array con herramientas y el id de empresa
+					$ins = $data["id_insumo"]; 
+					$j = 0;
+					foreach ($ins as $in) {
+						$insumo[$j]['artId'] = $in;
+						$insumo[$j]['id_empresa'] = $empresaId;
+						$j++;                                
+					} 
+					//saco array con cant de herramientas y el id de preventivo 
+					$cantInsum = $data["cant_insumo"];
+					$z = 0;
+					foreach ($cantInsum as $ci) {
+						$insumo[$z]['cantidad'] = $ci;
+						$insumo[$z]['otId'] = $ultimoId;
+						$z++;                                
+					}
+					// Guarda el bacht de datos de herramientas
+					$result['respInsumo'] = $this->Otrabajos->insertOTInsum($insumo);
+				}else{
+
+					$result['respInsumo'] = "vacio";	// no habia insumos
+				}	
+			
+			////////// Subir imagen o pdf 
+				$nomcodif = $this->codifNombre($ultimoId,$empresaId); // codificacion de nomb  		
+				$config = [
+					"upload_path" => "./assets/filesOTrabajos",
+					'allowed_types' => "png|jpg|pdf|xlsx",
+					'file_name'=> $nomcodif
+				];
+				$this->load->library("upload",$config);
+				if ($this->upload->do_upload('inputPDF')) {
+					
+					$data = array("upload_data" => $this->upload->data());
+					$extens = $data['upload_data']['file_ext'];//guardo extesnsion de archivo
+					$nomcodif = $nomcodif.$extens;
+					$adjunto = array('ot_adjunto' => $nomcodif);
+					$result['respNomImagen'] = $this->Otrabajos->updateAdjunto($adjunto,$ultimoId);
+				}else{
+					$result['respImagen'] = false;
+				}	
+
+		//TODO: VERIFICAR RESPUESTAS PARA DEVOLVER TRUE O FALSE
+		}		
+		
 		echo json_encode($result);
-  }
+	}
+	
+	// Codifica nombre de imagen para no repetir en servidor
+	// formato "12_6_2018-05-21-15-26-24" idpreventivo_idempresa_fecha(año-mes-dia-hora-min-seg)
+	function codifNombre($ultimoId,$empId){
+
+		$guion = '_';
+		$guion_medio = '-';
+		$hora = date('Y-m-d H:i:s');// hora actual del sistema	
+		$delimiter = array(" ",",",".","'","\"","|","\\","/",";",":");
+		$replace = str_replace($delimiter, $delimiter[0], $hora);
+		$explode = explode($delimiter[0], $replace);
+		
+		$strigHora = $explode[0].$guion_medio.$explode[1].$guion_medio.$explode[2].$guion_medio.$explode[3];
+		
+		$nomImagen = $ultimoId.$guion.$empId.$guion.$strigHora;
+		
+		return $nomImagen;
+	}
 
   	/**
   	 * Trae datos para editar
   	 *
   	 */
-    public function getpencil() // Ok
-    {
+	public function getpencil() // Ok
+	{
 		$id = $this->input->post('idp');
 		$result = $this->Otrabajos->getpencil($id);
 		echo json_encode($result);
@@ -435,7 +557,7 @@ class Otrabajo extends CI_Controller {
 	    }
   	}
 
-  	public function agregar_pedido()
+  public function agregar_pedido()
 	{
 
 	    $datos=$_POST['data'];
@@ -466,7 +588,7 @@ class Otrabajo extends CI_Controller {
 	    }
 	   return $result2; 		
 	   
-  	}
+  }
   	
   	public function agregar_tarea(){
 
