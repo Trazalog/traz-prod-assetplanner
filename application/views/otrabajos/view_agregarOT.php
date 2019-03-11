@@ -234,15 +234,14 @@
   });
 
   // limpia un input al seleccionar o llenar otro
-  $('#tarea').change(function(){
-    $('#tarea_manual').val('');
-    $('#id_tarea_manual').val('');
+  $('#tarea').change(function(){    
+    $('#tareacustom').val(''); 
   });
-  $('#tarea_manual').change(function(){
+  $('#tareacustom').change(function(){
     $('#tarea').val('');
     $('#id_tarea').val('');
   }); 
-
+  
   // Trae proveedores por empresa logueada
   traer_proveedor();      
   function traer_proveedor(){
@@ -298,112 +297,67 @@
  
   $("#formOT").submit(function (event){   
     event.preventDefault(); 
+    var equipo        = $('#equipo').val();
+    var tarea         = $('#id_tarea').val();
+    var tareacustom  = $('#tareacustom').val();    
+    var fecha_inicio  = $('#fechaInicio').val();
+    var fecha_entrega = $('#fechaEntrega').val();    
+    var sucursal      = $('#suci').val();
+    var proveedor     = $('#prov').val();
+    
+    var hayError = false; 
+    $('#error').hide();
+    if(equipo == '-1')
+    {
+      hayError = true;
+    }    
+    if((tarea == '') && (tareacustom == '')){
+      hayError = true;
+    }
+    if((fecha_inicio =='') || (fecha_entrega=='0000-00-00 00:00:00'))
+    {
+      hayError = true;
+    }
+    if(sucursal == '-1')
+    {
+      hayError = true;
+    }
+    if(proveedor == '-1')
+    {
+      hayError = true;
+    }
 
-  
-  // if () {
-  //     $('#error').fadeIn('slow');
-  // }
-  // else{
-  //   $('#error').fadeOut('slow');
-    var formData = new FormData($("#formOT")[0]);
-    $.ajax({
-      url:$("form").attr("action"),
-      type:$("form").attr("method"),
-      data:formData,
-      cache:false,
-      contentType:false,
-      processData:false,
-      success:function(respuesta){
-       
-      },
-      error: function(result){
-       
-        //$('#modalagregar').modal('hide');
-        alert('Ocurrio un error en el guardado...');
-        console.error("Error al agregar nueva OT. Ver console.table");
-        console.table(result);
-      }  
-    });
-  //}
-
-
-
-
-
+    if (hayError == true) {
+      $('#error').fadeIn('slow');
+      $('#btn_guardar').prop("disabled", false);
+      return;
+    }
+    else{
+      $('#error').fadeOut('slow');
+      var formData = new FormData($("#formOT")[0]);
+      $.ajax({
+        url:$("form").attr("action"),
+        type:$("form").attr("method"),
+        data:formData,
+        cache:false,
+        contentType:false,
+        processData:false,
+        success:function(respuesta){
+          recargaLista();
+        },
+        error: function(result){  
+          alert('Ocurrio un error en el guardado...');
+          console.error("Error al agregar nueva OT. Ver console.table");
+          console.table(result);
+        }  
+      });
+    }
 
   });
 
 
-  // Guarda una nueva OT - Ok
-// function guardaragregar(){
-  
-//    //WaitingOpen('Guardando OT...'); 
-//   //$('#btn_guardar').prop("disabled", true);
-
-//   var tarea         = $('#id_tarea').val();
-//   var tarea_manual  = $('#tarea_manual').val();
-//   //var num           = $('#nro1').val();
-//   var fecha_inicio  = $('#fechaInicio').val();
-//   var fecha_entrega = $('#fechaEntrega').val();
-//   var descripcion   = $('#vsdetal').val();
-//   var sucursal      = $('#suci').val();
-//   var proveedor     = $('#prov').val();
-//   var equipo        = $('#equipo').val();
-  
-//   // var hayError = false; 
-//   // $('#error').hide();
-//   // if($('#equipo').val() == '')
-//   // {
-//   //   hayError = true;
-//   // }
-//   // if($('#fechaEntrega').val()=='' || $('#fechaEntrega').val()=='0000-00-00 00:00:00')
-//   // {
-//   //   hayError = true;
-//   // }
-//   // if($('#suci').val() == '-1')
-//   // {
-//   //   hayError = true;
-//   // }
-//   // if($('#prov').val() == '-1')
-//   // {
-//   //   hayError = true;
-//   // }
-//   // if(hayError == true){
-//   //   $('#error').fadeIn('slow');  
-//   //   $('#btn_guardar').prop("disabled", false);   
-//   //   return;
-//   // }  
-
-//   $.ajax({
-//     type: 'POST', 
-//     data: { 
-//           fecha_inicio: fecha_inicio,
-//           fecha_entrega:fecha_entrega, 
-//           equipo:equipo, 
-//           descripcion:descripcion, 
-//           sucursal:sucursal, 
-//           proveedor:proveedor},
-//     url: 'index.php/Otrabajo/guardar_agregar',
-//     success: function(data){
-      
-     
-//       regresa1();
-//     },
-//     error: function(result){
-//       $btn.button('reset');
-//       //$('#modalagregar').modal('hide');
-//       alert('Ocurrio un error en el guardado...');
-//       console.error("Error al agregar nueva OT. Ver console.table");
-//       console.table(result);
-//     }
-//   });        
-// }
-
-
-
-
 // Limpia modales y regresa al listado de OTs - Ok test 
-function regresa1(){
+function recargaLista(){
     //WaitingOpen('');
     $('#content').empty();    
     $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/listOrden/<?php echo $permission; ?>");

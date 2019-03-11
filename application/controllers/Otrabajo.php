@@ -121,11 +121,13 @@ class Otrabajo extends CI_Controller {
 	 */
 	public function guardar_agregar() {
 	
+		
 		$userdata  = $this->session->userdata('user_data');
 		$usrId     = $userdata[0]['usrId'];
 		$empresaId = $userdata[0]['id_empresa'];
 	
 		$data					 = $this->input->post(); 
+		dump_exit($data);
 		$id_tareaestd	 = $this->input->post('id_tarea');	
 		if(!empty($id_tareaestd)){
 			$id_tar	 = $id_tareaestd;
@@ -227,12 +229,16 @@ class Otrabajo extends CI_Controller {
 					$result['respNomImagen'] = $this->Otrabajos->updateAdjunto($adjunto,$ultimoId);
 				}else{
 					$result['respImagen'] = false;
-				}	
-
-		//TODO: VERIFICAR RESPUESTAS PARA DEVOLVER TRUE O FALSE
+				}			
 		}		
+		if($result['respOT']){
+			$result = true;
+			echo json_encode($result);
+		}else{
+			$result = false;
+			echo json_encode($result);
+		}
 		
-		echo json_encode($result);
 	}
 	
 	// Codifica nombre de imagen para no repetir en servidor
