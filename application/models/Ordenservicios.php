@@ -89,6 +89,8 @@ class Ordenservicios extends CI_Model {
         }
     }
 
+    
+
     function getDatosOrdenServicios($data = null) // Ok ¿al pedo?
     {
         $id = $data['id_ordenservicio'];       
@@ -311,26 +313,26 @@ class Ordenservicios extends CI_Model {
 
     function getHerramOrdenes($data) // Ok
     {
-        $id_orden = $data['id_orden'];
-        $this->db->select('
-            herramientas.herrcodigo,
-            herramientas.herrmarca,
-            herramientas.herrdescrip
-        ');
-        $this->db->from('orden_servicio');        
-        $this->db->join('tbl_valesalida', 'orden_servicio.valesid = tbl_valesalida.valesid');        
-        $this->db->join('tbl_detavalesalida', 'tbl_detavalesalida.valesid = tbl_valesalida.valesid');
-        $this->db->join('herramientas', 'tbl_detavalesalida.herrId = herramientas.herrId');        
-        $this->db->where('orden_servicio.id_orden', $id_orden);
-        $query = $this->db->get();
-        if ($query->num_rows()!=0)
-        {
-            return $query->result_array();  
-        }
-        else
-        {   
-            return array();
-        }   
+			$id_orden = $data['id_orden'];
+			$this->db->select('
+					herramientas.herrcodigo,
+					herramientas.herrmarca,
+					herramientas.herrdescrip
+			');
+			$this->db->from('orden_servicio');        
+			$this->db->join('tbl_valesalida', 'orden_servicio.valesid = tbl_valesalida.valesid');        
+			$this->db->join('tbl_detavalesalida', 'tbl_detavalesalida.valesid = tbl_valesalida.valesid');
+			$this->db->join('herramientas', 'tbl_detavalesalida.herrId = herramientas.herrId');        
+			$this->db->where('orden_servicio.id_orden', $id_orden);
+			$query = $this->db->get();
+			if ($query->num_rows()!=0)
+			{
+					return $query->result_array();  
+			}
+			else
+			{   
+					return array();
+			}   
     }
 
     function getOperariosOrden($data)
