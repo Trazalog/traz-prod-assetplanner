@@ -6,8 +6,7 @@
         <div class="box-header">
           <h3 class="box-title">Orden de trabajo</h3>
           <?php
-          if (strpos($permission,'Add') !== false) {
-            //echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"  data-toggle="modal" data-target="#modalagregar" id="btnAdd">Agregar</button>'; 
+          if (strpos($permission,'Add') !== false) {           
             echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="btnAdd">Agregar</button>'; 
           }
           ?>
@@ -31,7 +30,7 @@
             </thead>
             <tbody>
               <?php
-              //dump_exit($list);
+
                 if( $list!=false && count($list) > 0) 
                 {
                   $userdata = $this->session->userdata('user_data');
@@ -202,12 +201,12 @@ function traer_equipo(){
 
 // Limpia modales y regresa al listado de OTs - Ok test 
 function regresa1(){
-    $('#content').empty();
-    $('#modalOT').empty();
-    $('#modalAsig').empty(); //local index 
-    $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/listOrden/<?php echo $permission; ?>");
-    WaitingClose();
-    //WaitingClose();
+  $('#content').empty();
+  $('#modalOT').empty();
+  $('#modalAsig').empty(); //local index 
+  $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/listOrden/<?php echo $permission; ?>");
+  WaitingClose();
+  //WaitingClose();
 }
 
 
@@ -226,66 +225,7 @@ $("#btn_cancGuardado").click(function (e) {
   $('.select_box').val('-1');
 });
 
-// Guarda una nueva OT - Ok
-function guardaragregar(){
-  
-  $('#btn_guardar').prop("disabled", true);
-  
-  var num           = $('#nro1').val();
-  var fecha_inicio  = $('#fechaInicio').val();
-  var fecha_entrega = $('#fechaEntrega').val();
-  var descripcion   = $('#vsdetal').val();
-  var sucursal      = $('#suci').val();
-  var proveedor     = $('#prov').val();
-  var equipo        = $('#equipo').val();
-  
-  var hayError = false; 
-  $('#error').hide();
-  if($('#equipo').val() == '')
-  {
-    hayError = true;
-  }
-  if($('#fechaEntrega').val()=='' || $('#fechaEntrega').val()=='0000-00-00 00:00:00')
-  {
-    hayError = true;
-  }
-  if($('#suci').val() == '-1')
-  {
-    hayError = true;
-  }
-  if($('#prov').val() == '-1')
-  {
-    hayError = true;
-  }
-  if(hayError == true){
-    $('#error').fadeIn('slow');  
-    $('#btn_guardar').prop("disabled", false);   
-    return;
-  }  
 
-  $.ajax({
-    type: 'POST', 
-    data: {num:num, 
-          fecha_inicio: fecha_inicio,
-          fecha_entrega:fecha_entrega, 
-          equipo:equipo, 
-          descripcion:descripcion, 
-          sucursal:sucursal, 
-          proveedor:proveedor},
-    url: 'index.php/Otrabajo/guardar_agregar',
-    success: function(data){
-      //console.log(data);  
-      $('#modalagregar').modal('hide');
-      regresa1();
-    },
-    error: function(result){
-      //$('#modalagregar').modal('hide');
-      alert('Ocurrio un error en el guardado...');
-      console.error("Error al agregar nueva OT. Ver console.table");
-      console.table(result);
-    }
-  });        
-}
 
 // Elimina OT (estado = AN) - Ok
 function eliminarpred(){
@@ -307,214 +247,712 @@ function eliminarpred(){
   });
 }
 
-// Trae datos para llenar el modal Editar OT - Ok
-$(".fa-pencil").click(function(e) { 
-  $("#modaleditar tbody").remove();
-  var idord = $(this).parent('td').parent('tr').attr('id');
-  idp = idord;
-  console.log("idp: "+idp);
-  $.ajax({
-    data: { idp:idp },
-    dataType: 'json',
-    type: 'POST',
-    url: 'index.php/Otrabajo/getpencil',
-    success: function(data){
-      console.table(data);
-      datos = {
-        'id_ot'         : data[0]['id_orden'],
-        'nro'           : data[0]['nro'],
-        'equipo'        : data[0]['codigo'],
-        'id_equipo'     : data[0]['id_equipo'],
-        'fecha_inicio'  : data[0]['fecha_inicio'],
-        'fecha_entrega' : data[0]['fecha_entrega'],
-        'idusuario'     : data[0]['id_usuario'],
-        'nota'          : data[0]['descripcion'],
-        'id_sucu'       : data[0]['id_sucursal'],
-        'sucursal'      : data[0]['descripc'],
-        'id_proveedor'  : data[0]['provid'],
-        'nombreprov'    : data[0]['provnombre'],
-      }
-      completarEdit(datos);
+
+///// EDICION DE ORDEN DE TRABAJO  ////
+
+  //Trae tareas y permite busqueda en el input
+  var dataTarea = function() {
+    var tmp = null;
+    $.ajax({
+      'async': false,
+      'type': "POST",
+      'dataType': 'json',
+      'url': 'index.php/Preventivo/gettarea',
+    })
+    .done( (data) => { tmp = data } )
+    .fail( () => alert("Error al traer tareas") );
+    return tmp;
+  }();
+  $("#tarea").autocomplete({
+    source:    dataTarea,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_tarea').val(ui.item.value);
     },
-    error: function(result){
-      console.error("Error al Editar OT. Ver console.table");
-      console.table(result);
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_tarea').val(ui.item.value);
+      $('#tareacustom').val('');  // borra la tarea custom
     },
   });
-});
 
-// completa los datos del modal Editar - Ok
-function completarEdit(datos){
-  //console.log("datos que llegaron: ");
-  //console.table(datos);
-  $('#nroedit').val(datos['nro']);
-  traer_equipo2(datos['id_equipo']);
-  $('#fecha_inicio1').val(datos['fecha_inicio']);
-  $('#fecha_entrega1').val(datos['fecha_entrega']);
-  $('#vsdetalleedit').val(datos['nota']);
-  traer_sucursal2(datos['id_sucu']);
-  traer_prov1(datos['id_proveedor']);
-}
-
-// llena select equipos en modal Editar OT - Ok
-function traer_equipo2(id_equipo){
-  $('#equipo1').empty();
-  $.ajax({
-    data: { },
-    dataType: 'json',
-    type: 'POST',
-    url: 'index.php/Otrabajo/getequipo',
-    success: function(data){
-      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-      $('#equipo1').append(opcion); 
-      for(var i=0; i < data.length ; i++) 
-      {    
-        var selectAttr = '';
-        if(data[i]['id_equipo'] == id_equipo) { var selectAttr = 'selected'; }
-        var nombre = data[i]['codigo'];
-        var opcion = "<option value='"+data[i]['id_equipo']+"' "+selectAttr+">" +nombre+ "</option>" ; 
-        $('#equipo1').append(opcion);             
-      }
-    },
-    error: function(result){
-      console.error("Error al traer equipos. Ver console.table");
-      console.table(result);
-    },
+  // limpia un input al seleccionar o llenar otro
+  $('#tarea').change(function(){    
+    $('#tareacustom').val(''); 
   });
-}
-
-// llena select sucursales en modal Editar - Ok
-function traer_sucursal2(id_sucursal){
-  $('#sucidedit').text("");
-  $.ajax({
-    type: 'POST',
-    data: { },
-    url: 'index.php/Otrabajo/traer_sucursal',
-    success: function(data){
-      for(var i=0; i < data.length ; i++) 
-      {
-        //console.info("i:"+data[i]['id_equipo']);
-        var selectAttr = '';
-        if(data[i]['id_sucursal'] == id_sucursal) { var selectAttr = 'selected';}
-        var nombre = data[i]['descripc'];
-        var opcion = "<option value='"+data[i]['id_sucursal']+"' "+selectAttr+">" +nombre+ "</option>";
-        $('#sucidedit').append(opcion); 
-      }
-    },
-    error: function(result){
-      console.error("Error al traer sucursales en Editar OT");
-      console.table(result);
-    },
-    dataType: 'json'
+  $('#tareacustom').change(function(){
+    $('#tarea').val('');
+    $('#id_tarea').val('');
   });
-}    
 
-// llena select proveedores en modal Editar - Ok
-function traer_prov1(id_proveedor){
-  $('#prov1').text("");
-  $.ajax({
-    type: 'POST',
-    data: {},
-    url: 'index.php/Otrabajo/getproveedor',
-    success: function(data){
-      for(var i=0; i < data.length ; i++) 
-      {
-        //console.info("i:"+data[i]['id_equipo']);
-        var selectAttr = '';
-        if(data[i]['provid'] == id_proveedor) { var selectAttr = 'selected'; }
-        var nombre = data[i]['provnombre'];
-        var opcion = "<option value='"+data[i]['provid']+"' "+selectAttr+">" +nombre+ "</option>";
-        $('#prov1').append(opcion); 
-      }
-    },
-    error: function(result){
-      console.log(result);
-    },
-    dataType: 'json'
+  // Trae datos para llenar el modal Editar OT - Ok
+  $(".fa-pencil").click(function(e) { 
+
+    var idord = $(this).parent('td').parent('tr').attr('id');
+    idp = idord;
+    console.log("idp: "+idp);
+    $.ajax({
+      data: { idp:idp },
+      dataType: 'json',
+      type: 'POST',
+      url: 'index.php/Otrabajo/getpencil',
+      success: function(data){
+        console.table(data);
+        var resp = data['datos'];
+        datos = {
+          'id_ot'         : resp[0]['id_orden'],        //
+          'nro'           : resp[0]['nro'],             //
+          'equipo_descrip': resp[0]['codigo'],          //
+          'fecha_ingreso' : resp[0]['fecha_ingreso'],
+          'id_equipo'     : resp[0]['id_equipo'],       //
+          'marca'         : resp[0]['marca'],
+          'ubicacion'     : resp[0]['ubicacion'],
+          'descripcion'   : resp[0]['equipodescrip'],
+          'id_tarea'      : resp[0]['id_tarea'],            
+          'fecha_inicio'  : resp[0]['fecha_inicio'],    //
+          'fecha_entrega' : resp[0]['fecha_entrega'],   //
+          'idusuario'     : resp[0]['id_usuario'],      //
+          'tareadescrip'  : resp[0]['tareadescrip'],     //
+          'id_sucu'       : resp[0]['id_sucursal'],     //
+          'sucursal'      : resp[0]['descripc'],        //
+          'id_proveedor'  : resp[0]['provid'],          //
+          'nombreprov'    : resp[0]['provnombre'],      //
+          'adjunto'       :resp[0]['ot_adjunto']        //
+        }
+        
+        var herram = data['herramientas'];             
+        var insum  = data['insumos']; 
+
+        completarEdit(datos, herram, insum);
+      },
+      error: function(result){
+        console.error("Error al Editar OT. Ver console.table");
+        console.table(result);
+      },
+    });
   });
-}
 
-// Guarda Edicion de OT - Ok
-function guardareditar(){
-  //var id_orden      = $('#id_orden').val();
-  var nro           = $('#nroedit').val();
-  var fecha_inicio  = $('#fecha_inicio1').val();
-  var fecha_entrega = $('#fecha_entrega1').val();
-  var descripcion   = $('#vsdetalleedit').val();
-  var id_sucu       = $('#sucidedit').val();
-  var proveedor     = $('#prov1').val();
-  var equipo        = $('#equipo1').val();
-  //var equipo1       = $('#id_equipo1').val();
-  var parametros = {
-    //'id_orden'     : id_orden,
-    'nro'           : nro,                                          
-    'fecha_inicio'  : fecha_inicio,
-    'fecha_entrega' : fecha_entrega,     
-    'descripcion'   : descripcion,     
-    'id_sucursal'   : id_sucu,                  
-    'id_proveedor'  : id_sucu,                
-    'id_equipo'     : equipo                    
-  };
-  // console.info("Parametros:");
-  // console.table(parametros);
-  // console.log("El id de orden es:");
-  // console.log(idp);
-  // console.log("El id de equipo es:");
-  // console.log(equipo);
-  // console.log(equipo1);
-  // console.log("El id de proveedor es:");
-  // console.log(proveedor);
-  //console.info($('#fecha_inicio1').val());
-  var hayError = false; 
-  $('#errorE').hide();
+  // completa los datos del modal Editar - Ok
+  function completarEdit(datos, herram, insum){  
 
-  console.info( $('#equipo1').val() );
-  console.info( $('#fecha_inicio1').val() );
-  console.info( fecha_entrega );
-  console.info( $('#sucidedit').val() );
-  console.info( $('#prov1').val() );
+    $('#equipo_descrip').val(datos['equipo_descrip']);
+    $('#equipo').val(datos['id_equipo']);
+    $('#fecha_ingreso').val(datos['fecha_ingreso']);
+    $('#marca').val(datos['marca']);
+    $('#ubicacion').val(datos['ubicacion']);
+    $('#descripcion').val(datos['descripcion']);   
+    if(datos['id_tarea'] != '0'){   
+      $('#id_tarea').val(datos['id_tarea']);
+      $('#tarea').val(datos['tareadescrip']);    
+    }else{
+      $('#tareacustom').val(datos['tareadescrip']); }
+    $('#fechaInicio').val(datos['fecha_inicio']); 
+    $('#fechaEntrega').val(datos['fecha_entrega']);  
+    $("#suci").val(datos['id_sucu']);
+    $("#prov").val(datos['id_proveedor']);
+    
 
-  if($('#equipo1').val() == '-1')
-  {
-    hayError = true;
-  }
-  if($('#fecha_inicio1').val()=='' || $('#fecha_inicio1').val()=='0000-00-00 00:00:00')
-  {
-    hayError = true;
-  }
-  if(fecha_entrega=='' || fecha_entrega=='0000-00-00 00:00:00')
-  {
-    hayError = true;
-  }
-  if($('#sucidedit').val() == '-1')
-  {
-    hayError = true;
-  }
-  if($('#prov1').val() == '-1')
-  {
-    hayError = true;
-  }
-  console.error( hayError );
-  if(hayError == true){
-    $('#errorE').fadeIn('slow');     
-    return;
-  }
-
-  $.ajax({
-    type: 'POST',
-    data: {parametros:parametros, idp:idp},
-    url: 'index.php/Otrabajo/guardar_editar',
-    success: function(data){
-      $('#modaleditar').modal('hide');
-      regresa1();
-    },
-    error: function(result){
-      console.error("Error al guardar en modal Editar Ot");
-      console.table(result);
+    $('#tablaherramienta tbody tr').remove();
+    for (var i = 0; i < herram.length; i++) {
+      var tr = "<tr id='"+herram[i]['herrId']+"'>"+
+      "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+      "<td>"+herram[i]['herrcodigo']+"</td>"+
+      "<td>"+herram[i]['herrmarca']+"</td>"+
+      "<td>"+herram[i]['herrdescrip']+"</td>"+
+      "<td>"+herram[i]['cantidad']+"</td>"+                   
+      "</tr>";
+      $('#tablaherramienta tbody').append(tr);
     }
-  });
-  
-}
+
+    $('#tablainsumo tbody tr').remove();
+    for (var i = 0; i < insum.length; i++){                                             
+      var tr = "<tr id='"+insum[i]['artId']+"'>"+
+      "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+      "<td>"+insum[i]['artBarCode']+"</td>"+
+      "<td>"+insum[i]['artDescription']+"</td>"+
+      "<td>"+insum[i]['cantidad']+"</td>"+                   
+      "</tr>";
+      $('#tablainsumo tbody').append(tr);
+    }
+
+    $(document).on("click",".elirow",function(){
+      var parent = $(this).closest('tr');
+      $(parent).remove();
+    });  
+  } 
+
+  // Guarda Edicion de OT - Ok
+  function guardareditar(){
+    
+    $('#btnEditar').prop("disabled", true);
+    var hayError = false; 
+    $('#errorE').hide(); 
+    //var nro           = $('#nroedit').val();
+    var fecha_inicio  = $('#fechaInicio').val();
+    var fecha_entrega = $('#fechaEntrega').val();
+    var id_sucu       = $('#suci').val();
+    var id_prov     = $('#prov').val();
+    var id_equipo     = $('#equipo').val();
+    var tareacustom   = $('#tareacustom').val();
+    var tareaestandar = $('#tarea').val();
+    var id_tarea      = $('#id_tarea').val();
+    var descripcion   = '';    
+    if (tareacustom == '') {
+      descripcion   = $('#tarea').val();      
+    } else {
+      descripcion   = $('#tareacustom').val();
+      id_tarea = 0;
+    }
+
+    var parametros = {
+      //'nro'           : nro,                                          
+      'fecha_inicio'  : fecha_inicio,
+      'fecha_entrega' : fecha_entrega,   
+      'id_tarea'      : id_tarea,  
+      'descripcion'   : descripcion,    
+      'id_sucursal'   : id_sucu,                  
+      'id_proveedor'  : id_prov,                
+      'id_equipo'     : id_equipo                    
+    };    
+
+    // Arma array de herramientas y cantidades
+    var idsherramienta = new Array();     
+    $("#tablaherramienta tbody tr").each(function (index){
+      var id_her = $(this).attr('id');
+      idsherramienta.push(id_her);        
+      });    
+    var cantHerram = new Array(); 
+    $("#tablaherramienta tbody tr").each(function (index){         
+      var cant_herr = $(this).find("td").eq(4).html();
+      cantHerram.push(cant_herr);                   
+    });
+    // Arma array de insumos y cantidades
+    var idsinsumo = new Array();     
+    $("#tablainsumo tbody tr").each(function (index){
+      var id_ins = $(this).attr('id');
+      idsinsumo.push(id_ins);        
+    });
+    var cantInsum = new Array(); 
+    $("#tablainsumo tbody tr").each(function (index){         
+      var cant_insum = $(this).find("td").eq(3).html();
+      cantInsum.push(cant_insum); 
+    });     
+
+    //validaciones
+      if($('#equipo').val() == '')
+      {
+        hayError = true;
+      }      
+      if ((tareacustom == '') && (id_tarea == '')){
+        hayError = true;
+      }
+      if($('#fechaInicio').val()=='' || $('#fechaEntrega').val()=='0000-00-00 00:00:00')
+      {
+        hayError = true;
+      }
+      if(fecha_entrega=='' || fecha_entrega=='0000-00-00 00:00:00')
+      {
+        hayError = true;
+      }
+      if($('#suci').val() == '-1')
+      {
+        hayError = true;
+      }
+      if($('#prov').val() == '-1')
+      {
+        hayError = true;
+      }
+      //console.error( hayError );
+      if(hayError == true){
+        $('#errorE').fadeIn('slow');     
+        return;
+      }
+
+    $.ajax({
+      type: 'POST',
+      data: {parametros:parametros, 
+              idOT:idp,
+              idsherramienta: idsherramienta,
+              cantHerram: cantHerram,
+              idsinsumo: idsinsumo, 
+              cantInsum: cantInsum },
+      url: 'index.php/Otrabajo/guardar_editar',
+      success: function(data){
+        $('#modaleditar').modal('hide');
+        regresa1();
+      },
+      error: function(result){
+        $('#btnEditar').prop("disabled", false);
+        console.error("Error al guardar en modal Editar Ot");
+        console.table(result);
+      }
+    });
+    
+  }
+
+  ////// HERRAMIENTAS //////
+
+    function ordenaArregloDeObjetosPor(propiedad) {  
+      return function(a, b) {  
+        if (a[propiedad] > b[propiedad]) {  
+          return 1;  
+        } else if (a[propiedad] < b[propiedad]) {  
+          return -1;  
+        }  
+        return 0;  
+      }  
+    } 
+    //Trae herramientas
+    var dataHerramientas = function() {
+      var tmp = null;
+      $.ajax({
+        'async': false,
+        'type': "POST",
+        'dataType': 'json',
+        'url': 'index.php/Preventivo/getHerramientasB',
+      })
+      .done( (data) => { tmp = data } )
+      .fail( () => alert("Error al traer Herramientas") );
+      return tmp;
+    }();
+
+    // data busqueda por codigo de herramientas
+    function dataCodigoHerr(request, response) {
+      function hasMatch(s) {
+        return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
+      }
+      var i, l, obj, matches = [];
+
+      if (request.term==="") {
+        response([]);
+        return;
+      }
+      
+      //ordeno por codigo de herramientas
+      dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("codigo"));
+
+      for  (i = 0, l = dataHerramientas.length; i<l; i++) {
+        obj = dataHerramientas[i];
+        if (hasMatch(obj.codigo)) {
+          matches.push(obj);
+        }
+      }
+      response(matches);
+    }
+    // data busqueda por marca de herramientas
+    function dataMarcaHerr(request, response) {
+      function hasMatch(s) {
+        return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
+      }
+      var i, l, obj, matches = [];
+
+      if (request.term==="") {
+        response([]);
+        return;
+      }
+
+      //ordeno por marca de herramientas
+      dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("marca"));
+
+      for  (i = 0, l = dataHerramientas.length; i<l; i++) {
+        obj = dataHerramientas[i];
+        if (hasMatch(obj.marca)) {
+          matches.push(obj);
+        }
+      }
+      response(matches);
+    }
+
+
+    //busqueda por marcas de herramientas
+    $("#herramienta").autocomplete({
+      source:    dataCodigoHerr,
+      delay:     500,
+      minLength: 1,
+      focus: function(event, ui) {
+        event.preventDefault();
+        $(this).val(ui.item.codigo);
+        $('#id_herramienta').val(ui.item.value);
+        $('#marcaherram').val(ui.item.marca);
+        $('#descripcionherram').val(ui.item.label);
+      },
+      select: function(event, ui) {
+        event.preventDefault();
+        $(this).val(ui.item.codigo);
+        $('#id_herramienta').val(ui.item.value);
+        $('#marcaherram').val(ui.item.marca);
+        $('#descripcionherram').val(ui.item.label);
+      },
+    })
+    //muestro marca en listado de resultados
+    .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+      return $( "<li>" )
+      .append( "<a>" + item.codigo + "</a>" )
+      .appendTo( ul );
+    };
+
+    //busqueda por marcas de herramientas
+    $("#marcaherram").autocomplete({
+      source:    dataMarcaHerr,
+      delay:     500,
+      minLength: 1,
+      focus: function(event, ui) {
+        event.preventDefault();
+        $(this).val(ui.item.marca);
+        $('#id_herramienta').val(ui.item.value);
+        $('#herramienta').val(ui.item.codigo);
+        $('#descripcionherram').val(ui.item.label);
+      },
+      select: function(event, ui) {
+        event.preventDefault();
+        $(this).val(ui.item.marca);
+        $('#id_herramienta').val(ui.item.value);
+        $('#herramienta').val(ui.item.codigo);
+        $('#descripcionherram').val(ui.item.label);
+      },
+    })
+    //muestro marca en listado de resultados
+    .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+      return $( "<li>" )
+      .append( "<a>" + item.marca + "</a>" )
+      .appendTo( ul );
+    };
+
+    //busqueda por descripcion de herramientas
+    $("#descripcionherram").autocomplete({
+      source:    dataHerramientas,
+      delay:     500,
+      minLength: 1,
+      focus: function(event, ui) {
+        event.preventDefault();
+        $(this).val(ui.item.label);
+        $('#id_herramienta').val(ui.item.value);
+        $('#herramienta').val(ui.item.codigo);
+        $('#marcaherram').val(ui.item.marca);
+      },
+      select: function(event, ui) {
+        event.preventDefault();
+        $(this).val(ui.item.label);
+        $('#id_herramienta').val(ui.item.value);
+        $('#herramienta').val(ui.item.codigo);
+        $('#marcaherram').val(ui.item.marca);
+      },
+    });
+
+    // Agrega herramientas a la tabla - Chequeado
+    var nrofila = 0;  // hace cada fila unica
+    $("#agregarherr").click(function (e) {
+      // FALTA HACER VALIDACION
+      var id_her            = $('#id_herramienta').val();
+      var herramienta       = $("#herramienta").val(); 
+      var marcaherram       = $('#marcaherram').val();
+      var descripcionherram = $('#descripcionherram').val();
+      var cantidadherram    = $('#cantidadherram').val();
+      
+      nrofila = nrofila + 1;
+      var tr = "<tr id='"+id_her+"' data-nrofila='"+nrofila+"'>"+
+                  "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+                  "<td class='herr'>"+herramienta+"</td>"+
+                  "<td class='marca'>"+marcaherram+"</td>"+
+                  "<td class='descrip'>"+descripcionherram+"</td>"+
+                  "<td class='cant'>"+cantidadherram+"</td>"+ 
+                  // guardo id de herram y cantidades
+                  "<input type='hidden' name='id_her["+nrofila+"]' value='"+id_her+"'>" +                
+                  "<input type='hidden' name='cant_herr["+nrofila+"]' value='"+cantidadherram+"'>" +
+                "</tr>";
+      if(id_her > 0 && cantidadherram > 0){
+        $('#tablaherramienta tbody').append(tr);
+      }
+      else{
+        return;
+      } 
+
+      $(document).on("click",".elirow",function(){
+        var parent = $(this).closest('tr');
+        $(parent).remove();
+      });
+
+      $('#herramienta').val('');
+      $('#marcaherram').val(''); 
+      $('#descripcionherram').val(''); 
+      $('#cantidadherram').val('');        
+    });
+  ////// HERRAMIENTAS //////
+
+  ////// INSUMOS //////
+
+    //Trae insumos
+    var dataInsumos = function() {
+      var tmp = null;
+      $.ajax({
+        'async': false,
+        'type': "POST",
+        'dataType': 'json',
+        'url': 'index.php/Preventivo/getinsumo',
+      })
+      .done( (data) => { tmp = data } )
+      .fail( () => alert("Error al traer Herramientas") );
+      return tmp;
+    }();
+
+    // data busqueda por codigo de herramientas
+    function dataCodigoInsumo(request, response) {
+      function hasMatch(s) {
+        return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
+      }
+      var i, l, obj, matches = [];
+
+      if (request.term==="") {
+        response([]);
+        return;
+      }
+
+      //ordeno por codigo de herramientas
+      dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("codigo"));
+
+      for  (i = 0, l = dataInsumos.length; i<l; i++) {
+        obj = dataInsumos[i];
+        if (hasMatch(obj.codigo)) {
+          matches.push(obj);
+        }
+      }
+      response(matches);
+    }
+
+
+    //busqueda por marcas de herramientas
+    $("#insumo").autocomplete({
+      source:    dataCodigoInsumo,
+      delay:     500,
+      minLength: 1,
+      focus: function(event, ui) {
+        event.preventDefault();
+        $(this).val(ui.item.codigo);
+        $('#id_insumo').val(ui.item.value);
+        $('#descript').val(ui.item.label);
+      },
+      select: function(event, ui) {
+        event.preventDefault();
+        $(this).val(ui.item.codigo);
+        $('#id_insumo').val(ui.item.value);
+        $('#descript').val(ui.item.label);
+      },
+    })
+    //muestro marca en listado de resultados
+    .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+      return $( "<li>" )
+      .append( "<a>" + item.codigo + "</a>" )
+      .appendTo( ul );
+    };
+
+    //busqueda por descripcion de herramientas
+    $("#descript").autocomplete({
+      source:    dataInsumos,
+      delay:     500,
+      minLength: 1,
+      focus: function(event, ui) {
+        event.preventDefault();
+        $(this).val(ui.item.label);
+        $('#id_insumo').val(ui.item.value);
+        $('#insumo').val(ui.item.codigo);
+      },
+      select: function(event, ui) {
+        event.preventDefault();
+        $(this).val(ui.item.label);
+        $('#id_herramienta').val(ui.item.value);
+        $('#herramienta').val(ui.item.codigo);
+        $('#marcaherram').val(ui.item.marca);
+      },
+    });
+
+    // Agrega insumos a la tabla 
+    var nrofilaIns = 0; 
+    $("#agregarins").click(function (e) {
+        var id_insumo = $('#id_insumo').val(); 
+        var $insumo   = $("#insumo").val();
+        var descript = $('#descript').val();
+        var cant = $('#cant').val();     
+        console.log("El id  del insumo");
+        console.log(id_insumo);
+        var hayError = false;
+        var tr = "<tr id='"+id_insumo+"'>"+
+                      "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+                      "<td>"+$insumo+"</td>"+
+                      "<td>"+descript+"</td>"+
+                      "<td>"+cant+"</td>"+
+
+                      // guardo id de insumos y cantidades
+                      "<input type='hidden' name='id_insumo["+nrofilaIns+"]' value='"+id_insumo+"'>" +
+                      "<input type='hidden' name='cant_insumo["+nrofilaIns+"]' value='"+cant+"'>" +
+                  "</tr>";
+        nrofilaIns = nrofilaIns + 1;          
+        if(id_insumo > 0 && cant > 0){
+          $('#tablainsumo tbody').append(tr); 
+        }
+        else {
+              return;
+        }    
+
+        $(document).on("click",".elirow",function(){
+          var parent = $(this).closest('tr');
+          $(parent).remove();
+        });
+        
+        $('#insumo').val('');
+        $('#descript').val(''); 
+        $('#cant').val(''); 
+    });
+  ////// INSUMOS //////
+
+
+
+/////////////////////////// FUNCIONES COMENTADAS PARA PROBAR SI SACAR O NO
+    // Guarda una nueva OT - Ok
+  // function guardaragregar(){
+    
+  //   $('#btn_guardar').prop("disabled", true);
+    
+  //   var num           = $('#nro1').val();
+  //   var fecha_inicio  = $('#fechaInicio').val();
+  //   var fecha_entrega = $('#fechaEntrega').val();
+  //   var descripcion   = $('#vsdetal').val();
+  //   var sucursal      = $('#suci').val();
+  //   var proveedor     = $('#prov').val();
+  //   var equipo        = $('#equipo').val();
+    
+  //   var hayError = false; 
+  //   $('#error').hide();
+  //   if($('#equipo').val() == '')
+  //   {
+  //     hayError = true;
+  //   }
+  //   if($('#fechaEntrega').val()=='' || $('#fechaEntrega').val()=='0000-00-00 00:00:00')
+  //   {
+  //     hayError = true;
+  //   }
+  //   if($('#suci').val() == '-1')
+  //   {
+  //     hayError = true;
+  //   }
+  //   if($('#prov').val() == '-1')
+  //   {
+  //     hayError = true;
+  //   }
+  //   if(hayError == true){
+  //     $('#error').fadeIn('slow');  
+  //     $('#btn_guardar').prop("disabled", false);   
+  //     return;
+  //   }  
+
+  //   $.ajax({
+  //     type: 'POST', 
+  //     data: {num:num, 
+  //           fecha_inicio: fecha_inicio,
+  //           fecha_entrega:fecha_entrega, 
+  //           equipo:equipo, 
+  //           descripcion:descripcion, 
+  //           sucursal:sucursal, 
+  //           proveedor:proveedor},
+  //     url: 'index.php/Otrabajo/guardar_agregar',
+  //     success: function(data){
+  //       //console.log(data);  
+  //       $('#modalagregar').modal('hide');
+  //       regresa1();
+  //     },
+  //     error: function(result){
+  //       //$('#modalagregar').modal('hide');
+  //       alert('Ocurrio un error en el guardado...');
+  //       console.error("Error al agregar nueva OT. Ver console.table");
+  //       console.table(result);
+  //     }
+  //   });        
+  // }
+  // llena select equipos en modal Editar OT - Ok
+  // function traer_equipo2(id_equipo){
+  //   $('#equipo1').empty();
+  //   $.ajax({
+  //     data: { },
+  //     dataType: 'json',
+  //     type: 'POST',
+  //     url: 'index.php/Otrabajo/getequipo',
+  //     success: function(data){
+  //       var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+  //       $('#equipo1').append(opcion); 
+  //       for(var i=0; i < data.length ; i++) 
+  //       {    
+  //         var selectAttr = '';
+  //         if(data[i]['id_equipo'] == id_equipo) { var selectAttr = 'selected'; }
+  //         var nombre = data[i]['codigo'];
+  //         var opcion = "<option value='"+data[i]['id_equipo']+"' "+selectAttr+">" +nombre+ "</option>" ; 
+  //         $('#equipo1').append(opcion);             
+  //       }
+  //     },
+  //     error: function(result){
+  //       console.error("Error al traer equipos. Ver console.table");
+  //       console.table(result);
+  //     },
+  //   });
+  // }
+
+  // // llena select sucursales en modal Editar - Ok
+  // function traer_sucursal2(id_sucursal){
+  //   $('#sucidedit').text("");
+  //   $.ajax({
+  //     type: 'POST',
+  //     data: { },
+  //     url: 'index.php/Otrabajo/traer_sucursal',
+  //     success: function(data){
+  //       for(var i=0; i < data.length ; i++) 
+  //       {
+  //         //console.info("i:"+data[i]['id_equipo']);
+  //         var selectAttr = '';
+  //         if(data[i]['id_sucursal'] == id_sucursal) { var selectAttr = 'selected';}
+  //         var nombre = data[i]['descripc'];
+  //         var opcion = "<option value='"+data[i]['id_sucursal']+"' "+selectAttr+">" +nombre+ "</option>";
+  //         $('#sucidedit').append(opcion); 
+  //       }
+  //     },
+  //     error: function(result){
+  //       console.error("Error al traer sucursales en Editar OT");
+  //       console.table(result);
+  //     },
+  //     dataType: 'json'
+  //   });
+  // }    
+
+  // // llena select proveedores en modal Editar - Ok
+  // function traer_prov1(id_proveedor){
+  //   $('#prov1').text("");
+  //   $.ajax({
+  //     type: 'POST',
+  //     data: {},
+  //     url: 'index.php/Otrabajo/getproveedor',
+  //     success: function(data){
+  //       for(var i=0; i < data.length ; i++) 
+  //       {
+  //         //console.info("i:"+data[i]['id_equipo']);
+  //         var selectAttr = '';
+  //         if(data[i]['provid'] == id_proveedor) { var selectAttr = 'selected'; }
+  //         var nombre = data[i]['provnombre'];
+  //         var opcion = "<option value='"+data[i]['provid']+"' "+selectAttr+">" +nombre+ "</option>";
+  //         $('#prov1').append(opcion); 
+  //       }
+  //     },
+  //     error: function(result){
+  //       console.log(result);
+  //     },
+  //     dataType: 'json'
+  //   });
+  // }
+///////////////////////////  FIN FUNCIONES COMENTADAS PARA PROBAR SI SACAR O NO
+
+
+
+
 
 // Lleva a la pantalla Asignar Tareas - Ok (no revisé la asignación!!!)
 $(".fa-check-square-o").click(function (e) { 
@@ -1043,658 +1481,828 @@ function guardarparcial(){
     });
 }
 
-
-$(".fa-cart-plus").click(function (e) { 
-  var id = $(this).parent('td').parent('tr').attr('id');
-  console.log("El id de OT es: "+id);
-  iort = id;
-
-  WaitingOpen();
-  $('#content').empty();
-  $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/agregarnota/<?php echo $permission; ?>/"+iort);
-  WaitingClose();  
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// ver Orden de Trabajo
-$(".fa-search").click( function(e){
-  let idot = $(this).parent('td').parent('tr').attr('id');
-  //console.log("id Orden de trabajo: "+idot);
-  
-  WaitingOpen('Obteniendo datos de OT...');
-  //buscar datos 
-  $.ajax({
-    data: { idot:idot },
-    dataType: 'json',
-    method: 'POST',
-    url: 'index.php/Otrabajo/getOrigenOt',
-  })
-  .done( (data) => {
-    //console.table(data);
-    traerDatosOt(idot, data.tipo, data.id_solicitud);
-  })
-  .fail( () => alert( "Error al traer los datos de la OT." ) )
-  .always( () => WaitingClose() );
-});
-
-// Elige a que fcion que trae datos de OT llamar, según su origen
-function traerDatosOt(idOt, tipo, idSolicitud) {
-  console.info(idOt+' - '+idSolicitud);
-  var datos = null;
-  switch (tipo) {
-    case '1': //Orden de trabajo
-      datos = getDataOt(idOt, "orden de Trabajo");
-      fillModalView(datos);
-      $('#verOt').modal('show');
-      WaitingClose();
-      break;
-    case '2': //Solicitud de servicio
-      datos = getDataOtSolServicio(idOt, idSolicitud, "Solicitud de Servicio");
-      fillModalViewSolServicio(datos);
-      $('#verOtSolServicio').modal('show');
-      WaitingClose();
-      break;
-    case '3': //preventivo
-      datos = getDataOtPreventivo(idOt, idSolicitud, "Preventivo");
-      fillModalViewPreventivo(datos);
-      $('#verOtPreventivo').modal('show');
-      WaitingClose();
-      break;
-    case '4': //Backlog
-      datos = getDataOtBacklog(idOt, idSolicitud, "Backlog");
-      fillModalViewBacklog(datos);
-      $('#verOtBacklog').modal('show');
-      WaitingClose();
-      break;
-    case '5': //predictivo
-      datos = getDataOtPredictivo(idOt, idSolicitud, "Predictivo");
-      fillModalViewPredictivo(datos);
-      $('#verOtPredictivo').modal('show');
-      WaitingClose();
-      break;
-    case '6': //correctivo programado
-      //break;
-    default:
-      console.error('Tipo de dato desconocido');
-      WaitingClose();
-      break;
-  }
-}
-
-
-
-/***** 1 OT *****/
-
-// Trae datos de OT 
-function getDataOt(idOt, origen) {
-  WaitingOpen('Cargando datos...');
-  var datos = null;
-  $.ajax({
-    async:false,
-    data: { idOt:idOt },
-    dataType: 'json',
-    method: 'POST',
-    url: 'index.php/Otrabajo/getViewDataOt',
-  })
-  .done( (data) => {
-    //console.table(data);
-    datos = {
-      //Panel datos de OT
-      'id_ot'          : data['id_orden'],
-      'nro'            : data['nro'],
-      'descripcion_ot' : data['descripcionFalla'],
-      'fecha_inicio'   : data['fecha_inicio'],
-      'fecha_entrega'  : data['fecha_entrega'],
-      'fecha_program'  : data['fecha_program'],
-      'estado'         : data['estado'],
-      'sucursal'       : data['descripc'],
-      'nombreprov'     : data['provnombre'],
-      'origen'         : origen,
-      'fecha_program'  : data['fecha_program'],
-      'asignado'       : data['usrLastName']+' '+data['usrLastName'],
-      'estado'         : data['estado'],
-      //Panel datos de equipos
-      'codigo'         : data['codigo'],
-      'marca'          : data['marca'],
-      'ubicacion'      : data['ubicacion'],
-      'descripcion_eq' : data['descripcionEquipo'],
-      'comp_equipo'    : data['compEquipo'],
-    }
-  })
-  .fail( () => alert( "Error al traer los datos de la OT." ) );
-  return datos;
-}
-//llena datos del modal preventivo
-function fillModalView(datos){
-  //llenar datos de ot
-  $('#vNroOt').val(datos['nro']);
-  $('#vDescripFalla').val(datos['descripcion_ot']);
-  $('#vFechaCreacion').val(datos['fecha_inicio']);
-  $('#vFechaEntrega').val(datos['fecha_entrega']);
-  $('#vSucursal').val(datos['sucursal']);
-  $('#vProveedor').val(datos['nombreprov']);
-
-  $('#vIdOt').val(datos['id_ot']);
-  $('#vOrigen').val(datos['origen']);
-  $('#vFechaProgram').val(datos['fecha_program']);
-  $('#vAsignado').val(datos['asignado']);
-  $('#vEstado').val(datos['estado']);
-  //llenar datos de equipo
-  $('#vCodigoEquipo').val(datos['codigo']);
-  $('#vMarcaEquipo').val(datos['marca']);
-  $('#vUbicacionEquipo').val(datos['ubicacion']);
-  $('#vDescripcionEquipo').val(datos['descripcion_eq']);
-}
-
-
-
-/***** 2 Solicitud de Servicios *****/
-
-// Trae datos de Solicitud de Servicios con origen Backlog
-function getDataOtSolServicio(idOt, idSolServicio, origen) {
-  WaitingOpen('Cargando datos...');
-  var datos = null;
-  $.ajax({
-    async: false,
-    data: { idOt:idOt, idSolServicio:idSolServicio },
-    dataType: 'json',
-    method: 'POST',
-    url: 'index.php/Otrabajo/getViewDataSolServicio',
-  })
-  .done( (data) => {
-    console.table(data);
-    datos = {
-      //Panel datos de OT
-      'id_ot'          : data['id_orden'],
-      'nro'            : data['nro'],
-      'descripcion_ot' : data['descripcionFalla'],
-      'fecha_inicio'   : data['fecha_inicio'],
-      'fecha_entrega'  : data['fecha_entrega'],
-      'fecha_program'  : data['fecha_program'],
-      'estado'         : data['estado'],
-      'sucursal'       : data['descripc'],
-      'nombreprov'     : data['provnombre'],
-      'origen'         : origen,
-      'fecha_program'  : data['fecha_program'],
-      'asignado'       : data['usrLastName']+' '+data['usrLastName'],
-      'estado'         : data['estado'],
-      //Panel datos de equipos
-      'codigo'         : data['codigo'],
-      'marca'          : data['marca'],
-      'ubicacion'      : data['ubicacion'],
-      'descripcion_eq' : data['descripcionEquipo'],
-      'comp_equipo'    : data['compEquipo'],
-      'solServicio'   : data['solServicio'],
-    };
-  })
-  .fail( () => alert( "Error al traer los datos de la OT." ) );
-  return datos;
-}
-//llena datos del modal preventivo
-function fillModalViewSolServicio(datos){
-  //llenar datos de ot
-  $('#vNroOtSolServicio').val(datos['nro']);
-  $('#vDescripFallaSolServicio').val(datos['descripcion_ot']);
-  $('#vFechaCreacionSolServicio').val(datos['fecha_inicio']);
-  $('#vFechaEntregaSolServicio').val(datos['fecha_entrega']);
-  $('#vSucursalSolServicio').val(datos['sucursal']);
-  $('#vProveedorSolServicio').val(datos['nombreprov']);
-
-  $('#vIdOtSolServicio').val(datos['id_ot']);
-  $('#vOrigenSolServicio').val(datos['origen']);
-  $('#vFechaProgramSolServicio').val(datos['fecha_program']);
-  $('#vAsignadoSolServicio').val(datos['asignado']);
-  $('#vEstadoSolServicio').val(datos['estado']);
-  //llenar datos de equipo
-  $('#vCodigoEquipoSolServicio').val(datos['codigo']);
-  $('#vMarcaEquipoSolServicio').val(datos['marca']);
-  $('#vUbicacionEquipoSolServicio').val(datos['ubicacion']);
-  $('#vDescripcionEquipoSolServicio').val(datos['descripcion_eq']);
-  //llenar datos de soolicitud de servicios
-  $('#vSectorSolServicio').val( datos['solServicio']['sector'] );
-  $('#vGrupoSolServicio').val( datos['solServicio']['grupo'] );
-  $('#vSolicitanteSolServicio').val( datos['solServicio']['solicitante'] );
-  $('#vFechaSugeridaSolServicio').val( datos['solServicio']['fechaSugerida'] );
-  $('#vHorarioSugeridoSolServicio').val( datos['solServicio']['horarioSugerido'] );
-  $('#vFallaSolServicio').val( datos['solServicio']['falla'] );
-}
-
-
-
-/***** 3 preventivo *****/
-
-// Trae datos de OT con origen Preventivo
-function getDataOtPreventivo(idOt, idPreventivo, origen) {
-  WaitingOpen('Cargando datos...');
-  var datos = null;
-  $.ajax({
-    async: false,
-    data: { idOt:idOt, idPreventivo:idPreventivo },
-    dataType: 'json',
-    method: 'POST',
-    url: 'index.php/Otrabajo/getViewDataPreventivo',
-  })
-  .done( (data) => {
-    //console.table(data);
-    datos = {
-      //Panel datos de OT
-      'id_ot'          : data['id_orden'],
-      'nro'            : data['nro'],
-      'descripcion_ot' : data['descripcionFalla'],
-      'fecha_inicio'   : data['fecha_inicio'],
-      'fecha_entrega'  : data['fecha_entrega'],
-      'fecha_program'  : data['fecha_program'],
-      'estado'         : data['estado'],
-      'sucursal'       : data['descripc'],
-      'nombreprov'     : data['provnombre'],
-      'origen'         : origen,
-      'fecha_program'  : data['fecha_program'],
-      'asignado'       : data['usrLastName']+' '+data['usrLastName'],
-      'estado'         : data['estado'],
-      //Panel datos de equipos
-      'codigo'         : data['codigo'],
-      'marca'          : data['marca'],
-      'ubicacion'      : data['ubicacion'],
-      'descripcion_eq' : data['descripcionEquipo'],
-      'tarea' : data['tarea'],
-    };
-  })
-  .fail( () => alert( "Error al traer los datos de la OT." ) );
-  return datos;
-}
-//llena datos del modal preventivo
-function fillModalViewPreventivo(datos){
-  //llenar datos de ot
-  $('#vNroOtPrev').val(datos['nro']);
-  $('#vDescripFallaPrev').val(datos['descripcion_ot']);
-  $('#vFechaCreacionPrev').val(datos['fecha_inicio']);
-  $('#vFechaEntregaPrev').val(datos['fecha_entrega']);
-  $('#vSucursalPrev').val(datos['sucursal']);
-  $('#vProveedorPrev').val(datos['nombreprov']);
-
-  $('#vIdOtPrev').val(datos['id_ot']);
-  $('#vOrigenPrev').val(datos['origen']);
-  $('#vFechaProgramPrev').val(datos['fecha_program']);
-  $('#vAsignadoPrev').val(datos['asignado']);
-  $('#vEstadoPrev').val(datos['estado']);
-  //llenar datos de equipo
-  $('#vCodigoEquipoPrev').val(datos['codigo']);
-  $('#vMarcaEquipoPrev').val(datos['marca']);
-  $('#vUbicacionEquipoPrev').val(datos['ubicacion']);
-  $('#vDescripcionEquipoPrev').val(datos['descripcion_eq']);
-  //llenar campos de tarea
-  $('#vTareaPrev').val( datos['tarea']['tareadescrip'] );
-  $('#vComponentePrev').val( datos['tarea']['descripComponente'] );
-  $('#vFechaBasePrev').val( datos['tarea']['ultimo'] );
-  $('#vPeriodoPrev').val( datos['tarea']['perido'] );
-  $('#vFrecuenciaPrev').val( datos['tarea']['frecuencia'] );
-  $('#vLecturaBasePrev').val( datos['tarea']['lectura_base'] );
-  $('#vAlertaPrev').val( datos['tarea']['alerta'] );
-  $('#vDuraciónPrev').val( datos['tarea']['prev_duracion'] );
-  $('#vUnidadTiempoPrev').val( datos['tarea']['unidaddescrip'] );
-  $('#vCantOperariosPrev').val( datos['tarea']['prev_canth'] );
-  //llenar tabla herramientas
-  llenarTablaHerramientas(datos['tarea']);
-  llenarTablaInsumos(datos['tarea']);
-  llenarAdjuntos(datos['tarea'].prev_adjunto);
-}
-//llena tabla herramientas del modal preventivo
-function llenarTablaHerramientas(tareas) {
-  //console.table(tareas['herramientas'][0]);
-  $('#vTablaHerramientas').DataTable().clear().draw();
-  for (var i = 0; i < tareas['herramientas'][0].length; i++) {
-    //console.info('Herramientas: '+tareas['herramientas'][0][i]);
-    $('#vTablaHerramientas').DataTable().row.add( [
-        tareas['herramientas'][0][i].herrcodigo,
-        tareas['herramientas'][0][i].herrmarca,
-        tareas['herramientas'][0][i].herrdescrip,
-        tareas['herramientas'][0][i].cantidad,
-      ]
-    ).draw();
-  }
-}
-//llena tabla insumos del modal preventivo
-function llenarTablaInsumos(tareas) {
-  //console.table(tareas['insumos'][0]);
-  $('#vTablaInsumos').DataTable().clear().draw();
-  for (var i = 0; i < tareas['insumos'][0].length; i++) {
-    $('#vTablaInsumos').DataTable().row.add( [
-        tareas['insumos'][0][i].artBarCode,
-        tareas['insumos'][0][i].artDescription,
-        tareas['insumos'][0][i].cantidad,
-      ]
-    ).draw();
-  }
-}
-//muestra adjunto del modal preventivo
-function llenarAdjuntos(adjunto) {
-  pdfEmbeded = '<embed src="./assets/filespreventivos/'+adjunto+'" type="application/pdf" style="width:100%;height:800px"></embed>';
-  $('#collapseAdjunto .panel-body').html(pdfEmbeded);
-}
-
-
-
-/* 4 Backlog */
-
-// Trae datos de OT con origen Backlog
-function getDataOtBacklog(idOt, idBacklog, origen) {
-  WaitingOpen('Cargando datos...');
-  var datos = null;
-  $.ajax({
-    async: false,
-    data: { idOt:idOt, idBacklog:idBacklog },
-    dataType: 'json',
-    method: 'POST',
-    url: 'index.php/Otrabajo/getViewDataBacklog',
-  })
-  .done( (data) => {
-    //console.table(data);
-    datos = {
-      //Panel datos de OT
-      'id_ot'          : data['id_orden'],
-      'nro'            : data['nro'],
-      'descripcion_ot' : data['descripcionFalla'],
-      'fecha_inicio'   : data['fecha_inicio'],
-      'fecha_entrega'  : data['fecha_entrega'],
-      'fecha_program'  : data['fecha_program'],
-      'estado'         : data['estado'],
-      'sucursal'       : data['descripc'],
-      'nombreprov'     : data['provnombre'],
-      'origen'         : origen,
-      'fecha_program'  : data['fecha_program'],
-      'asignado'       : data['usrLastName']+' '+data['usrLastName'],
-      'estado'         : data['estado'],
-      //Panel datos de equipos
-      'codigo'         : data['codigo'],
-      'marca'          : data['marca'],
-      'ubicacion'      : data['ubicacion'],
-      'descripcion_eq' : data['descripcionEquipo'],
-      'comp_equipo'    : data['compEquipo'],
-      'tarea'          : data['tarea'],
-    };
-  })
-  .fail( () => alert( "Error al traer los datos de la OT." ) );
-  return datos;
-}
-//llena datos del modal preventivo
-function fillModalViewBacklog(datos){
-  //llenar datos de ot
-  $('#vNroOtBack').val(datos['nro']);
-  $('#vDescripFallaBack').val(datos['descripcion_ot']);
-  $('#vFechaCreacionBack').val(datos['fecha_inicio']);
-  $('#vFechaEntregaBack').val(datos['fecha_entrega']);
-  $('#vSucursalBack').val(datos['sucursal']);
-  $('#vProveedorBack').val(datos['nombreprov']);
-
-  $('#vIdOtBack').val(datos['id_ot']);
-  $('#vOrigenBack').val(datos['origen']);
-  $('#vFechaProgramBack').val(datos['fecha_program']);
-  $('#vAsignadoBack').val(datos['asignado']);
-  $('#vEstadoBack').val(datos['estado']);
-  //llenar datos de equipo
-  $('#vCodigoEquipoBack').val(datos['codigo']);
-  $('#vMarcaEquipoBack').val(datos['marca']);
-  $('#vUbicacionEquipoBack').val(datos['ubicacion']);
-  $('#vDescripcionEquipoBack').val(datos['descripcion_eq']);
-  //llenar campos de componente-equipo
-  $('#vCodigoCompBack').val( datos['tarea']['compEquipo']['codigoComponente'] );
-  $('#vDescripCompBack').val( datos['tarea']['compEquipo']['descripComponente'] );
-  $('#vSistemaBack').val( datos['tarea']['compEquipo']['descripSistema'] );
-  //llenar campos de tarea
-  $('#vTareaBack').val( datos['tarea']['tareadescrip'] );
-  $('#vFechaBack').val( datos['tarea']['fecha'] );
-  $('#vDuracionBack').val( datos['tarea']['back_duracion'] );
-}
-
-
-
-/* 5 Predictivo */
-
-// Trae datos de OT con origen Predictivo
-function getDataOtPredictivo(idOt, idPredictivo, origen) {
-  WaitingOpen('Cargando datos...');
-  var datos = null;
-  $.ajax({
-    async: false,
-    data: { idOt:idOt, idPredictivo:idPredictivo },
-    dataType: 'json',
-    method: 'POST',
-    url: 'index.php/Otrabajo/getViewDataPredictivo',
-  })
-  .done( (data) => {
-    console.table(data);
-    datos = {
-      //Panel datos de OT
-      'id_ot'          : data['id_orden'],
-      'nro'            : data['nro'],
-      'descripcion_ot' : data['descripcionFalla'],
-      'fecha_inicio'   : data['fecha_inicio'],
-      'fecha_entrega'  : data['fecha_entrega'],
-      'fecha_program'  : data['fecha_program'],
-      'estado'         : data['estado'],
-      'sucursal'       : data['descripc'],
-      'nombreprov'     : data['provnombre'],
-      'origen'         : origen,
-      'fecha_program'  : data['fecha_program'],
-      'asignado'       : data['usrLastName']+' '+data['usrLastName'],
-      'estado'         : data['estado'],
-      //Panel datos de equipos
-      'codigo'         : data['codigo'],
-      'marca'          : data['marca'],
-      'ubicacion'      : data['ubicacion'],
-      'descripcion_eq' : data['descripcionEquipo'],
-      'tarea'          : data['tarea'],
-    };
-  })
-  .fail( () => alert( "Error al traer los datos de la OT." ) );
-  return datos;
-}
-//llena datos del modal preventivo
-function fillModalViewPredictivo(datos){
-  //llenar datos de ot
-  $('#vNroOtPred').val(datos['nro']);
-  $('#vDescripFallaPred').val(datos['descripcion_ot']);
-  $('#vFechaCreacionPred').val(datos['fecha_inicio']);
-  $('#vFechaEntregaPred').val(datos['fecha_entrega']);
-  $('#vSucursalPred').val(datos['sucursal']);
-  $('#vProveedorPred').val(datos['nombreprov']);
-
-  $('#vIdOtPred').val(datos['id_ot']);
-  $('#vOrigenPred').val(datos['origen']);
-  $('#vFechaProgramPred').val(datos['fecha_program']);
-  $('#vAsignadoPred').val(datos['asignado']);
-  $('#vEstadoPred').val(datos['estado']);
-  //llenar datos de equipo
-  $('#vCodigoEquipoPred').val(datos['codigo']);
-  $('#vMarcaEquipoPred').val(datos['marca']);
-  $('#vUbicacionEquipoPred').val(datos['ubicacion']);
-  $('#vDescripcionEquipoPred').val(datos['descripcion_eq']);
-  //llenar campos de tarea
-  $('#vTareaPred').val( datos['tarea']['tareadescrip'] );
-  $('#vFechaPred').val( datos['tarea']['fecha'] );
-  $('#vPeriodoPred').val( datos['tarea']['periodo'] );
-  $('#vFrecuenciaPred').val( datos['tarea']['frecuencia'] );
-  $('#vDuraciónPred').val( datos['tarea']['duracion']+' '+datos['tarea']['unidaddescrip'] );
-  $('#vCantOperariosPred').val( datos['tarea']['cantOperarios'] );
-  $('#vCantHsHombrePred').val( datos['tarea']['horash'] );
-}
-
-
-
-// ajusto el ancho de la cabecera de las tablas al cargar el modal
-$('#verOtPreventivo').on('shown.bs.modal', function (e) {
-  $( $.fn.dataTable.tables( true ) ).DataTable().columns.adjust();
-});
-//y al mostrar panel de acordeon
-$('#collapseHerramientas, #collapseInsumos').on('shown.bs.collapse', function () {
-  $( $.fn.dataTable.tables( true ) ).DataTable().columns.adjust();
-})
-
-
-
-
-
-
-// ver Orden de Trabajo
-$(".fa-print").click( function(e){
-  let idot = $(this).parent('td').parent('tr').attr('id');
-  //console.log("id Orden de trabajo: "+idot);
-  
-  WaitingOpen('Obteniendo datos de OT...');
-  //buscar datos 
-  $.ajax({
-    data: { idot:idot },
-    dataType: 'json',
-    method: 'POST',
-    url: 'index.php/Otrabajo/getOrigenOt',
-  })
-  .done( (data) => {
-    console.table(data);
-    traerDatosImprimirOt(idot, data.tipo, data.id_solicitud);
-  })
-  .fail( () => alert( "Error al traer los datos de la OT." ) )
-  .always( () => WaitingClose() );
-});
-
-// Elige a que fcion que trae datos de OT llamar, según su origen
-function traerDatosImprimirOt(idOt, tipo, idSolicitud) {
-  console.info(idOt+' - '+idSolicitud);
-  var datos = null;
-  switch (tipo) {
-    case '1': //Orden de trabajo
-      datos = getDataOt(idOt, "orden de Trabajo");
-      fillPrintView(datos, tipo);
-      WaitingClose();
-      break;
-    case '2': //Solicitud de servicio
-      datos = getDataOtSolServicio(idOt, idSolicitud, "Solicitud de Servicio");
-      fillPrintView(datos, tipo);
-      WaitingClose();
-      break;
-    case '3': //preventivo
-      datos = getDataOtPreventivo(idOt, idSolicitud, "Preventivo");
-      fillPrintView(datos, tipo);
-      WaitingClose();
-      break;
-    case '4': //Backlog
-      datos = getDataOtBacklog(idOt, idSolicitud, "Backlog");
-      fillPrintView(datos, tipo);
-      WaitingClose();
-      break;
-    case '5': //predictivo
-      datos = getDataOtPredictivo(idOt, idSolicitud, "Predictivo");
-      fillPrintView(datos, tipo);
-      WaitingClose();
-      break;
-    case '6': //correctivo programado
-      //break;
-    default:
-      console.error('Tipo de dato desconocido');
-      WaitingClose();
-      break;
-  }
-}
-
-
-//llena datos del modal preventivo
-function fillPrintView(datos, tipo){
-  console.table(datos);
-  $.ajax({
-    type: 'POST',
-    data: { datos:datos, tipo:tipo },
-    dataType: 'text',
-    url: 'index.php/Otrabajo/printOT',
-    success: function(data){
-      texto = data;
-      var mywindow = window.open('', 'Imprimir', 'height=700,width=900');
-      mywindow.document.write('<html><head><title></title>');
-      mywindow.document.write('</head><body onload="window.print();">');
-      mywindow.document.write(texto);
-      mywindow.document.write('</body></html>');
-      mywindow.document.close(); // necessary for IE >= 10
-      mywindow.focus(); // necessary for IE >= 10
-      return true; 
-    },
-    error: function(result){
-      console.log(result);
-      console.log("error en la vista imprimir");
-    },
+// AGREGAR NOTA DE PEDIDO
+  $(".fa-cart-plus").click(function (e) { 
+    var id = $(this).parent('td').parent('tr').attr('id');
+    console.log("El id de OT es: "+id);
+    iort = id;
+    WaitingOpen();
+    $('#content').empty();
+    $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/agregarnota/<?php echo $permission; ?>/"+iort);
+    WaitingClose();  
   });
-}
 
+//  VER OT  //
+  $(".fa-search").click( function(e){
+    let idot = $(this).parent('td').parent('tr').attr('id');
+    //console.log("id Orden de trabajo: "+idot);
+    
+    WaitingOpen('Obteniendo datos de OT...');
+    //buscar datos 
+    $.ajax({
+      data: { idot:idot },
+      dataType: 'json',
+      method: 'POST',
+      url: 'index.php/Otrabajo/getOrigenOt',
+    })
+    .done( (data) => {
+      //console.table(data);
+      traerDatosOt(idot, data.tipo, data.id_solicitud);
+    })
+    .fail( () => alert( "Error al traer los datos de la OT." ) )
+    .always( () => WaitingClose() );
+  });
 
-
-
-$('#otrabajo').DataTable({
-  "aLengthMenu": [ 10, 25, 50, 100 ],
-  "columnDefs": [ 
-    {
-      "targets": [ 0 ], 
-      "searchable": false,
-    },
-    {
-      "targets": [ 0 ], 
-      "orderable": false,
-    },
-    { 
-      "targets": [ 1, 8 ],
-      "type": "num",
+  // Elige a que fcion que trae datos de OT llamar, según su origen
+  function traerDatosOt(idOt, tipo, idSolicitud) {
+    console.info(idOt+' - '+idSolicitud);
+    var datos = null;
+    switch (tipo) {
+      case '1': //Orden de trabajo
+        datos = getDataOt(idOt, "orden de Trabajo");
+        fillModalView(datos);
+        $('#verOt').modal('show');
+        WaitingClose();
+        break;
+      case '2': //Solicitud de servicio
+        datos = getDataOtSolServicio(idOt, idSolicitud, "Solicitud de Servicio");
+        fillModalViewSolServicio(datos);
+        $('#verOtSolServicio').modal('show');
+        WaitingClose();
+        break;
+      case '3': //preventivo
+        datos = getDataOtPreventivo(idOt, idSolicitud, "Preventivo");
+        fillModalViewPreventivo(datos);
+        $('#verOtPreventivo').modal('show');
+        WaitingClose();
+        break;
+      case '4': //Backlog
+        datos = getDataOtBacklog(idOt, idSolicitud, "Backlog");
+        fillModalViewBacklog(datos);
+        $('#verOtBacklog').modal('show');
+        WaitingClose();
+        break;
+      case '5': //predictivo
+        datos = getDataOtPredictivo(idOt, idSolicitud, "Predictivo");
+        fillModalViewPredictivo(datos);
+        $('#verOtPredictivo').modal('show');
+        WaitingClose();
+        break;
+      case '6': //correctivo programado
+        //break;
+      default:
+        console.error('Tipo de dato desconocido');
+        WaitingClose();
+        break;
     }
-  ],
-  "order": [[1, "desc"]],
-});
- 
-$('#tabladetalle').DataTable({
-  "aLengthMenu": [ 10, 25, 50, 100 ],
-  "columnDefs": [ 
-    {
-      "targets": [ 0 ], 
-      "searchable": false
-    },
-    {
-      "targets": [ 0 ], 
-      "orderable": false
+  }
+
+  /***** 1 OT *****/
+  // Trae datos de OT 
+  function getDataOt(idOt, origen) {
+    WaitingOpen('Cargando datos...');
+    var datos = null;
+    $.ajax({
+      async:false,
+      data: { idOt:idOt },
+      dataType: 'json',
+      method: 'POST',
+      url: 'index.php/Otrabajo/getViewDataOt',
+    })
+    .done( (data) => {
+      //console.table(data);
+      datos = {
+        //Panel datos de OT
+        'id_ot'          : data['id_orden'],
+        'nro'            : data['nro'],
+        'descripcion_ot' : data['descripcionFalla'],
+        'fecha_inicio'   : data['fecha_inicio'],
+        'fecha_entrega'  : data['fecha_entrega'],
+        'fecha_program'  : data['fecha_program'],
+        'estado'         : data['estado'],
+        'sucursal'       : data['descripc'],
+        'nombreprov'     : data['provnombre'],
+        'origen'         : origen,
+        'fecha_program'  : data['fecha_program'],
+        'asignado'       : data['usrLastName']+' '+data['usrLastName'],
+        'estado'         : data['estado'],
+        //Panel datos de equipos
+        'codigo'         : data['codigo'],
+        'marca'          : data['marca'],
+        'ubicacion'      : data['ubicacion'],
+        'descripcion_eq' : data['descripcionEquipo'],
+        'comp_equipo'    : data['compEquipo'],
+      }
+    })
+    .fail( () => alert( "Error al traer los datos de la OT." ) );
+    return datos;
+  }
+  //llena datos del modal preventivo
+  function fillModalView(datos){
+    //llenar datos de ot
+    $('#vNroOt').val(datos['nro']);
+    $('#vDescripFalla').val(datos['descripcion_ot']);
+    $('#vFechaCreacion').val(datos['fecha_inicio']);
+    $('#vFechaEntrega').val(datos['fecha_entrega']);
+    $('#vSucursal').val(datos['sucursal']);
+    $('#vProveedor').val(datos['nombreprov']);
+
+    $('#vIdOt').val(datos['id_ot']);
+    $('#vOrigen').val(datos['origen']);
+    $('#vFechaProgram').val(datos['fecha_program']);
+    $('#vAsignado').val(datos['asignado']);
+    $('#vEstado').val(datos['estado']);
+    //llenar datos de equipo
+    $('#vCodigoEquipo').val(datos['codigo']);
+    $('#vMarcaEquipo').val(datos['marca']);
+    $('#vUbicacionEquipo').val(datos['ubicacion']);
+    $('#vDescripcionEquipo').val(datos['descripcion_eq']);
+  }
+
+  /***** 2 Solicitud de Servicios *****/
+  // Trae datos de Solicitud de Servicios con origen Backlog
+  function getDataOtSolServicio(idOt, idSolServicio, origen) {
+    WaitingOpen('Cargando datos...');
+    var datos = null;
+    $.ajax({
+      async: false,
+      data: { idOt:idOt, idSolServicio:idSolServicio },
+      dataType: 'json',
+      method: 'POST',
+      url: 'index.php/Otrabajo/getViewDataSolServicio',
+    })
+    .done( (data) => {
+      console.table(data);
+      datos = {
+        //Panel datos de OT
+        'id_ot'          : data['id_orden'],
+        'nro'            : data['nro'],
+        'descripcion_ot' : data['descripcionFalla'],
+        'fecha_inicio'   : data['fecha_inicio'],
+        'fecha_entrega'  : data['fecha_entrega'],
+        'fecha_program'  : data['fecha_program'],
+        'estado'         : data['estado'],
+        'sucursal'       : data['descripc'],
+        'nombreprov'     : data['provnombre'],
+        'origen'         : origen,
+        'fecha_program'  : data['fecha_program'],
+        'asignado'       : data['usrLastName']+' '+data['usrLastName'],
+        'estado'         : data['estado'],
+        //Panel datos de equipos
+        'codigo'         : data['codigo'],
+        'marca'          : data['marca'],
+        'ubicacion'      : data['ubicacion'],
+        'descripcion_eq' : data['descripcionEquipo'],
+        'comp_equipo'    : data['compEquipo'],
+        'solServicio'   : data['solServicio'],
+      };
+    })
+    .fail( () => alert( "Error al traer los datos de la OT." ) );
+    return datos;
+  }
+  //llena datos del modal preventivo
+  function fillModalViewSolServicio(datos){
+    //llenar datos de ot
+    $('#vNroOtSolServicio').val(datos['nro']);
+    $('#vDescripFallaSolServicio').val(datos['descripcion_ot']);
+    $('#vFechaCreacionSolServicio').val(datos['fecha_inicio']);
+    $('#vFechaEntregaSolServicio').val(datos['fecha_entrega']);
+    $('#vSucursalSolServicio').val(datos['sucursal']);
+    $('#vProveedorSolServicio').val(datos['nombreprov']);
+
+    $('#vIdOtSolServicio').val(datos['id_ot']);
+    $('#vOrigenSolServicio').val(datos['origen']);
+    $('#vFechaProgramSolServicio').val(datos['fecha_program']);
+    $('#vAsignadoSolServicio').val(datos['asignado']);
+    $('#vEstadoSolServicio').val(datos['estado']);
+    //llenar datos de equipo
+    $('#vCodigoEquipoSolServicio').val(datos['codigo']);
+    $('#vMarcaEquipoSolServicio').val(datos['marca']);
+    $('#vUbicacionEquipoSolServicio').val(datos['ubicacion']);
+    $('#vDescripcionEquipoSolServicio').val(datos['descripcion_eq']);
+    //llenar datos de soolicitud de servicios
+    $('#vSectorSolServicio').val( datos['solServicio']['sector'] );
+    $('#vGrupoSolServicio').val( datos['solServicio']['grupo'] );
+    $('#vSolicitanteSolServicio').val( datos['solServicio']['solicitante'] );
+    $('#vFechaSugeridaSolServicio').val( datos['solServicio']['fechaSugerida'] );
+    $('#vHorarioSugeridoSolServicio').val( datos['solServicio']['horarioSugerido'] );
+    $('#vFallaSolServicio').val( datos['solServicio']['falla'] );
+  }
+
+  /***** 3 preventivo *****/
+  // Trae datos de OT con origen Preventivo
+  function getDataOtPreventivo(idOt, idPreventivo, origen) {
+    WaitingOpen('Cargando datos...');
+    var datos = null;
+    $.ajax({
+      async: false,
+      data: { idOt:idOt, idPreventivo:idPreventivo },
+      dataType: 'json',
+      method: 'POST',
+      url: 'index.php/Otrabajo/getViewDataPreventivo',
+    })
+    .done( (data) => {
+      //console.table(data);
+      datos = {
+        //Panel datos de OT
+        'id_ot'          : data['id_orden'],
+        'nro'            : data['nro'],
+        'descripcion_ot' : data['descripcionFalla'],
+        'fecha_inicio'   : data['fecha_inicio'],
+        'fecha_entrega'  : data['fecha_entrega'],
+        'fecha_program'  : data['fecha_program'],
+        'estado'         : data['estado'],
+        'sucursal'       : data['descripc'],
+        'nombreprov'     : data['provnombre'],
+        'origen'         : origen,
+        'fecha_program'  : data['fecha_program'],
+        'asignado'       : data['usrLastName']+' '+data['usrLastName'],
+        'estado'         : data['estado'],
+        //Panel datos de equipos
+        'codigo'         : data['codigo'],
+        'marca'          : data['marca'],
+        'ubicacion'      : data['ubicacion'],
+        'descripcion_eq' : data['descripcionEquipo'],
+        'tarea' : data['tarea'],
+      };
+    })
+    .fail( () => alert( "Error al traer los datos de la OT." ) );
+    return datos;
+  }
+  //llena datos del modal preventivo
+  function fillModalViewPreventivo(datos){
+    //llenar datos de ot
+    $('#vNroOtPrev').val(datos['nro']);
+    $('#vDescripFallaPrev').val(datos['descripcion_ot']);
+    $('#vFechaCreacionPrev').val(datos['fecha_inicio']);
+    $('#vFechaEntregaPrev').val(datos['fecha_entrega']);
+    $('#vSucursalPrev').val(datos['sucursal']);
+    $('#vProveedorPrev').val(datos['nombreprov']);
+
+    $('#vIdOtPrev').val(datos['id_ot']);
+    $('#vOrigenPrev').val(datos['origen']);
+    $('#vFechaProgramPrev').val(datos['fecha_program']);
+    $('#vAsignadoPrev').val(datos['asignado']);
+    $('#vEstadoPrev').val(datos['estado']);
+    //llenar datos de equipo
+    $('#vCodigoEquipoPrev').val(datos['codigo']);
+    $('#vMarcaEquipoPrev').val(datos['marca']);
+    $('#vUbicacionEquipoPrev').val(datos['ubicacion']);
+    $('#vDescripcionEquipoPrev').val(datos['descripcion_eq']);
+    //llenar campos de tarea
+    $('#vTareaPrev').val( datos['tarea']['tareadescrip'] );
+    $('#vComponentePrev').val( datos['tarea']['descripComponente'] );
+    $('#vFechaBasePrev').val( datos['tarea']['ultimo'] );
+    $('#vPeriodoPrev').val( datos['tarea']['perido'] );
+    $('#vFrecuenciaPrev').val( datos['tarea']['frecuencia'] );
+    $('#vLecturaBasePrev').val( datos['tarea']['lectura_base'] );
+    $('#vAlertaPrev').val( datos['tarea']['alerta'] );
+    $('#vDuraciónPrev').val( datos['tarea']['prev_duracion'] );
+    $('#vUnidadTiempoPrev').val( datos['tarea']['unidaddescrip'] );
+    $('#vCantOperariosPrev').val( datos['tarea']['prev_canth'] );
+    //llenar tabla herramientas
+    llenarTablaHerramientas(datos['tarea']);
+    llenarTablaInsumos(datos['tarea']);
+    llenarAdjuntos(datos['tarea'].prev_adjunto);
+  }
+  //llena tabla herramientas del modal preventivo
+  function llenarTablaHerramientas(tareas) {
+    //console.table(tareas['herramientas'][0]);
+    $('#vTablaHerramientas').DataTable().clear().draw();
+    for (var i = 0; i < tareas['herramientas'][0].length; i++) {
+      //console.info('Herramientas: '+tareas['herramientas'][0][i]);
+      $('#vTablaHerramientas').DataTable().row.add( [
+          tareas['herramientas'][0][i].herrcodigo,
+          tareas['herramientas'][0][i].herrmarca,
+          tareas['herramientas'][0][i].herrdescrip,
+          tareas['herramientas'][0][i].cantidad,
+        ]
+      ).draw();
     }
-  ],
-  "order": [[1, "asc"]],
-});
-
-
-$('#vTablaHerramientas').DataTable({
-  "aLengthMenu": [ 10, 25, 50, 100 ],
-  "columnDefs": [ 
-    { 
-      "targets": [ 3 ],
-      "type": "num",
+  }
+  //llena tabla insumos del modal preventivo
+  function llenarTablaInsumos(tareas) {
+    //console.table(tareas['insumos'][0]);
+    $('#vTablaInsumos').DataTable().clear().draw();
+    for (var i = 0; i < tareas['insumos'][0].length; i++) {
+      $('#vTablaInsumos').DataTable().row.add( [
+          tareas['insumos'][0][i].artBarCode,
+          tareas['insumos'][0][i].artDescription,
+          tareas['insumos'][0][i].cantidad,
+        ]
+      ).draw();
     }
-  ],
-  "order": [[0, "asc"]],
-});
+  }
+  //muestra adjunto del modal preventivo
+  function llenarAdjuntos(adjunto) {
+    pdfEmbeded = '<embed src="./assets/filespreventivos/'+adjunto+'" type="application/pdf" style="width:100%;height:800px"></embed>';
+    $('#collapseAdjunto .panel-body').html(pdfEmbeded);
+  }
 
-$('#vTablaInsumos').DataTable({
-  "aLengthMenu": [ 10, 25, 50, 100 ],
-  "order": [[0, "asc"]],
-});
+  /***** 4 Backlog *****/
+  // Trae datos de OT con origen Backlog
+  function getDataOtBacklog(idOt, idBacklog, origen) {
+    WaitingOpen('Cargando datos...');
+    var datos = null;
+    $.ajax({
+      async: false,
+      data: { idOt:idOt, idBacklog:idBacklog },
+      dataType: 'json',
+      method: 'POST',
+      url: 'index.php/Otrabajo/getViewDataBacklog',
+    })
+    .done( (data) => {
+      //console.table(data);
+      datos = {
+        //Panel datos de OT
+        'id_ot'          : data['id_orden'],
+        'nro'            : data['nro'],
+        'descripcion_ot' : data['descripcionFalla'],
+        'fecha_inicio'   : data['fecha_inicio'],
+        'fecha_entrega'  : data['fecha_entrega'],
+        'fecha_program'  : data['fecha_program'],
+        'estado'         : data['estado'],
+        'sucursal'       : data['descripc'],
+        'nombreprov'     : data['provnombre'],
+        'origen'         : origen,
+        'fecha_program'  : data['fecha_program'],
+        'asignado'       : data['usrLastName']+' '+data['usrLastName'],
+        'estado'         : data['estado'],
+        //Panel datos de equipos
+        'codigo'         : data['codigo'],
+        'marca'          : data['marca'],
+        'ubicacion'      : data['ubicacion'],
+        'descripcion_eq' : data['descripcionEquipo'],
+        'comp_equipo'    : data['compEquipo'],
+        'tarea'          : data['tarea'],
+      };
+    })
+    .fail( () => alert( "Error al traer los datos de la OT." ) );
+    return datos;
+  }
+  //llena datos del modal preventivo
+  function fillModalViewBacklog(datos){
+    //llenar datos de ot
+    $('#vNroOtBack').val(datos['nro']);
+    $('#vDescripFallaBack').val(datos['descripcion_ot']);
+    $('#vFechaCreacionBack').val(datos['fecha_inicio']);
+    $('#vFechaEntregaBack').val(datos['fecha_entrega']);
+    $('#vSucursalBack').val(datos['sucursal']);
+    $('#vProveedorBack').val(datos['nombreprov']);
+
+    $('#vIdOtBack').val(datos['id_ot']);
+    $('#vOrigenBack').val(datos['origen']);
+    $('#vFechaProgramBack').val(datos['fecha_program']);
+    $('#vAsignadoBack').val(datos['asignado']);
+    $('#vEstadoBack').val(datos['estado']);
+    //llenar datos de equipo
+    $('#vCodigoEquipoBack').val(datos['codigo']);
+    $('#vMarcaEquipoBack').val(datos['marca']);
+    $('#vUbicacionEquipoBack').val(datos['ubicacion']);
+    $('#vDescripcionEquipoBack').val(datos['descripcion_eq']);
+    //llenar campos de componente-equipo
+    $('#vCodigoCompBack').val( datos['tarea']['compEquipo']['codigoComponente'] );
+    $('#vDescripCompBack').val( datos['tarea']['compEquipo']['descripComponente'] );
+    $('#vSistemaBack').val( datos['tarea']['compEquipo']['descripSistema'] );
+    //llenar campos de tarea
+    $('#vTareaBack').val( datos['tarea']['tareadescrip'] );
+    $('#vFechaBack').val( datos['tarea']['fecha'] );
+    $('#vDuracionBack').val( datos['tarea']['back_duracion'] );
+  }
+
+  /***** 5 Predictivo *****/
+  // Trae datos de OT con origen Predictivo
+  function getDataOtPredictivo(idOt, idPredictivo, origen) {
+    WaitingOpen('Cargando datos...');
+    var datos = null;
+    $.ajax({
+      async: false,
+      data: { idOt:idOt, idPredictivo:idPredictivo },
+      dataType: 'json',
+      method: 'POST',
+      url: 'index.php/Otrabajo/getViewDataPredictivo',
+    })
+    .done( (data) => {
+      console.table(data);
+      datos = {
+        //Panel datos de OT
+        'id_ot'          : data['id_orden'],
+        'nro'            : data['nro'],
+        'descripcion_ot' : data['descripcionFalla'],
+        'fecha_inicio'   : data['fecha_inicio'],
+        'fecha_entrega'  : data['fecha_entrega'],
+        'fecha_program'  : data['fecha_program'],
+        'estado'         : data['estado'],
+        'sucursal'       : data['descripc'],
+        'nombreprov'     : data['provnombre'],
+        'origen'         : origen,
+        'fecha_program'  : data['fecha_program'],
+        'asignado'       : data['usrLastName']+' '+data['usrLastName'],
+        'estado'         : data['estado'],
+        //Panel datos de equipos
+        'codigo'         : data['codigo'],
+        'marca'          : data['marca'],
+        'ubicacion'      : data['ubicacion'],
+        'descripcion_eq' : data['descripcionEquipo'],
+        'tarea'          : data['tarea'],
+      };
+    })
+    .fail( () => alert( "Error al traer los datos de la OT." ) );
+    return datos;
+  }
+  //llena datos del modal preventivo
+  function fillModalViewPredictivo(datos){
+    //llenar datos de ot
+    $('#vNroOtPred').val(datos['nro']);
+    $('#vDescripFallaPred').val(datos['descripcion_ot']);
+    $('#vFechaCreacionPred').val(datos['fecha_inicio']);
+    $('#vFechaEntregaPred').val(datos['fecha_entrega']);
+    $('#vSucursalPred').val(datos['sucursal']);
+    $('#vProveedorPred').val(datos['nombreprov']);
+
+    $('#vIdOtPred').val(datos['id_ot']);
+    $('#vOrigenPred').val(datos['origen']);
+    $('#vFechaProgramPred').val(datos['fecha_program']);
+    $('#vAsignadoPred').val(datos['asignado']);
+    $('#vEstadoPred').val(datos['estado']);
+    //llenar datos de equipo
+    $('#vCodigoEquipoPred').val(datos['codigo']);
+    $('#vMarcaEquipoPred').val(datos['marca']);
+    $('#vUbicacionEquipoPred').val(datos['ubicacion']);
+    $('#vDescripcionEquipoPred').val(datos['descripcion_eq']);
+    //llenar campos de tarea
+    $('#vTareaPred').val( datos['tarea']['tareadescrip'] );
+    $('#vFechaPred').val( datos['tarea']['fecha'] );
+    $('#vPeriodoPred').val( datos['tarea']['periodo'] );
+    $('#vFrecuenciaPred').val( datos['tarea']['frecuencia'] );
+    $('#vDuraciónPred').val( datos['tarea']['duracion']+' '+datos['tarea']['unidaddescrip'] );
+    $('#vCantOperariosPred').val( datos['tarea']['cantOperarios'] );
+    $('#vCantHsHombrePred').val( datos['tarea']['horash'] );
+  }
+
+  // ajusto el ancho de la cabecera de las tablas al cargar el modal
+  $('#verOtPreventivo').on('shown.bs.modal', function (e) {
+    $( $.fn.dataTable.tables( true ) ).DataTable().columns.adjust();
+  });
+  //y al mostrar panel de acordeon
+  $('#collapseHerramientas, #collapseInsumos').on('shown.bs.collapse', function () {
+    $( $.fn.dataTable.tables( true ) ).DataTable().columns.adjust();
+  })
+
+// IMPRIMIR
+  $(".fa-print").click( function(e){
+    let idot = $(this).parent('td').parent('tr').attr('id');
+    //console.log("id Orden de trabajo: "+idot);
+    
+    WaitingOpen('Obteniendo datos de OT...');
+    //buscar datos 
+    $.ajax({
+      data: { idot:idot },
+      dataType: 'json',
+      method: 'POST',
+      url: 'index.php/Otrabajo/getOrigenOt',
+    })
+    .done( (data) => {
+      console.table(data);
+      traerDatosImprimirOt(idot, data.tipo, data.id_solicitud);
+    })
+    .fail( () => alert( "Error al traer los datos de la OT." ) )
+    .always( () => WaitingClose() );
+  });
+
+  // Elige a que fcion que trae datos de OT llamar, según su origen
+  function traerDatosImprimirOt(idOt, tipo, idSolicitud) {
+    console.info(idOt+' - '+idSolicitud);
+    var datos = null;
+    switch (tipo) {
+      case '1': //Orden de trabajo
+        datos = getDataOt(idOt, "orden de Trabajo");
+        fillPrintView(datos, tipo);
+        WaitingClose();
+        break;
+      case '2': //Solicitud de servicio
+        datos = getDataOtSolServicio(idOt, idSolicitud, "Solicitud de Servicio");
+        fillPrintView(datos, tipo);
+        WaitingClose();
+        break;
+      case '3': //preventivo
+        datos = getDataOtPreventivo(idOt, idSolicitud, "Preventivo");
+        fillPrintView(datos, tipo);
+        WaitingClose();
+        break;
+      case '4': //Backlog
+        datos = getDataOtBacklog(idOt, idSolicitud, "Backlog");
+        fillPrintView(datos, tipo);
+        WaitingClose();
+        break;
+      case '5': //predictivo
+        datos = getDataOtPredictivo(idOt, idSolicitud, "Predictivo");
+        fillPrintView(datos, tipo);
+        WaitingClose();
+        break;
+      case '6': //correctivo programado
+        //break;
+      default:
+        console.error('Tipo de dato desconocido');
+        WaitingClose();
+        break;
+    }
+  }
+
+  //llena datos del modal preventivo
+  function fillPrintView(datos, tipo){
+    console.table(datos);
+    $.ajax({
+      type: 'POST',
+      data: { datos:datos, tipo:tipo },
+      dataType: 'text',
+      url: 'index.php/Otrabajo/printOT',
+      success: function(data){
+        texto = data;
+        var mywindow = window.open('', 'Imprimir', 'height=700,width=900');
+        mywindow.document.write('<html><head><title></title>');
+        mywindow.document.write('</head><body onload="window.print();">');
+        mywindow.document.write(texto);
+        mywindow.document.write('</body></html>');
+        mywindow.document.close(); // necessary for IE >= 10
+        mywindow.focus(); // necessary for IE >= 10
+        return true; 
+      },
+      error: function(result){
+        console.log(result);
+        console.log("error en la vista imprimir");
+      },
+    });
+  }
+
+// DATATABLE
+  $('#otrabajo').DataTable({
+    "aLengthMenu": [ 10, 25, 50, 100 ],
+    "columnDefs": [ 
+      {
+        "targets": [ 0 ], 
+        "searchable": false,
+      },
+      {
+        "targets": [ 0 ], 
+        "orderable": false,
+      },
+      { 
+        "targets": [ 1, 8 ],
+        "type": "num",
+      }
+    ],
+    "order": [[1, "desc"]],
+  }); 
+  $('#tabladetalle').DataTable({
+    "aLengthMenu": [ 10, 25, 50, 100 ],
+    "columnDefs": [ 
+      {
+        "targets": [ 0 ], 
+        "searchable": false
+      },
+      {
+        "targets": [ 0 ], 
+        "orderable": false
+      }
+    ],
+    "order": [[1, "asc"]],
+  });
+  $('#vTablaHerramientas').DataTable({
+    "aLengthMenu": [ 10, 25, 50, 100 ],
+    "columnDefs": [ 
+      { 
+        "targets": [ 3 ],
+        "type": "num",
+      }
+    ],
+    "order": [[0, "asc"]],
+  });
+  $('#vTablaInsumos').DataTable({
+    "aLengthMenu": [ 10, 25, 50, 100 ],
+    "order": [[0, "asc"]],
+  });
 
 </script>
+
+
+<!-- Modal editar -->
+<div class="modal" id="modaleditar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">      
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="alert alert-danger alert-dismissable" id="errorE" style="display: none">
+                  <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                  Revise que todos los campos obligatorios esten seleccionados
+            </div>
+          </div>
+        </div>
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-fw fa-pencil text-light-blue"></span> Editar Orden de Trabajo </h4>
+        </div> <!-- /.modal-header  -->
+
+        <div class="modal-body" id="modalBodyArticle">
+          
+          <div class="panel panel-default">        
+            <div class="panel-heading">
+              <h3 class="panel-title"><span class="fa fa-cogs"></span> Datos del equipo </h3>
+            </div>
+
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-xs-12 col-sm-6 com-md-4">
+                  <label for="equipo">Equipo:</label>
+                  <input type="text" id="equipo_descrip"  name="equipo_descrip" class="form-control input-md" disabled />
+                  <input type="hidden" id="equipo"  name="equipo" class="form-control input-md" disabled />
+                </div>
+                <div class="col-xs-12 col-sm-6 com-md-4">
+                  <label for="fecha_ingreso">Fecha:</label>
+                  <input type="text" id="fecha_ingreso"  name="fecha_ingreso" class="form-control input-md" disabled />
+                </div>
+                <div class="col-xs-12 col-sm-6 com-md-4">
+                  <label for="marca">Marca:</label>
+                  <input type="text" id="marca"  name="marca" class="form-control input-md"  disabled />
+                </div>
+                <div class="col-xs-12 col-sm-6 com-md-4">
+                  <label for="ubicacion">Ubicacion:</label>
+                  <input type="text" id="ubicacion"  name="ubicacion" class="form-control input-md" disabled/>
+                </div>
+                <div class="col-xs-12">
+                  <label for="descripcion">Descripcion: </label>
+                  <textarea class="form-control" id="descripcion" name="descripcion" disabled></textarea>
+                </div> 
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title"><span class="fa fa-building-o"></span> Programación</h4>
+            </div>
+
+            <div class="panel-body"> 
+              <div class="row"> 
+                <div class="col-xs-12 col-sm-6">                    
+                  <label for="tarea">Tarea Estandar<strong style="color: #dd4b39">*</strong>:</label>
+                  <input type="text" id="tarea" name="tarea" class="form-control" placeholder="Buscar Tarea...">
+                  <input type="hidden" id="id_tarea" name="id_tarea"> 
+                </div>
+                <div class="col-xs-12 col-sm-6">  
+                  <label for="tarea_manual">Tarea Personalizada<strong style="color: #dd4b39">*</strong>:</label> 
+                  <input type="text" id="tareacustom" name="tareacustom" class="form-control" placeholder="Ingresar Tarea...">     
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                  <label for="fechaInicio">Fecha Inicio:</label>
+                  <input type="text" class="datepicker form-control fecha" id="fechaInicio" name="fechaInicio" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>
+                </div> 
+                
+                <div class="col-xs-12 col-sm-6">
+                  <label for="fechaEntrega">Fecha Entrega:</label>
+                  <input type="text" class="datepicker form-control fecha" id="fechaEntrega" name="fechaEntrega" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>
+                </div>
+
+                <div class="col-xs-12 col-sm-6">
+                  <label for="suci">Sucursal<strong style="color: #dd4b39">*</strong></label>
+                  <select  id="suci" name="suci" class="form-control" />
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                  <label for="prov">Proveedor<strong style="color: #dd4b39">*</strong></label>
+                  <select  id="prov" name="prov" class="form-control" />
+                </div>            
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="nav-tabs-custom">
+                <!--tabs -->
+                <ul class="nav nav-tabs" role="tablist">                
+                  <li role="presentation" class="active"><a href="#herramin" aria-controls="profile" role="tab" data-toggle="tab">Herramientas</a></li>
+                  <li role="presentation"><a href="#insum" aria-controls="messages" role="tab" data-toggle="tab">Insumos</a></li>
+                  <li role="presentation"><a href="#adj" aria-controls="messages" role="tab" data-toggle="tab">Adjunto</a></li>                        
+                </ul>
+                <!-- /tabs -->
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                  <div role="tabpanel" class="tab-pane active" id="herramin">
+                    <div class="row">
+                      <div class="col-xs-12 col-sm-6 col-md-4">
+                        <label for="herramienta">Codigo <strong style="color: #dd4b39">*</strong>:</label>
+                        <input type="text" id="herramienta"  name="" class="form-control" />
+                        <input type="hidden" id="id_herramienta" name="id_herramienta">
+                      </div>                          
+                      <div class="col-xs-12 col-sm-6 col-md-4">
+                        <label for="marcaherram">Marca <strong style="color: #dd4b39">*</strong>:</label>
+                        <input type="text" id="marcaherram"  name="" class="form-control" />
+                      </div>
+                      <div class="col-xs-12 col-sm-6 col-md-4">
+                        <label for="descripcionherram">Descripcion <strong style="color: #dd4b39">*</strong>:</label>
+                        <input type="text" id="descripcionherram"  name="" class="form-control" />
+                      </div>
+                      <div class="col-xs-12 col-sm-6 col-md-4">
+                        <label for="cantidadherram">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
+                        <input type="text" id="cantidadherram"  name="" class="form-control" placeholder="Ingrese Cantidad" />
+                      </div>
+                      <br>
+                      <div class="col-xs-12">
+                        <label></label> 
+                        <br>
+                        <button type="button" class="btn btn-primary" id="agregarherr"><i class="fa fa-check">Agregar</i></button>
+                      </div>
+                    </div><!-- /.row -->
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <br>
+                        <table class="table table-bordered" id="tablaherramienta"> 
+                          <thead>
+                            <tr>                      
+                              <th>Acciones</th>
+                              <th>Código</th>
+                              <th>Marca</th>
+                              <th>Descripcion</th>
+                              <th>Cantidad</th>
+                            </tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>  
+                      </div>
+                    </div><!-- /.row -->
+                  </div> <!-- /.tabpanel #herramin-->
+
+                  <div role="tabpanel" class="tab-pane" id="insum">
+                    <div class="row">
+                      <div class="col-xs-12 col-sm-6 col-md-4">
+                        <label for="insumo">Codigo <strong style="color: #dd4b39">*</strong>:</label>
+                        <input type="text" id="insumo" name="insumo" class="form-control" />
+                        <input type="hidden" id="id_insumo" name="">
+                      </div>
+                      <div class="col-xs-12 col-sm-6 col-md-4">
+                        <label for="">Descripcion:</label>
+                        <input type="text" id="descript"  name="" class="form-control" />
+                      </div>
+                      <div class="col-xs-12 col-sm-6 col-md-4">
+                        <label for="cant">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
+                        <input type="text" id="cant"  name="" class="form-control" placeholder="Ingrese Cantidad"/>
+                      </div>
+                    </div><!-- /.row -->
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <br>
+                        <button type="button" class="btn btn-primary" id="agregarins"><i class="fa fa-check">Agregar</i></button>
+                      </div>
+                    </div><!-- /.row -->
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <table class="table table-bordered" id="tablainsumo"> 
+                          <thead>
+                            <tr>                           
+                              <th>Acciones</th>
+                              <th>Código</th>
+                              <th>Descripcion</th>
+                              <th>Cantidad</th>
+                            </tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>  
+                      </div>
+                    </div><!-- /.row -->
+                  </div><!--/#insum -->
+
+                  <div role="tabpanel" class="tab-pane" id="adj">
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <input id="inputPDF" name="inputPDF" type="file" class="form-control input-md">
+                        <style type="text/css">
+                          #inputPDF {
+                            padding-bottom: 40px;
+                          }
+                        </style>
+                      </div> 
+                    </div><!-- /.row -->
+                  </div> <!-- /.tab-pane #adj -->
+                </div>  <!-- tab-content -->
+                
+              </div><!-- /.nav-tabs-custom -->
+            </div>
+          </div>
+          
+        </div>      <!-- /.modal-body --> 
+                   
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" >Cancelar</button>
+          <button type="button" class="btn btn-primary" id="btnEditar" onclick="guardareditar()">Guardar</button> 
+        </div>  <!-- /.modal footer -->
+        </div>
+                        
+    </div> <!-- /.modal-content -->
+  </div>  <!-- /.modal-dialog modal-lg -->
+</div>
 
 <!-- Modal agregar -->
 <div class="modal" id="modalagregar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -1813,98 +2421,7 @@ $('#vTablaInsumos').DataTable({
 </div><!-- /.modal fade -->
 <!-- / Modal -->
 
-<!-- Modal editar -->
-<div class="modal" id="modaleditar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
 
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-fw fa-pencil text-light-blue"></span> Editar Orden de Trabajo</h4>
-      </div> <!-- /.modal-header  -->
-
-      <div class="modal-body" id="modalBodyArticle">
-        <div class="row">
-          <div class="col-xs-12">
-            <div class="alert alert-danger alert-dismissable" id="errorE" style="display: none">
-              <h4><i class="icon fa fa-ban"></i> Error!</h4>
-              Revise que todos los campos obligatorios estén completos.
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xs12 col-sm-4">
-            <label style="margin-top: 7px;">Nro: </label>
-          </div>
-          <div class="col-xs12 col-sm-8">
-            <input type="text" class="form-control" placeholder="Nro Orden de trabajo" id="nroedit" name="nroedit">
-          </div>
-        </div><br>
-        <div class="row">
-          <div class="col-xs12 col-sm-4">
-            <label style="margin-top: 7px;">Equipo <strong style="color: #dd4b39">*</strong>: </label>
-          </div>
-          <div class="col-xs12 col-sm-8">
-            <select class="form-control" id="equipo1" name="equipo1" value="">
-              <!-- options -->
-            </select>
-            <input type="hidden" class="form-control"  id="id_equipo1" name="id_equipo1">
-          </div>
-        </div><br>
-        <div class="row">
-          <div class="col-xs-12 col-sm-4">
-            <label style="margin-top: 7px;">Fecha Inicio<strong style="color: #dd4b39">*</strong>: </label>
-          </div>
-          <div class="col-xs-12 col-sm-8">
-            <input type="text" class="form-control" id="fecha_inicio1" name="fecha_inicio1" value=""/>
-          </div>
-        </div><br>
-        <div class="row">
-          <div class="col-xs-12 col-sm-4">
-            <label style="margin-top: 7px;">Fecha Entrega<strong style="color: #dd4b39">*</strong>: </label>
-          </div>
-          <div class="col-xs-12 col-sm-8">
-            <input type="text" class="form-control" id="fecha_entrega1" name="fecha_entrega1" value=""/>
-          </div>
-        </div><br>
-        <div class="row">
-          <div class="col-xs-12 col-sm-4">
-            <label style="margin-top: 7px;">Nota: </label>
-          </div>
-          <div class="col-xs-12 col-sm-8">
-            <textarea placeholder="Orden de trabajo" class="form-control" rows="10" id="vsdetalleedit" name="vsdetalleedit" value=""></textarea>
-          </div>
-        </div><br>
-        <div class="row">
-          <div class="col-xs-12 col-sm-4">
-            <label style="margin-top: 7px;">Sucursal <strong style="color: #dd4b39">*</strong>: </label>
-          </div>
-          <div class="col-xs-12 col-sm-8">
-            <select class="form-control" id="sucidedit" name="sucidedit" value="" style="width: 100%;">
-
-            </select>
-          </div>
-        </div><br>
-        <div class="row">
-          <div class="col-xs-12 col-sm-4">
-            <label style="margin-top: 7px;">Proveedor <strong style="color: #dd4b39">*</strong>: </label>
-          </div>
-          <div class="col-xs-12 col-sm-8">
-            <select class="form-control" id="prov1" name="prov1"  value="" style="width: 100%;">
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" >Cancelar</button>
-        <button type="button" class="btn btn-primary" onclick="guardareditar()">Guardar</button> 
-        </div>  <!-- /.modal footer -->
-      </div>
-    </div> <!-- /.modal-content -->
-  </div>  <!-- /.modal-dialog modal-lg -->
-</div>  <!-- /.modal fade -->
-<!-- / Modal -->
 
 <!-- Modal ASIGNA OT -->
 <div id="modalAsig" class="modal" role="dialog">
@@ -2085,6 +2602,13 @@ $('#vTablaInsumos').DataTable({
                     <label for="vAsignado">Asignado:</label>
                     <input type="text" class="form-control " name="vAsignado" id="vAsignado" disabled>
                   </div>
+                  <div class="col-xs-12 col-sm-6 col-md-3">
+
+                    <a href="" alt="adjunto" target="_blank">adjunto</a>
+                     
+                    
+                  </div>
+
                 </div>
 
               </div>

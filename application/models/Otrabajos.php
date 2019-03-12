@@ -164,22 +164,9 @@ class Otrabajos extends CI_Model {
 	// 	return $herramientas;
 	// }
 
-	// Guarda el bacht de datos de herramientas de OT - Listo
-	function insertOTHerram($herram){
-		$query = $this->db->insert_batch("tbl_otherramientas",$herram);
-		return $query;
-	}
-	// Guarda insumos del Preventivo - Listo 
-	function insertOTInsum($insumo){
-		$query = $this->db->insert_batch("tbl_otinsumos",$insumo);
-		return $query;
-	}
 
-	function updateAdjunto($adjunto,$ultimoId){
-		$this->db->where('id_orden', $ultimoId);
-		$query = $this->db->update("orden_trabajo",$adjunto);
-		return $query;
-	}
+
+
 
 	function getDescTareaSTD($id_tar){
 		$this->db->select('tareas.descripcion');
@@ -203,59 +190,148 @@ class Otrabajos extends CI_Model {
 			$query = $this->db->insert("orden_trabajo", $data);
 			return $query;
 	}
-	/**
-	 * Devuelve valores de la OT con id_orden = $id.
-	 *
-	 * @param   Int     Id de Orden de Trabajo.
-	 */
-	function getpencil($id) // Ok
-	{
-		$sql = "SELECT orden_trabajo.id_orden,
-						orden_trabajo.nro,
-						orden_trabajo.fecha_inicio,
-						orden_trabajo.fecha_entrega,
-						orden_trabajo.descripcion,
-						orden_trabajo.estado,
-						orden_trabajo.id_usuario,
-						orden_trabajo.id_usuario_a,
-						orden_trabajo.id_usuario,
-						orden_trabajo.id_sucursal,
-						sucursal.descripc,
-						sisusers.usrNick,
-						abmproveedores.provnombre,
-						abmproveedores.provid,
-						equipos.id_equipo,
-						equipos.codigo
-				FROM orden_trabajo
-				JOIN equipos ON equipos.id_equipo=orden_trabajo.id_equipo
-				JOIN sucursal ON sucursal.id_sucursal=orden_trabajo.id_sucursal
-				jOIN sisusers ON sisusers.usrId=orden_trabajo.id_usuario
-				JOIN abmproveedores ON abmproveedores.provid=orden_trabajo.id_proveedor
-				WHERE orden_trabajo.id_orden=$id
-				";
-		$query = $this->db->query($sql);
-		//$sql= $this->db->last_query(); 
-		//dump($sql);
-		if( $query->num_rows() > 0)
+	// guarda adjunto
+	function updateAdjunto($adjunto,$ultimoId){
+		$this->db->where('id_orden', $ultimoId);
+		$query = $this->db->update("orden_trabajo",$adjunto);
+		return $query;
+	}
+	
+	//////////////		EDICION 	//////////////////
+		/**
+		 * Devuelve valores de la OT con id_orden = $id.
+		 *
+		 * @param   Int     Id de Orden de Trabajo.
+		 */
+		function getpencil($id) // Ok
 		{
-			return $query->result_array();
+			$this->db->select('orden_trabajo.id_orden,
+												orden_trabajo.id_tarea,
+												orden_trabajo.ot_adjunto,
+												orden_trabajo.nro,
+												orden_trabajo.fecha_inicio,
+												orden_trabajo.fecha_entrega,
+												orden_trabajo.descripcion AS tareadescrip,
+												orden_trabajo.estado,
+												orden_trabajo.id_usuario,
+												orden_trabajo.id_usuario_a,
+												orden_trabajo.id_usuario,
+												orden_trabajo.id_sucursal,
+												sucursal.descripc,
+												sisusers.usrNick,
+												abmproveedores.provnombre,
+												abmproveedores.provid,
+												equipos.id_equipo,
+												equipos.fecha_ingreso,
+												equipos.marca,
+												equipos.ubicacion,
+												equipos.descripcion AS equipodescrip,
+												equipos.codigo');
+			$this->db->from('orden_trabajo');		
+			$this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
+			$this->db->join('sucursal', 'sucursal.id_sucursal=orden_trabajo.id_sucursal');
+			$this->db->join('sisusers', 'sisusers.usrId=orden_trabajo.id_usuario');
+			$this->db->join('abmproveedores', 'abmproveedores.provid=orden_trabajo.id_proveedor');
+			$this->db->where('orden_trabajo.id_orden', $id);
+			$query = $this->db->get();
+			
+			if( $query->num_rows() > 0)
+			{
+				return $query->result_array();
+			}
+			else {
+				return 0;
+			}
 		}
-		else {
-			return 0;
+		// Trae herramientas ppor id de preventivo para Editar
+		function getOTHerramientas($id){
+					
+			$userdata = $this->session->userdata('user_data');
+			$empId = $userdata[0]['id_empresa']; 
+
+			$this->db->select('tbl_otherramientas.cantidad,
+													herramientas.herrcodigo,
+													herramientas.herrmarca,
+													herramientas.herrdescrip,
+													herramientas.herrId');
+			$this->db->from('tbl_otherramientas');
+			$this->db->join('herramientas', 'herramientas.herrId = tbl_otherramientas.herrId');   
+			$this->db->where('tbl_otherramientas.otId', $id);        
+			$this->db->where('tbl_otherramientas.id_empresa', $empId);
+			$query= $this->db->get();
+
+			if( $query->num_rows() > 0)
+			{
+				return $query->result_array();
+			}
+			else {
+				return 0;
+			}
 		}
-	}
-	/**
-	 * Guarda le edicion de una OT (actualiza OT).
-	 *
-	 * @param   Int     $idequipo   Id de equipo.
-	 * @param   Array   $data       Arreglo con los datos a editar del equipo $idequipo.
-	 */
-	function update_edita($idequipo,$data) // Ok
-	{
-			$this->db->where('id_orden', $idequipo);
-			$query = $this->db->update("orden_trabajo",$data);
+		// Trae insumos por id de preventivo para Editar
+		function getOTInsumos($id){
+
+				$userdata = $this->session->userdata('user_data');
+				$empId = $userdata[0]['id_empresa']; 
+
+				$this->db->select('tbl_otinsumos.id,
+														tbl_otinsumos.cantidad,
+														articles.artBarCode,
+														articles.artId,
+														articles.artDescription,
+														articles.id_empresa');                            
+				$this->db->from('tbl_otinsumos');
+				$this->db->join('articles', 'articles.artId = tbl_otinsumos.artId');   
+				$this->db->where('tbl_otinsumos.otId', $id);        
+				$this->db->where('articles.id_empresa', $empId);
+				$query= $this->db->get(); 
+
+				if( $query->num_rows() > 0)
+				{
+					return $query->result_array();
+				}
+				else {
+					return 0;
+				}
+		}	
+		/**
+		 * Guarda le edicion de una OT (actualiza OT).
+		 *
+		 * @param   Int     $idequipo   Id de equipo.
+		 * @param   Array   $data       Arreglo con los datos a editar del equipo $idequipo.
+		 */
+		function update_edita($id,$data) // Ok
+		{
+				$this->db->where('id_orden', $id);
+				$query = $this->db->update("orden_trabajo",$data);
+				return $query;
+		}
+		// Delete herramientas 
+		function deleteHerramOT($id){        
+			$this->db->where('otId', $id);
+			$query = $this->db->delete('tbl_otherramientas');
 			return $query;
-	}
+		}	
+		// Guarda el bacht de datos de herramientas 
+		function insertOTHerram($herram){
+			$query = $this->db->insert_batch("tbl_otherramientas",$herram);
+			return $query;
+		}
+		// Delete insumos
+		function deleteInsumOT($id){
+			$this->db->where('otId', $id);
+			$query = $this->db->delete('tbl_otinsumos');
+			return $query;
+		}
+		// Guarda el bacht de insumos 
+		function insertOTInsum($insumo){
+			$query = $this->db->insert_batch("tbl_otinsumos",$insumo);
+			return $query;
+		}
+
+	//////////////		FIN EDICION 	//////////////////
+
+
 	/**
 	 * Devuelve el listado de tareas asociadas a una OT.
 	 *
