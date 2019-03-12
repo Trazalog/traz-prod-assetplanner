@@ -96,12 +96,13 @@ $('#modalhistlect').on('shown.bs.modal', function (e) {
 })
 
 
+var tr = "";
 var isOpenWindow = false;
 var idEquipo     = "";
 var ide          = "";
 var idglob       = "";
 
-$(document).ready(function(event) {
+//$(document).ready(function(event) {
   
   $( function() {
     $( ".datepicker" ).datepicker();
@@ -166,10 +167,13 @@ $(document).ready(function(event) {
   // Asigna contratista - Chequeado
   $(".fa-user ").click(function (e) { 
     var id_equipo = $(this).parent('td').parent('tr').attr('id');
-    console.log(id_equipo);
     idglob = id_equipo;
-    console.log("variable global- id de equipo: "+idglob);
-    click_empresa();
+    console.log("variable global -> id de equipo: "+idglob);
+    
+    $('#tablaempresa tbody').html("");
+    tr = null;
+
+    //click_empresa();
     llenaContratistasEquipo(id_equipo);
     click_co(id_equipo);
     traer_contratista();        
@@ -212,13 +216,15 @@ $(document).ready(function(event) {
         if (data[0]['estado'] == 'AL') {
           var id_equipo   = idequipo;
           var lectura     = data[0]['ultima_lectura'];
-          var observacion = 'Lectura automática al habilitar equipo dado de alta';
+          var fecha     = data[0]['fecha_ultimalectura'];
+          var observacion = 'Lectura al cargar equipo';
           var operario    = 'alta';
           var turno       = 'alta';
           var estado      = 'AC';
           parametros = {
             'id_equipo' : id_equipo,
             'lectura' : lectura,
+            'fecha' : fecha,
             'observacion' : observacion,
             'operario' : operario,
             'turno' : turno,
@@ -227,7 +233,7 @@ $(document).ready(function(event) {
           alta_historial_lectura(parametros);
         }
         else {
-          //alert("Error al habilitar el equipo");
+          alert("Error al habilitar el equipo");
         }
       },
       error: function(result){
@@ -715,7 +721,7 @@ $(document).ready(function(event) {
     } ],
     "order": [[1, "asc"]],
   });
-});
+//});
 
 // Completa campos y select para Editar equipos - Listo
 function completarEdit(datos ,edit){
@@ -788,39 +794,28 @@ function cerro(){
 
 // guarda contratista asignado a equipo - Chequeado
 function guardarsi(){
-
-    var idglob = $(this).parent('td').parent('tr').attr('id');
-    console.log("Equipo: "+idglob);
-    console.log();
-
-    var ideq = $(this).parent('td').parent('tr').attr('class');
-    console.log('ideq: '+ideq);
-
-    datos = parseInt(ideq);
-    console.log(datos);
+    let idEquipo = $('#id_equipoC').val();
+    console.log("Equipo: "+idEquipo);
 
     var idscontra = new Array();     
-    $("#tablaempresa tbody tr").each(function (index){
+    $("#tablaempresa tbody tr").filter(':not(:first)').each(function (index){
       var id_contratista = $(this).attr('id');
       idscontra.push(id_contratista);           
     }); 
-
-    var parametros = {
-       'id_equipo': idglob       
-    };
+    console.table(idscontra);
 
     $.ajax({
+      data:{ idEquipo:idEquipo, idscontra:idscontra},
+      dataType: 'json',
       type:"POST",
       url: 'index.php/Equipo/guardarcontra', 
-      data:{ idglob:idglob, idscontra:idscontra},
       success: function(data){
-              alert("Contratista guardado con exito");              
-              },          
+        alert("Contratista guardado con exito");              
+      },          
       error: function(data){ 
-              alert("Error en guardado...");
-              console.log("Error: " + data['status']);
-              },
-      dataType: 'json'
+        alert("Error en guardado...");
+        console.log("Error: " + data['status']);
+      },
     });
 }
 
@@ -993,7 +988,8 @@ function traer_contratista(){
       }
     },
     error: function(result){
-      console.log(result);
+      //alert("Error al traer contratistas");
+      console.error(result);
     },
     dataType: 'json'
   });
@@ -1001,24 +997,14 @@ function traer_contratista(){
 
 
 function llenaContratistasEquipo(id_equipo){
-  console.log("id equipo para contratista: "+id_equipo);
+  //console.log("id equipo para contratista: "+id_equipo);
   $.ajax({
     data: { id_equipo: id_equipo},
     dataType: 'json',
     type: 'POST',
     url: 'index.php/Equipo/getContratistasEquipo',
     success: function(data){
-      console.table(data);
-      /*for (var i=0; i< data.length; i++) { 
-        var tr = "<tr id='"+data[i][id_contratistaquipo]+"' >"+
-          "<td><i class='fa fa-edit elirow text-light-blue' style='cursor: 'pointer'></i>"+
-            "<i class='fa fa-ban elirow text-light-blue' style='cursor: 'pointer'></i></td>"+
-          "<td>"+id_equipo+"</td>"+
-          "<td>"+$empresae+"</td>"+
-          "</tr>";
-         
-        $('#tablaempresa tbody').append(tr);
-      }*/
+      //console.table(data);
       tabla = $('#tablaempresa').DataTable();
       tabla.clear().draw();
       for (var i=0; i< data.length; i++) {      
@@ -1036,20 +1022,22 @@ function llenaContratistasEquipo(id_equipo){
       }
     },
     error: function(result){
-      console.log(result);
+      //alert("Error al traer contratista de equipo");
+      console.error(result);
     },
   });
 }
 
-function click_empresa(){
+//function click_empresa(){
   $("#adde").click(function (e) {
-      var $empresae = $("select#empresae option:selected").html();
-      var id_equipo= $('#codigoe').val();
-      var id_contratista= $('#empresae').val();
+      var $empresae      = $("select#empresae option:selected").html();
+      var id_equipo      = $('#codigoe').val();
+      var id_contratista = $('#empresae').val();
 
       console.log("id_contratista: "+id_contratista);
-      console.log("id_equipo: "+id_equipo);
-      var tr = "<tr id='"+id_contratista+"' >"+
+      //console.log("id_equipo: "+id_equipo);
+      console.log("tr: "+tr);
+      tr = "<tr id='"+id_contratista+"' >"+
         "<td><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
         "<td>"+id_equipo+"</td>"+
         "<td>"+$empresae+"</td>"+
@@ -1058,16 +1046,16 @@ function click_empresa(){
       $('#tablaempresa tbody').append(tr);
             
       $(document).on("click",".elirow",function(){
-      var parent = $(this).closest('tr');
-      $(parent).remove();
+        var parent = $(this).closest('tr');
+        $(parent).remove();
       });
            
       $('#empresae').val(''); 
   });
-}
+//}
     
 function click_co(id_equipo){
-  console.log(id_equipo);
+  //console.log(id_equipo);
   $.ajax({
     type: 'POST',
     data: { id_equipo: id_equipo},
@@ -1085,9 +1073,11 @@ function click_co(id_equipo){
       $('#marcae').val(mar);   
       $('#descripcione').val(descrip);       
       $('#ubicacione').val(ubica);  
+      $('#id_equipoC').val(id_equipo);
     },
     error: function(result){
-      console.log(result);
+      //alert("Error al traer equipos");
+      console.error(result);
     },
     dataType: 'json'
   });
@@ -1132,15 +1122,6 @@ function click_co(id_equipo){
           data[i]['operario'],
           data[i]['observacion']
         ]).draw();
-        /*$("#tblhistorial tbody").append(  
-         '<tr class="registro">'+         
-              '<td class="clear">'+ data[i]['lectura'] +'</td>'+
-              '<td class="clear">'+ data[i]['fecha'] +'</td>'+                            
-              '<td class="clear">'+ data[i]['turno'] +'</td>'+
-              '<td class="clear">'+ data[i]['operario'] +'</td>'+
-              '<td class="clear">'+ data[i]['observacion'] +'</td>'+
-          '</tr>'
-        );*/
       } 
     } else { 
       $("#codEquipo").text("Equipo sin historial de lecturas");
@@ -1248,7 +1229,7 @@ $( ".editEquipo" ).click(function() {
   console.info('id de equipo a editar: ' + idEquipo);
 
   $.ajax({
-    data: { idEquipo: idEquipo},
+    data: { idEquipo: idEquipo },
     dataType: 'json',
     type: 'POST',
     url: 'index.php/Equipo/geteditar',
@@ -1282,8 +1263,10 @@ function llenarCampos(data) {
   $('#fecha_ultimalectura').val( data[0]['fecha_ultimalectura'] );
   $('#ultima_lectura').val( data[0]['ultima_lectura'] );
   $('#destec').val( data[0]['descrip_tecnica'] );
+
+  $('#destec').val( data[0]['descrip_tecnica'] );
   //info complementaria
-  
+  llenar_adjunto( data[0]['adjunto'] );
   //abro modal
   $('#modaleditar').modal('show');
   WaitingClose(); 
@@ -1461,7 +1444,18 @@ function llenar_cliente(id){
     },
   });
 }
-
+//llena los datos de archivo adjunto
+function llenar_adjunto(adjunto) {
+  //console.info( "adjunto: "+adjunto );
+  $('#adjunto').text(adjunto);
+  $('#adjunto').attr('href', 'assets/filesequipos/'+adjunto);
+  if( adjunto == null || adjunto == '') {
+    var accion = '<i class="fa fa-plus-square agregaAdjunto text-light-blue" style="color:#f39c12; cursor:pointer; margin-right:10px" title="Agregar Adjunto"></i>';
+  } else {
+    var accion = '<i class="fa fa-times-circle eliminaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Eliminar Adjunto"></i>'+'<i class="fa fa-pencil editaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Editar Adjunto"></i>';
+  }
+  $('#accionAdjunto').html(accion);
+}
 
 
 
@@ -1775,6 +1769,89 @@ function guardarmarca(){
     alert("Por favor complete la descripcion de Marca, es un campo obligatorio");
   }
 }
+
+
+
+
+//abrir modal eliminar adjunto
+$(document).on("click",".eliminaAdjunto",function(){
+  $('#modalEliminarAdjunto').modal('show');
+  var idEquipo = $('#id_equipo').val();
+  $('#idAdjunto').val(idEquipo);
+});
+//eliminar adjunto
+function eliminarAdjunto() {
+  $('#modalEliminarAdjunto').modal('hide');
+  var idEquipo = $('#idAdjunto').val();
+  $.ajax({
+    data: { idEquipo:idEquipo },
+    dataType: 'json',
+    type: 'POST',
+    url: 'index.php/Equipo/eliminarAdjunto',
+  }) 
+  .done( function(data){     
+    //console.table(data); 
+    let prevAdjunto = '';
+    llenar_adjunto(prevAdjunto);
+  })                
+  .error( function(result){                      
+    console.error(result);
+  }); 
+}
+
+//abrir modal agregar adjunto
+$(document).on("click",".agregaAdjunto",function(){
+  $('#btnAgregarEditar').text("Agregar");
+  $('#modalAgregarAdjunto .modal-title').html('<span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar');
+
+  $('#modalAgregarAdjunto').modal('show');
+  var idEquipo = $('#id_equipo').val();
+  $('#idAgregaAdjunto').val(idEquipo);
+});
+//abrir modal editar adjunto
+$(document).on("click",".editaAdjunto",function(){
+  $('#btnAgregarEditar').text("Editar");
+  $('#modalAgregarAdjunto .modal-title').html('<span class="fa fa-fw fa-pencil text-light-blue"></span> Editar');
+
+  $('#modalAgregarAdjunto').modal('show');
+  var idEquipo = $('#id_equipo').val();
+  $('#idAgregaAdjunto').val(idEquipo);
+});
+//eliminar adjunto
+$("#formAgregarAdjunto").submit(function (event){
+  $('#modalAgregarAdjunto').modal('hide');
+
+  event.preventDefault();  
+  if (document.getElementById("inputPDF").files.length == 0) {
+    $('#error').fadeIn('slow');
+  }
+  else{
+    $('#error').fadeOut('slow');
+    var formData = new FormData($("#formAgregarAdjunto")[0]);
+    //debugger
+    $.ajax({
+      cache:false,
+      contentType:false,
+      data:formData,
+      dataType:'json',
+      processData:false,
+      type:'POST',
+      url:'index.php/Equipo/agregarAdjunto',
+    })
+    .done( function(data){     
+      console.table(data['adjunto']); 
+      llenar_adjunto( data['adjunto'] );
+    })                
+    .error( function(result){                      
+      console.error(result);
+    }); 
+  }
+});
+
+$('#modaleditar').on('hidden.bs.modal', function (e) {
+  $('#content').empty();  
+  $("#content").load("<?php echo base_url(); ?>index.php/Equipo/index/<?php echo $permission; ?>");
+})
 </script>
 
 
@@ -1800,7 +1877,7 @@ function guardarmarca(){
                   <div class="col-xs-12 col-md-6">
                     <label for="codigoe">Codigo:</label>
                     <input id="codigoe" name="codigoe" class="form-control" disabled>
-                    <input type="hidden" id="id_equipo" name="id_equipo">
+                    <input type="hidden" id="id_equipoC" name="id_equipoC">
                   </div>
 
                   <div class="col-xs-12 col-md-6">
@@ -1898,17 +1975,11 @@ function guardarmarca(){
 
               <div class="panel-body">
                 <div class="row">
-                  <div class="col-xs-12"> <!-- FIRST COLUMN -->
-                    <!--<label>Empresa<strong style="color: #dd4b39">*</strong>: </label>
-                    <select  id="empresa" name="empresa" class="form-control" value=""></select> -->
-                    <input type="hidden" id="empresa" name="empresa" class="form-control" readonly>
-                    <input type="hidden" id="id_empresa" name="id_empresa" class="form-control hidden" Disabled>
-                    <input type="hidden" id="unin" name="unin" class="form-control" value="<?php echo $empresa ?>">
-                  </div>
+                  <input type="hidden" id="unin" name="unin" class="form-control" value="<?php echo $empresa ?>">
 
                   <div class="col-md-6 col-sm-12"> <!-- FIRST COLUMN -->
                     <div class="row">
-                      <div class="col-xs-8"><label>Área:</label>
+                      <div class="col-xs-8"><label>Área<strong style="color: #dd4b39">*</strong>:</label>
                         <input type="hidden" id="id_area" name="id_area">
                         <select id="area" name="area" class="form-control" value="<?php echo $area ?>"></select>
                       </div>
@@ -1917,7 +1988,7 @@ function guardarmarca(){
                         <button type="button" class="btn btn-primary" id="addarea"  data-toggle="modal" data-target="#modalarea"><i class="fa fa-plus"> Agregar</i></button> 
                       </div>
 
-                      <div class="col-xs-8"><label>Proceso:</label>
+                      <div class="col-xs-8"><label>Proceso<strong style="color: #dd4b39">*</strong>:</label>
                         <input type="hidden" id="id_proceso" name="id_proceso">
                         <select id="proceso" name="prid_procesooceso" class="form-control" value=""></select>
                       </div>
@@ -1926,7 +1997,7 @@ function guardarmarca(){
                         <button type="button" class="btn btn-primary" id="addproceso"  data-toggle="modal" data-target="#modalproceso"><i class="fa fa-plus"> Agregar</i></button>
                       </div>
 
-                      <div class="col-xs-8"><label>Criticidad:</label>
+                      <div class="col-xs-8"><label>Criticidad<strong style="color: #dd4b39">*</strong>:</label>
                         <select id="criticidad" name="criticidad" class="form-control"></select>
                       </div>
                       <div class="col-xs-4">
@@ -1987,7 +2058,6 @@ function guardarmarca(){
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-4">
                     <label>Marca</label> <strong style="color: #dd4b39">*</strong>:
-                    <!--   <input type="text" id="marca" name="marca" class="form-control" placeholder="Ingrese Marca"> -->
                     <select id="marca" name="marca" class="form-control" value="" ></select>   
                   </div>
                   <div class="col-xs-4">
@@ -2005,7 +2075,7 @@ function guardarmarca(){
                     <input type="text" id="numse"  name="numse" class="form-control input-md" placeholder="Ingrese Número de serie">
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-4">
-                    <label>Ubicación (Georeferencial)</label><strong style="color: #dd4b39">*</strong>:
+                    <label>Ubicación (Georeferencial)</label>:
                     <input type="text" id="ubicacion" name="ubicacion" class="form-control" placeholder="Ingrese Ubicación">
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-4">
@@ -2017,63 +2087,33 @@ function guardarmarca(){
                     <input type="date" id="fecha_garantia"  name="fecha_garantia" class="form-control input-md">
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-4">
-                    <label>Fecha de Última lectura:</label>
-                    <input type="datetime" id="fecha_ultimalectura"  name="fecha_ultima" class="form-control input-md">
+                    <label>Fecha de Lectura Inicial:</label>
+                    <input type="datetime" id="fecha_ultimalectura"  name="fecha_ultima" class="form-control input-md" disabled="">
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-4">
-                    <label>Última Lectura:</label>
-                    <input type="text" id="ultima_lectura"  name="ultima_lectura" class="form-control input-md" placeholder="Ingrese Ultima Lectura">
+                    <label>Lectura Inicial:</label>
+                    <input type="text" id="ultima_lectura"  name="ultima_lectura" class="form-control input-md" placeholder="Ingrese Ultima Lectura" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label>Archivo Adjunto:</label>
+                    <table class="table table-bordered" id="tablaadjunto"> 
+                      <tbody>
+                        <tr>
+                          <td id="accionAdjunto">
+                           <!-- -->
+                          </td>
+                          <td>
+                          <a id="adjunto" href="" target="_blank"></a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                   <div class="col-xs-12">
                     <label>Descripción Técnica:</label>
                     <textarea class="form-control" id="destec" name="destec" placeholder="Ingrese Descripción Técnica..."></textarea>
                   </div>
                 </div>
-                <br>
-                <?php /*<div class="row">
-                  <div id="exTab1" class="col-xs-12"> 
-                    <ul  class="nav nav-tabs">
-                      <li>
-                        <a  href="#1a" id="ag" data-toggle="tab" class="glyphicon glyphicon-plus" >Información complementaria</a>
-                      </li>
-                    </ul>
-                    <div class="tab-content clearfix">
-                      <div class="tab-pane" id="1a">
-                        <br>
-                        <div class="row">
-                          <div class="col-xs-12">
-                            <div class="col-xs-12 col-sm-6">
-                              <input type="text" id="tit" name="tit" class="form-control" placeholder="Ingrese Título ...">
-                            </div>
-                            <div class="col-xs-12 col-sm-6">
-                              <input type="text" id="info" name="info" class="form-control" placeholder="Ingrese Descripción ...">
-                            </div><br><br>
-                            <div class="col-xs-12">
-                              <button type="button" class="btn btn-primary" id="agregar" ><i class="fa fa-plus"> Agregar</i></button> 
-                            </div>
-                          </div>
-                        </div><!-- /.row -->
-                        <br>
-                        <div class="row">
-                          <div class="col-xs-12">
-                            <table id="sales" class="table table-bordered table-hover">
-                              <thead>
-                                <tr>                
-                                  <th>Acción</th>
-                                  <th>Título</th>
-                                  <th>Descripción</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <!-- -->
-                              </tbody>
-                            </table>
-                          </div>
-                        </div><!-- /.row -->
-                      </div><!-- /.tab-pane -->
-                    </div><!-- /.tab-content -->
-                  </div>
-                </div>*/ echo " " ?>
               </div><!-- /.panel-body-->   
             </div><!-- /.panel -->
 
@@ -2429,3 +2469,50 @@ function guardarmarca(){
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal --><!-- Modal -->
+
+<!-- Modal Eliminar Adjunto -->
+<div class="modal" id="modalEliminarAdjunto">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><span class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar</h4>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="idAdjunto">
+        <h4>¿Desea eliminar Archivo Adjunto?</h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminarAdjunto();">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Agregar adjunto -->
+<div class="modal" id="modalAgregarAdjunto">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar</h4>
+      </div>
+
+      <form id="formAgregarAdjunto">
+        <div class="modal-body">
+          <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+            <h4><i class="icon fa fa-ban"></i> Error!</h4>
+            Seleccione un Archivo Adjunto
+          </div>
+          <input type="hidden" id="idAgregaAdjunto" name="idAgregaAdjunto">
+          <input id="inputPDF" name="inputPDF" type="file" class="form-control input-md">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="btnAgregarEditar">Agregar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

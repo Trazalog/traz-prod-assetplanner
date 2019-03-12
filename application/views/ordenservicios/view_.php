@@ -632,16 +632,16 @@ var dataO = function () {
 }();
 $("#operario").autocomplete({
   autoFocus: true,
-  delay: 100,
+  delay: 300,
   minLength: 1,
   source: dataO,
-  focus: function(event, ui) {
+  /*focus: function(event, ui) {
     // prevent autocomplete from updating the textbox
     event.preventDefault();
     // manually update the textbox
     $(this).val(ui.item.label);
     $("#id-Operario").val(ui.item.value);
-  },
+  },*/
   select: function(event, ui) {
     // prevent autocomplete from updating the textbox
     event.preventDefault();
