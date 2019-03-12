@@ -126,8 +126,8 @@ class Otrabajo extends CI_Controller {
 		$usrId     = $userdata[0]['usrId'];
 		$empresaId = $userdata[0]['id_empresa'];
 	
-		$data					 = $this->input->post(); 
-		dump_exit($data);
+		$data					 = $this->input->post(); 	
+		
 		$id_tareaestd	 = $this->input->post('id_tarea');	
 		if(!empty($id_tareaestd)){
 			$id_tar	 = $id_tareaestd;
@@ -135,14 +135,17 @@ class Otrabajo extends CI_Controller {
 		}else{
 			$id_tar = 0;
 			$descripcion   = $this->input->post('tareacustom');
-		}
-		
-		$fecha_inicio	 = $this->input->post('fechaInicio');
-		$fecha_entrega = $this->input->post('fechaEntrega');
+		}		
+		$f_inicio	 = $this->input->post('fechaInicio');
+		$f_entrega = $this->input->post('fechaEntrega');		
+		$f_inicio      = explode('/', $f_inicio);
+		$fecha_inicio = 	$f_inicio[2].'-'.$f_inicio[1].'-'.$f_inicio[0];		
+		$f_entrega      = explode('/', $f_entrega);
+		$fecha_entrega = 	$f_entrega[2].'-'.$f_entrega[1].'-'.$f_entrega[0];
 		$equipo        = $this->input->post('equipo');
 		$sucursal      = $this->input->post('suci');
 		$proveedor     = $this->input->post('prov');
-    	
+
     $datos2 = array(
 			'id_tarea'			=> $id_tar,
 			'fecha_inicio'  => $fecha_inicio,
@@ -267,7 +270,32 @@ class Otrabajo extends CI_Controller {
 	{
 		$id = $this->input->post('idp');
 		$result = $this->Otrabajos->getpencil($id);
-		echo json_encode($result);
+		
+		if($result){
+
+			$arre['datos'] = $result;
+			// trae herramientas 
+			$herramientas = $this->Otrabajos->getOTHerramientas($id);
+			if($herramientas){
+				$arre['herramientas']=$herramientas;
+			}
+			else{ 
+				$arre['herramientas']=0;
+			}
+			// trae insumos
+			$insumos = $this->Otrabajos->getOTInsumos($id);
+			if($insumos){
+					$arre['insumos']=$insumos;
+			}
+			else{ $arre['insumos']=0;}
+
+			echo json_encode($arre);
+		}
+		else {
+			$arre['datos'] = 0;
+			echo json_encode($arre);
+		}			
+		
 	}
 
 	/**
@@ -275,11 +303,76 @@ class Otrabajo extends CI_Controller {
   	 *
   	 */
 	public function guardar_editar() // Ok
-	{
-		$idequipo = $this->input->post('idp');
+	{		
+		$userdata = $this->session->userdata('user_data');
+    $empId = $userdata[0]['id_empresa'];
+
+		$data     = $this->input->post();
+		dump($data, 'datos en controller: ');
+		
+		$id = $this->input->post('idOT');	
 		$datos    = $this->input->post('parametros');
-		$result   = $this->Otrabajos->update_edita($idequipo,$datos);
-		print_r($result);
+		$result   = $this->Otrabajos->update_edita($id, $datos);
+
+		/// HERRAMIENTAS	
+			//saco array con herramientas y el id de empresa
+			$herr = $this->input->post('idsherramienta');
+			//saco array con cant de herramientas y el id de preventivo 
+			$cantHerr = $this->input->post('cantHerram');		
+			
+			if ( !empty($herr) ) {				
+				
+				$respdelHerr = $this->Otrabajos->deleteHerramOT($id);// borr herram ant	  		
+				if ($respdelHerr) {
+					$i = 0;		  			
+					foreach ($herr as $h) {
+						$herramPrev[$i]['herrId']= $h;
+						$herramPrev[$i]['id_empresa']= $empId;
+						$i++;                                
+					} 
+					$z = 0;
+					foreach ($cantHerr as $c) {
+						$herramPrev[$z]['cantidad']= $c;
+						$herramPrev[$z]['otId']= $id;
+						$z++;                                
+					}
+				// Guarda el bacht de datos de herramientas
+				$response['respHerram'] = $this->Otrabajos->insertOTHerram($herramPrev);
+				}
+			}else{
+				// se borran la herram
+				$respdelHerr = $this->Otrabajos->deleteHerramOT($id);
+				$response['respHerram'] = $respdelHerr;	// no habia herramientas
+			}
+
+
+		/// INSUMOS	
+			//saco array con herramientas y el id de empresa
+			$ins = $this->input->post('idsinsumo');
+			//saco array con cant de herramientas y el id de preventivo			
+			$cantInsum = $this->input->post('cantInsum');
+			if ( !empty($ins) ){
+				// se borran la insum anteriores
+				$respdelInsum = $this->Otrabajos->deleteInsumOT($id); 
+				$j = 0;
+				foreach ($ins as $in) {
+					$insumoPrev[$j]['artId'] = $in;
+					$insumoPrev[$j]['id_empresa'] = $empId;
+					$j++;                                
+				}
+				$z = 0;
+				foreach ($cantInsum as $ci) {
+					$insumoPrev[$z]['cantidad'] = $ci;
+					$insumoPrev[$z]['otId'] = $id;
+					$z++;                                
+				}
+				// Guarda el bacht de datos de herramientas
+				$response['respInsumo'] = $this->Otrabajos->insertOTInsum($insumoPrev);
+			}else{
+				$respdelInsum = $this->Otrabajos->deleteInsumOT($id); 
+				$response['respInsumo'] = $respdelInsum ;	// no habia insumos	  			
+			}	
+		//print_r($result);
 	}
 
 	/**

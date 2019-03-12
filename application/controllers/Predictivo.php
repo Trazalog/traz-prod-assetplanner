@@ -319,31 +319,31 @@ class Predictivo extends CI_Controller {
 
 
 			/// INSUMOS	
-			//saco array con herramientas y el id de empresa
-			$ins = $this->input->post('idsinsumo');
-			//saco array con cant de herramientas y el id de preventivo			
-			$cantInsum = $this->input->post('cantInsum');
-			if ( !empty($ins) ){
-				// se borran la insum anteriores
-				$respdelInsum = $this->Predictivos->deleteInsumPred($id); 
-				$j = 0;
-				foreach ($ins as $in) {
-					$insumoPrev[$j]['artId'] = $in;
-					$insumoPrev[$j]['id_empresa'] = $empId;
-					$j++;                                
-				}
-				$z = 0;
-				foreach ($cantInsum as $ci) {
-					$insumoPrev[$z]['cantidad'] = $ci;
-					$insumoPrev[$z]['predId'] = $id;
-					$z++;                                
-				}
-				// Guarda el bacht de datos de herramientas
-				$response['respInsumo'] = $this->Predictivos->insertPredInsum($insumoPrev);
-			}else{
-				$respdelInsum = $this->Predictivos->deleteInsumPred($id); 
-				$response['respInsumo'] = $respdelInsum ;	// no habia insumos	  			
-			}	
+				//saco array con herramientas y el id de empresa
+				$ins = $this->input->post('idsinsumo');
+				//saco array con cant de herramientas y el id de preventivo			
+				$cantInsum = $this->input->post('cantInsum');
+				if ( !empty($ins) ){
+					// se borran la insum anteriores
+					$respdelInsum = $this->Predictivos->deleteInsumPred($id); 
+					$j = 0;
+					foreach ($ins as $in) {
+						$insumoPrev[$j]['artId'] = $in;
+						$insumoPrev[$j]['id_empresa'] = $empId;
+						$j++;                                
+					}
+					$z = 0;
+					foreach ($cantInsum as $ci) {
+						$insumoPrev[$z]['cantidad'] = $ci;
+						$insumoPrev[$z]['predId'] = $id;
+						$z++;                                
+					}
+					// Guarda el bacht de datos de herramientas
+					$response['respInsumo'] = $this->Predictivos->insertPredInsum($insumoPrev);
+				}else{
+					$respdelInsum = $this->Predictivos->deleteInsumPred($id); 
+					$response['respInsumo'] = $respdelInsum ;	// no habia insumos	  			
+				}	
 
 		}	
 
