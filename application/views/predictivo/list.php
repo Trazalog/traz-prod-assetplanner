@@ -12,12 +12,14 @@
             <thead>
               <tr>
                 <th>Acciones</th>
+                <th>Id Pred.</th>
                 <th>Equipo</th>
                 <th>Tarea</th>
                 <th>Fecha</th>
                 <th>Periodo</th>
                 <th>Cantidad</th>
                 <th>Horas.H</th>
+                <th>Adjunto</th>
               </tr>
             </thead>
             <tbody>
@@ -38,12 +40,20 @@
                         echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar" ></i>';
                       }     
                       echo '</td>';
+                      echo '<td>'.$a['predId'].'</td>';
                       echo '<td>'.$a['codigo'].'</td>';
                       echo '<td>'.$a['de1'].'</td>';
                       echo '<td>'.date_format(date_create($a['fecha']),'d-m-Y').'</td>';
                       echo '<td>'.$a['periodo'].'</td>';
                       echo '<td>'.$a['cantidad'].'</td>';
-                      echo '<td>'.$a['horash'].'</td>'; 
+                      echo '<td>'.$a['horash'].'</td>';
+                      if( $a['pred_adjunto'] != "")
+                      {
+                        echo '<td><a href="./assets/filespredictivos/'.$a['pred_adjunto'].'" alt="adjunto" target="_blank">'.$a['pred_adjunto'].'</a></td>';
+                      }
+                      else {
+                        echo '<td></td>';
+                      }                   
                       echo '</tr>';
                     }                    
                   }
@@ -88,34 +98,25 @@ $(document).ready(function(event) {
 
     var idpred = $(this).parent('td').parent('tr').attr('id');
     var ide = $(this).parent('td').parent('tr').attr('class');
-    console.log("Id de predictivo");
-    console.log(idpred);
-
     //guardo id de predictivo en modal para editar 
     $('#id_Predictivo').val(idpred);
-
-    //globi=idpred;
-    console.log("Id de equipo");
-    console.log(ide);  
     datos= parseInt(ide);
-    console.log(datos); 
 
     $.ajax({
       type: 'POST',
       data: { idpred: idpred, datos:datos},
-      url: 'index.php/Predictivo/getEditar', //index.php/
+      url: 'index.php/Predictivo/getEditar', 
       success: function(data){             
-
-              console.log(data);
-              console.log("codigo");
-              console.log(data['datos'][0]['tarea_descrip']);
+              
               datos = {             
                         'id_equipo':data['datos'][0]['id_equipo'], 
+                        'ubicacion':data['datos'][0]['ubicacion'],
                         'codigo':data['datos'][0]['codigo'],
                         'marca':data['datos'][0]['marca'],
                         'descripcion':data['datos'][0]['descripcion'],
                         'fecha_ingreso':data['datos'][0]['fecha_ingreso'],
                         'tarea': data['datos'][0]['tarea_descrip'],
+                        'id_tarea': data['datos'][0]['id_tarea'],  
                         'fecha':data['datos'][0]['fecha'],
                         'periodo':data['datos'][0]['periodo'],
                         'cantidad':data['datos'][0]['cantidad'], 
@@ -123,8 +124,10 @@ $(document).ready(function(event) {
                         'unidtiempo':data['datos'][0]['unidtiempo'],
                         'operarios':data['datos'][0]['operarios'],
                         'hh':data['datos'][0]['hh']
-                      };              
-              completarEdit(datos);   
+                      };   
+              var herram = data['herramientas'];             
+              var insum  = data['insumos'];           
+              completarEdit(datos, herram, insum);   
             },
         
       error: function(result){
@@ -135,29 +138,57 @@ $(document).ready(function(event) {
     });
   });
 
-  // Trae tareas por empresa logueada - Chequeado
-  $(function(){  
+  
+  //Trae tareas y permite busqueda en el input
+  var dataTarea = function() {
+    var tmp = null;
     $.ajax({
-      type: 'POST',
-      data: { },
-      url: 'index.php/Predictivo/getTarea', 
-      success: function(data){
-             
-              var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-              $('#tarea').append(opcion); 
-              for(var i=0; i < data.length ; i++){    
-                    var nombre = data[i]['descripcion'];
-                    var opcion  = "<option value='"+data[i]['id_tarea']+"'>" +nombre+ "</option>" ; 
-                  $('#tarea').append(opcion);                                
-              }
-            },
-      error: function(result){
-            
-            console.log(result);
-          },
-          dataType: 'json'
-    });
+      'async': false,
+      'type': "POST",
+      'dataType': 'json',
+      'url': 'index.php/Preventivo/gettarea',
+    })
+    .done( (data) => { tmp = data } )
+    .fail( () => alert("Error al traer tareas") );
+    return tmp;
+  }();
+  $("#tarea").autocomplete({
+    source:    dataTarea,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_tarea').val(ui.item.value);
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_tarea').val(ui.item.value);
+    },
   });
+    // $(function(){  
+      //   $.ajax({
+      //     type: 'POST',
+      //     data: { },
+      //     url: 'index.php/Predictivo/getTarea', 
+      //     success: function(data){
+                
+      //             var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+      //             $('#tarea').append(opcion); 
+      //             for(var i=0; i < data.length ; i++){    
+      //                   var nombre = data[i]['descripcion'];
+      //                   var opcion  = "<option value='"+data[i]['id_tarea']+"'>" +nombre+ "</option>" ; 
+      //                 $('#tarea').append(opcion);                                
+      //             }
+      //           },
+      //     error: function(result){
+                
+      //           console.log(result);
+      //         },
+      //         dataType: 'json'
+      //   });
+      // });
 
   // Trae unidades de tiempo - Chequeado
   $(function(){  
@@ -182,6 +213,160 @@ $(document).ready(function(event) {
           dataType: 'json'
     });
   }); 
+
+  //Trae herramientas
+  $(function(){
+    $('#herramienta').html("");
+    $.ajax({
+      type: 'POST',
+      data: { },
+            url: 'index.php/Preventivo/getherramienta', //index.php/
+            success: function(data){                   
+             var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+             $('#herramienta').append(opcion); 
+             for(var i=0; i < data.length ; i++){    
+              var nombre = data[i]['herrcodigo'];
+              var opcion  = "<option value='"+data[i]['herrId']+"'>" +nombre+ "</option>" ;
+              $('#herramienta').append(opcion);                                    
+            }
+          },
+          error: function(result){
+
+            console.log(result);
+          },
+          dataType: 'json'
+        });
+  });
+  $("#herramienta").change(function(){     
+    var id_herramienta = $(this).val();
+    console.log("El id de la herramienta que seleccione es:");
+    console.log(id_herramienta); 
+    codhermglo=id_herramienta;
+    $.ajax({
+      type: 'POST',
+      data: { id_herramienta: id_herramienta},
+        url: 'index.php/Preventivo/getdatos', //index.php/
+        success: function(data){    
+
+          console.log(data);
+          var marca = data[0]['herrmarca']; 
+          $('#marcaherram').val(marca); 
+          var des = data[0]['herrdescrip'];
+          $('#descripcionherram').val(des); 
+          var codigo = data[0]['herrcodigo'];
+        },
+
+        error: function(result){
+
+          console.log(result);
+        },
+        dataType: 'json'
+      });
+  }); 
+  var cod="";
+  $("#agregarherr").click(function (e) {   
+
+    var id_herramienta= $("#herramienta").val(codhermglo);    
+    var id_her=codhermglo;   
+    var id_herramienta1= $("#herramienta").val();
+    console.log("herramienta de prueba :"+id_herramienta1);
+
+    var $herramienta = $("select#herramienta option:selected").html(); 
+    var marcaherram = $('#marcaherram').val();
+    var descripcionherram = $('#descripcionherram').val();
+    var cantidadherram = $('#cantidadherram').val();
+
+    var tr = "<tr id='"+id_her+"'>"+
+    "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+    "<td>"+$herramienta+"</td>"+
+    "<td>"+marcaherram+"</td>"+
+    "<td>"+descripcionherram+"</td>"+
+    "<td>"+cantidadherram+"</td>"+                    
+    "</tr>";
+    console.log(tr);        
+    $('#tablaherramienta tbody').append(tr);   
+
+    $(document).on("click",".elirow",function(){
+      var parent = $(this).closest('tr');
+      $(parent).remove();
+    });
+
+    $('#herramienta').val('');
+    $('#marcaherram').val(''); 
+    $('#descripcionherram').val(''); 
+    $('#cantidadherram').val('');
+  });  
+
+
+  // trae insumos
+  $(function(){
+    $('#insumo').html("");
+    $.ajax({
+      type: 'POST',
+      data: { },
+      url: 'index.php/Preventivo/getinsumo', 
+      success: function(data){
+              var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+              $('#insumo').append(opcion); 
+              for(var i=0; i < data.length ; i++) 
+              {    
+                var nombre = data[i]['codigo'];
+                var opcion  = "<option value='"+data[i]['value']+"'>" +nombre+ "</option>" ;
+                $('#insumo').append(opcion); 
+              }
+      },
+      error: function(result){
+        console.log(result);
+      },
+      dataType: 'json'
+    });
+  });
+  $("#insumo").change(function(){
+
+    var id_insumo = $(this).val();
+    codinsumolo=id_insumo;
+    console.log("El id de insumo que seleccione es:");
+    console.log(id_insumo);
+    console.log(codinsumolo);
+    $.ajax({
+      type: 'POST',
+      data: { id_insumo: id_insumo},
+          url: 'index.php/Preventivo/getinsumo', //index.php/
+          success: function(data){
+            console.log(data);
+            var d = data[0]['label']; 
+            $('#descript').val(d);  
+            var insumo = data[0]['value'];             
+          },
+          error: function(result){
+            console.log(result);
+          },
+          dataType: 'json'
+    });
+  });
+  $("#agregarins").click(function (e) {
+
+    var id_in = $('#insumo').val();
+    alert(id_in);
+    var $insumo = $("select#insumo option:selected").html();
+    var descript = $('#descript').val();
+    var cant = $('#cant').val();     
+    var tr = "<tr id='"+id_in+"'>"+
+    "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+    "<td>"+$insumo+"</td>"+
+    "<td>"+descript+"</td>"+
+    "<td>"+cant+"</td>"+
+    "</tr>";
+    $('#tablainsumo tbody').append(tr);
+    $(document).on("click",".elirow",function(){
+      var parent = $(this).closest('tr');
+      $(parent).remove();
+    });
+    $('#insumo').val('');
+    $('#descript').val(''); 
+    $('#cant').val('');  
+  });
+
 
   $(".datepicker").datepicker({
       
@@ -233,16 +418,20 @@ function calcularHsHombre(){
     hs = entrada * 24;
   }
 
-  hsHombre = hs * operarios;
-  var mens=$("<h4 class='before'>HH: <span class='hh'>" + hsHombre + "</span></h4>");
- // var mens=$("<input class='before' value='"+ hsHombre +"' style='border:none;'/>");
-  $('#dato').html(mens);
-  //alert("horas hombre: " + hsHombre);  
+  hsHombre =  parseFloat(hs * operarios);
+  $('#hshombre').val(hsHombre);
+  
 }
 
+// Calcula hs hombre si están los 3 parametros y cambia alguno de ellos
+$('#duracion, #unidad, #cantOper').change(function(){
+  if( $('#duracion').val()!="" && $('#unidad').val()!="-1" && $('#cantOper').val()!="")
+    calcularHsHombre();
+});
+
 // Completa modal con datos para editar - Chequeado     
-function completarEdit(datos){
-    
+function completarEdit(datos, herram, insum){
+    // console.table(datos);
   $('#equipo').val(datos['codigo']);
   $('#id_equipo').val(datos['id_equipo']);
   $('#fecha_ingreso').val(datos['fecha_ingreso']);
@@ -250,29 +439,112 @@ function completarEdit(datos){
   $('#ubicacion').val(datos['ubicacion']);
   $('#descripcion').val(datos['descripcion']);
   $('#tarea').val(datos['tarea']);
+  $('#id_tarea').val(datos['id_tarea']);
   $('#fecha').val(datos['fecha']);
-  $('#cantidad').val(datos['cantidad']);
-  $('#periodo').val(datos['periodo']);  
+  $('#cantidad').val(datos['cantidad']);  
+  traer_periodo( datos['periodo'] );
   $('#duracion').val(datos['duracion']);
   $('#unidad').val(datos['unidtiempo']);
   $('#cantOper').val(datos['operarios']); 
-  var mens=$("<h4 class='before'>HH: <span class='hh'>" + datos['hh'] + "</span></h4>");
-  $('#dato').html(mens);
+  $('#hshombre').val(datos['hh']);  
+
+  $('#tablaherramienta tbody tr').remove();
+  for (var i = 0; i < herram.length; i++) {
+    var tr = "<tr id='"+herram[i]['herrId']+"'>"+
+    "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+    "<td>"+herram[i]['herrcodigo']+"</td>"+
+    "<td>"+herram[i]['herrmarca']+"</td>"+
+    "<td>"+herram[i]['herrdescrip']+"</td>"+
+    "<td>"+herram[i]['cantidad']+"</td>"+                   
+    "</tr>";
+    $('#tablaherramienta tbody').append(tr);
+  }
+
+  $('#tablainsumo tbody tr').remove();
+  for (var i = 0; i < insum.length; i++){                                             
+    var tr = "<tr id='"+insum[i]['artId']+"'>"+
+    "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+    "<td>"+insum[i]['artBarCode']+"</td>"+
+    "<td>"+insum[i]['artDescription']+"</td>"+
+    "<td>"+insum[i]['cantidad']+"</td>"+                   
+    "</tr>";
+    $('#tablainsumo tbody').append(tr);
+  }
+
+  $(document).on("click",".elirow",function(){
+    var parent = $(this).closest('tr');
+    $(parent).remove();
+  });
 }
 
+
+function traer_periodo(periodoE) {
+    if (periodoE === undefined) {
+      periodoE = null;
+    }
+    console.info(periodoE + 'periodo en traer periodo');
+    $('#periodo').html(""); 
+    $.ajax({
+      data: {periodoE:periodoE },
+      dataType: 'json',
+      type: 'POST',
+      url: 'index.php/Calendario/getperiodo',
+      success: function(data){
+        var opcion = "<option value='-1'>Seleccione...</option>" ; 
+        $('#periodo').append(opcion); 
+        for(var i=0; i < data.length ; i++) 
+        {    
+          let selectAttr = '';
+          if( (typeof periodoE !== 'undefined') && (data[i]['idperiodo'] == periodoE) ) { selectAttr = 'selected';}
+          let nombre = data[i]['descripcion'];
+          let opcion = "<option value='"+data[i]['idperiodo']+"' "+selectAttr+">" +nombre+ "</option>";
+          $('#periodo').append(opcion);                        
+        }
+        console.info(periodoE);
+      },
+      error: function(result){  
+        console.log(result);
+      },
+    });
+  }
 // Guarda Predictivo Editado
 function guardar(){    
  
   console.log("guardando");
   var id_Pred = $('#id_Predictivo').val(); // Guarda id de predictivo
-  var tarea = $('#tarea').val();        // Guarda id de tarea en tarea_descrip
+  var tarea = $('#id_tarea').val();        // Guarda id de tarea en tarea_descrip
   var fecha = $('#fecha').val();        // Fecha actual de creacion de la tarea
   var periodo = $('#periodo').val();    // diario siempre (especie de tiempo)  
   var cantidad = $('#cantidad').val();  // Frecuencia (cantidad de dias)  
-  var horash = $('#dato h4 span.hh').html(); // cantidad de horas hombre
+  var horash = $('#hshombre').val(); // cantidad de horas hombre
   var duracion = $('#duracion').val();  // Duracion de la tarea en minutos(guarda en pred_duracion)
   var unidad = $('#unidad').val();      // id de unidad de tiempo
   var operarios = $('#cantOper').val(); // Cantidad de operarios(guarda en pred_canth)
+
+  // Arma array de herramientas y cantidades
+  var idsherramienta = new Array();     
+  $("#tablaherramienta tbody tr").each(function (index){
+    var id_her = $(this).attr('id');
+    idsherramienta.push(id_her);        
+    });    
+  var cantHerram = new Array(); 
+  $("#tablaherramienta tbody tr").each(function (index){         
+    var cant_herr = $(this).find("td").eq(4).html();
+    cantHerram.push(cant_herr);                   
+  });
+
+  // Arma array de insumos y cantidades
+  var idsinsumo = new Array();     
+  $("#tablainsumo tbody tr").each(function (index){
+    var id_ins = $(this).attr('id');
+    idsinsumo.push(id_ins);        
+  });
+  var cantInsum = new Array(); 
+  $("#tablainsumo tbody tr").each(function (index){         
+    var cant_insum = $(this).find("td").eq(3).html();
+    cantInsum.push(cant_insum); 
+  }); 
+
 
   if((fecha !=='') || (cantidad !=='') || (duracion !=='') || (cantOper !=='') || (tarea > 0) || (unidad > 0) || (periodo > 0 )){
     WaitingOpen("Guardando");
@@ -287,8 +559,13 @@ function guardar(){
                   horash:horash, 
                   duracion: duracion,
                   unidad: unidad,
-                  operarios: operarios
+                  operarios: operarios,
+                  idsherramienta: idsherramienta,
+                  cantHerram: cantHerram,
+                  idsinsumo: idsinsumo, 
+                  cantInsum: cantInsum                  
                 },
+                
           url: 'index.php/Predictivo/updatePredictivo',  
           success: function(data){
             console.log("exito");   
@@ -406,7 +683,9 @@ function Refrescar(){
             <div class="row">
               <div class="col-xs-12">
                 <label for="tarea">Tarea <strong style="color: #dd4b39">*</strong>:</label>
-                <select id="tarea" name="tarea" class="form-control"   />                             
+                  <!-- <select id="tarea" name="tarea" class="form-control"   />                  -->
+                  <input type="text" id="tarea" name="tarea" class="form-control">
+                  <input type="hidden" id="id_tarea" name="id_tarea">                                           
               </div> 
               <div class="col-xs-12 col-sm-6 col-md-4">
                 <label for="vfecha">Fecha <strong style="color: #dd4b39">*</strong>:</label>
@@ -415,12 +694,6 @@ function Refrescar(){
               <div class="col-xs-12 col-sm-6 col-md-4">
                 <label for="periodo">Periodo <strong style="color: #dd4b39">*</strong>:</label>
                 <select id="periodo"  name="periodo" class=" selectpicker form-control input-md" value="">
-                  <!-- <option >Anual</option> -->
-                  <option >Diario</option>
-                  <!-- <option >Mensual</option>
-                  <option >Periodos</option>
-                  <option >Ciclos</option>
-                  <option >Semestral</option> -->                                      
                 </select>                   
               </div> 
 
@@ -440,13 +713,150 @@ function Refrescar(){
                 <label for="cantOper">Cant. Operarios <strong style="color: #dd4b39">*</strong>:</label>
                 <input type="text" class="form-control" id="cantOper" name="cantOper"/>
               </div>
-              <div class="col-xs-12">
-                <button type="button" class="btn btn-primary" onclick="calcularHsHombre()"style="margin-top: 19px;">Calcular</button>
-              </div>                  
-              <div class="col-xs-12" id="dato"></div>
-            </div><!-- /.row -->
+              <div class="col-xs-12 col-sm-6 col-md-4">
+                <label for="">Horas Hombre <strong style="color: #dd4b39">*</strong>:</label>
+                <input type="text" class="form-control" name="hshombre" id="hshombre" disabled>
+              </div>
+            </div><!-- /.row -->            
           </div><!-- /.panel-body -->           
         </div><!-- /.panel -->
+
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#herramin" aria-controls="profile" role="tab" data-toggle="tab">Herramientas</a></li>
+            <li role="presentation"><a href="#insum" aria-controls="messages" role="tab" data-toggle="tab">Insumos</a></li>            
+          </ul>
+        </div>
+
+
+<!-- de aca -->
+
+ <!-- Tab panes -->
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="herramin">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                      <label for="herramienta">Codigo <strong style="color: #dd4b39">*</strong>:</label>
+                      <select  id="herramienta"  name="herramienta" class="form-control input-md" value=""></select>
+                      <input type="hidden" id="id_herramienta" name="id_herramienta">
+                    </div>       
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                      <label for="marcaherram">Marca:</label>
+                      <input type="text" id="marcaherram" name="marcaherram" class="form-control input-md" />
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                      <label for="descripcionherram">Descripcion:</label>
+                      <input type="text" id="descripcionherram" name="descripcionherram" class="form-control input-md" />
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                      <label for="cantidadherram">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
+                      <input type="text" id="cantidadherram" name="cantidadherram" class="form-control input-md" placeholder="Ingrese Cantidad" />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12"> 
+                      <br>
+                      <button type="button" class="btn btn-primary" id="agregarherr"><i class="fa fa-check">Agregar</i></button>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <table class="table table-bordered" id="tablaherramienta"> 
+                        <thead>
+                          <tr>                      
+                            <th></th>
+                            <th>Código</th>
+                            <th>Marca</th>
+                            <th>Descripcion</th>
+                            <th>Cantidad</th>
+                          </tr>
+                        </thead>
+                        <tbody></tbody>
+                      </table>  
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> <!-- cierre div herram -->
+
+            <div role="tabpanel" class="tab-pane" id="insum">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                      <label for="insumo">Codigo:</label>
+                      <select  id="insumo"  name="insumo" class="form-control input-md" value=""></select>
+                      <!-- <input type="hidden" id="id_insumo" name="id_insumo"> -->
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                      <label for="descript">Descripcion:</label>
+                      <input type="text" id="descript"  name="descript" class="form-control input-md" />
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                      <label for="cant">Cantidad:</label>
+                      <input type="text" id="cant"  name="cant" class="form-control input-md" placeholder="Ingrese Cantidad"/>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <br>
+                      <button type="button" class="btn btn-primary" id="agregarins"><i class="fa fa-check">Agregar</i></button>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <table class="table table-bordered" id="tablainsumo"> 
+                        <thead>
+                          <tr>
+                            <th></th>
+                            <th>Código</th>
+                            <th>Descripcion</th>
+                            <th>Cantidad</th>
+                          </tr>
+                        </thead>
+                        <tbody></tbody>
+                      </table>  
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div><!--cierre div insum--> 
+
+            <div role="tabpanel" class="tab-pane" id="TabAdjunto">
+              <div class="row" >
+                <div class="col-xs-12">
+                  <i class="fa fa-ban" style="color: #f39c12" ;="" cursor:="" 'pointer'=""></i> <a href="">Archivo</a>
+                </div>
+                <div class="col-xs-12">
+                  <input id="inputPDF" name="inputPDF" type="file" class="form-control input-md" disabled>
+                  <style type="text/css">
+                    #inputPDF {
+                      padding-bottom: 40px;
+                    }
+                  </style>
+                </div>
+              </div>
+            </div><!--cierre de TabAdjunto-->                      
+          </div><!--tab-content-->
+           
+
+
+<!-- hasta aca -->          
+
+
+
+
+
+
+
+
+
+
+
 
       </div><!-- /.modal-body -->
 

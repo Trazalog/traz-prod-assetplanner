@@ -300,7 +300,7 @@ class Preventivo extends CI_Controller {
 	public function editar_preventivo(){
 		
 		$userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa'];
+    $empId = $userdata[0]['id_empresa'];
 		
 		$id_preventivo = $this->input->post('id_prevent');		
 		$eq = $this->input->post('id_equipo');///
@@ -365,7 +365,7 @@ class Preventivo extends CI_Controller {
 				// se borran la herram
 				$respdelHerr = $this->Preventivos->deleteHerramPrev($id_preventivo);
 	  			$response['respHerram'] = $respdelHerr;	// no habia herramientas
-	  		}
+	  	}
 
 		/// INSUMOS	
 			//saco array con herramientas y el id de empresa

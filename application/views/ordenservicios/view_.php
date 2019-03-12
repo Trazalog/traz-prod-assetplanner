@@ -245,7 +245,7 @@
               </div><!-- end .tabpanel -->
 
               <div role="tabpanel" class="tab-pane" id="herramientas">
-                <!--  ORDEN DE HERRAMIENTAS  -->
+                <!- -  ORDEN DE HERRAMIENTAS  - ->
                 <div class="panel panel-default">
                   <div class="panel-heading"><span class="fa fa-file-text-o icotitulo" aria-hidden="true"></span> Orden de Herramientas</div>
                   <div class="panel-body">
@@ -301,7 +301,7 @@
                     </div>
                   </div>
                 </div>
-              </div><!-- end .tabpanel -->
+              </div><!- - end .tabpanel - ->
 
               <div role="tabpanel" class="tab-pane" id="rrhh">
                 <!--  ORDEN DE RECURSOS HUMANOS  -->
@@ -574,7 +574,7 @@ $("#herramienta").autocomplete({
   }
 });
 
-// Llenar tabla herramientas
+//Llenar tabla herramientas
 function armartablistherr() {   // inserta valores de inputs en la tabla 
   var herrId      = $("#herrId").val();
   var herramienta = $("#herramienta").val();
@@ -609,7 +609,7 @@ function armartablistherr() {   // inserta valores de inputs en la tabla
   }
 }
 
-// elimina fila de la tabla listareas
+//elimina fila de la tabla listareas
 $(document).on("click","#delFileH",function(){
   $('#tablalistherram').DataTable().row( $(this).closest('tr') ).remove().draw();
 });
@@ -817,7 +817,7 @@ function enviarOrden() {
         herramienta[j] = act;
         j++;
     });
-    //console.table(herramienta);
+    console.table(herramienta);
 
     // operario 
     var operario = new Array(); 
@@ -855,8 +855,12 @@ function enviarOrden() {
     //console.table( datosInfoServicio );
 
     WaitingOpen('Guardando cambios');
+    
     $.ajax({
-      data: {datosInfoServicio:datosInfoServicio, tarea:tarea, herramienta:herramienta, operario:operario},
+      data: {datosInfoServicio:datosInfoServicio, 
+              tarea:tarea,  
+              operario:operario, 
+              herramienta:herramienta},
       type: 'POST',
       dataType: 'json',
       url: 'index.php/Ordenservicio/setOrdenServ',

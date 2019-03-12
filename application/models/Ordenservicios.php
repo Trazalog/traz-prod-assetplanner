@@ -89,6 +89,8 @@ class Ordenservicios extends CI_Model {
         }
     }
 
+    
+
     function getDatosOrdenServicios($data = null) // Ok ¿al pedo?
     {
         $id = $data['id_ordenservicio'];       
@@ -165,36 +167,38 @@ class Ordenservicios extends CI_Model {
             $usrId         = $userdata[0]['usrId'];     // guarda usuario logueado
             $empresaId     = $userdata[0]['id_empresa'];
             ////////// para guardar herramientas                 
-            if ( !empty($data['herramienta']) ){
-                $date          = $data['fecha'];
-                $valeSalHerram = array(
-                    'fecha'      => $date,
-                    'usrid'      => $usrId,
-                    'id_empresa' => $empresaId
-                );
-                if ( ! $this->db->insert('tbl_valesalida', $valeSalHerram) )
-                {
-                    return $this->db->error(); // Has keys 'code' and 'message'
-                }
-                $idInsertVale = $this->db->insert_id();
+					
+						if ( !empty($data['herramienta']) ){
+							$date          = $data['fecha'];
+							$valeSalHerram = array(
+									'fecha'      => $date,
+									'usrid'      => $usrId,
+									'id_empresa' => $empresaId
+							);
+							if ( ! $this->db->insert('tbl_valesalida', $valeSalHerram) )
+							{
+									return $this->db->error(); // Has keys 'code' and 'message'
+							}
+							$idInsertVale = $this->db->insert_id();
 
-                // detalle herramientas
-                for ($i=0; $i < count($data['herramienta']) ; $i++)
-                { 
-                    $detavalHerram["valesid"]    = $idInsertVale;
-                    $detavalHerram["herrId"]     = $data["herramienta"][$i][3];
-                    $detavalHerram["id_empresa"] = $empresaId;
-                    if ( ! $this->db->insert('tbl_detavalesalida', $detavalHerram) )
-                    {
-                        return $this->db->error(); // Has keys 'code' and 'message'
-                    }
-                }
+							// detalle herramientas
+							for ($i=0; $i < count($data['herramienta']) ; $i++)
+							{ 
+									$detavalHerram["valesid"]    = $idInsertVale;
+									$detavalHerram["herrId"]     = $data["herramienta"][$i][3];
+									$detavalHerram["id_empresa"] = $empresaId;
+									if ( ! $this->db->insert('tbl_detavalesalida', $detavalHerram) )
+									{
+											return $this->db->error(); // Has keys 'code' and 'message'
+									}
+							}
             }
             else
             {
-                $idInsertVale = 1;    // no puede ser 0 por la clave foranea
+							$idInsertVale = 1;    // no puede ser 0 por la clave foranea
             }
 
+						
             ////// guarda orden servicio                 
             //$lectura                = $data['lectura'];
             //$comprobante            = $data['comprobante'];
@@ -310,26 +314,26 @@ class Ordenservicios extends CI_Model {
 
     function getHerramOrdenes($data) // Ok
     {
-        $id_orden = $data['id_orden'];
-        $this->db->select('
-            herramientas.herrcodigo,
-            herramientas.herrmarca,
-            herramientas.herrdescrip
-        ');
-        $this->db->from('orden_servicio');        
-        $this->db->join('tbl_valesalida', 'orden_servicio.valesid = tbl_valesalida.valesid');        
-        $this->db->join('tbl_detavalesalida', 'tbl_detavalesalida.valesid = tbl_valesalida.valesid');
-        $this->db->join('herramientas', 'tbl_detavalesalida.herrId = herramientas.herrId');        
-        $this->db->where('orden_servicio.id_orden', $id_orden);
-        $query = $this->db->get();
-        if ($query->num_rows()!=0)
-        {
-            return $query->result_array();  
-        }
-        else
-        {   
-            return array();
-        }   
+			$id_orden = $data['id_orden'];
+			$this->db->select('
+					herramientas.herrcodigo,
+					herramientas.herrmarca,
+					herramientas.herrdescrip
+			');
+			$this->db->from('orden_servicio');        
+			$this->db->join('tbl_valesalida', 'orden_servicio.valesid = tbl_valesalida.valesid');        
+			$this->db->join('tbl_detavalesalida', 'tbl_detavalesalida.valesid = tbl_valesalida.valesid');
+			$this->db->join('herramientas', 'tbl_detavalesalida.herrId = herramientas.herrId');        
+			$this->db->where('orden_servicio.id_orden', $id_orden);
+			$query = $this->db->get();
+			if ($query->num_rows()!=0)
+			{
+					return $query->result_array();  
+			}
+			else
+			{   
+					return array();
+			}   
     }
 
     function getOperariosOrden($data)

@@ -427,10 +427,8 @@ function completarEdit(datos, herram, insum){
   $('#marca').val(datos['marca']);
   $('#ubicacion').val(datos['ubicacion']);
   $('#descripcion').val(datos['descripcion']);
-
   $('#id_tarea').val(datos['id_tarea']);
   $('#tarea').val(datos['descrip_tarea']);
-
   traer_componente(datos['id_equipo'], datos['id_componente']);
   $('#ultimo').val(datos['ultimo']);    
   traer_periodo( datos['perido'] );
