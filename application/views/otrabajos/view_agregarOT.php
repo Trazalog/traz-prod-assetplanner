@@ -11,18 +11,15 @@
   <div class="row">
     <div class="col-xs-12">
       <div class="box">
-        <form id="formPredictivo" role="form" action="<?php base_url();?>Predictivo/guardar_predictivo" method="POST" >
+        <form id="formOT" role="form" action="<?php base_url();?>Otrabajo/guardar_agregar" method="POST" >
           <div class="box-header">
-          <h3 class="box-title">Programación Predictivo</h3>
+          <h3 class="box-title">Nueva Orden de Trabajo</h3>
           <?php
-            if (strpos($permission,'Add') !== false) {
-              echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="listado">Ver Listado</button>';
-            }
+            echo '<button class="btn btn-block btn-primary" style="width: 250px; margin-top: 10px;" id="listadoOT">Ver Listado Ordenes de Trabajo</button>';
             ?>
           </div><!-- /.box-header -->
           
-          <div class="box-body">
-            
+          <div class="box-body">            
               
               <div class="panel panel-default">
                 <div class="panel-heading">
@@ -62,41 +59,35 @@
 
                 <div class="panel-body"> 
                   <div class="row"> 
-                    <div class="col-xs-12 col-sm-6">Tarea <strong style="color: #dd4b39">*</strong>:
-                      <input type="text" id="tarea" name="tarea" class="form-control">
-                      <input type="hidden" id="id_tarea" name="id_tarea">
-                    </div>
+                  <div class="col-xs-12 col-sm-6">                    
+                    <label for="tarea">Tarea Estandar<strong style="color: #dd4b39">*</strong>:</label>
+                    <input type="text" id="tarea" name="tarea" class="form-control" placeholder="Buscar Tarea...">
+                    <input type="hidden" id="id_tarea" name="id_tarea"> 
+                  </div>
+                  <div class="col-xs-12 col-sm-6">  
+                    <label for="tarea_manual">Tarea Personalizada<strong style="color: #dd4b39">*</strong>:</label> 
+                    <input type="text" id="tareacustom" name="tareacustom" class="form-control" placeholder="Ingresar Tarea...">     
+                  </div>
                   </div>
                   <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="vfecha">Fecha:</label>
-                      <input type="text" class="datepicker form-control fecha" id="fecha" name="vfecha" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>
+                    <div class="col-xs-12 col-sm-6">
+                      <label for="fechaInicio">Fecha Inicio:</label>
+                      <input type="text" class="datepicker form-control fecha" id="fechaInicio" name="fechaInicio" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>
                     </div> 
-                    <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="periodo">Periodo:                       </label>
-                      <select id="periodo" name="periodo" class=" selectpicker form-control">
-                        <!-- -->
-                      </select>
-                    </div> 
-                    <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="cantidad">Frecuencia <strong style="color: #dd4b39">*</strong>:</label>
-                      <input type="text" class="form-control" id="cantidad" name="cantidad"/>
+                    
+                    <div class="col-xs-12 col-sm-6">
+                      <label for="fechaEntrega">Fecha Entrega:</label>
+                      <input type="text" class="datepicker form-control fecha" id="fechaEntrega" name="fechaEntrega" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>
                     </div>
-                    <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="duracion">Duración <strong style="color: #dd4b39">*</strong>:</label>
-                      <input type="text" class="form-control" id="duracion" name="duracion"/>
-                    </div> 
-                    <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="unidad">U. de tiempo <strong style="color: #dd4b39">*</strong></label>
-                      <select  id="unidad" name="unidad" class="form-control" />
+
+                    <div class="col-xs-12 col-sm-6">
+                      <label for="suci">Sucursal<strong style="color: #dd4b39">*</strong></label>
+                      <select  id="suci" name="suci" class="form-control" />
                     </div>
-                    <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="cantOper">Cant. Operarios <strong style="color: #dd4b39">*</strong>:</label>
-                      <input type="text" class="form-control" id="cantOper" name="cantOper"/>
-                    </div>
-                    <div class="col-xs-12" id="dato" name="" style="margin-top: 19px;"></div>
-                    <input type="hidden" name="hshombre" id="hshombre">                
-                    <div class="col-xs-12" id="dato"></div> 
+                    <div class="col-xs-12 col-sm-6">
+                      <label for="prov">Proveedor<strong style="color: #dd4b39">*</strong></label>
+                      <select  id="prov" name="prov" class="form-control" />
+                    </div>            
                   </div>
                 </div>
               </div>
@@ -222,9 +213,7 @@
           </div><!-- /.box-body -->
 
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Guardar</button>
-            <!-- <button type="button" class="btn btn-default" onclick="limpiar()">Cancelar</button> -->
-            <!-- <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="guardar()">Guardar</button> -->
+            <button type="submit" id="btn_guardar" class="btn btn-primary">Guardar</button>            
           </div>
         </form> <!--cierre form-->
       </div>
@@ -233,6 +222,155 @@
 </section>
 
 <script> 
+
+// Nuevos //
+
+  //va listado de OTs
+  $("#listadoOT").click(function (e) {
+    WaitingOpen();
+    $('#content').empty();
+    $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/listOrden/<?php echo $permission; ?>");
+    WaitingClose();
+  });
+
+  // limpia un input al seleccionar o llenar otro
+  $('#tarea').change(function(){    
+    $('#tareacustom').val(''); 
+  });
+  $('#tareacustom').change(function(){
+    $('#tarea').val('');
+    $('#id_tarea').val('');
+  }); 
+  
+  // Trae proveedores por empresa logueada
+  traer_proveedor();      
+  function traer_proveedor(){
+    $('#proveedor').html('');
+    $.ajax({
+      type: 'POST',
+      data: {},
+      url: 'index.php/Otrabajo/getproveedor', //index.php/
+      success: function(data){
+            
+              var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+                $('#prov').append(opcion); 
+              for(var i=0; i < data.length ; i++) 
+              {    
+                    var nombre = data[i]['provnombre'];
+                    var opcion  = "<option value='"+data[i]['provid']+"'>" +nombre+ "</option>" ; 
+
+                  $('#prov').append(opcion);                
+              }
+            },
+      error: function(result){
+            
+            console.log(result);
+          },
+          dataType: 'json'
+      });
+  }
+  // llena el select de sucursales - Ok 
+  traer_sucursal()
+  function traer_sucursal(){
+    $.ajax({
+      type: 'POST',
+      data: { },
+      url: 'index.php/Otrabajo/traer_sucursal',
+      success: function(data){
+        var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+        $('#suci').append(opcion); 
+        for(var i=0; i < data.length ; i++) 
+        {    
+          var nombre = data[i]['descripc'];
+          var opcion = "<option value='"+data[i]['id_sucursal']+"'>" +nombre+ "</option>" ;
+          $('#suci').append(opcion);        
+        }
+      },
+      error: function(result){
+        console.error("Error al traer sucursal. Ver console.table");
+        console.table(result);
+      },
+      dataType: 'json'
+    });
+  } 
+
+ 
+  $("#formOT").submit(function (event){   
+    event.preventDefault(); 
+    var equipo        = $('#equipo').val();
+    var tarea         = $('#id_tarea').val();
+    var tareacustom  = $('#tareacustom').val();    
+    var fecha_inicio  = $('#fechaInicio').val();
+    var fecha_entrega = $('#fechaEntrega').val();    
+    var sucursal      = $('#suci').val();
+    var proveedor     = $('#prov').val();
+    
+    var hayError = false; 
+    $('#error').hide();
+    if(equipo == '-1')
+    {
+      hayError = true;
+    }    
+    if((tarea == '') && (tareacustom == '')){
+      hayError = true;
+    }
+    if((fecha_inicio =='') || (fecha_entrega=='0000-00-00 00:00:00'))
+    {
+      hayError = true;
+    }
+    if(sucursal == '-1')
+    {
+      hayError = true;
+    }
+    if(proveedor == '-1')
+    {
+      hayError = true;
+    }
+
+    if (hayError == true) {
+      $('#error').fadeIn('slow');
+      $('#btn_guardar').prop("disabled", false);
+      return;
+    }
+    else{
+      $('#error').fadeOut('slow');
+      var formData = new FormData($("#formOT")[0]);
+      $.ajax({
+        url:$("form").attr("action"),
+        type:$("form").attr("method"),
+        data:formData,
+        cache:false,
+        contentType:false,
+        processData:false,
+        success:function(respuesta){
+          recargaLista();
+        },
+        error: function(result){  
+          alert('Ocurrio un error en el guardado...');
+          console.error("Error al agregar nueva OT. Ver console.table");
+          console.table(result);
+        }  
+      });
+    }
+
+  });
+
+
+// Limpia modales y regresa al listado de OTs - Ok test 
+function recargaLista(){
+    //WaitingOpen('');
+    $('#content').empty();    
+    $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/listOrden/<?php echo $permission; ?>");
+    WaitingClose();   
+}
+
+$("#fechaEntrega, #fechaInicio").datepicker({
+  dateFormat: 'dd/mm/yy',
+  firstDay: 1
+}).datepicker("setDate", new Date());
+
+
+// Fin Nuevos //
 
 
 $("#formPredictivo").submit(function (event){   
@@ -856,9 +994,6 @@ function limpiar(){
 
 }
     
-$("#fecha").datepicker({
-  dateFormat: 'dd/mm/yy',
-  firstDay: 1
-}).datepicker("setDate", new Date());
+
 
 </script>

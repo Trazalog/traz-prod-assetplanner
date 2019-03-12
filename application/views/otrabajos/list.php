@@ -7,7 +7,8 @@
           <h3 class="box-title">Orden de trabajo</h3>
           <?php
           if (strpos($permission,'Add') !== false) {
-            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"  data-toggle="modal" data-target="#modalagregar" id="btnAdd">Agregar</button>'; 
+            //echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"  data-toggle="modal" data-target="#modalagregar" id="btnAdd">Agregar</button>'; 
+            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="btnAdd">Agregar</button>'; 
           }
           ?>
         </div><!-- /.box-header -->
@@ -208,9 +209,14 @@ function regresa1(){
     WaitingClose();
     //WaitingClose();
 }
-// boton cancelar
-$("#btnAdd").click(function (e) { 
-  $('#btn_guardar').prop("disabled", false);
+
+
+// boton agregar nueva ot
+$("#btnAdd").click(function (e) {   
+  WaitingOpen('Cargando Nueva OT...');
+  $('#content').empty();   
+  $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/nuevaOT/<?php echo $permission; ?>");
+  WaitingClose();
 });
 // boton guardar 
 $("#btn_cancGuardado").click(function (e) { 
@@ -629,13 +635,6 @@ function orden(){
   });              
 }
 
-/*/ Refresca    
-function regresa(){
-  $('#content').empty(); //listOrden  
-  $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/listOrden/<?php echo $permission; ?>");
-  WaitingClose();
-}*/
-
 // llena select clientes en modal Asignar OT - 
 function traer_clientes(id_cliente){
   $.ajax({
@@ -933,33 +932,6 @@ function finalOT(id_, action){ //esto es nuevo
             },
             dataType: 'json'
   });
-}
-
-// Trae proveedores por empresa logueada      
-function traer_proveedor(){
-  $('#proveedor').html('');
-  $.ajax({
-    type: 'POST',
-    data: {},
-    url: 'index.php/Otrabajo/getproveedor', //index.php/
-    success: function(data){
-           
-             var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-              $('#proveedor').append(opcion); 
-            for(var i=0; i < data.length ; i++) 
-            {    
-                  var nombre = data[i]['provnombre'];
-                  var opcion  = "<option value='"+data[i]['provid']+"'>" +nombre+ "</option>" ; 
-
-                $('#proveedor').append(opcion);                
-            }
-          },
-    error: function(result){
-          
-          console.log(result);
-        },
-        dataType: 'json'
-    });
 }
 
 function click_pedent(){  
