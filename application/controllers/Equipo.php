@@ -450,91 +450,106 @@ class  Equipo extends CI_Controller {
 	      	else echo 0;
 	    }
   	}
- 	// 	public function guardar_equipo(){
-		
-		// 	$datos=$_POST['data'];
-		// 	$mar=$_POST['marca'];
-		// 	$cod=$_POST['codigo'];
-		// 	$com=$_POST['comp'];
-		// 	$can=$_POST['j'];
-		// 	//var_dump($com);
-		// 	// $c= $can / 2;
-		// 	// $i=1;
-		// 	// $j=2;
-			
-
-		// 	$result = $this->Equipos->insert_equipo($datos);
-		// 	if($result!=0){
-
-		// 		$ultimoId=$this->db->insert_id();
-		// 		$arre=array();
-		// 		//if($i<$c){
-		// 			//if ($com[$i]<$can ) 
-		// 			foreach ($com as $row) 
-		// 	        {   
-		// 	        	//if ($com[$j]<$can )
-		// 	        	foreach ($com as $row2) 
-		// 	        	 { 
-		// 	           		$datos2 = array(
-								
-		// 			        	'titulo'=>$row, 
-		// 			        	'descripcion'=>$row2,
-		// 			        	'id_equipo'=>$ultimoId
-					        
-
-		// 		    			);
-		// 	           		 $result2 = $this->Equipos->insert_equipinfo($datos2);
-
-		// 	           	}
-		// 	           	$i++;
-		// 	           	$j++;
-			        
-
-		// 	        }
-		          
-	       
-
-
-		// 	}
-			
-		// 	print_r(json_encode($result));		
-	// }
 
   	// Agrega equipo nuevo - Listo
 	public function guardar_equipo()
 	{
-		$datos = $_POST['data'];	// todos los datos de equipo
-		$mar   = $_POST['marca'];	// marca equipo
-		$cod   = $_POST['codigo'];	// nombre del equipo
-		
-		if(isset($_POST['comp'])){
-			$com = $_POST['comp'];	// registros titulo/descripcion
-		}
-		
-		$can    = $_POST['j'];	//cantidad de registros titulo/descripción
+		//$data     = $this->input->post();
+		$userdata = $this->session->userdata('user_data');
+
+		$descripcion         = $this->input->post("descripcion");
+		$fecha_ingreso       = $this->input->post("fecha_ingreso");
+		//fecha_baja
+		$fecha_garantia      = $this->input->post("fecha_garantia");
+		$marca               = $this->input->post("marca");
+		$codigo              = $this->input->post("codigo");
+		$id_hubicacion       = $this->input->post("ubicacion");
+		$id_empresa          = $userdata[0]['id_empresa'];
+		$id_sector           = $this->input->post("etapa");
+		//id_hubicacion
+		$id_grupo            = $this->input->post("grupo");
+		$id_customer         = $this->input->post("cliente");
+		$id_criticidad       = $this->input->post("criticidad");
+		$estado              = "AL";
+		$fecha_ultimalectura = $this->input->post("fecha_ultima");
+		$ultima_lectura      = $this->input->post("ultima_lectura");
+		//tipo_horas
+		//id-centrodecosto
+		//valor_reposicion
+		//fecha_reposicion
+		//id_proveedor
+		//valor
+		//comprobante
+		$descrip_tecnica     = $this->input->post("destec");
+		$id_unidad           = $this->input->post("unin");
+		$id_area             = $this->input->post("area");
+		$id_proceso          = $this->input->post("proceso");
+		$numero_serie        = $this->input->post("numse");
+
+		$datos = array(
+			'descripcion'         => $descripcion,
+			'fecha_ingreso'       => $fecha_ingreso,
+			'fecha_garantia'      => $fecha_garantia,
+			'marca'               => $marca,
+			'codigo'              => $codigo,
+			'id_hubicacion'       => $id_hubicacion,
+			'id_empresa'          => $id_empresa,
+			'id_sector'           => $id_sector,
+			'id_grupo'            => $id_grupo,
+			'id_customer'         => $id_customer,
+			'id_criticidad'       => $id_criticidad,
+			'estado'              => $estado,
+			'fecha_ultimalectura' => $fecha_ultimalectura,
+			'ultima_lectura'      => $ultima_lectura,
+			'descrip_tecnica'     => $descrip_tecnica,
+			'id_unidad'           => $id_unidad,
+			'id_area'             => $id_area,
+			'id_proceso'          => $id_proceso,
+			'numero_serie'        => $numero_serie
+		);
 		$result = $this->Equipos->insert_equipo($datos);
-		
+
 		if($result)
 		{
-			$ultimoId = $this->db->insert_id(); // ultimo registro insertado en equipos (id_equipos)
-			$datos    = array();			
-			$j        = 1;
-			$long     = (int)$can - 1; // llega hasta 2 comp antes del final
+			$ultimoId = $this->db->insert_id(); 
+			$nomcodif = $this->codifNombre($ultimoId, $empId); // codificacion de nombre
+			$nomcodif = 'equipo'.$nomcodif;
+			$config = [
+				"upload_path"   => "./assets/filesequipos",
+				'allowed_types' => "png|jpg|pdf|xlsx",
+				'file_name'     => $nomcodif
+			];
 
-			for ($i = 0; $i < $long ; $i++)
-			{ 
-				$datos = array(
-					'titulo'=>$com[$i], 
-					'descripcion'=>$com[$j],
-					'id_equipo'=>$ultimoId
-				);			 	
-				$j = $j+2;
-				$i++;
-				$result = $this->Equipos->insert_equipinfo($datos);
+			$this->load->library("upload",$config);
+			if ($this->upload->do_upload('inputPDF')) {
+				
+				$data     = array("upload_data" => $this->upload->data());
+				$extens   = $data['upload_data']['file_ext'];//guardo extesnsion de archivo
+				$nomcodif = $nomcodif.$extens;
+				$adjunto  = array('adjunto' => $nomcodif);
+				$response = $this->Equipos->updateAdjuntoEquipo($adjunto,$ultimoId);
+			}else{
+				$response = false;
 			}
 		}
 
-		print_r(json_encode($result));
+		echo json_encode($response);
+	}
+
+	// Codifica nombre de imagen para no repetir en servidor
+	// formato "12_6_2018-05-21-15-26-24" idpreventivo_idempresa_fecha(año-mes-dia-hora-min-seg)
+	function codifNombre($ultimoId,$empId)
+	{
+		$guion = '_';
+		$guion_medio = '-';
+		$hora = date('Y-m-d H:i:s');// hora actual del sistema	
+		$delimiter = array(" ",",",".","'","\"","|","\\","/",";",":");
+		$replace = str_replace($delimiter, $delimiter[0], $hora);
+		$explode = explode($delimiter[0], $replace);
+		$strigHora = $explode[0].$guion_medio.$explode[1].$guion_medio.$explode[2].$guion_medio.$explode[3];
+		$nomImagen = $ultimoId.$guion.$empId.$guion.$strigHora;
+		
+		return $nomImagen;
 	}
 
 	public function mostrar_ventana(){		  
@@ -649,7 +664,7 @@ class  Equipo extends CI_Controller {
 	public function guardarcontra()
 	{
 		$datos  = $_POST['idscontra'];//contratista		
-		$contra = $_POST['idglob'];//idequipo
+		$contra = $_POST['idEquipo'];//idequipo
 		$arre   = array();
 		
 	    if(count($datos) > 0 )
@@ -773,4 +788,51 @@ class  Equipo extends CI_Controller {
   	  	echo json_encode($result);
   	}
 
+  	/**
+	 * Equipo:eliminarAdjunto();
+	 *
+	 * @return Bool 	True si se eliminó el archivo o false si hubo error
+	 */
+	public function eliminarAdjunto()
+	{
+		$idEquipo = $this->input->post('idEquipo');
+		$response = $this->Equipos->eliminarAdjunto($idEquipo);
+		echo json_encode($response);
+	}
+	
+	/**
+	 * Equipo:agregarAdjunto();
+	 *
+	 * @param 
+	 * @return String nomre de archivo adjunto
+	 */
+	public function agregarAdjunto()
+	{
+		$userdata     = $this->session->userdata('user_data');
+		$empId        = $userdata[0]['id_empresa'];
+
+		$idEquipo = $this->input->post('idAgregaAdjunto');
+
+		$nomcodif = $this->codifNombre($idEquipo, $empId); // codificacion de nombre
+		$nomcodif = 'equipo'.$nomcodif;
+		$config   = [
+			"upload_path"   => "./assets/filesequipos",
+			'allowed_types' => "png|jpg|pdf|xlsx",
+			'file_name'     => $nomcodif
+		];
+
+		$this->load->library("upload",$config);
+		if ($this->upload->do_upload('inputPDF')) 
+		{	
+			$data     = array("upload_data" => $this->upload->data());
+			$extens   = $data['upload_data']['file_ext'];//guardo extesnsion de archivo
+			$nomcodif = $nomcodif.$extens;
+			$adjunto  = array('adjunto' => $nomcodif);
+			$response = $this->Equipos->updateAdjuntoEquipo($adjunto,$idEquipo);
+		}else{
+			$response = false;
+		}
+
+		echo json_encode($response);
+	}
 }
