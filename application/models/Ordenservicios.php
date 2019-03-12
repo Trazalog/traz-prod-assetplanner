@@ -136,10 +136,11 @@ class Ordenservicios extends CI_Model {
     {
         $userdata  = $this->session->userdata('user_data');
         $empresaId = $userdata[0]['id_empresa'];
-        $this->db->select('usrId, usrLastName, usrname');
+        $this->db->select('sisusers.usrId, sisusers.usrLastName, sisusers.usrname');
+        $this->db->join('usuarioasempresa', 'usuarioasempresa.usrId = sisusers.usrId');
         $this->db->from('sisusers');
-        $this->db->where('id_empresa', $empresaId);
-        $this->db->where('estado', 'AC');
+        $this->db->where('usuarioasempresa.empresaid', $empresaId);
+        $this->db->where('usuarioasempresa.estado', 'AC');
         $query = $this->db->get();
         $i     = 0;
         foreach ($query->result() as $row)

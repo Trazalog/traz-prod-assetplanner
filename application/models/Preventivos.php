@@ -267,7 +267,7 @@ class Preventivos extends CI_Model
     function updateAdjunto($adjunto,$ultimoId){
         $this->db->where('prevId', $ultimoId);
         $query = $this->db->update("preventivo",$adjunto);
-        return $query;
+        return $adjunto;
     }
 
     // Da de baja Preventivvo por id
@@ -292,6 +292,7 @@ class Preventivos extends CI_Model
                             preventivo.horash, 
                             preventivo.prev_duracion,
                             preventivo.prev_canth,
+                            preventivo.prev_adjunto,
                             preventivo.id_unidad,
                             equipos.id_equipo, 
                             equipos.codigo, 
@@ -785,4 +786,21 @@ class Preventivos extends CI_Model
         return $query;
     }
 
+
+
+    /**
+     * Preventivos:eliminarAdjunto
+     * Elimina el Archivo Adjunto de un preventivo dado (no elimina el archivo).
+     *
+     * @param Int       $idPreventivo   Id de preventivo
+     * @return Bool                     True o False
+     */
+    public function eliminarAdjunto($idPreventivo)
+    {
+        $data  = array( 'prev_adjunto' => '' );
+        $this->db->where('prevId', $idPreventivo);
+        $query = $this->db->update("preventivo", $data);
+        return $query;
+    }
+    
 }
