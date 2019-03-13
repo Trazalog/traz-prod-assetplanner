@@ -152,6 +152,7 @@ class Ordenservicio extends CI_Controller {
 
     public function getOperarioOrden(){
       $response = $this->Ordenservicios->getOperariosOrden($this->input->post());
+      
       echo json_encode($response);
     }
 
