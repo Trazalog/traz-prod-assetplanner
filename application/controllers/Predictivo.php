@@ -142,7 +142,7 @@ class Predictivo extends CI_Controller {
 					$response['respHerram'] = $this->Predictivos->insertPredHerram($herramPred);
 				}else{
 
-					$response['respHerram'] = "vacio";	// no habia herramientas
+					$response['respHerram'] = true;	// no habia herramientas
 				}	
 
 			////////// para guardar insumos
@@ -167,7 +167,7 @@ class Predictivo extends CI_Controller {
 					$response['respInsumo'] = $this->Predictivos->insertPredInsum($insumoPred);
 				}else{
 
-					$response['respInsumo'] = "vacio";	// no habia insumos
+					$response['respInsumo'] = true;	// no habia insumos
 				}	
 				
 			////////// Subir imagen o pdf 
@@ -188,11 +188,17 @@ class Predictivo extends CI_Controller {
 					$response['respNomImagen'] = $this->Predictivos->updateAdjunto($adjunto,$ultimoId);
 				}else{
 					$response['respImagen'] = false;
-				}	
-
-		}				
+				}				
+		}		
 		
-		echo json_encode($response);			
+		// si todas las inserciones se hicieron devuelve true
+		if ($response['respPredictivo'] && $response['respHerram'] && $response['respInsumo']) {
+			$result = true;
+		} else {
+			$result = false;
+		}
+		
+		echo json_encode($result);			
 	}
 
 	// Codifica nombre de imagen para no repetir en servidor
@@ -252,24 +258,19 @@ class Predictivo extends CI_Controller {
 
 		$userdata = $this->session->userdata('user_data');
 		$empId = $userdata[0]['id_empresa'];
-
-		$id = $this->input->post('id_Predictivo');
-		$ta = $this->input->post('tarea');
-		$fe = $this->input->post('fecha');
-		$per = $this->input->post('periodo');
-		$can = $this->input->post('cantidad');
-		$hh = $this->input->post('horash');
-		$dur = $this->input->post('duracion');
-		$uTi = $this->input->post('unidad');
-		$op = $this->input->post('operarios');
-		
-		$uno=substr($fe, 0, 2); 
-        $dos=substr($fe, 3, 2); 
-        $tres=substr($fe, 6, 4); 
-        $resul = ($tres."/".$dos."/".$uno); 
+		// datos
+			$id = $this->input->post('id_Predictivo');
+			$ta = $this->input->post('tarea');
+			$fe = $this->input->post('fecha');
+			$per = $this->input->post('periodo');
+			$can = $this->input->post('cantidad');
+			$hh = $this->input->post('horash');
+			$dur = $this->input->post('duracion');
+			$uTi = $this->input->post('unidad');
+			$op = $this->input->post('operarios');	
 		
 		$datos = array(	'tarea_descrip'=>$ta,
-						'fecha'=>$resul,
+						'fecha'=>$fe,
 						'periodo'=>$per,
 						'cantidad'=>$can,
 						'horash'=>$hh,
@@ -279,9 +280,9 @@ class Predictivo extends CI_Controller {
 						'pred_canth'=>$op						
 					);
 
-		$response = $this->Predictivos->updatePredictivos($datos,$id);
+		$response['updatedatos'] = $this->Predictivos->updatePredictivos($datos,$id);
 		
-		if ($response) {
+		if ($response['updatedatos']) {
 			// caso 1: hay herram/insumos cargadas y agrego mas
 			// caso 2: hay herram/insumos cargadas borra alguna
 			// caso 3: hay herram/insumos cargadas borra todas
@@ -347,7 +348,13 @@ class Predictivo extends CI_Controller {
 
 		}	
 
-		echo json_encode($response);
+		if ($response['updatedatos'] &&	$response['respHerram'] && $response['respInsumo']) {
+			$result = true;
+		} else {
+			$result = fase;
+		}		
+
+		echo json_encode($result);
 	}
 
 	//Cambia de estado a "AN"
