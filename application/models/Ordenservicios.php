@@ -366,13 +366,12 @@ class Ordenservicios extends CI_Model {
 												articles.artDescription as descripcion,
 												articles.artBarCode as codigo,
 												tbl_notapedido.id_notaPedido as nroOT,
-												sisusers.usrName as nombre,
-												sisusers.usrLastName as apellido');
+												');
 			$this->db->from('tbl_detanotapedido');
 			$this->db->join('tbl_notapedido', 'tbl_detanotapedido.id_notaPedido = tbl_notapedido.id_notaPedido');
 			$this->db->join('orden_trabajo', 'tbl_notapedido.id_ordTrabajo = orden_trabajo.id_orden');
 			$this->db->join('articles', 'articles.artId = tbl_detanotapedido.artId');
-			$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario');
+			//$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario');
 			$this->db->where('tbl_notapedido.id_ordTrabajo', $id_ot);
 			$query = $this->db->get();
 		

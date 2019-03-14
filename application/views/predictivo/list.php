@@ -596,11 +596,17 @@ function Refrescar(){
 </script>
 <!-- Datepicker -->
 <script>     
-  $("#fecha").datepicker({
-    Format: 'dd/mm/yy',
-    startDate: '-3d'
-    //firstDay: 1
-  }).datepicker("setDate", new Date());
+  // $("#fecha").datepicker({
+  //   Format: 'yy-mm-dd',
+  //   startDate: '-3d'
+  //   //firstDay: 1
+  // }).datepicker("setDate", new Date());
+  /* input con horas minutos y segundos */
+  $("#fecha").datetimepicker({
+    format: 'YYYY-MM-DD',
+    locale: 'es',
+  });
+
 </script>
 
 <!-- Modal Editar -->
@@ -667,7 +673,8 @@ function Refrescar(){
               </div> 
               <div class="col-xs-12 col-sm-6 col-md-4">
                 <label for="vfecha">Fecha <strong style="color: #dd4b39">*</strong>:</label>
-                <input type="text" class="datepicker form-control fecha" id="fecha" name="vfecha" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>
+                <!-- <input type="text" class="datepicker form-control fecha" id="fecha" name="vfecha" value="<?php //echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/> -->
+                <input type="text" class="form-control fecha" id="fecha" name="vfecha" size="27"/>
               </div>                        
               <div class="col-xs-12 col-sm-6 col-md-4">
                 <label for="periodo">Periodo <strong style="color: #dd4b39">*</strong>:</label>
