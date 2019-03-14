@@ -131,7 +131,7 @@ $(document).ready(function(event) {
             },
         
       error: function(result){
-            
+              
               console.log(result);
             },
       dataType: 'json'
@@ -546,6 +546,8 @@ function guardar(){
                 
           url: 'index.php/Predictivo/updatePredictivo',  
           success: function(data){
+            WaitingClose("Guardando...");
+            $('#modalSale').modal('hide');
             console.log("exito");   
             Refrescar();
           },
