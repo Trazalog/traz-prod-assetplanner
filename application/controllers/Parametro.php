@@ -44,7 +44,7 @@ class Parametro extends CI_Controller {
 	        }
 			echo json_encode($arre );
 		}
-		else echo "nada";
+		else echo json_encode(array());
 	}
 	// trae datos para la edicion
 	public function editar(){
