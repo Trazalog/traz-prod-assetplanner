@@ -54,14 +54,17 @@ class BPM
   }
 
   // Comentarios
-  public function ObtenerComentariosBPM(){
-    $parametros = $this->CI->Bonitas->conexiones();
-    $param = stream_context_create($parametros);
-
+  public function ObtenerComentarios(){
+    //CONTEXTO
+    $parametros = $this->LoggerAdmin();
+		$param = stream_context_create($parametros);
+		
+		//URL Y ENVIO
     $processInstance = 'processInstanceId%3D'.$this->caseId;
-		$comentarios = file_get_contents(BONITA_URL.'API/bpm/comment?f='.$processInstance.'&o=postDate%20DESC&p=0&c=200&d=userId',false,$param);
-		return json_decode($comentarios,true);
-    //return $this->Tareas->ObtenerComentariosBPM($caseId,$param);
+		$result = file_get_contents(BONITA_URL.'API/bpm/comment?f='.$processInstance.'&o=postDate%20DESC&p=0&c=200&d=userId',false,$param);
+		
+		//RETORNO RESULTADO
+		return json_decode($result,true);
   }		
   
   public function GuardarComentario($comentario){

@@ -135,14 +135,16 @@
 											?>
 										</div>
 									</div>
+
+	
 									<!-- TAB PANEL -->
 									<div role="tabpanel"
 										<?php echo ($device == 'android' ? 'class= "hidden"' :'class= "tab-pane"') ?>
 										id="vista_global">
 										<div class="panel-body">
-											<div class="panel panel-primary">
-
-											</div>
+										
+												<?php echo timeline($timeline) ?>
+										
 										</div>
 									</div>
 								</div>
