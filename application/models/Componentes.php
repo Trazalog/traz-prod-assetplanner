@@ -131,23 +131,28 @@ class Componentes extends CI_Model
         }	
 	}	
 
-  // Trae componentes segun empresa (no equipos)
+ 
+	// Trae componentes segun empresa (no equipos)
 	function getcomponente(){	
 		$userdata = $this->session->userdata('user_data');
 		$empId    = $userdata[0]['id_empresa'];
-		$this->db->select('componentes.*, marcasequipos.marcadescrip');    	
+
+		$this->db->select('CONCAT(descripcion,\' - \',marcadescrip,\' - \', informacion) AS label, 
+											id_componente AS value', FALSE);    	
 		$this->db->from('componentes');
 		$this->db->join('marcasequipos', 'componentes.marcaid=marcasequipos.marcaid');
 		$this->db->where('componentes.id_empresa', $empId);
 		$this->db->where('componentes.estado !=', 'AN');
-		$this->db->order_by('descripcion');
+		$this->db->order_by('label', 'ASC');
 		$query = $this->db->get();
+		
 		if($query->num_rows()>0){
-				return $query->result();
+			return $query->result_array(); 
 		}
 		else{
-				return false;
-		}	
+			return array();
+		} 
+		
 	}
     
     // Trae componentes segun empresa (no equipos)
