@@ -51,7 +51,7 @@ class BPM
     }
     array_multisort($ord, SORT_DESC, $array);
     return $array;
-}
+  }
 
   // Comentarios
   public function ObtenerComentariosBPM(){
@@ -79,17 +79,109 @@ class BPM
     
     echo json_encode($response);
   }	
-  
 
+  public function ObtenerUsuarios(){
+    $parametros = $this->LoggerAdmin();
+		$parametros["http"]["method"] = "GET";		 
+    $param = stream_context_create($parametros);
+    
+		$resource = 'API/identity/user?p=0&c=50';	 	
+	 	$url = BONITA_URL.$resource;
+		$usrs = file_get_contents($url, false, $param);
+    return json_decode($usrs,true);
+	}
+	
+	public function ObtenerTaskidXNombre($case_id,$nombre){
+		$parametros = $this->LoggerAdmin();
+		$parametros["http"]["method"] = "GET";		 
+		$param = stream_context_create($parametros);
+		
+		$actividades = $this->ObtenerActividades($case_id,$param);
+		if($actividades == null) return 0;
+
+		for ($i=0; $i < count($actividades); $i++) { 				
+			if ($actividades[$i]["displayName"] == $nombre) {
+				return $actividades[$i]["id"];
+			}
+		}
+		return 0;
+	}
+
+  public function setUsuario($tarea_id, $user_id){
+		$parametros = $this->LoggerAdmin();
+		$parametros["http"]["method"] = "PUT";
+		$contract = array (
+			"assigned_id"	=>	$user_id
+		);				
+
+		$parametros["http"]["content"] = json_encode($contract);
+		$param = stream_context_create($parametros);
+
+		try {
+
+			$resource = 'API/bpm/humanTask/';
+			$url = BONITA_URL.$resource.$tarea_id;
+
+			$body = file_get_contents($url, false, $param);
+			$response = $this->parseHeaders( $http_response_header);
+			$code = $response['response_code'];
+			if($code<300){
+				return ['status'=>true, 'msj'=>'OK', 'code'=>$code];
+			}else {
+				return ['status'=>false, 'msj'=> ASP_0100.' | '.json_decode($body), 'code'=>'ERROR_BPM('.$code.')'];
+			}
+
+		}catch (Exception $e) {
+			var_dump($e->getMessage());
+		 }
+	
+	}
+
+	function CerrarTareaBPM($idTarBonita,$data=null){
+		// trae la cabecera
+		$parametros = $this->LoggerAdmin();
+		// Cambio el metodo de la cabecera a "PUT"
+		$parametros["http"]["method"] = "POST";
+		if($data)$parametros["http"]["content"] = json_encode($data);
+		// Variable tipo resource referencia a un recurso externo.
+		$param = stream_context_create($parametros);
+
+		//SEND
+		$method = '/execution';
+		$resource = 'API/bpm/userTask/';
+		$url = BONITA_URL.$resource.$idTarBonita.$method;
+		$body = @file_get_contents($url, false, $param);
+		$response = $this->parseHeaders( $http_response_header);
+
+		$code = $response['response_code'];
+		if($code<300){
+			return ['status'=>true, 'msj'=>'OK', 'code'=>$code];
+		}else {
+			return ['status'=>false, 'msj'=> ASP_0100.' | '.json_decode($body), 'code'=>'ERROR_BPM('.$code.')'];
+		}
+	}
+
+	function parseHeaders( $headers ){
+		$head = array();
+		foreach( $headers as $k=>$v ){
+			$t = explode( ':', $v, 2 );
+			if( isset( $t[1] ) )
+				$head[ trim($t[0]) ] = trim( $t[1] );
+			else{
+				$head[] = $v;
+				if( preg_match( "#HTTP/[0-9\.]+\s+([0-9]+)#",$v, $out ) )
+					$head['response_code'] = intval($out[1]);
+			}
+		}
+		return $head;
+	}
 
   // TODO: SACAR DE ACA Y ACCEDER A TRAVES DE MODELO BONITAS
   /* FUNCIONES DE BPM */
   function LoggerAdmin(){	
 
-		//$userdata = $this->session->userdata('user_data');
-		//$usrNick= $userdata[0]["usrNick"];
 
-		$usrNick = 'mantenedor1';
+		$usrNick = 'planificador1';
 		//dump_exit($userdata);
 		// Array de parametros (cabecera HTTP)
 		$opciones = array(
@@ -102,10 +194,59 @@ class BPM
 
 		$contexto = stream_context_create($opciones);
 
-		// Abre el fichero usando las cabeceras HTTP establecidas arriba
-			//  file_get_contents('http://35.239.41.196:8080/bonita/loginservice?username=admin&password=bpm&redirect=false', false, $contexto);
+			$data = array(
+					'username'=>$usrNick,
+					'password'=>'bpm',
+					'redirect'=>'false'
+					);
+			$url = http_build_query( $data );
+			$url = BONITA_URL.'loginservice?'.$url;
+			file_get_contents($url, false, $contexto);	
+
+
+		$cookies = array();
+		foreach ($http_response_header as $hdr) {
+		    if (preg_match('/^Set-Cookie:\s*([^;]+)/', $hdr, $matches)) {
+		        parse_str($matches[1], $tmp);
+		        $cookies += $tmp;
+		    }
+		}
+
+		// extrae cookies para que sea dinamico el cambio
+			$idsesion      = $cookies['JSESSIONID'];
+			$bonita_tenant = $cookies['bonita_tenant'];
+			$apiToken      = $cookies['X-Bonita-API-Token'];		
+
+			$parametros = array(
+			  'http'=>array(
+			    'method'=>"GET",
+			    'header'=> 	
+				"X-Bonita-API-Token: ".$apiToken."\r\n".
+			    "Cookie: JSESSIONID=".$idsesion."\r\n".
+			    			"X-Bonita-API-Token=".$apiToken."\r\n".
+			    			"bonita_tenant=".$bonita_tenant."\r\n".
+							"Content-Type: application/json"."\r\n"	
+			  )
+			);
 			
-			 //file_get_contents('http://192.168.100.112:8080/bonita/loginservice?username=ernesto.clavel&password=bpm&redirect=false', false, $contexto);	
+			return $parametros;	
+	}
+  /* ./ FUNCIONES DE BPM */
+  function conexiones(){	
+
+		$userdata = $this->session->userdata('user_data');
+		$usrNick= $userdata[0]["usrNick"];
+
+		// Array de parametros (cabecera HTTP)
+		$opciones = array(
+		  'http'=>array(
+		    'method'=>"POST",
+		    'header'=>"Path=/bonita". 
+		               "HttpOnly"						 			
+		  )
+		);
+
+		$contexto = stream_context_create($opciones);
 
 			$data = array(
 					'username'=>$usrNick,
@@ -127,7 +268,6 @@ class BPM
 
 		// parametro con cokies para comprobar
 			// $jsoncokies = json_encode($cookies);
-			// echo "<pre>";
 			// var_dump($jsoncokies);	
 
 		// extrae cookies para que sea dinamico el cambio
@@ -154,5 +294,4 @@ class BPM
 
 		//return $param;	
 	}
-  /* ./ FUNCIONES DE BPM */
 }

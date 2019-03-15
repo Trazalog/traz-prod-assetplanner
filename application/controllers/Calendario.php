@@ -378,27 +378,27 @@ class Calendario extends CI_Controller {
 			}
 
 			$datos2 = array(
-											'id_tarea'      => $id_tarea,// id de tarea a realizar(tabla tareas)
-											'nro'           => 1,//por defecto( no se usa)
-											'fecha'         => date('Y-m-d'),				
-											'fecha_program' => $fec_programacion,
-											'fecha_inicio'  => $fecha_inicio,
-											'descripcion'   => $descripcion,
-											'cliId'         => 1,//por defecto( no se usa)
-											'estado'        =>'C',
-											'id_usuario'    => $usrId,
-											'id_usuario_a'  => $usrId,
-											'id_usuario_e'  => 1,
-											'id_sucursal'   => 1,
-											'id_solicitud'  => $id_solicitud,// id prev-correct-back-predict
-											'tipo'          => $tipo,// tipo solicitud (prev-correct-back-predict )
-											'id_equipo'     => $equipo,
-											'duracion'      => $duracion,
-											'id_tareapadre' => $id_solicitud,//solic que genera la 1º OT y las repetitivas
-											'id_empresa'    => $empId,
-											'lectura_programada' => $lectura_programada,
-											'lectura_ejecutada'  => $lectura_ejecutada,
-											);
+				'id_tarea'      => $id_tarea,// id de tarea a realizar(tabla tareas)
+				'nro'           => 1,//por defecto( no se usa)
+				'fecha'         => date('Y-m-d'),				
+				'fecha_program' => $fec_programacion,
+				'fecha_inicio'  => $fecha_inicio,
+				'descripcion'   => $descripcion,
+				'cliId'         => 1,//por defecto( no se usa)
+				'estado'        =>'C',
+				'id_usuario'    => $usrId,
+				'id_usuario_a'  => 1,
+				'id_usuario_e'  => 1,
+				'id_sucursal'   => 1,
+				'id_solicitud'  => $id_solicitud,// id prev-correct-back-predict
+				'tipo'          => $tipo,// tipo solicitud (prev-correct-back-predict )
+				'id_equipo'     => $equipo,
+				'duracion'      => $duracion,
+				'id_tareapadre' => $id_solicitud,//solic que genera la 1º OT y las repetitivas
+				'id_empresa'    => $empId,
+				'lectura_programada' => $lectura_programada,
+				'lectura_ejecutada'  => $lectura_ejecutada,
+				);
 			//dump($datos2, 'datos');
 			
 			if ($event_tipo == '1') // si el evento es unico lo guarda

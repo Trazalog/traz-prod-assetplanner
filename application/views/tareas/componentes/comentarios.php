@@ -1,5 +1,3 @@
-
- 
 <div class="panel panel-primary">
 	<div class="panel-heading">Comentarios</div>
 	<div class="panel-body" style="max-height: 500px;overflow-y: scroll;">

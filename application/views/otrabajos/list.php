@@ -1,4 +1,4 @@
-﻿<input type="" id="permission" value="<?php echo $permission;?>">
+﻿<input type="hidden" id="permission" value="<?php echo $permission ?>">
 <section class="content">
   <div class="row">
     <div class="col-xs-12">
@@ -45,7 +45,7 @@
                         $id_equipo   = $a['id_equipo'];
                         $causa       = $a['descripcion'];
                         $idsolicitud = $a['id_solicitud'];
-                        echo '<tr id="'.$id.'" class="'.$id.'" data-id_equipo="'.$id_equipo.'" data-causa="'.$causa.'" data-idsolicitud="'.$idsolicitud.'">';
+                        echo '<tr id="'.$id.'" class="'.$id.' ot-row" data-id_equipo="'.$id_equipo.'" data-causa="'.$causa.'" data-idsolicitud="'.$idsolicitud.'">';
       	                echo '<td>';
                         if (strpos($permission,'Del') !== false) {
                           echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar" data-toggle="modal" data-target="#modalaviso"></i>';
@@ -104,6 +104,10 @@
 </section><!-- /.content -->
 
 <script>
+var sol_id;
+$('.ot-row').on('click',function(){
+  sol_id = $(this).data('idsolicitud');
+});
 // cargo plugin DateTimePicker
 $('#fechaEntrega, #fecha_inicio1, #fecha_entrega1').datetimepicker({
   format: 'YYYY-MM-DD H:mm:ss', //format: 'YYYY-MM-DD', // es igaul a campo date
@@ -540,67 +544,60 @@ $(".fa-thumb-tack").click(function (e) {
 });
 
 // llena select usuario en modal Asignar OT - Ok
-function traer_usuario(id_usuario){
-  $("#usuario1").html("");
-  $.ajax({
-    data: {},
-    dataType: 'json',
-    type: 'POST',
-    url: "Otrabajo/getusuario",
-    success: function (data) {
-      $('#usuario1').text("");
-      for(var i=0; i < data.length ; i++) 
-      {
-        var selectAttr = '';
-        if(data[i]['usrId'] == id_usuario) { var selectAttr = 'selected';}
-        var nombre = data[i]['usrName']+' '+data[i]['usrLastName'];
-        var opcion = "<option value='"+data[i]['usrId']+"' "+selectAttr+">" +nombre+ "</option>";
-        $('#usuario1').append(opcion); 
-      }
-    },
-    error : function (data){
-      console.error('Error al traer usuarios en modal Asignar OT');
-      console.table(data);
-    },
-  });
-}
+// function traer_usuario(id_usuario){
+//   $("#usuario1").html("");
+//   $.ajax({
+//     data: {},
+//     dataType: 'json',
+//     type: 'POST',
+//     url: "Otrabajo/getusuario",
+//     success: function (data) {
+//       $('#usuario1').text("");
+//       for(var i=0; i < data.length ; i++) 
+//       {
+//         var selectAttr = '';
+//         if(data[i]['usrId'] == id_usuario) { var selectAttr = 'selected';}
+//         var nombre = data[i]['usrName']+' '+data[i]['usrLastName'];
+//         var opcion = "<option value='"+data[i]['usrId']+"' "+selectAttr+">" +nombre+ "</option>";
+//         $('#usuario1').append(opcion); 
+//       }
+//     },
+//     error : function (data){
+//       console.error('Error al traer usuarios en modal Asignar OT');
+//       console.table(data);
+//     },
+//   });
+// }
 
 // 
 function orden(){
-  console.log("si guardo ");
+
   var id_orden = $('#id_orden').val();
-  var nro = $('#nro').val();
-  var fecha_inicio = $('#fecha_inicio').val();
   var fecha_entrega = $('#fecha_entrega').val();
   var usuario= $('#usuario1').val();
-  var estado= $('#estado').val();
   var cliente = $('#id_cliente').val();
-  var parametros = {
-      //'id_orden': id_orden,
-      'nro': nro,
-      'fecha_inicio': fecha_inicio,
-      'fecha_entrega': fecha_entrega,
-      'id_usuario_a': usuario,
-      'estado': 'As',     
-      'cliId': cliente,
-  };
-  console.log(parametros);
-  console.log(id_orden);
+  var task_id = sessionStorage.getItem('task_id');
+  var case_id = sessionStorage.getItem('case_id');
+  
+  console.log("Guardando>> OT: "+id_orden+" | SOID: "+sol_id+" | USER:"+usuario);
+
   $.ajax({
       type: 'POST',
-      data: { id_orden:id_orden, fecha_entrega:fecha_entrega, usuario:usuario},
+      data: { id_orden:id_orden, fecha_entrega:fecha_entrega, usuario:usuario, sol_id:sol_id,case_id:case_id, task_id: task_id},
       url: 'index.php/Otrabajo/guardar', 
+      dataType: 'json',
+
       success: function(data){
-              console.log(data);
-              regresa1();
-             
-            },
+          
+        sessionStorage.clear();
+        regresa1();
+        
+      },
       error: function(result){
             
-            console.log(result);
-           
-          },
-          dataType: 'json'
+        console.log("ERROR>> "+result);
+        
+      }
   });              
 }
 
@@ -1577,7 +1574,14 @@ $(".fa-cart-plus").click(function (e) {
             <input type="text" id="fecha_entrega" name="fecha_entrega" class="form-control datepicker" / >
           </div>
           <div  class="col-xs-12">Usuario:
-            <select id="usuario1" name="usuario1" class="form-control"></select>
+            <select id="usuario1" name="usuario1" class="form-control">
+              <option value="0">Seleccionar...</option>
+              <?php 
+                foreach ($list_usuarios as $o) {
+                  echo '<option value="'.$o['id'].'">'.$o['firstname']." ".$o['lastname'].'</option>';
+                }
+              ?>
+            </select>
             <input type="hidden" id="id_usuario" name="id_usuario">
           </div>
         </div><!-- /.row-->   

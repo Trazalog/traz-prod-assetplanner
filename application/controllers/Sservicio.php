@@ -88,7 +88,7 @@ class Sservicio extends CI_Controller {
 				$parametros["http"]["method"] = "POST";
 				$contract = array (
 					"idSolicitudServicio"	=>	$id_solServicio,
-												"idOT"  => 	0
+					"idOT"  => 	0
 				);					
 				$parametros["http"]["content"] = json_encode($contract);
 				$param = stream_context_create($parametros);
