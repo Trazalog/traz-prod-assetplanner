@@ -92,15 +92,18 @@ class Componente extends CI_Controller {
 	// Trae componentes segun empresa (no equipos)
 	public function getcomponente(){	
 		$compo = $this->Componentes->getcomponente();	
-		if($compo){	
-			$arre = array();
-	        foreach ($compo as $row ) 
-	        {   
-	           $arre[] = $row;
-	        }
-			echo json_encode($arre);
-		}
-		else echo "nada";
+
+		//dump($compo, 'cmpnentes:');
+		// if($compo){	
+		// 	$arre = array();
+	  //       foreach ($compo as $row ) 
+	  //       {   
+	  //          $arre[] = $row;
+	  //       }
+		// 	echo json_encode($arre);
+		// }
+		// else echo "nada";
+		echo json_encode($compo);
 	}
 
 	// Trae sistemas

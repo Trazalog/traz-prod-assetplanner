@@ -531,21 +531,21 @@ class Ordenservicios extends CI_Model {
 
     function validaOperarios($data){
         
-        $query = $this->db->query("SELECT CONCAT(`usrLastName`,', ',`usrname`)  as `operario` FROM `sisusers`");
-        $recurso = (string)$data['operario'];
-        
-        foreach($query->result_array() as $row){                
-             
-            $usuario = (string)$row['operario'];
-            
-            if (strcasecmp ($usuario , $recurso) == 0) { 
-                $resp['resp'] = true;                
-               return $resp;  
-            }  
-            
-        }
-        $resp['resp'] = false;
-        return $resp;
+			$query = $this->db->query("SELECT CONCAT(`usrLastName`,', ',`usrname`)  as `operario` FROM `sisusers`");
+			$recurso = (string)$data['operario'];
+			
+			foreach($query->result_array() as $row){                
+						
+					$usuario = (string)$row['operario'];
+					
+					if (strcasecmp ($usuario , $recurso) == 0) { 
+							$resp['resp'] = true;                
+							return $resp;  
+					}  
+					
+			}
+			$resp['resp'] = false;
+			return $resp;
     }
 
 
