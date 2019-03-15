@@ -178,9 +178,9 @@ echo '<th>?</th>'
   function verTarea(idTarBonita){
 
     WaitingOpen();
-
     $(".content").load("<?php echo base_url(); ?>index.php/Tarea/detaTarea/<?php echo $permission; ?>/" + idTarBonita);
     WaitingClose();
+    
   }
 
 /////////// TERMINAR TAREA   ///////

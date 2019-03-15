@@ -16,7 +16,7 @@ class Otrabajo extends CI_Controller {
 	 */
 	public function index($permission) // Ok
 	{
-		$data['list']       = $this->Otrabajos->otrabajos_List();
+		$data['list'] = $this->Otrabajos->otrabajos_List();
 		$data['permission'] = $permission;
 		$this->load->view('otrabajos/dash', $data);
 	}
@@ -26,10 +26,12 @@ class Otrabajo extends CI_Controller {
 	 *
 	 * @param 	String 	$permission 	Permisos de ejecución.
 	 */
-	public function listOrden($permission) // Ok
+	public function listOrden($permission,$ot=null) // Ok
 	{
-		$data['list']       = $this->Otrabajos->otrabajos_List();
+		$this->load->library('BPM',null);
+		$data['list']    = $this->Otrabajos->otrabajos_List($ot);
 		$data['permission'] = $permission;
+		$data['list_usuarios'] = $this->bpm->ObtenerUsuarios();					
 		$this->load->view('otrabajos/list', $data);
 	}
 
@@ -118,7 +120,7 @@ class Otrabajo extends CI_Controller {
 			'descripcion'   => $descripcion,
 			'estado'        => 'C',
 			'id_usuario'    => $usrId,
-			'id_usuario_a'  => 1,
+			'id_usuario_a'  => $usrId,
 			'id_sucursal'   => $sucursal,
 			'id_proveedor'  => $proveedor,
 			'id_equipo'     => $equipo,
@@ -318,23 +320,42 @@ class Otrabajo extends CI_Controller {
   	}
 
   	public function guardar(){	
-		
-		$id=$_POST['id_orden'];
-		$fee=$_POST['fecha_entrega'];
-		$us=$_POST['usuario'];
 
+		$case_id = $this->input->post('case_id');
+		$task_id = $this->input->post('task_id');
+		$user_id = $this->input->post('usuario');
+
+		//CERRAR TAREA EN BONITA  
+		$this->load->library('BPM',0);
+
+		//CERRAR TAREA BPM
+		$result = $this->bpm->CerrarTareaBPM($task_id);
+		if(!$result['status']) {echo $result['msj'];return;}
+
+		//OBTENER TASK_ID EJECTURAR OT
+		$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Ejecutar OT');
+		if($task_id == 0) {echo ASP_0100; return;}
+
+		//ASIGNO USUARIO A TAREA EJECTURA OT
+		$result = $this->bpm->setUsuario($task_id, $user_id);
+		if(!$result['status']) {echo $result['msj'];return;}
+		
+		//GUARDAR DATOS DE OT EN BD MYSQL	
+		$id = $_POST['id_orden'];
+		$fee = $_POST['fecha_entrega'];
+	
 		$uno=substr($fee, 0, 2); 
         $dos=substr($fee, 3, 2); 
         $tres=substr($fee, 6, 4); 
-        $resul = ($tres."/".$dos."/".$uno); 
+        $resul = ($tres."-".$dos."-".$uno); 
 		$datos = array(	'fecha_entrega'=>$resul,
 						'estado'=>'As',
-						'id_usuario_a'=>$us
+						'id_usuario_a'=>$user_id
 						);
 		$result = $this->Otrabajos->update_guardar($id, $datos);		
+		
 		if($result >0)
 		{   echo 1;
-			
 		}
 		else echo "error al insertar";
 	}
