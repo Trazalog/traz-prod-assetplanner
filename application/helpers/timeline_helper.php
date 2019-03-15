@@ -2,7 +2,11 @@
 
 if(!function_exists('timeline')){
     function timeline($timeline){
-                echo '<ul class="timeline">';
+                echo '<div class="panel panel-primary">
+                <div class="panel-heading">Línea de Tiempo</div>
+                <div class="panel-body" style="max-height: 500px;overflow-y: scroll;">
+                
+                <div class="container" ><ul class="timeline">';
                echo '<h2 style="margin-left:50px;">Actividades Pendientes</h2>';
                 foreach ($timeline['listAct'] as $f) {       
                     echo '<li>
@@ -34,7 +38,7 @@ if(!function_exists('timeline')){
                             <div class="timeline-panel">
                                     <div class="timeline-heading">
                                     <h4 class="timeline-title">'.$f['displayName'].'</h4>
-                                    <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i> Fecha Inicio: '.date_format(date_create($f['assigned_date']),'d/m/Y H:i').' hs / Fecha Fin: '.date_format(date_create($f['archivedDate']),'d/m/Y H:i').' hs</small></p>
+                                    <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i> Fecha Inicio: '.date_format(date_create($f['assigned_date']),'d/m/Y H:i').' hs | Fecha Fin: '.date_format(date_create($f['archivedDate']),'d/m/Y H:i').' hs</small></p>
                                     </div>
                                     <div class="timeline-body">';
                                     if(array_key_exists ( 'assigned_id' , $f )){
@@ -56,7 +60,7 @@ if(!function_exists('timeline')){
                                 <h4 class="timeline-title">Inicio del Proceso</h4>
                         </div>
                 </div>
-        </li></ul></div></div></ul><!-- estilos de linea de tiempo -->
+        </li></ul></div></div></ul></div></div><!-- estilos de linea de tiempo -->
         <style type="text/css">
         .timeline {
         list-style: ;

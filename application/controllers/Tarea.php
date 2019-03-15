@@ -210,11 +210,17 @@ class Tarea extends CI_Controller {
 					$data['subtareas'] = $this->Tareas->getSubtareas($id_OT);
 				}	
 
-				// comentarios y linea de tiempo desde libreria					
-					$idCase = array('caseId'=>$data['TareaBPM']["caseId"]);
-					$this->load->library('BPM',$idCase);
-					$data['timeline'] = "";//$this->bpm->ObtenerLineaTiempo();	
-					$data['comentarios'] = "";//$this->bpm->ObtenerComentarios();
+				//LIBRERIA BPM
+				$case_id = $data['TareaBPM']["caseId"];
+				$case = array('caseId'=>$case_id);
+				$this->load->library('BPM',$case);
+
+				// LINEA DE TIEMPO 			
+				$data['timeline'] =$this->bpm->ObtenerLineaTiempo();	
+
+				//CARGAR VISTA COMENTARIOS 
+				$data_aux = ['case_id'=>$case_id, 'comentarios'=>$this->bpm->ObtenerComentarios()];
+				$data['comentarios'] = $this->load->view('tareas/componentes/comentarios',$data_aux,true);
 					
 				switch ($data['TareaBPM']['displayName']) {
  
@@ -224,7 +230,7 @@ class Tarea extends CI_Controller {
 							break;
 					case 'Planificar Solicitud':					
 							$this->load->view('tareas/view_planificar', $data);
-							$this->load->view('tareas/scripts/tarea_std');													
+							$this->load->view('tareas/scripts/tarea_std');							 						
 							break;
 					case 'Asignar Responsable OT Urgente ':
 							$this->load->view('tareas/view_asignar', $data);

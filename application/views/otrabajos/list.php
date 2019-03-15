@@ -211,20 +211,14 @@ function regresa1(){
 
 // Guarda una nueva OT - Ok
 function guardaragregar(){
-  //console.log("Guarda OT");
+  console.log("Guardando OT...");
+  
   var num           = $('#nro1').val();
   var fecha_entrega = $('#fechaEntrega').val();
   var descripcion   = $('#vsdetal').val();
   var sucursal      = $('#suci').val();
   var proveedor     = $('#prov').val();
   var equipo        = $('#equipo').val();;
-  //console.log("Datos a guardar");
-  //console.log(num);
-  //console.log(fecha_entrega);
-  //console.log(descripcion);
-  //console.log(sucursal);
-  //console.log(proveedor);
-  //console.log(equipo);
 
   var hayError = false; 
   $('#error').hide();

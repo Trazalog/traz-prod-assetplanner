@@ -39,9 +39,17 @@
 											
 											<div class="panel-body">
 
-												<?php
-												//dump($subtareas, 'subtareas: ');
+													<!-- botones Tomar y soltar tareas -->
+													<?php
+													echo "<button class='btn btn-block btn-success' id='btontomar' style='width: 100px; margin-top: 10px ;display: inline-block;' onclick='tomarTarea()'>Tomar tarea</button>";
+													echo "&nbsp"; 
+													echo "&nbsp"; 
+													echo "&nbsp";
+													echo "<button class='btn btn-block btn-danger grupNoasignado' id='btonsoltr' style='width: 100px; margin-top: 10px; display: inline-block;' onclick='soltarTarea()'>Soltar tarea</button>";											
+													echo "</br>"; 
+													echo "</br>"; 			
 												?>
+												
 												<input type="text" class="form-control hidden" id="asignado" value="<?php echo $TareaBPM["assigned_id"] ?>"
 												>
 												<form>
@@ -157,30 +165,24 @@
 
 										<div role="tabpanel" class="tab-pane" id="profile">
 											<div class="panel-body">
-												<div class="panel panel-primary" id="panel-comentarios">
+												
 															
 															<!-- COMENTARIOS -->
+															<?php echo $comentarios ?>
+
 														
-												</div>
+
 											</div>
 										</div>
 										
 										<div role="tabpanel" <?php echo ($device == 'android' ? 'class= "hidden"' :'class= "tab-pane"') ?> id="messages" >							
 											
 											<div class="panel-body">
-												<div class="panel panel-primary">
-													<div class="panel-heading">Línea de Tiempo</div>
-													<div class="panel-body" style="max-height: 500px;overflow-y: scroll;">
-													
-													<div class="container" >
-														
+																			
 																<?php
 																	timeline($timeline);
 																?>
 						
-														</div>
-
-													</div>
 												</div>
 											</div>
 
@@ -212,11 +214,7 @@
 		$("#nota_pedido").load("<?php echo base_url(); ?>index.php/Notapedido/ObtenerNotasPedidosxOT/<?php echo $permission; ?>/"+iort);
 		
 	}
-	ObtenerComentarios();
-	function ObtenerComentarios(){
-		 $('#panel-comentarios').empty();
-		 $("#panel-comentarios").load("<?php echo base_url(); ?>index.php/Tarea/ObtenerComentariosBPM/"+$('#case').val());
-	}
+
 function validarFormularios(){
 	console.log('Validando Formularios...');
 	ban = true;

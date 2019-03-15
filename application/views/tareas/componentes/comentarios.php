@@ -1,3 +1,13 @@
+<input class="hidden" id="case_id" value="<?php echo $case_id ?>">
+<?php 
+  $userdata = $this->session->userdata('user_data');
+  $usrId = $userdata[0]['usrId'];     // guarda usuario logueado 
+  $usrName =  $userdata[0]['usrName'];
+  $usrLastName = $userdata[0]["usrLastName"];
+  
+  echo "<input type='text' class='hidden' id='usrName' value='$usrName' >";
+  echo "<input type='text' class='hidden' id='usrLastName' value='$usrLastName' >";
+?>
 <div class="panel panel-primary">
 	<div class="panel-heading">Comentarios</div>
 	<div class="panel-body" style="max-height: 500px;overflow-y: scroll;">
@@ -25,9 +35,9 @@
 	//Funcion COMENTARIOS
 	function guardarComentario() {
 		console.log("Guardar Comentarios...");
-		var id = <?php echo $case_id ?>;
+		var id = $('#case_id').val();
 		var nombUsr = $('#usrName').val();
-		var apellUsr = $('#usrLastName').val();;
+		var apellUsr = $('#usrLastName').val();
 		var comentario = $('#comentario').val();
 
 		$.ajax({

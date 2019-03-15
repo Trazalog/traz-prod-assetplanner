@@ -111,29 +111,11 @@
 										</div>
 
 										<div role="tabpanel" class="tab-pane" id="profile">
-											<div class="panel-body">
-												<div class="panel panel-primary">
-													<div class="panel-heading">Comentarios</div>
-													<div class="panel-body" style="max-height: 500px;overflow-y: scroll;">
-														<ul id="listaComentarios">
-															<?php 
-																foreach($comentarios as $f){
-
-																	if(strcmp($f['userId']['userName'],'System')!=0){
-																	echo '<hr/>';
-																	echo '<li><h4>'.$f['userId']['firstname'].' '.$f['userId']["lastname"].'<small style="float: right">'.date_format(date_create($f['postDate']),'H:i  d/m/Y').'</small></h4>';
-																	echo '<p>'.$f['content'].'</p></li>';
-																	}
-																}
-															?>
-														</ul>
-													</div>
-												</div>
-												<textarea id="comentario" class="form-control" placeholder="Nuevo Comentario..."></textarea>
-												<br />
-												<button class="btn btn-primary" id="guardarComentario" onclick="guardarComentario()">Agregar</button>
-											</div>
-										</div>
+									    	<div class="panel-body">
+											   <!-- COMENTARIOS -->
+											   <?php echo $comentarios ?>
+									    	</div>
+									  </div>
 										
 										<div role="tabpanel" <?php echo ($device == 'android' ? 'class= "hidden"' :'class= "tab-pane"') ?> id="messages" >							
 										<!-- <div role="tabpanel" class="tab-pane" id="messages" > -->

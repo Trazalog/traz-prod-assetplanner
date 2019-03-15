@@ -26,6 +26,7 @@
               <th style="text-align: center" class="hidden">Id Equipo</th>
               <th style="text-align: center" class="hidden">Id predictivo</th>
               <th style="text-align: center">OT</th>
+              <th style="text-align: center">ID Solic.</th>           
               <th style="text-align: center">Codigo</th>
               <th style="text-align: center">Causa</th>
               <!-- <th style="text-align: center">sector</th> -->
@@ -60,6 +61,8 @@
                 echo "<td style='text-align: center' class='hidden'>".$c['id_equipo']."</td>";
                       // 2 // id solicitud reparacion
                 echo "<td style='text-align: center' class='hidden'>".$c['id_solicitud']."</td>";
+
+                echo "<td style='text-align: center'>".$id_sol."</td>";
                       // 3 // codigo de equipo
                 echo "<td style='text-align: center'>".$c['codigo']."</td>";
                       // 4 // descripcion causa solicitud
@@ -262,6 +265,7 @@
               <th style="text-align: center" class="hidden">Id Equipo</th>
               <th style="text-align: center" class="hidden">Id Backlog</th>    
               <th style="text-align: center">OT</th>
+              <th style="text-align: center">ID Solic.</th>
               <th style="text-align: center">Codigo</th>
               <th style="text-align: center">Causa</th>
               <th style="text-align: center">Fecha</th>
@@ -296,6 +300,8 @@
                 echo "<td style='text-align: center' class='hidden'>".$b['id_equipo']."</td>";
                 // 2 // id solicitud reparacion
                 echo "<td style='text-align: center' class='hidden'>".$b['backId']."</td>"; 
+
+                echo "<td style='text-align: center'>".$b['sore_id']."</td>";
                 // 3 // codigo de equipo
                 echo "<td style='text-align: center'>".$b['codigo']."</td>";
                 // 4 // descripcion causa solicitud
