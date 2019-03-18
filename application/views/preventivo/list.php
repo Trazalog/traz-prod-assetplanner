@@ -829,7 +829,7 @@ $('#modalSale').on('hidden.bs.modal', function (e) {
                 <select id="periodo" name="periodo" class=" selectpicker form-control input-md">
                   <!--<option >Anual</option>- ->
                   <option value="0">Diario</option>
-                  <!--<option >Mensual</option>
+                  <option >Mensual</option>
                   <option >Periodos</option>
                   <option >Ciclos</option>
                   <option >Semestral</option>-->

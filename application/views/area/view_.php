@@ -55,10 +55,10 @@
   </div><!-- /.row -->
 </section><!-- /.content -->
 
-<script
->function guardararea(){
-      var descripcion=$('#descripcion').val();
-      var id_empresa=$('#id_empresa').val();
+<script>
+function guardararea(){
+    var descripcion=$('#descripcion').val();
+    var id_empresa=$('#id_empresa').val();
 
     var hayError = false;
     if($('#descripcion').val() == '' || $('#id_empresa').val() == '' )
@@ -69,7 +69,8 @@
       $('#error').fadeIn('slow');
       return;
     }
-    $('#error').fadeOut('slow');          $.ajax({
+    $('#error').fadeOut('slow');          
+    $.ajax({
              type: 'POST',
              data: {    "descripcion":descripcion,  "id_empresa":id_empresa },
              url: 'index.php/area/Guardar_area', 

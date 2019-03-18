@@ -825,19 +825,31 @@ class Equipos extends CI_Model {
     	 else{
     	     return true;
     	 }
-    }
+		}
+
+		// Guarda edicion de lectura
+		function setLecturaEdit($data){
+
+			$idLectura = $data["id_lectura"];
+			$lectura = $data["lectura"];			
+			$this->db->where('id_lectura', $idLectura);
+      $query = $this->db->update("historial_lecturas",array('lectura' =>$lectura));
+      return $query;  
+		}
+
     /// Trae lecturas de equipo por id de equipo
     function getHistoriaLecturas($data){
     	$id = $data['idequipo'];
     	$userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];     // guarda empresa logueadda
 
-    	$this->db->select('historial_lecturas.id_equipo,
-				    	historial_lecturas.lectura,
-				    	historial_lecturas.fecha,
-				    	historial_lecturas.observacion,
-				    	historial_lecturas.operario_nom AS operario,
-				    	historial_lecturas.turno');
+        $this->db->select('historial_lecturas.id_lectura,
+                        historial_lecturas.id_equipo,
+												historial_lecturas.lectura,
+												historial_lecturas.fecha,
+												historial_lecturas.observacion,
+												historial_lecturas.operario_nom AS operario,
+												historial_lecturas.turno');
     	$this->db->from('historial_lecturas');
     	$this->db->join('equipos', 'equipos.id_equipo = historial_lecturas.id_equipo');
     	$this->db->where('historial_lecturas.id_equipo', $id);
