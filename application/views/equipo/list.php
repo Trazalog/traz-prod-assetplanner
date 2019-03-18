@@ -684,43 +684,7 @@ var idglob       = "";
       $("input#estado").val('RE'); // Estado Reparacion
     }
   
-  // Datatable - Chequeado
-  $('#sales').DataTable({
-    "aLengthMenu": [ 10, 25, 50, 100 ],
-    "columnDefs": [ {
-        "targets": [ 0 ], 
-        "searchable": false
-    },
-    {
-        "targets": [ 0 ], 
-        "orderable": false
-    } ],
-    "order": [[1, "asc"]],
-  });
-  $('#tblhistorial').DataTable({
-    "aLengthMenu": [ 10, 25, 50, 100 ],
-      "columnDefs": [ {
-          "targets": [ 0 ], 
-          "searchable": false
-      },
-      {
-          "targets": [ 0 ], 
-          "orderable": false
-      } ],
-      "order": [[1, "asc"]],
-  });
-  $('#tablaempresa').DataTable({
-    "aLengthMenu": [ 10, 25, 50, 100 ],
-    "columnDefs": [ {
-        "targets": [ 0 ], 
-        "searchable": false
-    },
-    {
-        "targets": [ 0 ], 
-        "orderable": false
-    } ],
-    "order": [[1, "asc"]],
-  });
+  
 //});
 
 // Completa campos y select para Editar equipos - Listo
@@ -1106,8 +1070,35 @@ function click_co(id_equipo){
     });   
   });
 
+
+  function recargarTabla(){
+    $("tr.registro").remove();
+    var $id_equipo = $('#id_Equipo_modal').val();
+
+    $.ajax({
+      type: 'POST',
+      data: { idequipo: $id_equipo},
+      url: 'index.php/Equipo/getHistoriaLect', 
+      success: function(data){   
+        console.table(data);
+        llenarModal(data);
+      },
+      error: function(result){
+        console.log(result);
+      },
+      dataType: 'json'
+    }); 
+  }
+
+
+
+
+
    /// llena modal historial de lecturas
   function llenarModal(data){
+
+    $('#id_Equipo_modal').val(data[0]['id_equipo']);
+
     console.table(data);
     if(Array.isArray(data) && data.length) {
       console.log("El equipo SI tiene historial de lecturas");
@@ -1116,6 +1107,7 @@ function click_co(id_equipo){
       $('#tblhistorial').DataTable().clear().draw();
       for (var i=0; i< data.length; i++) {      
         $('#tblhistorial').DataTable().row.add( [
+          '<i class="fa fa-fw fa-pencil text-light-blue editLectura" style="cursor: pointer; margin-left: 15px;" title="Editar lectura" data-idLectura="'+data[i]['id_lectura']+'"></i>',
           data[i]['lectura'],
           data[i]['fecha'],
           data[i]['turno'],
@@ -1129,6 +1121,55 @@ function click_co(id_equipo){
       console.log("El equipo NO tiene historial de lecturas"); 
     }
   }  
+
+
+  $(document).on("click",".editLectura",function(e){
+
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    $("#modalEditarLectura").modal('show');    
+    var idLectura = $(this).data("idlectura");
+    var lectura = $(this).parents("tr").find("td").eq(1).html();     
+    $('#idLecturaEdit').val(idLectura);
+    $('#lecturaEdit').val(lectura);  
+  });
+
+  function guardarEditLectura(){
+    $('#errorEditLectura').fadeOut('fast');
+    console.log('estoy guardando');   
+    var id_lectura = $('#idLecturaEdit').val();
+    var lectura = $('#lecturaEdit').val();
+   
+    if ( (id_lectura == "") || (lectura == "") ) {
+      $('#errorEditLectura').fadeIn('slow');
+      return;
+    }else{
+      $("#modalEditarLectura").modal('hide');
+      $.ajax({
+              type:"POST",
+              url: "index.php/Equipo/setLecturaEdit", 
+              data:{lectura,id_lectura},
+              success: function(data){                 
+                console.log("Guardado con exito...");
+                $("#modalEditarLectura").modal('hide');
+                recargarTabla();
+              },          
+              error: function(result){
+                $("#modalEditarLectura").modal('hide');
+                alert('Ocurrió un error en la Edición...');
+                  console.log(result);                 
+              },
+              dataType: 'json'
+      });
+
+    //   $('#modalectura').modal('hide');
+    //   $('#errorLectura').hide();
+    }
+
+
+  }
+
+
 
 
 
@@ -1852,6 +1893,50 @@ $('#modaleditar').on('hidden.bs.modal', function (e) {
   $('#content').empty();  
   $("#content").load("<?php echo base_url(); ?>index.php/Equipo/index/<?php echo $permission; ?>");
 })
+
+
+// Datatable - Chequeado
+  $('#sales').DataTable({
+    "aLengthMenu": [ 10, 25, 50, 100 ],
+    "columnDefs": [ {
+        "targets": [ 0 ], 
+        "searchable": false
+    },
+    {
+        "targets": [ 0 ], 
+        "orderable": false
+    } ],
+    "order": [[1, "asc"]],
+  });
+  $('#tblhistorial').DataTable({
+    "aLengthMenu": [ 10, 25, 50, 100 ],
+      "columnDefs": [ {
+          "targets": [ 0 ], 
+          "searchable": false
+      },
+      {
+          "targets": [ 0 ], 
+          "orderable": false
+      } ],
+      "order": [[1, "asc"]],
+  });
+  $('#tablaempresa').DataTable({
+    "aLengthMenu": [ 10, 25, 50, 100 ],
+    "columnDefs": [ {
+        "targets": [ 0 ], 
+        "searchable": false
+    },
+    {
+        "targets": [ 0 ], 
+        "orderable": false
+    } ],
+    "order": [[1, "asc"]],
+  });
+
+
+
+
+
 </script>
 
 
@@ -2200,10 +2285,12 @@ $('#modaleditar').on('hidden.bs.modal', function (e) {
       </div> <!-- /.modal-header  -->
 
       <div class="modal-body">
+        <input type="hidden" id="id_Equipo_modal">
         <label>Equipo: <span id="codEquipo"></span></label>  
         <table id="tblhistorial" class="table table-condensed table-responsive">
           <thead>                        
-            <tr>                          
+            <tr>      
+              <th>Edición</th>                    
               <th>Lectura</th>
               <th>Fecha</th>                
               <th>Operario</th>
@@ -2226,9 +2313,38 @@ $('#modaleditar').on('hidden.bs.modal', function (e) {
 </div>  <!-- /.modal fade -->
 <!-- / Modal Historial de Lecturas -->
 
-
-
-
+<!-- Modal Edicion de Lecturas --> 
+<div class="modal" id="modalEditarLectura">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>Editar Lectura</h4>
+      </div>
+      <form id="formAgregarAdjunto">
+        <div class="modal-body">
+          <div class="alert alert-danger alert-dismissable" id="errorEditLectura" style="display: none">
+            <h4><i class="icon fa fa-ban"></i> Error!</h4>
+            Por favor ingrese una nueva lectura antes de guardar...
+          </div>         
+          <form class="form-horizontal">
+            <div class="form-group">
+              <label for="lecturaEdit" class="col-sm-2 control-label">Nueva Lectura</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="lecturaEdit" placeholder="Ingrese nueva lectura...">
+                <input type="hidden" class="form-control" id="idLecturaEdit">
+              </div>
+            </div>  
+          </form>          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="btnAgregarEditar" onclick="guardarEditLectura()">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- / Modal Edicion de Lecturas -->
 
 <!-- Modal criticidad-->
 <div class="modal" id="modalcrit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
