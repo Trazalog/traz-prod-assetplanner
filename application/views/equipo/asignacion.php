@@ -136,23 +136,7 @@
     </div>
   </div>        
 </section>
-<!--<style type="text/css">
-  .no {
-  background: green;
-}
-</style>
-<script>
-$("td").each(function() {
-    var value = this.innerHTML;
-    console.log(value);
-    if (value === 'No' || value === 'NO' || value === 'no') {
-        $(this).parent('tr').addClass('no');
-    } 
-});
-</script>
-<style>
-    .table, .table>tr, .table>td { color: #A9A9A9 ;}
-</style>-->
+
 
 <script>
   var codglo= "";
@@ -362,46 +346,7 @@ function traer_usuarios(){
             dataType: 'json'
       });
 }
- /*$( function() {
-      var dataF = function () {
-          var tmp = null;
-          $.ajax({
-              'async': false,
-              'type': "POST",
-              'global': false,
-              'dataType': 'json',
-              'url': "Otrabajo/getusuario",
-              'success': function (data) {
-                  tmp = data;
-              }
-          });
-          return tmp;
-      }();
 
-      $(function() {
-          $(".nomusu").autocomplete({
-              source: dataF,
-              delay: 100,
-              minLength: 1,
-              focus: function(event, ui) {
-                  // prevent autocomplete from updating the textbox
-                  event.preventDefault();
-                  // manually update the textbox
-                  $(this).val(ui.item.label);
-              },
-              select: function(event, ui) {
-                  // prevent autocomplete from updating the textbox
-                  event.preventDefault();
-                  // manually update the textbox and hidden field
-                  $(this).val(ui.item.value);//label
-                  $("#nomusu").val(ui.item.label); //value
-                  //console.log("id articulo de orden insumo: ") 
-                  //console.log(ui.item.value);                
-              },
-              
-          });
-      });
-  } );*/
 //guardando usuario asignado
 function guardarmodif(){
 
@@ -415,7 +360,7 @@ function guardarmodif(){
         $.ajax({
                 type: 'POST',
                 data: { idtarea: idtarea, idusu:idusu },
-                url: 'index.php/Otrabajo/ModificarUsuario', //index.php/
+                url: 'index.php/Otrabajo/ModificarUsuario', /
                 success: function(data){
                         console.log(data);
                         
@@ -461,19 +406,13 @@ function guardarfecha(){
 }
 
 function regresa1(){
-//   var idusu= $('#nomusu').val();
- // no=idusu;
+
   var numord= $('#numord').val();
   no=numord;
   console.log(no);
 
-  //$('#content').empty(); //listOrden
-  //$('#modalSale').empty();  
-  //$('#modalfecha').empty(); 
   $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/cargartarea/<?php echo $permission; ?>/"+no+"");
-  //WaitingClose();
- // WaitingClose();
-  //WaitingClose();
+
 }
 
 

@@ -31,12 +31,14 @@ class Tarea extends CI_Controller {
 	}
 
 	public function Obtener_Subtareas(){
-		echo json_encode($this->Tareas->getSubtareas($this->input->post('tarea_std')));
+		$tarea_std = $this->input->post('tarea_std');
+		$data = $this->Tareas->ObtenerSubtareas($tarea_std);
+		echo json_encode($data);
 	}
 
 	public function Guardar_Subtareas(){
 		$datos = $this->input->post();
-		echo $this->Tareas->Guardar_Subtareas($datos);
+		echo $this->Tareas->Guardar_SubTareas($datos);
 	}
 
     public function Guardar_Tarea(){

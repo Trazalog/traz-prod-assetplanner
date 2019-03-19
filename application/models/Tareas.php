@@ -38,6 +38,14 @@ class Tareas extends CI_Model {
 		return $query;
 	}
 
+	function Guardar_SubTareas($data)
+	{
+		//$userdata           = $this->session->userdata('user_data');
+		//$data['id_empresa'] = $userdata[0]['id_empresa']; 	
+		$query  = $this->db->insert_batch('tbl_listarea', $data);
+		return $query;
+	}
+
 	function Modificar_Tareas($data)
 	{
 		$userdata           = $this->session->userdata('user_data');
@@ -92,17 +100,17 @@ class Tareas extends CI_Model {
 	}
 	// devuelve subtareas por 
 	function getSubtareas($idTareaSTD){
-		$this->db->select('tbl_listarea.id_listarea,
-											tbl_listarea.id_orden,
-											tbl_listarea.tareadescrip,
-											tbl_listarea.id_usuario,
-											tbl_listarea.fecha,
-											tbl_listarea.estado,
-											tbl_listarea.info_id,
-											tbl_listarea.id_subtarea,
-											asp_subtareas.tareadescrip AS subtareadescrip,
-											asp_subtareas.id_subtarea,
-											asp_subtareas.form_asoc');		
+		$this->db->select( 'tbl_listarea.id_listarea,
+							tbl_listarea.id_orden,
+							tbl_listarea.tareadescrip,
+							tbl_listarea.id_usuario,
+							tbl_listarea.fecha,
+							tbl_listarea.estado,
+							tbl_listarea.info_id,
+							tbl_listarea.id_subtarea,
+							asp_subtareas.tareadescrip AS subtareadescrip,
+							asp_subtareas.id_subtarea,
+							asp_subtareas.form_asoc');		
 		$this->db->from('tbl_listarea');
 		$this->db->join('asp_subtareas', 'asp_subtareas.id_subtarea = tbl_listarea.id_subtarea','left');
 		$this->db->where('tbl_listarea.id_orden',$idTareaSTD);
@@ -112,14 +120,13 @@ class Tareas extends CI_Model {
 		}else{
 			return array();
 		}
-
-
-
-
-
-
-
 	}
+
+	function ObtenerSubtareas($tarea_std){
+		$this->db->where('id_tarea', $tarea_std);
+		return $this->db->get('asp_subtareas')->result_array();
+	}
+
 	function cambiarEstadoSubtask($idlistarea,$estado){
 		$dato = array('estado'=>$estado); 
 		$this->db->where('tbl_listarea.id_listarea', $idlistarea);
