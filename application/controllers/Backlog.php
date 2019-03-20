@@ -120,39 +120,138 @@ class Backlog extends CI_Controller {
 
 	// Carga vista para backolg nuevo - Listo
 	public function cargarback($permission){ 
-        $data['permission'] = $permission;       
-        $this->load->view('backlog/view_',$data);
-    }
+		$data['permission'] = $permission;       
+		$this->load->view('backlog/view_',$data);
+	}
   	
   	//Inserta  Backlog nuevo - Listo
 	public function guardar_backlog(){
-			
-		$userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa']; 
-
-        $idce=$_POST['idce'];
-		$eq=$_POST['equipo'];
-		$fe=$_POST['fecha'];
-		$ta=$_POST['tarea'];
-		$hs=$_POST['horas'];		
 		
-		$uno=substr($fe, 0, 2); 
-        $dos=substr($fe, 3, 2); 
-        $tres=substr($fe, 6, 4); 
-        $resul = ($tres."/".$dos."/".$uno); 
+		$userdata = $this->session->userdata('user_data');
+		$empId = $userdata[0]['id_empresa'];
+		$data = $this->input->post();		     
+		$ideq=$data['equipo'];
+		$idce=$data['idcomponenteequipo'];
+		$fe=$data['vfecha'];
+		$ta=$data['id_tarea'];
+		$hs=$data['hshombre'];		
+		$back_dur = $data['back_duracion'];
+		// fecha convertida		
+			$uno=substr($fe, 0, 2); 
+			$dos=substr($fe, 3, 2); 
+			$tres=substr($fe, 6, 4); 
+			$resul = ($tres."/".$dos."/".$uno); 
 
 		$datos = array(
-				'id_equipo'     => $eq,
-				'tarea_descrip' => $ta,						
-				'fecha'         => $resul,
-				'estado'        => 'C',
-				'back_duracion' => $hs,
+				'id_equipo'     => $ideq,//
+				'tarea_descrip' => $ta,		//				
+				'fecha'         => $resul, //
+				'horash'				=> $hs, //
+				'estado'        => 'C',//				
+				'back_duracion' => $back_dur,
 				'id_empresa'    => $empId,
-				'idcomponenteequipo' => $idce
-			);
+				'idcomponenteequipo' => $idce,//				
+		);		
 
-		$result = $this->Backlogs->insert_backlog($datos);
+		$response['respBacklog'] = $this->Backlogs->insert_backlog($datos);	
+
+		if($response['respBacklog']){
+
+			$ultimoId = $this->db->insert_id(); 
+			
+			////////// para guardar herramientas                 
+				if ( !empty($data['id_her']) ){
+					//saco array con herramientas y el id de empresa
+					$herr = $data["id_her"]; 
+					$i = 0;
+					foreach ($herr as $h) {
+						$herram[$i]['herrId']= $h;
+						$herram[$i]['id_empresa']= $empId;
+						$i++;                                
+					} 
+					//saco array con cant de herramientas y el id de preventivo 
+					$cantHerr = $data["cant_herr"];
+					$z = 0;
+					foreach ($cantHerr as $c) {
+						$herram[$z]['cantidad']= $c;
+						$herram[$z]['backId']= $ultimoId;
+						$z++;                                
+					}				
+					// Guarda el bacht de datos de herramientas
+					$response['respHerram'] = $this->Backlogs->insertBackHerram($herram);
+				}else{
+
+					$response['respHerram'] = true;	// no habia herramientas
+				}	
+
+
+			////////// para guardar insumos
+				if ( !empty($data['id_insumo']) ){
+					//saco array con herramientas y el id de empresa
+					$ins = $data["id_insumo"]; 
+					$j = 0;
+					foreach ($ins as $in) {
+						$insumo[$j]['artId'] = $in;
+						$insumo[$j]['id_empresa'] = $empId;
+						$j++;                                
+					} 
+					//saco array con cant de herramientas y el id de preventivo 
+					$cantInsum = $data["cant_insumo"];
+					$z = 0;
+					foreach ($cantInsum as $ci) {
+						$insumo[$z]['cantidad'] = $ci;
+						$insumo[$z]['backId'] = $ultimoId;
+						$z++;                                
+					}
+					// Guarda el bacht de datos de herramientas
+					$response['respInsumo'] = $this->Backlogs->insertBackInsum($insumo);
+				}else{
+
+					$response['respInsumo'] = true;	// no habia insumos
+				}	
+
+			////////// Subir imagen o pdf 
+				$nomcodif = $this->codifNombre($ultimoId,$empId); // codificacion de nomb  		
+				$config = [
+					"upload_path" => "./assets/filesbacklog",
+					'allowed_types' => "png|jpg|pdf|xlsx",
+					'file_name'=> $nomcodif
+				];
+
+				$this->load->library("upload",$config);
+				
+				if ($this->upload->do_upload('inputPDF')) {					
+					$data = array("upload_data" => $this->upload->data());
+					$extens = $data['upload_data']['file_ext'];//guardo extesnsion de archivo
+					$nomcodif = $nomcodif.$extens;
+					$adjunto = array('back_adjunto' => $nomcodif);
+					$response['respNomImagen'] = $this->Backlogs->updateAdjunto($adjunto,$ultimoId);
+				}else{
+					$response['respImagen'] = false;
+				}							
+		}		
+		
+		// si todas las inserciones se hicieron devuelve true
+		if ($response['respBacklog'] && $response['respHerram'] && $response['respInsumo']) {
+			$result = true;
+		} else {
+			$result = false;
+		}
 		echo json_encode($result);
+	}
+
+	// Codifica nombre de imagen para no repetir en servidor
+	// formato "12_6_2018-05-21-15-26-24" idpreventivo_idempresa_fecha(año-mes-dia-hora-min-seg)
+	function codifNombre($ultimoId,$empId){
+		$guion = '_';
+		$guion_medio = '-';
+		$hora = date('Y-m-d H:i:s');// hora actual del sistema	
+		$delimiter = array(" ",",",".","'","\"","|","\\","/",";",":");
+		$replace = str_replace($delimiter, $delimiter[0], $hora);
+		$explode = explode($delimiter[0], $replace);		
+		$strigHora = $explode[0].$guion_medio.$explode[1].$guion_medio.$explode[2].$guion_medio.$explode[3];		
+		$nomImagen = $ultimoId.$guion.$empId.$guion.$strigHora;		
+		return $nomImagen;
 	}
 
 	public function getComponente()
