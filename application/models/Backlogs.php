@@ -15,19 +15,20 @@ class Backlogs extends CI_Model
         $empId = $userdata[0]['id_empresa']; 
           
 	    $this->db->select('tbl_back.backId, 
-	    				   tbl_back.id_equipo,
-	    				   tbl_back.tarea_descrip, 
-	    				   tbl_back.fecha, 
-	    				   tbl_back.estado,
-	    				   tbl_back.back_duracion, 
-	    				   equipos.descripcion AS des, 
-	    				   equipos.marca, equipos.codigo, 
-	    				   equipos.ubicacion, 
-	    				   equipos.fecha_ingreso, 
-	    				   tareas.id_tarea, 
-	    				   tareas.descripcion as de1,
-                           componentes.descripcion AS componente,
-                           sistema.descripcion as sistema');	 
+												tbl_back.id_equipo,
+												tbl_back.tarea_descrip, 
+												tbl_back.fecha, 
+												tbl_back.estado,
+												tbl_back.back_duracion, 
+												tbl_back.back_adjunto,
+												equipos.descripcion AS des, 
+												equipos.marca, equipos.codigo, 
+												equipos.ubicacion, 
+												equipos.fecha_ingreso, 
+												tareas.id_tarea, 
+												tareas.descripcion as de1,
+												componentes.descripcion AS componente,
+												sistema.descripcion as sistema');	 
 	    $this->db->from('tbl_back'); 
 	    $this->db->join('equipos', 'equipos.id_equipo = tbl_back.id_equipo');
 	    $this->db->join('tareas', 'tareas.id_tarea = tbl_back.tarea_descrip');
@@ -78,18 +79,16 @@ class Backlogs extends CI_Model
 			return false;
 		}
 		else
-		{
-			
+		{			
 			$id_equipo = $data['id_equipo'];
-
 			//Datos del usuario
 			$query= $this->db->get_where('equipos',array('id_equipo'=>$id_equipo));
 			if($query->num_rows()>0){
-                return $query->result();
-            }
-            else{
-                return false;
-            }			
+					return $query->result();
+			}
+			else{
+					return false;
+			}			
 		}
 	}
 
@@ -97,40 +96,61 @@ class Backlogs extends CI_Model
 	function gettareas(){
 
 		$userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa']; 
+    $empId = $userdata[0]['id_empresa']; 
 
 		$query= $this->db->get_where('tareas', array('id_empresa' => $empId));
 		
 		if($query->num_rows()>0){
-            return $query->result();
-        }
-        else{
-            return false;
-        }			
+				return $query->result();
+		}
+		else{
+				return false;
+		}			
 	}
 
-    //Inserta  Backlog nuevo - Listo
-   	function insert_backlog($data)
-    {
-        $query = $this->db->insert("tbl_back",$data);
-        return $query;
-    }  
+	//Inserta  Backlog nuevo - Listo
+	function insert_backlog($data)
+	{
+		$query = $this->db->insert("tbl_back",$data);
+		return $query;
+	}  
 
-    // Trae datos de backlog para editar
-    function geteditar($id){
+	// Guarda el bacht de datos de herramientas de Preventivo - Listo
+	function insertBackHerram($herram){
+		dump($herram, 'herramientas en model: ');
+		$query = $this->db->insert_batch("tbl_backlogherramientas",$herram);
+		return $query;
+	}
 
-	    $this->db->select('tbl_back.*');	
-	    $this->db->from('tbl_back');
-	    $this->db->where('tbl_back.backId',$id);	    
-	    $query= $this->db->get();
-	    
-	    if( $query->num_rows() > 0)
-	    {
-	      return $query->result_array();	
-	    } 
-	    else {
-	      return 0;
-	    }
+	// Guarda insumos del Preventivo - Listo 
+	function insertBackInsum($insumo){
+
+		$query = $this->db->insert_batch("tbl_backloginsumos",$insumo);
+		return $query;
+	}
+
+	// Guarda el nombre de adjunto
+	function updateAdjunto($adjunto,$ultimoId){
+		$this->db->where('backId', $ultimoId);
+		$query = $this->db->update("tbl_back",$adjunto);
+		return $query;
+	}
+
+	// Trae datos de backlog para editar
+	function geteditar($id){
+
+		$this->db->select('tbl_back.*');	
+		$this->db->from('tbl_back');
+		$this->db->where('tbl_back.backId',$id);	    
+		$query= $this->db->get();
+		
+		if( $query->num_rows() > 0)
+		{
+			return $query->result_array();	
+		} 
+		else {
+			return 0;
+		}
 	}
 
 	// Trae datos de equipo del backlog para editar

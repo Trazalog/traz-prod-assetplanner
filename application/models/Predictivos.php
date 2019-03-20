@@ -145,7 +145,7 @@ class Predictivos extends CI_Model
 
 		$query = $this->db->insert_batch("tbl_predictivoinsumos",$insumoPred);
 		return $query;
-}
+	}
 
 // Guarda el nombre de adjunto
 function updateAdjunto($adjunto,$ultimoId){
