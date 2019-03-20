@@ -116,63 +116,10 @@
     });
   }
 
-  function agregar_tarea() {
-    if ($('#tarea_adicional').val() == '') return;
-    var aux = '<td>' + $('#tarea_adicional').val() + '</td><td><i class="fa fa-close" onclick="eliminar_fila(this)"></i></td>';
-    aux = '<tr>' + aux + '<tr>';
-    data_sub.push({'tareadescrip': $('#tarea_adicional').val()});
-    $('#tabla_subtareas').append(aux);
-    $('#tarea_adicional').val('');
-    guardar();
-
-  }
-
-  function rellenar_tabla() {
-    var aux = "";
-    for (let i = 0; i < data_sub.length; i++) {
-      aux = '<td>' + data_sub[i]['tareadescrip'] + '</td><td><i class="fa fa-close" onclick="eliminar_fila(this)"></i></td>';
-      aux = '<tr id="' + data_sub[i]['id_subtarea'] + '">' + aux + '<tr>';
-      $('#tabla_subtareas').append(aux);
-    }
-    collapse_box();
-    $('#lista_tareas').val(0);
-
-  }
-
-  function eliminar_fila(e) {
-    $(e).parent().parent().remove();
-  }
-
-  function guardar(){
-    if(data_sub.length==0){alert('No hay tareas seleccionadas');return;}
-    var aux=[];
-    for (let i = 0; i < data_sub.length; i++) {
-      const e = data_sub[i];
-      aux.push({
-        'id_subtarea':e['id_subtarea'],
-        'id_orden':$('#numord').val(),
-        'tareadescrip':e['tareadescrip'],
-        'id_usuario':'<?php echo $this->session->userdata('user_data')[0]['usrId']; ?>',
-        'fecha':new Date().toISOString().slice(0,10),
-        'estado':'C'
-      });
-    }
-    var obj = $.extend({}, aux);
-    $.ajax({
-      type: 'POST',
-      data: obj,
-      url: 'index.php/Tarea/Guardar_Subtareas',
-      success: function (data) {
-        $('#tabla_subtareas').html('');
-      },
-      error: function (result) {
-        console.log(result);
-      }
-    });
-  }
-
   var data_sub;
+
   $('#lista_tareas').on('change', function () {
+    //EVENTO SELECCIONAR TAREA >> MOSTRAR PLANTILLA
     var lista = $('#lista_subtareas');
     lista.html('');
     data_sub=[];
@@ -196,6 +143,67 @@
       dataType: 'json'
     });
   });
+
+  function agregar_tarea() {
+    if ($('#tarea_adicional').val() == '') return;
+    var aux = '<td>' + $('#tarea_adicional').val() + '</td><td><i class="fa fa-close" onclick="eliminar_fila(this)"></i></td>';
+    aux = '<tr class="tarea_add" id="0" tarea="'+$("#tarea_adicional").val()+'">' + aux + '<tr>';
+    //data_sub.push({'tareadescrip': $('#tarea_adicional').val()});
+    $('#tabla_subtareas').append(aux);
+    $('#tarea_adicional').val('');
+  }
+
+  function rellenar_tabla() {
+    var aux = "";
+    for (let i = 0; i < data_sub.length; i++) {
+      aux = '<td>' + data_sub[i]['tareadescrip'] + '</td><td><i class="fa fa-close" onclick="eliminar_fila(this)"></i></td>';
+      aux = '<tr class="tarea_add" id_sub="'+data_sub[i]['id_subtarea']+'" tarea="'+data_sub[i]['tareadescrip']+'">' + aux + '<tr>';
+      $('#tabla_subtareas').append(aux);
+    }
+    collapse_box();
+    $('#lista_tareas').val(0);
+
+  }
+
+  function eliminar_fila(e) {
+    $(e).parent().parent().remove();
+  }
+
+  function guardar(){
+    WaitingOpen();
+    var aux=[];
+    $('.tarea_add').each(function(i,e){
+
+      aux.push({
+        'id_subtarea':$(e).attr('id_sub'),
+        'id_orden':$('#numord').val(),
+        'tareadescrip':$(e).attr('tarea'),
+        'id_usuario':'<?php echo $this->session->userdata('user_data')[0]['usrId'];?>',
+        'fecha':new Date().toISOString().slice(0,10),
+        'estado':'C'
+      });
+
+    });
+
+    if(aux.length==0){WaitingClose();alert('No hay tareas seleccionadas');return;}
+    var obj = $.extend({}, aux);
+    
+    $.ajax({
+      type: 'POST',
+      data: obj,
+      url: 'index.php/Tarea/Guardar_Subtareas',
+      success: function (data) {
+        WaitingClose();
+        $('#tabla_subtareas').html('');
+      },
+      error: function (result) {
+        WaitingClose();
+        console.log(result);
+      }
+    });
+  }
+
+ 
 
   function collapse_box() {
     // if ($('#desplegable').is('.collapsed-box:not(.show)')) {
