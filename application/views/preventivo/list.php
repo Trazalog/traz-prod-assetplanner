@@ -252,8 +252,8 @@
       });
   });  
 
-   var cod="";
-   $("#agregarherr").click(function (e) {   
+  var cod="";
+  $("#agregarherr").click(function (e) {   
 
 
      var id_herramienta= $("#herramienta").val(codhermglo);    
@@ -282,12 +282,11 @@
       var parent = $(this).closest('tr');
       $(parent).remove();
     });
-
-     $('#herramienta').val('');
-     $('#marcaherram').val(''); 
-     $('#descripcionherram').val(''); 
-     $('#cantidadherram').val('');
-   });   
+    $('#herramienta').val('');
+    $('#marcaherram').val(''); 
+    $('#descripcionherram').val(''); 
+    $('#cantidadherram').val('');
+  });   
 
   // trae insumos
   $(function(){

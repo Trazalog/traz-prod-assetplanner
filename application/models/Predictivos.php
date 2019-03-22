@@ -151,7 +151,7 @@ class Predictivos extends CI_Model
 function updateAdjunto($adjunto,$ultimoId){
 	$this->db->where('predId', $ultimoId);
 	$query = $this->db->update("predictivo",$adjunto);
-	return $query;
+	return $adjunto;
 }
 
 	// Trae info para edicion de preventivo por id - Listo
@@ -170,6 +170,7 @@ function updateAdjunto($adjunto,$ultimoId){
 												predictivo.id_unidad as unidtiempo, 
 												predictivo.pred_canth as operarios,
 												predictivo.horash as hh,
+												predictivo.pred_adjunto,
 												equipos.codigo, 
 												equipos.ubicacion, 
 												equipos.marca, 

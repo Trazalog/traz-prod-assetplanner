@@ -18,8 +18,7 @@
                 <th>Fecha</th>
                 <th>Periodo</th>
                 <th>Cantidad</th>
-                <th>Horas.H</th>
-                <th>Adjunto</th>
+                <th>Horas.H</th>                
               </tr>
             </thead>
             <tbody>
@@ -38,6 +37,9 @@
                       if (strpos($permission,'Add') !== false) {
                         echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar" data-toggle="modal" data-target="#modalaviso"></i>';
                         echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar" ></i>';
+                      } 
+                      if ($a['pred_adjunto']) {
+                        echo '<a href="'.base_url().'assets/filespredictivos/'.$a['pred_adjunto'].'" target="_blank"><i class="fa fa-file-pdf-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Ver Pdf"></i></a>';
                       }     
                       echo '</td>';
                       echo '<td>'.$a['predId'].'</td>';
@@ -47,13 +49,7 @@
                       echo '<td>'.$a['periodo'].'</td>';
                       echo '<td>'.$a['cantidad'].'</td>';
                       echo '<td>'.$a['horash'].'</td>';
-                      if( $a['pred_adjunto'] != "")
-                      {
-                        echo '<td><a href="./assets/filespredictivos/'.$a['pred_adjunto'].'" alt="adjunto" target="_blank">'.$a['pred_adjunto'].'</a></td>';
-                      }
-                      else {
-                        echo '<td></td>';
-                      }                   
+                                       
                       echo '</tr>';
                     }                    
                   }
@@ -95,7 +91,6 @@ $(document).ready(function(event) {
   $(".fa-pencil").click(function (e) { 
             
     $('#modalSale').modal('show');
-
     var idpred = $(this).parent('td').parent('tr').attr('id');
     var ide = $(this).parent('td').parent('tr').attr('class');
     //guardo id de predictivo en modal para editar 
@@ -123,7 +118,8 @@ $(document).ready(function(event) {
                         'duracion':data['datos'][0]['duracion'],
                         'unidtiempo':data['datos'][0]['unidtiempo'],
                         'operarios':data['datos'][0]['operarios'],
-                        'hh':data['datos'][0]['hh']
+                        'hh':data['datos'][0]['hh'],
+                        'pred_adjunto':data['datos'][0]['pred_adjunto']
                       };   
               var herram = data['herramientas'];             
               var insum  = data['insumos'];           
@@ -375,6 +371,94 @@ $(document).ready(function(event) {
 
 }); 
 
+
+//abrir modal eliminar adjunto
+$(document).on("click",".eliminaAdjunto",function(){
+  $('#modalEliminarAdjunto').modal('show');
+  var idprev = $('#id_Predictivo').val();
+  $('#idAdjunto').val(idprev);
+});
+//eliminar adjunto
+function eliminarAdjunto() {
+  $('#modalEliminarAdjunto').modal('hide');
+  var idprev = $('#idAdjunto').val();
+  $.ajax({
+    data: { idprev: idprev },
+    dataType: 'json',
+    type: 'POST',
+    url: 'index.php/Preventivo/eliminarAdjunto',
+  }) 
+  .done( function(data){     
+    //console.table(data); 
+    let prevAdjunto = '';
+    recargaTablaAdjunto(prevAdjunto);
+  })                
+  .error( function(result){                      
+    console.error(result);
+  }); 
+}
+
+//abrir modal agregar adjunto
+$(document).on("click",".agregaAdjunto",function(){
+  $('#btnAgregarEditar').text("Agregar");
+  $('#modalAgregarAdjunto .modal-title').html('<span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar');
+
+  $('#modalAgregarAdjunto').modal('show');
+  var idprev = $('#id_Predictivo').val();
+  $('#idAgregaAdjunto').val(idprev);
+});
+//abrir modal editar adjunto
+$(document).on("click",".editaAdjunto",function(){
+  $('#btnAgregarEditar').text("Editar");
+  $('#modalAgregarAdjunto .modal-title').html('<span class="fa fa-fw fa-pencil text-light-blue"></span> Editar');
+
+  $('#modalAgregarAdjunto').modal('show');
+  var idprev = $('#id_Predictivo').val();
+  $('#idAgregaAdjunto').val(idprev);
+});
+//eliminar adjunto
+$("#formAgregarAdjunto").submit(function (event){
+  $('#modalAgregarAdjunto').modal('hide');
+
+  event.preventDefault();  
+  if (document.getElementById("inputPDF").files.length == 0) {
+    $('#error').fadeIn('slow');
+  }
+  else{
+    $('#error').fadeOut('slow');
+    var formData = new FormData($("#formAgregarAdjunto")[0]);
+    //debugger
+    $.ajax({
+      cache:false,
+      contentType:false,
+      data:formData,
+      dataType:'json',
+      processData:false,
+      type:'POST',
+      url:'index.php/Predictivo/agregarAdjunto',
+    })
+    .done( function(data){     
+      console.table(data['pred_adjunto']); 
+      recargaTablaAdjunto( data['pred_adjunto'] );
+    })                
+    .error( function(result){                      
+      console.error(result);
+    }); 
+  }
+});
+
+function recargaTablaAdjunto(prevAdjunto) {
+  //console.info( "adjunto: "+prevAdjunto );
+  $('#adjunto').text(prevAdjunto);
+  $('#adjunto').attr('href', 'assets/filespredictivos/'+prevAdjunto);
+  if( prevAdjunto == null || prevAdjunto == '') {
+    var accion = '<i class="fa fa-plus-square agregaAdjunto text-light-blue" style="color:#f39c12; cursor:pointer; margin-right:10px" title="Agregar Adjunto"></i>';
+  } else {
+    var accion = '<i class="fa fa-times-circle eliminaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Eliminar Adjunto"></i>'+'<i class="fa fa-pencil editaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Editar Adjunto"></i>';
+  }
+  $('#accionAdjunto').html(accion);
+}
+
 // Calcula horas hombre por tiempo y unidades - Chequeado
 function calcularHsHombre(){
   
@@ -449,12 +533,13 @@ function completarEdit(datos, herram, insum){
     $('#tablainsumo tbody').append(tr);
   }
 
+  recargaTablaAdjunto(datos['pred_adjunto']);
+
   $(document).on("click",".elirow",function(){
     var parent = $(this).closest('tr');
     $(parent).remove();
   });
 }
-
 
 function traer_periodo(periodoE) {
     if (periodoE === undefined) {
@@ -595,21 +680,13 @@ function Refrescar(){
   WaitingClose('Cargando...');
 }
   
-</script>
-<!-- Datepicker -->
-<script>     
-  // $("#fecha").datepicker({
-  //   Format: 'yy-mm-dd',
-  //   startDate: '-3d'
-  //   //firstDay: 1
-  // }).datepicker("setDate", new Date());
-  /* input con horas minutos y segundos */
-  $("#fecha").datetimepicker({
+$("#fecha").datetimepicker({
     format: 'YYYY-MM-DD',
     locale: 'es',
   });
-
 </script>
+<!-- Datepicker -->
+
 
 <!-- Modal Editar -->
 <div class="modal fade" id="modalSale" tabindex="2000" aria-labelledby="myModalLabel" style="display: none;">
@@ -668,14 +745,12 @@ function Refrescar(){
           <div class="panel-body">  
             <div class="row">
               <div class="col-xs-12">
-                <label for="tarea">Tarea <strong style="color: #dd4b39">*</strong>:</label>
-                  <!-- <select id="tarea" name="tarea" class="form-control"   />                  -->
+                <label for="tarea">Tarea <strong style="color: #dd4b39">*</strong>:</label> 
                   <input type="text" id="tarea" name="tarea" class="form-control">
-                  <input type="hidden" id="id_tarea" name="id_tarea">                                           
+                  <input type="hidden" id="id_tarea" name="id_tarea">
               </div> 
               <div class="col-xs-12 col-sm-6 col-md-4">
                 <label for="vfecha">Fecha <strong style="color: #dd4b39">*</strong>:</label>
-                <!-- <input type="text" class="datepicker form-control fecha" id="fecha" name="vfecha" value="<?php //echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/> -->
                 <input type="text" class="form-control fecha" id="fecha" name="vfecha" size="27"/>
               </div>                        
               <div class="col-xs-12 col-sm-6 col-md-4">
@@ -711,139 +786,133 @@ function Refrescar(){
         <div class="nav-tabs-custom">
           <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active"><a href="#herramin" aria-controls="profile" role="tab" data-toggle="tab">Herramientas</a></li>
-            <li role="presentation"><a href="#insum" aria-controls="messages" role="tab" data-toggle="tab">Insumos</a></li>            
+            <li role="presentation"><a href="#insum" aria-controls="messages" role="tab" data-toggle="tab">Insumos</a></li>
+            <li role="presentation"><a href="#TabAdjunto" aria-controls="home" role="tab" data-toggle="tab">Adjunto</a></li>            
           </ul>
         </div>
 
-
-<!-- de aca -->
-
- <!-- Tab panes -->
-          <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="herramin">
-              <div class="panel panel-default">
-                <div class="panel-body">
-                  <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="herramienta">Codigo <strong style="color: #dd4b39">*</strong>:</label>
-                      <select  id="herramienta"  name="herramienta" class="form-control input-md" value=""></select>
-                      <input type="hidden" id="id_herramienta" name="id_herramienta">
-                    </div>       
-                    <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="marcaherram">Marca:</label>
-                      <input type="text" id="marcaherram" name="marcaherram" class="form-control input-md" />
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="descripcionherram">Descripcion:</label>
-                      <input type="text" id="descripcionherram" name="descripcionherram" class="form-control input-md" />
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="cantidadherram">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
-                      <input type="text" id="cantidadherram" name="cantidadherram" class="form-control input-md" placeholder="Ingrese Cantidad" />
-                    </div>
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <div role="tabpanel" class="tab-pane active" id="herramin">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="herramienta">Codigo <strong style="color: #dd4b39">*</strong>:</label>
+                    <select  id="herramienta"  name="herramienta" class="form-control input-md" value=""></select>
+                    <input type="hidden" id="id_herramienta" name="id_herramienta">
+                  </div>       
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="marcaherram">Marca:</label>
+                    <input type="text" id="marcaherram" name="marcaherram" class="form-control input-md" />
                   </div>
-                  <div class="row">
-                    <div class="col-xs-12"> 
-                      <br>
-                      <button type="button" class="btn btn-primary" id="agregarherr"><i class="fa fa-check">Agregar</i></button>
-                    </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="descripcionherram">Descripcion:</label>
+                    <input type="text" id="descripcionherram" name="descripcionherram" class="form-control input-md" />
                   </div>
-                  <hr>
-                  <div class="row">
-                    <div class="col-xs-12">
-                      <table class="table table-bordered" id="tablaherramienta"> 
-                        <thead>
-                          <tr>                      
-                            <th></th>
-                            <th>Código</th>
-                            <th>Marca</th>
-                            <th>Descripcion</th>
-                            <th>Cantidad</th>
-                          </tr>
-                        </thead>
-                        <tbody></tbody>
-                      </table>  
-                    </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="cantidadherram">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
+                    <input type="text" id="cantidadherram" name="cantidadherram" class="form-control input-md" placeholder="Ingrese Cantidad" />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12"> 
+                    <br>
+                    <button type="button" class="btn btn-primary" id="agregarherr"><i class="fa fa-check">Agregar</i></button>
+                  </div>
+                </div>
+                <hr>
+                <div class="row">
+                  <div class="col-xs-12">
+                    <table class="table table-bordered" id="tablaherramienta"> 
+                      <thead>
+                        <tr>                      
+                          <th></th>
+                          <th>Código</th>
+                          <th>Marca</th>
+                          <th>Descripcion</th>
+                          <th>Cantidad</th>
+                        </tr>
+                      </thead>
+                      <tbody></tbody>
+                    </table>  
                   </div>
                 </div>
               </div>
-            </div> <!-- cierre div herram -->
+            </div>
+          </div> <!-- cierre div herram -->
 
-            <div role="tabpanel" class="tab-pane" id="insum">
-              <div class="panel panel-default">
-                <div class="panel-body">
-                  <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="insumo">Codigo:</label>
-                      <select  id="insumo"  name="insumo" class="form-control input-md" value=""></select>
-                      <!-- <input type="hidden" id="id_insumo" name="id_insumo"> -->
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="descript">Descripcion:</label>
-                      <input type="text" id="descript"  name="descript" class="form-control input-md" />
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="cant">Cantidad:</label>
-                      <input type="text" id="cant"  name="cant" class="form-control input-md" placeholder="Ingrese Cantidad"/>
-                    </div>
+          <div role="tabpanel" class="tab-pane" id="insum">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="insumo">Codigo:</label>
+                    <select  id="insumo"  name="insumo" class="form-control input-md" value=""></select>
+                    <!-- <input type="hidden" id="id_insumo" name="id_insumo"> -->
                   </div>
-                  <div class="row">
-                    <div class="col-xs-12">
-                      <br>
-                      <button type="button" class="btn btn-primary" id="agregarins"><i class="fa fa-check">Agregar</i></button>
-                    </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="descript">Descripcion:</label>
+                    <input type="text" id="descript"  name="descript" class="form-control input-md" />
                   </div>
-                  <hr>
-                  <div class="row">
-                    <div class="col-xs-12">
-                      <table class="table table-bordered" id="tablainsumo"> 
-                        <thead>
-                          <tr>
-                            <th></th>
-                            <th>Código</th>
-                            <th>Descripcion</th>
-                            <th>Cantidad</th>
-                          </tr>
-                        </thead>
-                        <tbody></tbody>
-                      </table>  
-                    </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="cant">Cantidad:</label>
+                    <input type="text" id="cant"  name="cant" class="form-control input-md" placeholder="Ingrese Cantidad"/>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12">
+                    <br>
+                    <button type="button" class="btn btn-primary" id="agregarins"><i class="fa fa-check">Agregar</i></button>
+                  </div>
+                </div>
+                <hr>
+                <div class="row">
+                  <div class="col-xs-12">
+                    <table class="table table-bordered" id="tablainsumo"> 
+                      <thead>
+                        <tr>
+                          <th></th>
+                          <th>Código</th>
+                          <th>Descripcion</th>
+                          <th>Cantidad</th>
+                        </tr>
+                      </thead>
+                      <tbody></tbody>
+                    </table>  
                   </div>
                 </div>
               </div>
-            </div><!--cierre div insum--> 
+            </div>
+          </div><!--cierre div insum--> 
 
-            <div role="tabpanel" class="tab-pane" id="TabAdjunto">
-              <div class="row" >
-                <div class="col-xs-12">
-                  <i class="fa fa-ban" style="color: #f39c12" ;="" cursor:="" 'pointer'=""></i> <a href="">Archivo</a>
-                </div>
-                <div class="col-xs-12">
-                  <input id="inputPDF" name="inputPDF" type="file" class="form-control input-md" disabled>
-                  <style type="text/css">
-                    #inputPDF {
-                      padding-bottom: 40px;
-                    }
-                  </style>
-                </div>
+          <div role="tabpanel" class="tab-pane" id="TabAdjunto">
+            <div class="row" >
+              <div class="col-xs-12">
+                <table class="table table-bordered" id="tablaadjunto"> 
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Archivo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td id="accionAdjunto">
+                          <!-- -->
+                      </td>
+                      <td>
+                        <a id="adjunto" href="" target="_blank"></a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-            </div><!--cierre de TabAdjunto-->                      
-          </div><!--tab-content-->
-           
 
+            </div>
+          </div><!--cierre de TabAdjunto--> 
 
-<!-- hasta aca -->          
-
-
-
-
-
-
-
-
-
-
-
+        </div><!--tab-content-->
 
       </div><!-- /.modal-body -->
 
@@ -854,6 +923,59 @@ function Refrescar(){
     </div>
   </div>
 </div>
+
+
+<!--------------- MODALES ADJUNTO ------------->
+
+<!-- Modal Eliminar Adjunto -->
+<div class="modal" id="modalEliminarAdjunto">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title"><span class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar</h4>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="idAdjunto">
+          <h4>¿Desea eliminar Archivo Adjunto?</h4>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminarAdjunto();">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal Agregar adjunto -->
+  <div class="modal" id="modalAgregarAdjunto">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title"><span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar</h4>
+        </div>
+  
+        <form id="formAgregarAdjunto">
+          <div class="modal-body">
+            <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+              <h4><i class="icon fa fa-ban"></i> Error!</h4>
+              Seleccione un Archivo Adjunto
+            </div>
+            <input type="hidden" id="idAgregaAdjunto" name="idAgregaAdjunto">
+            <input id="inputPDF" name="inputPDF" type="file" class="form-control input-md">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary" id="btnAgregarEditar">Agregar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<!--------------- MODALES ADJUNTO ------------->
+
 
   <!-- Modal Eliminar Warning -->
   <div class="modal fade" id="modalaviso">
