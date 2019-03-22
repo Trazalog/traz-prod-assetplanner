@@ -17,28 +17,23 @@ class Equipos extends CI_Model {
                     equipos.estado AS estadoEquipo,
 					unidad_industrial.id_unidad,
 					unidad_industrial.descripcion AS deun,
-					grupo.id_grupo,
-					grupo.descripcion AS degr,
 					area.id_area,
 					area.descripcion AS dear,
 					empresas.id_empresa,
 					empresas.descripcion AS deem,
 					sector.id_sector,
 					sector.descripcion AS desec,
-                    admcustomers.cliLastName,
 					criticidad.id_criti,
 					criticidad.descripcion AS decri,
 					proceso.id_proceso,
 					proceso.descripcion AS depro');
     	$this->db->from('equipos');
-    	$this->db->join('grupo', 'grupo.id_grupo=equipos.id_grupo');
     	$this->db->join('sector', 'sector.id_sector=equipos.id_sector');
     	$this->db->join('empresas', 'empresas.id_empresa=equipos.id_empresa');
     	$this->db->join('unidad_industrial', 'unidad_industrial.id_unidad=equipos.id_unidad');
     	$this->db->join('criticidad', 'criticidad.id_criti=equipos.id_criticidad');
         $this->db->join('area', 'area.id_area=equipos.id_area');
         $this->db->join('proceso', 'proceso.id_proceso=equipos.id_proceso');
-        $this->db->join('admcustomers', 'admcustomers.cliId=equipos.id_customer');
     	$this->db->where('equipos.estado !=', 'AN');
     	$this->db->where('equipos.id_empresa', $empId);
     	$this->db->order_by('equipos.id_equipo', 'ASC');
@@ -643,6 +638,13 @@ class Equipos extends CI_Model {
 	public function insert_contratista($data)
     {
         $query = $this->db->insert("contratistaquipo", $data);
+        return $query;
+    }
+
+    public function delContra($id_contratistaquipo)
+    {
+        $this->db->where('id_contratistaquipo', $id_contratistaquipo);
+        $query = $this->db->delete('contratistaquipo');
         return $query;
     }
 
@@ -1397,7 +1399,7 @@ class Equipos extends CI_Model {
         $id_equipo    = $parametros['id_equipo'];
         $lectura      = $parametros['lectura'];
         $fecha        = $parametros['fecha'];
-        $userdata     = $this->session->userdata('user_data');
+        $userdata = $this->session->userdata('user_data');
         $usrId        = $userdata[0]['usrId'];
         $observacion  = $parametros['observacion'];
         $operario     = $parametros['operario'];
