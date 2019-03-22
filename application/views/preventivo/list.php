@@ -261,10 +261,8 @@ function ordenaArregloDeObjetosPor(propiedad) {
     }
     var i, l, obj, matches = [];
 
-    if (request.term==="") {
-      response([]);
-      return;
-    }
+  var cod="";
+  $("#agregarherr").click(function (e) {   
 
     //ordeno por marca de herramientas
     dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("marca"));
@@ -306,17 +304,32 @@ function ordenaArregloDeObjetosPor(propiedad) {
     .appendTo( ul );
   };
 
-  //busqueda por marcas de herramientas
-  $("#marcaherram").autocomplete({
-    source:    dataMarcaHerr,
-    delay:     500,
-    minLength: 1,
-    focus: function(event, ui) {
-      event.preventDefault();
-      $(this).val(ui.item.marca);
-      $('#id_herramienta').val(ui.item.value);
-      $('#herramienta').val(ui.item.codigo);
-      $('#descripcionherram').val(ui.item.label);
+     $(document).on("click",".elirow",function(){
+      var parent = $(this).closest('tr');
+      $(parent).remove();
+    });
+    $('#herramienta').val('');
+    $('#marcaherram').val(''); 
+    $('#descripcionherram').val(''); 
+    $('#cantidadherram').val('');
+  });   
+
+  // trae insumos
+  $(function(){
+    $('#insumo').html("");
+    $.ajax({
+      type: 'POST',
+      data: { },
+      url: 'index.php/Preventivo/getinsumo', 
+      success: function(data){
+       var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+       $('#insumo').append(opcion); 
+       for(var i=0; i < data.length ; i++) 
+       {    
+        var nombre = data[i]['artBarCode'];
+        var opcion  = "<option value='"+data[i]['artId']+"'>" +nombre+ "</option>" ; 
+        $('#insumo').append(opcion); 
+      }
     },
     select: function(event, ui) {
       event.preventDefault();
