@@ -29,7 +29,6 @@
                 <th>Área</th>
                 <th>Proceso</th>
                 <th>Sector</th>
-                <th>Cliente</th>
                 <th>Criticidad</th>
                 <th>Estado</th>
               </tr>
@@ -50,13 +49,13 @@
                     //echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"></i>';
                   }
                   if (strpos($permission,'Del') !== false) {
-                    echo '<i class="fa fa-fw  fa fa-user text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Contratista" data-toggle="modal" data-target="#modalasignar"></i>';
+                    echo '<i class="fa fa-fw fa-user text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Contratista" data-toggle="modal" data-target="#modalasignar"></i>';
                     //antes estaba el estado R por que ERA REPARACION pero ahora reparacion es R
                     if( ($a['estado'] == 'AC') || ($a['estado'] == 'RE') ){
-                      echo '<i  href="#"class="fa fa-fw fa fa-toggle-on text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Inhabilitar"></i>';
+                      echo '<i  href="#"class="fa fa-fw fa-toggle-on text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Inhabilitar"></i>';
                     }
                     else {
-                      echo '<i class="fa fa-fw fa fa-toggle-off text-light-blue" title="Habilitar" style="cursor: pointer; margin-left: 15px;"></i>';
+                      echo '<i class="fa fa-fw fa-toggle-off text-light-blue" title="Habilitar" style="cursor: pointer; margin-left: 15px;"></i>';
                     }
                   }
                   if (strpos($permission,'Lectura') !== false) {
@@ -70,7 +69,6 @@
                   echo '<td>'.$a['dear'].'</td>';
                   echo '<td>'.$a['depro'].'</td>';
                   echo '<td>'.$a['desec'].'</td>';
-                  echo '<td>'.$a['cliLastName'].'</td>';
                   echo '<td>'.$a['decri'].'</td>';
                   echo '<td>'
                     .($a['estado'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' 
@@ -173,10 +171,9 @@ var idglob       = "";
     $('#tablaempresa tbody').html("");
     tr = null;
 
-    //click_empresa();
-    llenaContratistasEquipo(id_equipo);
     click_co(id_equipo);
     traer_contratista();        
+    llenaContratistasEquipo(id_equipo);
   });
    
   // Cambiar a estado - Chequeado
@@ -216,36 +213,32 @@ var idglob       = "";
         if (data[0]['estado'] == 'AL') {
           var id_equipo   = idequipo;
           var lectura     = data[0]['ultima_lectura'];
-          var fecha     = data[0]['fecha_ultimalectura'];
+          var fecha       = data[0]['fecha_ultimalectura'];
           var observacion = 'Lectura al cargar equipo';
-          var operario    = 'alta';
+          var operario    = '-';
           var turno       = 'alta';
           var estado      = 'AC';
           parametros = {
-            'id_equipo' : id_equipo,
-            'lectura' : lectura,
-            'fecha' : fecha,
+            'id_equipo'   : id_equipo,
+            'lectura'     : lectura,
+            'fecha'       : fecha,
             'observacion' : observacion,
-            'operario' : operario,
-            'turno' : turno,
-            'estado' : estado,
+            'operario'    : operario,
+            'turno'       : turno,
+            'estado'      : estado,
           }
           alta_historial_lectura(parametros);
+          cambiar_estado(id_equipo);
         }
         else {
-          alert("Error al habilitar el equipo");
+          //alert("Error al habilitar el equipo");
+          console.info("El equipo ya tiene estado activo. Si no figura como activo ver historial de lecturas...")
         }
       },
       error: function(result){
         console.log(result);
       }
     });
-    //y agrego en historial lectura la primer lectura del equipo
-
-    // No esta Ok => exit y mensaje de error
-    // Está Ok => cambio estado
-    //alert('activando equipo en alta ');
-    cambiar_estado(idequipo);
   });
 
   function alta_historial_lectura(parametros){
@@ -257,7 +250,7 @@ var idglob       = "";
       type: 'POST',
       url: 'index.php/Equipo/alta_historial_lectura', 
       success: function(data){
-        console.log(data);
+        console.table(data);
         //alert("Se agregó historial lecturas");
       },
       error: function(result){
@@ -756,39 +749,12 @@ function cerro(){
   isOpenWindow = false;
 }
 
-// guarda contratista asignado a equipo - Chequeado
-function guardarsi(){
-    let idEquipo = $('#id_equipoC').val();
-    console.log("Equipo: "+idEquipo);
-
-    var idscontra = new Array();     
-    $("#tablaempresa tbody tr").filter(':not(:first)').each(function (index){
-      var id_contratista = $(this).attr('id');
-      idscontra.push(id_contratista);           
-    }); 
-    console.table(idscontra);
-
-    $.ajax({
-      data:{ idEquipo:idEquipo, idscontra:idscontra},
-      dataType: 'json',
-      type:"POST",
-      url: 'index.php/Equipo/guardarcontra', 
-      success: function(data){
-        alert("Contratista guardado con exito");              
-      },          
-      error: function(data){ 
-        alert("Error en guardado...");
-        console.log("Error: " + data['status']);
-      },
-    });
-}
-
 // Guarda edicion de equipo
 function guardar(){
   var idEquipo            = $('#id_equipo').val();
   var codigo              = $('#codigo').val();
   var ubicacion           = $('#ubicacion').val();
-  var marca               = $('#marca option:selected').text();
+  var marca               = $('#marca option:selected').val();
   var descripcion         = $('#descripcion').val();
   var fecha_ingreso       = $('#fecha_ingreso').val();
   var fecha_ultimalectura = $('#fecha_ultimalectura').val();
@@ -974,8 +940,7 @@ function llenaContratistasEquipo(id_equipo){
       for (var i=0; i< data.length; i++) {      
         //agrego valores a la tabla
         tablaCompleta = tabla.row.add( [
-          '<i class="fa fa-fw fa-pencil text-light-blue elirow" style="cursor: pointer; margin-left: 15px;" data-eqContr="'+data[i]['id_contratistaquipo']+'"></i>'+
-          '<i class="fa fa-fw fa-times-circle text-light-blue elirow" style="cursor: pointer; margin-left: 15px;" data-eqContr="'+data[i]['id_contratistaquipo']+'"></i>',
+          '<i class="fa fa-fw fa-times-circle text-light-blue elirow btnDel" style="cursor: pointer; margin-left: 15px;" data-eqContr="'+data[i]['id_contratistaquipo']+'"></i>',
           data[i]['codigo'],
           data[i]['nombre']
         ]);
@@ -986,37 +951,76 @@ function llenaContratistasEquipo(id_equipo){
       }
     },
     error: function(result){
-      //alert("Error al traer contratista de equipo");
       console.error(result);
     },
   });
 }
 
-//function click_empresa(){
-  $("#adde").click(function (e) {
-      var $empresae      = $("select#empresae option:selected").html();
-      var id_equipo      = $('#codigoe').val();
-      var id_contratista = $('#empresae').val();
+//agrega contratista
+$("#adde").click(function (e) {
+  var id_equipo      = $('#id_equipoC').val();
+  var id_contratista = $('#empresae').val();
+  console.log("id_contratista: "+id_contratista);
+  console.log("id_equipo: "+id_equipo);
 
-      console.log("id_contratista: "+id_contratista);
-      //console.log("id_equipo: "+id_equipo);
-      console.log("tr: "+tr);
-      tr = "<tr id='"+id_contratista+"' >"+
-        "<td><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
-        "<td>"+id_equipo+"</td>"+
-        "<td>"+$empresae+"</td>"+
-        "</tr>";
-       
-      $('#tablaempresa tbody').append(tr);
-            
-      $(document).on("click",".elirow",function(){
-        var parent = $(this).closest('tr');
-        $(parent).remove();
-      });
-           
-      $('#empresae').val(''); 
+  WaitingOpen("Agregando contratista a equipo")
+  var hayError = false;
+  if ( $('#empresae').val() == -1 ) {
+      hayError = true;
+  }
+  if(hayError == true){
+    $('#errorC').fadeIn('slow');
+    WaitingClose();
+    return;
+  }
+  else{
+    $('#errorC').fadeOut('slow');
+    $.ajax({
+      data:{ id_equipo:id_equipo, id_contratista:id_contratista},
+      dataType: 'json',
+      type:"POST",
+      url: 'index.php/Equipo/guardarcontra',
+    })
+    .done( function(data){ 
+      console.table(data);
+      alert("Contratista guardado con exito"); 
+      llenaContratistasEquipo(id_equipo);
+    })
+    .error( function(result){
+      alert("Error en guardado...");
+      console.log("Error: " + result['status']);
+      console.table(result);               
+    })
+    .always( function(){
+      WaitingClose();
+    });
+  }
+});
+
+$(document).on("click", ".btnDel", function() {
+  var id_contratistaquipo = $(this).parent().parent().attr('id');
+  var id_equipo           = $('#id_equipoC').val();
+
+  WaitingOpen("Agregando contratista a equipo")
+  $.ajax({
+    data:{ id_contratistaquipo:id_contratistaquipo },
+    dataType: 'json',
+    type:"POST",
+    url: 'index.php/Equipo/delContra',
+  })
+  .done( function(data){ 
+    llenaContratistasEquipo(id_equipo);
+  })
+  .error( function(result){
+    alert("Error eliminando contratista...");
+    console.log("Error: " + result['status']);
+    console.table(result);               
+  })
+  .always( function(){
+    WaitingClose();
   });
-//}
+});
+
     
 function click_co(id_equipo){
   //console.log(id_equipo);
@@ -1110,8 +1114,8 @@ function click_co(id_equipo){
           '<i class="fa fa-fw fa-pencil text-light-blue editLectura" style="cursor: pointer; margin-left: 15px;" title="Editar lectura" data-idLectura="'+data[i]['id_lectura']+'"></i>',
           data[i]['lectura'],
           data[i]['fecha'],
-          data[i]['turno'],
           data[i]['operario'],
+          data[i]['turno'],
           data[i]['observacion']
         ]).draw();
       } 
@@ -1491,7 +1495,7 @@ function llenar_adjunto(adjunto) {
   $('#adjunto').text(adjunto);
   $('#adjunto').attr('href', 'assets/filesequipos/'+adjunto);
   if( adjunto == null || adjunto == '') {
-    var accion = '<i class="fa fa-plus-square agregaAdjunto text-light-blue" style="color:#f39c12; cursor:pointer; margin-right:10px" title="Agregar Adjunto"></i>';
+    var accion = '<i class="fa fa-plus-square agregaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Agregar Adjunto"></i>';
   } else {
     var accion = '<i class="fa fa-times-circle eliminaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Eliminar Adjunto"></i>'+'<i class="fa fa-pencil editaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Editar Adjunto"></i>';
   }
@@ -1858,7 +1862,7 @@ $(document).on("click",".editaAdjunto",function(){
   var idEquipo = $('#id_equipo').val();
   $('#idAgregaAdjunto').val(idEquipo);
 });
-//eliminar adjunto
+//agregar/editar adjunto
 $("#formAgregarAdjunto").submit(function (event){
   $('#modalAgregarAdjunto').modal('hide');
 
@@ -2004,6 +2008,15 @@ $('#modaleditar').on('hidden.bs.modal', function (e) {
 
               <div class="panel-body">
                 <div class="row">
+                  <div class="col-xs-12">
+                    <div class="alert alert-danger alert-dismissable" id="errorC" style="display: none">
+                      <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                      Revise que todos los campos esten completos
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
                   <div class="col-xs-12 col-md-6">
                     <select id="empresae" name="empresae" class="form-control"/>
                     <input type="hidden" id="id_contratista" name="id_contratista">
@@ -2033,7 +2046,7 @@ $('#modaleditar').on('hidden.bs.modal', function (e) {
       </div><!-- /.modal-body -->
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" onclick="cerro()">Cancelar</button>
-        <button type="button" class="btn btn-primary" id="reset" data-dismiss="modal" onclick="guardarsi()">Guardar</button>
+        <!--<button type="button" class="btn btn-primary" id="reset" data-dismiss="modal" onclick="guardarsi()">Guardar</button>-->
       </div>
     </div>
   </div>

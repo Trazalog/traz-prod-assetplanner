@@ -23,6 +23,7 @@ class Preventivos extends CI_Model
             periodo.descripcion AS periodoDesc,
             preventivo.cantidad,
             preventivo.ultimo,
+            preventivo.horash,
             preventivo.prev_adjunto');
     	$this->db->from('preventivo');
     	$this->db->join('equipos', 'equipos.id_equipo = preventivo.id_equipo');
