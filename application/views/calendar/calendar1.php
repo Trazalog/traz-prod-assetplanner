@@ -188,6 +188,7 @@ var mes = "";
     },
 
     eventClick: function(event) {
+      WaitingOpen();
       //// console.log('eventossss');
       // console.log(evento);
       console.log('Titulo:');
@@ -203,7 +204,7 @@ var mes = "";
         '<td class="cod" id="cod"><input type="text" class="codigo_equipo prevent" id="codigo_equipo" value=" '+ event.equipo +' " placeholder=""></td>'+
         '<td class="tit"><input type="text" class="title prevent" id="title" value=" '+ event.title +' " placeholder=""></td>'+          
         '</tr>');
-      $('#modalPrevent').modal('show');
+      es_orden_a_ejectutar(event.id_orden);  
     },
 
     editable: true,
@@ -266,6 +267,30 @@ var mes = "";
       }
     }  
   });
+
+  function es_orden_a_ejectutar(ot){
+    $.ajax({
+          type: 'POST', 
+          data: {ot:ot},
+          url: 'index.php/Otrabajo/ObtenerTaskIDxOT',  
+          success: function(task){
+            WaitingClose();
+            if(task==0) $('#ejecutar_ot').hide();else{
+              $('#numero').attr('task',task);
+              $('#ejecutar_ot').show();
+            }
+            $('#modalPrevent').modal('show');
+
+          },
+          error: function(error){
+            WaitingClose();
+            alert('No se Obtener Estado de OT');
+            $('#modalPrevent').modal('show');
+            $('#ejecutar_ot').hide();
+          },
+          dataType: 'json'    
+      }); 
+  }
 
 
 
@@ -880,6 +905,31 @@ $("#fecha_progr_prevent_horas").datepicker({
   }
 //////////  / ACTUALIZA DIA Y HORA
 
+function EjecutarOT(){
+  WaitingOpen();
+  var task = $('#numero').attr('task');
+  var ot = $('#numero').val();
+
+  if(ot == null || task == null){alert('Error');return;}
+  $.ajax({
+      type: 'POST', 
+      data: {ot:ot, task:task}, // duracion adicional
+      url: 'index.php/Otrabajo/EjecutarOT',  
+      success: function(data){
+        WaitingClose();
+        if(data.status) $('#modalPrevent').modal('hide');
+        else{
+          alert('Falla | No se pudo Ejecutar la Orden de Trabajo | '+data.msj);
+        }
+      },
+      error: function(data){
+        WaitingClose();
+        alert('Error | No se pudo Ejecutar la Orden de Trabajo | '+data.msj);
+      },
+      dataType: 'json'    
+  }); 
+}
+
 
 </script>
 <!-- Guardado de datos y validaciones -->
@@ -1066,7 +1116,8 @@ $("#fecha_progr_prevent_horas").datepicker({
         </table>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal" id="aceptar">Aceptar</button>
+        <button type="button" class="btn btn-success" id="ejecutar_ot" onclick="EjecutarOT()">Ejecutar OT</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>

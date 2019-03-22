@@ -40,7 +40,7 @@
                     $gr = $a['grpId'];
                     //echo "grupo: ".$gr;
                     if ($gr=='1') { 
-                      if (($a['estado'] =='As') || ($a['estado'] =='P') || ($a['estado'] =='C')) {
+                      if (($a['estado'] =='As') || ($a['estado'] =='P') || ($a['estado'] =='C') || $a['estado']=='Ej') {
                         $id          = $a['id_orden'];
                         $id_equipo   = $a['id_equipo'];
                         $causa       = $a['descripcion'];
@@ -571,7 +571,7 @@ $(".fa-thumb-tack").click(function (e) {
 
 // 
 function orden(){
-
+  WaitingOpen();
   var id_orden = $('#id_orden').val();
   var fecha_entrega = $('#fecha_entrega').val();
   var usuario= $('#usuario1').val();
@@ -588,13 +588,13 @@ function orden(){
       dataType: 'json',
 
       success: function(data){
-          
+        WaitingClose();    
         sessionStorage.clear();
         regresa1();
         
       },
       error: function(result){
-            
+        WaitingClose();    
         console.log("ERROR>> "+result);
         
       }

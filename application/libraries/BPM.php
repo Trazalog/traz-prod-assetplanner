@@ -184,7 +184,7 @@ class BPM
   function LoggerAdmin(){	
 
 
-		$usrNick = 'planificador1';
+		$usrNick = 'mantenedor1';
 		//dump_exit($userdata);
 		// Array de parametros (cabecera HTTP)
 		$opciones = array(
@@ -237,7 +237,7 @@ class BPM
   /* ./ FUNCIONES DE BPM */
   function conexiones(){	
 
-		$userdata = $this->session->userdata('user_data');
+		$userdata = $this->CI->session->userdata('user_data');
 		$usrNick= $userdata[0]["usrNick"];
 
 		// Array de parametros (cabecera HTTP)
@@ -291,10 +291,5 @@ class BPM
 			);
 			
 			return $parametros;
-			
-		//Variable tipo resource referencia a un recurso externo. Ahora en c/metodo para cambiar a distintos metodos(PUT,GET,POST) que usa Bonita. 	
-		//$param = stream_context_create($parametros);
-
-		//return $param;	
 	}
 }
