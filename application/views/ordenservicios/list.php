@@ -226,11 +226,10 @@
 
 /////// Carga la tabla del Modal y valida que  no se duplique 
 var $flag = 0;    
-$(".fa-sticky-note-o").click(function () {     
-  var row = $(this).parent("td").parent("tr").clone();
-  //row.eq(0).css({"display:none"});
-  row.find('td.icono').remove();
+$(".fa-sticky-note-o").click(function () { 
 
+  var row = $(this).parent("td").parent("tr").clone();
+  row.find('td.icono').remove();
   var id_ord = row.attr('id'); // guardo el Id de la orden de servicio.
   console.log('id de orden servicio: '+id_ord);
 
@@ -340,7 +339,7 @@ function getHerrramOrden(id_ord){
       'url': "Ordenservicio/getHerramOrden",
       'success': function (data) {
         tmp = data;
-        console.table(data);
+        //console.table(data);
       }
     });
     return tmp;
@@ -391,6 +390,7 @@ function getInsumOrd(id_ot){
 
 // trae RRHH segun id de orden y arma tabla en modal 
 function getRecOrden(id_ord){
+  console.log('recursossss: ');
   var dataO = function () {
     var tmp = null;
     $.ajax({
@@ -412,7 +412,7 @@ function getRecOrden(id_ord){
   $.each(dataO, function(i, val){           
     $('#modRecurso').DataTable().row.add( [
       val.usrLastName,
-      val.usrname
+      val.usrName
     ]).draw();
   });     
 }

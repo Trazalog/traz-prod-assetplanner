@@ -131,7 +131,7 @@ $(document).ready(function(event) {
             },
         
       error: function(result){
-            
+              
               console.log(result);
             },
       dataType: 'json'
@@ -166,29 +166,7 @@ $(document).ready(function(event) {
       $(this).val(ui.item.label);
       $('#id_tarea').val(ui.item.value);
     },
-  });
-    // $(function(){  
-      //   $.ajax({
-      //     type: 'POST',
-      //     data: { },
-      //     url: 'index.php/Predictivo/getTarea', 
-      //     success: function(data){
-                
-      //             var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-      //             $('#tarea').append(opcion); 
-      //             for(var i=0; i < data.length ; i++){    
-      //                   var nombre = data[i]['descripcion'];
-      //                   var opcion  = "<option value='"+data[i]['id_tarea']+"'>" +nombre+ "</option>" ; 
-      //                 $('#tarea').append(opcion);                                
-      //             }
-      //           },
-      //     error: function(result){
-                
-      //           console.log(result);
-      //         },
-      //         dataType: 'json'
-      //   });
-      // });
+  });   
 
   // Trae unidades de tiempo - Chequeado
   $(function(){  
@@ -431,7 +409,7 @@ $('#duracion, #unidad, #cantOper').change(function(){
 
 // Completa modal con datos para editar - Chequeado     
 function completarEdit(datos, herram, insum){
-    // console.table(datos);
+  // console.table(datos);
   $('#equipo').val(datos['codigo']);
   $('#id_equipo').val(datos['id_equipo']);
   $('#fecha_ingreso').val(datos['fecha_ingreso']);
@@ -568,6 +546,8 @@ function guardar(){
                 
           url: 'index.php/Predictivo/updatePredictivo',  
           success: function(data){
+            WaitingClose("Guardando...");
+            $('#modalSale').modal('hide');
             console.log("exito");   
             Refrescar();
           },
@@ -618,11 +598,17 @@ function Refrescar(){
 </script>
 <!-- Datepicker -->
 <script>     
-  $("#fecha").datepicker({
-    Format: 'dd/mm/yy',
-    startDate: '-3d'
-    //firstDay: 1
-  }).datepicker("setDate", new Date());
+  // $("#fecha").datepicker({
+  //   Format: 'yy-mm-dd',
+  //   startDate: '-3d'
+  //   //firstDay: 1
+  // }).datepicker("setDate", new Date());
+  /* input con horas minutos y segundos */
+  $("#fecha").datetimepicker({
+    format: 'YYYY-MM-DD',
+    locale: 'es',
+  });
+
 </script>
 
 <!-- Modal Editar -->
@@ -689,7 +675,8 @@ function Refrescar(){
               </div> 
               <div class="col-xs-12 col-sm-6 col-md-4">
                 <label for="vfecha">Fecha <strong style="color: #dd4b39">*</strong>:</label>
-                <input type="text" class="datepicker form-control fecha" id="fecha" name="vfecha" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>
+                <!-- <input type="text" class="datepicker form-control fecha" id="fecha" name="vfecha" value="<?php //echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/> -->
+                <input type="text" class="form-control fecha" id="fecha" name="vfecha" size="27"/>
               </div>                        
               <div class="col-xs-12 col-sm-6 col-md-4">
                 <label for="periodo">Periodo <strong style="color: #dd4b39">*</strong>:</label>

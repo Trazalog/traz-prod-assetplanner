@@ -17,28 +17,23 @@ class Equipos extends CI_Model {
                     equipos.estado AS estadoEquipo,
 					unidad_industrial.id_unidad,
 					unidad_industrial.descripcion AS deun,
-					grupo.id_grupo,
-					grupo.descripcion AS degr,
 					area.id_area,
 					area.descripcion AS dear,
 					empresas.id_empresa,
 					empresas.descripcion AS deem,
 					sector.id_sector,
 					sector.descripcion AS desec,
-                    admcustomers.cliLastName,
 					criticidad.id_criti,
 					criticidad.descripcion AS decri,
 					proceso.id_proceso,
 					proceso.descripcion AS depro');
     	$this->db->from('equipos');
-    	$this->db->join('grupo', 'grupo.id_grupo=equipos.id_grupo');
     	$this->db->join('sector', 'sector.id_sector=equipos.id_sector');
     	$this->db->join('empresas', 'empresas.id_empresa=equipos.id_empresa');
     	$this->db->join('unidad_industrial', 'unidad_industrial.id_unidad=equipos.id_unidad');
     	$this->db->join('criticidad', 'criticidad.id_criti=equipos.id_criticidad');
         $this->db->join('area', 'area.id_area=equipos.id_area');
         $this->db->join('proceso', 'proceso.id_proceso=equipos.id_proceso');
-        $this->db->join('admcustomers', 'admcustomers.cliId=equipos.id_customer');
     	$this->db->where('equipos.estado !=', 'AN');
     	$this->db->where('equipos.id_empresa', $empId);
     	$this->db->order_by('equipos.id_equipo', 'ASC');
@@ -646,6 +641,13 @@ class Equipos extends CI_Model {
         return $query;
     }
 
+    public function delContra($id_contratistaquipo)
+    {
+        $this->db->where('id_contratistaquipo', $id_contratistaquipo);
+        $query = $this->db->delete('contratistaquipo');
+        return $query;
+    }
+
     public function insert_componentes($data)
     {
         $query = $this->db->insert("componentes",$data);
@@ -825,19 +827,31 @@ class Equipos extends CI_Model {
     	 else{
     	     return true;
     	 }
-    }
+		}
+
+		// Guarda edicion de lectura
+		function setLecturaEdit($data){
+
+			$idLectura = $data["id_lectura"];
+			$lectura = $data["lectura"];			
+			$this->db->where('id_lectura', $idLectura);
+      $query = $this->db->update("historial_lecturas",array('lectura' =>$lectura));
+      return $query;  
+		}
+
     /// Trae lecturas de equipo por id de equipo
     function getHistoriaLecturas($data){
     	$id = $data['idequipo'];
     	$userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];     // guarda empresa logueadda
 
-    	$this->db->select('historial_lecturas.id_equipo,
-				    	historial_lecturas.lectura,
-				    	historial_lecturas.fecha,
-				    	historial_lecturas.observacion,
-				    	historial_lecturas.operario_nom AS operario,
-				    	historial_lecturas.turno');
+        $this->db->select('historial_lecturas.id_lectura,
+                        historial_lecturas.id_equipo,
+												historial_lecturas.lectura,
+												historial_lecturas.fecha,
+												historial_lecturas.observacion,
+												historial_lecturas.operario_nom AS operario,
+												historial_lecturas.turno');
     	$this->db->from('historial_lecturas');
     	$this->db->join('equipos', 'equipos.id_equipo = historial_lecturas.id_equipo');
     	$this->db->where('historial_lecturas.id_equipo', $id);
@@ -1397,7 +1411,7 @@ class Equipos extends CI_Model {
         $id_equipo    = $parametros['id_equipo'];
         $lectura      = $parametros['lectura'];
         $fecha        = $parametros['fecha'];
-        $userdata     = $this->session->userdata('user_data');
+        $userdata = $this->session->userdata('user_data');
         $usrId        = $userdata[0]['usrId'];
         $observacion  = $parametros['observacion'];
         $operario     = $parametros['operario'];

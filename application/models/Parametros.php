@@ -10,20 +10,21 @@ class Parametros extends CI_Model
 	// trae equipos por empresa
 	function getequipo(){
 
-        $userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-		$sql       = "SELECT *
-			FROM equipos 
-			WHERE equipos.estado = 'AC'
-            AND equipos.id_empresa = $empresaId 
-            ";
-		$query     = $this->db->query($sql);
+		$userdata  = $this->session->userdata('user_data');
+		$empresaId = $userdata[0]['id_empresa'];
+		
+		$this->db->select('equipos.id_equipo,equipos.codigo');
+		$this->db->from('equipos');
+		$this->db->where('equipos.estado', 'AC');
+		$this->db->where('equipos.id_empresa', $empresaId);
+		$query = $this->db->get();
+
 		if($query->num_rows()>0){
-            return $query->result();
-        }
-        else{
-            return false;
-        }
+			return $query->result();
+		}
+		else{
+			return false;
+		}
 	}
 	// trae parametros asociados por id de equipo
 	function getparametros($id){
@@ -122,7 +123,12 @@ class Parametros extends CI_Model
 	function traerparametro(){
 			$userdata  = $this->session->userdata('user_data');
 			$empresaId = $userdata[0]['id_empresa'];
-			$query     = $this->db->get_where('parametros', array('id_empresa' => $empresaId));
+			$this->db->select('parametros.*');
+			$this->db->from('parametros');
+			$this->db->where('parametros.id_empresa', $empresaId);
+			$this->db->where('parametros.estado !=', 'AN');
+			$query = $this->db->get();
+
 			if($query->num_rows()>0){
 					return $query->result();
 			}

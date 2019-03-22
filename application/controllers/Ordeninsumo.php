@@ -122,7 +122,6 @@ class Ordeninsumo extends CI_Controller {
 	        			'loteid'         => $idLote,
 	        			'cantidad'       => $cantidad[$i]
 	        		);
-		        	//dump($datos2,'datos2');
 		          	$this->Ordeninsumos->insert_detaordeninsumo($datos2);
          		}
 	        }        

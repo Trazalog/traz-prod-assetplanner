@@ -27,7 +27,7 @@
                 <h2 class="panel-title"><span class="fa fa-globe"></span> Ubicación del Equipo / Sector</h2>
               </div>
 
-              <div class="panel-body"">
+              <div class="panel-body">
                 <div class="row">
                   <input type="hidden" id="unin" name="unin" class="form-control" value="<?php echo $empresa ?>">
 
@@ -298,7 +298,7 @@ function traer_grupo(){
   });
 }
 
-// Trae grupo y llena el select
+// Trae cliente y llena el select
 traer_cliente();
 function traer_cliente(){
   $.ajax({
@@ -384,7 +384,7 @@ function guardararea(){
   }
   else 
   { 
-    alert("Por favor complete la descripcion del grupo, es un campo obligatorio");
+    alert("Por favor complete la descripcion del área, es un campo obligatorio");
   }
 }
 
@@ -421,7 +421,7 @@ function guardarproceso(){
   }
   else 
   { 
-    alert("Por favor complete la descripcion del grupo, es un campo obligatorio");
+    alert("Por favor complete la descripcion del proceso, es un campo obligatorio");
   }
 }
 
@@ -496,7 +496,7 @@ function guardaretapa(){
   }
   else 
   { 
-    alert("Por favor complete la descripcion del grupo, es un campo obligatorio");
+    alert("Por favor complete la descripcion de la etapa, es un campo obligatorio");
   }
 }
 
@@ -586,7 +586,7 @@ function guardarCliente(){
   }
   else 
   { 
-    alert("Por favor complete la descripcion del grupo, es un campo obligatorio");
+    alert("Por favor complete la descripcion del cliente, es un campo obligatorio");
   }
 }
 
