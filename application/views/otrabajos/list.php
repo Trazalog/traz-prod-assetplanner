@@ -379,11 +379,105 @@ function eliminarpred(){
       $('#tablainsumo tbody').append(tr);
     }
 
+    recargaTablaAdjunto(datos['adjunto']);
+
     $(document).on("click",".elirow",function(){
       var parent = $(this).closest('tr');
       $(parent).remove();
     });  
   } 
+
+
+  //abrir modal eliminar adjunto
+$(document).on("click",".eliminaAdjunto",function(){
+  $('#modalEliminarAdjunto').modal('show');
+  var idprev = $('#id_Predictivo').val();
+  $('#idAdjunto').val(idprev);
+});
+//eliminar adjunto
+function eliminarAdjunto() {
+  $('#modalEliminarAdjunto').modal('hide');
+  var idprev = $('#idAdjunto').val();
+  $.ajax({
+    data: { idprev: idprev },
+    dataType: 'json',
+    type: 'POST',
+    url: 'index.php/Preventivo/eliminarAdjunto',
+  }) 
+  .done( function(data){     
+    //console.table(data); 
+    let prevAdjunto = '';
+    recargaTablaAdjunto(prevAdjunto);
+  })                
+  .error( function(result){                      
+    console.error(result);
+  }); 
+}
+
+//abrir modal agregar adjunto
+$(document).on("click",".agregaAdjunto",function(){
+  $('#btnAgregarEditar').text("Agregar");
+  $('#modalAgregarAdjunto .modal-title').html('<span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar');
+
+  $('#modalAgregarAdjunto').modal('show');
+  var idprev = $('#id_Predictivo').val();
+  $('#idAgregaAdjunto').val(idprev);
+});
+//abrir modal editar adjunto
+$(document).on("click",".editaAdjunto",function(){
+  $('#btnAgregarEditar').text("Editar");
+  $('#modalAgregarAdjunto .modal-title').html('<span class="fa fa-fw fa-pencil text-light-blue"></span> Editar');
+
+  $('#modalAgregarAdjunto').modal('show');
+  var idprev = $('#id_Predictivo').val();
+  $('#idAgregaAdjunto').val(idprev);
+});
+//eliminar adjunto
+$("#formAgregarAdjunto").submit(function (event){
+  $('#modalAgregarAdjunto').modal('hide');
+
+  event.preventDefault();  
+  if (document.getElementById("inputPDF").files.length == 0) {
+    $('#error').fadeIn('slow');
+  }
+  else{
+    $('#error').fadeOut('slow');
+    var formData = new FormData($("#formAgregarAdjunto")[0]);
+    //debugger
+    $.ajax({
+      cache:false,
+      contentType:false,
+      data:formData,
+      dataType:'json',
+      processData:false,
+      type:'POST',
+      url:'index.php/Otrabajo/agregarAdjunto',
+    })
+    .done( function(data){     
+      console.table(data['ot_adjunto']); 
+      recargaTablaAdjunto( data['ot_adjunto'] );
+    })                
+    .error( function(result){                      
+      console.error(result);
+    }); 
+  }
+});
+
+
+
+
+
+  function recargaTablaAdjunto(Adjunto) {
+    //console.info( "adjunto: "+Adjunto );
+    $('#adjunto').text(Adjunto);
+    $('#adjunto').attr('href', 'assets/filesOTrabajos/'+Adjunto);
+    if( Adjunto == null || Adjunto == '') {
+      var accion = '<i class="fa fa-plus-square agregaAdjunto text-light-blue" style="color:#f39c12; cursor:pointer; margin-right:10px" title="Agregar Adjunto"></i>';
+    } else {
+      var accion = '<i class="fa fa-times-circle eliminaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Eliminar Adjunto"></i>'+'<i class="fa fa-pencil editaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Editar Adjunto"></i>';
+    }
+    $('#accionAdjunto').html(accion);
+  }
 
   // Guarda Edicion de OT - Ok
   function guardareditar(){
@@ -2184,7 +2278,7 @@ function guardarparcial(){
                 <ul class="nav nav-tabs" role="tablist">                
                   <li role="presentation" class="active"><a href="#herramin" aria-controls="profile" role="tab" data-toggle="tab">Herramientas</a></li>
                   <li role="presentation"><a href="#insum" aria-controls="messages" role="tab" data-toggle="tab">Insumos</a></li>
-                  <li role="presentation"><a href="#adj" aria-controls="messages" role="tab" data-toggle="tab">Adjunto</a></li>                        
+                  <li role="presentation"><a href="#TabAdjunto" aria-controls="messages" role="tab" data-toggle="tab">Adjunto</a></li>                        
                 </ul>
                 <!-- /tabs -->
 
@@ -2274,7 +2368,7 @@ function guardarparcial(){
                     </div><!-- /.row -->
                   </div><!--/#insum -->
 
-                  <div role="tabpanel" class="tab-pane" id="adj">
+                  <!-- <div role="tabpanel" class="tab-pane" id="adj">
                     <div class="row">
                       <div class="col-xs-12">
                         <input id="inputPDF" name="inputPDF" type="file" class="form-control input-md">
@@ -2284,8 +2378,40 @@ function guardarparcial(){
                           }
                         </style>
                       </div> 
-                    </div><!-- /.row -->
-                  </div> <!-- /.tab-pane #adj -->
+                    </div><!- - /.row - ->
+                  </div> <!- - /.tab-pane #adj - -> -->
+
+
+                  <div role="tabpanel" class="tab-pane" id="TabAdjunto">
+                    <div class="row" >
+                      <div class="col-xs-12">
+                        <table class="table table-bordered" id="tablaadjunto"> 
+                          <thead>
+                            <tr>
+                              <th></th>
+                              <th>Archivo</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td id="accionAdjunto">
+                                  <!-- -->
+                              </td>
+                              <td>
+                                <a id="adjunto" href="" target="_blank"></a>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+        
+                    </div>
+                  </div><!--cierre de TabAdjunto--> 
+
+
+
+
+                  
                 </div>  <!-- tab-content -->
                 
               </div><!-- /.nav-tabs-custom -->
@@ -2303,6 +2429,60 @@ function guardarparcial(){
     </div> <!-- /.modal-content -->
   </div>  <!-- /.modal-dialog modal-lg -->
 </div>
+
+<!--------------- MODALES ADJUNTO ------------->
+
+<!-- Modal Eliminar Adjunto -->
+<div class="modal" id="modalEliminarAdjunto">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><span class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar</h4>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="idAdjunto">
+        <h4>¿Desea eliminar Archivo Adjunto?</h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminarAdjunto();">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Agregar adjunto -->
+<div class="modal" id="modalAgregarAdjunto">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar</h4>
+      </div>
+
+      <form id="formAgregarAdjunto">
+        <div class="modal-body">
+          <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+            <h4><i class="icon fa fa-ban"></i> Error!</h4>
+            Seleccione un Archivo Adjunto
+          </div>
+          <input type="hidden" id="idAgregaAdjunto" name="idAgregaAdjunto">
+          <input id="inputPDF" name="inputPDF" type="file" class="form-control input-md">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="btnAgregarEditar">Agregar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!--------------- MODALES ADJUNTO ------------->
+
+
+
 
 <!-- Modal agregar -->
 <div class="modal" id="modalagregar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
