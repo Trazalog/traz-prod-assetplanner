@@ -387,7 +387,7 @@ class Calendario extends CI_Controller {
 				'cliId'         => 1,//por defecto( no se usa)
 				'estado'        =>'C',
 				'id_usuario'    => $usrId,
-				'id_usuario_a'  => 1,
+				'id_usuario_a'  => $usrId,
 				'id_usuario_e'  => 1,
 				'id_sucursal'   => 1,
 				'id_solicitud'  => $id_solicitud,// id prev-correct-back-predict

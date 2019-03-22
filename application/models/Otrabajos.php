@@ -748,4 +748,19 @@ class Otrabajos extends CI_Model {
         }
     }
 
+    function ObtenerCaseIDxOT($ot){
+        $this->db->select('case_id');
+        $this->db->from('orden_trabajo as A');
+        $this->db->join('solicitud_reparacion as B','A.id_solicitud=B.id_solicitud');
+        $this->db->where('id_orden',$ot);
+        return $this->db->get()->first_row()->case_id;
+    }
+
+    function CambiarEstado($ot, $estado){
+        $this->db->where('id_orden',$ot);
+        $this->db->set('estado',$estado);
+        return $this->db->update('orden_trabajo');
+    }
+    
+
 }	

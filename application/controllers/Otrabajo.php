@@ -38,7 +38,6 @@ class Otrabajo extends CI_Controller {
 	/**
   	 * Traer proveedores de empresa con estado AC.
   	 *
-  	 * @return 	String 	Arreglo con proveedores.
   	 */
   	public function getproveedor() // Ok
   	{	
@@ -458,7 +457,7 @@ class Otrabajo extends CI_Controller {
 	    }
   	}
 
-  public function agregar_pedido(){
+	  public function agregar_pedido(){
 
 	    $datos=$_POST['data'];
 	    $idot=$_POST['ido'];
@@ -619,7 +618,51 @@ class Otrabajo extends CI_Controller {
 			return false;
 		}
 	}
+	
+	//Obtener TaskID por OtID
+  public function ObtenerTaskIDxOT(){ 
+		$this->load->library('BPM');
+		$id = $this->input->post('ot');
+		$case_id = $this->Otrabajos->ObtenerCaseIDxOT($id);
+		echo $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar"');
+	}
 
+	//Ejecuta Orden de Trabajo en BPM
+	public function EjecutarOT(){
+		$task = $this->input->post('task');
+		$ot = $this->input->post('ot');
+		
+		//Cargo Libreria
+		$this->load->library('BPM');
+
+		//Obtener ID User Bonita
+		$userdata  = $this->session->userdata('user_data');
+		$usrId     = $userdata[0]['usrId'];
+
+		//Asignar Usuario a Tarea para Finanlizar
+		$responce = $this->bpm->setUsuario($task,$usrId);
+		if(!$responce['status']){echo json_encode($responce);return;}
+
+		//Cerrar Tarea Ejectuar OT
+		$responce = $this->bpm->CerrarTareaBPM($task);
+		if(!$responce['status']){echo json_encode($responce);return;}
+
+		//Cambiar Estado de OT en BD
+		if($this->Otrabajos->CambiarEstado($ot,'Ej')){
+			echo json_encode(['status'=>true, 'msj'=>'OK']);
+		}else{
+			echo json_encode(['status'=>false, 'msj'=>'Error Base de Datos']);
+		}
+
+		
+	}
 	
  
+
+
+
+
+
+
+
 }

@@ -262,7 +262,7 @@ class Bonitas extends CI_Model
 	}
 
 	function getTareas($param){
-		$tareas = file_get_contents('http://35.239.41.196:8080/bonita/API/bpm/humanTask?p=0&c=10&f=assigned_id%3D5', false, $param);
+		$tareas = file_get_contents('http://localhost:8080/bonita/API/bpm/humanTask?p=0&c=10&f=assigned_id%3D5', false, $param);
 
 		dump_exit($tareas);
 	}
