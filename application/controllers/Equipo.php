@@ -486,7 +486,7 @@ class  Equipo extends CI_Controller {
 		$id_proceso          = $this->input->post("proceso");
 		$numero_serie        = $this->input->post("numse");
 
-		$datos = array(
+		$data = array(
 			'descripcion'         => $descripcion,
 			'fecha_ingreso'       => $fecha_ingreso,
 			'fecha_garantia'      => $fecha_garantia,
@@ -507,7 +507,8 @@ class  Equipo extends CI_Controller {
 			'id_proceso'          => $id_proceso,
 			'numero_serie'        => $numero_serie
 		);
-		$result = $this->Equipos->insert_equipo($datos);
+		//dump($data);
+		$result = $this->Equipos->insert_equipo($data);
 
 		if($result)
 		{
@@ -531,9 +532,12 @@ class  Equipo extends CI_Controller {
 			}else{
 				$response = false;
 			}
+
+			echo json_encode($response);
+		} else {
+			echo json_encode($result);
 		}
 
-		echo json_encode($response);
 	}
 
 	// Codifica nombre de imagen para no repetir en servidor
@@ -663,22 +667,21 @@ class  Equipo extends CI_Controller {
 	//Guarda contratista asignado a equipo
 	public function guardarcontra()
 	{
-		$datos  = $_POST['idscontra'];//contratista		
-		$contra = $_POST['idEquipo'];//idequipo
-		$arre   = array();
-		
-	    if(count($datos) > 0 )
-	    {	    		
-	        foreach ($datos as $row )
-	        {
-	        	$datos2 = array(
-					'id_equipo'      => $contra, 
-					'id_contratista' => $row
-				);	
-	          	$r1 = $this->Equipos->insert_contratista($datos2);
-	        }	    	
-		}
-		echo json_encode($r1);
+		$id_equipo      = $_POST['id_equipo'];//idequipo
+		$id_contratista = $_POST['id_contratista'];//contratista		
+		$datos          = array(
+			'id_equipo'      => $id_equipo, 
+			'id_contratista' => $id_contratista
+		);	
+		$response = $this->Equipos->insert_contratista($datos);
+		echo json_encode($response);
+	}
+
+	public function delContra()
+	{
+		$id_contratistaquipo = $_POST['id_contratistaquipo'];
+		$response = $this->Equipos->delContra($id_contratistaquipo);
+		echo json_encode($response);
 	}
 
 	public function agregar_componente(){

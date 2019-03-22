@@ -19,6 +19,7 @@
             <thead>
               <tr>
                 <th>Acciones</th>
+                <th>Id tarea</th>
                 <th>Tarea</th>
                 <th>Equipo</th>
                 <th>Grupo</th>
@@ -26,6 +27,7 @@
                 <th>Periodo</th>
                 <th>Frecuencia</th>
                 <th>Fecha Base</th>
+                <th>Horas Hombre</th>
                 <th>Adjunto</th>
               </tr>
             </thead>
@@ -46,6 +48,7 @@
                       //echo '<i class="fa fa-file-text text-light-blue" id="cargOrden" style="cursor: pointer; margin-left: 15px;" title="Orden de Trabajo" ></i>';
                   }
                   echo '</td>';
+                  echo '<td>'.$a['prevId'].'</td>';
                   echo '<td>'.$a['deta'].'</td>';
                   echo '<td>'.$a['des'].'</td>';
                   echo '<td>'.$a['des1'].'</td>';
@@ -53,7 +56,7 @@
                   echo '<td>'.$a['periodoDesc'].'</td>';
                   echo '<td>'.$a['cantidad'].'</td>';
                   echo '<td>'.date_format(date_create($a['ultimo']), 'd-m-Y').'</td>';
-                    //echo '<td>'.$a['descripcion'].'</td>';
+                  echo '<td>'.$a['horash'].' h.h</td>';
                   if( $a['prev_adjunto'] != "")
                   {
                     echo '<td><a href="./assets/filespreventivos/'.$a['prev_adjunto'].'" alt="adjunto" target="_blank">'.$a['prev_adjunto'].'</a></td>';
@@ -80,15 +83,14 @@
   var codinsumolo="";
   var preglob="";
 
-  $(document).ready(function(event) {
 
-    edit=0;  datos=Array();
-    $('#btnAgre').click( function cargarVista(){
-      WaitingOpen();
-      $('#content').empty();
-      $("#content").load("<?php echo base_url(); ?>index.php/Preventivo/cargarpreventivo/<?php echo $permission; ?>");
-      WaitingClose();
-    });
+  edit=0;  datos=Array();
+  $('#btnAgre').click( function cargarVista(){
+    WaitingOpen();
+    $('#content').empty();
+    $("#content").load("<?php echo base_url(); ?>index.php/Preventivo/cargarpreventivo/<?php echo $permission; ?>");
+    WaitingClose();
+  });
 
   //Eliminar
   $(".eliminarPreventivo").click(function (e) {                 
@@ -201,82 +203,106 @@
     });
   });   
 
+
+
+function ordenaArregloDeObjetosPor(propiedad) {  
+  return function(a, b) {  
+    if (a[propiedad] > b[propiedad]) {  
+      return 1;  
+    } else if (a[propiedad] < b[propiedad]) {  
+      return -1;  
+    }  
+    return 0;  
+  }  
+} 
+////// HERRAMIENTAS //////
+
   //Trae herramientas
-  $(function(){
-    $('#herramienta').html("");
+  var dataHerramientas = function() {
+    var tmp = null;
     $.ajax({
-      type: 'POST',
-      data: { },
-            url: 'index.php/Preventivo/getherramienta', //index.php/
-            success: function(data){                   
-             var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-             $('#herramienta').append(opcion); 
-             for(var i=0; i < data.length ; i++){    
-              var nombre = data[i]['herrcodigo'];
-              var opcion  = "<option value='"+data[i]['herrId']+"'>" +nombre+ "</option>" ;
-              $('#herramienta').append(opcion);                                    
-            }
-          },
-          error: function(result){
+      'async': false,
+      'type': "POST",
+      'dataType': 'json',
+      'url': 'index.php/Preventivo/getHerramientasB',
+    })
+    .done( (data) => { tmp = data } )
+    .fail( () => alert("Error al traer Herramientas") );
+    return tmp;
+  }();
 
-            console.log(result);
-          },
-          dataType: 'json'
-        });
-  });
+  // data busqueda por codigo de herramientas
+  function dataCodigoHerr(request, response) {
+    function hasMatch(s) {
+      return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
+    }
+    var i, l, obj, matches = [];
 
-  $("#herramienta").change(function(){     
-    var id_herramienta = $(this).val();
-    console.log("El id de la herramienta que seleccione es:");
-    console.log(id_herramienta); 
-    codhermglo=id_herramienta;
-    $.ajax({
-      type: 'POST',
-      data: { id_herramienta: id_herramienta},
-        url: 'index.php/Preventivo/getdatos', //index.php/
-        success: function(data){    
+    if (request.term==="") {
+      response([]);
+      return;
+    }
+    
+    //ordeno por codigo de herramientas
+    dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("codigo"));
 
-          console.log(data);
-          var marca = data[0]['herrmarca']; 
-          $('#marcaherram').val(marca); 
-          var des = data[0]['herrdescrip'];
-          $('#descripcionherram').val(des); 
-          var codigo = data[0]['herrcodigo'];
-        },
-
-        error: function(result){
-
-          console.log(result);
-        },
-        dataType: 'json'
-      });
-  });  
+    for  (i = 0, l = dataHerramientas.length; i<l; i++) {
+      obj = dataHerramientas[i];
+      if (hasMatch(obj.codigo)) {
+        matches.push(obj);
+      }
+    }
+    response(matches);
+  }
+  // data busqueda por marca de herramientas
+  function dataMarcaHerr(request, response) {
+    function hasMatch(s) {
+      return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
+    }
+    var i, l, obj, matches = [];
 
   var cod="";
   $("#agregarherr").click(function (e) {   
 
+    //ordeno por marca de herramientas
+    dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("marca"));
 
-     var id_herramienta= $("#herramienta").val(codhermglo);    
-     var id_her=codhermglo;
-     
-     //console.log("herramienta:"+id_her);
-     var id_herramienta1= $("#herramienta").val();
-     console.log("herramienta de prueba :"+id_herramienta1);
+    for  (i = 0, l = dataHerramientas.length; i<l; i++) {
+      obj = dataHerramientas[i];
+      if (hasMatch(obj.marca)) {
+        matches.push(obj);
+      }
+    }
+    response(matches);
+  }
 
-     var $herramienta = $("select#herramienta option:selected").html(); 
-     var marcaherram = $('#marcaherram').val();
-     var descripcionherram = $('#descripcionherram').val();
-     var cantidadherram = $('#cantidadherram').val();
 
-     var tr = "<tr id='"+id_her+"'>"+
-     "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
-     "<td>"+$herramienta+"</td>"+
-     "<td>"+marcaherram+"</td>"+
-     "<td>"+descripcionherram+"</td>"+
-     "<td>"+cantidadherram+"</td>"+                    
-     "</tr>";
-     console.log(tr);        
-     $('#tablaherramienta tbody').append(tr);   
+  //busqueda por marcas de herramientas
+  $("#herramienta").autocomplete({
+    source:    dataCodigoHerr,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.codigo);
+      $('#id_herramienta').val(ui.item.value);
+      $('#marcaherram').val(ui.item.marca);
+      $('#descripcionherram').val(ui.item.label);
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.codigo);
+      $('#id_herramienta').val(ui.item.value);
+      $('#marcaherram').val(ui.item.marca);
+      $('#descripcionherram').val(ui.item.label);
+    },
+  })
+  //muestro marca en listado de resultados
+  .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+    .append( "<a>" + item.codigo + "</a>" )
+    .appendTo( ul );
+  };
 
      $(document).on("click",".elirow",function(){
       var parent = $(this).closest('tr');
@@ -305,95 +331,212 @@
         $('#insumo').append(opcion); 
       }
     },
-    error: function(result){
-
-      console.log(result);
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.marca);
+      $('#id_herramienta').val(ui.item.value);
+      $('#herramienta').val(ui.item.codigo);
+      $('#descripcionherram').val(ui.item.label);
     },
-    dataType: 'json'
-  });
-  });
+  })
+  //muestro marca en listado de resultados
+  .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+    .append( "<a>" + item.marca + "</a>" )
+    .appendTo( ul );
+  };
 
-  $("#insumo").change(function(){
-
-    var id_insumo = $(this).val();
-    codinsumolo=id_insumo;
-    console.log("El id de insumo que seleccione es:");
-    console.log(id_insumo);
-    console.log(codinsumolo);
-    $.ajax({
-      type: 'POST',
-      data: { id_insumo: id_insumo},
-          url: 'index.php/Preventivo/traerinsumo', //index.php/
-          success: function(data){
-            console.log(data);
-            var d = data[0]['artDescription']; 
-            $('#descript').val(d);  
-            var insumo = data[0]['artBarCode']; 
-                    //$('#insumo').val(insumo);
-                  },
-
-                  error: function(result){
-
-                    console.log(result);
-                  },
-                  dataType: 'json'
-                });
+  //busqueda por descripcion de herramientas
+  $("#descripcionherram").autocomplete({
+    source:    dataHerramientas,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_herramienta').val(ui.item.value);
+      $('#herramienta').val(ui.item.codigo);
+      $('#marcaherram').val(ui.item.marca);
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_herramienta').val(ui.item.value);
+      $('#herramienta').val(ui.item.codigo);
+      $('#marcaherram').val(ui.item.marca);
+    },
   });
 
-  $("#agregarins").click(function (e) {
 
-    var id_insumo= $('#insumo').val(codinsumolo);
-    var id_in= codinsumolo;
-    //var id_insumo1= $('#insumo').val();
+  // Agrega herramientas a la tabla - Chequeado
+  var nrofila = 0;  // hace cada fila unica
+  $("#agregarherr").click(function (e) {
+    // FALTA HACER VALIDACION
+    var id_her            = $('#id_herramienta').val();
+    var herramienta       = $("#herramienta").val(); 
+    var marcaherram       = $('#marcaherram').val();
+    var descripcionherram = $('#descripcionherram').val();
+    var cantidadherram    = $('#cantidadherram').val();
     
-    var $insumo = $("select#insumo option:selected").html();
-    var descript = $('#descript').val();
-    var cant = $('#cant').val();
-      //var datos=Array();
-      //datos=marca.split('%%');  //class='quitarEquipo'
+    nrofila = nrofila + 1;
+    var tr = "<tr id='"+id_her+"' data-nrofila='"+nrofila+"'>"+
+                "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+                "<td class='herr'>"+herramienta+"</td>"+
+                "<td class='marca'>"+marcaherram+"</td>"+
+                "<td class='descrip'>"+descripcionherram+"</td>"+
+                "<td class='cant'>"+cantidadherram+"</td>"+ 
+                // guardo id de herram y cantidades
+                "<input type='hidden' name='id_her["+nrofila+"]' value='"+id_her+"'>" +                
+                "<input type='hidden' name='cant_herr["+nrofila+"]' value='"+cantidadherram+"'>" +
+              "</tr>";
+    if(id_her > 0 && cantidadherram > 0){
+      $('#tablaherramienta tbody').append(tr);
+    }
+    else{
+      return;
+    } 
+
+    $(document).on("click",".elirow",function(){
+      var parent = $(this).closest('tr');
+      $(parent).remove();
+    });
+
+    $('#herramienta').val('');
+    $('#marcaherram').val(''); 
+    $('#descripcionherram').val(''); 
+    $('#cantidadherram').val('');        
+  });
+////// HERRAMIENTAS //////
 
 
-      var tr = "<tr id='"+id_in+"'>"+
-      "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
-      "<td>"+$insumo+"</td>"+
-      "<td>"+descript+"</td>"+
-      "<td>"+cant+"</td>"+
+////// INSUMOS //////
 
-      "</tr>";
+  //Trae insumos
+  var dataInsumos = function() {
+    var tmp = null;
+    $.ajax({
+      'async': false,
+      'type': "POST",
+      'dataType': 'json',
+      'url': 'index.php/Preventivo/getinsumo',
+    })
+    .done( (data) => { tmp = data } )
+    .fail( () => alert("Error al traer Herramientas") );
+    return tmp;
+  }();
 
-      console.log(tr); 
-      console.log("el id de insumo");
-      console.log(id_in);
+  // data busqueda por codigo de herramientas
+  function dataCodigoInsumo(request, response) {
+    function hasMatch(s) {
+      return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
+    }
+    var i, l, obj, matches = [];
+
+    if (request.term==="") {
+      response([]);
+      return;
+    }
+
+    //ordeno por codigo de herramientas
+    dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("codigo"));
+
+    for  (i = 0, l = dataInsumos.length; i<l; i++) {
+      obj = dataInsumos[i];
+      if (hasMatch(obj.codigo)) {
+        matches.push(obj);
+      }
+    }
+    response(matches);
+  }
 
 
-      $('#tablainsumo tbody').append(tr);
+  //busqueda por marcas de herramientas
+  $("#insumo").autocomplete({
+    source:    dataCodigoInsumo,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.codigo);
+      $('#id_insumo').val(ui.item.value);
+      $('#descript').val(ui.item.label);
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.codigo);
+      $('#id_insumo').val(ui.item.value);
+      $('#descript').val(ui.item.label);
+    },
+  })
+  //muestro marca en listado de resultados
+  .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+    .append( "<a>" + item.codigo + "</a>" )
+    .appendTo( ul );
+  };
 
+  //busqueda por descripcion de herramientas
+  $("#descript").autocomplete({
+    source:    dataInsumos,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_insumo').val(ui.item.value);
+      $('#insumo').val(ui.item.codigo);
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_herramienta').val(ui.item.value);
+      $('#herramienta').val(ui.item.codigo);
+      $('#marcaherram').val(ui.item.marca);
+    },
+  });
 
+  // Agrega insumos a la tabla 
+  var nrofilaIns = 0; 
+  $("#agregarins").click(function (e) {
+      var id_insumo = $('#id_insumo').val(); 
+      var $insumo   = $("#insumo").val();
+      var descript = $('#descript').val();
+      var cant = $('#cant').val();     
+      console.log("El id  del insumo");
+      console.log(id_insumo);
+      var hayError = false;
+      var tr = "<tr id='"+id_insumo+"'>"+
+                    "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+                    "<td>"+$insumo+"</td>"+
+                    "<td>"+descript+"</td>"+
+                    "<td>"+cant+"</td>"+
+
+                    // guardo id de insumos y cantidades
+                    "<input type='hidden' name='id_insumo["+nrofilaIns+"]' value='"+id_insumo+"'>" +
+                    "<input type='hidden' name='cant_insumo["+nrofilaIns+"]' value='"+cant+"'>" +
+                "</tr>";
+      nrofilaIns = nrofilaIns + 1;          
+      if(id_insumo > 0 && cant > 0){
+        $('#tablainsumo tbody').append(tr); 
+      }
+      else {
+             return;
+      }    
 
       $(document).on("click",".elirow",function(){
         var parent = $(this).closest('tr');
         $(parent).remove();
       });
-
+       
       $('#insumo').val('');
       $('#descript').val(''); 
-      $('#cant').val('');  
-    });
-
-  $('#tabprev').DataTable({
-    "aLengthMenu": [ 10, 25, 50, 100 ],
-    "columnDefs": [ {
-      "targets": [ 0 ], 
-      "searchable": false
-    },
-    {
-      "targets": [ 0 ], 
-      "orderable": false
-    } ],
-    "order": [[1, "asc"]],
+      $('#cant').val(''); 
   });
+////// INSUMOS //////
 
-});
+
+
+
 
 //Elimina Preventivo
 function eliminaPrevent(){
@@ -744,6 +887,21 @@ $('#modalSale').on('hidden.bs.modal', function (e) {
   $('#content').empty();  
   $("#content").load("<?php echo base_url(); ?>index.php/Preventivo/index/<?php echo $permission; ?>");
 })
+
+
+
+$('#tabprev').DataTable({
+  "aLengthMenu": [ 10, 25, 50, 100 ],
+  "columnDefs": [ {
+    "targets": [ 0 ], 
+    "searchable": false
+  },
+  {
+    "targets": [ 0 ], 
+    "orderable": false
+  } ],
+  "order": [[1, "asc"]],
+});
 </script>
 
 <!-- Modal editar-->
@@ -875,20 +1033,20 @@ $('#modalSale').on('hidden.bs.modal', function (e) {
                   <div class="row">
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="herramienta">Codigo <strong style="color: #dd4b39">*</strong>:</label>
-                      <select  id="herramienta"  name="herramienta" class="form-control input-md" value=""></select>
+                      <input type="text" id="herramienta"  name="" class="form-control" />
                       <input type="hidden" id="id_herramienta" name="id_herramienta">
-                    </div>       
+                    </div>                          
                     <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="marcaherram">Marca:</label>
-                      <input type="text" id="marcaherram" name="marcaherram" class="form-control input-md" />
+                      <label for="marcaherram">Marca <strong style="color: #dd4b39">*</strong>:</label>
+                      <input type="text" id="marcaherram"  name="" class="form-control" />
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="descripcionherram">Descripcion:</label>
-                      <input type="text" id="descripcionherram" name="descripcionherram" class="form-control input-md" />
+                      <label for="descripcionherram">Descripcion <strong style="color: #dd4b39">*</strong>:</label>
+                      <input type="text" id="descripcionherram"  name="" class="form-control" />
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="cantidadherram">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
-                      <input type="text" id="cantidadherram" name="cantidadherram" class="form-control input-md" placeholder="Ingrese Cantidad" />
+                      <input type="text" id="cantidadherram"  name="" class="form-control" placeholder="Ingrese Cantidad" />
                     </div>
                   </div>
                   <div class="row">
@@ -923,17 +1081,17 @@ $('#modalSale').on('hidden.bs.modal', function (e) {
                 <div class="panel-body">
                   <div class="row">
                     <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="insumo">Codigo:</label>
-                      <select  id="insumo"  name="insumo" class="form-control input-md" value=""></select>
-                      <input type="hidden" id="id_insumo" name="id_insumo">
+                      <label for="insumo">Codigo <strong style="color: #dd4b39">*</strong>:</label>
+                      <input type="text" id="insumo" name="insumo" class="form-control" />
+                      <input type="hidden" id="id_insumo" name="">
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="descript">Descripcion:</label>
-                      <input type="text" id="descript"  name="descript" class="form-control input-md" />
+                      <label for="">Descripcion:</label>
+                      <input type="text" id="descript"  name="" class="form-control" />
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="cant">Cantidad:</label>
-                      <input type="text" id="cant"  name="cant" class="form-control input-md" placeholder="Ingrese Cantidad"/>
+                      <label for="cant">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
+                      <input type="text" id="cant"  name="" class="form-control" placeholder="Ingrese Cantidad"/>
                     </div>
                   </div>
                   <div class="row">
