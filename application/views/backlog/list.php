@@ -261,6 +261,7 @@ function getFormattedPartTime(partTime) {
     var hshombre = $('#hshombre').val();  
     var duracion = $('#duracion').val(); 
     var id_unidad = $('#unidad').val();
+    var back_canth = $('#cantOper').val();
     
     // Arma array de herramientas y cantidades
     var idsherramienta = new Array();     
@@ -297,6 +298,7 @@ function getFormattedPartTime(partTime) {
                 duracion:duracion,
                 id_unidad:id_unidad,
                 hshombre: hshombre,
+                back_canth: back_canth,
                 idsherramienta: idsherramienta,
                 cantHerram: cantHerram,
                 idsinsumo: idsinsumo, 
@@ -434,26 +436,6 @@ function getFormattedPartTime(partTime) {
       calcularHsHombre();
       //calcDuracionBack(); 
   });
-
-// calcua duracion en minutos para mostrar en lista
-  // function calcDuracionBack(){
-
-  //   var duracion = $('#duracion').val();
-  //   var unidad = $('#unidad').val();
-  //   var durMinutos = 0;
-  //   if(unidad == 3){
-  //     durMinutos = duracion * 1440;
-  //   }
-  //   if(unidad == 2){
-  //     durMinutos = duracion * 60; 
-  //   }
-  //   if(unidad == 1){
-  //     durMinutos = duracion;
-  //   }
-  //   $('#back_duracion').val(durMinutos);
-  // }  
-
-
 
 //Trae herramientas
   $(function(){
@@ -816,15 +798,7 @@ function recargaTablaAdjunto(backAdjunto) {
                 <!-- <input type="text" class="datepicker  form-control limpiar fecha" id="fecha" name="vfecha" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/> -->
                 <input type="text" class="form-control limpiar fecha" id="fecha" name="vfecha" size="27"/>
               </div>
-              <!--<div class="col-xs-12 col-sm-6">
-              <label for="horash">Horas.H:</label>
-                <input type="text" class="form-control limpiar" id="horash" name="horash" />                         
-              </div> -->  
-              <!-- <div class="col-xs-12 col-sm-6">
-                <label for="horash">Duración (minutos):</label>
-                <input type="text" class="form-control limpiar" id="horash" name="horash" />
-              </div> 
-               -->
+              
               <div class="col-xs-12 col-sm-6 col-md-4">
                 <label for="duracion">Duración <strong style="color: #dd4b39">*</strong>:</label>
                 <input type="text" class="form-control" id="duracion" name="duracion"/>

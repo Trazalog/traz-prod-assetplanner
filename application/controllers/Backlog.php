@@ -116,6 +116,7 @@ class Backlog extends CI_Controller {
 		$tarea = $this->input->post('tarea');
 		$fecha = $this->input->post('fecha');
 		$duracion = $this->input->post('duracion');
+		$back_canth = $this->input->post('back_canth');
 		$hshombre = $this->input->post('hshombre');
 		$id_unidad = $this->input->post('id_unidad');
 		$uno=substr($fecha, 0, 2); 
@@ -127,10 +128,10 @@ class Backlog extends CI_Controller {
 									'fecha' => $resul,
 									'horash' => $hshombre,
 									'back_duracion' => $duracion,
+									'back_canth'=> $back_canth,
 									'id_unidad' => $id_unidad									
 									);		
-
-		//dump_exit($datos);
+	
 		$result1 = $this->Backlogs->editar_backlogs($datos,$id_back);	
 		
 		/// HERRAMIENTAS	
