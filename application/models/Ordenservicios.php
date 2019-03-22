@@ -336,27 +336,24 @@ class Ordenservicios extends CI_Model {
 			}   
     }
 
-    function getOperariosOrden($data)
-    {
-        $id_orden = $data['id_orden'];
-        $this->db->select('
-            sisusers.usrId,
-            sisusers.usrLastName,
-            sisusers.usrname
-        ');
-        $this->db->from('sisusers');        
-        $this->db->join('asignausuario', 'asignausuario.usrId = sisusers.usrId');        
-        $this->db->join('orden_servicio', 'asignausuario.id_orden = orden_servicio.id_orden'); 
-        $this->db->where('orden_servicio.id_orden', $id_orden);
-        $query = $this->db->get();
-        if ($query->num_rows()!=0)
-        {
-            return $query->result_array();  
-        }
-        else
-        {   
-            return array();
-        }                
+    function getOperariosOrden($data){
+			
+			$id_orden = $data['id_orden'];
+			$this->db->select('sisusers.usrName,
+												sisusers.usrLastName');
+			$this->db->from('asignausuario');        
+			$this->db->join('sisusers', 'asignausuario.usrId = sisusers.usrId');        
+			$this->db->join('orden_servicio', 'orden_servicio.id_orden = asignausuario.id_orden'); 
+			$this->db->where('orden_servicio.id_orden', $id_orden);
+			$query = $this->db->get();
+			if ($query->num_rows()!=0)
+			{
+					return $query->result_array();  
+			}
+			else
+			{   
+					return array();
+			}                
     }
 
 		// devuelve insumos pedidos por id de OT
@@ -369,20 +366,19 @@ class Ordenservicios extends CI_Model {
 												articles.artDescription as descripcion,
 												articles.artBarCode as codigo,
 												tbl_notapedido.id_notaPedido as nroOT,
-												sisusers.usrName as nombre,
-												sisusers.usrLastName as apellido');
+												');
 			$this->db->from('tbl_detanotapedido');
 			$this->db->join('tbl_notapedido', 'tbl_detanotapedido.id_notaPedido = tbl_notapedido.id_notaPedido');
 			$this->db->join('orden_trabajo', 'tbl_notapedido.id_ordTrabajo = orden_trabajo.id_orden');
 			$this->db->join('articles', 'articles.artId = tbl_detanotapedido.artId');
-			$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario');
+			//$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario');
 			$this->db->where('tbl_notapedido.id_ordTrabajo', $id_ot);
 			$query = $this->db->get();
 		
 			if ($query->num_rows()!=0){
 					return $query->result_array();
 			}else{   
-					return false;
+					return array();
 			}  
 
     }
@@ -535,21 +531,21 @@ class Ordenservicios extends CI_Model {
 
     function validaOperarios($data){
         
-        $query = $this->db->query("SELECT CONCAT(`usrLastName`,', ',`usrname`)  as `operario` FROM `sisusers`");
-        $recurso = (string)$data['operario'];
-        
-        foreach($query->result_array() as $row){                
-             
-            $usuario = (string)$row['operario'];
-            
-            if (strcasecmp ($usuario , $recurso) == 0) { 
-                $resp['resp'] = true;                
-               return $resp;  
-            }  
-            
-        }
-        $resp['resp'] = false;
-        return $resp;
+			$query = $this->db->query("SELECT CONCAT(`usrLastName`,', ',`usrname`)  as `operario` FROM `sisusers`");
+			$recurso = (string)$data['operario'];
+			
+			foreach($query->result_array() as $row){                
+						
+					$usuario = (string)$row['operario'];
+					
+					if (strcasecmp ($usuario , $recurso) == 0) { 
+							$resp['resp'] = true;                
+							return $resp;  
+					}  
+					
+			}
+			$resp['resp'] = false;
+			return $resp;
     }
 
 

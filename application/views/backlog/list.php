@@ -18,13 +18,13 @@
             <thead>
               <tr>
                 <th>Acciones</th>
-                <th>Nro Backlog</th>
+                <th>Nº Backlog</th>
                 <th>Equipo</th>
                 <th>Componente</th>
                 <th>Sistema</th>
                 <th>Tarea</th>
                 <th>Fecha</th>
-                <th>Duración</th>
+                <th>Duración (min)</th>
               </tr>
             </thead>
             <tbody>
@@ -38,6 +38,9 @@
                         if (strpos($permission,'Add') !== false) {
                           echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar" data-toggle="modal" data-target="#modalaviso"></i>';
                           echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar" ></i>';
+                          if ($a['back_adjunto']) {
+                            echo '<a href="'.base_url().'assets/filesbacklog/'.$a['back_adjunto'].'" target="_blank"><i class="fa fa-file-pdf-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Ver Pdf"></i></a>';
+                          }                          
                         }                     
                       echo '</td>';
                       echo '<td>'.$a['backId'].'</td>';

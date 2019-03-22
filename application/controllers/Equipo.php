@@ -764,7 +764,12 @@ class  Equipo extends CI_Controller {
   	public function setLectura(){
   		$result = $this->Equipos->setLecturas($this->input->post());
   		echo json_encode($result);
-  	}
+		}
+		
+		public function setLecturaEdit(){
+			$result = $this->Equipos->setLecturaEdit($this->input->post());
+  		echo json_encode($result);
+		}
 
   	public function getHistoriaLect(){
   		$result = $this->Equipos->getHistoriaLecturas($this->input->post());
