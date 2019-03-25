@@ -11,7 +11,38 @@ class BPM
     $this->caseId = $idCase['caseId'];
     $this->CI =& get_instance();
     $this->CI->load->model('Bonitas');
-  }
+	}
+	
+	// Lanza proceso en BPM
+	function LanzarProceso($contract)
+	{
+		//Preparar Ambiente
+		$parametros = $this->conexiones();
+		$parametros["http"]["method"] = "POST";
+		$parametros["http"]["content"] = json_encode($contract);
+		$param = stream_context_create($parametros);
+
+		//Lanzar Proceso en Bonita
+		$resource = 'API/bpm/process/';
+		$url = BONITA_URL.$resource;
+		$com = '/instantiation';			
+		$caseId = @file_get_contents($url.BPM_PROCESS_ID.$com, false, $param);
+
+		//Interpretar Responce
+		$response = $this->parseHeaders( $http_response_header);
+
+		$code = $response['response_code'];
+		if($code<300){
+			return ['status'=>true, 'msj'=>'OK', 'code'=>$code, 'case_id'=>$caseId];
+		}else {
+			return ['status'=>false, 'msj'=> ASP_0100.' | '.json_decode($caseId), 'code'=>'ERROR_BPM('.$code.')'];
+		}
+
+		//Interpretar Responce
+		$response['responsecabecera'] = $this->parseHeaders( $http_response_header );
+		$response['caseId'] = $caseId;	
+		return $response;
+	}
   // Gestiona Actividaddes desde BPM
   public function ObtenerLineaTiempo(){
     

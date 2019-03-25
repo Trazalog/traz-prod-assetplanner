@@ -196,8 +196,8 @@ class Sservicios extends CI_Model
 			}
 		}
 	// Lanza proceso en BPM
-		function lanzarProcesoBPM($param){
-			
+		function lanzarProcesoBPM($param)
+		{
 			$resource = 'API/bpm/process/';
 			$url = BONITA_URL.$resource;
 			$com = '/instantiation';			

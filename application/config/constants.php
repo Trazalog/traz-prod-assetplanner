@@ -125,8 +125,14 @@ define ("ID_FORMULARIOS", serialize (array (1,2,3,4,5,6,7,8,9)));
 | ERRORES
 |--------------------------------------------------------------------------
 |
-| Listado Errores BONITA 
+| Listado Errores 
+|
 |
 */
+//Errores 100 <200 de Bonita
 define('ASP_0100', 'Error ASP_0100: Comunicarse con el Proveedor de Servicio'); 
+
+
+//Errores 200 < 300 de MySql
+define('ASP_0200', 'Error ASP_0200: Comunicarse con el Proveedor de Servicio'); 
 
