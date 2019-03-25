@@ -2,7 +2,7 @@
   "name": "assetPLANNER",
   "short_name": "asset",
   "display": "standalone",
-  "start_url": "/test/traz-prod-assetplanner/index.php",
+  "start_url": "/demo/traz-prod-assetplanner/index.php",
   "theme_color": "#673ab6",
   "background_color": "#111111",
   "icons": [
