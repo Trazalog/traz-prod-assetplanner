@@ -1,6 +1,6 @@
 {
-  "name": "assetPLANNER",
-  "short_name": "asset",
+  "name": "SIM App",
+  "short_name": "SIM",
   "display": "standalone",
   "start_url": "/test/traz-prod-assetplanner/index.php",
   "theme_color": "#673ab6",
@@ -8,17 +8,17 @@
   "icons": [
 
     {
-      "src": "iconoasset.png",
+      "src": "iconosim.png",
       "sizes": "144x144",
       "type": "image/png"
       
     }, {
-      "src": "assetlogo.png",
+      "src": "simlogo.png",
       "sizes": "192x192",
       "type": "image/png"
       
     }, {
-      "src": "assetlogo512.png",
+      "src": "simlogo512.png",
       "sizes": "512x512",
       "type": "image/png"
       

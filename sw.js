@@ -1,13 +1,10 @@
-self.addEventListener('fetch', (event) => {
-    event.respondWith(async function() {
-      const cache = await caches.open('https://www.trazalog.com.ar/test/traz-prod-assetplanner/application/views');
-      const cachedResponse = await cache.match(event.request);
-      if (cachedResponse) return cachedResponse;
-      const networkResponse = await fetch(event.request);
-      event.waitUntil(
-        cache.put(event.request, networkResponse.clone())
-      );
-      return networkResponse;
-    }());
-  });
-  
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.0.0/workbox-sw.js');
+
+if (workbox) {
+  console.log(`Yay! Workbox is loaded 🎉`);
+
+  workbox.precaching.precacheAndRoute([]);
+
+} else {
+  console.log(`Boo! Workbox didn't load 😬`);
+}
