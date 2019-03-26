@@ -196,8 +196,8 @@ class Sservicios extends CI_Model
 			}
 		}
 	// Lanza proceso en BPM
-		function lanzarProcesoBPM($param){
-			
+		function lanzarProcesoBPM($param)
+		{
 			$resource = 'API/bpm/process/';
 			$url = BONITA_URL.$resource;
 			$com = '/instantiation';			
@@ -230,7 +230,7 @@ class Sservicios extends CI_Model
 				'case_id' => $caseId		        
 			);
 			$this->db->where('id_solicitud', $id_solServicio);
-			$result = $this->db->update('solicitud_reparacion', $caseId);
+			return $this->db->update('solicitud_reparacion', $caseId);
 		}	
 
 /*	./ INTEGRACION CON BPM */

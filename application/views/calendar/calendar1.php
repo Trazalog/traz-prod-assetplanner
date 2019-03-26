@@ -287,8 +287,7 @@ var mes = "";
             alert('No se Obtener Estado de OT');
             $('#modalPrevent').modal('show');
             $('#ejecutar_ot').hide();
-          },
-          dataType: 'json'    
+          }   
       }); 
   }
 

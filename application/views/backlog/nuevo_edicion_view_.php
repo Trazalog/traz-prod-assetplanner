@@ -173,135 +173,8 @@
 												</table>		 -->
 											</div>
 											</div>
-										</div>
-
-                    <!-- prioridad de la SServicios -->
-                    <!-- <div class="form-group" id="decisionSolicitud">
-                      <div class="radioBtn col-sm-12 col-md-12">
-                        <center>
-                          <label class="control-label">¿La Solicitud de Servicios es Urgente?
-                          </label>
-                          </br>
-                          <div class="col-md-12">
-                            <label class="radio-inline" for="radios-0">
-                              <input type="radio" name="opcion" id="radios-0" value="correctivo" checked="checked"> Si
-                            </label>
-                            <label class="radio-inline" for="radios-1">
-                              <input type="radio" name="opcion" id="radios-1" value="backlog" checked="checked"> No
-                            </label>
-                          </div>
-                        </center>
-                      </div>
-                    </div>         -->
-
-
-
-										<div role="tabpanel" class="tab-pane" id="profile">
-											<div class="panel-body">
-												<div class="panel panel-primary">
-													<div class="panel-heading">Comentarios</div>
-													<div class="panel-body" style="max-height: 500px;overflow-y: scroll;">
-														<ul id="listaComentarios">
-															<?php 
-																foreach($comentarios as $f){
-
-																	if(strcmp($f['userId']['userName'],'System')!=0){
-																	echo '<hr/>';
-																	echo '<li><h4>'.$f['userId']['firstname'].' '.$f['userId']["lastname"].'<small style="float: right">'.date_format(date_create($f['postDate']),'H:i  d/m/Y').'</small></h4>';
-																	echo '<p>'.$f['content'].'</p></li>';
-																	}
-																}
-															?>
-														</ul>
-													</div>
-												</div>
-												<textarea id="comentario" class="form-control" placeholder="Nuevo Comentario..."></textarea>
-												<br />
-												<button class="btn btn-primary" id="guardarComentario" onclick="guardarComentario()">Agregar</button>
-											</div>
-										</div>
-										
-										<div role="tabpanel" <?php echo ($device == 'android' ? 'class= "hidden"' :'class= "tab-pane"') ?> id="messages" >							
-										  <!-- <div role="tabpanel" class="tab-pane" id="messages" > -->
-											
-											<div class="panel-body">
-												<div class="panel panel-primary">
-													<div class="panel-heading">Línea de Tiempo</div>
-													<div class="panel-body" style="max-height: 500px;overflow-y: scroll;">
-													
-													<div class="container" >
-															<ul class="timeline">
-																<?php
-																	//echo '<h2 style="margin-left:50px;">Actividades Pendientes</h2>';
-																	echo '<h3 style="margin-left:50px;">Actividades Pendientes</h3>';
-																	foreach ($timeline['listAct'] as $f) {       
-																		echo '<li>
-																				<div class="timeline-badge info"><i class="glyphicon glyphicon-time"></i></div>
-																				<div class="timeline-panel">
-																						<div class="timeline-heading">
-																						<h4 class="timeline-title">'.$f['displayName'].'</h4>
-																						<p><small class="text-muted"><i class="glyphicon glyphicon-time"></i> '.date_format(date_create($f['last_update_date']),'H:i  d/m/Y').'</small></p>
-																						</div>
-																						<div class="timeline-body">';
-																						if(array_key_exists ( 'assigned_id' , $f ) && $f['assigned_id']!=''){
-																								echo '<p>Usuario: '.$f['assigned_id']['firstname'].' '.$f['assigned_id']['lastname'].'</p>';
-																						}else{
-																								echo '<p>Usuario: Sin Asignar</p>';
-																						}
-																		echo   '<p>Descripción: '.$f['displayDescription'].'</p>
-																						<p>Case: '.$f['caseId'].'</p>
-																						</div>
-																				</div>
-																				</li>';
-																		}
-																		//echo '<h2 style="margin-left:50px;">Actividades Terminadas</h2>';
-																		echo '<h3 style="margin-left:50px;">Actividades Terminadas</h3>';
-																		foreach ($timeline['listArch'] as $f) {
-																		
-																		echo '<li>
-																				<div class="timeline-badge danger"><i class="glyphicon glyphicon-check"></i></div>
-																				<div class="timeline-panel">
-																						<div class="timeline-heading">
-																						<h4 class="timeline-title">'.$f['displayName'].'</h4>
-																						<p><small class="text-muted"><i class="glyphicon glyphicon-time"></i> '.date_format(date_create($f['last_update_date']),'H:i  d/m/Y').'</small></p>
-																						</div>
-																						<div class="timeline-body">';
-																						if(array_key_exists ( 'assigned_id' , $f )){
-																								echo '<p>Usuario: '.$f['assigned_id']['firstname'].' '.$f['assigned_id']['lastname'].'</p>';
-																						}else{
-																								echo '<p>Usuario: Sin Asignar</p>';
-																						}
-																		echo    '<p>Descripción: '.$f['displayDescription'].'</p>           
-																						<p>Case: '.$f['caseId'].'</p>
-																						</div>
-																				</div>
-																				</li>';
-																	}
-																	?>
-															</ul>
-														</div>
-
-													</div>
-												</div>
-											</div>
-
-										</div>
-
-									</div>
-								</div>
-							</div>
-						</div>
-
-					</div><!-- /.row -->
-
-
-
-
-
-
-        
-
-          <div class="panel panel-default">
+                      <!-- Formulario -->
+                      <div class="panel panel-default">
             <div class="panel-heading">
               <h3 class="panel-title"><span class="fa fa-cogs"></span> Datos del equipo</h3>
             </div>
@@ -375,9 +248,7 @@
                   <label for="vfecha">Fecha <strong style="color: #dd4b39">*</strong>:</label>                 
                   <input type='text' class="form-control" id="fechaEdit" name="denunciasfecha" value="<?php echo date("Y-m-d") ?>">
                 </div>
-                
-                
-
+    
 
                 <div class="col-xs-12 col-sm-6">
                   <label for="back_duracion">Duración (minutos)<strong style="color: #dd4b39">*</strong>:</label>
@@ -386,6 +257,74 @@
               </div><!-- /.row -->
             </div>
           </div>
+										</div>
+
+                    <!-- prioridad de la SServicios -->
+                    <!-- <div class="form-group" id="decisionSolicitud">
+                      <div class="radioBtn col-sm-12 col-md-12">
+                        <center>
+                          <label class="control-label">¿La Solicitud de Servicios es Urgente?
+                          </label>
+                          </br>
+                          <div class="col-md-12">
+                            <label class="radio-inline" for="radios-0">
+                              <input type="radio" name="opcion" id="radios-0" value="correctivo" checked="checked"> Si
+                            </label>
+                            <label class="radio-inline" for="radios-1">
+                              <input type="radio" name="opcion" id="radios-1" value="backlog" checked="checked"> No
+                            </label>
+                          </div>
+                        </center>
+                      </div>
+                    </div>         -->
+
+
+
+										<div role="tabpanel" class="tab-pane" id="profile">
+											<div class="panel-body">
+												<div class="panel panel-primary">
+													<div class="panel-heading">Comentarios</div>
+													<div class="panel-body" style="max-height: 500px;overflow-y: scroll;">
+														<ul id="listaComentarios">
+															<?php 
+																foreach($comentarios as $f){
+
+																	if(strcmp($f['userId']['userName'],'System')!=0){
+																	echo '<hr/>';
+																	echo '<li><h4>'.$f['userId']['firstname'].' '.$f['userId']["lastname"].'<small style="float: right">'.date_format(date_create($f['postDate']),'H:i  d/m/Y').'</small></h4>';
+																	echo '<p>'.$f['content'].'</p></li>';
+																	}
+																}
+															?>
+														</ul>
+													</div>
+												</div>
+												<textarea id="comentario" class="form-control" placeholder="Nuevo Comentario..."></textarea>
+												<br />
+												<button class="btn btn-primary" id="guardarComentario" onclick="guardarComentario()">Agregar</button>
+											</div>
+										</div>
+										
+										<div role="tabpanel" <?php echo ($device == 'android' ? 'class= "hidden"' :'class= "tab-pane"') ?> id="messages" >							
+										  <!-- <div role="tabpanel" class="tab-pane" id="messages" > -->
+											
+											<div class="panel-body">
+												<div class="panel panel-primary">
+                          <?php
+                              timeline($timeline);
+                            ?>
+												</div>
+											</div>
+
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div><!-- /.row -->
+          
           </div>
           
           <div class="modal-footer">
@@ -405,64 +344,7 @@ var codhermglo  = "";
 var codinsumolo = "";
 var preglob     = "";
   
-//carga listado backlog(desde boton) - Chequeado
-// $('#listado').click( function cargarVista(){
-//     WaitingOpen();
-//     $('#content').empty();
-//     $("#content").load("<?php echo base_url(); ?>index.php/Backlog/index/<?php echo $permission; ?>");
-//     WaitingClose();
-// });
 
-// $(".datepicker").datepicker({
-//     changeMonth: true,
-//     changeYear: true
-// });
-
-// trae info de equipo por id para completar los campos - Chequeado
-//completarEquipo();
-// function completarEquipo(){
-//   var id_equipo = $("#equipo").val();
-//   $.ajax({
-//     data: { id_equipo:id_equipo },
-//     dataType: 'json',
-//     type: 'POST',
-//     url: 'index.php/Backlog/getInfoEquipo',
-//     success: function(data){
-//       //console.table(data);
-//       var codigo        = data[0]['codigo'];
-//       var fecha_ingreso = data[0]['fecha_ingreso']; 
-//       var marca         = data[0]['marca']; 
-//       var ubicacion     = data[0]['ubicacion']; 
-//       var criterio1     = data[0]['criterio1']; 
-//       var descripcion   = data[0]['descripcion']; 
-//       $('#equipoDescrip').val(codigo);
-//       $('#fecha_ingreso').val(fecha_ingreso);       
-//       $('#marca').val(marca);   
-//       $('#descripcion').val(descripcion);       
-//       $('#ubicacion').val(ubicacion);
-//       //refrescarAutocompletar();
-//       $('#codigo_componente').val("");
-//       $('#descrip_componente').val("");
-//       $('#sistema_componente').val("");
-//     },
-//     error: function(result){
-//       console.error("Error al traer info de equipo.");
-//       console.table(result);
-//     },
-//   });   
-// }
-//$("#fecha").datepicker();
-// $("#fecha").datepicker({
-//   format: 'dd/mm/yy',
-//   startDate: '-3d',
-//   firstDay: 1
-// }).datepicker();
-
-// jQuery(function ($) { // wait until the DOM is ready
-// 		$("#fecha").datepicker({
-// 			autoclose: true
-// 		})
-// 	});
 
 // cargo plugin DateTimePicker
 $('#fechaEdit').datetimepicker({
@@ -470,34 +352,6 @@ $('#fechaEdit').datetimepicker({
     locale: 'es',
   });
 
-// Trae equipos llena select - Chequeado
-// traer_equipo();
-// function traer_equipo(){
-//   $('#equipo').html('');
-//     $.ajax({
-//       type: 'POST',
-//       data: { },
-//       url: 'index.php/Backlog/getequipo', //index.php/
-//       success: function(data){
-             
-//                var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-//                 $('#equipo').append(opcion); 
-//               for(var i=0; i < data.length ; i++) 
-//               {    
-//                     var nombre = data[i]['codigo'];
-//                     var opcion  = "<option value='"+data[i]['id_equipo']+"'>" +nombre+ "</option>" ; 
-
-//                   $('#equipo').append(opcion); 
-                                 
-//               }
-//             },
-//       error: function(result){
-            
-//             console.log(result);
-//           },
-//           dataType: 'json'
-//       });
-// }
 
 // Trae tareas llena select - Chequeado
 traer_tarea();
@@ -585,37 +439,8 @@ function refrescarAutocompletar(){
       $("#sistema_componente").val(ui.item.sistema);
       $('#idcomponenteequipo').val(ui.item.idce);
     }
-  });/*/
-  $("#codigo_componente").autocomplete({
-    source: dataC,
-    delay: 100,
-    minLength: 1,
-    focus: function(event, ui) {
-      // prevent autocomplete from updating the textbox
-      event.preventDefault();
-      // manually update the textbox
-      $(this).val(ui.item.label);
-      $('#descrip_componente').val(ui.item.descrip);
-      $('#sistema_componente').val(ui.item.sistema);
-    },
-    select: function(event, ui) {
-      // prevent autocomplete from updating the textbox
-      event.preventDefault();
-      // manually update the textbox and hidden field
-      $(this).val(ui.item.value);//label
-      $('#descrip_componente').val(ui.item.descrip);
-      $('#sistema_componente').val(ui.item.sistema);               
-    },
-  });*/
-}
-
-// Carga lista de backlog - Chequeado
-// function cargarVista(){
-//     WaitingOpen();
-//     $('#content').empty();
-//     $("#content").load("<?php echo base_url(); ?>index.php/Backlog/index/<?php echo $permission; ?>");
-//     WaitingClose();
-// }
+  });
+  
 
 
   $('#tareaest').change(function(){
@@ -624,12 +449,12 @@ function refrescarAutocompletar(){
   $('#tareaOpcional').click(function(){
     $('#tareaest').val(-1);
   });
-
+}
 
 
 // Guarda Backlog - Chequeado
 function guardar(){     
-
+  
   var idComponenteEquipo = $('#idcomponenteequipo').val();
   var equipo = $('#equipo').val();
   var tarea  = $('#tareaest').val();       
@@ -642,6 +467,7 @@ function guardar(){
 
   if(equipo > 0 && horas !=='' ){    
     if((tarea != -1) || (tarea_opcional != '')){
+      WaitingOpen();
       $.ajax({
           type: 'POST',
           data: {
@@ -656,16 +482,17 @@ function guardar(){
           },
           url: 'index.php/Backlog/editarNuevo', 
           success: function(data){                 
-                  console.log("exito");   
-                  //cargarVista();  
+                  WaitingClose(); 
                   alert('editado con exito');             
                 },
           error: function(result){
-                  console.log(result);              
+                  console.log(result);   
+                  WaitingClose();           
                 },
           dataType: 'json'        
       });  
     }else{
+       
       var hayError = true;
         $('#error').fadeIn('slow');
         return;
@@ -673,13 +500,13 @@ function guardar(){
         
   }
   else{
+       
         var hayError = true;
         $('#error').fadeIn('slow');
         return;
       }
 
   if(hayError == false){
-    
     $('#error').fadeOut('slow');
   }    
 }

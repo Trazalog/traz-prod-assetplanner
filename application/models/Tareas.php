@@ -665,6 +665,21 @@ class Tareas extends CI_Model {
 		$respuesta = file_get_contents(BONITA_URL.'API/bpm/comment',false,$param);
 		return $respuesta;
 	}
+
+	function CompletarToDoList($data){
+		foreach ($data as $key => $value) {
+			$this->db->select('A.id_solicitud as \'ss\', id_orden as \'ot\'');
+			$this->db->where('case_id',$value['caseId']);
+			$this->db->from('solicitud_reparacion as A');
+			$this->db->join('orden_trabajo as B','A.id_solicitud = B.id_solicitud','left');
+			$res = $this->db->get()->first_row();
+			$data[$key]['ss'] = $res->ss;
+			$data[$key]['ot'] = $res->ot; 
+		}
+		return $data;
+	}
+
+
 	/* 	./ TAREAS BPM */	
 
 /* ./ INTEGRACION CON BPM */

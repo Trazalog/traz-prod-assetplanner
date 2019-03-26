@@ -24,7 +24,7 @@
                 <th width="10%"> </th>
                 <?php  
 //echo '<th>Id Pedido Trabajo:</th>';
-echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Id Pedido Trabajo:</td>';    
+echo '<th width="15%"'.($device == 'android' ? 'class= "hidden"' :'class= ""').' >ID SS | OT:</td>';    
                 
                 echo '<th>Tarea:</th>';
                 echo '<th>Descripcion:</th>';
@@ -70,9 +70,10 @@ echo '<th>?</th>'
                         }
                       }
                     echo '</td>';
-                    // td 1
-                    //echo '<td class="celda" style="text-align: left">'.$f['cod_interno'].'</td>';
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea"').' style="text-align: left">'.$f['cod_interno'].'</td>';                  
+                    $aux = ''; 
+                    if($f['ss']) $aux = 'SS: '.$f['ss'];
+                    if($f['ot']) {if($aux) $aux = $aux .' | OT: '.$f['ot'];else $aux = 'OT: '.$f['ot'];}
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea"').' style="text-align: left">'.$aux.'</td>';                  
                     // td 2
                     echo '<td class="celda nomTarea" style="text-align: left">'.$f['displayName'].'</td>';  
                     // td 3

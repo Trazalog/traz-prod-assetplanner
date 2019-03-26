@@ -622,15 +622,19 @@ class Otrabajo extends CI_Controller {
 	//Obtener TaskID por OtID
   public function ObtenerTaskIDxOT(){ 
 		$this->load->library('BPM');
-		$id = $this->input->post('ot');
+		$id = (int)$this->input->post('ot');
 		$case_id = $this->Otrabajos->ObtenerCaseIDxOT($id);
-		echo $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar"');
+		if($case_id == null) {echo 0; return;}
+		$res = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar"');
+		if($res == 0)
+			$res = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar" 2');
+		echo $res;
 	}
 
 	//Ejecuta Orden de Trabajo en BPM
 	public function EjecutarOT(){
-		$task = $this->input->post('task');
-		$ot = $this->input->post('ot');
+		$task = (int) $this->input->post('task');
+		$ot = (int)$this->input->post('ot');
 		
 		//Cargo Libreria
 		$this->load->library('BPM');

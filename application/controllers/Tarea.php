@@ -11,13 +11,7 @@ class Tarea extends CI_Controller {
 			$this->load->model('Overviews');
 			$this->load->model('Backlogs');
     }
-	/* TAREAS ASSET ORIGINALES */	
-    // public function index($permission)
-    // {
-    //     $data['list']       = $this->Tareas->Listado_Tareas();
-    //     $data['permission'] = $permission;
-    //     $this->load->view('tarea/list', $data);
-    // }
+
     public function Obtener_Tarea(){
 
         $id     =$_POST['id_tarea'];
@@ -78,23 +72,29 @@ class Tarea extends CI_Controller {
 		/*	./ FUNCIONES BPM */
 			public function index($permission){
 
-				//$this->load->library('Mobile_Detect');
+				$this->load->library('BPM');
 				$detect = new Mobile_Detect();    
+				
+				//Obtener Bandeja de Usuario desde Bonita
+				$response = $this->bpm->getToDoList();
+				if(!$response['status']){echo json_encode($response);return;}
 
-				$parametros = $this->Bonitas->conexiones();
-				$param = stream_context_create($parametros);
-				$data['list'] = $this->Tareas->getTareas($param);
+				//Completar Tareas con ID Solicitud y ID OT
+				$data_extend = $this->Tareas->CompletarToDoList($response['data']);
+				
+				$data['list'] = $data_extend;
 				$data['permission'] = $permission;		
 
 				if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {				
-					//$this->load->view('tareas/list_mobile',$data);
+					
 					$data['device'] = "android";
+
 				}else{
-					//$this->load->view('tareas/list_mobile',$data);
+					
 					$data['device'] = "pc";				
+
 				}
-				//$data['device'] = "android";
-				//dump_exit($data['device']);
+			
 				$this->load->view('tareas/list',$data);
 				
 			}
