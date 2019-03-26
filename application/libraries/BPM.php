@@ -26,22 +26,51 @@ class BPM
 		$resource = 'API/bpm/process/';
 		$url = BONITA_URL.$resource;
 		$com = '/instantiation';			
-		$caseId = @file_get_contents($url.BPM_PROCESS_ID.$com, false, $param);
+		$body = @file_get_contents($url.BPM_PROCESS_ID.$com, false, $param);
 
 		//Interpretar Responce
 		$response = $this->parseHeaders( $http_response_header);
 
 		$code = $response['response_code'];
+		$body  = json_decode($body);
 		if($code<300){
-			return ['status'=>true, 'msj'=>'OK', 'code'=>$code, 'case_id'=>$caseId];
+			return ['status'=>true, 'msj'=>'OK', 'code'=>$code, 'case_id'=> $body->caseId];
 		}else {
-			return ['status'=>false, 'msj'=> ASP_0100.' | '.json_decode($caseId), 'code'=>'ERROR_BPM('.$code.')'];
+			return ['status'=>false, 'msj'=> ASP_0100.' | '.$body, 'code'=>'ERROR_BPM('.$code.')'];
 		}
+	}
+
+	// trae tareas por ID de usuario
+	function getToDoList(){
+
+		//Preparar Ambiente
+		$parametros = $this->conexiones();
+		$param = stream_context_create($parametros);
+		
+		//Datos Usuario
+		$userdata = $this->CI->session->userdata('user_data');
+		$usrId= $userdata[0]["usrId"];		
+
+		//Enviar Request
+		$resource = 'API/bpm/humanTask?p=0&c=1000&f=user_id%3D';
+		$url = BONITA_URL.$resource.$usrId;
+		$body = @file_get_contents($url, false, $param);
 
 		//Interpretar Responce
-		$response['responsecabecera'] = $this->parseHeaders( $http_response_header );
-		$response['caseId'] = $caseId;	
-		return $response;
+		$response = $this->parseHeaders( $http_response_header);
+		$code = $response['response_code'];
+
+		//Segun el Codigo de Responce
+		if($code<300){
+			//Transformar datos en Arreglo Asociativo
+			$body = json_decode($body,true);
+			return ['status'=>true, 'msj'=>'OK', 'code'=>$code, 'data'=>$body];
+
+		}else {
+	
+			return ['status'=>false, 'msj'=> ASP_0100.' | '.json_decode($body), 'code'=>'ERROR_BPM('.$code.')'];
+
+		}
 	}
   // Gestiona Actividaddes desde BPM
   public function ObtenerLineaTiempo(){
@@ -83,7 +112,6 @@ class BPM
     array_multisort($ord, SORT_DESC, $array);
     return $array;
   }
-
   // Comentarios
   public function ObtenerComentarios(){
     //CONTEXTO
@@ -96,8 +124,8 @@ class BPM
 		
 		//RETORNO RESULTADO
 		return json_decode($result,true);
-  }		
-  
+	}		
+	//Guardar Comentarios
   public function GuardarComentario($comentario){
     
     //$comentario = $this->input->post();
@@ -151,24 +179,19 @@ class BPM
 		$parametros["http"]["content"] = json_encode($contract);
 		$param = stream_context_create($parametros);
 
-		try {
 
-			$resource = 'API/bpm/humanTask/';
-			$url = BONITA_URL.$resource.$tarea_id;
+		$resource = 'API/bpm/humanTask/';
+		$url = BONITA_URL.$resource.$tarea_id;
 
-			$body = file_get_contents($url, false, $param);
-			$response = $this->parseHeaders( $http_response_header);
-			$code = $response['response_code'];
-			if($code<300){
-				return ['status'=>true, 'msj'=>'OK', 'code'=>$code];
-			}else {
-				return ['status'=>false, 'msj'=> ASP_0100.' | '.json_decode($body), 'code'=>'ERROR_BPM('.$code.')'];
-			}
+		$body = @file_get_contents($url, false, $param);
+		$response = $this->parseHeaders($http_response_header);
 
-		}catch (Exception $e) {
-			var_dump($e->getMessage());
-		 }
-	
+		$code = $response['response_code'];
+		if($code<300){
+			return ['status'=>true, 'msj'=>'OK', 'code'=>$code];
+		}else {
+			return ['status'=>false, 'msj'=> ASP_0101.' | '.json_decode($body), 'code'=>'ERROR_BPM('.$code.')'];
+		}
 	}
 
 	function CerrarTareaBPM($idTarBonita,$data=null){

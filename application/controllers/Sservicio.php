@@ -82,20 +82,34 @@ class Sservicio extends CI_Controller
 			if(!$responce['status']){echo json_encode($responce); return;}
 
 			//Validar Resultado
-			$caseId = $responce['case_id'];
-			if ($caseId) {
+		
+			if ($responce['case_id']) {
+
 				//update de solic de servicio concaseid
-				$this->Sservicios->setCaseId($caseId['caseId'], $id_solServicio);
-				echo json_encode(['msj' =>'Error de BD']);return;
-			} else {
+				if($this->Sservicios->setCaseId($responce['case_id'],$id_solServicio)){
+
+					echo json_encode(['status'=> true, 'msj'=>'OK']);return;
+
+				}else{
+
+					echo json_encode(['status'=> false, 'msj'=>ASP_0200]);return;
+
+				}				
+
+			} else{ 
+
+				//Falla Lanzar el Procesoy elimina la solicitud
 				$result = $this->Sservicios->elimSolicitudes($id_solServicio);
-				$result = 150; // codigo inventado
-				echo json_encode($result);
+				echo json_encode(['status'=> false, 'msj'=>ASP_0100]);
+				return;
 			}
-		} else {
+	
+		}else{ 
+
+			//Falla Lanzar el Procesoy elimina la solicitud
 			$result = $this->Sservicios->elimSolicitudes($id_solServicio);
-			$result = 100; // codigo inventado
-			echo json_encode($result);
+			echo json_encode(['status'=> false, 'msj'=>ASP_0100]);
+			return;
 		}
 	}
 

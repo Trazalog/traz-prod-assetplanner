@@ -162,6 +162,7 @@
 		// cerrar tarea Analisis de urgencia
 		function decidirUrgencia(){
 
+			WaitingOpen();
 			var opcion = $('input[name="opcion"]:checked').val();
 			var idTarBonita = $('#idTarBonita').val();	
 
@@ -171,14 +172,16 @@
 								idTarBonita:idTarBonita},
 				url: 'index.php/Tarea/decidirUrgencia',
 				success: function(data) {
-								console.table(data);
-								//	WaitingClose();
-								// toma a tarea exitosamente
-								if(data['reponse_code'] == 204){
-										$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
-								}
+					WaitingClose();
+					console.table(data);
+					//	WaitingClose();
+					// toma a tarea exitosamente
+					if(data['reponse_code'] == 204){
+							$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+					}
 				},
 				error: function(data) {
+					WaitingClose();
 						//alert("Noo");
 						console.log(data);
 				},

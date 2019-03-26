@@ -548,6 +548,7 @@
   // Guardado de datos y validaciones
   $("#btnSave").click(function(){
 
+    WaitingOpen('Generando Solcitud');
   	var hayError = false;
     if($('#nombre').val() == '')
     {
@@ -587,25 +588,19 @@
                   },
         		url: 'index.php/Sservicio/lanzarProcesoBPM',
         		success: function(data){
-                    //WaitingClose('Guardado exitosamente...');
+                    WaitingClose();
                     console.log(data);
-                    if (data['responsecabecera']['reponse_code'] == 200){
-                      var permisos = '<?php echo $permission; ?>';
-                      cargarView('Sservicio', 'index', permisos) ;
+                    if (data.status == true){
                       alert("Solicitud generada exitosamente");
-                    } else{
-                      if(data['responsecabecera']['reponse_code'] == 400){
-                        alert("NO se ha generado la Solicitud de Servicios (Error en BPM)");
-                      }else{
-                        alert("NO se ha generado la Solicitud de Servicios (Error en BD)");
-                      }
-                      //alert("Error en la generacion de la Solicitud de Servicio...");
+                      var permisos = '<?php echo $permission; ?>';
+                      cargarView('Sservicio', 'index', permisos) ;           
+                    } else{             
+                        alert("Falla: "+data.msj);
                     }                   
         					},
         		error: function(data){
-        					  //WaitingClose();
-        					  alert("Error en generacion de la solicitud");
-                    console.log(data);
+        					  WaitingClose();
+        					  alert("Error: "+data.msj);         
         				},
             dataType: 'json'
     		});
