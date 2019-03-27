@@ -5,47 +5,48 @@
   // echo '<input type="text" class="form-control" id="dispositivo" value="'.$dispositivo.'" >';
 ?>
 
+<style>
+.datagrid table { border-collapse: collapse; text-align: left; width: 100%; } .datagrid {font: normal 12px/150% Arial, Helvetica, sans-serif; background: #fff; overflow: hidden; }.datagrid table td, .datagrid table th { padding: 13px 20px; }.datagrid table thead th {background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #3B8BBA), color-stop(1, #45A4DB) );background:-moz-linear-gradient( center top, #3B8BBA 5%, #45A4DB 100% );filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#3B8BBA', endColorstr='#45A4DB');background-color:#3B8BBA; color:#FAF2F8; font-size: 13px; font-weight: bold; border-left: 1px solid #A3A3A3; } .datagrid table thead th:first-child { border: none; }.datagrid table tbody td { color: #002538; font-size: 13px;border-bottom: 1px solid #E1EEF4;font-weight: normal; }.datagrid table tbody .alt td { background: #EBEBEB; color: #00273B; }.datagrid table tbody td:first-child { border-left: none; }.datagrid table tbody tr:last-child td { border-bottom: none; }
+</style>
+
 <section class="content">
+
   <div class="row">
     <div class="col-xs-12">
-      <div class="box">
+      <div class="box box-primary">
         <div class="box-header">
 
-        <center>
-          <h1 class="box-title">Listado de Tareas</h1>
-        </center>
+       
+          <h1 class="box-title">Mis Tareas</h1>
+      
 
         </div><!-- /.box-header -->
         <div class="box-body">
-          <table id="sector" class="table table-hover">
+        <div class="datagrid">
+          <table id="sector" class="table table-hover table-striped">
             <thead>
               <tr>
-                <!-- <th>disp</th> -->
-                <th width="10%"> </th>
+          
                 <?php  
-//echo '<th>Id Pedido Trabajo:</th>';
-echo '<th width="15%"'.($device == 'android' ? 'class= "hidden"' :'class= ""').' >ID SS | OT:</td>';    
-                
-                echo '<th>Tarea:</th>';
-                echo '<th>Descripcion:</th>';
+
+                  echo '<th width="7%"'.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Estado</td>';
+
+                  echo '<th>Tarea</th>';
+
+                  echo '<th>Descripción</th>';
+
+                  echo '<th width="7%"'.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Id S.S</td>';    
+                  echo '<th width="7%"'.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Id OT</td>';          
+                                  
+
+                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Fecha Asignación</td>';                 
+                                  
+
+                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Fecha Vto.</td>'; 
+
+                  // echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Prioridad</td>';
+                                  
                  
-//echo '<th>Fecha Asignacion:</th>';
-echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Fecha Asignacion:</td>';                 
-                
-//echo '<th>Fecha Vto.:</th>';
-echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Fecha Vto.:</td>'; 
-                
-//echo '<th>Estado:</th>';
-echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Estado:</td>';
-                
-//echo '<th>Prioridad:</th>';
-echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Prioridad:</td>';
-                
-echo '<th style="display:none">Id tarea bonita</th>';
-
-echo '<th>?</th>'
-
-//echo '<th>Estado:</th>';
               
               ?>  
               </tr>
@@ -57,59 +58,36 @@ echo '<th>?</th>'
                   $id=$f["id"];
                   $asig = $f['assigned_id'];
 
-                  echo '<tr id="'.$id.'" class="'.$id.'" >';                    
-                    // td 0                  
-                    echo '<td>';
-                      if (strpos($permission,'Del') !== false){
-                        if ($asig != "") {
-                          echo '<button type="button" id="btncolor" class="btn btnFin btn-success btn-sm" >
-                              <span class="glyphicon glyphicon-ok"></span>  </button> ';
-                        }else{
-                          echo '<button type="button" id="btncolor" class="btn btn-success btn-sm" data-toggle="modal" data-target="#finalizar" disabled>
-                              <span class="glyphicon glyphicon-ok"></span>  </button> ';
-                        }
-                      }
-                    echo '</td>';
-                    $aux = ''; 
-                    if($f['ss']) $aux = 'SS: '.$f['ss'];
-                    if($f['ot']) {if($aux) $aux = $aux .' | OT: '.$f['ot'];else $aux = 'OT: '.$f['ot'];}
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea"').' style="text-align: left">'.$aux.'</td>';                  
-                    // td 2
-                    echo '<td class="celda nomTarea" style="text-align: left">'.$f['displayName'].'</td>';  
-                    // td 3
-                    echo '<td class="celda tareaDesc" style="text-align: left">'.substr($f['displayDescription'],0,500).'</td>';                
-                    // td 4
-                    //echo '<td class="celda" style="text-align: left">'.$f['assigned_date'].'</td>';
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea"').' style="text-align: left">'.$f['assigned_date'].'</td>'; 
-                    // td 5
-                    //echo '<td class="celda" style="text-align: left">'.$f['dueDate'].'</td>';
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea"').' style="text-align: left">'.$f['dueDate'].'</td>';
-                    
-                    if ( $asig != "")  {
-                      //echo '<td class="celda" style="text-align: left"><i class="fa fa-user" style="color: #A9A9A9 ; cursor: pointer;"" title="Tomado" data-toggle="modal" data-target="#modalSale"></i></td>';
-                      echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea"').' style="text-align: left"><i class="fa fa-user" style="color: #A9A9A9 ; cursor: pointer;"" title="Tomado" data-toggle="modal" data-target="#modalSale"></i></td>';
-                    }else{
-                      //echo '<td class="celda" style="text-align: left"></td>';
-                      echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea"').' style="text-align: left"></td>';
-                    }
-                    // td 6
-                    //echo '<td class="celda" style="text-align: left">'.$f['priority'].'</td>';
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea"').' style="text-align: left">'.$f['priority'].'</td>';
-                    // id de tarea en bonita
-                    // td 7
-                    echo '<td class="celda" style="text-align: left">'.$f['id'].'</td>';
-                    // td 8
-                    //FIXME: OCULTAR CELDA NUEVAMENTE
-                    echo '<td class="celda" style="text-align: left">'.$f['caseId'].'</td>';
-                    echo '<td class="celda hidden" style="text-align: left">'.($f['estado'] == 'TE' ? '<small class="label pull-left bg-orange">Parcial</small>' : ($f['estado'] == 'C' ? '<small class="label pull-left bg-green">Iniciada</small>' : ($f['estado'] == 'P' ? '<small class="label pull-left bg-blue">Pedido</small>' : ($f['estado'] == 'As' ? '<small class="label pull-left bg-yellow">Asignado</small>' : '<small class="label pull-left bg-red">Entregado</small>')))).'</td>';
+                  echo '<tr id="'.$id.'" class="'.$id.'" style="cursor: pointer;">';                   
+
+                  if ( $asig != "")  {
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea"').' style="text-align: left"><i class="fa fa-user" style="color: #5c99bc ; cursor: pointer;"" title="Tomado" data-toggle="modal" data-target="#modalSale"></i></td>';
+                  }else{
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea"').' style="text-align: left"><i class="fa fa-user" style="color: #d6d9db ; cursor: pointer;"" title="Tomado" data-toggle="modal" data-target="#modalSale"></i></td>';
+                  }
                   
-                  echo '</tr>';
+                    echo '</td>';
+
+                    echo '<td class="celda nomTarea" style="text-align: left">'.$f['displayName'].'</td>';  
+                     
+                    echo '<td class="celda tareaDesc" style="text-align: left">'.substr($f['displayDescription'],0,500).'</td>';                
+                      
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea"').' style="text-align: left"><span data-toggle="tooltip" class="badge bg-blue" >'.$f['ss'].'</span></td>';   
+                    
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea"').' style="text-align: left"><span data-toggle="tooltip" class="badge bg-orange" >'.$f['ot'].'</span></td>';                  
+              
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.formato_fecha_hora($f['assigned_date']).'</td>'; 
+
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.formato_fecha_hora($f['dueDate']).'</td>';
+                
+                    echo '</tr>';
 
                 }
               ?>
 
             </tbody>
           </table>
+          </div>
         </div><!-- /.box-body -->
       </div><!-- /.box -->
     </div><!-- /.col -->
@@ -152,26 +130,9 @@ echo '<th>?</th>'
  
 
 //Tomo valor de la celda y carga detalle de la tarea
-  $('.celda').click( function () {
-
-   // var idTarBonita = $(this).parents('tr').find('td').eq(9).html();   
-    var idTarBonita = $(this).parents('tr').find('td').eq(8).html();     
-    var estado = $(this).parents('tr').find('td').eq(6).html();
-
-    // toma nombre y descripcion de tarea para Notific Estandar
-    nomTarea = $(this).parents('tr').find('td').eq(2).html();   
-    tareaDesc = $(this).parents('tr').find('td').eq(3).html();
-    tareaDesc = "descripcion";
-    
-    //fechaCreacion = $(this).parents('tr').find('td').eq(4).html();
-    fechaCreacion = "2018-12-01";
-    var estadoTarea = "";
-    if (estado!="") {
-      estadoTarea ="asignado";
-    }else{
-      estadoTarea ="noasignado";
-    }
-      verTarea(idTarBonita);
+  $('tr').click( function () {
+    var id = $(this).attr('id');
+    verTarea(id);
   });
 
 
@@ -198,33 +159,10 @@ echo '<th>?</th>'
     WaitingClose();
   }
 
-  // Datatable
-  $(function () {
-
-    $('#sector').DataTable({
-        "paging": true,
-        "lengthChange": true,
-        "searching": true,
-        "ordering": true,
-        "info": true,
-        "autoWidth": true,
-        "language": {
-              "lengthMenu": "Ver _MENU_ filas por página",
-              "zeroRecords": "No hay registros",
-              "info": "Mostrando pagina _PAGE_ de _PAGES_",
-              "infoEmpty": "No hay registros disponibles",
-              "infoFiltered": "(filtrando de un total de _MAX_ registros)",
-              "sSearch": "Buscar:  ",
-              "oPaginate": {
-                  "sNext": "Sig.",
-                  "sPrevious": "Ant."
-                }
-        }
-    });
-  });
-
 
 </script>
+
+
 
 
 
