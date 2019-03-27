@@ -393,7 +393,7 @@ class Calendario extends CI_Controller {
 				'id_solicitud'  => $id_solicitud,// id prev-correct-back-predict
 				'tipo'          => $tipo,// tipo solicitud (prev-correct-back-predict )
 				'id_equipo'     => $equipo,
-				'duracion'      => $duracion,
+				'duracion'      => $duracion==null?0:$duracion,
 				'id_tareapadre' => $id_solicitud,//solic que genera la 1º OT y las repetitivas
 				'id_empresa'    => $empId,
 				'lectura_programada' => $lectura_programada,
@@ -426,6 +426,8 @@ class Calendario extends CI_Controller {
 					dump($tipo, 'entre por tipo 4');	
 					// actualizo estado del backlog
 					$tipo = 'backlog';
+
+					//Actualizar Tablas >> Backlog ||Solicitud
 					$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);	
 					$infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);			
 					dump($infoTarea, 'info tarea');
@@ -473,9 +475,6 @@ class Calendario extends CI_Controller {
 	/* INTEGRACION CON BPM */
 		function getInfoTareaporIdSolicitud($id_solicitud, $tipo){
 			//TODO: TRAER ID DE BACKLOG GENERADO EN BPM(TRAER POR REST O GUARDAR EN TABLA BACKLOG)
-			
-			dump($id_solicitud, 'id solicitud en 1: ');
-			dump($tipo, 'tipo en 1: ');
 
 			if ($tipo == 'correctivo') {
 				//$id_solicitud	-> id sol de servicios

@@ -716,12 +716,13 @@ $("#fecha_progr_prevent_horas").datepicker({
           url: 'index.php/Calendario/getBackPorId',  //index.php/
           success: function(data){
 
-                   console.log('back: ');
+                   console.log(data);
                    id_de_tar = data[0]['tarea_descrip'];
                    fec_sol_back = data[0]['fecha'];
                    id_back = data[0]['backId'];
                    id_equi = data[0]['id_equipo'];
                    tarea = data[0]['descripcion'];
+                   id_sol = data[0]['sore_id'];
                    // si tiene tarea estandar grava eso sino la tarea custom
                    if(id_de_tar != null){
                     desc_tarea_back = data[0]['descripcion'];
@@ -746,7 +747,7 @@ $("#fecha_progr_prevent_horas").datepicker({
           type: 'POST', //parametros:parametros
           data: {
                   event_tipo: 1, // evento unico
-                  id_sol : id_back,
+                  id_sol : id_sol,
                   id_tarea : id_de_tar,
                   fecha_progr : progr_back,
                   hora_progr:hora_progr_back,
