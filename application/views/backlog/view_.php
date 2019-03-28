@@ -20,7 +20,7 @@
             }
             ?>
           </div><!-- /.box-header -->
-          <form id="formBacklog" role="form" action="<?php base_url();?>Backlog/guardar_backlog" method="POST" >
+          <form id="formBacklog" role="form" action="<?php base_url();?>Backlog/guardar_backlog" method="POST" onKeypress="if (event.keyCode == 13) event.returnValue = false;" >
             <div class="box-body">
               <div class="panel panel-default">
                 <div class="panel-heading">
@@ -93,17 +93,10 @@
                   </div>
                   <div class="row">
                     
-
-                    <!-- <div class="col-xs-12 col-sm-6">
-                      <label for="back_duracion">Duración (minutos)<strong style="color: #dd4b39">*</strong>:</label>
-                      <input type="text" class="form-control" id="back_duracion" name="back_duracion" />
-                    </div> -->
-                    
-                    
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="duracion">Duración <strong style="color: #dd4b39">*</strong>:</label>
                       <input type="text" class="form-control" id="duracion" name="duracion"/>
-                      <input type="text" class="form-control" id="back_duracion" name="back_duracion"/>
+                      <input type="hidden" class="form-control" id="back_duracion" name="back_duracion"/>
                     </div> 
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="unidad">U. de tiempo <strong style="color: #dd4b39">*</strong></label>
@@ -116,9 +109,6 @@
                     <div class="col-xs-12" id="dato" name="" style="margin-top: 19px;"></div>
                     <input type="hidden" name="hshombre" id="hshombre">                
                     <div class="col-xs-12" id="dato"></div> 
-
-
-
                   </div><!-- /.row -->
                 </div>
               </div>
@@ -308,7 +298,6 @@ $("#fecha").datepicker({
   //firstDay: 1
 }).datepicker("setDate", new Date());
 
-
 // Trae equipos llena select - Chequeado
 traer_equipo();
 function traer_equipo(){
@@ -337,7 +326,6 @@ function traer_equipo(){
           dataType: 'json'
       });
 }
-
 
 //Trae tareas y permite busqueda en el input
 var dataTarea = function() {
@@ -440,55 +428,55 @@ function cargarVista(){
 }
 
 // Guarda Backlog - Chequeado
-function guardar(){     
-  var idComponenteEquipo = $('#idcomponenteequipo').val();
-  var equipo = $('#equipo').val();
-  var tarea  = $('#tarea').val();       
-  var fecha  = $('#fecha').val();
-  var horas  = $('#back_duracion').val();  
-  console.log("Estoy guardando");
+// function guardar(){     
+//   var idComponenteEquipo = $('#idcomponenteequipo').val();
+//   var equipo = $('#equipo').val();
+//   var tarea  = $('#tarea').val();       
+//   var fecha  = $('#fecha').val();
+//   var horas  = $('#back_duracion').val();  
+//   console.log("Estoy guardando");
 
-  if(equipo > 0 && tarea !=='' && horas !=='' ){
+//   if(equipo > 0 && tarea !=='' && horas !=='' ){
     
-      $.ajax({
-          type: 'POST',
-          data: {
-            idce:idComponenteEquipo,
-            equipo:equipo, 
-            tarea:tarea,  
-            fecha:fecha, 
-            horas:horas
-          },
-          url: 'index.php/Backlog/guardar_backlog', 
-          success: function(data){
+//       $.ajax({
+//           type: 'POST',
+//           data: {
+//             idce:idComponenteEquipo,
+//             equipo:equipo, 
+//             tarea:tarea,  
+//             fecha:fecha, 
+//             horas:horas
+//           },
+//           url: 'index.php/Backlog/guardar_backlog', 
+//           success: function(data){
                  
-                  console.log("exito");   
-                  cargarVista();               
-                },
-          error: function(result){
-                  console.log(result);              
-                },
-          dataType: 'json'        
-      });    
-  }
-  else{
-        var hayError = true;
-        $('#error').fadeIn('slow');
-        return;
-      }
+//                   console.log("exito");   
+//                   cargarVista();               
+//                 },
+//           error: function(result){
+//                   console.log(result);              
+//                 },
+//           dataType: 'json'        
+//       });    
+//   }
+//   else{
+//         var hayError = true;
+//         $('#error').fadeIn('slow');
+//         return;
+//       }
 
-  if(hayError == false){
+//   if(hayError == false){
     
-    $('#error').fadeOut('slow');
-  }    
-}
-
+//     $('#error').fadeOut('slow');
+//   }    
+// }
 
 /* nuevo */
 // Guarda Backlog nuevo
 $("#formBacklog").submit(function (event){   
   
   event.preventDefault();  
+  WaitingOpen('Guardando...');
   var equipo   = $('#equipo').val();
   var tarea    = $('#tarea').val();
   var compon   = $('#codigo_componente').val(); 
@@ -510,9 +498,11 @@ $("#formBacklog").submit(function (event){
       contentType:false,
       processData:false,
       success:function(respuesta){        
+        WaitingClose();
         cargarVista();   
       },
       error:function(respuesta){
+        WaitingClose();
         alert('Error en guardado de Backlog...');
       }
     });
@@ -572,27 +562,10 @@ function calcularHsHombre(){
 $('#duracion, #unidad, #cantOper').change(function(){
   if( $('#duracion').val()!="" && $('#unidad').val()!="-1" && $('#cantOper').val()!=""){
     calcularHsHombre();
-    calcDuracionBack();    
+    //calcDuracionBack();    
   }
 });
-// calcua duracion en minutos para mostrar en lista
-function calcDuracionBack(){
 
-  var duracion = $('#duracion').val();
-  var unidad = $('#unidad').val();
-  var durMinutos = 0;
-
-  if(unidad == 3){
-    durMinutos = duracion * 1440;
-  }
-  if(unidad == 2){
-    durMinutos = duracion * 60; 
-  }
-  if(unidad == 1){
-    durMinutos = duracion;
-  }
-  $('#back_duracion').val(durMinutos);
-}
 // ordena los items de las busquedas
 function ordenaArregloDeObjetosPor(propiedad) {  
   return function(a, b) {  

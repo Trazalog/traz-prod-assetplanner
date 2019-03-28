@@ -792,60 +792,6 @@ function ordenaArregloDeObjetosPor(propiedad) {
   });
 ////// INSUMOS //////
 
-
-// Guarda Predictivo - Chequeado
-  // function guardar(){    
-  
-  //   console.log("guardando");
-  //   var equipo = $('#equipo').val();
-  //   var tarea = $('#id_tarea').val();        // Guarda id de tarea en tarea_descrip
-  //   var fecha = $('#fecha').val();        // Fecha actual de creacion de la tarea
-  //   var periodo = $('#periodo').val();    
-  //   var cantidad = $('#cantidad').val();  // Frecuencia (cantidad de dias)  
-  //   var horash = $('#hshombre').val(); // cantidad de horas hombre
-  //   var duracion = $('#duracion').val();  // Duracion de la tarea en minutos(guarda en pred_duracion)
-  //   var unidad = $('#unidad').val();      // id de unidad de tiempo
-  //   var operarios = $('#cantOper').val(); // Cantidad de operarios(guarda en pred_canth)
-
-  //   if((fecha !=='') || (cantidad !=='') || (duracion !=='') || (cantOper !=='') || (equipo > 0) || (tarea > 0) || (unidad > 0) || (periodo > 0 )){
-  //     $.ajax({
-  //           type: 'POST',
-  //           data: { equipo: equipo, 
-  //                   tarea: tarea, 
-  //                   fecha: fecha,
-  //                   periodo: periodo,  
-  //                   cantidad: cantidad,
-  //                   horash:horash, 
-  //                   duracion: duracion,
-  //                   unidad: unidad,
-  //                   operarios: operarios
-  //                 },
-  //           url: 'index.php/Predictivo/guardar_predictivo',  
-  //           success: function(data){
-  //             console.log("exito");   
-  //             cargarVista();
-  //           },
-  //           error: function(result){
-  //             console.log(result);                     
-  //           },
-  //           dataType: 'json'
-  //     });
-  //   } else{
-  //       var hayError = true;
-  //       $('#error').fadeIn('slow');
-  //       return;
-  //   }
-
-  //   if(hayError == false){
-  //     $('#error').fadeOut('slow');
-  //   }
-
-  // }
-
-// Guarda Preventivo  
-
-
-
 function limpiar(){
   
   $("#equipo").val("");

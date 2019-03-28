@@ -194,7 +194,7 @@ class Otrabajos extends CI_Model {
 	function updateAdjunto($adjunto,$ultimoId){
 		$this->db->where('id_orden', $ultimoId);
 		$query = $this->db->update("orden_trabajo",$adjunto);
-		return $query;
+		return $adjunto;
 	}
 	
 	//////////////		EDICION 	//////////////////
