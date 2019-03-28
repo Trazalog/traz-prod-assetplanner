@@ -269,10 +269,9 @@ class Otrabajo extends CI_Controller {
 	public function getpencil() // Ok
 	{
 		$id = $this->input->post('idp');
-		$result = $this->Otrabajos->getpencil($id);
-		
+		$result = $this->Otrabajos->getpencil($id);		
+	
 		if($result){
-
 			$arre['datos'] = $result;
 			// trae herramientas 
 			$herramientas = $this->Otrabajos->getOTHerramientas($id);

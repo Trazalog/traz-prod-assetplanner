@@ -74,7 +74,7 @@ class Backlog extends CI_Controller {
 		$result = $this->Backlogs->geteditar($id);
 		if($result){	
 			$arre['datos'] = $result;
-			$result2 = $this->Backlogs->traerequiposprev($ide,$id);
+			$result2 = $this->Backlogs->traerequiposBack($ide,$id);
 			if($result2){
 				$arre['equipo']=$result2;
 			}
@@ -111,7 +111,6 @@ class Backlog extends CI_Controller {
 		$empId = $userdata[0]['id_empresa'];
 
 		$datos = $this->input->post();	
-
 		$id_back = $this->input->post('backid');
 		$tarea = $this->input->post('tarea');
 		$fecha = $this->input->post('fecha');

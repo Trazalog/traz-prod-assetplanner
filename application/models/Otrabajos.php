@@ -46,7 +46,7 @@ class Otrabajos extends CI_Model {
 		$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario');
 		$this->db->join('sisusers AS user1', 'user1.usrId = orden_trabajo.id_usuario_a');//usuario asignado?
 		$this->db->join('usuarioasempresa', 'usuarioasempresa.usrId = user1.usrId');
-		$this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
+		$this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal', 'left');
 		$this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
 		$this->db->where('equipos.estado !=','AN');
 		$this->db->where('usuarioasempresa.tipo', 1);//TODO: ACA VER COMO FUNCIONA !!!
@@ -217,8 +217,7 @@ class Otrabajos extends CI_Model {
 												orden_trabajo.id_usuario_a,
 												orden_trabajo.id_usuario,
 												orden_trabajo.id_sucursal,
-												sucursal.descripc,
-												sisusers.usrNick,
+												sucursal.descripc,											
 												abmproveedores.provnombre,
 												abmproveedores.provid,
 												equipos.id_equipo,
@@ -229,9 +228,9 @@ class Otrabajos extends CI_Model {
 												equipos.codigo');
 			$this->db->from('orden_trabajo');		
 			$this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
-			$this->db->join('sucursal', 'sucursal.id_sucursal=orden_trabajo.id_sucursal');
-			$this->db->join('sisusers', 'sisusers.usrId=orden_trabajo.id_usuario');
-			$this->db->join('abmproveedores', 'abmproveedores.provid=orden_trabajo.id_proveedor');
+			$this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal', 'left');
+			//$this->db->join('sisusers', 'sisusers.usrId=orden_trabajo.id_usuario');
+			$this->db->join('abmproveedores', 'abmproveedores.provid=orden_trabajo.id_proveedor', 'left');
 			$this->db->where('orden_trabajo.id_orden', $id);
 			$query = $this->db->get();
 			

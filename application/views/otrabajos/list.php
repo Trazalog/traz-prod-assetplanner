@@ -292,6 +292,8 @@ function eliminarpred(){
   // Trae datos para llenar el modal Editar OT - Ok
   $(".fa-pencil").click(function(e) { 
 
+    $('#errorE').hide();
+    $('#btnEditar').prop("disabled", false); 
     var idord = $(this).parent('td').parent('tr').attr('id');
     idp = idord;
     console.log("idp: "+idp);
@@ -326,7 +328,7 @@ function eliminarpred(){
         
         var herram = data['herramientas'];             
         var insum  = data['insumos']; 
-
+        console.table(herram);
         completarEdit(datos, herram, insum);
       },
       error: function(result){
@@ -481,10 +483,10 @@ $("#formAgregarAdjunto").submit(function (event){
 
   // Guarda Edicion de OT - Ok
   function guardareditar(){
-    
+    $('#errorE').hide(); 
     $('#btnEditar').prop("disabled", true);
     var hayError = false; 
-    $('#errorE').hide(); 
+    
     //var nro           = $('#nroedit').val();
     var fecha_inicio  = $('#fechaInicio').val();
     var fecha_entrega = $('#fechaEntrega').val();
@@ -537,34 +539,34 @@ $("#formAgregarAdjunto").submit(function (event){
     });     
 
     //validaciones
-      if($('#equipo').val() == '')
-      {
-        hayError = true;
-      }      
-      if ((tareacustom == '') && (id_tarea == '')){
-        hayError = true;
-      }
-      if($('#fechaInicio').val()=='' || $('#fechaEntrega').val()=='0000-00-00 00:00:00')
-      {
-        hayError = true;
-      }
-      if(fecha_entrega=='' || fecha_entrega=='0000-00-00 00:00:00')
-      {
-        hayError = true;
-      }
-      if($('#suci').val() == '-1')
-      {
-        hayError = true;
-      }
-      if($('#prov').val() == '-1')
-      {
-        hayError = true;
-      }
-      //console.error( hayError );
-      if(hayError == true){
-        $('#errorE').fadeIn('slow');     
-        return;
-      }
+      // if($('#equipo').val() == '')
+      // {
+      //   hayError = true;
+      // }      
+      // if ((tareacustom == '') && (id_tarea == '')){
+      //   hayError = true;
+      // }
+      // if($('#fechaInicio').val()=='' || $('#fechaEntrega').val()=='0000-00-00 00:00:00')
+      // {
+      //   hayError = true;
+      // }
+      // if(fecha_entrega=='' || fecha_entrega=='0000-00-00 00:00:00')
+      // {
+      //   hayError = true;
+      // }
+      // if($('#suci').val() == '-1')
+      // {
+      //   hayError = true;
+      // }
+      // if($('#prov').val() == '-1')
+      // {
+      //   hayError = true;
+      // }
+      // //console.error( hayError );
+      // if(hayError == true){
+      //   $('#errorE').fadeIn('slow');     
+      //   return;
+      // }
 
     $.ajax({
       type: 'POST',
@@ -1377,15 +1379,15 @@ $(document).ready(function(event) {
 
   // Genera Informe de Servicio - Hugo
   $('.fa-sticky-note-o').click( function cargarVista(){
-      var id_sol = parseInt($(this).parent('td').parent('tr').attr('id'));
-      var id_eq  = parseInt($(this).parent('td').parent('tr').data('id_equipo')); 
-      var desc   = $(this).parent('td').parent('tr').data('causa');
-      var id_solicitud = parseInt($(this).parent('td').parent('tr').data('idsolicitud'));
-      desc = encodeURIComponent(desc);
-      WaitingOpen();
-      $('#content').empty();
-      $("#content").load("<?php echo base_url(); ?>index.php/Ordenservicio/cargarOrden/<?php echo $permission; ?>/"+id_sol+"/"+id_eq+"/"+desc+"/"+id_solicitud+"/");
-      WaitingClose();
+    var id_sol = parseInt($(this).parent('td').parent('tr').attr('id'));
+    var id_eq  = parseInt($(this).parent('td').parent('tr').data('id_equipo')); 
+    var desc   = $(this).parent('td').parent('tr').data('causa');
+    var id_solicitud = parseInt($(this).parent('td').parent('tr').data('idsolicitud'));
+    desc = encodeURIComponent(desc);
+    WaitingOpen();
+    $('#content').empty();
+    $("#content").load("<?php echo base_url(); ?>index.php/Ordenservicio/cargarOrden/<?php echo $permission; ?>/"+id_sol+"/"+id_eq+"/"+desc+"/"+id_solicitud+"/");
+    WaitingClose();
   });
 
 });
@@ -2260,11 +2262,11 @@ function guardarparcial(){
                 </div>
 
                 <div class="col-xs-12 col-sm-6">
-                  <label for="suci">Sucursal<strong style="color: #dd4b39">*</strong></label>
+                  <label for="suci">Sucursal</label>
                   <select  id="suci" name="suci" class="form-control" />
                 </div>
                 <div class="col-xs-12 col-sm-6">
-                  <label for="prov">Proveedor<strong style="color: #dd4b39">*</strong></label>
+                  <label for="prov">Proveedor</label>
                   <select  id="prov" name="prov" class="form-control" />
                 </div>            
               </div>
