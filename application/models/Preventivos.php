@@ -15,7 +15,7 @@ class Preventivos extends CI_Model
         $empId = $userdata[0]['id_empresa'];          
 
 		$this->db->select('preventivo.prevId, 
-			preventivo.id_equipo, 
+		        preventivo.id_equipo, 
             tareas.descripcion AS deta, 
             equipos.descripcion AS des,                            
             grupo.descripcion AS des1,
@@ -23,15 +23,16 @@ class Preventivos extends CI_Model
             periodo.descripcion AS periodoDesc,
             preventivo.cantidad,
             preventivo.ultimo,
+            preventivo.horash,
             preventivo.prev_adjunto');
     	$this->db->from('preventivo');
     	$this->db->join('equipos', 'equipos.id_equipo = preventivo.id_equipo');
     	$this->db->join('grupo', 'equipos.id_grupo=grupo.id_grupo');
     	$this->db->join('tareas', 'tareas.id_tarea = preventivo.id_tarea');
     	$this->db->join('componentes', 'componentes.id_componente = preventivo.id_componente');
-        $this->db->join('periodo', 'periodo.idperiodo = preventivo.perido');
+      $this->db->join('periodo', 'periodo.idperiodo = preventivo.perido');
     	$this->db->where('preventivo.estadoprev', 'C');
-        $this->db->where('preventivo.id_empresa', $empId);	
+      $this->db->where('preventivo.id_empresa', $empId);	
         //dump_exit( $this->db->get_compiled_select() );
     	$query= $this->db->get();
 
@@ -201,25 +202,23 @@ class Preventivos extends CI_Model
     }
 
 	//Trae insumos (articles) por empresa logueada
-	function getinsumo()
-    {
+	function getinsumo(){
 		$userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa'];
-        //$query= $this->db->get_where('articles',array('id_empresa' => $empId));
-        $this->db->select('articles.artId AS value, 
-            articles.artBarCode AS codigo,
-            articles.artDescription AS label');
-        $this->db->from('articles');      
-        $this->db->where('articles.id_empresa', $empId);
-        $this->db->where('articles.artEstado !=', 'AN');
-        $this->db->order_by('label', 'ASC');
-        $query = $this->db->get();
+			$empId = $userdata[0]['id_empresa'];
+			$this->db->select('articles.artId AS value, 
+												articles.artBarCode AS codigo,
+												articles.artDescription AS label');
+			$this->db->from('articles');      
+			$this->db->where('articles.id_empresa', $empId);
+			$this->db->where('articles.artEstado !=', 'AN');
+			$this->db->order_by('label', 'ASC');
+			$query = $this->db->get();
 		if($query->num_rows()>0){
-            return $query->result();
-        }
-        else{
-            return false;
-        }
+			return $query->result();
+		}
+		else{
+			return false;
+		}
 	}
 
 	//Trae insumo por id
@@ -267,7 +266,7 @@ class Preventivos extends CI_Model
     function updateAdjunto($adjunto,$ultimoId){
         $this->db->where('prevId', $ultimoId);
         $query = $this->db->update("preventivo",$adjunto);
-        return $query;
+        return $adjunto;
     }
 
     // Da de baja Preventivvo por id
@@ -292,6 +291,7 @@ class Preventivos extends CI_Model
                             preventivo.horash, 
                             preventivo.prev_duracion,
                             preventivo.prev_canth,
+                            preventivo.prev_adjunto,
                             preventivo.id_unidad,
                             equipos.id_equipo, 
                             equipos.codigo, 
@@ -475,7 +475,7 @@ class Preventivos extends CI_Model
 		else
 		{
 			$id = $data['id_insumo'];
-			//Datos del usuario
+			Datos del usuario
 			$query= $this->db->get_where('articles',array('artId'=>$id));
 			if($query->num_rows()>0){
                 return $query->result();
@@ -785,4 +785,21 @@ class Preventivos extends CI_Model
         return $query;
     }
 
+
+
+    /**
+     * Preventivos:eliminarAdjunto
+     * Elimina el Archivo Adjunto de un preventivo dado (no elimina el archivo).
+     *
+     * @param Int       $idPreventivo   Id de preventivo
+     * @return Bool                     True o False
+     */
+    public function eliminarAdjunto($idPreventivo)
+    {
+        $data  = array( 'prev_adjunto' => '' );
+        $this->db->where('prevId', $idPreventivo);
+        $query = $this->db->update("preventivo", $data);
+        return $query;
+    }
+    
 }

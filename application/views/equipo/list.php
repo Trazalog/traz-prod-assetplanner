@@ -29,7 +29,6 @@
                 <th>Área</th>
                 <th>Proceso</th>
                 <th>Sector</th>
-                <th>Cliente</th>
                 <th>Criticidad</th>
                 <th>Estado</th>
               </tr>
@@ -50,13 +49,13 @@
                     //echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"></i>';
                   }
                   if (strpos($permission,'Del') !== false) {
-                    echo '<i class="fa fa-fw  fa fa-user text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Contratista" data-toggle="modal" data-target="#modalasignar"></i>';
+                    echo '<i class="fa fa-fw fa-user text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Contratista" data-toggle="modal" data-target="#modalasignar"></i>';
                     //antes estaba el estado R por que ERA REPARACION pero ahora reparacion es R
                     if( ($a['estado'] == 'AC') || ($a['estado'] == 'RE') ){
-                      echo '<i  href="#"class="fa fa-fw fa fa-toggle-on text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Inhabilitar"></i>';
+                      echo '<i  href="#"class="fa fa-fw fa-toggle-on text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Inhabilitar"></i>';
                     }
                     else {
-                      echo '<i class="fa fa-fw fa fa-toggle-off text-light-blue" title="Habilitar" style="cursor: pointer; margin-left: 15px;"></i>';
+                      echo '<i class="fa fa-fw fa-toggle-off text-light-blue" title="Habilitar" style="cursor: pointer; margin-left: 15px;"></i>';
                     }
                   }
                   if (strpos($permission,'Lectura') !== false) {
@@ -70,7 +69,6 @@
                   echo '<td>'.$a['dear'].'</td>';
                   echo '<td>'.$a['depro'].'</td>';
                   echo '<td>'.$a['desec'].'</td>';
-                  echo '<td>'.$a['cliLastName'].'</td>';
                   echo '<td>'.$a['decri'].'</td>';
                   echo '<td>'
                     .($a['estado'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' 
@@ -96,12 +94,13 @@ $('#modalhistlect').on('shown.bs.modal', function (e) {
 })
 
 
+var tr = "";
 var isOpenWindow = false;
 var idEquipo     = "";
 var ide          = "";
 var idglob       = "";
 
-$(document).ready(function(event) {
+//$(document).ready(function(event) {
   
   $( function() {
     $( ".datepicker" ).datepicker();
@@ -166,13 +165,15 @@ $(document).ready(function(event) {
   // Asigna contratista - Chequeado
   $(".fa-user ").click(function (e) { 
     var id_equipo = $(this).parent('td').parent('tr').attr('id');
-    console.log(id_equipo);
     idglob = id_equipo;
-    console.log("variable global- id de equipo: "+idglob);
-    click_empresa();
-    llenaContratistasEquipo(id_equipo);
+    console.log("variable global -> id de equipo: "+idglob);
+    
+    $('#tablaempresa tbody').html("");
+    tr = null;
+
     click_co(id_equipo);
     traer_contratista();        
+    llenaContratistasEquipo(id_equipo);
   });
    
   // Cambiar a estado - Chequeado
@@ -212,34 +213,32 @@ $(document).ready(function(event) {
         if (data[0]['estado'] == 'AL') {
           var id_equipo   = idequipo;
           var lectura     = data[0]['ultima_lectura'];
-          var observacion = 'Lectura automática al habilitar equipo dado de alta';
-          var operario    = 'alta';
+          var fecha       = data[0]['fecha_ultimalectura'];
+          var observacion = 'Lectura al cargar equipo';
+          var operario    = '-';
           var turno       = 'alta';
           var estado      = 'AC';
           parametros = {
-            'id_equipo' : id_equipo,
-            'lectura' : lectura,
+            'id_equipo'   : id_equipo,
+            'lectura'     : lectura,
+            'fecha'       : fecha,
             'observacion' : observacion,
-            'operario' : operario,
-            'turno' : turno,
-            'estado' : estado,
+            'operario'    : operario,
+            'turno'       : turno,
+            'estado'      : estado,
           }
           alta_historial_lectura(parametros);
+          cambiar_estado(id_equipo);
         }
         else {
           //alert("Error al habilitar el equipo");
+          console.info("El equipo ya tiene estado activo. Si no figura como activo ver historial de lecturas...")
         }
       },
       error: function(result){
         console.log(result);
       }
     });
-    //y agrego en historial lectura la primer lectura del equipo
-
-    // No esta Ok => exit y mensaje de error
-    // Está Ok => cambio estado
-    //alert('activando equipo en alta ');
-    cambiar_estado(idequipo);
   });
 
   function alta_historial_lectura(parametros){
@@ -251,7 +250,7 @@ $(document).ready(function(event) {
       type: 'POST',
       url: 'index.php/Equipo/alta_historial_lectura', 
       success: function(data){
-        console.log(data);
+        console.table(data);
         //alert("Se agregó historial lecturas");
       },
       error: function(result){
@@ -678,44 +677,8 @@ $(document).ready(function(event) {
       $("input#estado").val('RE'); // Estado Reparacion
     }
   
-  // Datatable - Chequeado
-  $('#sales').DataTable({
-    "aLengthMenu": [ 10, 25, 50, 100 ],
-    "columnDefs": [ {
-        "targets": [ 0 ], 
-        "searchable": false
-    },
-    {
-        "targets": [ 0 ], 
-        "orderable": false
-    } ],
-    "order": [[1, "asc"]],
-  });
-  $('#tblhistorial').DataTable({
-    "aLengthMenu": [ 10, 25, 50, 100 ],
-      "columnDefs": [ {
-          "targets": [ 0 ], 
-          "searchable": false
-      },
-      {
-          "targets": [ 0 ], 
-          "orderable": false
-      } ],
-      "order": [[1, "asc"]],
-  });
-  $('#tablaempresa').DataTable({
-    "aLengthMenu": [ 10, 25, 50, 100 ],
-    "columnDefs": [ {
-        "targets": [ 0 ], 
-        "searchable": false
-    },
-    {
-        "targets": [ 0 ], 
-        "orderable": false
-    } ],
-    "order": [[1, "asc"]],
-  });
-});
+  
+//});
 
 // Completa campos y select para Editar equipos - Listo
 function completarEdit(datos ,edit){
@@ -786,50 +749,12 @@ function cerro(){
   isOpenWindow = false;
 }
 
-// guarda contratista asignado a equipo - Chequeado
-function guardarsi(){
-
-    var idglob = $(this).parent('td').parent('tr').attr('id');
-    console.log("Equipo: "+idglob);
-    console.log();
-
-    var ideq = $(this).parent('td').parent('tr').attr('class');
-    console.log('ideq: '+ideq);
-
-    datos = parseInt(ideq);
-    console.log(datos);
-
-    var idscontra = new Array();     
-    $("#tablaempresa tbody tr").each(function (index){
-      var id_contratista = $(this).attr('id');
-      idscontra.push(id_contratista);           
-    }); 
-
-    var parametros = {
-       'id_equipo': idglob       
-    };
-
-    $.ajax({
-      type:"POST",
-      url: 'index.php/Equipo/guardarcontra', 
-      data:{ idglob:idglob, idscontra:idscontra},
-      success: function(data){
-              alert("Contratista guardado con exito");              
-              },          
-      error: function(data){ 
-              alert("Error en guardado...");
-              console.log("Error: " + data['status']);
-              },
-      dataType: 'json'
-    });
-}
-
 // Guarda edicion de equipo
 function guardar(){
   var idEquipo            = $('#id_equipo').val();
   var codigo              = $('#codigo').val();
   var ubicacion           = $('#ubicacion').val();
-  var marca               = $('#marca option:selected').text();
+  var marca               = $('#marca option:selected').val();
   var descripcion         = $('#descripcion').val();
   var fecha_ingreso       = $('#fecha_ingreso').val();
   var fecha_ultimalectura = $('#fecha_ultimalectura').val();
@@ -993,7 +918,8 @@ function traer_contratista(){
       }
     },
     error: function(result){
-      console.log(result);
+      //alert("Error al traer contratistas");
+      console.error(result);
     },
     dataType: 'json'
   });
@@ -1001,31 +927,20 @@ function traer_contratista(){
 
 
 function llenaContratistasEquipo(id_equipo){
-  console.log("id equipo para contratista: "+id_equipo);
+  //console.log("id equipo para contratista: "+id_equipo);
   $.ajax({
     data: { id_equipo: id_equipo},
     dataType: 'json',
     type: 'POST',
     url: 'index.php/Equipo/getContratistasEquipo',
     success: function(data){
-      console.table(data);
-      /*for (var i=0; i< data.length; i++) { 
-        var tr = "<tr id='"+data[i][id_contratistaquipo]+"' >"+
-          "<td><i class='fa fa-edit elirow text-light-blue' style='cursor: 'pointer'></i>"+
-            "<i class='fa fa-ban elirow text-light-blue' style='cursor: 'pointer'></i></td>"+
-          "<td>"+id_equipo+"</td>"+
-          "<td>"+$empresae+"</td>"+
-          "</tr>";
-         
-        $('#tablaempresa tbody').append(tr);
-      }*/
+      //console.table(data);
       tabla = $('#tablaempresa').DataTable();
       tabla.clear().draw();
       for (var i=0; i< data.length; i++) {      
         //agrego valores a la tabla
         tablaCompleta = tabla.row.add( [
-          '<i class="fa fa-fw fa-pencil text-light-blue elirow" style="cursor: pointer; margin-left: 15px;" data-eqContr="'+data[i]['id_contratistaquipo']+'"></i>'+
-          '<i class="fa fa-fw fa-times-circle text-light-blue elirow" style="cursor: pointer; margin-left: 15px;" data-eqContr="'+data[i]['id_contratistaquipo']+'"></i>',
+          '<i class="fa fa-fw fa-times-circle text-light-blue elirow btnDel" style="cursor: pointer; margin-left: 15px;" data-eqContr="'+data[i]['id_contratistaquipo']+'"></i>',
           data[i]['codigo'],
           data[i]['nombre']
         ]);
@@ -1036,38 +951,79 @@ function llenaContratistasEquipo(id_equipo){
       }
     },
     error: function(result){
-      console.log(result);
+      console.error(result);
     },
   });
 }
 
-function click_empresa(){
-  $("#adde").click(function (e) {
-      var $empresae = $("select#empresae option:selected").html();
-      var id_equipo= $('#codigoe').val();
-      var id_contratista= $('#empresae').val();
+//agrega contratista
+$("#adde").click(function (e) {
+  var id_equipo      = $('#id_equipoC').val();
+  var id_contratista = $('#empresae').val();
+  console.log("id_contratista: "+id_contratista);
+  console.log("id_equipo: "+id_equipo);
 
-      console.log("id_contratista: "+id_contratista);
-      console.log("id_equipo: "+id_equipo);
-      var tr = "<tr id='"+id_contratista+"' >"+
-        "<td><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
-        "<td>"+id_equipo+"</td>"+
-        "<td>"+$empresae+"</td>"+
-        "</tr>";
-       
-      $('#tablaempresa tbody').append(tr);
-            
-      $(document).on("click",".elirow",function(){
-      var parent = $(this).closest('tr');
-      $(parent).remove();
-      });
-           
-      $('#empresae').val(''); 
+  WaitingOpen("Agregando contratista a equipo")
+  var hayError = false;
+  if ( $('#empresae').val() == -1 ) {
+      hayError = true;
+  }
+  if(hayError == true){
+    $('#errorC').fadeIn('slow');
+    WaitingClose();
+    return;
+  }
+  else{
+    $('#errorC').fadeOut('slow');
+    $.ajax({
+      data:{ id_equipo:id_equipo, id_contratista:id_contratista},
+      dataType: 'json',
+      type:"POST",
+      url: 'index.php/Equipo/guardarcontra',
+    })
+    .done( function(data){ 
+      console.table(data);
+      alert("Contratista guardado con exito"); 
+      llenaContratistasEquipo(id_equipo);
+    })
+    .error( function(result){
+      alert("Error en guardado...");
+      console.log("Error: " + result['status']);
+      console.table(result);               
+    })
+    .always( function(){
+      WaitingClose();
+    });
+  }
+});
+
+$(document).on("click", ".btnDel", function() {
+  var id_contratistaquipo = $(this).parent().parent().attr('id');
+  var id_equipo           = $('#id_equipoC').val();
+
+  WaitingOpen("Agregando contratista a equipo")
+  $.ajax({
+    data:{ id_contratistaquipo:id_contratistaquipo },
+    dataType: 'json',
+    type:"POST",
+    url: 'index.php/Equipo/delContra',
+  })
+  .done( function(data){ 
+    llenaContratistasEquipo(id_equipo);
+  })
+  .error( function(result){
+    alert("Error eliminando contratista...");
+    console.log("Error: " + result['status']);
+    console.table(result);               
+  })
+  .always( function(){
+    WaitingClose();
   });
-}
+});
+
     
 function click_co(id_equipo){
-  console.log(id_equipo);
+  //console.log(id_equipo);
   $.ajax({
     type: 'POST',
     data: { id_equipo: id_equipo},
@@ -1085,9 +1041,11 @@ function click_co(id_equipo){
       $('#marcae').val(mar);   
       $('#descripcione').val(descrip);       
       $('#ubicacione').val(ubica);  
+      $('#id_equipoC').val(id_equipo);
     },
     error: function(result){
-      console.log(result);
+      //alert("Error al traer equipos");
+      console.error(result);
     },
     dataType: 'json'
   });
@@ -1116,8 +1074,35 @@ function click_co(id_equipo){
     });   
   });
 
+
+  function recargarTabla(){
+    $("tr.registro").remove();
+    var $id_equipo = $('#id_Equipo_modal').val();
+
+    $.ajax({
+      type: 'POST',
+      data: { idequipo: $id_equipo},
+      url: 'index.php/Equipo/getHistoriaLect', 
+      success: function(data){   
+        console.table(data);
+        llenarModal(data);
+      },
+      error: function(result){
+        console.log(result);
+      },
+      dataType: 'json'
+    }); 
+  }
+
+
+
+
+
    /// llena modal historial de lecturas
   function llenarModal(data){
+
+    $('#id_Equipo_modal').val(data[0]['id_equipo']);
+
     console.table(data);
     if(Array.isArray(data) && data.length) {
       console.log("El equipo SI tiene historial de lecturas");
@@ -1126,21 +1111,13 @@ function click_co(id_equipo){
       $('#tblhistorial').DataTable().clear().draw();
       for (var i=0; i< data.length; i++) {      
         $('#tblhistorial').DataTable().row.add( [
+          '<i class="fa fa-fw fa-pencil text-light-blue editLectura" style="cursor: pointer; margin-left: 15px;" title="Editar lectura" data-idLectura="'+data[i]['id_lectura']+'"></i>',
           data[i]['lectura'],
           data[i]['fecha'],
-          data[i]['turno'],
           data[i]['operario'],
+          data[i]['turno'],
           data[i]['observacion']
         ]).draw();
-        /*$("#tblhistorial tbody").append(  
-         '<tr class="registro">'+         
-              '<td class="clear">'+ data[i]['lectura'] +'</td>'+
-              '<td class="clear">'+ data[i]['fecha'] +'</td>'+                            
-              '<td class="clear">'+ data[i]['turno'] +'</td>'+
-              '<td class="clear">'+ data[i]['operario'] +'</td>'+
-              '<td class="clear">'+ data[i]['observacion'] +'</td>'+
-          '</tr>'
-        );*/
       } 
     } else { 
       $("#codEquipo").text("Equipo sin historial de lecturas");
@@ -1148,6 +1125,55 @@ function click_co(id_equipo){
       console.log("El equipo NO tiene historial de lecturas"); 
     }
   }  
+
+
+  $(document).on("click",".editLectura",function(e){
+
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    $("#modalEditarLectura").modal('show');    
+    var idLectura = $(this).data("idlectura");
+    var lectura = $(this).parents("tr").find("td").eq(1).html();     
+    $('#idLecturaEdit').val(idLectura);
+    $('#lecturaEdit').val(lectura);  
+  });
+
+  function guardarEditLectura(){
+    $('#errorEditLectura').fadeOut('fast');
+    console.log('estoy guardando');   
+    var id_lectura = $('#idLecturaEdit').val();
+    var lectura = $('#lecturaEdit').val();
+   
+    if ( (id_lectura == "") || (lectura == "") ) {
+      $('#errorEditLectura').fadeIn('slow');
+      return;
+    }else{
+      $("#modalEditarLectura").modal('hide');
+      $.ajax({
+              type:"POST",
+              url: "index.php/Equipo/setLecturaEdit", 
+              data:{lectura,id_lectura},
+              success: function(data){                 
+                console.log("Guardado con exito...");
+                $("#modalEditarLectura").modal('hide');
+                recargarTabla();
+              },          
+              error: function(result){
+                $("#modalEditarLectura").modal('hide');
+                alert('Ocurrió un error en la Edición...');
+                  console.log(result);                 
+              },
+              dataType: 'json'
+      });
+
+    //   $('#modalectura').modal('hide');
+    //   $('#errorLectura').hide();
+    }
+
+
+  }
+
+
 
 
 
@@ -1248,7 +1274,7 @@ $( ".editEquipo" ).click(function() {
   console.info('id de equipo a editar: ' + idEquipo);
 
   $.ajax({
-    data: { idEquipo: idEquipo},
+    data: { idEquipo: idEquipo },
     dataType: 'json',
     type: 'POST',
     url: 'index.php/Equipo/geteditar',
@@ -1282,8 +1308,10 @@ function llenarCampos(data) {
   $('#fecha_ultimalectura').val( data[0]['fecha_ultimalectura'] );
   $('#ultima_lectura').val( data[0]['ultima_lectura'] );
   $('#destec').val( data[0]['descrip_tecnica'] );
+
+  $('#destec').val( data[0]['descrip_tecnica'] );
   //info complementaria
-  
+  llenar_adjunto( data[0]['adjunto'] );
   //abro modal
   $('#modaleditar').modal('show');
   WaitingClose(); 
@@ -1461,7 +1489,18 @@ function llenar_cliente(id){
     },
   });
 }
-
+//llena los datos de archivo adjunto
+function llenar_adjunto(adjunto) {
+  //console.info( "adjunto: "+adjunto );
+  $('#adjunto').text(adjunto);
+  $('#adjunto').attr('href', 'assets/filesequipos/'+adjunto);
+  if( adjunto == null || adjunto == '') {
+    var accion = '<i class="fa fa-plus-square agregaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Agregar Adjunto"></i>';
+  } else {
+    var accion = '<i class="fa fa-times-circle eliminaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Eliminar Adjunto"></i>'+'<i class="fa fa-pencil editaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Editar Adjunto"></i>';
+  }
+  $('#accionAdjunto').html(accion);
+}
 
 
 
@@ -1775,6 +1814,133 @@ function guardarmarca(){
     alert("Por favor complete la descripcion de Marca, es un campo obligatorio");
   }
 }
+
+
+
+
+//abrir modal eliminar adjunto
+$(document).on("click",".eliminaAdjunto",function(){
+  $('#modalEliminarAdjunto').modal('show');
+  var idEquipo = $('#id_equipo').val();
+  $('#idAdjunto').val(idEquipo);
+});
+//eliminar adjunto
+function eliminarAdjunto() {
+  $('#modalEliminarAdjunto').modal('hide');
+  var idEquipo = $('#idAdjunto').val();
+  $.ajax({
+    data: { idEquipo:idEquipo },
+    dataType: 'json',
+    type: 'POST',
+    url: 'index.php/Equipo/eliminarAdjunto',
+  }) 
+  .done( function(data){     
+    //console.table(data); 
+    let prevAdjunto = '';
+    llenar_adjunto(prevAdjunto);
+  })                
+  .error( function(result){                      
+    console.error(result);
+  }); 
+}
+
+//abrir modal agregar adjunto
+$(document).on("click",".agregaAdjunto",function(){
+  $('#btnAgregarEditar').text("Agregar");
+  $('#modalAgregarAdjunto .modal-title').html('<span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar');
+
+  $('#modalAgregarAdjunto').modal('show');
+  var idEquipo = $('#id_equipo').val();
+  $('#idAgregaAdjunto').val(idEquipo);
+});
+//abrir modal editar adjunto
+$(document).on("click",".editaAdjunto",function(){
+  $('#btnAgregarEditar').text("Editar");
+  $('#modalAgregarAdjunto .modal-title').html('<span class="fa fa-fw fa-pencil text-light-blue"></span> Editar');
+
+  $('#modalAgregarAdjunto').modal('show');
+  var idEquipo = $('#id_equipo').val();
+  $('#idAgregaAdjunto').val(idEquipo);
+});
+//agregar/editar adjunto
+$("#formAgregarAdjunto").submit(function (event){
+  $('#modalAgregarAdjunto').modal('hide');
+
+  event.preventDefault();  
+  if (document.getElementById("inputPDF").files.length == 0) {
+    $('#error').fadeIn('slow');
+  }
+  else{
+    $('#error').fadeOut('slow');
+    var formData = new FormData($("#formAgregarAdjunto")[0]);
+    //debugger
+    $.ajax({
+      cache:false,
+      contentType:false,
+      data:formData,
+      dataType:'json',
+      processData:false,
+      type:'POST',
+      url:'index.php/Equipo/agregarAdjunto',
+    })
+    .done( function(data){     
+      console.table(data['adjunto']); 
+      llenar_adjunto( data['adjunto'] );
+    })                
+    .error( function(result){                      
+      console.error(result);
+    }); 
+  }
+});
+
+$('#modaleditar').on('hidden.bs.modal', function (e) {
+  $('#content').empty();  
+  $("#content").load("<?php echo base_url(); ?>index.php/Equipo/index/<?php echo $permission; ?>");
+})
+
+
+// Datatable - Chequeado
+  $('#sales').DataTable({
+    "aLengthMenu": [ 10, 25, 50, 100 ],
+    "columnDefs": [ {
+        "targets": [ 0 ], 
+        "searchable": false
+    },
+    {
+        "targets": [ 0 ], 
+        "orderable": false
+    } ],
+    "order": [[1, "asc"]],
+  });
+  $('#tblhistorial').DataTable({
+    "aLengthMenu": [ 10, 25, 50, 100 ],
+      "columnDefs": [ {
+          "targets": [ 0 ], 
+          "searchable": false
+      },
+      {
+          "targets": [ 0 ], 
+          "orderable": false
+      } ],
+      "order": [[1, "asc"]],
+  });
+  $('#tablaempresa').DataTable({
+    "aLengthMenu": [ 10, 25, 50, 100 ],
+    "columnDefs": [ {
+        "targets": [ 0 ], 
+        "searchable": false
+    },
+    {
+        "targets": [ 0 ], 
+        "orderable": false
+    } ],
+    "order": [[1, "asc"]],
+  });
+
+
+
+
+
 </script>
 
 
@@ -1800,7 +1966,7 @@ function guardarmarca(){
                   <div class="col-xs-12 col-md-6">
                     <label for="codigoe">Codigo:</label>
                     <input id="codigoe" name="codigoe" class="form-control" disabled>
-                    <input type="hidden" id="id_equipo" name="id_equipo">
+                    <input type="hidden" id="id_equipoC" name="id_equipoC">
                   </div>
 
                   <div class="col-xs-12 col-md-6">
@@ -1842,6 +2008,15 @@ function guardarmarca(){
 
               <div class="panel-body">
                 <div class="row">
+                  <div class="col-xs-12">
+                    <div class="alert alert-danger alert-dismissable" id="errorC" style="display: none">
+                      <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                      Revise que todos los campos esten completos
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
                   <div class="col-xs-12 col-md-6">
                     <select id="empresae" name="empresae" class="form-control"/>
                     <input type="hidden" id="id_contratista" name="id_contratista">
@@ -1871,7 +2046,7 @@ function guardarmarca(){
       </div><!-- /.modal-body -->
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" onclick="cerro()">Cancelar</button>
-        <button type="button" class="btn btn-primary" id="reset" data-dismiss="modal" onclick="guardarsi()">Guardar</button>
+        <!--<button type="button" class="btn btn-primary" id="reset" data-dismiss="modal" onclick="guardarsi()">Guardar</button>-->
       </div>
     </div>
   </div>
@@ -1898,17 +2073,11 @@ function guardarmarca(){
 
               <div class="panel-body">
                 <div class="row">
-                  <div class="col-xs-12"> <!-- FIRST COLUMN -->
-                    <!--<label>Empresa<strong style="color: #dd4b39">*</strong>: </label>
-                    <select  id="empresa" name="empresa" class="form-control" value=""></select> -->
-                    <input type="hidden" id="empresa" name="empresa" class="form-control" readonly>
-                    <input type="hidden" id="id_empresa" name="id_empresa" class="form-control hidden" Disabled>
-                    <input type="hidden" id="unin" name="unin" class="form-control" value="<?php echo $empresa ?>">
-                  </div>
+                  <input type="hidden" id="unin" name="unin" class="form-control" value="<?php echo $empresa ?>">
 
                   <div class="col-md-6 col-sm-12"> <!-- FIRST COLUMN -->
                     <div class="row">
-                      <div class="col-xs-8"><label>Área:</label>
+                      <div class="col-xs-8"><label>Área<strong style="color: #dd4b39">*</strong>:</label>
                         <input type="hidden" id="id_area" name="id_area">
                         <select id="area" name="area" class="form-control" value="<?php echo $area ?>"></select>
                       </div>
@@ -1917,7 +2086,7 @@ function guardarmarca(){
                         <button type="button" class="btn btn-primary" id="addarea"  data-toggle="modal" data-target="#modalarea"><i class="fa fa-plus"> Agregar</i></button> 
                       </div>
 
-                      <div class="col-xs-8"><label>Proceso:</label>
+                      <div class="col-xs-8"><label>Proceso<strong style="color: #dd4b39">*</strong>:</label>
                         <input type="hidden" id="id_proceso" name="id_proceso">
                         <select id="proceso" name="prid_procesooceso" class="form-control" value=""></select>
                       </div>
@@ -1926,7 +2095,7 @@ function guardarmarca(){
                         <button type="button" class="btn btn-primary" id="addproceso"  data-toggle="modal" data-target="#modalproceso"><i class="fa fa-plus"> Agregar</i></button>
                       </div>
 
-                      <div class="col-xs-8"><label>Criticidad:</label>
+                      <div class="col-xs-8"><label>Criticidad<strong style="color: #dd4b39">*</strong>:</label>
                         <select id="criticidad" name="criticidad" class="form-control"></select>
                       </div>
                       <div class="col-xs-4">
@@ -1987,7 +2156,6 @@ function guardarmarca(){
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-4">
                     <label>Marca</label> <strong style="color: #dd4b39">*</strong>:
-                    <!--   <input type="text" id="marca" name="marca" class="form-control" placeholder="Ingrese Marca"> -->
                     <select id="marca" name="marca" class="form-control" value="" ></select>   
                   </div>
                   <div class="col-xs-4">
@@ -2005,7 +2173,7 @@ function guardarmarca(){
                     <input type="text" id="numse"  name="numse" class="form-control input-md" placeholder="Ingrese Número de serie">
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-4">
-                    <label>Ubicación (Georeferencial)</label><strong style="color: #dd4b39">*</strong>:
+                    <label>Ubicación (Georeferencial)</label>:
                     <input type="text" id="ubicacion" name="ubicacion" class="form-control" placeholder="Ingrese Ubicación">
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-4">
@@ -2017,63 +2185,33 @@ function guardarmarca(){
                     <input type="date" id="fecha_garantia"  name="fecha_garantia" class="form-control input-md">
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-4">
-                    <label>Fecha de Última lectura:</label>
-                    <input type="datetime" id="fecha_ultimalectura"  name="fecha_ultima" class="form-control input-md">
+                    <label>Fecha de Lectura Inicial:</label>
+                    <input type="datetime" id="fecha_ultimalectura"  name="fecha_ultima" class="form-control input-md" disabled="">
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-4">
-                    <label>Última Lectura:</label>
-                    <input type="text" id="ultima_lectura"  name="ultima_lectura" class="form-control input-md" placeholder="Ingrese Ultima Lectura">
+                    <label>Lectura Inicial:</label>
+                    <input type="text" id="ultima_lectura"  name="ultima_lectura" class="form-control input-md" placeholder="Ingrese Ultima Lectura" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label>Archivo Adjunto:</label>
+                    <table class="table table-bordered" id="tablaadjunto"> 
+                      <tbody>
+                        <tr>
+                          <td id="accionAdjunto">
+                           <!-- -->
+                          </td>
+                          <td>
+                          <a id="adjunto" href="" target="_blank"></a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                   <div class="col-xs-12">
                     <label>Descripción Técnica:</label>
                     <textarea class="form-control" id="destec" name="destec" placeholder="Ingrese Descripción Técnica..."></textarea>
                   </div>
                 </div>
-                <br>
-                <?php /*<div class="row">
-                  <div id="exTab1" class="col-xs-12"> 
-                    <ul  class="nav nav-tabs">
-                      <li>
-                        <a  href="#1a" id="ag" data-toggle="tab" class="glyphicon glyphicon-plus" >Información complementaria</a>
-                      </li>
-                    </ul>
-                    <div class="tab-content clearfix">
-                      <div class="tab-pane" id="1a">
-                        <br>
-                        <div class="row">
-                          <div class="col-xs-12">
-                            <div class="col-xs-12 col-sm-6">
-                              <input type="text" id="tit" name="tit" class="form-control" placeholder="Ingrese Título ...">
-                            </div>
-                            <div class="col-xs-12 col-sm-6">
-                              <input type="text" id="info" name="info" class="form-control" placeholder="Ingrese Descripción ...">
-                            </div><br><br>
-                            <div class="col-xs-12">
-                              <button type="button" class="btn btn-primary" id="agregar" ><i class="fa fa-plus"> Agregar</i></button> 
-                            </div>
-                          </div>
-                        </div><!-- /.row -->
-                        <br>
-                        <div class="row">
-                          <div class="col-xs-12">
-                            <table id="sales" class="table table-bordered table-hover">
-                              <thead>
-                                <tr>                
-                                  <th>Acción</th>
-                                  <th>Título</th>
-                                  <th>Descripción</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <!-- -->
-                              </tbody>
-                            </table>
-                          </div>
-                        </div><!-- /.row -->
-                      </div><!-- /.tab-pane -->
-                    </div><!-- /.tab-content -->
-                  </div>
-                </div>*/ echo " " ?>
               </div><!-- /.panel-body-->   
             </div><!-- /.panel -->
 
@@ -2160,10 +2298,12 @@ function guardarmarca(){
       </div> <!-- /.modal-header  -->
 
       <div class="modal-body">
+        <input type="hidden" id="id_Equipo_modal">
         <label>Equipo: <span id="codEquipo"></span></label>  
         <table id="tblhistorial" class="table table-condensed table-responsive">
           <thead>                        
-            <tr>                          
+            <tr>      
+              <th>Edición</th>                    
               <th>Lectura</th>
               <th>Fecha</th>                
               <th>Operario</th>
@@ -2186,9 +2326,38 @@ function guardarmarca(){
 </div>  <!-- /.modal fade -->
 <!-- / Modal Historial de Lecturas -->
 
-
-
-
+<!-- Modal Edicion de Lecturas --> 
+<div class="modal" id="modalEditarLectura">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>Editar Lectura</h4>
+      </div>
+      <form id="formAgregarAdjunto">
+        <div class="modal-body">
+          <div class="alert alert-danger alert-dismissable" id="errorEditLectura" style="display: none">
+            <h4><i class="icon fa fa-ban"></i> Error!</h4>
+            Por favor ingrese una nueva lectura antes de guardar...
+          </div>         
+          <form class="form-horizontal">
+            <div class="form-group">
+              <label for="lecturaEdit" class="col-sm-2 control-label">Nueva Lectura</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="lecturaEdit" placeholder="Ingrese nueva lectura...">
+                <input type="hidden" class="form-control" id="idLecturaEdit">
+              </div>
+            </div>  
+          </form>          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="btnAgregarEditar" onclick="guardarEditLectura()">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- / Modal Edicion de Lecturas -->
 
 <!-- Modal criticidad-->
 <div class="modal" id="modalcrit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -2429,3 +2598,50 @@ function guardarmarca(){
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal --><!-- Modal -->
+
+<!-- Modal Eliminar Adjunto -->
+<div class="modal" id="modalEliminarAdjunto">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><span class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar</h4>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="idAdjunto">
+        <h4>¿Desea eliminar Archivo Adjunto?</h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminarAdjunto();">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Agregar adjunto -->
+<div class="modal" id="modalAgregarAdjunto">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar</h4>
+      </div>
+
+      <form id="formAgregarAdjunto">
+        <div class="modal-body">
+          <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+            <h4><i class="icon fa fa-ban"></i> Error!</h4>
+            Seleccione un Archivo Adjunto
+          </div>
+          <input type="hidden" id="idAgregaAdjunto" name="idAgregaAdjunto">
+          <input id="inputPDF" name="inputPDF" type="file" class="form-control input-md">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="btnAgregarEditar">Agregar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

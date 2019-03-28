@@ -25,7 +25,7 @@ class Sservicios extends CI_Model
 		$this->db->join('sector', 'equipos.id_sector = sector.id_sector');
 		$this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo');
 		$this->db->where('solicitud_reparacion.id_empresa', $empId);
-		$this->db->where('solicitud_reparacion.estado !=', 'T');
+		//$this->db->where('solicitud_reparacion.estado !=', 'T');
 		$this->db->where('solicitud_reparacion.estado !=', 'AN');
 		//$this->db->where('solicitud_reparacion.estado', 'C');
 		//$this->db->or_where('solicitud_reparacion.estado', 'S');

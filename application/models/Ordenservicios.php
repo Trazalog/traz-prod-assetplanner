@@ -89,6 +89,8 @@ class Ordenservicios extends CI_Model {
         }
     }
 
+    
+
     function getDatosOrdenServicios($data = null) // Ok ¿al pedo?
     {
         $id = $data['id_ordenservicio'];       
@@ -136,10 +138,11 @@ class Ordenservicios extends CI_Model {
     {
         $userdata  = $this->session->userdata('user_data');
         $empresaId = $userdata[0]['id_empresa'];
-        $this->db->select('usrId, usrLastName, usrname');
+        $this->db->select('sisusers.usrId, sisusers.usrLastName, sisusers.usrname');
+        $this->db->join('usuarioasempresa', 'usuarioasempresa.usrId = sisusers.usrId');
         $this->db->from('sisusers');
-        $this->db->where('id_empresa', $empresaId);
-        $this->db->where('estado', 'AC');
+        $this->db->where('usuarioasempresa.empresaid', $empresaId);
+        $this->db->where('usuarioasempresa.estado', 'AC');
         $query = $this->db->get();
         $i     = 0;
         foreach ($query->result() as $row)
@@ -164,36 +167,38 @@ class Ordenservicios extends CI_Model {
             $usrId         = $userdata[0]['usrId'];     // guarda usuario logueado
             $empresaId     = $userdata[0]['id_empresa'];
             ////////// para guardar herramientas                 
-            if ( !empty($data['herramienta']) ){
-                $date          = $data['fecha'];
-                $valeSalHerram = array(
-                    'fecha'      => $date,
-                    'usrid'      => $usrId,
-                    'id_empresa' => $empresaId
-                );
-                if ( ! $this->db->insert('tbl_valesalida', $valeSalHerram) )
-                {
-                    return $this->db->error(); // Has keys 'code' and 'message'
-                }
-                $idInsertVale = $this->db->insert_id();
+					
+						if ( !empty($data['herramienta']) ){
+							$date          = $data['fecha'];
+							$valeSalHerram = array(
+									'fecha'      => $date,
+									'usrid'      => $usrId,
+									'id_empresa' => $empresaId
+							);
+							if ( ! $this->db->insert('tbl_valesalida', $valeSalHerram) )
+							{
+									return $this->db->error(); // Has keys 'code' and 'message'
+							}
+							$idInsertVale = $this->db->insert_id();
 
-                // detalle herramientas
-                for ($i=0; $i < count($data['herramienta']) ; $i++)
-                { 
-                    $detavalHerram["valesid"]    = $idInsertVale;
-                    $detavalHerram["herrId"]     = $data["herramienta"][$i][3];
-                    $detavalHerram["id_empresa"] = $empresaId;
-                    if ( ! $this->db->insert('tbl_detavalesalida', $detavalHerram) )
-                    {
-                        return $this->db->error(); // Has keys 'code' and 'message'
-                    }
-                }
+							// detalle herramientas
+							for ($i=0; $i < count($data['herramienta']) ; $i++)
+							{ 
+									$detavalHerram["valesid"]    = $idInsertVale;
+									$detavalHerram["herrId"]     = $data["herramienta"][$i][3];
+									$detavalHerram["id_empresa"] = $empresaId;
+									if ( ! $this->db->insert('tbl_detavalesalida', $detavalHerram) )
+									{
+											return $this->db->error(); // Has keys 'code' and 'message'
+									}
+							}
             }
             else
             {
-                $idInsertVale = 1;    // no puede ser 0 por la clave foranea
+							$idInsertVale = 1;    // no puede ser 0 por la clave foranea
             }
 
+						
             ////// guarda orden servicio                 
             //$lectura                = $data['lectura'];
             //$comprobante            = $data['comprobante'];
@@ -309,49 +314,46 @@ class Ordenservicios extends CI_Model {
 
     function getHerramOrdenes($data) // Ok
     {
-        $id_orden = $data['id_orden'];
-        $this->db->select('
-            herramientas.herrcodigo,
-            herramientas.herrmarca,
-            herramientas.herrdescrip
-        ');
-        $this->db->from('orden_servicio');        
-        $this->db->join('tbl_valesalida', 'orden_servicio.valesid = tbl_valesalida.valesid');        
-        $this->db->join('tbl_detavalesalida', 'tbl_detavalesalida.valesid = tbl_valesalida.valesid');
-        $this->db->join('herramientas', 'tbl_detavalesalida.herrId = herramientas.herrId');        
-        $this->db->where('orden_servicio.id_orden', $id_orden);
-        $query = $this->db->get();
-        if ($query->num_rows()!=0)
-        {
-            return $query->result_array();  
-        }
-        else
-        {   
-            return array();
-        }   
+			$id_orden = $data['id_orden'];
+			$this->db->select('
+					herramientas.herrcodigo,
+					herramientas.herrmarca,
+					herramientas.herrdescrip
+			');
+			$this->db->from('orden_servicio');        
+			$this->db->join('tbl_valesalida', 'orden_servicio.valesid = tbl_valesalida.valesid');        
+			$this->db->join('tbl_detavalesalida', 'tbl_detavalesalida.valesid = tbl_valesalida.valesid');
+			$this->db->join('herramientas', 'tbl_detavalesalida.herrId = herramientas.herrId');        
+			$this->db->where('orden_servicio.id_orden', $id_orden);
+			$query = $this->db->get();
+			if ($query->num_rows()!=0)
+			{
+					return $query->result_array();  
+			}
+			else
+			{   
+					return array();
+			}   
     }
 
-    function getOperariosOrden($data)
-    {
-        $id_orden = $data['id_orden'];
-        $this->db->select('
-            sisusers.usrId,
-            sisusers.usrLastName,
-            sisusers.usrname
-        ');
-        $this->db->from('sisusers');        
-        $this->db->join('asignausuario', 'asignausuario.usrId = sisusers.usrId');        
-        $this->db->join('orden_servicio', 'asignausuario.id_orden = orden_servicio.id_orden'); 
-        $this->db->where('orden_servicio.id_orden', $id_orden);
-        $query = $this->db->get();
-        if ($query->num_rows()!=0)
-        {
-            return $query->result_array();  
-        }
-        else
-        {   
-            return array();
-        }                
+    function getOperariosOrden($data){
+			
+			$id_orden = $data['id_orden'];
+			$this->db->select('sisusers.usrName,
+												sisusers.usrLastName');
+			$this->db->from('asignausuario');        
+			$this->db->join('sisusers', 'asignausuario.usrId = sisusers.usrId');        
+			$this->db->join('orden_servicio', 'orden_servicio.id_orden = asignausuario.id_orden'); 
+			$this->db->where('orden_servicio.id_orden', $id_orden);
+			$query = $this->db->get();
+			if ($query->num_rows()!=0)
+			{
+					return $query->result_array();  
+			}
+			else
+			{   
+					return array();
+			}                
     }
 
 		// devuelve insumos pedidos por id de OT
@@ -364,20 +366,19 @@ class Ordenservicios extends CI_Model {
 												articles.artDescription as descripcion,
 												articles.artBarCode as codigo,
 												tbl_notapedido.id_notaPedido as nroOT,
-												sisusers.usrName as nombre,
-												sisusers.usrLastName as apellido');
+												');
 			$this->db->from('tbl_detanotapedido');
 			$this->db->join('tbl_notapedido', 'tbl_detanotapedido.id_notaPedido = tbl_notapedido.id_notaPedido');
 			$this->db->join('orden_trabajo', 'tbl_notapedido.id_ordTrabajo = orden_trabajo.id_orden');
 			$this->db->join('articles', 'articles.artId = tbl_detanotapedido.artId');
-			$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario');
+			//$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario');
 			$this->db->where('tbl_notapedido.id_ordTrabajo', $id_ot);
 			$query = $this->db->get();
 		
 			if ($query->num_rows()!=0){
 					return $query->result_array();
 			}else{   
-					return false;
+					return array();
 			}  
 
     }
@@ -530,21 +531,21 @@ class Ordenservicios extends CI_Model {
 
     function validaOperarios($data){
         
-        $query = $this->db->query("SELECT CONCAT(`usrLastName`,', ',`usrname`)  as `operario` FROM `sisusers`");
-        $recurso = (string)$data['operario'];
-        
-        foreach($query->result_array() as $row){                
-             
-            $usuario = (string)$row['operario'];
-            
-            if (strcasecmp ($usuario , $recurso) == 0) { 
-                $resp['resp'] = true;                
-               return $resp;  
-            }  
-            
-        }
-        $resp['resp'] = false;
-        return $resp;
+			$query = $this->db->query("SELECT CONCAT(`usrLastName`,', ',`usrname`)  as `operario` FROM `sisusers`");
+			$recurso = (string)$data['operario'];
+			
+			foreach($query->result_array() as $row){                
+						
+					$usuario = (string)$row['operario'];
+					
+					if (strcasecmp ($usuario , $recurso) == 0) { 
+							$resp['resp'] = true;                
+							return $resp;  
+					}  
+					
+			}
+			$resp['resp'] = false;
+			return $resp;
     }
 
 

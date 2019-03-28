@@ -256,7 +256,8 @@ class Preventivo extends CI_Controller {
 	  		}	
 
 			////////// Subir imagen o pdf 
-			$nomcodif = $this->codifNombre($ultimoId,$empId); // codificacion de nomb  		
+			$nomcodif = $this->codifNombre($ultimoId,$empId); // codificacion de nomb  	
+			$nomcodif = 'preventivo'.$nomcodif;	
 			$config = [
 				"upload_path" => "./assets/filespreventivos",
 				'allowed_types' => "png|jpg|pdf|xlsx",
@@ -289,9 +290,7 @@ class Preventivo extends CI_Controller {
 		$delimiter = array(" ",",",".","'","\"","|","\\","/",";",":");
 		$replace = str_replace($delimiter, $delimiter[0], $hora);
 		$explode = explode($delimiter[0], $replace);
-		
 		$strigHora = $explode[0].$guion_medio.$explode[1].$guion_medio.$explode[2].$guion_medio.$explode[3];
-		
 		$nomImagen = $ultimoId.$guion.$empId.$guion.$strigHora;
 		
 		return $nomImagen;
@@ -301,7 +300,7 @@ class Preventivo extends CI_Controller {
 	public function editar_preventivo(){
 		
 		$userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa'];
+    $empId = $userdata[0]['id_empresa'];
 		
 		$id_preventivo = $this->input->post('id_prevent');		
 		$eq = $this->input->post('id_equipo');///
@@ -366,7 +365,7 @@ class Preventivo extends CI_Controller {
 				// se borran la herram
 				$respdelHerr = $this->Preventivos->deleteHerramPrev($id_preventivo);
 	  			$response['respHerram'] = $respdelHerr;	// no habia herramientas
-	  		}
+	  	}
 
 		/// INSUMOS	
 			//saco array con herramientas y el id de empresa
@@ -593,4 +592,53 @@ class Preventivo extends CI_Controller {
 	}
 
 
+	/**
+	 * Preventivo:eliminarAdjunto();
+	 *
+	 * @return Bool 	True si se eliminó el archivo o false si hubo error
+	 */
+	public function eliminarAdjunto()
+	{
+	    $idPreventivo = $this->input->post('idprev');
+	    $response     = $this->Preventivos->eliminarAdjunto($idPreventivo);
+		echo json_encode($response);
+	}
+	
+	/**
+	 * Preventivo:agregarAdjunto();
+	 *
+	 * @param 
+	 * @return String nomre de archivo adjunto
+	 */
+	public function agregarAdjunto()
+	{
+		$userdata     = $this->session->userdata('user_data');
+		$empId        = $userdata[0]['id_empresa'];
+
+		$idPreventivo = $this->input->post('idAgregaAdjunto');
+
+		$nomcodif = $this->codifNombre($idPreventivo, $empId); // codificacion de nomb  		
+		$config   = [
+			"upload_path"   => "./assets/filespreventivos",
+			'allowed_types' => "png|jpg|pdf|xlsx",
+			'file_name'     => $nomcodif
+		];
+
+		$this->load->library("upload",$config);
+		if ($this->upload->do_upload('inputPDF'))
+		{
+			$data     = array("upload_data" => $this->upload->data());
+			$extens   = $data['upload_data']['file_ext'];//guardo extension de archivo
+			$nomcodif = $nomcodif.$extens;
+			$adjunto  = array('prev_adjunto' => $nomcodif);
+			$response = $this->Preventivos->updateAdjunto($adjunto, $idPreventivo);
+		}
+		else
+		{
+			$response = false;
+		}
+
+		echo json_encode($response);
+	}
+	
 }

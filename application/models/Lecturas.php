@@ -48,6 +48,7 @@ class Lecturas extends CI_Model
 		$this->db->from('setupparam');
 		$this->db->join('equipos', 'equipos.id_equipo = setupparam.id_equipo');
 		$this->db->where('equipos.id_empresa', $empId);
+		$this->db->where('equipos.estado', 'AC');
 
 		$query = $this->db->get();				
 		$i=0;

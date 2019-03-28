@@ -37,6 +37,7 @@ class Ordenservicio extends CI_Controller {
       $response = $this->Ordenservicios->getEquipos($this->input->post());
       echo json_encode($response);
     }
+    
 
     public function getHerramienta() //Ok
     {
@@ -79,27 +80,7 @@ class Ordenservicio extends CI_Controller {
       
       echo json_encode($response);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
     public function getsolicitud(){
 
       $response = $this->Ordenservicios->getsolicitudes($this->input->post());
@@ -171,6 +152,7 @@ class Ordenservicio extends CI_Controller {
 
     public function getOperarioOrden(){
       $response = $this->Ordenservicios->getOperariosOrden($this->input->post());
+      
       echo json_encode($response);
     }
 
