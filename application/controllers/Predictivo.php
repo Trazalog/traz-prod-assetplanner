@@ -253,6 +253,37 @@ class Predictivo extends CI_Controller {
 		}	
 	}	
 
+	// Agrega adjunto desde modal edicion
+	public function agregarAdjunto(){
+		$userdata     = $this->session->userdata('user_data');
+		$empId        = $userdata[0]['id_empresa'];
+
+		$idPredictivo = $this->input->post('idAgregaAdjunto');
+
+		$nomcodif = $this->codifNombre($idPredictivo, $empId); // codificacion de nomb  		
+		$config   = [
+			"upload_path"   => "./assets/filespredictivos",
+			'allowed_types' => "png|jpg|pdf|xlsx",
+			'file_name'     => $nomcodif
+		];
+
+		$this->load->library("upload",$config);
+		if ($this->upload->do_upload('inputPDF'))
+		{
+			$data     = array("upload_data" => $this->upload->data());
+			$extens   = $data['upload_data']['file_ext'];//guardo extension de archivo
+			$nomcodif = $nomcodif.$extens;
+			$adjunto  = array('pred_adjunto' => $nomcodif);
+			$response = $this->Predictivos->updateAdjunto($adjunto, $idPredictivo);
+		}
+		else
+		{
+			$response = false;
+		}
+
+		echo json_encode($response);
+	}
+
 	// Guarda Predictivo editado -
 	public function updatePredictivo(){
 
