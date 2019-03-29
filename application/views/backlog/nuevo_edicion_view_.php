@@ -483,7 +483,7 @@ function guardar(){
           url: 'index.php/Backlog/editarNuevo', 
           success: function(data){                 
                   WaitingClose(); 
-                  alert('editado con exito');             
+                  $("#content").load("<?php echo base_url(); ?>index.php/Backlog/index/<?php echo $permission; ?>");        
                 },
           error: function(result){
                   console.log(result);   

@@ -33,6 +33,7 @@ class Otrabajo extends CI_Controller {
 		$data['permission'] = $permission;
 		$data['list_usuarios'] = $this->bpm->ObtenerUsuarios();					
 		$this->load->view('otrabajos/list', $data);
+		$this->load->view('otrabajos/tabla_opciones');
 	}
 
 	/**

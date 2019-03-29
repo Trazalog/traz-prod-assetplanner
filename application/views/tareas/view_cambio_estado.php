@@ -122,7 +122,7 @@
 											
 											<div class="panel-body">
 												<div class="panel panel-primary">
-													<?php timeline($timeline) ?>
+													<?php timeline($timeline) ?>;
 												</div>
 											</div>
 
@@ -137,7 +137,7 @@
 					
 					<div class="modal-footer">
 						<button type="button" id="cerrar" class="btn btn-primary" onclick="cargarVista()">Cerrar</button>
-						<button type="button" class="btn btn-success" id="hecho" onclick="terminarTarea()">Hecho</button>
+						<button type="button" class="btn btn-success" id="hecho" onclick="redirect_calendario()">Ir a Calentadio</button>
 					</div> <!-- /.modal footer -->
 
 				</div><!-- /.box body -->
@@ -148,6 +148,11 @@
 
 
 <script>  
+
+    function redirect_calendario(){
+        $('#content').empty();
+	    $("#content").load("<?php echo base_url(); ?>index.php/Calendario/indexot/<?php echo $permission; ?>");
+    }
 
 	$('.fecha').datepicker({
 		autoclose: true

@@ -297,9 +297,9 @@
                 // }
                 echo "</td>";
                 // 1 // id equipo
-                echo "<td style='text-align: center' class='hidden'>".$b['id_equipo']."</td>";
+                echo "<td style='text-align: center' class='hidden equipo'>".$b['id_equipo']."</td>";
                 // 2 // id solicitud reparacion
-                echo "<td style='text-align: center' class='hidden'>".$b['backId']."</td>"; 
+                echo "<td style='text-align: center' class='hidden backlog'>".$b['backId']."</td>"; 
 
                 echo "<td style='text-align: center'>".$b['sore_id']."</td>";
                 // 3 // codigo de equipo

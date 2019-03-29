@@ -454,18 +454,18 @@ class Calendarios extends CI_Model {
 
     function cambiarEstado($id_solicitud, $estado, $tipo){
 
-			$this->db->set('estado', $estado);			
-			
-			if ($tipo == 'backlog') {
-				$this->db->where('backId', $id_solicitud);
-				$resposnse = $this->db->update('tbl_back');
-			}
+        $this->db->set('estado', $estado);			
+        
+        if ($tipo == 'backlog') {
+            $this->db->where('backId', $id_solicitud);
+            $resposnse = $this->db->update('tbl_back');
+        }
 
-			if ($tipo == 'correctivo') {
-				$this->db->where('id_solicitud', $id_solicitud);
-				$resposnse = $this->db->update('solicitud_reparacion');
-			}
-			return $resposnse;
+        if ($tipo == 'correctivo') {
+            $this->db->where('id_solicitud', $id_solicitud);
+            $resposnse = $this->db->update('solicitud_reparacion');
+        }
+        return $resposnse;
     }
 
     // Guarda batch de OT 
@@ -634,7 +634,7 @@ class Calendarios extends CI_Model {
 			$this->db->select('solicitud_reparacion.case_id');
 			$this->db->from('tbl_back');
 			$this->db->join('solicitud_reparacion', 'tbl_back.sore_id = solicitud_reparacion.id_solicitud');
-			$this->db->where('tbl_back.backId', $id_solicitud);
+			$this->db->where('tbl_back.sore_id', $id_solicitud);
 			$query = $this->db->get();
 			if ($query->num_rows() > 0){
 				return $query->row('case_id');				

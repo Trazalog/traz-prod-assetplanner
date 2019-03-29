@@ -156,7 +156,7 @@
 
 				<div class="modal-footer">
 					<div class="col-sm-12 col-md-12">
-						<button type="button" id="verOrden" class="btn btn-primary" onclick="asignarTareas()">Asignar Tareas</button>
+						<button type="button" id="verOrden" class="btn btn-primary" onclick="asignarTareas()">Asignar Responsable a OT</button>
 					</div>
 				</div> <br>
 			</div><!-- /.box body -->
