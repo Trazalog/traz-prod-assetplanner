@@ -1,16 +1,22 @@
 <body class="skin-blue-light sidebar-mini">
     <div class="wrapper">
 
-        <header class="main-header">
+        <header class="main-header" style=''>
             <!-- Logo -->
-            <a href="#" onClick="cargarView('<?php echo $grpDash; ?>', 'index', 'View')" class="logo">
+            <a href="#" onClick="cargarView('<?php echo $grpDash; ?>', 'index', 'View')" class="logo" style="background: -moz-linear-gradient(45deg, rgba(60,148,201,1) 0%, rgba(70,170,232,1) 100%); /* ff3.6+ */
+background: -webkit-gradient(linear, left bottom, right top, color-stop(0%, rgba(60,148,201,1)), color-stop(100%, rgba(70,170,232,1))); /* safari4+,chrome */
+background: -webkit-linear-gradient(45deg, rgba(60,148,201,1) 0%, rgba(70,170,232,1) 100%); /* safari5.1+,chrome10+ */
+background: -o-linear-gradient(45deg, rgba(60,148,201,1) 0%, rgba(70,170,232,1) 100%); /* opera 11.10+ */
+background: -ms-linear-gradient(45deg, rgba(60,148,201,1) 0%, rgba(70,170,232,1) 100%); /* ie10+ */
+background: linear-gradient(45deg, rgba(60,148,201,1) 0%, rgba(70,170,232,1) 100%); /* w3c */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#46aae8', endColorstr='#3c94c9',GradientType=1 ); /* ie6-9 */">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
                 <span class="logo-mini">A<b></b>P</span>
                 <!-- logo for regular state and mobile devices -->
                 <span class="logo-lg"><b>Asset</b> PLANNER</span>
             </a>
             <!-- Header Navbar: style can be found in header.less -->
-            <nav class="navbar navbar-static-top" role="navigation">
+            <nav class="navbar navbar-static-top" role="navigation" style='background: -moz-linear-gradient(45deg, rgba(64,154,207,1) 0%, rgba(3,75,128,1) 100%); background: -webkit-gradient(linear, left bottom, right top, color-stop(0%, rgba(64,154,207,1)), color-stop(100%, rgba(3,75,128,1))); background: -webkit-linear-gradient(45deg, rgba(64,154,207,1) 0%, rgba(3,75,128,1) 100%);background: -o-linear-gradient(45deg, rgba(64,154,207,1) 0%, rgba(3,75,128,1) 100%);background: -ms-linear-gradient(45deg, rgba(64,154,207,1) 0%, rgba(3,75,128,1) 100%); background: linear-gradient(45deg, rgba(64,154,207,1) 0%, rgba(3,75,128,1) 100%); filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#034B80", endColorstr="#409ACF",GradientType=1 );'>
                 <!-- Sidebar toggle button-->
                 <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
                     <span class="sr-only">Toggle navigation</span>
