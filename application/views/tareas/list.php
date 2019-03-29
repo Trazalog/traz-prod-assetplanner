@@ -61,9 +61,9 @@
                   echo '<tr id="'.$id.'" class="'.$id.'" style="cursor: pointer;">';                   
 
                   if ( $asig != "")  {
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea"').' style="text-align: left"><i class="fa fa-user" style="color: #5c99bc ; cursor: pointer;"" title="Tomado" data-toggle="modal" data-target="#modalSale"></i></td>';
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea"').' style="text-align: left"><i class="fa fa-user" style="color: #5c99bc ; cursor: pointer;"" title="Asignado" data-toggle="modal" data-target="#modalSale"></i></td>';
                   }else{
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea"').' style="text-align: left"><i class="fa fa-user" style="color: #d6d9db ; cursor: pointer;"" title="Tomado" data-toggle="modal" data-target="#modalSale"></i></td>';
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea"').' style="text-align: left"><i class="fa fa-user" style="color: #d6d9db ; cursor: pointer;"" title="Sin Asignar" data-toggle="modal" data-target="#modalSale"></i></td>';
                   }
                   
                     echo '</td>';

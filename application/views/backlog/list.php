@@ -292,7 +292,6 @@ function Refrescar(){
   $('#modalSale').empty();
   $("#content").load("<?php echo base_url(); ?>index.php/Backlog/index/<?php echo $permission; ?>");
   WaitingClose();
-  WaitingClose();
 }
 function Refrescar1(){
 

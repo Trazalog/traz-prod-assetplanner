@@ -15,7 +15,7 @@
           <table id="otrabajo" class="table table-bordered table-hover">
             <thead>
               <tr>
-                <th>Acciones</th>
+                <th></th>
                 <th>Id Orden</th>
                 <th>Fecha Inicio</th>
                 <th>Fecha Entrega</th>
@@ -46,35 +46,7 @@
                         $causa       = $a['descripcion'];
                         $idsolicitud = $a['id_solicitud'];
                         echo '<tr id="'.$id.'" class="'.$id.' ot-row" data-id_equipo="'.$id_equipo.'" data-causa="'.$causa.'" data-idsolicitud="'.$idsolicitud.'">';
-      	                echo '<td>';
-                        if (strpos($permission,'Del') !== false) {
-                          echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar" data-toggle="modal" data-target="#modalaviso"></i>';
-                          //echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"  ></i> '; 
-                        }
-                        if (strpos($permission,'Edit') !== false) {
-      	                	echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar" data-toggle="modal" data-target="#modaleditar" ></i>';
-                        }
-                        if (strpos($permission,'Asignar') !== false) {
-                          echo '<i class="fa fa-check-square-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar tarea" id="btnAddtarea"></i>';
-                          echo '<i class="fa fa-thumb-tack text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar OT" data-toggle="modal" data-target="#modalAsig" ></i>';
-                         
-                        }
-                        /*if (strpos($permission,'OP') !== false) {
-                          echo '<i class="fa fa-tags text-light-blue" style="cursor: pointer; margin-left: 15px;"  title="Cargar Pedido " data-toggle="modal" data-target="#modalpedido"></i>';
-                        }*/
-                        if (strpos($permission,'Pedidos') !== false) {
-                          echo '<i class="fa fa-truck text-light-blue" style="cursor: pointer; margin-left: 15px;"  title="Mostrar Perdido " data-toggle="modal" data-target="#modallista"></i>';
-                          echo '<i class="fa fa-cart-plus text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Agregar Nota de Pedido"></i>';
-                        }
-                        if(($a['estado'] == 'As' || $a['estado'] == 'P') && ($a['id_usuario_a'] == $usrId)){
-                        //if($a['estado'] == 'As' ){
-                          echo '<i  href="#"class="fa fa-fw fa fa-toggle-on text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Finalizar Orden" data-toggle="modal" data-target="#modalfinalizar"></i>';
-                        }
-                        //// GENERA INFORME DE SERVICIOS
-                        if (strpos($permission,'Del') !== false) {
-                          echo '<i class="fa fa-sticky-note-o text-light-blue" id="cargOrden" style="cursor: pointer; margin-left: 15px;" title="Informe de Servicios" ></i>';
-                        }
-      	                echo '</td>';
+      	                echo '<td><i class="fa fa-dot-circle-o text-light-blue opcion" style="cursor: pointer;title="Opciones"></i></td>';
                         echo '<td>'.$a['id_orden'].'</td>';
                         $fecha_inicio = ($a['fecha_inicio'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_inicio']), 'd-m-Y');
                         echo '<td>'.$fecha_inicio.'</td>';
@@ -543,31 +515,6 @@ $(".fa-thumb-tack").click(function (e) {
   });
 });
 
-// llena select usuario en modal Asignar OT - Ok
-// function traer_usuario(id_usuario){
-//   $("#usuario1").html("");
-//   $.ajax({
-//     data: {},
-//     dataType: 'json',
-//     type: 'POST',
-//     url: "Otrabajo/getusuario",
-//     success: function (data) {
-//       $('#usuario1').text("");
-//       for(var i=0; i < data.length ; i++) 
-//       {
-//         var selectAttr = '';
-//         if(data[i]['usrId'] == id_usuario) { var selectAttr = 'selected';}
-//         var nombre = data[i]['usrName']+' '+data[i]['usrLastName'];
-//         var opcion = "<option value='"+data[i]['usrId']+"' "+selectAttr+">" +nombre+ "</option>";
-//         $('#usuario1').append(opcion); 
-//       }
-//     },
-//     error : function (data){
-//       console.error('Error al traer usuarios en modal Asignar OT');
-//       console.table(data);
-//     },
-//   });
-// }
 
 // 
 function orden(){
@@ -1595,93 +1542,6 @@ $(".fa-cart-plus").click(function (e) {
   </div>
 </div><!-- /.modal fade -->
 <!-- / Modal -->
-
-
-
-<?php /*<!-- Modal Pedido-->
-<div class="modal" id="modalpedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"  id="myModalLabel"><span class="fa fa-tags text-light-blue"></span> Orden de Pedido</h4>
-       </div> <!-- /.modal-header  -->
-
-      <div class="modal-body" id="modalBodyArticle">
-        <div class="row" >
-
-            <div class="col-xs-12">
-              <label for="num1">Nro:</label>
-              <input type="text"  class="form-control" id="num1" name="num1" placeholder="Ingrese nro de orden de pedido..">
-              <!--align=\"right\" -->
-            </div>
-            <div class="col-xs-12">
-              <label for="fecha1">Fecha:</label>
-              <input type="date"  class="datepicker fecha1 form-control" id="fecha1"  name="fecha1" size= "36" value="<?php echo date_format(date_create(date("Y-m-d ")), 'd/m/Y') ; ?>"  />
-            </div>
-            <div class="col-xs-12">
-              <label for="fecha_entrega2">Fecha de Entrega:</label>
-              <input type="date"  class="form-control" id="fecha_entrega2" name="fecha_entrega2" />
-            </div>
-            <div class="col-xs-12">
-              <label for="proveedor">Proveedor:</label>
-              <select type="text"  id="proveedor" name="proveedor" class="form-control" value="" ></select>
-              <input type="hidden" id="id_proveedor" name="id_proveedor">
-            </div>
-            
-            <div class="col-xs-12">
-              <label for="">Detalle del pedido:</label>
-              <textarea  class="form-control input-md" rows="6" cols="500" id="descripcion2" name="descripcion2"
-              value="" placeholder="Ingrese detalle del pedido..."></textarea>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal" onclick="cerro()">Cancelar</button>     
-          <button type="button" class="btn btn-primary" id="btnSave" data-dismiss="modal" onclick="guardarpedido()" >Guardar</button>
-        </div>  <!-- /.modal footer -->
-      </div>  <!-- /.modal-body -->
-    </div> <!-- /.modal-content -->
-  </div>  <!-- /.modal-dialog modal-lg -->
-</div>  <!-- /.modal fade -->
-<!-- / Modal -->
-
-<!-- Modal mostrar pedido-->
-<div class="modal" id="modallista" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"  id="myModalLabel"><spanclass="fa fa-truck text-light-blue"></span> Lista de Orden de Pedido</h4>
-      </div> <!-- /.modal-header  -->
-
-      <div class="modal-body" id="modalBodyArticle">
-        <div class="row" >
-          <div class="col-xs-12">
-            <table class="table table-bordered table-hover" id="tabladetalle">
-              <thead>
-                <tr>
-                  <th></th>                  
-                  <th>Nro de orden</th>
-                  <th>Fecha</th>
-                  <th>Fecha de Entrega</th>
-                  <th>Proveedor</th>
-                  <th>Descripcion</th>
-                  <th>Estado</th>
-                </tr>
-              </thead>
-              <tbody>              
-              </tbody>
-            </table>    
-          </div>
-        </div>  
-      </div>  <!-- /.modal-body -->
-    </div> <!-- /.modal-content -->
-  </div>  <!-- /.modal-dialog modal-lg -->
-</div>  <!-- /.modal fade -->
-<!-- / Modal -->*/ ?>
 
 <!-- Modal FINALIZAR-->
 <div class="modal" id="modalfinalizar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

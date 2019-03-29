@@ -748,6 +748,7 @@ $("#fecha_progr_prevent_horas").datepicker({
           data: {
                   event_tipo: 1, // evento unico
                   id_sol : id_sol,
+                  id_back: id_back,
                   id_tarea : id_de_tar,
                   fecha_progr : progr_back,
                   hora_progr:hora_progr_back,

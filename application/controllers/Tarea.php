@@ -257,6 +257,10 @@ class Tarea extends CI_Controller {
 							$this->load->view('tareas/scripts/abm_forms');
 							$this->load->view('tareas/scripts/validacion_forms');							
 							break;
+					case 'Esperando cambio estado "a Ejecutar" 2':
+							$this->load->view('tareas/view_cambio_estado', $data);
+							$this->load->view('tareas/scripts/tarea_std');
+							break;
 					default:
 							$this->load->view('tareas/view_', $data);					
 							$this->load->view('tareas/scripts/tarea_std');	
