@@ -50,8 +50,18 @@ $(".sidebar .sidebar-menu a").click(function(event) {
         if( typeof permission === "undefined" ) {
             permission = '';
         }
+
+
+
+        //SI ES DISPOSITIVO MOVIL COLAPSAR MENU AL HACER CLICK
+        if($('body').data('device') == 'android' && !$('.sidebar').hasClass('sidebar-collapse'))
+           $('.sidebar-toggle').click();
+        
         cargarView(controller, action, permission);
     }
+
+  
+    
 
     console.log( "controlador: "+controller);
     console.log( "metodo: "+action);

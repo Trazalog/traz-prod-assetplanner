@@ -130,7 +130,7 @@
  
 
 //Tomo valor de la celda y carga detalle de la tarea
-  $('tr').click( function () {
+  $('tbody tr').click( function () {
     var id = $(this).attr('id');
     verTarea(id);
   });

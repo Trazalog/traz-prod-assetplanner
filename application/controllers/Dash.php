@@ -53,6 +53,14 @@ class dash extends CI_Controller {
 			$data['grpDash']    = $this->Groups->grpDash($userdata[0]['grpId']);
 			//$data['permission'] = $this->items['seguridad'];
 
+			//Detectar Dispositivo
+			$detect = new Mobile_Detect();
+			if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {				
+				$data['device'] = "android";
+			}else{
+				$data['device'] = "pc";				
+			}
+
 			$this->load->view('dash', $data);
 			$this->load->view('menu');
 			$this->load->view('content');

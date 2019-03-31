@@ -49,7 +49,7 @@
       <!-- Show this tab by adding `active` class -->
       <div class="tab-pane fade in active" id="one">
         <!-- sacar u ocultar -->
-        <input type="text" id="id_ordTrabajo" name="id_ordTrabajo" class="form-control"
+        <input type="text" id="id_ordTrabajo" name="id_ordTrabajo" class="form-control hidden"
             value="<?php echo $ot ?>" disabled>
         <form id="form_insumos">
             <table id="tbl_insumos" class="table table-bordered table-hover">
@@ -115,13 +115,6 @@
     locale: 'es',
   });
 
-  /*/va listado de OTs
-  $("#listadoOT").click(function (e) {
-    WaitingOpen();
-    $('#content').empty();
-    $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/listOrden/<?php echo $permission; ?>");
-    WaitingClose();
-  });*/
 
   //va a listado de nota de pedido
   $("#listado").click(function (e) {
@@ -150,19 +143,18 @@
         $('#error').hide();
 
         var tabla = $('#tbl_insumos tbody tr');
-        //console.table(tabla);
         var nombreIns = new Array();
         var idinsumos = new Array();
         var cantidades = new Array();
         id = '';
         cant = '';
 
+         //Procesar Formulario
         $.each(tabla, function (index) {
-          var check = $(this).find('input.check');
+          var check = $(this).find('input.check');  
           var cant = $(this).find('input.cant_insumos');
-       //   console.log(check);
-          // checked y lleno cant
-          if (check.prop('checked') && (cant != "")) {
+          
+          if (check.prop('checked') && (cant != "")) { // SI CAMPO CHEKEADO Y CANTIDAD COMPLETA
             id = check.attr('value');
             idinsumos.push(id);
             cant = check.parents("tr").find("input.cant_insumos").val();
@@ -176,16 +168,9 @@
           if (check.prop('checked') && (cant == "")) {
             hayError = true;
           }
-          // no checked y lleno cant
-          if (!(check.prop('checked')) && (cant != "")) {
-            hayError = true;
-          }
-          // no checked y vacio cant
-          if (!(check.prop('checked')) && (cant == "")) {
-            hayError = true;
-          }
+
         });
-        //FIXME: DESHARDCODEAR !!!!
+
         var idOT = $('#id_ordTrabajo').val();
 
         if (hayError == true) {
@@ -213,6 +198,7 @@
             WaitingClose();
             cargarPedidos();
             $('.modal').modal('hide');
+            $('input.check').attr('checked',false);
           },
           error: function (result) {
             WaitingClose();
