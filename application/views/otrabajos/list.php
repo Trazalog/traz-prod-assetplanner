@@ -1,4 +1,7 @@
 ﻿<input type="hidden" id="permission" value="<?php echo $permission ?>">
+<style>
+.datagrid table { border-collapse: collapse; text-align: left; width: 100%; } .datagrid {font: normal 12px/150% Arial, Helvetica, sans-serif; background: #fff; overflow: hidden; }.datagrid table td, .datagrid table th { padding: 13px 20px; }.datagrid table thead th {background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #3B8BBA), color-stop(1, #45A4DB) );background:-moz-linear-gradient( center top, #3B8BBA 5%, #45A4DB 100% );filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#3B8BBA', endColorstr='#45A4DB');background-color:#3B8BBA; color:#FAF2F8; font-size: 13px; font-weight: bold; border-left: 1px solid #A3A3A3; } .datagrid table thead th:first-child { border: none; }.datagrid table tbody td { color: #002538; font-size: 13px;border-bottom: 1px solid #E1EEF4;font-weight: normal; }.datagrid table tbody .alt td { background: #EBEBEB; color: #00273B; }.datagrid table tbody td:first-child { border-left: none; }.datagrid table tbody tr:last-child td { border-bottom: none; }
+</style>
 <section class="content">
   <div class="row">
     <div class="col-xs-12">
@@ -12,7 +15,9 @@
           ?>
         </div><!-- /.box-header -->
         <div class="box-body">
-          <table id="otrabajo" class="table table-bordered table-hover">
+      
+
+          <table id="otrabajo" class="table table-striped table-hover">
             <thead>
               <tr>
                 <th></th>
@@ -46,7 +51,9 @@
                         $causa       = $a['descripcion'];
                         $idsolicitud = $a['id_solicitud'];
                         echo '<tr id="'.$id.'" class="'.$id.' ot-row" data-id_equipo="'.$id_equipo.'" data-causa="'.$causa.'" data-idsolicitud="'.$idsolicitud.'">';
-      	                echo '<td><i class="fa fa-dot-circle-o text-light-blue opcion" style="cursor: pointer;title="Opciones"></i></td>';
+                        echo '<td>';
+                        echo $opciones;
+                        echo '</td>';
                         echo '<td>'.$a['id_orden'].'</td>';
                         $fecha_inicio = ($a['fecha_inicio'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_inicio']), 'd-m-Y');
                         echo '<td>'.$fecha_inicio.'</td>';
@@ -400,16 +407,7 @@ function guardareditar(){
     'id_proveedor'  : id_sucu,                
     'id_equipo'     : equipo                    
   };
-  // console.info("Parametros:");
-  // console.table(parametros);
-  // console.log("El id de orden es:");
-  // console.log(idp);
-  // console.log("El id de equipo es:");
-  // console.log(equipo);
-  // console.log(equipo1);
-  // console.log("El id de proveedor es:");
-  // console.log(proveedor);
-  //console.info($('#fecha_inicio1').val());
+
   var hayError = false; 
   $('#errorE').hide();
 
@@ -462,15 +460,15 @@ function guardareditar(){
 }
 
 // Lleva a la pantalla Asignar Tareas - Ok (no revisé la asignación!!!)
-$(".fa-check-square-o").click(function (e) { 
-  var id = $(this).parent('td').parent('tr').attr('id');
+function agregar_tareas(o) { 
+  var id = $(o).parent('td').parent('tr').attr('id');
   console.log("El id de OT es: "+id);
   iort = id;
   WaitingOpen();
   $('#content').empty();
   $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/cargartarea/<?php echo $permission; ?>/"+iort+"");
   WaitingClose();  
-});
+};
 
 // Trae los datos a mostrar en el modal Asignar OT - Ok
 $(".fa-thumb-tack").click(function (e) { 
@@ -550,61 +548,6 @@ function orden(){
 
 
 
-
-
-
-
-/*/ Refresca    
-function regresa(){
-  $('#content').empty(); //listOrden  
-  $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/listOrden/<?php echo $permission; ?>");
-  WaitingClose();
-}*/
-
-// llena select clientes en modal Asignar OT - 
-// function traer_clientes(id_cliente){
-//   $.ajax({
-//     type: 'POST',
-//     data: {},
-//     url: 'index.php/Otrabajo/traer_cli',
-//     success: function(data){
-//       console.info(data);
-//       /*var selectAttr = '';
-//       if(data[i]['cliId'] == id_cliente) { var selectAttr = 'selected'; console.log("sel")}
-//       var nombre = data[i]['cliLastName']+'. .'+datos['cliName'];
-//       var opcion = "<option value='"+data[i]['cliId']+"' "+selectAttr+">" +nombre+ "</option>";
-//       $('#cli').append(opcion); 
-
-//       /*var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-//       $('#cli').append(opcion); 
-//       for(var i=0; i < data.length ; i++) 
-//       {    
-//         var nombre = data[i]['cliLastName']+'. .'+datos['cliName'];
-//         var opcion = "<option value='"+data[i]['cliId']+"'>" +nombre+ "</option>" ; 
-//         $('#cli').append(opcion);          
-//       }*/
-//     },
-//     error: function(result){
-//       console.log(result);
-//     },
-//     dataType: 'json'
-//   });
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-$(document).ready(function(event) {
-
   //cargar pedido
   $(".fa-tags").click(function (e) { 
     var id_orden = $(this).parent('td').parent('tr').attr('id');
@@ -619,58 +562,16 @@ $(document).ready(function(event) {
   });
 
 
-  $(".fa-truck").click(function (e) { 
+    function mostrar_pedido(o) { 
     $("#modallista tbody tr").remove();
-    var idorde = $(this).parent('td').parent('tr').attr('id');
+    var idorde = $(o).parent('td').parent('tr').attr('id');
     console.log("ID de orden de trabajo para mostrar pedido es: "+idorde);  
-    /*$.ajax({
-      dataType: 'json',
-      data: { idorde:idorde },
-      type: 'POST',
-      url: 'index.php/Otrabajo/getmostrar',
-      success: function(data){
-        console.log("llego el detalle");
-        console.table(data);
-        for (var i = 0; i < data.length; i++) {
-          if (data[i]['estado']== 'P') {
-            var estado= '<small class="label pull-left bg-green">Pedido</small>';
-          }
-          else {
-            if (data[i]['estado']== 'C'){
-              var estado= '<small class="label pull-left bg-blue">Curso</small>';
-            }
-            else {
-              if (data[i]['estado']== 'E'){ 
-                var estado= '<small class="label pull-left bg-red">Entregado</small>';
-              }
-              else { 
-                var estado= '<small class="label pull-left bg-yellow">Terminado</small>';
-              }
-              $('#tabladetalle').DataTable().clear().draw();
-              $('#tabladetalle').DataTable().row.add( [
-                "",
-                data[i]['nro_trabajo'],
-                data[i]['fecha'],
-                data[i]['fecha_entrega'],
-                data[i]['provnombre'],
-                data[i]['descripcion'],
-                estado,
-              ] ).draw();
-            }
-          }
-        }
-      },
-      error: function(result){
-        console.error("Entro x el error de detalle");
-        console.table(result);
-      },
-    });*/
-    //iort = id;
+   
     WaitingOpen();
     $('#content').empty();
     $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/getNotasxOT/<?php echo $permission; ?>/"+idorde+"");
     WaitingClose(); 
-  });
+  };
 
   //guardar pedido
   $('#btnSave').click(function(){
@@ -977,44 +878,19 @@ $(document).ready(function(event) {
     idfin=idord;
   });
   
-  /*$('#vfecha').datepicker({
-      changeMonth: true,
-      changeYear: true
-  }); 
-
-  $("#fecha_entrega").datepicker({
-    dateFormat: 'dd/mm/yy',
-    firstDay: 1
-  }).datepicker("setDate", new Date());
-
-  $("#fecha1").datepicker({
-    dateFormat: 'dd/mm/yy',
-    firstDay: 1
-  }).datepicker("setDate", new Date()); 
-
-  $("#fecha_inicio1").datepicker({
-    dateFormat: 'dd/mm/yy',
-    firstDay: 1
-  }).datepicker("setDate", new Date()); 
-
-  $(".datepicker").datepicker({    
-      changeMonth: true,
-      changeYear: true
-  });*/
-
 
   // Genera Informe de Servicio - Hugo
-  $('.fa-sticky-note-o').click( function cargarVista(){
-      var id_sol = parseInt($(this).parent('td').parent('tr').attr('id'));
-      var id_eq  = parseInt($(this).parent('td').parent('tr').data('id_equipo')); 
-      var desc   = $(this).parent('td').parent('tr').data('causa');
-      var id_solicitud = parseInt($(this).parent('td').parent('tr').data('idsolicitud'));
+  function generar_informe_servicio(o){
+      var id_sol = parseInt($(o).parent('td').parent('tr').attr('id'));
+      var id_eq  = parseInt($(o).parent('td').parent('tr').data('id_equipo')); 
+      var desc   = $(o).parent('td').parent('tr').data('causa');
+      var id_solicitud = parseInt($(o).parent('td').parent('tr').data('idsolicitud'));
       desc = encodeURIComponent(desc);
       WaitingOpen();
       $('#content').empty();
       $("#content").load("<?php echo base_url(); ?>index.php/Ordenservicio/cargarOrden/<?php echo $permission; ?>/"+id_sol+"/"+id_eq+"/"+desc+"/"+id_solicitud+"/");
       WaitingClose();
-  });
+  };
 
   $('#otrabajo').DataTable({
     "aLengthMenu": [ 10, 25, 50, 100 ],
@@ -1041,8 +917,6 @@ $(document).ready(function(event) {
     } ],
     "order": [[1, "asc"]],
   });
-
-});
 
 
     
@@ -1266,15 +1140,15 @@ function guardarparcial(){
 }
 
 //Agrega nota de pedido desde la OT
-$(".fa-cart-plus").click(function (e) { 
-  var id = $(this).parent('td').parent('tr').attr('id');
+function nota_pedido(o) { 
+  var id = $(o).parent('td').parent('tr').attr('id');
   console.log("El id de OT es: "+id);
   iort = id;
   WaitingOpen();
   $('#content').empty();
   $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/agregarnota/<?php echo $permission; ?>/"+iort);
   WaitingClose();  
-});
+}
 
 
 </script>

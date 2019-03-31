@@ -1106,9 +1106,9 @@ function EjecutarOT(){
         <table class="table table-condensed table-responsive modal_prev" id="modal_prev">
             <thead>
               <tr>
-                <th style="width: 5%;">Nº de Orden</th>                
-                <th style="width: 15%;">Equipo</th>
-                <th>Tarea</th>
+                <th style="width: 10%;">Nº de Orden</th>                
+                <th style="width: 45%;">Equipo</th>
+                <th style="width: 45%;">Tarea</th>
               </tr>
             </thead>
             <tbody>
