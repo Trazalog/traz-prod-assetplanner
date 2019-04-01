@@ -81,11 +81,11 @@
                     </div>
 
                     <div class="col-xs-12 col-sm-6">
-                      <label for="suci">Sucursal<strong style="color: #dd4b39">*</strong></label>
+                      <label for="suci">Sucursal</label>
                       <select  id="suci" name="suci" class="form-control" />
                     </div>
                     <div class="col-xs-12 col-sm-6">
-                      <label for="prov">Proveedor<strong style="color: #dd4b39">*</strong></label>
+                      <label for="prov">Proveedor</label>
                       <select  id="prov" name="prov" class="form-control" />
                     </div>            
                   </div>
@@ -318,14 +318,14 @@
     {
       hayError = true;
     }
-    if(sucursal == '-1')
-    {
-      hayError = true;
-    }
-    if(proveedor == '-1')
-    {
-      hayError = true;
-    }
+    // if(sucursal == '-1')
+    // {
+    //   hayError = true;
+    // }
+    // if(proveedor == '-1')
+    // {
+    //   hayError = true;
+    // }
 
     if (hayError == true) {
       $('#error').fadeIn('slow');

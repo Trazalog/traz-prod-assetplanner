@@ -46,7 +46,7 @@ class Otrabajos extends CI_Model {
 		$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario');
 		$this->db->join('sisusers AS user1', 'user1.usrId = orden_trabajo.id_usuario_a');//usuario asignado?
 		$this->db->join('usuarioasempresa', 'usuarioasempresa.usrId = user1.usrId');
-		$this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
+		$this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal', 'left');
 		$this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
 		$this->db->where('equipos.estado !=','AN');
 		$this->db->where('usuarioasempresa.tipo', 1);//TODO: ACA VER COMO FUNCIONA !!!
@@ -133,41 +133,6 @@ class Otrabajos extends CI_Model {
 			}   
 	}
 
-	// function getHerramientas(){
-
-	// 	$userdata  = $this->session->userdata('user_data');
-	// 	$empresaId = $userdata[0]['id_empresa'];
-	// 	//$this->db->select('herrdescrip, herrmarca, herrcodigo, herrId');
-	// 	$this->db->select('codigo,
-	// 										descripcion,
-	// 										estado,
-	// 										marca,
-	// 										sector,
-	// 										ubicacion,
-	// 										fecha_ingreso,
-	// 										fecha_baja,
-	// 										fecha_garantia,
-	// 										grupo_desc');
-	// 	$this->db->from('equipos');
-	// 	$this->db->where('id_empresa', $empresaId);
-	// 	$this->db->where('estado !=', 'AN');
-	// 	$query = $this->db->get();
-	// 	$i     = 0;
-	// 	foreach ($query->result() as $row)
-	// 	{
-	// 			$herramientas[$i]['label'] = $row->codigo;
-	// 			$herramientas[$i]['value'] = $row->desc_equipo;
-	// 			// $herramientas[$i]['codherram'] = $row->herrcodigo;
-	// 			// $herramientas[$i]['herrId'] = $row->herrId;
-	// 			$i++;
-	// 	}
-	// 	return $herramientas;
-	// }
-
-
-
-
-
 	function getDescTareaSTD($id_tar){
 		$this->db->select('tareas.descripcion');
 		$this->db->from('tareas');
@@ -190,12 +155,6 @@ class Otrabajos extends CI_Model {
 			$query = $this->db->insert("orden_trabajo", $data);
 			return $query;
 	}
-	// guarda adjunto
-	function updateAdjunto($adjunto,$ultimoId){
-		$this->db->where('id_orden', $ultimoId);
-		$query = $this->db->update("orden_trabajo",$adjunto);
-		return $adjunto;
-	}
 	
 	//////////////		EDICION 	//////////////////
 		/**
@@ -217,8 +176,7 @@ class Otrabajos extends CI_Model {
 												orden_trabajo.id_usuario_a,
 												orden_trabajo.id_usuario,
 												orden_trabajo.id_sucursal,
-												sucursal.descripc,
-												sisusers.usrNick,
+												sucursal.descripc,											
 												abmproveedores.provnombre,
 												abmproveedores.provid,
 												equipos.id_equipo,
@@ -229,9 +187,9 @@ class Otrabajos extends CI_Model {
 												equipos.codigo');
 			$this->db->from('orden_trabajo');		
 			$this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
-			$this->db->join('sucursal', 'sucursal.id_sucursal=orden_trabajo.id_sucursal');
-			$this->db->join('sisusers', 'sisusers.usrId=orden_trabajo.id_usuario');
-			$this->db->join('abmproveedores', 'abmproveedores.provid=orden_trabajo.id_proveedor');
+			$this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal', 'left');
+			//$this->db->join('sisusers', 'sisusers.usrId=orden_trabajo.id_usuario');
+			$this->db->join('abmproveedores', 'abmproveedores.provid=orden_trabajo.id_proveedor', 'left');
 			$this->db->where('orden_trabajo.id_orden', $id);
 			$query = $this->db->get();
 			
@@ -294,6 +252,20 @@ class Otrabajos extends CI_Model {
 					return 0;
 				}
 		}	
+		// Trae adjuntos de OT por id
+		function getOTadjuntos($id){
+			$this->db->select('tbl_otadjuntos.*');
+			$this->db->from('tbl_otadjuntos');
+			$this->db->where('tbl_otadjuntos.otId', $id);
+			$query = $this->db->get();
+			if( $query->num_rows() > 0)
+			{
+				return $query->result_array();
+			}
+			else {
+				return 0;
+			}
+		}
 		/**
 		 * Guarda le edicion de una OT (actualiza OT).
 		 *
@@ -306,6 +278,18 @@ class Otrabajos extends CI_Model {
 				$query = $this->db->update("orden_trabajo",$data);
 				return $query;
 		}
+		// guarda adjunto en Edicion y en OT nueva
+		function setAdjunto($adjunto){	
+			$query = $this->db->insert("tbl_otadjuntos", $adjunto);
+			return $query;
+		}
+		// Elimina adjunto por id 
+		function eliminarAdjunto($id){
+			$this->db->where('id', $id);
+			$query = $this->db->delete('tbl_otadjuntos');
+			return $query;
+		}
+
 		// Delete herramientas 
 		function deleteHerramOT($id){        
 			$this->db->where('otId', $id);

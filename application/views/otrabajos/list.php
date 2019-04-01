@@ -248,7 +248,7 @@ function eliminarpred(){
 }
 
 
-///// EDICION DE ORDEN DE TRABAJO  ////
+///// EDICION DE ORDEN DE TRABAJO  
 
   //Trae tareas y permite busqueda en el input
   var dataTarea = function() {
@@ -292,8 +292,15 @@ function eliminarpred(){
   // Trae datos para llenar el modal Editar OT - Ok
   $(".fa-pencil").click(function(e) { 
 
+    $('#errorE').hide();
+    $('#btnEditar').prop("disabled", false); 
     var idord = $(this).parent('td').parent('tr').attr('id');
     idp = idord;
+    // agrega id de ot par guardar con adjuntos
+    $('#idAgregaAdjunto').val(idp);
+    //borra la tabla de adjuntos antes de cargar 
+    $('#tablaadjunto tbody tr').remove();
+    
     console.log("idp: "+idp);
     $.ajax({
       data: { idp:idp },
@@ -320,14 +327,15 @@ function eliminarpred(){
           'id_sucu'       : resp[0]['id_sucursal'],     //
           'sucursal'      : resp[0]['descripc'],        //
           'id_proveedor'  : resp[0]['provid'],          //
-          'nombreprov'    : resp[0]['provnombre'],      //
-          'adjunto'       :resp[0]['ot_adjunto']        //
+          'nombreprov'    : resp[0]['provnombre']//,      //
+          //'adjunto'       :resp[0]['ot_adjunto']        //
         }
         
         var herram = data['herramientas'];             
         var insum  = data['insumos']; 
-
-        completarEdit(datos, herram, insum);
+        var adjunto = data['adjunto'];
+        console.table(adjunto);
+        completarEdit(datos, herram, insum, adjunto);
       },
       error: function(result){
         console.error("Error al Editar OT. Ver console.table");
@@ -337,7 +345,7 @@ function eliminarpred(){
   });
 
   // completa los datos del modal Editar - Ok
-  function completarEdit(datos, herram, insum){  
+  function completarEdit(datos, herram, insum, adjunto){  
 
     $('#equipo_descrip').val(datos['equipo_descrip']);
     $('#equipo').val(datos['id_equipo']);
@@ -379,7 +387,7 @@ function eliminarpred(){
       $('#tablainsumo tbody').append(tr);
     }
 
-    recargaTablaAdjunto(datos['adjunto']);
+    recargaTablaAdjunto(adjunto);
 
     $(document).on("click",".elirow",function(){
       var parent = $(this).closest('tr');
@@ -387,104 +395,12 @@ function eliminarpred(){
     });  
   } 
 
-
-  //abrir modal eliminar adjunto
-$(document).on("click",".eliminaAdjunto",function(){
-  $('#modalEliminarAdjunto').modal('show');
-  var idprev = $('#id_Predictivo').val();
-  $('#idAdjunto').val(idprev);
-});
-//eliminar adjunto
-function eliminarAdjunto() {
-  $('#modalEliminarAdjunto').modal('hide');
-  var idprev = $('#idAdjunto').val();
-  $.ajax({
-    data: { idprev: idprev },
-    dataType: 'json',
-    type: 'POST',
-    url: 'index.php/Preventivo/eliminarAdjunto',
-  }) 
-  .done( function(data){     
-    //console.table(data); 
-    let prevAdjunto = '';
-    recargaTablaAdjunto(prevAdjunto);
-  })                
-  .error( function(result){                      
-    console.error(result);
-  }); 
-}
-
-//abrir modal agregar adjunto
-$(document).on("click",".agregaAdjunto",function(){
-  $('#btnAgregarEditar').text("Agregar");
-  $('#modalAgregarAdjunto .modal-title').html('<span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar');
-
-  $('#modalAgregarAdjunto').modal('show');
-  var idprev = $('#id_Predictivo').val();
-  $('#idAgregaAdjunto').val(idprev);
-});
-//abrir modal editar adjunto
-$(document).on("click",".editaAdjunto",function(){
-  $('#btnAgregarEditar').text("Editar");
-  $('#modalAgregarAdjunto .modal-title').html('<span class="fa fa-fw fa-pencil text-light-blue"></span> Editar');
-
-  $('#modalAgregarAdjunto').modal('show');
-  var idprev = $('#id_Predictivo').val();
-  $('#idAgregaAdjunto').val(idprev);
-});
-//eliminar adjunto
-$("#formAgregarAdjunto").submit(function (event){
-  $('#modalAgregarAdjunto').modal('hide');
-
-  event.preventDefault();  
-  if (document.getElementById("inputPDF").files.length == 0) {
-    $('#error').fadeIn('slow');
-  }
-  else{
-    $('#error').fadeOut('slow');
-    var formData = new FormData($("#formAgregarAdjunto")[0]);
-    //debugger
-    $.ajax({
-      cache:false,
-      contentType:false,
-      data:formData,
-      dataType:'json',
-      processData:false,
-      type:'POST',
-      url:'index.php/Otrabajo/agregarAdjunto',
-    })
-    .done( function(data){     
-      console.table(data['ot_adjunto']); 
-      recargaTablaAdjunto( data['ot_adjunto'] );
-    })                
-    .error( function(result){                      
-      console.error(result);
-    }); 
-  }
-});
-
-
-
-
-
-  function recargaTablaAdjunto(Adjunto) {
-    //console.info( "adjunto: "+Adjunto );
-    $('#adjunto').text(Adjunto);
-    $('#adjunto').attr('href', 'assets/filesOTrabajos/'+Adjunto);
-    if( Adjunto == null || Adjunto == '') {
-      var accion = '<i class="fa fa-plus-square agregaAdjunto text-light-blue" style="color:#f39c12; cursor:pointer; margin-right:10px" title="Agregar Adjunto"></i>';
-    } else {
-      var accion = '<i class="fa fa-times-circle eliminaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Eliminar Adjunto"></i>'+'<i class="fa fa-pencil editaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Editar Adjunto"></i>';
-    }
-    $('#accionAdjunto').html(accion);
-  }
-
   // Guarda Edicion de OT - Ok
   function guardareditar(){
-    
+    $('#errorE').hide(); 
     $('#btnEditar').prop("disabled", true);
     var hayError = false; 
-    $('#errorE').hide(); 
+    
     //var nro           = $('#nroedit').val();
     var fecha_inicio  = $('#fechaInicio').val();
     var fecha_entrega = $('#fechaEntrega').val();
@@ -537,34 +453,34 @@ $("#formAgregarAdjunto").submit(function (event){
     });     
 
     //validaciones
-      if($('#equipo').val() == '')
-      {
-        hayError = true;
-      }      
-      if ((tareacustom == '') && (id_tarea == '')){
-        hayError = true;
-      }
-      if($('#fechaInicio').val()=='' || $('#fechaEntrega').val()=='0000-00-00 00:00:00')
-      {
-        hayError = true;
-      }
-      if(fecha_entrega=='' || fecha_entrega=='0000-00-00 00:00:00')
-      {
-        hayError = true;
-      }
-      if($('#suci').val() == '-1')
-      {
-        hayError = true;
-      }
-      if($('#prov').val() == '-1')
-      {
-        hayError = true;
-      }
-      //console.error( hayError );
-      if(hayError == true){
-        $('#errorE').fadeIn('slow');     
-        return;
-      }
+      // if($('#equipo').val() == '')
+      // {
+      //   hayError = true;
+      // }      
+      // if ((tareacustom == '') && (id_tarea == '')){
+      //   hayError = true;
+      // }
+      // if($('#fechaInicio').val()=='' || $('#fechaEntrega').val()=='0000-00-00 00:00:00')
+      // {
+      //   hayError = true;
+      // }
+      // if(fecha_entrega=='' || fecha_entrega=='0000-00-00 00:00:00')
+      // {
+      //   hayError = true;
+      // }
+      // if($('#suci').val() == '-1')
+      // {
+      //   hayError = true;
+      // }
+      // if($('#prov').val() == '-1')
+      // {
+      //   hayError = true;
+      // }
+      // //console.error( hayError );
+      // if(hayError == true){
+      //   $('#errorE').fadeIn('slow');     
+      //   return;
+      // }
 
     $.ajax({
       type: 'POST',
@@ -587,6 +503,118 @@ $("#formAgregarAdjunto").submit(function (event){
     });
     
   }
+///// EDICION DE ORDEN DE TRABAJO  
+
+
+/// EDICION Y AGREGADO DE ADJUNTOS
+  //abrir modal eliminar adjunto
+  $(document).on("click",".eliminaAdjunto",function(){
+    $('#modalEliminarAdjunto').modal('show');  
+    var id_adjunto = $(this).parents("tr").attr('id');
+    $('#idAdjunto').val(id_adjunto);
+    console.log(id_adjunto + 'adjunto');
+  });
+  //eliminar adjunto
+  function eliminarAdjunto() {
+    $('#modalEliminarAdjunto').modal('hide');
+    var id_adjunto = $('#idAdjunto').val();
+    $.ajax({
+      data: { id_adjunto: id_adjunto },
+      dataType: 'json',
+      type: 'POST',
+      url: 'index.php/Otrabajo/eliminarAdjunto',
+    }) 
+    .done( function(data){     
+      //console.table(data); 
+      let prevAdjunto = '';
+      borrarRegistro(id_adjunto);
+      //recargaTablaAdjunto(prevAdjunto);
+    })                
+    .error( function(result){                      
+      console.error(result);
+    }); 
+  }
+  // //abrir modal agregar adjunto
+  $(document).on("click",".agregaAdjunto",function(){
+    $('#btnAgregarEditar').text("Agregar");
+    $('#modalAgregarAdjunto .modal-title').html('<span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar');
+
+    $('#modalAgregarAdjunto').modal('show');
+    // var idprev = $('#id_Predictivo').val();
+    // $('#idAgregaAdjunto').val(idprev);
+  });
+  //abrir modal editar adjunto
+  $(document).on("click",".editaAdjunto",function(){
+    $('#btnAgregarEditar').text("Editar");
+    $('#modalAgregarAdjunto .modal-title').html('<span class="fa fa-fw fa-pencil text-light-blue"></span> Editar');
+
+    $('#modalAgregarAdjunto').modal('show');
+    var idprev = $('#id_Predictivo').val();
+    $('#idAgregaAdjunto').val(idprev);
+  });
+  //eliminar adjunto
+  $("#formAgregarAdjunto").submit(function (event){
+    $('#modalAgregarAdjunto').modal('hide');
+
+    event.preventDefault();  
+    if (document.getElementById("inputPDF").files.length == 0) {
+      $('#error').fadeIn('slow');
+    }
+    else{
+      $('#error').fadeOut('slow');
+      var formData = new FormData($("#formAgregarAdjunto")[0]);
+      //debugger
+      $.ajax({
+        cache:false,
+        contentType:false,
+        data:formData,
+        dataType:'json',
+        processData:false,
+        type:'POST',
+        url:'index.php/Otrabajo/agregarAdjunto',
+      })
+      .done( function(data){  
+        nuevoAdjunto(data);
+      })                
+      .error( function(result){                      
+        console.error(result);
+      }); 
+    }
+  });
+  // recarga tablas de adjuntos al iniciar la edicion
+  function recargaTablaAdjunto(Adjunto) {
+    
+    for (var i = 0;  i < Adjunto.length; i++) {       
+
+      var tr = "<tr id='"+Adjunto[i]['id']+"'>"+
+      "<td ><i class='fa fa-times-circle eliminaAdjunto text-light-blue' style='cursor:pointer; margin-right:10px' title='Eliminar Adjunto'></i></td>'"+
+      "<td><a id='' href='"+Adjunto[i]['ot_adjunto']+"' target='_blank'>Archivo adjunto</a></td>"+      
+      "</tr>";
+      $('#tablaadjunto tbody').append(tr);
+    }  
+
+  }
+  // agrega nuevo registro en tabla despues de guardarlo
+  function nuevoAdjunto(data){
+    var tr = "<tr id='"+data['id']+"'>"+
+      "<td ><i class='fa fa-times-circle eliminaAdjunto text-light-blue' style='cursor:pointer; margin-right:10px' title='Eliminar Adjunto'></i></td>'"+
+      "<td><a id='' href='"+data['ot_adjunto']+"' target='_blank'>Archivo adjunto</a></td>"+      
+      "</tr>";
+      $('#tablaadjunto tbody').append(tr);
+  }
+  // borra registro en tabla si fue eliminado con exito
+  function borrarRegistro(id_adjunto){
+    var tabla = $('#tablaadjunto tbody tr');
+    $.each(tabla, function(){
+      var idTrow = $(this).attr('id');
+      if (idTrow == id_adjunto) {
+        $(this).remove();
+      }
+    });
+  }
+///  / EDICION Y AGREGADO DE ADJUNTOS
+
+  
 
   ////// HERRAMIENTAS //////
 
@@ -1377,15 +1405,15 @@ $(document).ready(function(event) {
 
   // Genera Informe de Servicio - Hugo
   $('.fa-sticky-note-o').click( function cargarVista(){
-      var id_sol = parseInt($(this).parent('td').parent('tr').attr('id'));
-      var id_eq  = parseInt($(this).parent('td').parent('tr').data('id_equipo')); 
-      var desc   = $(this).parent('td').parent('tr').data('causa');
-      var id_solicitud = parseInt($(this).parent('td').parent('tr').data('idsolicitud'));
-      desc = encodeURIComponent(desc);
-      WaitingOpen();
-      $('#content').empty();
-      $("#content").load("<?php echo base_url(); ?>index.php/Ordenservicio/cargarOrden/<?php echo $permission; ?>/"+id_sol+"/"+id_eq+"/"+desc+"/"+id_solicitud+"/");
-      WaitingClose();
+    var id_sol = parseInt($(this).parent('td').parent('tr').attr('id'));
+    var id_eq  = parseInt($(this).parent('td').parent('tr').data('id_equipo')); 
+    var desc   = $(this).parent('td').parent('tr').data('causa');
+    var id_solicitud = parseInt($(this).parent('td').parent('tr').data('idsolicitud'));
+    desc = encodeURIComponent(desc);
+    WaitingOpen();
+    $('#content').empty();
+    $("#content").load("<?php echo base_url(); ?>index.php/Ordenservicio/cargarOrden/<?php echo $permission; ?>/"+id_sol+"/"+id_eq+"/"+desc+"/"+id_solicitud+"/");
+    WaitingClose();
   });
 
 });
@@ -2260,11 +2288,11 @@ function guardarparcial(){
                 </div>
 
                 <div class="col-xs-12 col-sm-6">
-                  <label for="suci">Sucursal<strong style="color: #dd4b39">*</strong></label>
+                  <label for="suci">Sucursal</label>
                   <select  id="suci" name="suci" class="form-control" />
                 </div>
                 <div class="col-xs-12 col-sm-6">
-                  <label for="prov">Proveedor<strong style="color: #dd4b39">*</strong></label>
+                  <label for="prov">Proveedor</label>
                   <select  id="prov" name="prov" class="form-control" />
                 </div>            
               </div>
@@ -2382,8 +2410,16 @@ function guardarparcial(){
                   </div> <!- - /.tab-pane #adj - -> -->
 
 
+
+
+
+
                   <div role="tabpanel" class="tab-pane" id="TabAdjunto">
                     <div class="row" >
+
+                    <div class="col-xs-12"><i class="fa fa-plus-square agregaAdjunto text-light-blue" style="color:#f39c12; cursor:pointer; margin-right:10px" title="Agregar Adjunto"></i> Agregar Archivo</div>
+                    
+                    
                       <div class="col-xs-12">
                         <table class="table table-bordered" id="tablaadjunto"> 
                           <thead>
@@ -2393,14 +2429,14 @@ function guardarparcial(){
                             </tr>
                           </thead>
                           <tbody>
-                            <tr>
+                            <!-- <tr>
                               <td id="accionAdjunto">
-                                  <!-- -->
+                                  <!- - - ->
                               </td>
                               <td>
-                                <a id="adjunto" href="" target="_blank"></a>
+                                <!- - <a id="adjunto" href="" target="_blank"></a> - ->
                               </td>
-                            </tr>
+                            </tr> -->
                           </tbody>
                         </table>
                       </div>
