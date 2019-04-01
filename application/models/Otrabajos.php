@@ -165,8 +165,7 @@ class Otrabajos extends CI_Model {
 		function getpencil($id) // Ok
 		{
 			$this->db->select('orden_trabajo.id_orden,
-												orden_trabajo.id_tarea,
-												orden_trabajo.ot_adjunto,
+												orden_trabajo.id_tarea,												
 												orden_trabajo.nro,
 												orden_trabajo.fecha_inicio,
 												orden_trabajo.fecha_entrega,
