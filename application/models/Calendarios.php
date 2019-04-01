@@ -419,10 +419,11 @@ class Calendarios extends CI_Model {
 		}
 
 		// guarda el adjunto que viene de la Tarea Original(Backlog, prevent y predict)
-		function insertAdjunto($idOT,$adjunto){
-			$this->db->where('orden_trabajo.id_orden', $idOT);
-			$result = $this->db->update('orden_trabajo', array('ot_adjunto'=>$adjunto));
-			return $result;
+		function insertAdjunto($idOT,$adjunto){		
+			$data = array('otId'=>$idOT,
+										'ot_adjunto'=>$adjunto);
+			$query = $this->db->insert("tbl_otadjuntos",$data);
+			return $query;
 		}
 
 

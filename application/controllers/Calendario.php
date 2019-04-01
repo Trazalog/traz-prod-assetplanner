@@ -167,6 +167,7 @@ class Calendario extends CI_Controller {
 				if ($event_tipo == '1'){
 					
 					$idOT = $this->Calendarios->guardar_agregar($datos2);
+					$this->setHerramInsPorTarea($idOT,$tipo,$id_solicitud);
 					if($idOT){
 						$this->Calendarios->setEstadoSServicio($id_solicitud);
 					}
@@ -177,9 +178,9 @@ class Calendario extends CI_Controller {
 					$fecha_limite = strtotime ( '+'.$cant_meses.' month' , strtotime ( $fec_programacion ) );
 					$fecha_limite = date ( 'Y-m-d H:i:s' , $fecha_limite ); /// "2018-06-16 00:00:00"					
 					//busco la frecuencia de la tarea
-	    		$diasFrecuencia = $this->getPeriodTarea($tipo,$id_solicitud);	//bien	    		
-					//$this->armar_batch($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2);
-					$this->armar_batch($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo,$id_solicitud);
+					$diasFrecuencia = $this->getPeriodTarea($tipo,$id_solicitud);	
+					// guarda las OT que corrrespondan de acuerdo a la cantidad que entren en $cantidad_meses
+					$this->setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo,$id_solicitud);
 
 					// si es preventivo ACTUALIZA NUEVAMENTE LA FECHA BASE_ OK!
 					if($tipo == '3'){	    		
@@ -187,10 +188,7 @@ class Calendario extends CI_Controller {
 	    			$this->Calendarios->actualizarFechaBasePreventivos($fecha_limite, $id_solicitud);
 	    		}
 				}	     	
-				
-				//TODO: GUARDAR HERRAMIENTAS, INSUMOS Y ADJUNTOS  TRAER CON ID Y TIPO DE TAREA(BACK, PREV O PREDI)
-				// FIXME: SACRA HARDODEO DE TIPOOOOO
-				//$tipo = 4;	
+					
 				// guarda los Insumos y herramientas de Backlog, predict y prenvent segun tipo
 				$this->setHerramInsPorTarea($idOT,$tipo,$id_solicitud);
 
@@ -260,8 +258,8 @@ class Calendario extends CI_Controller {
 		}
 		return $duracion;
 	}
-
-	function armar_batch($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo, $id_solicitud){	
+	// guarda las OT que correspondan de acuerdo a la fecuencia y $cantidad_meses
+	function>setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo, $id_solicitud){	
 		$data[] = $datos2;
 		while ($fecha_limite >= $fec_programacion  ) {
 		// a la fecha de programacion le sumo la frecuencia en dias	   	
@@ -272,10 +270,8 @@ class Calendario extends CI_Controller {
 			// guardo el componete en el array batch
 			$data[] = $datos2;
 			// actualizo la fecha de programacion
-			$fec_programacion = $nuev_fecha;
-			//TODO: INSERTAR LAS OT DE A UNA DEVOLVIENDO EL ID DE INSERCION PARA GUARDAR EN TABLA OT HERRRAMIENTA Y TAB OT INSUMOS  
+			$fec_programacion = $nuev_fecha;			 
 			$idOT = $this->Calendarios->guardar_agregar($data);
-			dump();
 			$this->setHerramInsPorTarea($idOT, $tipo, $id_solicitud);
 		} 
 		return;
@@ -286,7 +282,7 @@ class Calendario extends CI_Controller {
 
 
 	// arma conjunto de OT para su insercion en la BD
-	// function armar_batch($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2){	
+	// function>setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2){	
 	// 	$data[] = $datos2;
 	// 	while ($fecha_limite >= $fec_programacion  ) {
 	// 	// a la fecha de programacion le sumo la frecuencia en dias	   	
@@ -303,16 +299,12 @@ class Calendario extends CI_Controller {
 
 	// 	$this->Calendarios->setOTbatch($data); 		
 	// }
-
+	
 	// Guarda herramientas e insumos que vienen de Backlog, Prevent y Predictivo
 	function setHerramInsPorTarea($idOT, $tipo, $id_solicitud){
-		// $tipo = 3; 
-		// $id_solicitud = 1;
-
+		
 		switch ($tipo) {
 			case '5':		// Predictivo
-				dump($tipo, 'predictivo: ');
-				dump($id_solicitud, 'id solicitud: ');
 				$herra = $this->Calendarios->getPredictivoHerramientas($id_solicitud);
 				$insumos = $this->Calendarios->getPredictivoInsumos($id_solicitud);
 				$adjunto = $this->Calendarios->getAdjunto($id_solicitud,$tipo);	
@@ -326,12 +318,12 @@ class Calendario extends CI_Controller {
 				}
 				// guarda el adjunto en la taba Orden trabajos (url)
 				if ( !empty($adjunto) ) {
-					$result['respAdjunto'] = $this->Calendarios->insertAdjunto($idOT,$adjunto);
+					$url = 'assets/filespredictivos/';
+					$file = $url.$adjunto;
+					$result['respAdjunto'] = $this->Calendarios->insertAdjunto($idOT,$file);
 				}
 				break;
-			case '4':		//Backlog
-				dump($tipo, 'backlog: ');
-				dump($id_solicitud, 'id solicitud: ');
+			case '4':		//Backlog			
 				$herra = $this->Calendarios->getBacklogHerramientas($id_solicitud);
 				$insumos = $this->Calendarios->getBacklogInsumos($id_solicitud);
 				$adjunto = $this->Calendarios->getAdjunto($id_solicitud,$tipo);				
@@ -342,12 +334,12 @@ class Calendario extends CI_Controller {
 					$result['respInsumo'] = $this->Calendarios->insertOTInsum($idOT,$insumos);
 				}
 				if ( !empty($adjunto) ) {
-					$result['respAdjunto'] = $this->Calendarios->insertAdjunto($idOT,$adjunto);
+					$url = 'assets/filesbacklog/';
+					$file = $url.$adjunto;
+					$result['respAdjunto'] = $this->Calendarios->insertAdjunto($idOT,$file);
 				}
 				break;
-			default:		// Preventivos (tipo 3)
-				dump($tipo, 'preventivo: ');
-				dump($id_solicitud, 'id solicitud: ');
+			default:		// Preventivos (tipo 3)				
 				$herra = $this->Calendarios->getPreventivoHerramientas($id_solicitud);
 				$insumos = $this->Calendarios->getPreventivoInsumos($id_solicitud);
 				$adjunto = $this->Calendarios->getAdjunto($id_solicitud,$tipo);	
@@ -358,7 +350,9 @@ class Calendario extends CI_Controller {
 					$result['respInsumo'] = $this->Calendarios->insertOTInsum($idOT,$insumos);
 				}
 				if ( !empty($adjunto) ) {
-					$result['respAdjunto'] = $this->Calendarios->insertAdjunto($idOT,$adjunto);
+					$url = 'assets/filespreventivos/';
+					$file = $url.$adjunto;
+					$result['respAdjunto'] = $this->Calendarios->insertAdjunto($idOT,$file);
 				}	
 				break;
 		}

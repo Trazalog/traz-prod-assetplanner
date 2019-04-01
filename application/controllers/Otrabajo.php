@@ -107,13 +107,6 @@ class Otrabajo extends CI_Controller {
 		else echo "nada";
 	}
 
-	// public function getHerramienta() //Ok
-  //   {
-  //     $response = $this->Otrabajos->getHerramientas($this->input->post());
-  //     echo json_encode($response);
-  //   }
-
-
 	/**
 	 * Agrega nueva OTs.
 	 *
@@ -224,12 +217,13 @@ class Otrabajo extends CI_Controller {
 				];
 				$this->load->library("upload",$config);
 				if ($this->upload->do_upload('inputPDF')) {
-					
+					$urlfile = "assets/filesOTrabajos/";
 					$data = array("upload_data" => $this->upload->data());
 					$extens = $data['upload_data']['file_ext'];//guardo extesnsion de archivo
-					$nomcodif = $nomcodif.$extens;
-					$adjunto = array('ot_adjunto' => $nomcodif);
-					$result['respNomImagen'] = $this->Otrabajos->updateAdjunto($adjunto,$ultimoId);
+					$nomcodif = $urlfile.$nomcodif.$extens;
+					$adjunto = array('ot_adjunto' => $nomcodif,
+														'otId' => $ultimoId);
+					$result['respNomImagen'] = $this->Otrabajos->setAdjunto($adjunto);
 				}else{
 					$result['respImagen'] = false;
 				}			
@@ -288,6 +282,13 @@ class Otrabajo extends CI_Controller {
 			}
 			else{ $arre['insumos']=0;}
 
+			// trae adjuntos
+			$adjuntos = $this->Otrabajos->getOTadjuntos($id);
+			if($adjuntos){
+					$arre['adjunto']=$adjuntos;
+			}
+			else{ $arre['adjunto']=0;}
+
 			echo json_encode($arre);
 		}
 		else {
@@ -305,6 +306,8 @@ class Otrabajo extends CI_Controller {
 		$id = $this->input->post('idAgregaAdjunto');
 
 		$nomcodif = $this->codifNombre($id, $empId); // codificacion de nomb  		
+		$urlfile = "assets/filesOTrabajos/";
+		
 		$config   = [
 			"upload_path"   => "./assets/filesOTrabajos",
 			'allowed_types' => "png|jpg|pdf|xlsx",
@@ -316,18 +319,31 @@ class Otrabajo extends CI_Controller {
 		{
 			$data     = array("upload_data" => $this->upload->data());
 			$extens   = $data['upload_data']['file_ext'];//guardo extension de archivo
-			$nomcodif = $nomcodif.$extens;
-			$adjunto  = array('ot_adjunto' => $nomcodif);
-			$response = $this->Otrabajos->updateAdjunto($adjunto, $id);
+			$nomcodif = $urlfile.$nomcodif.$extens;
+			$adjunto  = array('ot_adjunto' => $nomcodif,
+												'otId' => $id);
+			$response = $this->Otrabajos->setAdjunto($adjunto);
+			//$response = $this->Otrabajos->updateAdjunto($adjunto, $id);
+			if($response){
+				$idAdj = $this->db->insert_id();
+				$result['ot_adjunto'] = $nomcodif;
+				$result['id'] = $idAdj;
+			}
 		}
 		else
 		{
-			$response = false;
+			$result = false;
 		}
 
-		echo json_encode($response);
+		echo json_encode($result);
 	}
 
+	public function eliminarAdjunto(){
+		
+		$id = $this->input->post('id_adjunto');
+		$response = $this->Otrabajos->eliminarAdjunto($id);		
+		echo json_encode($response);
+	}
 
 	/**
   	 * Actualiza la OT.
@@ -427,15 +443,15 @@ class Otrabajo extends CI_Controller {
      */
     public function getasigna() // Ok
     {
-		$id     = $_GET['id_orden'];
-		$result = $this->Otrabajos->getasigna($id);
-		if($result)
-		{
-			$arre['datos'] = $result;
-			echo json_encode($arre);
+			$id     = $_GET['id_orden'];
+			$result = $this->Otrabajos->getasigna($id);
+			if($result)
+			{
+				$arre['datos'] = $result;
+				echo json_encode($arre);
+			}
+			else echo "nada";
 		}
-		else echo "nada";
-	}
 
 	/**
 	 * Trae usuarios por id de empresa logueada.
@@ -604,16 +620,6 @@ class Otrabajo extends CI_Controller {
 		else echo "nada";
 	}
 
-
-
-	
-
-	/*public function getusuario (){
-      $response = $this->Ordenservicios->getusuario();
-      echo json_encode($response);
-    }*/
-
-	
 //nuevo
 
 
