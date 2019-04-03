@@ -297,6 +297,7 @@
  
   $("#formOT").submit(function (event){   
     event.preventDefault(); 
+    WaitingOpen('Guardando Nueva Orden de Trabajo');
     var equipo        = $('#equipo').val();
     var tarea         = $('#id_tarea').val();
     var tareacustom  = $('#tareacustom').val();    
@@ -343,9 +344,11 @@
         contentType:false,
         processData:false,
         success:function(respuesta){
+          WaitingClose(),
           recargaLista();
         },
         error: function(result){  
+          WaitingClose();
           alert('Ocurrio un error en el guardado...');
           console.error("Error al agregar nueva OT. Ver console.table");
           console.table(result);

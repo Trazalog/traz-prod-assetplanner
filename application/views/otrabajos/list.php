@@ -397,6 +397,7 @@ function eliminarpred(){
 
   // Guarda Edicion de OT - Ok
   function guardareditar(){
+    WaitingOpen('Guardando Edición...');
     $('#errorE').hide(); 
     $('#btnEditar').prop("disabled", true);
     var hayError = false; 
@@ -492,10 +493,12 @@ function eliminarpred(){
               cantInsum: cantInsum },
       url: 'index.php/Otrabajo/guardar_editar',
       success: function(data){
+        WaitingClose();
         $('#modaleditar').modal('hide');
         regresa1();
       },
       error: function(result){
+        WaitingClose();
         $('#btnEditar').prop("disabled", false);
         console.error("Error al guardar en modal Editar Ot");
         console.table(result);
@@ -555,7 +558,7 @@ function eliminarpred(){
   //eliminar adjunto
   $("#formAgregarAdjunto").submit(function (event){
     $('#modalAgregarAdjunto').modal('hide');
-
+    WaitingOpen('Guardando Adjunto...');
     event.preventDefault();  
     if (document.getElementById("inputPDF").files.length == 0) {
       $('#error').fadeIn('slow');
@@ -575,8 +578,10 @@ function eliminarpred(){
       })
       .done( function(data){  
         nuevoAdjunto(data);
+        WaitingClose();
       })                
-      .error( function(result){                      
+      .error( function(result){ 
+        WaitingClose();                     
         console.error(result);
       }); 
     }
