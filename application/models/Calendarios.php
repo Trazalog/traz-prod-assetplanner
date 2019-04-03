@@ -400,20 +400,24 @@ class Calendarios extends CI_Model {
 								$this->db->from('predictivo');
 								$this->db->where('predictivo.predId',$id_solicitud);
 								$query = $this->db->get();
-								$result = $query->row('pred_adjunto');
+								$row = $query->row();
+								$result =  $row->pred_adjunto; 
 								break;
 				case '4':		//Backlog
 								$this->db->select('tbl_back.back_adjunto');
 								$this->db->from('tbl_back');
 								$this->db->where('tbl_back.backId',$id_solicitud);
 								$query = $this->db->get();
-								$result = $query->row('back_adjunto');
+								$row = $query->row();
+								$result =  $row->back_adjunto; 
+								break;		
 				default:		//Preventivo
 								$this->db->select('preventivo.prev_adjunto');
 								$this->db->from('preventivo');
 								$this->db->where('preventivo.prevId',$id_solicitud);
 								$query = $this->db->get();
-								$result = $query->row('prev_adjunto');
+								$row = $query->row();
+								$result =  $row->prev_adjunto; 								
 			}
 			return $result;
 		}

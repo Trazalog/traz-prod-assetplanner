@@ -259,7 +259,7 @@ class Calendario extends CI_Controller {
 		return $duracion;
 	}
 	// guarda las OT que correspondan de acuerdo a la fecuencia y $cantidad_meses
-	function>setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo, $id_solicitud){	
+	function setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo, $id_solicitud){	
 		$data[] = $datos2;
 		while ($fecha_limite >= $fec_programacion  ) {
 		// a la fecha de programacion le sumo la frecuencia en dias	   	
@@ -274,31 +274,8 @@ class Calendario extends CI_Controller {
 			$idOT = $this->Calendarios->guardar_agregar($data);
 			$this->setHerramInsPorTarea($idOT, $tipo, $id_solicitud);
 		} 
-		return;
-		//$this->Calendarios->setOTbatch($data); 		
+		return;	
 	}
-
-
-
-
-	// arma conjunto de OT para su insercion en la BD
-	// function>setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2){	
-	// 	$data[] = $datos2;
-	// 	while ($fecha_limite >= $fec_programacion  ) {
-	// 	// a la fecha de programacion le sumo la frecuencia en dias	   	
-	// 		$nuev_fecha = strtotime ( '+'.$diasFrecuencia.'day' , strtotime ( $fec_programacion ) ) ;
-	// 		$nuev_fecha = date ( 'Y-m-d H:i:s' , $nuev_fecha );
-	// 		// guardo la fecha nueva en el array para nuevva OT
-	// 		$datos2['fecha_program'] = $nuev_fecha;
-	// 		// guardo el componete en el array batch
-	// 		$data[] = $datos2;
-	// 		// actualizo la fecha de programacion
-	// 		$fec_programacion = $nuev_fecha;
-	// 		//TODO: INSERTAR LAS OT DE A UNA DEVOLVIENDO EL ID DE INSERCION PARA GUARDAR EN TABLA OT HERRRAMIENTA Y TAB OT INSUMOS  
-	// 	} 
-
-	// 	$this->Calendarios->setOTbatch($data); 		
-	// }
 	
 	// Guarda herramientas e insumos que vienen de Backlog, Prevent y Predictivo
 	function setHerramInsPorTarea($idOT, $tipo, $id_solicitud){
@@ -327,6 +304,7 @@ class Calendario extends CI_Controller {
 				$herra = $this->Calendarios->getBacklogHerramientas($id_solicitud);
 				$insumos = $this->Calendarios->getBacklogInsumos($id_solicitud);
 				$adjunto = $this->Calendarios->getAdjunto($id_solicitud,$tipo);				
+				
 				if (!empty($herra)) {		
 					$result['respHerram'] = $this->Calendarios->insertOTHerram($idOT, $herra);
 				}
