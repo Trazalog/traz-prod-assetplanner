@@ -43,7 +43,7 @@
 												<input type="text" class="form-control hidden" id="asignado" value="<?php echo $TareaBPM["assigned_id"] ?>"
 												>
 												<form>
-													<div class="panel panel-default">
+													<div class="panel panel-default info">
 														<!-- <h4 class="panel-heading">INFORMACION:</h4> -->
 														<div class="panel-heading">INFORMACION:</div>
 
@@ -74,7 +74,7 @@
 															<div class="col-sm-6 col-md-6 ">
 																<label for="ot ">Orden de Trabajo:</label>
 																<input type="text " class="form-control " id="ot"
-																 placeholder=" " value="<?php echo $datos[0][ 'id_orden'] ?>" disabled>
+																 placeholder=" " value="" disabled>
 															</div>
 														</div><br>
 
@@ -137,7 +137,7 @@
 					
 					<div class="modal-footer">
 						<button type="button" id="cerrar" class="btn btn-primary" onclick="cargarVista()">Cerrar</button>
-						<button type="button" class="btn btn-success" id="hecho" onclick="redirect_calendario()">Ir a Calentadio</button>
+						<button type="button" class="btn btn-success" id="hecho" onclick="redirect_calendario()">Ir a Calendario</button>
 					</div> <!-- /.modal footer -->
 
 				</div><!-- /.box body -->
@@ -162,6 +162,9 @@
 	   $('#genericForm').data('bootstrapValidator').resetField($(this),false);
 	   $('#genericForm').data('bootstrapValidator').validateField($(this));
   });
+
+	$('.info #ot').val($('.info-ot #ot').val());
+	$('.info #duracion_std').val($('.info-ot #duracion').val());
 </script>
 
 

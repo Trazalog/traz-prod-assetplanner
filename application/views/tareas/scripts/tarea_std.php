@@ -26,8 +26,11 @@
 			$("#pedidoInsumos").show();
 			$('#decisionSolicitud').show();
 			$('#verOrden').show();
+			$('.panel_form').show();
+			$('.oculto').show();
     }
     function deshabilitar(){
+			$('.oculto').hide();
 			// habilito btn tomar
 			$("#btontomar").show();
 			// habilito btn y textarea  

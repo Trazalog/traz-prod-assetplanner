@@ -183,7 +183,7 @@ class Backlog extends CI_Controller {
 
 /* Funciones para BPM */
 	public function editarNuevo(){ 
-
+		
 		$userdata = $this->session->userdata('user_data');
     $empId = $userdata[0]['id_empresa']; 
     $idce = $this->input->post('idce');
@@ -197,7 +197,7 @@ class Backlog extends CI_Controller {
 		
 		$datos = array(
 				'id_equipo'     => $eq,
-				'id_tarea' => $ta,						
+				'id_tarea' 		=> $ta,						
 				'fecha'         => $fe,
 				'estado'        => 'C',
 				'back_duracion' => $hs,

@@ -19,5 +19,7 @@
 			"path": "application\\views"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "traz-prod-assetplanner"
+	}
 }

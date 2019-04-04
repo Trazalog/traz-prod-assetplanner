@@ -326,6 +326,7 @@ class Otrabajo extends CI_Controller {
 		$task_id = $this->input->post('task_id');
 		$user_id = $this->input->post('usuario');
 
+
 		//CERRAR TAREA EN BONITA  
 		$this->load->library('BPM',0);
 
