@@ -51,6 +51,12 @@ class Ordenservicio extends CI_Controller {
       echo json_encode($response);
     }
 
+    public function getRRHHOrdenTrabajo(){
+      $response['recursos'] = $this->Ordenservicios->getRRHHOrdenTrabajo($this->input->post('idOT'));
+      $response['responsable'] = $this->Ordenservicios->getResponsableOT($this->input->post('idOT'));
+      echo json_encode($response);
+    }
+
     public function setOrdenServ()
     {
       //$data[''] = $this->input->post('');

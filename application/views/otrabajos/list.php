@@ -37,6 +37,7 @@
                   $usrId    = $userdata[0]['usrId']; 
                   foreach($list as $a)
                   {
+                    
                     $gr = $a['grpId'];
                     //echo "grupo: ".$gr;
                     if ($gr=='1') { 
@@ -2673,10 +2674,12 @@ function guardarparcial(){
             <label for="descripcion">Descripcion:</label>
             <textarea  class="form-control" rows="6" cols="500" id="descripcion" name="descripcion" value="" disabled ></textarea>
           </div>
-          <div class="col-xs-12">Fecha de entrega:
+          <div class="col-xs-12">
+            <label for="fecha_entrega">Fecha de entrega:</label>
             <input type="text" id="fecha_entrega" name="fecha_entrega" class="form-control datepicker" / >
           </div>
-          <div  class="col-xs-12">Usuario:
+          <div  class="col-xs-12">
+            <label for="usuario1">Responsable:</label>
             <select id="usuario1" name="usuario1" class="form-control"></select>
             <input type="hidden" id="id_usuario" name="id_usuario">
           </div>
