@@ -78,7 +78,7 @@ if(!function_exists('cargarCabecera')){
 									<div class="col-xs-12 col-sm-4">
 										<div class="form-group">
 												<label style="margin-top: 7px;">Marca: </label>
-												<input type="text" id="marca" class="form-control" value="'.$result['marca'].'" disabled/>
+												<input type="text" id="" class="form-control" value="'.$result['marca'].'" disabled/>
 										</div>						
 									</div>
 									<div class="col-xs-12 col-sm-4">
@@ -89,20 +89,20 @@ if(!function_exists('cargarCabecera')){
 									</div>
 									<div class="col-xs-12 col-sm-4">
 										<label style="margin-top: 7px;">Ubicación: </label>
-										<input type="text" id="domicilio" class="form-control"  value="'.$result['ubicacion'].'" disabled/>
+										<input type="text" class="form-control"  value="'.$result['ubicacion'].'" disabled/>
 									</div>
 									<div class="clearfix"></div>
 									<div class="col-xs-12 col-sm-4">
 										<label style="margin-top: 7px;">Descripción: </label>
-										<input type="text" id="domicilio" class="form-control"  value="'.$result['descripcionEquipo'].'" disabled/>
+										<input type="text" class="form-control"  value="'.$result['descripcionEquipo'].'" disabled/>
 									</div>									
 									<div class="col-xs-12 col-sm-4">
 										<label style="margin-top: 7px;">Fecha Ingreso: </label>
-										<input type="text" id="domicilio" class="form-control"  value="'.$result['fecha_ingreso'].'" disabled/>
+										<input type="text" class="form-control"  value="'.$result['fecha_ingreso'].'" disabled/>
 									</div>
 									<div class="col-xs-12 col-sm-4">
 										<label style="margin-top: 7px;">Estado: </label>
-										<input type="text" id="domicilio" class="form-control"  value="'.$result['estado'].'" disabled/>
+										<input type="text" class="form-control"  value="'.$result['estado'].'" disabled/>
 									</div>
 
 									
@@ -134,19 +134,19 @@ if(!function_exists('cargarCabecera')){
 							<div class="col-xs-12 col-sm-4">
 								<div class="form-group">
 										<label style="margin-top: 7px;">Solicitante: </label>
-										<input type="text" id="marca" class="form-control" value="'.$resultSS['solicitante'].'" disabled/>
+										<input type="text"  class="form-control" value="'.$resultSS['solicitante'].'" disabled/>
 								</div>						
 							</div>
 							<div class="col-xs-12 col-sm-4">
 								<div class="form-group">
 										<label style="margin-top: 7px;">Fecha: </label>
-										<input type="text" id="marca" class="form-control" value="'.$resultSS['f_solicitado'].'" disabled/>
+										<input type="text"  class="form-control" value="'.$resultSS['f_solicitado'].'" disabled/>
 								</div>						
 							</div>
 							<div class="col-xs-12 col-sm-4">
 								<div class="form-group">
 										<label style="margin-top: 7px;">Causa: </label>
-										<input type="text" id="marca" class="form-control" value="'.$resultSS['causa'].'" disabled/>
+										<input type="text"  class="form-control" value="'.$resultSS['causa'].'" disabled/>
 								</div>						
 							</div>
 							<div class="col-xs-12 col-sm-4">
@@ -161,7 +161,7 @@ if(!function_exists('cargarCabecera')){
 							</div>
 							<div class="col-xs-12 col-sm-4">
 								<label style="margin-top: 7px;">Sector: </label>
-								<input type="text" id="domicilio" class="form-control"  value="'.$resultSS['descripcionSector'].'" disabled/>
+								<input type="text" class="form-control"  value="'.$resultSS['descripcionSector'].'" disabled/>
 							</div>
 							
 							
@@ -180,7 +180,7 @@ if(!function_exists('cargarCabecera')){
 			// Orden Trabajo
 			if($id_OT != null){
 				echo '        
-				<div id="collapseDivCli" class="box box-default collapsed-box box-solid">
+				<div id="collapseDivCli" class="box box-default collapsed-box box-solid info-ot">
 					<div class="box-header with-border">
 						<h3 id="tituloInfo" class="box-title">Orden de Trabajo: '.$resultOT['id_orden'].' / Mas Detalles</h3>
 						<div class="box-tools pull-right">
@@ -196,14 +196,14 @@ if(!function_exists('cargarCabecera')){
 							<div class="col-xs-12 col-sm-4">
 								<div class="form-group">
 										<label style="margin-top: 7px;">Nº Orden Trabajo: </label>
-										<input type="text" id="marca" class="form-control" value="'.$resultOT['id_orden'].'" disabled/>
+										<input type="text" id="ot" class="form-control" value="'.$resultOT['id_orden'].'" disabled/>
 								</div>						
 							</div>
 								
 							<div class="col-xs-12 col-sm-4">
 								<div class="form-group">
 										<label style="margin-top: 7px;">Descripción: </label>
-										<input type="text" id="marca" class="form-control" value="'.$resultOT['otDescrip'].'" disabled/>
+										<input type="text"  class="form-control" value="'.$resultOT['otDescrip'].'" disabled/>
 								</div>						
 							</div>
 							<div class="col-xs-12 col-sm-4">
@@ -214,17 +214,17 @@ if(!function_exists('cargarCabecera')){
 							</div>
 							<div class="col-xs-12 col-sm-4">
 								<label style="margin-top: 7px;">Duración: </label>
-								<input type="text" id="domicilio" class="form-control"  value="'.$resultOT['duracion'].'" disabled/>
+								<input type="text" id="duracion" class="form-control"  value="'.$resultOT['duracion'].'" disabled/>
 							</div>
 							
 							<div class="col-xs-12 col-sm-4">
 								<label style="margin-top: 7px;">Tarea: </label>
-								<input type="text" id="domicilio" class="form-control"  value="'.$resultOT['tareaDescrip'].'" disabled/>
+								<input type="text" class="form-control"  value="'.$resultOT['tareaDescrip'].'" disabled/>
 							</div>
 							
 							<div class="col-xs-12 col-sm-4">
 								<label style="margin-top: 7px;">Estado: </label>
-								<input type="text" id="domicilio" class="form-control"  value="'.$resultOT['estado'].'" disabled/>
+								<input type="text" class="form-control"  value="'.$resultOT['estado'].'" disabled/>
 							</div>
 							
 							

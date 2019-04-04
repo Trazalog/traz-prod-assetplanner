@@ -20,27 +20,10 @@
 
 </div>    
 
-<!-- <button id="boton">boton</button> -->    
 
 </section><!-- /.content -->
 
 <script>
-
-// $('#boton').click(function(){
-  //     $.ajax({
-  //         url: 'index.php/Calendario/getTablas',
-  //         type: "POST",
-  //         data: {mes:1},
-  //         success: function(data) {              
-
-  //                 $('#tablas').html(data);   
-  //         },
-  //         error:function(argument) {
-  //           alert('fuiste');
-  //         }
-  //     });
-  // });
-
 
 function getTablas(month_, year_) 
 {
@@ -63,10 +46,7 @@ function getTablas(month_, year_)
 
 var mes = "";
 
-//$(function () {    
-//  CALENDARIO
-/* initialize the external events
------------------------------------------------------------------*/
+
   function ini_events(ele) {
     ele.each(function () {
       // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
@@ -118,6 +98,8 @@ var mes = "";
           dataType: 'json',
           type: 'POST',
           success: function(doc) {
+            console.log(doc);
+            
             var events = [];
             getTablas(month_, year_);
             $(doc).each(function() {
@@ -130,16 +112,11 @@ var mes = "";
               var minutos = parseInt(from.getMinutes());
               var duracion = parseInt($(this).attr('duracion'));
               var totalminutos = minutos + duracion;
-              // console.log('fecha OT: ');
-              // console.log(from);
-              // console.log('Duracion: ');
-              // console.log(duracion);
+
               var hasta = new Date(from);
               hasta = hasta.setMinutes(totalminutos);
               var to = new Date(hasta);
-              // console.log('fecha con duracion: ');
-              // console.log(to);                            
-              // asigna colores en funcion del tipo de orden
+
               var  Color = '';
               switch ($(this).attr('tipo')) {
                 case '1':
@@ -189,11 +166,10 @@ var mes = "";
 
     eventClick: function(event) {
       WaitingOpen();
-      //// console.log('eventossss');
-      // console.log(evento);
+
       console.log('Titulo:');
       console.log(event.title);
-      //setTimeout("$('#modalPrevent').modal('show')",0);
+
       $('#title').remove();
       $('#codigo_equipo').remove();
       $('#numero').remove();
@@ -483,19 +459,7 @@ $("#fecha_progr_prevent_horas").datepicker({
   // Genera Orden de Trabajo y la guarda automaticamente
   $('.fa-stop-circle').click( function(){
 
-    // Mes segun cambia el calendario se va corriendo
-      //var date_ = new Date($("#calendar").fullCalendar('getDate'));
-      //var month_ = date_.getMonth() + 1;
-      //alert(month_);
 
-    //tarea = 1; // id_tarea (por defecto 1)
-    //  nro no va.
-    //  fecha (fecha de hoy)
-    //  fecha_progr_pred  lo toma del modal
-    // fecha_solicit = $(this).parents("tr").find("td").eq(5).html();
-    // desc_causa = $(this).parents("tr").find("td").eq(4).html();
-    // id_sol = $(this).parents("tr").find("td").eq(2).html();
-    // id_eq = $(this).parents("tr").find("td").eq(1).html();
   });
 
   function fill_Correc(dato){
@@ -709,7 +673,7 @@ $("#fecha_progr_prevent_horas").datepicker({
   var id_equi = "";
 
   function fill_Backlog(dato){    
-     
+      console.log('Rellenar Backlog...');
       $.ajax({
           type: 'POST', //parametros:parametros
           data: {id:dato},
@@ -717,7 +681,7 @@ $("#fecha_progr_prevent_horas").datepicker({
           success: function(data){
 
                    console.log(data);
-                   id_de_tar = data[0]['tarea_descrip'];
+                   id_de_tar = data[0]['id_tarea'];
                    fec_sol_back = data[0]['fecha'];
                    id_back = data[0]['backId'];
                    id_equi = data[0]['id_equipo'];
@@ -742,7 +706,7 @@ $("#fecha_progr_prevent_horas").datepicker({
   function setOtBacklog() {
     var progr_back = $('#fecha_progr_back').val();
     var hora_progr_back = $('#hora_progr_back').val();   
-
+   
     $.ajax({
           type: 'POST', //parametros:parametros
           data: {

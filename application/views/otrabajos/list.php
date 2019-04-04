@@ -88,7 +88,7 @@ $('.ot-row').on('click',function(){
   sol_id = $(this).data('idsolicitud');
 });
 // cargo plugin DateTimePicker
-$('#fechaEntrega, #fecha_inicio1, #fecha_entrega1').datetimepicker({
+$('#fechaEntrega, #fecha_inicio1, #fecha_inicio, #fecha_entrega1, #fecha_entregaa').datetimepicker({
   format: 'YYYY-MM-DD H:mm:ss', //format: 'YYYY-MM-DD', // es igaul a campo date
   locale: 'es',
 });
@@ -471,10 +471,10 @@ function agregar_tareas(o) {
 };
 
 // Trae los datos a mostrar en el modal Asignar OT - Ok
-$(".fa-thumb-tack").click(function (e) { 
-  // $('#modalAsig').modal('show');
-  var id_orden = $(this).parent('td').parent('tr').attr('id');  
-  console.log("El id de OT: "+id_orden);
+function asigarOT_usuario(o) { 
+
+  var id_orden = $(o).closest('tr').attr('id');  
+
   $.ajax({
     type: 'GET',
     data: { id_orden: id_orden},
@@ -511,7 +511,7 @@ $(".fa-thumb-tack").click(function (e) {
     },
     dataType: 'json'
   });
-});
+};
 
 
 // 
@@ -530,7 +530,7 @@ function orden(){
       type: 'POST',
       data: { id_orden:id_orden, fecha_entrega:fecha_entrega, usuario:usuario, sol_id:sol_id,case_id:case_id, task_id: task_id},
       url: 'index.php/Otrabajo/guardar', 
-      dataType: 'json',
+    
 
       success: function(data){
         WaitingClose();    
@@ -1151,6 +1151,7 @@ function nota_pedido(o) {
 }
 
 
+
 </script>
 
 <!-- Modal agregar -->
@@ -1392,7 +1393,7 @@ function nota_pedido(o) {
             <textarea  class="form-control" rows="6" cols="500" id="descripcion" name="descripcion" value="" disabled ></textarea>
           </div>
           <div class="col-xs-12">Fecha de entrega:
-            <input type="text" id="fecha_entrega" name="fecha_entrega" class="form-control datepicker" / >
+            <input type="text" id="fecha_entregaa" name="fecha_entrega" class="form-control" />
           </div>
           <div  class="col-xs-12">Usuario:
             <select id="usuario1" name="usuario1" class="form-control">
