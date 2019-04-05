@@ -461,7 +461,7 @@ function guardareditar(){
 
 // Lleva a la pantalla Asignar Tareas - Ok (no revisé la asignación!!!)
 function agregar_tareas(o) { 
-  var id = $(o).parent('td').parent('tr').attr('id');
+  var id = $(o).closest('tr').attr('id');
   console.log("El id de OT es: "+id);
   iort = id;
   WaitingOpen();
