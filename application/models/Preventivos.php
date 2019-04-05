@@ -179,27 +179,27 @@ class Preventivos extends CI_Model
         }
 	}
 
-    function getHerramientasB()
-    {
-        $userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa']; 
-        $this->db->select('herramientas.herrId AS value, 
-            herramientas.herrcodigo AS codigo,
-            herramientas.herrmarca AS marca,
-            herramientas.herrdescrip AS label');
-        $this->db->from('herramientas');      
-        $this->db->where('herramientas.id_empresa', $empId);
-        //$this->db->where('herramientas.estado !=', 'AN');
-        $this->db->order_by('label', 'ASC');
-        $query = $this->db->get();
+	function getHerramientasB()
+	{
+		$userdata = $this->session->userdata('user_data');
+		$empId = $userdata[0]['id_empresa']; 
+		$this->db->select('herramientas.herrId AS value, 
+				herramientas.herrcodigo AS codigo,
+				herramientas.herrmarca AS marca,
+				herramientas.herrdescrip AS label');
+		$this->db->from('herramientas');      
+		$this->db->where('herramientas.id_empresa', $empId);
+		//$this->db->where('herramientas.estado !=', 'AN');
+		$this->db->order_by('label', 'ASC');
+		$query = $this->db->get();
 
-        if($query->num_rows()>0){
-            return $query->result_array();
-        }
-        else{
-            return false;
-        }
-    }
+		if($query->num_rows()>0){
+				return $query->result_array();
+		}
+		else{
+				return false;
+		}
+	}
 
 	//Trae insumos (articles) por empresa logueada
 	function getinsumo(){

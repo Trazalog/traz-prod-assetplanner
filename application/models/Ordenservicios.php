@@ -46,7 +46,7 @@ class Ordenservicios extends CI_Model {
         }      
     }
 
-	function getEquipos($data = null) // Ok
+		function getEquipos($data = null) // Ok
     {
         $id = $data['id_equipo'];       
         $this->db->select('
@@ -153,6 +153,43 @@ class Ordenservicios extends CI_Model {
         }
         return $equipos; 
     }
+
+		function getRRHHOrdenTrabajo($idOT){
+			//dump($idOT, 'id de OT en modell');	
+			$this->db->select('tbl_listarea.id_usuario,
+												sisusers.usrName,
+												sisusers.usrLastName');			
+			$this->db->from('tbl_listarea');
+			$this->db->join('sisusers', 'sisusers.usrId = tbl_listarea.id_usuario');
+			$this->db->where('tbl_listarea.id_orden', $idOT);
+			$query = $this->db->get();
+			$i     = 0;
+			foreach ($query->result() as $row)
+			{   
+					$equipos[$i]['label'] = $row->usrLastName.", ". $row->usrName ;
+					$equipos[$i]['value'] = $row->id_usuario;
+					$i++;
+			}
+			return $equipos; 
+		}
+		function getResponsableOT($idOT){
+			$this->db->select('sisusers.usrId,
+												sisusers.usrName,
+												sisusers.usrLastName');			
+			$this->db->from('orden_trabajo');
+			$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
+			$this->db->where('orden_trabajo.id_orden', $idOT);
+			$query = $this->db->get();
+			$i     = 0;
+						
+			foreach ($query->result() as $row)
+			{   
+					$equipos['label'] = $row->usrLastName.", ". $row->usrName ;
+					$equipos['value'] = $row->usrId;
+					$i++;
+			}
+			return $equipos;
+		}
 
     function setOrdenServicios($data = null)
     {

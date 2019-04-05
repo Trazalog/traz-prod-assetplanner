@@ -179,7 +179,7 @@ class Backlogs extends CI_Model
 		}
 	}
 	// Trae datos de equipo del backlog para editar
-	function traerequiposprev($ide,$id){
+	function traerequiposBack($ide,$id){
 
 	    $this->db->select('tbl_back.backId, 
 	    				   tbl_back.id_equipo,
