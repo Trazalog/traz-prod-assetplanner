@@ -47,15 +47,15 @@ class Equipos extends CI_Model {
                 if( ($valor['estadoEquipo'] == 'AC') || ($valor['estadoEquipo'] == 'RE'))
                 {
                     $idEquipo = $valor['id_equipo'];
-                    $this->db->select('estado');
+                    $this->db->select('*');
                     $this->db->from('historial_lecturas');
-                    $this->db->where('id_equipo', $idEquipo);
-                    $this->db->order_by('id_equipo', 'DESC');
+                    $this->db->where('id_equipo', $valor['id_equipo']);
+                    $this->db->order_by('fecha', 'DESC');
                     $this->db->limit(1);
                     
                     $query2 = $this->db->get();
                     $estado = $query2->result_array();
-                    $valor['estado'] = $estado[0]['estado'];
+                    @$valor['estado'] = $estado[0]['estado'];
                 }
                 else {
                     $valor['estado'] = $valor['estadoEquipo'];   
@@ -447,9 +447,10 @@ class Equipos extends CI_Model {
         $query = $this->db->update("equipos",$estado);
         return $query;
     }
-    // Cambia estado del equipo a inhabilitado desde la lista
-    function update_cambio($data, $idequipo){
 
+    // Cambia estado del equipo a inhabilitado desde la lista
+    function update_cambio($data, $idequipo)
+    {
 		$userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];
 
@@ -460,10 +461,10 @@ class Equipos extends CI_Model {
         return $query;
     }
 
-    function update_estado($data, $idequipo){
-
+    function update_estado($data, $idequipo)
+    {
         $this->db->where('id_equipo', $idequipo);
-        $query = $this->db->update("equipos",$data);
+        $query = $this->db->update("equipos", $data);
         return $query;
     }
 
@@ -1318,10 +1319,6 @@ class Equipos extends CI_Model {
                     equipos.adjunto,
                     unidad_industrial.id_unidad,
                     unidad_industrial.descripcion AS deun,
-                    grupo.id_grupo,
-                    grupo.descripcion AS degr,
-                    admcustomers.cliId,
-                    admcustomers.cliRazonSocial,
                     area.id_area,
                     area.descripcion AS dear,
                     empresas.id_empresa,
@@ -1336,19 +1333,16 @@ class Equipos extends CI_Model {
                     marcasequipos.marcadescrip'
                 );
         $this->db->from('equipos');
-        $this->db->join('grupo', 'grupo.id_grupo=equipos.id_grupo');
         $this->db->join('sector', 'sector.id_sector=equipos.id_sector');
         $this->db->join('empresas', 'empresas.id_empresa=equipos.id_empresa');
         $this->db->join('unidad_industrial', 'unidad_industrial.id_unidad=equipos.id_unidad');
         $this->db->join('criticidad', 'criticidad.id_criti=equipos.id_criticidad');
-        $this->db->join('admcustomers', 'admcustomers.cliId=equipos.id_customer');
         $this->db->join('area', 'area.id_area=equipos.id_area');
         $this->db->join('proceso', 'proceso.id_proceso=equipos.id_proceso');
         $this->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');
         $this->db->where('equipos.id_empresa', $empId);
         $this->db->where('equipos.estado !=', 'AN');
         /*// esta validacion hay que hacerla al traer grupos sectores y equipos
-        $this->db->where('grupo.estado !=', 'AN'); 
         $this->db->where('sector.estado !=', 'AN');
         $this->db->where('marcasequipos.estado !=', 'AN');*/
         $this->db->where('equipos.id_equipo', $idEquipo);
@@ -1356,7 +1350,44 @@ class Equipos extends CI_Model {
         $query = $this->db->get();
         if ($query->num_rows()!=0)
         {
-            return $query->result_array();
+            $datosEquipo = $query->result_array();
+
+            //traer cliente
+            $this->db->select('admcustomers.cliId, admcustomers.cliRazonSocial');
+            $this->db->from('equipos');
+            $this->db->join('admcustomers', 'admcustomers.cliId=equipos.id_customer');
+            $this->db->where('equipos.id_empresa', $empId);
+            $this->db->where('equipos.id_equipo', $idEquipo);
+            $query = $this->db->get();
+            if ($query->num_rows()!=0)
+            {
+                $datosEquipoCustomer = $query->result_array();
+                $datosEquipo[0]["cliId"]          = $datosEquipoCustomer[0]["cliId"];
+                $datosEquipo[0]["cliRazonSocial"] = $datosEquipoCustomer[0]["cliRazonSocial"];
+            } else {
+                $datosEquipo[0]["cliId"]          = null;
+                $datosEquipo[0]["cliRazonSocial"] = null;
+            }
+
+
+            //traer grupo
+            $this->db->select('grupo.id_grupo, grupo.descripcion AS degr');
+            $this->db->from('equipos');
+            $this->db->join('grupo', 'grupo.id_grupo=equipos.id_grupo');
+            $this->db->where('equipos.id_empresa', $empId);
+            $this->db->where('equipos.id_equipo', $idEquipo);
+            $query = $this->db->get();
+            if ($query->num_rows()!=0)
+            {
+                $datosEquipoCustomer = $query->result_array();
+                $datosEquipo[0]["id_grupo"] = $datosEquipoCustomer[0]["id_grupo"];
+                $datosEquipo[0]["degr"]     = $datosEquipoCustomer[0]["degr"];
+            } else {
+                $datosEquipo[0]["id_grupo"] = null;
+                $datosEquipo[0]["degr"]     = null;
+            }
+
+            return $datosEquipo;
         }
         else
         {
