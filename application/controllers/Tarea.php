@@ -377,7 +377,6 @@ class Tarea extends CI_Controller {
 			public function Obtener_Formulario(){
 				
 				$infoId = $this->input->post('infoId');
-				//$id_form	= $this->input->post('form_id');
 				$data['form'] = $this->Tareas->get_form($infoId);				
 				$response['html'] = $this->load->view('tareas/viewFormSubtareas', $data, true);
 				echo json_encode($response);

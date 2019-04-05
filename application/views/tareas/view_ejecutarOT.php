@@ -291,15 +291,15 @@ echo "<input type='text' class='hidden' id='case' value='" . $TareaBPM['caseId']
     /* Formulario de subareas */
 
     // levanta cada formulario por id 
-    $(document).on("click", ".fa-paperclip", function(e) {
+    $(".fa-paperclip").on('click', function(e) {
         e.preventDefault();
         e.stopImmediatePropagation();
         infoId = $(this).attr("data-infoId");
+    
+        if(infoId == null || infoId == 0) {alert('Error InfoId =null');return;}
         WaitingOpen();
         $.ajax({
-            data: {
-                infoId: infoId
-            },
+            data: {infoId: infoId},
             dataType: 'json',
             type: 'POST',
             url: 'index.php/Tarea/Obtener_Formulario',

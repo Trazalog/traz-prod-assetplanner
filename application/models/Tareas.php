@@ -396,7 +396,6 @@ class Tareas extends CI_Model {
 		}
 		// Trae form para dibujar pantalla (agregar where de id de form)
 		function get_form($infoId){
-
 			$userdata = $this->session->userdata('user_data');
 			$empId = $userdata[0]['id_empresa']; 
 			$sql = "SELECT foco.FOCO_ID AS idValor,
