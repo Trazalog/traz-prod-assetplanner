@@ -59,7 +59,7 @@
                     }
                   }
                   if (strpos($permission,'Lectura') !== false) {
-                    if( $a['estado'] != 'IN') {
+                    if( $a['estado'] == 'AC' OR $a['estado'] == 'RE' ) {
                       echo '<i class="fa fa-hourglass-half text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Mantenimiento Autónomo" data-toggle="modal" data-target="#modalectura"></i>';
                     }
                     echo '<i class="fa fa-history text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Historial de Lecturas" data-toggle="modal" data-target="#modalhistlect"></i>';
@@ -579,17 +579,17 @@ $(".fa-hourglass-half").click(function(e){
   var $estado = $(this).parents("tr").find("td").eq(7).find("small").html();
   console.log("estado: "+$estado);
 
-  if($estado == "Alta") {
+  /*if($estado == "Alta") {
     $.ajax({
       async: true,
-      data: {idequipo: idequipo},
+      data: {idequipo: $id_equipo},
       dataType: 'json',
       type: 'POST',
       url: 'index.php/Equipo/estado_alta', 
       success: function(data){
         console.table(data[0]['estado']);
         if (data[0]['estado'] == 'AL') {
-          var id_equipo   = idequipo;
+          var id_equipo   = $id_equipo;
           var lectura     = data[0]['ultima_lectura'];
           var fecha       = data[0]['fecha_ultimalectura'];
           var observacion = 'Lectura al cargar equipo';
@@ -613,7 +613,7 @@ $(".fa-hourglass-half").click(function(e){
         console.log(result);
       }
     });
-  } 
+  } */
 
   $.ajax({
     data: { idequipo: $id_equipo},
