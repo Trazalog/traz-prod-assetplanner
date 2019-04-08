@@ -96,7 +96,7 @@
 		});
 	}
 
-	function GuardarFormulario(validarOn){
+	function GuardarFormularioFAIL(validarOn){
 		alert("Guardando Formulario");
 		// console.log(form_actual_id + ' id form');
 		// console.log(form_actual_data.attr("data-formid") + ' id de form en bd');
@@ -161,6 +161,72 @@
 				WaitingClose();
 				alert(error.msj);
 				console.log(error);
+			}
+		});
+	}
+
+	function GuardarFormulario(validarOn){
+
+	//	alert('Guardar Formulario...');
+		var imgs = $('input.archivo');
+		var formData = new FormData($("#"+form_actual_id)[0]);
+		var id_listarea = 0;
+		formData.append('id_listarea', id_listarea);
+		formData.append('idformulario', form_actual_id);
+
+		/** subidad y resubida de imagenes **/
+		// Tomo los inputs auxiliares cargados
+		var aux = $('input.auxiliar');
+		var auxArray = [];
+		aux.each(function () {
+			auxArray.push($(this).val());
+		});
+
+
+		for (var i = 0; i < imgs.length; i++) {
+			var inpValor = $(imgs[i]).val();
+			var idValor = $(imgs[i]).attr('name');
+			// si tiene algun valor (antes de subir img)
+			if (inpValor != "") {
+				//al subir primera img
+				formData.append(idValor, inpValor);
+			} else {
+				//formData.delete(idValor);
+			}
+		}
+		/* text tipo check */
+		var check = $('input.check');
+		var checkArray = [];		
+		for (var i = 0; i < check.length; i++) {
+			var idCheckValor = $(check[i]).attr('name');
+			if ($(check[i]).is(':checked')) {
+				chekValor = 'tilde';
+			} else {
+				chekValor = 'notilde';
+			}
+			formData.append(idCheckValor, chekValor);
+		}	
+		for (var pair of formData.entries()) {
+			console.log(pair[0]+ ', ' + pair[1]); 
+		}
+		/* Ajax de Grabado en BD */
+		$.ajax({
+			url: 'index.php/Tarea/guardarForm',
+			type: 'POST',
+			data: formData,
+			cache: false,
+			contentType: false,
+			processData: false,
+			success: function (respuesta) {
+				console.log(form_actual_id+"...OK");
+				WaitingClose();
+				if(existFunction("after_save_form"))after_save_form();
+				ValidarObligatorios(validarOn);
+			},
+			error: function(respuesta){
+				
+				WaitingClose();
+				alert('Error Form');
 			}
 		});
 	}

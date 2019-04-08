@@ -157,7 +157,7 @@ class Tarea extends CI_Controller {
 
 			public function ejecutarOT(){
 				$idTarBonita = $this->input->post('idTarBonita');
-				dump($idTarBonita, 'id bonita');
+			//	dump($idTarBonita, 'id bonita');
 				// $id_listarea = $this->input->post('id_listarea');
 				// trae la cabecera
 				$parametros = $this->Bonitas->conexiones();
@@ -411,6 +411,8 @@ class Tarea extends CI_Controller {
 
 				//  array con id de dato->valor(dato es FOCO_ID)
 				$datos = $this->input->post();
+
+				unset($datos['artId']);
 
 				$userdata = $this->session->userdata('user_data');
 				$usrId = $userdata[0]['usrId'];     // guarda usuario logueado
