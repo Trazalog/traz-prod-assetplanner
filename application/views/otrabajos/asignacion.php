@@ -148,7 +148,6 @@
     if ($('#tarea_adicional').val() == '') return;
     var aux = '<td>' + $('#tarea_adicional').val() + '</td><td><i class="fa fa-close" onclick="eliminar_fila(this)"></i></td>';
     aux = '<tr class="tarea_add" id="0" tarea="'+$("#tarea_adicional").val()+'">' + aux + '<tr>';
-    //data_sub.push({'tareadescrip': $('#tarea_adicional').val()});
     $('#tabla_subtareas').append(aux);
     $('#tarea_adicional').val('');
   }
@@ -157,7 +156,7 @@
     var aux = "";
     for (let i = 0; i < data_sub.length; i++) {
       aux = '<td>' + data_sub[i]['tareadescrip'] + '</td><td><i class="fa fa-close" onclick="eliminar_fila(this)"></i></td>';
-      aux = '<tr class="tarea_add" id_sub="'+data_sub[i]['id_subtarea']+'" tarea="'+data_sub[i]['tareadescrip']+'">' + aux + '<tr>';
+      aux = '<tr class="tarea_add" id_sub="'+data_sub[i]['id_subtarea']+'" tarea="'+data_sub[i]['tareadescrip']+'" form="'+data_sub[i]['form_asoc']+'">' + aux + '<tr>';
       $('#tabla_subtareas').append(aux);
     }
     collapse_box();
@@ -172,22 +171,25 @@
   function guardar(){
     WaitingOpen();
     var aux=[];
-    $('.tarea_add').each(function(i,e){
 
+    //Armar Arreglo de Tareas
+    $('.tarea_add').each(function(i,e){
       aux.push({
         'id_subtarea':$(e).attr('id_sub'),
         'id_orden':$('#numord').val(),
         'tareadescrip':$(e).attr('tarea'),
         'id_usuario':'<?php echo $this->session->userdata('user_data')[0]['usrId'];?>',
+        'form_id':$(e).attr('form'),
         'fecha':new Date().toISOString().slice(0,10),
         'estado':'C'
       });
-
     });
 
+    //Validar si hay Tareas
     if(aux.length==0){WaitingClose();alert('No hay tareas seleccionadas');return;}
     var obj = $.extend({}, aux);
     
+    //Envio Datos
     $.ajax({
       type: 'POST',
       data: obj,

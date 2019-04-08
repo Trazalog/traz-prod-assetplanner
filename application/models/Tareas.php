@@ -40,8 +40,14 @@ class Tareas extends CI_Model {
 
 	function Guardar_SubTareas($data)
 	{
-		//$userdata           = $this->session->userdata('user_data');
-		//$data['id_empresa'] = $userdata[0]['id_empresa']; 	
+		//Inicialzar Formularios
+		foreach ($data as $key => $o) {
+			$form = $data[$key]['form_id'];
+			unset($data[$key]['form_id']);
+			if($form) $data[$key]['info_id']  = $this->setFormInicial(0,$form,0);	
+		}
+		
+		//Guardar Tareas 
 		$query  = $this->db->insert_batch('tbl_listarea', $data);
 		return $query;
 	}
@@ -300,7 +306,7 @@ class Tareas extends CI_Model {
 		}
 		
 		// Guarda la configuracion inicial del formulario
-		function setFormInicial($bpm_task_id,$idFormAsoc,$ot_id) { //$id_listarea){
+		function setFormInicial($bpm_task_id,$idFormAsoc,$ot_id) {
 
 			$userdata = $this->session->userdata('user_data');
 			$usrId = $userdata[0]['usrId'];     // guarda usuario logueado
@@ -431,17 +437,7 @@ class Tareas extends CI_Model {
 					return false;
 				}
 		}
-		// valida campos obligatorios en form generico
-			// function ValidarObligatorios($form_id,$id_OT){
-			// 	$this->db->select('count(*)=0 as result');
-			// 	$this->db->from('frm_formularios_completados');
-			// 	$this->db->join('frm_instancias_formulario', 'frm_instancias_formulario.info_id = frm_formularios_completados.INFO_ID');
-			// 	$this->db->where('frm_instancias_formulario.ortra_id ',$id_OT);
-			// 	$this->db->where('FORM_ID',$form_id);			
-			// 	$this->db->where('frm_formularios_completados.OBLIGATORIO',true);
-			// 	$this->db->where('frm_formularios_completados.VALIDADO',false);
-			// 	return $this->db->get()->result_array()[0];
-			// }
+
 		
 		function validarCamposObligatorios($idForm,$idOT){
 			
@@ -483,8 +479,7 @@ class Tareas extends CI_Model {
 		function UpdateForm($datos,$key){
 
 			$this->db->where('FOCO_ID', $key);
-			$response = $this->db->update('frm_formularios_completados', $datos);
-			return $response;
+			return $this->db->update('frm_formularios_completados', $datos);
 		}
 	/*	./ FORMULARIOS */	
 

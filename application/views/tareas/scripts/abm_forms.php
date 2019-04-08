@@ -97,7 +97,7 @@
 	}
 
 	function GuardarFormulario(validarOn){
-
+		alert("Guardando Formulario");
 		// console.log(form_actual_id + ' id form');
 		// console.log(form_actual_data.attr("data-formid") + ' id de form en bd');
 		// console.log(form_actual_data.attr("data-bpmIdTarea") + ' bpm id');		
@@ -140,8 +140,10 @@
 			formData.append(idCheckValor, chekValor);
 		}	
 		for (var pair of formData.entries()) {
-		//	console.log(pair[0]+ ', ' + pair[1]); 
+		 console.log(pair[0]+ ', ' + pair[1]); 
 		}
+
+	
 		/* Ajax de Grabado en BD */
 		$.ajax({
 			url: 'index.php/Tarea/guardarForm',
@@ -150,11 +152,16 @@
 			cache: false,
 			contentType: false,
 			processData: false,
-			success: function (respuesta) {
+			success: function (data) {
 				console.log(form_actual_id+"...OK");
 				WaitingClose();
 				if(existFunction("after_save_form"))after_save_form();
-    		}
+    		},
+			error: function(error){
+				WaitingClose();
+				alert(error.msj);
+				console.log(error);
+			}
 		});
 	}
 

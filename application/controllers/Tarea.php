@@ -411,7 +411,7 @@ class Tarea extends CI_Controller {
 
 				//  array con id de dato->valor(dato es FOCO_ID)
 				$datos = $this->input->post();
-				//dump($datos, 'datos  de post en controller');
+
 				$userdata = $this->session->userdata('user_data');
 				$usrId = $userdata[0]['usrId'];     // guarda usuario logueado
 
