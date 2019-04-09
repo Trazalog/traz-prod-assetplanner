@@ -197,27 +197,27 @@ function updateAdjunto($adjunto,$ultimoId){
 	// Trae herramientas ppor id de preventivo para Editar
     function getPredictivoHerramientas($id){
         
-        $userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa']; 
+			$userdata = $this->session->userdata('user_data');
+			$empId = $userdata[0]['id_empresa']; 
 
-        $this->db->select('tbl_predictivoherramientas.cantidad,
-                            herramientas.herrcodigo,
-                            herramientas.herrmarca,
-                            herramientas.herrdescrip,
-                            herramientas.herrId');
-        $this->db->from('tbl_predictivoherramientas');
-        $this->db->join('herramientas', 'herramientas.herrId = tbl_predictivoherramientas.herrId');   
-        $this->db->where('tbl_predictivoherramientas.predId', $id);        
-        $this->db->where('tbl_predictivoherramientas.id_empresa', $empId);
-        $query= $this->db->get();
+			$this->db->select('tbl_predictivoherramientas.cantidad,
+													herramientas.herrcodigo,
+													herramientas.herrmarca,
+													herramientas.herrdescrip,
+													herramientas.herrId');
+			$this->db->from('tbl_predictivoherramientas');
+			$this->db->join('herramientas', 'herramientas.herrId = tbl_predictivoherramientas.herrId');   
+			$this->db->where('tbl_predictivoherramientas.predId', $id);        
+			$this->db->where('tbl_predictivoherramientas.id_empresa', $empId);
+			$query= $this->db->get();
 
-        if( $query->num_rows() > 0)
-        {
-          return $query->result_array();
-        }
-        else {
-          return 0;
-        }
+			if( $query->num_rows() > 0)
+			{
+				return $query->result_array();
+			}
+			else {
+				return 0;
+			}
     }
 
     // Trae insumos por id de preventivo para Editar

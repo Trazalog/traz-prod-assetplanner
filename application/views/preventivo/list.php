@@ -78,106 +78,54 @@
 </section><!-- /.content -->
 
 <script>
+
   var isOpenWindow = false;
   var codhermglo="";
   var codinsumolo="";
   var preglob="";
 
-
   edit=0;  datos=Array();
+  // Agregar Preventivo Nuevo
   $('#btnAgre').click( function cargarVista(){
     WaitingOpen();
     $('#content').empty();
     $("#content").load("<?php echo base_url(); ?>index.php/Preventivo/cargarpreventivo/<?php echo $permission; ?>");
     WaitingClose();
   });
-
   //Eliminar
   $(".eliminarPreventivo").click(function (e) {                 
     $('#modalaviso').modal('show');
-    //var tr = $(this).parent('td').parent('tr');
     var idprev = $(this).parent('td').parent('tr').attr('id');
     $('#id').val(idprev);
-  });   
-
-
-
-  // Editar Preventivo
-  $(".editarPreventivo").click(function (e) { 
-    $('#error').fadeOut('fast');        
-    $('#modalSale').modal('show');
-    $('#tarea').autocomplete( "option", "appendTo", ".eventInsForm" );
-
-    var idprev = $(this).parent('td').parent('tr').attr('id');
-    $('#id_preventivo').val(idprev);  
-    console.info('id de prev a editar: ' + idprev);  
-
-    $.ajax({
-      type: 'POST',
-      data: { idprev:idprev },
-      dataType: 'json',
-      url: 'index.php/Preventivo/geteditar',
-      success: function(data){                         
-        datos = {
-          'idprev'       :data['datos'][0]['idprev'],
-          'codigo'       :data['datos'][0]['codigo'],
-          'id_equipo'    :data['datos'][0]['id_equipo'], // id_equipo
-          'fecha_ingreso':data['datos'][0]['fecha_ingreso'],
-          'marca'        :data['datos'][0]['marca'],
-          'codigo'       :data['datos'][0]['codigo'],  // nombre del equipo
-          'ubicacion'    :data['datos'][0]['ubicacion'],
-          'descripcion'  :data['datos'][0]['descripcion'],                
-          'id_tarea'     :data['datos'][0]['id_tarea'], //iria  id_tarea descripta
-          'descrip_tarea':data['datos'][0]['descripta'],
-          'perido'       :data['datos'][0]['perido'],
-          'cantidad'     :data['datos'][0]['cantidad'],
-          'ultimo'       :data['datos'][0]['ultimo'],
-          'id_componente':data['datos'][0]['id_componente'],
-          'critico1'     :data['datos'][0]['critico1'],
-          'horash'       :data['datos'][0]['horash'],
-          'prev_duracion':data['datos'][0]['prev_duracion'],
-          'id_unidad'    :data['datos'][0]['id_unidad'],
-          'prev_canth'   :data['datos'][0]['prev_canth'],
-          'prev_adjunto' :data['datos'][0]['prev_adjunto'],
-          'ultimo'       :data['datos'][0]['ultimo'],
-        };             
-        var herram = data['herramientas'];             
-        var insum  = data['insumos'];
-        completarEdit(datos, herram, insum);                        
-      },        
-      error: function(result){            
-        console.log(result);
-      },
-    });
   });  
 
   //Trae tareas y permite busqueda en el input
   var dataTarea = function() {
-    var tmp = null;
-    $.ajax({
-      'async': false,
-      'type': "POST",
-      'dataType': 'json',
-      'url': 'index.php/Preventivo/gettarea',
-    })
-    .done( (data) => { tmp = data } )
-    .fail( () => alert("Error al traer tareas") );
-    return tmp;
-  }();
+                  var tmp = null;
+                  $.ajax({
+                    'async': false,
+                    'type': "POST",
+                    'dataType': 'json',
+                    'url': 'index.php/Preventivo/gettarea',
+                  })
+                  .done( (data) => { tmp = data } )
+                  .fail( () => alert("Error al traer tareas") );
+                  return tmp;
+                }();
   $("#tarea").autocomplete({
-    source:    dataTarea,
-    delay:     500,
-    minLength: 1,
-    focus: function(event, ui) {
-      event.preventDefault();
-      $(this).val(ui.item.label);
-      $('#id_tarea').val(ui.item.value);
-    },
-    select: function(event, ui) {
-      event.preventDefault();
-      $(this).val(ui.item.label);
-      $('#id_tarea').val(ui.item.value);
-    },
+              source:    dataTarea,
+              delay:     500,
+              minLength: 1,
+              focus: function(event, ui) {
+                event.preventDefault();
+                $(this).val(ui.item.label);
+                $('#id_tarea').val(ui.item.value);
+              },
+              select: function(event, ui) {
+                event.preventDefault();
+                $(this).val(ui.item.label);
+                $('#id_tarea').val(ui.item.value);
+              },
   });
 
   // Trae unidades de tiempo - Chequeado
@@ -201,172 +149,71 @@
       },
       dataType: 'json'
     });
-  });   
+  }); 
 
-
-
-function ordenaArregloDeObjetosPor(propiedad) {  
-  return function(a, b) {  
-    if (a[propiedad] > b[propiedad]) {  
-      return 1;  
-    } else if (a[propiedad] < b[propiedad]) {  
-      return -1;  
+  function ordenaArregloDeObjetosPor(propiedad) {  
+    return function(a, b) {  
+      if (a[propiedad] > b[propiedad]) {  
+        return 1;  
+      } else if (a[propiedad] < b[propiedad]) {  
+        return -1;  
+      }  
+      return 0;  
     }  
-    return 0;  
-  }  
-} 
+  } 
+
+    
 ////// HERRAMIENTAS //////
 
   //Trae herramientas
   var dataHerramientas = function() {
-    var tmp = null;
-    $.ajax({
-      'async': false,
-      'type': "POST",
-      'dataType': 'json',
-      'url': 'index.php/Preventivo/getHerramientasB',
-    })
-    .done( (data) => { tmp = data } )
-    .fail( () => alert("Error al traer Herramientas") );
-    return tmp;
-  }();
-
-  // data busqueda por codigo de herramientas
-  function dataCodigoHerr(request, response) {
-    function hasMatch(s) {
-      return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
-    }
-    var i, l, obj, matches = [];
-
-    if (request.term==="") {
-      response([]);
-      return;
-    }
-    
-    //ordeno por codigo de herramientas
-    dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("codigo"));
-
-    for  (i = 0, l = dataHerramientas.length; i<l; i++) {
-      obj = dataHerramientas[i];
-      if (hasMatch(obj.codigo)) {
-        matches.push(obj);
-      }
-    }
-    response(matches);
-  }
-  // data busqueda por marca de herramientas
-  function dataMarcaHerr(request, response) {
-    function hasMatch(s) {
-      return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
-    }
-    var i, l, obj, matches = [];
-
-  var cod="";
-  $("#agregarherr").click(function (e) {   
-
-    //ordeno por marca de herramientas
-    dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("marca"));
-
-    for  (i = 0, l = dataHerramientas.length; i<l; i++) {
-      obj = dataHerramientas[i];
-      if (hasMatch(obj.marca)) {
-        matches.push(obj);
-      }
-    }
-    response(matches);
-  }
-
-
+                          var tmp = null;
+                          $.ajax({
+                            'async': false,
+                            'type': "POST",
+                            'dataType': 'json',
+                            'url': 'index.php/Preventivo/getHerramientasB',
+                          })
+                          .done( (data) => { tmp = data } )
+                          .fail( () => alert("Error al traer Herramientas") );
+                          return tmp;
+                        }();
+  
   //busqueda por marcas de herramientas
   $("#herramienta").autocomplete({
-    source:    dataCodigoHerr,
-    delay:     500,
-    minLength: 1,
-    focus: function(event, ui) {
-      event.preventDefault();
-      $(this).val(ui.item.codigo);
-      $('#id_herramienta').val(ui.item.value);
-      $('#marcaherram').val(ui.item.marca);
-      $('#descripcionherram').val(ui.item.label);
-    },
-    select: function(event, ui) {
-      event.preventDefault();
-      $(this).val(ui.item.codigo);
-      $('#id_herramienta').val(ui.item.value);
-      $('#marcaherram').val(ui.item.marca);
-      $('#descripcionherram').val(ui.item.label);
-    },
-  })
-  //muestro marca en listado de resultados
-  .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-    return $( "<li>" )
-    .append( "<a>" + item.codigo + "</a>" )
-    .appendTo( ul );
-  };
+      source:    dataCodigoHerr,
+      delay:     500,
+      minLength: 1,
+      focus: function(event, ui) {
+        event.preventDefault();
+        $(this).val(ui.item.codigo);
+        $('#id_herramienta').val(ui.item.value);
+        $('#marcaherram').val(ui.item.marca);
+        $('#descripcionherram').val(ui.item.label);
+      },
+      select: function(event, ui) {
+        event.preventDefault();
+        $(this).val(ui.item.codigo);
+        $('#id_herramienta').val(ui.item.value);
+        $('#marcaherram').val(ui.item.marca);
+        $('#descripcionherram').val(ui.item.label);
+      },
+    })
+    //muestro marca en listado de resultados
+    .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+      return $( "<li>" )
+      .append( "<a>" + item.codigo + "</a>" )
+      .appendTo( ul );
+    };
 
-     $(document).on("click",".elirow",function(){
-      var parent = $(this).closest('tr');
-      $(parent).remove();
-    });
-    $('#herramienta').val('');
-    $('#marcaherram').val(''); 
-    $('#descripcionherram').val(''); 
-    $('#cantidadherram').val('');
-  });   
+  
 
-  // trae insumos
-  $(function(){
-    $('#insumo').html("");
-    $.ajax({
-      type: 'POST',
-      data: { },
-      url: 'index.php/Preventivo/getinsumo', 
-      success: function(data){
-       var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-       $('#insumo').append(opcion); 
-       for(var i=0; i < data.length ; i++) 
-       {    
-        var nombre = data[i]['artBarCode'];
-        var opcion  = "<option value='"+data[i]['artId']+"'>" +nombre+ "</option>" ; 
-        $('#insumo').append(opcion); 
-      }
-    },
-    select: function(event, ui) {
-      event.preventDefault();
-      $(this).val(ui.item.marca);
-      $('#id_herramienta').val(ui.item.value);
-      $('#herramienta').val(ui.item.codigo);
-      $('#descripcionherram').val(ui.item.label);
-    },
-  })
-  //muestro marca en listado de resultados
-  .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-    return $( "<li>" )
-    .append( "<a>" + item.marca + "</a>" )
-    .appendTo( ul );
-  };
 
-  //busqueda por descripcion de herramientas
-  $("#descripcionherram").autocomplete({
-    source:    dataHerramientas,
-    delay:     500,
-    minLength: 1,
-    focus: function(event, ui) {
-      event.preventDefault();
-      $(this).val(ui.item.label);
-      $('#id_herramienta').val(ui.item.value);
-      $('#herramienta').val(ui.item.codigo);
-      $('#marcaherram').val(ui.item.marca);
-    },
-    select: function(event, ui) {
-      event.preventDefault();
-      $(this).val(ui.item.label);
-      $('#id_herramienta').val(ui.item.value);
-      $('#herramienta').val(ui.item.codigo);
-      $('#marcaherram').val(ui.item.marca);
-    },
-  });
 
+
+  
+
+ 
 
   // Agrega herramientas a la tabla - Chequeado
   var nrofila = 0;  // hace cada fila unica
@@ -406,8 +253,10 @@ function ordenaArregloDeObjetosPor(propiedad) {
     $('#descripcionherram').val(''); 
     $('#cantidadherram').val('');        
   });
-////// HERRAMIENTAS //////
 
+
+ 
+////// HERRAMIENTAS //////
 
 ////// INSUMOS //////
 
@@ -534,359 +383,332 @@ function ordenaArregloDeObjetosPor(propiedad) {
   });
 ////// INSUMOS //////
 
+////// Edicion 
 
+  // Editar Preventivo
+  $(".editarPreventivo").click(function (e) { 
+    $('#error').fadeOut('fast');        
+    $('#modalSale').modal('show');
+    $('#tarea').autocomplete( "option", "appendTo", ".eventInsForm" );
 
+    var idprev = $(this).parent('td').parent('tr').attr('id');
+    $('#id_preventivo').val(idprev);  
+    console.info('id de prev a editar: ' + idprev);  
 
-
-//Elimina Preventivo
-function eliminaPrevent(){
-
-  $('#modalaviso').modal('hide');
-  var idP = $('#id').val();
-  console.log(idP);    
-  $.ajax({
-    type: 'POST',
-    data: { idprev: idP},
-    url: 'index.php/Preventivo/baja_preventivo', 
-    success: function(data){     
-      console.log(data); 
-      cargarVista();
-    },                  
-    error: function(result){                      
-      console.log(result);
-    },
-    dataType: 'json'
-  }); 
-}
-
-// commpleta los campos de modal de edicion
-function completarEdit(datos, herram, insum){
-  //console.table(datos);
-  $('#id_equipo').val(datos['id_equipo']);
-  $('#equipo option').remove();
-  $('#equipo').append( '<option value="'+datos['id_equipo']+'" selected>'+datos['codigo']+'</option>' );
-  $('#fecha_ingreso').val(datos['fecha_ingreso']);
-  $('#marca').val(datos['marca']);
-  $('#ubicacion').val(datos['ubicacion']);
-  $('#descripcion').val(datos['descripcion']);
-  $('#id_tarea').val(datos['id_tarea']);
-  $('#tarea').val(datos['descrip_tarea']);
-  traer_componente(datos['id_equipo'], datos['id_componente']);
-  $('#ultimo').val(datos['ultimo']);    
-  traer_periodo( datos['perido'] );
-  $('#cantidad').val(datos['cantidad']);
-
-  $('#hshombre').val(datos['horash']);    
-  $('#duracion').val(datos['prev_duracion']);
-  $('#unidad').val(datos['id_unidad']);
-  $('#cantOper').val(datos['prev_canth']);
-
-  $('#tablaherramienta tbody tr').remove();
-  for (var i = 0; i < herram.length; i++) {
-    var tr = "<tr id='"+herram[i]['herrId']+"'>"+
-    "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
-    "<td>"+herram[i]['herrcodigo']+"</td>"+
-    "<td>"+herram[i]['herrmarca']+"</td>"+
-    "<td>"+herram[i]['herrdescrip']+"</td>"+
-    "<td>"+herram[i]['cantidad']+"</td>"+                   
-    "</tr>";
-    $('#tablaherramienta tbody').append(tr);
-  }
-
-  $('#tablainsumo tbody tr').remove();
-  for (var i = 0; i < insum.length; i++){                                             
-    var tr = "<tr id='"+insum[i]['artId']+"'>"+
-    "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
-    "<td>"+insum[i]['artBarCode']+"</td>"+
-    "<td>"+insum[i]['artDescription']+"</td>"+
-    "<td>"+insum[i]['cantidad']+"</td>"+                   
-    "</tr>";
-    $('#tablainsumo tbody').append(tr);
-  }
-
-  recargaTablaAdjunto(datos['prev_adjunto']);
-
-
-  $(document).on("click",".elirow",function(){
-    var parent = $(this).closest('tr');
-    $(parent).remove();
-  });
-}
-
-// Calcula horas hombre por tiempo y unidades -chequeado
-function calcularHsHombre(){
-
-  var entrada = $('#duracion').val(); 
-  var unidad = $('#unidad').val();
-  var operarios = $('#cantOper').val(); 
-  var hs = 0;
-  var hsHombre = 0;
-  if ((entrada > 0)&&(unidad!= '-1')&&(operarios> 0)) {      
-      //minutos
-      if (unidad == 1) {
-        hs = entrada / 60;
-      }
-      // horas
-      if (unidad == 2) {
-        hs = entrada;
-      }
-      // dias
-      if (unidad == 3) {
-        hs = entrada * 24;
-      }
-      hsHombre = hs * operarios;      
-      $('#hshombre').val(hsHombre);      
-    }  
-  }
-
-// Calcula hs hombre si están los 3 parametros y cambia alguno de ellos
-$('#duracion, #unidad, #cantOper').change(function(){
-  if( $('#duracion').val()!="" && $('#unidad').val()!="-1" && $('#cantOper').val()!="")
-    calcularHsHombre();
-});
-
-function traer_periodo(periodoE) {
-  if (periodoE === undefined) {
-    periodoE = null;
-  }
-  $('#periodo').html(""); 
-  $.ajax({
-    data: {periodoE:periodoE },
-    dataType: 'json',
-    type: 'POST',
-    url: 'index.php/Calendario/getperiodo',
-    success: function(data){
-      var opcion = "<option value='-1'>Seleccione...</option>" ; 
-      $('#periodo').append(opcion); 
-      for(var i=0; i < data.length ; i++) 
-      {    
-        let selectAttr = '';
-        if( (typeof periodoE !== 'undefined') && (data[i]['idperiodo'] == periodoE) ) { selectAttr = 'selected';}
-        let nombre = data[i]['descripcion'];
-        let opcion = "<option value='"+data[i]['idperiodo']+"' "+selectAttr+">" +nombre+ "</option>";
-        $('#periodo').append(opcion);                        
-      }
-    },
-    error: function(result){  
-      console.log(result);
-    },
-  });
-}
-
-function traer_componente(id_equipo, id_componente){
-  console.info("id de equipo: "+id_equipo);
-  $('#componente').html("");
-  $.ajax({
-    data: {id_equipo:id_equipo },
-    dataType: 'json',
-    type: 'POST',
-    url: 'index.php/Preventivo/getcomponente',
-    async:false,
-    success: function(data){
-      $('#componente option').remove();
-      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-      $('#componente').append(opcion); 
-      for(var i=0; i < data.length ; i++) {
-        let selectAttr = '';
-        if( (typeof id_componente !== 'undefined') && (data[i]['id_componente'] == id_componente) ) { selectAttr = 'selected';}
-        let nombre = data[i]['descripcion'];
-        let opcion = "<option value='"+data[i]['id_componente']+"' "+selectAttr+">" +nombre+ "</option>";
-        $('#componente').append(opcion);    
-      }
-    },
-    error: function(result){
-      console.log(result);
-    },
-  });
-}
-
-function guardarEdicion(){
-  var id_prevent = $('#id_preventivo').val();//
-  var id_equipo  = $('#id_equipo').val();//
-  var id_tarea   = $('#id_tarea').val();//
-  var componente = $('#componente').val();
-  var ultimo     = $('#ultimo').val();
-  var periodo    = $('#periodo').val();    
-  var cantidad   = $('#cantidad').val();
-  var cantidadhm = $('#hshombre').val();    
-  var duracion   = $('#duracion').val();
-  var unidad     = $('#unidad').val();
-  var cantOper   = $('#cantOper').val();   
-    
-  // Arma array de herramientas y cantidades
-  var idsherramienta = new Array();     
-  $("#tablaherramienta tbody tr").each(function (index){
-    var id_her = $(this).attr('id');
-    idsherramienta.push(id_her); 
-      //console.log('id de herram: ');
-      //console.log(id_her); 
-  });    
-  var cantHerram = new Array(); 
-  $("#tablaherramienta tbody tr").each(function (index){         
-    var cant_herr = $(this).find("td").eq(4).html();
-    cantHerram.push(cant_herr);                   
-  });
-
-  // Arma array de insumos y cantidades
-  var idsinsumo = new Array();     
-  $("#tablainsumo tbody tr").each(function (index){
-    var id_ins = $(this).attr('id');
-    idsinsumo.push(id_ins); 
-    //console.log('id de insumos: ');
-    //console.log(id_ins); 
-  });    
-  //console.log('id de insumos: ');
-  //console.log(idsinsumo);
-  var cantInsum = new Array(); 
-  $("#tablainsumo tbody tr").each(function (index){         
-    var cant_insum = $(this).find("td").eq(3).html();
-    cantInsum.push(cant_insum);  
-    //console.log('cantidad de insumos: ');
-    //console.log(cant_insum);                  
-  });    
-  //console.log('cantidad de insumos arreglo: ');
-  //console.log(cantInsum);                       
-  $.ajax({
-    type: 'POST',
-    data: { id_equipo: id_equipo,
-      id_tarea: id_tarea,
-      perido: periodo,
-      cantidad: cantidad,
-      ultimo : ultimo,
-      id_componente: componente, 
-      horash: cantidadhm,  
-      prev_duracion: duracion,                                    
-      cantOper: cantOper,
-      unidad: unidad,
-      id_prevent: id_prevent,
-      idsherramienta: idsherramienta,
-      cantHerram: cantHerram, 
-      idsinsumo: idsinsumo, 
-      cantInsum: cantInsum
-    },
-    url: 'index.php/Preventivo/editar_preventivo',  
-    success: function(data){                 
-      $('#modalSale').modal('hide');                    
-      console.log("resp preventivo: ");
-      console.log(data.resPrenvent);
-      if (data.resPrenvent == false) {
-        alert("Preventivo no se ha guardado correctamente...");
-      }     
-      if(data.respHerram == false){
-        alert("Herramientas no se ha guardado correctamente...");
-      }
-      if (data.respInsumo == false) {
-        alert("Insumos no se ha guardado correctamente...");
-      }
-      cargarVista();                     
-    },
-    error: function(result){      
-      $('#modalSale').modal('hide');                      
-      console.log(result);
-      console.log("Entre por el error");            
-    },
-    dataType: 'json'
-  });
-};
-
-function cargarVista(){
-  $('#content').empty();  
-  $("#content").load("<?php echo base_url(); ?>index.php/Preventivo/index/<?php echo $permission; ?>");
-  WaitingClose(); 
-}
-
-
-//abrir modal eliminar adjunto
-$(document).on("click",".eliminaAdjunto",function(){
-  $('#modalEliminarAdjunto').modal('show');
-  var idprev = $('#id_preventivo').val();
-  $('#idAdjunto').val(idprev);
-});
-//eliminar adjunto
-function eliminarAdjunto() {
-  $('#modalEliminarAdjunto').modal('hide');
-  var idprev = $('#idAdjunto').val();
-  $.ajax({
-    data: { idprev: idprev },
-    dataType: 'json',
-    type: 'POST',
-    url: 'index.php/Preventivo/eliminarAdjunto',
-  }) 
-  .done( function(data){     
-    //console.table(data); 
-    let prevAdjunto = '';
-    recargaTablaAdjunto(prevAdjunto);
-  })                
-  .error( function(result){                      
-    console.error(result);
-  }); 
-}
-
-//abrir modal agregar adjunto
-$(document).on("click",".agregaAdjunto",function(){
-  $('#btnAgregarEditar').text("Agregar");
-  $('#modalAgregarAdjunto .modal-title').html('<span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar');
-
-  $('#modalAgregarAdjunto').modal('show');
-  var idprev = $('#id_preventivo').val();
-  $('#idAgregaAdjunto').val(idprev);
-});
-//abrir modal editar adjunto
-$(document).on("click",".editaAdjunto",function(){
-  $('#btnAgregarEditar').text("Editar");
-  $('#modalAgregarAdjunto .modal-title').html('<span class="fa fa-fw fa-pencil text-light-blue"></span> Editar');
-
-  $('#modalAgregarAdjunto').modal('show');
-  var idprev = $('#id_preventivo').val();
-  $('#idAgregaAdjunto').val(idprev);
-});
-//eliminar adjunto
-$("#formAgregarAdjunto").submit(function (event){
-  $('#modalAgregarAdjunto').modal('hide');
-
-  event.preventDefault();  
-  if (document.getElementById("inputPDF").files.length == 0) {
-    $('#error').fadeIn('slow');
-  }
-  else{
-    $('#error').fadeOut('slow');
-    var formData = new FormData($("#formAgregarAdjunto")[0]);
-    //debugger
     $.ajax({
-      cache:false,
-      contentType:false,
-      data:formData,
-      dataType:'json',
-      processData:false,
-      type:'POST',
-      url:'index.php/Preventivo/agregarAdjunto',
-    })
-    .done( function(data){     
-      console.table(data['prev_adjunto']); 
-      recargaTablaAdjunto( data['prev_adjunto'] );
-    })                
-    .error( function(result){                      
-      console.error(result);
-    }); 
-  }
-});
+      type: 'POST',
+      data: { idprev:idprev },
+      dataType: 'json',
+      url: 'index.php/Preventivo/geteditar',
+      success: function(data){                         
+        datos = {
+          'idprev'       :data['datos'][0]['idprev'],
+          'codigo'       :data['datos'][0]['codigo'],
+          'id_equipo'    :data['datos'][0]['id_equipo'], // id_equipo
+          'fecha_ingreso':data['datos'][0]['fecha_ingreso'],
+          'marca'        :data['datos'][0]['marca'],
+          'codigo'       :data['datos'][0]['codigo'],  // nombre del equipo
+          'ubicacion'    :data['datos'][0]['ubicacion'],
+          'descripcion'  :data['datos'][0]['descripcion'],                
+          'id_tarea'     :data['datos'][0]['id_tarea'], //iria  id_tarea descripta
+          'descrip_tarea':data['datos'][0]['descripta'],
+          'perido'       :data['datos'][0]['perido'],
+          'cantidad'     :data['datos'][0]['cantidad'],
+          'ultimo'       :data['datos'][0]['ultimo'],
+          'id_componente':data['datos'][0]['id_componente'],
+          'critico1'     :data['datos'][0]['critico1'],
+          'horash'       :data['datos'][0]['horash'],
+          'prev_duracion':data['datos'][0]['prev_duracion'],
+          'id_unidad'    :data['datos'][0]['id_unidad'],
+          'prev_canth'   :data['datos'][0]['prev_canth'],
+          'prev_adjunto' :data['datos'][0]['prev_adjunto'],
+          'ultimo'       :data['datos'][0]['ultimo']
+        };             
+        var herram = data['herramientas'];             
+        var insum  = data['insumos'];
+        completarEdit(datos, herram, insum);                        
+      },        
+      error: function(result){            
+        console.log(result);
+      },
+    });
+  }); 
+  // commpleta los campos de modal de edicion
+  function completarEdit(datos, herram, insum){
 
-function recargaTablaAdjunto(prevAdjunto) {
-  //console.info( "adjunto: "+prevAdjunto );
-  $('#adjunto').text(prevAdjunto);
-  $('#adjunto').attr('href', 'assets/filespreventivos/'+prevAdjunto);
-  if( prevAdjunto == null || prevAdjunto == '') {
-    var accion = '<i class="fa fa-plus-square agregaAdjunto text-light-blue" style="color:#f39c12; cursor:pointer; margin-right:10px" title="Agregar Adjunto"></i>';
-  } else {
-    var accion = '<i class="fa fa-times-circle eliminaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Eliminar Adjunto"></i>'+'<i class="fa fa-pencil editaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Editar Adjunto"></i>';
-  }
-  $('#accionAdjunto').html(accion);
-}
+    $('#id_equipo').val(datos['id_equipo']);
+    $('#equipo option').remove();
+    $('#equipo').append( '<option value="'+datos['id_equipo']+'" selected>'+datos['codigo']+'</option>' );
+    $('#fecha_ingreso').val(datos['fecha_ingreso']);
+    $('#marca').val(datos['marca']);
+    $('#ubicacion').val(datos['ubicacion']);
+    $('#descripcion').val(datos['descripcion']);
+    $('#id_tarea').val(datos['id_tarea']);
+    $('#tarea').val(datos['descrip_tarea']);
+    traer_componente(datos['id_equipo'], datos['id_componente']);
+    $('#ultimo').val(datos['ultimo']);    
+    traer_periodo( datos['perido'] );
+    $('#cantidad').val(datos['cantidad']);
 
-$('#modalSale').on('hidden.bs.modal', function (e) {
-  $('#content').empty();  
-  $("#content").load("<?php echo base_url(); ?>index.php/Preventivo/index/<?php echo $permission; ?>");
-})
+    $('#hshombre').val(datos['horash']);    
+    $('#duracion').val(datos['prev_duracion']);
+    $('#unidad').val(datos['id_unidad']);
+    $('#cantOper').val(datos['prev_canth']);
+
+    $('#tablaherramienta tbody tr').remove();
+    for (var i = 0; i < herram.length; i++) {
+      var tr = "<tr id='"+herram[i]['herrId']+"'>"+
+      "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+      "<td>"+herram[i]['herrcodigo']+"</td>"+
+      "<td>"+herram[i]['herrmarca']+"</td>"+
+      "<td>"+herram[i]['herrdescrip']+"</td>"+
+      "<td>"+herram[i]['cantidad']+"</td>"+                   
+      "</tr>";
+      $('#tablaherramienta tbody').append(tr);
+    }
+
+    $('#tablainsumo tbody tr').remove();
+    for (var i = 0; i < insum.length; i++){                                            
+      var tr = "<tr id='"+insum[i]['artId']+"'>"+
+      "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+      "<td>"+insum[i]['artBarCode']+"</td>"+
+      "<td>"+insum[i]['artDescription']+"</td>"+
+      "<td>"+insum[i]['cantidad']+"</td>"+                   
+      "</tr>";
+      $('#tablainsumo tbody').append(tr);
+    }
+
+    recargaTablaAdjunto(datos['prev_adjunto']);
+
+    $(document).on("click",".elirow",function(){
+      var parent = $(this).closest('tr');
+      $(parent).remove();
+    });
+  }
+  // Calcula horas hombre por tiempo y unidades -chequeado
+  function calcularHsHombre(){
+
+    var entrada = $('#duracion').val(); 
+    var unidad = $('#unidad').val();
+    var operarios = $('#cantOper').val(); 
+    var hs = 0;
+    var hsHombre = 0;
+    if ((entrada > 0)&&(unidad!= '-1')&&(operarios> 0)) {      
+        //minutos
+        if (unidad == 1) {
+          hs = entrada / 60;
+        }
+        // horas
+        if (unidad == 2) {
+          hs = entrada;
+        }
+        // dias
+        if (unidad == 3) {
+          hs = entrada * 24;
+        }
+        hsHombre = hs * operarios;      
+        $('#hshombre').val(hsHombre);      
+      }  
+    }
+
+  // Calcula hs hombre si están los 3 parametros y cambia alguno de ellos
+  $('#duracion, #unidad, #cantOper').change(function(){
+    if( $('#duracion').val()!="" && $('#unidad').val()!="-1" && $('#cantOper').val()!="")
+      calcularHsHombre();
+  });
+  //Trae tareas y permite busqueda en el input
+  var dataTarea = function() {
+                    var tmp = null;
+                    $.ajax({
+                      'async': false,
+                      'type': "POST",
+                      'dataType': 'json',
+                      'url': 'index.php/Preventivo/gettarea',
+                    })
+                    .done( (data) => { tmp = data } )
+                    .fail( () => alert("Error al traer tareas") );
+                    return tmp;
+                  }();
+  $("#tarea").autocomplete({
+    source:    dataTarea,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_tarea').val(ui.item.value);
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_tarea').val(ui.item.value);
+    },
+  });
+
+  // Trae unidades de tiempo - Chequeado
+  $(function(){  
+    $('#unidad').html(""); 
+    $.ajax({
+      type: 'POST',
+      data: { },
+      url: 'index.php/Preventivo/getUnidTiempo', 
+      success: function(data){
+        var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+        $('#unidad').append(opcion); 
+        for(var i=0; i < data.length ; i++){    
+          var nombre = data[i]['unidaddescrip'];
+          var opcion  = "<option value='"+data[i]['id_unidad']+"'>" +nombre+ "</option>" ; 
+          $('#unidad').append(opcion);                                
+        }
+      },
+      error: function(result){
+        console.log(result);
+      },
+      dataType: 'json'
+    });
+  }); 
+  // trae periodos de tiempo para edicion
+  function traer_periodo(periodoE) {
+    if (periodoE === undefined) {
+      periodoE = null;
+    }
+    $('#periodo').html(""); 
+    $.ajax({
+      data: {periodoE:periodoE },
+      dataType: 'json',
+      type: 'POST',
+      url: 'index.php/Calendario/getperiodo',
+      success: function(data){
+        var opcion = "<option value='-1'>Seleccione...</option>" ; 
+        $('#periodo').append(opcion); 
+        for(var i=0; i < data.length ; i++) 
+        {    
+          let selectAttr = '';
+          if( (typeof periodoE !== 'undefined') && (data[i]['idperiodo'] == periodoE) ) { selectAttr = 'selected';}
+          let nombre = data[i]['descripcion'];
+          let opcion = "<option value='"+data[i]['idperiodo']+"' "+selectAttr+">" +nombre+ "</option>";
+          $('#periodo').append(opcion);                        
+        }
+      },
+      error: function(result){  
+        console.log(result);
+      },
+    });
+  }
+  // trae componentes segun id deequipo para edicion
+  function traer_componente(id_equipo, id_componente){
+    console.info("id de equipo: "+id_equipo);
+    $('#componente').html("");
+    $.ajax({
+      data: {id_equipo:id_equipo },
+      dataType: 'json',
+      type: 'POST',
+      url: 'index.php/Preventivo/getcomponente',
+      async:false,
+      success: function(data){
+        $('#componente option').remove();
+        var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+        $('#componente').append(opcion); 
+        for(var i=0; i < data.length ; i++) {
+          let selectAttr = '';
+          if( (typeof id_componente !== 'undefined') && (data[i]['id_componente'] == id_componente) ) { selectAttr = 'selected';}
+          let nombre = data[i]['descripcion'];
+          let opcion = "<option value='"+data[i]['id_componente']+"' "+selectAttr+">" +nombre+ "</option>";
+          $('#componente').append(opcion);    
+        }
+      },
+      error: function(result){
+        console.log(result);
+      },
+    });
+  }
+  // Guarda la Edicion completa de Preventivo
+  function guardarEdicion(){
+    var id_prevent = $('#id_preventivo').val();//
+    var id_equipo  = $('#id_equipo').val();//
+    var id_tarea   = $('#id_tarea').val();//
+    var componente = $('#componente').val();
+    var ultimo     = $('#ultimo').val();
+    var periodo    = $('#periodo').val();    
+    var cantidad   = $('#cantidad').val();
+    var cantidadhm = $('#hshombre').val();    
+    var duracion   = $('#duracion').val();
+    var unidad     = $('#unidad').val();
+    var cantOper   = $('#cantOper').val();   
+      
+    // Arma array de herramientas y cantidades
+    var idsherramienta = new Array();     
+    $("#tablaherramienta tbody tr").each(function (index){
+      var id_her = $(this).attr('id');
+      idsherramienta.push(id_her);      
+    });    
+    var cantHerram = new Array(); 
+    $("#tablaherramienta tbody tr").each(function (index){         
+      var cant_herr = $(this).find("td").eq(4).html();
+      cantHerram.push(cant_herr);                   
+    });
+
+    // Arma array de insumos y cantidades
+    var idsinsumo = new Array();     
+    $("#tablainsumo tbody tr").each(function (index){
+      var id_ins = $(this).attr('id');
+      idsinsumo.push(id_ins);     
+    });    
+    var cantInsum = new Array(); 
+    $("#tablainsumo tbody tr").each(function (index){         
+      var cant_insum = $(this).find("td").eq(3).html();
+      cantInsum.push(cant_insum);                    
+    });                     
+    $.ajax({
+      type: 'POST',
+      data: { id_equipo: id_equipo,
+        id_tarea: id_tarea,
+        perido: periodo,
+        cantidad: cantidad,
+        ultimo : ultimo,
+        id_componente: componente, 
+        horash: cantidadhm,  
+        prev_duracion: duracion,                                    
+        cantOper: cantOper,
+        unidad: unidad,
+        id_prevent: id_prevent,
+        idsherramienta: idsherramienta,
+        cantHerram: cantHerram, 
+        idsinsumo: idsinsumo, 
+        cantInsum: cantInsum
+      },
+      url: 'index.php/Preventivo/editar_preventivo',  
+      success: function(data){                 
+        $('#modalSale').modal('hide');                    
+        console.log("resp preventivo: ");
+        console.log(data.resPrenvent);
+        if (data.resPrenvent == false) {
+          alert("Preventivo no se ha guardado correctamente...");
+        }     
+        if(data.respHerram == false){
+          alert("Herramientas no se ha guardado correctamente...");
+        }
+        if (data.respInsumo == false) {
+          alert("Insumos no se ha guardado correctamente...");
+        }
+        cargarVista();                     
+      },
+      error: function(result){      
+        $('#modalSale').modal('hide');                      
+        console.log(result);
+        console.log("Entre por el error");            
+      },
+      dataType: 'json'
+    });
+  }
+ 
+
+
+
+
+
+
+
 
 
 
@@ -902,6 +724,7 @@ $('#tabprev').DataTable({
   } ],
   "order": [[1, "asc"]],
 });
+
 </script>
 
 <!-- Modal editar-->
@@ -1159,7 +982,6 @@ $('#tabprev').DataTable({
   </div>
 </div>
 
-
 <!-- Modal Eliminar Warning -->
 <div class="modal" id="modalaviso">
   <div class="modal-dialog" role="document">
@@ -1181,7 +1003,6 @@ $('#tabprev').DataTable({
     </div>
   </div>
 </div>
-
 
 <!-- Modal Eliminar Adjunto -->
 <div class="modal" id="modalEliminarAdjunto">

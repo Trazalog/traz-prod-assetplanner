@@ -636,8 +636,10 @@ $("#formAgregarEquipo").submit( function (event){
 
   var hayError = false;
   hayError     = validarCampos();
+
   if(hayError == true){
     $('#error').fadeIn('slow');
+    WaitingClose();
     return;
   }
   else{

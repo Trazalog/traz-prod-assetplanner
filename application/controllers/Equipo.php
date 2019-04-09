@@ -513,7 +513,7 @@ class  Equipo extends CI_Controller {
 		if($result)
 		{
 			$ultimoId = $this->db->insert_id(); 
-			$nomcodif = $this->codifNombre($ultimoId, $empId); // codificacion de nombre
+			$nomcodif = $this->codifNombre($ultimoId, $id_empresa); // codificacion de nombre
 			$nomcodif = 'equipo'.$nomcodif;
 			$config = [
 				"upload_path"   => "./assets/filesequipos",
@@ -575,27 +575,18 @@ class  Equipo extends CI_Controller {
 	
 	public function cambio_equipo()
 	{
-	
-		$idequipo=$_POST['idequipo'];
-		
-		$datos = array('estado'=>"IN");
-
-		//doy de baja
-		$result = $this->Equipos->update_cambio($datos, $idequipo);
+		$idequipo = $_POST['idequipo'];
+		$datos    = array('estado'=>"IN");
+		$result   = $this->Equipos->update_cambio($datos, $idequipo);
 		print_r($result);
-	
 	}
 
-	public function cambio_estado(){
-	
-		$idequipo=$_POST['idequipo'];
-		
-		$datos = array('estado'=>"AC");
-
-		//doy de baja
-		$result = $this->Equipos->update_estado($datos, $idequipo);
+	public function cambio_estado()
+	{
+		$idequipo = $_POST['idequipo'];
+		$datos    = array('estado'=>"AC");
+		$result   = $this->Equipos->update_estado($datos, $idequipo);
 		print_r($result);
-	
 	}
 
 	// Trae datos de equipo segun id

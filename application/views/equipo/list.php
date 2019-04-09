@@ -59,8 +59,10 @@
                     }
                   }
                   if (strpos($permission,'Lectura') !== false) {
-                     echo '<i class="fa fa-hourglass-half text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Mantenimiento Autónomo" data-toggle="modal" data-target="#modalectura"></i>';
-                     echo '<i class="fa fa-history text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Historial de Lecturas" data-toggle="modal" data-target="#modalhistlect"></i>';
+                    if( $a['estado'] != 'IN') {
+                      echo '<i class="fa fa-hourglass-half text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Mantenimiento Autónomo" data-toggle="modal" data-target="#modalectura"></i>';
+                    }
+                    echo '<i class="fa fa-history text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Historial de Lecturas" data-toggle="modal" data-target="#modalhistlect"></i>';
                   }
                   echo '</td>';
                   '<input type="hidden" id="id_equipo" name="id_equipo">';
@@ -99,109 +101,485 @@ var isOpenWindow = false;
 var idEquipo     = "";
 var ide          = "";
 var idglob       = "";
-
-//$(document).ready(function(event) {
   
-  $( function() {
-    $( ".datepicker" ).datepicker();
-  } );
+$(function() {
+  $( ".datepicker" ).datepicker();
+});
 
-  // Carga vista para agregar equipo nuevo - Chequeado
-  edit=0;  datos=Array()  
-  $('#btnAgre').click( function cargarVista(){
-    WaitingOpen();
-    $('#content').empty();
-    $("#content").load("<?php echo base_url(); ?>index.php/Equipo/cargarequipo/<?php echo $permission; ?>");
-    WaitingClose();
-  });
+// Carga vista para agregar equipo nuevo - Chequeado
+edit=0;  datos=Array()  
+$('#btnAgre').click( function cargarVista(){
+  WaitingOpen();
+  $('#content').empty();
+  $("#content").load("<?php echo base_url(); ?>index.php/Equipo/cargarequipo/<?php echo $permission; ?>");
+  WaitingClose();
+});
 
 
+// Asigna contratista - Chequeado
+$(".fa-user ").click(function (e) { 
+  var id_equipo = $(this).parent('td').parent('tr').attr('id');
+  idglob = id_equipo;
+  console.log("variable global -> id de equipo: "+idglob);
   
-  //Editar Revisar no trae los datos para lenar los combos
-  /*$(".fa-pencil").click(function(e) { 
-    limpiarselect();  //limpia select modal edicion
-    var id_equipo = $(this).parent('td').parent('tr').attr('id');
-    idEquipo = id_equipo;
-    console.log(id_equipo);
-    console.log(idEquipo);
-    $.ajax({
-      data: { id_equipo: id_equipo},
-      dataType: 'json',
-      type: 'POST',
-      url: 'index.php/Equipo/getpencil', 
-      success: function(data){                                  
-        console.log(data); 
-        datos = {
-          'id_equipo':id_equipo,
-          'descripcion':data[0]['descripcion'],
-          'fecha_ingreso':data[0]['fecha_ingreso'],
-          'fecha_garantia':data[0]['fecha_garantia'],
-          'marca':data[0]['marca'],
-          'codigo':data[0]['codigo'],
-          'ubicacion':data[0]['ubicacion'],
-          'empresa':data[0]['deemp'], //descricion de empresa
-          'id_empresa':data[0]['id_empresa'], // id de empresa
-          'id_sector':data[0]['id_sector'], //desect
-          'sector':data[0]['desect'],
-          'id_grupo':data[0]['id_grupo'], //degrup
-          'grupo':data[0]['degrupo'], //degrup
-          'criticidad':data[0]['decriti'], //decriti
-          'id_criticidad':data[0]['id_criti'], //decriti
-          'estado':data[0]['estado'],
-          'fecha_ultimalectura':data[0]['fecha_ultimalectura'],
-          'ultima_lectura':data[0]['ultima_lectura']       
-        },             
-        edit = 1;
-        console.log("datos a enviar");
-        console.log(datos);
-        completarEdit(datos,edit);                
-      },
-      error: function(result){
-        console.log(result);
-      },
-    });  
-  });*/
+  $('#tablaempresa tbody').html("");
+  tr = null;
 
-  // Asigna contratista - Chequeado
-  $(".fa-user ").click(function (e) { 
-    var id_equipo = $(this).parent('td').parent('tr').attr('id');
-    idglob = id_equipo;
-    console.log("variable global -> id de equipo: "+idglob);
-    
-    $('#tablaempresa tbody').html("");
-    tr = null;
-
-    click_co(id_equipo);
-    traer_contratista();        
-    llenaContratistasEquipo(id_equipo);
+  click_co(id_equipo);
+  traer_contratista();        
+  llenaContratistasEquipo(id_equipo);
+});
+ 
+// Cambiar a estado - Chequeado
+$(".fa-toggle-on").click(function (e) { 
+  var idequipo = $(this).parent('td').parent('tr').attr('id');
+  console.log(idequipo);
+  $.ajax({
+    type: 'POST',
+    data: { idequipo: idequipo},
+    url: 'index.php/Equipo/cambio_equipo', 
+    success: function(data){
+      console.log(data);
+      alert("Se cambio el estado del equipo a INACTIVO");            
+      regresa();          
+    },
+    error: function(result){
+      console.log(result);
+    },
+    dataType: 'json'
   });
-   
-  // Cambiar a estado - Chequeado
-  $(".fa-toggle-on").click(function (e) { 
-    var idequipo = $(this).parent('td').parent('tr').attr('id');
-    console.log(idequipo);
-    $.ajax({
-      type: 'POST',
-      data: { idequipo: idequipo},
-      url: 'index.php/Equipo/cambio_equipo', 
-      success: function(data){
-        console.log(data);
-        alert("Se cambio el estado del equipo a INACTIVO");            
-        regresa();          
-      },
-      error: function(result){
-        console.log(result);
-      },
-      dataType: 'json'
-    });
+});
+
+// Cambiar a estado - Chequeado
+$(".fa-toggle-off").click(function (e) { 
+  var idequipo = $(this).parent('td').parent('tr').attr('id');
+  console.log("id de equipo: "+idequipo);
+
+  habilitarEquipo(idequipo);
+});
+
+function habilitarEquipo(idequipo) {
+  console.log("ID equipo en fcion: "+idequipo);
+  // Si el estado es Alta (saco lectura de tabla equipo (ultima lectura))
+  $.ajax({
+    async: true,
+    data: {idequipo: idequipo},
+    dataType: 'json',
+    type: 'POST',
+    url: 'index.php/Equipo/estado_alta', 
+    success: function(data){
+      console.table(data[0]['estado']);
+      if (data[0]['estado'] == 'AL') {
+        var id_equipo   = idequipo;
+        var lectura     = data[0]['ultima_lectura'];
+        var fecha       = data[0]['fecha_ultimalectura'];
+        var observacion = 'Lectura al cargar equipo';
+        var operario    = '-';
+        var turno       = 'alta';
+        var estado      = 'AC';
+        parametros = {
+          'id_equipo'   : id_equipo,
+          'lectura'     : lectura,
+          'fecha'       : fecha,
+          'observacion' : observacion,
+          'operario'    : operario,
+          'turno'       : turno,
+          'estado'      : estado,
+        }
+        alta_historial_lectura(parametros);
+        cambiar_estado(id_equipo);
+      } else if(data[0]['estado'] != 'AN') {
+        cambiar_estado(idequipo);
+      }
+      else {
+        //alert("Error al habilitar el equipo");
+        console.info("Error al cambiar el estado del equipo...")
+      }
+    },
+    error: function(result){
+      console.log(result);
+    }
   });
+}
 
-  // Cambiar a estado - Chequeado
-  $(".fa-toggle-off").click(function (e) { 
-    var idequipo = $(this).parent('td').parent('tr').attr('id');
-    console.log("id de equipo: "+idequipo);
+function alta_historial_lectura(parametros){
+  console.log("parametros:");
+  console.table(parametros);
+  $.ajax({
+    data: {parametros: parametros},
+    dataType: 'json',
+    type: 'POST',
+    url: 'index.php/Equipo/alta_historial_lectura', 
+    success: function(data){
+      console.table(data);
+      //alert("Se agregó historial lecturas");
+    },
+    error: function(result){
+      console.error("Error al agregar historial lecturas");
+      console.table(result);
+    },
+  });
+}
 
-    // Si el estado es Alta (saco lectura de tabla equipo (ultima lectura))
+//cambio el estado a activo, sin importar si el anterior es alta, inhabilitado, etc...
+function cambiar_estado(idequipo, vuelve=true){
+  $.ajax({
+    data: {idequipo: idequipo},
+    dataType: 'json',
+    type: 'POST',
+    url: 'index.php/Equipo/cambio_estado', 
+    success: function(data){
+      console.log(data);
+      alert("Se cambio el estado del equipo a ACTIVO");
+      if(vuelve==true){
+        regresa();
+      }
+    },
+    error: function(result){
+      console.error("Error al cambiar el estado");
+      console.table(result);
+    },
+  });
+}
+
+// Impresion - Chequeado
+$(".fa-print").click(function (e) {
+  e.preventDefault();
+  var idequip = $(this).parent('td').parent('tr').attr('id');
+  console.log("El id de orden al imprimir es :");
+  console.log(idequip);
+  // alert(id_orden);
+  $.ajax({
+    type: 'POST',
+    data: { idequip: idequip},
+    dataType: 'json',
+    url: 'index.php/Equipo/getsolImp', //index.php/
+    success: function(data){
+      console.log("Entre a la impresion");
+      console.log(data);
+      console.log(data.datos.codigo);
+      console.log(data.equipos.asegurado);
+      console.log(data.orden.nombre);
+      var fecha = new Date(data.datos.fechain);
+      var day = fecha.getDate();
+      var month = fecha.getMonth();
+      var year = fecha.getUTCFullYear();
+      fecha = day + '-' + month + '-' + year;
+      //data.equipos.fecha_vigencia
+      //data.equipos.fecha_inicio
+      var fechav = new Date(data.equipos.fecha_vigencia);
+      var day = fechav.getDate();
+      var month = fechav.getMonth();
+      var year = fechav.getUTCFullYear();
+      fechav = day + '-' + month + '-' + year;
+      var fechai = new Date(data.equipos.fecha_inicio);
+      var day = fechai.getDate();
+      var month = fechai.getMonth();
+      var year = fechai.getUTCFullYear();
+      fechai = day + '-' + month + '-' + year;
+      var trequipos = '';
+      for(var i=0; i < data['orden'].length ; i++){   
+        var fecha1 = new Date(data['orden'][i]['fecha']);
+        var day = fecha1.getDate();
+        var month = fecha1.getMonth();
+        var year = fecha1.getUTCFullYear();
+        fecha1 = day + '-' + month + '-' + year;
+        trequipos  = trequipos+"<tr>  <td width='10%'>"+ fecha1+"</td> <td width='10%'>"+data['orden'][i]['causa']+"</td> <td width='10%'>"+data['orden'][i]['causa']+"</td> <td width='10%'>"+data['orden'][i]['nombre']+"</td><td width='10%'>"+data['orden'][i]['estado']+"</td>  </tr>" ;                           
+      }
+      var texto =
+        '<div class="" id="vistaimprimir">'+
+          '<div class="container">'+
+            '<div class="thumbnail">'+
+
+              '<div class="caption">'+
+                '<div class="row" >'+
+                  '<div class="panel panel-default">'+
+                    '<div class="form-group">'+
+                      '<h3 class="text-center" align="center"></h3>'+
+                    '</div>'+
+                    '<hr/>'+
+                    '<div class="panel-body">'+
+                      '<div class="container">'+
+                        '<div class="thumbnail">'+
+                          '<div class="row">'+
+                            '<div class="col-sm-12 col-md-12">'+
+                              '<table width="100%" style="text-align:justify" >'+
+                                '<tr>'+
+                                '<tr>'+
+                                  '<td  colspan="1"  align="left" >'+
+                                    '<div class="text-left"> <img src="img/LOGO.jpg" width="280" height="80" /> </div></td>'+
+                                  '</td>'+ 
+                                  '<td >'+
+                                    '<div  class="col-md-4 "><h3> FICHA TECNICA DE SERVICIO</h3>'+
+                                    '</div>'+
+                                  '</td>'+
+                                '</tr>'+
+                                '</tr>'+
+                              '</table>'+
+                            '</div>'+
+                          '</div>'+
+                          '<div class="row">'+
+                            '<div class="col-sm-12 col-md-12">'+
+                              '<table width="100%" style="text-align:justify" border="1px solid black" >'+  
+                                '<tr>'+
+                                    '<td>Numero de serie</td>'+
+                                    '<td>'+data.datos.numero_serie+'</td>'+
+                                    '<td style="text-align: left"" >Codigo del equipo</td>'+
+                                    '<td>'+data.datos.codigo+'</td>'+
+                                    '</tr>'+
+
+                                    '<tr>'+
+                                    '<td>Marca del motor</td>'+
+                                    '<td>'+data.datos.marca+'</td>'+
+                                    '<td align="left" >Estado del equipo</td>'+
+                                    '<td>'+data.datos.estado+'</td>'+
+                                    '</tr>'+
+
+                                    '<tr>'+
+                                    '<td>Modelo del motor</td>'+
+                                    '<td>'+data.datos.modelo+'</td>'+
+                                    '<td>Dominio</td>'+
+                                    '<td>'+data.datos.dominio+'</td>'+
+                                    '</tr>'+
+
+                                    '<tr>'+
+                                    '<td>Numero de motor</td>'+
+                                    '<td>'+data.datos.numero_motor+'</td>'+
+                                    '<td>Marca de equipo</td>'+
+                                    '<td>'+data.datos.marcaeq+'</td>'+
+                                    '</tr>'+
+
+                                    '<tr>'+
+                                    '<td>Año de fabricacion</td>'+
+                                    '<td>'+data.datos.fabricacion+'</td>'+
+                                    '<td>Modelo de equipo</td>'+
+                                    '<td>'+data.datos.modelo+'</td>'+
+                                    '</tr>'+
+
+                                    '<tr>'+
+                                    '<td>Baterias</td>'+
+                                    '<td>'+data.datos.bateria+'</td>'+
+                                    '<td>Ubicacion</td>'+
+                                    '<td>'+data.datos.ubicacion+'</td>'+
+                                    '</tr>'+
+
+                                    '<tr>'+
+                                    '<td>Peso Operativo</td>'+
+                                    '<td>'+data.datos.ubicacion+'</td>'+
+                                    '<td>Sector</td>'+
+                                    '<td>'+data.datos.sector+'</td>'+
+                                    '</tr>'+
+
+                                    '<tr>'+
+                                    '<td>Ingreso a la Reparacion</td>'+
+                                    '<td>'+fecha+'</td>'+  //data.datos.fechain
+                                    '<td>Horas del equipo a la fecha</td>'+
+                                    '<td>'+data.datos.hora_lectura+'</td>'+
+                                    '</tr>'+
+                              
+                              '</table>'+
+                            '</div>'+
+                          '</div>'+
+                          '<br>'+
+                          '<br>'+
+                          '<div class="row">'+
+                            '<div class="col-sm-12 col-md-12">'+
+                              '<table width="100%" style="text-align:justify" border="1px solid black" >'+ 
+                                '<tr>'+
+                                    '<td colspan="4" align="center">Datos de Poliza de Seguro</td>'+   
+                                '</tr>'+
+                                '<tr>'+
+                                    '<td colspan="4" align="left">Seguro Obligatorio Automotor</td>'+   
+                                '</tr>'+
+                                 '<tr>'+
+                                    '<td colspan="4" align="left">Decreto 1716/08 - Reclamo Ley: 26.363</td>'+   
+                                '</tr>'+
+                                '<tr>'+
+                                    '<td>Asegurado</td>'+ 
+                                    '<td colspan="4">'+data.equipos.asegurado+'</td>'+
+                                '</tr>'+
+
+                                    '<tr>'+
+                                    '<td>Ref</td>'+
+                                    '<td>'+data.equipos.ref+'</td>'+
+                                    '<td >Poliza</td>'+
+                                    '<td>'+data.equipos.numero_pliza+'</td>'+
+                                    '</tr>'+
+
+                                    '<tr>'+
+                                    '<td>Vigencia desde</td>'+
+                                    '<td>'+fechav+'</td>'+ //data.equipos.fecha_vigencia
+                                    '<td>Hasta</td>'+
+                                    '<td>'+fechai+'</td>'+ //data.equipos.fecha_inicio
+                                    '</tr>'+
+
+                              '</table>'+
+                            '</div>'+
+                          '</div>'+
+                          '<div class="col-sm-6 col-md-6" border="1" >'+
+                          '</div>'+
+                      
+                          '<br>'+
+                          '<br>'+
+
+                         //aca va la tabla 
+
+                          '<div class="row">'+
+                            '<div class="col-xs-10 col-xs-offset-1 text-center">'+
+                           
+                              '<table class="table table-bordered"  style="text-align:justify" border="1px solid black" >'+ //class="table table-bordered"
+                                '<thead>'+
+                                  '<tr colspan="6" height="30">'+
+                                    '<th width="20%">Fecha </th>'+
+                                    '<th width="40%">Descripcion del arreglo</th>'+
+                                    '<th width="25%">Diagnostico realizado por </th>'+
+                                    '<th width="25%">Reparacion realizado por </th>'+
+                                    '<th width="10%">Estado de la reparacion </th>'+
+                                  '</tr>'+
+                                '</thead>'+
+                                
+                                '<tbody style="text-align:center">'+trequipos+
+                                '<tr colspan="2">'+
+                                  '<td style="text-align: center" ></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                '</tr>'+
+                                '<tr colspan="2">'+
+                                  '<td style="text-align: center" ></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                '</tr>'+
+                                '<tr colspan="2">'+
+                                  '<td style="text-align: center" ></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                '</tr>'+
+                                '<tr colspan="2">'+
+                                  '<td style="text-align: center" ></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                '</tr>'+
+                                '<tr colspan="2">'+
+                                  '<td style="text-align: center" ></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                '</tr>'+
+                                '<tr colspan="2">'+
+                                  '<td style="text-align: center" ></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                '</tr>'+
+                                  '<tr colspan="2">'+
+                                  '<td style="text-align: center" ></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                '</tr>'+
+                                  '<tr colspan="2">'+
+                                  '<td style="text-align: center" ></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                '</tr>'+
+                                  '<tr>'+
+                                  '<td style="text-align: center" ></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                '</tr>'+
+                                  '<tr>'+
+                                  '<td style="text-align: center" ></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                '</tr>'+
+                                '<tr>'+
+                                  '<td style="text-align: center" ></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                '</tr>'+
+                                '<tr colspan="2">'+
+                                  '<td style="text-align: center" ></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                  '<td><br></td>'+
+                                '</tr>'+
+                                '</tbody>'+
+                              '</table>'+    
+                            '</div>'+
+                          '</div>'+
+                          //'<div class="container-fluid">'+
+                   
+                        '</div>'+
+                      '</div>'+
+                    '</div>'+
+
+                   
+                  '</div>'+
+                '</div>'+
+              '</div>'+
+              '<style>'+
+                 '.table, .table>tr, .table>td  {} '+
+              '</style>';
+              //border:  1px solid black;
+
+
+      var mywindow = window.open('', 'Imprimir', 'height=700,width=900');
+      mywindow.document.write('<html><head><title></title>');
+      //mywindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
+      //mywindow.document.write('<link rel="stylesheet" href="main.css">
+      mywindow.document.write('</head><body onload="window.print();">');
+      mywindow.document.write(texto);
+      mywindow.document.write('</body></html>');
+
+      mywindow.document.close(); // necessary for IE >= 10
+      mywindow.focus(); // necessary for IE >= 10
+      //mywindow.print();
+      //mywindow.close();
+      return true; 
+    },
+    error: function(result){
+      console.log(result);
+      console.log("error en la vistaimprimir");
+    },
+  });
+});   
+
+// Modal ingreso lectura
+$(".fa-hourglass-half").click(function(e){
+  $(".clear").val("");  //llimpia los inputs del modal lectura
+  
+  var $id_equipo = $(this).parent('td').parent('tr').attr('id');
+  $('#id_maquina').val($id_equipo);
+  console.log("id_equipo: "+$id_equipo);
+  
+  var $nom_equipo = $(this).parents("tr").find("td").eq(1).html();
+  $('#maquina').val($nom_equipo);
+  //console.log("nom_equipo: "+$nom_equipo);
+
+  var $estado = $(this).parents("tr").find("td").eq(7).find("small").html();
+  console.log("estado: "+$estado);
+
+  if($estado == "Alta") {
     $.ajax({
       async: true,
       data: {idequipo: idequipo},
@@ -230,459 +608,72 @@ var idglob       = "";
           alta_historial_lectura(parametros);
           cambiar_estado(id_equipo);
         }
-        else {
-          //alert("Error al habilitar el equipo");
-          console.info("El equipo ya tiene estado activo. Si no figura como activo ver historial de lecturas...")
-        }
       },
       error: function(result){
         console.log(result);
       }
     });
+  } 
+
+  $.ajax({
+    data: { idequipo: $id_equipo},
+    dataType: 'json',
+    type: 'POST',
+    url: 'index.php/Equipo/getEqPorId', 
+    success: function(data){ 
+      console.table(data);
+      estBoton($estado);       //agrega boton de estados
+    },                
+    error: function(result){
+      console.log(result);
+    },
   });
+});
 
-  function alta_historial_lectura(parametros){
-    console.log("parametros:");
-    console.table(parametros);
-    $.ajax({
-      data: {parametros: parametros},
-      dataType: 'json',
-      type: 'POST',
-      url: 'index.php/Equipo/alta_historial_lectura', 
-      success: function(data){
-        console.table(data);
-        //alert("Se agregó historial lecturas");
-      },
-      error: function(result){
-        console.error("Error al agregar historial lecturas");
-        console.table(result);
-      },
-    });
-  }
-
-  //cambio el estado a activo, sin importar si el anterior es alta, inhabilitado, etc...
-  function cambiar_estado(idequipo){
-    $.ajax({
-      data: {idequipo: idequipo},
-      dataType: 'json',
-      type: 'POST',
-      url: 'index.php/Equipo/cambio_estado', 
-      success: function(data){
-        console.log(data);
-        alert("Se cambio el estado del equipo a ACTIVO");
-        regresa();    
-      },
-      error: function(result){
-        console.error("Error al cambiar el estado");
-        console.table(result);
-      },
-    });
-  }
- 
-  // Impresion - Chequeado
-  $(".fa-print").click(function (e) {
-    e.preventDefault();
-    var idequip = $(this).parent('td').parent('tr').attr('id');
-    console.log("El id de orden al imprimir es :");
-    console.log(idequip);
-    // alert(id_orden);
-    $.ajax({
-      type: 'POST',
-      data: { idequip: idequip},
-      dataType: 'json',
-      url: 'index.php/Equipo/getsolImp', //index.php/
-      success: function(data){
-        console.log("Entre a la impresion");
-        console.log(data);
-        console.log(data.datos.codigo);
-        console.log(data.equipos.asegurado);
-        console.log(data.orden.nombre);
-        var fecha = new Date(data.datos.fechain);
-        var day = fecha.getDate();
-        var month = fecha.getMonth();
-        var year = fecha.getUTCFullYear();
-        fecha = day + '-' + month + '-' + year;
-        //data.equipos.fecha_vigencia
-        //data.equipos.fecha_inicio
-        var fechav = new Date(data.equipos.fecha_vigencia);
-        var day = fechav.getDate();
-        var month = fechav.getMonth();
-        var year = fechav.getUTCFullYear();
-        fechav = day + '-' + month + '-' + year;
-        var fechai = new Date(data.equipos.fecha_inicio);
-        var day = fechai.getDate();
-        var month = fechai.getMonth();
-        var year = fechai.getUTCFullYear();
-        fechai = day + '-' + month + '-' + year;
-        var trequipos = '';
-        for(var i=0; i < data['orden'].length ; i++){   
-          var fecha1 = new Date(data['orden'][i]['fecha']);
-          var day = fecha1.getDate();
-          var month = fecha1.getMonth();
-          var year = fecha1.getUTCFullYear();
-          fecha1 = day + '-' + month + '-' + year;
-          trequipos  = trequipos+"<tr>  <td width='10%'>"+ fecha1+"</td> <td width='10%'>"+data['orden'][i]['causa']+"</td> <td width='10%'>"+data['orden'][i]['causa']+"</td> <td width='10%'>"+data['orden'][i]['nombre']+"</td><td width='10%'>"+data['orden'][i]['estado']+"</td>  </tr>" ;                           
-        }
-        var texto =
-          '<div class="" id="vistaimprimir">'+
-            '<div class="container">'+
-              '<div class="thumbnail">'+
-
-                '<div class="caption">'+
-                  '<div class="row" >'+
-                    '<div class="panel panel-default">'+
-                      '<div class="form-group">'+
-                        '<h3 class="text-center" align="center"></h3>'+
-                      '</div>'+
-                      '<hr/>'+
-                      '<div class="panel-body">'+
-                        '<div class="container">'+
-                          '<div class="thumbnail">'+
-                            '<div class="row">'+
-                              '<div class="col-sm-12 col-md-12">'+
-                                '<table width="100%" style="text-align:justify" >'+
-                                  '<tr>'+
-                                  '<tr>'+
-                                    '<td  colspan="1"  align="left" >'+
-                                      '<div class="text-left"> <img src="img/LOGO.jpg" width="280" height="80" /> </div></td>'+
-                                    '</td>'+ 
-                                    '<td >'+
-                                      '<div  class="col-md-4 "><h3> FICHA TECNICA DE SERVICIO</h3>'+
-                                      '</div>'+
-                                    '</td>'+
-                                  '</tr>'+
-                                  '</tr>'+
-                                '</table>'+
-                              '</div>'+
-                            '</div>'+
-                            '<div class="row">'+
-                              '<div class="col-sm-12 col-md-12">'+
-                                '<table width="100%" style="text-align:justify" border="1px solid black" >'+  
-                                  '<tr>'+
-                                      '<td>Numero de serie</td>'+
-                                      '<td>'+data.datos.numero_serie+'</td>'+
-                                      '<td style="text-align: left"" >Codigo del equipo</td>'+
-                                      '<td>'+data.datos.codigo+'</td>'+
-                                      '</tr>'+
-
-                                      '<tr>'+
-                                      '<td>Marca del motor</td>'+
-                                      '<td>'+data.datos.marca+'</td>'+
-                                      '<td align="left" >Estado del equipo</td>'+
-                                      '<td>'+data.datos.estado+'</td>'+
-                                      '</tr>'+
-
-                                      '<tr>'+
-                                      '<td>Modelo del motor</td>'+
-                                      '<td>'+data.datos.modelo+'</td>'+
-                                      '<td>Dominio</td>'+
-                                      '<td>'+data.datos.dominio+'</td>'+
-                                      '</tr>'+
-
-                                      '<tr>'+
-                                      '<td>Numero de motor</td>'+
-                                      '<td>'+data.datos.numero_motor+'</td>'+
-                                      '<td>Marca de equipo</td>'+
-                                      '<td>'+data.datos.marcaeq+'</td>'+
-                                      '</tr>'+
-
-                                      '<tr>'+
-                                      '<td>Año de fabricacion</td>'+
-                                      '<td>'+data.datos.fabricacion+'</td>'+
-                                      '<td>Modelo de equipo</td>'+
-                                      '<td>'+data.datos.modelo+'</td>'+
-                                      '</tr>'+
-
-                                      '<tr>'+
-                                      '<td>Baterias</td>'+
-                                      '<td>'+data.datos.bateria+'</td>'+
-                                      '<td>Ubicacion</td>'+
-                                      '<td>'+data.datos.ubicacion+'</td>'+
-                                      '</tr>'+
-
-                                      '<tr>'+
-                                      '<td>Peso Operativo</td>'+
-                                      '<td>'+data.datos.ubicacion+'</td>'+
-                                      '<td>Sector</td>'+
-                                      '<td>'+data.datos.sector+'</td>'+
-                                      '</tr>'+
-
-                                      '<tr>'+
-                                      '<td>Ingreso a la Reparacion</td>'+
-                                      '<td>'+fecha+'</td>'+  //data.datos.fechain
-                                      '<td>Horas del equipo a la fecha</td>'+
-                                      '<td>'+data.datos.hora_lectura+'</td>'+
-                                      '</tr>'+
-                                
-                                '</table>'+
-                              '</div>'+
-                            '</div>'+
-                            '<br>'+
-                            '<br>'+
-                            '<div class="row">'+
-                              '<div class="col-sm-12 col-md-12">'+
-                                '<table width="100%" style="text-align:justify" border="1px solid black" >'+ 
-                                  '<tr>'+
-                                      '<td colspan="4" align="center">Datos de Poliza de Seguro</td>'+   
-                                  '</tr>'+
-                                  '<tr>'+
-                                      '<td colspan="4" align="left">Seguro Obligatorio Automotor</td>'+   
-                                  '</tr>'+
-                                   '<tr>'+
-                                      '<td colspan="4" align="left">Decreto 1716/08 - Reclamo Ley: 26.363</td>'+   
-                                  '</tr>'+
-                                  '<tr>'+
-                                      '<td>Asegurado</td>'+ 
-                                      '<td colspan="4">'+data.equipos.asegurado+'</td>'+
-                                  '</tr>'+
-
-                                      '<tr>'+
-                                      '<td>Ref</td>'+
-                                      '<td>'+data.equipos.ref+'</td>'+
-                                      '<td >Poliza</td>'+
-                                      '<td>'+data.equipos.numero_pliza+'</td>'+
-                                      '</tr>'+
-
-                                      '<tr>'+
-                                      '<td>Vigencia desde</td>'+
-                                      '<td>'+fechav+'</td>'+ //data.equipos.fecha_vigencia
-                                      '<td>Hasta</td>'+
-                                      '<td>'+fechai+'</td>'+ //data.equipos.fecha_inicio
-                                      '</tr>'+
-
-                                '</table>'+
-                              '</div>'+
-                            '</div>'+
-                            '<div class="col-sm-6 col-md-6" border="1" >'+
-                            '</div>'+
-                        
-                            '<br>'+
-                            '<br>'+
-
-                           //aca va la tabla 
-
-                            '<div class="row">'+
-                              '<div class="col-xs-10 col-xs-offset-1 text-center">'+
-                             
-                                '<table class="table table-bordered"  style="text-align:justify" border="1px solid black" >'+ //class="table table-bordered"
-                                  '<thead>'+
-                                    '<tr colspan="6" height="30">'+
-                                      '<th width="20%">Fecha </th>'+
-                                      '<th width="40%">Descripcion del arreglo</th>'+
-                                      '<th width="25%">Diagnostico realizado por </th>'+
-                                      '<th width="25%">Reparacion realizado por </th>'+
-                                      '<th width="10%">Estado de la reparacion </th>'+
-                                    '</tr>'+
-                                  '</thead>'+
-                                  
-                                  '<tbody style="text-align:center">'+trequipos+
-                                  '<tr colspan="2">'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                  '<tr colspan="2">'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                  '<tr colspan="2">'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                  '<tr colspan="2">'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                  '<tr colspan="2">'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                  '<tr colspan="2">'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                    '<tr colspan="2">'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                    '<tr colspan="2">'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                    '<tr>'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                    '<tr>'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                  '<tr>'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                  '<tr colspan="2">'+
-                                    '<td style="text-align: center" ></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                    '<td><br></td>'+
-                                  '</tr>'+
-                                  '</tbody>'+
-                                '</table>'+    
-                              '</div>'+
-                            '</div>'+
-                            //'<div class="container-fluid">'+
-                     
-                          '</div>'+
-                        '</div>'+
-                      '</div>'+
-
-                     
-                    '</div>'+
-                  '</div>'+
-                '</div>'+
-                '<style>'+
-                   '.table, .table>tr, .table>td  {} '+
-                '</style>';
-                //border:  1px solid black;
-
-
-        var mywindow = window.open('', 'Imprimir', 'height=700,width=900');
-        mywindow.document.write('<html><head><title></title>');
-        //mywindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
-        //mywindow.document.write('<link rel="stylesheet" href="main.css">
-        mywindow.document.write('</head><body onload="window.print();">');
-        mywindow.document.write(texto);
-        mywindow.document.write('</body></html>');
-
-        mywindow.document.close(); // necessary for IE >= 10
-        mywindow.focus(); // necessary for IE >= 10
-        //mywindow.print();
-        //mywindow.close();
-        return true; 
-      },
-      error: function(result){
-        console.log(result);
-        console.log("error en la vistaimprimir");
-      },
-    });
-  });   
-
-  /// Lectura Hugo   
-    // Modal ingreso lectura - Chequeado
-    $(".fa-hourglass-half").click(function(e){
-     
-        $(".clear").val("");  //llimpia los inputs del modal lectura
-        
-        var $id_equipo = $(this).parent('td').parent('tr').attr('id');
-        $('#id_maquina').val($id_equipo);
-        console.log("id_equipo: ");
-        console.log($id_equipo);
-        
-        var $nom_equipo = $(this).parents("tr").find("td").eq(1).html();
-        $('#maquina').val($nom_equipo);
-        console.log("nom_equipo: ");
-        console.log($nom_equipo);
-
-        var $estado = $(this).parents("tr").find("td").eq(8).find("small").html();
-        console.log("estado: ");
-        console.log($estado);
-
-        $.ajax({
-              type: 'POST',
-              data: { idequipo: $id_equipo},
-              url: 'index.php/Equipo/getEqPorId', 
-              success: function(data){                                    
-                      estBoton($estado);       //agrega boton de estados
-                    },                
-              error: function(result){
-                    
-                    console.log(result);
-                  },
-                  dataType: 'json'
-        });   
-    });
-
-    /// agrega el estado del boton en modal - Chequeado
-    function estBoton($estado){
-      
-      var estado = $estado;
-      console.log(estado);
-      if (estado == 'Reparación') {  //reparacion
-        inhabilitar();          
-      }
-      if (estado == 'Activo') {  //activo
-        habilitar();
-      }
-    }
-
-    /// cambio de estado desde el boton - Chequeado
-    $(".llave").click(function(e){
-
-      var estadobton = $(this).attr("class");
-      
-      if (estadobton == 'fa fa-fw llave fa-toggle-on') {
-        inhabilitar();
-      }
-      if (estadobton == 'fa fa-fw llave fa-toggle-off') {         
-        habilitar();
-      }  
-    });  
-
-    // Chequeado
-    function habilitar(){
-      $(".llave").removeClass("fa-toggle-off");  
-      $(".llave").addClass("fa-toggle-on");
-      $("label#botestado").text('Activo');
-      $("input#estado").val('AC'); // Estado Activo
-    }
-    // Chequeado
-    function inhabilitar(){
-      $(".llave").removeClass("fa-toggle-on");  
-      $(".llave").addClass("fa-toggle-off");
-      $("label#botestado").text('Reparación');
-      $("input#estado").val('RE'); // Estado Reparacion
-    }
+/// agrega el estado del boton en modal - Chequeado
+function estBoton($estado){
   
+  var estado = $estado;
+  console.log(estado);
+  if (estado == 'Reparación') {  //reparacion
+    inhabilitar();          
+  }
+  if (estado == 'Activo') {  //activo
+    habilitar();
+  }
+}
+
+/// cambio de estado desde el boton - Chequeado
+$(".llave").click(function(e){
+
+  var estadobton = $(this).attr("class");
   
-//});
+  if (estadobton == 'fa fa-fw llave fa-toggle-on') {
+    inhabilitar();
+  }
+  if (estadobton == 'fa fa-fw llave fa-toggle-off') {         
+    habilitar();
+  }  
+});  
+
+// Chequeado
+function habilitar(){
+  $(".llave").removeClass("fa-toggle-off");  
+  $(".llave").addClass("fa-toggle-on");
+  $("label#botestado").text('Activo');
+  $("input#estado").val('AC'); // Estado Activo
+}
+// Chequeado
+function inhabilitar(){
+  $(".llave").removeClass("fa-toggle-on");  
+  $(".llave").addClass("fa-toggle-off");
+  $("label#botestado").text('Reparación');
+  $("input#estado").val('RE'); // Estado Reparacion
+}
+  
 
 // Completa campos y select para Editar equipos - Listo
 function completarEdit(datos ,edit){
-
   console.log("datos que llegaron");
   $('#equipo').val(datos['id_equipo']);
   $('#descripcion').val(datos['descripcion']);
@@ -737,7 +728,6 @@ function limpiarselect(){
 
 // Chequeado
 function regresa(){
-
   $('#content').empty();
   $("#content").load("<?php echo base_url(); ?>index.php/Equipo/index/<?php echo $permission; ?>");
   WaitingClose();
@@ -745,7 +735,6 @@ function regresa(){
 
 // Chequeado para impresion
 function cerro(){
-  
   isOpenWindow = false;
 }
 
@@ -833,8 +822,7 @@ function traer_grupo(){
   });
 }
 // Trae criticidad y completa el select grupo - Chequeado
-function traer_criticidad(){
-    
+function traer_criticidad(){  
   $.ajax({
       type: 'POST',
       url: 'index.php/Equipo/getcriti', //index.php/
@@ -874,7 +862,6 @@ function traer_etapa(){
 
 // Llena select en modal editar de marcas
 function traer_marca(){
-
     //$('#marca1').html('');
     $.ajax({
       type: 'POST',
@@ -1054,177 +1041,175 @@ function click_co(id_equipo){
 
 
 /// Hitorial de lecturas
-  $(".fa-history").click(function(e){
-    $("tr.registro").remove();
-    var $id_equipo = $(this).parent('td').parent('tr').attr('id');      
-    console.log("id de equipo: "+$id_equipo);
+$(".fa-history").click(function(e){
+  $("tr.registro").remove();
+  var $id_equipo = $(this).parent('td').parent('tr').attr('id');      
+  console.log("id de equipo: "+$id_equipo);
 
+  $.ajax({
+    type: 'POST',
+    data: { idequipo: $id_equipo},
+    url: 'index.php/Equipo/getHistoriaLect', 
+    success: function(data){   
+      console.table(data);
+      llenarModal(data);
+    },
+    error: function(result){
+      console.log(result);
+    },
+    dataType: 'json'
+  });   
+});
+
+
+function recargarTabla(){
+  $("tr.registro").remove();
+  var $id_equipo = $('#id_Equipo_modal').val();
+
+  $.ajax({
+    type: 'POST',
+    data: { idequipo: $id_equipo},
+    url: 'index.php/Equipo/getHistoriaLect', 
+    success: function(data){   
+      console.table(data);
+      llenarModal(data);
+    },
+    error: function(result){
+      console.log(result);
+    },
+    dataType: 'json'
+  }); 
+}
+
+
+
+
+
+ /// llena modal historial de lecturas
+function llenarModal(data){
+
+  $('#id_Equipo_modal').val(data[0]['id_equipo']);
+
+  console.table(data);
+  if(Array.isArray(data) && data.length) {
+    console.log("El equipo SI tiene historial de lecturas");
+    $("#codEquipo").text(data[0]['codigo']);
+    //borro los datos de la tabla
+    $('#tblhistorial').DataTable().clear().draw();
+    for (var i=0; i< data.length; i++) {      
+      $('#tblhistorial').DataTable().row.add( [
+        '<i class="fa fa-fw fa-pencil text-light-blue editLectura" style="cursor: pointer; margin-left: 15px;" title="Editar lectura" data-idLectura="'+data[i]['id_lectura']+'"></i>',
+        data[i]['lectura'],
+        data[i]['fecha'],
+        data[i]['operario'],
+        data[i]['turno'],
+        data[i]['observacion']
+      ]).draw();
+    } 
+  } else { 
+    $("#codEquipo").text("Equipo sin historial de lecturas");
+    $('#tblhistorial').DataTable().clear().draw();
+    console.log("El equipo NO tiene historial de lecturas"); 
+  }
+}  
+
+
+$(document).on("click",".editLectura",function(e){
+
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  $("#modalEditarLectura").modal('show');    
+  var idLectura = $(this).data("idlectura");
+  var lectura = $(this).parents("tr").find("td").eq(1).html();     
+  $('#idLecturaEdit').val(idLectura);
+  $('#lecturaEdit').val(lectura);  
+});
+
+function guardarEditLectura(){
+  $('#errorEditLectura').fadeOut('fast');
+  console.log('estoy guardando');   
+  var id_lectura = $('#idLecturaEdit').val();
+  var lectura = $('#lecturaEdit').val();
+ 
+  if ( (id_lectura == "") || (lectura == "") ) {
+    $('#errorEditLectura').fadeIn('slow');
+    return;
+  }else{
+    $("#modalEditarLectura").modal('hide');
     $.ajax({
-      type: 'POST',
-      data: { idequipo: $id_equipo},
-      url: 'index.php/Equipo/getHistoriaLect', 
-      success: function(data){   
-        console.table(data);
-        llenarModal(data);
-      },
-      error: function(result){
-        console.log(result);
-      },
-      dataType: 'json'
-    });   
-  });
+            type:"POST",
+            url: "index.php/Equipo/setLecturaEdit", 
+            data:{lectura,id_lectura},
+            success: function(data){                 
+              console.log("Guardado con exito...");
+              $("#modalEditarLectura").modal('hide');
+              recargarTabla();
+            },          
+            error: function(result){
+              $("#modalEditarLectura").modal('hide');
+              alert('Ocurrió un error en la Edición...');
+                console.log(result);                 
+            },
+            dataType: 'json'
+    });
+
+  //   $('#modalectura').modal('hide');
+  //   $('#errorLectura').hide();
+  }
+}
 
 
-  function recargarTabla(){
-    $("tr.registro").remove();
-    var $id_equipo = $('#id_Equipo_modal').val();
 
+
+
+// Chequea los campos llenos - Chequeado
+function validarCampos(){
+  var hayError = "";
+  if ( $('#lectura').val() == "" ) {
+      hayError = true;
+  }
+  if ( $('#operario').val() == "" ) {
+      hayError = true;
+  }
+  if ( $('#turno').val() == "" ) {
+      hayError = true;
+  }
+  if ( $('#observacion').val() == "" ) {
+      hayError = true;
+  }
+  return hayError;
+}
+
+
+function guardarlectura(){
+  var hayError = false;
+  hayError     = validarCampos();
+  if(hayError == true){
+    $('#errorLectura').fadeIn('slow');
+  }
+  else{
+
+    var lectura = $("#formlectura").serializeArray();
+    console.table(lectura);
     $.ajax({
-      type: 'POST',
-      data: { idequipo: $id_equipo},
-      url: 'index.php/Equipo/getHistoriaLect', 
-      success: function(data){   
-        console.table(data);
-        llenarModal(data);
-      },
-      error: function(result){
-        console.log(result);
-      },
-      dataType: 'json'
-    }); 
+            type:"POST",
+            url: "index.php/Equipo/setLectura", 
+            data:lectura,
+            success: function(data){
+              console.log("Guardado con exito...");
+              regresa();
+            },          
+            error: function(result){
+                console.log("Error en guardado de Lectura...");
+                console.log(result);                 
+            },
+            dataType: 'json'
+    });
+
+    $('#modalectura').modal('hide');
+    $('#errorLectura').hide();
   }
-
-
-
-
-
-   /// llena modal historial de lecturas
-  function llenarModal(data){
-
-    $('#id_Equipo_modal').val(data[0]['id_equipo']);
-
-    console.table(data);
-    if(Array.isArray(data) && data.length) {
-      console.log("El equipo SI tiene historial de lecturas");
-      $("#codEquipo").text(data[0]['codigo']);
-      //borro los datos de la tabla
-      $('#tblhistorial').DataTable().clear().draw();
-      for (var i=0; i< data.length; i++) {      
-        $('#tblhistorial').DataTable().row.add( [
-          '<i class="fa fa-fw fa-pencil text-light-blue editLectura" style="cursor: pointer; margin-left: 15px;" title="Editar lectura" data-idLectura="'+data[i]['id_lectura']+'"></i>',
-          data[i]['lectura'],
-          data[i]['fecha'],
-          data[i]['operario'],
-          data[i]['turno'],
-          data[i]['observacion']
-        ]).draw();
-      } 
-    } else { 
-      $("#codEquipo").text("Equipo sin historial de lecturas");
-      $('#tblhistorial').DataTable().clear().draw();
-      console.log("El equipo NO tiene historial de lecturas"); 
-    }
-  }  
-
-
-  $(document).on("click",".editLectura",function(e){
-
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    $("#modalEditarLectura").modal('show');    
-    var idLectura = $(this).data("idlectura");
-    var lectura = $(this).parents("tr").find("td").eq(1).html();     
-    $('#idLecturaEdit').val(idLectura);
-    $('#lecturaEdit').val(lectura);  
-  });
-
-  function guardarEditLectura(){
-    $('#errorEditLectura').fadeOut('fast');
-    console.log('estoy guardando');   
-    var id_lectura = $('#idLecturaEdit').val();
-    var lectura = $('#lecturaEdit').val();
-   
-    if ( (id_lectura == "") || (lectura == "") ) {
-      $('#errorEditLectura').fadeIn('slow');
-      return;
-    }else{
-      $("#modalEditarLectura").modal('hide');
-      $.ajax({
-              type:"POST",
-              url: "index.php/Equipo/setLecturaEdit", 
-              data:{lectura,id_lectura},
-              success: function(data){                 
-                console.log("Guardado con exito...");
-                $("#modalEditarLectura").modal('hide');
-                recargarTabla();
-              },          
-              error: function(result){
-                $("#modalEditarLectura").modal('hide');
-                alert('Ocurrió un error en la Edición...');
-                  console.log(result);                 
-              },
-              dataType: 'json'
-      });
-
-    //   $('#modalectura').modal('hide');
-    //   $('#errorLectura').hide();
-    }
-
-
-  }
-
-
-
-
-
-  // Chequea los campos llenos - Chequeado
-  function validarCampos(){
-    var hayError = "";
-    if ( $('#lectura').val() == "" ) {
-        hayError = true;
-    }
-    if ( $('#operario').val() == "" ) {
-        hayError = true;
-    }
-    if ( $('#turno').val() == "" ) {
-        hayError = true;
-    }
-    if ( $('#observacion').val() == "" ) {
-        hayError = true;
-    }
-    return hayError;
-  }
-
-
-  function guardarlectura(){
-    var hayError = false;
-    hayError     = validarCampos();
-    if(hayError == true){
-      $('#errorLectura').fadeIn('slow');
-    }
-    else{
-
-      var lectura = $("#formlectura").serializeArray();
-      console.table(lectura);
-      $.ajax({
-              type:"POST",
-              url: "index.php/Equipo/setLectura", 
-              data:lectura,
-              success: function(data){
-                console.log("Guardado con exito...");
-                regresa();
-              },          
-              error: function(result){
-                  console.log("Error en guardado de Lectura...");
-                  console.log(result);                 
-              },
-              dataType: 'json'
-      });
-
-      $('#modalectura').modal('hide');
-      $('#errorLectura').hide();
-    }
-  }  
+}  
 
 
 
@@ -1268,7 +1253,7 @@ $(".fa-times-circle").click(function (e) {
 
 // Traigo datos del equipo
 $( ".editEquipo" ).click(function() {
-  WaitingOpen(); 
+  //WaitingOpen(); 
   var idEquipo = $(this).parent('td').parent('tr').attr('id');
   //$('#id_equipo').val(idEquipo);
   console.info('id de equipo a editar: ' + idEquipo);
@@ -1425,6 +1410,8 @@ function llenar_grupo(id){
     success: function(data){
       //console.table(data);
       $('#grupo').text("");
+      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+      $('#grupo').append(opcion); 
       for(var i=0; i < data.length ; i++) 
       {
         var selectAttr = '';
@@ -1475,6 +1462,8 @@ function llenar_cliente(id){
       //console.log("cliente: "+id);
       //console.table(data);
       $('#cliente').text("");
+      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+      $('#cliente').append(opcion); 
       for(var i=0; i < data.length ; i++) 
       {
         var selectAttr = '';
