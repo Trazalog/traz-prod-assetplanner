@@ -787,9 +787,32 @@
     });
   }
  
+//Elimina Preventivo
+function eliminaPrevent(){
 
+  $('#modalaviso').modal('hide');
+  var idP = $('#id').val();
+  console.log(idP);    
+  $.ajax({
+    type: 'POST',
+    data: { idprev: idP},
+    url: 'index.php/Preventivo/baja_preventivo', 
+    success: function(data){     
+      console.log(data); 
+      cargarVista();
+    },                  
+    error: function(result){                      
+      console.log(result);
+    },
+    dataType: 'json'
+  }); 
+}
 
-
+function cargarVista(){
+  $('#content').empty();  
+  $("#content").load("<?php echo base_url(); ?>index.php/Preventivo/index/<?php echo $permission; ?>");
+  WaitingClose(); 
+}
 
 
 
