@@ -20,7 +20,7 @@ if (!function_exists('cargarFormulario')) {
 
      echo'<form enctype="multipart/form-data" id="genericForm'.$id.'" class="form-horizontal" style="padding:0px 15px;" role="form" action="" method="" >';
     // echo'<form enctype="multipart/form-data" id="" class="form-horizontal formgenerico" style="padding:0px 15px;" role="form" action="" method="" >';
-dump($id, 'id de form en helper');
+//ump($id, 'id de form en helper');
 
         // guarda el id_listarea para actualizarla tabla frm formcompletados
         echo "<input type='text' class='' name='id_listarea' id='id_info' style='width: 100%'>";
