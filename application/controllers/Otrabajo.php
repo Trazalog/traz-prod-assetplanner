@@ -21,6 +21,20 @@ class Otrabajo extends CI_Controller {
 		$this->load->view('otrabajos/dash', $data);
 	}
 
+
+	/**
+	 * Muestra pantalla de Nueva Orden de Trabajo.
+	 *
+	 * @param 	String 	$permission 	Permisos de ejecución.
+	 */
+	public function nuevaOT($permission) // Ok
+	{
+		// $data['list']       = $this->Otrabajos->otrabajos_List();
+		$data['permission'] = $permission;
+		$this->load->view('otrabajos/view_agregarOT', $data);
+	}
+
+
 	/**
 	 * Muestra pantalla de listado de Ordenes de Trabajo.
 	 *
@@ -99,21 +113,34 @@ class Otrabajo extends CI_Controller {
 	 * @return
 	 */
 	public function guardar_agregar() {
+	
 		
 		$userdata  = $this->session->userdata('user_data');
 		$usrId     = $userdata[0]['usrId'];
 		$empresaId = $userdata[0]['id_empresa'];
-	    
-		$num           = $this->input->post('num');
-		$descripcion   = $this->input->post('descripcion');
-		$fecha_inicio	 = $this->input->post('fecha_inicio');
-		$fecha_entrega = $this->input->post('fecha_entrega');
+	
+		$data					 = $this->input->post(); 	
+		
+		$id_tareaestd	 = $this->input->post('id_tarea');	
+		if(!empty($id_tareaestd)){
+			$id_tar	 = $id_tareaestd;
+			$descripcion	=	$this->Otrabajos->getDescTareaSTD($id_tar);			
+		}else{
+			$id_tar = 0;
+			$descripcion   = $this->input->post('tareacustom');
+		}		
+		$f_inicio	 = $this->input->post('fechaInicio');
+		$f_entrega = $this->input->post('fechaEntrega');		
+		$f_inicio      = explode('/', $f_inicio);
+		$fecha_inicio = 	$f_inicio[2].'-'.$f_inicio[1].'-'.$f_inicio[0];		
+		$f_entrega      = explode('/', $f_entrega);
+		$fecha_entrega = 	$f_entrega[2].'-'.$f_entrega[1].'-'.$f_entrega[0];
 		$equipo        = $this->input->post('equipo');
-		$sucursal      = $this->input->post('sucursal');
-		$proveedor     = $this->input->post('proveedor');
-    	
+		$sucursal      = $this->input->post('suci');
+		$proveedor     = $this->input->post('prov');
+
     $datos2 = array(
-			'nro'           => $num,
+			'id_tarea'			=> $id_tar,
 			'fecha_inicio'  => $fecha_inicio,
 			'fecha_entrega' => $fecha_entrega,
 			'descripcion'   => $descripcion,
@@ -127,19 +154,195 @@ class Otrabajo extends CI_Controller {
 			'id_empresa'    => $empresaId
 		);
 
-		$result = $this->Otrabajos->guardar_agregar($datos2);		
-		echo json_encode($result);
-  }
+		$result['respOT'] = $this->Otrabajos->guardar_agregar($datos2);	
+
+		if($result['respOT']){
+
+			$ultimoId = $this->db->insert_id(); 	
+			////////// para guardar herramientas                 
+				if ( !empty($data['id_her']) ){
+					//saco array con herramientas y el id de empresa
+					$herr = $data["id_her"]; 
+					$i = 0;
+					foreach ($herr as $h) {
+						$herram[$i]['herrId']= $h;
+						$herram[$i]['id_empresa']= $empresaId;
+						$i++;                                
+					} 
+					//saco array con cant de herramientas y el id de preventivo 
+					$cantHerr = $data["cant_herr"];
+					$z = 0;
+					foreach ($cantHerr as $c) {
+						$herram[$z]['cantidad']= $c;
+						$herram[$z]['otId']= $ultimoId;
+						$z++;                                
+					}				
+					// Guarda el bacht de datos de herramientas
+					$result['respHerram'] = $this->Otrabajos->insertOTHerram($herram);
+				}else{
+					$result['respHerram'] = "vacio";	// no habia herramientas
+				}	
+
+			////////// para guardar insumos
+				if ( !empty($data['id_insumo']) ){
+					//saco array con herramientas y el id de empresa
+					$ins = $data["id_insumo"]; 
+					$j = 0;
+					foreach ($ins as $in) {
+						$insumo[$j]['artId'] = $in;
+						$insumo[$j]['id_empresa'] = $empresaId;
+						$j++;                                
+					} 
+					//saco array con cant de herramientas y el id de preventivo 
+					$cantInsum = $data["cant_insumo"];
+					$z = 0;
+					foreach ($cantInsum as $ci) {
+						$insumo[$z]['cantidad'] = $ci;
+						$insumo[$z]['otId'] = $ultimoId;
+						$z++;                                
+					}
+					// Guarda el bacht de datos de herramientas
+					$result['respInsumo'] = $this->Otrabajos->insertOTInsum($insumo);
+				}else{
+
+					$result['respInsumo'] = "vacio";	// no habia insumos
+				}	
+			
+			////////// Subir imagen o pdf 
+				$nomcodif = $this->codifNombre($ultimoId,$empresaId); // codificacion de nomb  		
+				$config = [
+					"upload_path" => "./assets/filesOTrabajos",
+					'allowed_types' => "png|jpg|pdf|xlsx",
+					'file_name'=> $nomcodif
+				];
+				$this->load->library("upload",$config);
+				if ($this->upload->do_upload('inputPDF')) {
+					$urlfile = "assets/filesOTrabajos/";
+					$data = array("upload_data" => $this->upload->data());
+					$extens = $data['upload_data']['file_ext'];//guardo extesnsion de archivo
+					$nomcodif = $urlfile.$nomcodif.$extens;
+					$adjunto = array('ot_adjunto' => $nomcodif,
+														'otId' => $ultimoId);
+					$result['respNomImagen'] = $this->Otrabajos->setAdjunto($adjunto);
+				}else{
+					$result['respImagen'] = false;
+				}			
+		}		
+		if($result['respOT']){
+			$result = true;
+			echo json_encode($result);
+		}else{
+			$result = false;
+			echo json_encode($result);
+		}
+		
+	}
+	
+	// Codifica nombre de imagen para no repetir en servidor
+	// formato "12_6_2018-05-21-15-26-24" idpreventivo_idempresa_fecha(año-mes-dia-hora-min-seg)
+	function codifNombre($ultimoId,$empId){
+
+		$guion = '_';
+		$guion_medio = '-';
+		$hora = date('Y-m-d H:i:s');// hora actual del sistema	
+		$delimiter = array(" ",",",".","'","\"","|","\\","/",";",":");
+		$replace = str_replace($delimiter, $delimiter[0], $hora);
+		$explode = explode($delimiter[0], $replace);
+		
+		$strigHora = $explode[0].$guion_medio.$explode[1].$guion_medio.$explode[2].$guion_medio.$explode[3];
+		
+		$nomImagen = $ultimoId.$guion.$empId.$guion.$strigHora;
+		
+		return $nomImagen;
+	}
 
   	/**
   	 * Trae datos para editar
   	 *
   	 */
-    public function getpencil() // Ok
-    {
+	public function getpencil() // Ok
+	{
 		$id = $this->input->post('idp');
-		$result = $this->Otrabajos->getpencil($id);
+		$result = $this->Otrabajos->getpencil($id);		
+	
+		if($result){
+			$arre['datos'] = $result;
+			// trae herramientas 
+			$herramientas = $this->Otrabajos->getOTHerramientas($id);
+			if($herramientas){
+				$arre['herramientas']=$herramientas;
+			}
+			else{ 
+				$arre['herramientas']=0;
+			}
+			// trae insumos
+			$insumos = $this->Otrabajos->getOTInsumos($id);
+			if($insumos){
+					$arre['insumos']=$insumos;
+			}
+			else{ $arre['insumos']=0;}
+
+			// trae adjuntos
+			$adjuntos = $this->Otrabajos->getOTadjuntos($id);
+			if($adjuntos){
+					$arre['adjunto']=$adjuntos;
+			}
+			else{ $arre['adjunto']=0;}
+
+			echo json_encode($arre);
+		}
+		else {
+			$arre['datos'] = 0;
+			echo json_encode($arre);
+		}			
+		
+	}
+
+	// Agrega adjunto desde modal edicion
+	public function agregarAdjunto(){
+		$userdata     = $this->session->userdata('user_data');
+		$empId        = $userdata[0]['id_empresa'];
+
+		$id = $this->input->post('idAgregaAdjunto');
+
+		$nomcodif = $this->codifNombre($id, $empId); // codificacion de nomb  		
+		$urlfile = "assets/filesOTrabajos/";
+		
+		$config   = [
+			"upload_path"   => "./assets/filesOTrabajos",
+			'allowed_types' => "png|jpg|pdf|xlsx",
+			'file_name'     => $nomcodif
+		];
+
+		$this->load->library("upload",$config);
+		if ($this->upload->do_upload('inputPDF'))
+		{
+			$data     = array("upload_data" => $this->upload->data());
+			$extens   = $data['upload_data']['file_ext'];//guardo extension de archivo
+			$nomcodif = $urlfile.$nomcodif.$extens;
+			$adjunto  = array('ot_adjunto' => $nomcodif,
+												'otId' => $id);
+			$response = $this->Otrabajos->setAdjunto($adjunto);
+			//$response = $this->Otrabajos->updateAdjunto($adjunto, $id);
+			if($response){
+				$idAdj = $this->db->insert_id();
+				$result['ot_adjunto'] = $nomcodif;
+				$result['id'] = $idAdj;
+			}
+		}
+		else
+		{
+			$result = false;
+		}
+
 		echo json_encode($result);
+	}
+
+	public function eliminarAdjunto(){
+		
+		$id = $this->input->post('id_adjunto');
+		$response = $this->Otrabajos->eliminarAdjunto($id);		
+		echo json_encode($response);
 	}
 
 	/**
@@ -147,11 +350,76 @@ class Otrabajo extends CI_Controller {
   	 *
   	 */
 	public function guardar_editar() // Ok
-	{
-		$idequipo = $this->input->post('idp');
+	{		
+		$userdata = $this->session->userdata('user_data');
+    $empId = $userdata[0]['id_empresa'];
+
+		$data     = $this->input->post();
+		dump($data, 'datos en controller: ');
+		
+		$id = $this->input->post('idOT');	
 		$datos    = $this->input->post('parametros');
-		$result   = $this->Otrabajos->update_edita($idequipo,$datos);
-		print_r($result);
+		$result   = $this->Otrabajos->update_edita($id, $datos);
+
+		/// HERRAMIENTAS	
+			//saco array con herramientas y el id de empresa
+			$herr = $this->input->post('idsherramienta');
+			//saco array con cant de herramientas y el id de preventivo 
+			$cantHerr = $this->input->post('cantHerram');		
+			
+			if ( !empty($herr) ) {				
+				
+				$respdelHerr = $this->Otrabajos->deleteHerramOT($id);// borr herram ant	  		
+				if ($respdelHerr) {
+					$i = 0;		  			
+					foreach ($herr as $h) {
+						$herramPrev[$i]['herrId']= $h;
+						$herramPrev[$i]['id_empresa']= $empId;
+						$i++;                                
+					} 
+					$z = 0;
+					foreach ($cantHerr as $c) {
+						$herramPrev[$z]['cantidad']= $c;
+						$herramPrev[$z]['otId']= $id;
+						$z++;                                
+					}
+				// Guarda el bacht de datos de herramientas
+				$response['respHerram'] = $this->Otrabajos->insertOTHerram($herramPrev);
+				}
+			}else{
+				// se borran la herram
+				$respdelHerr = $this->Otrabajos->deleteHerramOT($id);
+				$response['respHerram'] = $respdelHerr;	// no habia herramientas
+			}
+
+
+		/// INSUMOS	
+			//saco array con herramientas y el id de empresa
+			$ins = $this->input->post('idsinsumo');
+			//saco array con cant de herramientas y el id de preventivo			
+			$cantInsum = $this->input->post('cantInsum');
+			if ( !empty($ins) ){
+				// se borran la insum anteriores
+				$respdelInsum = $this->Otrabajos->deleteInsumOT($id); 
+				$j = 0;
+				foreach ($ins as $in) {
+					$insumoPrev[$j]['artId'] = $in;
+					$insumoPrev[$j]['id_empresa'] = $empId;
+					$j++;                                
+				}
+				$z = 0;
+				foreach ($cantInsum as $ci) {
+					$insumoPrev[$z]['cantidad'] = $ci;
+					$insumoPrev[$z]['otId'] = $id;
+					$z++;                                
+				}
+				// Guarda el bacht de datos de herramientas
+				$response['respInsumo'] = $this->Otrabajos->insertOTInsum($insumoPrev);
+			}else{
+				$respdelInsum = $this->Otrabajos->deleteInsumOT($id); 
+				$response['respInsumo'] = $respdelInsum ;	// no habia insumos	  			
+			}	
+		//print_r($result);
 	}
 
 	/**
@@ -175,15 +443,15 @@ class Otrabajo extends CI_Controller {
      */
     public function getasigna() // Ok
     {
-		$id     = $_GET['id_orden'];
-		$result = $this->Otrabajos->getasigna($id);
-		if($result)
-		{
-			$arre['datos'] = $result;
-			echo json_encode($arre);
+			$id     = $_GET['id_orden'];
+			$result = $this->Otrabajos->getasigna($id);
+			if($result)
+			{
+				$arre['datos'] = $result;
+				echo json_encode($arre);
+			}
+			else echo "nada";
 		}
-		else echo "nada";
-	}
 
 	/**
 	 * Trae usuarios por id de empresa logueada.
@@ -352,16 +620,6 @@ class Otrabajo extends CI_Controller {
 		else echo "nada";
 	}
 
-
-
-	
-
-	/*public function getusuario (){
-      $response = $this->Ordenservicios->getusuario();
-      echo json_encode($response);
-    }*/
-
-	
 //nuevo
 
 
@@ -435,7 +693,7 @@ class Otrabajo extends CI_Controller {
 	    }
   	}
 
-  	public function agregar_pedido()
+  public function agregar_pedido()
 	{
 
 	    $datos=$_POST['data'];
@@ -466,7 +724,7 @@ class Otrabajo extends CI_Controller {
 	    }
 	   return $result2; 		
 	   
-  	}
+  }
   	
   	public function agregar_tarea(){
 
@@ -602,6 +860,103 @@ class Otrabajo extends CI_Controller {
 		}
 	}
 
-	
+
+	public function getDisponibilidad()
+	{
+		$idEquipo = $this->input->post('idEquipo');
+		$result   = calcularDisponibilidad($idEquipo);
+		echo json_encode($result);
+	}
  
+ 	public function getEquipoDisponibilidad()
+ 	{
+		$result = $this->Otrabajos->getEquipoDisponibilidad();
+		echo json_encode($result);
+ 	}
+
+
+
+
+
+	//devuelve valores de todos los datos de la OT para mostrar en modal.
+	public function getOrigenOt()
+	{
+		$idot     = $_POST['idot'];
+		$response = $this->Otrabajos->getOrigenOt($idot);
+      	echo json_encode($response[0]);
+	}
+	
+
+	//devuelve valores de todos los datos de la OT para mostrar en modal.
+	public function getViewDataOt()
+	{
+		$idOt         = $_POST['idOt'];
+		$response     = $this->Otrabajos->getViewDataPreventivo($idOt);
+		echo json_encode($response[0]);
+	}
+
+	//devuelve valores de todos los datos de la OT desde Preventivos para mostrar en modal.
+	public function getViewDataSolServicio()
+	{
+		$idOt          = $_POST['idOt'];
+		$idSolServicio = $_POST['idSolServicio'];
+		$response      = $this->Otrabajos->getViewDataSolServicio($idOt, $idSolServicio);
+		echo json_encode($response[0]);
+	}
+
+	//devuelve valores de todos los datos de la OT desde Preventivos para mostrar en modal.
+	public function getViewDataPreventivo()
+	{
+		$idOt         = $_POST['idOt'];
+		$idPreventivo = $_POST['idPreventivo'];
+		$response     = $this->Otrabajos->getViewDataPreventivo($idOt, $idPreventivo);
+		echo json_encode($response[0]);
+	}
+
+	//devuelve valores de todos los datos de la OT desde Backlog para mostrar en modal.
+	public function getViewDataBacklog()
+	{
+		$idOt      = $_POST['idOt'];
+		$idBacklog = $_POST['idBacklog'];
+		$response  = $this->Otrabajos->getViewDataBacklog($idOt, $idBacklog);
+      	echo json_encode($response[0]);
+	}
+
+	//devuelve valores de todos los datos de la OT desde Predictivo para mostrar en modal.
+	public function getViewDataPredictivo()
+	{
+		$idOt         = $_POST['idOt'];
+		$idPredictivo = $_POST['idPredictivo'];
+		$response     = $this->Otrabajos->getViewDataPredictivo($idOt, $idPredictivo);
+		echo json_encode($response[0]);
+	}
+
+
+	public function printOT()
+	{
+		$datos = $this->input->post('datos');
+		$tipo = $this->input->post('tipo');
+		switch ($tipo) {
+		case '1': //Orden de trabajo
+			$this->load->view('otrabajos/printot', $datos);
+			break;
+		case '2': //Solicitud de servicio
+			$this->load->view('otrabajos/printotsolserv', $datos);
+			break;
+		case '3': //preventivo
+			$this->load->view('otrabajos/printotprev', $datos);
+			break;
+		case '4': //Backlog
+			$this->load->view('otrabajos/printotback', $datos);
+			break;
+		case '5': //predictivo
+			$this->load->view('otrabajos/printotpred', $datos);
+			break;
+		case '6': //correctivo programado
+			//break;
+		default:
+			break;
+		}
+	}
+
 }

@@ -41,9 +41,6 @@ class Calendario extends CI_Controller {
 		$data['list3'] = $this->Calendarios->getPreventivos($mes, $year);  // listo 
 		$data['list4'] = $this->Calendarios->getsservicio($mes, $year);	// listo
 		$data['permission'] = $permission;
-		//dump_exit($data['list3']);
-		//dump_exit($preventivosHoras);
-
 		//para cada preventivo
 		if($preventivosHoras) {
 			$j = 0;
@@ -105,93 +102,97 @@ class Calendario extends CI_Controller {
 		$usrId    = $userdata[0]['usrId'];
 		$empId    = $userdata[0]['id_empresa'];
 
-	    if($_POST) 
-	    {
-	    	if( isset($_POST['event_tipo']) )
-				$event_tipo       = $_POST['event_tipo'];//evento unico '1' evnto repetitivo '2'
-			$id_solicitud     = $_POST['id_sol'];// id predic - correct - back 
-			$id_tarea         = $_POST['id_tarea'];
-			$hora_progr       = $_POST['hora_progr'];
-			$fecha_progr      = $_POST['fecha_progr'];
-			$fecha_progr      = explode('-', $fecha_progr);
-			$fec_programacion = $fecha_progr[2].'-'.$fecha_progr[1].'-'.$fecha_progr[0].' '.$hora_progr.':00';
-			$fecha_inicio     = $_POST['fecha_inicio'];
-			$descripcion      = $_POST['descripcion'];//descripcion del predictivo/correc/backlog/etc
-			$tipo             = $_POST['tipo'];//numero de tipo segun tbl orden_trabajo
-			$equipo           = $_POST['ide'];  
-			$cant_meses       = $_POST['cant_meses'];//cantidad de meses a programar las OT
+	    if($_POST){
+				
+				if( isset($_POST['event_tipo']) ){
+					$event_tipo       = $_POST['event_tipo'];//evento unico '1' evnto repetitivo '2'
+				}
 
-			if( isset($_POST['lectura_programada']) ) {
-				$lectura_programada = $_POST['lectura_programada'];
-			} else {
-				$lectura_programada = '0000-00-00 00:00:00';
-			}
+				$id_solicitud     = $_POST['id_sol'];// id predic - correct - back 
+				$id_tarea         = $_POST['id_tarea'];
+				$hora_progr       = $_POST['hora_progr'];
+				$fecha_progr      = $_POST['fecha_progr'];
+				$fecha_progr      = explode('-', $fecha_progr);
+				$fec_programacion = $fecha_progr[2].'-'.$fecha_progr[1].'-'.$fecha_progr[0].' '.$hora_progr.':00';
+				$fecha_inicio     = $_POST['fecha_inicio'];
+				$descripcion      = $_POST['descripcion'];//descripcion del predictivo/correc/backlog/etc
+				$tipo             = $_POST['tipo'];//numero de tipo segun tbl orden_trabajo
+				$equipo           = $_POST['ide'];  
 
-			if( isset($_POST['lectura_ejecutada']) ) {
-				$lectura_ejecutada  = $_POST['lectura_ejecutada'];
-			} else {
-				$lectura_ejecutada = '0000-00-00 00:00:00';
-			}
+				if( isset($_POST['cant_meses']) ){
+					$cant_meses = $_POST['cant_meses'];//cantidad de meses a programar las OT
+				}	
+				if( isset($_POST['lectura_programada']) ) {
+					$lectura_programada = $_POST['lectura_programada'];
+				} else {
+					$lectura_programada = '0000-00-00 00:00:00';
+				}
+				if( isset($_POST['lectura_ejecutada']) ) {
+					$lectura_ejecutada  = $_POST['lectura_ejecutada'];
+				} else {
+					$lectura_ejecutada = '0000-00-00 00:00:00';
+				}
 
-	    	// si no es correctivo busca duracion sino pone 60' por defecto	    	
-	    	if ($tipo != '2') 
-	    	{
-	    		$duracion = $this->getDurTarea($tipo,$id_solicitud); 
-	    		dump($duracion, 'duracion');
-	    	}
-	    	else
-	    	{
-	    		$duracion =  60;	
-	    	}
+				// si no es correctivo busca duracion sino pone 60' por defecto	    	
+				if ($tipo != '2'){
+					$duracion = $this->getDurTarea($tipo,$id_solicitud); 					
+				}else{
+					$duracion =  60;	
+				}
 
-	    	$datos2 = array(
-				'id_tarea'      => $id_tarea,// id de tarea a realizar(tabla tareas)
-				'nro'           => 1,//por defecto( no se usa)
-				'fecha'         => date('Y-m-d'),				
-				'fecha_program' => $fec_programacion,
-				'fecha_inicio'  => $fecha_inicio,
-				'descripcion'   => $descripcion,
-				'cliId'         => 1,//por defecto( no se usa)
-				'estado'        =>'C',
-				'id_usuario'    => $usrId,
-				'id_usuario_a'  => 1,
-				'id_usuario_e'  => 1,
-				'id_sucursal'   => 1,
-				'id_solicitud'  => $id_solicitud,// id prev-correct-back-predict
-				'tipo'          => $tipo,// tipo solicitud (prev-correct-back-predict )
-				'id_equipo'     => $equipo,
-				'duracion'      => $duracion,
-				'id_tareapadre' => $id_solicitud,//solic que genera la 1º OT y las repetitivas
-				'id_empresa'    => $empId,
-				'lectura_programada' => $lectura_programada,
-				'lectura_ejecutada'  => $lectura_ejecutada,
-	    	);
-	    	dump($datos2, 'datos');
-	    	
-	    	if ($event_tipo == '1') // si el evento es unico lo guarda
-	    	{
-	    		$result = $this->Calendarios->guardar_agregar($datos2);
-	    	}
-	    	else // evento repetitivo 
-	    	{
-	    		// Sumo a la fecha de program la cant de meses p/ sacar fecha limite
-				$fecha_limite = strtotime ( '+'.$cant_meses.' month' , strtotime ( $fec_programacion ) );
-				$fecha_limite = date ( 'Y-m-d H:i:s' , $fecha_limite ); /// "2018-06-16 00:00:00"
-				dump($fecha_limite, 'fecha_limite');
-				//busco la frecuencia de la tarea
-	    		$diasFrecuencia = $this->getPeriodTarea($tipo,$id_solicitud);	//bien
-	    		dump($diasFrecuencia, 'dias frecuencia');
-	    		$this->armar_batch($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2);
+				$datos2 = array(
+											'id_tarea'      => $id_tarea,// id de tarea a realizar(tabla tareas)
+											'nro'           => 1,//por defecto( no se usa)
+											'fecha'         => date('Y-m-d'),				
+											'fecha_program' => $fec_programacion,
+											'fecha_inicio'  => $fecha_inicio,
+											'descripcion'   => $descripcion,
+											'cliId'         => 1,//por defecto( no se usa)
+											'estado'        =>'C',
+											'id_usuario'    => $usrId,
+											'id_usuario_a'  => 1,
+											'id_usuario_e'  => 1,
+											'id_sucursal'   => 1,
+											'id_solicitud'  => $id_solicitud,// id prev-correct-back-predict
+											'tipo'          => $tipo,// tipo solicitud (prev-correct-back-predict )
+											'id_equipo'     => $equipo,
+											'duracion'      => $duracion,
+											'id_tareapadre' => $id_solicitud,//solic que genera la 1º OT y las repetitivas
+											'id_empresa'    => $empId,
+											'lectura_programada' => $lectura_programada,
+											'lectura_ejecutada'  => $lectura_ejecutada,
+											);			
+			
+				// si el evento es unico lo guarda
+				if ($event_tipo == '1'){
+					
+					$idOT = $this->Calendarios->guardar_agregar($datos2);
+					$this->setHerramInsPorTarea($idOT,$tipo,$id_solicitud);
+					if($idOT){
+						$this->Calendarios->setEstadoSServicio($id_solicitud);
+					}
 
+	    	}else{	// evento repetitivo 
+					
+					// Sumo a la fecha de program la cant de meses p/ sacar fecha limite
+					$fecha_limite = strtotime ( '+'.$cant_meses.' month' , strtotime ( $fec_programacion ) );
+					$fecha_limite = date ( 'Y-m-d H:i:s' , $fecha_limite ); /// "2018-06-16 00:00:00"					
+					//busco la frecuencia de la tarea
+					$diasFrecuencia = $this->getPeriodTarea($tipo,$id_solicitud);	
+					// guarda las OT que corrrespondan de acuerdo a la cantidad que entren en $cantidad_meses
+					$this->setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo,$id_solicitud);
 
-				if($tipo == '3') // si es preventivo
-	    		{
+					// si es preventivo ACTUALIZA NUEVAMENTE LA FECHA BASE_ OK!
+					if($tipo == '3'){	    		
 	    			//pongo nueva fecha base en preventivos
-	    			dump('$id_solicitud', 'id preventivo');
 	    			$this->Calendarios->actualizarFechaBasePreventivos($fecha_limite, $id_solicitud);
 	    		}
-	    	}	     	
-	      	return true;
+				}	     	
+					
+				// guarda los Insumos y herramientas de Backlog, predict y prenvent segun tipo
+				$this->setHerramInsPorTarea($idOT,$tipo,$id_solicitud);
+
+	      return true;
 	    }
   	}
 
@@ -257,27 +258,92 @@ class Calendario extends CI_Controller {
 		}
 		return $duracion;
 	}
-
-  	// arama conjunto de OT para su insercion en la BD
-   	function armar_batch($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2)
-   	{	
-  		$data[] = $datos2;
-    	while ($fecha_limite >= $fec_programacion  ) {
-		 	// a la fecha de programacion le sumo la frecuencia en dias	   	
-	   		$nuev_fecha = strtotime ( '+'.$diasFrecuencia.'day' , strtotime ( $fec_programacion ) ) ;
-	   		$nuev_fecha = date ( 'Y-m-d H:i:s' , $nuev_fecha );
-	   		// guardo la fecha nueva en el array para nuevva OT
-	   		$datos2['fecha_program'] = $nuev_fecha;
-	   		// guardo el componete en el array batch
-	   		$data[] = $datos2;
-	   		// actualizo la fecha de programacion
-	   		$fec_programacion = $nuev_fecha;
+	// guarda las OT que correspondan de acuerdo a la fecuencia y $cantidad_meses
+	function setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo, $id_solicitud){	
+		$data[] = $datos2;
+		while ($fecha_limite >= $fec_programacion  ) {
+		// a la fecha de programacion le sumo la frecuencia en dias	   	
+			$nuev_fecha = strtotime ( '+'.$diasFrecuencia.'day' , strtotime ( $fec_programacion ) ) ;
+			$nuev_fecha = date ( 'Y-m-d H:i:s' , $nuev_fecha );
+			// guardo la fecha nueva en el array para nuevva OT
+			$datos2['fecha_program'] = $nuev_fecha;
+			// guardo el componete en el array batch
+			$data[] = $datos2;
+			// actualizo la fecha de programacion
+			$fec_programacion = $nuev_fecha;			 
+			$idOT = $this->Calendarios->guardar_agregar($data);
+			$this->setHerramInsPorTarea($idOT, $tipo, $id_solicitud);
 		} 
+		return;	
+	}
+	
+	// Guarda herramientas e insumos que vienen de Backlog, Prevent y Predictivo
+	function setHerramInsPorTarea($idOT, $tipo, $id_solicitud){
+		
+		switch ($tipo) {
+			case '5':		// Predictivo
+				$herra = $this->Calendarios->getPredictivoHerramientas($id_solicitud);
+				$insumos = $this->Calendarios->getPredictivoInsumos($id_solicitud);
+				$adjunto = $this->Calendarios->getAdjunto($id_solicitud,$tipo);	
+				// Guarda el bacht de datos de herramientas
+				if (!empty($herra)) {		
+					$result['respHerram'] = $this->Calendarios->insertOTHerram($idOT, $herra);
+				}
+				// Guarda el bacht de datos de insumos
+				if ( !empty($insumos) ){ 					
+					$result['respInsumo'] = $this->Calendarios->insertOTInsum($idOT,$insumos);
+				}
+				// guarda el adjunto en la taba Orden trabajos (url)
+				if ( !empty($adjunto) ) {
+					$url = 'assets/filespredictivos/';
+					$file = $url.$adjunto;
+					$result['respAdjunto'] = $this->Calendarios->insertAdjunto($idOT,$file);
+				}
+				break;
+			case '4':		//Backlog			
+				$herra = $this->Calendarios->getBacklogHerramientas($id_solicitud);
+				$insumos = $this->Calendarios->getBacklogInsumos($id_solicitud);
+				$adjunto = $this->Calendarios->getAdjunto($id_solicitud,$tipo);				
+				
+				if (!empty($herra)) {		
+					$result['respHerram'] = $this->Calendarios->insertOTHerram($idOT, $herra);
+				}
+				if ( !empty($insumos) ){ 					
+					$result['respInsumo'] = $this->Calendarios->insertOTInsum($idOT,$insumos);
+				}
+				if ( !empty($adjunto) ) {
+					$url = 'assets/filesbacklog/';
+					$file = $url.$adjunto;
+					$result['respAdjunto'] = $this->Calendarios->insertAdjunto($idOT,$file);
+				}
+				break;
+			default:		// Preventivos (tipo 3)				
+				$herra = $this->Calendarios->getPreventivoHerramientas($id_solicitud);
+				$insumos = $this->Calendarios->getPreventivoInsumos($id_solicitud);
+				$adjunto = $this->Calendarios->getAdjunto($id_solicitud,$tipo);	
+				if (!empty($herra)) {		
+					$result['respHerram'] = $this->Calendarios->insertOTHerram($idOT, $herra);
+				}
+				if ( !empty($insumos) ){ 					
+					$result['respInsumo'] = $this->Calendarios->insertOTInsum($idOT,$insumos);
+				}
+				if ( !empty($adjunto) ) {
+					$url = 'assets/filespreventivos/';
+					$file = $url.$adjunto;
+					$result['respAdjunto'] = $this->Calendarios->insertAdjunto($idOT,$file);
+				}	
+				break;
+		}
+	}
 
-		$this->Calendarios->setOTbatch($data); 		
-   	}
 
-   	public function getperiodo()
+
+
+
+
+
+
+  public function getperiodo()
 	{
 		$periodo = $this->Calendarios->getperiodo($this->input->post());
 		if($periodo)

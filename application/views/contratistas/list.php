@@ -65,6 +65,18 @@
 </section><!-- /.content -->
 
 <script>
+// limpia modal agregar nuevo contratista
+$('#btnAdd').click(function(){
+  $('#nombre').val('');
+  $('#contradireccion').val('');
+  $('#contramail').val('');
+  $('#contramail1').val('');
+  $('#contracelular1').val('');
+  $('#contracelular2').val('');
+  $('#contratelefono').val('');
+  $('#contracontacto').val('');
+});
+
 function guardarContratista(){
   var nombre          = $('#nombre').val();
   var contradireccion = $('#contradireccion').val();
@@ -75,7 +87,8 @@ function guardarContratista(){
   var contratelefono  = $('#contratelefono').val();
   var contracontacto  = $('#contracontacto').val();
   var hayError        = false;
-  if($('#nombre').val() == '' || $('#contradireccion').val() == '' || $('#contramail').val() == '' || $('#contramail1').val() == '' || $('#contracelular1').val() == '' || $('#contracelular2').val() == '' || $('#contratelefono').val() == '' || $('#contracontacto').val() == '' )
+  
+  if($('#nombre').val() == '' || $('#contradireccion').val() == '' || $('#contramail').val() == '' || $('#contracelular1').val() == '')
   {
     hayError = true;
   }

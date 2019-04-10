@@ -37,6 +37,7 @@ class Ordenservicio extends CI_Controller {
       $response = $this->Ordenservicios->getEquipos($this->input->post());
       echo json_encode($response);
     }
+    
 
     public function getHerramienta() //Ok
     {
@@ -47,6 +48,12 @@ class Ordenservicio extends CI_Controller {
     public function getOperario() // Ok
     {
       $response = $this->Ordenservicios->getOperarios($this->input->post());
+      echo json_encode($response);
+    }
+
+    public function getRRHHOrdenTrabajo(){
+      $response['recursos'] = $this->Ordenservicios->getRRHHOrdenTrabajo($this->input->post('idOT'));
+      $response['responsable'] = $this->Ordenservicios->getResponsableOT($this->input->post('idOT'));
       echo json_encode($response);
     }
 
@@ -79,27 +86,7 @@ class Ordenservicio extends CI_Controller {
       
       echo json_encode($response);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
     public function getsolicitud(){
 
       $response = $this->Ordenservicios->getsolicitudes($this->input->post());
@@ -171,6 +158,7 @@ class Ordenservicio extends CI_Controller {
 
     public function getOperarioOrden(){
       $response = $this->Ordenservicios->getOperariosOrden($this->input->post());
+      
       echo json_encode($response);
     }
 

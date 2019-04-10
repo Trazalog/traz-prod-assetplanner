@@ -8,30 +8,48 @@ class Users extends CI_Model
 	}
 
 	function User_List()
-	{
-		$userdata  = $this->session->userdata('user_data');
-		$empresaId = $userdata[0]['id_empresa'];
-		$query     = $this->db->get_where('sisusers', array('id_empresa' => $empresaId, 'estado' => 'AC'));
-		//var_dump($query);
-		if ($query->num_rows()!=0)
-		{
-			return $query->result_array();
-		} else {
-			return false;
-		}
-	}
+    {
+        $userdata  = $this->session->userdata('user_data');
+        $empresaId = $userdata[0]['id_empresa'];
+
+        $this->db->select('sisusers.*');
+            $this->db->from('sisusers');
+        $this->db->join('usuarioasempresa', 'usuarioasempresa.usrId = sisusers.usrId');
+        $this->db->where('usuarioasempresa.empresaid', $empresaId);
+        $this->db->where('usuarioasempresa.estado', 'AC');
+        
+        $query = $this->db->get();
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();
+        } else {
+            return false;
+        }
+    }
 
 	function getUser($data = null)
 	{
 		if($data == null) {
 			return false;
 		} else {
-			$action = $data['act'];
-			$idUsr = $data['id'];
-			$data = array();
+			$userdata = $this->session->userdata('user_data');
+			$empId    = $userdata[0]['id_empresa'];
+			$action   = $data['act'];
+			$idUsr    = $data['id'];
+			$data     = array();
 
 			//Datos del usuario
-			$query= $this->db->get_where('sisusers',array('usrId'=>$idUsr));
+			$this->db->select('
+				sisusers.*,
+				usuarioasempresa.grpId
+				');
+			$this->db->from('sisusers');
+			$this->db->join('usuarioasempresa', 'usuarioasempresa.usrId = sisusers.usrId');
+			$this->db->where('usuarioasempresa.empresaid', $empId);
+			$this->db->where('usuarioasempresa.usrId', $idUsr);
+			$this->db->where('sisusers.usrId', $idUsr);
+			$query = $this->db->get();
+
 			if ($query->num_rows() != 0) {
 				$u = $query->result_array();
 				$data['user'] = $u[0];
@@ -42,7 +60,7 @@ class Users extends CI_Model
 				$user['usrLastName'] = '';
 				//$user['usrComision'] = '';
 				$user['usrPassword'] = '';
-				$user['grpId']       = 1;
+				$user['grpId']       = 4;
 				$user['usrimag']     = '';
 				$data['user']        = $user;
 				$user['id_empresa']  = '';
@@ -56,7 +74,7 @@ class Users extends CI_Model
 			$data['read'] = $readonly;
 
 			//Grupos
-			$query= $this->db->get('sisgroups');
+			$query = $this->db->get_where('sisgroups', array('id_empresa' =>$empId));
 			if ($query->num_rows() != 0) {
 				$data['groups'] = $query->result_array();
 			}
@@ -94,11 +112,9 @@ class Users extends CI_Model
 						   'usrNick'     => $usr,
 						   'usrName'     => $name,
 						   'usrLastName' => $lnam,
-						   //'usrComision' => $com,
-						   'grpId'       => $grp,
-						   //'usrimag'     => $img,
-						   //'estado'		 => 'AC',
-						   'id_empresa'  => $empresaId
+						   //'estado'	     => 'AC',
+						   //'grpId'       => $grp,
+						   //'id_empresa'  => $empresaId
 						);
 					}
 					else {
@@ -107,10 +123,11 @@ class Users extends CI_Model
 						   'usrName'     => $name,
 						   'usrLastName' => $lnam,
 						   //'usrComision' => $com,
-						   'grpId'       => $grp,
+						   //'grpId'       => $grp,
 						   'usrimag'     => $img,
-						   //'estado'		 => 'AC',
-						   'id_empresa'  => $empresaId
+						   //'estado'	     => 'AC',
+						   //'grpId'       => $grp,
+						   //'id_empresa'  => $empresaId
 						);
 					}
 				} else {
@@ -122,10 +139,10 @@ class Users extends CI_Model
 						   'usrLastName' => $lnam,
 						   //'usrComision' => $com,
 						   'usrPassword' => md5($pas),
-						   'grpId'       => $grp,
+						   //'estado'	     => 'AC',
+						   //'grpId'       => $grp,
 						   //'usrimag'     => $img,
-						   //'estado'		 => 'AC',
-						   'id_empresa'  => $empresaId
+						   //'id_empresa'  => $empresaId
 						);
 					} else {
 						$data = array(
@@ -134,41 +151,69 @@ class Users extends CI_Model
 						   'usrLastName' => $lnam,
 						   //'usrComision' => $com,
 						   'usrPassword' => md5($pas),
-						   'grpId'       => $grp,
+						   //'grpId'       => $grp,
 						   'usrimag'     => $img,
-						   //'estado'		 => 'AC',
-						   'id_empresa'  => $empresaId
+						   //'estado'      => 'AC',
+						   //'grpId'       => $grp,
+						   //'id_empresa'  => $empresaId
 						);
 					}
 				}
 			} else {
 				$data = array(
-					   'usrNick'     => $usr,
-					   'usrName'     => $name,
-					   'usrLastName' => $lnam,
-					   //'usrComision' => $com,
-					   'usrPassword' => md5($pas),
-					   'grpId'       => $grp,
-					   'usrimag'     => $img,
-					   'estado'		 => 'AC',
-					   'id_empresa'  => $empresaId
-					);
+				   'usrNick'     => $usr,
+				   'usrName'     => $name,
+				   'usrLastName' => $lnam,
+				   'usrPassword' => md5($pas),
+				   'usrimag'     => $img,
+				);
 			}
+
 
 			switch($act){
 				case 'Add':
 					//Agregar Usuario
-					if($this->db->insert('sisusers', $data) == false) {
+					if($this->db->insert('sisusers', $data) == false)
+					{
 						return false;
-					}else{
-						return true;
+					}
+					else
+					{
+						$data2 = array(
+							'empresaid' => $empresaId,
+							'usrId'     => $this->db->insert_id(),
+							'fecha'     => date('Y-m-d H:i:s'),
+							'tipo'      => 1,
+							'grpId'     => $grp,
+							'estado'    => 'AC',
+						);
+						if($this->db->insert('usuarioasempresa', $data2) == false)
+						{
+							return false;
+						}
 					}
 					break;
 
 				 case 'Edit':
 				 	//Actualizar usuario
-				 	if($this->db->update('sisusers', $data, array('usrId'=>$id)) == false) {
+				 	if($this->db->update('sisusers', $data, array('usrId'=>$id)) == false)
+				 	{
 				 		return false;
+				 	}
+				 	else
+				 	{
+				 		$data2 = array(
+							'empresaid' => $empresaId,
+							//'usrId'     => $this->db->insert_id(),
+							//'fecha'     => date('Y-m-d H:i:s'),
+							//'tipo'      => 0,
+							'grpId'     => $grp,
+							//'estado'    => 'AC',
+						);
+				 		if($this->db->update('usuarioasempresa', $data2, array('usrId'=>$id, 'empresaid'=>$empresaId)) == false)
+					 	{
+					 		return false;
+					 	}	
 				 	}
 				 	break;
 
@@ -177,7 +222,7 @@ class Users extends CI_Model
 				 	$dataE = array(
 						'estado' => 'AN',
 					);
-				 	if($this->db->update('sisusers', $dataE, array('usrId'=>$id)) == false) {
+				 	if($this->db->update('usuarioasempresa', $dataE, array('usrId'=>$id, 'empresaid'=>$empresaId)) == false) {
 				 		return false;
 				 	}
 				 	break;
@@ -188,23 +233,27 @@ class Users extends CI_Model
 		}
 	}
 
-	function sessionStart_($data = null){
+	function sessionStart_($data = null)
+	{
 		if($data == null)
 		{
 			return false;
 		}
 		else
 		{
-			$usr  = $data['usr'];
-			$pas  = md5($data['pas']);
+			$usr = $data['usr'];
+			$pas = md5($data['pas']);
 
-			/*$this->db->select('sisusers.usrId, sisusers.usrNick, sisusers.usrName, sisusers.usrLastName, sisusers.usrComision, sisusers.usrPassword, sisusers.grpId, sisusers.usrimag, 
-				empresas.descripcion, empresas.id_empresa');
+			$this->db->select('
+				sisusers.usrId, sisusers.usrNick, sisusers.usrName, sisusers.usrLastName, 
+				empresas.id_empresa, empresas.descripcion, 
+				usuarioasempresa.grpId, 
+				sisusers.usrimag');
 			$this->db->from('sisusers');
 			$this->db->join('usuarioasempresa', 'usuarioasempresa.usrId = sisusers.usrId');
-			$this->db->join('empresas', 'usuarioasempresa.empresaid = empresas.id_empresa');
+			$this->db->join('empresas', 'empresas.id_empresa = usuarioasempresa.empresaid');
 			$this->db->where('sisusers.usrNick', $usr);
-			//$this->db->where('sisusers.usrPassword', $pas);
+			$this->db->where('sisusers.usrPassword', $pas);
 			$this->db->where('usuarioasempresa.tipo', 1);
 			$query = $this->db->get();
 			
@@ -212,36 +261,9 @@ class Users extends CI_Model
 			{
 				$datosSesionUsuario = $query->result_array();
 				
-				dump_exit($datosSesionUsuario);
+				//dump_exit($datosSesionUsuario);
 				$this->session->set_userdata('user_data', $datosSesionUsuario);
-				
-				return true;
-			} else {
-				return false;
-			}*/
-
-			$this->db->select('sisusers.usrId, sisusers.usrNick, sisusers.usrName, sisusers.usrLastName, sisusers.usrPassword, sisusers.grpId, sisusers.usrimag, sisusers.id_empresa, 
-				empresas.id_empresa, empresas.descripcion');
-			$this->db->from('sisusers');
-			$this->db->join('empresas', 'sisusers.id_empresa = empresas.id_empresa');
-			$this->db->where('sisusers.usrNick', $usr);
-			$this->db->where('sisusers.usrPassword', $pas);
-			$query = $this->db->get();
-			
-			if ($query->num_rows() != 0)
-			{
-				$datosSesionUsuario = $query->result_array();
-				$idEmpresa = $datosSesionUsuario[0]['id_empresa'];
-				//agrego unidades productivas
-				$query = $this->db->get_where('unidad_industrial', array('id_empresa' => $idEmpresa));
-				if ($query->num_rows() != 0)
-				{
-					$datosSesionUsuario[0]['unidad_industrial'] = $query->result_array();
-					$this->session->set_userdata('user_data', $datosSesionUsuario);
-					return true;
-				} else {
-					return false;
-				}
+	 			return true;
 			} else {
 				return false;
 			}

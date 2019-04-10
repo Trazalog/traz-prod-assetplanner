@@ -127,7 +127,7 @@
                                 <th>Descripcion</th>
                                 <th>Cantidad</th>
                                 <th>Deposito</th>
-                                <th>OT</th>
+                                <th>Descripción de OT</th>
                               </tr>
                             </thead>
                             <tbody></tbody>
@@ -168,29 +168,7 @@ $('#listado').click( function cargarVista(){
 });
   
 var idslote = new Array(); 
-/*traer_codigo();
-function traer_codigo(){
-  $.ajax({
-    type: 'POST',
-    data: { },
-    url: 'index.php/Ordeninsumo/getcodigo',
-    success: function(data){
-      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-      $('#codigo').append(opcion);
-      for(var i=0; i < data.length ; i++) 
-      {   
-          idslote[i] = data[i]['loteid'];
-          var nombre = data[i]['artBarCode'];
-          var opcion  = "<option value='"+data[i]['artId']+"'>" +nombre+ "</option>" ;
-          $('#codigo').append(opcion); 
-      }
-    },
-    error: function(result){       
-      console.log(result);
-    },
-      dataType: 'json'
-  });
-}*/
+
 // autocomplete para codigo
 var dataF = function () {
   var tmp = null;
@@ -238,29 +216,6 @@ $("#codigo").autocomplete({
     //console.log(ui.item.value);                
   },
 });
-
-//trae_solicitante();
-/*function trae_solicitante(){
-  $.ajax({
-    type: 'POST',
-    data: { },
-    url: 'index.php/Ordeninsumo/getsolicitante',
-    success: function(data){
-      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-      $('#solicitante').append(opcion); 
-      for(var i=0; i < data.length ; i++) 
-      {
-        var nombre = data[i]['solicitante'];
-        var opcion = "<option value='"+data[i]['id_solicitud']+"'>" +nombre+ "</option>" ; 
-        $('#solicitante').append(opcion);
-      }
-    },
-    error: function(result){   
-      console.log(result);
-    },
-    dataType: 'json'
-  });
-}*/
 
 // autocomplete para solicitante
 var dataF = function () {
@@ -313,55 +268,37 @@ var dataOT = function () {
     'url': "index.php/Ordeninsumo/getOT",
     'success': function (data) {
       tmp = data;
-      //console.table(tmp);
     }
   });
   return tmp;
 }();
-$("#idOT").autocomplete({
-  autoFocus: true,
-  source: dataOT,
-  delay: 500,
-  minLength: 1,
-  response: function(event, ui) {
-    var noResult = { value:"",label:"No se encontraron resultados" };
-    ui.content.push(noResult);
-  },
-  focus: function(event, ui) {
-    // prevent autocomplete from updating the textbox
+
+$("#idOT").keypress(function( event ) {
+  
+  if ( event.which == 13 ) {
     event.preventDefault();
-    // manually update the textbox
-    $(this).val(ui.item.value);
-    if(ui.item.value=="")
+    var ordenTrabajo = buscarOT(dataOT);
+    if( ordenTrabajo == '-1')
       $('#ot').html("");
-    $('#ot').html(ui.item.info);
-  },
-  select: function(event, ui) {
-    // prevent autocomplete from updating the textbox
-    event.preventDefault();
-    // manually update the textbox and hidden field
-    $(this).val(ui.item.value);//label
-    if(ui.item.value=="")
-      $('#ot').html("");
-    $("#ot").html(ui.item.info);
-    //console.log("id articulo de orden insumo: ") 
-    //console.log(ui.item.value);                
-  },
-  /*change: function (event, ui) {
-    if (!ui.item) {
-      this.value = '';
-      $("#ot").val("");
+    else
+      $('#ot').html(ordenTrabajo.info);
+  }
+});
+
+function buscarOT(Objeto){
+    var objetoOt = [];
+    for (propiedad in Objeto){
+        if ( Objeto[propiedad]['value'] === $('#idOT').val() ){
+            objetoOt.push(Objeto[propiedad]);
+        }
     }
-  }*/
-}).autocomplete( "widget" ).addClass( "hidden" );
-/*.autocomplete("instance")._renderItem = function(ul, item) {
-  console.log('test');
-  var item = $('<div class="list_item_container"><div class="label"><h3> Reputation:  ' + item.label + '</h3></div><div class="description">' + item.info + '</div></div>')
-  return $("<li>").append(item).appendTo(ul);
-};*/
+    if (objetoOt[0] == null) {
+      objetoOt[0] = '-1';
+    }
+    return objetoOt[0];
+}
 
-
-//traer_deposito();
+//trae deposito al seleccionar un articulo si este esta cargado en algun deposito;
 function traer_deposito(artId){
   $('#deposito').html(""); 
   $.ajax({
@@ -369,10 +306,10 @@ function traer_deposito(artId){
     data: {artId:artId },
     url: 'index.php/Ordeninsumo/getdeposito',
     success: function(data){
+      console.log('datos en deposito' + data);
       var opcion  = "<option value='-1'>Seleccione...</option>" ; 
       $('#deposito').append(opcion); 
-      for(var i=0; i < data.length ; i++) 
-      {    
+      for(var i=0; i < data.length ; i++){    
         var nombre = data[i]['depositodescrip'];
         var opcion  = "<option value='"+data[i]['depositoId']+"'>" +nombre+ "</option>" ; 
         $('#deposito').append(opcion);                        
@@ -455,21 +392,9 @@ function guardar(){
     console.log('articulo: '+art);
   });
      
-  console.log("parametros de Orden");
-  console.log(parametros);
-  console.log("insumos id");
-  console.log(idsinsumo);
-  console.log("cantidad");
-  console.log(comp);
-  console.log("lotes");
-  console.log(idslote);
-  console.log("depo");
-  console.log(depo);
-    console.log("art");
-  console.log(art);
   var hayError = false;
 
-  if(parametros !=0 && idsinsumo !=0 && $('#comprobante').val()!="" && $('#fecha').val()!="" && $('#solicitante').val()!=""){
+  if(parametros !=0 && idsinsumo !=0 && $('#fecha').val()!="" && $('#solicitante').val()!="" && $('#ot').val()!="" ){
     //&& depo !=0 && idsinsumo >0 && comp >0
     $.ajax({
       type: 'POST',
@@ -498,26 +423,6 @@ function guardar(){
     $('#error').fadeOut('slow');
   }
 }
-/*
-$('#codigo').change(function(){
-  var artId = $(this).val();
-  console.log(artId);
-  $.ajax({
-    type: 'POST',
-    data: {artId:artId }, 
-    url: 'index.php/Ordeninsumo/getdescrip',
-    success: function(data){
-      console.log(data);
-      var descrip = data[0]['artDescription']; 
-      $('#descripcion').val(descrip);       
-    },
-    error: function(result){
-      console.log(result);
-    },
-    dataType: 'json'
-  });
-  traer_deposito(artId);
-});*/
 
 //agrega insumos a la tabla detainsumos
 var i = 1;

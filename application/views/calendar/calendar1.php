@@ -25,29 +25,12 @@
 
 <script>
 
-// $('#boton').click(function(){
-  //     $.ajax({
-  //         url: 'index.php/Calendario/getTablas',
-  //         type: "POST",
-  //         data: {mes:1},
-  //         success: function(data) {              
-
-  //                 $('#tablas').html(data);   
-  //         },
-  //         error:function(argument) {
-  //           alert('fuiste');
-  //         }
-  //     });
-  // });
-
 
 function getTablas(month_, year_) 
 {
   var mes = parseInt(month_) + 1;
   var year = parseInt(year_);
-  var permission = '<?php echo $permission ?>';
-  //var permission = $('#permission').val();
-  //alert(permission);
+  var permission = '<?php echo $permission ?>';  
   $.ajax({
     url: 'index.php/Calendario/getTablas',
     type: "POST",
@@ -451,11 +434,11 @@ $("#fecha_progr_prevent_horas").datepicker({
 
 
 //////////  CORRECTIVO (Listoooo)
-var tarea         = "";
-var fecha_solicit = "";
-var id_sol        = "";
-var id_eq         = "";
-var desc_causa    = "";
+  var tarea         = "";
+  var fecha_solicit = "";
+  var id_sol        = "";
+  var id_eq         = "";
+  var desc_causa    = "";
 
   // Genera Orden de Trabajo y la guarda automaticamente
   $('.fa-stop-circle').click( function(){
@@ -544,11 +527,11 @@ var desc_causa    = "";
 //////////  / CORRECTIVO (Listoooo)
 
 //////////  PREVENTIVO (Listoooo)
-var id_tar       = "";
-var fec_sol_prev = "";
-var id_prev      = "";
-var id_equ       = "";
-var desc_tarea   = "";  
+  var id_tar       = "";
+  var fec_sol_prev = "";
+  var id_prev      = "";
+  var id_equ       = "";
+  var desc_tarea   = "";  
 
 function fill_Prevent(dato){    
   $.ajax({
@@ -641,8 +624,8 @@ $('#event_Preventivo').change(function(){
   function setOtPrevHoras() {
     var progr_corr_hs    = $('#fecha_progr_prevent_horas').val();
     var hora_progr_prevH = $('#hora_progr_prevH').val();
-console.info(fec_sol_prevhs);
-console.info(ultima_lectura);
+    console.info(fec_sol_prevhs);
+    console.info(ultima_lectura);
 
     $.ajax({
       type: 'POST', //parametros:parametros
@@ -678,7 +661,7 @@ console.info(ultima_lectura);
   }
 //////////  / PREVENTIVO POR HORAS 
 
-//////////  BACKLOG (Listoooo)
+//////////  BACKLOG 
   var id_de_tar = "";
   var fec_sol_back = "";
   var desc_tarea_back = "";
@@ -711,11 +694,10 @@ console.info(ultima_lectura);
   function setOtBacklog() {
     var progr_back = $('#fecha_progr_back').val();
     var hora_progr_back = $('#hora_progr_back').val();
-    
-
     $.ajax({
           type: 'POST', //parametros:parametros
-          data: {
+          data: { 
+                  event_tipo : 1, // evento unico
                   id_sol : id_back,
                   id_tarea : id_de_tar,
                   fecha_progr : progr_back,
@@ -746,7 +728,7 @@ console.info(ultima_lectura);
   }
 //////////  / BACKLOG ()
 
-//////////  PREDICTIVO ()
+//////////  PREDICTIVO () - Listo modificado (trae insumo y herramientas desde Predictivo)
 
   // Variables globales para llenar al enviar
   var tarea_descrip = "";   //id tarea
@@ -774,7 +756,6 @@ console.info(ultima_lectura);
           dataType: 'json'    
       });    
   }
-
   // Limpia variables
   function CancPred(){
      tarea_descrip = "";   //id tarea
@@ -782,7 +763,6 @@ console.info(ultima_lectura);
      ide = "";   // id equipo
      fecha_inicio = "";
   }
-
   ////Guarda OT desde Predictivo
   function setOtPredictivo(){
 
@@ -790,8 +770,6 @@ console.info(ultima_lectura);
     var hora_pred = $('#hora_progr_pred').val();
     var event_Predic = $('#event_Predictivo').val() ;
     var cant_meses_predic = $('#cant_meses_predic').val();
-    
-
     $.ajax({
           type: 'POST', //parametros:parametros
           data: {
@@ -808,7 +786,6 @@ console.info(ultima_lectura);
                 },
           url: 'index.php/Calendario/guardar_agregar',  //index.php/
           success: function(data){
-
                    setTimeout("cargarView('Calendario', 'indexot', '"+$('#permission').val()+"');",0);
                 },
           error: function(result){
@@ -817,7 +794,6 @@ console.info(ultima_lectura);
               }
     });
   }
-
   //habilita/deshabilita el campo cantidad
   $('#event_Predictivo').change(function(){
     
@@ -879,7 +855,7 @@ console.info(ultima_lectura);
 <!-- Guardado de datos y validaciones -->
 
 <!-- Modal Correctivo-->
-<div class="modal fade" id="modal-correctivo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modal-correctivo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -905,7 +881,7 @@ console.info(ultima_lectura);
 </div>
 
 <!-- Modal Preventivo-->
-<div class="modal fade" id="modal-preventivo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modal-preventivo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -943,7 +919,7 @@ console.info(ultima_lectura);
 </div>
 
 <!-- Modal Preventivo P/ Horas-->
-<div class="modal fade" id="modal-preventivoH" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modal-preventivoH" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -972,7 +948,7 @@ console.info(ultima_lectura);
 </div>
 
 <!-- Modal Backlog-->
-<div class="modal fade" id="modal-backlog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modal-backlog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -1000,7 +976,7 @@ console.info(ultima_lectura);
 </div>
 
 <!-- Modal Predictivo-->
-<div class="modal fade" id="modal-fecha" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modal-fecha" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -1038,7 +1014,7 @@ console.info(ultima_lectura);
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="modalPrevent" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="modalPrevent" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">

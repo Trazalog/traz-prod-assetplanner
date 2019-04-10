@@ -83,8 +83,9 @@
                   </div>
                   <div class="panel-body">
                     <div class="row" >
-                      <div class="col-xs-12 col-md-6"><label>Componente <strong style="color: #dd4b39">*</strong> :</label>
-                        <select  id="componente" name="componente" class="form-control" />
+                      <div class="col-xs-12 col-md-6"><label>Componente <strong style="color: #dd4b39">*</strong> :</label>                        
+                        <input type="text" name="componente" id="componente" class="form-control" placeholder="Buscar Componente...">
+                        <input type="hidden" name="id_componente" id="id_componente" class="form-control">
                       </div>
                       <div class="col-xs-12 col-md-6">
                         <br>
@@ -135,7 +136,7 @@
             </div>
 
             <div class="modal-footer">
-              <button type="button" class="btn btn-default delete" onclick="javascript:limpiarModal()">Cancelar</button>
+              <button type="button" class="btn btn-default delete" id="listado2">Cancelar</button>
               <button type="button" class="btn btn-primary" onclick="guardar()">Guardar</button>
             </div>  <!-- /.modal footer -->
               <!-- / Modal -->
@@ -227,339 +228,392 @@ function traer_equipo(){
       }
     },
     error: function(result){
-      console.log(result);
+      console.error(result);
     },
     dataType: 'json'
   });
 }
 
 // Trae componentes segun empresa (no equipos)
-traer_componente();
-function traer_componente(){
-  $.ajax({
-    type: 'POST',
-    data: { },
-    url: 'index.php/Componente/getcomponente',
-    success: function(data){
-      $('#componente').empty();
-      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-      $('#componente').append(opcion); 
-      for(var i=0; i < data.length ; i++){  
-        var nombre = data[i]['descripcion']+" - "+data[i]['marcadescrip']+" - "+data[i]['informacion'];
-        var opcion  = "<option value='"+data[i]['id_componente']+"'>" +nombre+ "</option>" ; 
-        $('#componente').append(opcion); 
+
+  function ordenaArregloDeObjetosPor(propiedad) {  
+    return function(a, b) {  
+      if (a[propiedad] > b[propiedad]) {  
+        return 1;  
+      } else if (a[propiedad] < b[propiedad]) {  
+        return -1;  
+      }  
+      return 0;  
+    }  
+  } 
+
+
+  var dataComponentes = {};
+  traerComp();
+  function traerComp(){
+    dataComponentes = function() {
+      var tmp = null;
+      $.ajax({
+        'async': false,
+        'type': "POST",
+        'dataType': 'json',
+        'url': 'index.php/Componente/getcomponente',
+      })
+      .done( (data) => { tmp = data } )
+      .fail( () => alert("Error al traer componentes") );
+      return tmp;
+    }();
+  }
+
+   
+
+  // data busqueda por codigo de herramientas
+  function dataCodigoCompo(request, response) {
+    function hasMatch(s) {
+      return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
+    }
+    var i, l, obj, matches = [];
+
+    if (request.term==="") {
+      response([]);
+      return;
+    }
+    
+    //ordeno por codigo de herramientas
+    dataComponentes = dataComponentes.sort(ordenaArregloDeObjetosPor("label"));
+
+    for  (i = 0, l = dataComponentes.length; i<l; i++) {
+      obj = dataComponentes[i];
+      if (hasMatch(obj.codigo)) {
+        matches.push(obj);
       }
+    }
+    response(matches);
+  }
+
+  autoCompletarComponentes();
+function autoCompletarComponentes(){
+  //busqueda por marcas de herramientas
+  $("#componente").autocomplete({
+    source:    dataComponentes,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_componente').val(ui.item.value); 
     },
-    error: function(result){
-      console.log(result);
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_componente').val(ui.item.value);
     },
-    dataType: 'json'
-  });
+  })
+  //muestro marca en listado de resultados
+  .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+    .append( "<a>" + item.label + "</a>" )
+    .appendTo( ul );
+  };
 }
 
 // Trae sistemas
-traer_sistema();
-function traer_sistema(){
-  $.ajax({
-    type: 'POST',
-    data: { },
-    url: 'index.php/Componente/getsistema',
-    success: function(data){
-      $('#sistema').empty();
-      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-      $('#sistema').append(opcion); 
-      for(var i=0; i < data.length ; i++){  
-        var nombre = data[i]['descripcion'];
-        var opcion  = "<option value='"+data[i]['sistemaid']+"'>" +nombre+ "</option>" ; 
+  traer_sistema();
+  function traer_sistema(){
+    $.ajax({
+      type: 'POST',
+      data: { },
+      url: 'index.php/Componente/getsistema',
+      success: function(data){
+        $('#sistema').empty();
+        var opcion  = "<option value='-1'>Seleccione...</option>" ; 
         $('#sistema').append(opcion); 
-      }
-    },
-    error: function(result){
-      console.log(result);
-    },
-    dataType: 'json'
-  });
-}
+        for(var i=0; i < data.length ; i++){  
+          var nombre = data[i]['descripcion'];
+          var opcion  = "<option value='"+data[i]['sistemaid']+"'>" +nombre+ "</option>" ; 
+          $('#sistema').append(opcion); 
+        }
+      },
+      error: function(result){
+        console.error(result);
+      },
+      dataType: 'json'
+    });
+  }
 
 // Trae marcas para modal agregar componente - Chequeado
-traer_marca();
-function traer_marca(){
-  $.ajax({
-    type: 'POST',
-    data: { },
-    url: 'index.php/Componente/getmarca', 
-    success: function(data){
-           $('#ma').empty();
-             var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-              $('#ma').append(opcion); 
-            for(var i=0; i < data.length ; i++) 
-            {    
-                  var nombre = data[i]['marcadescrip'];
-                  var opcion  = "<option value='"+data[i]['marcaid']+"'>" +nombre+ "</option>" ; 
-
+  traer_marca();
+  function traer_marca(){
+    $.ajax({
+      type: 'POST',
+      data: { },
+      url: 'index.php/Componente/getmarca', 
+      success: function(data){
+            $('#ma').empty();
+              var opcion  = "<option value='-1'>Seleccione...</option>" ; 
                 $('#ma').append(opcion); 
-                               
-            }
+              for(var i=0; i < data.length ; i++) 
+              {    
+                    var nombre = data[i]['marcadescrip'];
+                    var opcion  = "<option value='"+data[i]['marcaid']+"'>" +nombre+ "</option>" ; 
+
+                  $('#ma').append(opcion); 
+                                
+              }
+            },
+      error: function(result){
+            
+            console.error(result);
           },
-    error: function(result){
-          
-          console.log(result);
-        },
-        dataType: 'json'
-    });
-}
+          dataType: 'json'
+      });
+  }
 
 // Llena textarea Descrip segun id de euipo
-function traer_descripcion(idequipo){
-  $.ajax({
-    type: 'POST',
-    data: { idequipo: idequipo},
-    url: 'index.php/Componente/getequipo',
-    success: function(data){
-            console.log(data);
-            console.log(data.datos);
-            if(data=='nada'){
-              var d='No hay Descripcion cargada';
-              $('#descrip').append(d);
-            }
-             $('#descrip').val(data.datos);
-        },
-    error: function(result){
-          console.log(result);
-            },
-           dataType: 'json'
-        });   
-}
+  function traer_descripcion(idequipo){
+    $.ajax({
+      type: 'POST',
+      data: { idequipo: idequipo},
+      url: 'index.php/Componente/getequipo',
+      success: function(data){
+              //console.log(data);
+              //console.log(data.datos);
+              if(data=='nada'){
+                var d='No hay Descripcion cargada';
+                $('#descrip').append(d);
+              }
+              $('#descrip').val(data.datos);
+          },
+      error: function(result){
+            console.error(result);
+              },
+            dataType: 'json'
+          });   
+  }
 
 // Limpia modal agregar componente
-function limpiarModal(){
-  $("#equipo").val("");
-  $("#descrip").val("");
-  $("#componente").val("");
-  $("#codigo").val("");
-  $('#tablacompo tbody tr').remove();
-  $('#tablaequipos tbody tr').remove();
-}
+  function limpiarModal(){
+    $("#equipo").val("");
+    $("#descrip").val("");
+    $("#componente").val("");
+    $("#codigo").val("");
+    $('#tablacompo tbody tr').remove();
+    $('#tablaequipos tbody tr').remove();
+  }
 
 // Guarda asociacion Equipo/componente 
-function guardar(){ 
-  var id_equipo = new Array();     
-  $("#tablaequipos tbody tr").each(function (index){
-    var idequipo = $(this).attr('id');
-    id_equipo.push(idequipo); 
-  });  
+  function guardar(){ 
+    WaitingOpen("Guardando asociación a equipo");
+    var id_equipo = new Array();     
+    $("#tablaequipos tbody tr").each(function (index){
+      var idequipo = $(this).attr('id');
+      id_equipo.push(idequipo); 
+    });  
 
-  comp   = {};
-  codigo = {};
-  sistemaid = {};
-  var j  = 1;
-  var f  = 1;
-  $("#tablaequipos tbody tr").each(function (index){
-    var campo1, campo2, campo3, campo4, campo5, campo6;
-    $(this).children("td").each(function (index2){
-      switch (index2){
-        case 0: 
-          campo1 = $(this).text();
-          break;
-        case 1: 
-          campo2 = $(this).text();
-          break;
-        case 2: 
-          campo3 = $(this).text();
-          break;
-        case 3: 
-          campo4    = $(this).text();
-          codigo[j] = campo4; 
-          break;
-        case 4: 
-          campo5  = $(this).text();
-          //sistemaid[j] = campo5;
-          break;
-        case 5: 
-          campo6  = $(this).text();
-          comp[j] = campo6;
-          break;
-        case 6: 
-          campo7  = $(this).text();
-          sistemaid[j] = campo7;
-          j++;
-          break;
-      }
+    comp   = {};
+    codigo = {};
+    sistemaid = {};
+    var j  = 1;
+    var f  = 1;
+    $("#tablaequipos tbody tr").each(function (index){
+      var campo1, campo2, campo3, campo4, campo5, campo6;
+      $(this).children("td").each(function (index2){
+        switch (index2){
+          case 0: 
+            campo1 = $(this).text();
+            break;
+          case 1: 
+            campo2 = $(this).text();
+            break;
+          case 2: 
+            campo3 = $(this).text();
+            break;
+          case 3: 
+            campo4    = $(this).text();
+            codigo[j] = campo4; 
+            break;
+          case 4: 
+            campo5  = $(this).text();
+            //sistemaid[j] = campo5;
+            break;
+          case 5: 
+            campo6  = $(this).text();
+            comp[j] = campo6;
+            break;
+          case 6: 
+            campo7  = $(this).text();
+            sistemaid[j] = campo7;
+            j++;
+            break;
+        }
+      });
+      //console.log(codigo);
     });
-    //console.log(codigo);
-  });
 
-  var idequipo = $('#equipo').val();
-  
-  console.log("idequipo: "+idequipo);
-  console.log("componentes: ");
-  console.table(comp);
-  console.log("codigo: ");
-  console.table(codigo);
-  console.log("sistemaid: ");
-  console.table(sistemaid);
-  console.log("bandera: "+x);
-  var hayError = false;
+    var idequipo = $('#equipo').val();
+    var hayError = false;
 
-  if( $('#tablaequipos').DataTable().data().any() ) {
-  //if(eq !== '-1' && comp !== '-1'){   
-    $.ajax({
+    if( $('#tablaequipos').DataTable().data().any() ) {
+      $.ajax({
         type: 'POST',
         data: {idequipo:idequipo, codigo:codigo, sistemaid:sistemaid, comp:comp, x:x, ge:ge},
-        url: 'index.php/Componente/guardar_componente',  //index.php/
+        url: 'index.php/Componente/guardar_componente',
         success: function(data){
           console.log("entre por el guardado del componente equipo");
-                console.log(data);
-                alert ("guardado con exito");
-                cargarVista();
-              },
+          //alert ("guardado con exito");
+          cargarVista();
+        },
         error: function(result){
-          console.log("entre por el error del componente equipo");
-              
-              console.log(result);
-              
-            }
-           // dataType: 'json'
-        });
-        limpiarModal();
+          console.error(result);
         }
-  else{
-    hayError=true;
-    $('#error').fadeIn('slow');
+      });
+      limpiarModal();
+      WaitingClose();
+    }
+    else{
+      hayError=true;
+      $('#error').fadeIn('slow');
+    }
+    if(hayError == false){
+      $('#error').fadeOut('slow');
+    }
   }
-  if(hayError == false){
-    $('#error').fadeOut('slow');
-  }
-}
 
 
 
 // Guarda un componente nuevo
-$('#guardarComponente').click(function(e) { //
-  e.preventDefault();
+  $('#guardarComponente').click(function(e) { //
+    e.preventDefault();
 
-  var descripcion = $('#descrip1').val();
-  var informacion = $('#informacion').val();
-  var marcaid     = $('#ma').val();
-  var pdf         = $('#input-4').val();
-  var parametros  = {
-    'descripcion' : descripcion,
-    'informacion' : informacion,
-    'marcaid'     : marcaid,
-    'pdf'         : pdf,
-  };                                              
-  //console.log("marcaid"+marcaid);
-  var hayError = false; 
-  $('#errorComponentes').hide();
-  if ( marcaid < 0 ) {
-    hayError = true;
-    console.log("entro x marcaid");
-  }
-  if( descripcion == "" ) {
-    hayError = true;
-    console.log("entro x descrip");
-  }
+    var descripcion = $('#descrip1').val();
+    var informacion = $('#informacion').val();
+    var marcaid     = $('#ma').val();
+    var pdf         = $('#input-4').val();
+    var parametros  = {
+      'descripcion' : descripcion,
+      'informacion' : informacion,
+      'marcaid'     : marcaid,
+      'pdf'         : pdf,
+    };                                              
+    //console.log("marcaid"+marcaid);
+    var hayError = false; 
+    $('#errorComponentes').hide();
+    if ( marcaid < 0 ) {
+      hayError = true;
+      //console.log("entro x marcaid");
+    }
+    if( descripcion == "" ) {
+      hayError = true;
+      //console.log("entro x descrip");
+    }
 
-  if(hayError == true){
-    $('#errorComponentes').fadeIn('slow');
-  }
-  else{
-    var formData = new FormData(document.getElementById("formComponentes"));
-    $.ajax({
-      cache: false,
-      contentType: false,
-      data: formData,
-      dataType: "html",
-      processData: false,
-      type: "POST",
-      url: "index.php/Componente/agregarComponente", 
-      success: function(data){
-        traer_componente();
-        $("#modalAddComp2").modal("hide");
-        //$("#modalAddComp2").css("display":"none");
-        //$('.modal.in:visible').modal('hide');
-        //$(".modal-backdrop.in").hide();
-      },
-      error: function(result){
-          console.error("Error al crear componente");
-          console.table(result);
-      },
-    });
-  }
-});
+    if(hayError == true){
+      $('#errorComponentes').fadeIn('slow');
+    }
+    else{
+      var formData = new FormData(document.getElementById("formComponentes"));
+      $.ajax({
+        cache: false,
+        contentType: false,
+        data: formData,
+        dataType: "html",
+        processData: false,
+        type: "POST",
+        url: "index.php/Componente/agregarComponente", 
+        success: function(data){
+          traerComp();
+          autoCompletarComponentes();
+          //traer_componente();
+          $("#modalAddComp2").modal("hide");
+          //$("#modalAddComp2").css("display":"none");
+          //$('.modal.in:visible').modal('hide');
+          //$(".modal-backdrop.in").hide();
+        },
+        error: function(result){
+            console.error("Error al crear componente");
+            console.table(result);
+        },
+      });
+    }
+  });
 
 // Crea la tabla con la asociacion de equipo/componente
-var equipoglob="";
-var x=0;
-$('#addcompo').click(function (e) {
-  var $equipo       = $("select#equipo option:selected").html();
-  var id_equipo     = $('#equipo').val();
-  var codigo        = $('#codigo').val();
-  var $componente   = $("select#componente option:selected").html();
-  var id_componente = $('#componente').val();
-  var sistema       = $("select#sistema option:selected").html();
-  var id_sistema    = $('#sistema').val();
-  equipoglob        = id_equipo;
-  console.info('codigo: '+codigo);
-  console.info('sistema: '+sistema);
-  console.info('id_sistema: '+id_sistema);
-  var table   = $('#tablaequipos').DataTable();
-  if(id_componente >0 && id_sistema >0 && equipoglob >0) {
-    /*$('#tablaequipos tbody').append(tr);*/
-    var rowNode = table.row.add( [
-      "<i class='fa fa-ban elirow text-light-blue' style='cursor: 'pointer'></i>",
-      id_equipo,
-      $componente,
-      codigo,
-      sistema,
-      id_componente,
-      id_sistema
-    ] ).node();
-    rowNode.id = id_equipo;
-    table.draw();
-    $( rowNode ).find('td').eq(5).addClass('hidden');
-    $( rowNode ).find('td').eq(6).addClass('hidden');
+  var equipoglob="";
+  var x=0;
+  $('#addcompo').click(function (e) {
+    var $equipo       = $("select#equipo option:selected").html();
+    var id_equipo     = $('#equipo').val();
+    var codigo        = $('#codigo').val();
+    var $componente   = $("#componente").val();
+    var id_componente = $('#id_componente').val();
+    var sistema       = $("select#sistema option:selected").html();
+    var id_sistema    = $('#sistema').val();
+    equipoglob        = id_equipo;
+    
+    var table   = $('#tablaequipos').DataTable();
+    if(id_componente >0 && id_sistema >0 && equipoglob >0) {
+      /*$('#tablaequipos tbody').append(tr);*/
+      var rowNode = table.row.add( [
+        "<i class='fa fa-ban elirow text-light-blue' style='cursor: 'pointer'></i>",
+        id_equipo,
+        $componente,
+        codigo,
+        sistema,
+        id_componente,
+        id_sistema
+      ] ).node();
+      rowNode.id = id_equipo;
+      table.draw();
+      $( rowNode ).find('td').eq(5).addClass('hidden');
+      $( rowNode ).find('td').eq(6).addClass('hidden');
 
-    $('#error').fadeOut('slow');
-    //$('#descrip').val('');
-    //$('#tablacompo tbody tr').remove('');
-    //$('#equipo').val('');
-    $('#codigo').val('');
-    $('#componente').val('');
-    $('#sistema').val('');
-  }
-  else{
-    var hayError = true;
-    $('#error').fadeIn('slow')
-  }
-  if(hayError == false){ 
-    $('#error').fadeOut('slow');
-  }
-  x++;
-  //console.log(tr);
-  $(document).on("click",".elirow",function(){
-    //var parent = $(this).closest('tr');
-    //$(parent).remove();
-    table.row($(this).parents('tr')).remove().draw(false);
+      $('#error').fadeOut('slow');
+      //$('#descrip').val('');
+      //$('#tablacompo tbody tr').remove('');
+      //$('#equipo').val('');
+      $('#codigo').val('');
+      $('#componente').val('');
+      $('#sistema').val('');
+    }
+    else{
+      var hayError = true;
+      $('#error').fadeIn('slow')
+    }
+    if(hayError == false){ 
+      $('#error').fadeOut('slow');
+    }
+    x++;
+    //console.log(tr);
+    $(document).on("click",".elirow",function(){
+      //var parent = $(this).closest('tr');
+      //$(parent).remove();
+      table.row($(this).parents('tr')).remove().draw(false);
+    });
   });
-});
 
-// Vuelve al listado al guardar
-$('#listado').click( function cargarVista(){
-    WaitingOpen();
-    $('#content').empty();
-    $("#content").load("<?php echo base_url(); ?>index.php/Componente/asigna/<?php echo $permission; ?>");
-    WaitingClose();
-});
+  // Vuelve al listado al guardar
+  $('#listado, #listado2').click( function cargarVista(){
+      WaitingOpen();
+      $('#content').empty();
+      $("#content").load("<?php echo base_url(); ?>index.php/Componente/asigna/<?php echo $permission; ?>");
+      WaitingClose();
+  });
 
-// Cuando selecciona equipo carga componentes
+  function cargarVista(){
+      WaitingOpen();
+      $('#content').empty();
+      $("#content").load("<?php echo base_url(); ?>index.php/Componente/asigna/<?php echo $permission; ?>");
+      WaitingClose();
+  }
+
+// Cuando selecciona equipo carga componentes asociados al equipo
 var s=0; 
 $('#equipo').change(function(){
   var idequipo = $(this).val();
   var d = $(this).parent('td').parent('tr').attr('id');
   di = d;
   ge = idequipo;
-  console.log("id de equipo: "+idequipo);
+  //console.log("id de equipo: "+idequipo);
   $('#tablacompo tbody tr').html("");
   
   $.ajax({
@@ -568,7 +622,7 @@ $('#equipo').change(function(){
     type: 'POST',
     url: 'Componente/getcompo', 
     success: function(data){                  
-      console.table(data); 
+      //console.table(data); 
       if (data!= 0) {
         var de = data[0]['descripcion']; 
         var comp = data[0]['dee11'];
@@ -582,8 +636,8 @@ $('#equipo').change(function(){
           s++;
         }             
 
-        console.log(table);
-        console.log(s);
+        //console.log(table);
+        //console.log(s);
         $('#tablacompo').val('');
       }
       else{

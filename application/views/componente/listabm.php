@@ -4,7 +4,7 @@
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">Componentes</h3>
+          <h3 class="box-title">Componentes en abm</h3>
           <?php
           if (strpos($permission,'Add') !== false) {
             echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" data-toggle="modal" data-target="#modalAddComp">Agregar</button>';
@@ -212,7 +212,8 @@ function traer_marca(){ // Ok
 // Guarda un componente nuevo
 $('#guardarComponente').click(function(e) { //
   e.preventDefault();
-
+  WaitingOpen("Guardando Componente");
+  
   var descripcion = $('#descrip1').val();
   var informacion = $('#informacion').val();
   var marcaid     = $('#ma').val();
@@ -332,6 +333,7 @@ function llena_marca(idMarca){ // Ok
 $("#editarComponente").click(function(e){
   e.preventDefault();
 
+  WaitingOpen("Guardando Componente");
   idComponente = $("#idComponenteE").val();
   idmarca      = $("#marcaE").val();
   descripcion  = $("#descripcionE").val();

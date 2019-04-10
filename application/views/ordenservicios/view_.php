@@ -72,7 +72,7 @@
                 <input class="form-control numSolic form_equipos" name="numSolic" id="numSolic" value="<?php echo $id_ot;?>" disabled/>
               </div>
               <div class="col-xs-12 col-sm-6">
-                <label for="causa">Descripción de la Falla</label>
+                <label for="causa">Descripción de la Tarea</label>
                 <input type="text" name="causa" class="form-control causa form_equipos" id="causa" value="<?php echo $causa;?>" disabled>
               </div>
               <div class="col-xs-12 col-sm-6">
@@ -301,7 +301,7 @@
                     </div>
                   </div>
                 </div>
-              </div><!-- end .tabpanel -->
+              </div><!- - end .tabpanel - ->
 
               <div role="tabpanel" class="tab-pane" id="rrhh">
                 <!--  ORDEN DE RECURSOS HUMANOS  -->
@@ -320,6 +320,11 @@
 
                     <input type="hidden" class="id-Operario" id="id-Operario" value="">
                     <div class="row">
+                      <div class="col-xs-12">
+                        <label for="responsable">Responsable<strong style="color: #dd4b39">*</strong> :</label>
+                        <input type="text" class=" form-control responsable" id="responsable" name="responsable" disabled> 
+                        <input type="hidden" id="id_responsable" name="id_responsable">
+                      </div>
                       <div class="col-xs-12 col-sm-6 col-md-4">
                         <label for="operario">Apellido y Nombre <strong style="color: #dd4b39">*</strong> :</label>
                         <input type="text" class=" form-control operario" id="operario" name="operario" value="" placeholder="Buscar...">
@@ -574,7 +579,7 @@ $("#herramienta").autocomplete({
   }
 });
 
-// Llenar tabla herramientas
+//Llenar tabla herramientas
 function armartablistherr() {   // inserta valores de inputs en la tabla 
   var herrId      = $("#herrId").val();
   var herramienta = $("#herramienta").val();
@@ -609,7 +614,7 @@ function armartablistherr() {   // inserta valores de inputs en la tabla
   }
 }
 
-// elimina fila de la tabla listareas
+//elimina fila de la tabla listareas
 $(document).on("click","#delFileH",function(){
   $('#tablalistherram').DataTable().row( $(this).closest('tr') ).remove().draw();
 });
@@ -632,16 +637,16 @@ var dataO = function () {
 }();
 $("#operario").autocomplete({
   autoFocus: true,
-  delay: 100,
+  delay: 300,
   minLength: 1,
   source: dataO,
-  focus: function(event, ui) {
+  /*focus: function(event, ui) {
     // prevent autocomplete from updating the textbox
     event.preventDefault();
     // manually update the textbox
     $(this).val(ui.item.label);
     $("#id-Operario").val(ui.item.value);
-  },
+  },*/
   select: function(event, ui) {
     // prevent autocomplete from updating the textbox
     event.preventDefault();
@@ -687,6 +692,42 @@ function armarTablaRecursos() {   // inserta valores de inputs en la tabla
   }
 }
 
+getRRHHOrdenTrabajo();
+function getRRHHOrdenTrabajo(){
+  var idOT = $('#numSolic').val();
+  $.ajax({
+    'data' : { idOT:idOT },
+    'async': false,
+    'type': "POST",
+    'global': false,
+    'dataType': 'json',
+    'url': "Ordenservicio/getRRHHOrdenTrabajo",
+    'success': function (data) {
+                
+      $('#responsable').val(data['responsable']['label']);
+      $('#id_responsable').val(data['responsable']['value']);
+        var recursos = data['recursos'];
+        for(i = 0; i < recursos.length; i++) {
+          var idRRHH = recursos[i].value;
+          var nameRRHH = recursos[i].label;
+          $('#tabModRecursos').DataTable().row.add( [
+          "<i class ='fa fa-ban elirow text-primary' id='delRRHH' style='cursor:pointer'></i>",
+          nameRRHH
+            ]
+          ).node().id = idRRHH;
+          $('#tabModRecursos').DataTable().draw();
+
+        }    
+
+    },
+    'error': function(){
+      alert('Fallo la carga de RRHH...');
+    }
+    
+  });
+}
+
+
 getInsumos();
 function getInsumos(){
 
@@ -721,10 +762,7 @@ function getInsumos(){
             cantidad             
           ] );
           $('#tablalistinsumos').DataTable().draw();        
-        }
-     
-
-
+        }   
     },
     error: function(data){
 
@@ -817,7 +855,7 @@ function enviarOrden() {
         herramienta[j] = act;
         j++;
     });
-    //console.table(herramienta);
+    console.table(herramienta);
 
     // operario 
     var operario = new Array(); 
@@ -855,8 +893,12 @@ function enviarOrden() {
     //console.table( datosInfoServicio );
 
     WaitingOpen('Guardando cambios');
+    
     $.ajax({
-      data: {datosInfoServicio:datosInfoServicio, tarea:tarea, herramienta:herramienta, operario:operario},
+      data: {datosInfoServicio:datosInfoServicio, 
+              tarea:tarea,  
+              operario:operario, 
+              herramienta:herramienta},
       type: 'POST',
       dataType: 'json',
       url: 'index.php/Ordenservicio/setOrdenServ',
@@ -885,7 +927,7 @@ $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
     $( $.fn.dataTable.tables( true ) ).DataTable().columns.adjust();
 });
 
-$('#tablalistareas, #tablalistherram, #tabModRecursos').DataTable({
+$('#tablalistareas, #tablalistherram').DataTable({
   "aLengthMenu": [ 10, 25, 50, 100 ],
     "columnDefs": [ {
       "targets": [ 0 ], 

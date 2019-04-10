@@ -11,6 +11,7 @@
             <thead>
               <tr>
                 <th>Acciones</th>
+                <th>Nota de Pedido</th>
                 <th>Orden de Trabajo</th>
                 <th>Detalle</th>
                 <th>Fecha Nota</th>              
@@ -34,6 +35,7 @@
                     echo '<i class="fa fa-fw fa-search text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Ver Nota Pedido" data-toggle="modal" data-target="#modaltarea"></i>';
                   //}                     
                   echo '</td>';
+                  echo '<td>'.$z['id_notaPedido'].'</td>';
                   echo '<td>'.$z['id_ordTrabajo'].'</td>';
                   echo '<td>'.$z['descripcion'].'</td>';
                   echo '<td>'.$z['fecha'].'</td>';
