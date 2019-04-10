@@ -55,7 +55,7 @@ class Predictivos extends CI_Model
         
     	$this->db->select('equipos.id_equipo,equipos.codigo');
     	$this->db->from('equipos');
-    	$this->db->where('equipos.estado', 'AC');
+    	$this->db->where('equipos.estado!=', 'AN');
     	$this->db->where('equipos.id_empresa', $empId);    	
     	$query= $this->db->get();		
 		
