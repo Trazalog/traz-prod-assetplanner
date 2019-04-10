@@ -16,6 +16,7 @@
             <thead>
               <tr>                
                 <th>Acciones</th>
+                <th>ID</th>
                 <th>Código Componente</th> 
                 <th>Descripción Componente</th>   
                 <th>Código Equipo</th>
@@ -44,6 +45,7 @@
                   }
                   echo '</td>';
                   '<input type="hidden" id="id_equipo" name="id_equipo">';
+                  echo '<td>'.$idcome.'</td>';
                   echo '<td id="'.$idc.'">'.$a['codcomponente'].'</td>';
                   echo '<td>'.$a['descomp'].'</td>';
                   echo '<td>'.$a['codigo'].'</td>';
@@ -131,13 +133,13 @@ var idequipo     = "";
       //url:  'index.php/Componente/getcompo',
       url:  'index.php/Componente/getcomponente',
       success: function(data){
-        //console.table(data);
+         //console.log(data);
+        if(data == null || data.length == 0){alert('No data');return;}
         $('#componente').empty();
         for(var i=0; i < data.length ; i++) {
-          var nombre = data[i]['descripcion'];
-          var marca = data[i]['marcadescrip'];
-          var selected = (idComponente == data[i]['id_componente']) ? 'selected' : '';
-          var opcion  = "<option value='"+data[i]['id_componente']+"' " +selected+ ">" +nombre+ " - " +marca+ "</option>" ; 
+          var nombre = data[i]['label'];
+          var selected = (idComponente == data[i]['value']) ? 'selected' : '';
+          var opcion  = "<option value='"+data[i]['value']+"' " +selected+ ">" +nombre+ "</option>" ; 
           $('#componente').append(opcion); 
         }
       },

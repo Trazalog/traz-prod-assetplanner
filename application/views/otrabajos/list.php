@@ -1637,7 +1637,7 @@ function guardarparcial(){
       //console.table(data);
       traerDatosOt(idot, data.tipo, data.id_solicitud);
     })
-    .fail( () => alert( "Error al traer los datos de la OT." ) )
+    .fail( () => {alert( "Error al traer los datos de la OT." );WaitingClose(); } )
     .always( () => WaitingClose() );
   });
 
@@ -1698,6 +1698,7 @@ function guardarparcial(){
       url: 'index.php/Otrabajo/getViewDataOt',
     })
     .done( (data) => {
+      if(data==null || data.length==0){WaitingClose();alert("No Data");return;}
       //console.table(data);
       datos = {
         //Panel datos de OT
@@ -1722,7 +1723,8 @@ function guardarparcial(){
         'comp_equipo'    : data['compEquipo'],
       }
     })
-    .fail( () => alert( "Error al traer los datos de la OT." ) );
+    .fail( () => {alert( "Error al traer los datos de la OT." );WaitingClose(); } );
+  
     return datos;
   }
   //llena datos del modal preventivo
@@ -1760,7 +1762,8 @@ function guardarparcial(){
       url: 'index.php/Otrabajo/getViewDataSolServicio',
     })
     .done( (data) => {
-      console.table(data);
+      if(data==null || data.length==0){WaitingClose();alert("No Data");return;}
+      //console.table(data);
       datos = {
         //Panel datos de OT
         'id_ot'          : data['id_orden'],
@@ -1785,7 +1788,7 @@ function guardarparcial(){
         'solServicio'   : data['solServicio'],
       };
     })
-    .fail( () => alert( "Error al traer los datos de la OT." ) );
+    .fail( () => {alert( "Error al traer los datos de la OT." );WaitingClose(); } );
     return datos;
   }
   //llena datos del modal preventivo
@@ -1831,6 +1834,7 @@ function guardarparcial(){
     })
     .done( (data) => {
       //console.table(data);
+      if(data==null || data.length==0){WaitingClose();alert("No Data");return;}
       datos = {
         //Panel datos de OT
         'id_ot'          : data['id_orden'],
@@ -1854,7 +1858,7 @@ function guardarparcial(){
         'tarea' : data['tarea'],
       };
     })
-    .fail( () => alert( "Error al traer los datos de la OT." ) );
+    .fail( () => {alert( "Error al traer los datos de la OT." );WaitingClose(); } );
     return datos;
   }
   //llena datos del modal preventivo
@@ -1941,6 +1945,7 @@ function guardarparcial(){
     })
     .done( (data) => {
       //console.table(data);
+      if(data==null || data.length==0){WaitingClose();alert("No Data");return;}
       datos = {
         //Panel datos de OT
         'id_ot'          : data['id_orden'],
@@ -1965,7 +1970,7 @@ function guardarparcial(){
         'tarea'          : data['tarea'],
       };
     })
-    .fail( () => alert( "Error al traer los datos de la OT." ) );
+    .fail( () => {alert( "Error al traer los datos de la OT." );WaitingClose(); } );
     return datos;
   }
   //llena datos del modal preventivo
@@ -2011,7 +2016,8 @@ function guardarparcial(){
       url: 'index.php/Otrabajo/getViewDataPredictivo',
     })
     .done( (data) => {
-      console.table(data);
+      //console.table(data);
+      if(data==null || data.length==0){WaitingClose();alert("No Data");return;}
       datos = {
         //Panel datos de OT
         'id_ot'          : data['id_orden'],
@@ -2035,7 +2041,7 @@ function guardarparcial(){
         'tarea'          : data['tarea'],
       };
     })
-    .fail( () => alert( "Error al traer los datos de la OT." ) );
+    .fail( () => {alert( "Error al traer los datos de la OT." );WaitingClose(); });
     return datos;
   }
   //llena datos del modal preventivo
@@ -2094,7 +2100,7 @@ function guardarparcial(){
       console.table(data);
       traerDatosImprimirOt(idot, data.tipo, data.id_solicitud);
     })
-    .fail( () => alert( "Error al traer los datos de la OT." ) )
+    .fail( () => {alert( "Error al traer los datos de la OT." );WaitingClose(); } )
     .always( () => WaitingClose() );
   });
 
