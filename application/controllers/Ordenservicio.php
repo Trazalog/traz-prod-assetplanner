@@ -210,3 +210,16 @@ class Ordenservicio extends CI_Controller {
   
   
 }
+        {
+          $arre['equipos']=$equipos;
+        }
+        else $arre['equipos']=0;
+
+
+        echo json_encode($arre);
+      }
+      else echo "nada";
+  }
+  
+  
+}

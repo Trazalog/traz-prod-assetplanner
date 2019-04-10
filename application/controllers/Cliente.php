@@ -44,6 +44,9 @@ class Cliente extends CI_Controller {
 	    $sql = $this->Clientes->Guardar_Clientes($data);
 	    print_r($sql);
   	}
+	    print_r($sql);
+  	}
+          
           
     public function Modificar_Cliente(){
 
@@ -66,6 +69,9 @@ class Cliente extends CI_Controller {
 	    $sql = $this->Clientes->Modificar_Clientes($data);
 	     echo json_encode($sql);
   	}
+	     echo json_encode($sql);
+  	}
+
 
 	public function Eliminar_Cliente(){
         
@@ -73,5 +79,7 @@ class Cliente extends CI_Controller {
 		$result = $this->Clientes->Eliminar_Clientes($id);
         echo json_encode($result);
 	}
+
+}	
 
 }	

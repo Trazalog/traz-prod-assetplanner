@@ -34,8 +34,8 @@ class Componentes extends CI_Model
     }
 
 	// Trae listado de componentes por empresa logueada - Listo
-	function componentes_List()
-    { 
+	function componentes_List(){
+	 
 		$userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];    
 

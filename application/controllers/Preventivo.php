@@ -445,6 +445,34 @@ class Preventivo extends CI_Controller {
     	echo json_encode($response);
     }
 
+	// }
+
+
+
+
+
+
+
+
+
+
+
+	public function cargarpreventivo($permission){ 
+        $data['permission'] = $permission;    // envia permisos       
+        $this->load->view('preventivo/view_',$data);
+    }
+
+    public function volver($permission){ 
+    	$data['list'] = $this->Otrabajos->otrabajos_List();
+        $data['permission'] = $permission;    // envia permisos       
+        $this->load->view('otrabajos/list',$data);
+    }
+
+	public function getProducto (){
+    	$response = $this->Preventivos->getProductos($this->input->post());
+    	echo json_encode($response);
+    }
+
 	public function agregar_componente()
 	{
 

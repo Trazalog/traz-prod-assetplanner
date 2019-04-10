@@ -1,4 +1,4 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+
 
 class area extends CI_Controller {
 
@@ -57,5 +57,7 @@ class area extends CI_Controller {
 		
 	}
 }	
+
+?>
 
 ?>

@@ -68,3 +68,13 @@ function cargarView(controller, action, actions) {
     WaitingClose();
 }
 </script>
+/**
+ * Llama a la vista, mandando controlador, metodo y permisos
+ */
+function cargarView(controller, action, actions) {
+    WaitingOpen();
+    $('#content').empty();
+    $("#content").load("<?php echo base_url(); ?>index.php/"+controller+"/"+action+"/"+actions);
+    WaitingClose();
+}
+</script>

@@ -14,9 +14,9 @@ class  Equipo extends CI_Controller {
 		$data['empresa']    = $userdata[0]['id_empresa'];
 		$data['list']       = $this->Equipos->equipos_List();
 		$data['permission'] = $permission;
-		//dump( $data['list'] );
 		$this->load->view('equipo/list', $data);		     
     }
+
 
     /********** ELIMINAR EQUIPO **********/
     
@@ -165,8 +165,8 @@ class  Equipo extends CI_Controller {
 	//Guarda datos editados
 	public function editar_equipo()
 	{
-		$datos            = $_POST['data'];
-		$id               = $_POST['idEquipo'];	
+		$datos            = $this->input->post('data');
+		$id               = $this->input->post('idEquipo');
 		$userdata         = $this->session->userdata('user_data');
 		$datos['id_empresa'] = $userdata[0]['id_empresa'];
 		$result           = $this->Equipos->update_editar($datos,$id);

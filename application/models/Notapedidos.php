@@ -226,3 +226,33 @@ class Notapedidos extends CI_Model
     }
 
 }
+				$result = file_get_contents($url.BPM_PROCESS_ID.$com, false, $param);
+			} catch (Exception $e) {
+				echo 'Excepción capturada: ',  $e->getMessage(), "\n";
+				echo 'respuestas: ';
+				var_dump( $http_response_header);
+			} 
+				
+			return $result;
+		}
+		
+		
+		
+		//
+    function getOTporId($id)
+    {
+        $this->db->select('id_orden, nro, descripcion');
+        $this->db->from('orden_trabajo');
+        $this->db->where('id_orden', $id);
+        $query = $this->db->get();
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+}

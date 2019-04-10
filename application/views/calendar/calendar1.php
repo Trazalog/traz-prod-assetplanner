@@ -1,4 +1,5 @@
-<input type="hidden" id="permission" value="<?php echo $permission;?>">
+<input type="hidden" id="permission" value="<?php echo $permission;?>"><script>console.log($('#permission').val())
+</script>
 <section class="content">
   <style>
   input.prevent{border: none; padding-left: 5px; width: 100%;} 
@@ -19,18 +20,17 @@
 
 </div>    
 
-<!-- <button id="boton">boton</button> -->    
 
 </section><!-- /.content -->
 
 <script>
 
-
 function getTablas(month_, year_) 
 {
   var mes = parseInt(month_) + 1;
   var year = parseInt(year_);
-  var permission = '<?php echo $permission ?>';  
+  var permission = '<?php echo $permission ?>';
+  //var permission = $('#permission').val();
   $.ajax({
     url: 'index.php/Calendario/getTablas',
     type: "POST",
@@ -46,11 +46,7 @@ function getTablas(month_, year_)
 
 var mes = "";
 
-$(function () {    
 
-//  CALENDARIO
-/* initialize the external events
------------------------------------------------------------------*/
   function ini_events(ele) {
     ele.each(function () {
       // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
@@ -102,6 +98,8 @@ $(function () {
           dataType: 'json',
           type: 'POST',
           success: function(doc) {
+            console.log(doc);
+            
             var events = [];
             getTablas(month_, year_);
             $(doc).each(function() {
@@ -114,16 +112,11 @@ $(function () {
               var minutos = parseInt(from.getMinutes());
               var duracion = parseInt($(this).attr('duracion'));
               var totalminutos = minutos + duracion;
-              // console.log('fecha OT: ');
-              // console.log(from);
-              // console.log('Duracion: ');
-              // console.log(duracion);
+
               var hasta = new Date(from);
               hasta = hasta.setMinutes(totalminutos);
               var to = new Date(hasta);
-              // console.log('fecha con duracion: ');
-              // console.log(to);                            
-              // asigna colores en funcion del tipo de orden
+
               var  Color = '';
               switch ($(this).attr('tipo')) {
                 case '1':
@@ -172,11 +165,11 @@ $(function () {
     },
 
     eventClick: function(event) {
-      //// console.log('eventossss');
-      // console.log(evento);
+      WaitingOpen();
+
       console.log('Titulo:');
       console.log(event.title);
-      //setTimeout("$('#modalPrevent').modal('show')",0);
+
       $('#title').remove();
       $('#codigo_equipo').remove();
       $('#numero').remove();
@@ -187,7 +180,7 @@ $(function () {
         '<td class="cod" id="cod"><input type="text" class="codigo_equipo prevent" id="codigo_equipo" value=" '+ event.equipo +' " placeholder=""></td>'+
         '<td class="tit"><input type="text" class="title prevent" id="title" value=" '+ event.title +' " placeholder=""></td>'+          
         '</tr>');
-      $('#modalPrevent').modal('show');
+      es_orden_a_ejectutar(event.id_orden);  
     },
 
     editable: true,
@@ -251,6 +244,29 @@ $(function () {
     }  
   });
 
+  function es_orden_a_ejectutar(ot){
+    $.ajax({
+          type: 'POST', 
+          data: {ot:ot},
+          url: 'index.php/Otrabajo/ObtenerTaskIDxOT',  
+          success: function(task){
+            WaitingClose();
+            if(task==0) $('#ejecutar_ot').hide();else{
+              $('#numero').attr('task',task);
+              $('#ejecutar_ot').show();
+            }
+            $('#modalPrevent').modal('show');
+
+          },
+          error: function(error){
+            WaitingClose();
+            alert('No se Obtener Estado de OT');
+            $('#modalPrevent').modal('show');
+            $('#ejecutar_ot').hide();
+          }   
+      }); 
+  }
+
 
 
 
@@ -286,13 +302,13 @@ $(function () {
     //Remove event from text input
     $("#new-event").val("");
   });    
-});
+//});
 
 $(".fa-print").click(function (e) {
   $("#calendar").printArea();
 });
 
-$(function(){
+//$(function(){
   //  Datatables listas
   $('#correctivo').DataTable({
     "paging": true,
@@ -398,7 +414,7 @@ $(function(){
       }
     }
   });
-});
+//});
 
 
 ///// Datepicker para modales
@@ -443,19 +459,7 @@ $("#fecha_progr_prevent_horas").datepicker({
   // Genera Orden de Trabajo y la guarda automaticamente
   $('.fa-stop-circle').click( function(){
 
-    // Mes segun cambia el calendario se va corriendo
-      //var date_ = new Date($("#calendar").fullCalendar('getDate'));
-      //var month_ = date_.getMonth() + 1;
-      //alert(month_);
 
-    //tarea = 1; // id_tarea (por defecto 1)
-    //  nro no va.
-    //  fecha (fecha de hoy)
-    //  fecha_progr_pred  lo toma del modal
-    // fecha_solicit = $(this).parents("tr").find("td").eq(5).html();
-    // desc_causa = $(this).parents("tr").find("td").eq(4).html();
-    // id_sol = $(this).parents("tr").find("td").eq(2).html();
-    // id_eq = $(this).parents("tr").find("td").eq(1).html();
   });
 
   function fill_Correc(dato){
@@ -533,72 +537,72 @@ $("#fecha_progr_prevent_horas").datepicker({
   var id_equ       = "";
   var desc_tarea   = "";  
 
-function fill_Prevent(dato){    
-  $.ajax({
-    data: {id:dato},
-    dataType: 'json',
-    type: 'POST',
-    url: 'index.php/Calendario/getPrevPorId',          
-    success: function(data){
-      id_tar       = data[0]['id_tarea'];
-      fec_sol_prev = data[0]['ultimo'];
-      id_prev      = data[0]['prevId'];
-      id_equ       = data[0]['id_equipo'];
-      desc_tarea   = data[0]['descripcion'];
-    },
-    error: function(data){
-      console.error("Error al trear preventivos por Id");
-      console.table(data);
-    },
-  });      
-}
+  function fill_Prevent(dato){    
+    $.ajax({
+      data: {id:dato},
+      dataType: 'json',
+      type: 'POST',
+      url: 'index.php/Calendario/getPrevPorId',          
+      success: function(data){
+        id_tar       = data[0]['id_tarea'];
+        fec_sol_prev = data[0]['ultimo'];
+        id_prev      = data[0]['prevId'];
+        id_equ       = data[0]['id_equipo'];
+        desc_tarea   = data[0]['descripcion'];
+      },
+      error: function(data){
+        console.error("Error al trear preventivos por Id");
+        console.table(data);
+      },
+    });      
+  }
 
-function setOtPreventivo() {
-  var progr_corr        = $('#fecha_progr_prevent').val();
-  var hora_prog_prevent = $('#hora_prog_prevent').val();
-  var event_Preventivo  = $('#event_Preventivo').val();
-  var cant_meses_prev   = $('#cant_meses_prev').val();
+  function setOtPreventivo() {
+    var progr_corr        = $('#fecha_progr_prevent').val();
+    var hora_prog_prevent = $('#hora_prog_prevent').val();
+    var event_Preventivo  = $('#event_Preventivo').val();
+    var cant_meses_prev   = $('#cant_meses_prev').val();
 
-  $.ajax({
-    type: 'POST',
-    data: {
-      id_sol       : id_prev,
-      id_tarea     : id_tar,
-      fecha_progr  : progr_corr,
-      hora_progr   : hora_prog_prevent,
-      fecha_inicio : fec_sol_prev,
-      descripcion  : desc_tarea,
-      tipo         : 3, // preventivo
-      ide          : id_equ,
-      event_tipo   : event_Preventivo,
-      cant_meses   : cant_meses_prev
-    },
-    url: 'index.php/Calendario/guardar_agregar',
-    success: function(data){
-      setTimeout("cargarView('Calendario', 'indexot', '"+$('#permission').val()+"');",0);
-    },
-    error: function(result){
-     console.log(result);
-    }
+    $.ajax({
+      type: 'POST',
+      data: {
+        id_sol       : id_prev,
+        id_tarea     : id_tar,
+        fecha_progr  : progr_corr,
+        hora_progr   : hora_prog_prevent,
+        fecha_inicio : fec_sol_prev,
+        descripcion  : desc_tarea,
+        tipo         : 3, // preventivo
+        ide          : id_equ,
+        event_tipo   : event_Preventivo,
+        cant_meses   : cant_meses_prev
+      },
+      url: 'index.php/Calendario/guardar_agregar',
+      success: function(data){
+        setTimeout("cargarView('Calendario', 'indexot', '"+$('#permission').val()+"');",0);
+      },
+      error: function(result){
+      console.log(result);
+      }
+    });
+  }
+
+  function CancPrevent(){
+    id_tar = "";
+    fec_sol_prev = "";
+    id_prev = "";
+    id_equ = "";
+    desc_tarea = "";
+  }
+    
+  //habilita/deshabilita el campo cantidad
+  $('#event_Preventivo').change(function(){
+      if ( $(this).val() == 0 ) {
+        $('#cant_meses_prev').attr('disabled',true);
+      }else{
+        $('#cant_meses_prev').attr('disabled',false);
+      }    
   });
-}
-
-function CancPrevent(){
-   id_tar = "";
-   fec_sol_prev = "";
-   id_prev = "";
-   id_equ = "";
-   desc_tarea = "";
-}
-  
-//habilita/deshabilita el campo cantidad
-$('#event_Preventivo').change(function(){
-    if ( $(this).val() == 0 ) {
-      $('#cant_meses_prev').attr('disabled',true);
-    }else{
-      $('#cant_meses_prev').attr('disabled',false);
-    }    
-});
 //////////  / PREVENTIVO 
 
 //////////  PREVENTIVO POR HORAS CAMBIAR VARIABLE IDP UREGNTTE
@@ -624,8 +628,8 @@ $('#event_Preventivo').change(function(){
   function setOtPrevHoras() {
     var progr_corr_hs    = $('#fecha_progr_prevent_horas').val();
     var hora_progr_prevH = $('#hora_progr_prevH').val();
-    console.info(fec_sol_prevhs);
-    console.info(ultima_lectura);
+  console.info(fec_sol_prevhs);
+  console.info(ultima_lectura);
 
     $.ajax({
       type: 'POST', //parametros:parametros
@@ -661,7 +665,7 @@ $('#event_Preventivo').change(function(){
   }
 //////////  / PREVENTIVO POR HORAS 
 
-//////////  BACKLOG 
+//////////  BACKLOG (Listoooo)
   var id_de_tar = "";
   var fec_sol_back = "";
   var desc_tarea_back = "";
@@ -669,19 +673,27 @@ $('#event_Preventivo').change(function(){
   var id_equi = "";
 
   function fill_Backlog(dato){    
-     
+      console.log('Rellenar Backlog...');
       $.ajax({
           type: 'POST', //parametros:parametros
           data: {id:dato},
           url: 'index.php/Calendario/getBackPorId',  //index.php/
           success: function(data){
 
-                   console.log('back: ');
-                   id_de_tar = data[0]['tarea_descrip'];
+                   console.log(data);
+                   id_de_tar = data[0]['id_tarea'];
                    fec_sol_back = data[0]['fecha'];
                    id_back = data[0]['backId'];
                    id_equi = data[0]['id_equipo'];
-                   desc_tarea_back = data[0]['descripcion'];///////ACAAAAAA FALTAAAAA
+                   tarea = data[0]['descripcion'];
+                   id_sol = data[0]['sore_id'];
+                   // si tiene tarea estandar grava eso sino la tarea custom
+                   if(id_de_tar != null){
+                    desc_tarea_back = data[0]['descripcion'];
+                   }else{
+                    desc_tarea_back = data[0]['tarea_opcional']; 
+                   }
+                  
                 },
           error: function(data){
 
@@ -693,12 +705,14 @@ $('#event_Preventivo').change(function(){
 
   function setOtBacklog() {
     var progr_back = $('#fecha_progr_back').val();
-    var hora_progr_back = $('#hora_progr_back').val();
+    var hora_progr_back = $('#hora_progr_back').val();   
+   
     $.ajax({
           type: 'POST', //parametros:parametros
-          data: { 
-                  event_tipo : 1, // evento unico
-                  id_sol : id_back,
+          data: {
+                  event_tipo: 1, // evento unico
+                  id_sol : id_sol,
+                  id_back: id_back,
                   id_tarea : id_de_tar,
                   fecha_progr : progr_back,
                   hora_progr:hora_progr_back,
@@ -728,7 +742,7 @@ $('#event_Preventivo').change(function(){
   }
 //////////  / BACKLOG ()
 
-//////////  PREDICTIVO () - Listo modificado (trae insumo y herramientas desde Predictivo)
+//////////  PREDICTIVO ()
 
   // Variables globales para llenar al enviar
   var tarea_descrip = "";   //id tarea
@@ -756,6 +770,7 @@ $('#event_Preventivo').change(function(){
           dataType: 'json'    
       });    
   }
+
   // Limpia variables
   function CancPred(){
      tarea_descrip = "";   //id tarea
@@ -763,6 +778,7 @@ $('#event_Preventivo').change(function(){
      ide = "";   // id equipo
      fecha_inicio = "";
   }
+
   ////Guarda OT desde Predictivo
   function setOtPredictivo(){
 
@@ -770,6 +786,8 @@ $('#event_Preventivo').change(function(){
     var hora_pred = $('#hora_progr_pred').val();
     var event_Predic = $('#event_Predictivo').val() ;
     var cant_meses_predic = $('#cant_meses_predic').val();
+    
+
     $.ajax({
           type: 'POST', //parametros:parametros
           data: {
@@ -786,6 +804,7 @@ $('#event_Preventivo').change(function(){
                 },
           url: 'index.php/Calendario/guardar_agregar',  //index.php/
           success: function(data){
+
                    setTimeout("cargarView('Calendario', 'indexot', '"+$('#permission').val()+"');",0);
                 },
           error: function(result){
@@ -794,6 +813,7 @@ $('#event_Preventivo').change(function(){
               }
     });
   }
+
   //habilita/deshabilita el campo cantidad
   $('#event_Predictivo').change(function(){
     
@@ -850,12 +870,37 @@ $('#event_Preventivo').change(function(){
   }
 //////////  / ACTUALIZA DIA Y HORA
 
+function EjecutarOT(){
+  WaitingOpen();
+  var task = $('#numero').attr('task');
+  var ot = $('#numero').val();
+
+  if(ot == null || task == null){alert('Error');return;}
+  $.ajax({
+      type: 'POST', 
+      data: {ot:ot, task:task}, // duracion adicional
+      url: 'index.php/Otrabajo/EjecutarOT',  
+      success: function(data){
+        WaitingClose();
+        if(data.status) $('#modalPrevent').modal('hide');
+        else{
+          alert('Falla | No se pudo Ejecutar la Orden de Trabajo | '+data.msj);
+        }
+      },
+      error: function(data){
+        WaitingClose();
+        alert('Error | No se pudo Ejecutar la Orden de Trabajo | '+data.msj);
+      },
+      dataType: 'json'    
+  }); 
+}
+
 
 </script>
 <!-- Guardado de datos y validaciones -->
 
 <!-- Modal Correctivo-->
-<div class="modal" id="modal-correctivo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="modal-correctivo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -881,7 +926,7 @@ $('#event_Preventivo').change(function(){
 </div>
 
 <!-- Modal Preventivo-->
-<div class="modal" id="modal-preventivo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="modal-preventivo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -919,7 +964,7 @@ $('#event_Preventivo').change(function(){
 </div>
 
 <!-- Modal Preventivo P/ Horas-->
-<div class="modal" id="modal-preventivoH" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="modal-preventivoH" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -948,7 +993,7 @@ $('#event_Preventivo').change(function(){
 </div>
 
 <!-- Modal Backlog-->
-<div class="modal" id="modal-backlog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="modal-backlog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -976,7 +1021,7 @@ $('#event_Preventivo').change(function(){
 </div>
 
 <!-- Modal Predictivo-->
-<div class="modal" id="modal-fecha" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="modal-fecha" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -1014,7 +1059,7 @@ $('#event_Preventivo').change(function(){
 </div>
 
 <!-- Modal -->
-<div class="modal" id="modalPrevent" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="modalPrevent" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -1025,9 +1070,9 @@ $('#event_Preventivo').change(function(){
         <table class="table table-condensed table-responsive modal_prev" id="modal_prev">
             <thead>
               <tr>
-                <th style="width: 5%;">Nº de Orden</th>                
-                <th style="width: 15%;">Equipo</th>
-                <th>Tarea</th>
+                <th style="width: 10%;">Nº de Orden</th>                
+                <th style="width: 45%;">Equipo</th>
+                <th style="width: 45%;">Tarea</th>
               </tr>
             </thead>
             <tbody>
@@ -1036,7 +1081,8 @@ $('#event_Preventivo').change(function(){
         </table>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal" id="aceptar">Aceptar</button>
+        <button type="button" class="btn btn-success" id="ejecutar_ot" onclick="EjecutarOT()">Ejecutar OT</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>

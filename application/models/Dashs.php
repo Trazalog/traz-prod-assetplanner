@@ -22,7 +22,6 @@ class Dashs extends CI_Model
 
         return $data;
     }
-//}
 
     function cambiarDeEmpresa($idNewEmpresa)
     {

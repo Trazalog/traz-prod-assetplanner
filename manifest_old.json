@@ -1,0 +1,27 @@
+{
+  "name": "SIM App",
+  "short_name": "SIM",
+  "display": "minimal-ui",
+  "start_url": "/index.php",
+  "theme_color": "#673ab6",
+  "background_color": "#111111",
+  "icons": [
+
+    {
+      "src": "iconosim.png",
+      "sizes": "144x144",
+      "type": "image/png"
+      
+    }, {
+      "src": "simlogo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+      
+    }, {
+      "src": "simlogo512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+      
+    }
+  ]
+}

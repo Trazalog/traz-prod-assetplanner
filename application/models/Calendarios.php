@@ -126,23 +126,25 @@ class Calendarios extends CI_Model {
         $userdata = $this->session->userdata('user_data');
         $empId    = $userdata[0]['id_empresa'];    
         $sql      = "SELECT
-            tbl_back.backId,
-            tbl_back.estado,
-            tbl_back.fecha,
-            tbl_back.tarea_descrip,
-            tbl_back.id_equipo,
-            tbl_back.back_duracion,
-            equipos.descripcion,
-            equipos.codigo,
-            tareas.descripcion AS tarea
-            FROM tbl_back
-            INNER JOIN equipos ON equipos.id_equipo = tbl_back.id_equipo
-            INNER JOIN tareas ON tareas.id_tarea = tbl_back.tarea_descrip
-            WHERE tbl_back.id_empresa = $empId
-            AND year(tbl_back.fecha) = $year 
-            AND month(tbl_back.fecha) = $month 
-            AND tbl_back.estado = 'C' 
-            "; 
+                    tbl_back.backId,
+                    tbl_back.sore_id,
+                    tbl_back.estado,
+                    tbl_back.fecha,
+                    tbl_back.id_tarea,
+                    tbl_back.id_equipo,
+                    tbl_back.back_duracion,
+                    tbl_back.tarea_opcional,
+                    equipos.descripcion,
+                    equipos.codigo,
+                    tareas.descripcion AS tarea
+                    FROM tbl_back
+                    INNER JOIN equipos ON equipos.id_equipo = tbl_back.id_equipo
+                    LEFT JOIN tareas ON tareas.id_tarea = tbl_back.id_tarea
+                    WHERE tbl_back.id_empresa = $empId
+                    AND year(tbl_back.fecha) = $year 
+                    AND month(tbl_back.fecha) = $month 
+                    AND tbl_back.estado != 'AN' 
+                    AND tbl_back.estado != 'OT'";
         $query= $this->db->query($sql);
         if ($query->num_rows()!=0)
         {
@@ -207,6 +209,7 @@ class Calendarios extends CI_Model {
                 solicitud_reparacion.f_solicitado,
                 solicitud_reparacion.f_sugerido,
                 solicitud_reparacion.hora_sug,
+                solicitud_reparacion.estado,
                 equipos.descripcion,
                 equipos.codigo,
                 equipos.id_equipo,
@@ -217,6 +220,8 @@ class Calendarios extends CI_Model {
             INNER JOIN equipos ON equipos.id_equipo = solicitud_reparacion.id_equipo
             INNER JOIN sector ON sector.id_sector = equipos.id_sector
             WHERE solicitud_reparacion.id_empresa = $empId
+            AND solicitud_reparacion.estado != 'AN'
+            AND solicitud_reparacion.estado != 'OT'
             AND year(solicitud_reparacion.f_solicitado) = $year
             AND month(solicitud_reparacion.f_solicitado) = $month
             AND solicitud_reparacion.estado != 'OT'
@@ -850,3 +855,31 @@ class Calendarios extends CI_Model {
         }
     }
 }
+
+/* funciones para BPM */
+    function getCaseIdporIdBacklog($id_solicitud){
+			$this->db->select('solicitud_reparacion.case_id');
+			$this->db->from('tbl_back');
+			$this->db->join('solicitud_reparacion', 'tbl_back.sore_id = solicitud_reparacion.id_solicitud');
+			$this->db->where('tbl_back.sore_id', $id_solicitud);
+			$query = $this->db->get();
+			if ($query->num_rows() > 0){
+				return $query->row('case_id');				
+			}
+			else{
+				return 0;
+			}
+		}
+
+		function getCaseIdporIdSolServicios($id_solicitud){
+			$this->db->select('solicitud_reparacion.case_id');
+			$this->db->from('solicitud_reparacion');			
+			$this->db->where('solicitud_reparacion.id_solicitud', $id_solicitud);
+			$query = $this->db->get();
+			if ($query->num_rows() > 0){
+				return $query->row('case_id');				
+			}
+			else{
+				return 0;
+			}
+		}

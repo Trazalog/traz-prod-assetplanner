@@ -93,3 +93,12 @@ class Orders extends CI_Model {
     }
 
 }
+            return false;  // Si funciona mal return false
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+}
