@@ -905,16 +905,6 @@ class Otrabajos extends CI_Model {
     }
 
 
-
-
-
-
-
-
-
-
-
-
     //devuelve valores de todos los datos de la OT para mostrar en modal.
     function getOrigenOt($idot)
     {
@@ -946,8 +936,8 @@ class Otrabajos extends CI_Model {
     		equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, equipos.descripcion AS descripcionEquipo');
         $this->db->from('orden_trabajo');
         $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
-        $this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
-        $this->db->join('abmproveedores', 'abmproveedores.provid = orden_trabajo.id_proveedor');
+        $this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal','left');
+        $this->db->join('abmproveedores', 'abmproveedores.provid = orden_trabajo.id_proveedor','left');
         $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
         $this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
         $this->db->where('orden_trabajo.id_orden', $idOt);
@@ -976,8 +966,8 @@ class Otrabajos extends CI_Model {
     		equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, equipos.descripcion AS descripcionEquipo');
         $this->db->from('orden_trabajo');
         $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
-        $this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
-        $this->db->join('abmproveedores', 'abmproveedores.provid = orden_trabajo.id_proveedor');
+        $this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal','left');
+        $this->db->join('abmproveedores', 'abmproveedores.provid = orden_trabajo.id_proveedor','left');
         $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
         $this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
         $this->db->where('orden_trabajo.id_orden', $idOt);
@@ -1022,7 +1012,7 @@ class Otrabajos extends CI_Model {
 
 
     //devuelve valores de todos los datos de la OT para mostrar en modal.
-    function getViewDataPreventivo($idOt, $idSolicitud)
+    function getViewDataPreventivo($idOt, $idSolicitud=null)
     {
     	$this->db->select('orden_trabajo.id_orden, orden_trabajo.nro, orden_trabajo.descripcion AS descripcionFalla, orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, 
     		orden_trabajo.fecha_program, tbl_estado.descripcion AS estado, sisusers.usrName, sisusers.usrLastName, 
@@ -1032,8 +1022,8 @@ class Otrabajos extends CI_Model {
     		equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, equipos.descripcion AS descripcionEquipo');
         $this->db->from('orden_trabajo');
         $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
-        $this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
-        $this->db->join('abmproveedores', 'abmproveedores.provid = orden_trabajo.id_proveedor');
+        $this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal','left');
+        $this->db->join('abmproveedores', 'abmproveedores.provid = orden_trabajo.id_proveedor','left');
         $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
         $this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
         $this->db->where('orden_trabajo.id_orden', $idOt);
