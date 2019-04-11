@@ -59,7 +59,7 @@
                     }
                   }
                   if (strpos($permission,'Lectura') !== false) {
-                    if( $a['estado'] != 'IN') {
+                    if( $a['estado'] == 'AC' OR $a['estado'] == 'RE' ) {
                       echo '<i class="fa fa-hourglass-half text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Mantenimiento Autónomo" data-toggle="modal" data-target="#modalectura"></i>';
                     }
                     echo '<i class="fa fa-history text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Historial de Lecturas" data-toggle="modal" data-target="#modalhistlect"></i>';
@@ -579,17 +579,17 @@ $(".fa-hourglass-half").click(function(e){
   var $estado = $(this).parents("tr").find("td").eq(7).find("small").html();
   console.log("estado: "+$estado);
 
-  if($estado == "Alta") {
+  /*if($estado == "Alta") {
     $.ajax({
       async: true,
-      data: {idequipo: idequipo},
+      data: {idequipo: $id_equipo},
       dataType: 'json',
       type: 'POST',
       url: 'index.php/Equipo/estado_alta', 
       success: function(data){
         console.table(data[0]['estado']);
         if (data[0]['estado'] == 'AL') {
-          var id_equipo   = idequipo;
+          var id_equipo   = $id_equipo;
           var lectura     = data[0]['ultima_lectura'];
           var fecha       = data[0]['fecha_ultimalectura'];
           var observacion = 'Lectura al cargar equipo';
@@ -613,7 +613,7 @@ $(".fa-hourglass-half").click(function(e){
         console.log(result);
       }
     });
-  } 
+  } */
 
   $.ajax({
     data: { idequipo: $id_equipo},
@@ -1835,7 +1835,7 @@ function eliminarAdjunto() {
 
 //abrir modal agregar adjunto
 $(document).on("click",".agregaAdjunto",function(){
-  $('#btnAgregarEditar').text("Agregar");
+  $('.btnAgregarEditar').text("Agregar");
   $('#modalAgregarAdjunto .modal-title').html('<span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar');
 
   $('#modalAgregarAdjunto').modal('show');
@@ -1844,7 +1844,7 @@ $(document).on("click",".agregaAdjunto",function(){
 });
 //abrir modal editar adjunto
 $(document).on("click",".editaAdjunto",function(){
-  $('#btnAgregarEditar').text("Editar");
+  $('.btnAgregarEditar').text("Editar");
   $('#modalAgregarAdjunto .modal-title').html('<span class="fa fa-fw fa-pencil text-light-blue"></span> Editar');
 
   $('#modalAgregarAdjunto').modal('show');
@@ -2322,7 +2322,7 @@ $('#modaleditar').on('hidden.bs.modal', function (e) {
       <div class="modal-header">
         <h4>Editar Lectura</h4>
       </div>
-      <form id="formAgregarAdjunto">
+      <form id="formEditarLectura">
         <div class="modal-body">
           <div class="alert alert-danger alert-dismissable" id="errorEditLectura" style="display: none">
             <h4><i class="icon fa fa-ban"></i> Error!</h4>
@@ -2340,7 +2340,7 @@ $('#modaleditar').on('hidden.bs.modal', function (e) {
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary" id="btnAgregarEditar" onclick="guardarEditLectura()">Guardar</button>
+          <button type="submit" class="btn btn-primary btnAgregarEditar" onclick="guardarEditLectura()">Guardar</button>
         </div>
       </form>
     </div>
@@ -2617,7 +2617,7 @@ $('#modaleditar').on('hidden.bs.modal', function (e) {
         <h4 class="modal-title"><span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar</h4>
       </div>
 
-      <form id="formAgregarAdjunto">
+      <form id="formAgregarAdjunto" enctype="multipart/form-data">
         <div class="modal-body">
           <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
             <h4><i class="icon fa fa-ban"></i> Error!</h4>
@@ -2628,7 +2628,7 @@ $('#modaleditar').on('hidden.bs.modal', function (e) {
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary" id="btnAgregarEditar">Agregar</button>
+          <button type="submit" class="btn btn-primary btnAgregarEditar">Agregar</button>
         </div>
       </form>
     </div>

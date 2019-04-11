@@ -570,7 +570,9 @@ function ordenaArregloDeObjetosPor(propiedad) {
       $('#id_herramienta').val(ui.item.value);
       $('#marcaherram').val(ui.item.marca);
       $('#descripcionherram').val(ui.item.label);
-    },
+    },change: function(event,ui){
+        $(this).val((ui.item ? ui.item.id : ""));
+      }
   })
   //muestro marca en listado de resultados
   .data( "ui-autocomplete" )._renderItem = function( ul, item ) {

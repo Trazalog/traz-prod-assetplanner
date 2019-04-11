@@ -247,7 +247,7 @@ WaitingOpen("Cargando Equipos...");
 $.ajax({
   data: { },
   dataType: 'json',
-  url: 'index.php/Preventivo/getequipo',
+  url: 'index.php/Predictivo/getEquipo', 
   type: 'POST',
 })
 .done( (data) => {
@@ -351,7 +351,9 @@ $("#tarea").autocomplete({
     event.preventDefault();
     $(this).val(ui.item.label);
     $('#id_tarea').val(ui.item.value);
-  },
+  },change: function(event,ui){
+  $(this).val((ui.item ? ui.item.id : ""));
+}
 });
 
 
