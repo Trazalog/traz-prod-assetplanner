@@ -259,21 +259,24 @@ class Calendario extends CI_Controller {
 		return $duracion;
 	}
 	// guarda las OT que correspondan de acuerdo a la fecuencia y $cantidad_meses
-	function setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo, $id_solicitud){	
-		$data[] = $datos2;
-		while ($fecha_limite >= $fec_programacion  ) {
-		// a la fecha de programacion le sumo la frecuencia en dias	   	
+	function setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo, $id_solicitud)
+	{	
+		$i=0;
+		while ($fecha_limite >= $fec_programacion  )
+		{
+			// a la fecha de programacion le sumo la frecuencia en dias
 			$nuev_fecha = strtotime ( '+'.$diasFrecuencia.'day' , strtotime ( $fec_programacion ) ) ;
 			$nuev_fecha = date ( 'Y-m-d H:i:s' , $nuev_fecha );
 			// guardo la fecha nueva en el array para nuevva OT
 			$datos2['fecha_program'] = $nuev_fecha;
 			// guardo el componete en el array batch
-			$data[] = $datos2;
+			$data[$i] = $datos2;
 			// actualizo la fecha de programacion
 			$fec_programacion = $nuev_fecha;			 
-			$idOT = $this->Calendarios->guardar_agregar($data);
+			$idOT = $this->Calendarios->guardar_agregar($data[$i]);
 			$this->setHerramInsPorTarea($idOT, $tipo, $id_solicitud);
-		} 
+			$i++;
+		}
 		return;	
 	}
 	

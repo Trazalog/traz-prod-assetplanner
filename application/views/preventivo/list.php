@@ -167,53 +167,141 @@
 
   //Trae herramientas
   var dataHerramientas = function() {
-                          var tmp = null;
-                          $.ajax({
-                            'async': false,
-                            'type': "POST",
-                            'dataType': 'json',
-                            'url': 'index.php/Preventivo/getHerramientasB',
-                          })
-                          .done( (data) => { tmp = data } )
-                          .fail( () => alert("Error al traer Herramientas") );
-                          return tmp;
-                        }();
-  
+    var tmp = null;
+    $.ajax({
+      'async': false,
+      'type': "POST",
+      'dataType': 'json',
+      'url': 'index.php/Preventivo/getHerramientasB',
+    })
+    .done( (data) => { tmp = data } )
+    .fail( () => alert("Error al traer Herramientas") );
+    return tmp;
+  }();
+
+  // data busqueda por codigo de herramientas
+  function dataCodigoHerr(request, response) {
+    function hasMatch(s) {
+      return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
+    }
+    var i, l, obj, matches = [];
+
+    if (request.term==="") {
+      response([]);
+      return;
+    }
+    
+    //ordeno por codigo de herramientas
+    dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("codigo"));
+
+    for  (i = 0, l = dataHerramientas.length; i<l; i++) {
+      obj = dataHerramientas[i];
+      if (hasMatch(obj.codigo)) {
+        matches.push(obj);
+      }
+    }
+    response(matches);
+  }
+  // data busqueda por marca de herramientas
+  function dataMarcaHerr(request, response) {
+    function hasMatch(s) {
+      return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
+    }
+    var i, l, obj, matches = [];
+
+    if (request.term==="") {
+      response([]);
+      return;
+    }
+
+    //ordeno por marca de herramientas
+    dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("marca"));
+
+    for  (i = 0, l = dataHerramientas.length; i<l; i++) {
+      obj = dataHerramientas[i];
+      if (hasMatch(obj.marca)) {
+        matches.push(obj);
+      }
+    }
+    response(matches);
+  }
+
+
   //busqueda por marcas de herramientas
   $("#herramienta").autocomplete({
-      source:    dataCodigoHerr,
-      delay:     500,
-      minLength: 1,
-      focus: function(event, ui) {
-        event.preventDefault();
-        $(this).val(ui.item.codigo);
-        $('#id_herramienta').val(ui.item.value);
-        $('#marcaherram').val(ui.item.marca);
-        $('#descripcionherram').val(ui.item.label);
-      },
-      select: function(event, ui) {
-        event.preventDefault();
-        $(this).val(ui.item.codigo);
-        $('#id_herramienta').val(ui.item.value);
-        $('#marcaherram').val(ui.item.marca);
-        $('#descripcionherram').val(ui.item.label);
-      },
-    })
-    //muestro marca en listado de resultados
-    .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-      return $( "<li>" )
-      .append( "<a>" + item.codigo + "</a>" )
-      .appendTo( ul );
-    };
+    source:    dataCodigoHerr,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.codigo);
+      $('#id_herramienta').val(ui.item.value);
+      $('#marcaherram').val(ui.item.marca);
+      $('#descripcionherram').val(ui.item.label);
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.codigo);
+      $('#id_herramienta').val(ui.item.value);
+      $('#marcaherram').val(ui.item.marca);
+      $('#descripcionherram').val(ui.item.label);
+    },
+  })
+  //muestro marca en listado de resultados
+  .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+    .append( "<a>" + item.codigo + "</a>" )
+    .appendTo( ul );
+  };
 
-  
+  //busqueda por marcas de herramientas
+  $("#marcaherram").autocomplete({
+    source:    dataMarcaHerr,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.marca);
+      $('#id_herramienta').val(ui.item.value);
+      $('#herramienta').val(ui.item.codigo);
+      $('#descripcionherram').val(ui.item.label);
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.marca);
+      $('#id_herramienta').val(ui.item.value);
+      $('#herramienta').val(ui.item.codigo);
+      $('#descripcionherram').val(ui.item.label);
+    },
+  })
+  //muestro marca en listado de resultados
+  .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+    .append( "<a>" + item.marca + "</a>" )
+    .appendTo( ul );
+  };
 
+  //busqueda por descripcion de herramientas
+  $("#descripcionherram").autocomplete({
+    source:    dataHerramientas,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_herramienta').val(ui.item.value);
+      $('#herramienta').val(ui.item.codigo);
+      $('#marcaherram').val(ui.item.marca);
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_herramienta').val(ui.item.value);
+      $('#herramienta').val(ui.item.codigo);
+      $('#marcaherram').val(ui.item.marca);
+    },
+  });
 
-
-
-  
-
- 
 
   // Agrega herramientas a la tabla - Chequeado
   var nrofila = 0;  // hace cada fila unica
@@ -253,9 +341,6 @@
     $('#descripcionherram').val(''); 
     $('#cantidadherram').val('');        
   });
-
-
- 
 ////// HERRAMIENTAS //////
 
 ////// INSUMOS //////
@@ -702,9 +787,32 @@
     });
   }
  
+//Elimina Preventivo
+function eliminaPrevent(){
 
+  $('#modalaviso').modal('hide');
+  var idP = $('#id').val();
+  console.log(idP);    
+  $.ajax({
+    type: 'POST',
+    data: { idprev: idP},
+    url: 'index.php/Preventivo/baja_preventivo', 
+    success: function(data){     
+      console.log(data); 
+      cargarVista();
+    },                  
+    error: function(result){                      
+      console.log(result);
+    },
+    dataType: 'json'
+  }); 
+}
 
-
+function cargarVista(){
+  $('#content').empty();  
+  $("#content").load("<?php echo base_url(); ?>index.php/Preventivo/index/<?php echo $permission; ?>");
+  WaitingClose(); 
+}
 
 
 
