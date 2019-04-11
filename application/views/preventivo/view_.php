@@ -247,7 +247,7 @@ WaitingOpen("Cargando Equipos...");
 $.ajax({
   data: { },
   dataType: 'json',
-  url: 'index.php/Preventivo/getequipo',
+  url: 'index.php/Predictivo/getEquipo', 
   type: 'POST',
 })
 .done( (data) => {
