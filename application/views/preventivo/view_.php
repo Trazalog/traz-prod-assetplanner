@@ -340,7 +340,7 @@ var dataTarea = function() {
 }();
 $("#tarea").autocomplete({
   source:    dataTarea,
-  delay:     500,
+  delay:     500, 
   minLength: 1,
   focus: function(event, ui) {
     event.preventDefault();
@@ -352,8 +352,8 @@ $("#tarea").autocomplete({
     $(this).val(ui.item.label);
     $('#id_tarea').val(ui.item.value);
   },change: function(event,ui){
-  $(this).val((ui.item ? ui.item.id : ""));
-}
+    $(this).val(ui.item == null ? "" : ui.item.label);
+  }
 });
 
 
