@@ -220,11 +220,11 @@ if (!function_exists('sacarEquiposOperativos')) {
         // si solo hay un estado (todos activos, o todos en reparacion)
         if( sizeof($equipos) == 1 ) {
             if( $equipos[0]['estado'] == 'OP' ) { //si solo tiene activos
-                $equipos[1]['cantEstadoActivo'] = '0';
-                $equipos[1]['estado'] = 'NO';
+                $output[1]['cantEstadoActivo'] = '0';
+                $output[1]['estado'] = 'NO';
             } else { //si tiene todos en reparacion
-                $equipos[1]['cantEstadoActivo'] = '0';
-                $equipos[1]['estado'] = 'OP';
+                $output[1]['cantEstadoActivo'] = '0';
+                $output[1]['estado'] = 'OP';
             }
         }
 
