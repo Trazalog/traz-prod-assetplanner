@@ -17,7 +17,7 @@
               <tr>                
                 <th>Acciones</th>
                 <th>ID</th>
-                <th>Código Componente</th> 
+                <th>Código Trazable</th> 
                 <th>Descripción Componente</th>   
                 <th>Código Equipo</th>
                 <th>Descripción Equipo</th>
