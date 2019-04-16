@@ -98,7 +98,7 @@
               <div class="panel-body">
                 <div class="row">
                   <div class="col-xs-12 col-sm-6 col-md-4">
-                    <label>Código Trazable</label>:
+                    <label>Código de Equipo<strong style="color: #dd4b39">*</strong></label>:
                     <input type="text" id="codigo" name="codigo" class="form-control" placeholder="Ingrese Código de Equipo">
                     <input type="hidden" id="id_equipo" name="id_equipo">
                   </div>
@@ -689,9 +689,9 @@ function validarCampos(){
   if ( $('#etapa').val() == -1 ) {
       hayError = true;
   }
-  // if ( $('#codigo').val() == "" ) {
-  //     hayError = true;
-  // }
+  if ( $('#codigo').val() == "" ) {
+      hayError = true;
+  }
   if ( $('#marca').val() == -1 ) {
       hayError = true;
   }
