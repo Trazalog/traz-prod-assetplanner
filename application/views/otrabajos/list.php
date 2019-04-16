@@ -1413,12 +1413,11 @@ $(document).ready(function(event) {
   $('.fa-sticky-note-o').click( function cargarVista(){
     var id_sol = parseInt($(this).parent('td').parent('tr').attr('id'));
     var id_eq  = parseInt($(this).parent('td').parent('tr').data('id_equipo')); 
-    var desc   = $(this).parent('td').parent('tr').data('causa');
     var id_solicitud = parseInt($(this).parent('td').parent('tr').data('idsolicitud'));
-    desc = encodeURIComponent(desc);
+   // desc = encodeURIComponent(desc);
     WaitingOpen();
     $('#content').empty();
-    $("#content").load("<?php echo base_url(); ?>index.php/Ordenservicio/cargarOrden/<?php echo $permission; ?>/"+id_sol+"/"+id_eq+"/"+desc+"/"+id_solicitud+"/");
+    $("#content").load("<?php echo base_url(); ?>index.php/Ordenservicio/cargarOrden/<?php echo $permission; ?>/"+id_sol+"/"+id_eq+"/"+id_solicitud+"/");
     WaitingClose();
   });
 
