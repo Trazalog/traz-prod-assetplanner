@@ -619,12 +619,10 @@ class Otrabajos extends CI_Model {
 	//PEDIDOS
 	function getorden($id){
 
-	    $sql="SELECT * 
-	    	  FROM orden_pedido
-	    	  WHERE id_orden=$id
-	    	  ";
-	    
-	    $query= $this->db->query($sql);
+		$this->db->from('orden_trabajo');
+		$this->db->where('id_orden',$id);
+		
+	    $query= $this->db->get();
 
 	    if( $query->num_rows() > 0)
 	    {

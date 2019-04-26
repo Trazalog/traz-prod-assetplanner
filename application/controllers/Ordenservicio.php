@@ -6,6 +6,7 @@ class Ordenservicio extends CI_Controller {
     {
         parent::__construct();
         $this->load->model('Ordenservicios');
+        $this->load->model('Otrabajos');
     }
 
     public function index($permission)
@@ -15,12 +16,12 @@ class Ordenservicio extends CI_Controller {
         $this->load->view('ordenservicios/list',$data);
     }
 
-    public function cargarOrden($permission, $id_ot = null, $id_eq = null, $causa = null, $id_solicitud = null)   // Ok
+    public function cargarOrden($permission, $id_ot = null, $id_eq = null, $id_solicitud = null)   // Ok
     { 
         $data['permission'] = $permission;        // permisos 
         $data['id_ot']      = $id_ot;            // id de OT. 
         $data['id_eq']      = $id_eq;             // id de equipo
-        $data['causa']      = urldecode($causa);  // motivo de la solicitud
+        $data['causa']      = $this->Otrabajos->getorden($id_ot)[0]['descripcion'];  // motivo de la solicitud
         $data['id_solicitudServicio'] = $id_solicitud; // id de orden de servicio. 
         //dump($data);
         $this->load->view('ordenservicios/view_',$data);

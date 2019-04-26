@@ -95,7 +95,7 @@
                     <div class="row">
                       <div class="col-xs-12 col-md-6">
                         <br>
-                        <label for="codigo">Código <strong style="color: #dd4b39">*</strong> :</label>
+                        <label for="codigo">Código Trazable:</label>
                         <input type="text" name="codigo" id="codigo" class="form-control">
                       </div>
                       <div class="col-xs-12 col-md-6">
@@ -116,6 +116,7 @@
                           <thead>
                             <tr>
                               <th>Acciones</th>
+                              <th>ID</th>
                               <th>Equipo</th>
                               <th>Componente</th>
                               <th>Código</th>
@@ -556,6 +557,7 @@ function autoCompletarComponentes(){
       var rowNode = table.row.add( [
         "<i class='fa fa-ban elirow text-light-blue' style='cursor: 'pointer'></i>",
         id_equipo,
+        $equipo,
         $componente,
         codigo,
         sistema,
