@@ -205,5 +205,3 @@ class Ordeninsumo extends CI_Controller {
 	}
 
 }
-
-}

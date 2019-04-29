@@ -44,6 +44,7 @@ class Calendario extends CI_Controller {
 		$data['list3'] = $this->Calendarios->getPreventivos($mes, $year);  // listo 
 		$data['list4'] = $this->Calendarios->getsservicio($mes, $year);	// listo
 		$data['permission'] = $permission;
+	
 		//para cada preventivo
 		if($preventivosHoras) {
 			$j = 0;
@@ -63,8 +64,7 @@ class Calendario extends CI_Controller {
 				if($lecturaAutonomo >= $proximoServicio) {
 					$tipoAlerta = 'R';
 					$estaAlertado = true;
-				}
-				
+				}				
 				//si esta alertado guardo
 				if($estaAlertado) {
 					$preventivosHorasVisible[$j] = $preventivosHoras[$i];
@@ -97,10 +97,11 @@ class Calendario extends CI_Controller {
 	}
 
 
-		// Guarda la OT simple o redirije para guardar varias
+	// Guarda la OT simple o redirije para guardar varias
 	public function guardar_agregar()
 	{
 		$data     = $this->input->post();
+		//dump_exit($data);
 		$userdata = $this->session->userdata('user_data');
 		$usrId    = $userdata[0]['usrId'];
 		$empId    = $userdata[0]['id_empresa'];
@@ -110,7 +111,6 @@ class Calendario extends CI_Controller {
 				if( isset($_POST['event_tipo']) ){
 					$event_tipo       = $_POST['event_tipo'];//evento unico '1' evnto repetitivo '2'
 				}
-
 				$id_solicitud     = $_POST['id_sol'];// id predic - correct - back 
 				$id_tarea         = $_POST['id_tarea'];
 				$hora_progr       = $_POST['hora_progr'];
@@ -121,7 +121,6 @@ class Calendario extends CI_Controller {
 				$descripcion      = $_POST['descripcion'];//descripcion del predictivo/correc/backlog/etc
 				$tipo             = $_POST['tipo'];//numero de tipo segun tbl orden_trabajo
 				$equipo           = $_POST['ide'];  
-
 				if( isset($_POST['cant_meses']) ){
 					$cant_meses = $_POST['cant_meses'];//cantidad de meses a programar las OT
 				}	
@@ -169,42 +168,42 @@ class Calendario extends CI_Controller {
 				// si el evento es unico lo guarda
 				if ($event_tipo == '1'){
 					
-					/// Interacción con BPM ///
+					/// Interaccion con BPM ///
 					$estado = 'OT';
 					// $tipo == '2' -> S.Servicios
 					if($tipo == '2'){
-						// si es correctivo o S.Servicio
+						// si es correctivo u S.Servicio
 						$tipo = 'correctivo';				
 						$infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);						
 					
 						$respCerrar = $this->cerrarTarea($infoTarea['taskId']);			
 						if($respCerrar == 204 ){
 							$resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);
-					}
-					//if($resActualizar == 200){					
+						}
+						//if($resActualizar == 200){					
 						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);
 						$response = true;
-					//}
-        			}
+						//}
+        	}
         
-				// $tipo == '4' -> Backlog			
-				if($tipo == '4'){	
-					// actualizo estado del backlog
-					$tipo = 'backlog';
-					//Actualizar Tablas >> Backlog ||Solicitud
-					$this->Calendarios->cambiarEstado($id_backlog, $estado, $tipo);	
-					//Obtener TaskID y CaseID
-					$infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);				
-					$respCerrar = $this->cerrarTarea($infoTarea['taskId']);							
-					$resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);
-					$response = true;					
-				}
+					// $tipo == '4' -> Backlog			
+					if($tipo == '4'){	
+						// actualizo estado del backlog
+						$tipo = 'backlog';
+						//Actualizar Tablas >> Backlog ||Solicitud
+						$this->Calendarios->cambiarEstado($id_backlog, $estado, $tipo);	
+						//Obtener TaskID y CaseID
+						$infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);				
+						$respCerrar = $this->cerrarTarea($infoTarea['taskId']);							
+						$resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);
+						$response = true;					
+					}
 
-        			$idOT = $this->Calendarios->guardar_agregar($datos2);
-        			$this->setHerramInsPorTarea($idOT,$tipo,$id_solicitud);
-        			if($idOT){
-          				$this->Calendarios->setEstadoSServicio($id_solicitud);
-        			}
+					$idOT = $this->Calendarios->guardar_agregar($datos2);
+					$this->setHerramInsPorTarea($idOT,$tipo,$id_solicitud);
+					if($idOT){
+							$this->Calendarios->setEstadoSServicio($id_solicitud);
+					}
 
 	    	}else{	// evento repetitivo 
 					
@@ -218,17 +217,17 @@ class Calendario extends CI_Controller {
 
 					// si es preventivo ACTUALIZA NUEVAMENTE LA FECHA BASE_ OK!
 					if($tipo == '3'){	    		
-	    					//pongo nueva fecha base en preventivos
-	    					$this->Calendarios->actualizarFechaBasePreventivos($fecha_limite, $id_solicitud);
-	    				}
+						//pongo nueva fecha base en preventivos
+						$this->Calendarios->actualizarFechaBasePreventivos($fecha_limite, $id_solicitud);
+					}
 				}	     	
 					
 				// guarda los Insumos y herramientas de Backlog, predict y prenvent segun tipo
 				$this->setHerramInsPorTarea($idOT,$tipo,$id_solicitud);
 		}
-	      return true;
+	  return true;
 	    
-  	}
+  }
 
 	function getDurTarea($tipo,$id_solicitud)
 	{
@@ -477,7 +476,7 @@ class Calendario extends CI_Controller {
 
 		$id = $_POST['id'];
 		$data = $this->Calendarios->getBackPorIds($id);
-
+		//dump($data, 'backlog info: ');
 		echo json_encode($data);
 	}
 
@@ -526,7 +525,7 @@ class Calendario extends CI_Controller {
 		echo json_encode($response);
    	}
 
-}
+
 
 	/* INTEGRACION CON BPM */
 		function getInfoTareaporIdSolicitud($id_solicitud, $tipo){

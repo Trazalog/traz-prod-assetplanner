@@ -211,28 +211,9 @@
                                     </div>
 
                                     <div role="tabpanel" class="tab-pane" id="profile">
-                                        <div class="panel-body">
-                                            <div class="panel panel-primary">
-                                                <div class="panel-heading">Comentarios</div>
-                                                <div class="panel-body" style="max-height: 500px;overflow-y: scroll;">
-                                                    <ul id="listaComentarios">
-                                                        <?php 
-                                                        foreach ($comentarios as $f) {
-
-                                                          if (strcmp($f['userId']['userName'], 'System') != 0) {
-                                                            echo '<hr/>';
-                                                            echo '<li><h4>' . $f['userId']['firstname'] . ' ' . $f['userId']["lastname"] . '<small style="float: right">' . date_format(date_create($f['postDate']), 'H:i  d/m/Y') . '</small></h4>';
-                                                            echo '<p>' . $f['content'] . '</p></li>';
-                                                          }
-                                                        }
-                                                        ?>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <textarea id="comentario" class="form-control" placeholder="Nuevo Comentario..."></textarea>
-                                            <br />
-                                            <button class="btn btn-primary" id="guardarComentario" onclick="guardarComentario()">Agregar</button>
-                                        </div>
+                                      <?php  
+																				echo $comentarios;																			
+																			?>	
                                     </div>
 
                                     <div role="tabpanel" <?php echo ($device == 'android' ? 'class= "hidden"' : 'class= "tab-pane"') ?> id="messages">
@@ -272,18 +253,14 @@
     var codinsumolo = "";
     var preglob = "";
 
-
-
     // cargo plugin DateTimePicker
     $('#fechaEdit').datetimepicker({
         format: 'YYYY-MM-DD',
         locale: 'es',
-    });
-
-
+		});
+		
     // Trae tareas llena select - Chequeado
     traer_tarea();
-
     function traer_tarea() {
         $('#tareaest').html('');
         $.ajax({
@@ -310,7 +287,6 @@
     }
 
     // autocomplete para componente
-
     function dataC() {
         var tmp = null;
         var idEquipo = $('#equipo').val();
@@ -335,9 +311,7 @@
         });
         return tmp;
     };
-
     refrescarAutocompletar();
-
     function refrescarAutocompletar() {
         $("#codigo_componente").autocomplete({
             source: dataC(),
@@ -373,8 +347,6 @@
             }
         });
 
-
-
         $('#tareaest').change(function() {
             $('#tareaOpcional').val('');
         });
@@ -383,11 +355,15 @@
         });
     }
 
-
-    // Guarda Backlog - Chequeado
+    // Guarda Backlog (Edicion de Nuevo Backlog Autogenerado)- Chequeado
     function guardar() {
-
-        var idComponenteEquipo = $('#idcomponenteequipo').val();
+				var componente = $('#codigo_componente').val();
+				var idCompo = "";       
+				if (componente == "") {					
+						idComponenteEquipo = 0;					
+				} else {
+					var idComponenteEquipo = $('#idcomponenteequipo').val();					
+				}
         var equipo = $('#equipo').val();
         var tarea = $('#tareaest').val();
         var fecha = $('#fechaEdit').val();
@@ -397,8 +373,9 @@
         var idTarBonita = $('#idTarBonita').val();
         console.log("Estoy guardando");
 
-        if (equipo > 0 && horas !== '') {
+        if (horas !== '') {
             if ((tarea != -1) || (tarea_opcional != '')) {
+						
                 WaitingOpen();
                 $.ajax({
                     type: 'POST',

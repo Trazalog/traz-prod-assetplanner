@@ -77,109 +77,130 @@ class Backlog extends CI_Controller {
 		if($result){	
 			$arre['datos'] = $result;
 			$result2 = $this->Backlogs->traerequiposBack($ide,$id);
-			if($result2){
+			//dump($result2, 'equipos: ');
+			//if($result2){
 				$arre['equipo']=$result2;
-			}
-			else {
-				$arre['equipo']=0;
-			}
+				//dump($result2, 'equipos: ');
+			//}
+			// else {
+			// 	$arre['equipo']=0;
+			// }
 			
 			$herramientas = $this->Backlogs->getBacklogHerramientas($id);
 			if($herramientas){
 				$arre['herramientas']=$herramientas;
 			}
 			else{ 
+				$arre['herramientas']=0;
+			}
+			// trae insumos
+			$insumos = $this->Backlogs->getBacklogInsumos($id);
+			if($insumos){
+					$arre['insumos']=$insumos;
+			}
+			else{ $arre['insumos']=0;}
 
-	public function editar_backlog(){
-
-		$id_back = $this->input->post('backid');
-		$tarea = $this->input->post('tarea');
-		$fecha = $this->input->post('fecha');
-		$duracion = $this->input->post('duracion');
+			echo json_encode($arre);	
 		
-		$uno=substr($fecha, 0, 2); 
-        $dos=substr($fecha, 3, 2); 
-        $tres=substr($fecha, 6, 4); 
-        $resul = ($tres."-".$dos."-".$uno); 
-
-		$datos = array('tarea_descrip'=>$tarea,
-					   'fecha'=>$resul,
-					   'back_duracion'=>$duracion
-						);		
-
-		$result1 = $this->Backlogs->editar_backlogs($datos,$id_back);			
-		echo json_encode($result1);
+		}else {
+			
+			$arre['datos'] = 0;
+			echo json_encode($arre);
+		}	
 	}
+	// TODO: ENTENDERE SI ESTA FUNCION SIRVE SINO BORRAR
+	// public function editar_backlog(){
+
+	// 	$id_back = $this->input->post('backid');
+	// 	$tarea = $this->input->post('tarea');
+	// 	$fecha = $this->input->post('fecha');
+	// 	$duracion = $this->input->post('duracion');
+		
+	// 	$uno=substr($fecha, 0, 2); 
+  //       $dos=substr($fecha, 3, 2); 
+  //       $tres=substr($fecha, 6, 4); 
+  //       $resul = ($tres."-".$dos."-".$uno); 
+
+	// 	$datos = array('tarea_descrip'=>$tarea,
+	// 				   'fecha'=>$resul,
+	// 				   'back_duracion'=>$duracion
+	// 					);		
+
+	// 	$result1 = $this->Backlogs->editar_backlogs($datos,$id_back);			
+	// 	echo json_encode($result1);
+	// }
 	//Cambia de estado a "AN" - Listo
-	public function baja_backlog(){
+	// public function baja_backlog(){
 	
-		$idpre=$_POST['gloid'];
+	// 	$idpre=$_POST['gloid'];
 		
-		$datos = array('estado'=>"AN");
-		$result = $this->Backlogs->update_back($datos, $idpre);
-		echo json_encode($result);	
-	}
+	// 	$datos = array('estado'=>"AN");
+	// 	$result = $this->Backlogs->update_back($datos, $idpre);
+	// 	echo json_encode($result);	
+	// }
 
 	// Carga vista para backolg nuevo - Listo
-	public function cargarback($permission){ 
-        $data['permission'] = $permission;       
-        $this->load->view('backlog/view_',$data);
-  }
-  	
+	// public function cargarback($permission){ 
+  //       $data['permission'] = $permission;       
+  //       $this->load->view('backlog/view_',$data);
+  // }
+	
+	//TODO: ENTENDER SI SRIVE FUNCION O BORRAR
+
   	//Inserta  Backlog nuevo - Listo
-	public function guardar_backlog(){
+	// public function guardar_backlog(){
 			
-		$userdata = $this->session->userdata('user_data');
-    $empId = $userdata[0]['id_empresa']; 
+	// 	$userdata = $this->session->userdata('user_data');
+  //   $empId = $userdata[0]['id_empresa']; 
 
-    $idce=$_POST['idce'];
-		$eq=$_POST['equipo'];
-		$fe=$_POST['fecha'];
-		$ta=$_POST['tarea'];
-		$hs=$_POST['horas'];		
-		$tarOpc = $_POST['tarea_opcional'];
-		$idBacklog = $_POST['idBacklog'];
+  //   $idce=$_POST['idce'];
+	// 	$eq=$_POST['equipo'];
+	// 	$fe=$_POST['fecha'];
+	// 	$ta=$_POST['tarea'];
+	// 	$hs=$_POST['horas'];		
+	// 	$tarOpc = $_POST['tarea_opcional'];
+	// 	$idBacklog = $_POST['idBacklog'];
 
-		$uno=substr($fe, 0, 2); 
-        $dos=substr($fe, 3, 2); 
-        $tres=substr($fe, 6, 4); 
-        $resul = ($tres."/".$dos."/".$uno); 
+	// 	$uno=substr($fe, 0, 2); 
+  //       $dos=substr($fe, 3, 2); 
+  //       $tres=substr($fe, 6, 4); 
+  //       $resul = ($tres."/".$dos."/".$uno); 
 
-		$datos = array(
-				'id_equipo'     => $eq,
-				'tarea_descrip' => $ta,						
-				'fecha'         => $resul,
-				'estado'        => 'C',
-				'back_duracion' => $hs,
-				'id_empresa'    => $empId,
-				'idcomponenteequipo' => $idce,
-				'tarea_opcional'=> $tarOpc
-			);
+	// 	$datos = array(
+	// 			'id_equipo'     => $eq,
+	// 			'tarea_descrip' => $ta,						
+	// 			'fecha'         => $resul,
+	// 			'estado'        => 'C',
+	// 			'back_duracion' => $hs,
+	// 			'id_empresa'    => $empId,
+	// 			'idcomponenteequipo' => $idce,
+	// 			'tarea_opcional'=> $tarOpc
+	// 		);
 
-		$result = $this->Backlogs->insert_backlog($datos);
-		echo json_encode($result);
-	}
+	// 	$result = $this->Backlogs->insert_backlog($datos);
+	// 	echo json_encode($result);
+	// }
 
-	public function getComponente(){
-		$idEquipo = $this->input->post('idEquipo');
-		$componentes = $this->Backlogs->getComponentes($idEquipo);
-		if($componentes)
-		{	
-			$arre = array();$i=0;
-	        foreach ($componentes as $valor ) 
-	        {   
-				$valorS = (array)$valor;
-				$arre[$i]['value']   = $valorS['codigo'];
-				$arre[$i]['label']   = $valorS['codigo'];
-				$arre[$i]['descrip'] = $valorS['descripcion'];
-				$arre[$i]['sistema'] = $valorS['sistema'];
-				$arre[$i]['idce']    = $valorS['idce'];
-				$i++;
-	        }
-			echo json_encode($arre);
-		}
-		else echo json_encode(0);
-	}
+	// public function getComponente(){
+	// 	$idEquipo = $this->input->post('idEquipo');
+	// 	$componentes = $this->Backlogs->getComponentes($idEquipo);
+	// 	if($componentes)
+	// 	{	
+	// 		$arre = array();$i=0;
+	//         foreach ($componentes as $valor ) 
+	//         {   
+	// 			$valorS = (array)$valor;
+	// 			$arre[$i]['value']   = $valorS['codigo'];
+	// 			$arre[$i]['label']   = $valorS['codigo'];
+	// 			$arre[$i]['descrip'] = $valorS['descripcion'];
+	// 			$arre[$i]['sistema'] = $valorS['sistema'];
+	// 			$arre[$i]['idce']    = $valorS['idce'];
+	// 			$i++;
+	//         }
+	// 		echo json_encode($arre);
+	// 	}
+	// 	else echo json_encode(0);
+	// }
 
 /* Funciones para BPM */
 	public function editarNuevo(){ 
@@ -206,7 +227,7 @@ class Backlog extends CI_Controller {
 				'tarea_opcional'=> $tarOpc
 			);
 
-		$result = $this->Backlogs->editarNuevo($datos,$idBacklog);
+		$result = $this->Backlogs->editar_backlogs($datos,$idBacklog);
 		
 		// trae la cabecera
 		$parametros = $this->Bonitas->conexiones();
@@ -216,29 +237,10 @@ class Backlog extends CI_Controller {
 		$param = stream_context_create($parametros);
 		$result = $this->Tareas->cerrarTarea($idTarBonita, $param);
 
-
 		echo json_encode($result);
 	}
 
 /* Fin Funciones para BPM */
-}
-				$arre['herramientas']=0;
-			}
-			// trae insumos
-			$insumos = $this->Backlogs->getBacklogInsumos($id);
-			if($insumos){
-					$arre['insumos']=$insumos;
-			}
-			else{ $arre['insumos']=0;}
-
-			echo json_encode($arre);	
-		
-		}else {
-			
-			$arre['datos'] = 0;
-			echo json_encode($arre);
-		}	
-	}
 
 	public function editar_backlog(){
 
@@ -347,7 +349,7 @@ class Backlog extends CI_Controller {
 		$this->load->view('backlog/view_',$data);
 	}
   	
-  	//Inserta  Backlog nuevo - Listo
+  //Inserta  Backlog nuevo - Listo
 	public function guardar_backlog(){
 		
 		$userdata = $this->session->userdata('user_data');
@@ -369,7 +371,7 @@ class Backlog extends CI_Controller {
 
 		$datos = array(
 				'id_equipo'     => $ideq,//
-				'tarea_descrip' => $ta,		//				
+				'id_tarea' 			=> $ta,		//				
 				'fecha'         => $resul, //
 				'horash'				=> $hs, //
 				'estado'        => 'C',//				
@@ -379,7 +381,7 @@ class Backlog extends CI_Controller {
 				'id_empresa'    => $empId,
 				'idcomponenteequipo' => $idce,//				
 		);		
-
+	//	dump($datos, 'back en back: ');
 		$response['respBacklog'] = $this->Backlogs->insert_backlog($datos);	
 
 		if($response['respBacklog']){
@@ -519,15 +521,14 @@ class Backlog extends CI_Controller {
 		if($componentes)
 		{	
 			$arre = array();$i=0;
-	        foreach ($componentes as $valor ) 
-	        {   
-				$valorS = (array)$valor;
-				$arre[$i]['value']   = $valorS['codigo'];
-				$arre[$i]['label']   = $valorS['codigo'];
-				$arre[$i]['descrip'] = $valorS['descripcion'];
-				$arre[$i]['sistema'] = $valorS['sistema'];
-				$arre[$i]['idce']    = $valorS['idce'];
-				$i++;
+	        foreach ($componentes as $valor ){   
+						$valorS = (array)$valor;
+						$arre[$i]['value']   = $valorS['codigo'];
+						$arre[$i]['label']   = $valorS['codigo'];
+						$arre[$i]['descrip'] = $valorS['descripcion'];
+						$arre[$i]['sistema'] = $valorS['sistema'];
+						$arre[$i]['idce']    = $valorS['idce'];
+						$i++;
 	        }
 			echo json_encode($arre);
 		}

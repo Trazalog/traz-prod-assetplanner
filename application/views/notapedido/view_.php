@@ -30,11 +30,8 @@
       <div class="box">
         <div class="box-header">
           <h2 class="box-title">Nota de Pedido</h2>
-            <?php
-            //if (strpos($permission,'Add') !== false) {
-            echo '<button class="btn btn-block btn-primary" style="width: 250px; margin-top: 10px;" id="listadoOT">Volver a OTs</button>';
-            /*echo '<button class="btn btn-block btn-primary" style="width: 250px; margin-top: 10px;" id="listado">Ver Listado de Notas de pedido</button>';*/
-            //}
+            <?php           
+            echo '<button class="btn btn-block btn-primary" style="width: 250px; margin-top: 10px;" id="listadoOT">Volver a OTs</button>';            
           ?>
         </div><!-- /.box-header -->
         <div class="box-body">
@@ -82,13 +79,8 @@
                     <div class="row">
                       <div class="col-xs-12">
                         <button type="button" class="btn btn-primary" id="addcompo" onclick="javascript:armarTabla()"><i class="fa fa-check"></i> Agregar</button>
-                      </div><br><br>
-                      <!-- <div class="col-xs-8">
-                        <label>Observaciones:</label>
-                        <textarea class="form-control" id="descrip" name="descrip"></textarea>
-                      </div> -->
+                      </div><br><br>                      
                     </div><br><br>
-
                     <!-- tabla-->
                     <div class="row" >
                       <div class="col-xs-12">

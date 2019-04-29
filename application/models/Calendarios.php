@@ -396,6 +396,22 @@ class Calendarios extends CI_Model {
 			return $idOT;        
 		}
 
+		function cambiarEstado($id_solicitud, $estado, $tipo){
+
+			$this->db->set('estado', $estado);			
+			
+			if ($tipo == 'backlog') {
+					$this->db->where('backId', $id_solicitud);
+					$resposnse = $this->db->update('tbl_back');
+			}
+
+			if ($tipo == 'correctivo') {
+					$this->db->where('id_solicitud', $id_solicitud);
+					$resposnse = $this->db->update('solicitud_reparacion');
+			}
+			return $resposnse;
+	}
+
 		// Trae adjunto de Tarea original segun tipo (Backlog, Prevent y predict)
 		function getAdjunto($id_solicitud,$tipo){
 			
@@ -491,14 +507,10 @@ class Calendarios extends CI_Model {
 		function getBackPorIds($data){
 			$id = $data;
 			
-			$this->db->select('tareas.descripcion,
-												tbl_back.id_equipo,
-												tbl_back.tarea_descrip,
-												tbl_back.fecha,
-												tbl_back.backId						
-												');
+			$this->db->select('tbl_back.*,
+			tareas.descripcion as tareadesc');
 			$this->db->from('tbl_back'); 
-			$this->db->join('tareas', 'tareas.id_tarea = tbl_back.tarea_descrip');       
+			$this->db->join('tareas', 'tbl_back.id_tarea = tareas.id_tarea', 'left');       
 			$this->db->where('tbl_back.backId', $id);
 			$query = $this->db->get();      
 			
@@ -854,7 +866,7 @@ class Calendarios extends CI_Model {
             return true;
         }
     }
-}
+
 
 /* funciones para BPM */
     function getCaseIdporIdBacklog($id_solicitud){
@@ -870,7 +882,7 @@ class Calendarios extends CI_Model {
 				return 0;
 			}
 		}
-
+						
 		function getCaseIdporIdSolServicios($id_solicitud){
 			$this->db->select('solicitud_reparacion.case_id');
 			$this->db->from('solicitud_reparacion');			
@@ -883,3 +895,4 @@ class Calendarios extends CI_Model {
 				return 0;
 			}
 		}
+	}		

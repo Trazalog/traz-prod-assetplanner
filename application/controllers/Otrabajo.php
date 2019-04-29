@@ -6,12 +6,13 @@ class Otrabajo extends CI_Controller {
 	function __construct(){
 		parent::__construct();
 		$this->load->model('Otrabajos');
+		
 	}
 
 	/**
 	 * Muestra pantalla de listado de Ordenes de Trabajo.
 	 *
-	 * @param 	String 	$permission 	Permisos de ejecución.
+	 * @param 	String 	$permission 	Permisos de ejecuciï¿½n.
 	 */
 	public function index($permission) // Ok
 	{
@@ -24,7 +25,7 @@ class Otrabajo extends CI_Controller {
 	/**
 	 * Muestra pantalla de Nueva Orden de Trabajo.
 	 *
-	 * @param 	String 	$permission 	Permisos de ejecución.
+	 * @param 	String 	$permission 	Permisos de ejecuciï¿½n.
 	 */
 	public function nuevaOT($permission) // Ok
 	{
@@ -36,7 +37,7 @@ class Otrabajo extends CI_Controller {
   /**
 	 * Muestra pantalla de listado de Ordenes de Trabajo.
 	 *
-	 * @param 	String 	$permission 	Permisos de ejecución.
+	 * @param 	String 	$permission 	Permisos de ejecuciï¿½n.
 	 */
 	public function listOrden($permission,$ot=null) // Ok
 	{
@@ -241,7 +242,7 @@ class Otrabajo extends CI_Controller {
 	}
 	
 	// Codifica nombre de imagen para no repetir en servidor
-	// formato "12_6_2018-05-21-15-26-24" idpreventivo_idempresa_fecha(año-mes-dia-hora-min-seg)
+	// formato "12_6_2018-05-21-15-26-24" idpreventivo_idempresa_fecha(aï¿½o-mes-dia-hora-min-seg)
 	function codifNombre($ultimoId,$empId){
 
 		$guion = '_';
@@ -266,7 +267,7 @@ class Otrabajo extends CI_Controller {
 	{
 		$id = $this->input->post('idp');
 		$result = $this->Otrabajos->getpencil($id);		
-	
+		//dump($result, 'info de OT: ');
 		if($result){
 			$arre['datos'] = $result;
 			// trae herramientas 
@@ -427,7 +428,7 @@ class Otrabajo extends CI_Controller {
 	/**
 	 * Muestra la vista de Asignar Tarea
 	 *
-	 * @param 	String 	$permission 	Permisos de ejecución.
+	 * @param 	String 	$permission 	Permisos de ejecuciï¿½n.
 	 * @param 	Int 	$idglob 		Id de orden de trabajo.
 	 */
 	public function cargartarea($permission, $idglob) // Ok
@@ -585,14 +586,6 @@ class Otrabajo extends CI_Controller {
 	    }
     }
     
-    public function agregar(){//ajax
-
-	    if($_POST){
-	      $agregar = $this->Otrabajos->agregar($_POST);
-	      echo ($agregar===true)?"bien":"mal";
-	    }
-  	}
-
   	public function guardar(){	
 
 		$case_id = $this->input->post('case_id');
@@ -858,14 +851,75 @@ class Otrabajo extends CI_Controller {
   
   //Obtener TaskID por OtID
   public function ObtenerTaskIDxOT(){ 
+		
 		$this->load->library('BPM');
 		$id = (int)$this->input->post('ot');
-		$case_id = $this->Otrabajos->ObtenerCaseIDxOT($id);
-		if($case_id == null) {echo 0; return;}
-		$res = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar"');
-		if($res == 0)
-			$res = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar" 2');
-		echo $res;
+		$origenOT = $this->Otrabajos->getDatosOrigenOT($id);
+		$tipo = $origenOT[0]['tipo'];
+		$id_solicitud = $origenOT[0]['id_solicitud'];
+		
+		// si viene de correctivo
+		if ($tipo == 2) {		
+			$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar"');
+			echo $task_id;
+			return;
+		} 
+		
+		// si viene de backlog
+		if ($tipo == 4) {
+			//busco origen del backlog(tiene sore_id o no)
+			$idSolRep = $this->Otrabajos->getIdSolReparacion($id_solicitud);
+			//dump($idSolRep, 'sore_id: ');			
+			if($idSolRep == NULL){	//viene de item menu
+				// lanzar proceso
+				$contract = array(
+											"idSolicitudServicio"	=>	0,
+											"idOT"  => 	$id
+										);
+				$responce = $this->bpm->LanzarProceso($contract);
+				// guardo el caseid en OTrabajo
+				if($responce['status']){					
+					$case_id = $responce['case_id'];
+					$this->Otrabajos->setCaseidenOT($case_id, $id);					
+				}
+				//TODO: ARREGLAR  RODO DEBE CAMBIAR PROCESO ASI ES IGUAL AL OTRO
+				// pasa a ejecutar (no urgente) 
+				$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar" 2');	
+				echo $task_id;
+				return;			
+				//retornaR el taskid
+				//dump($task_id, 'task id en controller: ');			
+			}else{	// backlog generado desde una SServicios
+				// con id solicitud busco el case desde solicitud de reparacion
+				$case_id = $this->Otrabajos->getCaseIdenSServicios($id_solicitud);
+				//dump($case_id, ' id case en controller: ');
+				$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar" 2');
+				// guarda case_id en Otrabajo
+				//dump($task_id, 'task en 2: ');	// BIEN!				
+				$this->Otrabajos->setCaseidenOT($case_id, $id);
+				echo $task_id;
+				return;
+			}
+		}
+
+		// si viene de preventivo y predictivo
+		// lanzar proceso
+		$contract = array(
+			"idSolicitudServicio"	=>	0,
+			"idOT"  => 	$id
+		);
+		$responce = $this->bpm->LanzarProceso($contract);
+		// guardo el caseid en OTrabajo
+		if($responce['status']){					
+			$case_id = $responce['case_id'];
+			$this->Otrabajos->setCaseidenOT($case_id, $id);					
+		}
+		// retorna task id 
+		//TODO: ARREGLAR  RODO DEBE CAMBIAR PROCESO ASI ES IGUAL AL OTRO
+		 $task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar" 2');
+		 echo $task_id;
+		return;
+
 	}
 
 	//Ejecuta Orden de Trabajo en BPM
@@ -878,7 +932,7 @@ class Otrabajo extends CI_Controller {
 
 		//Obtener ID User Bonita
 		$userdata  = $this->session->userdata('user_data');
-		$usrId     = $userdata[0]['usrId'];
+		$usrId     = $userdata[0]['usrId'];		
 
 		//Asignar Usuario a Tarea para Finanlizar
 		$responce = $this->bpm->setUsuario($task,$usrId);
@@ -1008,3 +1062,4 @@ class Otrabajo extends CI_Controller {
 			break;
 		}
 	}
+}

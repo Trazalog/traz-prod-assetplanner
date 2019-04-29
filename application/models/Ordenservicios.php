@@ -423,7 +423,29 @@ class Ordenservicios extends CI_Model {
 
 
 
+	//Ordenn de trabajo por id
+		function getorden($id){
 
+			$this->db->select('orden_trabajo.*, 
+												tareas.id_tarea, 
+												tareas.descripcion AS tareadescrip, 
+												sisusers.usrId, 
+												CONCAT(sisusers.usrLastName,", ",sisusers.usrName) AS responsable');
+			$this->db->from('orden_trabajo');
+			$this->db->join('tareas','tareas.id_tarea  = orden_trabajo.id_tarea', 'left');
+			$this->db->join('sisusers','sisusers.usrId  = orden_trabajo.id_usuario_a');
+			$this->db->where('id_orden',$id);
+			
+				$query= $this->db->get();		
+
+				if( $query->num_rows() > 0)
+				{
+					return $query->result_array();	
+				} 
+				else {
+					return 0;
+				}
+		}
 
 
 

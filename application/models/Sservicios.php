@@ -121,6 +121,26 @@ class Sservicios extends CI_Model
 					return $data; 
 			}
 		}
+		// Trae usuarios para solicitantes de la SServicios
+		function getOperarios() // Ok
+    {
+        $userdata  = $this->session->userdata('user_data');
+        $empresaId = $userdata[0]['id_empresa'];
+        $this->db->select('sisusers.usrId, sisusers.usrLastName, sisusers.usrname');
+        $this->db->join('usuarioasempresa', 'usuarioasempresa.usrId = sisusers.usrId');
+        $this->db->from('sisusers');
+        $this->db->where('usuarioasempresa.empresaid', $empresaId);
+        $this->db->where('usuarioasempresa.estado', 'AC');
+        $query = $this->db->get();
+        $i     = 0;
+        foreach ($query->result() as $row)
+        {   
+            $equipos[$i]['label'] = $row->usrLastName.", ". $row->usrname ;
+            $equipos[$i]['value'] = $row->usrId;
+            $i++;
+        }
+        return $equipos; 
+    }
 		// Guarda solicitud de Servicio - Listo
 		function setservicios($data = null){ 	
 			if($data == null)
@@ -190,32 +210,32 @@ class Sservicios extends CI_Model
 			}
 		}
 	// Lanza proceso en BPM
-		function lanzarProcesoBPM($param)
-		{
-			$resource = 'API/bpm/process/';
-			$url = BONITA_URL.$resource;
-			$com = '/instantiation';			
-			$caseId = file_get_contents($url.BPM_PROCESS_ID.$com, false, $param);
-			$response['responsecabecera'] = $this->parseHeaders( $http_response_header );
-			$response['caseId'] = $caseId;	
-			return $response;
-		}
+	// 	function lanzarProcesoBPM($param)
+	// 	{
+	// 		$resource = 'API/bpm/process/';
+	// 		$url = BONITA_URL.$resource;
+	// 		$com = '/instantiation';			
+	// 		$caseId = file_get_contents($url.BPM_PROCESS_ID.$com, false, $param);
+	// 		$response['responsecabecera'] = $this->parseHeaders( $http_response_header );
+	// 		$response['caseId'] = $caseId;	
+	// 		return $response;
+	// 	}
 
-	// toma la respuesta del server y devuelve el codigo de respuesta solo
-		function parseHeaders( $headers ){
-			$head = array();
-			foreach( $headers as $k=>$v ){
-				$t = explode( ':', $v, 2 );
-				if( isset( $t[1] ) )
-					$head[ trim($t[0]) ] = trim( $t[1] );
-				else{
-					$head[] = $v;
-					if( preg_match( "#HTTP/[0-9\.]+\s+([0-9]+)#",$v, $out ) )
-						$head['reponse_code'] = intval($out[1]);
-				}
-			}
-			return $head;
-		}
+	// // toma la respuesta del server y devuelve el codigo de respuesta solo
+	// 	function parseHeaders( $headers ){
+	// 		$head = array();
+	// 		foreach( $headers as $k=>$v ){
+	// 			$t = explode( ':', $v, 2 );
+	// 			if( isset( $t[1] ) )
+	// 				$head[ trim($t[0]) ] = trim( $t[1] );
+	// 			else{
+	// 				$head[] = $v;
+	// 				if( preg_match( "#HTTP/[0-9\.]+\s+([0-9]+)#",$v, $out ) )
+	// 					$head['reponse_code'] = intval($out[1]);
+	// 			}
+	// 		}
+	// 		return $head;
+	// 	}
 
 	// guarda CaseId en solic de servicios
 		function setCaseId($caseId,$id_solServicio){			
@@ -228,10 +248,6 @@ class Sservicios extends CI_Model
 		}	
 
 /*	./ INTEGRACION CON BPM */
-
-
-
-
 
 
 //////// no vistas
@@ -282,8 +298,6 @@ class Sservicios extends CI_Model
 		 return true;
 		}  
 	}
-
-
 
 	// Guarda confirmacion de Solicitud de Servicio, por usr que la hizo
 	function confSolicitudes($data){

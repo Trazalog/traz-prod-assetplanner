@@ -302,6 +302,7 @@
               <th style="text-align: center">Causa</th>
               <th style="text-align: center">Fecha</th>
               <th style="text-align: center" class="hidden">Id tarea</th>
+              <th style="text-align: center" class="hidden">Duracion</th>
             </tr>
           </thead>
           <tbody>
@@ -315,19 +316,17 @@
                 echo "<tr>";
                 echo "<td>";
   
-                if($b['estado'] != 'OT'){
-                  echo '<i class="fa fa-check-square" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-backlog" onclick="fill_Backlog('.$b['backId'].')"></i>';
-                }else{
-                  echo '<i class="fa fa-check-square-o" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden Generada"></i>';
-                }
-                
-                // }
+                  if($b['estado'] != 'OT'){
+                    echo '<i class="fa fa-check-square" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-backlog" onclick="fill_Backlog('.$b['backId'].')"></i>';
+                  }else{
+                    echo '<i class="fa fa-check-square-o" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden Generada"></i>';
+                  }                
+               
                 echo "</td>";
                 // 1 // id equipo
                 echo "<td style='text-align: center' class='hidden equipo'>".$b['id_equipo']."</td>";
                 // 2 // id solicitud reparacion
-                echo "<td style='text-align: center' class='hidden backlog'>".$b['backId']."</td>"; 
-
+                echo "<td style='text-align: center' class='hidden backlog'>".$b['backId']."</td>";
                 echo "<td style='text-align: center'>".$b['sore_id']."</td>";
                 // 3 // codigo de equipo
                 echo "<td style='text-align: center'>".$b['codigo']."</td>";
@@ -341,6 +340,7 @@
                 echo "<td style='text-align: center'>".$b['fecha']."</td>";
                 // 6 // id de tarea
                 echo "<td style='text-align: center' class='hidden'>".$b['id_tarea']."</td>";
+                echo "<td style='text-align: center' class='hidden'>".$b['back_duracion']."</td>";
                 echo "</tr>";
               }
             }

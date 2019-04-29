@@ -14,28 +14,19 @@ class Backlogs extends CI_Model
 		$userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa']; 
           
-	    $this->db->select('tbl_back.backId, 
-												tbl_back.id_equipo,
-												tbl_back.tarea_descrip, 
-												tbl_back.fecha, 
-												tbl_back.estado,
-												tbl_back.back_duracion, 
-												tbl_back.id_unidad,
-												tbl_back.back_adjunto,
+	    $this->db->select('tbl_back.*,
 												equipos.descripcion AS des, 
-												equipos.marca, equipos.codigo, 
-												equipos.ubicacion, 
-												equipos.fecha_ingreso, 
-												tareas.id_tarea, 
+												equipos.marca, 
+												equipos.codigo, 
 												tareas.descripcion as de1,
 												componentes.descripcion AS componente,
 												sistema.descripcion as sistema');	 
 	    $this->db->from('tbl_back'); 
 	    $this->db->join('equipos', 'equipos.id_equipo = tbl_back.id_equipo');
-	    $this->db->join('tareas', 'tareas.id_tarea = tbl_back.tarea_descrip');
-        $this->db->join('componenteequipo', 'componenteequipo.idcomponenteequipo = tbl_back.idcomponenteequipo');
-        $this->db->join('componentes', 'componentes.id_componente = componenteequipo.id_componente');
-        $this->db->join('sistema', 'sistema.sistemaid = componenteequipo.sistemaid');
+	    $this->db->join('tareas', 'tareas.id_tarea = tbl_back.id_tarea','left');
+			$this->db->join('componenteequipo', 'componenteequipo.idcomponenteequipo = tbl_back.idcomponenteequipo', 'left');
+			$this->db->join('componentes', 'componentes.id_componente = componenteequipo.id_componente', 'left');
+			$this->db->join('sistema', 'sistema.sistemaid = componenteequipo.sistemaid',  'left');
 	    $this->db->where('tbl_back.id_empresa', $empId);
 	    $query= $this->db->get();
 	    
@@ -52,14 +43,14 @@ class Backlogs extends CI_Model
 	// Trae equipos para llenar select vista por empresa logueada - Listo
 	function getequipo(){
 			
-	    $userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa']; 
-        
-    	$this->db->select('equipos.*');
-    	$this->db->from('equipos');
-    	$this->db->where('equipos.estado', 'AC');
-    	$this->db->where('equipos.id_empresa', $empId);    	
-    	$query= $this->db->get();   
+		$userdata = $this->session->userdata('user_data');
+			$empId = $userdata[0]['id_empresa']; 
+			
+		$this->db->select('equipos.*');
+		$this->db->from('equipos');
+		$this->db->where('equipos.estado', 'AC');
+		$this->db->where('equipos.id_empresa', $empId);    	
+		$query= $this->db->get();   
 
 		if ($query->num_rows()!=0)
 		{
@@ -72,25 +63,28 @@ class Backlogs extends CI_Model
 	}	
 	function getComponentes($idEquipo){
 		$userdata  = $this->session->userdata('user_data');
-			 $empresaId = $userdata[0]['id_empresa'];
-			 $this->db->select('componenteequipo.idcomponenteequipo AS idce, componenteequipo.codigo, componentes.descripcion, sistema.descripcion AS sistema');
-			 $this->db->from('componenteequipo');
-			 $this->db->join('componentes', 'componentes.id_componente = componenteequipo.id_componente');
-			 $this->db->join('sistema', 'sistema.sistemaid = componenteequipo.sistemaid');
-			 if($idEquipo!="") {
-				 $this->db->where('componenteequipo.id_equipo', $idEquipo);	
-			 }
-			 $this->db->where('componenteequipo.id_empresa', $empresaId);
-			 $this->db->where('componenteequipo.estado !=', 'AN');
-			 $this->db->order_by('componenteequipo.codigo');
-			 $query = $this->db->get();
-			 if($query->num_rows()>0){
-					 return $query->result();
-			 }
-			 else
-			 {
-					 return false;
-			 }     
+		$empresaId = $userdata[0]['id_empresa'];
+		$this->db->select('componenteequipo.idcomponenteequipo AS idce, 
+											componenteequipo.codigo, 
+											componentes.descripcion, 
+											sistema.descripcion AS sistema');
+		$this->db->from('componenteequipo');
+		$this->db->join('componentes', 'componentes.id_componente = componenteequipo.id_componente');
+		$this->db->join('sistema', 'sistema.sistemaid = componenteequipo.sistemaid');
+		if($idEquipo!="") {
+			$this->db->where('componenteequipo.id_equipo', $idEquipo);	
+		}
+		$this->db->where('componenteequipo.id_empresa', $empresaId);
+		$this->db->where('componenteequipo.estado !=', 'AN');
+		$this->db->order_by('componenteequipo.codigo');
+		$query = $this->db->get();
+		if($query->num_rows()>0){
+				return $query->result();
+		}
+		else
+		{
+				return false;
+		}     
 	}
 	// Trae info de equipo por id - Listo
 	function getInfoEquipos($data = null){
@@ -182,27 +176,27 @@ class Backlogs extends CI_Model
 	function traerequiposBack($ide,$id){
 
 	    $this->db->select('tbl_back.backId, 
-	    				   tbl_back.id_equipo,
-	    				   tbl_back.tarea_descrip, 
-	    				   tbl_back.fecha, 
-	    				   tbl_back.estado,
-	    				   tbl_back.horash, 
-	    				   equipos.descripcion AS des, 
-	    				   equipos.marca, 
-	    				   equipos.codigo, 
-	    				   equipos.ubicacion, 
-	    				   equipos.fecha_ingreso, 
-	    				   tareas.id_tarea, 
-	    				   tareas.descripcion as de1,
-                           componenteequipo.codigo as codcompeq,
-                           componentes.descripcion as componente,
-                           sistema.descripcion as sistema');
+												tbl_back.id_equipo,
+												tbl_back.tarea_opcional, 
+												tbl_back.fecha, 
+												tbl_back.estado,
+												tbl_back.horash, 
+												equipos.descripcion AS des, 
+												equipos.marca, 
+												equipos.codigo, 
+												equipos.ubicacion, 
+												equipos.fecha_ingreso, 
+												tareas.id_tarea, 
+												tareas.descripcion as de1,
+												componenteequipo.codigo as codcompeq,
+												componentes.descripcion as componente,
+												sistema.descripcion as sistema');
 	    $this->db->from('tbl_back');
 	    $this->db->join('equipos', 'equipos.id_equipo = tbl_back.id_equipo');
-        $this->db->join('tareas', 'tareas.id_tarea = tbl_back.tarea_descrip');
-	    $this->db->join('componenteequipo', 'componenteequipo.idcomponenteequipo = tbl_back.idcomponenteequipo');
-        $this->db->join('componentes', 'componentes.id_componente = componenteequipo.id_componente');
-        $this->db->join('sistema', 'sistema.sistemaid = componenteequipo.sistemaid');
+      $this->db->join('tareas', 'tareas.id_tarea = tbl_back.id_tarea', 'left');
+	    $this->db->join('componenteequipo', 'componenteequipo.idcomponenteequipo = tbl_back.idcomponenteequipo','left');
+			$this->db->join('componentes', 'componentes.id_componente = componenteequipo.id_componente','left');
+			$this->db->join('sistema', 'sistema.sistemaid = componenteequipo.sistemaid','left');
 	    $this->db->where('tbl_back.backId', $id);
 	    $this->db->where('tbl_back.id_equipo', $ide);
 	    $query = $this->db->get();
@@ -272,6 +266,12 @@ class Backlogs extends CI_Model
 		$query = $this->db->update("tbl_back",$datos);
 		return $query;
 	 }
+
+	 function editarNuevo($datos,$idBacklog){
+		$this->db->where('backId', $idBacklog);
+		$query = $this->db->update("tbl_back",$datos);
+		return $query;
+	}
 	// borra herramientas en edicion 
 	function deleteHerramBack($id){
 		$this->db->where('backId', $id);

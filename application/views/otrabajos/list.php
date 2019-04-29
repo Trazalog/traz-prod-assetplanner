@@ -1,6 +1,8 @@
 ﻿<input type="hidden" id="permission" value="<?php echo $permission ?>">
 <style>
-.datagrid table { border-collapse: collapse; text-align: left; width: 100%; } .datagrid {font: normal 12px/150% Arial, Helvetica, sans-serif; background: #fff; overflow: hidden; }.datagrid table td, .datagrid table th { padding: 13px 20px; }.datagrid table thead th {background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #3B8BBA), color-stop(1, #45A4DB) );background:-moz-linear-gradient( center top, #3B8BBA 5%, #45A4DB 100% );filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#3B8BBA', endColorstr='#45A4DB');background-color:#3B8BBA; color:#FAF2F8; font-size: 13px; font-weight: bold; border-left: 1px solid #A3A3A3; } .datagrid table thead th:first-child { border: none; }.datagrid table tbody td { color: #002538; font-size: 13px;border-bottom: 1px solid #E1EEF4;font-weight: normal; }.datagrid table tbody .alt td { background: #EBEBEB; color: #00273B; }.datagrid table tbody td:first-child { border-left: none; }.datagrid table tbody tr:last-child td { border-bottom: none; }
+  .datagrid table { border-collapse: collapse; text-align: left; width: 100%; } .datagrid {font: normal 12px/150% Arial, Helvetica, sans-serif; background: #fff; overflow: hidden; }.datagrid table td, .datagrid table th { padding: 13px 20px; }.datagrid table thead th {background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #3B8BBA), color-stop(1, #45A4DB) );background:-moz-linear-gradient( center top, #3B8BBA 5%, #45A4DB 100% );filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#3B8BBA', endColorstr='#45A4DB');background-color:#3B8BBA; color:#FAF2F8; font-size: 13px; font-weight: bold; border-left: 1px solid #A3A3A3; } .datagrid table thead th:first-child { border: none; }.datagrid table tbody td { color: #002538; font-size: 13px;border-bottom: 1px solid #E1EEF4;font-weight: normal; }.datagrid table tbody .alt td { background: #EBEBEB; color: #00273B; }.datagrid table tbody td:first-child { border-left: none; }.datagrid table tbody tr:last-child td { border-bottom: none; }
+
+  ul.dropdown-menu{z-index: 10000 !important; position: relative !important;}
 </style>
 <section class="content">
   <div class="row">
@@ -253,7 +255,6 @@ function eliminarpred(){
       $('#tareacustom').val('');  // borra la tarea custom
     },
   });
-
   // limpia un input al seleccionar o llenar otro
   $('#tarea').change(function(){    
     $('#tareacustom').val(''); 
@@ -264,18 +265,16 @@ function eliminarpred(){
   });
 
   // Trae datos para llenar el modal Editar OT - Ok
-  $(".fa-pencil").click(function(e) { 
+  function editar(o) { 
 
     $('#errorE').hide();
-    $('#btnEditar').prop("disabled", false); 
-    var idord = $(this).parent('td').parent('tr').attr('id');
-    idp = idord;
+    $('#btnEditar').prop("disabled", false);    
+    var idp = $(o).closest('tr').attr('id');    
     // agrega id de ot par guardar con adjuntos
     $('#idAgregaAdjunto').val(idp);
     //borra la tabla de adjuntos antes de cargar 
     $('#tablaadjunto tbody tr').remove();
-    
-    console.log("idp: "+idp);
+
     $.ajax({
       data: { idp:idp },
       dataType: 'json',
@@ -284,6 +283,7 @@ function eliminarpred(){
       success: function(data){
         console.table(data);
         var resp = data['datos'];
+
         datos = {
           'id_ot'         : resp[0]['id_orden'],        //
           'nro'           : resp[0]['nro'],             //
@@ -316,7 +316,7 @@ function eliminarpred(){
         console.table(result);
       },
     });
-  });
+  }
 
   // completa los datos del modal Editar - Ok
   function completarEdit(datos, herram, insum, adjunto){  
@@ -327,7 +327,7 @@ function eliminarpred(){
     $('#marca').val(datos['marca']);
     $('#ubicacion').val(datos['ubicacion']);
     $('#descripcion').val(datos['descripcion']);   
-    if(datos['id_tarea'] != '0'){   
+    if(datos['id_tarea'] > '0'){   
       $('#id_tarea').val(datos['id_tarea']);
       $('#tarea').val(datos['tareadescrip']);    
     }else{
@@ -482,7 +482,6 @@ function eliminarpred(){
   }
 ///// EDICION DE ORDEN DE TRABAJO  
 
-
 /// EDICION Y AGREGADO DE ADJUNTOS
   //abrir modal eliminar adjunto
   $(document).on("click",".eliminaAdjunto",function(){
@@ -593,376 +592,374 @@ function eliminarpred(){
   }
 ///  / EDICION Y AGREGADO DE ADJUNTOS
 
-  
+////// HERRAMIENTAS //////
 
-  ////// HERRAMIENTAS //////
-
-    function ordenaArregloDeObjetosPor(propiedad) {  
-      return function(a, b) {  
-        if (a[propiedad] > b[propiedad]) {  
-          return 1;  
-        } else if (a[propiedad] < b[propiedad]) {  
-          return -1;  
-        }  
-        return 0;  
+  function ordenaArregloDeObjetosPor(propiedad) {  
+    return function(a, b) {  
+      if (a[propiedad] > b[propiedad]) {  
+        return 1;  
+      } else if (a[propiedad] < b[propiedad]) {  
+        return -1;  
       }  
+      return 0;  
+    }  
+  } 
+  //Trae herramientas
+  var dataHerramientas = function() {
+    var tmp = null;
+    $.ajax({
+      'async': false,
+      'type': "POST",
+      'dataType': 'json',
+      'url': 'index.php/Preventivo/getHerramientasB',
+    })
+    .done( (data) => { tmp = data } )
+    .fail( () => alert("Error al traer Herramientas") );
+    return tmp;
+  }();
+
+  // data busqueda por codigo de herramientas
+  function dataCodigoHerr(request, response) {
+    function hasMatch(s) {
+      return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
+    }
+    var i, l, obj, matches = [];
+
+    if (request.term==="") {
+      response([]);
+      return;
+    }
+    
+    //ordeno por codigo de herramientas
+    dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("codigo"));
+
+    for  (i = 0, l = dataHerramientas.length; i<l; i++) {
+      obj = dataHerramientas[i];
+      if (hasMatch(obj.codigo)) {
+        matches.push(obj);
+      }
+    }
+    response(matches);
+  }
+  // data busqueda por marca de herramientas
+  function dataMarcaHerr(request, response) {
+    function hasMatch(s) {
+      return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
+    }
+    var i, l, obj, matches = [];
+
+    if (request.term==="") {
+      response([]);
+      return;
+    }
+
+    //ordeno por marca de herramientas
+    dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("marca"));
+
+    for  (i = 0, l = dataHerramientas.length; i<l; i++) {
+      obj = dataHerramientas[i];
+      if (hasMatch(obj.marca)) {
+        matches.push(obj);
+      }
+    }
+    response(matches);
+  }
+
+
+  //busqueda por marcas de herramientas
+  $("#herramienta").autocomplete({
+    source:    dataCodigoHerr,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.codigo);
+      $('#id_herramienta').val(ui.item.value);
+      $('#marcaherram').val(ui.item.marca);
+      $('#descripcionherram').val(ui.item.label);
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.codigo);
+      $('#id_herramienta').val(ui.item.value);
+      $('#marcaherram').val(ui.item.marca);
+      $('#descripcionherram').val(ui.item.label);
+    },
+  })
+  //muestro marca en listado de resultados
+  .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+    .append( "<a>" + item.codigo + "</a>" )
+    .appendTo( ul );
+  };
+
+  //busqueda por marcas de herramientas
+  $("#marcaherram").autocomplete({
+    source:    dataMarcaHerr,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.marca);
+      $('#id_herramienta').val(ui.item.value);
+      $('#herramienta').val(ui.item.codigo);
+      $('#descripcionherram').val(ui.item.label);
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.marca);
+      $('#id_herramienta').val(ui.item.value);
+      $('#herramienta').val(ui.item.codigo);
+      $('#descripcionherram').val(ui.item.label);
+    },
+  })
+  //muestro marca en listado de resultados
+  .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+    .append( "<a>" + item.marca + "</a>" )
+    .appendTo( ul );
+  };
+
+  //busqueda por descripcion de herramientas
+  $("#descripcionherram").autocomplete({
+    source:    dataHerramientas,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_herramienta').val(ui.item.value);
+      $('#herramienta').val(ui.item.codigo);
+      $('#marcaherram').val(ui.item.marca);
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_herramienta').val(ui.item.value);
+      $('#herramienta').val(ui.item.codigo);
+      $('#marcaherram').val(ui.item.marca);
+    },
+  });
+
+  // Agrega herramientas a la tabla - Chequeado
+  var nrofila = 0;  // hace cada fila unica
+  $("#agregarherr").click(function (e) {
+    // FALTA HACER VALIDACION
+    var id_her            = $('#id_herramienta').val();
+    var herramienta       = $("#herramienta").val(); 
+    var marcaherram       = $('#marcaherram').val();
+    var descripcionherram = $('#descripcionherram').val();
+    var cantidadherram    = $('#cantidadherram').val();
+    
+    nrofila = nrofila + 1;
+    var tr = "<tr id='"+id_her+"' data-nrofila='"+nrofila+"'>"+
+                "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+                "<td class='herr'>"+herramienta+"</td>"+
+                "<td class='marca'>"+marcaherram+"</td>"+
+                "<td class='descrip'>"+descripcionherram+"</td>"+
+                "<td class='cant'>"+cantidadherram+"</td>"+ 
+                // guardo id de herram y cantidades
+                "<input type='hidden' name='id_her["+nrofila+"]' value='"+id_her+"'>" +                
+                "<input type='hidden' name='cant_herr["+nrofila+"]' value='"+cantidadherram+"'>" +
+              "</tr>";
+    if(id_her > 0 && cantidadherram > 0){
+      $('#tablaherramienta tbody').append(tr);
+    }
+    else{
+      return;
     } 
-    //Trae herramientas
-    var dataHerramientas = function() {
-      var tmp = null;
-      $.ajax({
-        'async': false,
-        'type': "POST",
-        'dataType': 'json',
-        'url': 'index.php/Preventivo/getHerramientasB',
-      })
-      .done( (data) => { tmp = data } )
-      .fail( () => alert("Error al traer Herramientas") );
-      return tmp;
-    }();
 
-    // data busqueda por codigo de herramientas
-    function dataCodigoHerr(request, response) {
-      function hasMatch(s) {
-        return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
-      }
-      var i, l, obj, matches = [];
-
-      if (request.term==="") {
-        response([]);
-        return;
-      }
-      
-      //ordeno por codigo de herramientas
-      dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("codigo"));
-
-      for  (i = 0, l = dataHerramientas.length; i<l; i++) {
-        obj = dataHerramientas[i];
-        if (hasMatch(obj.codigo)) {
-          matches.push(obj);
-        }
-      }
-      response(matches);
-    }
-    // data busqueda por marca de herramientas
-    function dataMarcaHerr(request, response) {
-      function hasMatch(s) {
-        return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
-      }
-      var i, l, obj, matches = [];
-
-      if (request.term==="") {
-        response([]);
-        return;
-      }
-
-      //ordeno por marca de herramientas
-      dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("marca"));
-
-      for  (i = 0, l = dataHerramientas.length; i<l; i++) {
-        obj = dataHerramientas[i];
-        if (hasMatch(obj.marca)) {
-          matches.push(obj);
-        }
-      }
-      response(matches);
-    }
-
-
-    //busqueda por marcas de herramientas
-    $("#herramienta").autocomplete({
-      source:    dataCodigoHerr,
-      delay:     500,
-      minLength: 1,
-      focus: function(event, ui) {
-        event.preventDefault();
-        $(this).val(ui.item.codigo);
-        $('#id_herramienta').val(ui.item.value);
-        $('#marcaherram').val(ui.item.marca);
-        $('#descripcionherram').val(ui.item.label);
-      },
-      select: function(event, ui) {
-        event.preventDefault();
-        $(this).val(ui.item.codigo);
-        $('#id_herramienta').val(ui.item.value);
-        $('#marcaherram').val(ui.item.marca);
-        $('#descripcionherram').val(ui.item.label);
-      },
-    })
-    //muestro marca en listado de resultados
-    .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-      return $( "<li>" )
-      .append( "<a>" + item.codigo + "</a>" )
-      .appendTo( ul );
-    };
-
-    //busqueda por marcas de herramientas
-    $("#marcaherram").autocomplete({
-      source:    dataMarcaHerr,
-      delay:     500,
-      minLength: 1,
-      focus: function(event, ui) {
-        event.preventDefault();
-        $(this).val(ui.item.marca);
-        $('#id_herramienta').val(ui.item.value);
-        $('#herramienta').val(ui.item.codigo);
-        $('#descripcionherram').val(ui.item.label);
-      },
-      select: function(event, ui) {
-        event.preventDefault();
-        $(this).val(ui.item.marca);
-        $('#id_herramienta').val(ui.item.value);
-        $('#herramienta').val(ui.item.codigo);
-        $('#descripcionherram').val(ui.item.label);
-      },
-    })
-    //muestro marca en listado de resultados
-    .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-      return $( "<li>" )
-      .append( "<a>" + item.marca + "</a>" )
-      .appendTo( ul );
-    };
-
-    //busqueda por descripcion de herramientas
-    $("#descripcionherram").autocomplete({
-      source:    dataHerramientas,
-      delay:     500,
-      minLength: 1,
-      focus: function(event, ui) {
-        event.preventDefault();
-        $(this).val(ui.item.label);
-        $('#id_herramienta').val(ui.item.value);
-        $('#herramienta').val(ui.item.codigo);
-        $('#marcaherram').val(ui.item.marca);
-      },
-      select: function(event, ui) {
-        event.preventDefault();
-        $(this).val(ui.item.label);
-        $('#id_herramienta').val(ui.item.value);
-        $('#herramienta').val(ui.item.codigo);
-        $('#marcaherram').val(ui.item.marca);
-      },
+    $(document).on("click",".elirow",function(){
+      var parent = $(this).closest('tr');
+      $(parent).remove();
     });
 
-    // Agrega herramientas a la tabla - Chequeado
-    var nrofila = 0;  // hace cada fila unica
-    $("#agregarherr").click(function (e) {
-      // FALTA HACER VALIDACION
-      var id_her            = $('#id_herramienta').val();
-      var herramienta       = $("#herramienta").val(); 
-      var marcaherram       = $('#marcaherram').val();
-      var descripcionherram = $('#descripcionherram').val();
-      var cantidadherram    = $('#cantidadherram').val();
-      
-      nrofila = nrofila + 1;
-      var tr = "<tr id='"+id_her+"' data-nrofila='"+nrofila+"'>"+
-                  "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
-                  "<td class='herr'>"+herramienta+"</td>"+
-                  "<td class='marca'>"+marcaherram+"</td>"+
-                  "<td class='descrip'>"+descripcionherram+"</td>"+
-                  "<td class='cant'>"+cantidadherram+"</td>"+ 
-                  // guardo id de herram y cantidades
-                  "<input type='hidden' name='id_her["+nrofila+"]' value='"+id_her+"'>" +                
-                  "<input type='hidden' name='cant_herr["+nrofila+"]' value='"+cantidadherram+"'>" +
-                "</tr>";
-      if(id_her > 0 && cantidadherram > 0){
-        $('#tablaherramienta tbody').append(tr);
+    $('#herramienta').val('');
+    $('#marcaherram').val(''); 
+    $('#descripcionherram').val(''); 
+    $('#cantidadherram').val('');        
+  });
+////// HERRAMIENTAS //////
+
+////// INSUMOS //////
+
+  //Trae insumos
+  var dataInsumos = function() {
+    var tmp = null;
+    $.ajax({
+      'async': false,
+      'type': "POST",
+      'dataType': 'json',
+      'url': 'index.php/Preventivo/getinsumo',
+    })
+    .done( (data) => { tmp = data } )
+    .fail( () => alert("Error al traer Herramientas") );
+    return tmp;
+  }();
+
+  // data busqueda por codigo de herramientas
+  function dataCodigoInsumo(request, response) {
+    function hasMatch(s) {
+      return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
+    }
+    var i, l, obj, matches = [];
+
+    if (request.term==="") {
+      response([]);
+      return;
+    }
+
+    //ordeno por codigo de herramientas
+    dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("codigo"));
+
+    for  (i = 0, l = dataInsumos.length; i<l; i++) {
+      obj = dataInsumos[i];
+      if (hasMatch(obj.codigo)) {
+        matches.push(obj);
       }
-      else{
-        return;
-      } 
+    }
+    response(matches);
+  }
+
+
+  //busqueda por marcas de herramientas
+  $("#insumo").autocomplete({
+    source:    dataCodigoInsumo,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.codigo);
+      $('#id_insumo').val(ui.item.value);
+      $('#descript').val(ui.item.label);
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.codigo);
+      $('#id_insumo').val(ui.item.value);
+      $('#descript').val(ui.item.label);
+    },
+  })
+  //muestro marca en listado de resultados
+  .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+    .append( "<a>" + item.codigo + "</a>" )
+    .appendTo( ul );
+  };
+
+  //busqueda por descripcion de herramientas
+  $("#descript").autocomplete({
+    source:    dataInsumos,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_insumo').val(ui.item.value);
+      $('#insumo').val(ui.item.codigo);
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#id_herramienta').val(ui.item.value);
+      $('#herramienta').val(ui.item.codigo);
+      $('#marcaherram').val(ui.item.marca);
+    },
+  });
+
+  // Agrega insumos a la tabla 
+  var nrofilaIns = 0; 
+  $("#agregarins").click(function (e) {
+      var id_insumo = $('#id_insumo').val(); 
+      var $insumo   = $("#insumo").val();
+      var descript = $('#descript').val();
+      var cant = $('#cant').val();     
+      console.log("El id  del insumo");
+      console.log(id_insumo);
+      var hayError = false;
+      var tr = "<tr id='"+id_insumo+"'>"+
+                    "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
+                    "<td>"+$insumo+"</td>"+
+                    "<td>"+descript+"</td>"+
+                    "<td>"+cant+"</td>"+
+
+                    // guardo id de insumos y cantidades
+                    "<input type='hidden' name='id_insumo["+nrofilaIns+"]' value='"+id_insumo+"'>" +
+                    "<input type='hidden' name='cant_insumo["+nrofilaIns+"]' value='"+cant+"'>" +
+                "</tr>";
+      nrofilaIns = nrofilaIns + 1;          
+      if(id_insumo > 0 && cant > 0){
+        $('#tablainsumo tbody').append(tr); 
+      }
+      else {
+            return;
+      }    
 
       $(document).on("click",".elirow",function(){
         var parent = $(this).closest('tr');
         $(parent).remove();
       });
-
-      $('#herramienta').val('');
-      $('#marcaherram').val(''); 
-      $('#descripcionherram').val(''); 
-      $('#cantidadherram').val('');        
-    });
-  ////// HERRAMIENTAS //////
-
-  ////// INSUMOS //////
-
-    //Trae insumos
-    var dataInsumos = function() {
-      var tmp = null;
-      $.ajax({
-        'async': false,
-        'type': "POST",
-        'dataType': 'json',
-        'url': 'index.php/Preventivo/getinsumo',
-      })
-      .done( (data) => { tmp = data } )
-      .fail( () => alert("Error al traer Herramientas") );
-      return tmp;
-    }();
-
-    // data busqueda por codigo de herramientas
-    function dataCodigoInsumo(request, response) {
-      function hasMatch(s) {
-        return s.toLowerCase().indexOf(request.term.toLowerCase())!==-1;
-      }
-      var i, l, obj, matches = [];
-
-      if (request.term==="") {
-        response([]);
-        return;
-      }
-
-      //ordeno por codigo de herramientas
-      dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("codigo"));
-
-      for  (i = 0, l = dataInsumos.length; i<l; i++) {
-        obj = dataInsumos[i];
-        if (hasMatch(obj.codigo)) {
-          matches.push(obj);
-        }
-      }
-      response(matches);
-    }
-
-
-    //busqueda por marcas de herramientas
-    $("#insumo").autocomplete({
-      source:    dataCodigoInsumo,
-      delay:     500,
-      minLength: 1,
-      focus: function(event, ui) {
-        event.preventDefault();
-        $(this).val(ui.item.codigo);
-        $('#id_insumo').val(ui.item.value);
-        $('#descript').val(ui.item.label);
-      },
-      select: function(event, ui) {
-        event.preventDefault();
-        $(this).val(ui.item.codigo);
-        $('#id_insumo').val(ui.item.value);
-        $('#descript').val(ui.item.label);
-      },
-    })
-    //muestro marca en listado de resultados
-    .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-      return $( "<li>" )
-      .append( "<a>" + item.codigo + "</a>" )
-      .appendTo( ul );
-    };
-
-    //busqueda por descripcion de herramientas
-    $("#descript").autocomplete({
-      source:    dataInsumos,
-      delay:     500,
-      minLength: 1,
-      focus: function(event, ui) {
-        event.preventDefault();
-        $(this).val(ui.item.label);
-        $('#id_insumo').val(ui.item.value);
-        $('#insumo').val(ui.item.codigo);
-      },
-      select: function(event, ui) {
-        event.preventDefault();
-        $(this).val(ui.item.label);
-        $('#id_herramienta').val(ui.item.value);
-        $('#herramienta').val(ui.item.codigo);
-        $('#marcaherram').val(ui.item.marca);
-      },
-    });
-
-    // Agrega insumos a la tabla 
-    var nrofilaIns = 0; 
-    $("#agregarins").click(function (e) {
-        var id_insumo = $('#id_insumo').val(); 
-        var $insumo   = $("#insumo").val();
-        var descript = $('#descript').val();
-        var cant = $('#cant').val();     
-        console.log("El id  del insumo");
-        console.log(id_insumo);
-        var hayError = false;
-        var tr = "<tr id='"+id_insumo+"'>"+
-                      "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>"+
-                      "<td>"+$insumo+"</td>"+
-                      "<td>"+descript+"</td>"+
-                      "<td>"+cant+"</td>"+
-
-                      // guardo id de insumos y cantidades
-                      "<input type='hidden' name='id_insumo["+nrofilaIns+"]' value='"+id_insumo+"'>" +
-                      "<input type='hidden' name='cant_insumo["+nrofilaIns+"]' value='"+cant+"'>" +
-                  "</tr>";
-        nrofilaIns = nrofilaIns + 1;          
-        if(id_insumo > 0 && cant > 0){
-          $('#tablainsumo tbody').append(tr); 
-        }
-        else {
-              return;
-        }    
-
-        $(document).on("click",".elirow",function(){
-          var parent = $(this).closest('tr');
-          $(parent).remove();
-        });
-        
-        $('#insumo').val('');
-        $('#descript').val(''); 
-        $('#cant').val(''); 
-    });
-  ////// INSUMOS //////
+      
+      $('#insumo').val('');
+      $('#descript').val(''); 
+      $('#cant').val(''); 
+  });
+////// INSUMOS //////
 
 
 // Lleva a la pantalla Asignar Tareas - Ok (no revisé la asignación!!!)
-$(".fa-check-square-o").click(function (e) { 
-  var id = $(this).parent('td').parent('tr').attr('id');
-  console.log("El id de OT es: "+id);
-  iort = id;
-  WaitingOpen();
-  $('#content').empty();
-  $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/cargartarea/<?php echo $permission; ?>/"+iort+"");
-  WaitingClose();  
-});
+  $(".fa-check-square-o").click(function (e) { 
+    var id = $(this).parent('td').parent('tr').attr('id');
+    console.log("El id de OT es: "+id);
+    iort = id;
+    WaitingOpen();
+    $('#content').empty();
+    $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/cargartarea/<?php echo $permission; ?>/"+iort+"");
+    WaitingClose();  
+  });
 
 // Trae los datos a mostrar en el modal Asignar OT - Ok
-$(".fa-thumb-tack").click(function (e) { 
-  // $('#modalAsig').modal('show');
-  var id_orden = $(this).parent('td').parent('tr').attr('id');  
-  console.log("El id de OT: "+id_orden);
-  $.ajax({
-    type: 'GET',
-    data: { id_orden: id_orden},
-    url: 'index.php/Otrabajo/getasigna', 
-    success: function(data){
-      datos = {
-        'id_orden'     : id_orden,
-        'nro'          : data['datos'][0]['nro'],
-        'fecha_inicio' : data['datos'][0]['fecha_inicio'],
-        'estado'       : data['datos'][0]['estado'],
-        'descripcion'  : data['datos'][0]['descripcion'],
-        'equipo'       : data['datos'][0]['codigo'],
-        'id_usuario'   : data['datos'][0]['id_usuario'],
-        'id_equipo'    : data['datos'][0]['id_equipo'],
-        'equipoDescrip': data['datos'][0]['equipoDescrip'],
-      };
-      var arre = new Array();
-      arre = datos['fecha_inicio'].split(' ');
-      //var fe= date_format(date_create(arre[0]), 'd-m-Y');
-      $('#id_orden').val(datos['id_orden']);
-      $('#nro').val(datos['nro']);
-      $('#descripcion').val(datos['descripcion']);
-      $('#fecha_inicio').val(arre[0]); 
-      $('#estado').val(datos['estado']);
-      $('#equipo13').val(datos['equipo']);
-      $('#equipo13').prop('title', datos['equipoDescrip']);
-      $('#equipo13id').val(datos['id_equipo']);
-      traer_usuario( datos['id_usuario'] ); 
-      // click_pedent();
-    },
-    error: function(result){
-      console.error("Error al ")
-      console.table(result);
-    },
-    dataType: 'json'
-  }); 
-});
+  $(".fa-thumb-tack").click(function (e) { 
+    // $('#modalAsig').modal('show');
+    var id_orden = $(this).parent('td').parent('tr').attr('id');  
+    console.log("El id de OT: "+id_orden);
+    $.ajax({
+      type: 'GET',
+      data: { id_orden: id_orden},
+      url: 'index.php/Otrabajo/getasigna', 
+      success: function(data){
+        datos = {
+          'id_orden'     : id_orden,
+          'nro'          : data['datos'][0]['nro'],
+          'fecha_inicio' : data['datos'][0]['fecha_inicio'],
+          'estado'       : data['datos'][0]['estado'],
+          'descripcion'  : data['datos'][0]['descripcion'],
+          'equipo'       : data['datos'][0]['codigo'],
+          'id_usuario'   : data['datos'][0]['id_usuario'],
+          'id_equipo'    : data['datos'][0]['id_equipo'],
+          'equipoDescrip': data['datos'][0]['equipoDescrip'],
+        };
+        var arre = new Array();
+        arre = datos['fecha_inicio'].split(' ');
+        //var fe= date_format(date_create(arre[0]), 'd-m-Y');
+        $('#id_orden').val(datos['id_orden']);
+        $('#nro').val(datos['nro']);
+        $('#descripcion').val(datos['descripcion']);
+        $('#fecha_inicio').val(arre[0]); 
+        $('#estado').val(datos['estado']);
+        $('#equipo13').val(datos['equipo']);
+        $('#equipo13').prop('title', datos['equipoDescrip']);
+        $('#equipo13id').val(datos['id_equipo']);
+        traer_usuario( datos['id_usuario'] ); 
+        // click_pedent();
+      },
+      error: function(result){
+        console.error("Error al ")
+        console.table(result);
+      },
+      dataType: 'json'
+    }); 
+  });
 
 // llena select usuario en modal Asignar OT - Ok
 function traer_usuario(id_usuario){
@@ -990,42 +987,29 @@ function traer_usuario(id_usuario){
   });
 }
 
-// 
 function orden(){
-  console.log("si guardo ");
+  WaitingOpen();
   var id_orden = $('#id_orden').val();
-  var nro = $('#nro').val();
-  var fecha_inicio = $('#fecha_inicio').val();
   var fecha_entrega = $('#fecha_entrega').val();
   var usuario= $('#usuario1').val();
-  var estado= $('#estado').val();
   var cliente = $('#id_cliente').val();
-  var parametros = {
-      //'id_orden': id_orden,
-      'nro': nro,
-      'fecha_inicio': fecha_inicio,
-      'fecha_entrega': fecha_entrega,
-      'id_usuario_a': usuario,
-      'estado': 'As',     
-      'cliId': cliente
-  };
-  console.log(parametros);
-  console.log(id_orden);
+  var task_id = sessionStorage.getItem('task_id');
+  var case_id = sessionStorage.getItem('case_id');  
+  console.log("Guardando>> OT: "+id_orden+" | SOID: "+sol_id+" | USER:"+usuario);
   $.ajax({
       type: 'POST',
-      data: { id_orden:id_orden, fecha_entrega:fecha_entrega, usuario:usuario},
-      url: 'index.php/Otrabajo/guardar', 
+      data: { id_orden:id_orden, fecha_entrega:fecha_entrega, usuario:usuario, sol_id:sol_id,case_id:case_id, task_id: task_id},
+      url: 'index.php/Otrabajo/guardar',    
       success: function(data){
-              console.log(data);
-              regresa1();
-             
-            },
+        WaitingClose();    
+        sessionStorage.clear();
+        regresa1();        
+      },
       error: function(result){
-            
-            console.log(result);
-           
-          },
-          dataType: 'json'
+        WaitingClose();    
+        console.log("ERROR>> "+result);
+        
+      }
   });              
 }
 
@@ -1074,17 +1058,6 @@ $(document).ready(function(event) {
     $('#num1').append(opcion);
     i=i+1; 
     traer_proveedor();
-  });
-
-
-  $(".fa-truck").click(function (e) { 
-
-    $("#modallista tbody tr").remove();
-    var idorde = $(this).parent('td').parent('tr').attr('id');
-    WaitingOpen();
-    $('#content').empty();
-    $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/getNotasxOT/<?php echo $permission; ?>/"+idorde+"");
-    WaitingClose(); 
   });
 
   //guardar pedido
@@ -1164,21 +1137,7 @@ $(document).ready(function(event) {
     var idord = $(this).parent('td').parent('tr').attr('id');
     console.log(idord);  
     idfin=idord;
-  });
-  
-
-  // Genera Informe de Servicio - Hugo
-  $('.fa-sticky-note-o').click( function cargarVista(){
-    var id_sol = parseInt($(this).parent('td').parent('tr').attr('id'));
-    var id_eq  = parseInt($(this).parent('td').parent('tr').data('id_equipo')); 
-    var desc   = $(this).parent('td').parent('tr').data('causa');
-    var id_solicitud = parseInt($(this).parent('td').parent('tr').data('idsolicitud'));
-    desc = encodeURIComponent(desc);
-    WaitingOpen();
-    $('#content').empty();
-    $("#content").load("<?php echo base_url(); ?>index.php/Ordenservicio/cargarOrden/<?php echo $permission; ?>/"+id_sol+"/"+id_eq+"/"+desc+"/"+id_solicitud+"/");
-    WaitingClose();
-  });
+  });  
 
 });
   
@@ -1325,41 +1284,127 @@ function guardarpedido(){
   });                 
 }
 
-//OT TOTAL, pasa a la partalla de ot terminadas 
-function guardartotal(){
-  console.log("Estoy finalizando total la ot ");
-  console.log(idfin);
-  $.ajax({
-        type: 'POST',
-        data: { idfin: idfin},
-        url: 'index.php/Otrabajo/FinalizaOt', //index.php/
-        success: function(data){
-                console.log(data);
-                alert("Se Finalizando la ORDEN TRABAJO");
-                regresa();
-              },
-          
-        error: function(result){
-              console.log(result);
-            }
-            //dataType: 'json'
-    });
-} 
 
 
+// GENERAR INFORME DE SERVICIOS
+  // Genera Informe de Servicio - Hugo
+  function generar_informe_servicio (o){ 
+      
+    var id_sol = parseInt($(o).closest('tr').attr('id')); 
+    var id_eq  = parseInt($(o).closest('tr').attr('data-id_equipo'));     
+    var id_solicitud = parseInt($(o).closest('tr').attr('data-idsolicitud'));
+    WaitingOpen();
+    $('#content').empty();
+    $("#content").load("<?php echo base_url(); ?>index.php/Ordenservicio/cargarOrden/<?php echo $permission; ?>/"+id_sol+"/"+id_eq+"/"+id_solicitud+"/");
+    WaitingClose();
+  }
+
+
+
+
+// OT TOTAL, pasa a la partalla de ot terminadas 
+  function guardartotal(){
+    console.log("Estoy finalizando total la ot ");
+    console.log(idfin);
+    $.ajax({
+          type: 'POST',
+          data: { idfin: idfin},
+          url: 'index.php/Otrabajo/FinalizaOt', //index.php/
+          success: function(data){
+                  console.log(data);
+                  alert("Se Finalizando la ORDEN TRABAJO");
+                  regresa();
+                },
+            
+          error: function(result){
+                console.log(result);
+              }
+              //dataType: 'json'
+      });
+  } 
+// MOSTRAR NOTA DE PEDIDO
+  function mostrar_pedido(o) { 
+    $("#modallista tbody tr").remove();
+    var idorde = $(o).parent('td').parent('tr').attr('id');
+    console.log("ID de orden de trabajo para mostrar pedido es: "+idorde);  
+   
+    WaitingOpen();
+    $('#content').empty();
+    $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/getNotasxOT/<?php echo $permission; ?>/"+idorde+"");
+    WaitingClose(); 
+  };
 
 // AGREGAR NOTA DE PEDIDO
-  $(".fa-cart-plus").click(function (e) { 
-    var id = $(this).parent('td').parent('tr').attr('id');
+  //Agrega nota de pedido desde la OT
+  function nota_pedido(o) { 
+    var id = $(o).parent('td').parent('tr').attr('id');
     console.log("El id de OT es: "+id);
     iort = id;
     WaitingOpen();
     $('#content').empty();
     $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/agregarnota/<?php echo $permission; ?>/"+iort);
     WaitingClose();  
-  });
+  }
 
-//  VER OT  //
+// ASIGNAR OT 
+  // Trae los datos a mostrar en el modal Asignar OT - Ok
+  function asigarOT_usuario(o) { 
+    var id_orden = $(o).closest('tr').attr('id');  
+
+    $.ajax({
+      type: 'GET',
+      data: { id_orden: id_orden},
+      url: 'index.php/Otrabajo/getasigna', 
+      success: function(data){
+        datos = {
+          'id_orden'     : id_orden,
+          'nro'          : data['datos'][0]['nro'],
+          'fecha_inicio' : data['datos'][0]['fecha_inicio'],
+          'estado'       : data['datos'][0]['estado'],
+          'descripcion'  : data['datos'][0]['descripcion'],
+          'equipo'       : data['datos'][0]['codigo'],
+          'id_usuario'   : data['datos'][0]['id_usuario'],
+          'id_equipo'    : data['datos'][0]['id_equipo'],
+          'equipoDescrip': data['datos'][0]['equipoDescrip'],
+        };
+        var arre = new Array();
+        arre = datos['fecha_inicio'].split(' ');
+        //var fe= date_format(date_create(arre[0]), 'd-m-Y');
+        $('#id_orden').val(datos['id_orden']);
+        $('#nro').val(datos['nro']);
+        $('#descripcion').val(datos['descripcion']);
+        $('#fecha_inicio').val(arre[0]); 
+        $('#estado').val(datos['estado']);
+        $('#equipo13').val(datos['equipo']);
+        $('#equipo13').prop('title', datos['equipoDescrip']);
+        $('#equipo13id').val(datos['id_equipo']);
+        traer_usuario( datos['id_usuario'] ); 
+        // click_pedent();
+      },
+      error: function(result){
+        console.error("Error al ")
+        console.table(result);
+      },
+      dataType: 'json'
+    });
+  };
+
+// ASIGNAR TAREAS
+  // Lleva a la pantalla Asignar Tareas - Ok (no revisé la asignación!!!)
+  function agregar_tareas(o) { 
+    var id = $(o).closest('tr').attr('id');
+    console.log("El id de OT es: "+id);
+    iort = id;
+    WaitingOpen();
+    $('#content').empty();
+    $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/cargartarea/<?php echo $permission; ?>/"+iort+"");
+    WaitingClose();  
+  };
+
+
+
+
+// VER OT  
   $(".fa-search").click( function(e){
     let idot = $(this).parent('td').parent('tr').attr('id');
     //console.log("id Orden de trabajo: "+idot);
@@ -1950,3 +1995,400 @@ function guardartotal(){
     "order": [[0, "asc"]],
   });
 </script>
+
+
+
+
+<!-- Modal Aviso desea eliminar -->
+<div class="modal" id="modalaviso">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" >&times;</span>
+        </button>
+        <h5 class="modal-title" ><span class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar</h5>
+      </div>
+      <div class="modal-body">
+        <h4>¿Desea eliminarl Orden de Trabajo?</h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminarpred()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div><!-- /.modal fade -->
+<!-- / Modal -->
+
+
+
+<!-- Modal ASIGNA OT -->
+<div id="modalAsig" class="modal" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title"><span class="fa fa-thumb-tack text-light-blue"></span> Asignación Orden de trabajo</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row" >
+          <div class="col-xs-12">
+            <label for="nro">Nro:</label>
+            <input type="text" class="form-control" id="nro" name="nro" disabled>
+          </div>
+          <input type="hidden" id="id_orden" name="id_orden">
+          <div class="col-xs-12">
+            <label for="fecha_inicio">Fecha de inicio:</label>
+            <input type="text" class="form-control" id="fecha_inicio" name="fecha_inicio" disabled>
+          </div>
+          <div class="col-xs-12">
+            <label for="equipo13">Equipo:</label>
+            <input type="text"  id="equipo13" name="equipo13" class="form-control" title="" disabled>
+            <input type="hidden" id="equipo13id" name="equipo13id">
+          </div>
+          <div class="col-xs-12">
+            <label for="descripcion">Descripcion:</label>
+            <textarea  class="form-control" rows="6" cols="500" id="descripcion" name="descripcion" value="" disabled ></textarea>
+          </div>
+          <div class="col-xs-12">Fecha de entrega:
+            <input type="text" id="fecha_entregaa" name="fecha_entrega" class="form-control" />
+          </div>
+          <div  class="col-xs-12">Usuario:
+            <select id="usuario1" name="usuario1" class="form-control">
+              <option value="0">Seleccionar...</option>
+              <?php 
+                foreach ($list_usuarios as $o) {
+                  echo '<option value="'.$o['id'].'">'.$o['firstname']." ".$o['lastname'].'</option>';
+                }
+              ?>
+            </select>
+            <input type="hidden" id="id_usuario" name="id_usuario">
+          </div>
+        </div><!-- /.row-->   
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" >Cancelar</button>
+        <button type="button" class="btn btn-primary" id="reset" data-dismiss="modal" onclick="orden()">Guardar</button>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /.modal fade -->
+<!-- / Modal -->
+
+<!-- Modal FINALIZAR-->
+<div class="modal" id="modalfinalizar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-fw fa fa-toggle-on text-light-blue"></span> Finalización </h4>
+       </div> <!-- /.modal-header  -->
+
+      <div class="modal-body" id="modalBodyArticle">
+        <h4>
+          Elija la opción de finalización de orden:
+        </h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="guardarparcial()"> Parcial</button>     
+        <button type="button" class="btn btn-primary" id="btnSave" data-dismiss="modal" onclick="guardartotal()" >Total</button>
+      </div>  <!-- /.modal footer -->
+    </div> <!-- /.modal-content -->
+  </div>  <!-- /.modal-dialog modal-lg -->
+</div>  <!-- /.modal fade -->
+<!-- / Modal -->
+
+
+<!-- Modal editar -->
+<div class="modal" id="modaleditar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">      
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="alert alert-danger alert-dismissable" id="errorE" style="display: none">
+                  <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                  Revise que todos los campos obligatorios esten seleccionados
+            </div>
+          </div>
+        </div>
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-fw fa-pencil text-light-blue"></span> Editar Orden de Trabajo </h4>
+        </div> <!-- /.modal-header  -->
+
+        <div class="modal-body" id="modalBodyArticle">
+          
+          <div class="panel panel-default">        
+            <div class="panel-heading">
+              <h3 class="panel-title"><span class="fa fa-cogs"></span> Datos del equipo </h3>
+            </div>
+
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-xs-12 col-sm-6 com-md-4">
+                  <label for="equipo">Equipo:</label>
+                  <input type="text" id="equipo_descrip"  name="equipo_descrip" class="form-control input-md" disabled />
+                  <input type="hidden" id="equipo"  name="equipo" class="form-control input-md" disabled />
+                </div>
+                <div class="col-xs-12 col-sm-6 com-md-4">
+                  <label for="fecha_ingreso">Fecha:</label>
+                  <input type="text" id="fecha_ingreso"  name="fecha_ingreso" class="form-control input-md" disabled />
+                </div>
+                <div class="col-xs-12 col-sm-6 com-md-4">
+                  <label for="marca">Marca:</label>
+                  <input type="text" id="marca"  name="marca" class="form-control input-md"  disabled />
+                </div>
+                <div class="col-xs-12 col-sm-6 com-md-4">
+                  <label for="ubicacion">Ubicacion:</label>
+                  <input type="text" id="ubicacion"  name="ubicacion" class="form-control input-md" disabled/>
+                </div>
+                <div class="col-xs-12">
+                  <label for="descripcion">Descripcion: </label>
+                  <textarea class="form-control" id="descripcion" name="descripcion" disabled></textarea>
+                </div> 
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title"><span class="fa fa-building-o"></span> Programación</h4>
+            </div>
+
+            <div class="panel-body"> 
+              <div class="row"> 
+                <div class="col-xs-12 col-sm-6">                    
+                  <label for="tarea">Tarea Estandar<strong style="color: #dd4b39">*</strong>:</label>
+                  <input type="text" id="tarea" name="tarea" class="form-control" placeholder="Buscar Tarea...">
+                  <input type="hidden" id="id_tarea" name="id_tarea"> 
+                </div>
+                <div class="col-xs-12 col-sm-6">  
+                  <label for="tarea_manual">Tarea Personalizada<strong style="color: #dd4b39">*</strong>:</label> 
+                  <input type="text" id="tareacustom" name="tareacustom" class="form-control" placeholder="Ingresar Tarea...">     
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                  <label for="fechaInicio">Fecha Inicio:</label>
+                  <input type="text" class="datepicker form-control fecha" id="fechaInicio" name="fechaInicio" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>
+                </div> 
+                
+                <div class="col-xs-12 col-sm-6">
+                  <label for="fechaEntrega">Fecha Entrega:</label>
+                  <input type="text" class="datepicker form-control fecha" id="fechaEntrega" name="fechaEntrega" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>
+                </div>
+
+                <div class="col-xs-12 col-sm-6">
+                  <label for="suci">Sucursal</label>
+                  <select  id="suci" name="suci" class="form-control" />
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                  <label for="prov">Proveedor</label>
+                  <select  id="prov" name="prov" class="form-control" />
+                </div>            
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="nav-tabs-custom">
+                <!--tabs -->
+                <ul class="nav nav-tabs" role="tablist">                
+                  <li role="presentation" class="active"><a href="#herramin" aria-controls="profile" role="tab" data-toggle="tab">Herramientas</a></li>
+                  <li role="presentation"><a href="#insum" aria-controls="messages" role="tab" data-toggle="tab">Insumos</a></li>
+                  <li role="presentation"><a href="#TabAdjunto" aria-controls="messages" role="tab" data-toggle="tab">Adjunto</a></li>                        
+                </ul>
+                <!-- /tabs -->
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                  <div role="tabpanel" class="tab-pane active" id="herramin">
+                    <div class="row">
+                      <div class="col-xs-12 col-sm-6 col-md-4">
+                        <label for="herramienta">Codigo <strong style="color: #dd4b39">*</strong>:</label>
+                        <input type="text" id="herramienta"  name="" class="form-control" />
+                        <input type="hidden" id="id_herramienta" name="id_herramienta">
+                      </div>                          
+                      <div class="col-xs-12 col-sm-6 col-md-4">
+                        <label for="marcaherram">Marca <strong style="color: #dd4b39">*</strong>:</label>
+                        <input type="text" id="marcaherram"  name="" class="form-control" />
+                      </div>
+                      <div class="col-xs-12 col-sm-6 col-md-4">
+                        <label for="descripcionherram">Descripcion <strong style="color: #dd4b39">*</strong>:</label>
+                        <input type="text" id="descripcionherram"  name="" class="form-control" />
+                      </div>
+                      <div class="col-xs-12 col-sm-6 col-md-4">
+                        <label for="cantidadherram">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
+                        <input type="text" id="cantidadherram"  name="" class="form-control" placeholder="Ingrese Cantidad" />
+                      </div>
+                      <br>
+                      <div class="col-xs-12">
+                        <label></label> 
+                        <br>
+                        <button type="button" class="btn btn-primary" id="agregarherr"><i class="fa fa-check">Agregar</i></button>
+                      </div>
+                    </div><!-- /.row -->
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <br>
+                        <table class="table table-bordered" id="tablaherramienta"> 
+                          <thead>
+                            <tr>                      
+                              <th>Acciones</th>
+                              <th>Código</th>
+                              <th>Marca</th>
+                              <th>Descripcion</th>
+                              <th>Cantidad</th>
+                            </tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>  
+                      </div>
+                    </div><!-- /.row -->
+                  </div> <!-- /.tabpanel #herramin-->
+
+                  <div role="tabpanel" class="tab-pane" id="insum">
+                    <div class="row">
+                      <div class="col-xs-12 col-sm-6 col-md-4">
+                        <label for="insumo">Codigo <strong style="color: #dd4b39">*</strong>:</label>
+                        <input type="text" id="insumo" name="insumo" class="form-control" />
+                        <input type="hidden" id="id_insumo" name="">
+                      </div>
+                      <div class="col-xs-12 col-sm-6 col-md-4">
+                        <label for="">Descripcion:</label>
+                        <input type="text" id="descript"  name="" class="form-control" />
+                      </div>
+                      <div class="col-xs-12 col-sm-6 col-md-4">
+                        <label for="cant">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
+                        <input type="text" id="cant"  name="" class="form-control" placeholder="Ingrese Cantidad"/>
+                      </div>
+                    </div><!-- /.row -->
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <br>
+                        <button type="button" class="btn btn-primary" id="agregarins"><i class="fa fa-check">Agregar</i></button>
+                      </div>
+                    </div><!-- /.row -->
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <table class="table table-bordered" id="tablainsumo"> 
+                          <thead>
+                            <tr>                           
+                              <th>Acciones</th>
+                              <th>Código</th>
+                              <th>Descripcion</th>
+                              <th>Cantidad</th>
+                            </tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>  
+                      </div>
+                    </div><!-- /.row -->
+                  </div><!--/#insum -->
+
+                  <div role="tabpanel" class="tab-pane" id="TabAdjunto">
+                    <div class="row" >
+
+                    <div class="col-xs-12"><i class="fa fa-plus-square agregaAdjunto text-light-blue" style="color:#f39c12; cursor:pointer; margin-right:10px" title="Agregar Adjunto"></i> Agregar Archivo</div>
+                    
+                    
+                      <div class="col-xs-12">
+                        <table class="table table-bordered" id="tablaadjunto"> 
+                          <thead>
+                            <tr>
+                              <th></th>
+                              <th>Archivo</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <!-- <tr>
+                              <td id="accionAdjunto">
+                                  <!- - - ->
+                              </td>
+                              <td>
+                                <!- - <a id="adjunto" href="" target="_blank"></a> - ->
+                              </td>
+                            </tr> -->
+                          </tbody>
+                        </table>
+                      </div>
+        
+                    </div>
+                  </div><!--cierre de TabAdjunto--> 
+                  
+                </div>  <!-- tab-content -->
+                
+              </div><!-- /.nav-tabs-custom -->
+            </div>
+          </div>
+          
+        </div>      <!-- /.modal-body --> 
+                   
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" >Cancelar</button>
+          <button type="button" class="btn btn-primary" id="btnEditar" onclick="guardareditar()">Guardar</button> 
+        </div>  <!-- /.modal footer -->
+        </div>
+                        
+    </div> <!-- /.modal-content -->
+  </div>  <!-- /.modal-dialog modal-lg -->
+</div>
+
+
+
+
+<!--------------- MODALES ADJUNTO ------------->
+
+<!-- Modal Eliminar Adjunto -->
+<div class="modal" id="modalEliminarAdjunto">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><span class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar</h4>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="idAdjunto">
+        <h4>¿Desea eliminar Archivo Adjunto?</h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminarAdjunto();">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Agregar adjunto -->
+<div class="modal" id="modalAgregarAdjunto">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar</h4>
+      </div>
+
+      <form id="formAgregarAdjunto">
+        <div class="modal-body">
+          <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+            <h4><i class="icon fa fa-ban"></i> Error!</h4>
+            Seleccione un Archivo Adjunto
+          </div>
+          <input type="hidden" id="idAgregaAdjunto" name="idAgregaAdjunto">
+          <input id="inputPDF" name="inputPDF" type="file" class="form-control input-md">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="btnAgregarEditar">Agregar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!--------------- MODALES ADJUNTO ------------->

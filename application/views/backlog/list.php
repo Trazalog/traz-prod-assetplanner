@@ -29,6 +29,7 @@
             </thead>
             <tbody>
               <?php        
+              //dump($list, 'lista backlog');
                 foreach($list['data'] as $a){
                   if ($a['estado'] == 'C') {
                     $id  = $a['backId'];
@@ -47,7 +48,11 @@
                       echo '<td>'.$a['codigo'].'</td>';
                       echo '<td>'.$a['componente'].'</td>';
                       echo '<td>'.$a['sistema'].'</td>';
-                      echo '<td>'.$a['de1'].'</td>';
+                      if ($a["id_tarea"] < 0) {
+                        echo '<td>'.$a["tarea_opcional"].'</td>';
+                      } else {
+                        echo '<td>'.$a['de1'].'</td>';
+                      }                     
                       echo '<td>'.date_format(date_create($a['fecha']), 'd-m-Y').'</td>';
                       //echo '<td>'.$a['horash'].'</td>'; 
                       switch ($a['id_unidad']) {
@@ -112,7 +117,7 @@ $(document).ready(function(event) {
         data: { idpred:idpred, datos:datos},
         url: 'index.php/Backlog/geteditar',
         success: function(data){
-
+          console.table(data);
                     datos={ 'codigo':data['equipo'][0]['codigo'],
                             'marca':data['equipo'][0]['marca'],
                             'descripcion':data['equipo'][0]['des'],   
@@ -179,9 +184,6 @@ function eliminarpred(){
     dataType: 'json'
   });
 }
-
-
-
 
 // Completa los campos con datos de backlpog - Chequeado
 function completarEdit(datos,herram,insum){   
@@ -706,14 +708,6 @@ function recargaTablaAdjunto(backAdjunto) {
   $('#accionAdjunto').html(accion);
 }
 
-
-//////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
 </script>
 
 
@@ -991,52 +985,49 @@ function recargaTablaAdjunto(backAdjunto) {
 </div>
 
 <!--------------- MODALES ADJUNTO ------------->
-
-<!-- Modal Eliminar Adjunto -->
-<div class="modal" id="modalEliminarAdjunto">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"><span class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar</h4>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="idAdjunto">
-        <h4>¿Desea eliminar Archivo Adjunto?</h4>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminarAdjunto();">Eliminar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal Agregar adjunto -->
-<div class="modal" id="modalAgregarAdjunto">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"><span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar</h4>
-      </div>
-
-      <form id="formAgregarAdjunto">
+  <!-- Modal Eliminar Adjunto -->
+  <div class="modal" id="modalEliminarAdjunto">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title"><span class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar</h4>
+        </div>
         <div class="modal-body">
-          <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
-            <h4><i class="icon fa fa-ban"></i> Error!</h4>
-            Seleccione un Archivo Adjunto
-          </div>
-          <input type="hidden" id="idAgregaAdjunto" name="idAgregaAdjunto">
-          <input id="inputPDF" name="inputPDF" type="file" class="form-control input-md">
+          <input type="hidden" id="idAdjunto">
+          <h4>¿Desea eliminar Archivo Adjunto?</h4>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary" id="btnAgregarEditar">Agregar</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminarAdjunto();">Eliminar</button>
         </div>
-      </form>
+      </div>
     </div>
   </div>
-</div>
+  <!-- Modal Agregar adjunto -->
+  <div class="modal" id="modalAgregarAdjunto">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title"><span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar</h4>
+        </div>
 
-<!--------------- MODALES ADJUNTO ------------->
+        <form id="formAgregarAdjunto">
+          <div class="modal-body">
+            <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+              <h4><i class="icon fa fa-ban"></i> Error!</h4>
+              Seleccione un Archivo Adjunto
+            </div>
+            <input type="hidden" id="idAgregaAdjunto" name="idAgregaAdjunto">
+            <input id="inputPDF" name="inputPDF" type="file" class="form-control input-md">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary" id="btnAgregarEditar">Agregar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+<!--------------/ MODALES ADJUNTO ------------->

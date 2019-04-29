@@ -137,32 +137,32 @@ class Parametros extends CI_Model
 			}	
 	}
 	
-}	
-	    }
-	}
+// }	
+// 	    }
+// 	}
 
-    function update_editar($m, $n, $pa, $equ)
-    {
-    	$sql   = "UPDATE setupparam 
-            SET maximo = $m, minimo = $n
-    		WHERE id_equipo = $equ 
-            AND id_parametro = $pa
-            ";
-        $query = $this->db->query($sql);
-        return $query;
-        /* id_equipo=$ide,
-    		id_parametro=$pa, 
-        $this->db->where('id_equipo' AND 'id_parametro', $ide, $pa);
-        $query = $this->db->update("setupparam",$data);
-        return $query;*/
-	    /* if( $query->num_rows() > 0)
-	    {
-	      return $query->result_array();	
-	    } 
-	    else {
-	      return 0;
-	    }*/
-    }
+    // function update_editar($m, $n, $pa, $equ)
+    // {
+    // 	$sql   = "UPDATE setupparam 
+    //         SET maximo = $m, minimo = $n
+    // 		WHERE id_equipo = $equ 
+    //         AND id_parametro = $pa
+    //         ";
+    //     $query = $this->db->query($sql);
+    //     return $query;
+    //     /* id_equipo=$ide,
+    // 		id_parametro=$pa, 
+    //     $this->db->where('id_equipo' AND 'id_parametro', $ide, $pa);
+    //     $query = $this->db->update("setupparam",$data);
+    //     return $query;*/
+	  //   /* if( $query->num_rows() > 0)
+	  //   {
+	  //     return $query->result_array();	
+	  //   } 
+	  //   else {
+	  //     return 0;
+	  //   }*/
+    // }
 
 
 

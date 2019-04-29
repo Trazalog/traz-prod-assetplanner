@@ -4,19 +4,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Tarea extends CI_Controller {
 
-    function __construct(){
-			parent::__construct();
-			$this->load->model('Tareas');
-			$this->load->model('Bonitas');
-			$this->load->model('Overviews');
-			$this->load->model('Backlogs');
-    }
+	function __construct(){
+		parent::__construct();
+		$this->load->model('Tareas');
+		$this->load->model('Bonitas');
+		$this->load->model('Overviews');
+		$this->load->model('Backlogs');
+	}
 
-    public function Obtener_Tarea(){
+	public function Obtener_Tarea(){
 
-        $id     =$_POST['id_tarea'];
-        $result = $this->Tareas->Obtener_Tareas($id);
-        echo json_encode($result);
+			$id     =$_POST['id_tarea'];
+			$result = $this->Tareas->Obtener_Tareas($id);
+			echo json_encode($result);
 	}
 	
 	/*Fernando Leiva */
@@ -157,7 +157,7 @@ class Tarea extends CI_Controller {
 
 			public function ejecutarOT(){
 				$idTarBonita = $this->input->post('idTarBonita');
-				dump($idTarBonita, 'id bonita');
+				//dump($idTarBonita, 'id bonita');
 				// $id_listarea = $this->input->post('id_listarea');
 				// trae la cabecera
 				$parametros = $this->Bonitas->conexiones();
@@ -183,13 +183,13 @@ class Tarea extends CI_Controller {
 				$data['permission'] = $permission;
 
 				//OBTENER DATOS DE TAREA SELECCIONADA DESDE BONITA
-				$data['TareaBPM'] = json_decode($this->getDatosBPM($idTarBonita),true);	
-				$data['idTarBonita'] = $idTarBonita;
-				$caseId = $data['TareaBPM']["caseId"];
+					$data['TareaBPM'] = json_decode($this->getDatosBPM($idTarBonita),true);	
+					$data['idTarBonita'] = $idTarBonita;
+					$caseId = $data['TareaBPM']["caseId"];
 			
 				// Trae id de OT y de Sol Serv por CaseId			
-				$id_SS = $this->getIdSolServPorIdCase($caseId);		
-				$id_OT = $this->Tareas->getIdOtPorid_SS($id_SS);
+					$id_SS = $this->getIdSolServPorIdCase($caseId);		
+					$id_OT = $this->Tareas->getIdOtPorid_SS($id_SS);
 
 				// Si hay Sol Serv trae el id de equpo sino por id de Ot
 				if($id_SS!= null){
@@ -203,13 +203,14 @@ class Tarea extends CI_Controller {
 				$data['id_SS'] = $id_SS;
 				$data['id_EQ'] = $id_EQ;
 				
-				//$id_OT = 1;
 				/* Bloque subtareas estandar */	
 				if($id_OT != 0){
 					/* funcion nueva de asset */										
-					// traer subtareas estandar en funcion de tarea estandar					
+					// traer subtareas estandar en funcion de tarea estandar	
 					$tareaSTD = $this->Tareas->getIdTareaSTD($id_OT);
-					$data['subtareas'] = $this->Tareas->getSubtareas($id_OT);
+					if ($tareaSTD) {
+						$data['subtareas'] = $this->Tareas->getSubtareas($id_OT);
+					} 					
 				}	
 
 				//LIBRERIA BPM
@@ -218,12 +219,12 @@ class Tarea extends CI_Controller {
 				$this->load->library('BPM',$case);
 
 				// LINEA DE TIEMPO 			
-				$data['timeline'] =$this->bpm->ObtenerLineaTiempo();	
+				$data['timeline'] = $this->bpm->ObtenerLineaTiempo();	
 
 				//CARGAR VISTA COMENTARIOS 
 				$data_aux = ['case_id'=>$case_id, 'comentarios'=>$this->bpm->ObtenerComentarios()];
 				$data['comentarios'] = $this->load->view('tareas/componentes/comentarios',$data_aux,true);
-					
+
 				switch ($data['TareaBPM']['displayName']) {
  
 					case 'Analisis de Solicitud de Servicio':
@@ -244,6 +245,7 @@ class Tarea extends CI_Controller {
 							break;
 					case 'Editar Backlog':									
 							$data['info'] = $this->getEditarBacklog($id_SS);						
+							//dump($data['info'], 'info backlog: ');
 							$this->load->view('backlog/nuevo_edicion_view_',$data);
 							$this->load->view('tareas/scripts/tarea_std');
 							break;					
@@ -265,6 +267,11 @@ class Tarea extends CI_Controller {
 							$this->load->view('tareas/view_cambio_estado', $data);
 							$this->load->view('tareas/scripts/tarea_std');
 							break;
+					case 'Confecciona informe servicio':
+							$this->load->view('tareas/view_informe_servicio', $data);
+							$this->load->view('tareas/scripts/tarea_std');
+							break;		
+
 					default:
 							$this->load->view('tareas/view_', $data);					
 							$this->load->view('tareas/scripts/tarea_std');	

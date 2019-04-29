@@ -59,18 +59,18 @@ class Notapedido extends CI_Controller {
     echo json_encode($response);
   }
 
-  public function setNotaPedido(){
-    $response = $this->Notapedidos->setNotaPedidos($this->input->post());
-    echo json_encode($response);
-  }
+  // public function setNotaPedido(){
+  //   $response = $this->Notapedidos->setNotaPedidos($this->input->post());
+  //   echo json_encode($response);
+  // }
   
-}
+//}
 
-    // Lanza proceso (retorna case_id)
-		$result = $this->lanzarProcesoBPM($inspectorid);
-		$caseId = json_decode($result, true)['caseId'];
+    // // Lanza proceso (retorna case_id)
+		// $result = $this->lanzarProcesoBPM($inspectorid);
+		// $caseId = json_decode($result, true)['caseId'];
 
-  }
+  //}
   // lanza proceso en BPM (inspección)
 	function lanzarProcesoBPM($inspectorid){
 
@@ -86,30 +86,30 @@ class Notapedido extends CI_Controller {
 		return $result;		
 	}
 
-  public function getOrdenesCursos(){
-    $response = $this->Notapedidos->getOrdenesCursos();
-    echo json_encode($response);
-  }
+  // public function getOrdenesCursos(){
+  //   $response = $this->Notapedidos->getOrdenesCursos();
+  //   echo json_encode($response);
+  // }
 
-  public function getDetalle(){
-    $response = $this->Notapedidos->getDetalles($this->input->post());
-    echo json_encode($response);
-  }
+  // public function getDetalle(){
+  //   $response = $this->Notapedidos->getDetalles($this->input->post());
+  //   echo json_encode($response);
+  // }
 
-  public function getArticulo (){
-    $response = $this->Notapedidos->getArticulos($this->input->post());
-    echo json_encode($response);
-  }
+  // public function getArticulo (){
+  //   $response = $this->Notapedidos->getArticulos($this->input->post());
+  //   echo json_encode($response);
+  // }
 
-  public function getProveedor(){
-      $response = $this->Notapedidos->getProveedores();
-      echo json_encode($response);
-  }
+  // public function getProveedor(){
+  //     $response = $this->Notapedidos->getProveedores();
+  //     echo json_encode($response);
+  // }
 
-  public function getNotaPedidoId(){
-    $response = $this->Notapedidos->getNotaPedidoIds($this->input->post());
-    echo json_encode($response);
-  }
+  // public function getNotaPedidoId(){
+  //   $response = $this->Notapedidos->getNotaPedidoIds($this->input->post());
+  //   echo json_encode($response);
+  // }
 
   public function setNotaPedido(){
     
@@ -135,6 +135,15 @@ class Notapedido extends CI_Controller {
 
     $response = $this->Notapedidos->setDetaNota($deta);
     echo json_encode($response);
+  }
+
+   // devuelve plantilla de insumos a pedir por cliente 
+   public function agregarListInsumos($permission, $ot ,$idcliente){
+    $data['permission'] = $permission;    
+    $data['plantilla']  = $this->Notapedidos->getPlantillaPorCliente($idcliente);
+    $data['ot'] = $ot;
+    $this->load->view('notapedido/insumolist',$data);
+    
   }
   
 }

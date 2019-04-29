@@ -92,25 +92,19 @@ class Tareas extends CI_Model {
 		$this->db->join('orden_trabajo', 'tareas.id_tarea = orden_trabajo.id_tarea');
 		$this->db->where('orden_trabajo.id_orden',$id_OT);
 		$query = $this->db->get();
-			if ($query->num_rows()!=0){
-				return $query->result_array();	
-			}else{
-				return 0;
-			}
+		if ($query->num_rows()!=0){
+			return $query->result_array();	
+		}else{
+			return 0;
+		}
 	}
 	// devuelve subtareas por 
 	function getSubtareas($idTareaSTD){
-		$this->db->select( 'tbl_listarea.id_listarea,
-							tbl_listarea.id_orden,
-							tbl_listarea.tareadescrip,
-							tbl_listarea.id_usuario,
-							tbl_listarea.fecha,
-							tbl_listarea.estado,
-							tbl_listarea.info_id,
-							tbl_listarea.id_subtarea,
-							asp_subtareas.tareadescrip AS subtareadescrip,
-							asp_subtareas.id_subtarea,
-							asp_subtareas.form_asoc');		
+		$this->db->select( 'tbl_listarea.*,
+												asp_subtareas.tareadescrip AS subtareadescrip,
+												asp_subtareas.id_subtarea,
+												asp_subtareas.duracion_prog,
+												asp_subtareas.form_asoc');		
 		$this->db->from('tbl_listarea');
 		$this->db->join('asp_subtareas', 'asp_subtareas.id_subtarea = tbl_listarea.id_subtarea','left');
 		$this->db->where('tbl_listarea.id_orden',$idTareaSTD);
@@ -139,7 +133,7 @@ class Tareas extends CI_Model {
 		$method = '/execution';
 		$resource = 'API/bpm/userTask/';
 		$url = BONITA_URL.$resource.$idTarBonita.$method;
-		dump($url, 'url de file a abrir');
+		//dump($url, 'url de file a abrir');
 		//$url = BONITA_URL.$resource.$usrId.$method;
 		file_get_contents($url, false, $param);
 		$response = $this->parseHeaders( $http_response_header );
@@ -668,7 +662,7 @@ class Tareas extends CI_Model {
 	function CompletarToDoList($data){
 		foreach ($data as $key => $value) {
 			$this->db->select('A.id_solicitud as \'ss\', id_orden as \'ot\'');
-			$this->db->where('case_id',$value['caseId']);
+			$this->db->where('A.case_id',$value['caseId']);
 			$this->db->from('solicitud_reparacion as A');
 			$this->db->join('orden_trabajo as B','A.id_solicitud = B.id_solicitud','left');
 			$res = $this->db->get()->first_row();

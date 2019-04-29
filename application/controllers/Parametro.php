@@ -22,17 +22,20 @@ class Parametro extends CI_Controller {
 	public function getequipo(){
 		//$this->load->model('Parametros');
 		$equipo = $this->Parametros->getequipo();
+	
+	
 		if($equipo){	
 			$arre = array();
 	        foreach ($equipo as $row ) 
 	        {   
 	           $arre[] = $row;
-	        }
+					}
+					//dump($equipo, 'equipos: ');
 			echo json_encode($arre);
 		}
 		else echo "nada";
 	}
-	}
+//	}
 
 	public function getparametros()
 	{
@@ -51,41 +54,41 @@ class Parametro extends CI_Controller {
 		else echo "nada";
 	}
 
-	public function traerparametro()
-	{
-		//$this->load->model('Parametros');
-		$equipo = $this->Parametros->traerparametro();
-		if($equipo)
-		{	
-			$arre = array();
-	        foreach ($equipo as $row ) 
-	        {   
-	           $arre[] = $row;
-	        }
-			echo json_encode($arre);
-		}
-		else echo "nada";
-	}
+	// public function traerparametro()
+	// {
+	// 	//$this->load->model('Parametros');
+	// 	$equipo = $this->Parametros->traerparametro();
+	// 	if($equipo)
+	// 	{	
+	// 		$arre = array();
+	//         foreach ($equipo as $row ) 
+	//         {   
+	//            $arre[] = $row;
+	//         }
+	// 		echo json_encode($arre);
+	// 	}
+	// 	else echo "nada";
+	// }
 
-	public function guardar()
-	{
-		$datos  = $_POST['data'];
-		$result = $this->Parametros->guardar($datos);
-		print_r($result);
-		/*if($result)
-		echo $this->db->insert_id();
-		else echo 0;*/       
-	}
+	// public function guardar()
+	// {
+	// 	$datos  = $_POST['data'];
+	// 	$result = $this->Parametros->guardar($datos);
+	// 	print_r($result);
+	// 	/*if($result)
+	// 	echo $this->db->insert_id();
+	// 	else echo 0;*/       
+	// }
 
-	public function guardar_todo()
-	{
-		$datos  = $_POST['data'];
-		$result = $this->Parametros->guardar_todo($datos);
-		print_r(json_encode($result));
-		/*if($result)
-		echo $this->db->insert_id();
-		else echo 0;*/
-	}
+	// public function guardar_todo()
+	// {
+	// 	$datos  = $_POST['data'];
+	// 	$result = $this->Parametros->guardar_todo($datos);
+	// 	print_r(json_encode($result));
+	// 	/*if($result)
+	// 	echo $this->db->insert_id();
+	// 	else echo 0;*/
+	// }
 
 	public function baja_parametro()
 	{
@@ -176,7 +179,7 @@ class Parametro extends CI_Controller {
 		}
   	}
 
-  	public function agregarcomponente()
+  public function agregarcomponente()
 	{
 		$ide   = $_POST['equipoglob'];
 		$datos = $_POST['datos'];
@@ -190,7 +193,7 @@ class Parametro extends CI_Controller {
 			$result = $this->Parametros->update_editar($maxi,$mini, $ide,$pa);
 			print_r(json_encode($result));
 		}
-  	}
+  }
 
 
 
@@ -279,36 +282,36 @@ class Parametro extends CI_Controller {
 		echo json_encode($result);
 	}*/
 
-}	
+//}	
 	// trae parametros asociados por id de equipo
-	public function getparametros(){
+	// public function getparametros(){
 		
-		$id         = $_POST['id_equipo'];
-		$parametros = $this->Parametros->getparametros($id);
-		if($parametros){	
-			$arre = array();
-	        foreach ($parametros as $row ) 
-	        {   
-	           $arre[] = $row;
-	        }
-			echo json_encode($arre );
-		}
-		else echo json_encode(array());
-	}
+	// 	$id         = $_POST['id_equipo'];
+	// 	$parametros = $this->Parametros->getparametros($id);
+	// 	if($parametros){	
+	// 		$arre = array();
+	//         foreach ($parametros as $row ) 
+	//         {   
+	//            $arre[] = $row;
+	//         }
+	// 		echo json_encode($arre );
+	// 	}
+	// 	else echo json_encode(array());
+	// }
 	// trae datos para la edicion
-	public function editar(){
+	// public function editar(){
 	
-		$id_equipo  = $_POST['id_equipo'];
-		$id_param  = $_POST['id_param'];
+	// 	$id_equipo  = $_POST['id_equipo'];
+	// 	$id_param  = $_POST['id_param'];
 	
-		$result = $this->Parametros->editar($id_equipo,$id_param);
+	// 	$result = $this->Parametros->editar($id_equipo,$id_param);
 		
-		if($result){	
-			$arre['datos'] = $result;
-			echo json_encode($arre);
-		}
-		else echo array();
-	}
+	// 	if($result){	
+	// 		$arre['datos'] = $result;
+	// 		echo json_encode($arre);
+	// 	}
+	// 	else echo array();
+	// }
 	//guarda la asociacio de parametros editada
 	public function guardarmodif(){
 		

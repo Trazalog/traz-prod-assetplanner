@@ -4,7 +4,7 @@
     <div class="col-xs-12">
       <div class="box box-primary">
         <div class="box-header">
-          <h3 class="box-title">Solicitud de Servicios bpm</h3>
+          <h3 class="box-title">Solicitud de Servicios</h3>
           <?php
            if (strpos($permission,'Add') !== false) {
               echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" data-toggle="modal" data-target="#modalservicio" id="btnAdd">Agregar</button>';
@@ -125,7 +125,6 @@
               });
     }
   });
-
   // Imprime Solicitud de Servicios - Chequeado
   $(".fa-print").click(function (e) {
 
@@ -425,7 +424,6 @@
                 //dataType: 'json'
     });
   });
-
   // Levanta imagen de solicitud - Chequeado
   $('.fa-picture-o').click(function(){
     $('#imgSolServ').attr('src',''); 
@@ -438,20 +436,17 @@
       $('.imagen').append('<h5 id="resp">Sin imagen cargada.<h5>');
     }
   });
-
   // Datepicker  
   $("#vstFecha").datepicker({    
     firstDay: 0      
   }).datepicker("setDate", "+1d"); // agrega la cantidad de dias o meses a partir de hoy
- 
+
   $("#fecha_conformidad").datepicker({
     dateFormat: 'yy/mm/dd',
     firstDay: 1
   }).datepicker("setDate", new Date());
 
   // Trae Sectores y autocompleta el campo
-  //$( function() {
-
   var dataF = function () {
     var tmp = null;
     $.ajax({
@@ -465,9 +460,7 @@
       }
     });
     return tmp;
-  }();
-
-  
+  }();  
   $(".buscSector").autocomplete({
     source: dataF,
     delay: 100,
@@ -492,7 +485,7 @@
       //console.log(ui.item.value);
     },
   }); 
-
+  //  llena select de equipos segun sector
   function getEquiSector(idSect){
     var id =  idSect;
     console.log("id de sector para traer equipos: "+id);
@@ -519,7 +512,6 @@
       },
     });
   }
-
   // trae tareas estandar para llenar select
   getTareasStandar();
   function getTareasStandar(){
@@ -543,7 +535,52 @@
       },
     });
   }
- 
+
+// Trae Operarios
+var dataO = function () {
+  var tmp = null;
+  $.ajax({
+    'async': false,
+    'type': "POST",
+    'global': false,
+    'dataType': 'json',
+    'url': "ordenservicio/getOperario",
+    'success': function (data) {
+        tmp = data;
+    }
+  });
+  return tmp;
+}();
+$("#vstsolicita").autocomplete({
+  autoFocus: true,
+  delay: 300,
+  minLength: 1,
+  source: dataO,
+  /*focus: function(event, ui) {
+    // prevent autocomplete from updating the textbox
+    event.preventDefault();
+    // manually update the textbox
+    $(this).val(ui.item.label);
+    $("#id-Operario").val(ui.item.value);
+  },*/
+  select: function(event, ui) {
+    // prevent autocomplete from updating the textbox
+    event.preventDefault();
+    // manually update the textbox and hidden field
+    $(this).val(ui.item.label); 
+    $("#id_vstsolicita").val(ui.item.value);                 
+  },
+  /*open: function( event, ui ) {
+    $("#ui-id-3").css('z-index',1050);
+  },*/
+  change: function (event, ui) {
+    if (!ui.item) {
+      this.value = '';
+    }
+  }
+});
+
+
 
   // Guardado de datos y validaciones
   $("#btnSave").click(function(){
@@ -566,7 +603,6 @@
     {
       hayError = true;
     }
-
     if(hayError == true){
     	$('#error').fadeIn('slow');
     	return;
@@ -574,7 +610,7 @@
 
     $('#error').fadeOut('slow');
     $('#modalservicio').modal('hide');
-    //WaitingOpen('Guardando cambios');
+
     	$.ajax({
           	type: 'POST',
           	data: {
@@ -605,7 +641,6 @@
             dataType: 'json'
     		});
   });
-
   //Guardar conformidad 
   $('.fa-thumbs-up').click(function(){
       var id = $(this).parent('td').parent('tr').attr('id'); 
@@ -720,7 +755,8 @@
             <label style="margin-top: 7px;">Solicitante: </label>
           </div>
           <div class="col-xs-12 col-md-9">
-              <input placeholder="Solicitante" class="form-control" rows="3" id="vstsolicita" value="">
+              <input placeholder="Buscar Nombre..." class="form-control" rows="3" id="vstsolicita" value="">
+              <input type="hidden" class="form-control" rows="3" id="id_vstsolicita" value="">
           </div>
         </div><br>
 

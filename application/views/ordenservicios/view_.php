@@ -51,22 +51,12 @@
         </div><!-- /.box-header -->
 
         <div class="box-body">
-          <!-- <div class="row" style="margin-top:20px;">
-            <div class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px; border-radius: 18px; " title="Imprimir"  ></div>
-          </div> -->
+          
           <!-- form  -->
           <form class="form-horizontal" role="form" id="form_order" action="" accept-charset="utf-8">
 
             <!--  ORDEN SERVICIO  -->
-            <div class="row">
-              <!--<div class="col-xs-12 col-sm-6">
-                <label for="comprobante">Comprobante</label>
-                <input type="text" name="comprobante" class="form-control comprobante" id="comprobante" disabled>
-              </div>
-              <div class="col-xs-12 col-sm-6">
-                <label for="lecturaP">Lectura</label>
-                <input type="text" name="lecturaP" class="form-control lecturaP" id="lecturaP" disabled>
-              </div>-->
+            <div class="row">             
               <div class="col-xs-12 col-sm-6">
                 <label for="numSolic">Número de OT</label>
                 <input class="form-control numSolic form_equipos" name="numSolic" id="numSolic" value="<?php echo $id_ot;?>" disabled/>
@@ -92,8 +82,7 @@
               </div>
 
               <div class="panel-body">
-                <div class="row">
-                  <!--<input type="hidden" name="id_contratista" class="id_contratista" id="id_contratista" value=""  >-->
+                <div class="row">                  
 
                   <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="nomEquipo">Nombre Equipo</label>
@@ -119,24 +108,7 @@
                   <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="ubicacion">Ubicación</label>
                     <input type="text" name="ubicacion" class="form-control ubicacion form_equipos" id="ubicacion" value="" disabled>
-                  </div>
-
-                  <!--<div class="col-xs-12 col-sm-6 col-md-4">
-                    <label for="fecha_ingreso">Fecha Ingreso</label>
-                    <input type="text" name="fecha_ingreso" class="form-control fecha_ingreso form_equipos" id="fecha_ingreso" value="" disabled>
-                  </div>
-                  <div class="col-xs-12 col-sm-6 col-md-4">
-                    <label for="fecha_baja">Fecha Baja</label>
-                    <input type="text" name="fecha_baja" class="form-control fecha_baja form_equipos" id="fecha_baja" value="" disabled>
-                  </div>
-                  <div class="col-xs-12 col-sm-6 col-md-4">
-                    <label for="fecha_garantia">Fecha garantía</label>
-                    <input type="text" name="fecha_garantia" class="form-control fecha_garantia form_equipos" id="fecha_garantia" value="" disabled>
-                  </div>
-                  <div class="col-xs-12 col-sm-6 col-md-4">
-                    <label for="contratista">Contratista</label>
-                    <input type="text" name="contratista" class="form-control contratista" id="contratista" disabled>
-                  </div>-->
+                  </div>                
                 </div>
               </div><!-- end .panel-body -->
             </div><!--  / <div class="panel panel-default"> -->   
@@ -301,7 +273,7 @@
                     </div>
                   </div>
                 </div>
-              </div><!- - end .tabpanel - ->
+              </div><!-- end .tabpanel -->
 
               <div role="tabpanel" class="tab-pane" id="rrhh">
                 <!--  ORDEN DE RECURSOS HUMANOS  -->
@@ -322,8 +294,8 @@
                     <div class="row">
                       <div class="col-xs-12">
                         <label for="responsable">Responsable<strong style="color: #dd4b39">*</strong> :</label>
-                        <input type="text" class=" form-control responsable" id="responsable" name="responsable" disabled> 
-                        <input type="hidden" id="id_responsable" name="id_responsable">
+                        <input type="text" class=" form-control responsable" id="responsable" name="responsable" value="<?php echo $nom_responsable;?>" disabled> 
+                        <input type="" value="<?php echo $idresponsable;?>" id="id_responsable" name="id_responsable">
                       </div>
                       <div class="col-xs-12 col-sm-6 col-md-4">
                         <label for="operario">Apellido y Nombre <strong style="color: #dd4b39">*</strong> :</label>
@@ -358,8 +330,6 @@
                 </div><!-- end .panel-default -->
               </div><!-- end .tabpanel -->
 
-
-
               <div role="tabpanel" class="tab-pane" id="insumosPed">
                 <!--  INSUMOS PEDIDOS  -->
                 <div class="panel panel-default">
@@ -375,22 +345,6 @@
                         </div>
                       </div>
                     </div>
-
-                    <!-- <input type="hidden" name="id-comp" class="id-comp" id="id-comp" value="" disabled> -->
-                    <!-- <div class="row">
-                      <div class="col-xs-12">
-                        <label for="tareas">Tarea <strong style="color: #dd4b39">*</strong> :</label>
-                        <input type="text" class="form-control tareas" name="tareas" id="tareas" placeholder="Ingrese tarea realizada">
-                      </div>
-                    </div> -->
-
-                    <!-- <div class="row">
-                      <div class="col-xs-12">
-                        <br>
-                        <button type="button" class="botones btn btn-primary" onclick="armarTablaTareas()">Agregar</button>
-                      </div>
-
-                    </div> -->
 
                     <div class="row">
                       <div class="col-xs-12">
@@ -422,10 +376,6 @@
                   </div><!-- end .panel-body -->
                 </div><!-- end .panel-default -->
               </div><!-- end .tabpanel -->
-
-
-
-
               
             </div>
           </form>      
@@ -703,9 +653,6 @@ function getRRHHOrdenTrabajo(){
     'dataType': 'json',
     'url': "Ordenservicio/getRRHHOrdenTrabajo",
     'success': function (data) {
-                
-      $('#responsable').val(data['responsable']['label']);
-      $('#id_responsable').val(data['responsable']['value']);
         var recursos = data['recursos'];
         for(i = 0; i < recursos.length; i++) {
           var idRRHH = recursos[i].value;
@@ -716,12 +663,10 @@ function getRRHHOrdenTrabajo(){
             ]
           ).node().id = idRRHH;
           $('#tabModRecursos').DataTable().draw();
-
         }    
-
     },
     'error': function(){
-      alert('Fallo la carga de RRHH...');
+      //alert('Fallo la carga de RRHH...');
     }
     
   });
@@ -941,191 +886,4 @@ $('#tablalistareas, #tablalistherram').DataTable({
 });
 
 
-</script>
-
-
-<script>
-/*
-// Carga vista Orden de Servicio -->
-$('#listado').click( function cargarVista(){
-  WaitingOpen();
-  $('#content').empty();
-  $("#content").load("<?php echo base_url(); ?>index.php/ordenservicio/index/<?php echo $permission; ?>/");
-  WaitingClose();
-});
-
-// Trae Tareas 
-var dataF = function () {
-  var tmp = null;
-  $.ajax({
-    'async': false,
-    'type': "POST",
-    'global': false,
-    'dataType': 'json',
-    'url': "ordenservicio/getTarea",
-    'success': function (data) {
-        tmp = data;               
-    }
-  });
-  return tmp;
-}();
-
-// Trae Tareas 
-
-// HERRAMIENTAS
-  var regHerr = 0;                // variable incrementable en func, para diferenciar los inputs
-  function armartablistherr(){   // inserta valores de inputs en la tabla 
-
-    var $herramienta = $("#herramienta").val();
-    var $marcaherram = $("#marcaherram").val();
-    var $codherram = $("#codherram").val(); 
-    var $herrId = $("#herrId").val();
-    $(".tablalistherram tbody").append(
-                  '<tr>'+ 
-                    '<td><i class="fa fa-ban eliminrow" style="color: #f39c12; cursor: pointer; margin-left: 15px;"></i></td>'+
-                     '<td>'+ $herramienta +'</td>'+
-                     '<td>'+ $marcaherram +'</td>'+
-                     '<td>'+ $codherram +'</td>'+
-                     '<td class="hidden" id=""><input type="text" name="herrid'+ '['+ regHerr+']' +'" class="herrid" id="herrid" value=" '+ $herrId +' " placeholder=""></td>'+
-                  '<tr>');
-    $("#herramienta").val("");
-    $("#marcaherram").val("");
-    $("#codherram").val("");
-    $("#herrId").val(); 
-
-    regHerr++;
-  }
-   
-   // Evento que selecciona la fila y la elimina 
-   $(document).on("click",".eliminrow",function(){
-      var parent = $(this).closest('tr');
-      $(parent).remove();
-   });
-
-// RECURSOS
-  
-  regOper = 0;                       // variable incrementable en func, para diferenciar los inputs
-  function armarTablaRecursos(){   // inserta valores de inputs en la tabla  
-
-    var $operario = $("#operario").val();
-    var $id_operario = $("#id-Operario").val();
-    $(".tabModRecursos tbody").append(
-                  '<tr>'+
-                    '<td><i class="fa fa-ban elimrowrec" style="color: #f39c12; cursor: pointer; margin-left: 15px;"></i></td>'+
-                     '<td>'+ $operario +'</td>'+
-                     '<td class="hidden operario_id id-Operario"><input type="text" name="usrid'+ '['+ regOper+']' +'" class="usrid" id="usrid" value=" '+ $id_operario +' " placeholder=""></td>'+
-                  '<tr>');
-    $("#operario").val("");
-    $("#id-Operario").val("");  
-
-    regOper++;
-  }
-   
-   // Evento que selecciona la fila y la elimina 
-  $(document).on("click",".elimrowrec",function(){
-      var parent = $(this).closest('tr');
-      $(parent).remove();
-  });
-
-// INSUMOS
-  
-  function validarCantidad(){
-    
-    //var cantInsum = $("#cantOrdInsum").val();
-    var iddepositos = $("#depositos").val();
-    var idinsum = $(".id-artOrdIns").val();
-    $.ajax({
-                type: 'POST',
-                data:{ 
-                      depoid : iddepositos,
-                      id_insum : idinsum
-                    },
-                dataType: 'json',     
-                cache: false,
-                url: 'index.php/Ordenservicio/getLoteActivo',                
-                success: function(data){
-                       
-                       var data = JSON.parse(data);
-                       console.log('cantidad desde server: ');
-                       console.log(data);
-                       //console.log(data[cantidad]);
-                       //console.log(data.cantidad);
-                       
-                       // var cantInsum = $("#cantOrdInsum").val();
-                       // console.log('cantidad desde form: ')
-                       // console.log(cantInsum);
-
-
-                       // if (cantInsum <= data.cantidad) {
-                       //    alert("hay insumos suficientes...");
-                       //    //armarTablaInsumos();
-                       // }
-                       // else{
-                       //    alert("no alcanzan los insumos...");
-                       // }
-                        //console.log('devoplucion de success');
-                        // console.log(data.id_lote);
-                        // console.log(data.cantidad);
-                  },                        
-                error: function(data){
-                        //data = JSON.parse(data,true);
-                        console.log('devoplucion de ajax por error');
-                        //console.log(data);
-                        
-                  },
-                 
-                complete : function(jqXHR, status) {
-                //alert(jqXHR);
-                alert(status);
-                }
-           });
-  };
-
-
-  var regInsum = 0;                 // variable incrementable en func, para diferenciar los inputs
-  function armarTablaInsumos(){   // inserta valores de inputs en la tabla   
-
-    //validarCantidad();
-    var $artOrdInsum = $("#artOrdInsum").val();
-    var $desCripInsum = $("#decripInsumo").val();
-    var $id_Insumo = $("#id-artOrdIns").val();
-    var $cantOrdInsum = $("#cantOrdInsum").val();
-    var $precioOrdInsum = $("#precioOrdInsum").val(); 
-    var $componentes = $("select#componentes option:selected").html();
-    var $depos = $("select#depositos option:selected").html();
-    var $id_deposito = $("#depositos").val();    // muestra e id de componente
-    
-    $(".tabModInsum tbody").append(
-                  '<tr>'+
-                    '<td><i class="fa fa-ban elimrow" style="color: #f39c12; cursor: pointer; margin-left: 15px;"></i></td>'+
-                     '<td class="">'+ $artOrdInsum +'</td>'+ 
-                     '<td class="">'+ $desCripInsum +'</td>'+
-                     '<td class="hidden id_Insumo" id="id_Insumo"><input type="text" name="insum_Id'+ '['+ regInsum+']' +'" class="insum_Id" id="insum_Id" value=" '+ $id_Insumo +' " placeholder=""></td>'+
-                     
-                     '<td class="cant_insumos" id="cant_insumos"><input type="text" name="cant_insumos'+ '['+ regInsum+']' +'" class="cant_insumos" id="cant_insumos" value=" '+ $cantOrdInsum +' " placeholder=""></td>'+
-                     
-                     '<td class="nom_depos" id="nom_depos"><input type="text" class="nom_depo" id="nom_depo" value=" '+ $depos +' " placeholder=""></td>'+
-
-                     '<td class="hidden id_depo" id="id_depo"><input type="text" name="depositoid'+ '['+ regInsum+']' +'" class="depositoid" id="depositoid" value=" '+ $id_deposito +' " placeholder=""></td>'+
-
-                  '<tr>');
-    $("#artOrdInsum").val("");
-    $("#decripInsumo").val("");
-    $("#cantOrdInsum").val("");
-    $("#precioOrdInsum").val("");   
-    $("#id-artOrdIns").val("");
-    $("#depositos").val("");
-
-    regInsum++;
-  }
-   
-   // Evento que selecciona la fila y la elimina 
-   $(document).on("click",".elimrow",function(){
-      var parent = $(this).closest('tr');
-      $(parent).remove();
-   });
-
-
-
-*/
 </script>

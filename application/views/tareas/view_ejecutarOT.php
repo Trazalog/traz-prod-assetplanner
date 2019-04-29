@@ -111,43 +111,48 @@ echo "<input type='text' class='hidden' id='case' value='" . $TareaBPM['caseId']
                                                         </div>
 
                                                 </form>
+																							<?php 
+																														
+																								if (isset($subtareas)) { 			
+																									echo '<table id="subtask" class="table table-hover">';
+                                                    echo '<thead>';
+																											echo	'<tr>';
+																												echo	'<th width="2%">Estado</th>';
+																												echo	'<th width="10%">Subtarea</th>';
+																												echo	'<th width="10%">Duración</th>';
+																												echo	'<th width="10%">Formulario</th>';
+																											echo '</tr>';
+                                                    echo '</thead>';
+                                                    echo '<tbody>';
+																												
+																											//dump($subtareas, 'subtareas');
+																											foreach ($subtareas as $subt) {
+																												echo '<tr>';
+																												echo '<td>';
+																												if ($subt["estado"] != 'T')
+																													echo '<input class="check" type="checkbox" name="estado" value="" id="' . $subt["id_listarea"] . '">';
+																												else
+																													echo '<input class="check" type="checkbox" name="estado" value="" id="' . $subt["id_listarea"] . '" checked>';
+																												echo '</td>';
 
-                                                <table id="subtask" class="table table-hover">
-                                                    <thead>
-                                                        <tr>
-                                                            <th width="2%">Estado</th>
-                                                            <th width="10%">Subtarea</th>
-                                                            <th width="10%">Duración</th>
-                                                            <th width="10%">Formulario</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php 
-																												//dump($subtareas, 'subtareas');
-																												foreach ($subtareas as $subt) {
-																													echo '<tr>';
-																													echo '<td>';
-																													if ($subt["estado"] != 'T')
-																														echo '<input class="check" type="checkbox" name="estado" value="" id="' . $subt["id_listarea"] . '">';
-																													else
-																														echo '<input class="check" type="checkbox" name="estado" value="" id="' . $subt["id_listarea"] . '" checked>';
-																													echo '</td>';
-
-																													if ($subt['tareadescrip'] != null) {
-																														echo '<td>' . $subt['tareadescrip'] . '</td>';
-																													} else {
-																														echo '<td>' . $subt['subtareadescrip'] . '</td>';
-																													}
-																													echo '<td>' . $subt['duracion_prog'] . '</td>';
-																													if ($subt['subtareadescrip'] != null) {
-																														echo '<td><i class="fa fa-paperclip text-light-blue btn-form" style="cursor: pointer; margin-left: 15px;" aria-hidden="true" id="' . $subt["id_listarea"] . '" data-infoId="' . $subt["info_id"] . '" data-valido="true"></i></td>';
-																													}
-
-																													echo '</tr>';
+																												if ($subt['tareadescrip'] != null) {
+																													echo '<td>' . $subt['tareadescrip'] . '</td>';
+																												} else {
+																													echo '<td>' . $subt['subtareadescrip'] . '</td>';
 																												}
-																												?>
-                                                    </tbody>
-                                                </table>
+																												echo '<td>' . $subt['duracion_prog'] . '</td>';
+																												if ($subt['subtareadescrip'] != null) {
+																													echo '<td><i class="fa fa-paperclip text-light-blue btn-form" style="cursor: pointer; margin-left: 15px;" aria-hidden="true" id="' . $subt["id_listarea"] . '" data-infoId="' . $subt["info_id"] . '" data-valido="true"></i></td>';
+																												}
+
+																												echo '</tr>';
+																											}
+																												
+																										echo'</tbody>';
+                                                	echo '</table>';																						
+																								}																								
+																							?>						
+
                                             </div>
                                         </div>
                                         <div class="row">
@@ -162,13 +167,8 @@ echo "<input type='text' class='hidden' id='case' value='" . $TareaBPM['caseId']
 
                                     <div role="tabpanel" class="tab-pane" id="profile">
                                         <div class="panel-body">
-
-
                                             <!-- COMENTARIOS -->
                                             <?php echo $comentarios ?>
-
-
-
                                         </div>
                                     </div>
 
@@ -251,6 +251,7 @@ echo "<input type='text' class='hidden' id='case' value='" . $TareaBPM['caseId']
         }
     });
 
+		/* cambia estado de subtareas a T o a C en BD */
     function cambiarEstadoSubtask(estado, idListarea) {
 
         WaitingOpen();
@@ -273,7 +274,7 @@ echo "<input type='text' class='hidden' id='case' value='" . $TareaBPM['caseId']
     }
     // devueve bool si estan todas las subt tildadas
     function validarEstSubTareas() {
-        var tabla = $('#subtask tbody tr');
+        var tabla = $('#subtask tbody tr');				
         var band = '';
         $.each(tabla, function(index) {
             var check = $(this).find('input.check');

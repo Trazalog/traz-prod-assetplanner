@@ -16,6 +16,12 @@ class BPM
 	// Lanza proceso en BPM
 	function LanzarProceso($contract)
 	{
+		//Contrato para lanzar proceso (NO BORRAR PLEASE!!)
+			// $contract = array(
+			// 	"idSolicitudServicio"	=>	$id_solServicio,
+			// 	"idOT"  => 	0
+			// );
+
 		//Preparar Ambiente
 		$parametros = $this->conexiones();
 		$parametros["http"]["method"] = "POST";

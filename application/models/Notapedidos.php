@@ -35,13 +35,12 @@ class Notapedidos extends CI_Model
     {
         $userdata = $this->session->userdata('user_data');
         $empId    = $userdata[0]['id_empresa'];
-        $this->db->select('
-            tbl_notapedido.id_notaPedido,
-            tbl_notapedido.fecha,
-            tbl_notapedido.id_ordTrabajo,
-            solicitud_reparacion.solicitante,
-            orden_trabajo.descripcion
-        ');
+        $this->db->select('tbl_notapedido.id_notaPedido,
+                            tbl_notapedido.fecha,
+                            tbl_notapedido.id_ordTrabajo,
+                            solicitud_reparacion.solicitante,
+                            orden_trabajo.descripcion
+                        ');
         $this->db->from('tbl_notapedido');
         $this->db->join('orden_trabajo','tbl_notapedido.id_ordTrabajo = orden_trabajo.id_orden');
         $this->db->join('solicitud_reparacion', 'orden_trabajo.id_solicitud = solicitud_reparacion.id_solicitud');
@@ -225,34 +224,54 @@ class Notapedidos extends CI_Model
         }
     }
 
+     // devuelve plantilla por Id de cliente
+     function getPlantillaPorCliente($idcliente){
+        //FIXME: DESHARDCODEAR ESTE CLIENTE!!!!
+        $idcliente = 21;
+        $this->db->select('asp_detaplantillainsumos.artId,
+                                            articles.artDescription,
+                                            asp_plantillainsumos.plant_id');
+        $this->db->from('asp_detaplantillainsumos'); 
+        $this->db->join('asp_plantillainsumos', 'asp_detaplantillainsumos.plant_id = asp_plantillainsumos.plant_id');
+        $this->db->join('articles', 'articles.artId = asp_detaplantillainsumos.artId');
+        $this->db->join('admcustomers', 'asp_plantillainsumos.plant_id = admcustomers.plant_id');
+        $this->db->where('admcustomers.plant_id','(SELECT admcustomers.plant_id WHERE admcustomers.cliId = '.$idcliente.')', false);       
+        $query = $this->db->get();
+        if ($query->num_rows() != 0){					
+            return $query->result_array();             
+        }else {
+            return array();
+        }
 }
-				$result = file_get_contents($url.BPM_PROCESS_ID.$com, false, $param);
-			} catch (Exception $e) {
-				echo 'Excepción capturada: ',  $e->getMessage(), "\n";
-				echo 'respuestas: ';
-				var_dump( $http_response_header);
-			} 
+
+// }
+// 				$result = file_get_contents($url.BPM_PROCESS_ID.$com, false, $param);
+// 			} catch (Exception $e) {
+// 				echo 'Excepción capturada: ',  $e->getMessage(), "\n";
+// 				echo 'respuestas: ';
+// 				var_dump( $http_response_header);
+// 			} 
 				
-			return $result;
-		}
+// 			return $result;
+// 		}
 		
 		
 		
 		//
-    function getOTporId($id)
-    {
-        $this->db->select('id_orden, nro, descripcion');
-        $this->db->from('orden_trabajo');
-        $this->db->where('id_orden', $id);
-        $query = $this->db->get();
-        if ($query->num_rows()!=0)
-        {
-            return $query->result_array();
-        }
-        else
-        {
-            return false;
-        }
-    }
+    // function getOTporId($id)
+    // {
+    //     $this->db->select('id_orden, nro, descripcion');
+    //     $this->db->from('orden_trabajo');
+    //     $this->db->where('id_orden', $id);
+    //     $query = $this->db->get();
+    //     if ($query->num_rows()!=0)
+    //     {
+    //         return $query->result_array();
+    //     }
+    //     else
+    //     {
+    //         return false;
+    //     }
+    // }
 
 }

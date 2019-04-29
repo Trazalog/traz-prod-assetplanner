@@ -149,10 +149,10 @@
 
 <script>  
 
-    function redirect_calendario(){
-        $('#content').empty();
-	    $("#content").load("<?php echo base_url(); ?>index.php/Calendario/indexot/<?php echo $permission; ?>");
-    }
+	function redirect_calendario(){
+			$('#content').empty();
+		$("#content").load("<?php echo base_url(); ?>index.php/Calendario/indexot/<?php echo $permission; ?>");
+	}
 
 	$('.fecha').datepicker({
 		autoclose: true

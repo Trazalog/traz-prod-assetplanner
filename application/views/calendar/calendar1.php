@@ -251,12 +251,15 @@ var mes = "";
           url: 'index.php/Otrabajo/ObtenerTaskIDxOT',  
           success: function(task){
             WaitingClose();
-            if(task==0) $('#ejecutar_ot').hide();else{
-              $('#numero').attr('task',task);
-              $('#ejecutar_ot').show();
-            }
+            alert(task);
+            // if(task==0) $('#ejecutar_ot').hide();else{
+            //   $('#numero').attr('task',task);
+            //   $('#ejecutar_ot').show();
+            // }
+            // $('#modalPrevent').modal('show');
+            $('#numero').attr('task',task);
+            $('#ejecutar_ot').show();
             $('#modalPrevent').modal('show');
-
           },
           error: function(error){
             WaitingClose();
@@ -302,13 +305,11 @@ var mes = "";
     //Remove event from text input
     $("#new-event").val("");
   });    
-//});
 
-$(".fa-print").click(function (e) {
-  $("#calendar").printArea();
-});
+  $(".fa-print").click(function (e) {
+    $("#calendar").printArea();
+  });
 
-//$(function(){
   //  Datatables listas
   $('#correctivo').DataTable({
     "paging": true,
@@ -414,8 +415,6 @@ $(".fa-print").click(function (e) {
       }
     }
   });
-//});
-
 
 ///// Datepicker para modales
 $("#fecha_progr_pred").datepicker({
@@ -671,6 +670,7 @@ $("#fecha_progr_prevent_horas").datepicker({
   var desc_tarea_back = "";
   var id_back = "";
   var id_equi = "";
+  var duracion = "";
 
   function fill_Backlog(dato){    
       console.log('Rellenar Backlog...');
@@ -679,20 +679,23 @@ $("#fecha_progr_prevent_horas").datepicker({
           data: {id:dato},
           url: 'index.php/Calendario/getBackPorId',  //index.php/
           success: function(data){
-
-                   console.log(data);
+                    console.log('datos backlog: '); 
+                    console.table(data[0]['tarea_opcional']);
                    id_de_tar = data[0]['id_tarea'];
                    fec_sol_back = data[0]['fecha'];
                    id_back = data[0]['backId'];
                    id_equi = data[0]['id_equipo'];
-                   tarea = data[0]['descripcion'];
+                   //tarea = data[0]['descripcion'];
                    id_sol = data[0]['sore_id'];
+                   duracion = data[0]['back_duracion'];
                    // si tiene tarea estandar grava eso sino la tarea custom
-                   if(id_de_tar != null){
-                    desc_tarea_back = data[0]['descripcion'];
+                   if(id_de_tar != -1){
+                    desc_tarea_back = data[0]['tareadesc'];
+                    console.log('entre por tar estandar');
                    }else{
                     desc_tarea_back = data[0]['tarea_opcional']; 
-                   }
+                    console.log('entre por tar custom');
+                  }
                   
                 },
           error: function(data){
@@ -706,6 +709,7 @@ $("#fecha_progr_prevent_horas").datepicker({
   function setOtBacklog() {
     var progr_back = $('#fecha_progr_back').val();
     var hora_progr_back = $('#hora_progr_back').val();   
+    alert('duracion: '+duracion);
    
     $.ajax({
           type: 'POST', //parametros:parametros
@@ -719,7 +723,8 @@ $("#fecha_progr_prevent_horas").datepicker({
                   fecha_inicio : fec_sol_back,
                   descripcion : desc_tarea_back,                  
                   tipo : 4, // backlog
-                  ide : id_equi
+                  ide : id_equi,
+                  duracion : duracion
                 },
           url: 'index.php/Calendario/guardar_agregar',  //index.php/
           success: function(data){
@@ -761,7 +766,7 @@ $("#fecha_progr_prevent_horas").datepicker({
                    fecha_inicio = data[0]['fecha'];
                    idp = data[0]['predId'];
                    ide = data[0]['id_equipo'];
-                   desc_tarea_back = data[0]['descripcion'];
+                   tarea_descrip = data[0]['descripcion'];
                 },
           error: function(data){
 

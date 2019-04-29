@@ -92,10 +92,10 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 | Url base to Bonita
 |
 */
-// define('BONITA_URL', 'http://35.239.41.196:7070/bonita/');
-//define('BONITA_URL', 'http://35.225.113.255:8080/bonita/');// SST - 
-define('BONITA_URL', 'http://localhost:8080/bonita/');  //localhost
-//define('BONITA_URL', '192.168.100.114:8080/bonita/');
+
+define('BONITA_URL', 'http://localhost:8080/bonita/');// SST - 
+//define('BONITA_URL', 'http://192.168.100.112:8080/bonita/');  //localhost
+
 
 /*
 |--------------------------------------------------------------------------
@@ -106,10 +106,7 @@ define('BONITA_URL', 'http://localhost:8080/bonita/');  //localhost
 |
 */
  
-
-// define('BPM_PROCESS_ID', '8159262131949207788');
-//define('BPM_PROCESS_ID', '8752332739922939857'); // SST - 
-define('BPM_PROCESS_ID', '9079653342029912696'); // localhost -
+define('BPM_PROCESS_ID', '8288693900524284674'); // localhost -
 
 /*
 |--------------------------------------------------------------------------

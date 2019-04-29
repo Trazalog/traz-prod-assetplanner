@@ -108,5 +108,3 @@ class Herramienta extends CI_Controller {
 
 
 }
-
-}

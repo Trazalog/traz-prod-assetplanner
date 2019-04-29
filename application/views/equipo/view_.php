@@ -953,74 +953,7 @@ function regresa(){
   </div>  <!-- /.modal-dialog -->
 </div>  <!-- /.modal fade -->
 <!-- / Modal -->
-    var hayError = false; 
-
-    if( parametros !=0){                                         
-
-    $.ajax({
-      data:{parametros:parametros},
-      dataType: 'json',
-      type:"POST",
-      url: "index.php/Equipo/agregar_cliente", 
-      success: function(data){
-        console.log("exito");
-        console.log(data);
-        if(data > 0){  
-          var texto = '<option value="'+data+'">'+ parametros.cliRazonSocial +'</option>';
-          console.log(texto);
-          $('#cliente').append(texto);
-          $('#modalCliente').modal('hide');
-        }           
-      },        
-      error: function(result){
-        console.log("entro por el error");
-        console.log(result);
-      },
-    });     
-  }
-  else 
-  { 
-    alert("Por favor complete la descripcion del grupo, es un campo obligatorio");
-  }
-}
-
-// Agrega las grupos nuevos - Listo
-function guardarmarca(){ 
-  var descripcion = $('#nombreMarca').val(); 
-  var parametros = {
-    'marcadescrip': descripcion,
-    'estado': 'AC',        
-  };                                              
-  console.table(parametros);
-  var hayError = false; 
-  if( parametros !=0){    
-    $.ajax({
-      data:{parametros:parametros},
-      dataType: 'json',
-      type: 'POST',
-      url: "index.php/Equipo/agregar_marca", 
-      success: function(data){
-        console.log("exito");
-        var datos= parseInt(data);
-        console.log(datos);
-        if(data > 0){  
-          var texto = '<option value="'+data+'">'+ parametros.marcadescrip +'</option>';
-          console.log(texto);
-          $('#marca').append(texto);
-        }      
-      },
-      error: function(result){
-        console.log("entro por el error");
-        console.log(result);
-      }
-    });
-  }
-  else 
-  { 
-    alert("Por favor complete la descripcion de Marca, es un campo obligatorio");
-  }
-}
-</script>
+    
 
 <!-- Modal empresa -->
 <div class="modal fade" id="modalOrder" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

@@ -1,7 +1,7 @@
 
 <?php
     echo '<div class="dropdown">
-    <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false" title="Opciones">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
     <i class="fa fa-ellipsis-h text-light-blue opcion" style="cursor: pointer;"></i></a>
     <ul class="dropdown-menu" style="[5:51, 28/3/2019] Mi Princesa: background: -moz-linear-gradient(45deg, rgba(60,148,201,1) 0%, rgba(70,170,232,1) 100%); /* ff3.6+ */
     background: -webkit-gradient(linear, left bottom, right top, color-stop(0%, rgba(60,148,201,1)), color-stop(100%, rgba(70,170,232,1))); /* safari4+,chrome */
@@ -27,7 +27,7 @@
 
     if (strpos($permission,'Edit') !== false) {
 
-        echo '<li role="presentation"><a style="color:white;" role="menuitem" tabindex="-1" href="#" data-toggle="modal" data-target="#modaleditar"><i class="fa fa-pencil text-white" style="color:white; cursor: pointer;"></i>Editar</a></li>';
+				 echo '<li role="presentation"><a onclick="editar(this)" style="color:white;" role="menuitem" tabindex="-1" href="#" data-toggle="modal" data-target="#modaleditar"><i class="fa fa-pencil text-white" style="color:white; cursor: pointer;"></i>Editar</a></li>';
   
     }
 

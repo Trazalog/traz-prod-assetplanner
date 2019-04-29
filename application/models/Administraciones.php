@@ -36,8 +36,7 @@ class Administraciones extends CI_Model
 		}
 	}
 
-		}
-	}
+
 
 	function cargartareas($idglob){
 		//var_dump($idglob);

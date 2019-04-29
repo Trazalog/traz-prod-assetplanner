@@ -225,11 +225,12 @@
       }
     });
 
-  }function ActualizarPagina(){ //Funcion Resfresca
+  }
+  function ActualizarPagina(){ //Funcion Resfresca
   $('#content').empty();
   $("#content").load("<?php echo base_url(); ?>index.php/Cliente/index/<?php echo $permission; ?>");
-
-}$(function () {
+}
+$(function () {
       
       $('#Cliente').DataTable({
           "paging": true,

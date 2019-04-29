@@ -593,23 +593,26 @@ class Otrabajos extends CI_Model {
 	}
 
 	//PEDIDOS
-	function getorden($id){
+	// function getorden($id){
 
-	    $sql="SELECT * 
-	    	  FROM orden_pedido
-	    	  WHERE id_orden=$id
-	    	  ";
+	//     $sql="SELECT * 
+	//     	  FROM orden_pedido
+	//     	  WHERE id_orden=$id
+	//     	  ";
 	    
-	    $query= $this->db->query($sql);
+	//     $query= $this->db->query($sql);
 
-	    if( $query->num_rows() > 0)
-	    {
-	      return $query->result_array();	
-	    } 
-	    else {
-	      return 0;
-	    }
-	}
+	//     if( $query->num_rows() > 0)
+	//     {
+	//       return $query->result_array();	
+	//     } 
+	//     else {
+	//       return 0;
+	//     }
+	// }
+
+	
+
 
 	//pediso a entregar x fecha
 	function getpedidos($id){
@@ -1239,14 +1242,59 @@ class Otrabajos extends CI_Model {
             return null;
         }
     }
-      
+    // TODO: VER SI SE OCUPA O BORRAR  
     function ObtenerCaseIDxOT($ot){
-      $this->db->select('case_id');
-      $this->db->from('orden_trabajo as A');
-      $this->db->join('solicitud_reparacion as B','A.id_solicitud=B.id_solicitud');
-      $this->db->where('id_orden',$ot);
-      return $this->db->get()->first_row()->case_id;
-    }
+			// busca en OT e case_id
+			$this->db->select('orden_trabajo.case_id');
+			$this->db->from('orden_trabajo');
+			$this->db->where('id_orden',$ot);
+      $caseEnOT = $this->db->get()->first_row()->case_id;		
+			// es null si se genero de un Prevent, Predict o  Backlog normalmente
+			if ($caseEnOT == NULL) {
+				return $caseEnOT;
+			} // En caso que sea generado desde una SServicios 
+			else {
+				$this->db->select('case_id');
+				$this->db->from('orden_trabajo as A');
+				$this->db->join('solicitud_reparacion as B','A.id_solicitud=B.id_solicitud');
+				$this->db->where('orden_trabajo.id_orden',$ot);
+				return $this->db->get()->first_row()->case_id;
+			}     
+		}
+		// develve tipo de solicitud e id q dieron origen a OT
+		function getDatosOrigenOT($id){
+			$this->db->select('orden_trabajo.id_solicitud, orden_trabajo.tipo');
+			$this->db->from('orden_trabajo');
+			$this->db->where('id_orden',$id);
+			$query = $this->db->get();
+			return $query->result_array();
+		}
+		// trae id de SServicio desde backlog
+		function getIdSolReparacion($id_solicitud){
+			$this->db->select('tbl_back.sore_id');
+			$this->db->from('tbl_back');
+			$this->db->where('backId',$id_solicitud);
+			$query = $this->db->get();
+			$row = $query->row('sore_id');
+			return $row;
+		}
+		// trae case_id desde SServicios
+		function getCaseIdenSServicios($id_solicitud){
+			$this->db->select('solicitud_reparacion.case_id');
+			$this->db->from('solicitud_reparacion');
+			$this->db->where('id_solicitud',$id_solicitud);
+			$query = $this->db->get();
+			$row = $query->row('case_id');
+			return $row;		
+		}
+		// guarda case_id en Otrabajo
+		function setCaseidenOT($case_id, $id){
+			$this->db->where('orden_trabajo.id_orden', $id);
+			return $this->db->update('orden_trabajo', array('case_id'=>$case_id));			
+		}
+
+
+
 
     function CambiarEstado($ot, $estado){
         $this->db->where('id_orden',$ot);
