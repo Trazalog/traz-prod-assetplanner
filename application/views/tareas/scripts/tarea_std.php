@@ -191,7 +191,61 @@
 				dataType: 'json'
 			});
 		}
+		// cierra tarea Verificar Informe
+		function verificarInforme(){
+			WaitingOpen();
+			var opcion = $('input[name="opcion"]:checked').val();
+			var idTarBonita = $('#idTarBonita').val();	
 
+			$.ajax({
+				type: 'POST',
+				data: {opcion:opcion,
+								idTarBonita:idTarBonita},
+				url: 'index.php/Tarea/verificarInforme',
+				success: function(data) {
+					WaitingClose();
+					console.table(data);				
+					// cierra la tarea exitosamente
+					if(data['code'] == 204){
+							$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+					}
+				},
+				error: function(data) {
+					WaitingClose();
+						//alert("Noo");
+						console.log(data);
+				},
+				dataType: 'json'
+			});
+		}
+		// cierra tarea Prestar Conformidad de 
+		function prestarConformidad(){
+			WaitingOpen();
+			var opcion = $('input[name="opcion"]:checked').val();
+			var idTarBonita = $('#idTarBonita').val();	
+
+			$.ajax({
+				type: 'POST',
+				data: {opcion:opcion,
+								idTarBonita:idTarBonita},
+				url: 'index.php/Tarea/prestarConformidad',
+				success: function(data) {
+					WaitingClose();
+					console.table(data);				
+					// cierra la tarea exitosamente
+					if(data['code'] == 204){
+							$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+					}
+				},
+				error: function(data) {
+					WaitingClose();
+						//alert("Noo");
+						console.log(data);
+				},
+				dataType: 'json'
+			});
+		}
+		
 		function ejecutarOT(){
 			
 			var idTarBonita = $('#idTarBonita').val();	
@@ -207,7 +261,7 @@
 								sessionStorage.setItem("tareas_cerradas",idTareaBonita + "-");
 								if(data['reponse_code'] == 204){
 								  
-										$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+									$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
 								}
 				},
 				error: function(data) {

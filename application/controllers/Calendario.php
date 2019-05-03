@@ -180,6 +180,8 @@ class Calendario extends CI_Controller {
 						if($respCerrar == 204 ){
 							$resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);
 						}
+						// guardo el case_id en Otrabajo
+						$this->Calendarios->setCaseidenOT($infoTarea['caseId'], $idOTnueva);
 						//if($resActualizar == 200){					
 						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);
 						$response = true;
@@ -196,10 +198,15 @@ class Calendario extends CI_Controller {
 						$infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);				
 						$respCerrar = $this->cerrarTarea($infoTarea['taskId']);							
 						$resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);
+						
 						$response = true;					
 					}
 
 					$idOT = $this->Calendarios->guardar_agregar($datos2);
+					
+					// guardo el case_id en Otrabajo
+					$respcaseOT = $this->Calendarios->setCaseidenOT($infoTarea['caseId'], $idOT);		
+					
 					$this->setHerramInsPorTarea($idOT,$tipo,$id_solicitud);
 					if($idOT){
 							$this->Calendarios->setEstadoSServicio($id_solicitud);
@@ -305,6 +312,8 @@ class Calendario extends CI_Controller {
 			// actualizo la fecha de programacion
 			$fec_programacion = $nuev_fecha;			 
 			$idOT = $this->Calendarios->guardar_agregar($data);
+			// guardo el case_id en Otrabajo
+			$respcaseOT = $this->Calendarios->setCaseidenOT($infoTarea['caseId'], $idOT);
 			$this->setHerramInsPorTarea($idOT, $tipo, $id_solicitud);
 		} 
 		return;	

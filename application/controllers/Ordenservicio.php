@@ -55,7 +55,7 @@ class Ordenservicio extends CI_Controller {
       $data['nom_responsable'] = $infoOt[0]["responsable"];
       $data['idresponsable'] = $infoOt[0]["usrId"];
       $data['idTarBonita'] = $idTarBonita;
-      dump($data, 'datos para modal');
+      //dump($data, 'datos para modal');
       $this->load->view('tareas/view_inf_servicio_modal',$data);
     }  
 
@@ -107,18 +107,41 @@ class Ordenservicio extends CI_Controller {
       $data['herramienta'] = $this->input->post('herramienta');
       $data['operario']    = $this->input->post('operario');
 
-
       $idTarBonita = $datosInfoServicio['idTarBonita'];
 
-      dump($idTarBonita, 'id de tarea bonita en set orden servicio');
+      //$response = $this->Ordenservicios->setOrdenServicios($data); 
+      //dump($response, ' respuesta de guardado informe:');
+      ///dump($idTarBonita, 'id de tarea bonita en set orden servicio');
        //TODO: CERRAR TAREA
        $this->load->library('BPM');
        $resp = $this->bpm->CerrarTareaBPM($idTarBonita,$data=null);
+      //  $code = $resp['code']; 
+        //dump($resp['code'], 'respuesta CODE: ');
+        
+       //if ( $resp['code'] < 300) {
+          //dump($data, 'datos en controller:');
+          $response = $this->Ordenservicios->setOrdenServicios($data);          
+          // FIXME: ARREGLAR ESTA VALIDACION
+          //if ($response == 'true') {
+            $respuesta['status'] = true;
+            $respuesta['msj'] = 'OK';
+            $respuesta['code'] = 'Exito';
+            echo json_encode($respuesta);
+          //   return;
+          // } else {
+          //   $respuesta['status'] = false;
+          //   $respuesta['msj'] = 'ERROR';
+          //   $respuesta['code'] = 'ASP_0200, Error ASP_0200: Comunicarse con el Proveedor de Servicio';
+          //   echo json_encode($respuesta);
+          //   return;
+          // }  
 
-
-
-      $response = $this->Ordenservicios->setOrdenServicios($data);
-      echo json_encode($res);
+      //  } else {         
+        
+      //     echo json_encode($resp);
+      //     return;
+      //  }     
+      
     }
     // devuelve insumos pedidos por id de OT
     public function getInsumosPorOT(){

@@ -1243,24 +1243,51 @@ class Otrabajos extends CI_Model {
         }
     }
     // TODO: VER SI SE OCUPA O BORRAR  
-    function ObtenerCaseIDxOT($ot){
+    // function ObtenerCaseIDxOT($ot){
+			// busca en OT e case_id
+		// 	$this->db->select('orden_trabajo.case_id');
+		// 	$this->db->from('orden_trabajo');
+		// 	$this->db->where('id_orden',$ot);
+    //   $caseEnOT = $this->db->get()->first_row()->case_id;		
+		// 	// es null si se genero de un Prevent, Predict o  Backlog normalmente
+		// 	if ($caseEnOT == NULL) {
+		// 		return $caseEnOT;
+		// 	} // En caso que sea generado desde una SServicios 
+		// 	else {
+		// 		$this->db->select('case_id');
+		// 		$this->db->from('orden_trabajo as A');
+		// 		$this->db->join('solicitud_reparacion as B','A.id_solicitud=B.id_solicitud');
+		// 		$this->db->where('orden_trabajo.id_orden',$ot);
+		// 		return $this->db->get()->first_row()->case_id;
+		// 	}     
+		// }
+
+		//Define si la OT tiene un proceso lanzado
+		function getCaseIdOT($id){
+
+			
+
+
 			// busca en OT e case_id
 			$this->db->select('orden_trabajo.case_id');
 			$this->db->from('orden_trabajo');
-			$this->db->where('id_orden',$ot);
-      $caseEnOT = $this->db->get()->first_row()->case_id;		
-			// es null si se genero de un Prevent, Predict o  Backlog normalmente
-			if ($caseEnOT == NULL) {
-				return $caseEnOT;
-			} // En caso que sea generado desde una SServicios 
-			else {
-				$this->db->select('case_id');
-				$this->db->from('orden_trabajo as A');
-				$this->db->join('solicitud_reparacion as B','A.id_solicitud=B.id_solicitud');
-				$this->db->where('orden_trabajo.id_orden',$ot);
-				return $this->db->get()->first_row()->case_id;
-			}     
+			$this->db->where('id_orden',$id);
+			$query = $this->db->get();
+      $row = $query->row('case_id');
+      return $row;  
 		}
+
+		//Define si la OT tiene un proceso lanzado
+		// function getCaseIdOTenSS($id){
+		// 	// busca en OT e case_id
+		// 	$this->db->select('solicitud_reparacion.case_id');
+		// 	$this->db->from('solicitud_reparacion');
+		// 	$this->db->where('id_solicitud',$id);
+		// 	$query = $this->db->get();
+		// 	$row = $query->row('case_id');
+		// 	return $row;  
+		// }
+
 		// develve tipo de solicitud e id q dieron origen a OT
 		function getDatosOrigenOT($id){
 			$this->db->select('orden_trabajo.id_solicitud, orden_trabajo.tipo');
@@ -1271,12 +1298,14 @@ class Otrabajos extends CI_Model {
 		}
 		// trae id de SServicio desde backlog
 		function getIdSolReparacion($id_solicitud){
+			
+			//$id_solicitud = 7;
 			$this->db->select('tbl_back.sore_id');
 			$this->db->from('tbl_back');
 			$this->db->where('backId',$id_solicitud);
 			$query = $this->db->get();
-			$row = $query->row('sore_id');
-			return $row;
+			$result = $query->row();			
+			return $result->sore_id;			
 		}
 		// trae case_id desde SServicios
 		function getCaseIdenSServicios($id_solicitud){
@@ -1286,6 +1315,14 @@ class Otrabajos extends CI_Model {
 			$query = $this->db->get();
 			$row = $query->row('case_id');
 			return $row;		
+		}
+		//Valida si hay o no un proceso lanzado en BPM
+		function validarProcesoEnOT($id){
+			$this->db->select('orden_trabajo.case_id');
+			$this->db->from('orden_trabajo');
+			$this->db->where('id_orden',$id);
+			$result = $query->row();			
+			return $result->case_id;
 		}
 		// guarda case_id en Otrabajo
 		function setCaseidenOT($case_id, $id){

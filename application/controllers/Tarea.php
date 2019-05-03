@@ -155,10 +155,34 @@ class Tarea extends CI_Controller {
 				echo json_encode($result);
 			}
 
+			// terminar tarea verificar Informe Servicios
+			public function verificarInforme(){
+
+				$idTarBonita = $this->input->post('idTarBonita');
+				$opcion = $this->input->post('opcion');				
+				$opcionSel = array(
+					"informeServicioOk" => $opcion
+				);
+				$this->load->library('BPM');
+				$result = $this->bpm->CerrarTareaBPM($idTarBonita,$opcionSel);	
+				echo json_encode($result);
+			}
+	
+			// terminar tarea prestar conformidad
+			public function prestarConformidad(){
+				$idTarBonita = $this->input->post('idTarBonita');
+				$opcion = $this->input->post('opcion');				
+				$opcionSel = array(
+					"prestaConformidad" => $opcion
+				);						
+				$this->load->library('BPM');
+				$result = $this->bpm->CerrarTareaBPM($idTarBonita,$opcionSel);	
+				echo json_encode($result);
+			}
+
+			// terminar tarea ejecutar OT
 			public function ejecutarOT(){
 				$idTarBonita = $this->input->post('idTarBonita');
-				//dump($idTarBonita, 'id bonita');
-				// $id_listarea = $this->input->post('id_listarea');
 				// trae la cabecera
 				$parametros = $this->Bonitas->conexiones();
 				// Cambio el metodo de la cabecera a "PUT"
@@ -166,6 +190,14 @@ class Tarea extends CI_Controller {
 				// Variable tipo resource referencia a un recurso externo.
 				$param = stream_context_create($parametros);
 				$response = $this->Tareas->terminarTareaStandarenBPM($idTarBonita, $param);
+				
+				// $code = $response['response_code'];
+				// if($code<300){
+				// 	return ['status'=>true, 'msj'=>'OK', 'code'=>$code];
+				// }else {
+				// 	return ['status'=>false, 'msj'=> ASP_0100.' | '.json_decode($body), 'code'=>'ERROR_BPM('.$code.')'];
+				// }
+				
 				echo json_encode($response);
 			}
 
@@ -179,8 +211,8 @@ class Tarea extends CI_Controller {
 					}else{
 						$data['device'] = "pc";				
 					}
-				//dump($idTarBonita, 'id tarea bonita en controller:');
-				$data['permission'] = $permission;
+
+					$data['permission'] = $permission;
 
 				//OBTENER DATOS DE TAREA SELECCIONADA DESDE BONITA
 					$data['TareaBPM'] = json_decode($this->getDatosBPM($idTarBonita),true);	
@@ -206,11 +238,13 @@ class Tarea extends CI_Controller {
 				/* Bloque subtareas estandar */	
 				if($id_OT != 0){
 					/* funcion nueva de asset */										
-					// traer subtareas estandar en funcion de tarea estandar	
-					$tareaSTD = $this->Tareas->getIdTareaSTD($id_OT);
-					if ($tareaSTD) {
-						$data['subtareas'] = $this->Tareas->getSubtareas($id_OT);
-					} 					
+					// traer subtareas estandar en funcion de id tarea estandar	
+					//$tareaSTD = $this->Tareas->getIdTareaSTD($id_OT);
+					//if ($tareaSTD) {
+						if(!empty($this->Tareas->getSubtareas($id_OT))){
+							$data['subtareas'] = $this->Tareas->getSubtareas($id_OT);
+						}						
+					//} 					
 				}	
 
 				//LIBRERIA BPM
@@ -264,14 +298,23 @@ class Tarea extends CI_Controller {
 						$this->load->view('tareas/scripts/tarea_std');
 						break;
 					case 'Esperando cambio estado "a Ejecutar" 2':
+							dump($data, 'datos de bpm: ');
 							$this->load->view('tareas/view_cambio_estado', $data);
 							$this->load->view('tareas/scripts/tarea_std');
 							break;
 					case 'Confecciona informe servicio':
 							$this->load->view('tareas/view_informe_servicio', $data);
 							$this->load->view('tareas/scripts/tarea_std');
-							break;		
-
+							break;
+					case 'Verifica Informe de Servicio':
+							$this->load->view('tareas/view_verifica_informe', $data);
+							$this->load->view('tareas/scripts/tarea_std');
+							break;	
+					case 'Presta conformidad':
+						$this->load->view('tareas/view_presta_conformidad', $data);
+						$this->load->view('tareas/scripts/tarea_std');
+						break;							
+							
 					default:
 							$this->load->view('tareas/view_', $data);					
 							$this->load->view('tareas/scripts/tarea_std');	

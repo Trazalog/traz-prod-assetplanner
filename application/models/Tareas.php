@@ -133,7 +133,6 @@ class Tareas extends CI_Model {
 		$method = '/execution';
 		$resource = 'API/bpm/userTask/';
 		$url = BONITA_URL.$resource.$idTarBonita.$method;
-		//dump($url, 'url de file a abrir');
 		//$url = BONITA_URL.$resource.$usrId.$method;
 		file_get_contents($url, false, $param);
 		$response = $this->parseHeaders( $http_response_header );

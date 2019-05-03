@@ -396,6 +396,12 @@ class Calendarios extends CI_Model {
 			return $idOT;        
 		}
 
+		// guarda case_id en Otrabajo
+		function setCaseidenOT($case_id, $id){
+			$this->db->where('orden_trabajo.id_orden', $id);
+			return $this->db->update('orden_trabajo', array('case_id'=>$case_id));			
+		}
+
 		function cambiarEstado($id_solicitud, $estado, $tipo){
 
 			$this->db->set('estado', $estado);			

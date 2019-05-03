@@ -180,7 +180,8 @@ var mes = "";
         '<td class="cod" id="cod"><input type="text" class="codigo_equipo prevent" id="codigo_equipo" value=" '+ event.equipo +' " placeholder=""></td>'+
         '<td class="tit"><input type="text" class="title prevent" id="title" value=" '+ event.title +' " placeholder=""></td>'+          
         '</tr>');
-      es_orden_a_ejectutar(event.id_orden);  
+      visibBtnEjecutar(event.id_orden);
+      //es_orden_a_ejectutar(event.id_orden);  
     },
 
     editable: true,
@@ -244,22 +245,54 @@ var mes = "";
     }  
   });
 
+
+  function visibBtnEjecutar(ot){
+    $('#ejecutar_ot').hide();
+    $.ajax({
+          type: 'POST', 
+          data: {ot:ot},
+          url: 'index.php/Otrabajo/visibBtnEjecutar',  
+          success: function(data){
+            WaitingClose();
+            
+            //alert(data);
+            // muestra btn ejecutar si el preceso esta lanzado  
+            if (data) {              
+              $('#ejecutar_ot').show();
+              //alert('entre por true');
+              es_orden_a_ejectutar(ot);
+            } else {
+              alert('entre por false');
+              $('#ejecutar_ot').hide();
+            }  
+            $('#modalPrevent').modal('show');
+          },
+          error: function(error){
+            WaitingClose();
+            alert('No se Obtener Estado de OT');
+            $('#modalPrevent').modal('show');
+            $('#ejecutar_ot').hide();
+          },
+          dataType: 'json'     
+      });
+  }
+
   function es_orden_a_ejectutar(ot){
+    alert('entre en ejecutar ot: ' + ot);
     $.ajax({
           type: 'POST', 
           data: {ot:ot},
           url: 'index.php/Otrabajo/ObtenerTaskIDxOT',  
           success: function(task){
-            WaitingClose();
-            alert(task);
-            // if(task==0) $('#ejecutar_ot').hide();else{
-            //   $('#numero').attr('task',task);
-            //   $('#ejecutar_ot').show();
-            // }
-            // $('#modalPrevent').modal('show');
-            $('#numero').attr('task',task);
-            $('#ejecutar_ot').show();
-            $('#modalPrevent').modal('show');
+            WaitingClose();            
+            alert(task);   
+            if (task != 0) {
+              $('#ejecutar_ot').show();
+              $('#numero').attr('task',task);
+            } else {
+              $('#ejecutar_ot').hide();
+            }         
+               
           },
           error: function(error){
             WaitingClose();

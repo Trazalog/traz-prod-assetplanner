@@ -112,8 +112,10 @@ echo "<input type='text' class='hidden' id='case' value='" . $TareaBPM['caseId']
 
                                                 </form>
 																							<?php 
-																														
-																								if (isset($subtareas)) { 			
+																										
+																								if ($subtareas !== NULL) { 		
+																									// echo 'entre en subtareas'	;
+																									// dump($subtareas , 'subtareas en vista:');			
 																									echo '<table id="subtask" class="table table-hover">';
                                                     echo '<thead>';
 																											echo	'<tr>';
@@ -274,18 +276,24 @@ echo "<input type='text' class='hidden' id='case' value='" . $TareaBPM['caseId']
     }
     // devueve bool si estan todas las subt tildadas
     function validarEstSubTareas() {
-        var tabla = $('#subtask tbody tr');				
-        var band = '';
-        $.each(tabla, function(index) {
-            var check = $(this).find('input.check');
-            if (check.prop('checked')) {
-                band = true;
-            } else {
-                band = false;
-                return band;
-            }
-        });
-        return band;
+			var tabla = $('#subtask tbody tr');				
+			// si hay subtareas en la tabla 
+			if(Object.keys(tabla).length === 0){
+				var band = '';
+				// recorre validadno que esten los checkbox tildados
+				$.each(tabla, function(index) {
+						var check = $(this).find('input.check');
+						if (check.prop('checked')) {
+								band = true;
+						} else {
+								band = false;
+								return band;
+						}
+				});
+				return band;
+			}else{	// sino hay tareas retorna true
+				return true;
+			}					
     }
     /* /. camba el estado de las subtareas en BD (tblListareas) */
 

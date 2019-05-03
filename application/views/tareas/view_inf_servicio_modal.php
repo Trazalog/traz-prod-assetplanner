@@ -2,7 +2,7 @@
 
   <form class="form-horizontal" role="form" id="form_order" action="" accept-charset="utf-8">
 
-  <input class="form-control numSolic form_equipos" name="idTarBonita" id="idTarBonita" value="<?php echo $idTarBonita;?>" disabled/>
+  <input class="form-control" type="hidden" name="idTarBonita" id="idTarBonita" value="<?php echo $idTarBonita;?>" disabled/>
   
 
     <!--  ORDEN SERVICIO  -->
@@ -376,8 +376,6 @@
           $("#fecha_baja").val(data.fecha_baja);
           $("#fecha_garantia").val(data.fecha_garantia);                 
           $("#grupo").val(data.grupo_desc);
-          //$("#contratista").val(data.contratista);
-          //$("#id_contratista").val(data.id_contratista);
         }
       });
 
@@ -750,16 +748,23 @@
           $.ajax({
             data: {datosInfoServicio:datosInfoServicio, 
                     tarea:tarea,  
-                    operario:operario, 
+                    operario:operario,
                     herramienta:herramienta},
             type: 'POST',
             dataType: 'json',
             url: 'index.php/Ordenservicio/setOrdenServ',
             success: function(result){
               WaitingClose();
-
-              alert(result+ 'resultado cierre tarea: ');
-              //cargarView('Ordenservicio', 'index', '<?php echo $permission ?>');
+              console.table(result);
+              alert(result['status']+ 'resultado cierre tarea: ');
+              if(result['status']){
+                $('#modalInforme').modal('hide');
+								$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+              }else{
+                alert(result['code']);
+                $('#modalInforme').modal('hide');
+              }
+              
             },
             error: function(result){
               console.error("Error en guardado...");
