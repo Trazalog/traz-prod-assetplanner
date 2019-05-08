@@ -262,14 +262,14 @@ var mes = "";
               //alert('entre por true');
               es_orden_a_ejectutar(ot);
             } else {
-              alert('entre por false');
+              //alert('entre por false');
               $('#ejecutar_ot').hide();
             }  
             $('#modalPrevent').modal('show');
           },
           error: function(error){
             WaitingClose();
-            alert('No se Obtener Estado de OT');
+            alert('No se puede Obtener Estado de OT');
             $('#modalPrevent').modal('show');
             $('#ejecutar_ot').hide();
           },
@@ -278,14 +278,14 @@ var mes = "";
   }
 
   function es_orden_a_ejectutar(ot){
-    alert('entre en ejecutar ot: ' + ot);
+   // alert('entre en ejecutar ot: ' + ot);
     $.ajax({
           type: 'POST', 
           data: {ot:ot},
           url: 'index.php/Otrabajo/ObtenerTaskIDxOT',  
           success: function(task){
             WaitingClose();            
-            alert(task);   
+            //alert(task);   
             if (task != 0) {
               $('#ejecutar_ot').show();
               $('#numero').attr('task',task);
@@ -748,8 +748,9 @@ $("#fecha_progr_prevent_horas").datepicker({
           type: 'POST', //parametros:parametros
           data: {
                   event_tipo: 1, // evento unico
-                  id_sol : id_sol,
-                  id_back: id_back,
+                  //id_sol : id_sol,
+                  id_sol : id_back,
+                  //id_back: id_back,
                   id_tarea : id_de_tar,
                   fecha_progr : progr_back,
                   hora_progr:hora_progr_back,

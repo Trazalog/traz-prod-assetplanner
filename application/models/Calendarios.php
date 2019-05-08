@@ -872,14 +872,27 @@ class Calendarios extends CI_Model {
             return true;
         }
     }
+   
 
 
 /* funciones para BPM */
     function getCaseIdporIdBacklog($id_solicitud){
+			// $this->db->select('solicitud_reparacion.case_id');
+			// $this->db->from('tbl_back');
+			// $this->db->join('solicitud_reparacion', 'tbl_back.sore_id = solicitud_reparacion.id_solicitud');
+			// $this->db->where('tbl_back.sore_id', $id_solicitud);
+			// $query = $this->db->get();
+			// if ($query->num_rows() > 0){
+			// 	return $query->row('case_id');				
+			// }
+			// else{
+			// 	return 0;
+			// }
+				
 			$this->db->select('solicitud_reparacion.case_id');
-			$this->db->from('tbl_back');
-			$this->db->join('solicitud_reparacion', 'tbl_back.sore_id = solicitud_reparacion.id_solicitud');
-			$this->db->where('tbl_back.sore_id', $id_solicitud);
+			$this->db->from('solicitud_reparacion');
+			$this->db->join('tbl_back', 'tbl_back.sore_id = solicitud_reparacion.id_solicitud');
+			$this->db->where('tbl_back.backId', $id_solicitud);
 			$query = $this->db->get();
 			if ($query->num_rows() > 0){
 				return $query->row('case_id');				
@@ -887,6 +900,8 @@ class Calendarios extends CI_Model {
 			else{
 				return 0;
 			}
+
+
 		}
 						
 		function getCaseIdporIdSolServicios($id_solicitud){

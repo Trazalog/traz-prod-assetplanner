@@ -474,7 +474,7 @@ class Tareas extends CI_Model {
 		}
 		// Inserta datos de Form en frm_formularios_completados
 		function UpdateForm($datos,$key){
-
+			dump($datos, 'datos de form: ');
 			$this->db->where('FOCO_ID', $key);
 			$response = $this->db->update('frm_formularios_completados', $datos);
 			return $response;

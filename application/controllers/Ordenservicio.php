@@ -102,24 +102,17 @@ class Ordenservicio extends CI_Controller {
       $data['horometro_inicio']       = $datosInfoServicio['horometro_inicio'];
       $data['horometro_fin']          = $datosInfoServicio['horometro_fin'];
       $data['fecha_inicio']           = $datosInfoServicio['fecha_inicio'];
-      $data['fecha_fin']              = $datosInfoServicio['fecha_fin'];
+      $data['fecha_fin']              = $datosInfoServicio['fecha_fin'];      
       $data['tarea']       = $this->input->post('tarea');
       $data['herramienta'] = $this->input->post('herramienta');
       $data['operario']    = $this->input->post('operario');
 
-      $idTarBonita = $datosInfoServicio['idTarBonita'];
-
-      //$response = $this->Ordenservicios->setOrdenServicios($data); 
-      //dump($response, ' respuesta de guardado informe:');
-      ///dump($idTarBonita, 'id de tarea bonita en set orden servicio');
+      $idTarBonita = $datosInfoServicio['idTarBonita'];      
        //TODO: CERRAR TAREA
        $this->load->library('BPM');
-       $resp = $this->bpm->CerrarTareaBPM($idTarBonita,$data=null);
-      //  $code = $resp['code']; 
-        //dump($resp['code'], 'respuesta CODE: ');
+       $resp = $this->bpm->CerrarTareaBPM($idTarBonita,$data);    
         
-       //if ( $resp['code'] < 300) {
-          //dump($data, 'datos en controller:');
+       //if ( $resp['code'] < 300) {          
           $response = $this->Ordenservicios->setOrdenServicios($data);          
           // FIXME: ARREGLAR ESTA VALIDACION
           //if ($response == 'true') {
@@ -145,8 +138,7 @@ class Ordenservicio extends CI_Controller {
     }
     // devuelve insumos pedidos por id de OT
     public function getInsumosPorOT(){
-      $response = $this->Ordenservicios->getInsumosPorOT($this->input->post('id_ot'));
-      
+      $response = $this->Ordenservicios->getInsumosPorOT($this->input->post('id_ot'));      
       echo json_encode($response);
     }
     

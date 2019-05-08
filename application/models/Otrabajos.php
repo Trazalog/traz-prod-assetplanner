@@ -1263,30 +1263,14 @@ class Otrabajos extends CI_Model {
 		// }
 
 		//Define si la OT tiene un proceso lanzado
-		function getCaseIdOT($id){
-
-			
-
-
-			// busca en OT e case_id
+		function getCaseIdOT($id){	
 			$this->db->select('orden_trabajo.case_id');
-			$this->db->from('orden_trabajo');
-			$this->db->where('id_orden',$id);
+			$this->db->from('orden_trabajo');			
+			$this->db->where('orden_trabajo.id_orden',$id);
 			$query = $this->db->get();
       $row = $query->row('case_id');
       return $row;  
 		}
-
-		//Define si la OT tiene un proceso lanzado
-		// function getCaseIdOTenSS($id){
-		// 	// busca en OT e case_id
-		// 	$this->db->select('solicitud_reparacion.case_id');
-		// 	$this->db->from('solicitud_reparacion');
-		// 	$this->db->where('id_solicitud',$id);
-		// 	$query = $this->db->get();
-		// 	$row = $query->row('case_id');
-		// 	return $row;  
-		// }
 
 		// develve tipo de solicitud e id q dieron origen a OT
 		function getDatosOrigenOT($id){
@@ -1303,9 +1287,11 @@ class Otrabajos extends CI_Model {
 			$this->db->select('tbl_back.sore_id');
 			$this->db->from('tbl_back');
 			$this->db->where('backId',$id_solicitud);
-			$query = $this->db->get();
-			$result = $query->row();			
-			return $result->sore_id;			
+			return $this->db->get()->first_row()->sore_id;
+			
+			// $query = $this->db->get();
+			// $row = $query->row('sore_id');
+			// return $row;;			
 		}
 		// trae case_id desde SServicios
 		function getCaseIdenSServicios($id_solicitud){

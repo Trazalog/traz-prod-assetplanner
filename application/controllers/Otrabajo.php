@@ -852,9 +852,16 @@ class Otrabajo extends CI_Controller {
 	public function visibBtnEjecutar(){
 		
 		$id = $this->input->post('ot');
-
-		$case_Id = $this->Otrabajos->getCaseIdOT($id);
-	//	dump($case_Id, ' case id en controller: ');
+		
+		$origenOT = $this->Otrabajos->getDatosOrigenOT($id);
+		$tipo = $origenOT[0]['tipo'];	
+		//dump($tipo, 'tipo tarea: ');		
+		if($tipo == 2){
+			$case_Id = $this->Otrabajos->getCaseIdenSServicios($id);
+		}else{
+			$case_Id = $this->Otrabajos->getCaseIdOT($id);
+		}				
+		//dump($case_Id, ' case id en controller: ');
 		if ($case_Id != NULL) {
 			echo json_encode(true);
 		} else {
@@ -866,25 +873,32 @@ class Otrabajo extends CI_Controller {
   public function ObtenerTaskIDxOT(){ 	
 		
 		$id = (int)$this->input->post('ot');	
-		$caseId = $this->Otrabajos->getCaseIdOT($id);	
+		//dump($id, 'id de OT:');
+		$case_id = $this->Otrabajos->getCaseIdOT($id);	
+		//dump($case_id, 'caseId en 1: ');
 		$this->load->library('BPM');
 		$origenOT = $this->Otrabajos->getDatosOrigenOT($id);		
+		
 		$tipo = $origenOT[0]['tipo'];	
-		$id_solicitud = $origenOT[0]['id_solicitud'];
-	
+		$id_solicitud = $origenOT[0]['id_solicitud'];// id de sol reparacion
+		//dump($tipo, 'tipo en origen: ');
+		//dump($id_solicitud, 'id solicitud guardada en OT: ');
 		// si viene de correctivo
 		if ($tipo == 2) {		
-				$task_id = $this->bpm->ObtenerTaskidXNombre($caseId,'Esperando cambio estado "a Ejecutar"');
+				$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar"');
+				//dump($task_id, 'tadk id en *');
 				echo $task_id;
 				return;
 		} 
-		
+		//dump($tipo, ' tipo de tarea(back, pred, et): ');
 		// si viene de backlog
 		if ($tipo == 4) {
 				//busco origen del backlog(tiene sore_id o no)
+				//dump($id_solicitud, 'id solicitud tarea en 4 (back, red, et): ');
 				$idSolRep = $this->Otrabajos->getIdSolReparacion($id_solicitud);
 				//dump($idSolRep, 'sore_id: ');			
-				if($idSolRep == NULL){	//viene de item menu
+				
+				if($idSolRep == NULL){	//viene de item menu 
 					// lanzar proceso
 					$contract = array(
 												"idSolicitudServicio"	=>	0,
@@ -902,14 +916,17 @@ class Otrabajo extends CI_Controller {
 					return;		
 				}else{	// backlog generado desde una SServicios
 					
-					// con id solicitud busco el case desde solicitud de reparacion
+					// con id solicitud (BACKLOG) busco el case desde solicitud de reparacion
 					$case_id = $this->Otrabajos->getCaseIdenSServicios($id_solicitud);
+					//dump($id_solicitud, 'id sollicitud');
+					//$case_id = 14001;
 					//dump($case_id, ' id case en controller: ');
-					$task_id = $this->bpm->ObtenerTaskidXNombre($caseId,'Esperando cambio estado "a Ejecutar" 2');
+					$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar" 2');
 					// guarda case_id en Otrabajo
 					//dump($task_id, 'task en 2: ');	// BIEN!				
 					
-					///$this->Otrabajos->setCaseidenOT($case_id, $id);	SE GUARDA AL GENERAR LA OTRABAJO
+					///$this->Otrabajos->setCaseidenOT($case_id, $id);	SE GUARDA AL GENERAR LA OTRABAJO 
+					//dump($task_id, 'task para cerrar tarea: ');
 					echo $task_id;
 					return;			
 				}
@@ -925,10 +942,10 @@ class Otrabajo extends CI_Controller {
 		// guardo el caseid en OTrabajo
 		if($responce['status']){					
 			$case_id = $responce['case_id'];
-			$this->Otrabajos->setCaseidenOT($caseId, $id);					
+			$this->Otrabajos->setCaseidenOT($case_id, $id);					
 		}
 		// retorna task id 		
-		$task_id = $this->bpm->ObtenerTaskidXNombre($caseId,'Esperando cambio estado "a Ejecutar" 2');
+		$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar" 2');
 		echo $task_id;
 		return;
 

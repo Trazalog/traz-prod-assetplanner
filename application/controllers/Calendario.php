@@ -164,7 +164,7 @@ class Calendario extends CI_Controller {
 						'lectura_programada' => $lectura_programada,
 						'lectura_ejecutada'  => $lectura_ejecutada,
 					);			
-			
+			//dump($datos2, 'datos a guardar en generacion nueva ot: ');
 				// si el evento es unico lo guarda
 				if ($event_tipo == '1'){
 					
@@ -193,35 +193,36 @@ class Calendario extends CI_Controller {
 						// actualizo estado del backlog
 						$tipo = 'backlog';
 						//Actualizar Tablas >> Backlog ||Solicitud
-						$this->Calendarios->cambiarEstado($id_backlog, $estado, $tipo);	
+						//	$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);	
 						//Obtener TaskID y CaseID
+
+						//dump($id_solicitud, 'ids solicitud: ');
+						//$id_solicitud = 11;
+					//	dump($tipo, 'tipo: ');
+						//TODO: ACA ESTA EL ERROR CAMBIAR EL ID SOLICITUD(ANTES DE SSERV AHORA DE BACKLOG)
 						$infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);				
-						$respCerrar = $this->cerrarTarea($infoTarea['taskId']);							
-						$resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);
 						
-						$response = true;					
+						//dump_exit($infoTarea['taskId']);
+						$respCerrar = $this->cerrarTarea($infoTarea['taskId']);							
+						$resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);	
 					}
 
-					$idOT = $this->Calendarios->guardar_agregar($datos2);
-					
+					$idOT = $this->Calendarios->guardar_agregar($datos2);					
 					// guardo el case_id en Otrabajo
-					$respcaseOT = $this->Calendarios->setCaseidenOT($infoTarea['caseId'], $idOT);		
-					
+					$respcaseOT = $this->Calendarios->setCaseidenOT($infoTarea['caseId'], $idOT);	
 					$this->setHerramInsPorTarea($idOT,$tipo,$id_solicitud);
 					if($idOT){
 							$this->Calendarios->setEstadoSServicio($id_solicitud);
 					}
 
-	    	}else{	// evento repetitivo 
-					
+	    	}else{	// evento repetitivo 					
 					// Sumo a la fecha de program la cant de meses p/ sacar fecha limite
 					$fecha_limite = strtotime ( '+'.$cant_meses.' month' , strtotime ( $fec_programacion ) );
-					$fecha_limite = date ( 'Y-m-d H:i:s' , $fecha_limite ); /// "2018-06-16 00:00:00"					
+					$fecha_limite = date ( 'Y-m-d H:i:s' , $fecha_limite ); /// "2018-06-16 00:00:00"
 					//busco la frecuencia de la tarea
 					$diasFrecuencia = $this->getPeriodTarea($tipo,$id_solicitud);	
-					// guarda las OT que corrrespondan de acuerdo a la cantidad que entren en $cantidad_meses
+					// guarda las OT que corresp de acuerdo a la cant que entren en $cantidad_meses
 					$this->setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo,$id_solicitud);
-
 					// si es preventivo ACTUALIZA NUEVAMENTE LA FECHA BASE_ OK!
 					if($tipo == '3'){	    		
 						//pongo nueva fecha base en preventivos
@@ -409,21 +410,7 @@ class Calendario extends CI_Controller {
 		$this->load->view('calendar/calendar2');
 	}
 
-	public function setot(){
-		$dato = $this->input->post();
-
-		$data = $this->Calendarios->setVisit($this->input->post());
-
-		 if($data  == false)
-		 {
-			echo json_encode(false);
-
-		 }
-		 else
-		 {
-		 	echo json_encode($data);
-		 }
-	}
+	
 
 	public function getPreventivo(){
 		$data = $this->Calendarios->getPreventivos($this->input->post());
@@ -537,23 +524,20 @@ class Calendario extends CI_Controller {
 
 
 	/* INTEGRACION CON BPM */
-		function getInfoTareaporIdSolicitud($id_solicitud, $tipo){
-			//TODO: TRAER ID DE BACKLOG GENERADO EN BPM(TRAER POR REST O GUARDAR EN TABLA BACKLOG)
+		function getInfoTareaporIdSolicitud($id_solicitud, $tipo){	
 
 			if ($tipo == 'correctivo') {
 				//$id_solicitud	-> id sol de servicios
 				$caseId = $this->Calendarios->getCaseIdporIdSolServicios($id_solicitud);
 			}
 			if ($tipo == 'backlog') {
-				//$id_solicitud	-> id de backlog
-				$caseId = $this->Calendarios->getCaseIdporIdBacklog($id_solicitud);
-			}
-		
+				//$id_solicitud	-> id de backlog				
+				$caseId = $this->Calendarios->getCaseIdporIdBacklog($id_solicitud);				
+			}		
 			// traer de bpm el id de tarea (id)			
 			$parametros = $this->Bonitas->LoggerAdmin();
 			$parametros["http"]["method"] = "GET";
 			$param = stream_context_create($parametros);
-			//dump($param, 'param: ');
 			$actividades = $this->Overviews->ObtenerActividades($caseId,$param);			
 			$infoTarea['taskId'] = json_decode($this->getIdTask($actividades,$tipo),true);
 			$infoTarea['caseId'] = $caseId;			

@@ -21,6 +21,12 @@ class Notapedido extends CI_Controller {
     $this->load->view('notapedido/listOt', $data);
   }
 
+  public function ObtenerNotasPedidosxOT($permission,$idot){
+    $data['permission'] = $permission;
+    $data['list']  = $this->Notapedidos->getNotasxOT($idot);
+    $this->load->view('notapedido/list',$data);
+  }
+
   /*public function agregarNota($permission){
     //$data['list'] = $this->Notapedidos->notaPedidos_List();
     $data['permission'] = $permission;
@@ -71,20 +77,35 @@ class Notapedido extends CI_Controller {
 		// $caseId = json_decode($result, true)['caseId'];
 
   //}
-  // lanza proceso en BPM (inspección)
-	function lanzarProcesoBPM($inspectorid){
 
-		$parametros = $this->Bonitas->conexiones();
-		$parametros["http"]["method"] = "POST";
-		$idInspector = array (
-		  "idInspector"	=>	$inspectorid
-		);	
-		$parametros["http"]["content"] = json_encode($idInspector);
-		$param = stream_context_create($parametros);
-		$result = $this->Inspecciones->lanzarProcesoBPM($param);
-		//dump($result, 'Result:');
-		return $result;		
-	}
+ // guardar pedido especial
+  public function setPedidoEspecial(){
+
+    $pedido = $this->input->post('pedido');
+    $justif = $this->input->post('justif');
+
+    //dump($pedido, 'pedido');
+    //dump_exit($justif, 'justif');
+
+    // Lanza proceso (retorna case_id)
+    $result = $this->lanzarProcesoBPM($inspectorid);
+    $caseId = json_decode($result, true)['caseId'];
+
+  }
+// lanza proceso en BPM (inspección)
+  function lanzarProcesoBPM($inspectorid){
+
+    $parametros = $this->Bonitas->conexiones();
+    $parametros["http"]["method"] = "POST";
+    $idInspector = array (
+      "idInspector"	=>	$inspectorid
+    );	
+    $parametros["http"]["content"] = json_encode($idInspector);
+    $param = stream_context_create($parametros);
+    $result = $this->Inspecciones->lanzarProcesoBPM($param);
+    //dump($result, 'Result:');
+    return $result;		
+  } 
 
   // public function getOrdenesCursos(){
   //   $response = $this->Notapedidos->getOrdenesCursos();

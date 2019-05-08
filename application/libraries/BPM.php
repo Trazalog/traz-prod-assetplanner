@@ -8,7 +8,7 @@ class BPM
 
   public function __construct($idCase = null){
 
-    $this->caseId = $idCase['caseId'];
+    //$this->caseId = $idCase['caseId'];
     $this->CI =& get_instance();
     $this->CI->load->model('Bonitas');
 	}
@@ -165,6 +165,8 @@ class BPM
 		$param = stream_context_create($parametros);
 		
 		$actividades = $this->ObtenerActividades($case_id,$param);
+		//dump($case_id, 'case en obtener task: ');
+	//	dump($actividades, 'actividadesss en bpm: ');
 		if($actividades == null) return 0;
 
 		for ($i=0; $i < count($actividades); $i++) { 				

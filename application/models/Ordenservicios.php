@@ -191,8 +191,8 @@ class Ordenservicios extends CI_Model {
 			return $equipos;
 		}
 
-    function setOrdenServicios($data = null){
-        
+    function setOrdenServicios($data){
+      //dump($data, 'datos q vienen desde el controller: ');
 			$userdata      = $this->session->userdata('user_data');
 			$usrId         = $userdata[0]['usrId'];     // guarda usuario logueado
 			$empresaId     = $userdata[0]['id_empresa'];
@@ -231,7 +231,7 @@ class Ordenservicios extends CI_Model {
 			$fechahorainicio        = $data['fecha_inicio'];
 			$fechahorafin           = $data['fecha_fin'];
 			$ord_serv               = array(
-																	'fecha'                  => date('Y-m-d H:i:s'),                
+																	'fecha'                  => date('Y-m-d H:i:s'), 
 																	'id_equipo'              => $id_equipo,
 																	'id_solicitudreparacion' => $id_solicitudreparacion,
 																	'valesid'                => $idInsertVale,	
@@ -243,7 +243,7 @@ class Ordenservicios extends CI_Model {
 																	'horometroinicio'        => $horometroinicio,
 																	'horometrofin'           => $horometrofin,
 															);
-					dump($ord_serv, 'datos orden servicios: ');										
+					//dump($ord_serv, 'datos orden servicios: ');										
 
 			if ( ! $this->db->insert('orden_servicio', $ord_serv) ){
 					return $this->db->error(); // Has keys 'code' and 'message'

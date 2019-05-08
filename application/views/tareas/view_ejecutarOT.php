@@ -364,7 +364,7 @@ echo "<input type='text' class='hidden' id='case' value='" . $TareaBPM['caseId']
 
     //////////////////////////////////////////////////
 </script>
-
+<!--	Modal Insumos	-->
 <div class="modal" id="pedidos" tabindex="-1" role="dialog">
     <div class="modal-dialog" id="body-pedidos" role="document">
 
