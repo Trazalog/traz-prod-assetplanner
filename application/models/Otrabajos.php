@@ -1295,12 +1295,18 @@ class Otrabajos extends CI_Model {
 		}
 		// trae case_id desde SServicios
 		function getCaseIdenSServicios($id_solicitud){
-			$this->db->select('solicitud_reparacion.case_id');
-			$this->db->from('solicitud_reparacion');
-			$this->db->where('id_solicitud',$id_solicitud);
+			$this->db->select('orden_trabajo.case_id');
+			$this->db->from('orden_trabajo');
+			$this->db->where('id_orden',$id_solicitud);
 			$query = $this->db->get();
 			$row = $query->row('case_id');
-			return $row;		
+			return $row;	
+			// $this->db->select('solicitud_reparacion.case_id');
+			// $this->db->from('solicitud_reparacion');
+			// $this->db->where('id_solicitud',$id_solicitud);
+			// $query = $this->db->get();
+			// $row = $query->row('case_id');
+			// return $row;		
 		}
 		//Valida si hay o no un proceso lanzado en BPM
 		function validarProcesoEnOT($id){

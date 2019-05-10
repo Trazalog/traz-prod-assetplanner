@@ -408,14 +408,14 @@ class Calendarios extends CI_Model {
 			
 			if ($tipo == 'backlog') {
 					$this->db->where('backId', $id_solicitud);
-					$resposnse = $this->db->update('tbl_back');
+					$response = $this->db->update('tbl_back');
 			}
 
 			if ($tipo == 'correctivo') {
 					$this->db->where('id_solicitud', $id_solicitud);
-					$resposnse = $this->db->update('solicitud_reparacion');
+					$response = $this->db->update('solicitud_reparacion');
 			}
-			return $resposnse;
+			return $response;
 	}
 
 		// Trae adjunto de Tarea original segun tipo (Backlog, Prevent y predict)

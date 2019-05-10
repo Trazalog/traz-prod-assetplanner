@@ -166,10 +166,6 @@ var mes = "";
 
     eventClick: function(event) {
       WaitingOpen();
-
-      console.log('Titulo:');
-      console.log(event.title);
-
       $('#title').remove();
       $('#codigo_equipo').remove();
       $('#numero').remove();
@@ -180,8 +176,8 @@ var mes = "";
         '<td class="cod" id="cod"><input type="text" class="codigo_equipo prevent" id="codigo_equipo" value=" '+ event.equipo +' " placeholder=""></td>'+
         '<td class="tit"><input type="text" class="title prevent" id="title" value=" '+ event.title +' " placeholder=""></td>'+          
         '</tr>');
+      // decide si se mueestra o no el btn ejecutar en modal  
       visibBtnEjecutar(event.id_orden);
-      //es_orden_a_ejectutar(event.id_orden);  
     },
 
     editable: true,
@@ -245,68 +241,6 @@ var mes = "";
     }  
   });
 
-
-  function visibBtnEjecutar(ot){
-    $('#ejecutar_ot').hide();
-    $.ajax({
-          type: 'POST', 
-          data: {ot:ot},
-          url: 'index.php/Otrabajo/visibBtnEjecutar',  
-          success: function(data){
-            WaitingClose();
-            
-            //alert(data);
-            // muestra btn ejecutar si el preceso esta lanzado  
-            if (data) {              
-              $('#ejecutar_ot').show();
-              //alert('entre por true');
-              es_orden_a_ejectutar(ot);
-            } else {
-              //alert('entre por false');
-              $('#ejecutar_ot').hide();
-            }  
-            $('#modalPrevent').modal('show');
-          },
-          error: function(error){
-            WaitingClose();
-            alert('No se puede Obtener Estado de OT');
-            $('#modalPrevent').modal('show');
-            $('#ejecutar_ot').hide();
-          },
-          dataType: 'json'     
-      });
-  }
-
-  function es_orden_a_ejectutar(ot){
-   // alert('entre en ejecutar ot: ' + ot);
-    $.ajax({
-          type: 'POST', 
-          data: {ot:ot},
-          url: 'index.php/Otrabajo/ObtenerTaskIDxOT',  
-          success: function(task){
-            WaitingClose();            
-            //alert(task);   
-            if (task != 0) {
-              $('#ejecutar_ot').show();
-              $('#numero').attr('task',task);
-            } else {
-              $('#ejecutar_ot').hide();
-            }         
-               
-          },
-          error: function(error){
-            WaitingClose();
-            alert('No se Obtener Estado de OT');
-            $('#modalPrevent').modal('show');
-            $('#ejecutar_ot').hide();
-          }   
-      }); 
-  }
-
-
-
-
-
   /* ADDING EVENTS */
   var currColor = "#3c8dbc"; //Red by default
   //Color chooser button
@@ -337,7 +271,61 @@ var mes = "";
 
     //Remove event from text input
     $("#new-event").val("");
-  });    
+  }); 
+  
+  // valida mostrar el Btn ejecutar en modal 
+  function visibBtnEjecutar(ot){
+    $('#ejecutar_ot').hide();
+    $.ajax({
+          type: 'POST', 
+          data: {ot:ot},
+          url: 'index.php/Otrabajo/visibBtnEjecutar',  
+          success: function(data){
+            WaitingClose();
+            // muestra btn ejecutar si el preceso esta lanzado  
+            if (data) {              
+              //$('#ejecutar_ot').show();
+              //alert('entre por true');
+              es_orden_a_ejectutar(ot);
+            } else {
+              //alert('entre por false');
+              $('#ejecutar_ot').hide();
+            }  
+            $('#modalPrevent').modal('show');
+          },
+          error: function(error){
+            WaitingClose();
+            alert('No se puede Obtener Estado de OT');
+            $('#modalPrevent').modal('show');
+            $('#ejecutar_ot').hide();
+          },
+          dataType: 'json'     
+      });
+  }
+  // guarda el task id para ejecutar la tarea
+  function es_orden_a_ejectutar(ot){
+   // alert('entre en ejecutar ot: ' + ot);
+    $.ajax({
+          type: 'POST', 
+          data: {ot:ot},
+          url: 'index.php/Otrabajo/ObtenerTaskIDxOT',  
+          success: function(task){
+            WaitingClose();            
+            if (task != 0) {
+              $('#ejecutar_ot').show();
+              $('#numero').attr('task',task);
+            } else {
+              $('#ejecutar_ot').hide();
+            }  
+          },
+          error: function(error){
+            WaitingClose();
+            alert('No se Obtener Estado de OT');
+            $('#modalPrevent').modal('show');
+            $('#ejecutar_ot').hide();
+          }   
+      }); 
+  } 
 
   $(".fa-print").click(function (e) {
     $("#calendar").printArea();
@@ -742,10 +730,10 @@ $("#fecha_progr_prevent_horas").datepicker({
   function setOtBacklog() {
     var progr_back = $('#fecha_progr_back').val();
     var hora_progr_back = $('#hora_progr_back').val();   
-    alert('duracion: '+duracion);
+    //alert('duracion: '+duracion);
    
     $.ajax({
-          type: 'POST', //parametros:parametros
+          type: 'POST', 
           data: {
                   event_tipo: 1, // evento unico
                   //id_sol : id_sol,
@@ -760,13 +748,11 @@ $("#fecha_progr_prevent_horas").datepicker({
                   ide : id_equi,
                   duracion : duracion
                 },
-          url: 'index.php/Calendario/guardar_agregar',  //index.php/
+          url: 'index.php/Calendario/guardar_agregar',  
           success: function(data){
-
                    setTimeout("cargarView('Calendario', 'indexot', '"+$('#permission').val()+"');",0);
                 },
           error: function(result){
-
                 console.log(result);
               }
     });

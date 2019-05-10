@@ -30,7 +30,7 @@ class Notapedidos extends CI_Model
         }
     }
 
-        //
+    //
     function getNotasxOT($id)
     {
 			$userdata = $this->session->userdata('user_data');

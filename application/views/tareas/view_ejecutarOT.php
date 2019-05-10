@@ -209,7 +209,6 @@ echo "<input type='text' class='hidden' id='case' value='" . $TareaBPM['caseId']
 
 <script>
     cargarPedidos();
-
     function cargarPedidos() {
         var iort = $('#ot').val();
         $('#nota_pedido').empty();
@@ -299,66 +298,65 @@ echo "<input type='text' class='hidden' id='case' value='" . $TareaBPM['caseId']
 
     /* Formulario de subareas */
 
-    // levanta cada formulario por id 
-    $(".fa-paperclip").on('click', function(e) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        infoId = $(this).attr("data-infoId");
-    
-        if(infoId == null || infoId == 0) {alert('Error InfoId =null');return;}
-        WaitingOpen();
-        $.ajax({
-            data: {infoId: infoId},
-            dataType: 'json',
-            type: 'POST',
-            url: 'index.php/Tarea/Obtener_Formulario',
-            success: function(result) {
-                $("#contFormSubtarea").html(result.html);
-                $('#modalFormSubtarea').modal('show');
-                WaitingClose();
-                ValidarObligatorios();
-            },
-            error: function(result) {
-                WaitingClose();
-                alert("Error: No se pudo obtener el Formulario");
-            },
-        });
+			// levanta cada formulario por id 
+			$(".fa-paperclip").on('click', function(e) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					infoId = $(this).attr("data-infoId");
+			
+					if(infoId == null || infoId == 0) {alert('Error InfoId =null');return;}
+					WaitingOpen();
+					$.ajax({
+							data: {infoId: infoId},
+							dataType: 'json',
+							type: 'POST',
+							url: 'index.php/Tarea/Obtener_Formulario',
+							success: function(result) {
+									$("#contFormSubtarea").html(result.html);
+									$('#modalFormSubtarea').modal('show');
+									WaitingClose();
+									ValidarObligatorios();
+							},
+							error: function(result) {
+									WaitingClose();
+									alert("Error: No se pudo obtener el Formulario");
+							},
+					});
 
-    });
+			});
 
     /*  /. Formulario de subareas */
 
     /* Pantalla pedido de insumos */
-    load_view_insumos();
+			load_view_insumos();
 
-    function load_view_insumos() {
-        var emp_id = $('#empresa_id').val();
-        var iort = $('#ot').val();
-        $('#body-pedidos').empty();
-        $("#body-pedidos").load("<?php echo base_url(); ?>index.php/Notapedido/agregarListInsumos/<?php echo $permission; ?>/" + iort + "/" + emp_id);
-    }
+			function load_view_insumos() {
+					var emp_id = $('#empresa_id').val();
+					var iort = $('#ot').val();
+					$('#body-pedidos').empty();
+					$("#body-pedidos").load("<?php echo base_url(); ?>index.php/Notapedido/agregarListInsumos/<?php echo $permission; ?>/" + iort + "/" + emp_id);
+			}
 
-    function pedirInsumos() {
-        $('.modal#pedidos').modal('show');
-    }
+			function pedirInsumos() {
+					$('.modal#pedidos').modal('show');
+			}
 
-
-    function cargarNotasOffline() {
-        console.log("Cargando Pedidos Offline...");
-        $('.ped_pendientes').remove();
-        var data = sessionStorage.getItem('list_pedidos_' + $('#ot').val());
-        if (data == null) {
-            console.log("sin nota pedidos");
-            return;
-        }
-        data = JSON.parse(data);
-        for (var i = 0; i < data.length; i++) {
-            var aux = JSON.stringify(data[i]).replace(/'/g, "\\'");
-            $('#deposito tbody').append(
-                "<tr class='ped_pendientes' data-offline='true' data-detalle='" + aux + "' id='ped_" + i + "'><td><i class='fa fa-fw fa-search text-light-blue' style='cursor: pointer; margin-left: 15px;' title='Ver Nota Pedido' onclick='VerDetalles(this)'</i></td><td># ? </td><td>Esperando Conexión...</td></tr>"
-            );
-        }
-    }
+			function cargarNotasOffline() {
+					console.log("Cargando Pedidos Offline...");
+					$('.ped_pendientes').remove();
+					var data = sessionStorage.getItem('list_pedidos_' + $('#ot').val());
+					if (data == null) {
+							console.log("sin nota pedidos");
+							return;
+					}
+					data = JSON.parse(data);
+					for (var i = 0; i < data.length; i++) {
+							var aux = JSON.stringify(data[i]).replace(/'/g, "\\'");
+							$('#deposito tbody').append(
+									"<tr class='ped_pendientes' data-offline='true' data-detalle='" + aux + "' id='ped_" + i + "'><td><i class='fa fa-fw fa-search text-light-blue' style='cursor: pointer; margin-left: 15px;' title='Ver Nota Pedido' onclick='VerDetalles(this)'</i></td><td># ? </td><td>Esperando Conexión...</td></tr>"
+							);
+					}
+			}
 
 
 

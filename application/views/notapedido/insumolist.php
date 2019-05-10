@@ -114,8 +114,6 @@
     format: 'YYYY-MM-DD',
     locale: 'es',
   });
-
-
   //va a listado de nota de pedido
   $("#listado").click(function (e) {
     WaitingOpen();
@@ -123,9 +121,6 @@
     $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/index/<?php echo $permission; ?>");
     WaitingClose();
   });
-
-
-
   // Guarda Nota de Pedido
   function enviarOrden() {
     $('.modal').modal('hide');
@@ -134,77 +129,74 @@
     }else{
       guardar_pedido_esp();
     }
-  }
-
-  
+  }  
   function guardar_pedido(){
-       /////  VALIDACIONES
-       var hayError = false;
-        $('#error').hide();
+    /////  VALIDACIONES
+    var hayError = false;
+    $('#error').hide();
 
-        var tabla = $('#tbl_insumos tbody tr');
-        var nombreIns = new Array();
-        var idinsumos = new Array();
-        var cantidades = new Array();
-        id = '';
-        cant = '';
+    var tabla = $('#tbl_insumos tbody tr');
+    var nombreIns = new Array();
+    var idinsumos = new Array();
+    var cantidades = new Array();
+    id = '';
+    cant = '';
 
-         //Procesar Formulario
-        $.each(tabla, function (index) {
-          var check = $(this).find('input.check');  
-          var cant = $(this).find('input.cant_insumos');
-          
-          if (check.prop('checked') && (cant != "")) { // SI CAMPO CHEKEADO Y CANTIDAD COMPLETA
-            id = check.attr('value');
-            idinsumos.push(id);
-            cant = check.parents("tr").find("input.cant_insumos").val();
-            cantidades.push(cant);
-            nom = check.parents("tr").find("input.insum_Desc").val();
-            nombreIns.push(nom);
-            //Vaciar Campos
-            check.parents("tr").find("input.cant_insumos").val('');
-          }
-          // checked y vacio cant
-          if (check.prop('checked') && (cant == "")) {
-            hayError = true;
-          }
+    //Procesar Formulario
+    $.each(tabla, function (index) {
+      var check = $(this).find('input.check');  
+      var cant = $(this).find('input.cant_insumos');
+      
+      if (check.prop('checked') && (cant != "")) { // SI CAMPO CHEKEADO Y CANTIDAD COMPLETA
+        id = check.attr('value');
+        idinsumos.push(id);
+        cant = check.parents("tr").find("input.cant_insumos").val();
+        cantidades.push(cant);
+        nom = check.parents("tr").find("input.insum_Desc").val();
+        nombreIns.push(nom);
+        //Vaciar Campos
+        check.parents("tr").find("input.cant_insumos").val('');
+      }
+      // checked y vacio cant
+      if (check.prop('checked') && (cant == "")) {
+        hayError = true;
+      }
+    });
 
-        });
+    var idOT = $('#id_ordTrabajo').val();
 
-        var idOT = $('#id_ordTrabajo').val();
-
-        if (hayError == true) {
-          $('#error').fadeIn('slow');
-          return;
-        }
-        WaitingOpen("Guardando pedido...");
-
-        if(!navigator.onLine){//SI NO HAY CONEXION LO GUARDA EN SESSION STORAGE
-          console.log("Sin Conexión");
-          var aux = sessionStorage.getItem('list_pedidos_'+idOT);
-          if(aux==null)aux=[];else aux = JSON.parse(aux);
-          aux.push({nombreIns, idinsumos, cantidades, idOT });
-          sessionStorage.setItem('list_pedidos_'+idOT,JSON.stringify(aux));
-          console.log(sessionStorage.getItem('list_pedidos_'+idOT));
-          cargarNotasOffline();
-        }
-        
-        $.ajax({
-          data: { idinsumos, cantidades, idOT },
-          type: 'POST',
-          dataType: 'json',
-          url: 'index.php/Notapedido/setNotaPedido',
-          success: function (result) {
-            WaitingClose();
-            cargarPedidos();
-            $('.modal').modal('hide');
-            $('input.check').attr('checked',false);
-          },
-          error: function (result) {
-            WaitingClose();
-            alert("Error en guardado...");
-          },
-        });
+    if (hayError == true) {
+      $('#error').fadeIn('slow');
+      return;
+    }
+    WaitingOpen("Guardando pedido...");
+    //SI NO HAY CONEXION LO GUARDA EN SESSION STORAGE
+    if(!navigator.onLine){
+      console.log("Sin Conexión");
+      var aux = sessionStorage.getItem('list_pedidos_'+idOT);
+      if(aux==null)aux=[];else aux = JSON.parse(aux);
+      aux.push({nombreIns, idinsumos, cantidades, idOT });
+      sessionStorage.setItem('list_pedidos_'+idOT,JSON.stringify(aux));
+      console.log(sessionStorage.getItem('list_pedidos_'+idOT));
+      cargarNotasOffline();
+    }
+            
+    $.ajax({
+      data: { idinsumos, cantidades, idOT },
+      type: 'POST',
+      dataType: 'json',
+      url: 'index.php/Notapedido/setNotaPedido',
+      success: function (result) {
+        WaitingClose();
+        cargarPedidos();
+        $('.modal').modal('hide');
+        $('input.check').attr('checked',false);
+      },
+      error: function (result) {
+        WaitingClose();
+        alert("Error en guardado...");
+      },
+    });
   }
 
   function guardar_pedido_esp() {

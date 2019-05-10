@@ -101,7 +101,6 @@ class Calendario extends CI_Controller {
 	public function guardar_agregar()
 	{
 		$data     = $this->input->post();
-		//dump_exit($data);
 		$userdata = $this->session->userdata('user_data');
 		$usrId    = $userdata[0]['usrId'];
 		$empId    = $userdata[0]['id_empresa'];
@@ -164,7 +163,7 @@ class Calendario extends CI_Controller {
 						'lectura_programada' => $lectura_programada,
 						'lectura_ejecutada'  => $lectura_ejecutada,
 					);			
-			//dump($datos2, 'datos a guardar en generacion nueva ot: ');
+				//dump($datos2, 'datos a guardar en generacion nueva ot: ');
 				// si el evento es unico lo guarda
 				if ($event_tipo == '1'){
 					
@@ -193,16 +192,9 @@ class Calendario extends CI_Controller {
 						// actualizo estado del backlog
 						$tipo = 'backlog';
 						//Actualizar Tablas >> Backlog ||Solicitud
-						//	$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);	
-						//Obtener TaskID y CaseID
+						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);					
 
-						//dump($id_solicitud, 'ids solicitud: ');
-						//$id_solicitud = 11;
-					//	dump($tipo, 'tipo: ');
-						//TODO: ACA ESTA EL ERROR CAMBIAR EL ID SOLICITUD(ANTES DE SSERV AHORA DE BACKLOG)
-						$infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);				
-						
-						//dump_exit($infoTarea['taskId']);
+						$infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);	
 						$respCerrar = $this->cerrarTarea($infoTarea['taskId']);							
 						$resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);	
 					}
@@ -571,9 +563,6 @@ class Calendario extends CI_Controller {
 		}
 
 		function actualizarIdOTenBPM($caseId, $idOTnueva){
-
-			dump($caseId, 'id de case en actualizar');
-			dump($idOTnueva, 'id ot en actuallizar');
 			
 			$idOT = (integer)$idOTnueva;
 			$contract = array(

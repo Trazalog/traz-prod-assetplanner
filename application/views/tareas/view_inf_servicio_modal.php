@@ -756,12 +756,12 @@
             success: function(result){
               WaitingClose();
               console.table(result);
-              alert(result['status']+ 'resultado cierre tarea: ');
+              //alert(result['status']+ 'resultado cierre tarea: ');
               if(result['status']){
                 $('#modalInforme').modal('hide');
 								$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
               }else{
-                alert(result['code']);
+               // alert(result['code']);
                 $('#modalInforme').modal('hide');
               }
               

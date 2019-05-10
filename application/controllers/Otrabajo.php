@@ -855,6 +855,8 @@ class Otrabajo extends CI_Controller {
 		
 		$origenOT = $this->Otrabajos->getDatosOrigenOT($id);
 		$tipo = $origenOT[0]['tipo'];	
+		
+		//dump($id, 'id de ot: ');	
 		//dump($tipo, 'tipo tarea: ');		
 		if($tipo == 2){
 			$case_Id = $this->Otrabajos->getCaseIdenSServicios($id);
@@ -893,7 +895,7 @@ class Otrabajo extends CI_Controller {
 		//dump($tipo, ' tipo de tarea(back, pred, et): ');
 		// si viene de backlog
 		if ($tipo == 4) {
-				//busco origen del backlog(tiene sore_id o no)
+				//busco origen del backlog(tiene sore_id o no para diferenciar el origen item menu o SServicio)
 				//dump($id_solicitud, 'id solicitud tarea en 4 (back, red, et): ');
 				$idSolRep = $this->Otrabajos->getIdSolReparacion($id_solicitud);
 				//dump($idSolRep, 'sore_id: ');			
@@ -917,8 +919,8 @@ class Otrabajo extends CI_Controller {
 				}else{	// backlog generado desde una SServicios
 					
 					// con id solicitud (BACKLOG) busco el case desde solicitud de reparacion
-					$case_id = $this->Otrabajos->getCaseIdenSServicios($id_solicitud);
-					//dump($id_solicitud, 'id sollicitud');
+					$case_id = $this->Otrabajos->getCaseIdenSServicios($id);
+					//dump($id, 'id sollicitud');
 					//$case_id = 14001;
 					//dump($case_id, ' id case en controller: ');
 					$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar" 2');

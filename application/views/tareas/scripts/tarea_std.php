@@ -80,40 +80,7 @@
 					}
 			});
     });
-               
-    // function terminarTarea(){
-		// 	var ban = true;
-		// 	$('.getFormularioTarea').each(function( index ) {
-		// 	if($( this ).attr('data-open')=="true"){
-		// 			console.log( index + ": " + $( this ).attr('data-validado'));
-		// 			ban = ban && ($( this ).attr('data-validado') == "true");
-		// 	}
-		// 	});
-		// 	if(ban==false){alert("Para concluir esta actividad primero debe Validar el Formulario");return;}
-		// 	WaitingOpen('Cerrando Tarea');
-		// 	var idTarBonita = $('#idTarBonita').val();
-		// 	//alert(idTarBonita);
-		// 	$.ajax({
-		// 			type: 'POST',
-		// 			data: {
-		// 					'idTarBonita': idTarBonita,
-		// 			},
-		// 			url: 'index.php/Tarea/terminarTarea',
-		// 			success: function(data) {
-		// 								WaitingClose();
-		// 							// toma a tarea exitosamente
-		// 							if(data['reponse_code'] == 204){
-		// 									$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
-		// 							}
-		// 			},
-		// 			error: function(data) {
-		// 					//alert("Noo");
-		// 					console.log(data);
-		// 			},
-		// 			dataType: 'json'
-		// 	}); 
-    // }      
-
+     
 		function terminarTarea(){
 			
 			var formOt = [];
@@ -205,9 +172,11 @@
 				success: function(data) {
 					WaitingClose();
 					console.table(data);				
-					// cierra la tarea exitosamente
-					if(data['code'] == 204){
+					
+					if(data['status']){
 							$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+					}else{
+						alert(data['status']);
 					}
 				},
 				error: function(data) {
@@ -220,53 +189,63 @@
 		}
 		// cierra tarea Prestar Conformidad de 
 		function prestarConformidad(){
-			WaitingOpen();
+			WaitingOpen('Cerrando Tarea');
 			var opcion = $('input[name="opcion"]:checked').val();
 			var idTarBonita = $('#idTarBonita').val();	
+			var id_SS = "<?php echo $id_SS;?>";
 
 			$.ajax({
 				type: 'POST',
 				data: {opcion:opcion,
-								idTarBonita:idTarBonita},
+								idTarBonita:idTarBonita,
+								id_SS: id_SS},
 				url: 'index.php/Tarea/prestarConformidad',
 				success: function(data) {
-					WaitingClose();
-					console.table(data);				
-					// cierra la tarea exitosamente
-					if(data['code'] == 204){
+					WaitingClose();					
+				
+					if(data['status']){
 							$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+					}else{
+						alert(data['status']);
 					}
+					
 				},
 				error: function(data) {
 					WaitingClose();
-						//alert("Noo");
-						console.log(data);
+					alert(data['msj']);
+					//	alert("Noo");
+					$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
 				},
 				dataType: 'json'
 			});
 		}
-		
+		// cierra tarea Ejecutar OT
 		function ejecutarOT(){
-			
-			var idTarBonita = $('#idTarBonita').val();	
-	
+		
+			WaitingOpen('Cerrando Tarea');
+			var idTarBonita = $('#idTarBonita').val();		
 			$.ajax({
 				type: 'POST',
 				data: {idTarBonita:idTarBonita},
 				url: 'index.php/Tarea/ejecutarOT',
 				success: function(data) {
 								console.table(data);
-								//	WaitingClose();
+								WaitingClose();
 								// toma a tarea exitosamente
-								sessionStorage.setItem("tareas_cerradas",idTareaBonita + "-");
-								if(data['reponse_code'] == 204){
-								  
-									$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+								sessionStorage.setItem("tareas_cerradas",idTarBonita + "-");
+							
+								if(data['status']){
+										$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+								}else{
+									alert(data['code']);
 								}
 				},
 				error: function(data) {
-	
-						console.log(data);
+					console.table(data);
+					WaitingClose();
+					alert(data['msj']);
+					//	alert("Noo");
+					$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
 				},
 				dataType: 'json'
 			});

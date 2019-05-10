@@ -79,17 +79,19 @@ class BPM
 		}
 	}
   // Gestiona Actividaddes desde BPM
-  public function ObtenerLineaTiempo(){
+  public function ObtenerLineaTiempo($case_id){
     
     $parametros = $this->LoggerAdmin();
 		$parametros["http"]["method"] = "GET";
 		$param = stream_context_create($parametros);
-		$data['listAct'] = $this->ObtenerActividades($this->caseId, $param);
-		$data['listArch'] = $this->ObtenerActividadesArchivadas($this->caseId, $param);
+		$data['listAct'] = $this->ObtenerActividades($case_id, $param);
+		$data['listArch'] = $this->ObtenerActividadesArchivadas($case_id, $param);
+		// $data['listAct'] = $this->ObtenerActividades($this->caseId, $param);
+		// $data['listArch'] = $this->ObtenerActividadesArchivadas($this->caseId, $param);
 		return $data;
   }
   // Obtiene Actividades desde BPM por id de caso
-  public function ObtenerActividades($caseId,$param){
+  public function ObtenerActividades($caseId,$param){		
     $respuesta = file_get_contents(BONITA_URL.'API/bpm/activity?p=0&c=200&f=processId%3D'.BPM_PROCESS_ID.'&f=rootCaseId%3D'.$caseId.'&d=assigned_id',false,$param);
     $array = json_decode($respuesta,true);
     $ord = array();
@@ -119,13 +121,13 @@ class BPM
     return $array;
   }
   // Comentarios
-  public function ObtenerComentarios(){
+  public function ObtenerComentarios($case_id){
     //CONTEXTO
     $parametros = $this->LoggerAdmin();
 		$param = stream_context_create($parametros);
 		
 		//URL Y ENVIO
-    $processInstance = 'processInstanceId%3D'.$this->caseId;
+    $processInstance = 'processInstanceId%3D'.$case_id;
 		$result = file_get_contents(BONITA_URL.'API/bpm/comment?f='.$processInstance.'&o=postDate%20DESC&p=0&c=200&d=userId',false,$param);
 		
 		//RETORNO RESULTADO
@@ -166,7 +168,7 @@ class BPM
 		
 		$actividades = $this->ObtenerActividades($case_id,$param);
 		//dump($case_id, 'case en obtener task: ');
-	//	dump($actividades, 'actividadesss en bpm: ');
+		//	dump($actividades, 'actividadesss en bpm: ');
 		if($actividades == null) return 0;
 
 		for ($i=0; $i < count($actividades); $i++) { 				

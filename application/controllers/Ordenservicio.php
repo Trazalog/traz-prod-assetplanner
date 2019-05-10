@@ -91,7 +91,7 @@ class Ordenservicio extends CI_Controller {
       //$response['responsable'] = $this->Ordenservicios->getResponsableOT($this->input->post('idOT'));
       echo json_encode($response);
     }
-
+    // Guarda Informe de Servicios desde Tarea y Cierra la tarea conffecciona Informe de servicios
     public function setOrdenServ()
     {    
       $datosInfoServicio   = $this->input->post('datosInfoServicio');
@@ -108,32 +108,32 @@ class Ordenservicio extends CI_Controller {
       $data['operario']    = $this->input->post('operario');
 
       $idTarBonita = $datosInfoServicio['idTarBonita'];      
-       //TODO: CERRAR TAREA
+      
        $this->load->library('BPM');
-       $resp = $this->bpm->CerrarTareaBPM($idTarBonita,$data);    
-        
-       //if ( $resp['code'] < 300) {          
+       $resp = $this->bpm->CerrarTareaBPM($idTarBonita,$data); 
+
+       if ( json_decode($resp['code']) < 300) {  
+
           $response = $this->Ordenservicios->setOrdenServicios($data);          
-          // FIXME: ARREGLAR ESTA VALIDACION
-          //if ($response == 'true') {
+          if ($response) {
             $respuesta['status'] = true;
             $respuesta['msj'] = 'OK';
             $respuesta['code'] = 'Exito';
             echo json_encode($respuesta);
-          //   return;
-          // } else {
-          //   $respuesta['status'] = false;
-          //   $respuesta['msj'] = 'ERROR';
-          //   $respuesta['code'] = 'ASP_0200, Error ASP_0200: Comunicarse con el Proveedor de Servicio';
-          //   echo json_encode($respuesta);
-          //   return;
-          // }  
+            return;
+          } else {
+            $respuesta['status'] = false;
+            $respuesta['msj'] = 'ERROR';
+            $respuesta['code'] = 'ASP_0200, Error ASP_0200: Comunicarse con el Proveedor de Servicio';
+            echo json_encode($respuesta);
+            return;
+          }  
 
-      //  } else {         
+       } else {         
         
-      //     echo json_encode($resp);
-      //     return;
-      //  }     
+          echo json_encode($resp);
+          return;
+       }     
       
     }
     // devuelve insumos pedidos por id de OT
