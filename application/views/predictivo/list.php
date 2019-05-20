@@ -26,7 +26,7 @@
                 if(count($list['data']) > 0){                  
                   foreach($list['data'] as $a){
 
-                    if ($a['estado'] == "C") {
+                    //if ($a['estado'] == "C") {
                       
                       $id  = $a['predId'];
                       $ide = $a['id_equipo'];
@@ -36,7 +36,11 @@
                      
                       if (strpos($permission,'Add') !== false) {
                         echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar" data-toggle="modal" data-target="#modalaviso"></i>';
-                        echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar" ></i>';
+                        
+                        if ($a['estado'] != "OT") {
+                          echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar" ></i>';
+                        }
+                       
                       } 
                       if ($a['pred_adjunto']) {
                         echo '<a href="'.base_url().'assets/filespredictivos/'.$a['pred_adjunto'].'" target="_blank"><i class="fa fa-file-pdf-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Ver Pdf"></i></a>';
@@ -51,7 +55,7 @@
                       echo '<td>'.$a['horash'].'</td>';
                                        
                       echo '</tr>';
-                    }                    
+                    //}                    
                   }
                 } 
               ?>

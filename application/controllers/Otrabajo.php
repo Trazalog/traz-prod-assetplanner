@@ -855,9 +855,7 @@ class Otrabajo extends CI_Controller {
 		
 		$origenOT = $this->Otrabajos->getDatosOrigenOT($id);
 		$tipo = $origenOT[0]['tipo'];	
-		
-		//dump($id, 'id de ot: ');	
-		//dump($tipo, 'tipo tarea: ');		
+				
 		if($tipo == 2){
 			$case_Id = $this->Otrabajos->getCaseIdenSServicios($id);
 		}else{
@@ -955,32 +953,72 @@ class Otrabajo extends CI_Controller {
 
 	//Ejecuta Orden de Trabajo en BPM
 	public function EjecutarOT(){
-		$task = (int) $this->input->post('task');
-		$ot = (int)$this->input->post('ot');
+
+		$task 				= (int) $this->input->post('task');
+		$ot 					= (int)$this->input->post('ot');
+		$usrId				= (int)$this->input->post('responsable');
+		$id_solicitud = (int)$this->input->post('id_solicitud');
+		$tipo					= (int)$this->input->post('tipo');
+		$estado				= 'AS';		
+		$id_tarea 		= (int)$this->input->post('tareastd');
 		
+		// tarea estandar
+		if ($id_tarea != -1) {
+			$descripcion = $this->input->post('tareastdDesc');;
+		} else {
+			$descripcion = $this->input->post('tareaOpcional');;
+		}				
+
+
+		switch ($tipo) {			
+			case '3':
+				$tipo  = 'preventivo';
+				break;
+			case '4':
+				$tipo  = 'backlog';
+				break;
+			case '5':
+				$tipo  = 'predictivo';
+				break;
+			default:
+				$tipo  = 'correctivo';
+				break;
+		}
+
 		//Cargo Libreria
 		$this->load->library('BPM');
-
-		//Obtener ID User Bonita
-		$userdata  = $this->session->userdata('user_data');
-		$usrId     = $userdata[0]['usrId'];		
-
 		//Asignar Usuario a Tarea para Finanlizar
 		$responce = $this->bpm->setUsuario($task,$usrId);
 		if(!$responce['status']){echo json_encode($responce);return;}
-
 		//Cerrar Tarea Ejectuar OT
 		$responce = $this->bpm->CerrarTareaBPM($task);
 		if(!$responce['status']){echo json_encode($responce);return;}
 
-		//Cambiar Estado de OT en BD
-		if($this->Otrabajos->CambiarEstado($ot,'Ej')){
-			echo json_encode(['status'=>true, 'msj'=>'OK']);
-		}else{
-			echo json_encode(['status'=>false, 'msj'=>'Error Base de Datos']);
-		}
+		//Cambiar Estado de OT ('ASignada') y en solicitud origen en BD		
+		if($this->Otrabajos->cambiarEstado($ot, $estado, 'OT')){
+				
+				//Cambiar Estado de solicitud origen de tarea(prevent, predic, backl)
+				if ($this->Otrabajos->cambiarEstado($id_solicitud, $estado, $tipo)) {
+					
+						$datos = array( 'id_tarea' =>$id_tarea,
+											'descripcion' =>$descripcion);						
+						// actualiza tarea en OT					
+						if($this->Otrabajos->updOT($ot, $datos)){
+								echo json_encode(['status'=>true, 'msj'=>'OK']);
+								return;
+						}else {
+								echo json_encode(['status'=>false, 'msj'=>'Error Base de Datos']);
+								return;
+						}	
 
-		
+				} else {
+						echo json_encode(['status'=>false, 'msj'=>'Error Base de Datos']);
+						return;
+				}			
+				
+		}else{
+				echo json_encode(['status'=>false, 'msj'=>'Error Base de Datos']);
+		}		
 	}
 
 	//Cambia de estado a "AN"

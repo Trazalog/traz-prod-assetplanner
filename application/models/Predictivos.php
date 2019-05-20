@@ -33,7 +33,7 @@ class Predictivos extends CI_Model
     	$this->db->join('equipos','equipos.id_equipo = predictivo.id_equipo');
 			$this->db->join('tareas', 'tareas.id_tarea = predictivo.tarea_descrip');
 			$this->db->join('periodo', 'periodo.idperiodo = predictivo.periodo');    	
-    	$this->db->where('predictivo.estado', 'C');
+    	$this->db->where('predictivo.estado !=', 'AN');
     	$this->db->where('predictivo.id_empresa', $empId);    	    	
     	$query= $this->db->get(); 		
 	    

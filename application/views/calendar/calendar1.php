@@ -165,19 +165,8 @@ var mes = "";
     },
 
     eventClick: function(event) {
-      WaitingOpen();
-      $('#title').remove();
-      $('#codigo_equipo').remove();
-      $('#numero').remove();
-      $('#modal_desc').remove();
-      $('#modal_prev tbody').append(
-        '<tr id="modal_desc">'+
-        '<td class="tit"><input type="text" class="numero prevent" id="numero" value=" '+ event.id_orden +' " placeholder=""></td>'+
-        '<td class="cod" id="cod"><input type="text" class="codigo_equipo prevent" id="codigo_equipo" value=" '+ event.equipo +' " placeholder=""></td>'+
-        '<td class="tit"><input type="text" class="title prevent" id="title" value=" '+ event.title +' " placeholder=""></td>'+          
-        '</tr>');
-      // decide si se mueestra o no el btn ejecutar en modal  
-      visibBtnEjecutar(event.id_orden);
+      // levanta modal con detalle Orden Trabajo
+      verDetalleOT(event.id_orden);
     },
 
     editable: true,
@@ -273,60 +262,75 @@ var mes = "";
     $("#new-event").val("");
   }); 
   
-  // valida mostrar el Btn ejecutar en modal 
-  function visibBtnEjecutar(ot){
-    $('#ejecutar_ot').hide();
-    $.ajax({
-          type: 'POST', 
-          data: {ot:ot},
-          url: 'index.php/Otrabajo/visibBtnEjecutar',  
-          success: function(data){
-            WaitingClose();
-            // muestra btn ejecutar si el preceso esta lanzado  
-            if (data) {              
-              //$('#ejecutar_ot').show();
-              //alert('entre por true');
-              es_orden_a_ejectutar(ot);
-            } else {
-              //alert('entre por false');
-              $('#ejecutar_ot').hide();
-            }  
-            $('#modalPrevent').modal('show');
-          },
-          error: function(error){
-            WaitingClose();
-            alert('No se puede Obtener Estado de OT');
-            $('#modalPrevent').modal('show');
-            $('#ejecutar_ot').hide();
-          },
-          dataType: 'json'     
-      });
-  }
-  // guarda el task id para ejecutar la tarea
-  function es_orden_a_ejectutar(ot){
-   // alert('entre en ejecutar ot: ' + ot);
-    $.ajax({
-          type: 'POST', 
-          data: {ot:ot},
-          url: 'index.php/Otrabajo/ObtenerTaskIDxOT',  
-          success: function(task){
-            WaitingClose();            
-            if (task != 0) {
-              $('#ejecutar_ot').show();
-              $('#numero').attr('task',task);
-            } else {
-              $('#ejecutar_ot').hide();
-            }  
-          },
-          error: function(error){
-            WaitingClose();
-            alert('No se Obtener Estado de OT');
-            $('#modalPrevent').modal('show');
-            $('#ejecutar_ot').hide();
-          }   
-      }); 
-  } 
+///////////////////////////////////////////////////////////////
 
+  // Muestra modal con detalle de orden y btn para ejecutar tarea
+  function verDetalleOT(id_orden){ 
+    WaitingOpen();
+    $('#modalInforme').modal('show');
+    $('#modalInformeServicios').empty();
+    $("#modalInformeServicios").load("<?php echo base_url(); ?>index.php/Calendario/verEjecutarOT/"+id_orden+"/");
+    WaitingClose();
+  }
+
+
+  // valida mostrar el Btn ejecutar en modal 
+  // function visibBtnEjecutar(ot){
+  //   $('#ejecutar_ot').hide();
+  //   $.ajax({
+  //         type: 'POST', 
+  //         data: {ot:ot},
+  //         url: 'index.php/Otrabajo/visibBtnEjecutar',  
+  //         success: function(data){
+  //           WaitingClose();
+  //           // muestra btn ejecutar si el preceso esta lanzado  
+  //           if (data) {              
+  //             //$('#ejecutar_ot').show();
+  //             //alert('entre por true');
+  //             es_orden_a_ejectutar(ot);
+  //           } else {
+  //             //alert('entre por false');
+  //             $('#ejecutar_ot').hide();
+  //           }  
+  //           // muestra modal de Orden Trabajo
+  //           $('#modalPrevent').modal('show');
+  //         },
+  //         error: function(error){
+  //           WaitingClose();
+  //           alert('No se puede Obtener Estado de OT');
+  //           $('#modalPrevent').modal('show');
+  //           $('#ejecutar_ot').hide();
+  //         },
+  //         dataType: 'json'     
+  //     });
+  // }
+  // // guarda el task id para ejecutar la tarea
+  // function es_orden_a_ejectutar(ot){
+  //  // alert('entre en ejecutar ot: ' + ot);
+  //   $.ajax({
+  //         type: 'POST', 
+  //         data: {ot:ot},
+  //         url: 'index.php/Otrabajo/ObtenerTaskIDxOT',  
+  //         success: function(task){
+  //           WaitingClose();            
+  //           if (task != 0) {
+  //             $('#ejecutar_ot').show();
+  //             $('#numero').attr('task',task);
+  //           } else {
+  //             $('#ejecutar_ot').hide();
+  //           }  
+  //         },
+  //         error: function(error){
+  //           WaitingClose();
+  //           alert('No se Obtener Estado de OT');
+  //           $('#modalPrevent').modal('show');
+  //           $('#ejecutar_ot').hide();
+  //         }   
+  //     }); 
+  // } 
+  
+
+///////////////////////////////////////////////////////////////
   $(".fa-print").click(function (e) {
     $("#calendar").printArea();
   });
@@ -895,34 +899,38 @@ $("#fecha_progr_prevent_horas").datepicker({
   }
 //////////  / ACTUALIZA DIA Y HORA
 
-function EjecutarOT(){
-  WaitingOpen();
-  var task = $('#numero').attr('task');
-  var ot = $('#numero').val();
 
-  if(ot == null || task == null){alert('Error');return;}
-  $.ajax({
-      type: 'POST', 
-      data: {ot:ot, task:task}, // duracion adicional
-      url: 'index.php/Otrabajo/EjecutarOT',  
-      success: function(data){
-        WaitingClose();
-        if(data.status) $('#modalPrevent').modal('hide');
-        else{
-          alert('Falla | No se pudo Ejecutar la Orden de Trabajo | '+data.msj);
-        }
-      },
-      error: function(data){
-        WaitingClose();
-        alert('Error | No se pudo Ejecutar la Orden de Trabajo | '+data.msj);
-      },
-      dataType: 'json'    
-  }); 
-}
 
 
 </script>
 <!-- Guardado de datos y validaciones -->
+
+
+<!--  MODAL VER OT Y EJECUTAR   -->
+<div class="modal fade bs-example-modal-lg" id="modalInforme" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="box">
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12" id="modalInformeServicios">                               
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+
+
+
+
 
 <!-- Modal Correctivo-->
 <div class="modal fade" id="modal-correctivo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -1084,7 +1092,7 @@ function EjecutarOT(){
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="modalPrevent" role="dialog" aria-labelledby="myModalLabel">
+<!-- <div class="modal fade" id="modalPrevent" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -1111,4 +1119,6 @@ function EjecutarOT(){
       </div>
     </div>
   </div>
-</div>
+</div> -->
+
+

@@ -10,6 +10,7 @@ class Calendario extends CI_Controller {
 		$this->load->model('Bonitas');
 		$this->load->model('Overviews');
 		$this->load->model('Tareas');
+		$this->load->model('Otrabajos');
 	}	
 
 	public function indexot($permission) // Ok
@@ -149,7 +150,7 @@ class Calendario extends CI_Controller {
 						'fecha_inicio'  => $fecha_inicio,
 						'descripcion'   => $descripcion,
 						'cliId'         => 1,//por defecto( no se usa)
-						'estado'        =>'C',
+						'estado'        =>'PL',	// estado Planificado
 						'id_usuario'    => $usrId,
 						'id_usuario_a'  => 1,
 						'id_usuario_e'  => 1,
@@ -163,12 +164,11 @@ class Calendario extends CI_Controller {
 						'lectura_programada' => $lectura_programada,
 						'lectura_ejecutada'  => $lectura_ejecutada,
 					);			
-				//dump($datos2, 'datos a guardar en generacion nueva ot: ');
 				// si el evento es unico lo guarda
-				if ($event_tipo == '1'){
+				if ($event_tipo == '1'){					
 					
 					/// Interaccion con BPM ///
-					$estado = 'OT';
+					$estado = 'PL';
 					// $tipo == '2' -> S.Servicios
 					if($tipo == '2'){
 						// si es correctivo u S.Servicio
@@ -180,13 +180,15 @@ class Calendario extends CI_Controller {
 							$resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);
 						}
 						// guardo el case_id en Otrabajo
-						$this->Calendarios->setCaseidenOT($infoTarea['caseId'], $idOTnueva);
-						//if($resActualizar == 200){					
-						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);
-						$response = true;
-						//}
-        	}
-        
+						$this->Calendarios->setCaseidenOT($infoTarea['caseId'], $idOTnueva);									
+						// cambio de estado a PL de SServicio
+						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);						
+					}					
+					// $tipo == '3' -> Preventivo			
+					if($tipo == '3'){	
+						$tipo = 'preventivo';
+						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);						
+					}        
 					// $tipo == '4' -> Backlog			
 					if($tipo == '4'){	
 						// actualizo estado del backlog
@@ -198,28 +200,57 @@ class Calendario extends CI_Controller {
 						$respCerrar = $this->cerrarTarea($infoTarea['taskId']);							
 						$resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);	
 					}
-
+					// $tipo == '5' -> Predictivo			
+					if($tipo == '5'){	
+						$tipo = 'predictivo';
+						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);						
+					}					
+					// genera la Otrabajo devuelve el id de OT
 					$idOT = $this->Calendarios->guardar_agregar($datos2);					
-					// guardo el case_id en Otrabajo
-					$respcaseOT = $this->Calendarios->setCaseidenOT($infoTarea['caseId'], $idOT);	
+					// guarda herramientas, insumos y rrhh de las tareas en OT
 					$this->setHerramInsPorTarea($idOT,$tipo,$id_solicitud);
-					if($idOT){
-							$this->Calendarios->setEstadoSServicio($id_solicitud);
-					}
+										
+					// si es Preventivo o Predictivo lanza proceso nuevo
+					if ( ($tipo == 'preventivo') || ($tipo == 'predictivo')) {
+						
+							$this->load->library('BPM');
+							$contract = array(
+								"idSolicitudServicio"	=>	0,
+								"idOT"  => 	$idOT
+							);						
+							$result = $this->bpm->LanzarProceso($contract);								
+							// guarda case id generado el lanzar proceso				
+							$respcaseOT = $this->Calendarios->setCaseidenOT($result['case_id'], $idOT);					
+					}else{
 
-	    	}else{	// evento repetitivo 					
+							// guarda caseid ya generado anteriormente
+							$respcaseOT = $this->Calendarios->setCaseidenOT($infoTarea['caseId'], $idOT);
+					}					
+
+	    	}else{	// evento repetitivo solo preventivo o predictivo 					
 					// Sumo a la fecha de program la cant de meses p/ sacar fecha limite
 					$fecha_limite = strtotime ( '+'.$cant_meses.' month' , strtotime ( $fec_programacion ) );
 					$fecha_limite = date ( 'Y-m-d H:i:s' , $fecha_limite ); /// "2018-06-16 00:00:00"
 					//busco la frecuencia de la tarea
 					$diasFrecuencia = $this->getPeriodTarea($tipo,$id_solicitud);	
+
 					// guarda las OT que corresp de acuerdo a la cant que entren en $cantidad_meses
 					$this->setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo,$id_solicitud);
+					
 					// si es preventivo ACTUALIZA NUEVAMENTE LA FECHA BASE_ OK!
+					$estado = 'PL';
 					if($tipo == '3'){	    		
 						//pongo nueva fecha base en preventivos
 						$this->Calendarios->actualizarFechaBasePreventivos($fecha_limite, $id_solicitud);
+						// cambia estado al preventivo
+						$tipo = 'preventivo';
+						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);	
 					}
+					// cambia estado al predictivo					
+					if($tipo == '5'){	
+						$tipo = 'predictivo';
+						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);						
+					}	
 				}	     	
 					
 				// guarda los Insumos y herramientas de Backlog, predict y prenvent segun tipo
@@ -268,47 +299,87 @@ class Calendario extends CI_Controller {
 		return $duracion;
 	}	
 
-	// Devuelve duracion de la tarea original (backlog, predictivo, preventivo)
+	// Devuelve periodo de la tarea original (backlog, predictivo, preventivo)
 	function getPeriodTarea($tipo,$id_solicitud)
 	{
+		// TODO: SELECCIONAR LOS TIPOS DE FRECUENCIA QUE SEAN TIEMPO  DE ACUERDO AL ID DE PERIODO Y TRADUCIR A DIAS PARA DEVOLVER
 		$duracion = 0;
 		// devuelve la duracion de la tarea segun prde prev o backlog	
 		switch ($tipo) {							
 			case '3':					// Preventivo
-				$this->db->select('preventivo.cantidad');
+				$this->db->select('preventivo.cantidad, periodo.descripcion');
 		        $this->db->from('preventivo');        
-		        $this->db->where('preventivo.prevId', $id_solicitud);
+						$this->db->where('preventivo.prevId', $id_solicitud);
+						$this->db->join('periodo', 'periodo.idperiodo = preventivo.perido');
 		        $query = $this->db->get(); 
-        		$duracion = $query->row('cantidad');
+        		$info = $query->result_array();
 				break;
 			case '5':					// Predictivo
-				$this->db->select('predictivo.cantidad');
+				$this->db->select('predictivo.cantidad, periodo.descripcion');
 		        $this->db->from('predictivo');        
-		        $this->db->where('predictivo.predId', $id_solicitud);
-		        $query = $this->db->get(); 
-        		$duracion = $query->row('cantidad');
+						$this->db->where('predictivo.predId', $id_solicitud);
+						$this->db->join('periodo', 'periodo.idperiodo = predictivo.periodo');
+		        // $query = $this->db->get(); 
+						// $info = $query->row('cantidad');
+						$query = $this->db->get(); 
+        		$info = $query->result_array();
 				break;				
 		}
+
+		$duracion = $this->getDiasDuracion($info);
 		return $duracion;
+	}
+
+	function getDiasDuracion($info){		// bien no tocar!
+		//dump($info, 'info en duracion nenenenne: ');
+		$cantidad = $info[0]["cantidad"];
+		$especie = $info[0]["descripcion"];	
+		$dias = 0;
+		switch ($especie) {		
+			case 'mensual':
+				$dias = 30 * $cantidad;
+				break;
+			case 'semestral':
+				$dias = 180 * $cantidad;
+				break;
+			case 'anual':
+				$dias = 365 * $cantidad;
+				break;			
+			default:
+				$dias = $cantidad;
+				break;
+		}
+		return $dias;
 	}
 	// guarda las OT que correspondan de acuerdo a la fecuencia y $cantidad_meses
 	function setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo, $id_solicitud){	
-		$data[] = $datos2;
-		while ($fecha_limite >= $fec_programacion  ) {
-		// a la fecha de programacion le sumo la frecuencia en dias	   	
+
+		//cargo libreria BPM
+		$this->load->library('BPM');
+		$estado = 'PL';
+		
+		while ($fecha_limite >= $fec_programacion ) {
+						 
+			$idOT = $this->Calendarios->guardar_agregar($datos2);		
+			// setea estado 'PL' a las OT
+			$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);	
+			// lanza proceso 
+			$contract = array(
+				"idSolicitudServicio"	=>	0,
+				"idOT"  => 	$idOT
+			);						
+			$result = $this->bpm->LanzarProceso($contract);								
+			// guarda case id generado el lanzar proceso				
+			$respcaseOT = $this->Calendarios->setCaseidenOT($result['case_id'], $idOT);
+			// a la fecha de programacion le sumo la frecuencia en dias	   	
 			$nuev_fecha = strtotime ( '+'.$diasFrecuencia.'day' , strtotime ( $fec_programacion ) ) ;
 			$nuev_fecha = date ( 'Y-m-d H:i:s' , $nuev_fecha );
 			// guardo la fecha nueva en el array para nuevva OT
-			$datos2['fecha_program'] = $nuev_fecha;
-			// guardo el componete en el array batch
-			$data[] = $datos2;
+			$datos2['fecha_program'] = $nuev_fecha;			
 			// actualizo la fecha de programacion
-			$fec_programacion = $nuev_fecha;			 
-			$idOT = $this->Calendarios->guardar_agregar($data);
-			// guardo el case_id en Otrabajo
-			$respcaseOT = $this->Calendarios->setCaseidenOT($infoTarea['caseId'], $idOT);
-			$this->setHerramInsPorTarea($idOT, $tipo, $id_solicitud);
+			$fec_programacion = $nuev_fecha;			
 		} 
+		
 		return;	
 	}
 	
@@ -369,7 +440,90 @@ class Calendario extends CI_Controller {
 				}	
 				break;
 		}
+	}	
+	// devuelve operarios para asignar OT
+	public function getOperario(){
+		$response = $this->Calendarios->getOperarios();
+		echo json_encode($response);
 	}
+	// carga modal ver OT y ejecutar OT
+	function verEjecutarOT($idOt){
+		
+		$data['idOt'] = $idOt;
+		$data['detaOT'] = $this->Calendarios->getDataOt($idOt);	
+		$data['tareas'] = $this->Calendarios->gettareas();	
+		$task = $this->ObtenerTaskIDxOT($idOt);
+		if ($task) {
+			$data['btnVisibilidad'] = true;
+		} else {
+			$data['btnVisibilidad'] = false;
+		}
+		$data['task'] = $task;		
+	
+		$this->load->view('calendar/view_OtEjecutar_modal', $data);
+	}
+
+	 //Obtener TaskID por OtID (Cuando hay procesos generados, sino los genera)
+	 function ObtenerTaskIDxOT($id){ 	
+				
+		$case_id = $this->Otrabajos->getCaseIdOT($id);		
+		
+		$this->load->library('BPM');
+		$origenOT = $this->Otrabajos->getDatosOrigenOT($id);	
+		$tipo = $origenOT[0]['tipo'];	
+		$id_solicitud = $origenOT[0]['id_solicitud'];// id de sol reparacion
+	
+		// si viene de correctivo
+		if ($tipo == 2) {		
+				$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas Urgente');			
+				return $task_id;
+		} 
+		// si viene de backlog
+		if ($tipo == 4) {
+				//busco origen del backlog(tiene sore_id o no para diferenciar el origen item menu o SServicio)			
+				$idSolRep = $this->Otrabajos->getIdSolReparacion($id_solicitud);					
+				
+				if($idSolRep == NULL){	//viene de item menu 
+					// lanzar proceso
+					$contract = array(
+												"idSolicitudServicio"	=>	0,
+												"idOT"  => 	$id
+											);
+					$responce = $this->bpm->LanzarProceso($contract);
+					// guardo el caseid en OTrabajo
+					if($responce['status']){					
+						$case_id = $responce['case_id'];
+						$this->Otrabajos->setCaseidenOT($case_id, $id);					
+					}	
+					$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas');
+					return $task_id;		
+
+				}else{	// backlog generado desde una SServicios					
+					// con id solicitud (BACKLOG) busco el case desde solicitud de reparacion
+					$case_id = $this->Otrabajos->getCaseIdenSServicios($id);					
+					$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas');	
+					return $task_id;			
+				}
+		}
+		
+		// Para el resto de las Tareas (Predictivo, Preventivo)
+		// lanzar proceso
+		$contract = array(
+			"idSolicitudServicio"	=>	0,
+			"idOT"  => 	$id
+		);
+		$responce = $this->bpm->LanzarProceso($contract);
+		// guardo el caseid en OTrabajo
+		if($responce['status']){					
+			$case_id = $responce['case_id'];
+			$this->Otrabajos->setCaseidenOT($case_id, $id);					
+		}
+		// retorna task id 		
+		$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas');		
+		return $task_id;
+	}
+
+	
 
 
 

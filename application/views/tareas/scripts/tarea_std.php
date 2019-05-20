@@ -116,17 +116,6 @@
 						},
 						dataType: 'json'
 					}); 
-			 //} else {
-			//	alert('Existen Formularios incompletos, por favor rellenelos para completar la tarea.');
-			 //}
-			 
-
-			//console.table(formOt);
-			//if(ban==false){alert("Para concluir esta actividad primero debe Validar el Formulario");return;}
-			//WaitingOpen('Cerrando Tarea');
-			// var idTarBonita = $('#idTarBonita').val();
-			// //alert(idTarBonita);
-			// 
     }  
 
 		// cerrar tarea Analisis de urgencia

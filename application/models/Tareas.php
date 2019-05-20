@@ -655,6 +655,7 @@ class Tareas extends CI_Model {
 		}
 		// Agrega datos desde BPM y BD local
 		function CompletarToDoList($data){
+			
 			foreach ($data as $key => $value) {
 				$this->db->select('A.id_solicitud as \'ss\', id_orden as \'ot\'');
 				$this->db->where('A.case_id',$value['caseId']);
@@ -664,6 +665,7 @@ class Tareas extends CI_Model {
 				$data[$key]['ss'] = $res->ss;
 				$data[$key]['ot'] = $res->ot; 
 			}
+			//dump($data, 'data en completar: ');
 			return $data;
 		}
 	/* 	./ TAREAS BPM */	

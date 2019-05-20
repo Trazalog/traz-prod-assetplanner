@@ -391,6 +391,7 @@ class Calendarios extends CI_Model {
 	// FUNCIONES DE OT	
 		//Guarda orden de trabajo a partir de Pred/Correc/Backlog/Prevent
 		function guardar_agregar($data){
+	
 			$query = $this->db->insert("orden_trabajo",$data);
 			$idOT = $this->db->insert_id();
 			return $idOT;        
@@ -402,21 +403,34 @@ class Calendarios extends CI_Model {
 			return $this->db->update('orden_trabajo', array('case_id'=>$case_id));			
 		}
 
-		function cambiarEstado($id_solicitud, $estado, $tipo){
-
-			$this->db->set('estado', $estado);			
+		function cambiarEstado($id_solicitud, $estado, $tipo){						
 			
-			if ($tipo == 'backlog') {
-					$this->db->where('backId', $id_solicitud);
-					$response = $this->db->update('tbl_back');
+			if ($tipo == 'correctivo') {
+				$this->db->set('estado', $estado);
+				$this->db->where('id_solicitud', $id_solicitud);
+				$response = $this->db->update('solicitud_reparacion');
 			}
 
-			if ($tipo == 'correctivo') {
-					$this->db->where('id_solicitud', $id_solicitud);
-					$response = $this->db->update('solicitud_reparacion');
+			if ($tipo == 'preventivo') {
+				$this->db->set('estadoprev', $estado);
+				$this->db->where('prevId', $id_solicitud);
+				$response = $this->db->update('preventivo');
 			}
+
+			if ($tipo == 'backlog') {
+				$this->db->set('estado', $estado);
+				$this->db->where('backId', $id_solicitud);
+				$response = $this->db->update('tbl_back');
+			}			
+
+			if ($tipo == 'predictivo') {
+				$this->db->set('estado', $estado);
+				$this->db->where('predId', $id_solicitud);
+				$response = $this->db->update('predictivo');
+			}			
+
 			return $response;
-	}
+		}
 
 		// Trae adjunto de Tarea original segun tipo (Backlog, Prevent y predict)
 		function getAdjunto($id_solicitud,$tipo){
@@ -457,21 +471,78 @@ class Calendarios extends CI_Model {
 			return $query;
 		}
 
-
-
-
-		// Actuaiza estado 'C' la Sol de Servicios
-		function setEstadoSServicio($id_solicitud){
-			$this->db->set('estado', 'OT');
-			$this->db->where('id_solicitud', $id_solicitud);
-			$response = $this->db->update('solicitud_reparacion');
-			return $response;
-		}
 		// TODO: ENTENDER SI YA NO SE USA CON LA NUEVA MODIFICACION DE HERRAM E INSUMOS
 		// Guarda batch de OT 
 		function setOTbatch($data)
 		{
 			$this->db->insert_batch('orden_trabajo', $data);
+		}
+
+		//devuelve valores de todos los datos de la OT para mostrar en modal.
+		function getDataOt($idOt){
+				$this->db->select('orden_trabajo.id_orden,
+													orden_trabajo.id_tarea,
+													orden_trabajo.descripcion,
+													orden_trabajo.tipo,
+													orden_trabajo.id_solicitud,
+													equipos.codigo,
+													equipos.descripcion AS descripcionEquipo,
+													tbl_tipoordentrabajo.descripcion AS descrpcionSolicitud');
+				$this->db->from('orden_trabajo');			
+				$this->db->join('equipos', 'orden_trabajo.id_equipo = equipos.id_equipo');
+				$this->db->join('tbl_tipoordentrabajo', 'tbl_tipoordentrabajo.id = orden_trabajo.tipo');			
+				$this->db->where('orden_trabajo.id_orden', $idOt);
+ 
+				$query = $this->db->get();
+				if($query->num_rows()!=0)
+				{
+					
+						return $query->result_array();
+				}
+				else
+				{
+						return array();
+				}
+		}
+
+		// devuelve usuarios a asignar OT
+		function getOperarios(){
+			$userdata  = $this->session->userdata('user_data');
+			$empresaId = $userdata[0]['id_empresa'];
+			dump($empresaId, 'id de empresa: ');
+			// $this->db->select('sisusers.usrId, sisusers.usrLastName, sisusers.usrname');
+			// $this->db->join('usuarioasempresa', 'usuarioasempresa.usrId = sisusers.usrId');
+			// $this->db->from('sisusers');
+			// $this->db->where('usuarioasempresa.empresaid', $empresaId);
+			// $this->db->where('usuarioasempresa.estado', 'AC');
+			// $query = $this->db->get();
+			// $i     = 0;
+			// foreach ($query->result() as $row)
+			// {   
+			// 		$operarios[$i]['label'] = $row->usrLastName.", ". $row->usrname ;
+			// 		$operarios[$i]['value'] = $row->usrId;
+			// 		$i++;
+			// }
+			// return $operarios; 
+		} 
+
+		// Trae tareas por empresa logueada - Listo
+		function gettareas(){
+
+			$userdata = $this->session->userdata('user_data');
+			$empId = $userdata[0]['id_empresa']; 
+
+			$this->db->select('tareas.id_tarea, tareas.descripcion');
+			$this->db->where('tareas.id_empresa',$empId);
+			$this->db->from('tareas');
+			$query= $this->db->get();
+			
+			if($query->num_rows()>0){
+					return $query->result_array();
+			}
+			else{
+					return array();
+			}			
 		}
 
 	//////// FUNCIONES CALENDARIO	

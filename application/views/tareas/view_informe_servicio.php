@@ -153,8 +153,6 @@ echo "<input type='text' class='hidden' id='case' value='" . $TareaBPM['caseId']
 
             </div><!-- /.row -->
 
-
-
         </div><!-- /.box body -->
     </div> <!-- /.box  -->
     </div><!-- /.col -->
@@ -187,9 +185,7 @@ echo "<input type='text' class='hidden' id='case' value='" . $TareaBPM['caseId']
                     <div class="box">
                         <div class="box-body">
                             <div class="row">
-                                <div class="col-sm-12 col-md-12" id="modalInformeServicios">
-
-                                 
+                                <div class="col-sm-12 col-md-12" id="modalInformeServicios">                                
 
 
                                 </div>
@@ -206,49 +202,4 @@ echo "<input type='text' class='hidden' id='case' value='" . $TareaBPM['caseId']
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="modal" id="pedidos" tabindex="-1" role="dialog">
-    <div class="modal-dialog" id="body-pedidos" role="document">
-
-    </div>
-</div>
-
-
-
-<div class="modal fade bs-example-modal-lg" id="modalFormSubtarea" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="box">
-                        <div class="box-body">
-                            <div class="row">
-                                <div class="col-sm-12 col-md-12" id="contFormSubtarea">
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> 
 

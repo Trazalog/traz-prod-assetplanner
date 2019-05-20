@@ -23,8 +23,8 @@ class Sservicios extends CI_Model
 			$this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo');
 			$this->db->join('sector', 'equipos.id_sector = sector.id_sector');
 			$this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo');
-			$this->db->where('solicitud_reparacion.estado', 'C');
-			$this->db->or_where('solicitud_reparacion.estado', 'S');
+			//$this->db->where('solicitud_reparacion.estado', 'C');
+			//$this->db->or_where('solicitud_reparacion.estado', 'S');
 			$this->db->where('solicitud_reparacion.id_empresa', $empId);
 			$query = $this->db->get();
 			if ($query->num_rows()!=0)
@@ -156,15 +156,8 @@ class Sservicios extends CI_Model
 				$hora     = $data['hora'];//
 				$min      = $data['min'];//
 				$falla    = $data['falla'];//
-				//$idPreventivo = $data['id_prev'];
 				$userdata = $this->session->userdata('user_data');
 				$empId    = $userdata[0]['id_empresa'];
-				
-				// if ($idPreventivo !== "") { //actualiza fecha preventivo (fecha sistema)
-				// 	  $fechUltimo['ultimo'] = date('Y-m-d H:i:s');
-				//    $this->db->where('prevId', $idPreventivo);
-				//    $this->db->update('preventivo', $fechUltimo);		        
-				// }
 
 				$userdata = $this->session->userdata('user_data');
 				$usrId    = $userdata[0]['usrId'];     // guarda usuario logueado

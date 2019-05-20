@@ -16,7 +16,7 @@
 									<!-- Nav tabs -->
 									<ul class="nav nav-tabs" role="tablist">
 										<li role="presentation" class="active"><a href="#home" aria-controls="home"
-												role="tab" data-toggle="tab">Tareas verifica</a></li>
+												role="tab" data-toggle="tab">Tareas</a></li>
 										<li role="presentation"><a href="#profile" aria-controls="profile" role="tab"
 												data-toggle="tab">Comentarios</a></li>
 										<li
@@ -233,6 +233,7 @@
 				</div><!-- /.row -->
 
 				<div class="modal-footer">
+					<button type="button" class="btn btn-success" id="hecho" onclick="ver_informe_servicio()"> Ver Inf. Servicio</button>
 					<button type="button" id="cerrar" class="btn btn-primary" onclick="cargarVista()">Cerrar</button>
 					<button type="button" class="btn btn-success" id="hecho" onclick="verificarInforme()">Hecho</button>
 				</div> <!-- /.modal footer -->
@@ -370,24 +371,86 @@
 	}
 </style>
 
+<script>
 
-<div class="modal fade bs-example-modal-lg" id="modalFormSubtarea" tabindex="-1" role="dialog"
-	aria-labelledby="myLargeModalLabel">
-	<div class="modal-dialog modal-lg" role="document">
-		<div class="modal-content">
-			<div class="row">
-				<div class="col-sm-12">
-					<div class="box">
-						<div class="box-body">
-							<div class="row">
-								<div class="col-sm-12 col-md-12" id="contFormSubtarea">
+	function ver_informe_servicio (o){ 
 
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+		var id_sol = <?php echo $id_OT ?> ;
+		var id_eq  = <?php echo $id_EQ ?> ;
+		var id_solicitud = <?php echo $id_SS ?> ; 
+		var idTarBonita = <?php echo $idTarBonita ?> ;    
+		WaitingOpen();
+		$('#modalInforme').modal('show');
+		$('#modalInformeServicios').empty();
+		$("#modalInformeServicios").load("<?php echo base_url(); ?>index.php/Ordenservicio/verInforme/"+id_sol+"/"+id_eq+"/"+id_solicitud+"/"+idTarBonita+"/");
+		WaitingClose();
+	}
+
+
+
+//	Scripts para acordeon del modal
+	//cierro todos los collapse
+	$('#modalOrder').on('shown.bs.modal', function () {
+		$('.collapse-group').find('.collapse').collapse('hide');
+	});
+	//cierro collapse al abrir otro
+	$('.collapse-group').on('show.bs.collapse','.collapse', function() {
+			$('.collapse-group').find('.collapse.in').collapse('hide');
+	});
+
+	// ajusto ancho de columnas
+	$('#collapseZero, #collapseOne, #collapseTwo, #collapseThree, #collapseFour').on('shown.bs.collapse', function () {
+		$($.fn.dataTable.tables(true)).DataTable()
+				.columns.adjust();
+	});
+
+	$('#tblorden').DataTable({
+		"aLengthMenu": [ 10, 25, 50, 100 ],
+		"columnDefs": [ {
+			"targets": [ 0 ], 
+			"searchable": false
+		},
+		{
+			"targets": [ 0 ], 
+			"orderable": false
+		} ],
+		"order": [[1, "asc"]],
+	});
+
+	$('#modLectura, #modTarea, #modHerram, #modInsum, #modRecurso').DataTable({
+		"aLengthMenu": [ 10, 25, 50, 100 ],
+		"order": [[0, "asc"]],
+	});
+
+//	./ Scripts para acordeon del modal
+
+
+
+
+
+
+</script>
+
+
+
+<!--  MODAL INFORME DE SERVICIO  -->
+<div class="modal fade bs-example-modal-lg" id="modalInforme" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="box">
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12" id="modalInformeServicios">                               
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

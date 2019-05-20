@@ -44,8 +44,10 @@
                   echo '<td>';
                   if (strpos($permission,'Add') !== false) {
                     echo '<i class="fa fa-fw fa-times-circle eliminarPreventivo text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar"></i>';
-                    echo '<i class="fa fa-fw fa-pencil editarPreventivo text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar"></i>';
-                      //echo '<i class="fa fa-file-text text-light-blue" id="cargOrden" style="cursor: pointer; margin-left: 15px;" title="Orden de Trabajo" ></i>';
+                    
+                    if ($a['estado'] != 'OT') {
+                      echo '<i class="fa fa-fw fa-pencil editarPreventivo text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar"></i>';
+                    }                   
                   }
                   echo '</td>';
                   echo '<td>'.$a['prevId'].'</td>';

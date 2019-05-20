@@ -93,8 +93,8 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 |
 */
 
-//define('BONITA_URL', 'http://192.168.88.50:8080/bonita/');
-define('BONITA_URL', 'http://localhost:8080/bonita/');  //localhost
+define('BONITA_URL', 'http://192.168.88.50:8080/bonita/');
+//define('BONITA_URL', 'http://localhost:8080/bonita/');  //localhost
 
 
 /*
@@ -106,7 +106,7 @@ define('BONITA_URL', 'http://localhost:8080/bonita/');  //localhost
 |
 */
  
-define('BPM_PROCESS_ID', '6660734328911978563'); // localhost -
+define('BPM_PROCESS_ID', '8394317125296823097'); // localhost -
 
 /*
 |--------------------------------------------------------------------------

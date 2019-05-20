@@ -46,7 +46,7 @@ class Ordenservicios extends CI_Model {
         }      
     }
 
-		function getEquipos($data = null) // Ok
+		function getEquipos($data) // Ok
     {
         $id = $data['id_equipo'];       
         $this->db->select('
@@ -73,19 +73,19 @@ class Ordenservicios extends CI_Model {
         $query = $this->db->get();      
         foreach ($query->result_array() as $row)
         { 
-                $data['nomb_equipo']    = $row['nomb_equipo'];
-                $data['desc_equipo']    = $row['desc_equip'];
-                $data['fecha_ingreso']  = $row['fecha_ingreso'];
-                $data['fecha_baja']     = $row['fecha_baja'];
-                $data['fecha_garantia'] = $row['fecha_garantia'];
-                $data['estado']         = $row['estado'];
-                $data['marca']          = $row['marca'];
-                $data['grupo_desc']     = $row['grupo_desc'];
-                $data['sector']         = $row['sector_desc'];
-                $data['ubicacion']      = $row['ubicacion'];
-                //$data['id_contratista'] = $row['id_contratista'];
-                //$data['contratista']    = $row['contratista'];
-                return $data;
+					$data['nomb_equipo']    = $row['nomb_equipo'];
+					$data['desc_equipo']    = $row['desc_equip'];
+					$data['fecha_ingreso']  = $row['fecha_ingreso'];
+					$data['fecha_baja']     = $row['fecha_baja'];
+					$data['fecha_garantia'] = $row['fecha_garantia'];
+					$data['estado']         = $row['estado'];
+					$data['marca']          = $row['marca'];
+					$data['grupo_desc']     = $row['grupo_desc'];
+					$data['sector']         = $row['sector_desc'];
+					$data['ubicacion']      = $row['ubicacion'];
+					//$data['id_contratista'] = $row['id_contratista'];
+					//$data['contratista']    = $row['contratista'];
+					return $data;
         }
     }
 

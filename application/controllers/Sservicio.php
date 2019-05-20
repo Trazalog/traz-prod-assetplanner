@@ -59,6 +59,7 @@ class Sservicio extends CI_Controller
 		public function index($permission)
 		{
 			$data['list']       = $this->Sservicios->servicios_List();
+			//dump($data, ' sservicios: ');
 			$data['permission'] = $permission;
 			$this->load->view('Sservicios/list_bpm', $data);
 		}
