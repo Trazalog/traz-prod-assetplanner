@@ -117,7 +117,7 @@ class Calendario extends CI_Controller {
 				$fecha_progr      = $_POST['fecha_progr'];
 				$fecha_progr      = explode('-', $fecha_progr);
 				$fec_programacion = $fecha_progr[2].'-'.$fecha_progr[1].'-'.$fecha_progr[0].' '.$hora_progr.':00';
-				$fecha_inicio     = $_POST['fecha_inicio'];
+				$fecha_inicio     = '0000-00-00 00:00:00';
 				$descripcion      = $_POST['descripcion'];//descripcion del predictivo/correc/backlog/etc
 				$tipo             = $_POST['tipo'];//numero de tipo segun tbl orden_trabajo
 				$equipo           = $_POST['ide'];  

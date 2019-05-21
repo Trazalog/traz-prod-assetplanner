@@ -157,10 +157,7 @@ class Tareas extends CI_Model {
 		
 		$tar = json_decode($tareas,true);
 	
-		return $tar;
-		// TODO: AGREGAR DESDE ACA LOS DATOS A MOSTRAR DE LA ORDEN TRABAJO
-		//$tar = $this->AgregarDatos($tareas);
-		//return $tar;
+		return $tar;		
 	}
 	// agrega datos de pedido de trabajo desde la base local 
 	function AgregarDatos($tareas){
@@ -261,6 +258,78 @@ class Tareas extends CI_Model {
 	 		return false;
 	 	}
 	}	
+	// Verifica si la tarea fue guardada la fecha de inicio
+	function confInicioTareas($id_OT){
+		$this->db->select('orden_trabajo.fecha_inicio');
+		$this->db->from('orden_trabajo');
+		$this->db->where('orden_trabajo.id_orden', $id_OT);	
+		$query = $this->db->get();
+		$row = $query->row('fecha_inicio');
+		return $row; 
+	}
+	// marca inicio de Tarea en OT
+	function inicioTareas($id_OT){
+		$fechaInicio = date("Y-m-d H:i:s");
+		$estado = 'C';
+		$this->db->where('id_orden', $id_OT);
+		$result = $this->db->update('orden_trabajo',array('fecha_inicio'=>$fechaInicio));
+		return $result;
+	}
+
+	// cambbia de estado la Tareas(SServ, Prevent, Predic, Back y OT)
+	function cambiarEstado($id_solicitud, $estado, $tipo){						
+			
+		if ($tipo == 'correctivo') {
+			$this->db->set('estado', $estado);
+			$this->db->where('id_solicitud', $id_solicitud);
+			$response = $this->db->update('solicitud_reparacion');
+		}
+
+		if ($tipo == 'preventivo') {
+			$this->db->set('estadoprev', $estado);
+			$this->db->where('prevId', $id_solicitud);
+			$response = $this->db->update('preventivo');
+		}
+
+		if ($tipo == 'backlog') {
+			$this->db->set('estado', $estado);
+			$this->db->where('backId', $id_solicitud);
+			$response = $this->db->update('tbl_back');
+		}			
+
+		if ($tipo == 'predictivo') {
+			$this->db->set('estado', $estado);
+			$this->db->where('predId', $id_solicitud);
+			$response = $this->db->update('predictivo');
+		}	
+		
+		if ($tipo == 'OT') {
+			$this->db->set('estado',$estado);
+			$this->db->where('id_orden',$id_solicitud);
+			return $this->db->update('orden_trabajo');
+		}
+
+		return $response;
+	}
+
+	//devuelve valores de todos los datos de la OT para mostrar en modal.
+	function getOrigenOt($idot)
+	{
+		$this->db->select('orden_trabajo.tipo, orden_trabajo.id_solicitud');
+			$this->db->from('orden_trabajo');
+			$this->db->where('orden_trabajo.id_orden', $idot);
+
+			$query = $this->db->get();
+			if($query->num_rows()!=0)
+			{
+					return $query->result_array();
+			}
+			else
+			{
+					return false;
+			}
+	}
+
 	/*FORMULARIOS */
 		// Devuelve form asociado a una tarea std
 		function getIdFormPorIdTareaSTD($idTareaStd){
@@ -474,7 +543,7 @@ class Tareas extends CI_Model {
 		}
 		// Inserta datos de Form en frm_formularios_completados
 		function UpdateForm($datos,$key){
-			dump($datos, 'datos de form: ');
+			//dump($datos, 'datos de form: ');
 			$this->db->where('FOCO_ID', $key);
 			$response = $this->db->update('frm_formularios_completados', $datos);
 			return $response;

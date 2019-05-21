@@ -98,6 +98,62 @@ class Tarea extends CI_Controller {
 				$this->load->view('tareas/list',$data);
 				
 			}
+			// Verifica si la tarea fue guardada la fecha de inicio
+			public function confInicioTarea(){
+				$id_OT = $this->input->post('id_OT');
+				$fecha = $this->Tareas->confInicioTareas($id_OT);
+				//dump($fecha, 'fecha: ');
+				if ($fecha == '0000-00-00 00:00:00') {
+					echo json_encode(FALSE);
+				} else {
+					echo json_encode(TRUE);
+				}			
+
+			}
+			// marca inicio de Tarea en OT
+			public function inicioTarea(){
+				
+				$id_OT = $this->input->post('id_OT');
+				$estado = 'C';
+				// graba fecha de inicio en OT
+				if ($this->Tareas->inicioTareas($id_OT)) {
+						//cambia el estado a a OT
+						if ($this->Tareas->cambiarEstado($id_OT, $estado, 'OT')) {
+								// averigua origen de OT
+								$origen = $this->Tareas->getOrigenOt($id_OT);							
+								
+								$numtipo = 	$origen[0]['tipo'];
+								$id_solicitud = $origen[0]['id_solicitud'];
+
+								switch ($numtipo) {
+									case '2':
+										$tipo = 'correctivo';
+										break;
+
+									case '3':
+										$tipo = 'preventivo';
+										break;
+									
+									case '4':
+										$tipo = 'backlog';
+										break;
+								
+									default:
+										$tipo = 'predictivo';
+										break;
+								}
+								// cambia estado a la Tarrea origen de OT
+								$response = $this->Tareas->cambiarEstado($id_solicitud, $estado, $tipo);
+								echo json_encode($response);
+								
+						} else {
+							echo json_encode(FALSE);
+							
+						}				
+				} else {
+					echo json_encode(FALSE);
+				}
+			}
 			// Usr Toma tarea en BPM (Vistas tareas comunes)
 			public function tomarTarea(){
 				$userdata = $this->session->userdata('user_data');

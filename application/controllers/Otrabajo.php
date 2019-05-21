@@ -1056,7 +1056,7 @@ class Otrabajo extends CI_Controller {
 	{
 		$idot     = $_POST['idot'];
 		$response = $this->Otrabajos->getOrigenOt($idot);
-      	echo json_encode($response[0]);
+    echo json_encode($response[0]);
 	}
 	
 
