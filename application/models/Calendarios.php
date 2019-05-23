@@ -144,7 +144,8 @@ class Calendarios extends CI_Model {
                     AND year(tbl_back.fecha) = $year 
                     AND month(tbl_back.fecha) = $month 
                     AND tbl_back.estado != 'AN' 
-                    AND tbl_back.estado != 'OT'";
+										AND tbl_back.estado != 'OT'
+										AND tbl_back.estado != 'PL'";
         $query= $this->db->query($sql);
         if ($query->num_rows()!=0)
         {
@@ -202,30 +203,30 @@ class Calendarios extends CI_Model {
         $userdata = $this->session->userdata('user_data');
         $empId    = $userdata[0]['id_empresa'];
         $sql      = " SELECT solicitud_reparacion.id_solicitud,
-                solicitud_reparacion.numero,
-                solicitud_reparacion.id_tipo,
-                solicitud_reparacion.nivel,
-                solicitud_reparacion.solicitante,
-                solicitud_reparacion.f_solicitado,
-                solicitud_reparacion.f_sugerido,
-                solicitud_reparacion.hora_sug,
-                solicitud_reparacion.estado,
-                equipos.descripcion,
-                equipos.codigo,
-                equipos.id_equipo,
-                solicitud_reparacion.correctivo,
-                solicitud_reparacion.causa,
-                sector.descripcion AS sector
-            FROM solicitud_reparacion
-            INNER JOIN equipos ON equipos.id_equipo = solicitud_reparacion.id_equipo
-            INNER JOIN sector ON sector.id_sector = equipos.id_sector
-            WHERE solicitud_reparacion.id_empresa = $empId
-            AND solicitud_reparacion.estado != 'AN'
-            AND solicitud_reparacion.estado != 'OT'
-            AND year(solicitud_reparacion.f_solicitado) = $year
-            AND month(solicitud_reparacion.f_solicitado) = $month
-            AND solicitud_reparacion.estado != 'OT'
-            ";
+											solicitud_reparacion.numero,
+											solicitud_reparacion.id_tipo,
+											solicitud_reparacion.nivel,
+											solicitud_reparacion.solicitante,
+											solicitud_reparacion.f_solicitado,
+											solicitud_reparacion.f_sugerido,
+											solicitud_reparacion.hora_sug,
+											solicitud_reparacion.estado,
+											equipos.descripcion,
+											equipos.codigo,
+											equipos.id_equipo,
+											solicitud_reparacion.correctivo,
+											solicitud_reparacion.causa,
+											sector.descripcion AS sector
+											FROM solicitud_reparacion
+											INNER JOIN equipos ON equipos.id_equipo = solicitud_reparacion.id_equipo
+											INNER JOIN sector ON sector.id_sector = equipos.id_sector
+											WHERE solicitud_reparacion.id_empresa = $empId
+											AND solicitud_reparacion.estado != 'AN'
+											AND solicitud_reparacion.estado != 'OT'
+											AND year(solicitud_reparacion.f_solicitado) = $year
+											AND month(solicitud_reparacion.f_solicitado) = $month
+											AND solicitud_reparacion.estado != 'OT'
+											";
         $query = $this->db->query($sql);
         if ($query->num_rows()!=0)
         {

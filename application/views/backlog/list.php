@@ -25,6 +25,7 @@
                 <th>Tarea</th>
                 <th>Fecha</th>
                 <th>Duración</th>
+                <!-- <th>Estado</th> -->
               </tr>
             </thead>
             <tbody>
@@ -65,7 +66,9 @@
                         default:
                         echo '<td>'.$a['back_duracion'].' min</td>';
                           break;
-                      }                   
+                      }    
+                      
+                      //echo '<td>'.$a['estado'].'</td>';
                     echo '</tr>';
                   }                    
                 }

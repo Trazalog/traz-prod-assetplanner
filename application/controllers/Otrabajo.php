@@ -1092,6 +1092,9 @@ class Otrabajo extends CI_Controller {
 		$idOt      = $_POST['idOt'];
 		$idBacklog = $_POST['idBacklog'];
 		$response  = $this->Otrabajos->getViewDataBacklog($idOt, $idBacklog);
+
+			dump($response, 'datos de backlog: ');
+
       	echo json_encode($response[0]);
 	}
 

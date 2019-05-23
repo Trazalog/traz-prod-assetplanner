@@ -14,29 +14,7 @@ class Ordenservicio extends CI_Controller {
         $data['list']       = $this->Ordenservicios->getOrdServiciosList();
         $this->load->view('ordenservicios/list',$data);
     }
-
-    // public function cargarOrden($permission, $id_ot = null, $id_eq = null, $id_solicitud = null)   // Ok
-    // { 
-    //   $data['permission'] = $permission;        // permisos 
-    //   $data['id_ot']      = $id_ot;            // id de OT. 
-    //   $data['id_eq']      = $id_eq;             // id de equipo        
-    //   $infoOt = $this->Ordenservicios->getorden($id_ot);
-    //   dump($infoOt, 'datos ot');
-    //   // si la tareas es opcional
-    //   if (($infoOt[0] ["id_tarea"] < 0) || ($infoOt[0] ["id_tarea"] == NULL)) {
-    //     $causa = $infoOt[0]["descripcion"];
-    //   } else {
-    //     $causa = $infoOt[0]["tareadescrip"];
-    //   }              
-    //   $data['causa'] = $causa; // motivo de la solicitud        
-    //   $data['id_solicitudServicio'] = $id_solicitud; // id de orden de servicio. 
-    //   $data['id_responsable'] = $infoOt[0]["descripcion"];
-    //   $data['nom_responsable'] = $infoOt[0]["responsable"];
-    //   $data['idresponsable'] = $infoOt[0]["usrId"];
-
-    //   $this->load->view('ordenservicios/view_',$data);
-    // }
- 
+    // devuelve info de Informe de servicio (modal vista)
     public function cargarOrden($id_ot = null, $id_eq = null, $id_solicitud = null, $idTarBonita)   // Ok
     {       
       $data['id_ot']      = $id_ot;            // id de OT. 
@@ -54,6 +32,7 @@ class Ordenservicio extends CI_Controller {
       $data['nom_responsable'] = $infoOt[0]["responsable"];
       $data['idresponsable'] = $infoOt[0]["usrId"];
       $data['idTarBonita'] = $idTarBonita;
+      // $this->load->view('tareas/view_presta_presta_conf_modal',$data);
       $this->load->view('tareas/view_inf_servicio_modal',$data);
     }  
 
@@ -84,7 +63,8 @@ class Ordenservicio extends CI_Controller {
       $data['insumos'] = $this->Ordenservicios->getInsumosPorOT($id_ot);
       $data['rrhh'] = $this->Ordenservicios->getOperariosOrden($id_ot);
      // dump($data, 'data: ');
-      $this->load->view('tareas/view_inf_servicio_modal',$data);
+      // $this->load->view('tareas/view_inf_servicio_modal',$data);
+      $this->load->view('tareas/view_presta_presta_conf_modal',$data);
     } 
 
     public function getDatosOrdenServicio() // Ok

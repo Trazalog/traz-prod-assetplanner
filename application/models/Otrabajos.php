@@ -1137,14 +1137,16 @@ class Otrabajos extends CI_Model {
     		equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, equipos.descripcion AS descripcionEquipo');
         $this->db->from('orden_trabajo');
         $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
-        $this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
-        $this->db->join('abmproveedores', 'abmproveedores.provid = orden_trabajo.id_proveedor');
+        $this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal', 'left');
+        $this->db->join('abmproveedores', 'abmproveedores.provid = orden_trabajo.id_proveedor', 'left');
         $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
-        $this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
+        //$this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
         $this->db->where('orden_trabajo.id_orden', $idOt);
 
         $query = $this->db->get();
-        if($query->num_rows()!=0)
+				$dato = $this->db->last_query();
+				dump($dato, 'backlog info: ');
+				if($query->num_rows()!=0)
         {
             $datos = $query->result_array();
             $datos[0]['tarea'] = $this->getViewDataTareaBacklog( $datos[0]['id_solicitud']);

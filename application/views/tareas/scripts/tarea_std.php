@@ -151,12 +151,16 @@
 		function verificarInforme(){
 			WaitingOpen();
 			var opcion = $('input[name="opcion"]:checked').val();
+			var id_OT = $('#id_OT').val();
+			var id_SS = $('#id_SS').val();
 			var idTarBonita = $('#idTarBonita').val();	
 
 			$.ajax({
 				type: 'POST',
 				data: {opcion:opcion,
-								idTarBonita:idTarBonita},
+								idTarBonita:idTarBonita,
+								id_OT: id_OT,
+								id_SS: id_SS},
 				url: 'index.php/Tarea/verificarInforme',
 				success: function(data) {
 					WaitingClose();
@@ -178,16 +182,19 @@
 		}
 		// cierra tarea Prestar Conformidad de 
 		function prestarConformidad(){
+			
 			WaitingOpen('Cerrando Tarea');
 			var opcion = $('input[name="opcion"]:checked').val();
 			var idTarBonita = $('#idTarBonita').val();	
-			var id_SS = "<?php echo $id_SS;?>";
+			var id_SS = $('#id_SS').val();
+			var id_OT = $('#id_OT').val();
 
 			$.ajax({
 				type: 'POST',
 				data: {opcion:opcion,
 								idTarBonita:idTarBonita,
-								id_SS: id_SS},
+								id_SS: id_SS,
+								id_OT: id_OT},
 				url: 'index.php/Tarea/prestarConformidad',
 				success: function(data) {
 					WaitingClose();					

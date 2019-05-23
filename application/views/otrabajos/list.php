@@ -45,7 +45,7 @@
                     $gr = $a['grpId'];
                     //echo "grupo: ".$gr;
                     if ($gr=='1') { 
-                      if (($a['estado'] =='As') || ($a['estado'] =='P') || ($a['estado'] =='C') || $a['estado']=='Ej' || ($a['estado'] =='PL')) {
+                      //if (($a['estado'] =='As') || ($a['estado'] =='P') || ($a['estado'] =='C') || $a['estado']=='Ej' || ($a['estado'] =='PL')) {
                         $id          = $a['id_orden'];
                         $id_equipo   = $a['id_equipo'];
                         $causa       = $a['descripcion'];
@@ -66,9 +66,34 @@
                         echo '<td>'.$a['tipoDescrip'].'</td>';
                         echo '<td>'.$a['id_solicitud'].'</td>';
                         echo '<td>'.$a['nombre'].'</td>';
-                        echo '<td>'.($a['estado'] == 'C' ? '<small class="label pull-left bg-green">Curso</small>' : ($a['estado'] == 'P' ? '<small class="label pull-left bg-red">Pedido</small>' :  $a['estado'] == 'PL' ? '<small class="label pull-left bg-green">Planificado</small>' : '<small class="label pull-left bg-yellow">Asignado</small>')).'</td>';
-      	                echo '</tr>';
-        		          }
+                        // echo '<td>'.($a['estado'] == 'C' ? '<small class="label pull-left bg-green">Curso</small>' : ($a['estado'] == 'P' ? '<small class="label pull-left bg-red">Pedido</small>' :  $a['estado'] == 'PL' ? '<small class="label pull-left bg-green">Planificado</small>' : '<small class="label pull-left bg-yellow">Asignado</small>')).'</td>';
+      	                // echo '</tr>';
+                      //}
+                      
+                      echo '<td>';           
+                            
+                      if($a['estado'] == 'PL'){
+                      echo '<small class="label pull-left bg-yellow">Planificada</small>';
+                      }
+                      if($a['estado'] == 'AS'){
+                      echo '<small class="label pull-left bg-purple">Asignada</small>';
+                      }
+                      if ($a['estado'] == 'C') {
+                        echo '<small class="label pull-left bg-green">Curso</small>' ;
+                      }
+                      if ($a['estado'] == 'T') {
+                      echo  '<small class="label pull-left bg-blue">Terminada</small>';
+                      }
+                      if ($a['estado'] == 'CE') {
+                        echo  '<small class="label pull-left bg-primary">Cerrada</small>';
+                      }
+                      if ($a['estado'] == 'S') {
+                        echo  '<small class="label pull-left bg-red">Solicitada</small>';
+                      }
+
+                      echo '</td>';
+
+
                     }
                   }
                 }

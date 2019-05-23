@@ -2,7 +2,8 @@
 <?php //dump();?>
 <section class="content">
 	<?php echo cargarCabecera($id_OT,$id_SS,$id_EQ); ?>
-	<?php //dump($TareaBPM); ?>
+	<input type="hidden" class="form-control " id="id_OT" value="<?php echo $id_OT ?>">
+	<input type="hidden" class="form-control " id="id_SS" value="<?php echo $id_SS ?>">
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="box">

@@ -51,7 +51,7 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 																					echo "&nbsp";
 																					echo "<button class='btn btn-block btn-danger grupNoasignado' id='btonsoltr' style='width: 100px; margin-top: 10px; display: inline-block;' onclick='soltarTarea()'>Soltar tarea</button>";
 																					echo '</div>';																					
-																					echo '<div class="col-md-4 col-md-offset-4" id="llave">';	
+																					echo '<div class="col-md-4 col-md-offset-4 oculto" id="llave">';	
 																					echo '<i class="text-light-blue fa fa-fw fa fa-toggle-on fa-2x" id="onSwitch" title="Iniciar Tarea" style="cursor: pointer; margin-left: 15px;"><span class="" style="margin-left: 15px; font-size: 15px">Tarea</span>
 																					</i>';
 																					echo '<i class="text-light-blue fa fa-fw fa fa-toggle-off fa-2x" id="offSwitch" title="Iniciar Tarea" style="cursor: pointer; margin-left: 15px;"><span class="" style="margin-left: 15px; font-size: 15px">Tarea</span>
@@ -426,7 +426,7 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 							);
 					}
 			}
-
+		/*  /.	Pantalla pedido de insumos */	
 </script>
 <!--	Modal Insumos	-->
 <div class="modal" id="pedidos" tabindex="-1" role="dialog">

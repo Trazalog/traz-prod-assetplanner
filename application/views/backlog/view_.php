@@ -428,50 +428,6 @@ function cargarVista(){
     WaitingClose();
 }
 
-// Guarda Backlog - Chequeado
-// function guardar(){     
-//   var idComponenteEquipo = $('#idcomponenteequipo').val();
-//   var equipo = $('#equipo').val();
-//   var tarea  = $('#tarea').val();       
-//   var fecha  = $('#fecha').val();
-//   var horas  = $('#back_duracion').val();  
-//   console.log("Estoy guardando");
-
-//   if(equipo > 0 && tarea !=='' && horas !=='' ){
-    
-//       $.ajax({
-//           type: 'POST',
-//           data: {
-//             idce:idComponenteEquipo,
-//             equipo:equipo, 
-//             tarea:tarea,  
-//             fecha:fecha, 
-//             horas:horas
-//           },
-//           url: 'index.php/Backlog/guardar_backlog', 
-//           success: function(data){
-                 
-//                   console.log("exito");   
-//                   cargarVista();               
-//                 },
-//           error: function(result){
-//                   console.log(result);              
-//                 },
-//           dataType: 'json'        
-//       });    
-//   }
-//   else{
-//         var hayError = true;
-//         $('#error').fadeIn('slow');
-//         return;
-//       }
-
-//   if(hayError == false){
-    
-//     $('#error').fadeOut('slow');
-//   }    
-// }
-
 /* nuevo */
 // Guarda Backlog nuevo
 $("#formBacklog").submit(function (event){   

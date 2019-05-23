@@ -62,12 +62,12 @@ class Tareas extends CI_Model {
 		return $query;
 	}
 
-	function cerrarSServicios($id){
-		$this->db->set('estado', 'T');
-		$this->db->where('id_solicitud', $id);
-		$query=$this->db->update('solicitud_reparacion');
-		return $query;
-	}
+	// function cerrarSServicios($id){
+	// 	$this->db->set('estado', 'T');
+	// 	$this->db->where('id_solicitud', $id);
+	// 	$query=$this->db->update('solicitud_reparacion');
+	// 	return $query;
+	// }
 /* ./ TAREAS ASSET ORIGINALES (TAREAS ESTANDAR)*/	
 
 /* INTEGRACION CON BPM */

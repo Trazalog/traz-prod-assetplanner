@@ -4,20 +4,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Tarea extends CI_Controller {
 
-	function __construct(){
-		parent::__construct();
-		$this->load->model('Tareas');
-		$this->load->model('Bonitas');
-		$this->load->model('Overviews');
-		$this->load->model('Backlogs');
-	}
+		function __construct(){
+			parent::__construct();
+			$this->load->model('Tareas');
+			$this->load->model('Bonitas');
+			$this->load->model('Overviews');
+			$this->load->model('Backlogs');
+		}
 
-	public function Obtener_Tarea(){
+		public function Obtener_Tarea(){
 
-			$id     =$_POST['id_tarea'];
-			$result = $this->Tareas->Obtener_Tareas($id);
-			echo json_encode($result);
-	}
+				$id     =$_POST['id_tarea'];
+				$result = $this->Tareas->Obtener_Tareas($id);
+				echo json_encode($result);
+		}
 	
 		/*Fernando Leiva */
 		public function Obtener_Todas(){
@@ -211,48 +211,134 @@ class Tarea extends CI_Controller {
 			}
 			// terminar tarea verificar Informe Servicios
 			public function verificarInforme(){
-
+				
+				$id_OT = $this->input->post('id_OT');
+				$id_SS = $this->input->post('id_SS');
 				$idTarBonita = $this->input->post('idTarBonita');
 				$opcion = $this->input->post('opcion');				
+				
+				// averigua origen de OT
+				$origen = $this->Tareas->getOrigenOt($id_OT);
+				$numtipo = 	$origen[0]['tipo'];
+				$id_solicitud = $origen[0]['id_solicitud'];
+				$estado = 'T';
+				switch ($numtipo) {
+					case '2':
+						$tipo = 'correctivo';
+						break;
+
+					case '3':
+						$tipo = 'preventivo';
+						break;
+					
+					case '4':
+						$tipo = 'backlog';
+						break;
+				
+					default:
+						$tipo = 'predictivo';
+						break;
+				}	
+
 				$opcionSel = array(
 					"informeServicioOk" => $opcion
 				);
 				$this->load->library('BPM');
-				$result = $this->bpm->CerrarTareaBPM($idTarBonita,$opcionSel);	
-				echo json_encode($result);
+				$result = $this->bpm->CerrarTareaBPM($idTarBonita,$opcionSel);
+				// si cierra la tarea en BPM
+				if (json_decode($response['code']) < 300){
+
+						// La respuesta es Informe de Servicios correcto
+						if($opcion){
+							// Si hay SServicios cambio estado a CERRADO
+							if ($id_SS != NULL) {
+								$result = $this->Tareas->cambiarEstado($id_SS, $estado, $tipo);																
+							}	else{	// sino cambio estado de la tarea origen(back, prevent, predict)
+								$result = $this->Tareas->cambiarEstado($id_solicitud, $estado, $tipo);	
+							}							
+							// Cierro la OT					
+							$result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT');
+							// si guarda en BD	
+							if ($result) {
+								echo json_encode(['status'=>true, 'msj'=>'OK']);
+								return;
+							}else{								
+								echo json_encode(['status'=>false, 'msj'=> ASP_0100.' | Error en Cambio Estado OT']);
+								return;
+							}
+					
+					}else{	// no conforme con trabajo	NO CAMBIA ESTADOS
+							echo $response;
+							return;
+					}	
+
+				} else {	// fallo al cerrar la tarea en BPM				
+					echo json_encode(['status'=>true, 'msj'=>'OK', 'code'=>$code]);
+				}	
+
 			}	
 			// terminar tarea prestar conformidad
 			public function prestarConformidad(){
 				$idTarBonita = $this->input->post('idTarBonita');				
 				$opcion = $this->input->post('opcion');	
 				$id_SS = 	$this->input->post('id_SS');	
+				$id_OT =  $this->input->post('id_OT');			
+				// averigua origen de OT
+				$origen = $this->Tareas->getOrigenOt($id_OT);
+				$numtipo = 	$origen[0]['tipo'];
+				$id_solicitud = $origen[0]['id_solicitud'];
+				$estado = 'CE';
+				switch ($numtipo) {
+					case '2':
+						$tipo = 'correctivo';
+						break;
+
+					case '3':
+						$tipo = 'preventivo';
+						break;
+					
+					case '4':
+						$tipo = 'backlog';
+						break;
+				
+					default:
+						$tipo = 'predictivo';
+						break;
+				}				
+				// Cierro tarea en BPM
 				$opcionSel = array(
 					"prestaConformidad" => $opcion
-				);						
+				);
 				$this->load->library('BPM');
 				$response = $this->bpm->CerrarTareaBPM($idTarBonita,$opcionSel);
-				
 				// si cierra la tarea en BPM
 				if (json_decode($response['code']) < 300){						
 						// La respuesta es conforme con trabajo
 						if($opcion){
-								$result = $this->cerrarSServicio($id_SS);
+								// Si hay SServicios cambio estado a CERRADO
+								if ($id_SS != NULL) {
+									$result = $this->Tareas->cambiarEstado($id_SS, $estado, $tipo);																
+								}	else{	// sino cambio estado de la tarea origen(back, prevent, predict)
+									$result = $this->Tareas->cambiarEstado($id_solicitud, $estado, $tipo);	
+								}							
+								// Cierro la OT					
+								$result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT');
 								// si guarda en BD	
 								if ($result) {
-									echo $response;
+									echo json_encode(['status'=>true, 'msj'=>'OK']);
 									return;
 								}else{								
-									echo json_encode(['status'=>false, 'msj'=> ASP_0100.' | Error en Base de Datos']);
+									echo json_encode(['status'=>false, 'msj'=> ASP_0100.' | Error en Cambio Estado OT']);
 									return;
 								}
 						
-						}else{	// no conforme con trabajo
+						}else{	// no conforme con trabajo	NO CAMBIA ESTADOS
 								echo $response;
 								return;
 						}	
 
 				} else {	// fallo al cerrar la tarea en BPM				
-					echo $response;
+					echo json_encode(['status'=>true, 'msj'=>'OK', 'code'=>$code]);
 				}					
 			}
 			// terminar tarea ejecutar OT
@@ -282,6 +368,8 @@ class Tarea extends CI_Controller {
 				}	
 
 			}
+
+			
 			// trae datos para llenar notificaion estandar y formulario asociado
 			public function detaTarea($permission,$idTarBonita){
 
