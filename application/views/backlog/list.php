@@ -25,14 +25,14 @@
                 <th>Tarea</th>
                 <th>Fecha</th>
                 <th>Duración</th>
-                <!-- <th>Estado</th> -->
+                <th>Estado</th>
               </tr>
             </thead>
             <tbody>
               <?php        
               //dump($list, 'lista backlog');
                 foreach($list['data'] as $a){
-                  if ($a['estado'] == 'C') {
+                  //if ($a['estado'] == 'C') {
                     $id  = $a['backId'];
                     $ide = $a['id_equipo'];
                     echo '<tr id="'.$id.'" class="'.$ide.'">';
@@ -68,9 +68,30 @@
                           break;
                       }    
                       
-                      //echo '<td>'.$a['estado'].'</td>';
+                      echo '<td>';           
+                            
+                            if($a['estado'] == 'PL'){
+                            echo '<small class="label pull-left bg-yellow">Planificada</small>';
+                            }
+                            if($a['estado'] == 'AS'){
+                            echo '<small class="label pull-left bg-purple">Asignada</small>';
+                            }
+                            if ($a['estado'] == 'C') {
+                              echo '<small class="label pull-left bg-green">Curso</small>' ;
+                            }
+                            if ($a['estado'] == 'T') {
+                            echo  '<small class="label pull-left bg-blue">Terminada</small>';
+                            }
+                            if ($a['estado'] == 'CE') {
+                              echo  '<small class="label pull-left bg-primary">Cerrada</small>';
+                            }
+                            if ($a['estado'] == 'S') {
+                              echo  '<small class="label pull-left bg-red">Solicitada</small>';
+                            }
+                           
+                            echo '</td>';
                     echo '</tr>';
-                  }                    
+                  //}                    
                 }
               ?>
             </tbody>
@@ -124,24 +145,28 @@ $(document).ready(function(event) {
                     datos={ 'codigo':data['equipo'][0]['codigo'],
                             'marca':data['equipo'][0]['marca'],
                             'descripcion':data['equipo'][0]['des'],   
-                            'fecha_ingreso':data['equipo'][0]['fecha_ingreso'],
-                            'idtarea': data['equipo'][0]['id_tarea'],
-                            'tarea': data['equipo'][0]['tarea_descrip'],
-                            'fecha':data['datos'][0]['fecha'],
+                            'fecha_ingreso':data['equipo'][0]['fecha_ingreso'],                            
+                            'tarea': data['equipo'][0]['tarea_descrip'],                            
                             'desta':data['equipo'][0]['de1'],
                             'hora':data['equipo'][0]['horash'],
-                            'ubicacion':data['equipo'][0]['ubicacion'],
-                            'duracion' :data['datos'][0]['back_duracion'],
+                            'ubicacion':data['equipo'][0]['ubicacion'],   
                             'sistema' :data['equipo'][0]['sistema'],
                             'componente' :data['equipo'][0]['componente'],
                             'codcompeq' :data['equipo'][0]['codcompeq'],
+                            
                             'backId': idpred,
+                            'idtarea': data['datos'][0]['id_tarea'],
+                            'fecha':data['datos'][0]['fecha'],
                             'duracion':data['datos'][0]['back_duracion'],
                             'unidtiempo':data['datos'][0]['id_unidad'],
                             'operarios':data['datos'][0]['back_canth'],
                             'hh':data['datos'][0]['horash'],
                             'back_adjunto':data['datos'][0]['back_adjunto']               
                           };
+
+console.table(datos);
+
+
                     var herram = data['herramientas'];             
                     var insum  = data['insumos']; 
                     completarEdit(datos,herram,insum); 

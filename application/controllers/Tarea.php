@@ -12,6 +12,14 @@ class Tarea extends CI_Controller {
 			$this->load->model('Backlogs');
 		}
 
+		// llama ABM tareas estandar
+		public function index2($permission)
+    {
+        $data['list']       = $this->Tareas->Listado_Tareas();
+        $data['permission'] = $permission;
+        $this->load->view('tarea/list', $data);
+    }
+
 		public function Obtener_Tarea(){
 
 				$id     =$_POST['id_tarea'];

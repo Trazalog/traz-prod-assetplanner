@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-05-2019 a las 22:01:08
+-- Tiempo de generación: 24-05-2019 a las 08:35:05
 -- Versión del servidor: 10.1.16-MariaDB
 -- Versión de PHP: 5.6.24
 
@@ -622,6 +622,18 @@ CREATE TABLE `asignausuario` (
   `fechahora` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Volcado de datos para la tabla `asignausuario`
+--
+
+INSERT INTO `asignausuario` (`id`, `usrId`, `id_orden`, `fechahora`) VALUES
+(1, 0, 4, '2019-05-22 12:28:36'),
+(2, 0, 4, '2019-05-22 12:28:36'),
+(3, 0, 5, '2019-05-22 13:27:18'),
+(4, 0, 6, '2019-05-22 15:08:45'),
+(5, 0, 6, '2019-05-22 15:08:45'),
+(6, 0, 7, '2019-05-23 16:08:39');
+
 -- --------------------------------------------------------
 
 --
@@ -790,8 +802,9 @@ CREATE TABLE `componenteequipo` (
 --
 
 INSERT INTO `componenteequipo` (`idcomponenteequipo`, `id_equipo`, `id_componente`, `observacion`, `codigo`, `estado`, `id_empresa`, `sistemaid`) VALUES
-(1, 1, 2, NULL, '00011', 'AC', 6, 1),
-(2, 1, 53, NULL, '', 'AC', 6, 2);
+(1, 1, 20, NULL, '00011', 'AC', 6, 1),
+(2, 1, 53, NULL, '', 'AC', 6, 2),
+(3, 4, 57, NULL, '123', 'AC', 6, 1);
 
 -- --------------------------------------------------------
 
@@ -1288,6 +1301,20 @@ CREATE TABLE `deta_ordenservicio` (
   `rh` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+--
+-- Volcado de datos para la tabla `deta_ordenservicio`
+--
+
+INSERT INTO `deta_ordenservicio` (`id_detasercicio`, `id_ordenservicio`, `id_tarea`, `tiempo`, `observacion`, `monto`, `id_componente`, `rh`) VALUES
+(1, 1, 'tarea forra', '', NULL, 0, 0, NULL),
+(2, 2, 'TAREA  PRESTA CONFORMIDAD TERMINADA ', '', NULL, 0, 0, NULL),
+(3, 3, 'tarea terminada regulacion intercambio de barras', '', NULL, 0, 0, NULL),
+(4, 4, 'tarea pa test', '', NULL, 0, 0, NULL),
+(5, 5, 'tarea forrita pa ver erifica informe', '', NULL, 0, 0, NULL),
+(6, 5, 'otra tarea mas pa verifica informe', '', NULL, 0, 0, NULL),
+(7, 6, 'tarea de revision de estados', '', NULL, 0, 0, NULL),
+(8, 7, 'tarea info servicios', '', NULL, 0, 0, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -1392,8 +1419,8 @@ CREATE TABLE `equipos` (
 --
 
 INSERT INTO `equipos` (`id_equipo`, `descripcion`, `fecha_ingreso`, `fecha_baja`, `fecha_garantia`, `marca`, `codigo`, `ubicacion`, `id_empresa`, `id_sector`, `id_hubicacion`, `id_grupo`, `id_customer`, `id_criticidad`, `estado`, `fecha_ultimalectura`, `ultima_lectura`, `tipo_horas`, `id-centrodecosto`, `valor_reposicion`, `fecha_reposicion`, `id_proveedor`, `valor`, `comprobante`, `descrip_tecnica`, `id_unidad`, `id_area`, `id_proceso`, `numero_serie`, `adjunto`) VALUES
-(1, 'Nuevo equipo 00 de prueba', '0000-00-00', '0000-00-00', '0000-00-00', '1', 'Equipo-00', '', 6, 10, 0, 1, 13, 1, 'AC', '0000-00-00 00:00:00', 200, '', 0, 0, '0000-00-00', 0, 0, '', 'descripcion tecnica nueva', 6, 1, 7, 11223344, NULL),
-(2, 'nuevo equipo 01--editado antes de lectura', '0000-00-00', '0000-00-00', '0000-00-00', '1', 'Equipo-01', '', 6, 10, 0, 2, 22, 2, 'AC', '2019-04-23 00:00:00', 1000, '', 0, 0, '0000-00-00', 0, 0, '', '', 6, 1, 7, 445566, NULL),
+(1, 'Nuevo equipo 00 de prueba', '0000-00-00', '0000-00-00', '0000-00-00', '1', 'Equipo-00', '-56 +34', 6, 10, 0, 1, 13, 1, 'AC', '0000-00-00 00:00:00', 200, '', 0, 0, '0000-00-00', 0, 0, '', 'descripcion tecnica nueva', 6, 1, 7, 11223344, NULL),
+(2, 'nuevo equipo 01--editado antes de lectura', '0000-00-00', '0000-00-00', '0000-00-00', '1', 'Equipo-01', '-56 +34', 6, 10, 0, 2, 22, 2, 'AC', '2019-04-23 00:00:00', 1000, '', 0, 0, '0000-00-00', 0, 0, '', '', 6, 1, 7, 445566, NULL),
 (3, 'equipo de ping pong', '2019-04-25', '0000-00-00', '2019-05-02', '3', 'hu001', '', 6, 24, 0, 19, 22, 16, 'AC', '2019-04-25 00:00:00', 120, '', 0, 0, '0000-00-00', 0, 0, '', '', 6, 19, 18, 155, NULL),
 (4, 'test edicion antes de activar editado', '2019-04-25', '0000-00-00', '2019-05-02', '11', 'hugo test edicion alta', '', 6, 11, 0, 2, 16, 3, 'IN', '2019-04-25 00:00:00', 121, '', 0, 0, '0000-00-00', 0, 0, '', '', 6, 8, 8, 123, NULL),
 (5, 'hugo test final 0', '2019-04-25', '0000-00-00', '2019-05-02', '4', 'hugo test final 0- editado', '', 6, 10, 0, 2, 22, 2, 'IN', '2019-04-18 00:00:00', 100, '', 0, 0, '0000-00-00', 0, 0, '', '', 6, 1, 8, 112233, NULL);
@@ -7138,7 +7165,8 @@ INSERT INTO `historial_lecturas` (`id_lectura`, `id_equipo`, `lectura`, `fecha`,
 (2, 1, 200, '0000-00-00 00:00:00', 3, 'Lectura al cargar equipo', '-', 'alta', 'AC'),
 (3, 2, 1000, '2019-04-23 00:00:00', 3, 'Lectura al cargar equipo', '-', 'alta', 'AC'),
 (4, 4, 121, '2019-04-25 00:00:00', 3, 'Lectura al cargar equipo', '-', 'alta', 'AC'),
-(5, 5, 100, '2019-04-18 00:00:00', 3, 'Lectura al cargar equipo', '-', 'alta', 'AC');
+(5, 5, 100, '2019-04-18 00:00:00', 3, 'Lectura al cargar equipo', '-', 'alta', 'AC'),
+(6, 1, 220, '2019-05-16 12:28:25', 1, 'nn', 'eli', 'mñn', 'AC');
 
 -- --------------------------------------------------------
 
@@ -7339,6 +7367,19 @@ CREATE TABLE `orden_servicio` (
   `horometrofin` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+--
+-- Volcado de datos para la tabla `orden_servicio`
+--
+
+INSERT INTO `orden_servicio` (`id_orden`, `lectura`, `fecha`, `comprobante`, `id_equipo`, `id_contratista`, `id_solicitudreparacion`, `valesid`, `estado`, `id_ordenherraminetas`, `id_orden_insumo`, `id_ot`, `id_empresa`, `fechahorainicio`, `fechahorafin`, `horometroinicio`, `horometrofin`) VALUES
+(1, NULL, '2019-05-21', '', 3, 0, 1, 1, 'C', NULL, NULL, 2, 6, '2019-05-14 17:27:00', '2019-05-21 17:27:03', 1234, 456),
+(2, NULL, '2019-05-22', '', 3, 0, 2, 1, 'C', NULL, NULL, 3, 6, '2019-05-15 11:58:47', '2019-05-29 11:58:56', 123, 234),
+(3, NULL, '2019-05-22', '', 3, 0, 1, 1, 'C', NULL, NULL, 2, 6, '2019-05-01 12:09:21', '2019-05-22 12:09:24', 789, 456),
+(4, NULL, '2019-05-22', '', 3, 0, 3, 2, 'C', NULL, NULL, 4, 6, '2019-05-15 12:27:35', '2019-05-22 12:27:38', 123456, 789456),
+(5, NULL, '2019-05-22', '', 3, 0, 4, 3, 'C', NULL, NULL, 5, 6, '2019-05-21 13:26:00', '2019-05-22 13:26:09', 123456, 6789),
+(6, NULL, '2019-05-22', '', 3, 0, 5, 4, 'C', NULL, NULL, 6, 6, '2019-05-15 15:07:36', '2019-05-22 15:07:38', 123456, 78946),
+(7, NULL, '2019-05-23', '', 3, 0, 1, 5, 'C', NULL, NULL, 1, 6, '2019-05-22 16:07:39', '2019-05-23 16:07:42', 212, 345);
+
 -- --------------------------------------------------------
 
 --
@@ -7374,6 +7415,13 @@ CREATE TABLE `orden_trabajo` (
   `lectura_ejecutada` double DEFAULT NULL,
   `case_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `orden_trabajo`
+--
+
+INSERT INTO `orden_trabajo` (`id_orden`, `id_tarea`, `nro`, `fecha`, `fecha_program`, `fecha_inicio`, `fecha_entrega`, `fecha_terminada`, `fecha_aviso`, `fecha_entregada`, `descripcion`, `cliId`, `estado`, `id_usuario`, `id_usuario_a`, `id_usuario_e`, `id_sucursal`, `id_proveedor`, `id_solicitud`, `tipo`, `id_equipo`, `duracion`, `id_tareapadre`, `id_empresa`, `lectura_programada`, `lectura_ejecutada`, `case_id`) VALUES
+(1, 0, '1', '2019-05-23', '2019-05-01 11:01:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', 1, 'PL', 3, 1, 1, 1, 0, 1, '4', 3, 0, 1, 6, 0, 0, 27020);
 
 -- --------------------------------------------------------
 
@@ -8364,7 +8412,7 @@ INSERT INTO `sismenu` (`id`, `parent`, `name`, `icon`, `slug`, `number`, `estado
 (32, 29, 'ABM Contratista', 'fa fa-fw fa-life-ring', 'Contratista', 4, 'AC'),
 (33, 7, 'Parametrizar Predictivo', 'fa fa-fw fa-bullhorn', 'Parametro', 5, 'AC'),
 (34, 29, 'ABM Deposito', 'fa fa-fw fa-qrcode', 'Deposito', 5, 'AC'),
-(35, 29, 'ABM Tareas', 'fa fa-fw fa-street-view', 'Tarea', 6, 'AC'),
+(35, 29, 'ABM Tareas', 'fa fa-fw fa-street-view', 'Tarea/index2', 6, 'AC'),
 (36, 29, 'ABM Parametros', 'fa fa-fw fa-adjust', 'Altparametro', 6, 'AC'),
 (37, 29, 'ABM Proveedor', 'fa fa-fw fa-truck', 'Proveedor', 7, 'AC'),
 (38, 29, 'ABM Familia', 'fa fa-fw fa-check-square', 'Family', 8, 'AC'),
@@ -8786,6 +8834,13 @@ CREATE TABLE `solicitud_reparacion` (
   `urgente` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+--
+-- Volcado de datos para la tabla `solicitud_reparacion`
+--
+
+INSERT INTO `solicitud_reparacion` (`id_solicitud`, `numero`, `id_tipo`, `nivel`, `solicitante`, `f_solicitado`, `f_sugerido`, `hora_sug`, `id_equipo`, `correctivo`, `causa`, `observaciones`, `estado`, `usrId`, `fecha_conformidad`, `observ_conformidad`, `foto1`, `foto2`, `foto3`, `foto`, `id_empresa`, `case_id`, `urgente`) VALUES
+(1, NULL, NULL, NULL, 'Gallardo, Hugo', '2019-05-23 17:59:07', '2019-05-24', '08:00:00', 3, NULL, 'falla 1 test', NULL, 'S', 4, '0000-00-00', '', NULL, NULL, NULL, 'assets/files/orders/sinImagen.jpg', 6, 27020, 0);
+
 -- --------------------------------------------------------
 
 --
@@ -8849,7 +8904,9 @@ INSERT INTO `tareas` (`id_tarea`, `descripcion`, `estado`, `id_empresa`, `form_a
 (228, 'Regulación de Intercambiador de Barras ', 'AC', 6, NULL, 1),
 (229, 'Limpieza de Difusor de Grasa de Barras', 'AC', 6, NULL, 1),
 (230, 'Limpieza de Mangon de Succión primario ', 'AC', 6, NULL, 1),
-(231, 'Rectificacion de Motor naftero', 'AC', 6, 0, 1);
+(231, 'Rectificacion de Motor naftero', 'AC', 6, 0, 1),
+(232, 'Tarea Test 1', 'AN', 6, NULL, 0),
+(233, 'tarea ', 'AN', 6, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -8873,6 +8930,13 @@ CREATE TABLE `tbl_back` (
   `sore_id` int(11) DEFAULT NULL,
   `tarea_opcional` varchar(500) COLLATE utf8_spanish_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `tbl_back`
+--
+
+INSERT INTO `tbl_back` (`backId`, `id_equipo`, `id_tarea`, `fecha`, `horash`, `estado`, `back_duracion`, `id_unidad`, `back_canth`, `id_empresa`, `idcomponenteequipo`, `back_adjunto`, `sore_id`, `tarea_opcional`) VALUES
+(1, 3, 0, '2019-05-16', NULL, 'PL', 0, NULL, 0, 6, 0, NULL, 1, '');
 
 -- --------------------------------------------------------
 
@@ -8956,7 +9020,14 @@ CREATE TABLE `tbl_detavalesalida` (
 
 INSERT INTO `tbl_detavalesalida` (`detavid`, `valesid`, `herrId`, `observa`, `dest`, `id_empresa`) VALUES
 (1, 1, 4, NULL, NULL, 6),
-(2, 1, 6, NULL, NULL, 6);
+(2, 2, 4, NULL, NULL, 6),
+(3, 2, 7, NULL, NULL, 6),
+(4, 3, 32, NULL, NULL, 6),
+(5, 3, 17, NULL, NULL, 6),
+(6, 4, 4, NULL, NULL, 6),
+(7, 4, 7, NULL, NULL, 6),
+(8, 5, 4, NULL, NULL, 6),
+(9, 5, 8, NULL, NULL, 6);
 
 -- --------------------------------------------------------
 
@@ -8988,7 +9059,9 @@ INSERT INTO `tbl_estado` (`estadoid`, `descripcion`, `estado`) VALUES
 (11, 'ENTREGADO', 'E'),
 (12, 'PEDIDO', 'P'),
 (13, 'ASIGNADO', 'As'),
-(14, 'ANULADO', 'AN');
+(14, 'ANULADO', 'AN'),
+(15, 'BORRADOR', 'B'),
+(16, 'CERRADO', 'CE');
 
 -- --------------------------------------------------------
 
@@ -9179,6 +9252,40 @@ CREATE TABLE `tbl_otherramientas` (
   `id_empresa` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+--
+-- Volcado de datos para la tabla `tbl_otherramientas`
+--
+
+INSERT INTO `tbl_otherramientas` (`id`, `otId`, `herrId`, `cantidad`, `id_empresa`) VALUES
+(1, 9, 31, 13, 6),
+(2, 9, 91, 33, 6),
+(3, 9, 31, 13, 6),
+(4, 9, 91, 33, 6),
+(5, 10, 37, 23, 6),
+(6, 10, 43, 12, 6),
+(7, 10, 37, 23, 6),
+(8, 10, 43, 12, 6),
+(9, 1, 31, 13, 6),
+(10, 1, 91, 33, 6),
+(11, 1, 31, 13, 6),
+(12, 1, 91, 33, 6),
+(13, 2, 31, 13, 6),
+(14, 2, 91, 33, 6),
+(15, 2, 31, 13, 6),
+(16, 2, 91, 33, 6),
+(17, 1, 31, 13, 6),
+(18, 1, 91, 33, 6),
+(19, 1, 31, 13, 6),
+(20, 1, 91, 33, 6),
+(21, 2, 31, 13, 6),
+(22, 2, 91, 33, 6),
+(23, 2, 31, 13, 6),
+(24, 2, 91, 33, 6),
+(25, 1, 31, 13, 6),
+(26, 1, 91, 33, 6),
+(27, 1, 31, 13, 6),
+(28, 1, 91, 33, 6);
+
 -- --------------------------------------------------------
 
 --
@@ -9192,6 +9299,40 @@ CREATE TABLE `tbl_otinsumos` (
   `cantidad` double NOT NULL,
   `id_empresa` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `tbl_otinsumos`
+--
+
+INSERT INTO `tbl_otinsumos` (`id`, `otId`, `artId`, `cantidad`, `id_empresa`) VALUES
+(1, 9, 42, 13, 6),
+(2, 9, 48, 4, 6),
+(3, 9, 42, 13, 6),
+(4, 9, 48, 4, 6),
+(5, 10, 145, 2, 6),
+(6, 10, 42, 35, 6),
+(7, 10, 145, 2, 6),
+(8, 10, 42, 35, 6),
+(9, 1, 42, 13, 6),
+(10, 1, 48, 4, 6),
+(11, 1, 42, 13, 6),
+(12, 1, 48, 4, 6),
+(13, 2, 42, 13, 6),
+(14, 2, 48, 4, 6),
+(15, 2, 42, 13, 6),
+(16, 2, 48, 4, 6),
+(17, 1, 42, 13, 6),
+(18, 1, 48, 4, 6),
+(19, 1, 42, 13, 6),
+(20, 1, 48, 4, 6),
+(21, 2, 42, 13, 6),
+(22, 2, 48, 4, 6),
+(23, 2, 42, 13, 6),
+(24, 2, 48, 4, 6),
+(25, 1, 42, 13, 6),
+(26, 1, 48, 4, 6),
+(27, 1, 42, 13, 6),
+(28, 1, 48, 4, 6);
 
 -- --------------------------------------------------------
 
@@ -9207,6 +9348,13 @@ CREATE TABLE `tbl_predictivoherramientas` (
   `id_empresa` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+--
+-- Volcado de datos para la tabla `tbl_predictivoherramientas`
+--
+
+INSERT INTO `tbl_predictivoherramientas` (`id`, `predId`, `herrId`, `cantidad`, `id_empresa`) VALUES
+(1, 1, 86, 2, 6);
+
 -- --------------------------------------------------------
 
 --
@@ -9220,6 +9368,13 @@ CREATE TABLE `tbl_predictivoinsumos` (
   `cantidad` double NOT NULL,
   `id_empresa` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `tbl_predictivoinsumos`
+--
+
+INSERT INTO `tbl_predictivoinsumos` (`id`, `predId`, `artId`, `cantidad`, `id_empresa`) VALUES
+(1, 1, 96, 23, 6);
 
 -- --------------------------------------------------------
 
@@ -9235,6 +9390,16 @@ CREATE TABLE `tbl_preventivoherramientas` (
   `id_empresa` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Volcado de datos para la tabla `tbl_preventivoherramientas`
+--
+
+INSERT INTO `tbl_preventivoherramientas` (`id`, `prevId`, `herrId`, `cantidad`, `id_empresa`) VALUES
+(1, 1, 31, 13, 6),
+(2, 1, 91, 33, 6),
+(3, 2, 37, 23, 6),
+(4, 2, 43, 12, 6);
+
 -- --------------------------------------------------------
 
 --
@@ -9248,6 +9413,16 @@ CREATE TABLE `tbl_preventivoinsumos` (
   `cantidad` double NOT NULL,
   `id_empresa` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `tbl_preventivoinsumos`
+--
+
+INSERT INTO `tbl_preventivoinsumos` (`id`, `prevId`, `artId`, `cantidad`, `id_empresa`) VALUES
+(1, 1, 42, 13, 6),
+(2, 1, 48, 4, 6),
+(3, 2, 145, 2, 6),
+(4, 2, 42, 35, 6);
 
 -- --------------------------------------------------------
 
@@ -9353,6 +9528,17 @@ CREATE TABLE `tbl_valesalida` (
   `dest` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish_ci DEFAULT NULL,
   `id_empresa` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `tbl_valesalida`
+--
+
+INSERT INTO `tbl_valesalida` (`valesid`, `fecha`, `usrId`, `respons`, `dest`, `id_empresa`) VALUES
+(1, '2019-05-22', 1, NULL, NULL, 6),
+(2, '2019-05-22', 1, NULL, NULL, 6),
+(3, '2019-05-22', 1, NULL, NULL, 6),
+(4, '2019-05-22', 1, NULL, NULL, 6),
+(5, '2019-05-23', 1, NULL, NULL, 6);
 
 -- --------------------------------------------------------
 
@@ -10190,7 +10376,7 @@ ALTER TABLE `asignaherramientas`
 -- AUTO_INCREMENT de la tabla `asignausuario`
 --
 ALTER TABLE `asignausuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT de la tabla `asp_detaplantillainsumos`
 --
@@ -10220,7 +10406,7 @@ ALTER TABLE `clientes`
 -- AUTO_INCREMENT de la tabla `componenteequipo`
 --
 ALTER TABLE `componenteequipo`
-  MODIFY `idcomponenteequipo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `idcomponenteequipo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT de la tabla `componentes`
 --
@@ -10260,7 +10446,7 @@ ALTER TABLE `deta_ordeninsumos`
 -- AUTO_INCREMENT de la tabla `deta_ordenservicio`
 --
 ALTER TABLE `deta_ordenservicio`
-  MODIFY `id_detasercicio` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_detasercicio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT de la tabla `deta_remito`
 --
@@ -10340,7 +10526,7 @@ ALTER TABLE `herramientas`
 -- AUTO_INCREMENT de la tabla `historial_lecturas`
 --
 ALTER TABLE `historial_lecturas`
-  MODIFY `id_lectura` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_lectura` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT de la tabla `infocomponentes`
 --
@@ -10380,12 +10566,12 @@ ALTER TABLE `orden_pedido`
 -- AUTO_INCREMENT de la tabla `orden_servicio`
 --
 ALTER TABLE `orden_servicio`
-  MODIFY `id_orden` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_orden` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT de la tabla `orden_trabajo`
 --
 ALTER TABLE `orden_trabajo`
-  MODIFY `id_orden` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_orden` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT de la tabla `parametroequipo`
 --
@@ -10475,7 +10661,7 @@ ALTER TABLE `sisusers`
 -- AUTO_INCREMENT de la tabla `solicitud_reparacion`
 --
 ALTER TABLE `solicitud_reparacion`
-  MODIFY `id_solicitud` int(100) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_solicitud` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT de la tabla `sucursal`
 --
@@ -10485,12 +10671,12 @@ ALTER TABLE `sucursal`
 -- AUTO_INCREMENT de la tabla `tareas`
 --
 ALTER TABLE `tareas`
-  MODIFY `id_tarea` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=232;
+  MODIFY `id_tarea` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=234;
 --
 -- AUTO_INCREMENT de la tabla `tbl_back`
 --
 ALTER TABLE `tbl_back`
-  MODIFY `backId` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `backId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT de la tabla `tbl_backlogherramientas`
 --
@@ -10515,12 +10701,12 @@ ALTER TABLE `tbl_detavaledescarga`
 -- AUTO_INCREMENT de la tabla `tbl_detavalesalida`
 --
 ALTER TABLE `tbl_detavalesalida`
-  MODIFY `detavid` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `detavid` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 --
 -- AUTO_INCREMENT de la tabla `tbl_estado`
 --
 ALTER TABLE `tbl_estado`
-  MODIFY `estadoid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `estadoid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT de la tabla `tbl_estanteria`
 --
@@ -10550,32 +10736,32 @@ ALTER TABLE `tbl_otadjuntos`
 -- AUTO_INCREMENT de la tabla `tbl_otherramientas`
 --
 ALTER TABLE `tbl_otherramientas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 --
 -- AUTO_INCREMENT de la tabla `tbl_otinsumos`
 --
 ALTER TABLE `tbl_otinsumos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 --
 -- AUTO_INCREMENT de la tabla `tbl_predictivoherramientas`
 --
 ALTER TABLE `tbl_predictivoherramientas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT de la tabla `tbl_predictivoinsumos`
 --
 ALTER TABLE `tbl_predictivoinsumos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT de la tabla `tbl_preventivoherramientas`
 --
 ALTER TABLE `tbl_preventivoherramientas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT de la tabla `tbl_preventivoinsumos`
 --
 ALTER TABLE `tbl_preventivoinsumos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT de la tabla `tbl_tipoordentrabajo`
 --
@@ -10600,7 +10786,7 @@ ALTER TABLE `tbl_valedesacarga`
 -- AUTO_INCREMENT de la tabla `tbl_valesalida`
 --
 ALTER TABLE `tbl_valesalida`
-  MODIFY `valesid` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `valesid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT de la tabla `tipocuenta`
 --

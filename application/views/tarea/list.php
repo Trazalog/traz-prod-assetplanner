@@ -160,7 +160,7 @@ function eliminarTarea(){
 
 function ActualizarPagina(){ //Funcion Resfresca
   $('#content').empty();
-  $("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+  $("#content").load("<?php echo base_url(); ?>index.php/Tarea/index2/<?php echo $permission; ?>");
 }
 
 $(function () {

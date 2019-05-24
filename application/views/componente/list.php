@@ -124,21 +124,21 @@ var idequipo     = "";
 
   // Llena los datos del modal editar
   function llenarComponentes(idEquipo, idComponente) { // Ok
+
     $.ajax({
-      //data: { idequipo:idEquipo },
+
       dataType: 'json',
       type: 'POST',
-      //url:  'index.php/Componente/getcompo',
       url:  'index.php/Componente/getcomponente',
+
       success: function(data){
-        //console.table(data);
         $('#componente').empty();
-        for(var i=0; i < data.length ; i++) {
-          var nombre = data[i]['descripcion'];
-          var marca = data[i]['marcadescrip'];
-          var selected = (idComponente == data[i]['id_componente']) ? 'selected' : '';
-          var opcion  = "<option value='"+data[i]['id_componente']+"' " +selected+ ">" +nombre+ " - " +marca+ "</option>" ; 
-          $('#componente').append(opcion); 
+
+        for(var i=0; i < data.length ; i++) { 
+          var selected = (idComponente == data[i]['value']) ? 'selected' : '';
+          var opcion  = "<option value='"+data[i]['value']+"' " +selected+ ">"+ data[i]['label']+ "</option>" ;
+
+          $('#componente').append(opcion);
         }
       },
       error: function(result){

@@ -486,16 +486,17 @@ class Calendario extends CI_Controller {
 				
 				if($idSolRep == NULL){	//viene de item menu 
 					// lanzar proceso
-					$contract = array(
-												"idSolicitudServicio"	=>	0,
-												"idOT"  => 	$id
-											);
-					$responce = $this->bpm->LanzarProceso($contract);
-					// guardo el caseid en OTrabajo
-					if($responce['status']){					
-						$case_id = $responce['case_id'];
-						$this->Otrabajos->setCaseidenOT($case_id, $id);					
-					}	
+					//TODO: ACA COMENTE ENTENDER SI BORRAR
+					// $contract = array(
+					// 							"idSolicitudServicio"	=>	0,
+					// 							"idOT"  => 	$id
+					// 						);
+					// $responce = $this->bpm->LanzarProceso($contract);
+					// // guardo el caseid en OTrabajo
+					// if($responce['status']){					
+					// 	$case_id = $responce['case_id'];
+					// 	$this->Otrabajos->setCaseidenOT($case_id, $id);					
+					// }	
 					$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas');
 					return $task_id;		
 
@@ -506,22 +507,30 @@ class Calendario extends CI_Controller {
 					return $task_id;			
 				}
 		}
-		
+		//TODO: ACA AGREGUE
 		// Para el resto de las Tareas (Predictivo, Preventivo)
-		// lanzar proceso
-		$contract = array(
-			"idSolicitudServicio"	=>	0,
-			"idOT"  => 	$id
-		);
-		$responce = $this->bpm->LanzarProceso($contract);
-		// guardo el caseid en OTrabajo
-		if($responce['status']){					
-			$case_id = $responce['case_id'];
-			$this->Otrabajos->setCaseidenOT($case_id, $id);					
-		}
-		// retorna task id 		
-		$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas');		
+		//  devuelve task		
+		$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas Urgente');			
+		
 		return $task_id;
+				
+		
+		
+		//TODO: ACA COMENTE
+					// // lanzar proceso
+					// $contract = array(
+					// 	"idSolicitudServicio"	=>	0,
+					// 	"idOT"  => 	$id
+					// );
+					// $responce = $this->bpm->LanzarProceso($contract);
+					// // guardo el caseid en OTrabajo
+					// if($responce['status']){					
+					// 	$case_id = $responce['case_id'];
+					// 	$this->Otrabajos->setCaseidenOT($case_id, $id);					
+					// }
+					// // retorna task id 		
+					// $task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas');		
+					// return $task_id;
 	}
 
 	

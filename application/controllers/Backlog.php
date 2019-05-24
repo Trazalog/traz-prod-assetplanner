@@ -12,7 +12,7 @@ class Backlog extends CI_Controller {
 	}
 
 	public function index($permission){
-		$data['list'] = $this->Backlogs->backlog_List();
+		$data['list'] = $this->Backlogs->backlog_List();		
 		$data['permission'] = $permission;
 		$this->load->view('backlog/list', $data);
 	}
@@ -74,9 +74,12 @@ class Backlog extends CI_Controller {
 		$ide=$_GET['datos'];
 
 		$result = $this->Backlogs->geteditar($id);
+		//dump($result, 'back sin tarea: ');
 		if($result){	
 			$arre['datos'] = $result;
 			$result2 = $this->Backlogs->traerequiposBack($ide,$id);
+		//dump($result2, 'equipos: ');
+		
 			//dump($result2, 'equipos: ');
 			//if($result2){
 				$arre['equipo']=$result2;
@@ -227,7 +230,7 @@ public function editarNuevo(){
 				'idcomponenteequipo' => $idce,
 				'tarea_opcional'=> $tarOpc
 			);
-
+	
 		$result = $this->Backlogs->editar_backlogs($datos,$idBacklog);
 		
 		// trae la cabecera
