@@ -218,7 +218,8 @@ class Calendario extends CI_Controller {
 								"idSolicitudServicio"	=>	0,
 								"idOT"  => 	$idOT
 							);						
-							$result = $this->bpm->LanzarProceso($contract);								
+							$result = $this->bpm->LanzarProceso($contract);	
+							dump($result, 'respuesta lanzamiento proceso bpm: ');							
 							// guarda case id generado el lanzar proceso				
 							$respcaseOT = $this->Calendarios->setCaseidenOT($result['case_id'], $idOT);					
 					}else{
