@@ -1129,23 +1129,27 @@ class Otrabajos extends CI_Model {
 	//devuelve valores de todos los datos de la OT para mostrar en modal.
     function getViewDataBacklog($idOt, $idSolicitud)
     {
-    	$this->db->select('orden_trabajo.id_orden, orden_trabajo.nro, orden_trabajo.descripcion AS descripcionFalla, orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, 
-    		orden_trabajo.fecha_program, tbl_estado.descripcion AS estado, sisusers.usrName, sisusers.usrLastName, 
-    		orden_trabajo.tipo, orden_trabajo.id_solicitud,
-    		sucursal.id_sucursal, sucursal.descripc,
-    		abmproveedores.provid, abmproveedores.provnombre,
-    		equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, equipos.descripcion AS descripcionEquipo');
+			$this->db->select('orden_trabajo.id_orden, orden_trabajo.nro, 
+												orden_trabajo.estado,
+												orden_trabajo.descripcion AS descripcionFalla, 
+												orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, 
+												orden_trabajo.fecha_program, 
+												sisusers.usrName, sisusers.usrLastName, 
+												orden_trabajo.tipo, orden_trabajo.id_solicitud,
+												sucursal.id_sucursal, sucursal.descripc,
+												abmproveedores.provid, abmproveedores.provnombre,
+												equipos.codigo, equipos.fecha_ingreso, equipos.marca, 
+												equipos.ubicacion, equipos.descripcion AS descripcionEquipo');
         $this->db->from('orden_trabajo');
         $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
-        $this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal', 'left');
-        $this->db->join('abmproveedores', 'abmproveedores.provid = orden_trabajo.id_proveedor', 'left');
+        $this->db->join('sucursal', 'orden_trabajo.id_sucursal =  sucursal.id_sucursal', 'left');
+        $this->db->join('abmproveedores', 'orden_trabajo.id_proveedor = abmproveedores.provid', 'left');
         $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
-        //$this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
+      	//$this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
         $this->db->where('orden_trabajo.id_orden', $idOt);
 
         $query = $this->db->get();
-				$dato = $this->db->last_query();
-				dump($dato, 'backlog info: ');
+				
 				if($query->num_rows()!=0)
         {
             $datos = $query->result_array();
@@ -1159,25 +1163,30 @@ class Otrabajos extends CI_Model {
         }
     }
 
-		function getViewDataTareaBacklog($idBacklog)
-	    {
-	    	$this->db->select('tbl_back.fecha, tbl_back.back_duracion, tbl_back.idcomponenteequipo,
-	    		tareas.descripcion AS tareadescrip');
-	        $this->db->from('tbl_back');
-	        $this->db->join('tareas', 'tareas.id_tarea = tbl_back.tarea_descrip');
-	        $this->db->where('tbl_back.backId', $idBacklog);
-	        $query = $this->db->get();
-	        if($query->num_rows()!=0)
-	        {
-	            $tarea = $query->result_array();
-	            $tarea[0]['compEquipo'] = $this->getViewDataComponenteEquipoBacklog( $tarea[0]['idcomponenteequipo']);
-	            return $tarea[0];
-	        }
-	        else
-	        {
-	            return null;
-	        }
-	    }
+		function getViewDataTareaBacklog($idBacklog){
+			$this->db->select('tbl_back.fecha,
+												tbl_back.id_tarea,	 
+												tbl_back.back_duracion, 
+												tbl_back.tarea_opcional,
+												tbl_back.idcomponenteequipo,
+												tareas.descripcion AS tareadescrip');
+			$this->db->from('tbl_back');
+			$this->db->join('tareas', 'tbl_back.id_tarea = tareas.id_tarea', 'left');
+			$this->db->where('tbl_back.backId', $idBacklog);
+			$query = $this->db->get();
+			//$dato = $this->db->last_query();
+			//dump($dato, 'backlog info: ');
+				if($query->num_rows()!=0)
+				{
+						$tarea = $query->result_array();
+						$tarea[0]['compEquipo'] = $this->getViewDataComponenteEquipoBacklog( $tarea[0]['idcomponenteequipo']);
+						return $tarea[0];
+				}
+				else
+				{
+						return null;
+				}
+	  }
 
 	    function getViewDataComponenteEquipoBacklog($idComponenteEquipo)
 	    {

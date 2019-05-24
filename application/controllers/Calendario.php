@@ -219,7 +219,7 @@ class Calendario extends CI_Controller {
 								"idOT"  => 	$idOT
 							);						
 							$result = $this->bpm->LanzarProceso($contract);	
-							dump($result, 'respuesta lanzamiento proceso bpm: ');							
+							//dump($result, 'respuesta lanzamiento proceso bpm: ');							
 							// guarda case id generado el lanzar proceso				
 							$respcaseOT = $this->Calendarios->setCaseidenOT($result['case_id'], $idOT);					
 					}else{
@@ -252,10 +252,12 @@ class Calendario extends CI_Controller {
 						$tipo = 'predictivo';
 						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);						
 					}	
+
+					// guarda los Insumos y herramientas de Backlog, predict y prenvent segun tipo
+					$this->setHerramInsPorTarea($idOT,$tipo,$id_solicitud);
 				}	     	
 					
-				// guarda los Insumos y herramientas de Backlog, predict y prenvent segun tipo
-				$this->setHerramInsPorTarea($idOT,$tipo,$id_solicitud);
+				
 		}
 	  return true;
 	    

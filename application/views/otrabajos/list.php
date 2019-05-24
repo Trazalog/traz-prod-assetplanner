@@ -1801,11 +1801,17 @@ function guardarpedido(){
           'tarea'          : data['tarea'],
         };
       })
-      .fail( () => alert( "Error al traer los datos de la OT." ) );
+     
+      .fail( () => alert( "Error al traer los datos de la OT." ) )
+      .always( () => WaitingClose() );
       return datos;
     }
     //llena datos del modal preventivo
     function fillModalViewBacklog(datos){
+
+      //console.table(datos['tarea']['tarea_opcional']);
+
+
       //llenar datos de ot
       $('#vNroOtBack').val(datos['nro']);
       $('#vDescripFallaBack').val(datos['descripcion_ot']);
@@ -1825,11 +1831,18 @@ function guardarpedido(){
       $('#vUbicacionEquipoBack').val(datos['ubicacion']);
       $('#vDescripcionEquipoBack').val(datos['descripcion_eq']);
       //llenar campos de componente-equipo
-      $('#vCodigoCompBack').val( datos['tarea']['compEquipo']['codigoComponente'] );
-      $('#vDescripCompBack').val( datos['tarea']['compEquipo']['descripComponente'] );
-      $('#vSistemaBack').val( datos['tarea']['compEquipo']['descripSistema'] );
-      //llenar campos de tarea
-      $('#vTareaBack').val( datos['tarea']['tareadescrip'] );
+      // $('#vCodigoCompBack').val( datos['tarea']['compEquipo']['codigoComponente'] );
+      // $('#vDescripCompBack').val( datos['tarea']['compEquipo']['descripComponente'] );
+      // $('#vSistemaBack').val( datos['tarea']['compEquipo']['descripSistema'] );
+      
+      console.table(datos['tarea']);
+      if (datos['tarea']['id_tarea'] == 0) {
+        $('#vTareaBack').val( datos['tarea']['tarea_opcional'] );    
+      } else {
+        $('#vTareaBack').val( datos['tarea']['tareadescrip'] );    
+      }
+     
+      
       $('#vFechaBack').val( datos['tarea']['fecha'] );
       $('#vDuracionBack').val( datos['tarea']['back_duracion'] );
     }

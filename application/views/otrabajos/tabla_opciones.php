@@ -27,13 +27,13 @@
 
     if (strpos($permission,'Edit') !== false) {
 
-				 echo '<li role="presentation"><a onclick="editar(this)" style="color:white;" role="menuitem" tabindex="-1" href="#" data-toggle="modal" data-target="#modaleditar"><i class="fa fa-pencil text-white" style="color:white; cursor: pointer;"></i>Editar</a></li>';
+			echo '<li role="presentation"><a onclick="editar(this)" style="color:white;" role="menuitem" tabindex="-1" href="#" data-toggle="modal" data-target="#modaleditar"><i class="fa fa-pencil text-white" style="color:white; cursor: pointer;"></i>Editar</a></li>';
   
     }
 
     if (strpos($permission,'Del') !== false) {
 
-        echo '<li role="presentation"><a style="color:white;" role="menuitem" tabindex="-1" href="#" data-toggle="modal" data-target="#modalaviso"><i class="fa fa-times-circle text-white" style="color:white; cursor: pointer;"></i>Eliminar</a></li>';
+			echo '<li role="presentation"><a style="color:white;" role="menuitem" tabindex="-1" href="#" data-toggle="modal" data-target="#modalaviso"><i class="fa fa-times-circle text-white" style="color:white; cursor: pointer;"></i>Eliminar</a></li>';
    
     }
 
@@ -42,16 +42,14 @@
 
         echo '<li role="presentation" id="cargOrden"><a onclick="generar_informe_servicio(this)" style="color:white;" role="menuitem" tabindex="-1" href="#" ><i class="fa fa-file-text text-white" style="color:white; cursor: pointer;margin-left:-1px"></i>Informe de Servicios</a></li>';
    
-    }
-   
+    }   
   
     if (strpos($permission,'Pedidos') !== false) {
 
-        echo '<li role="presentation"><a onclick="mostrar_pedido(this)"style="color:white;" role="menuitem" tabindex="-1" href="#" data-toggle="modal" data-target="#modallista"><i class="fa fa-truck text-white" style="color:white; cursor: pointer;margin-left:-3px"></i>Mostrar Pedido</a></li>';
-    
+        echo '<li role="presentation"><a onclick="mostrar_pedido(this)"style="color:white;" role="menuitem" tabindex="-1" href="#" data-toggle="modal" data-target="#modallista"><i class="fa fa-truck text-white" style="color:white; cursor: pointer;margin-left:-3px"></i>Mostrar Pedido</a></li>';    
     }
 
-		echo '<li role="presentation"><a onclick="mostrarOT(this)"style="color:white;" role="menuitem" tabindex="-1" href="#" data-toggle="modal" data-target="#modallista"><i class="fa fa-search text-white" style="color:white; cursor: pointer;margin-left:-3px"></i>Ver OT</a></li>';
+		echo '<li role="presentation"><a onclick="mostrarOT(this)"style="color:white;" role="menuitem" tabindex="-1" href="#" data-toggle="modal" data-target="#verOtBacklog"><i class="fa fa-search text-white" style="color:white; cursor: pointer;margin-left:-3px"></i>Ver OT</a></li>';
     
     echo '</ul><div>';
 ?>

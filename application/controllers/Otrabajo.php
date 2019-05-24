@@ -272,6 +272,7 @@ class Otrabajo extends CI_Controller {
 			$arre['datos'] = $result;
 			// trae herramientas 
 			$herramientas = $this->Otrabajos->getOTHerramientas($id);
+		//dump($herramientas, 'herrramientas');
 			if($herramientas){
 				$arre['herramientas']=$herramientas;
 			}
@@ -1093,7 +1094,7 @@ class Otrabajo extends CI_Controller {
 		$idBacklog = $_POST['idBacklog'];
 		$response  = $this->Otrabajos->getViewDataBacklog($idOt, $idBacklog);
 
-			dump($response, 'datos de backlog: ');
+		//	dump($response, 'datos de backlog: ');
 
       	echo json_encode($response[0]);
 	}
