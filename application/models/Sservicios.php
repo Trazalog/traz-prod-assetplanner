@@ -15,14 +15,14 @@ class Sservicios extends CI_Model
 			$empId    = $userdata[0]['id_empresa'];
 			
 			$this->db->select('solicitud_reparacion.*,
-				equipos.codigo as equipo, 
-				sector.descripcion as sector, 
-				grupo.descripcion as grupo, 
-				equipos.ubicacion');
+												equipos.codigo as equipo, 
+												sector.descripcion as sector, 
+												grupo.descripcion as grupo, 
+												equipos.ubicacion');
 			$this->db->from('solicitud_reparacion');
 			$this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo');
 			$this->db->join('sector', 'equipos.id_sector = sector.id_sector');
-			$this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo');
+			$this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo', 'left');
 			//$this->db->where('solicitud_reparacion.estado', 'C');
 			//$this->db->or_where('solicitud_reparacion.estado', 'S');
 			$this->db->where('solicitud_reparacion.id_empresa', $empId);

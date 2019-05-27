@@ -273,63 +273,6 @@ var mes = "";
     WaitingClose();
   }
 
-
-  // valida mostrar el Btn ejecutar en modal 
-  // function visibBtnEjecutar(ot){
-  //   $('#ejecutar_ot').hide();
-  //   $.ajax({
-  //         type: 'POST', 
-  //         data: {ot:ot},
-  //         url: 'index.php/Otrabajo/visibBtnEjecutar',  
-  //         success: function(data){
-  //           WaitingClose();
-  //           // muestra btn ejecutar si el preceso esta lanzado  
-  //           if (data) {              
-  //             //$('#ejecutar_ot').show();
-  //             //alert('entre por true');
-  //             es_orden_a_ejectutar(ot);
-  //           } else {
-  //             //alert('entre por false');
-  //             $('#ejecutar_ot').hide();
-  //           }  
-  //           // muestra modal de Orden Trabajo
-  //           $('#modalPrevent').modal('show');
-  //         },
-  //         error: function(error){
-  //           WaitingClose();
-  //           alert('No se puede Obtener Estado de OT');
-  //           $('#modalPrevent').modal('show');
-  //           $('#ejecutar_ot').hide();
-  //         },
-  //         dataType: 'json'     
-  //     });
-  // }
-  // // guarda el task id para ejecutar la tarea
-  // function es_orden_a_ejectutar(ot){
-  //  // alert('entre en ejecutar ot: ' + ot);
-  //   $.ajax({
-  //         type: 'POST', 
-  //         data: {ot:ot},
-  //         url: 'index.php/Otrabajo/ObtenerTaskIDxOT',  
-  //         success: function(task){
-  //           WaitingClose();            
-  //           if (task != 0) {
-  //             $('#ejecutar_ot').show();
-  //             $('#numero').attr('task',task);
-  //           } else {
-  //             $('#ejecutar_ot').hide();
-  //           }  
-  //         },
-  //         error: function(error){
-  //           WaitingClose();
-  //           alert('No se Obtener Estado de OT');
-  //           $('#modalPrevent').modal('show');
-  //           $('#ejecutar_ot').hide();
-  //         }   
-  //     }); 
-  // } 
-  
-
 ///////////////////////////////////////////////////////////////
   $(".fa-print").click(function (e) {
     $("#calendar").printArea();
@@ -527,7 +470,7 @@ $("#fecha_progr_prevent_horas").datepicker({
     var hor_corr = $('#hora_progr_correct').val();
 
     $.ajax({
-          type: 'POST', //parametros:parametros
+          type: 'POST', 
           data: {
                   event_tipo: 1, // evento unico
                   id_sol : id_sol,

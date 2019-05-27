@@ -36,7 +36,7 @@ class BPM
 
 		//Interpretar Responce
 		$response = $this->parseHeaders( $http_response_header);
-
+		dump($response, 'respuesta en libreria: ');		
 		$code = $response['response_code'];
 		$body  = json_decode($body);
 		if($code<300){

@@ -18,7 +18,8 @@
                 <th>Fecha</th>
                 <th>Periodo</th>
                 <th>Cantidad</th>
-                <th>Horas.H</th>                
+                <th>Horas.H</th>
+                <th>Estado</th>                
               </tr>
             </thead>
             <tbody>
@@ -53,7 +54,26 @@
                       echo '<td>'.$a['periodo'].'</td>';
                       echo '<td>'.$a['cantidad'].'</td>';
                       echo '<td>'.$a['horash'].'</td>';
-                                       
+                      echo '<td>';     
+                        if($a['estado'] == 'PL'){
+                        echo '<small class="label pull-left bg-yellow">Planificada</small>';
+                        }
+                        if($a['estado'] == 'AS'){
+                        echo '<small class="label pull-left bg-purple">Asignada</small>';
+                        }
+                        if ($a['estado'] == 'C') {
+                          echo '<small class="label pull-left bg-green">Curso</small>' ;
+                        }
+                        if ($a['estado'] == 'T') {
+                        echo  '<small class="label pull-left bg-blue">Terminada</small>';
+                        }
+                        if ($a['estado'] == 'CE') {
+                          echo  '<small class="label pull-left bg-primary">Cerrada</small>';
+                        }
+                        if ($a['estado'] == 'S') {
+                          echo  '<small class="label pull-left bg-red">Solicitada</small>';
+                        }
+                      echo '</td>';                                        
                       echo '</tr>';
                     //}                    
                   }

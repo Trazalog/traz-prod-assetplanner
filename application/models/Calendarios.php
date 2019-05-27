@@ -221,12 +221,10 @@ class Calendarios extends CI_Model {
 											INNER JOIN equipos ON equipos.id_equipo = solicitud_reparacion.id_equipo
 											INNER JOIN sector ON sector.id_sector = equipos.id_sector
 											WHERE solicitud_reparacion.id_empresa = $empId
-											AND solicitud_reparacion.estado != 'AN'
-											AND solicitud_reparacion.estado != 'OT'
+											AND solicitud_reparacion.estado != 'AN'										
+											AND solicitud_reparacion.estado != 'PL'
 											AND year(solicitud_reparacion.f_solicitado) = $year
-											AND month(solicitud_reparacion.f_solicitado) = $month
-											AND solicitud_reparacion.estado != 'OT'
-											";
+											AND month(solicitud_reparacion.f_solicitado) = $month";
         $query = $this->db->query($sql);
         if ($query->num_rows()!=0)
         {
@@ -486,6 +484,7 @@ class Calendarios extends CI_Model {
 													orden_trabajo.descripcion,
 													orden_trabajo.tipo,
 													orden_trabajo.id_solicitud,
+													orden_trabajo.fecha_program,
 													equipos.codigo,
 													equipos.descripcion AS descripcionEquipo,
 													tbl_tipoordentrabajo.descripcion AS descrpcionSolicitud');
@@ -493,7 +492,6 @@ class Calendarios extends CI_Model {
 				$this->db->join('equipos', 'orden_trabajo.id_equipo = equipos.id_equipo');
 				$this->db->join('tbl_tipoordentrabajo', 'tbl_tipoordentrabajo.id = orden_trabajo.tipo');			
 				$this->db->where('orden_trabajo.id_orden', $idOt);
- 
 				$query = $this->db->get();
 				if($query->num_rows()!=0)
 				{
@@ -503,6 +501,69 @@ class Calendarios extends CI_Model {
 				else
 				{
 						return array();
+				}
+		}
+
+		function getInfoTareaProgram($numtipo, $id_solicitud){
+			switch ($numtipo) {	
+				// correctivo
+				case '2':
+					// correctivo no tiene duracion...
+					$tipo = 'correctivo';
+					break;
+				// preventivo
+				case '3':
+					$this->db->select('unidad_tiempo.unidaddescrip,
+														preventivo.prev_duracion AS duracionTarea,
+														preventivo.cantidad AS frecuencia,
+														periodo.descripcion AS especieFrecuencia');
+					$this->db->from('unidad_tiempo');
+					$this->db->join('preventivo', 'unidad_tiempo.id_unidad = preventivo.id_unidad');
+					$this->db->join('periodo', 'preventivo.perido = periodo.idperiodo');
+					
+					$query = $this->db->get();
+					return $query->result_array();
+					break;
+				// backlog
+				case '4':
+					$this->db->select('tbl_back.back_duracion AS duracionTarea,
+														tbl_back.back_duracion AS frecuencia,
+														unidad_tiempo.unidaddescrip');
+					$this->db->from('unidad_tiempo');									
+					$this->db->join('tbl_back', 'unidad_tiempo.id_unidad = tbl_back.id_unidad');
+					$query = $this->db->get();
+					return $query->result_array();				
+					break;
+				// predictivo
+				default:			
+					$this->db->select('predictivo.pred_duracion AS duracionTarea,
+														predictivo.id_unidad,
+														predictivo.cantidad AS frecuencia,
+														unidad_tiempo.unidaddescrip');
+					$this->db->from('unidad_tiempo');
+					$this->db->join('predictivo', 'predictivo.id_unidad = predictivo.id_unidad');
+					$this->db->where('predictivo.predId', $id_solicitud);	
+					$query = $this->db->get();
+					return $query->result_array();
+					break;
+			}
+		}
+
+		//devuelve valores de todos los datos de la OT para mostrar en modal.
+		function getOrigenOt($idot)
+		{
+			$this->db->select('orden_trabajo.tipo, orden_trabajo.id_solicitud');
+				$this->db->from('orden_trabajo');
+				$this->db->where('orden_trabajo.id_orden', $idot);
+
+				$query = $this->db->get();
+				if($query->num_rows()!=0)
+				{
+						return $query->result_array();
+				}
+				else
+				{
+						return false;
 				}
 		}
 
@@ -533,17 +594,18 @@ class Calendarios extends CI_Model {
 			$userdata = $this->session->userdata('user_data');
 			$empId = $userdata[0]['id_empresa']; 
 
-			$this->db->select('tareas.id_tarea, tareas.descripcion');
-			$this->db->where('tareas.id_empresa',$empId);
+			$this->db->select('tareas.id_tarea, tareas.descripcion');			
 			$this->db->from('tareas');
+			$this->db->where('tareas.id_empresa',$empId);
 			$query= $this->db->get();
+			$query->result_array();
 			
-			if($query->num_rows()>0){
-					return $query->result_array();
-			}
-			else{
-					return array();
-			}			
+			// if($query->num_rows()>0){
+			// 		return $query->result_array();
+			// }
+			// else{
+			// 		return array();
+			// }			
 		}
 
 	//////// FUNCIONES CALENDARIO	

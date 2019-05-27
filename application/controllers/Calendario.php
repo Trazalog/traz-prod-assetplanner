@@ -199,6 +199,10 @@ class Calendario extends CI_Controller {
 						$infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);	
 						$respCerrar = $this->cerrarTarea($infoTarea['taskId']);							
 						$resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);	
+						// averiguo case para saber si es autogenerado por BPM o no
+						$caseDeBacklog = $infoTarea['caseId'];
+
+						dump($caseDeBacklog, 'case de backlog segun Sservicios:');
 					}
 					// $tipo == '5' -> Predictivo			
 					if($tipo == '5'){	
@@ -211,15 +215,18 @@ class Calendario extends CI_Controller {
 					$this->setHerramInsPorTarea($idOT,$tipo,$id_solicitud);
 										
 					// si es Preventivo o Predictivo lanza proceso nuevo
-					if ( ($tipo == 'preventivo') || ($tipo == 'predictivo')) {
-						
+					if ( ($tipo == 'preventivo') || ($tipo == 'predictivo') || $caseDeBacklog == 0 ) {
+						dump($tipo, 'entre por if forrito: ');
+						dump($idOT, 'id de OT: ');
 							$this->load->library('BPM');
+						
 							$contract = array(
-								"idSolicitudServicio"	=>	0,
-								"idOT"  => 	$idOT
-							);						
+									"idSolicitudServicio"	=> 0,		// 0 NULL  FALSE       // "" ''
+									"idOT"  => 	$idOT
+								);
+							dump($contract, 'contrrato BPM: ');	
 							$result = $this->bpm->LanzarProceso($contract);	
-							//dump($result, 'respuesta lanzamiento proceso bpm: ');							
+							dump($result, 'respuesta lanzamiento proceso bpm: ');							
 							// guarda case id generado el lanzar proceso				
 							$respcaseOT = $this->Calendarios->setCaseidenOT($result['case_id'], $idOT);					
 					}else{
@@ -453,8 +460,17 @@ class Calendario extends CI_Controller {
 	function verEjecutarOT($idOt){
 		
 		$data['idOt'] = $idOt;
-		$data['detaOT'] = $this->Calendarios->getDataOt($idOt);	
-		$data['tareas'] = $this->Calendarios->gettareas();	
+		// ifno de la OTrabajo
+		$data['detaOT'] = $this->Calendarios->getDataOt($idOt);			
+		// Tarea estandar
+		$data['tareas'] = $this->Calendarios->gettareas();
+		// Datos de la Solicitud que le da origen a la OT
+		$origen = $this->Calendarios->getOrigenOt($idOt);
+		//dump($origen, 'datos origen: ');
+		$numtipo = 	$origen[0]['tipo'];
+		$id_solicitud = $origen[0]['id_solicitud'];				
+		$data['infoSolicOrigen'] = $this->Calendarios->getInfoTareaProgram($numtipo, $id_solicitud);			
+		
 		$task = $this->ObtenerTaskIDxOT($idOt);
 		if ($task) {
 			$data['btnVisibilidad'] = true;

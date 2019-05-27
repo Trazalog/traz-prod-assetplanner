@@ -47,19 +47,34 @@
                              
                               <table id="tblOrden">
                                 <thead>
+                                  <th>F. Prog</th>
                                   <th>Nº Orden</th>
-                                  <th>Falla</th>
-                                  <th>Origen</th>
-                                  <th>Nº Solicitud Origen</th>
+                                  <th>Tipo</th>
+                                  <th>Nº Tarea</th>
+                                  <th>Desc. Tarea</th>
+                                  <!-- <th>Origen</th> -->
+                                  <th>Duracion</th>
+                                  <th>Frec.</th>  
+                                  
+                                  <!-- <th>Nº Solicitud Origen</th> -->
                                   <th>Codigo de Equipo</th>
-                                  <th>Descripción</th>
+                                  <th>Desc. Equipo</th>
                                 </thead>
                                 <tbody>
                                 <?php
-                                  echo '<td>'.$detaOT[0]['id_orden'].'</td>';
-                                  echo '<td>'.$detaOT[0]['descripcion'].'</td>';
-                                  echo '<td>'.$detaOT[0]['descrpcionSolicitud'].'</td>';
-                                  echo '<td>'.$detaOT[0]['id_solicitud'].'</td>';
+                                  echo '<td>'.$detaOT[0]["fecha_program"].'</td>';
+                                  if ($detaOT[0]['id_orden'] != NULL) {
+                                    echo '<td>'.$detaOT[0]['id_orden'].'</td>';
+                                  } else {
+                                    echo '<td> </td>';
+                                  }
+                                  
+                                  
+                                  echo '<td>'.$detaOT[0]["descrpcionSolicitud"].'</td>';
+                                  echo '<td>'.$detaOT[0]["id_solicitud"].'</td>';
+                                  echo '<td>'.$detaOT[0]['descripcion'].'</td>';                         
+                                  echo '<td>'.$infoSolicOrigen[0]["duracionTarea"]." ".$infoSolicOrigen[0]["unidaddescrip"] .'</td>';
+                                  echo '<td>'.$infoSolicOrigen[0]['frecuencia'].'</td>';
                                   echo '<td>'.$detaOT[0]['codigo'].'</td>';
                                   echo '<td>'.$detaOT[0]['descripcionEquipo'].'</td>';
                                 ?>  
