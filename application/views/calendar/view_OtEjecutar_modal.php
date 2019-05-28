@@ -114,6 +114,7 @@
                               <div class="col-xs-12 col-sm-6">
                                   <label for="tareaest">Tarea Estandar<strong style="color: #dd4b39">*</strong>:</label>                                 
                                   <?php
+                                  //dump($tareas, 'tareas en select: ');
                                     echo '<select id="tareaest" name="tareaest" class="form-control">';                       echo '<option value="-1" >"Seleccione..."</option>';            
                                    
                                     foreach ($tareas as $tarea) {    

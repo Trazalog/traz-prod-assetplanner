@@ -464,6 +464,8 @@ class Calendario extends CI_Controller {
 		$data['detaOT'] = $this->Calendarios->getDataOt($idOt);			
 		// Tarea estandar
 		$data['tareas'] = $this->Calendarios->gettareas();
+		
+		//dump($data['tareas'], 'tareas cont: ');
 		// Datos de la Solicitud que le da origen a la OT
 		$origen = $this->Calendarios->getOrigenOt($idOt);
 		//dump($origen, 'datos origen: ');
@@ -528,7 +530,7 @@ class Calendario extends CI_Controller {
 		//TODO: ACA AGREGUE
 		// Para el resto de las Tareas (Predictivo, Preventivo)
 		//  devuelve task		
-		$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas Urgente');			
+		$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas');			
 		
 		return $task_id;
 				

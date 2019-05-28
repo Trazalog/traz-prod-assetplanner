@@ -598,14 +598,14 @@ class Calendarios extends CI_Model {
 			$this->db->from('tareas');
 			$this->db->where('tareas.id_empresa',$empId);
 			$query= $this->db->get();
-			$query->result_array();
+			//$query->result_array();
 			
-			// if($query->num_rows()>0){
-			// 		return $query->result_array();
-			// }
-			// else{
-			// 		return array();
-			// }			
+			if($query->num_rows()>0){
+					return $query->result_array();
+			}
+			else{
+					return array();
+			}			
 		}
 
 	//////// FUNCIONES CALENDARIO	
