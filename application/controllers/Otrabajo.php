@@ -145,7 +145,7 @@ class Otrabajo extends CI_Controller {
     $datos2 = array(
 			'id_tarea'			=> $id_tar,
 			'fecha_program' => $fecha_inicio,
-			'fecha_inicio'  => $fecha_inicio,
+			//'fecha_inicio'  => $fecha_inicio,
 			'fecha_entrega' => $fecha_entrega,
 			'descripcion'   => $descripcion,
 			'estado'        => 'PL',

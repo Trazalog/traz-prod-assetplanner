@@ -49,8 +49,10 @@
         echo '<li role="presentation"><a onclick="mostrar_pedido(this)"style="color:white;" role="menuitem" tabindex="-1" href="#" data-toggle="modal" data-target="#modallista"><i class="fa fa-truck text-white" style="color:white; cursor: pointer;margin-left:-3px"></i>Mostrar Pedido</a></li>';    
     }
 
-		echo '<li role="presentation"><a onclick="mostrarOT(this)"style="color:white;" role="menuitem" tabindex="-1" href="#" data-toggle="modal" data-target="#verOtBacklog"><i class="fa fa-search text-white" style="color:white; cursor: pointer;margin-left:-3px"></i>Ver OT</a></li>';
-    
+    // echo '<li role="presentation"><a onclick="mostrarOT(this)"style="color:white;" role="menuitem" tabindex="-1" href="#" data-toggle="modal" data-target="#verOtBacklog"><i class="fa fa-search text-white" style="color:white; cursor: pointer;margin-left:-3px"></i>Ver OT</a></li>';
+
+    echo '<li role="presentation"><a onclick="mostrarOT(this)"style="color:white;" role="menuitem" tabindex="-1" href="#"><i class="fa fa-search text-white" style="color:white; cursor: pointer;margin-left:-3px"></i>Ver OT</a></li>';
+
     echo '</ul><div>';
 ?>
 

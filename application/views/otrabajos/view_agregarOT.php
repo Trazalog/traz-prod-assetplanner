@@ -71,7 +71,7 @@
                   </div>
                   <div class="row">
                     <div class="col-xs-12 col-sm-6">
-                      <label for="fechaInicio">Fecha Inicio:</label>
+                      <label for="fechaInicio">Fecha Programación:</label>
                       <input type="text" class="datepicker form-control fecha" id="fechaInicio" name="fechaInicio" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>
                     </div> 
                     

@@ -147,7 +147,7 @@ class Calendario extends CI_Controller {
 						'nro'           => 1,//por defecto( no se usa)
 						'fecha'         => date('Y-m-d'),				
 						'fecha_program' => $fec_programacion,
-						'fecha_inicio'  => $fecha_inicio,
+						//'fecha_inicio'  => $fecha_inicio,
 						'descripcion'   => $descripcion,
 						'cliId'         => 1,//por defecto( no se usa)
 						'estado'        =>'PL',	// estado Planificado
