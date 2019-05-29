@@ -68,7 +68,7 @@
                                   } else {
                                     echo '<td> </td>';
                                   }
-                                  
+                                  //dump($detaOT[0], 'datos de ot: ');
                                   
                                   echo '<td>'.$detaOT[0]["descrpcionSolicitud"].'</td>';
                                   echo '<td>'.$detaOT[0]["id_solicitud"].'</td>';
@@ -115,16 +115,19 @@
                                   <label for="tareaest">Tarea Estandar<strong style="color: #dd4b39">*</strong>:</label>                                 
                                   <?php
                                   //dump($tareas, 'tareas en select: ');
-                                    echo '<select id="tareaest" name="tareaest" class="form-control">';                       echo '<option value="-1" >"Seleccione..."</option>';            
+                                    echo '<select id="tareaest" name="tareaest" class="form-control">';
+                                    echo '<option value="-1" >"Seleccione..."</option>';            
                                    
                                     foreach ($tareas as $tarea) {    
                                       
                                       $t = $tarea['id_tarea'];
                                       $tOT = $detaOT[0]['id_tarea'];
+                                      // dump($t, 'id tarea std');
+                                      // dump($tOT, 'id tarea de OT');
 
                                      if($t == $tOT){                                     
                                       
-                                      echo '<option value="'.$tarea['id_tarea'].'" selected="selected>'.$tarea['descripcion'].'</option>';
+                                      echo '<option value="'.$tarea['id_tarea'].'" selected="selected">'.$tarea['descripcion'].'</option>';
                                       }else{
                                         echo '<option value="'.$tarea['id_tarea'].'">'.$tarea['descripcion'].'</option>';
                                       }

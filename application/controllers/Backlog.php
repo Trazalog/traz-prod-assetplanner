@@ -219,7 +219,7 @@ public function editarNuevo(){
 		$tarOpc = $this->input->post('tarea_opcional');
 		$idBacklog = $this->input->post('idBacklog');
 		$idTarBonita = $this->input->post('idTarBonita');
-		
+	
 		$datos = array(
 				'id_equipo'     => $eq,
 				'id_tarea' 		=> $ta,						
@@ -231,9 +231,9 @@ public function editarNuevo(){
 				'tarea_opcional'=> $tarOpc
 			);
 	
-		$result = $this->Backlogs->editar_backlogs($datos,$idBacklog);
+		$result = $this->Backlogs->editar_backlogs($datos,$idBacklog);		
 		
-		// trae la cabecera
+		// // trae la cabecera
 		$parametros = $this->Bonitas->conexiones();
 		// Cambio el metodo de la cabecera a "PUT"
 		$parametros["http"]["method"] = "POST";	
