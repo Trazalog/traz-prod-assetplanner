@@ -17,13 +17,13 @@
    
     }
 
-    if (strpos($permission,'Asignar') !== false) {		
+    // if (strpos($permission,'Asignar') !== false) {		
 
-				echo '<li role="presentation"><a onclick="verDetalleOT(this)" style="color:white;" role="menuitem" tabindex="-1" href="#"><i class="fa fa-user text-white" style="color:white; cursor: pointer;" ></i>Asignar OT</a></li>';
+	// 			echo '<li role="presentation"><a onclick="verDetalleOT(this)" style="color:white;" role="menuitem" tabindex="-1" href="#"><i class="fa fa-user text-white" style="color:white; cursor: pointer;" ></i>Asignar OT</a></li>';
        
-        echo '<li role="presentation"><a onclick="agregar_tareas(this)" style="color:white;" role="menuitem" tabindex="-1" href="#"><i class="fa fa-check-square text-white" style="color:white; cursor: pointer;"></i>Asignar Tareas</a></li>';
+    //     echo '<li role="presentation"><a onclick="agregar_tareas(this)" style="color:white;" role="menuitem" tabindex="-1" href="#"><i class="fa fa-check-square text-white" style="color:white; cursor: pointer;"></i>Asignar Tareas</a></li>';
         
-    }
+    // }
 
     if (strpos($permission,'Edit') !== false) {
 

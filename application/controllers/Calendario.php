@@ -468,9 +468,16 @@ class Calendario extends CI_Controller {
 		//dump($data['tareas'], 'tareas cont: ');
 		// Datos de la Solicitud que le da origen a la OT
 		$origen = $this->Calendarios->getOrigenOt($idOt);
-		//dump($origen, 'datos origen: ');
-		$numtipo = 	$origen[0]['tipo'];
-		$id_solicitud = $origen[0]['id_solicitud'];				
+		
+		// si no hay solicitud de origen
+		if ($origen[0]['id_solicitud'] == 0) {
+			$numtipo = 	0;
+			$id_solicitud = $idOt;	
+		} else {
+			$numtipo = 	$origen[0]['tipo'];
+			$id_solicitud = $origen[0]['id_solicitud'];	
+		}
+					
 		$data['infoSolicOrigen'] = $this->Calendarios->getInfoTareaProgram($numtipo, $id_solicitud);			
 		
 		$task = $this->ObtenerTaskIDxOT($idOt);

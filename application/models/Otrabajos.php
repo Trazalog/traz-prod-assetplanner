@@ -139,9 +139,25 @@ class Otrabajos extends CI_Model {
 	 */
 	function guardar_agregar($data) // Ok
 	{
-			$query = $this->db->insert("orden_trabajo", $data);
-			return $query;
+			$this->db->insert("orden_trabajo", $data);
+			$id_insert = $this->db->insert_id(); 
+			return $id_insert;
 	}
+
+	/**
+	 * Guarda Case id en OT
+	 *
+	 * @param   
+	 */
+	// guarda case_id en Otrabajo
+	function setCaseidenOTNueva($case_id, $id){
+		$this->db->where('orden_trabajo.id_orden', $id);
+		return $this->db->update('orden_trabajo', array('case_id'=>$case_id));			
+	}
+
+
+
+
 	
 	//////////////		EDICION 	//////////////////
 		/**

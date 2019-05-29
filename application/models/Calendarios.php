@@ -505,11 +505,16 @@ class Calendarios extends CI_Model {
 		}
 
 		function getInfoTareaProgram($numtipo, $id_solicitud){
+			
 			switch ($numtipo) {	
-				// correctivo
-				case '2':
-					// correctivo no tiene duracion...
-					$tipo = 'correctivo';
+				// OT generada desde item menu
+				case '0':
+					// OT generada desde item menu
+					// traer sinfo de OT solamente
+					$this->db->select('orden_trabajo.*');
+					$this->db->from('orden_trabajo');
+					$query = $this->db->get();
+					return $query->result_array();					
 					break;
 				// preventivo
 				case '3':
