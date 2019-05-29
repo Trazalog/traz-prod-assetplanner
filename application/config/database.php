@@ -75,9 +75,12 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => '192.168.0.7',
-	'username' => 'glados',
-	'password' => 'glados',
+	'hostname' => 'localhost',
+	'username' => 'root',
+	'password' => '',
+	// 'hostname' => '192.168.0.7',
+	// 'username' => 'glados',
+	// 'password' => 'glados',
 	'database' => 'planner_assetcloud_integracion',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',

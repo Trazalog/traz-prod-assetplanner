@@ -13,7 +13,7 @@ class Articulo extends CI_Controller {
 	}
 
 	// Muestra listado de articulos
-	public function index($permission)
+	public function index($permission='Add')
 	{
 		$data['list'] = $this->Articulos->list();
 		$data['permission'] = $permission;

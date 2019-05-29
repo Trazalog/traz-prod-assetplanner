@@ -9,7 +9,7 @@
 <form id="generic_form">
     <div class="form-group">
         <center>
-            <h4> ¿Se Aprueba o Rechaza el Pedido de Materiales? </h4>
+            <h4 class="text-danger"> ¿Se Aprueba o Rechaza el Pedido de Materiales? </h4>
             <label class="radio-inline">
                 <input type="radio" name="result" value="true" onclick="$('#motivo').hide();$('#hecho').prop('disabled',false);"> Aprobar
             </label>

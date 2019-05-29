@@ -1,17 +1,33 @@
-<h3>Nota Pedido Detalle</h3>
+<hr>
+<input type="number" class="hidden" value="<?php echo $pemaId ?>">
+<h3>Pedido Materiales <small>Detalle</small></h3>
 <div id="nota_pedido">
-    <!--Tabla Pedido Materiales-->
+    <table id="tabladetalle" class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Articulo</th>
+                <th class="text-center">Cantidad</th>
+                <th class="text-center">Fecha Nota</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!--Detalle Pedido Materiales -->
+        </tbody>
+    </table>
 </div>
+<hr>
 
 <form id="generic_form">
     <div class="form-group">
         <center>
-            <h4> ¿Se Aprueba o Rechaza el Pedido de Materiales? </h4>
+            <h4 class="text-danger"> ¿Se Aprueba o Rechaza el Pedido de Materiales? </h4>
             <label class="radio-inline">
-                <input type="radio" name="result" value="true" onclick="$('#motivo').hide();$('#hecho').prop('disabled',false);"> Aprobar
+                <input type="radio" name="result" value="true"
+                    onclick="$('#motivo').hide();$('#hecho').prop('disabled',false);"> Aprobar
             </label>
             <label class="radio-inline">
-                <input id="rechazo" type="radio" name="result" value="false" onclick="$('#motivo').show();$('#hecho').prop('disabled',false);"> Rechazar
+                <input id="rechazo" type="radio" name="result" value="false"
+                    onclick="$('#motivo').show();$('#hecho').prop('disabled',false);"> Rechazar
             </label>
         </center>
     </div>
@@ -22,44 +38,70 @@
 </form>
 
 <script>
-    $('#motivo').hide();
-    $('#hecho').prop('disabled',true);
+$('#motivo').hide();
+$('#hecho').prop('disabled', true);
 
-    cargarPedidos();
-    function cargarPedidos() {
-        var iort = $('#ot').val();
-        $('#nota_pedido').empty();
-        $("#nota_pedido").load("<?php base_url() ?>index.php/almacen/Notapedido/ObtenerNotasPedidosxOT/" + iort);
-    }
 
-    function cerrarTarea() {
 
-        if($('#rechazo').prop('checked') && $('#motivo .form-control').val() == ''){alert('Completar Motivo de Rechazo'); return;}
+cargarPedidos();
 
-        var id = $('#idTarBonita').val();
+function cargarPedidos() {
+    $.ajax({
+        type: 'POST',
+        data: {
+            id: 1
+        },
+        url: 'index.php/almacen/Notapedido/getNotaPedidoId',
+        success: function(data) {
 
-        var dataForm = new FormData($('#generic_form')[0]);
-
-        dataForm.append('pema_id', $('table#deposito tbody tr').attr('id'));
-        
-        $.ajax({
-            type: 'POST',
-            data: dataForm,	
-            cache: false,
-			contentType: false,
-			processData: false,
-            url: '<?php base_url() ?>index.php/almacen/Proceso/cerrarTarea/'+id,
-            success: function (data) {
-                //WaitingClose();
-                linkTo('almacen/Proceso');
-
-            },
-            error: function (data) {
-               alert("Error");
+            $('tr.celdas').remove();
+            for (var i = 0; i < data.length; i++) {
+                var tr = "<tr class='celdas'>" +
+                    "<td>" + data[i]['artDescription'] + "</td>" +
+                    "<td class='text-center'>" + data[i]['cantidad'] + "</td>" +
+                    "<td class='text-center'>" + data[i]['fecha'] + "</td>" +
+                    "</tr>";
+                $('#tabladetalle tbody').append(tr);
             }
-        });
+            $('.table').DataTable();
+        },
+        error: function(result) {
 
+            console.log(result);
+        },
+        dataType: 'json'
+    });
+}
+
+function cerrarTarea() {
+
+    if ($('#rechazo').prop('checked') && $('#motivo .form-control').val() == '') {
+        alert('Completar Motivo de Rechazo');
+        return;
     }
 
+    var id = $('#idTarBonita').val();
 
+    var dataForm = new FormData($('#generic_form')[0]);
+
+    dataForm.append('pema_id', $('table#deposito tbody tr').attr('id'));
+
+    $.ajax({
+        type: 'POST',
+        data: dataForm,
+        cache: false,
+        contentType: false,
+        processData: false,
+        url: '<?php base_url() ?>index.php/almacen/Proceso/cerrarTarea/' + id,
+        success: function(data) {
+            //WaitingClose();
+            linkTo('almacen/Proceso');
+
+        },
+        error: function(data) {
+            alert("Error");
+        }
+    });
+
+}
 </script>

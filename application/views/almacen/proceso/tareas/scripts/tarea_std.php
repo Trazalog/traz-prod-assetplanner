@@ -270,10 +270,7 @@
 			//alert(idTarBonita);
 			$.ajax({
 					type: 'POST',
-					data: {
-							id: idTarBonita
-					},
-					url: 'index.php/almacen/Proceso/tomarTarea',
+					url: 'index.php/almacen/Proceso/tomarTarea/'+idTarBonita,
 					success: function(data) {
 						
 									if(data['status']){
@@ -292,10 +289,7 @@
 			var idTarBonita = $('#idTarBonita').val();
 			$.ajax({
 					type: 'POST',
-					data: {
-							id: idTarBonita
-					},
-					url: 'index.php/almacen/Proceso/soltarTarea',
+					url: 'index.php/almacen/Proceso/soltarTarea/'+idTarBonita,
 					success: function(data) {
 						
 									// toma a tarea exitosamente
