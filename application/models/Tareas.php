@@ -636,6 +636,7 @@ class Tareas extends CI_Model {
 			}
 
 		}
+		// traee id de SServicio por caseid
 		function getIdSolServPorIdCase($caseId, $param){
 				// [URL_BONITA]/API/bpm/caseVariable/:caseId/gIdOT
 			$urlResource = BONITA_URL.'API/bpm/caseVariable/';
@@ -644,6 +645,16 @@ class Tareas extends CI_Model {
 
 			return $data;
 		}
+		// trae id de OT por caseid
+		function getIdOTPorIdCase($caseId, $param){
+			// [URL_BONITA]/API/bpm/caseVariable/:caseId/gIdOT
+			$urlResource = BONITA_URL.'API/bpm/caseVariable/';
+			$var = '/gIdOT';
+			$data =json_decode(file_get_contents($urlResource.$caseId.$var , false, $param), true);
+
+			return $data;
+		}
+
 		// devuelve id de backlog
 		function getIdBackporid_OT($id_OT, $tipo){
 			
@@ -730,6 +741,7 @@ class Tareas extends CI_Model {
 				$this->db->where('A.case_id',$value['caseId']);
 				$this->db->from('solicitud_reparacion as A');
 				$this->db->join('orden_trabajo as B','A.id_solicitud = B.id_solicitud','left');
+				
 				$res = $this->db->get()->first_row();
 				$data[$key]['ss'] = $res->ss;
 				$data[$key]['ot'] = $res->ot; 

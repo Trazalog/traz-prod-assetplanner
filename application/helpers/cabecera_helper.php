@@ -2,7 +2,7 @@
 
 if(!function_exists('cargarCabecera')){
     // id de pedido es el petr_id de la tabla trj_pedido_trabajo se obtiene con el bpm_id de esa tabla
-    function cargarCabecera($id_OT = null, $id_SS = null, $id_EQ = null){
+    function cargarCabecera($id_OT = 0, $id_SS = 0, $id_EQ = null){
 			// equipo
 			if($id_EQ != null){
 				
@@ -25,7 +25,7 @@ if(!function_exists('cargarCabecera')){
 				}
 			}
 			// Solic Servicios			
-			if($id_SS != null){
+			if($id_SS != 0){
 				$ci->db->select('solicitud_reparacion.id_solicitud,
 												solicitud_reparacion.solicitante,
 												solicitud_reparacion.causa,
@@ -44,7 +44,7 @@ if(!function_exists('cargarCabecera')){
 				}
 			}	
 			// OT
-			if($id_OT != null){
+			if($id_OT != 0){
 				$ci->db->select('tareas.descripcion AS tareaDescrip,
 												orden_trabajo.descripcion AS otDescrip,
 												orden_trabajo.fecha,
@@ -116,7 +116,7 @@ if(!function_exists('cargarCabecera')){
 			<!-- /.box-body -->';
 
 			// Solicitud Servicios
-			if($id_SS != null){
+			if($id_SS != 0){
 				echo '        
 				<div id="collapseDivCli" class="box box-default collapsed-box box-solid">
 					<div class="box-header with-border">
@@ -178,7 +178,7 @@ if(!function_exists('cargarCabecera')){
 			}
 
 			// Orden Trabajo
-			if($id_OT != null){
+			if($id_OT != 0){
 				echo '        
 				<div id="collapseDivCli" class="box box-default collapsed-box box-solid info-ot">
 					<div class="box-header with-border">

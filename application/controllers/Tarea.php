@@ -78,6 +78,7 @@ class Tarea extends CI_Controller {
 	/* INTEGRACION CON BPM */
 		
 		/*	./ FUNCIONES BPM */
+			// Bandea de entrada
 			public function index($permission){
 
 				$this->load->library('BPM');
@@ -85,10 +86,13 @@ class Tarea extends CI_Controller {
 				
 				//Obtener Bandeja de Usuario desde Bonita
 				$response = $this->bpm->getToDoList();
+
+				//dump($response, 'respuesta tareas BPM: ');
 				if(!$response['status']){echo json_encode($response);return;}
 
 				//Completar Tareas con ID Solicitud y ID OT
 				$data_extend = $this->Tareas->CompletarToDoList($response['data']);
+
 				
 				$data['list'] = $data_extend;
 				$data['permission'] = $permission;		
@@ -396,8 +400,14 @@ class Tarea extends CI_Controller {
 					$caseId = $data['TareaBPM']["caseId"];
 			
 				// Trae id de OT y de Sol Serv por CaseId			
-					$id_SS = $this->getIdSolServPorIdCase($caseId);		
-					$id_OT = $this->Tareas->getIdOtPorid_SS($id_SS);
+					$id_SS = $this->getIdSolServPorIdCase($caseId);	
+					
+				// si la tarea se origino en una SServicio
+					if ($id_SS == 0) {
+						$id_OT = $this->getIdOTPorIdCase($caseId);					
+					} else {	// sino busca el id de OTen BPM
+						$id_OT = $this->Tareas->getIdOtPorid_SS($id_SS);
+					}
 
 				// Si hay Sol Serv trae el id de equpo sino por id de Ot
 					if($id_SS!= null){
@@ -495,6 +505,7 @@ class Tarea extends CI_Controller {
 							break;
 				}
 			}	
+
 			function getIdSolServPorIdCase($caseId){
 				// trae la cabecera
 				$parametros = $this->Bonitas->conexiones();
@@ -505,6 +516,17 @@ class Tarea extends CI_Controller {
 				//dump($response["value"], 'respuesta bonita');
 				return $response["value"];
 			}	
+			// traer id de OT por caseId
+			function getIdOTPorIdCase($caseId){
+					// trae la cabecera
+					$parametros = $this->Bonitas->conexiones();
+					// Cambio el metodo de la cabecera a "GET"
+					$parametros["http"]["method"] = "GET";				
+					$param = stream_context_create($parametros);
+					$response = $this->Tareas->getIdOTPorIdCase($caseId, $param);
+					//dump($response["value"], 'respuesta bonita');
+					return $response["value"];
+			}
 			// Trae datos de backlog para editar
 			function getEditarBacklog($id_SS){
 				$result = $this->Tareas->geteditar($id_SS);	

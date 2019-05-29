@@ -215,7 +215,7 @@ class Calendario extends CI_Controller {
 					$this->setHerramInsPorTarea($idOT,$tipo,$id_solicitud);
 										
 					// si es Preventivo o Predictivo lanza proceso nuevo
-					if ( ($tipo == 'preventivo') || ($tipo == 'predictivo') || $caseDeBacklog == 0 ) {
+					if ( ($tipo == 'preventivo') || ($tipo == 'predictivo') || ( ($caseDeBacklog == 0) && ($tipo != 'correctivo') ) ) {
 						dump($tipo, 'entre por if forrito: ');
 						dump($idOT, 'id de OT: ');
 							$this->load->library('BPM');
@@ -505,18 +505,7 @@ class Calendario extends CI_Controller {
 				$idSolRep = $this->Otrabajos->getIdSolReparacion($id_solicitud);					
 				
 				if($idSolRep == NULL){	//viene de item menu 
-					// lanzar proceso
-					//TODO: ACA COMENTE ENTENDER SI BORRAR
-					// $contract = array(
-					// 							"idSolicitudServicio"	=>	0,
-					// 							"idOT"  => 	$id
-					// 						);
-					// $responce = $this->bpm->LanzarProceso($contract);
-					// // guardo el caseid en OTrabajo
-					// if($responce['status']){					
-					// 	$case_id = $responce['case_id'];
-					// 	$this->Otrabajos->setCaseidenOT($case_id, $id);					
-					// }	
+					
 					$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas');
 					return $task_id;		
 

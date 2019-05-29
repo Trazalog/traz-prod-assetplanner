@@ -955,21 +955,25 @@ class Otrabajo extends CI_Controller {
 	//Ejecuta Orden de Trabajo en BPM
 	public function EjecutarOT(){
 
-		$task 				= (int) $this->input->post('task');
+		$mostrar = $this->input->post();
+		//dump_exit($mostrar);
+
+		$task 				= (int)$this->input->post('task');
 		$ot 					= (int)$this->input->post('ot');
 		$usrId				= (int)$this->input->post('responsable');
 		$id_solicitud = (int)$this->input->post('id_solicitud');
 		$tipo					= (int)$this->input->post('tipo');
 		$estado				= 'AS';		
-		$id_tarea 		= (int)$this->input->post('tareastd');
+		$id_tarea 		= (int)$this->input->post('tareastd');		
 		
+		$case_id = $this->Otrabajos->getCaseIdOT($ot);
+
 		// tarea estandar
 		if ($id_tarea != -1) {
 			$descripcion = $this->input->post('tareastdDesc');;
 		} else {
 			$descripcion = $this->input->post('tareaOpcional');;
 		}				
-
 
 		switch ($tipo) {			
 			case '3':
@@ -987,14 +991,26 @@ class Otrabajo extends CI_Controller {
 		}
 
 		//Cargo Libreria
-		$this->load->library('BPM');
-		//Asignar Usuario a Tarea para Finanlizar
+		$this->load->library('BPM');	
 		$responce = $this->bpm->setUsuario($task,$usrId);
-		if(!$responce['status']){echo json_encode($responce);return;}
-		//Cerrar Tarea Ejectuar OT
-		$responce = $this->bpm->CerrarTareaBPM($task);
+	
+		if(!$responce['status']){echo json_encode($responce);return;}	
+		//Cerrar Tarea Ejectuar OT con ase que viene de pantalla
+		$responce = $this->bpm->CerrarTareaBPM($task);	
 		if(!$responce['status']){echo json_encode($responce);return;}
 
+		// buscar task pa asignar la tarea siguiente (ejecutar ot) a un responsable		
+		$nextTask = $this->bpm->ObtenerTaskidXNombre($case_id,'Ejecutar OT');
+	
+		if($nextTask == 0){
+			echo json_encode(['status'=>false, 'msj'=>'No Existe la actividad requerida']);
+			return;
+		}
+	
+		//Asignar Usuario a Tarea para Finanlizar
+		$responce = $this->bpm->setUsuario($nextTask,$usrId);
+		if(!$responce['status']){echo json_encode($responce);return;}
+	
 		//Cambiar Estado de OT ('ASignada') y en solicitud origen en BD		
 		if($this->Otrabajos->cambiarEstado($ot, $estado, 'OT')){
 				
@@ -1008,17 +1024,17 @@ class Otrabajo extends CI_Controller {
 								echo json_encode(['status'=>true, 'msj'=>'OK']);
 								return;
 						}else {
-								echo json_encode(['status'=>false, 'msj'=>'Error Base de Datos']);
+								echo json_encode(['status'=>false, 'msj'=>'Error Base de Datos1']);
 								return;
 						}	
 
 				} else {
-						echo json_encode(['status'=>false, 'msj'=>'Error Base de Datos']);
+						echo json_encode(['status'=>false, 'msj'=>'Error Base de Datos2']);
 						return;
 				}			
 				
 		}else{
-				echo json_encode(['status'=>false, 'msj'=>'Error Base de Datos']);
+				echo json_encode(['status'=>false, 'msj'=>'Error Base de Datos3']);
 		}		
 	}
 

@@ -130,10 +130,7 @@
                                       }
                                     }
 
-                                    echo '</select>';
-
-
-     
+                                    echo '</select>';    
 
 
                                   ?>                                  

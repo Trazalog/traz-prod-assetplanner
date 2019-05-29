@@ -36,7 +36,7 @@ class BPM
 
 		//Interpretar Responce
 		$response = $this->parseHeaders( $http_response_header);
-		dump($response, 'respuesta en libreria: ');		
+		//dump($response, 'respuesta en libreria: ');		
 		$code = $response['response_code'];
 		$body  = json_decode($body);
 		if($code<300){
@@ -91,17 +91,18 @@ class BPM
 		return $data;
   }
   // Obtiene Actividades desde BPM por id de caso
-  public function ObtenerActividades($caseId,$param){		
+  public function ObtenerActividades($caseId,$param){	
+	
     $respuesta = file_get_contents(BONITA_URL.'API/bpm/activity?p=0&c=200&f=processId%3D'.BPM_PROCESS_ID.'&f=rootCaseId%3D'.$caseId.'&d=assigned_id',false,$param);
     $array = json_decode($respuesta,true);
-    $ord = array();
+		$ord = array();
     foreach ($array as $key=>$value)if($value['type']=='MULTI_INSTANCE_ACTIVITY'){unset($array[$key]);}
     foreach ($array as $key => $value){
         $ord[] = strtotime($value['last_update_date']);
        // $sort['a'][$key] = strtotime($value['last_update_date']);
       //  $sort['b'][$key] = $value['caseId'];
     }
-    array_multisort($ord, SORT_DESC, $array);
+		array_multisort($ord, SORT_DESC, $array);	
     return $array;
   }
   // Obtiene Actividades Archivadas desde BPM por id de caso
@@ -166,9 +167,7 @@ class BPM
 		$parametros["http"]["method"] = "GET";		 
 		$param = stream_context_create($parametros);
 		
-		$actividades = $this->ObtenerActividades($case_id,$param);
-		//dump($case_id, 'case en obtener task: ');
-		//	dump($actividades, 'actividadesss en bpm: ');
+		$actividades = $this->ObtenerActividades($case_id,$param);	
 		if($actividades == null) return 0;
 
 		for ($i=0; $i < count($actividades); $i++) { 				

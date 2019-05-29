@@ -629,6 +629,8 @@ $("#vstsolicita").autocomplete({
     $('#error').fadeOut('slow');
     $('#modalservicio').modal('hide');
 
+    var permisos = $('#permission').val();
+
     	$.ajax({
           	type: 'POST',
           	data: {
@@ -646,7 +648,7 @@ $("#vstsolicita").autocomplete({
                     console.log(data);
                     if (data.status == true){
                       alert("Solicitud generada exitosamente");
-                      var permisos = '<?php echo $permission; ?>';
+                     
                       cargarView('Sservicio', 'index', permisos) ;           
                     } else{             
                         alert("Falla: "+data.msj);
