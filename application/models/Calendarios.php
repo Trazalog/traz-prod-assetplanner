@@ -223,6 +223,7 @@ class Calendarios extends CI_Model {
 											WHERE solicitud_reparacion.id_empresa = $empId
 											AND solicitud_reparacion.estado != 'AN'										
 											AND solicitud_reparacion.estado != 'PL'
+											AND solicitud_reparacion.urgente != 0
 											AND year(solicitud_reparacion.f_solicitado) = $year
 											AND month(solicitud_reparacion.f_solicitado) = $month";
         $query = $this->db->query($sql);
@@ -505,11 +506,16 @@ class Calendarios extends CI_Model {
 		}
 
 		function getInfoTareaProgram($numtipo, $id_solicitud){
+			
 			switch ($numtipo) {	
-				// correctivo
-				case '2':
-					// correctivo no tiene duracion...
-					$tipo = 'correctivo';
+				// OT generada desde item menu
+				case '0':
+					// OT generada desde item menu
+					// traer sinfo de OT solamente
+					$this->db->select('orden_trabajo.*');
+					$this->db->from('orden_trabajo');
+					$query = $this->db->get();
+					return $query->result_array();					
 					break;
 				// preventivo
 				case '3':

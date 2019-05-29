@@ -139,9 +139,25 @@ class Otrabajos extends CI_Model {
 	 */
 	function guardar_agregar($data) // Ok
 	{
-			$query = $this->db->insert("orden_trabajo", $data);
-			return $query;
+			$this->db->insert("orden_trabajo", $data);
+			$id_insert = $this->db->insert_id(); 
+			return $id_insert;
 	}
+
+	/**
+	 * Guarda Case id en OT
+	 *
+	 * @param   
+	 */
+	// guarda case_id en Otrabajo
+	function setCaseidenOTNueva($case_id, $id){
+		$this->db->where('orden_trabajo.id_orden', $id);
+		return $this->db->update('orden_trabajo', array('case_id'=>$case_id));			
+	}
+
+
+
+
 	
 	//////////////		EDICION 	//////////////////
 		/**
@@ -1014,8 +1030,8 @@ class Otrabajos extends CI_Model {
 												equipos.descripcion AS descripcionEquipo');
         $this->db->from('orden_trabajo');
         $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
-        $this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
-        //$this->db->join('abmproveedores', 'abmproveedores.provid = orden_trabajo.id_proveedor');
+        $this->db->join('sucursal', 'orden_trabajo.id_sucursal = sucursal.id_sucursal', 'left');
+        $this->db->join('abmproveedores', 'orden_trabajo.id_proveedor = abmproveedores.provid', 'left');
         $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
         //$this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
         $this->db->where('orden_trabajo.id_orden', $idOt);
@@ -1213,8 +1229,8 @@ class Otrabajos extends CI_Model {
     		equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, equipos.descripcion AS descripcionEquipo');
         $this->db->from('orden_trabajo');
         $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
-        $this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
-        $this->db->join('abmproveedores', 'abmproveedores.provid = orden_trabajo.id_proveedor');
+        $this->db->join('sucursal', 'orden_trabajo.id_sucursal = sucursal.id_sucursal','left');
+        $this->db->join('abmproveedores', 'orden_trabajo.id_proveedor = abmproveedores.provid', 'left');
         $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
         $this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
         $this->db->where('orden_trabajo.id_orden', $idOt);

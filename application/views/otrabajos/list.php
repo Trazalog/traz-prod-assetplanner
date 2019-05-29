@@ -1479,7 +1479,7 @@ function guardarpedido(){
 
   // Elige a que fcion que trae datos de OT llamar, según su origen
   function traerDatosOt(idOt, tipo, idSolicitud) {
-    console.info(idOt+' - '+idSolicitud);
+    console.info('id deot'+ idOt+' - '+idSolicitud + 'id solic');
     var datos = null;
     switch (tipo) {
       case '1': //Orden de trabajo

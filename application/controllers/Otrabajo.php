@@ -144,10 +144,11 @@ class Otrabajo extends CI_Controller {
 
     $datos2 = array(
 			'id_tarea'			=> $id_tar,
-			'fecha_inicio'  => $fecha_inicio,
+			'fecha_program' => $fecha_inicio,
+			//'fecha_inicio'  => $fecha_inicio,
 			'fecha_entrega' => $fecha_entrega,
 			'descripcion'   => $descripcion,
-			'estado'        => 'C',
+			'estado'        => 'PL',
 			'id_usuario'    => $usrId,
 			'id_usuario_a'  => 1,
 			'id_sucursal'   => $sucursal,
@@ -157,9 +158,23 @@ class Otrabajo extends CI_Controller {
 			'id_empresa'    => $empresaId
 		);
 
-		$result['respOT'] = $this->Otrabajos->guardar_agregar($datos2);	
+		// guarda OT y devuelve el id de insercion
+		$ultimoId = $this->Otrabajos->guardar_agregar($datos2);	
+		
+		$this->load->library('BPM');
+		$contract = array(
+				"idSolicitudServicio"	=> 0,		// 0 NULL  FALSE       // "" ''
+				"idOT"  => 	$ultimoId
+		);
 
-		if($result['respOT']){
+		dump($contract, 'contrato BPM: ');	
+		$result = $this->bpm->LanzarProceso($contract);	
+		dump($result, 'respuesta lanzamiento proceso bpm: ');							
+		// guarda case id generado el lanzar proceso				
+		$respcaseOT = $this->Otrabajos->setCaseidenOTNueva($result['case_id'], $ultimoId);			
+
+
+		if($ultimoId){
 
 			$ultimoId = $this->db->insert_id(); 	
 			////////// para guardar herramientas                 

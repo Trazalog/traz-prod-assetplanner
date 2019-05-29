@@ -141,10 +141,17 @@
                               <div class="col-xs-12 col-sm-6">
                                   <label for="tareaOpcional">Tarea No Estandar<strong style="color: #dd4b39">*</strong>:</label>
                                   <?php
-                                  if ($detaOT[0]["id_tarea"] != 1) {
-                                    echo '<input type="text" class="form-control" id="tareaOpcional" name="tareaOpcional" value=""/>';
-                                  } else {
+                                  // if ($detaOT[0]["id_tarea"] != 1) {
+                                  //   echo '<input type="text" class="form-control" id="tareaOpcional" name="tareaOpcional" value=""/>';
+                                  // } else {
+                                  //   echo '<input type="text" class="form-control" id="tareaOpcional" name="tareaOpcional" value="'.$detaOT[0]["descripcion"].'"/>';
+                                  // }
+
+                                  if ( ($detaOT[0]["id_tarea"] == 0) || ($detaOT[0]["id_tarea"] == -1) ) {
                                     echo '<input type="text" class="form-control" id="tareaOpcional" name="tareaOpcional" value="'.$detaOT[0]["descripcion"].'"/>';
+                                    
+                                  } else {
+                                    echo '<input type="text" class="form-control" id="tareaOpcional" name="tareaOpcional" value=""/>';
                                   }
                                   
                                  
