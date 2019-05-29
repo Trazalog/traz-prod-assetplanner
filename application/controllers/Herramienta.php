@@ -38,8 +38,8 @@ class Herramienta extends CI_Controller {
 
     public function edit_herramienta()
     {
-        $datos  = $_POST['parametros'];
-        $id     = $_POST['ed'];
+        $datos  = $this->input->post('parametros');
+        $id     = $this->input->post('ed');
         $result = $this->Herramientas->update_editar($datos,$id);
         return true;
     }

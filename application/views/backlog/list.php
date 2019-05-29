@@ -25,12 +25,14 @@
                 <th>Tarea</th>
                 <th>Fecha</th>
                 <th>Duración</th>
+                <th>Estado</th>
               </tr>
             </thead>
             <tbody>
               <?php        
+              //dump($list, 'lista backlog');
                 foreach($list['data'] as $a){
-                  if ($a['estado'] == 'C') {
+                  //if ($a['estado'] == 'C') {
                     $id  = $a['backId'];
                     $ide = $a['id_equipo'];
                     echo '<tr id="'.$id.'" class="'.$ide.'">';
@@ -47,7 +49,11 @@
                       echo '<td>'.$a['codigo'].'</td>';
                       echo '<td>'.$a['componente'].'</td>';
                       echo '<td>'.$a['sistema'].'</td>';
-                      echo '<td>'.$a['de1'].'</td>';
+                      if ($a["id_tarea"] < 0) {
+                        echo '<td>'.$a["tarea_opcional"].'</td>';
+                      } else {
+                        echo '<td>'.$a['de1'].'</td>';
+                      }                     
                       echo '<td>'.date_format(date_create($a['fecha']), 'd-m-Y').'</td>';
                       //echo '<td>'.$a['horash'].'</td>'; 
                       switch ($a['id_unidad']) {
@@ -60,9 +66,32 @@
                         default:
                         echo '<td>'.$a['back_duracion'].' min</td>';
                           break;
-                      }                   
+                      }    
+                      
+                      echo '<td>';           
+                            
+                            if($a['estado'] == 'PL'){
+                            echo '<small class="label pull-left bg-yellow">Planificada</small>';
+                            }
+                            if($a['estado'] == 'AS'){
+                            echo '<small class="label pull-left bg-purple">Asignada</small>';
+                            }
+                            if ($a['estado'] == 'C') {
+                              echo '<small class="label pull-left bg-green">Curso</small>' ;
+                            }
+                            if ($a['estado'] == 'T') {
+                            echo  '<small class="label pull-left bg-blue">Terminada</small>';
+                            }
+                            if ($a['estado'] == 'CE') {
+                              echo  '<small class="label pull-left bg-primary">Cerrada</small>';
+                            }
+                            if ($a['estado'] == 'S') {
+                              echo  '<small class="label pull-left bg-red">Solicitada</small>';
+                            }
+                           
+                            echo '</td>';
                     echo '</tr>';
-                  }                    
+                  //}                    
                 }
               ?>
             </tbody>
@@ -112,28 +141,32 @@ $(document).ready(function(event) {
         data: { idpred:idpred, datos:datos},
         url: 'index.php/Backlog/geteditar',
         success: function(data){
-
+          console.table(data);
                     datos={ 'codigo':data['equipo'][0]['codigo'],
                             'marca':data['equipo'][0]['marca'],
                             'descripcion':data['equipo'][0]['des'],   
-                            'fecha_ingreso':data['equipo'][0]['fecha_ingreso'],
-                            'idtarea': data['equipo'][0]['id_tarea'],
-                            'tarea': data['equipo'][0]['tarea_descrip'],
-                            'fecha':data['datos'][0]['fecha'],
+                            'fecha_ingreso':data['equipo'][0]['fecha_ingreso'],                            
+                            'tarea': data['equipo'][0]['tarea_descrip'],                            
                             'desta':data['equipo'][0]['de1'],
                             'hora':data['equipo'][0]['horash'],
-                            'ubicacion':data['equipo'][0]['ubicacion'],
-                            'duracion' :data['datos'][0]['back_duracion'],
+                            'ubicacion':data['equipo'][0]['ubicacion'],   
                             'sistema' :data['equipo'][0]['sistema'],
                             'componente' :data['equipo'][0]['componente'],
                             'codcompeq' :data['equipo'][0]['codcompeq'],
+                            
                             'backId': idpred,
+                            'idtarea': data['datos'][0]['id_tarea'],
+                            'fecha':data['datos'][0]['fecha'],
                             'duracion':data['datos'][0]['back_duracion'],
                             'unidtiempo':data['datos'][0]['id_unidad'],
                             'operarios':data['datos'][0]['back_canth'],
                             'hh':data['datos'][0]['horash'],
                             'back_adjunto':data['datos'][0]['back_adjunto']               
                           };
+
+console.table(datos);
+
+
                     var herram = data['herramientas'];             
                     var insum  = data['insumos']; 
                     completarEdit(datos,herram,insum); 
@@ -179,9 +212,6 @@ function eliminarpred(){
     dataType: 'json'
   });
 }
-
-
-
 
 // Completa los campos con datos de backlpog - Chequeado
 function completarEdit(datos,herram,insum){   
@@ -706,14 +736,6 @@ function recargaTablaAdjunto(backAdjunto) {
   $('#accionAdjunto').html(accion);
 }
 
-
-//////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
 </script>
 
 
@@ -991,52 +1013,49 @@ function recargaTablaAdjunto(backAdjunto) {
 </div>
 
 <!--------------- MODALES ADJUNTO ------------->
-
-<!-- Modal Eliminar Adjunto -->
-<div class="modal" id="modalEliminarAdjunto">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"><span class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar</h4>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="idAdjunto">
-        <h4>¿Desea eliminar Archivo Adjunto?</h4>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminarAdjunto();">Eliminar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal Agregar adjunto -->
-<div class="modal" id="modalAgregarAdjunto">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"><span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar</h4>
-      </div>
-
-      <form id="formAgregarAdjunto">
+  <!-- Modal Eliminar Adjunto -->
+  <div class="modal" id="modalEliminarAdjunto">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title"><span class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar</h4>
+        </div>
         <div class="modal-body">
-          <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
-            <h4><i class="icon fa fa-ban"></i> Error!</h4>
-            Seleccione un Archivo Adjunto
-          </div>
-          <input type="hidden" id="idAgregaAdjunto" name="idAgregaAdjunto">
-          <input id="inputPDF" name="inputPDF" type="file" class="form-control input-md">
+          <input type="hidden" id="idAdjunto">
+          <h4>¿Desea eliminar Archivo Adjunto?</h4>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary" id="btnAgregarEditar">Agregar</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminarAdjunto();">Eliminar</button>
         </div>
-      </form>
+      </div>
     </div>
   </div>
-</div>
+  <!-- Modal Agregar adjunto -->
+  <div class="modal" id="modalAgregarAdjunto">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title"><span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar</h4>
+        </div>
 
-<!--------------- MODALES ADJUNTO ------------->
+        <form id="formAgregarAdjunto">
+          <div class="modal-body">
+            <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+              <h4><i class="icon fa fa-ban"></i> Error!</h4>
+              Seleccione un Archivo Adjunto
+            </div>
+            <input type="hidden" id="idAgregaAdjunto" name="idAgregaAdjunto">
+            <input id="inputPDF" name="inputPDF" type="file" class="form-control input-md">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary" id="btnAgregarEditar">Agregar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+<!--------------/ MODALES ADJUNTO ------------->

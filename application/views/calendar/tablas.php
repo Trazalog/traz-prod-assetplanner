@@ -26,6 +26,7 @@
               <th style="text-align: center" class="hidden">Id Equipo</th>
               <th style="text-align: center" class="hidden">Id predictivo</th>
               <th style="text-align: center">OT</th>
+              <th style="text-align: center">ID Solic.</th>           
               <th style="text-align: center">Codigo</th>
               <th style="text-align: center">Causa</th>
               <!-- <th style="text-align: center">sector</th> -->
@@ -47,13 +48,21 @@
                 echo "<td>";
                       //  if (strpos($permission,'Del') !== false) {
                             //alternativa a orden hecha fa fa-stop-circle-o
-                echo '<i class="fa fa-stop-circle" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-correctivo" onclick="fill_Correc('.$c['id_solicitud'].')"></i>';
+               //dump($c, 'backlog:');
+                if ($c['estado'] != 'OT') {
+                  echo '<i class="fa fa-stop-circle" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-correctivo" onclick="fill_Correc('.$c['id_solicitud'].')"></i>';
+                } else {
+                  echo '<i class="fa fa-stop-circle-o" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden Generada"></i>';
+                }                          
+                            
                       //  }
                 echo "</td>";
                       // 1 // id equipo
                 echo "<td style='text-align: center' class='hidden'>".$c['id_equipo']."</td>";
                       // 2 // id solicitud reparacion
                 echo "<td style='text-align: center' class='hidden'>".$c['id_solicitud']."</td>";
+
+                echo "<td style='text-align: center'>".$id_sol."</td>";
                       // 3 // codigo de equipo
                 echo "<td style='text-align: center'>".$c['codigo']."</td>";
                       // 4 // descripcion causa solicitud
@@ -134,7 +143,6 @@
                 echo "<td style='text-align: center'>".$p['ultimo']."</td>";
                 // 7  //horas hombre
                 //echo "<td style='text-align: center'>".$p['horash']."</td>";
-                
                 // 8  //periodo
                 switch ($p['perido']) {
                   case '1':
@@ -154,9 +162,7 @@
                           $periodo = 'Diario';
                     break;
                 }
-                
-                //echo "<td style='text-align: center'>".$p['perido']."</td>";
-                echo "<td style='text-align: center'>".$periodo."</td>";
+                echo "<td style='text-align: center'>".$periodo."</td>";               
                 // 9  //frecuencia
                 echo "<td style='text-align: center'>".$p['cantidad']."</td>";
               echo "</tr>";
@@ -232,7 +238,6 @@
                   echo "<td style='text-align: center'>".$p['prox']."</td>";
                   // 7  //horas hombre
                   //echo "<td style='text-align: center'>".$p['horash']."</td>";
-
                   // 8  //periodo
                   switch ($p['perido']) {
                     case '5':
@@ -249,7 +254,6 @@
                       break;
                   }
                   echo "<td style='text-align: center'>".$periodo."</td>";
-                  //echo "<td style='text-align: center'>".$p['perido']."</td>";
                   // 9  //frecuencia
                   echo "<td style='text-align: center'>".$p['cantidad']."</td>";
                   // 10  //proximo Servicio
@@ -293,10 +297,12 @@
               <th style="text-align: center" class="hidden">Id Equipo</th>
               <th style="text-align: center" class="hidden">Id Backlog</th>    
               <th style="text-align: center">OT</th>
+              <th style="text-align: center">ID Solic.</th>
               <th style="text-align: center">Codigo</th>
               <th style="text-align: center">Causa</th>
               <th style="text-align: center">Fecha</th>
               <th style="text-align: center" class="hidden">Id tarea</th>
+              <th style="text-align: center" class="hidden">Duracion</th>
             </tr>
           </thead>
           <tbody>
@@ -306,30 +312,35 @@
             {
               foreach( $list2 as $b ) 
               {
-                // curso, critico, vencido
-                // $estado = 'bg-gray';
-                // if( $b['estado'] == 'C'  ) { $estado = 'bg-green'; }
-                // if( $b['estado'] == 'CR' ) { $estado = 'bg-orange'; }
-                // if( $b['estado'] == 'VE' ) { $estado = 'bg-red'; }
+          
                 echo "<tr>";
                 echo "<td>";
-                // if (strpos($permission,'Del') !== false) {
-                //alternativa a orden hecha fa fa-stop-circle-o
-                echo '<i class="fa fa-check-square" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-backlog" onclick="fill_Backlog('.$b['backId'].')"></i>';
-                // }
+  
+                  if($b['estado'] != 'OT'){
+                    echo '<i class="fa fa-check-square" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-backlog" onclick="fill_Backlog('.$b['backId'].')"></i>';
+                  }else{
+                    echo '<i class="fa fa-check-square-o" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden Generada"></i>';
+                  }                
+               
                 echo "</td>";
                 // 1 // id equipo
-                echo "<td style='text-align: center' class='hidden'>".$b['id_equipo']."</td>";
+                echo "<td style='text-align: center' class='hidden equipo'>".$b['id_equipo']."</td>";
                 // 2 // id solicitud reparacion
-                echo "<td style='text-align: center' class='hidden'>".$b['backId']."</td>"; 
+                echo "<td style='text-align: center' class='hidden backlog'>".$b['backId']."</td>";
+                echo "<td style='text-align: center'>".$b['sore_id']."</td>";
                 // 3 // codigo de equipo
                 echo "<td style='text-align: center'>".$b['codigo']."</td>";
                 // 4 // descripcion causa solicitud
-                echo "<td style='text-align: center'>".$b['tarea']."</td>";
+                if($b['tarea'] != null){
+                  echo "<td style='text-align: center'>".$b['tarea']."</td>";
+                } else{
+                  echo "<td style='text-align: center'>".$b['tarea_opcional']."</td>";
+                }
                 // 5 // fecha guardada anteriromente
                 echo "<td style='text-align: center'>".$b['fecha']."</td>";
                 // 6 // id de tarea
-                echo "<td style='text-align: center' class='hidden'>".$b['tarea_descrip']."</td>";
+                echo "<td style='text-align: center' class='hidden'>".$b['id_tarea']."</td>";
+                echo "<td style='text-align: center' class='hidden'>".$b['back_duracion']."</td>";
                 echo "</tr>";
               }
             }

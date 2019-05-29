@@ -29,6 +29,7 @@
                 <th>Fecha Base</th>
                 <th>Horas Hombre</th>
                 <th>Adjunto</th>
+                <th>Estado</th>
               </tr>
             </thead>
             <tbody>
@@ -44,8 +45,10 @@
                   echo '<td>';
                   if (strpos($permission,'Add') !== false) {
                     echo '<i class="fa fa-fw fa-times-circle eliminarPreventivo text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar"></i>';
-                    echo '<i class="fa fa-fw fa-pencil editarPreventivo text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar"></i>';
-                      //echo '<i class="fa fa-file-text text-light-blue" id="cargOrden" style="cursor: pointer; margin-left: 15px;" title="Orden de Trabajo" ></i>';
+                    
+                    if ($a['estado'] != 'OT') {
+                      echo '<i class="fa fa-fw fa-pencil editarPreventivo text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar"></i>';
+                    }                   
                   }
                   echo '</td>';
                   echo '<td>'.$a['prevId'].'</td>';
@@ -64,6 +67,30 @@
                   else {
                     echo '<td></td>';
                   }
+
+                  echo '<td>';     
+                      if($a['estado'] == 'PL'){
+                      echo '<small class="label pull-left bg-yellow">Planificada</small>';
+                      }
+                      if($a['estado'] == 'AS'){
+                      echo '<small class="label pull-left bg-purple">Asignada</small>';
+                      }
+                      if ($a['estado'] == 'C') {
+                        echo '<small class="label pull-left bg-green">Curso</small>' ;
+                      }
+                      if ($a['estado'] == 'T') {
+                      echo  '<small class="label pull-left bg-blue">Terminada</small>';
+                      }
+                      if ($a['estado'] == 'CE') {
+                        echo  '<small class="label pull-left bg-primary">Cerrada</small>';
+                      }
+                      if ($a['estado'] == 'S') {
+                        echo  '<small class="label pull-left bg-red">Solicitada</small>';
+                      }
+                  echo '</td>'; 
+
+
+
                   echo '</tr>';
                     //}
                 }

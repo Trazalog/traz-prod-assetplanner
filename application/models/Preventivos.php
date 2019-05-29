@@ -15,23 +15,24 @@ class Preventivos extends CI_Model
         $empId = $userdata[0]['id_empresa'];          
 
 		$this->db->select('preventivo.prevId, 
-		        preventivo.id_equipo, 
-            tareas.descripcion AS deta, 
-            equipos.descripcion AS des,                            
-            grupo.descripcion AS des1,
-            componentes.descripcion,
-            periodo.descripcion AS periodoDesc,
-            preventivo.cantidad,
-            preventivo.ultimo,
-            preventivo.horash,
-            preventivo.prev_adjunto');
+											preventivo.id_equipo, 
+											tareas.descripcion AS deta, 
+											equipos.descripcion AS des,                            
+											grupo.descripcion AS des1,
+											componentes.descripcion,
+											periodo.descripcion AS periodoDesc,
+											preventivo.cantidad,
+											preventivo.ultimo,
+											preventivo.horash,
+											preventivo.prev_adjunto,
+											preventivo.estadoprev AS estado');
     	$this->db->from('preventivo');
     	$this->db->join('equipos', 'equipos.id_equipo = preventivo.id_equipo');
     	$this->db->join('grupo', 'equipos.id_grupo=grupo.id_grupo');
     	$this->db->join('tareas', 'tareas.id_tarea = preventivo.id_tarea');
     	$this->db->join('componentes', 'componentes.id_componente = preventivo.id_componente');
       $this->db->join('periodo', 'periodo.idperiodo = preventivo.perido');
-    	$this->db->where('preventivo.estadoprev', 'C');
+    	$this->db->where('preventivo.estadoprev !=', 'AN');
       $this->db->where('preventivo.id_empresa', $empId);	
         //dump_exit( $this->db->get_compiled_select() );
     	$query= $this->db->get();

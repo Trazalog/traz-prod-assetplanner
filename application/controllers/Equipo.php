@@ -166,6 +166,7 @@ class  Equipo extends CI_Controller {
 	public function editar_equipo()
 	{
 		$datos            = $_POST['data'];
+		//dump($datos, 'datos a editar: ');
 		$id               = $_POST['idEquipo'];	
 		$userdata         = $this->session->userdata('user_data');
 		$datos['id_empresa'] = $userdata[0]['id_empresa'];

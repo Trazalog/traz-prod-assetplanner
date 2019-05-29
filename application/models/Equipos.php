@@ -7,61 +7,61 @@ class Equipos extends CI_Model {
     }
 
 	function equipos_List()
-    {
+  {
 		$userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa'];     // guarda usuario logueado
+    $empId = $userdata[0]['id_empresa'];     // guarda usuario logueado
 
-        $this->db->select('equipos.id_equipo,
-					equipos.codigo,
-					equipos.descripcion AS deeq,
-                    equipos.estado AS estadoEquipo,
-					unidad_industrial.id_unidad,
-					unidad_industrial.descripcion AS deun,
-					area.id_area,
-					area.descripcion AS dear,
-					empresas.id_empresa,
-					empresas.descripcion AS deem,
-					sector.id_sector,
-					sector.descripcion AS desec,
-					criticidad.id_criti,
-					criticidad.descripcion AS decri,
-					proceso.id_proceso,
-					proceso.descripcion AS depro');
-    	$this->db->from('equipos');
-    	$this->db->join('sector', 'sector.id_sector=equipos.id_sector');
-    	$this->db->join('empresas', 'empresas.id_empresa=equipos.id_empresa');
-    	$this->db->join('unidad_industrial', 'unidad_industrial.id_unidad=equipos.id_unidad');
-    	$this->db->join('criticidad', 'criticidad.id_criti=equipos.id_criticidad');
-        $this->db->join('area', 'area.id_area=equipos.id_area');
-        $this->db->join('proceso', 'proceso.id_proceso=equipos.id_proceso');
-    	$this->db->where('equipos.estado !=', 'AN');
-    	$this->db->where('equipos.id_empresa', $empId);
-    	$this->db->order_by('equipos.id_equipo', 'ASC');
-    	$query = $this->db->get();
+    $this->db->select('equipos.id_equipo,
+        equipos.codigo,
+        equipos.descripcion AS deeq,
+        equipos.estado AS estadoEquipo,
+        unidad_industrial.id_unidad,
+        unidad_industrial.descripcion AS deun,
+        area.id_area,
+        area.descripcion AS dear,
+        empresas.id_empresa,
+        empresas.descripcion AS deem,
+        sector.id_sector,
+        sector.descripcion AS desec,
+        criticidad.id_criti,
+        criticidad.descripcion AS decri,
+        proceso.id_proceso,
+        proceso.descripcion AS depro');
+    $this->db->from('equipos');
+    $this->db->join('sector', 'sector.id_sector=equipos.id_sector');
+    $this->db->join('empresas', 'empresas.id_empresa=equipos.id_empresa');
+    $this->db->join('unidad_industrial', 'unidad_industrial.id_unidad=equipos.id_unidad');
+    $this->db->join('criticidad', 'criticidad.id_criti=equipos.id_criticidad');
+    $this->db->join('area', 'area.id_area=equipos.id_area');
+    $this->db->join('proceso', 'proceso.id_proceso=equipos.id_proceso');
+    $this->db->where('equipos.estado !=', 'AN');
+    $this->db->where('equipos.id_empresa', $empId);
+    $this->db->order_by('equipos.id_equipo', 'ASC');
+    $query = $this->db->get();
 
-	    if ($query->num_rows()!=0)
+	  if ($query->num_rows()!=0)
 		{
 			$equipos = $query->result_array();
-            foreach ($equipos as &$valor) 
-            {
-                if( ($valor['estadoEquipo'] == 'AC') || ($valor['estadoEquipo'] == 'RE'))
-                {
-                    $idEquipo = $valor['id_equipo'];
-                    $this->db->select('*');
-                    $this->db->from('historial_lecturas');
-                    $this->db->where('id_equipo', $valor['id_equipo']);
-                    $this->db->order_by('fecha', 'DESC');
-                    $this->db->limit(1);
-                    
-                    $query2 = $this->db->get();
-                    $estado = $query2->result_array();
-                    @$valor['estado'] = $estado[0]['estado'];
-                }
-                else {
-                    $valor['estado'] = $valor['estadoEquipo'];   
-                }
-            }
-            return $equipos;
+      foreach ($equipos as &$valor) 
+      {
+        if( ($valor['estadoEquipo'] == 'AC') || ($valor['estadoEquipo'] == 'RE'))
+        {
+            $idEquipo = $valor['id_equipo'];
+            $this->db->select('*');
+            $this->db->from('historial_lecturas');
+            $this->db->where('id_equipo', $valor['id_equipo']);
+            $this->db->order_by('fecha', 'DESC');
+            $this->db->limit(1);
+            
+            $query2 = $this->db->get();
+            $estado = $query2->result_array();
+            $valor['estado'] = $estado[0]['estado'];
+        }
+        else {
+            $valor['estado'] = $valor['estadoEquipo'];   
+        }
+      }
+      return $equipos;
 		}
 		else
 		{
@@ -154,9 +154,9 @@ class Equipos extends CI_Model {
 
         $this->db->select('grupo.*');
         $this->db->from('grupo');
-		$this->db->where('grupo.id_empresa', $empId);
-        $this->db->where('grupo.estado', 'AC');
-		$query = $this->db->get();
+			$this->db->where('grupo.id_empresa', $empId);
+					$this->db->where('grupo.estado', 'AC');
+			$query = $this->db->get();
 
         if($query->num_rows()>0){
             return $query->result();
@@ -168,7 +168,7 @@ class Equipos extends CI_Model {
 
     // Trae proceso y llena el select - Listo
 	function getprocesos()
-    {
+   {
 
         $userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];
@@ -1456,8 +1456,9 @@ class Equipos extends CI_Model {
             'operario_nom' => $operario,
             'turno'        => $turno,
             'estado'       => $estado,
-        );
-        //dump_exit($datos);
+				);
+				// dump($datos, 'datos en alta historial: ');
+        // dump_exit($datos);
         $this->db->insert('historial_lecturas',$datos);
         $query = $this->db->insert_id();
         return $query;

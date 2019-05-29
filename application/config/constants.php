@@ -83,3 +83,57 @@ defined('EXIT_USER_INPUT')     OR define('EXIT_USER_INPUT', 7); // invalid user 
 defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
+
+/*
+|--------------------------------------------------------------------------
+| Bonita url
+|--------------------------------------------------------------------------
+|
+| Url base to Bonita
+|
+*/
+
+//define('BONITA_URL', 'http://192.168.1.147:8080/bonita/');
+define('BONITA_URL', 'http://localhost:8080/bonita/');  //localhost
+
+
+/*
+|--------------------------------------------------------------------------
+| Bonita Process ID ()
+|--------------------------------------------------------------------------
+|
+| Id de proceso productivo (se usa para lanzar proceso)
+|
+*/
+ 
+define('BPM_PROCESS_ID', '5101302672793474013'); // localhost -
+
+/*
+|--------------------------------------------------------------------------
+| Id de Formularios de Diagnostico
+|--------------------------------------------------------------------------
+|
+| Listado de Formularios de Diagnostico
+|
+*/
+define ("ID_FORMULARIOS", serialize (array (1,2,3,4,5,6,7,8,9)));
+/*
+|--------------------------------------------------------------------------
+| ERRORES
+|--------------------------------------------------------------------------
+|
+| Listado Errores 
+|
+|
+*/
+//Errores 100 <200 de Bonita
+//No se puedo Cerrar Tarea
+define('ASP_0100', 'Error ASP_0100: Comunicarse con el Proveedor de Servicio'); 
+
+//No se pudo Asignar Usuario
+define('ASP_0101', 'Error ASP_0101: Comunicarse con el Proveedor de Servicio'); 
+
+
+//Errores 200 < 300 de MySql
+define('ASP_0200', 'Error ASP_0200: Comunicarse con el Proveedor de Servicio'); 
+

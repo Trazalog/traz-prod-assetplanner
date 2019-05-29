@@ -1,0 +1,25 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "application\\config"
+		},
+		{
+			"path": "application\\controllers"
+		},
+		{
+			"path": "application\\helpers"
+		},
+		{
+			"path": "application\\models"
+		},
+		{
+			"path": "application\\views"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "traz-prod-assetplanner"
+	}
+}

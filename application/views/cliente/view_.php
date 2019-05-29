@@ -225,11 +225,12 @@
       }
     });
 
-  }function ActualizarPagina(){ //Funcion Resfresca
+  }
+  function ActualizarPagina(){ //Funcion Resfresca
   $('#content').empty();
   $("#content").load("<?php echo base_url(); ?>index.php/Cliente/index/<?php echo $permission; ?>");
-
-}$(function () {
+}
+$(function () {
       
       $('#Cliente').DataTable({
           "paging": true,
@@ -359,6 +360,60 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal --><!-- Modal -->
+<div class="modal" id="modalEliminar">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Eliminar Cliente</h4>
+      </div>
+      <div class="modal-body" id="cuerpoModalEditar">
+       <h5>¿Desea eliminar el registro?</h5> 
+      </div>
+      <div class="modal-footer">
+
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminarCliente()" >Eliminar</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal --><!-- Modal -->
+<div class="modal" id="modalEditar">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Editar Cliente</h4>
+      </div>
+      <div class="modal-body" id="cuerpoModalEditar">
+       <div class="row">
+          <div class="col-xs-12">
+            <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+             <h4><i class="icon fa fa-ban"></i> Error!</h4>
+             Revise que todos los campos esten completos
+           </div>
+         </div>
+       </div>
+
+         
+      </div>
+      <div class="modal-footer">
+
+        <button type="button" class="btn btn-primary" onclick="editarCliente()" >Guardar</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal --><!-- Modal -->
+
 <div class="modal" id="modalEliminar">
   <div class="modal-dialog">
     <div class="modal-content">
