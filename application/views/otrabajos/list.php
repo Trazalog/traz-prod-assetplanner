@@ -123,7 +123,7 @@ $('.ot-row').on('click',function(){
   sol_id = $(this).data('idsolicitud');
 });
 // cargo plugin DateTimePicker
-$('#fechaEntrega, #fecha_inicio1, #fecha_inicio, #fecha_entrega1, #fecha_entregaa').datetimepicker({
+$('#fechaEntrega,#fechaInicio, #fecha_inicio1, #fecha_inicio, #fecha_entrega1, #fecha_entregaa').datetimepicker({
   format: 'YYYY-MM-DD H:mm:ss', //format: 'YYYY-MM-DD', // es igaul a campo date
   locale: 'es',
 }); 
@@ -310,7 +310,8 @@ function eliminarpred(){
 
         datos = {
           'id_ot'         : resp[0]['id_orden'],        //
-          'nro'           : resp[0]['nro'],             //
+          'nro'           : resp[0]['nro'], 
+          'fecha_program' : resp[0]['fecha_program'],          //
           'equipo_descrip': resp[0]['codigo'],          //
           'fecha_ingreso' : resp[0]['fecha_ingreso'],
           'id_equipo'     : resp[0]['id_equipo'],       //
@@ -344,7 +345,8 @@ function eliminarpred(){
 
   // completa los datos del modal Editar - Ok
   function completarEdit(datos, herram, insum, adjunto){  
-
+    
+    $('#id_ot').val(datos['id_ot']);
     $('#equipo_descrip').val(datos['equipo_descrip']);
     $('#equipo').val(datos['id_equipo']);
     $('#fecha_ingreso').val(datos['fecha_ingreso']);
@@ -356,7 +358,7 @@ function eliminarpred(){
       $('#tarea').val(datos['tareadescrip']);    
     }else{
       $('#tareacustom').val(datos['tareadescrip']); }
-    $('#fechaInicio').val(datos['fecha_inicio']); 
+    $('#fechaInicio').val(datos['fecha_program']); 
     $('#fechaEntrega').val(datos['fecha_entrega']);  
     $("#suci").val(datos['id_sucu']);
     $("#prov").val(datos['id_proveedor']);
@@ -395,6 +397,7 @@ function eliminarpred(){
 
   // Guarda Edicion de OT - Ok
   function guardareditar(){
+    var idp = $('#id_ot').val();    
     WaitingOpen('Guardando Edición...');
     $('#errorE').hide(); 
     $('#btnEditar').prop("disabled", true);
@@ -419,7 +422,7 @@ function eliminarpred(){
 
     var parametros = {
       //'nro'           : nro,                                          
-      'fecha_inicio'  : fecha_inicio,
+      'fecha_program'  : fecha_inicio,
       'fecha_entrega' : fecha_entrega,   
       'id_tarea'      : id_tarea,  
       'descripcion'   : descripcion,    
@@ -1371,49 +1374,6 @@ function guardarpedido(){
     $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/agregarnota/<?php echo $permission; ?>/"+iort);
     WaitingClose();  
   }
-//FIXME: BORRAR ESTE METODO 
-// ASIGNAR OT 
-  // Trae los datos a mostrar en el modal Asignar OT - Ok
-  // function asigarOT_usuario(o) { 
-  //   var id_orden = $(o).closest('tr').attr('id');  
-
-  //   $.ajax({
-  //     type: 'GET',
-  //     data: { id_orden: id_orden},
-  //     url: 'index.php/Otrabajo/getasigna', 
-  //     success: function(data){
-  //       datos = {
-  //         'id_orden'     : id_orden,
-  //         'nro'          : data['datos'][0]['nro'],
-  //         'fecha_inicio' : data['datos'][0]['fecha_inicio'],
-  //         'estado'       : data['datos'][0]['estado'],
-  //         'descripcion'  : data['datos'][0]['descripcion'],
-  //         'equipo'       : data['datos'][0]['codigo'],
-  //         'id_usuario'   : data['datos'][0]['id_usuario'],
-  //         'id_equipo'    : data['datos'][0]['id_equipo'],
-  //         'equipoDescrip': data['datos'][0]['equipoDescrip'],
-  //       };
-  //       var arre = new Array();
-  //       arre = datos['fecha_inicio'].split(' ');
-  //       //var fe= date_format(date_create(arre[0]), 'd-m-Y');
-  //       $('#id_orden').val(datos['id_orden']);
-  //       $('#nro').val(datos['nro']);
-  //       $('#descripcion').val(datos['descripcion']);
-  //       $('#fecha_inicio').val(arre[0]); 
-  //       $('#estado').val(datos['estado']);
-  //       $('#equipo13').val(datos['equipo']);
-  //       $('#equipo13').prop('title', datos['equipoDescrip']);
-  //       $('#equipo13id').val(datos['id_equipo']);
-  //       traer_usuario( datos['id_usuario'] ); 
-  //       // click_pedent();
-  //     },
-  //     error: function(result){
-  //       console.error("Error al ")
-  //       console.table(result);
-  //     },
-  //     dataType: 'json'
-  //   });
-  // };
 
 //  ASIGNAR OT (RESPONSBLE) 
   // carga vista modal ejecutar ot y asignar responsable
@@ -1437,25 +1397,6 @@ function guardarpedido(){
     WaitingClose();  
   };
 // VER OT  
-  // $(".fa-search").click( function(e){
-  //   let idot = $(this).parent('td').parent('tr').attr('id');
-  //   //console.log("id Orden de trabajo: "+idot);
-    
-  //   WaitingOpen('Obteniendo datos de OT...');
-  //   //buscar datos 
-  //   $.ajax({
-  //     data: { idot:idot },
-  //     dataType: 'json',
-  //     method: 'POST',
-  //     url: 'index.php/Otrabajo/getOrigenOt',
-  //   })
-  //   .done( (data) => {
-  //     //console.table(data);
-  //     traerDatosOt(idot, data.tipo, data.id_solicitud);
-  //   })
-  //   .fail( () => alert( "Error al traer los datos de la OT." ) )
-  //   .always( () => WaitingClose() );
-  // });
 
   function mostrarOT(o){
     let idot = $(o).closest('tr').attr('id'); 
@@ -1470,7 +1411,7 @@ function guardarpedido(){
       url: 'index.php/Otrabajo/getOrigenOt',
     })
     .done( (data) => {
-      //console.table(data);
+      console.table(data);
       traerDatosOt(idot, data.tipo, data.id_solicitud);
     })
     .fail( () => {alert( "Error al traer los datos de la OT." );WaitingClose(); } )
@@ -1500,14 +1441,17 @@ function guardarpedido(){
         $('#verOtPreventivo').modal('show');
         WaitingClose();
         break;
-      case '4': //Backlog
+      case '4': //Backlog 
         datos = getDataOtBacklog(idOt, idSolicitud, "Backlog");
         fillModalViewBacklog(datos);
         $('#verOtBacklog').modal('show');
         WaitingClose();
         break;
-      case '5': //predictivo
+      case '5': //predictivo  LISTO
         datos = getDataOtPredictivo(idOt, idSolicitud, "Predictivo");
+        
+        //console.table(datos);
+        
         fillModalViewPredictivo(datos);
         $('#verOtPredictivo').modal('show');
         WaitingClose();
@@ -1534,28 +1478,51 @@ function guardarpedido(){
         url: 'index.php/Otrabajo/getViewDataOt',
       })
       .done( (data) => {
-        //console.table(data);
+        console.table(data);
         datos = {
           //Panel datos de OT
-          'id_ot'          : data['id_orden'],
-          'nro'            : data['nro'],
-          'descripcion_ot' : data['descripcionFalla'],
-          'fecha_inicio'   : data['fecha_inicio'],
-          'fecha_entrega'  : data['fecha_entrega'],
-          'fecha_program'  : data['fecha_program'],
-          'estado'         : data['estado'],
-          'sucursal'       : data['descripc'],
-          'nombreprov'     : data['provnombre'],
+          'id_ot'          : data['otrabajo'][0]['id_orden'],
+          'nro'            : data['otrabajo'][0]['nro'],
+          'descripcion_ot' : data['otrabajo'][0]['descripcionFalla'],
+          'fecha_inicio'   : data['otrabajo'][0]['fecha_inicio'],
+          'fecha_entrega'  : data['otrabajo'][0]['fecha_entrega'],
+          'fecha_program'  : data['otrabajo'][0]['fecha_program'],
+          'estado'         : data['otrabajo'][0]['estado'],
+          'sucursal'       : data['otrabajo'][0]['descripc'],
+          'nombreprov'     : data['otrabajo'][0]['provnombre'],
           'origen'         : origen,
-          'fecha_program'  : data['fecha_program'],
-          'asignado'       : data['usrLastName']+' '+data['usrLastName'],
-          'estado'         : data['estado'],
+          'fecha_program'  : data['otrabajo'][0]['fecha_program'],
+          'asignado'       : data['otrabajo'][0]['usrLastName']+' '+data['otrabajo'][0]['usrLastName'],
+          'estado'         : data['otrabajo'][0]['estado'],
           //Panel datos de equipos
-          'codigo'         : data['codigo'],
-          'marca'          : data['marca'],
-          'ubicacion'      : data['ubicacion'],
-          'descripcion_eq' : data['descripcionEquipo'],
-          'comp_equipo'    : data['compEquipo'],
+          'codigo'         : data['otrabajo'][0]['codigo'],
+          'marca'          : data['otrabajo'][0]['marca'],
+          'ubicacion'      : data['otrabajo'][0]['ubicacion'],
+          'descripcion_eq' : data['otrabajo'][0]['descripcionEquipo'],
+          'comp_equipo'    : data['otrabajo'][0]['compEquipo'],
+        };
+        var herram = data['herramientas'];
+        var insum = data['insumos'];    
+
+        $('#tblherrOT tbody tr').remove();
+        for (var i = 0; i < herram.length; i++) {
+          var tr = "<tr id='"+herram[i]['herrId']+"'>"+          
+          "<td>"+herram[i]['herrcodigo']+"</td>"+
+          "<td>"+herram[i]['herrmarca']+"</td>"+
+          "<td>"+herram[i]['herrdescrip']+"</td>"+
+          "<td>"+herram[i]['cantidad']+"</td>"+                   
+          "</tr>";
+          $('#tblherrOT tbody').append(tr);
+        }
+        $('#tblinsOT tbody tr').remove();
+        for (var i = 0; i < insum.length; i++){                                             
+          var tr = "<tr id='"+insum[i]['artId']+"'>"+
+         
+          "<td>"+insum[i]['artBarCode']+"</td>"+
+          "<td>"+insum[i]['artDescription']+"</td>"+
+          "<td>"+insum[i]['cantidad']+"</td>"+                   
+          "</tr>";
+          $('#tblinsOT tbody').append(tr);
         }
       })
       .fail( () => alert( "Error al traer los datos de la OT." ) );
@@ -1599,27 +1566,64 @@ function guardarpedido(){
         console.table(data);
         datos = {
           //Panel datos de OT
-          'id_ot'          : data['id_orden'],
-          'nro'            : data['nro'],
-          'descripcion_ot' : data['descripcionFalla'],
-          'fecha_inicio'   : data['fecha_inicio'],
-          'fecha_entrega'  : data['fecha_entrega'],
-          'fecha_program'  : data['fecha_program'],
-          'estado'         : data['estado'],
-          'sucursal'       : data['descripc'],
-          'nombreprov'     : data['provnombre'],
+          'id_ot'          : data['solicitud'][0]['id_orden'],
+          'nro'            : data['solicitud'][0]['nro'],
+          'descripcion_ot' : data['solicitud'][0]['descripcionFalla'],
+          'fecha_inicio'   : data['solicitud'][0]['fecha_inicio'],
+          'fecha_entrega'  : data['solicitud'][0]['fecha_entrega'],
+          'fecha_program'  : data['solicitud'][0]['fecha_program'],
+          'estado'         : data['solicitud'][0]['estado'],
+          'sucursal'       : data['solicitud'][0]['descripc'],
+          'nombreprov'     : data['solicitud'][0]['provnombre'],
           'origen'         : origen,
-          'fecha_program'  : data['fecha_program'],
-          'asignado'       : data['usrLastName']+' '+data['usrLastName'],
-          'estado'         : data['estado'],
+          'fecha_program'  : data['solicitud'][0]['fecha_program'],
+          'asignado'       : data['solicitud'][0]['usrLastName']+' '+data['solicitud'][0]['usrLastName'],
+          'estado'         : data['solicitud'][0]['estado'],
           //Panel datos de equipos
-          'codigo'         : data['codigo'],
-          'marca'          : data['marca'],
-          'ubicacion'      : data['ubicacion'],
-          'descripcion_eq' : data['descripcionEquipo'],
-          'comp_equipo'    : data['compEquipo'],
-          'solServicio'   : data['solServicio'],
+          'codigo'         : data['solicitud'][0]['codigo'],
+          'marca'          : data['solicitud'][0]['marca'],
+          'ubicacion'      : data['solicitud'][0]['ubicacion'],
+          'descripcion_eq' : data['solicitud'][0]['descripcionEquipo'],
+          'comp_equipo'    : data['solicitud'][0]['compEquipo'],
+          'solServicio'   : data['solicitud'][0]['solServicio'],
         };
+
+        
+        var herram = data['herramientas'];
+        var insum = data['insumos'];
+        var adjunto = data['adjunto'][0]['ot_adjunto'];
+        // console.log(adjunto + 'adjunto');
+        // console.table(adjunto);    
+
+        $('#tblherrsolicitud tbody tr').remove();
+        for (var i = 0; i < herram.length; i++) {
+          var tr = "<tr id='"+herram[i]['herrId']+"'>"+          
+          "<td>"+herram[i]['herrcodigo']+"</td>"+
+          "<td>"+herram[i]['herrmarca']+"</td>"+
+          "<td>"+herram[i]['herrdescrip']+"</td>"+
+          "<td>"+herram[i]['cantidad']+"</td>"+                   
+          "</tr>";
+          $('#tblherrsolicitud tbody').append(tr);
+        }
+        $('#tblinsSolicitud tbody tr').remove();
+        for (var i = 0; i < insum.length; i++){                                             
+          var tr = "<tr id='"+insum[i]['artId']+"'>"+
+         
+          "<td>"+insum[i]['artBarCode']+"</td>"+
+          "<td>"+insum[i]['artDescription']+"</td>"+
+          "<td>"+insum[i]['cantidad']+"</td>"+                   
+          "</tr>";
+          $('#tblinsSolicitud tbody').append(tr);
+        }
+        //TODO: ARREGLAR ACA
+        pdfEmbeded = '<embed src=".'+adjunto+'" type="application/pdf" style="width:100%;height:800px"></embed>';
+        $('#TabAdjuntoPrevent .panel-body').html(pdfEmbeded);
+
+        console.log(pdfEmbeded + 'pdfembed');
+
+
+
+
       })
       .fail( () => alert( "Error al traer los datos de la OT." ) );
       return datos;
@@ -1653,7 +1657,7 @@ function guardarpedido(){
       $('#vFallaSolServicio').val( datos['solServicio']['falla'] );
     }
 
-  /***** 3 preventivo *****/
+  /***** 3 preventivo *****/    //  LISTO falta adj- 
     // Trae datos de OT con origen Preventivo
     function getDataOtPreventivo(idOt, idPreventivo, origen) {
       //WaitingOpen('Cargando datos...');
@@ -1666,29 +1670,62 @@ function guardarpedido(){
         url: 'index.php/Otrabajo/getViewDataPreventivo',
       })
       .done( (data) => {
-        //console.table(data);
+        
         datos = {
           //Panel datos de OT
-          'id_ot'          : data['id_orden'],
-          'nro'            : data['nro'],
-          'descripcion_ot' : data['descripcionFalla'],
-          'fecha_inicio'   : data['fecha_inicio'],
-          'fecha_entrega'  : data['fecha_entrega'],
-          'fecha_program'  : data['fecha_program'],
-          'estado'         : data['estado'],
-          'sucursal'       : data['descripc'],
-          //'nombreprov'     : data['provnombre'],
+          'id_ot'          : data['preventivo'][0]['id_orden'],
+          'nro'            : data['preventivo'][0]['nro'],
+          'descripcion_ot' : data['preventivo'][0]['descripcionFalla'],
+          'fecha_inicio'   : data['preventivo'][0]['fecha_inicio'],
+          'fecha_entrega'  : data['preventivo'][0]['fecha_entrega'],
+          'fecha_program'  : data['preventivo'][0]['fecha_program'],
+          'estado'         : data['preventivo'][0]['estado'],
+          'sucursal'       : data['preventivo'][0]['descripc'],
+          //'nombreprov'     : data['preventivo'][0]['provnombre'],
           'origen'         : origen,
-          'fecha_program'  : data['fecha_program'],
-          'asignado'       : data['usrLastName']+' '+data['usrLastName'],
-          //'estado'         : data['estado'],
+          'fecha_program'  : data['preventivo'][0]['fecha_program'],
+          'asignado'       : data['preventivo'][0]['usrLastName']+' '+data['usrLastName'],
+          //'estado'         : data['preventivo'][0]['estado'],
           //Panel datos de equipos
-          'codigo'         : data['codigo'],
-          'marca'          : data['marca'],
-          'ubicacion'      : data['ubicacion'],
-          'descripcion_eq' : data['descripcionEquipo'],
-          'tarea' : data['tarea'],
+          'codigo'         : data['preventivo'][0]['codigo'],
+          'marca'          : data['preventivo'][0]['marca'],
+          'ubicacion'      : data['preventivo'][0]['ubicacion'],
+          'descripcion_eq' : data['preventivo'][0]['descripcionEquipo'],
+          'tarea' : data['preventivo'][0]['tarea'],
         };
+
+        var herram = data['herramientas'];
+        var insum = data['insumos'];
+        var adjunto = data['adjunto'][0]['ot_adjunto'];
+        // console.log(adjunto + 'adjunto');
+        // console.table(adjunto);    
+
+        $('#tblherrPrevent tbody tr').remove();
+        for (var i = 0; i < herram.length; i++) {
+          var tr = "<tr id='"+herram[i]['herrId']+"'>"+          
+          "<td>"+herram[i]['herrcodigo']+"</td>"+
+          "<td>"+herram[i]['herrmarca']+"</td>"+
+          "<td>"+herram[i]['herrdescrip']+"</td>"+
+          "<td>"+herram[i]['cantidad']+"</td>"+                   
+          "</tr>";
+          $('#tblherrPrevent tbody').append(tr);
+        }
+        $('#tblinsPrevent tbody tr').remove();
+        for (var i = 0; i < insum.length; i++){                                             
+          var tr = "<tr id='"+insum[i]['artId']+"'>"+
+         
+          "<td>"+insum[i]['artBarCode']+"</td>"+
+          "<td>"+insum[i]['artDescription']+"</td>"+
+          "<td>"+insum[i]['cantidad']+"</td>"+                   
+          "</tr>";
+          $('#tblinsPrevent tbody').append(tr);
+        }
+        //TODO: ARREGLAR ACA
+        pdfEmbeded = '<embed src=".'+adjunto+'" type="application/pdf" style="width:100%;height:800px"></embed>';
+        $('#TabAdjuntoPrevent .panel-body').html(pdfEmbeded);
+
+        console.log(pdfEmbeded + 'pdfembed');
+        
       })
       .fail( () => alert( "Error al traer los datos de la OT." ) );
       return datos;
@@ -1760,10 +1797,11 @@ function guardarpedido(){
     //muestra adjunto del modal preventivo
     function llenarAdjuntos(adjunto) {
       pdfEmbeded = '<embed src="./assets/filespreventivos/'+adjunto+'" type="application/pdf" style="width:100%;height:800px"></embed>';
-      $('#collapseAdjunto .panel-body').html(pdfEmbeded);
+      
+       $('#collapseAdjunto .panel-body').html(pdfEmbeded);
     }
 
-  /***** 4 Backlog *****/
+  /***** 4 Backlog *****/   //  LISTO falta adj- 
     // Trae datos de OT con origen Backlog
     function getDataOtBacklog(idOt, idBacklog, origen) {
       WaitingOpen('Cargando datos...');
@@ -1779,27 +1817,51 @@ function guardarpedido(){
         //console.table(data);
         datos = {
           //Panel datos de OT
-          'id_ot'          : data['id_orden'],
-          'nro'            : data['nro'],
-          'descripcion_ot' : data['descripcionFalla'],
-          'fecha_inicio'   : data['fecha_inicio'],
-          'fecha_entrega'  : data['fecha_entrega'],
-          'fecha_program'  : data['fecha_program'],
-          'estado'         : data['estado'],
-          'sucursal'       : data['descripc'],
-          'nombreprov'     : data['provnombre'],
+          'id_ot'          : data['backlog'][0]['id_orden'],
+          'nro'            : data['backlog'][0]['nro'],
+          'descripcion_ot' : data['backlog'][0]['descripcionFalla'],
+          'fecha_inicio'   : data['backlog'][0]['fecha_inicio'],
+          'fecha_entrega'  : data['backlog'][0]['fecha_entrega'],
+          'fecha_program'  : data['backlog'][0]['fecha_program'],
+          'estado'         : data['backlog'][0]['estado'],
+          'sucursal'       : data['backlog'][0]['descripc'],
+          'nombreprov'     : data['backlog'][0]['provnombre'],
           'origen'         : origen,
-          'fecha_program'  : data['fecha_program'],
-          'asignado'       : data['usrLastName']+' '+data['usrLastName'],
-          'estado'         : data['estado'],
+          'fecha_program'  : data['backlog'][0]['fecha_program'],
+          'asignado'       : data['backlog'][0]['usrLastName']+' '+data['backlog'][0]['usrLastName'],
+          'estado'         : data['backlog'][0]['estado'],
           //Panel datos de equipos
-          'codigo'         : data['codigo'],
-          'marca'          : data['marca'],
-          'ubicacion'      : data['ubicacion'],
-          'descripcion_eq' : data['descripcionEquipo'],
-          'comp_equipo'    : data['compEquipo'],
-          'tarea'          : data['tarea'],
+          'codigo'         : data['backlog'][0]['codigo'],
+          'marca'          : data['backlog'][0]['marca'],
+          'ubicacion'      : data['backlog'][0]['ubicacion'],
+          'descripcion_eq' : data['backlog'][0]['descripcionEquipo'],
+          'comp_equipo'    : data['backlog'][0]['compEquipo'],
+          'tarea'          : data['backlog'][0]['tarea'],
         };
+
+        var herram = data['herramientas'];
+        var insum = data['insumos'];
+        $('#tblherrBack tbody tr').remove();
+        for (var i = 0; i < herram.length; i++) {
+          var tr = "<tr id='"+herram[i]['herrId']+"'>"+          
+          "<td>"+herram[i]['herrcodigo']+"</td>"+
+          "<td>"+herram[i]['herrmarca']+"</td>"+
+          "<td>"+herram[i]['herrdescrip']+"</td>"+
+          "<td>"+herram[i]['cantidad']+"</td>"+                   
+          "</tr>";
+          $('#tblherrBack tbody').append(tr);
+        }
+        $('#tblinsumBack tbody tr').remove();
+        for (var i = 0; i < insum.length; i++){                                             
+          var tr = "<tr id='"+insum[i]['artId']+"'>"+
+         
+          "<td>"+insum[i]['artBarCode']+"</td>"+
+          "<td>"+insum[i]['artDescription']+"</td>"+
+          "<td>"+insum[i]['cantidad']+"</td>"+                   
+          "</tr>";
+          $('#tblinsumBack tbody').append(tr);
+        }      
+
       })
      
       .fail( () => alert( "Error al traer los datos de la OT." ) )
@@ -1847,7 +1909,7 @@ function guardarpedido(){
       $('#vDuracionBack').val( datos['tarea']['back_duracion'] );
     }
 
-  /***** 5 Predictivo *****/
+  /***** 5 Predictivo *****/  //  LISTO falta adj- 
     // Trae datos de OT con origen Predictivo
     function getDataOtPredictivo(idOt, idPredictivo, origen) {
       WaitingOpen('Cargando datos...');
@@ -1863,28 +1925,52 @@ function guardarpedido(){
         console.table(data);
         datos = {
           //Panel datos de OT
-          'id_ot'          : data['id_orden'],
-          'nro'            : data['nro'],
-          'descripcion_ot' : data['descripcionFalla'],
-          'fecha_inicio'   : data['fecha_inicio'],
-          'fecha_entrega'  : data['fecha_entrega'],
-          'fecha_program'  : data['fecha_program'],
-          'estado'         : data['estado'],
-          'sucursal'       : data['descripc'],
-          'nombreprov'     : data['provnombre'],
+          'id_ot'          : data['predictivo'][0]['id_orden'],
+          'nro'            : data['predictivo'][0]['nro'],
+          'descripcion_ot' : data['predictivo'][0]['descripcionFalla'],
+          'fecha_inicio'   : data['predictivo'][0]['fecha_inicio'],
+          'fecha_entrega'  : data['predictivo'][0]['fecha_entrega'],
+          'fecha_program'  : data['predictivo'][0]['fecha_program'],
+          'estado'         : data['predictivo'][0]['estado'],
+          'sucursal'       : data['predictivo'][0]['descripc'],
+          'nombreprov'     : data['predictivo'][0]['provnombre'],
           'origen'         : origen,
-          'fecha_program'  : data['fecha_program'],
-          'asignado'       : data['usrLastName']+' '+data['usrLastName'],
-          'estado'         : data['estado'],
+          'fecha_program'  : data['predictivo'][0]['fecha_program'],
+          'asignado'       : data['predictivo'][0]['usrLastName']+' '+data['predictivo'][0]['usrLastName'],
+          'estado'         : data['predictivo'][0]['estado'],
           //Panel datos de equipos
-          'codigo'         : data['codigo'],
-          'marca'          : data['marca'],
-          'ubicacion'      : data['ubicacion'],
-          'descripcion_eq' : data['descripcionEquipo'],
-          'tarea'          : data['tarea'],
+          'codigo'         : data['predictivo'][0]['codigo'],
+          'marca'          : data['predictivo'][0]['marca'],
+          'ubicacion'      : data['predictivo'][0]['ubicacion'],
+          'descripcion_eq' : data['predictivo'][0]['descripcionEquipo'],
+          'tarea'          : data['predictivo'][0]['tarea'],
         };
+
+        var herram = data['herramientas'];
+        var insum = data['insumos'];
+        $('#tblherrPred tbody tr').remove();
+        for (var i = 0; i < herram.length; i++) {
+          var tr = "<tr id='"+herram[i]['herrId']+"'>"+          
+          "<td>"+herram[i]['herrcodigo']+"</td>"+
+          "<td>"+herram[i]['herrmarca']+"</td>"+
+          "<td>"+herram[i]['herrdescrip']+"</td>"+
+          "<td>"+herram[i]['cantidad']+"</td>"+                   
+          "</tr>";
+          $('#tblherrPred tbody').append(tr);
+        }
+        $('#tblinsPred tbody tr').remove();
+        for (var i = 0; i < insum.length; i++){                                             
+          var tr = "<tr id='"+insum[i]['artId']+"'>"+
+         
+          "<td>"+insum[i]['artBarCode']+"</td>"+
+          "<td>"+insum[i]['artDescription']+"</td>"+
+          "<td>"+insum[i]['cantidad']+"</td>"+                   
+          "</tr>";
+          $('#tblinsPred tbody').append(tr);
+        }
       })
-      .fail( () => alert( "Error al traer los datos de la OT." ) );
+      .fail( () => alert( "Error al traer los datos de la OT." ) )
+      .always( () => WaitingClose() );
       return datos;
     }
     //llena datos del modal preventivo
@@ -1897,7 +1983,7 @@ function guardarpedido(){
       $('#vSucursalPred').val(datos['sucursal']);
       $('#vProveedorPred').val(datos['nombreprov']);
 
-      $('#vIdOtPred').val(datos['id_ot']);
+      $('#vIdOtPr').val(datos['id_ot']);
       $('#vOrigenPred').val(datos['origen']);
       $('#vFechaProgramPred').val(datos['fecha_program']);
       $('#vAsignadoPred').val(datos['asignado']);
@@ -1917,14 +2003,14 @@ function guardarpedido(){
       $('#vCantHsHombrePred').val( datos['tarea']['horash'] );
     }
 
-  // ajusto el ancho de la cabecera de las tablas al cargar el modal
-  $('#verOtPreventivo').on('shown.bs.modal', function (e) {
-    $( $.fn.dataTable.tables( true ) ).DataTable().columns.adjust();
-  });
-  //y al mostrar panel de acordeon
-  $('#collapseHerramientas, #collapseInsumos').on('shown.bs.collapse', function () {
-    $( $.fn.dataTable.tables( true ) ).DataTable().columns.adjust();
-  })
+    // ajusto el ancho de la cabecera de las tablas al cargar el modal
+    $('#verOtPreventivo').on('shown.bs.modal', function (e) {
+      $( $.fn.dataTable.tables( true ) ).DataTable().columns.adjust();
+    });
+    //y al mostrar panel de acordeon
+    $('#collapseHerramientas, #collapseInsumos').on('shown.bs.collapse', function () {
+      $( $.fn.dataTable.tables( true ) ).DataTable().columns.adjust();
+    })
 
 // IMPRIMIR
   $(".fa-print").click( function(e){
@@ -2161,7 +2247,10 @@ function guardarpedido(){
 
             <div class="panel-body">
               <div class="row">
-                <div class="col-xs-12 col-sm-6 com-md-4">
+                <div class="col-xs-12 col-sm-6 com-md-4">                
+                  
+                  <input type="hidden" id="id_ot"  name="id_ot" class="form-control input-md" disabled />
+                  
                   <label for="equipo">Equipo:</label>
                   <input type="text" id="equipo_descrip"  name="equipo_descrip" class="form-control input-md" disabled />
                   <input type="hidden" id="equipo"  name="equipo" class="form-control input-md" disabled />
@@ -2205,8 +2294,9 @@ function guardarpedido(){
               </div>
               <div class="row">
                 <div class="col-xs-12 col-sm-6">
-                  <label for="fechaInicio">Fecha Inicio:</label>
-                  <input type="text" class="datepicker form-control fecha" id="fechaInicio" name="fechaInicio" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>
+                  <label for="fechaInicio">Fecha Programación:</label>
+                  <!-- <input type="text" class="datepicker form-control fecha" id="fechaInicio" name="fechaInicio" value="<?php //echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/> -->
+                  <input type="text" class="datepicker form-control fecha" id="fechaInicio" name="fechaInicio" size="27"/>
                 </div> 
                 
                 <div class="col-xs-12 col-sm-6">
@@ -2657,7 +2747,7 @@ function guardarpedido(){
 <!-- / Modal -->
 
 
-<!-- Modal Ver Orden de Trabajo -->
+<!-- Modal Ver Orden de Trabajo LISTO -->
 <div class="modal" id="verOt" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -2773,6 +2863,110 @@ function guardarpedido(){
               </div>
             </div>
           </div> 
+          <!-- vista herramientas -->
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingThreePred">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionPred" href="#collapseTareaPredInsHerrOT" aria-expanded="false" aria-controls="collapseTareaPredInsHerrOT">
+                  Herramientas - Tareas - Insumos
+                </a>
+              </h4>
+            </div>
+            <div id="collapseTareaPredInsHerrOT" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThreePred">
+              <div class="panel-body">
+                
+                  <div class="row">
+                      <div class="col-xs-12">
+                        <div class="nav-tabs-custom">
+                          <!--tabs -->
+                          <ul class="nav nav-tabs" role="tablist">                
+                            <li role="presentation" class="active"><a href="#herrOT" aria-controls="profile" role="tab" data-toggle="tab">Herramientas</a></li>
+                            <li role="presentation"><a href="#insumOT" aria-controls="messages" role="tab" data-toggle="tab">Insumos</a></li>
+                            <li role="presentation"><a href="#TabAdjuntoOT" aria-controls="messages" role="tab" data-toggle="tab">Adjunto</a></li>                        
+                          </ul>
+                          <!-- /tabs -->
+        
+                          <!-- Tab panes -->
+                          <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="herrOT">
+                              
+                              <div class="row">
+                                <div class="col-xs-12">
+                                  <br>
+                                  <table class="table table-bordered" id="tblherrOT"> 
+                                    <thead>
+                                      <tr>     
+                                        <th>Código</th>
+                                        <th>Marca</th>
+                                        <th>Descripcion</th>
+                                        <th>Cantidad</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                  </table>  
+                                </div>
+                              </div><!-- /.row -->
+                            </div> <!-- /.tabpanel #herramin-->
+        
+                            <div role="tabpanel" class="tab-pane" id="insumOT">
+                            
+                              <div class="row">
+                              
+                              </div><!-- /.row -->
+                              <div class="row">
+                                <div class="col-xs-12">
+                                  <table class="table table-bordered" id="tblinsOT"> 
+                                    <thead>
+                                      <tr>
+                                        <th>Código</th>
+                                        <th>Descripcion</th>
+                                        <th>Cantidad</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                  </table>  
+                                </div>
+                              </div><!-- /.row -->
+                            </div><!--/#insum -->
+        
+                            <div role="tabpanel" class="tab-pane" id="TabAdjuntoOT">
+                              
+                            
+                              <div class="panel-body">
+
+                              </div>
+                            
+                            
+                              <!-- <div class="row" >  
+                              
+                                <div class="col-xs-12">
+                                  <table class="table table-bordered" id="tablaadjuntoPrev"> 
+                                    <thead>
+                                      <tr>
+                                        <th></th>
+                                        <th>Archivo</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      
+                                    </tbody>
+                                  </table>
+                                </div>
+                  
+                              </div> -->
+                            </div><!--cierre de TabAdjunto--> 
+                            
+                          </div>  <!-- tab-content -->
+                          
+                        </div><!-- /.nav-tabs-custom -->
+                      </div>
+                    </div>
+
+
+              </div>
+            </div>
+          </div>
+          <!--  ./vista herramientas -->
         </div>
 
       </div>
@@ -2937,6 +3131,114 @@ function guardarpedido(){
               </div>
             </div>
           </div> 
+
+
+
+          <!-- vista herramientas -->
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingThreePred">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionBack" href="#collapseTareaSolicitudInsHerr" aria-expanded="false" aria-controls="collapseTareaSolicitudInsHerr">
+                  Herramientas - Tareas - Insumos
+                </a>
+              </h4>
+            </div>
+            <div id="collapseTareaSolicitudInsHerr" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThreePred">
+              <div class="panel-body">
+                
+                  <div class="row">
+                      <div class="col-xs-12">
+                        <div class="nav-tabs-custom">
+                          <!--tabs -->
+                          <ul class="nav nav-tabs" role="tablist">                
+                            <li role="presentation" class="active"><a href="#herrSolicitu" aria-controls="profile" role="tab" data-toggle="tab">Herramientas</a></li>
+                            <li role="presentation"><a href="#insumSolicitu" aria-controls="messages" role="tab" data-toggle="tab">Insumos</a></li>
+                            <li role="presentation"><a href="#TabAdjuntoBack" aria-controls="messages" role="tab" data-toggle="tab">Adjunto</a></li>                        
+                          </ul>
+                          <!-- /tabs -->
+        
+                          <!-- Tab panes -->
+                          <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="herrSolicitu">
+                              
+                              <div class="row">
+                                <div class="col-xs-12">
+                                  <br>
+                                  <table class="table table-bordered" id="tblherrsolicitud"> 
+                                    <thead>
+                                      <tr>             
+                                        <th>Código</th>
+                                        <th>Marca</th>
+                                        <th>Descripcion</th>
+                                        <th>Cantidad</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                  </table>  
+                                </div>
+                              </div><!-- /.row -->
+                            </div> <!-- /.tabpanel #herramin-->
+                            
+
+        
+                            <div role="tabpanel" class="tab-pane" id="insumSolicitu">
+                            
+                              <div class="row">
+                              
+                              </div><!-- /.row -->
+                              <div class="row">
+                                <div class="col-xs-12">
+                                  <table class="table table-bordered" id="tblinsSolicitud"> 
+                                    <thead>
+                                      <tr>    
+                                        <th>Código</th>
+                                        <th>Descripcion</th>
+                                        <th>Cantidad</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                  </table>  
+                                </div>
+                              </div><!-- /.row -->
+                            </div><!--/#insum -->
+        
+                            <div role="tabpanel" class="tab-pane" id="TabAdjuntoSolicitud">
+                              <div class="row" >  
+                              
+                                <div class="col-xs-12">
+                                  <table class="table table-bordered" id="tbladjSolicitud"> 
+                                    <thead>
+                                      <tr>
+                                        <th></th>
+                                        <th>Archivo</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      
+                                    </tbody>
+                                  </table>
+                                </div>
+                  
+                              </div>
+                            </div><!--cierre de TabAdjunto--> 
+                            
+                          </div>  <!-- tab-content -->
+                          
+                        </div><!-- /.nav-tabs-custom -->
+                      </div>
+                    </div>
+
+
+              </div>
+            </div>
+          </div>
+          <!--  ./vista herramientas -->
+
+
+
+
+
+
         </div>
 
       </div>
@@ -2948,7 +3250,7 @@ function guardarpedido(){
 </div><!-- /.modal -->
 
 
-<!-- Modal Ver Orden de Trabajo Preventivo -->
+<!-- Modal Ver Orden de Trabajo Preventivo LISTO -->
 <div class="modal" id="verOtPreventivo" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -3112,88 +3414,113 @@ function guardarpedido(){
               </div>
             </div>
           </div>  
+          
+          <!-- vista herramientas -->
           <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingFourPrev">
+            <div class="panel-heading" role="tab" id="headingThreePred">
               <h4 class="panel-title">
-                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionPrev" href="#collapseHerramientas" aria-expanded="false" aria-controls="collapseHerramientas">
-                  Herramientas
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionPrev" href="#collapseTareaPreventInsHerr" aria-expanded="false" aria-controls="collapseTareaPreventInsHerr">
+                  Herramientas - Tareas - Insumos
                 </a>
               </h4>
             </div>
-            <div id="collapseHerramientas" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFourPrev">
+            <div id="collapseTareaPreventInsHerr" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThreePred">
               <div class="panel-body">
                 
-                <!-- tabla -->
-                <div class="row" >
-                  <div class="col-xs-12">
-                    <form id = "form_order">
-                      <table class="table table-bordered" id="vTablaHerramientas" border="1px">
-                        <thead>
-                           <tr>
-                            <th>Código</th>
-                            <th>Marca</th>
-                            <th>descripción</th>
-                            <th>Cantidad</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                      </table>
-                    </form>  
-                  </div>
-                </div>
-                <!-- / tabla-->
+                  <div class="row">
+                      <div class="col-xs-12">
+                        <div class="nav-tabs-custom">
+                          <!--tabs -->
+                          <ul class="nav nav-tabs" role="tablist">                
+                            <li role="presentation" class="active"><a href="#herrPrevent" aria-controls="profile" role="tab" data-toggle="tab">Herramientas</a></li>
+                            <li role="presentation"><a href="#insumPrevent" aria-controls="messages" role="tab" data-toggle="tab">Insumos</a></li>
+                            <li role="presentation"><a href="#TabAdjuntoPrevent" aria-controls="messages" role="tab" data-toggle="tab">Adjunto</a></li>                        
+                          </ul>
+                          <!-- /tabs -->
+        
+                          <!-- Tab panes -->
+                          <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="herrPrevent">
+                              
+                              <div class="row">
+                                <div class="col-xs-12">
+                                  <br>
+                                  <table class="table table-bordered" id="tblherrPrevent"> 
+                                    <thead>
+                                      <tr>     
+                                        <th>Código</th>
+                                        <th>Marca</th>
+                                        <th>Descripcion</th>
+                                        <th>Cantidad</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                  </table>  
+                                </div>
+                              </div><!-- /.row -->
+                            </div> <!-- /.tabpanel #herramin-->
+        
+                            <div role="tabpanel" class="tab-pane" id="insumPrevent">
+                            
+                              <div class="row">
+                              
+                              </div><!-- /.row -->
+                              <div class="row">
+                                <div class="col-xs-12">
+                                  <table class="table table-bordered" id="tblinsPrevent"> 
+                                    <thead>
+                                      <tr>
+                                        <th>Código</th>
+                                        <th>Descripcion</th>
+                                        <th>Cantidad</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                  </table>  
+                                </div>
+                              </div><!-- /.row -->
+                            </div><!--/#insum -->
+        
+                            <div role="tabpanel" class="tab-pane" id="TabAdjuntoPrevent">
+                              
+                            
+                              <div class="panel-body">
+
+                              </div>
+                            
+                            
+                              <!-- <div class="row" >  
+                              
+                                <div class="col-xs-12">
+                                  <table class="table table-bordered" id="tablaadjuntoPrev"> 
+                                    <thead>
+                                      <tr>
+                                        <th></th>
+                                        <th>Archivo</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      
+                                    </tbody>
+                                  </table>
+                                </div>
+                  
+                              </div> -->
+                            </div><!--cierre de TabAdjunto--> 
+                            
+                          </div>  <!-- tab-content -->
+                          
+                        </div><!-- /.nav-tabs-custom -->
+                      </div>
+                    </div>
+
 
               </div>
             </div>
           </div>
-          <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingFivePrev">
-              <h4 class="panel-title">
-                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionPrev" href="#collapseInsumos" aria-expanded="false" aria-controls="collapseInsumos">
-                  Insumos
-                </a>
-              </h4>
-            </div>
-            <div id="collapseInsumos" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFivePrev">
-              <div class="panel-body">
-                
-                <!-- tabla -->
-                <div class="row" >
-                  <div class="col-xs-12">
-                    <form id = "form_order">
-                      <table class="table table-bordered" id="vTablaInsumos" border="1px">
-                        <thead>
-                           <tr>
-                            <th>Código</th>
-                            <th>descripción</th>
-                            <th>Cantidad</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                      </table>
-                    </form>  
-                  </div>
-                </div>
-                <!-- / tabla-->
+          <!--  ./vista herramientas -->
 
-              </div>
-            </div>
-          </div>
-          <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingSix">
-              <h4 class="panel-title">
-                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionPrev" href="#collapseAdjunto" aria-expanded="false" aria-controls="collapseAdjunto">
-                  Adjunto
-                </a>
-              </h4>
-            </div>
-            <div id="collapseAdjunto" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
-              <div class="panel-body">
-              </div>
-            </div>
-          </div>
+
         </div>
 
       </div>
@@ -3205,7 +3532,7 @@ function guardarpedido(){
 </div><!-- /.modal -->
 
 
-<!-- Modal Ver Orden de Trabajo Backlog -->
+<!-- Modal Ver Orden de Trabajo Backlog LISTO -->
 <div class="modal" id="verOtBacklog" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -3355,7 +3682,108 @@ function guardarpedido(){
 
               </div>
             </div>
-          </div>  
+          </div> 
+          
+          <!-- vista herramientas -->
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingThreePred">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionBack" href="#collapseTareaBackInsHerr" aria-expanded="false" aria-controls="collapseTareaBackInsHerr">
+                  Herramientas - Tareas - Insumos
+                </a>
+              </h4>
+            </div>
+            <div id="collapseTareaBackInsHerr" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThreePred">
+              <div class="panel-body">
+                
+                  <div class="row">
+                      <div class="col-xs-12">
+                        <div class="nav-tabs-custom">
+                          <!--tabs -->
+                          <ul class="nav nav-tabs" role="tablist">                
+                            <li role="presentation" class="active"><a href="#herrback" aria-controls="profile" role="tab" data-toggle="tab">Herramientas</a></li>
+                            <li role="presentation"><a href="#insumBack" aria-controls="messages" role="tab" data-toggle="tab">Insumos</a></li>
+                            <li role="presentation"><a href="#TabAdjuntoBack" aria-controls="messages" role="tab" data-toggle="tab">Adjunto</a></li>                        
+                          </ul>
+                          <!-- /tabs -->
+        
+                          <!-- Tab panes -->
+                          <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="herrback">
+                              
+                              <div class="row">
+                                <div class="col-xs-12">
+                                  <br>
+                                  <table class="table table-bordered" id="tblherrBack"> 
+                                    <thead>
+                                      <tr>                      
+                                        <th>Acciones</th>
+                                        <th>Código</th>
+                                        <th>Marca</th>
+                                        <th>Descripcion</th>
+                                        <th>Cantidad</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                  </table>  
+                                </div>
+                              </div><!-- /.row -->
+                            </div> <!-- /.tabpanel #herramin-->
+        
+                            <div role="tabpanel" class="tab-pane" id="insumBack">
+                            
+                              <div class="row">
+                              
+                              </div><!-- /.row -->
+                              <div class="row">
+                                <div class="col-xs-12">
+                                  <table class="table table-bordered" id="tblinsumBack"> 
+                                    <thead>
+                                      <tr>                           
+                                        <th>Acciones</th>
+                                        <th>Código</th>
+                                        <th>Descripcion</th>
+                                        <th>Cantidad</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                  </table>  
+                                </div>
+                              </div><!-- /.row -->
+                            </div><!--/#insum -->
+        
+                            <div role="tabpanel" class="tab-pane" id="TabAdjuntoBack">
+                              <div class="row" >  
+                              
+                                <div class="col-xs-12">
+                                  <table class="table table-bordered" id="tbladjBack"> 
+                                    <thead>
+                                      <tr>
+                                        <th></th>
+                                        <th>Archivo</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      
+                                    </tbody>
+                                  </table>
+                                </div>
+                  
+                              </div>
+                            </div><!--cierre de TabAdjunto--> 
+                            
+                          </div>  <!-- tab-content -->
+                          
+                        </div><!-- /.nav-tabs-custom -->
+                      </div>
+                    </div>
+
+
+              </div>
+            </div>
+          </div>
+          <!--  ./vista herramientas -->
+
         </div>
 
       </div>
@@ -3367,7 +3795,7 @@ function guardarpedido(){
 </div><!-- /.modal -->
 
 
-<!-- Modal Ver Orden de Trabajo Predictivo -->
+<!-- Modal Ver Orden de Trabajo Predictivo  LISTO -->
 <div class="modal" id="verOtPredictivo" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -3391,8 +3819,8 @@ function guardarpedido(){
 
                 <div class="row">
                   <div class="col-xs-12 col-sm-3">
-                    <label for="vIdOt">Id de OT:</label>
-                    <input type="text" class="form-control " name="vIdOt" id="vIdOt" disabled>
+                    <label for="vIdOtPr">Id de OT:</label>
+                    <input type="text" class="form-control " name="vIdOtPr" id="vIdOtPr" disabled>
                   </div>
                   <div class="col-xs-12 col-sm-3">
                     <label for="vNroOtPred">Número de OT:</label>
@@ -3519,10 +3947,107 @@ function guardarpedido(){
                     <input type="text" class="form-control " name="vCantHsHombrePred" id="vCantHsHombrePred" disabled>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+          <!-- vista herramientas -->
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingThreePred">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionPred" href="#collapseTareaPredInsHerr" aria-expanded="false" aria-controls="collapseTareaPredInsHerr">
+                  Herramientas - Tareas - Insumos
+                </a>
+              </h4>
+            </div>
+            <div id="collapseTareaPredInsHerr" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThreePred">
+              <div class="panel-body">
+                
+                  <div class="row">
+                      <div class="col-xs-12">
+                        <div class="nav-tabs-custom">
+                          <!--tabs -->
+                          <ul class="nav nav-tabs" role="tablist">                
+                            <li role="presentation" class="active"><a href="#tblherrPredictivo" aria-controls="profile" role="tab" data-toggle="tab">Herramientas</a></li>
+                            <li role="presentation"><a href="#insumPredic" aria-controls="messages" role="tab" data-toggle="tab">Insumos</a></li>
+                            <li role="presentation"><a href="#TabAdjuntoPredic" aria-controls="messages" role="tab" data-toggle="tab">Adjunto</a></li>                        
+                          </ul>
+                          <!-- /tabs -->
+                          
+
+                          <!-- Tab panes -->
+                          <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="tblherrPredictivo">
+                              
+                              <div class="row">
+                                <div class="col-xs-12">
+                                  <br>
+                                  <table class="table table-bordered" id="tblherrPred"> 
+                                    <thead>
+                                      <tr>     
+                                        <th>Código</th>
+                                        <th>Marca</th>
+                                        <th>Descripcion</th>
+                                        <th>Cantidad</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                  </table>  
+                                </div>
+                              </div><!-- /.row -->
+                            </div> <!-- /.tabpanel #herramin-->
+        
+                            <div role="tabpanel" class="tab-pane" id="insumPredic">
+                            
+                              <div class="row">
+                              
+                              </div><!-- /.row -->
+                              <div class="row">
+                                <div class="col-xs-12">
+                                  <table class="table table-bordered" id="tblinsPreventivo"> 
+                                    <thead>
+                                      <tr>
+                                        <th>Código</th>
+                                        <th>Descripcion</th>
+                                        <th>Cantidad</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                  </table>  
+                                </div>
+                              </div><!-- /.row -->
+                            </div><!--/#insum -->
+        
+                            <div role="tabpanel" class="tab-pane" id="TabAdjuntoPreventivo">
+                              <div class="row" >  
+                              
+                                <div class="col-xs-12">
+                                  <table class="table table-bordered" id="tablaadjuntoPrev"> 
+                                    <thead>
+                                      <tr>
+                                        <th></th>
+                                        <th>Archivo</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      
+                                    </tbody>
+                                  </table>
+                                </div>
+                  
+                              </div>
+                            </div><!--cierre de TabAdjunto--> 
+                            
+                          </div>  <!-- tab-content -->
+                          
+                        </div><!-- /.nav-tabs-custom -->
+                      </div>
+                    </div>
+
 
               </div>
             </div>
           </div>
+          <!--  ./vista herramientas -->
         </div>
 
       </div>

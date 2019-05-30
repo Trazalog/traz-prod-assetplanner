@@ -167,18 +167,13 @@ class Otrabajo extends CI_Controller {
 		$contract = array(
 				"idSolicitudServicio"	=> 0,		// 0 NULL  FALSE       // "" ''
 				"idOT"  => 	$ultimoId
-		);
-
-		dump($contract, 'contrato BPM: ');	
-		$result = $this->bpm->LanzarProceso($contract);	
-		dump($result, 'respuesta lanzamiento proceso bpm: ');							
+		);	
+		$result = $this->bpm->LanzarProceso($contract);						
 		// guarda case id generado el lanzar proceso				
-		$respcaseOT = $this->Otrabajos->setCaseidenOTNueva($result['case_id'], $ultimoId);			
-
+		$respcaseOT = $this->Otrabajos->setCaseidenOTNueva($result['case_id'], $ultimoId);
 
 		if($ultimoId){
 
-			$ultimoId = $this->db->insert_id(); 	
 			////////// para guardar herramientas                 
 				if ( !empty($data['id_her']) ){
 					//saco array con herramientas y el id de empresa
@@ -376,8 +371,9 @@ class Otrabajo extends CI_Controller {
     $empId = $userdata[0]['id_empresa'];
 
 		$data     = $this->input->post();
-		dump($data, 'datos en controller: ');
+		// dump($data, 'datos en controller: ');
 		
+		// dump_exit($data);
 		$id = $this->input->post('idOT');	
 		$datos    = $this->input->post('parametros');
 		$result   = $this->Otrabajos->update_edita($id, $datos);
@@ -1098,8 +1094,39 @@ class Otrabajo extends CI_Controller {
 	public function getViewDataOt()
 	{
 		$idOt         = $_POST['idOt'];
-		$response     = $this->Otrabajos->getViewDataPreventivo($idOt);
-		echo json_encode($response[0]);
+		$response['otrabajo']     = $this->Otrabajos->getViewDataPreventivo($idOt);
+		
+		// trae herramientas 
+		$herramientas = $this->Otrabajos->getOTHerramientas($idOt);
+
+		if($herramientas){
+			$response['herramientas']=$herramientas;
+		}
+		else{ 
+			$response['herramientas']=0;
+		}
+		// trae insumos
+		$insumos = $this->Otrabajos->getOTInsumos($idOt);
+		if($insumos){
+				$response['insumos']=$insumos;
+		}
+		else{ $response['insumos']=0;}
+
+		// trae adjuntos
+		$adjuntos = $this->Otrabajos->getOTadjuntos($idOt);
+
+	
+
+		if($adjuntos){
+				$response['adjunto']=$adjuntos;
+		}
+		else{ $response['adjunto']=0;}
+
+
+		//dump($response['adjunto'], 'adjuntos: ');
+
+    echo json_encode($response);
+
 	}
 
 	//devuelve valores de todos los datos de la OT desde Preventivos para mostrar en modal.
@@ -1107,8 +1134,35 @@ class Otrabajo extends CI_Controller {
 	{
 		$idOt          = $_POST['idOt'];
 		$idSolServicio = $_POST['idSolServicio'];
-		$response      = $this->Otrabajos->getViewDataSolServicio($idOt, $idSolServicio);
-		echo json_encode($response[0]);
+		$response['solicitud']      = $this->Otrabajos->getViewDataSolServicio($idOt, $idSolServicio);
+	
+		
+		// trae herramientas 
+		$herramientas = $this->Otrabajos->getOTHerramientas($idOt);
+
+		if($herramientas){
+			$response['herramientas']=$herramientas;
+		}
+		else{ 
+			$response['herramientas']=0;
+		}
+		// trae insumos
+		$insumos = $this->Otrabajos->getOTInsumos($idOt);
+		if($insumos){
+				$response['insumos']=$insumos;
+		}
+		else{ $response['insumos']=0;}
+
+		// trae adjuntos
+		$adjuntos = $this->Otrabajos->getOTadjuntos($idOt);	
+
+		if($adjuntos){
+				$response['adjunto']=$adjuntos;
+		}
+		else{ $response['adjunto']=0;}
+	
+		//dump($response, 'response');
+		echo json_encode($response);
 	}
 
 	//devuelve valores de todos los datos de la OT desde Preventivos para mostrar en modal.
@@ -1116,8 +1170,39 @@ class Otrabajo extends CI_Controller {
 	{
 		$idOt         = $_POST['idOt'];
 		$idPreventivo = $_POST['idPreventivo'];
-		$response     = $this->Otrabajos->getViewDataPreventivo($idOt, $idPreventivo);
-		echo json_encode($response[0]);
+		$response['preventivo']  = $this->Otrabajos->getViewDataPreventivo($idOt, $idPreventivo);
+		
+
+		// trae herramientas 
+		$herramientas = $this->Otrabajos->getOTHerramientas($idOt);
+
+		if($herramientas){
+			$response['herramientas']=$herramientas;
+		}
+		else{ 
+			$response['herramientas']=0;
+		}
+		// trae insumos
+		$insumos = $this->Otrabajos->getOTInsumos($idOt);
+		if($insumos){
+				$response['insumos']=$insumos;
+		}
+		else{ $response['insumos']=0;}
+
+		// trae adjuntos
+		$adjuntos = $this->Otrabajos->getOTadjuntos($idOt);
+
+	
+
+		if($adjuntos){
+				$response['adjunto']=$adjuntos;
+		}
+		else{ $response['adjunto']=0;}
+
+
+		//dump($response['adjunto'], 'adjuntos: ');
+
+    echo json_encode($response);
 	}
 
 	//devuelve valores de todos los datos de la OT desde Backlog para mostrar en modal.
@@ -1125,11 +1210,32 @@ class Otrabajo extends CI_Controller {
 	{
 		$idOt      = $_POST['idOt'];
 		$idBacklog = $_POST['idBacklog'];
-		$response  = $this->Otrabajos->getViewDataBacklog($idOt, $idBacklog);
+		$response['backlog']  = $this->Otrabajos->getViewDataBacklog($idOt, $idBacklog);
 
-		//	dump($response, 'datos de backlog: ');
+		// trae herramientas 
+		$herramientas = $this->Otrabajos->getOTHerramientas($idOt);
 
-      	echo json_encode($response[0]);
+		if($herramientas){
+			$response['herramientas']=$herramientas;
+		}
+		else{ 
+			$response['herramientas']=0;
+		}
+		// trae insumos
+		$insumos = $this->Otrabajos->getOTInsumos($idOt);
+		if($insumos){
+				$response['insumos']=$insumos;
+		}
+		else{ $response['insumos']=0;}
+
+		// trae adjuntos
+		$adjuntos = $this->Otrabajos->getOTadjuntos($idOt);
+		if($adjuntos){
+				$response['adjunto']=$adjuntos;
+		}
+		else{ $response['adjunto']=0;}
+
+    echo json_encode($response);
 	}
 
 	//devuelve valores de todos los datos de la OT desde Predictivo para mostrar en modal.
@@ -1137,8 +1243,36 @@ class Otrabajo extends CI_Controller {
 	{
 		$idOt         = $_POST['idOt'];
 		$idPredictivo = $_POST['idPredictivo'];
-		$response     = $this->Otrabajos->getViewDataPredictivo($idOt, $idPredictivo);
-		echo json_encode($response[0]);
+	
+		$response['predictivo'] = $this->Otrabajos->getViewDataPredictivo($idOt, $idPredictivo);
+		
+		// trae herramientas 
+		$herramientas = $this->Otrabajos->getOTHerramientas($idOt);
+
+		if($herramientas){
+			$response['herramientas']=$herramientas;
+		}
+		else{ 
+			$response['herramientas']=0;
+		}
+		// trae insumos
+		$insumos = $this->Otrabajos->getOTInsumos($idOt);
+		if($insumos){
+				$response['insumos']=$insumos;
+		}
+		else{ $response['insumos']=0;}
+
+		// trae adjuntos
+		$adjuntos = $this->Otrabajos->getOTadjuntos($idOt);
+		if($adjuntos){
+				$response['adjunto']=$adjuntos;
+		}
+		else{ $response['adjunto']=0;}
+
+		//dump($response, 'datos de herr, etc: ');
+
+
+		echo json_encode($response);
 	}
 
 
