@@ -73,11 +73,11 @@
                   echo '<td>'.$a['depro'].'</td>';
                   echo '<td>'.$a['desec'].'</td>';
                   echo '<td>'.$a['decri'].'</td>';
-                  echo '<td>'
-                    .($a['estado'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' 
-                    :($a['estado'] == 'IN' ? '<small class="label pull-left bg-blue">Inhabilitado</small>'
-                    :($a['estado'] == 'RE' ? '<small class="label pull-left bg-yellow">Reparación</small>' 
-                    : '<small class="label pull-left bg-teal">Alta</small>'))).'</td>';
+                  echo '<td>';
+                    if($a['estado'] == 'AC' ) echo '<small class="label pull-left bg-green">Activo</small>' ;
+                    if($a['estado'] == 'IN' ) echo '<small class="label pull-left bg-blue">Inhabilitado</small>';
+                    if($a['estado'] == 'RE' ) echo '<small class="label pull-left bg-yellow">Reparación</small>' ;
+                    //: '<small class="label pull-left bg-teal">Alta</small>'))).'</td>';
                   echo '</tr>';
                 }
               ?>
@@ -1834,7 +1834,7 @@ function eliminarAdjunto() {
 
 //abrir modal agregar adjunto
 $(document).on("click",".agregaAdjunto",function(){
-  $('#btnAgregarEditar').text("Agregar");
+  $('.btnAgregarEditar').text("Agregar");
   $('#modalAgregarAdjunto .modal-title').html('<span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar');
 
   $('#modalAgregarAdjunto').modal('show');
@@ -1843,7 +1843,7 @@ $(document).on("click",".agregaAdjunto",function(){
 });
 //abrir modal editar adjunto
 $(document).on("click",".editaAdjunto",function(){
-  $('#btnAgregarEditar').text("Editar");
+  $('.btnAgregarEditar').text("Editar");
   $('#modalAgregarAdjunto .modal-title').html('<span class="fa fa-fw fa-pencil text-light-blue"></span> Editar');
 
   $('#modalAgregarAdjunto').modal('show');
@@ -2319,7 +2319,7 @@ $('#modaleditar').on('hidden.bs.modal', function (e) {
       <div class="modal-header">
         <h4>Editar Lectura</h4>
       </div>
-      <form id="formAgregarAdjunto">
+      <form id="formEditarLectura">
         <div class="modal-body">
           <div class="alert alert-danger alert-dismissable" id="errorEditLectura" style="display: none">
             <h4><i class="icon fa fa-ban"></i> Error!</h4>
@@ -2337,7 +2337,7 @@ $('#modaleditar').on('hidden.bs.modal', function (e) {
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary" id="btnAgregarEditar" onclick="guardarEditLectura()">Guardar</button>
+          <button type="submit" class="btn btn-primary btnAgregarEditar" onclick="guardarEditLectura()">Guardar</button>
         </div>
       </form>
     </div>
@@ -2614,7 +2614,7 @@ $('#modaleditar').on('hidden.bs.modal', function (e) {
         <h4 class="modal-title"><span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar</h4>
       </div>
 
-      <form id="formAgregarAdjunto">
+      <form id="formAgregarAdjunto" enctype="multipart/form-data">
         <div class="modal-body">
           <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
             <h4><i class="icon fa fa-ban"></i> Error!</h4>
@@ -2625,7 +2625,7 @@ $('#modaleditar').on('hidden.bs.modal', function (e) {
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary" id="btnAgregarEditar">Agregar</button>
+          <button type="submit" class="btn btn-primary btnAgregarEditar">Agregar</button>
         </div>
       </form>
     </div>

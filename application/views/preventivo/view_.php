@@ -243,7 +243,7 @@ WaitingOpen("Cargando Equipos...");
 $.ajax({
   data: { },
   dataType: 'json',
-  url: 'index.php/Preventivo/getequipo',
+  url: 'index.php/Predictivo/getEquipo', 
   type: 'POST',
 })
 .done( (data) => {
@@ -330,7 +330,7 @@ var dataTarea = function() {
 }();
 $("#tarea").autocomplete({
   source:    dataTarea,
-  delay:     500,
+  delay:     500, 
   minLength: 1,
   focus: function(event, ui) {
     event.preventDefault();
@@ -341,7 +341,9 @@ $("#tarea").autocomplete({
     event.preventDefault();
     $(this).val(ui.item.label);
     $('#id_tarea').val(ui.item.value);
-  },
+  },change: function(event,ui){
+    $(this).val(ui.item == null ? "" : ui.item.label);
+  }
 });
 
 // Trae periodo y llena select

@@ -69,7 +69,7 @@
                         <button type="button" class="btn btn-primary" id="addetapa" data-toggle="modal" data-target="#modaletapa"><i class="fa fa-plus"> Agregar</i></button> 
                       </div>
 
-                      <div class="col-xs-8"><label>Grupo:</label>
+                      <div class="col-xs-8"><label>Grupo<strong style="color: #dd4b39">*</strong>:</label>
                         <select id="grupo" name="grupo" class="form-control"></select>
                       </div>
                       <div class="col-xs-4">
@@ -77,7 +77,7 @@
                         <button type="button" class="btn btn-primary" id="addgrupo" data-toggle="modal" data-target="#modalgrupo"><i class="fa fa-plus"> Agregar</i></button> 
                       </div>
 
-                      <div class="col-xs-8"><label>Cliente:</label>
+                      <div class="col-xs-8"><label>Cliente<strong style="color: #dd4b39">*</strong>:</label>
                         <select id="cliente" name="cliente" class="form-control"></select>
                       </div>
                       <div class="col-xs-4">
@@ -98,7 +98,7 @@
               <div class="panel-body">
                 <div class="row">
                   <div class="col-xs-12 col-sm-6 col-md-4">
-                    <label>Código</label> <strong style="color: #dd4b39">*</strong>:
+                    <label>Código de Equipo<strong style="color: #dd4b39">*</strong></label>:
                     <input type="text" id="codigo" name="codigo" class="form-control" placeholder="Ingrese Código de Equipo">
                     <input type="hidden" id="id_equipo" name="id_equipo">
                   </div>
@@ -700,6 +700,14 @@ function validarCampos(){
   }
   if ( $('#numse').val() == "" ) {
       hayError = true;
+  }
+
+  if($('#grupo').val() == -1){
+    hayError = true;
+  }
+
+   if($('#cliente').val() == -1){
+    hayError = true;
   }
 
   return hayError;

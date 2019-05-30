@@ -16,7 +16,8 @@
             <thead>
               <tr>                
                 <th>Acciones</th>
-                <th>Código Componente</th> 
+                <th>ID</th>
+                <th>Código Trazable</th> 
                 <th>Descripción Componente</th>   
                 <th>Código Equipo</th>
                 <th>Descripción Equipo</th>
@@ -44,6 +45,7 @@
                   }
                   echo '</td>';
                   '<input type="hidden" id="id_equipo" name="id_equipo">';
+                  echo '<td>'.$idcome.'</td>';
                   echo '<td id="'.$idc.'">'.$a['codcomponente'].'</td>';
                   echo '<td>'.$a['descomp'].'</td>';
                   echo '<td>'.$a['codigo'].'</td>';

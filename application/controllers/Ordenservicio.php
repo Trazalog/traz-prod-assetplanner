@@ -6,6 +6,7 @@ class Ordenservicio extends CI_Controller {
     {
         parent::__construct();
         $this->load->model('Ordenservicios');
+        $this->load->model('Otrabajos');
     }
 
     public function index($permission)

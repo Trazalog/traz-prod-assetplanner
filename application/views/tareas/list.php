@@ -58,12 +58,12 @@
                   $id=$f["id"];
                   $asig = $f['assigned_id'];
 
-                  echo '<tr id="'.$id.'" class="'.$id.'" style="cursor: pointer;">';                   
+                  echo '<tr id="'.$id.'" class="'.$id.'" style="cursor: pointer;" tags="'.tagProceso($f['processId']).'">';                   
 
                   if ( $asig != "")  {
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea"').' style="text-align: left"><i class="fa fa-user" style="color: #5c99bc ; cursor: pointer;"" title="Asignado" data-toggle="modal" data-target="#modalSale"></i></td>';
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea text-center"').'><i class="fa fa-user" style="color: #5c99bc ; cursor: pointer;"" title="Asignado" data-toggle="modal" data-target="#modalSale"></i></td>';
                   }else{
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea"').' style="text-align: left"><i class="fa fa-user" style="color: #d6d9db ; cursor: pointer;"" title="Sin Asignar" data-toggle="modal" data-target="#modalSale"></i></td>';
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea text-center"').'><i class="fa fa-user" style="color: #d6d9db ; cursor: pointer;"" title="Sin Asignar" data-toggle="modal" data-target="#modalSale"></i></td>';
                   }
                   
                     echo '</td>';
@@ -132,7 +132,15 @@
 //Tomo valor de la celda y carga detalle de la tarea
   $('tbody tr').click( function () {
     var id = $(this).attr('id');
-    verTarea(id);
+   
+    WaitingOpen();
+    if(!$(this).attr('tags').includes('#pedidoMaterial')){
+      $(".content").load("<?php echo base_url(); ?>index.php/Tarea/detaTarea/<?php echo $permission; ?>/" + id);
+    }else{
+      linkTo('almacen/Proceso/detalleTarea/'+id);
+    }
+    WaitingClose();
+    
   });
 
 

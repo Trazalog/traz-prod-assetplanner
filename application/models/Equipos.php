@@ -910,14 +910,12 @@ class Equipos extends CI_Model {
         $empresaId = $userdata[0]['id_empresa'];
         $sql = "SELECT equipos.id_equipo, equipos.estado
         FROM equipos
-        JOIN grupo ON grupo.id_grupo=equipos.id_grupo
         JOIN sector ON sector.id_sector=equipos.id_sector
         JOIN empresas ON empresas.id_empresa=equipos.id_empresa
         JOIN unidad_industrial ON unidad_industrial.id_unidad=equipos.id_unidad
         JOIN criticidad ON criticidad.id_criti=equipos.id_criticidad
         JOIN area ON area.id_area=equipos.id_area
         JOIN proceso ON proceso.id_proceso=equipos.id_proceso
-        JOIN admcustomers ON admcustomers.cliId=equipos.id_customer
         WHERE equipos.estado != 'AN'
         AND equipos.id_empresa = '".$empresaId."'
         ";
@@ -935,7 +933,7 @@ class Equipos extends CI_Model {
             $equipos = $query->result_array();
             foreach ($equipos as &$valor) 
             {
-                if( ($valor['estado'] == 'AL') || ($valor['estado'] == 'AC') || ($valor['estado'] == 'RE'))
+                if( ($valor['estado'] == 'AC') || ($valor['estado'] == 'RE') )
                 {
                     $idEquipo = $valor['id_equipo'];
                     $this->db->select('estado');
@@ -1494,6 +1492,19 @@ class Equipos extends CI_Model {
         $this->db->where('id_equipo', $idEquipo);
         $query = $this->db->update("equipos", $data);
         return $query;
+    }
+
+    public function informe_equipos()
+    {
+        $this->db->select('count(*) as result');
+        $this->db->where('estado', 'AC');
+        $data['eqActivos'] = $this->db->get('equipos')->row()->result;
+
+        $this->db->select('count(*) as result');
+        $this->db->where('estado', 'RE');
+        $data['eqReparacion'] = $this->db->get('equipos')->row()->result;
+
+        return $data;
     }
     
 }

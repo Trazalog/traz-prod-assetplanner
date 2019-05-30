@@ -1,11 +1,11 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Calendarios extends CI_Model {
-	
+    
     function __construct()
-	{
-		parent::__construct();
-	}	
+    {
+        parent::__construct();
+    }   
 
     /**
      * MANDA ORDENES DE TRABAJO AL CALENDARIO (programadas).
@@ -297,67 +297,67 @@ class Calendarios extends CI_Model {
 
 
 
-	function Equipos_List()
+    function Equipos_List()
     {
-		$this->db->order_by('codigo','asc');
-		$this->db->order_by('descripcion','asc');
-		$query = $this->db->get('equipos');
-		
-		if ($query->num_rows()!=0)
-		{
-			return $query->result_array();	
-		}
-		else
-		{
-			return false;
-		}
-	}
-	
-	function setVisit($data = null)
+        $this->db->order_by('codigo','asc');
+        $this->db->order_by('descripcion','asc');
+        $query = $this->db->get('equipos');
+        
+        if ($query->num_rows()!=0)
+        {
+            return $query->result_array();  
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    function setVisit($data = null)
     {
-		if($data == null)
-		{
-			return false;
-		}
-		else
-		{
-			$equipId = $data['equip'];
-			$dia = $data['fecha'];
-			$hora = $data['hora'];
-			$min = $data['min'];
-			$note = $data['falla'];
-	       	$dia = explode('-', $dia);
-			$insert = array(
-				   'fecha_inicio' => $dia[2].'-'.$dia[1].'-'.$dia[0],
-				   'id_equipo' => $equipId,
-				   'estado' => 'C',
-				   'tipo' => '2',
-				   'id_sucursal' => '1',
-				   'id_tarea' => '1',
-				   'id_usuario' => '1',
-				   'id_usuario_a' => '1',
-				    'id_usuario_e' => '1',
-				   'descripcion' => $note
-				);
+        if($data == null)
+        {
+            return false;
+        }
+        else
+        {
+            $equipId = $data['equip'];
+            $dia = $data['fecha'];
+            $hora = $data['hora'];
+            $min = $data['min'];
+            $note = $data['falla'];
+            $dia = explode('-', $dia);
+            $insert = array(
+                   'fecha_inicio' => $dia[2].'-'.$dia[1].'-'.$dia[0],
+                   'id_equipo' => $equipId,
+                   'estado' => 'C',
+                   'tipo' => '2',
+                   'id_sucursal' => '1',
+                   'id_tarea' => '1',
+                   'id_usuario' => '1',
+                   'id_usuario_a' => '1',
+                    'id_usuario_e' => '1',
+                   'descripcion' => $note
+                );
 
 
-			if($this->db->insert('orden_trabajo', $insert) == false) {
-				return false;
-			}else{
-				return "Se programo la Orden de Trabajo para el día <br>".$data['dia']." a las ".$data['hora'].":".$data['min'];
-			}
-		}
-	}		
+            if($this->db->insert('orden_trabajo', $insert) == false) {
+                return false;
+            }else{
+                return "Se programo la Orden de Trabajo para el día <br>".$data['dia']." a las ".$data['hora'].":".$data['min'];
+            }
+        }
+    }       
 
-	function getpred($data = null){
-		
-		if($data == null)
-		{
-			return false;
-		}
-		else
-		{
-			$month = $data['month'] + 1 ;
+    function getpred($data = null){
+        
+        if($data == null)
+        {
+            return false;
+        }
+        else
+        {
+            $month = $data['month'] + 1 ;
 
 			$sql= "select predictivo.predId, 
 					predictivo.tarea_descrip, 
@@ -463,13 +463,13 @@ class Calendarios extends CI_Model {
 			return $result;
 		}
 
-		// guarda el adjunto que viene de la Tarea Original(Backlog, prevent y predict)
-		function insertAdjunto($idOT,$adjunto){		
-			$data = array('otId'=>$idOT,
-										'ot_adjunto'=>$adjunto);
-			$query = $this->db->insert("tbl_otadjuntos",$data);
-			return $query;
-		}
+        // guarda el adjunto que viene de la Tarea Original(Backlog, prevent y predict)
+        function insertAdjunto($idOT,$adjunto){     
+            $data = array('otId'=>$idOT,
+                                        'ot_adjunto'=>$adjunto);
+            $query = $this->db->insert("tbl_otadjuntos",$data);
+            return $query;
+        }
 
 		// TODO: ENTENDER SI YA NO SE USA CON LA NUEVA MODIFICACION DE HERRAM E INSUMOS
 		// Guarda batch de OT 
@@ -616,38 +616,38 @@ class Calendarios extends CI_Model {
 
 	//////// FUNCIONES CALENDARIO	
     // Actualiza dia nueva fecha de programacion en OT
-    function updateDiaProgramacion($id, $diaNuevo){   		
-   		
-   		$this->db->set('fecha_program', $diaNuevo);
-			$this->db->where('id_orden', $id);
-			$resposnse = $this->db->update('orden_trabajo');
-			return $resposnse;
-   	}
-   	// Actualiza la nueva duracion de la OT 
-   	function updateDuraciones($id, $nueva){
+    function updateDiaProgramacion($id, $diaNuevo){         
+        
+        $this->db->set('fecha_program', $diaNuevo);
+            $this->db->where('id_orden', $id);
+            $resposnse = $this->db->update('orden_trabajo');
+            return $resposnse;
+    }
+    // Actualiza la nueva duracion de la OT 
+    function updateDuraciones($id, $nueva){
 
-   		$this->db->set('duracion', $nueva);
-		$this->db->where('id_orden', $id);
-		$resposnse = $this->db->update('orden_trabajo');
-		return $resposnse;
-   	}
+        $this->db->set('duracion', $nueva);
+        $this->db->where('id_orden', $id);
+        $resposnse = $this->db->update('orden_trabajo');
+        return $resposnse;
+    }
 
-	////// CORRECTIVOS 
-		function getCorrectPorIds($data){
+    ////// CORRECTIVOS 
+        function getCorrectPorIds($data){
 
-			$id = $data;
-			
-					$this->db->select('solicitud_reparacion.id_solicitud,
-									solicitud_reparacion.f_solicitado, 
-									solicitud_reparacion.causa,
-							solicitud_reparacion.id_equipo						
-							');
-					$this->db->from('solicitud_reparacion');        
-					$this->db->where('solicitud_reparacion.id_solicitud', $id);
-					$query = $this->db->get();      
-					
-					return $query->result_array();  
-		}
+            $id = $data;
+            
+                    $this->db->select('solicitud_reparacion.id_solicitud,
+                                    solicitud_reparacion.f_solicitado, 
+                                    solicitud_reparacion.causa,
+                            solicitud_reparacion.id_equipo                      
+                            ');
+                    $this->db->from('solicitud_reparacion');        
+                    $this->db->where('solicitud_reparacion.id_solicitud', $id);
+                    $query = $this->db->get();      
+                    
+                    return $query->result_array();  
+        }
 
 	/////	BACKLOG
 		function getBackPorIds($data){
@@ -668,217 +668,217 @@ class Calendarios extends CI_Model {
 			$userdata = $this->session->userdata('user_data');
 			$empId = $userdata[0]['id_empresa']; 
 
-			$this->db->select('tbl_backlogherramientas.cantidad,
-													herramientas.herrcodigo,
-													herramientas.herrmarca,
-													herramientas.herrdescrip,
-													herramientas.herrId');
-			$this->db->from('tbl_backlogherramientas');
-			$this->db->join('herramientas', 'herramientas.herrId = tbl_backlogherramientas.herrId');   
-			$this->db->where('tbl_backlogherramientas.backId', $id);        
-			$this->db->where('tbl_backlogherramientas.id_empresa', $empId);
-			$query= $this->db->get();
+            $this->db->select('tbl_backlogherramientas.cantidad,
+                                                    herramientas.herrcodigo,
+                                                    herramientas.herrmarca,
+                                                    herramientas.herrdescrip,
+                                                    herramientas.herrId');
+            $this->db->from('tbl_backlogherramientas');
+            $this->db->join('herramientas', 'herramientas.herrId = tbl_backlogherramientas.herrId');   
+            $this->db->where('tbl_backlogherramientas.backId', $id);        
+            $this->db->where('tbl_backlogherramientas.id_empresa', $empId);
+            $query= $this->db->get();
 
-			if( $query->num_rows() > 0)
-			{
-				return $query->result_array();
-			}
-			else {
-				return 0;
-			}
-		}	
-		// Trae insumos por id de preventivo para Editar
-		function getBacklogInsumos($id){
-				
-			$userdata = $this->session->userdata('user_data');
-			$empId = $userdata[0]['id_empresa']; 
+            if( $query->num_rows() > 0)
+            {
+                return $query->result_array();
+            }
+            else {
+                return 0;
+            }
+        }   
+        // Trae insumos por id de preventivo para Editar
+        function getBacklogInsumos($id){
+                
+            $userdata = $this->session->userdata('user_data');
+            $empId = $userdata[0]['id_empresa']; 
 
-			$this->db->select('tbl_backloginsumos.id,
-													tbl_backloginsumos.cantidad,
-													articles.artBarCode,
-													articles.artId,
-													articles.artDescription,
-													articles.id_empresa');                            
-			$this->db->from('tbl_backloginsumos');
-			$this->db->join('articles', 'articles.artId = tbl_backloginsumos.artId');   
-			$this->db->where('tbl_backloginsumos.backId', $id);        
-			$this->db->where('articles.id_empresa', $empId);
-			$query= $this->db->get(); 
+            $this->db->select('tbl_backloginsumos.id,
+                                                    tbl_backloginsumos.cantidad,
+                                                    articles.artBarCode,
+                                                    articles.artId,
+                                                    articles.artDescription,
+                                                    articles.id_empresa');                            
+            $this->db->from('tbl_backloginsumos');
+            $this->db->join('articles', 'articles.artId = tbl_backloginsumos.artId');   
+            $this->db->where('tbl_backloginsumos.backId', $id);        
+            $this->db->where('articles.id_empresa', $empId);
+            $query= $this->db->get(); 
 
-			if( $query->num_rows() > 0)
-			{
-				return $query->result_array();
-			}
-			else {
-				return 0;
-			}
-		}
+            if( $query->num_rows() > 0)
+            {
+                return $query->result_array();
+            }
+            else {
+                return 0;
+            }
+        }
 
 
 
-		
-	///// PREDICTIVOS	
-		function getPredictPorIds($data){
-			$id = $data;
-			
-			$this->db->select('predictivo.tarea_descrip,
-												tareas.descripcion,
-												predictivo.predId,
-												predictivo.id_equipo,
-												predictivo.fecha');
-			$this->db->from('predictivo');
-			$this->db->join('tareas', 'tareas.id_tarea = predictivo.tarea_descrip');
-			$this->db->where('predictivo.predId', $id);
-			$query = $this->db->get();      
-			
-			return $query->result_array(); 
-		}
-		// Trae herramientas por id de predictivo para guardar en OT
-		function getPredictivoHerramientas($id){
-					
-			$userdata = $this->session->userdata('user_data');
-			$empId = $userdata[0]['id_empresa']; 
+        
+    ///// PREDICTIVOS   
+        function getPredictPorIds($data){
+            $id = $data;
+            
+            $this->db->select('predictivo.tarea_descrip,
+                                                tareas.descripcion,
+                                                predictivo.predId,
+                                                predictivo.id_equipo,
+                                                predictivo.fecha');
+            $this->db->from('predictivo');
+            $this->db->join('tareas', 'tareas.id_tarea = predictivo.tarea_descrip');
+            $this->db->where('predictivo.predId', $id);
+            $query = $this->db->get();      
+            
+            return $query->result_array(); 
+        }
+        // Trae herramientas por id de predictivo para guardar en OT
+        function getPredictivoHerramientas($id){
+                    
+            $userdata = $this->session->userdata('user_data');
+            $empId = $userdata[0]['id_empresa']; 
 
-			$this->db->select('tbl_predictivoherramientas.cantidad,
-													herramientas.herrcodigo,
-													herramientas.herrmarca,
-													herramientas.herrdescrip,
-													herramientas.herrId');
-			$this->db->from('tbl_predictivoherramientas');
-			$this->db->join('herramientas', 'herramientas.herrId = tbl_predictivoherramientas.herrId');   
-			$this->db->where('tbl_predictivoherramientas.predId', $id);        
-			$this->db->where('tbl_predictivoherramientas.id_empresa', $empId);
-			$query= $this->db->get();
+            $this->db->select('tbl_predictivoherramientas.cantidad,
+                                                    herramientas.herrcodigo,
+                                                    herramientas.herrmarca,
+                                                    herramientas.herrdescrip,
+                                                    herramientas.herrId');
+            $this->db->from('tbl_predictivoherramientas');
+            $this->db->join('herramientas', 'herramientas.herrId = tbl_predictivoherramientas.herrId');   
+            $this->db->where('tbl_predictivoherramientas.predId', $id);        
+            $this->db->where('tbl_predictivoherramientas.id_empresa', $empId);
+            $query= $this->db->get();
 
-			if( $query->num_rows() > 0)
-			{
-				return $query->result_array();
-			}
-			else {
-				return 0;
-			}
-		}
-		// Trae insumos por id de preventivo para Editar
+            if( $query->num_rows() > 0)
+            {
+                return $query->result_array();
+            }
+            else {
+                return 0;
+            }
+        }
+        // Trae insumos por id de preventivo para Editar
     function getPredictivoInsumos($id){
         
-			$userdata = $this->session->userdata('user_data');
-			$empId = $userdata[0]['id_empresa']; 
+            $userdata = $this->session->userdata('user_data');
+            $empId = $userdata[0]['id_empresa']; 
 
-			$this->db->select('tbl_predictivoinsumos.id,
-													tbl_predictivoinsumos.cantidad,
-													articles.artBarCode,
-													articles.artId,
-													articles.artDescription,
-													articles.id_empresa');                            
-			$this->db->from('tbl_predictivoinsumos');
-			$this->db->join('articles', 'articles.artId = tbl_predictivoinsumos.artId');   
-			$this->db->where('tbl_predictivoinsumos.predId', $id);        
-			$this->db->where('articles.id_empresa', $empId);
-			$query= $this->db->get(); 
+            $this->db->select('tbl_predictivoinsumos.id,
+                                                    tbl_predictivoinsumos.cantidad,
+                                                    articles.artBarCode,
+                                                    articles.artId,
+                                                    articles.artDescription,
+                                                    articles.id_empresa');                            
+            $this->db->from('tbl_predictivoinsumos');
+            $this->db->join('articles', 'articles.artId = tbl_predictivoinsumos.artId');   
+            $this->db->where('tbl_predictivoinsumos.predId', $id);        
+            $this->db->where('articles.id_empresa', $empId);
+            $query= $this->db->get(); 
 
-			if( $query->num_rows() > 0)
-			{
-				return $query->result_array();
-			}
-			else {
-				return 0;
-			}
-		}
-		// Guarda el bacht de datos de herramientas 
-		function insertOTHerram($idOT,$herra){
+            if( $query->num_rows() > 0)
+            {
+                return $query->result_array();
+            }
+            else {
+                return 0;
+            }
+        }
+        // Guarda el bacht de datos de herramientas 
+        function insertOTHerram($idOT,$herra){
 
-			$userdata  = $this->session->userdata('user_data');
-			$empId    = $userdata[0]['id_empresa'];	
-			$i = 0;
-			foreach ($herra as $h) {
-				$herramientas[$i]['otId'] = $idOT;
-				$herramientas[$i]['herrId'] = $h["herrId"];
-				$herramientas[$i]['cantidad'] = $h["cantidad"];
-				$herramientas[$i]['id_empresa']= $empId;
-				$i++;                                
-			} 			
-			$query = $this->db->insert_batch("tbl_otherramientas",$herramientas);
-			return $query;
-		}
-		// Guarda el bacht de insumos 
-		function insertOTInsum($idOT,$ins){
-			//dump($ins, 'insumos en entrada de funcion insert: ');
-			$userdata  = $this->session->userdata('user_data');
-			$empId    = $userdata[0]['id_empresa'];	
-			$j = 0;
-			foreach ($ins as $in) {
-				$insumo[$j]['otId'] = $idOT;
-				$insumo[$j]['artId'] = $in['artId'];
-				$insumo[$j]['cantidad'] = $in['cantidad'];
-				$insumo[$j]['id_empresa'] = $empId;
-				$j++;                                
-			}			
-			$query = $this->db->insert_batch("tbl_otinsumos",$insumo);
-			return $query;
-		}
-	 
-
-
+            $userdata  = $this->session->userdata('user_data');
+            $empId    = $userdata[0]['id_empresa']; 
+            $i = 0;
+            foreach ($herra as $h) {
+                $herramientas[$i]['otId'] = $idOT;
+                $herramientas[$i]['herrId'] = $h["herrId"];
+                $herramientas[$i]['cantidad'] = $h["cantidad"];
+                $herramientas[$i]['id_empresa']= $empId;
+                $i++;                                
+            }           
+            $query = $this->db->insert_batch("tbl_otherramientas",$herramientas);
+            return $query;
+        }
+        // Guarda el bacht de insumos 
+        function insertOTInsum($idOT,$ins){
+            //dump($ins, 'insumos en entrada de funcion insert: ');
+            $userdata  = $this->session->userdata('user_data');
+            $empId    = $userdata[0]['id_empresa']; 
+            $j = 0;
+            foreach ($ins as $in) {
+                $insumo[$j]['otId'] = $idOT;
+                $insumo[$j]['artId'] = $in['artId'];
+                $insumo[$j]['cantidad'] = $in['cantidad'];
+                $insumo[$j]['id_empresa'] = $empId;
+                $j++;                                
+            }           
+            $query = $this->db->insert_batch("tbl_otinsumos",$insumo);
+            return $query;
+        }
+     
 
 
 
 
-	///// PREVENTIVOS	
-				
-		// Trae herramientas ppor id de preventivo para Editar
-		function getPreventivoHerramientas($id){
-				
-			$userdata = $this->session->userdata('user_data');
-			$empId = $userdata[0]['id_empresa']; 
 
-			$this->db->select('tbl_preventivoherramientas.cantidad,
-													herramientas.herrcodigo,
-													herramientas.herrmarca,
-													herramientas.herrdescrip,
-													herramientas.herrId');
-			$this->db->from('tbl_preventivoherramientas');
-			$this->db->join('herramientas', 'herramientas.herrId = tbl_preventivoherramientas.herrId');   
-			$this->db->where('tbl_preventivoherramientas.prevId', $id);        
-			$this->db->where('tbl_preventivoherramientas.id_empresa', $empId);
-			$query= $this->db->get();
 
-			if( $query->num_rows() > 0)
-			{
-				return $query->result_array();
-			}
-			else {
-				return 0;
-			}
-		}	
-		// Trae insumos por id de preventivo para Editar
-		function getPreventivoInsumos($id){
-				
-			$userdata = $this->session->userdata('user_data');
-			$empId = $userdata[0]['id_empresa']; 
+    ///// PREVENTIVOS   
+                
+        // Trae herramientas ppor id de preventivo para Editar
+        function getPreventivoHerramientas($id){
+                
+            $userdata = $this->session->userdata('user_data');
+            $empId = $userdata[0]['id_empresa']; 
 
-			$this->db->select('tbl_preventivoinsumos.id,
-													tbl_preventivoinsumos.cantidad,
-													articles.artBarCode,
-													articles.artId,
-													articles.artDescription,
-													articles.id_empresa');                            
-			$this->db->from('tbl_preventivoinsumos');
-			$this->db->join('articles', 'articles.artId = tbl_preventivoinsumos.artId');   
-			$this->db->where('tbl_preventivoinsumos.prevId', $id);        
-			$this->db->where('articles.id_empresa', $empId);
-			$query= $this->db->get(); 
+            $this->db->select('tbl_preventivoherramientas.cantidad,
+                                                    herramientas.herrcodigo,
+                                                    herramientas.herrmarca,
+                                                    herramientas.herrdescrip,
+                                                    herramientas.herrId');
+            $this->db->from('tbl_preventivoherramientas');
+            $this->db->join('herramientas', 'herramientas.herrId = tbl_preventivoherramientas.herrId');   
+            $this->db->where('tbl_preventivoherramientas.prevId', $id);        
+            $this->db->where('tbl_preventivoherramientas.id_empresa', $empId);
+            $query= $this->db->get();
 
-			if( $query->num_rows() > 0)
-			{
-				return $query->result_array();
-			}
-			else {
-				return 0;
-			}
-		}
-	
+            if( $query->num_rows() > 0)
+            {
+                return $query->result_array();
+            }
+            else {
+                return 0;
+            }
+        }   
+        // Trae insumos por id de preventivo para Editar
+        function getPreventivoInsumos($id){
+                
+            $userdata = $this->session->userdata('user_data');
+            $empId = $userdata[0]['id_empresa']; 
 
-		/**
+            $this->db->select('tbl_preventivoinsumos.id,
+                                                    tbl_preventivoinsumos.cantidad,
+                                                    articles.artBarCode,
+                                                    articles.artId,
+                                                    articles.artDescription,
+                                                    articles.id_empresa');                            
+            $this->db->from('tbl_preventivoinsumos');
+            $this->db->join('articles', 'articles.artId = tbl_preventivoinsumos.artId');   
+            $this->db->where('tbl_preventivoinsumos.prevId', $id);        
+            $this->db->where('articles.id_empresa', $empId);
+            $query= $this->db->get(); 
+
+            if( $query->num_rows() > 0)
+            {
+                return $query->result_array();
+            }
+            else {
+                return 0;
+            }
+        }
+    
+
+        /**
      * Trae listado de equipos que tengan mantenimiento preventivo por horas
      *
      * @return  Array   Vuleca la variable o no devuelve nada
@@ -909,12 +909,12 @@ class Calendarios extends CI_Model {
 
     
     // bucle que recorra preventivos
-			//      con id_equipo traigo historial_lecturas ->ultima lectura
-			//      hago cuenta
-			//      si es necesario llamo funcion que cambia estado de preventivo
-			//      cambio $preventivos[estadoprev]
-			// cierro bucle
-			// devuelvo $preventivos
+            //      con id_equipo traigo historial_lecturas ->ultima lectura
+            //      hago cuenta
+            //      si es necesario llamo funcion que cambia estado de preventivo
+            //      cambio $preventivos[estadoprev]
+            // cierro bucle
+            // devuelvo $preventivos
     function revisaEstadoPreventivosPorHoras($preventivos)
     {
         $cantPreventivos = sizeof( $preventivos );
