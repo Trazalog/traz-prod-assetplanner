@@ -102,7 +102,7 @@ define('CMP_ALM', 'almacen');
 |
 */
 
-define('BONITA_URL', 'http://localhost:8080/bonita/');  
+define('BONITA_URL', 'http://holis:8080/bonita/');  
 
 
 /*

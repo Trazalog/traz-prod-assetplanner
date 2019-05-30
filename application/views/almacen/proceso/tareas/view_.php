@@ -1,9 +1,6 @@
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
 
-
-	
-	<?php #echo cargarCabecera($id_OT,$id_SS,$id_EQ); ?>
-	<?php $ot = 36; info_header('Orden de Trabajo N°'.$ot,info_orden($ot)); ?>
+	<?php info_header('Orden de Trabajo N°'.$ot,info_orden($ot)); ?>
 	<!-- <?php #info_header('Nota de Pedido N° ???','Informacion Nota'); ?> -->
 	<div class="row">
 		<div class="col-xs-12">

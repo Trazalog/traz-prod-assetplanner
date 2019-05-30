@@ -2,9 +2,12 @@
 
 if (!function_exists('info_orden')) {
     function info_orden($id_OT=null){
+
+     
         $ci =& get_instance();			
             //load databse library
-            $ci->load->database();		
+        $ci->load->database();		
+        
         if($id_OT){
 
             $resultOT = null;
@@ -16,7 +19,7 @@ if (!function_exists('info_orden')) {
                                             orden_trabajo.duracion,
                                             orden_trabajo.estado');	
             $ci->db->from('orden_trabajo');		
-            $ci->db->join('sim_test.tareas', 'tareas.id_tarea = orden_trabajo.id_tarea','left');			
+            $ci->db->join('tareas', 'tareas.id_tarea = orden_trabajo.id_tarea','left');			
             $ci->db->where('orden_trabajo.id_orden', $id_OT);
             $queryOT = $ci->db->get();			
             if($queryOT->num_rows() > 0){
