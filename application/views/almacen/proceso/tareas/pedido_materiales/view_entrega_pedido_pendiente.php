@@ -31,7 +31,7 @@
         <th>Descripción</th>
         <th>Cant. Pedida</th>
         <th>Cant. Entregada</th>
-        <th>Cant. Disponible</th>
+        <th>Cant. Stock</th>
         <th>Cant. a Entregar</th>
         <th>Extraer</th>
     </thead>
@@ -97,24 +97,27 @@
 
         var id = $('#idTarBonita').val();
 
+        var cantidades =[];
+
         var detalles = [];
 
         var completa = true;
 
         $('#entregas tr').each(function() {
             const row = $(this).data('json');
-            
             completa = completa && (parseInt($(this).find('.pedido').html()) == (parseInt($(this).find('.entregado').html()) + parseInt($(this).find('.extraer').html()=='-'?0:$(this).find('.extraer').html())));
 
             if(row == null) return;
             row.forEach(element => {
                 detalles.push(element);
             });
+
+            cantidades.push({arti_id:$(this).data('id'), resto:$(this).attr('resto')});
         });
 
         $.ajax({
             type: 'POST',
-            data: {completa, info_entrega: get_info_entrega(), detalles},
+            data: {completa, info_entrega: get_info_entrega(), detalles, cantidades},
             url: '<?php base_url() ?>index.php/almacen/Proceso/cerrarTarea/' + id,
             success: function (data) {
 

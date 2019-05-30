@@ -434,10 +434,11 @@ function graficarEquiposOperativos() {
     var myChart = new Chart(areaChartCanvas, {
         type: 'doughnut',
         data: {
-            labels: ["Operativo", "No Operativo"],
+            labels: ["Activos", "En Reparación"],
             datasets: [{
-                data: [ <?php echo $equipoOperativo[0]['cantEstadoActivo']?>,
-                        <?php echo $equipoOperativo[1]['cantEstadoActivo']?>],
+                data: [ <?php echo $kpi['eqActivos'] ?>,
+                        <?php echo $kpi['eqReparacion'] ?>],
+                
                 backgroundColor: [
                 "#008d4c",
                 "#FF9600"

@@ -10,12 +10,11 @@
           <table id="stock" class="table table-bordered table-hover">
             <thead>
               <tr>
-                <th>Codigo</th>
                 <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Deposito</th>
-                <th>Punto Pedido</th>
-                <th>Estado</th>
+                <th>Código</th>
+                <th class="text-center">Punto Pedido</th>
+                <th class="text-center">Cant. Stock</th>
+                <th class="text-center">Cant. Disponible</th>
               </tr>
             </thead>
             <tbody>
@@ -24,13 +23,13 @@
 
                 	foreach($list as $f)
       		        {
+                    if($f['cantidad_disponible']>$f['punto_pedido']) continue;
   	                echo '<tr>';
-                    echo '<td>'.$f['artBarCode'].'</td>';
-                    echo '<td>'.$f['artDescription'].'</td>';
-                    echo '<td>'.$f['cantidad'].'</td>';
-                    echo '<td>'.$f['depositodescrip'].'</td>';
-                    echo '<td>'.$f['punto_pedido'].'</td>';
-                    echo '<td>'.($f['lotestado'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' : ($f['lotestado'] == 'IN' ? '<small class="label pull-left bg-red">Inactivo</small>' : '<small class="label pull-left bg-yellow">Suspendido</small>')).'</td>';
+                    echo '<td>'.$f['descripcion'].'</td>';
+                    echo '<td>'.$f['barcode'].'</td>';
+                    echo '<td class="text-center">'.$f['punto_pedido'].'</td>';
+                    echo '<td class="text-center">'.$f['cantidad_stock'].'</td>';
+                    echo '<td class="text-center '.($f['cantidad_disponible']<0?"text-danger":"").'">'.$f['cantidad_disponible'].'</td>';
   	                echo '</tr>';
       		        }
                 

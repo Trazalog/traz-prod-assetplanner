@@ -41,7 +41,7 @@
 
     <ul class="nav nav-tabs">
       <li class="nav active" data-tipo="comun"><a data-toggle="tab" href="#one">Pedidos</a></li>
-      <li class="nav hidden" data-tipo="especial"><a data-toggle="tab" href="#two">Pedidos Especiales</a></li>
+      <li class="nav" data-tipo="especial"><a data-toggle="tab" href="#two">Pedidos Especiales</a></li>
     </ul>
 
     <div class="tab-content">
@@ -54,11 +54,11 @@
         <form id="form_insumos">
             <table id="tbl_insumos" class="table table-bordered table-hover">
                 <thead>
-                    <tr>
-                        <th style="width: 2%;">Seleccionar</th>
-                        <th style="width: 50%;">Insumo</th>
+                    
+                        <th>Seleccionar</th>
+                        <th>Insumo</th>
                         <th>Cantidad</th>
-                    </tr>
+                   
                 </thead>
                 <tbody>
                     <?php
@@ -68,11 +68,11 @@
                           foreach ($plantilla as $p) {
 
                               echo '<tr id="" class="">';
-                              echo '<td>';
+                              echo '<td class="text-center">';
                               echo '<input class="check" type="checkbox" name="artId[' . $i . ']" value="' . $p['arti_id'] . '" id="' . $p['arti_id'] . '">';
                               echo '</td>';
-                              echo '<td>';
-                              echo '<input type="text" class="celda insum_Desc" id="insum_Desc" value=" ' . $p['descripcion'] . ' " placeholder="">';
+                              echo '<td>' . $p['descripcion'];
+                              echo '<input type="text" class="celda insum_Desc hidden" id="insum_Desc" value=" ' . $p['descripcion'] . ' " placeholder="">';
                               echo '</td>';
                               echo '<td>';
                               echo '<input type="text" name="cant_insumos[' . $i . ']" class="cant_insumos" id="cant_insumos" value="" placeholder="Ingrese cantidad...">';
@@ -87,7 +87,6 @@
                       ?>
                 </tbody>
             </table>
-            <!-- <button type="button" class="botones btn btn-primary" onclick="enviarOrden()">Hacer Pedido</button> -->
         </form>
       </div>
 
@@ -184,6 +183,9 @@
           cargarNotasOffline();
         }
 
+        $('.check').prop('checked',false);
+        if(idinsumos.length==0){$('.modal').modal('hide'); return;}
+
         $.ajax({
           data: { idinsumos, cantidades, idOT },
           type: 'POST',
@@ -205,39 +207,29 @@
   function guardar_pedido_esp() {
     var pedido = $('#pedido').val();
     var justif = $('#justificacion').val();
+    var ot = $('#id_ordTrabajo').val();
 
     $.ajax({
       type: 'POST',
       data: {
-        pedido: pedido,
-        justif: justif
+        pedido,
+        justif,
+        ot
       },
       url: 'index.php/almacen/Notapedido/setPedidoEspecial',
       success: function (data) {
-        console.log(data);
-        //alert("Se Finalizando la SUBTAREA");
-       // refresca(id);
+        cargarPedidos();
+        $('.modal').modal('hide');
       },
       error: function (result) {
-        console.log(result);
-        alert("NO se Finalizo la SUBTAREA");
-        refresca(id);
+   
+        alert("Error");
+     
       }
     });
 }
 
-  $('#tabModInsum').DataTable({
-    "aLengthMenu": [10, 25, 50, 100],
-    "columnDefs": [{
-      "targets": [0],
-      "searchable": false
-    },
-    {
-      "targets": [0],
-      "orderable": false
-    }],
-    "order": [[1, "asc"]],
-  });
+  $('#tbl_insumos').DataTable();
 
 
 

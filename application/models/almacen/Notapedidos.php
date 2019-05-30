@@ -164,11 +164,10 @@ class Notapedidos extends CI_Model
                 'pema_id' => $idNota,
                 'arti_id' => $insumo,
                 'cantidad' => $cant,
+                'resto' => $cant,
                 'prov_id' => $proveed,
                 'fechaEntrega' => $newDate,
                 'fechaEntregado' => $newDate,
-                // 'remito' => 1,
-                // 'estado' => 'P' // Estado Pedido
             );
             $this->db->insert('alm_deta_pedidos_materiales', $nota);
         }

@@ -83,6 +83,7 @@ class Proceso extends CI_Controller
         //Mapeo de Contrato
         $contrato = $this->getContrato($tarea, $form);
 
+    
         //Cerrar Tarea
         $this->bpmalm->cerrarTarea($task_id, $contrato);
 
@@ -174,7 +175,9 @@ class Proceso extends CI_Controller
 
             case 'Aprueba pedido de Recursos Materiales':
 
-                return $this->load->view(CMP_ALM.'/proceso/tareas/pedido_materiales/view_aprueba_pedido', null, true);
+                $data['pema_id'] = $this->Notapedidos->getXCaseId($tarea['rootCaseId'])['pema_id'];
+
+                return $this->load->view(CMP_ALM.'/proceso/tareas/pedido_materiales/view_aprueba_pedido', $data, true);
 
                 break;
 
@@ -260,7 +263,7 @@ class Proceso extends CI_Controller
         }
     }
 
-    public function pedidoNormal($pemaId = 1)
+    public function pedidoNormal($pemaId)
     {
         //? DEBE EXISTIR LA NOTA DE PEDIDO 
         $contract = [
@@ -274,14 +277,12 @@ class Proceso extends CI_Controller
         $this->index();
     }
 
-    public function pedidoExtraordinario($ot = 36)
+    public function pedidoExtraordinario($ot=1)
     {
         //? SE DEBE CORRESPONDER CON UN ID EN LA TABLE ORDEN_TRABAJO SINO NO ANDA
 
-        $pedidoExtra = 'Soy un Pedido Extraordinario';  //!HARDCODE    
-
         $contract = [
-            'pedidoExtraordinario' =>  $pedidoExtra
+            'pedidoExtraordinario' =>  'Soy un Pedido'
         ];
 
         $data = $this->bpmalm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS,$contract);

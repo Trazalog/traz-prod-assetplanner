@@ -281,7 +281,7 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
     function cargarPedidos() {
         var iort = $('#ot').val();
         $('#nota_pedido').empty();
-        $("#nota_pedido").load("<?php echo base_url(); ?>index.php/Notapedido/ObtenerNotasPedidosxOT/<?php echo $permission; ?>/" + iort);
+        $("#nota_pedido").load("<?php echo base_url(); ?>index.php/almacen/Notapedido/ObtenerNotasPedidosxOT/" + iort);
 
     }
 
@@ -398,12 +398,10 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 
     /* Pantalla pedido de insumos */
 			load_view_insumos();
-
 			function load_view_insumos() {
-					var emp_id = $('#empresa_id').val();
 					var iort = $('#ot').val();
 					$('#body-pedidos').empty();
-					$("#body-pedidos").load("<?php echo base_url(); ?>index.php/Notapedido/agregarListInsumos/<?php echo $permission; ?>/" + iort + "/" + emp_id);
+					$("#body-pedidos").load("<?php echo base_url(); ?>index.php/almacen/Notapedido/agregarListInsumos/" + iort );
 			}
 
 			function pedirInsumos() {

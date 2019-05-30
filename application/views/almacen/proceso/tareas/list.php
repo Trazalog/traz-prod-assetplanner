@@ -52,7 +52,7 @@
               <?php                
                 foreach($list as $f){
 
-                  if($f['processId']==BPM_PROCESS_ID_PEDIDOS_NORMALES || $f['processId']==BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS){
+             //     if($f['processId']==BPM_PROCESS_ID_PEDIDOS_NORMALES || $f['processId']==BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS){
                   
                   $id=$f["id"];
                   $asig = $f['assigned_id'];
@@ -84,7 +84,7 @@
 
                     echo '</tr>';
 
-                }
+              //  }
             }
               ?>
 

@@ -6,6 +6,7 @@ class Otrabajo extends CI_Controller {
 	function __construct(){
 		parent::__construct();
 		$this->load->model('Otrabajos');
+		$this->load->model('Equipos');
 		
 	}
 
@@ -17,6 +18,7 @@ class Otrabajo extends CI_Controller {
 	public function index($permission) // Ok
 	{
 		$data['list']       = $this->Otrabajos->otrabajos_List();
+		$data['kpi'] = $this->Equipos->informe_equipos();
 		$data['permission'] = $permission;
 		$this->load->view('otrabajos/dash', $data);
 	}

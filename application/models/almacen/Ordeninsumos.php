@@ -129,6 +129,9 @@ class Ordeninsumos extends CI_Model
         //DETALLE ENTREGA
         $detalle = $form['detalles'];
 
+        //CANTIDADEES PARA ACTUALZAR NOTA PEDIDOS
+        $cantidades = $form['cantidades'];
+
         //INSERTAR EN CABECERA ENTREGA
         $query = $this->db->insert("alm_entrega_materiales", $info);
         $id = $this->db->insert_id();
@@ -144,7 +147,19 @@ class Ordeninsumos extends CI_Model
         //INSERTAR DETALLES
         $this->db->insert_batch('alm_deta_entrega_materiales', $detalle);
         $this->actualizar_lote($detalle);
+        $this->actualizar_entregas($info['pema_id'], $cantidades);
 
+    }
+
+    public function actualizar_entregas($pema, $cantidades)
+    {
+        foreach ($cantidades as $o) {
+            $this->db->where('pema_id', $pema);
+            $this->db->where('arti_id', $o['arti_id']);
+            $this->db->set('resto', $o['resto']);
+            $this->db->update('alm_deta_pedidos_materiales');
+        }
+   
     }
 
     public function actualizar_lote($detalle)
@@ -160,7 +175,7 @@ class Ordeninsumos extends CI_Model
     public function get_detalle_entrega($pema)
     {
         // FILTRAR ARTICULOS PEDIDO MATERIALES
-        $this->db->select('ART.arti_id, ART.barcode, ART.descripcion, PEMA.cantidad as cant_pedida, sum(LOTE.cantidad) as cantidad');
+        $this->db->select('ART.arti_id, ART.barcode, ART.descripcion, PEMA.cantidad as cant_pedida, sum(LOTE.cantidad) as cantidad_stock');
         $this->db->from('alm_deta_pedidos_materiales PEMA');
         $this->db->join('alm_articulos ART', 'ART.arti_id = PEMA.arti_id');
         $this->db->join('alm_lotes LOTE','LOTE.arti_id = ART.arti_id');
@@ -177,26 +192,18 @@ class Ordeninsumos extends CI_Model
         $B = '(' . $this->db->get_compiled_select() . ') B';
 
         // OBTENER CANTIDADES RESERVADAS
-        $this->db->select('arti_id, sum(cantidad) as cant_reservada');
+        $this->db->select('arti_id, sum(resto) as cant_reservada');
         $this->db->from('alm_deta_pedidos_materiales');
         $this->db->where('pema_id != ', $pema);
         $this->db->group_by('arti_id');
         $C = '(' . $this->db->get_compiled_select() . ') C';
 
-        // SUMAR ENTREGAS DE OTRAS NOTAS PEDIDOS
-        $this->db->select('B.arti_id, sum(cantidad) as aux_cant_entrega');
-        $this->db->from('alm_entrega_materiales A');
-        $this->db->join('alm_deta_entrega_materiales B', 'B.enma_id = A.enma_id');
-        $this->db->where('A.pema_id !=', $pema);
-        $this->db->group_by('B.arti_id');
-        $D = '(' . $this->db->get_compiled_select() . ') D';
-
         // OBTENER EXISTENCIAS
-        $this->db->select('A.barcode, A.descripcion, A.arti_id, A.cant_pedida, cantidad -  IFNULL(C.cant_reservada,0) + IFNULL(D.aux_cant_entrega,0) as cant_disponible, IFNULL(B.cant_entregada,0) as cant_entregada');
+        $this->db->select('A.barcode, A.descripcion, A.arti_id, A.cant_pedida, cantidad_stock as cant_disponible, IFNULL(B.cant_entregada,0) as cant_entregada');
         $this->db->from($A);
         $this->db->join($B, 'B.arti_id = A.arti_id', 'left');
-        $this->db->join($C, 'C.arti_id = A.arti_id ', 'left');
-        $this->db->join($D, 'D.arti_id = A.arti_id ', 'left');
+       // $this->db->join($C, 'C.arti_id = A.arti_id ', 'left');
+       // $this->db->join($D, 'D.arti_id = A.arti_id ', 'left');
 
         //echo var_dump($this->db->get()->result_array());die;
         return $this->db->get()->result_array();

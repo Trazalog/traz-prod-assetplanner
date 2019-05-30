@@ -32,15 +32,16 @@ class Lotes extends CI_Model {
 
 	function puntoPedListado()
 	{
-		//$userdata  = $this->session->userdata('user_data');
-        //$empresaId = $userdata[0]['id_empresa'];
+		$userdata  = $this->session->userdata('user_data');
+		$empresaId = $userdata[0]['id_empresa'];
+		
 		$this->db->select('alm_lotes.*,alm_articulos.descripcion as artDescription, alm_articulos.barcode as artBarCode, alm_articulos.punto_pedido, alm_lotes.cantidad, alm_depositos.descripcion as depositodescrip, T.valor as lotestado');
 		$this->db->from('alm_lotes');
 		$this->db->join('alm_articulos', 'alm_lotes.arti_id = alm_articulos.arti_id');
 		$this->db->join('alm_depositos', ' alm_lotes.depo_id = alm_depositos.depo_id');
 		$this->db->join('utl_tablas T','T.tabl_id = alm_lotes.estado_id');
 		$this->db->where('alm_articulos.punto_pedido>= alm_lotes.cantidad');
-		//$this->db->where('alm_lotes.empr_id', $empresaId);
+		$this->db->where('alm_lotes.empr_id', $empresaId);
 		$query = $this->db->get();
 
 		if ($query->num_rows()!=0)
@@ -51,6 +52,27 @@ class Lotes extends CI_Model {
 		{	
 			return false;
 		}
+	}
+
+	public function getPuntoPedido()
+	{
+		  $userdata  = $this->session->userdata('user_data');
+		  $empresaId = $userdata[0]['id_empresa'];
+
+		  // OBTENER CANTIDADES RESERVADAS
+		  $this->db->select('arti_id, sum(resto) as cant_reservada');
+		  $this->db->from('alm_deta_pedidos_materiales');
+		  $this->db->group_by('arti_id');
+		  $C = '(' . $this->db->get_compiled_select() . ') C';
+
+		  $this->db->select('ART.arti_id, ART.barcode, ART.descripcion,punto_pedido, sum(LOTE.cantidad) as cantidad_stock, sum(LOTE.cantidad)-cant_reservada as cantidad_disponible');
+		  $this->db->from('alm_articulos ART');
+		  $this->db->join('alm_lotes LOTE','LOTE.arti_id = ART.arti_id');
+		  $this->db->join($C,'C.arti_id = ART.arti_id');
+		  $this->db->group_by('ART.arti_id');
+		  //$this->db->where('alm_lotes.empr_id', $empresaId);
+
+		  return $this->db->get()->result_array();
 	}
 	
 	function getMotion($data = null){

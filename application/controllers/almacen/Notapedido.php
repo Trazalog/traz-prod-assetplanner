@@ -62,28 +62,35 @@ class Notapedido extends CI_Controller
     public function setPedidoEspecial()
     {
 
-        $pedido = $this->input->post('pedido');
-        $justif = $this->input->post('justif');
+        $pedido = $this->input->post('pedido').'&'.$this->input->post('justif');
+        $ot = $this->input->post('ot');
 
-        // Lanza proceso (retorna case_id)
-        $result = $this->lanzarProcesoBPM($inspectorid);
-        $caseId = json_decode($result, true)['caseId'];
+        echo $this->pedidoExtraordinario($ot,$pedido);
 
     }
-    // lanza proceso en BPM (inspección)
-    public function lanzarProcesoBPM($inspectorid)
+
+    public function pedidoExtraordinario($ot, $pedidoExtra)
     {
+        //? SE DEBE CORRESPONDER CON UN ID EN LA TABLE ORDEN_TRABAJO SINO NO ANDA
+        $this->load->library('BPMALM');
+        $this->load->model(CMP_ALM.'/Pedidoextra');
 
-        $parametros = $this->Bonitas->conexiones();
-        $parametros["http"]["method"] = "POST";
-        $idInspector = array(
-            "idInspector" => $inspectorid,
-        );
-        $parametros["http"]["content"] = json_encode($idInspector);
-        $param = stream_context_create($parametros);
-        $result = $this->Inspecciones->lanzarProcesoBPM($param);
-        return $result;
+        $contract = [
+            'pedidoExtraordinario' =>  $pedidoExtra
+        ];
+
+        $data = $this->bpmalm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS,$contract);
+
+        $peex['case_id'] = $data['case_id'];
+        $peex['fecha'] = date("Y-m-d");
+        $peex['detalle'] = $pedidoExtra;    
+        $peex['ortr_id'] = $ot; 
+        $peex['empr_id'] = 1; //!HARDCODE
+
+        return $this->Pedidoextra->set($peex);
+
     }
+  
 
     public function getOrdenesCursos()
     {
@@ -145,7 +152,24 @@ class Notapedido extends CI_Controller
 
         $response = $this->Notapedidos->setDetaNota($deta);
         
+        $this->pedidoNormal($idnota);
+        
         echo json_encode(['pema_id'=>$idnota]);
+    }
+
+    
+    public function pedidoNormal($pemaId)
+    {
+        $this->load->library('BPMALM');
+
+        //? DEBE EXISTIR LA NOTA DE PEDIDO 
+        $contract = [
+            'pIdPedidoMaterial' => $pemaId,
+        ];
+
+        $data = $this->bpmalm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES,$contract);
+
+        $this->Notapedidos->setCaseId($pemaId, $data['case_id']);
     }
 
     public function editarPedido()

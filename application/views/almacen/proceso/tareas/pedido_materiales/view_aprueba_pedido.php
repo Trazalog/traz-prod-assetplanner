@@ -1,5 +1,5 @@
 <hr>
-<input type="number" class="hidden" value="<?php echo $pemaId ?>">
+<input type="number" class="hidden" value="<?php echo $pema_id ?>" id="pemaId">
 <h3>Pedido Materiales <small>Detalle</small></h3>
 <div id="nota_pedido">
     <table id="tabladetalle" class="table table-striped table-hover">
@@ -49,7 +49,7 @@ function cargarPedidos() {
     $.ajax({
         type: 'POST',
         data: {
-            id: 1
+            id: $('#pemaId').val()
         },
         url: 'index.php/almacen/Notapedido/getNotaPedidoId',
         success: function(data) {
@@ -84,7 +84,7 @@ function cerrarTarea() {
 
     var dataForm = new FormData($('#generic_form')[0]);
 
-    dataForm.append('pema_id', $('table#deposito tbody tr').attr('id'));
+    dataForm.append('pema_id', $('#pemaId').val());
 
     $.ajax({
         type: 'POST',

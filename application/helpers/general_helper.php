@@ -52,6 +52,11 @@ if (!function_exists('dump_exit')) {
         dump ($var, $label, $echo = TRUE);
         exit;
     }
+
+     function tagProcess($id)
+    {
+        if($id == BPM_PROCESS_ID_PEDIDOS_NORMALES) return '#pedidoMaterial';
+
+        if($id == BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS) return '#pedidoMaterial#extraordinario';
+    }
 }
-
-

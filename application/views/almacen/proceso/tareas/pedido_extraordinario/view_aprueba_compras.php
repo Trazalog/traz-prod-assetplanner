@@ -3,7 +3,8 @@
 
 <hr>
 <h3>Pedido Extraordinario <small>Detalle del Pedido</small></h3>
-<p class="text-danger"><?php echo $detalle ?></p>
+<p class="text-danger"><?php echo @explode('&',$detalle)[0] ?></p>
+<p class="text-danger"><?php echo @explode('&',$detalle)[1] ?></p>
 <hr>
 
 <form id="generic_form">
