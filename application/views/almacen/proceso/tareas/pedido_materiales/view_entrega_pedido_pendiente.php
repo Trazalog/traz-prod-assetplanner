@@ -121,7 +121,7 @@
             url: '<?php base_url() ?>index.php/almacen/Proceso/cerrarTarea/' + id,
             success: function (data) {
 
-               linkTo('almacen/Proceso');
+               linkTo('Tarea');
 
             },
             error: function (data) {

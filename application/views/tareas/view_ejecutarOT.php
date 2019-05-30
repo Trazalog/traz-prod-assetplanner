@@ -12,7 +12,7 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 ?>
 
 <section class="content">
-    <?php cargarCabecera($id_OT, $id_SS, $id_EQ); ?>
+    <?php #cargarCabecera($id_OT, $id_SS, $id_EQ); ?>
     <div class="row">
         <div class="col-xs-12">
             <div class="box">

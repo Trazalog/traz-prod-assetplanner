@@ -3,7 +3,7 @@
 <input id="pema_id" type="number" class="hidden" value="<?php echo $pema_id ?>">
 <input id="peex_id" type="number" class="hidden" value="<?php echo $peex_id ?>">
 
-<?php $this->load->view(CMP_ALM.'/proceso/tareas/componentes/pedido_materiales')?>
+<?php $this->load->view(CMP_ALM.'/Proceso/tareas/componentes/pedido_materiales')?>
 
 
 <script>
@@ -28,7 +28,7 @@ $.ajax({
     url: '<?php base_url()?>index.php/almacen/Proceso/cerrarTarea/'+id,
     success: function (data) {
 
-        linkTo('almacen/Proceso');
+        linkTo('Tarea');
 
     },
     error: function (data) {

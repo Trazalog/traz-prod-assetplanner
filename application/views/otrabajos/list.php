@@ -3533,3 +3533,26 @@ function guardarpedido(){
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+
+<script>
+
+function imprimir(e){
+    let idot = $(e).closest('tr').attr('id');
+    //console.log("id Orden de trabajo: "+idot);
+
+    WaitingOpen('Obteniendo datos de OT...');
+    //buscar datos 
+    $.ajax({
+      data: { idot:idot },
+      dataType: 'json',
+      method: 'POST',
+      url: 'index.php/Otrabajo/getOrigenOt',
+    })
+    .done( (data) => {
+      console.table(data);
+      traerDatosImprimirOt(idot, data.tipo, data.id_solicitud);
+    })
+    .fail( () => alert( "Error al traer los datos de la OT." ) )
+    .always( () => WaitingClose() );
+};
+</script>

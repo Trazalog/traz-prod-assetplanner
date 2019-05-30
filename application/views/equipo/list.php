@@ -73,11 +73,11 @@
                   echo '<td>'.$a['depro'].'</td>';
                   echo '<td>'.$a['desec'].'</td>';
                   echo '<td>'.$a['decri'].'</td>';
-                  echo '<td>'
-                    .($a['estado'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' 
-                    :($a['estado'] == 'IN' ? '<small class="label pull-left bg-blue">Inhabilitado</small>'
-                    :($a['estado'] == 'RE' ? '<small class="label pull-left bg-yellow">Reparación</small>' 
-                    : '<small class="label pull-left bg-teal">Alta</small>'))).'</td>';
+                  echo '<td>';
+                    if($a['estado'] == 'AC' ) echo '<small class="label pull-left bg-green">Activo</small>' ;
+                    if($a['estado'] == 'IN' ) echo '<small class="label pull-left bg-blue">Inhabilitado</small>';
+                    if($a['estado'] == 'RE' ) echo '<small class="label pull-left bg-yellow">Reparación</small>' ;
+                    //: '<small class="label pull-left bg-teal">Alta</small>'))).'</td>';
                   echo '</tr>';
                 }
               ?>

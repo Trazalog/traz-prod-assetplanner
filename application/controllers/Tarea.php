@@ -79,7 +79,7 @@ class Tarea extends CI_Controller {
 		
 		/*	./ FUNCIONES BPM */
 			// Bandea de entrada
-			public function index($permission){
+			public function index($permission = null){
 
 				$this->load->library('BPM');
 				$detect = new Mobile_Detect();    

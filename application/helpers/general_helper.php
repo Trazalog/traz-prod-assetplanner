@@ -53,7 +53,7 @@ if (!function_exists('dump_exit')) {
         exit;
     }
 
-     function tagProcess($id)
+     function tagProceso($id)
     {
         if($id == BPM_PROCESS_ID_PEDIDOS_NORMALES) return '#pedidoMaterial';
 
