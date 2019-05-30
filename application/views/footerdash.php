@@ -23,6 +23,17 @@
             link = (uri==''?link:uri);
 
         }
+
+        function collapse(e){
+            e = $(e).closest('.box');
+
+            if(e.hasClass('collapsed-box')){
+                $(e).removeClass('collapsed-box');
+            }else{
+                $(e).addClass('collapsed-box');
+            }
+
+        }
         //Esto dispara un evento para que se cargue el Dash en forma automatica cuando ingreso.
         cargarView('<?php echo $grpDash; ?>', 'index', 'View');
 

@@ -45,9 +45,20 @@ class Proceso extends CI_Controller
 
         //INFORMACION DE TAREA
         $data['idTarBonita'] = $task_id;
-        $data['TareaBPM'] = $tarea;
-        $data['tarea'] = $tarea;
-        $data['datos'] = '';
+        
+        $data['TareaBPM'] = $tarea;//!QUITAR
+        $data['tarea'] = $tarea;//!QUITAR
+        $data['datos'] = '';//!QUITAR
+
+        if ($proceso == BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS) {
+
+            $data['ot'] = $this->Pedidoextra->getXCaseId($tarea['rootCaseId'])['ortr_id'];
+
+        } else {
+
+            $data['ot'] = $this->Notapedidos->getXCaseId($tarea['rootCaseId'])['ortr_id'];
+
+        }
 
         //LINEA DE TIEMPO
         $data['timeline'] = $this->bpmalm->ObtenerLineaTiempo($tarea['processId'],$tarea['rootCaseId']);
