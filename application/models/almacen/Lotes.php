@@ -6,7 +6,7 @@ class Lotes extends CI_Model {
 		parent::__construct();
 	}
 	
-	function list() // Ok
+	function getList() // Ok
 	{
 		//$userdata  = $this->session->userdata('user_data');
 		$empresaId = 1;//$userdata[0]['id_empresa'];

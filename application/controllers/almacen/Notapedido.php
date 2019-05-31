@@ -47,7 +47,7 @@ class Notapedido extends CI_Controller
         $this->load->model(CMP_ALM.'/Articulos');
         $data['ot'] = $ot;
         $data['permission'] = $this->permission;
-        $data['plantilla'] = $this->Articulos->list();
+        $data['plantilla'] = $this->Articulos->getList();
         $this->load->view(CMP_ALM.'/notapedido/insumolist', $data);
     }
 
@@ -177,7 +177,7 @@ class Notapedido extends CI_Controller
 
         $this->load->model(CMP_ALM.'/Articulos');
         $data['permission'] = $this->permission;
-        $data['plantilla'] = $this->Articulos->list();
+        $data['plantilla'] = $this->Articulos->getList();
         $this->load->view(CMP_ALM.'/notapedido/edit_pedido', $data);
 
     }

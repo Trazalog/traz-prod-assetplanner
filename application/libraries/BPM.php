@@ -55,7 +55,7 @@ class BPM
 		
 		//Datos Usuario
 		$userdata = $this->CI->session->userdata('user_data');
-		$usrId= 102;//$userdata[0]["usrId"];		
+		$usrId= $userdata[0]["usrId"];		
 
 		//Enviar Request
 		$resource = 'API/bpm/humanTask?p=0&c=1000&f=user_id%3D';
