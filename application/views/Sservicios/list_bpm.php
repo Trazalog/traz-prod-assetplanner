@@ -53,6 +53,8 @@
                             }                                      
 
                             echo '<i class="fa fa-picture-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imagen" data-imagen ="'.$f['foto'].'" data-toggle="modal" data-target="#foto"></i> '; 
+                            
+                            echo '<i class="fa fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"></i> '; 
 
                             if ($f['estado'] !== 'T') { 
                             echo '<i class="fa fa-thumbs-up text-light-blue" data-toggle="modal" data-target="#modalConformidad" style="cursor: pointer; margin-left: 15px;" title="Conformidad"></i>';
@@ -147,7 +149,7 @@
   $(".fa-print").click(function (e) {
 
     e.preventDefault();
-    var idservicio = $(this).parent('td').parent('tr').attr('id');
+    var idservicio = $(this).closest('tr').attr('id');
     console.log("El id de solicitud de servicio al imprimir es :");
     console.log(idservicio);
 

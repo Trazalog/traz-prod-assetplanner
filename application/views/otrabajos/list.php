@@ -1591,7 +1591,7 @@ function guardarpedido(){
         
         var herram = data['herramientas'];
         var insum = data['insumos'];
-        var adjunto = data['adjunto'][0]['ot_adjunto'];
+        var adjunto = null;//data['adjunto'][0]['ot_adjunto'];
         // console.log(adjunto + 'adjunto');
         // console.table(adjunto);    
 
@@ -1696,7 +1696,7 @@ function guardarpedido(){
 
         var herram = data['herramientas'];
         var insum = data['insumos'];
-        var adjunto = data['adjunto'][0]['ot_adjunto'];
+        var adjunto = null;//data['adjunto'][0]['ot_adjunto'];
         // console.log(adjunto + 'adjunto');
         // console.table(adjunto);    
 
