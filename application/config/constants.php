@@ -102,7 +102,7 @@ define('CMP_ALM', 'almacen');
 |
 */
 
-define('BONITA_URL', 'http://holis:8080/bonita/');  
+define('BONITA_URL', 'http://localhost:8080/bonita/');  
 
 
 /*
@@ -132,7 +132,7 @@ define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '6013058915384903051');
 |
 */
  
-define('BPM_PROCESS_ID', '8092370659315893779'); // localhost -
+define('BPM_PROCESS_ID', '5101302672793474013'); // localhost -
 
 /*
 |--------------------------------------------------------------------------

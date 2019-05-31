@@ -20,7 +20,8 @@ class Ordenservicio extends CI_Controller {
     {       
       $data['id_ot']      = $id_ot;            // id de OT. 
       $data['id_eq']      = $id_eq;             // id de equipo        
-      $infoOt = $this->Ordenservicios->getorden($id_ot);
+      $infoOt = $this->Ordenservicios->getorden($id_ot);      
+      
       // si la tareas es opcional
       if (($infoOt[0] ["id_tarea"] < 0) || ($infoOt[0] ["id_tarea"] == NULL)) {
         $causa = $infoOt[0]["descripcion"];
@@ -56,14 +57,15 @@ class Ordenservicio extends CI_Controller {
       $data['nom_responsable'] = $infoOt[0]["responsable"];
       $data['idresponsable'] = $infoOt[0]["usrId"];
       $data['idTarBonita'] = $idTarBonita;
-      $equi['id_equipo']= $id_eq; // duplicado para reutilizar la funcion
-      $data['equipos'] = $this->Ordenservicios->getEquipos($equi);
+      $equi['id_equipo']= $id_eq; // duplicado para reutilizar la funcion   
+      $data['equipos'] = $this->Ordenservicios->getEquipos($id_eq); 
       $data['lecturas'] = $this->Ordenservicios->getLecturasOrden($id_ot);
       $data['tareas'] = $this->Ordenservicios->getTareasOrden($id_ot);
       $data['herramientas'] = $this->Ordenservicios->getHerramOrdenes($id_ot);
+
       $data['insumos'] = $this->Ordenservicios->getInsumosPorOT($id_ot);
       $data['rrhh'] = $this->Ordenservicios->getOperariosOrden($id_ot);
-     // dump($data, 'data: ');
+     dump($data, 'data: ');
       // $this->load->view('tareas/view_inf_servicio_modal',$data);
       $this->load->view('tareas/view_presta_presta_conf_modal',$data);
     } 
@@ -113,14 +115,15 @@ class Ordenservicio extends CI_Controller {
       $data['tarea']       = $this->input->post('tarea');
       $data['herramienta'] = $this->input->post('herramienta');
       $data['operario']    = $this->input->post('operario');
-
+      
+       
       $idTarBonita = $datosInfoServicio['idTarBonita'];      
       
        $this->load->library('BPM');
        $resp = $this->bpm->CerrarTareaBPM($idTarBonita,$data); 
 
        if ( json_decode($resp['code']) < 300) {  
-
+          // guardo el informe de servicios
           $response = $this->Ordenservicios->setOrdenServicios($data);          
           if ($response) {
             $respuesta['status'] = true;

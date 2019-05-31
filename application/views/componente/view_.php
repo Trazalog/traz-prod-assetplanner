@@ -121,8 +121,8 @@
                               <th>Componente</th>
                               <th>Código</th>
                               <th>Sistema</th>
-                              <th class="hidden"></th>
-                              <th class="hidden"></th>
+                              <th class=""></th>
+                              <th class=""></th>
                             </tr>
                           </thead>
                           <tbody>
@@ -417,7 +417,7 @@ function autoCompletarComponentes(){
     var j  = 1;
     var f  = 1;
     $("#tablaequipos tbody tr").each(function (index){
-      var campo1, campo2, campo3, campo4, campo5, campo6;
+      var campo1, campo2, campo3, campo4, campo5, campo6,campo8;
       $(this).children("td").each(function (index2){
         switch (index2){
           case 0: 
@@ -431,19 +431,23 @@ function autoCompletarComponentes(){
             break;
           case 3: 
             campo4    = $(this).text();
-            codigo[j] = campo4; 
+            //codigo[j] = campo4; 
             break;
           case 4: 
             campo5  = $(this).text();
+            codigo[j] = campo5;
             //sistemaid[j] = campo5;
             break;
           case 5: 
             campo6  = $(this).text();
-            comp[j] = campo6;
             break;
           case 6: 
             campo7  = $(this).text();
-            sistemaid[j] = campo7;
+            comp[j] = campo7;
+            break;
+          case 7:
+            campo8  = $(this).text();
+            sistemaid[j] = campo8;
             j++;
             break;
         }
@@ -566,8 +570,8 @@ function autoCompletarComponentes(){
       ] ).node();
       rowNode.id = id_equipo;
       table.draw();
-      $( rowNode ).find('td').eq(5).addClass('hidden');
-      $( rowNode ).find('td').eq(6).addClass('hidden');
+      $( rowNode ).find('td').eq(5).addClass('');
+      $( rowNode ).find('td').eq(6).addClass('');
 
       $('#error').fadeOut('slow');
       //$('#descrip').val('');

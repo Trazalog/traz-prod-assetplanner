@@ -165,20 +165,25 @@ class Componente extends CI_Controller {
 		$sistema  = $_POST['sistemaid'];
 		$ba       = $_POST['x'];
 		$ede      = $_POST['ge'];
-		$j        = 1;	
-	    for ($i=0; $i < $ba ; $i++)
-	    {     
+		$j        = 1;
+		
+		dump($sistema, 'sist: ');
+		
+	  for ($i=0; $i < $ba ; $i++)
+	  {     
 	 	    if($compo[$j])
 	 	    {
 	        	$datos2 = array(
-					'id_equipo'     => $idequipo, 
-					'id_componente' => $compo[$j],
-					'codigo'        => $codigo[$j],
-					'estado'        => 'AC',
-					'sistemaid'     => $sistema[$j]
-	        	);	
+													'id_equipo'     => $idequipo, 
+													'id_componente' => $compo[$j],
+													'codigo'        => $codigo[$j],
+													'estado'        => 'AC',
+													'sistemaid'     => $sistema[$j]
+														);	
 	        	//print_r($datos2);
-	        	$res = $this->Componentes->insert_componente($datos2);	     
+						$res = $this->Componentes->insert_componente($datos2);
+						
+						
 	        }
 	        $j++;
 	    }
