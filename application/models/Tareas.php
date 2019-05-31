@@ -745,17 +745,35 @@ class Tareas extends CI_Model {
 				$res = $this->db->get()->first_row();
 				
 				if (!$res) {
-						$this->db->select('id_orden as \'ot\'');
-						$this->db->where('A.case_id',$value['caseId']);
-						$this->db->from('orden_trabajo as A');
-						$res = $this->db->get()->first_row();
-						$data[$key]['ss'] = '';
+						
+					$this->db->select('A.id_solicitud as \'ss\', id_orden as \'ot\'');
+					$this->db->from('solicitud_reparacion as A');
+					$this->db->from('orden_trabajo as B');
+					$this->db->from('tbl_back as C');
+					$this->db->where('A.case_id',$value['caseId']);
+					$this->db->where('C.backId', 'B.id_solicitud','left');
+					$this->db->where('C.sore_id', 'A.id_solicitud','left');
+				
+					$res = $this->db->get()->first_row();
+				
+					if (!$res) {
+
+
+							$this->db->select('id_orden as \'ot\'');
+							$this->db->where('A.case_id',$value['caseId']);
+							$this->db->from('orden_trabajo as A');
+							$res = $this->db->get()->first_row();
+							$data[$key]['ss'] = '';
+							$data[$key]['ot'] = $res->ot;
+					} else {
+						$data[$key]['ss'] = $res->ss;
 						$data[$key]['ot'] = $res->ot;
-				} else {
+					}
+				} else{
 					$data[$key]['ss'] = $res->ss;
 					$data[$key]['ot'] = $res->ot;
 				}	
-				
+					
 			}
 			//dump($data, 'data en completar: ');
 			return $data;
