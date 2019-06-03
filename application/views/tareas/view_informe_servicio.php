@@ -1,13 +1,19 @@
 <input type="hidden" id="permission" value="<?php echo $permission; ?>">
 <?php 
-$userdata = $this->session->userdata('user_data');
-$usrId = $userdata[0]['usrId'];     // guarda usuario logueado 
-$usrName =  $userdata[0]['usrName'];
-$usrLastName = $userdata[0]["usrLastName"];
-echo "<input type='text' class='hidden' id='empresa_id' value='" . $userdata[0]['id_empresa'] . "'>";
-echo "<input type='text' class='hidden' id='usrName' value='$usrName' >";
-echo "<input type='text' class='hidden' id='usrLastName' value='$usrLastName' >";
-echo "<input type='text' class='hidden' id='case' value='" . $TareaBPM['caseId'] . "'>";
+	$userdata = $this->session->userdata('user_data');
+	$usrId = $userdata[0]['usrId'];     // guarda usuario logueado 
+	$usrName =  $userdata[0]['usrName'];
+	$usrLastName = $userdata[0]["usrLastName"];
+	echo "<input type='text' class='hidden' id='empresa_id' value='" . $userdata[0]['id_empresa'] . "'>";
+	echo "<input type='text' class='hidden' id='usrName' value='$usrName' >";
+	echo "<input type='text' class='hidden' id='usrLastName' value='$usrLastName' >";
+	echo "<input type='text' class='hidden' id='case' value='" . $TareaBPM['caseId'] . "'>";
+
+	echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT . "'>";
+	echo "<input type='text' class='hidden' id='id_EQ' value='" . $id_EQ . "'>";
+	echo "<input type='text' class='hidden' id='id_SS' value='" . $id_SS . "'>";
+	echo "<input type='text' class='hidden' id='idTarBonita' value='" . $idTarBonita . "'>";
+	
 ?>
 
 <section class="content">
@@ -163,15 +169,25 @@ echo "<input type='text' class='hidden' id='case' value='" . $TareaBPM['caseId']
   
   function generar_informe_servicio (o){ 
 
-    var id_sol = <?php echo $id_OT ?> ;
-    var id_eq  = <?php echo $id_EQ ?> ;
-    var id_solicitud = <?php echo $id_SS ?> ; 
-    var idTarBonita = <?php echo $idTarBonita ?> ;    
+		var id_sol = $("#id_OT").val();
+		var id_eq = $("#id_EQ").val();
+		var id_solicitud = $("#id_SS").val();
+		var idTarBonita = $("#idTarBonita").val();
+
+    // var id_sol = <?php //echo $id_OT ?> ;
+		// var id_eq  = <?php //echo $id_EQ ?> ;
+    // var id_solicitud = <?php //echo $id_SS ?> ; 
+    // var idTarBonita = <?php //echo $idTarBonita ?> ;    
     WaitingOpen();
     $('#modalInforme').modal('show');
     $('#modalInformeServicios').empty();
-    $("#modalInformeServicios").load("<?php echo base_url(); ?>index.php/Ordenservicio/cargarOrden/"+id_sol+"/"+id_eq+"/"+id_solicitud+"/"+idTarBonita+"/");
-    WaitingClose();
+    // $("#modalInformeServicios").load("<?php //echo base_url(); ?>index.php/Ordenservicio/cargarOrden/"+id_sol+"/"+id_eq+"/"+id_solicitud+"/"+idTarBonita+"/");
+   
+		$("#modalInformeServicios").load("<?php echo base_url(); ?>index.php/Ordenservicio/cargarOrden/"+id_sol+"/"+id_eq+"/"+id_solicitud+"/"+idTarBonita+"/");
+	 
+		
+	 
+	  WaitingClose();
   }
 
 </script>

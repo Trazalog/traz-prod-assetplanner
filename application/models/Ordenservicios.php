@@ -187,9 +187,21 @@ class Ordenservicios extends CI_Model {
 			return $equipos;
 		}
 
+
+		// Devuelve id de Orden Servicios por id de OTrabajo
+		function getOServicioPorIdOT($id_ot){
+
+			$this->db->select('orden_servicio.id_orden');
+			$this->db->from('orden_servicio');
+			$this->db->where('orden_servicio.id_ot', $id_ot);
+			$query = $this->db->get();
+			$result = $query->row();      
+      return $result->id_orden;		
+		}
+
+		// Guarda Informe de Servicios nuevo
     function setOrdenServicios($data){
 
-      //dump($data, 'datos q vienen desde el controller: ');
 			$userdata      = $this->session->userdata('user_data');
 			$usrId         = $userdata[0]['usrId'];     // guarda usuario logueado
 			$empresaId     = $userdata[0]['id_empresa'];
@@ -239,8 +251,7 @@ class Ordenservicios extends CI_Model {
 																	'fechahorafin'           => $fechahorafin,
 																	'horometroinicio'        => $horometroinicio,
 																	'horometrofin'           => $horometrofin,
-															);
-					//dump($ord_serv, 'datos orden servicios: ');										
+															);				
 
 			if ( ! $this->db->insert('orden_servicio', $ord_serv) ){
 					return $this->db->error(); // Has keys 'code' and 'message'
@@ -284,7 +295,71 @@ class Ordenservicios extends CI_Model {
 
 			return true;
         
-    }
+		}
+		// borra herramientas de Informe Servicios
+		function borrarHerramOrden($id_ot){
+
+			$this->db->select('orden_servicio.valesid');
+			$this->db->from('orden_servicio');
+			$this->db->where('orden_servicio.id_ot', $id_ot);
+			$resp = $this->db->get();
+			$valeSalId = $resp->row('valesid');
+			// si hay Vale salida
+			if ($valeSalId) {
+				// borra el detalle de vale salida				
+				$this->db->where('valesid', $valeSalId);							
+				$response = $this->db->delete('tbl_detavalesalida');
+				// borra vale salida
+				$this->db->where('valesid', $valeSalId);							
+				$response = $this->db->delete('tbl_valesalida');				
+				return $response;	
+			}else{
+				return TRUE;
+			}			
+		}
+
+		// borra RRHH de Informe de Servicios
+		function borrarRecursosOrden($id_ot){
+			
+			$this->db->select('orden_servicio.id_orden');
+			$this->db->from('orden_servicio');
+			$this->db->where('orden_servicio.id_ot', $id_ot);
+			$resp = $this->db->get();
+			$idOrdServ = $resp->row('id_orden');
+		
+			// si hay orden servicios
+			if ($idOrdServ) {
+				// borra el detalle de vale salida				
+				$this->db->where('id_orden', $idOrdServ);							
+				$response = $this->db->delete('asignausuario');
+				return $response;
+			}else{
+				return TRUE;
+			}	
+
+		}
+
+		// borra Informe Servicios completo
+		function borrarOrden($id_ot){
+
+			$this->db->select('orden_servicio.id_orden');
+			$this->db->from('orden_servicio');
+			$this->db->where('orden_servicio.id_ot', $id_ot);
+			$resp = $this->db->get();
+			$idOrdServ = $resp->row('id_orden');
+
+			$this->db->where('id_ordenservicio', $idOrdServ);							
+			$response = $this->db->delete('deta_ordenservicio');
+			
+			if($response){
+				$this->db->where('id_ot', $id_ot);							
+				$response = $this->db->delete('orden_servicio');
+				return $response;
+			}else{
+				return $response;
+			}		
+
+		}
 
     function getLecturasOrden($id_ot) // Ok FUNCIONANDO BIEN!!!
     {		

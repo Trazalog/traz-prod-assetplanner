@@ -62,12 +62,6 @@ class Tareas extends CI_Model {
 		return $query;
 	}
 
-	// function cerrarSServicios($id){
-	// 	$this->db->set('estado', 'T');
-	// 	$this->db->where('id_solicitud', $id);
-	// 	$query=$this->db->update('solicitud_reparacion');
-	// 	return $query;
-	// }
 /* ./ TAREAS ASSET ORIGINALES (TAREAS ESTANDAR)*/	
 
 /* INTEGRACION CON BPM */
@@ -493,17 +487,6 @@ class Tareas extends CI_Model {
 					return false;
 				}
 		}
-		// valida campos obligatorios en form generico
-			// function ValidarObligatorios($form_id,$id_OT){
-			// 	$this->db->select('count(*)=0 as result');
-			// 	$this->db->from('frm_formularios_completados');
-			// 	$this->db->join('frm_instancias_formulario', 'frm_instancias_formulario.info_id = frm_formularios_completados.INFO_ID');
-			// 	$this->db->where('frm_instancias_formulario.ortra_id ',$id_OT);
-			// 	$this->db->where('FORM_ID',$form_id);			
-			// 	$this->db->where('frm_formularios_completados.OBLIGATORIO',true);
-			// 	$this->db->where('frm_formularios_completados.VALIDADO',false);
-			// 	return $this->db->get()->result_array()[0];
-			// }
 		
 		function validarCamposObligatorios($idForm,$idOT){
 			
