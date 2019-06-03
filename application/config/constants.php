@@ -113,6 +113,7 @@ define('BONITA_URL', 'http://localhost:8080/bonita/');
 | Id de proceso productivo (se usa para lanzar proceso)
 |
 */
+define('BPM_ADMIN_USER', 'mantenedor1');
 
 //? PEDIDOS NORMALES
  
