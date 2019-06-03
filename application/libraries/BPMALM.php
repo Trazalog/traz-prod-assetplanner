@@ -49,7 +49,7 @@ class BPMALM
 		
 		//Datos Usuario
 		$userdata = $this->CI->session->userdata('user_data');
-		$userId= 102;//$userdata["userId"];		
+		$userId= $userdata[0]["userBpm"];		
 
 		//Enviar Request
 		$resource = 'API/bpm/humanTask?p=0&c=1000&f=user_id%3D';
@@ -256,7 +256,7 @@ class BPMALM
   function LoggerAdmin(){	
 
 
-		$usrNick = 'mantenedor1';
+		$usrNick = BPM_ADMIN_USER;
 		//dump_exit($userdata);
 		// Array de parametros (cabecera HTTP)
 		$opciones = array(

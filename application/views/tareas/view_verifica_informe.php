@@ -4,6 +4,9 @@
 	<?php echo cargarCabecera($id_OT,$id_SS,$id_EQ); ?>
 	<input type="hidden" class="form-control " id="id_OT" value="<?php echo $id_OT ?>">
 	<input type="hidden" class="form-control " id="id_SS" value="<?php echo $id_SS ?>">
+	<input type="hidden" class="form-control " id="idTarBonita" value="<?php echo $idTarBonita ?>">
+	<input type="hidden" class="form-control " id="id_EQ" value="<?php echo $id_EQ ?>">
+
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="box">
@@ -375,15 +378,16 @@
 <script>
 
 	function ver_informe_servicio (o){ 
-
-		var id_sol = <?php echo $id_OT ?> ;
-		var id_eq  = <?php echo $id_EQ ?> ;
-		var id_solicitud = <?php echo $id_SS ?> ; 
-		var idTarBonita = <?php echo $idTarBonita ?> ;    
+	
+		var id_OT =	$('#id_OT').val();	
+		var id_eq  = $('#id_EQ').val();	
+		var id_solicitud = $('#id_SS').val();
+		var idTarBonita = $('#idTarBonita').val();   
+		 
 		WaitingOpen();
 		$('#modalInforme').modal('show');
 		$('#modalInformeServicios').empty();
-		$("#modalInformeServicios").load("<?php echo base_url(); ?>index.php/Ordenservicio/verInforme/"+id_sol+"/"+id_eq+"/"+id_solicitud+"/"+idTarBonita+"/");
+		$("#modalInformeServicios").load("<?php echo base_url(); ?>index.php/Ordenservicio/verInforme/"+id_OT+"/"+id_eq+"/"+id_solicitud+"/"+idTarBonita+"/");
 		WaitingClose();
 	}
 

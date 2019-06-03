@@ -14,7 +14,7 @@
         Fecha Programada: <?php echo $fecha_program; ?><br>
         Estado: <?php echo $estado; ?><br>
         Sucursal: <?php echo $sucursal; ?><br>
-        Proveedor: <?php echo $nombreprov; ?><br>
+        Proveedor: -<br>
         Origen: <?php echo $origen; ?><br>
         Asignado: <?php echo $asignado; ?><br>
     </div>

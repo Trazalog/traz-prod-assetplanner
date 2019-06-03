@@ -25,3 +25,7 @@ TRUNCATE deta_ordenservicio;
 TRUNCATE tbl_valesalida;
 TRUNCATE tbl_detavalesalida;
 
+TRUNCATE tbl_notapedido;
+TRUNCATE tbl_detanotapedido;
+
+TRUNCATE asignausuario;

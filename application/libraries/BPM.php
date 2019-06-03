@@ -55,7 +55,7 @@ class BPM
 		
 		//Datos Usuario
 		$userdata = $this->CI->session->userdata('user_data');
-		$usrId= 102;//$userdata[0]["usrId"];		
+		$usrId= $userdata[0]["userBpm"];		
 
 		//Enviar Request
 		$resource = 'API/bpm/humanTask?p=0&c=1000&f=user_id%3D';
@@ -247,7 +247,7 @@ class BPM
   function LoggerAdmin(){	
 
 
-		$usrNick = 'mantenedor1';
+		$usrNick = BPM_ADMIN_USER;
 		//dump_exit($userdata);
 		// Array de parametros (cabecera HTTP)
 		$opciones = array(
@@ -354,5 +354,27 @@ class BPM
 			);
 			
 			return $parametros;
+	}
+
+	public function getUser($user)
+	{
+		$list = $this->getUsuariosBPM();
+		foreach ($list as $o) {
+			if($o['userName']==$user) return $o['id'];
+		}
+		return null;
+	}
+
+	public function getUsuariosBPM(){
+		 
+		$parametros = $this->LoggerAdmin();
+		$parametros["http"]["method"] = "GET";		 
+		$param = stream_context_create($parametros);
+
+		$resource = 'API/identity/user?p=0&c=50';	 	
+	 	$url = BONITA_URL.$resource;
+		$usrs = file_get_contents($url, false, $param);
+
+		return json_decode($usrs,true);
 	}
 }

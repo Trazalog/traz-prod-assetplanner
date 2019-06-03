@@ -223,6 +223,7 @@ class Calendarios extends CI_Model {
 											WHERE solicitud_reparacion.id_empresa = $empId
 											AND solicitud_reparacion.estado != 'AN'										
 											AND solicitud_reparacion.estado != 'PL'
+											AND solicitud_reparacion.estado != 'AS'
 											AND solicitud_reparacion.urgente != 0
 											AND year(solicitud_reparacion.f_solicitado) = $year
 											AND month(solicitud_reparacion.f_solicitado) = $month";

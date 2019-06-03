@@ -46,7 +46,7 @@ class Ordenservicios extends CI_Model {
         }      
     }
 
-		function getEquipos($data) // Ok
+		function getEquipos($data) // FUNCIONA BIEN 
     {
         $id = $data['id_equipo'];       
         $this->db->select('
@@ -60,33 +60,29 @@ class Ordenservicios extends CI_Model {
             grupo.descripcion AS grupo_desc,
             sector.descripcion As sector_desc,
             equipos.ubicacion
-            ');
-            //contratistas.id_contratista,
-            //contratistas.nombre as contratista,
+            ');           
         $this->db->from('equipos');        
-        $this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo');
-        $this->db->join('sector', 'equipos.id_sector = sector.id_sector');
-        //$this->db->join('contratistaquipo', 'equipos.id_equipo = contratistaquipo.id_equipo');
-        //$this->db->join('contratistas', 'contratistaquipo.id_contratista = contratistas.id_contratista');
-        $this->db->group_by('equipos.id_equipo');
-        $this->db->having('equipos.id_equipo', $id);
-        $query = $this->db->get();      
-        foreach ($query->result_array() as $row)
-        { 
-					$data['nomb_equipo']    = $row['nomb_equipo'];
-					$data['desc_equipo']    = $row['desc_equip'];
-					$data['fecha_ingreso']  = $row['fecha_ingreso'];
-					$data['fecha_baja']     = $row['fecha_baja'];
-					$data['fecha_garantia'] = $row['fecha_garantia'];
-					$data['estado']         = $row['estado'];
-					$data['marca']          = $row['marca'];
-					$data['grupo_desc']     = $row['grupo_desc'];
-					$data['sector']         = $row['sector_desc'];
-					$data['ubicacion']      = $row['ubicacion'];
-					//$data['id_contratista'] = $row['id_contratista'];
-					//$data['contratista']    = $row['contratista'];
-					return $data;
-        }
+        $this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo', 'left');
+        $this->db->join('sector', 'equipos.id_sector = sector.id_sector');      
+				$this->db->group_by('equipos.id_equipo');
+        $this->db->where('equipos.id_equipo', $id);
+        $query = $this->db->get();      			
+				
+				foreach ($query->result_array() as $row){ 	
+
+					$datos['nomb_equipo']    = $row['nomb_equipo'];
+					$datos['desc_equipo']    = $row['desc_equip'];
+					$datos['fecha_ingreso']  = $row['fecha_ingreso'];
+					$datos['fecha_baja']     = $row['fecha_baja'];
+					$datos['fecha_garantia'] = $row['fecha_garantia'];
+					$datos['estado']         = $row['estado'];
+					$datos['marca']          = $row['marca'];
+					$datos['grupo_desc']     = $row['grupo_desc'];
+					$datos['sector']         = $row['sector_desc'];
+					$datos['ubicacion']      = $row['ubicacion'];
+				}
+				
+				return $datos;
     }
 
     
@@ -192,6 +188,7 @@ class Ordenservicios extends CI_Model {
 		}
 
     function setOrdenServicios($data){
+
       //dump($data, 'datos q vienen desde el controller: ');
 			$userdata      = $this->session->userdata('user_data');
 			$usrId         = $userdata[0]['usrId'];     // guarda usuario logueado
@@ -220,7 +217,7 @@ class Ordenservicios extends CI_Model {
 				}
 			}else{
 
-				$idInsertVale = 1;    // no puede ser 0 por la clave foranea
+				$idInsertVale = 0;    // esta ba en 1 hardcode (no puede ser 0 por la clave foranea)
 			}						
 			////// guarda orden servicio
 			$id_equipo              = $data['id_equipo'];
@@ -269,7 +266,7 @@ class Ordenservicios extends CI_Model {
 			$this->db->where('id_solicitud', $id_solicitudreparacion);
 			$this->db->update('solicitud_reparacion', $estado);  
 
-			////// guarda Operarios
+			// ////// guarda Operarios
 			if (!empty($data['operario'])) 
 			{
 					$fechaSist = date('Y-m-d H:i:s');
@@ -289,37 +286,34 @@ class Ordenservicios extends CI_Model {
         
     }
 
-    function getLecturasOrden($data) // Ok
-    {
-        $id_orden = $data['id_orden'];
-        $this->db->select('
-            orden_servicio.horometroinicio,
-            orden_servicio.horometrofin,
-            orden_servicio.fechahorainicio,
-            orden_servicio.fechahorafin
-            ');
-        $this->db->from('orden_servicio');
-        $this->db->where('orden_servicio.id_orden', $id_orden);
-        $query = $this->db->get();
-        if ($query->num_rows()!=0)
-        {
-            return $query->result_array();
-        }
-        else
-        {   
-            return false;
-        }   
+    function getLecturasOrden($id_ot) // Ok FUNCIONANDO BIEN!!!
+    {		
+			$this->db->select('orden_servicio.horometroinicio,
+											orden_servicio.horometrofin,
+											orden_servicio.fechahorainicio,
+											orden_servicio.fechahorafin
+											');
+			$this->db->from('orden_servicio');
+			$this->db->where('orden_servicio.id_ot', $id_ot);
+			$query = $this->db->get();
+			if ($query->num_rows()!=0)
+			{
+					return $query->result_array();
+			}
+			else
+			{   
+					return false;
+			}   
     }
 
-    function getTareasOrden($data) // Ok
-    {
-        $id_orden = $data['id_orden'];
+    function getTareasOrden($id_ot) // Ok FUNCIONANDO BIEN!!!
+    {        
         $this->db->select('
             deta_ordenservicio.id_tarea
             ');
         $this->db->from('orden_servicio');
         $this->db->join('deta_ordenservicio', 'deta_ordenservicio.id_ordenservicio = orden_servicio.id_orden');
-        $this->db->where('orden_servicio.id_orden', $id_orden);
+        $this->db->where('orden_servicio.id_ot', $id_ot);
         $query = $this->db->get();
         if ($query->num_rows()!=0)
         {
@@ -331,19 +325,17 @@ class Ordenservicios extends CI_Model {
         }   
     }
 
-    function getHerramOrdenes($data) // Ok
-    {
-			$id_orden = $data['id_orden'];
-			$this->db->select('
-					herramientas.herrcodigo,
-					herramientas.herrmarca,
-					herramientas.herrdescrip
-			');
+    function getHerramOrdenes($id_ot) // Ok FUNCIONANDO BIEN!!!
+    {		
+			$this->db->select('herramientas.herrcodigo,
+													herramientas.herrmarca,
+													herramientas.herrdescrip
+											');
 			$this->db->from('orden_servicio');        
 			$this->db->join('tbl_valesalida', 'orden_servicio.valesid = tbl_valesalida.valesid');        
 			$this->db->join('tbl_detavalesalida', 'tbl_detavalesalida.valesid = tbl_valesalida.valesid');
 			$this->db->join('herramientas', 'tbl_detavalesalida.herrId = herramientas.herrId');        
-			$this->db->where('orden_servicio.id_orden', $id_orden);
+			$this->db->where('orden_servicio.id_ot', $id_ot);
 			$query = $this->db->get();
 			if ($query->num_rows()!=0)
 			{
@@ -363,7 +355,7 @@ class Ordenservicios extends CI_Model {
 			$this->db->from('asignausuario');        
 			$this->db->join('sisusers', 'asignausuario.usrId = sisusers.usrId');        
 			$this->db->join('orden_servicio', 'orden_servicio.id_orden = asignausuario.id_orden'); 
-			$this->db->where('orden_servicio.id_orden', $id_orden);
+			$this->db->where('orden_servicio.id_ot', $id_orden);
 			$query = $this->db->get();
 			if ($query->num_rows()!=0)
 			{

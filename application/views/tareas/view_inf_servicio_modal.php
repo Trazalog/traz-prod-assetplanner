@@ -574,7 +574,8 @@
         // prevent autocomplete from updating the textbox
         event.preventDefault();
         // manually update the textbox and hidden field
-        $(this).val(ui.item.label);                  
+        $(this).val(ui.item.label); 
+        $("#id-Operario").val(ui.item.value);                 
       },
       /*open: function( event, ui ) {
         $("#ui-id-3").css('z-index',1050);

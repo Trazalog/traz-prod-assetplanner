@@ -50,7 +50,7 @@ class Proceso extends CI_Controller
         $data['tarea'] = $tarea;//!QUITAR
         $data['datos'] = '';//!QUITAR
 
-        if ($proceso == BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS) {
+        if ($tarea['processId'] == BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS) {
 
             $data['ot'] = $this->Pedidoextra->getXCaseId($tarea['rootCaseId'])['ortr_id'];
 
@@ -274,7 +274,7 @@ class Proceso extends CI_Controller
         }
     }
 
-    public function pedidoNormal($pemaId)
+    public function pedidoNormal($pemaId=1)
     {
         //? DEBE EXISTIR LA NOTA DE PEDIDO 
         $contract = [
@@ -290,10 +290,11 @@ class Proceso extends CI_Controller
 
     public function pedidoExtraordinario($ot=1)
     {
+        $pedidoExtra = 'Soy un Pedido';
         //? SE DEBE CORRESPONDER CON UN ID EN LA TABLE ORDEN_TRABAJO SINO NO ANDA
 
         $contract = [
-            'pedidoExtraordinario' =>  'Soy un Pedido'
+            'pedidoExtraordinario' =>   $pedidoExtra
         ];
 
         $data = $this->bpmalm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS,$contract);

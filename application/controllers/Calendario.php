@@ -116,7 +116,7 @@ class Calendario extends CI_Controller {
 				$hora_progr       = $_POST['hora_progr'];
 				$fecha_progr      = $_POST['fecha_progr'];
 				$fecha_progr      = explode('-', $fecha_progr);
-				$fec_programacion = $fecha_progr[2].'-'.$fecha_progr[1].'-'.$fecha_progr[0].' '.$hora_progr.':00';
+				$fec_programacion = $fecha_progr[2].'-'.$fecha_progr[1].'-'.$fecha_progr[0].' '.$hora_progr.':00';	
 				$fecha_inicio     = '0000-00-00 00:00:00';
 				$descripcion      = $_POST['descripcion'];//descripcion del predictivo/correc/backlog/etc
 				$tipo             = $_POST['tipo'];//numero de tipo segun tbl orden_trabajo
@@ -213,7 +213,7 @@ class Calendario extends CI_Controller {
 					$idOT = $this->Calendarios->guardar_agregar($datos2);					
 					// guarda herramientas, insumos y rrhh de las tareas en OT
 					$this->setHerramInsPorTarea($idOT,$tipo,$id_solicitud);
-										
+					//	dump_exit($idOT);						
 					// si es Preventivo o Predictivo lanza proceso nuevo
 					if ( ($tipo == 'preventivo') || ($tipo == 'predictivo') || ( ($caseDeBacklog == 0) && ($tipo != 'correctivo') ) ) {
 						dump($tipo, 'entre por if forrito: ');
@@ -397,10 +397,10 @@ class Calendario extends CI_Controller {
 	function setHerramInsPorTarea($idOT, $tipo, $id_solicitud){
 		
 		switch ($tipo) {
-			case '5':		// Predictivo
-				$herra = $this->Calendarios->getPredictivoHerramientas($id_solicitud);
-				$insumos = $this->Calendarios->getPredictivoInsumos($id_solicitud);
-				$adjunto = $this->Calendarios->getAdjunto($id_solicitud,$tipo);	
+			case 'predictivo':		// Predictivo
+				$herra = $this->Calendarios->getPredictivoHerramientas($id_solicitud);				
+				$insumos = $this->Calendarios->getPredictivoInsumos($id_solicitud);			
+				$adjunto = $this->Calendarios->getAdjunto($id_solicitud,$tipo);				
 				// Guarda el bacht de datos de herramientas
 				if (!empty($herra)) {		
 					$result['respHerram'] = $this->Calendarios->insertOTHerram($idOT, $herra);
@@ -416,7 +416,7 @@ class Calendario extends CI_Controller {
 					$result['respAdjunto'] = $this->Calendarios->insertAdjunto($idOT,$file);
 				}
 				break;
-			case '4':		//Backlog			
+			case 'backlog':		//Backlog			
 				$herra = $this->Calendarios->getBacklogHerramientas($id_solicitud);
 				$insumos = $this->Calendarios->getBacklogInsumos($id_solicitud);
 				$adjunto = $this->Calendarios->getAdjunto($id_solicitud,$tipo);				
@@ -433,7 +433,7 @@ class Calendario extends CI_Controller {
 					$result['respAdjunto'] = $this->Calendarios->insertAdjunto($idOT,$file);
 				}
 				break;
-			default:		// Preventivos (tipo 3)				
+			case 'preventivo':		// Preventivos (tipo 3)				
 				$herra = $this->Calendarios->getPreventivoHerramientas($id_solicitud);
 				$insumos = $this->Calendarios->getPreventivoInsumos($id_solicitud);
 				$adjunto = $this->Calendarios->getAdjunto($id_solicitud,$tipo);	
@@ -448,6 +448,14 @@ class Calendario extends CI_Controller {
 					$file = $url.$adjunto;
 					$result['respAdjunto'] = $this->Calendarios->insertAdjunto($idOT,$file);
 				}	
+				break;
+
+			default:
+				// FIXME: AGRAGAR DATOS CUANDO SE CREE POR OT Y SE AGREGUEN COSAS
+
+
+
+
 				break;
 		}
 	}	

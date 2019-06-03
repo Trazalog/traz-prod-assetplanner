@@ -13,7 +13,7 @@ class Lote extends CI_Controller {
 
 	public function index()
 	{
-		$data['list']       = $this->Lotes->list();
+		$data['list']       = $this->Lotes->getList();
 		$data['permission'] = "Add-Edit-Del-View";
 		$this->load->view($this->path.'lotes/list', $data);
 	}
