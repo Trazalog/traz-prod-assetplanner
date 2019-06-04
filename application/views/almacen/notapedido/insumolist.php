@@ -55,7 +55,7 @@
             <table id="tbl_insumos" class="table table-bordered table-hover">
                 <thead>
                     
-                        <th>Seleccionar</th>
+                <th width="1%">Seleccionar</th>
                         <th>Insumo</th>
                         <th>Cantidad</th>
                    
@@ -103,6 +103,12 @@
 </div><!-- /.panel -->
 
 <script>
+
+$('.cant_insumos').prop('disabled',true);
+  $('.check').on('change',function() {
+    var tr = $(this).closest('tr');
+    $(tr).find('.cant_insumos').prop('disabled',!$(this).prop('checked'));
+  });
 
   $("#fechaEnt").datetimepicker({
     format: 'YYYY-MM-DD',

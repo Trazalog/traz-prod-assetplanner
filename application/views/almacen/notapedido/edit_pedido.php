@@ -52,13 +52,13 @@
         <!-- sacar u ocultar -->
        
         <form id="form_insumos">
-          <table id="tbl_insumos" class="table table-bordered table-hover">
+          <table id="tbl_insumos" class="table table-bordered table-striped">
             <thead>
-              <tr>
-                <th style="width:1%;">Seleccionar</th>
-                <th style="width: 50%;">Insumo</th>
-                <th>Cantidad</th>
-              </tr>
+           
+                <th width="1%">Seleccionar</th>
+                <th>Insumo</th>
+                <th id="culo">Cantidad</th>
+         
             </thead>
             <tbody>
               <?php
@@ -67,17 +67,14 @@
                   
                     foreach ($plantilla as $p) {
 
-                        echo '<tr id="" class="">';
+                        echo '<tr>';
                         echo '<td class="text-center">';
-                        echo '<input class="check" type="checkbox" name="artId[' . $i . ']" value="' . $p['arti_id'] . '" id="' . $p['arti_id'] . '">';
+                        echo '<input class="check" type="checkbox" name="artId[' . $i . ']" value="' . $p['arti_id'] . '" id="' . $p['arti_id'] . '"/>';
                         echo '</td>';
-                        echo '<td>' . $p['descripcion'];
-                        echo '<input type="text" class="celda insum_Desc hidden" id="insum_Desc" value=" ' . $p['descripcion'] . ' " placeholder="">';
-                        echo '</td>';
+                        echo '<td>' . $p['descripcion'] .'<input type="text" class="celda insum_Desc hidden" id="insum_Desc" value=" ' . $p['descripcion'] . ' " /></td>';
                         echo '<td>';
-                        echo '<input type="text" name="cant_insumos[' . $i . ']" class="cant_insumos" id="cant_insumos" value="" placeholder="Ingrese cantidad...">';
+                        echo '<input type="text" name="cant_insumos[' . $i . ']" class="cant_insumos" id="cant_insumos" placeholder="Ingrese cantidad..."/>';
                         echo '</td>';
-
                         echo '</tr>';
                         $i++;
                     }
@@ -87,10 +84,10 @@
           </table>
         </form>
       </div>
-      <div class="tab-pane fade" id="two">
+      <!-- <div class="tab-pane fade" id="two">
 
 
-      </div>
+      </div> -->
 
     </div>
     <button type="button" class="botones btn btn-primary" onclick="guardar_pedido()"
@@ -102,8 +99,9 @@
 <script>
   $('.cant_insumos').prop('disabled',true);
   $('.check').on('change',function() {
-    $(this).closest('tr').find('.cant_insumos').prop('disabled',!$(this).prop('checked'));
-  })
+    var tr = $(this).closest('tr');
+    $(tr).find('.cant_insumos').prop('disabled',!$(this).prop('checked'));
+  });
 
   $("#fechaEnt").datetimepicker({
     format: 'YYYY-MM-DD',
@@ -157,14 +155,12 @@
 
     });
 
-    //var idOT = $('#id_ordTrabajo').val();
-
     if (hayError == true) {
       $('#error').fadeIn('slow');
       return;
     }
     $('.check').prop('checked',false);
-    if(idinsumos.length==0){$('.modal').modal('hide'); return;}
+    if(idinsumos.length==0){$('.modal').modal('hide');return;}
     WaitingOpen("Guardando pedido...");
 
     $.ajax({
@@ -229,7 +225,7 @@
     }
 
     $('.check').prop('checked',false);
-    if(idinsumos.length==0){$('.modal').modal('hide'); return;}
+    if(idinsumos.length==0){$('.modal').modal('hide');return;}
     WaitingOpen("Guardando pedido...");
 
     $.ajax({
@@ -249,20 +245,6 @@
       },
     });
   }
-
-
-  $('#tbl_insumos').DataTable({
-    // "columnDefs": [{
-    //   "targets": [1],
-    //   "searchable": false
-    // },
-    // {
-    //   "targets": [1],
-    //   "orderable": false
-    // }],
-    "order": [[1, "asc"]]
-  });
-
-
+  $('#tbl_insumos').DataTable();
 
 </script>
