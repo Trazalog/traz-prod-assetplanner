@@ -34,24 +34,39 @@ class Proveedores extends CI_Model {
 	{
 		$userdata           = $this->session->userdata('user_data');
 		$data['id_empresa'] = $userdata[0]['id_empresa'];
-		$query              = $this->db->insert("abmproveedores", $data);
+		$data = $this->map($data);
+		$query              = $this->db->insert("alm_proveedores", $data);
 		return $query;
 	}
 			
 	function Modificar_Proveedores($data)
 	{
+		$id = $data['provid'];
 		$userdata           = $this->session->userdata('user_data');
 		$data['id_empresa'] = $userdata[0]['id_empresa']; 
-		$query              = $this->db->update('abmproveedores', $data, array('provid' => $data['provid']));
+		$data = $this->map($data);
+		$query = $this->db->update('alm_proveedores', $data, array('prov_id' => $id));
 		return $query;
 	}
 
 	function Eliminar_Proveedores($data)
 	{
-		$this->db->set('estado', 'AN');
-		$this->db->where('provid', $data);
-		$query = $this->db->update('abmproveedores');
+		$this->db->set('eliminado', 1);
+		$this->db->where('prov_id', $data);
+		$query = $this->db->update('alm_proveedores');
 		return $query;
+	}
+
+	public function map($data)
+	{
+		return array(
+			'nombre'=>   $data['provnombre'],
+			'cuit'=>     $data['provcuit'],
+			'domicilio'=>$data['provdomicilio'],
+			'telefono'=> $data['provtelefono'],
+			'email'=>    $data['provmail'],
+			'empr_id'=>  $data['id_empresa']
+		);
 	}
 
 }
