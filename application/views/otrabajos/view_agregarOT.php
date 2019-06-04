@@ -446,7 +446,7 @@ $(function() {
     $.ajax({
       type: 'POST',
       data: { },
-      url: 'index.php/Predictivo/getEquipo', 
+      url: 'index.php/Otrabajo/getEquiposNuevaOT', 
       success: function(data){
              
                var opcion  = "<option value='-1'>Seleccione...</option>" ; 

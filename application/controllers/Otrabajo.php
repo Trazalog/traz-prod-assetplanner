@@ -21,9 +21,7 @@ class Otrabajo extends CI_Controller {
 		$data['kpi'] = $this->Equipos->informe_equipos();
 		$data['permission'] = $permission;
 		$this->load->view('otrabajos/dash', $data);
-	}
-
-  
+	}  
 	/**
 	 * Muestra pantalla de Nueva Orden de Trabajo.
 	 *
@@ -35,7 +33,6 @@ class Otrabajo extends CI_Controller {
 		$data['permission'] = $permission;
 		$this->load->view('otrabajos/view_agregarOT', $data);
 	}
-
   /**
 	 * Muestra pantalla de listado de Ordenes de Trabajo.
 	 *
@@ -50,8 +47,7 @@ class Otrabajo extends CI_Controller {
 		$data['opciones'] = $this->load->view('otrabajos/tabla_opciones',['permission'=>$permission],true);
 		$this->load->view('otrabajos/list', $data);
 		
-  }
-  
+  }  
   /**
    * Traer proveedores de empresa con estado AC.
    *
@@ -69,8 +65,7 @@ class Otrabajo extends CI_Controller {
       echo json_encode($arre);
     }
     else echo "nada";
-  }
-  
+  }  
   /**
   	 * Traer Sucursales de empresa con estado AC.
   	 *
@@ -90,7 +85,6 @@ class Otrabajo extends CI_Controller {
 		}
 		else echo "nada";
 	}
-
 	/**
   	 * Traer Equipos de empresa con estado AC.
   	 *
@@ -251,8 +245,7 @@ class Otrabajo extends CI_Controller {
 			echo json_encode($result);
 		}
 		
-	}
-	
+	}	
 	// Codifica nombre de imagen para no repetir en servidor
 	// formato "12_6_2018-05-21-15-26-24" idpreventivo_idempresa_fecha(a�o-mes-dia-hora-min-seg)
 	function codifNombre($ultimoId,$empId){
@@ -313,7 +306,6 @@ class Otrabajo extends CI_Controller {
 		}			
 		
 	}
-
 	// Agrega adjunto desde modal edicion
 	public function agregarAdjunto(){
 		$userdata     = $this->session->userdata('user_data');
@@ -353,14 +345,12 @@ class Otrabajo extends CI_Controller {
 
 		echo json_encode($result);
 	}
-
 	public function eliminarAdjunto(){
 		
 		$id = $this->input->post('id_adjunto');
 		$response = $this->Otrabajos->eliminarAdjunto($id);		
 		echo json_encode($response);
-  }
-  
+  }  
   /**
   	 * Actualiza la OT.
   	 *
@@ -438,7 +428,6 @@ class Otrabajo extends CI_Controller {
 			}	
 		//print_r($result);
 	}
-
 	/**
 	 * Muestra la vista de Asignar Tarea
 	 *
@@ -484,6 +473,20 @@ class Otrabajo extends CI_Controller {
 	        foreach ($usuarios as $row )
 	        {
 	           $arre[] = $row;
+	        }
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}
+	// Trae equipos por empresa logueada - Listo
+	public function getEquiposNuevaOT(){
+		
+		$equipo = $this->Otrabajos->getEquiposNuevaOT();
+		if($equipo){	
+			$arre=array();
+	        foreach ($equipo as $row ) 
+	        {   
+	           $arre[]=$row;
 	        }
 			echo json_encode($arre);
 		}

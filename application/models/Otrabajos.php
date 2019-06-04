@@ -119,6 +119,26 @@ class Otrabajos extends CI_Model {
 					return false;
 			}   
 	}
+	// Trae equipos por empresa logueada - Listo
+	function getEquiposNuevaOT(){
+		$userdata = $this->session->userdata('user_data');
+		$empId = $userdata[0]['id_empresa']; 
+			
+		$this->db->select('equipos.id_equipo,equipos.codigo');
+		$this->db->from('equipos');
+		$this->db->where('equipos.estado!=', 'AN');
+		$this->db->where('equipos.id_empresa', $empId);    	
+		$query= $this->db->get();		
+		
+	 	if ($query->num_rows()!=0)
+	 	{
+	 		return $query->result_array();	
+	 	}
+	 	else
+	 	{	
+	 		return false;
+	 	}	
+	}
 
 	function getDescTareaSTD($id_tar){
 		$this->db->select('tareas.descripcion');
@@ -608,28 +628,6 @@ class Otrabajos extends CI_Model {
 
 		}
 	}
-
-	//PEDIDOS
-	// function getorden($id){
-
-	//     $sql="SELECT * 
-	//     	  FROM orden_pedido
-	//     	  WHERE id_orden=$id
-	//     	  ";
-	    
-	//     $query= $this->db->query($sql);
-
-	//     if( $query->num_rows() > 0)
-	//     {
-	//       return $query->result_array();	
-	//     } 
-	//     else {
-	//       return 0;
-	//     }
-	// }
-
-	
-
 
 	//pediso a entregar x fecha
 	function getpedidos($id){
@@ -1198,64 +1196,64 @@ class Otrabajos extends CI_Model {
 				}
 	  }
 
-	    function getViewDataComponenteEquipoBacklog($idComponenteEquipo)
-	    {
-	    	$this->db->select('componenteequipo.codigo AS codigoComponente, 
-	    		componentes.descripcion AS descripComponente,
-	    		sistema.descripcion AS descripSistema');
-	        $this->db->from('componenteequipo');
-	        $this->db->join('componentes', 'componentes.id_componente = componenteequipo.id_componente');
-	        $this->db->join('sistema', 'sistema.sistemaid = componenteequipo.sistemaid');
-	        $this->db->where('componenteequipo.idcomponenteequipo', $idComponenteEquipo);
+		function getViewDataComponenteEquipoBacklog($idComponenteEquipo)
+		{
+			$this->db->select('componenteequipo.codigo AS codigoComponente, 
+				componentes.descripcion AS descripComponente,
+				sistema.descripcion AS descripSistema');
+				$this->db->from('componenteequipo');
+				$this->db->join('componentes', 'componentes.id_componente = componenteequipo.id_componente');
+				$this->db->join('sistema', 'sistema.sistemaid = componenteequipo.sistemaid');
+				$this->db->where('componenteequipo.idcomponenteequipo', $idComponenteEquipo);
 
-	        $query = $this->db->get();
-	        if($query->num_rows()!=0)
-	        {
-	            $compEquipo = $query->result_array();
-	            return $compEquipo[0];
-	        }
-	        else
-	        {
-	            return null;
-	        }
-	    }
-	
-			function getViewDataPredictivo($idOt, $idSolicitud)
-			{
-				$this->db->select('orden_trabajo.id_orden, orden_trabajo.descripcion AS descripcionFalla, 
-													orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, 
-													orden_trabajo.fecha_program, 
-													orden_trabajo.tipo, orden_trabajo.id_solicitud, 
-													orden_trabajo.estado,
-													sisusers.usrName, 
-													sisusers.usrLastName, 
-													equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, 
-													equipos.descripcion AS descripcionEquipo,				
-													sucursal.id_sucursal, sucursal.descripc, 
-													abmproveedores.provid, abmproveedores.provnombre ');													
-				$this->db->from('orden_trabajo');					
-				$this->db->join('sucursal', 'orden_trabajo.id_sucursal = sucursal.id_sucursal','left');
-				$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
-				$this->db->join('abmproveedores', 'orden_trabajo.id_proveedor = abmproveedores.provid', 'left');				
-				$this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');				
-				$this->db->where('orden_trabajo.id_orden', $idOt);
-	
 				$query = $this->db->get();
-				
-				// $d = $this->db->last_query();	
-				// dump($d, 'query: ');
 				if($query->num_rows()!=0)
 				{
-						$datos = $query->result_array();
-						//dump_exit($datos);
-						$datos[0]['tarea'] = $this->getViewDataTareaPredictivo( $datos[0]['id_solicitud']);
-						return $datos;
+						$compEquipo = $query->result_array();
+						return $compEquipo[0];
 				}
 				else
 				{
-						return false;
+						return null;
 				}
+		}
+
+		function getViewDataPredictivo($idOt, $idSolicitud)
+		{
+			$this->db->select('orden_trabajo.id_orden, orden_trabajo.descripcion AS descripcionFalla, 
+												orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, 
+												orden_trabajo.fecha_program, 
+												orden_trabajo.tipo, orden_trabajo.id_solicitud, 
+												orden_trabajo.estado,
+												sisusers.usrName, 
+												sisusers.usrLastName, 
+												equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, 
+												equipos.descripcion AS descripcionEquipo,				
+												sucursal.id_sucursal, sucursal.descripc, 
+												abmproveedores.provid, abmproveedores.provnombre ');													
+			$this->db->from('orden_trabajo');					
+			$this->db->join('sucursal', 'orden_trabajo.id_sucursal = sucursal.id_sucursal','left');
+			$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
+			$this->db->join('abmproveedores', 'orden_trabajo.id_proveedor = abmproveedores.provid', 'left');				
+			$this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');				
+			$this->db->where('orden_trabajo.id_orden', $idOt);
+
+			$query = $this->db->get();
+			
+			// $d = $this->db->last_query();	
+			// dump($d, 'query: ');
+			if($query->num_rows()!=0)
+			{
+					$datos = $query->result_array();
+					//dump_exit($datos);
+					$datos[0]['tarea'] = $this->getViewDataTareaPredictivo( $datos[0]['id_solicitud']);
+					return $datos;
 			}
+			else
+			{
+					return false;
+			}
+		}
 
 
 
@@ -1263,40 +1261,7 @@ class Otrabajos extends CI_Model {
 
 
 
-	//devuelve valores de todos los datos de la OT para mostrar en modal.
-    // function getViewDataPredictivo($idOt, $idSolicitud)
-    // {
-    // 	$this->db->select('orden_trabajo.id_orden, orden_trabajo.nro, orden_trabajo.descripcion AS descripcionFalla, orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, 
-    // 		orden_trabajo.fecha_program, tbl_estado.descripcion AS estado, sisusers.usrName, sisusers.usrLastName, 
-    // 		orden_trabajo.tipo, orden_trabajo.id_solicitud,
-    // 		sucursal.id_sucursal, sucursal.descripc,
-    // 		abmproveedores.provid, abmproveedores.provnombre,
-    // 		equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, equipos.descripcion AS descripcionEquipo');
-    //     $this->db->from('orden_trabajo');
-    //     $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
-    //     $this->db->join('sucursal', 'orden_trabajo.id_sucursal = sucursal.id_sucursal','left');
-    //     $this->db->join('abmproveedores', 'orden_trabajo.id_proveedor = abmproveedores.provid', 'left');
-    //     $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
-    //     $this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
-    //     $this->db->where('orden_trabajo.id_orden', $idOt);
-
-		// 		$query = $this->db->get();
-				
-		// 		$d = $this->db->last_query();	
-		// 		dump($d, 'query: ');
-    //     if($query->num_rows()!=0)
-    //     {
-    //         $datos = $query->result_array();
-    //         //dump_exit($datos);
-    //         $datos[0]['tarea'] = $this->getViewDataTareaPredictivo( $datos[0]['id_solicitud']);
-    //         return $datos;
-    //     }
-    //     else
-    //     {
-    //         return false;
-    //     }
-    // }
-
+	
     //
     function getViewDataTareaPredictivo($id_solicitud)
     {
@@ -1320,26 +1285,7 @@ class Otrabajos extends CI_Model {
             return null;
         }
     }
-    // TODO: VER SI SE OCUPA O BORRAR  
-    // function ObtenerCaseIDxOT($ot){
-			// busca en OT e case_id
-		// 	$this->db->select('orden_trabajo.case_id');
-		// 	$this->db->from('orden_trabajo');
-		// 	$this->db->where('id_orden',$ot);
-    //   $caseEnOT = $this->db->get()->first_row()->case_id;		
-		// 	// es null si se genero de un Prevent, Predict o  Backlog normalmente
-		// 	if ($caseEnOT == NULL) {
-		// 		return $caseEnOT;
-		// 	} // En caso que sea generado desde una SServicios 
-		// 	else {
-		// 		$this->db->select('case_id');
-		// 		$this->db->from('orden_trabajo as A');
-		// 		$this->db->join('solicitud_reparacion as B','A.id_solicitud=B.id_solicitud');
-		// 		$this->db->where('orden_trabajo.id_orden',$ot);
-		// 		return $this->db->get()->first_row()->case_id;
-		// 	}     
-		// }
-
+   
 		//Define si la OT tiene un proceso lanzado
 		function getCaseIdOT($id){	
 			$this->db->select('orden_trabajo.case_id');

@@ -45,10 +45,7 @@ class Ordenservicio extends CI_Controller {
           $data['idresponsable'] = $infoOt[0]["usrId"];
           $data['idTarBonita'] = $idTarBonita;        
           $this->load->view('tareas/view_inf_servicio_modal',$data);
-
-     }
-
-      
+     }      
     }  
 
 
@@ -56,7 +53,7 @@ class Ordenservicio extends CI_Controller {
     {           
       $data['id_ot']      = $id_ot;            // id de OT. 
       $data['id_eq']      = $id_eq;             // id de equipo   
-      //dump($id_eq, 'ide equipo: ');     
+    
       $infoOt = $this->Ordenservicios->getorden($id_ot);
       // si la tareas es opcional
       if (($infoOt[0] ["id_tarea"] < 0) || ($infoOt[0] ["id_tarea"] == NULL)) {
@@ -75,11 +72,8 @@ class Ordenservicio extends CI_Controller {
       $data['lecturas'] = $this->Ordenservicios->getLecturasOrden($id_ot);
       $data['tareas'] = $this->Ordenservicios->getTareasOrden($id_ot);
       $data['herramientas'] = $this->Ordenservicios->getHerramOrdenes($id_ot);
-
       $data['insumos'] = $this->Ordenservicios->getInsumosPorOT($id_ot);
       $data['rrhh'] = $this->Ordenservicios->getOperariosOrden($id_ot);
-      dump($data, 'data: ');
-      // $this->load->view('tareas/view_inf_servicio_modal',$data);
       $this->load->view('tareas/view_presta_presta_conf_modal',$data);
     } 
 
@@ -108,9 +102,7 @@ class Ordenservicio extends CI_Controller {
       $data['herramientas'] = $this->Ordenservicios->getHerramOrdenes($id_ot);
       $data['insumos'] = $this->Ordenservicios->getInsumosPorOT($id_ot);
       $data['rrhh'] = $this->Ordenservicios->getOperariosOrden($id_ot);
-     // dump($data, 'data: ');
-      $this->load->view('tareas/view_edicion_inf_servicio_modal',$data);
-      
+      $this->load->view('tareas/view_edicion_inf_servicio_modal',$data);      
     } 
 
     public function getDatosOrdenServicio() // Ok

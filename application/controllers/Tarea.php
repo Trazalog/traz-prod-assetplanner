@@ -304,15 +304,12 @@ class Tarea extends CI_Controller {
 					case '2':
 						$tipo = 'correctivo';
 						break;
-
 					case '3':
 						$tipo = 'preventivo';
-						break;
-					
+						break;					
 					case '4':
 						$tipo = 'backlog';
-						break;
-				
+						break;				
 					default:
 						$tipo = 'predictivo';
 						break;
@@ -333,7 +330,15 @@ class Tarea extends CI_Controller {
 								}	else{	// sino cambio estado de la tarea origen(back, prevent, predict)
 									$result = $this->Tareas->cambiarEstado($id_solicitud, $estado, $tipo);	
 								}							
-								// Cierro la OT					
+								// Cierro la OT				
+								if ($id_SS != 0) {	
+									// Viene de una SServicios, Back, Prev o Predict
+									$result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT');
+								} else {
+									// Termina las OT que no vienen de Tareas solicitadas
+									$result = $this->Tareas->cambiarEstado($id_OT, 'T', 'OT');
+								}
+									
 								$result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT');
 								// si guarda en BD	
 								if ($result) {
