@@ -1496,12 +1496,17 @@ class Equipos extends CI_Model {
 
     public function informe_equipos()
     {
+        $userdata = $this->session->userdata('user_data');
+        $empId = $userdata[0]['id_empresa']; 
+
         $this->db->select('count(*) as result');
         $this->db->where('estado', 'AC');
+        $this->db->where('id_empresa', $empId);
         $data['eqActivos'] = $this->db->get('equipos')->row()->result;
 
         $this->db->select('count(*) as result');
         $this->db->where('estado', 'RE');
+        $this->db->where('id_empresa', $empId);
         $data['eqReparacion'] = $this->db->get('equipos')->row()->result;
 
         return $data;
