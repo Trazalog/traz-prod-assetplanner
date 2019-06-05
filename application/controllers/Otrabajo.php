@@ -492,14 +492,23 @@ class Otrabajo extends CI_Controller {
 		}
 		else echo "nada";
 	}
+	// Trae info de equipos por ID y por empresa logueada - Listo
+	public function getInfoEquipoNuevaOT(){
+		$id = $this->input->post('id_equipo');
+		$equipo = $this->Otrabajos->getInfoEquiposNuevaOT($id);
 
+		if($equipo)
+		{	
+			$arre=array();
+					foreach ($equipo as $row ) 
+					{   
+						$arre[]=$row;
+					}
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}	
 	
-
-
-
-
-
-
 	/**
 	 *
 	 *
@@ -1117,16 +1126,12 @@ class Otrabajo extends CI_Controller {
 
 		// trae adjuntos
 		$adjuntos = $this->Otrabajos->getOTadjuntos($idOt);
-
-	
-
+		
+		//dump($adjuntos, 'adjuntos: ');
 		if($adjuntos){
 				$response['adjunto']=$adjuntos;
 		}
 		else{ $response['adjunto']=0;}
-
-
-		//dump($response['adjunto'], 'adjuntos: ');
 
     echo json_encode($response);
 
@@ -1267,13 +1272,11 @@ class Otrabajo extends CI_Controller {
 
 		// trae adjuntos
 		$adjuntos = $this->Otrabajos->getOTadjuntos($idOt);
+		
 		if($adjuntos){
 				$response['adjunto']=$adjuntos;
 		}
 		else{ $response['adjunto']=0;}
-
-		//dump($response, 'datos de herr, etc: ');
-
 
 		echo json_encode($response);
 	}

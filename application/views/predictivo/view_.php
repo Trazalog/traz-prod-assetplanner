@@ -41,7 +41,8 @@
                     </div>
                     <div class="col-xs-12 col-sm-6 com-md-4">
                       <label for="marca">Marca:</label>
-                      <input type="text" id="marca"  name="marca" class="form-control input-md"  disabled />
+                      <input type="text" id="marcadesc"  name="marcadesc" class="form-control input-md"  disabled />
+                      <input type="hidden" id="marca"  name="marca" class="form-control input-md"  disabled />
                     </div>
                     <div class="col-xs-12 col-sm-6 com-md-4">
                       <label for="ubicacion">Ubicacion:</label>
@@ -334,14 +335,17 @@ $('#equipo').change(function(){
       success: function(data){    
                   console.log(data);                     
                   var fecha_ingreso = data[0]['fecha_ingreso']; 
-                  var marca = data[0]['marca']; 
+                  var marca = data[0]['marca'];
+                  var marcadesc = data[0]['marcadescrip']; 
                   var ubicacion = data[0]['ubicacion']; 
                   var criterio1 = data[0]['criterio1']; 
                   var descripcion = data[0]['descripcion']; 
                   $('#fecha_ingreso').val(fecha_ingreso);       
                   $('#marca').val(marca);   
                   $('#descripcion').val(descripcion);       
-                  $('#ubicacion').val(ubicacion);  
+                  $('#ubicacion').val(ubicacion);
+                  $('#marcadesc').val(marcadesc);  
+                  
               },        
       error: function(result){
                     

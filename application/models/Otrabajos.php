@@ -119,6 +119,8 @@ class Otrabajos extends CI_Model {
 					return false;
 			}   
 	}
+
+	
 	// Trae equipos por empresa logueada - Listo
 	function getEquiposNuevaOT(){
 		$userdata = $this->session->userdata('user_data');
@@ -139,6 +141,29 @@ class Otrabajos extends CI_Model {
 	 		return false;
 	 	}	
 	}
+	// Trae info de equipos por ID y por empresa logueada - Listo
+	function getInfoEquiposNuevaOT($id){
+
+		$userdata = $this->session->userdata('user_data');
+    $empId = $userdata[0]['id_empresa']; 
+			
+		$this->db->select('equipos.*, marcasequipos.marcadescrip');
+		$this->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');
+		$this->db->from('equipos');    	
+		$this->db->where('equipos.id_empresa', $empId);
+		$this->db->where('equipos.id_equipo', $id);      	
+		$query= $this->db->get();   
+	
+		if ($query->num_rows()!=0)
+		{
+			return $query->result_array();
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 
 	function getDescTareaSTD($id_tar){
 		$this->db->select('tareas.descripcion');

@@ -22,7 +22,7 @@
               <tr>
                 <th></th>
                 <th>Id Orden</th>
-                <th>Fecha Inicio</th>
+                <th>Fecha Program.</th>
                 <th>Fecha Entrega</th>
                 <th>Fecha Terminada</th>
                 <th>Detalle</th>
@@ -53,10 +53,10 @@
                         echo '<tr id="'.$id.'" class="'.$id.' ot-row" data-id_equipo="'.$id_equipo.'" data-causa="'.$causa.'" data-idsolicitud="'.$idsolicitud.'">';
                         echo '<td>';
                         echo $opciones;
-                        echo '</td>';
-                        echo '<td>'.$a['id_orden'].'</td>';
-                        $fecha_inicio = ($a['fecha_inicio'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_inicio']), 'd-m-Y');
-                        echo '<td>'.$fecha_inicio.'</td>';
+                        echo '</td>';                        
+                        echo '<td>'.$a['id_orden'].'</td>';                       
+                        $fecha_program = ($a['fecha_program'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_program']), 'd-m-Y');
+                        echo '<td>'.$fecha_program.'</td>';
                         $fecha_entrega = ($a['fecha_entrega'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_entrega']), 'd-m-Y');
                         echo '<td>'.$fecha_entrega.'</td>';
                         $fecha_terminada = ($a['fecha_terminada'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_terminada']), 'd-m-Y');
@@ -65,10 +65,7 @@
                         echo '<td>'.$a['codigo'].' </td>';
                         echo '<td>'.$a['tipoDescrip'].'</td>';
                         echo '<td>'.$a['id_solicitud'].'</td>';
-                        echo '<td>'.$a['nombre'].'</td>';
-                        // echo '<td>'.($a['estado'] == 'C' ? '<small class="label pull-left bg-green">Curso</small>' : ($a['estado'] == 'P' ? '<small class="label pull-left bg-red">Pedido</small>' :  $a['estado'] == 'PL' ? '<small class="label pull-left bg-green">Planificado</small>' : '<small class="label pull-left bg-yellow">Asignado</small>')).'</td>';
-      	                // echo '</tr>';
-                      //}
+                        echo '<td>'.$a['nombre'].'</td>';                        
                       
                       echo '<td>';           
                             
@@ -1465,7 +1462,7 @@ function guardarpedido(){
     }
   }
 
-  /***** 1 OT *****/
+  /***** 1 OT *****/  //LISTO Ver con adjunto y sin adjunto
     // Trae datos de OT 
     function getDataOt(idOt, origen) {
       WaitingOpen('Cargando datos...');
@@ -1477,8 +1474,14 @@ function guardarpedido(){
         method: 'POST',
         url: 'index.php/Otrabajo/getViewDataOt',
       })
-      .done( (data) => {
-        console.table(data);
+      .done( (data) => {        
+
+        if (data['adjunto'][0] === undefined) {
+          var adjunto = 'Sin Adjunto';  
+        } else {
+          var adjunto = data['adjunto'][0]['ot_adjunto'];          
+        }
+
         datos = {
           //Panel datos de OT
           'id_ot'          : data['otrabajo'][0]['id_orden'],
@@ -1500,7 +1503,9 @@ function guardarpedido(){
           'ubicacion'      : data['otrabajo'][0]['ubicacion'],
           'descripcion_eq' : data['otrabajo'][0]['descripcionEquipo'],
           'comp_equipo'    : data['otrabajo'][0]['compEquipo'],
+          'adjunto'        : adjunto
         };
+
         var herram = data['herramientas'];
         var insum = data['insumos'];    
 
@@ -1537,7 +1542,6 @@ function guardarpedido(){
       $('#vFechaEntrega').val(datos['fecha_entrega']);
       $('#vSucursal').val(datos['sucursal']);
       $('#vProveedor').val(datos['nombreprov']);
-
       $('#vIdOt').val(datos['id_ot']);
       $('#vOrigen').val(datos['origen']);
       $('#vFechaProgram').val(datos['fecha_program']);
@@ -1548,7 +1552,19 @@ function guardarpedido(){
       $('#vMarcaEquipo').val(datos['marca']);
       $('#vUbicacionEquipo').val(datos['ubicacion']);
       $('#vDescripcionEquipo').val(datos['descripcion_eq']);
+      llenarAdjuntosOT(datos['adjunto']);      
     }
+
+    //muestra adjunto del modal preventivo
+    function llenarAdjuntosOT(adjunto) {
+
+      if (adjunto == 'Sin Adjunto cargado') {
+        $('#TabAdjuntoOT .panel-body').html(adjunto);
+      } else {
+        pdfEmbeded = '<embed src="'+adjunto+'" type="application/pdf" style="width:100%;height:800px"></embed>';      
+       $('#TabAdjuntoOT .panel-body').html(pdfEmbeded);
+      }     
+    } 
 
   /***** 2 Solicitud de Servicios *****/
     // Trae datos de Solicitud de Servicios con origen Backlog
@@ -1796,9 +1812,8 @@ function guardarpedido(){
     }
     //muestra adjunto del modal preventivo
     function llenarAdjuntos(adjunto) {
-      pdfEmbeded = '<embed src="./assets/filespreventivos/'+adjunto+'" type="application/pdf" style="width:100%;height:800px"></embed>';
-      
-       $('#collapseAdjunto .panel-body').html(pdfEmbeded);
+      pdfEmbeded = '<embed src="./assets/filespreventivos/'+adjunto+'" type="application/pdf" style="width:100%;height:800px"></embed>';      
+       $('#TabAdjuntoPrevent .panel-body').html(pdfEmbeded);
     }
 
   /***** 4 Backlog *****/   //  LISTO falta adj- 
@@ -1837,10 +1852,11 @@ function guardarpedido(){
           'descripcion_eq' : data['backlog'][0]['descripcionEquipo'],
           'comp_equipo'    : data['backlog'][0]['compEquipo'],
           'tarea'          : data['backlog'][0]['tarea'],
+          'adjunto'        : data['adjunto'][0]['ot_adjunto']
         };
-
         var herram = data['herramientas'];
         var insum = data['insumos'];
+
         $('#tblherrBack tbody tr').remove();
         for (var i = 0; i < herram.length; i++) {
           var tr = "<tr id='"+herram[i]['herrId']+"'>"+          
@@ -1870,10 +1886,6 @@ function guardarpedido(){
     }
     //llena datos del modal preventivo
     function fillModalViewBacklog(datos){
-
-      //console.table(datos['tarea']['tarea_opcional']);
-
-
       //llenar datos de ot
       $('#vNroOtBack').val(datos['nro']);
       $('#vDescripFallaBack').val(datos['descripcion_ot']);
@@ -1902,11 +1914,19 @@ function guardarpedido(){
         $('#vTareaBack').val( datos['tarea']['tarea_opcional'] );    
       } else {
         $('#vTareaBack').val( datos['tarea']['tareadescrip'] );    
-      }
-     
-      
+      }   
+
       $('#vFechaBack').val( datos['tarea']['fecha'] );
       $('#vDuracionBack').val( datos['tarea']['back_duracion'] );
+      llenarAdjuntosBack(datos['adjunto']);
+      
+    }
+
+    function llenarAdjuntosBack(adjuntoback) {
+
+      alert(adjuntoback + 'adjuntoback');
+      pdfEmbededBack = '<embed src="'+adjuntoback+'" type="application/pdf" style="width:100%;height:800px"></embed>';      
+       $('#TabAdjuntoBack .back').html(pdfEmbededBack);
     }
 
   /***** 5 Predictivo *****/  //  LISTO falta adj- 
@@ -1944,6 +1964,7 @@ function guardarpedido(){
           'ubicacion'      : data['predictivo'][0]['ubicacion'],
           'descripcion_eq' : data['predictivo'][0]['descripcionEquipo'],
           'tarea'          : data['predictivo'][0]['tarea'],
+          'adjunto'        : data['adjunto'][0]['ot_adjunto'] 
         };
 
         var herram = data['herramientas'];
@@ -2001,7 +2022,16 @@ function guardarpedido(){
       $('#vDuraciónPred').val( datos['tarea']['duracion']+' '+datos['tarea']['unidaddescrip'] );
       $('#vCantOperariosPred').val( datos['tarea']['cantOperarios'] );
       $('#vCantHsHombrePred').val( datos['tarea']['horash'] );
+      
+      llenarAdjuntosPred(datos['adjunto']);
     }
+
+    //muestra adjunto del modal preventivo
+    function llenarAdjuntosPred(adjuntoPred) {
+      alert(adjuntoPred + ' ->adjunto');
+      pdfEmbededPred = '<embed src="'+adjuntoPred+'" type="application/pdf" style="width:100%;height:800px"></embed>';      
+       $('#TabAdjuntoPred .TabAdjuntoPredictivo').html(pdfEmbededPred);
+    }  
 
     // ajusto el ancho de la cabecera de las tablas al cargar el modal
     $('#verOtPreventivo').on('shown.bs.modal', function (e) {
@@ -2416,7 +2446,7 @@ function guardarpedido(){
                   <div role="tabpanel" class="tab-pane" id="TabAdjunto">
                     <div class="row" >
 
-                    <div class="col-xs-12"><i class="fa fa-plus-square agregaAdjunto text-light-blue" style="color:#f39c12; cursor:pointer; margin-right:10px" title="Agregar Adjunto"></i> Agregar Archivo</div>
+                    <!-- <div class="col-xs-12"><i class="fa fa-plus-square agregaAdjunto text-light-blue" style="color:#f39c12; cursor:pointer; margin-right:10px" title="Agregar Adjunto"></i> Agregar Archivo</div> -->
                     
                     
                       <div class="col-xs-12">
@@ -2747,7 +2777,7 @@ function guardarpedido(){
 <!-- / Modal -->
 
 
-<!-- Modal Ver Orden de Trabajo LISTO -->
+<!-- Modal Ver Orden de Trabajo LISTO con Adjunto-->
 <div class="modal" id="verOt" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -2929,31 +2959,9 @@ function guardarpedido(){
                               </div><!-- /.row -->
                             </div><!--/#insum -->
         
-                            <div role="tabpanel" class="tab-pane" id="TabAdjuntoOT">
-                              
-                            
+                            <div role="tabpanel" class="tab-pane" id="TabAdjuntoOT"> 
                               <div class="panel-body">
-
-                              </div>
-                            
-                            
-                              <!-- <div class="row" >  
-                              
-                                <div class="col-xs-12">
-                                  <table class="table table-bordered" id="tablaadjuntoPrev"> 
-                                    <thead>
-                                      <tr>
-                                        <th></th>
-                                        <th>Archivo</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      
-                                    </tbody>
-                                  </table>
-                                </div>
-                  
-                              </div> -->
+                              </div>                                
                             </div><!--cierre de TabAdjunto--> 
                             
                           </div>  <!-- tab-content -->
@@ -3250,7 +3258,7 @@ function guardarpedido(){
 </div><!-- /.modal -->
 
 
-<!-- Modal Ver Orden de Trabajo Preventivo LISTO -->
+<!-- Modal Ver Orden de Trabajo Preventivo LISTO con Adjunto -->
 <div class="modal" id="verOtPreventivo" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -3717,7 +3725,7 @@ function guardarpedido(){
                                   <table class="table table-bordered" id="tblherrBack"> 
                                     <thead>
                                       <tr>                      
-                                        <th>Acciones</th>
+                                        <!-- <th>Acciones</th> -->
                                         <th>Código</th>
                                         <th>Marca</th>
                                         <th>Descripcion</th>
@@ -3752,9 +3760,10 @@ function guardarpedido(){
                               </div><!-- /.row -->
                             </div><!--/#insum -->
         
-                            <div role="tabpanel" class="tab-pane" id="TabAdjuntoBack">
-                              <div class="row" >  
-                              
+                            <div role="tabpanel" class="tab-pane" id="TabAdjuntoBack">  
+                              <div class="panel-body back">
+                              </div>  
+                              <!-- <div class="row" >                                
                                 <div class="col-xs-12">
                                   <table class="table table-bordered" id="tbladjBack"> 
                                     <thead>
@@ -3767,9 +3776,8 @@ function guardarpedido(){
                                       
                                     </tbody>
                                   </table>
-                                </div>
-                  
-                              </div>
+                                </div>                  
+                              </div> -->
                             </div><!--cierre de TabAdjunto--> 
                             
                           </div>  <!-- tab-content -->
@@ -3969,7 +3977,7 @@ function guardarpedido(){
                           <ul class="nav nav-tabs" role="tablist">                
                             <li role="presentation" class="active"><a href="#tblherrPredictivo" aria-controls="profile" role="tab" data-toggle="tab">Herramientas</a></li>
                             <li role="presentation"><a href="#insumPredic" aria-controls="messages" role="tab" data-toggle="tab">Insumos</a></li>
-                            <li role="presentation"><a href="#TabAdjuntoPredic" aria-controls="messages" role="tab" data-toggle="tab">Adjunto</a></li>                        
+                            <li role="presentation"><a href="#TabAdjuntoPred" aria-controls="messages" role="tab" data-toggle="tab">Adjunto</a></li>                        
                           </ul>
                           <!-- /tabs -->
                           
@@ -4017,24 +4025,11 @@ function guardarpedido(){
                               </div><!-- /.row -->
                             </div><!--/#insum -->
         
-                            <div role="tabpanel" class="tab-pane" id="TabAdjuntoPreventivo">
-                              <div class="row" >  
-                              
-                                <div class="col-xs-12">
-                                  <table class="table table-bordered" id="tablaadjuntoPrev"> 
-                                    <thead>
-                                      <tr>
-                                        <th></th>
-                                        <th>Archivo</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      
-                                    </tbody>
-                                  </table>
-                                </div>
-                  
-                              </div>
+                            <div role="tabpanel" class="tab-pane" id="TabAdjuntoPred">                             
+                            
+                              <div class="panel-body TabAdjuntoPredictivo">
+                              </div> 
+                             
                             </div><!--cierre de TabAdjunto--> 
                             
                           </div>  <!-- tab-content -->

@@ -471,11 +471,11 @@ $('#equipo').change(function(){
   $.ajax({
       type: 'POST',
       data: { id_equipo: id_equipo},
-      url: 'index.php/Predictivo/getInfoEquipo', 
+      url: 'index.php/Otrabajo/getInfoEquipoNuevaOT', 
       success: function(data){    
-                  console.log(data);                     
+                  console.table(data);                     
                   var fecha_ingreso = data[0]['fecha_ingreso']; 
-                  var marca = data[0]['marca']; 
+                  var marca = data[0]['marcadescrip']; 
                   var ubicacion = data[0]['ubicacion']; 
                   var criterio1 = data[0]['criterio1']; 
                   var descripcion = data[0]['descripcion']; 
