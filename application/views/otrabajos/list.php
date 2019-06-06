@@ -1037,8 +1037,6 @@ function orden(){
   });              
 }
 
-
-
 // llena select clientes en modal Asignar OT - 
 function traer_clientes(id_cliente){
   $.ajax({
@@ -1068,7 +1066,6 @@ function traer_clientes(id_cliente){
     dataType: 'json'
   });
 }
-
 
 $(document).ready(function(event) {
 
@@ -1474,13 +1471,7 @@ function guardarpedido(){
         method: 'POST',
         url: 'index.php/Otrabajo/getViewDataOt',
       })
-      .done( (data) => {        
-
-        if (data['adjunto'][0] === undefined) {
-          var adjunto = 'Sin Adjunto';  
-        } else {
-          var adjunto = data['adjunto'][0]['ot_adjunto'];          
-        }
+      .done( (data) => { 
 
         datos = {
           //Panel datos de OT
@@ -1503,11 +1494,12 @@ function guardarpedido(){
           'ubicacion'      : data['otrabajo'][0]['ubicacion'],
           'descripcion_eq' : data['otrabajo'][0]['descripcionEquipo'],
           'comp_equipo'    : data['otrabajo'][0]['compEquipo'],
-          'adjunto'        : adjunto
+          //'adjunto'        : adjunto
         };
 
         var herram = data['herramientas'];
-        var insum = data['insumos'];    
+        var insum = data['insumos'];  
+        var adjunto = data['adjunto'];  
 
         $('#tblherrOT tbody tr').remove();
         for (var i = 0; i < herram.length; i++) {
@@ -1529,6 +1521,7 @@ function guardarpedido(){
           "</tr>";
           $('#tblinsOT tbody').append(tr);
         }
+        recargaTablaAdjuntoOT(adjunto);
       })
       .fail( () => alert( "Error al traer los datos de la OT." ) );
       return datos;
@@ -1551,20 +1544,25 @@ function guardarpedido(){
       $('#vCodigoEquipo').val(datos['codigo']);
       $('#vMarcaEquipo').val(datos['marca']);
       $('#vUbicacionEquipo').val(datos['ubicacion']);
-      $('#vDescripcionEquipo').val(datos['descripcion_eq']);
-      llenarAdjuntosOT(datos['adjunto']);      
+      $('#vDescripcionEquipo').val(datos['descripcion_eq']);           
     }
 
-    //muestra adjunto del modal preventivo
-    function llenarAdjuntosOT(adjunto) {
+    // recarga tablas de adjuntos al iniciar la edicion
+    function recargaTablaAdjuntoOT(Adjunto) {    
+      $('#TabAdjuntoOT tbody tr').remove();
+      if (Adjunto == 0) {      
+        $('#TabAdjuntoOT').html('<p>Sin Adjuntos</p>');
+      }else{
+        for (var i = 0;  i < Adjunto.length; i++) { 
+          var tr = "<tr id='"+Adjunto[i]['id']+"'>"+         
+          "<td><a id='' href='"+Adjunto[i]['ot_adjunto']+"' target='_blank'>Archivo adjunto " + (i+1) + "</a></td>"+      
+          "</tr>";
+          $('#tblAdjuntoOT tbody').append(tr);
+        }
+      }   
+    }
 
-      if (adjunto == 'Sin Adjunto cargado') {
-        $('#TabAdjuntoOT .panel-body').html(adjunto);
-      } else {
-        pdfEmbeded = '<embed src="'+adjunto+'" type="application/pdf" style="width:100%;height:800px"></embed>';      
-       $('#TabAdjuntoOT .panel-body').html(pdfEmbeded);
-      }     
-    } 
+
 
   /***** 2 Solicitud de Servicios *****/
     // Trae datos de Solicitud de Servicios con origen Backlog
@@ -1712,10 +1710,8 @@ function guardarpedido(){
 
         var herram = data['herramientas'];
         var insum = data['insumos'];
-        var adjunto = null;//data['adjunto'][0]['ot_adjunto'];
-        // console.log(adjunto + 'adjunto');
-        // console.table(adjunto);    
-
+        var adjunto = data['adjunto'];
+        
         $('#tblherrPrevent tbody tr').remove();
         for (var i = 0; i < herram.length; i++) {
           var tr = "<tr id='"+herram[i]['herrId']+"'>"+          
@@ -1735,12 +1731,8 @@ function guardarpedido(){
           "<td>"+insum[i]['cantidad']+"</td>"+                   
           "</tr>";
           $('#tblinsPrevent tbody').append(tr);
-        }
-        //TODO: ARREGLAR ACA
-        pdfEmbeded = '<embed src=".'+adjunto+'" type="application/pdf" style="width:100%;height:800px"></embed>';
-        $('#TabAdjuntoPrevent .panel-body').html(pdfEmbeded);
-
-        console.log(pdfEmbeded + 'pdfembed');
+        }      
+        recargaTablaAdjuntoPreven(adjunto);
         
       })
       .fail( () => alert( "Error al traer los datos de la OT." ) );
@@ -1777,10 +1769,8 @@ function guardarpedido(){
       $('#vDuraciónPrev').val( datos['tarea']['prev_duracion'] );
       $('#vUnidadTiempoPrev').val( datos['tarea']['unidaddescrip'] );
       $('#vCantOperariosPrev').val( datos['tarea']['prev_canth'] );
-      //llenar tabla herramientas
       llenarTablaHerramientas(datos['tarea']);
       llenarTablaInsumos(datos['tarea']);
-      llenarAdjuntos(datos['tarea'].prev_adjunto);
     }
     //llena tabla herramientas del modal preventivo
     function llenarTablaHerramientas(tareas) {
@@ -1810,11 +1800,24 @@ function guardarpedido(){
         ).draw();
       }
     }
-    //muestra adjunto del modal preventivo
-    function llenarAdjuntos(adjunto) {
-      pdfEmbeded = '<embed src="./assets/filespreventivos/'+adjunto+'" type="application/pdf" style="width:100%;height:800px"></embed>';      
-       $('#TabAdjuntoPrevent .panel-body').html(pdfEmbeded);
+   
+    // recarga tablas de adjuntos al iniciar la edicion
+    function recargaTablaAdjuntoPreven(Adjunto) {    
+      $('#TabAdjuntoPrevent tbody tr').remove();
+      if (Adjunto == 0) {      
+        $('#TabAdjuntoPrevent').html('<p>Sin Adjuntos</p>');
+      }else{
+        for (var i = 0;  i < Adjunto.length; i++) { 
+          var tr = "<tr id='"+Adjunto[i]['id']+"'>"+          
+          "<td><a id='' href='"+Adjunto[i]['ot_adjunto']+"' target='_blank'>Archivo adjunto " + (i+1) + " </a></td>"+      
+          "</tr>";
+          $('#tblAdjuntoPreven tbody').append(tr);
+        }
+      }   
     }
+
+    
+
 
   /***** 4 Backlog *****/   //  LISTO falta adj- 
     // Trae datos de OT con origen Backlog
@@ -1830,6 +1833,12 @@ function guardarpedido(){
       })
       .done( (data) => {
         //console.table(data);
+        // if (data['adjunto'][0] === undefined) {
+        //   var adjunto = 'Sin Adjunto';  
+        // } else {
+        //   var adjunto = data['adjunto'][0]['ot_adjunto'];          
+        // }
+
         datos = {
           //Panel datos de OT
           'id_ot'          : data['backlog'][0]['id_orden'],
@@ -1852,11 +1861,11 @@ function guardarpedido(){
           'descripcion_eq' : data['backlog'][0]['descripcionEquipo'],
           'comp_equipo'    : data['backlog'][0]['compEquipo'],
           'tarea'          : data['backlog'][0]['tarea'],
-          'adjunto'        : data['adjunto'][0]['ot_adjunto']
+          //'adjunto'        : data['adjunto'][0]['ot_adjunto']
         };
         var herram = data['herramientas'];
         var insum = data['insumos'];
-
+        var adjunto = data['adjunto'];
         $('#tblherrBack tbody tr').remove();
         for (var i = 0; i < herram.length; i++) {
           var tr = "<tr id='"+herram[i]['herrId']+"'>"+          
@@ -1876,7 +1885,8 @@ function guardarpedido(){
           "<td>"+insum[i]['cantidad']+"</td>"+                   
           "</tr>";
           $('#tblinsumBack tbody').append(tr);
-        }      
+        }  
+        recargaTablaAdjuntoBack(adjunto);    
 
       })
      
@@ -1918,17 +1928,34 @@ function guardarpedido(){
 
       $('#vFechaBack').val( datos['tarea']['fecha'] );
       $('#vDuracionBack').val( datos['tarea']['back_duracion'] );
-      llenarAdjuntosBack(datos['adjunto']);
+     // llenarAdjuntosBack(datos['adjunto']);
       
     }
 
-    function llenarAdjuntosBack(adjuntoback) {
+    // function llenarAdjuntosBack(adjuntoback) {
 
-      alert(adjuntoback + 'adjuntoback');
-      pdfEmbededBack = '<embed src="'+adjuntoback+'" type="application/pdf" style="width:100%;height:800px"></embed>';      
-       $('#TabAdjuntoBack .back').html(pdfEmbededBack);
+    //   alert(adjuntoback + 'adjuntoback');
+    //   pdfEmbededBack = '<embed src="'+adjuntoback+'" type="application/pdf" style="width:100%;height:800px"></embed>';      
+    //    $('#TabAdjuntoBack .back').html(pdfEmbededBack);
+    // }
+    // recarga tablas de adjuntos al iniciar la edicion
+    function recargaTablaAdjuntoBack(Adjunto) {  
+      $('#TabAdjuntoBack tbody tr').remove();       
+      if (Adjunto == 0) {
+        alert('sin adjuntos');
+        $('#TabAdjuntoBack').html('<p>Sin Adjuntos</p>');
+      } else {        
+        for (var i = 0;  i < Adjunto.length; i++) { 
+
+          var tr = "<tr id='"+Adjunto[i]['id']+"'>"+
+          "<td ><i class='fa fa-times-circle eliminaAdjunto text-light-blue' style='cursor:pointer; margin-right:10px' title='Eliminar Adjunto'></i></td>'"+
+          "<td><a id='' href='"+Adjunto[i]['ot_adjunto']+"' target='_blank'>Archivo adjunto</a></td>"+      
+          "</tr>";
+          $('#tblAdjuntoBack tbody').append(tr);
+        }
+      }   
     }
-
+   
   /***** 5 Predictivo *****/  //  LISTO falta adj- 
     // Trae datos de OT con origen Predictivo
     function getDataOtPredictivo(idOt, idPredictivo, origen) {
@@ -1964,11 +1991,13 @@ function guardarpedido(){
           'ubicacion'      : data['predictivo'][0]['ubicacion'],
           'descripcion_eq' : data['predictivo'][0]['descripcionEquipo'],
           'tarea'          : data['predictivo'][0]['tarea'],
-          'adjunto'        : data['adjunto'][0]['ot_adjunto'] 
+          //'adjunto'        : data['adjunto'][0]['ot_adjunto'] 
         };
 
         var herram = data['herramientas'];
         var insum = data['insumos'];
+        var adjunto =  data['adjunto'];
+
         $('#tblherrPred tbody tr').remove();
         for (var i = 0; i < herram.length; i++) {
           var tr = "<tr id='"+herram[i]['herrId']+"'>"+          
@@ -1989,6 +2018,7 @@ function guardarpedido(){
           "</tr>";
           $('#tblinsPred tbody').append(tr);
         }
+        recargaTablaAdjuntoPred(adjunto);
       })
       .fail( () => alert( "Error al traer los datos de la OT." ) )
       .always( () => WaitingClose() );
@@ -2023,15 +2053,34 @@ function guardarpedido(){
       $('#vCantOperariosPred').val( datos['tarea']['cantOperarios'] );
       $('#vCantHsHombrePred').val( datos['tarea']['horash'] );
       
-      llenarAdjuntosPred(datos['adjunto']);
+      //llenarAdjuntosPred(datos['adjunto']);
     }
 
     //muestra adjunto del modal preventivo
-    function llenarAdjuntosPred(adjuntoPred) {
-      alert(adjuntoPred + ' ->adjunto');
-      pdfEmbededPred = '<embed src="'+adjuntoPred+'" type="application/pdf" style="width:100%;height:800px"></embed>';      
-       $('#TabAdjuntoPred .TabAdjuntoPredictivo').html(pdfEmbededPred);
-    }  
+    // function llenarAdjuntosPred(adjuntoPred) {
+    //   alert(adjuntoPred + ' ->adjunto');
+    //   pdfEmbededPred = '<embed src="'+adjuntoPred+'" type="application/pdf" style="width:100%;height:800px"></embed>';      
+    //    $('#TabAdjuntoPred .TabAdjuntoPredictivo').html(pdfEmbededPred);
+    // } 
+
+    // recarga tablas de adjuntos al iniciar la edicion
+    function recargaTablaAdjuntoPred(Adjunto) {    
+      $('#TabAdjuntoPred tbody tr').remove();
+      if (Adjunto == 0) {      
+        $('#TabAdjuntoPred').html('<p>Sin Adjuntos</p>');
+      }else{
+        for (var i = 0;  i < Adjunto.length; i++) { 
+          var tr = "<tr id='"+Adjunto[i]['id']+"'>"+
+          "<td ><i class='fa fa-times-circle eliminaAdjunto text-light-blue' style='cursor:pointer; margin-right:10px' title='Eliminar Adjunto'></i></td>'"+
+          "<td><a id='' href='"+Adjunto[i]['ot_adjunto']+"' target='_blank'>Archivo adjunto</a></td>"+      
+          "</tr>";
+          $('#tblAdjuntoPred tbody').append(tr);
+        }
+      }   
+    }
+
+    
+
 
     // ajusto el ancho de la cabecera de las tablas al cargar el modal
     $('#verOtPreventivo').on('shown.bs.modal', function (e) {
@@ -2446,7 +2495,7 @@ function guardarpedido(){
                   <div role="tabpanel" class="tab-pane" id="TabAdjunto">
                     <div class="row" >
 
-                    <!-- <div class="col-xs-12"><i class="fa fa-plus-square agregaAdjunto text-light-blue" style="color:#f39c12; cursor:pointer; margin-right:10px" title="Agregar Adjunto"></i> Agregar Archivo</div> -->
+                    <div class="col-xs-12"><i class="fa fa-plus-square agregaAdjunto text-light-blue" style="color:#f39c12; cursor:pointer; margin-right:10px" title="Agregar Adjunto"></i> Agregar Archivo</div>
                     
                     
                       <div class="col-xs-12">
@@ -2458,14 +2507,14 @@ function guardarpedido(){
                             </tr>
                           </thead>
                           <tbody>
-                            <!-- <tr>
+                            <tr>
                               <td id="accionAdjunto">
-                                  <!- - - ->
+                                  
                               </td>
                               <td>
-                                <!- - <a id="adjunto" href="" target="_blank"></a> - ->
+                                <a id="adjunto" href="" target="_blank"></a> 
                               </td>
-                            </tr> -->
+                            </tr>
                           </tbody>
                         </table>
                       </div>
@@ -2846,14 +2895,7 @@ function guardarpedido(){
                   <div class="col-xs-12 col-sm-6 col-md-3">
                     <label for="vAsignado">Asignado:</label>
                     <input type="text" class="form-control " name="vAsignado" id="vAsignado" disabled>
-                  </div>
-                  <div class="col-xs-12 col-sm-6 col-md-3">
-
-                    <a href="" alt="adjunto" target="_blank">adjunto</a>
-                     
-                    
-                  </div>
-
+                  </div> 
                 </div>
 
               </div>
@@ -2959,9 +3001,25 @@ function guardarpedido(){
                               </div><!-- /.row -->
                             </div><!--/#insum -->
         
-                            <div role="tabpanel" class="tab-pane" id="TabAdjuntoOT"> 
-                              <div class="panel-body">
-                              </div>                                
+                            <div role="tabpanel" class="tab-pane" id="TabAdjuntoOT">                             
+
+                              <div class="col-xs-12">
+                                <table class="table table-bordered" id="tblAdjuntoOT"> 
+                                  <thead>
+                                    <tr>                                    
+                                      <th>Archivo</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>                                     
+                                      <td>
+                                        <a id="adjunto" href="" target="_blank"></a> 
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+
                             </div><!--cierre de TabAdjunto--> 
                             
                           </div>  <!-- tab-content -->
@@ -2969,7 +3027,6 @@ function guardarpedido(){
                         </div><!-- /.nav-tabs-custom -->
                       </div>
                     </div>
-
 
               </div>
             </div>
@@ -3490,30 +3547,24 @@ function guardarpedido(){
                             </div><!--/#insum -->
         
                             <div role="tabpanel" class="tab-pane" id="TabAdjuntoPrevent">
-                              
-                            
-                              <div class="panel-body">
-
+                              <div class="col-xs-12">
+                                <table class="table table-bordered" id="tblAdjuntoPreven"> 
+                                  <thead>
+                                    <tr>                                      
+                                      <th>Archivo/s</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <td id="accionAdjuntoPreven">                                          
+                                      </td>
+                                      <td>
+                                        <a id="adjuntopreven" href="" target="_blank"></a> 
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
                               </div>
-                            
-                            
-                              <!-- <div class="row" >  
-                              
-                                <div class="col-xs-12">
-                                  <table class="table table-bordered" id="tablaadjuntoPrev"> 
-                                    <thead>
-                                      <tr>
-                                        <th></th>
-                                        <th>Archivo</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      
-                                    </tbody>
-                                  </table>
-                                </div>
-                  
-                              </div> -->
                             </div><!--cierre de TabAdjunto--> 
                             
                           </div>  <!-- tab-content -->
@@ -3761,23 +3812,24 @@ function guardarpedido(){
                             </div><!--/#insum -->
         
                             <div role="tabpanel" class="tab-pane" id="TabAdjuntoBack">  
-                              <div class="panel-body back">
-                              </div>  
-                              <!-- <div class="row" >                                
-                                <div class="col-xs-12">
-                                  <table class="table table-bordered" id="tbladjBack"> 
-                                    <thead>
-                                      <tr>
-                                        <th></th>
-                                        <th>Archivo</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      
-                                    </tbody>
-                                  </table>
-                                </div>                  
-                              </div> -->
+                              
+                              <div class="col-xs-12">
+                                <table class="table table-bordered" id="tblAdjuntoBack"> 
+                                  <thead>
+                                    <tr>                                     
+                                      <th>Archivo/s</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>                                      
+                                      <td>
+                                        <a id="adjuntoBack" href="" target="_blank"></a> 
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                              
                             </div><!--cierre de TabAdjunto--> 
                             
                           </div>  <!-- tab-content -->
@@ -4027,8 +4079,22 @@ function guardarpedido(){
         
                             <div role="tabpanel" class="tab-pane" id="TabAdjuntoPred">                             
                             
-                              <div class="panel-body TabAdjuntoPredictivo">
-                              </div> 
+                              <div class="col-xs-12">
+                                <table class="table table-bordered" id="tblAdjuntoPred"> 
+                                  <thead>
+                                    <tr>                                    
+                                      <th>Archivo/s</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>                                    
+                                      <td>
+                                        <a id="adjuntopred" href="" target="_blank"></a> 
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
                              
                             </div><!--cierre de TabAdjunto--> 
                             
@@ -4037,8 +4103,6 @@ function guardarpedido(){
                         </div><!-- /.nav-tabs-custom -->
                       </div>
                     </div>
-
-
               </div>
             </div>
           </div>

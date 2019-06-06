@@ -12,7 +12,7 @@ class Preventivos extends CI_Model
 	function preventivos_List(){	
 
 		$userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa'];          
+		$empId = $userdata[0]['id_empresa'];          
 
 		$this->db->select('preventivo.prevId, 
 											preventivo.id_equipo, 
@@ -26,22 +26,22 @@ class Preventivos extends CI_Model
 											preventivo.horash,
 											preventivo.prev_adjunto,
 											preventivo.estadoprev AS estado');
-    	$this->db->from('preventivo');
-    	$this->db->join('equipos', 'equipos.id_equipo = preventivo.id_equipo');
-    	$this->db->join('grupo', 'equipos.id_grupo=grupo.id_grupo');
-    	$this->db->join('tareas', 'tareas.id_tarea = preventivo.id_tarea');
-    	$this->db->join('componentes', 'componentes.id_componente = preventivo.id_componente');
-      $this->db->join('periodo', 'periodo.idperiodo = preventivo.perido');
-    	$this->db->where('preventivo.estadoprev !=', 'AN');
-      $this->db->where('preventivo.id_empresa', $empId);	
-        //dump_exit( $this->db->get_compiled_select() );
-    	$query= $this->db->get();
+		$this->db->from('preventivo');
+		$this->db->join('equipos', 'equipos.id_equipo = preventivo.id_equipo');
+		$this->db->join('grupo', 'equipos.id_grupo=grupo.id_grupo');
+		$this->db->join('tareas', 'tareas.id_tarea = preventivo.id_tarea');
+		$this->db->join('componentes', 'componentes.id_componente = preventivo.id_componente');
+		$this->db->join('periodo', 'periodo.idperiodo = preventivo.perido');
+		$this->db->where('preventivo.estadoprev !=', 'AN');
+		$this->db->where('preventivo.id_empresa', $empId);	
+		//dump_exit( $this->db->get_compiled_select() );
+		$query= $this->db->get();
 
-	    if( $query->num_rows() > 0)
-	    {
-	      $data['data'] = $query->result_array();
-	      return  $data;
-	    }
+		if( $query->num_rows() > 0)
+		{
+			$data['data'] = $query->result_array();
+			return  $data;
+		}
 	}
 
 //// Edicion	
