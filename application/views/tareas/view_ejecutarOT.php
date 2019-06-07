@@ -51,11 +51,14 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 																					echo "&nbsp";
 																					echo "<button class='btn btn-block btn-danger grupNoasignado' id='btonsoltr' style='width: 100px; margin-top: 10px; display: inline-block;' onclick='soltarTarea()'>Soltar tarea</button>";
 																					echo '</div>';																					
+																				
 																					echo '<div class="col-md-4 col-md-offset-4 oculto" id="llave">';	
-																					echo '<i class="text-light-blue fa fa-fw fa fa-toggle-on fa-2x" id="onSwitch" title="Iniciar Tarea" style="cursor: pointer; margin-left: 15px;"><span class="" style="margin-left: 15px; font-size: 15px">Tarea</span>
-																					</i>';
-																					echo '<i class="text-light-blue fa fa-fw fa fa-toggle-off fa-2x" id="offSwitch" title="Iniciar Tarea" style="cursor: pointer; margin-left: 15px;"><span class="" style="margin-left: 15px; font-size: 15px">Tarea</span>
-																					</i>';
+																					// echo '<i class="text-light-blue fa fa-fw fa fa-toggle-on fa-2x" id="onSwitch" title="Iniciar Tarea" style="cursor: pointer; margin-left: 15px;"><span class="" style="margin-left: 15px; font-size: 15px">Tarea</span>
+																					// </i>';
+																					// echo '<i class="text-light-blue fa fa-fw fa fa-toggle-off fa-2x" id="offSwitch" title="Iniciar Tarea" style="cursor: pointer; margin-left: 15px;"><span class="" style="margin-left: 15px; font-size: 15px">Tarea</span>
+																					// </i>';
+																					echo '<i class="text-light-blue	fa fa-play fa-2x" id="fa-play" title="Iniciar Tarea" style="cursor: pointer; margin-left: 15px;"><span class="" style="margin-left: 15px; font-size: 15px">Iniciar Tarea</span> </i>';
+																				
 																					echo '</div>';
 																					echo '</div>';		
 																					echo "</br>";	
@@ -140,14 +143,12 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 																						</div>
 																				</div>
 
-
 																				<div class="form-group">
 																						<div class="col-sm-6 col-md-6">
 																								<label for="fecha">Fecha de Creación</label>
 																								<input type="text" class="form-control" id="fecha" placeholder="" value="<?php echo $TareaBPM['last_update_date'] ?>" disabled>
 																						</div>
-																				</div><br>
-
+																				</div><br> 
 
 																				<div class="form-group ">
 																						<div class="col-sm-6 col-md-6 ">
@@ -229,30 +230,30 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 		// valida el estado de la OT y muestra llave segun corressponda 
 		validaInicio();
 		function validaInicio() { 
-			$("#onSwitch").hide();
-			$("#offSwitch").hide(); 
+			// $("#onSwitch").hide();
+			// $("#offSwitch").hide();
+			$("#fa-play").hide(); 
 			var id_OT = $('#id_OT').val();
 			$.ajax({
 						type: 'POST',
 						data: {id_OT: id_OT},
 						url: 'index.php/Tarea/confInicioTarea', 
 						success: function(data){                   
-										if (data) {												
-											$("#offSwitch").show();											
-										} else {
-											$("#onSwitch").show();											
-										}
-									
-									},            
+											if (data) {												
+												$("#fa-play").hide();											
+											} else {
+												$("#fa-play").show();											
+											}									
+										},            
 						error: function(data){
-							alert('Error en Validacion Inicio Tareas' + data);
-								},
+								alert('Error en Validacion Inicio Tareas' + data);
+									},
 								dataType: 'json'
 						});
 		}		
 
 		// Cambia el estado de Orden servicio y de solicitud de servicio
-		$(".fa-toggle-on").click(function () {  
+		$(".fa-play").click(function () {  
 			
 			WaitingOpen('Iniciando Tarea...');
 			var id_OT = $('#id_OT').val();
@@ -263,8 +264,8 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 						success: function(data){   
 										WaitingClose();                
 										if (data) {
-											$("#onSwitch").hide();
-											$("#offSwitch").show();										
+											$("#fa-play").hide();
+											//$("#fa-play").show();										
 										} else {
 											alert('Error al iniciar a Tarea...');
 										}									

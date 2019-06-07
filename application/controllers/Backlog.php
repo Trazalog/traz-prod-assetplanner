@@ -226,6 +226,7 @@ public function editarNuevo(){
 				'fecha'         => $fe,
 				'estado'        => 'S',
 				'back_duracion' => $hs,
+				'id_unidad'			=> 1,			// 1 xq se carga en minutos 
 				'id_empresa'    => $empId,
 				'idcomponenteequipo' => $idce,
 				'tarea_opcional'=> $tarOpc

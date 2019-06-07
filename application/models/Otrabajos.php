@@ -972,22 +972,24 @@ class Otrabajos extends CI_Model {
         }
     }
 
-
-
-    	//devuelve valores de todos los datos de la OT para mostrar en modal.
+    //devuelve valores de todos los datos de la OT para mostrar en modal.
     function getViewDataSolServicio($idOt, $idSolicitud)
     {
-    	$this->db->select('orden_trabajo.id_orden, orden_trabajo.nro, orden_trabajo.descripcion AS descripcionFalla, orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, 
+			$this->db->select('orden_trabajo.id_orden, 
+				orden_trabajo.nro, orden_trabajo.descripcion AS descripcionFalla, 
+				orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, 
     		orden_trabajo.fecha_program, orden_trabajo.descripcion AS estado, sisusers.usrName, sisusers.usrLastName, 
     		orden_trabajo.tipo, orden_trabajo.id_solicitud,
     		sucursal.id_sucursal, sucursal.descripc,
     		abmproveedores.provid, abmproveedores.provnombre,
-    		equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, equipos.descripcion AS descripcionEquipo');
+				equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, equipos.descripcion AS descripcionEquipo,
+				grupo.descripcion AS grupodescrip, grupo.id_grupo');
         $this->db->from('orden_trabajo');
         $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
         $this->db->join('sucursal', ' orden_trabajo.id_sucursal = sucursal.id_sucursal ', 'left');
         $this->db->join('abmproveedores', 'orden_trabajo.id_proveedor = abmproveedores.provid', 'left');
-        $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
+				$this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
+				$this->db->join('grupo', 'grupo.id_grupo = equipos.id_grupo');
         $this->db->where('orden_trabajo.id_orden', $idOt);
 
 				$query = $this->db->get();

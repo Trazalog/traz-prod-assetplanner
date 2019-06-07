@@ -155,12 +155,12 @@
 
                                                     <div class="col-xs-12">
                                                         <label for="descripcion">Descripción: </label>
-                                                        <textarea class="form-control" id="descripcion" name="descripcion" value="<?php echo $info[0]["tareadescrip"] ?>" disabled></textarea>
+                                                        <textarea class="form-control" id="descripcion" name="descripcion" disabled> <?php echo $info[0]["descripcion"] ?></textarea>
                                                     </div>
 
                                                     <div class="col-xs-12 col-sm-6 col-md-4">
                                                         <label for="codigo_componente">Código de componente-equipo :</label>
-                                                        <input type="text" id="codigo_componente" name="codigo_componente" class="form-control input-md" name="descripcion" value="<?php echo $info[0]["componentecodigo"] ?>" placeholder="Ingrese código de componente" />
+                                                        <input type="text" id="codigo_componente" name="codigo_componente" class="form-control input-md" value="<?php echo $info[0]["componentecodigo"] ?>" placeholder="Ingrese código de componente" />
                                                         <input type="hidden" id="idcomponenteequipo" name="idcomponenteequipo" value="<?php echo $info[0]["idcomponenteequipo"] ?>" />
                                                     </div>
                                                     <div class="col-xs-12 col-sm-6 col-md-4">

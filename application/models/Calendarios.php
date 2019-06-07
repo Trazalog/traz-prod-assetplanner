@@ -512,9 +512,10 @@ class Calendarios extends CI_Model {
 				// OT generada desde item menu
 				case '0':
 					// OT generada desde item menu
-					// traer sinfo de OT solamente
+					// traer info de OT solamente
 					$this->db->select('orden_trabajo.*');
 					$this->db->from('orden_trabajo');
+					$this->db->where('orden_trabajo.id_orden', $id_solicitud);
 					$query = $this->db->get();
 					return $query->result_array();					
 					break;
@@ -527,7 +528,7 @@ class Calendarios extends CI_Model {
 					$this->db->from('unidad_tiempo');
 					$this->db->join('preventivo', 'unidad_tiempo.id_unidad = preventivo.id_unidad');
 					$this->db->join('periodo', 'preventivo.perido = periodo.idperiodo');
-					
+					$this->db->where('preventivo.prevId', $id_solicitud);
 					$query = $this->db->get();
 					return $query->result_array();
 					break;
@@ -538,7 +539,8 @@ class Calendarios extends CI_Model {
 														unidad_tiempo.unidaddescrip');
 					$this->db->from('unidad_tiempo');									
 					$this->db->join('tbl_back', 'unidad_tiempo.id_unidad = tbl_back.id_unidad');
-					$query = $this->db->get();
+					$this->db->where('tbl_back.backId', $id_solicitud);
+					$query = $this->db->get();			
 					return $query->result_array();				
 					break;
 				// predictivo

@@ -472,7 +472,7 @@ $("#formPreventivo").submit(function (event){
       $('#error').fadeIn('slow');
     }
   }
-  if ((equipo < 0)||(tarea < 0)||(periodo < 0)||(unidad < 0)||(duracion == "")||(freq == "")||(oper == "")||(hh == "")) {
+  if ((equipo < 0)||(tarea < 0)||(periodo < 0)||(unidad < 0)||(duracion == "")||(freq == "")||(oper == "")||(hh == "" || compon < 0)) {
       $('#error').fadeIn('slow');
   }
   else{

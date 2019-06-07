@@ -42,8 +42,9 @@
                 echo '<td>'.$a['marcadescrip'].'</td>';
                 echo '<td>'.$a['descripcion'].'</td>';
                 echo '<td>'.$a['informacion'].'</td>';
-                $url = base_url().'assets/files/equipos/'.$a['pdf'];
-                echo '<td><a href="'.$url.'" target="_blank">'.basename($a['pdf']).'</td>';
+                $url = base_url().'assets/files/equipos/'.$a['pdf']; 
+                echo '<td><a href="'.$url.'" target="_blank">Adjunto</td>';
+                //echo '<td><a href="'.$url.'" target="_blank">'.basename($a['pdf']).'</td>';
                 $idc++;
               }
               ?>

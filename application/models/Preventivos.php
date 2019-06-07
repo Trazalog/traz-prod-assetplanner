@@ -34,7 +34,7 @@ class Preventivos extends CI_Model
 		$this->db->join('periodo', 'periodo.idperiodo = preventivo.perido');
 		$this->db->where('preventivo.estadoprev !=', 'AN');
 		$this->db->where('preventivo.id_empresa', $empId);	
-		//dump_exit( $this->db->get_compiled_select() );
+
 		$query= $this->db->get();
 
 		if( $query->num_rows() > 0)

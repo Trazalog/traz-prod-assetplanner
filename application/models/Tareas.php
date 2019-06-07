@@ -657,16 +657,18 @@ class Tareas extends CI_Model {
 		function geteditar($id_SS){
 				
 			$this->db->select('tbl_back.*,		
-												equipos.descripcion AS codigo,
+												equipos.codigo,
+												equipos.descripcion,
 												equipos.id_equipo,
-												equipos.fecha_ingreso,
-												equipos.marca,
-												equipos.ubicacion');	
+												equipos.fecha_ingreso,												
+												equipos.ubicacion,
+												marcasequipos.marcadescrip AS marca');	
 			$this->db->from('tbl_back');
 			$this->db->join('equipos', 'tbl_back.id_equipo = equipos.id_equipo');		
+			$this->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');
 			$this->db->where('tbl_back.sore_id',$id_SS);
 			$query= $this->db->get();
-			
+			//dump_exit($this->db->last_query());
 			if( $query->num_rows() > 0)
 			{
 				return $query->result_array();	

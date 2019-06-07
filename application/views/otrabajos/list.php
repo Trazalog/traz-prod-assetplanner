@@ -1583,6 +1583,7 @@ function guardarpedido(){
           'id_ot'          : data['solicitud'][0]['id_orden'],
           'nro'            : data['solicitud'][0]['nro'],
           'descripcion_ot' : data['solicitud'][0]['descripcionFalla'],
+          'grupo'          : data['solicitud'][0]['grupodescrip'],
           'fecha_inicio'   : data['solicitud'][0]['fecha_inicio'],
           'fecha_entrega'  : data['solicitud'][0]['fecha_entrega'],
           'fecha_program'  : data['solicitud'][0]['fecha_program'],
@@ -1599,15 +1600,14 @@ function guardarpedido(){
           'ubicacion'      : data['solicitud'][0]['ubicacion'],
           'descripcion_eq' : data['solicitud'][0]['descripcionEquipo'],
           'comp_equipo'    : data['solicitud'][0]['compEquipo'],
-          'solServicio'   : data['solicitud'][0]['solServicio'],
+          'solServicio'   : data['solicitud'][0]['solServicio']
         };
-
+        
         
         var herram = data['herramientas'];
         var insum = data['insumos'];
-        var adjunto = null;//data['adjunto'][0]['ot_adjunto'];
-        // console.log(adjunto + 'adjunto');
-        // console.table(adjunto);    
+        var adjunto = data['adjunto'];
+         
 
         $('#tblherrsolicitud tbody tr').remove();
         for (var i = 0; i < herram.length; i++) {
@@ -1628,20 +1628,13 @@ function guardarpedido(){
           "<td>"+insum[i]['cantidad']+"</td>"+                   
           "</tr>";
           $('#tblinsSolicitud tbody').append(tr);
-        }
-        //TODO: ARREGLAR ACA
-        pdfEmbeded = '<embed src=".'+adjunto+'" type="application/pdf" style="width:100%;height:800px"></embed>';
-        $('#TabAdjuntoPrevent .panel-body').html(pdfEmbeded);
-
-        console.log(pdfEmbeded + 'pdfembed');
-
-
-
-
+        }   
+        recargaTablaAdjuntoSolic(adjunto);  
       })
       .fail( () => alert( "Error al traer los datos de la OT." ) );
       return datos;
     }
+
     //llena datos del modal preventivo
     function fillModalViewSolServicio(datos){
       //llenar datos de ot
@@ -1664,11 +1657,26 @@ function guardarpedido(){
       $('#vDescripcionEquipoSolServicio').val(datos['descripcion_eq']);
       //llenar datos de soolicitud de servicios
       $('#vSectorSolServicio').val( datos['solServicio']['sector'] );
-      $('#vGrupoSolServicio').val( datos['solServicio']['grupo'] );
+      $('#vGrupoSolServicio').val( datos['grupo'] );
       $('#vSolicitanteSolServicio').val( datos['solServicio']['solicitante'] );
       $('#vFechaSugeridaSolServicio').val( datos['solServicio']['fechaSugerida'] );
       $('#vHorarioSugeridoSolServicio').val( datos['solServicio']['horarioSugerido'] );
       $('#vFallaSolServicio').val( datos['solServicio']['falla'] );
+    }
+
+    // recarga tablas de adjuntos al iniciar la edicion
+    function recargaTablaAdjuntoSolic(Adjunto) {    
+      $('#tbladjSolicitud tbody tr').remove();
+      if (Adjunto == 0) {      
+        $('#tbladjSolicitud').html('<p>Sin Adjuntos</p>');
+      }else{
+        for (var i = 0;  i < Adjunto.length; i++) { 
+          var tr = "<tr id='"+Adjunto[i]['id']+"'>"+          
+          "<td><a id='' href='"+Adjunto[i]['ot_adjunto']+"' target='_blank'>Archivo adjunto " + (i+1) + " </a></td>"+      
+          "</tr>";
+          $('#tbladjSolicitud tbody').append(tr);
+        }
+      }   
     }
 
   /***** 3 preventivo *****/    //  LISTO falta adj- 
@@ -1832,13 +1840,7 @@ function guardarpedido(){
         url: 'index.php/Otrabajo/getViewDataBacklog',
       })
       .done( (data) => {
-        //console.table(data);
-        // if (data['adjunto'][0] === undefined) {
-        //   var adjunto = 'Sin Adjunto';  
-        // } else {
-        //   var adjunto = data['adjunto'][0]['ot_adjunto'];          
-        // }
-
+       
         datos = {
           //Panel datos de OT
           'id_ot'          : data['backlog'][0]['id_orden'],
@@ -1928,16 +1930,8 @@ function guardarpedido(){
 
       $('#vFechaBack').val( datos['tarea']['fecha'] );
       $('#vDuracionBack').val( datos['tarea']['back_duracion'] );
-     // llenarAdjuntosBack(datos['adjunto']);
-      
     }
 
-    // function llenarAdjuntosBack(adjuntoback) {
-
-    //   alert(adjuntoback + 'adjuntoback');
-    //   pdfEmbededBack = '<embed src="'+adjuntoback+'" type="application/pdf" style="width:100%;height:800px"></embed>';      
-    //    $('#TabAdjuntoBack .back').html(pdfEmbededBack);
-    // }
     // recarga tablas de adjuntos al iniciar la edicion
     function recargaTablaAdjuntoBack(Adjunto) {  
       $('#TabAdjuntoBack tbody tr').remove();       
@@ -1947,9 +1941,8 @@ function guardarpedido(){
       } else {        
         for (var i = 0;  i < Adjunto.length; i++) { 
 
-          var tr = "<tr id='"+Adjunto[i]['id']+"'>"+
-          "<td ><i class='fa fa-times-circle eliminaAdjunto text-light-blue' style='cursor:pointer; margin-right:10px' title='Eliminar Adjunto'></i></td>'"+
-          "<td><a id='' href='"+Adjunto[i]['ot_adjunto']+"' target='_blank'>Archivo adjunto</a></td>"+      
+          var tr = "<tr id='"+Adjunto[i]['id']+"'>"+          
+          "<td><a id='' href='"+Adjunto[i]['ot_adjunto']+"' target='_blank'>Archivo adjunto " + (i+1) + "</a></td>"+      
           "</tr>";
           $('#tblAdjuntoBack tbody').append(tr);
         }
@@ -2053,15 +2046,7 @@ function guardarpedido(){
       $('#vCantOperariosPred').val( datos['tarea']['cantOperarios'] );
       $('#vCantHsHombrePred').val( datos['tarea']['horash'] );
       
-      //llenarAdjuntosPred(datos['adjunto']);
     }
-
-    //muestra adjunto del modal preventivo
-    // function llenarAdjuntosPred(adjuntoPred) {
-    //   alert(adjuntoPred + ' ->adjunto');
-    //   pdfEmbededPred = '<embed src="'+adjuntoPred+'" type="application/pdf" style="width:100%;height:800px"></embed>';      
-    //    $('#TabAdjuntoPred .TabAdjuntoPredictivo').html(pdfEmbededPred);
-    // } 
 
     // recarga tablas de adjuntos al iniciar la edicion
     function recargaTablaAdjuntoPred(Adjunto) {    
@@ -2078,9 +2063,6 @@ function guardarpedido(){
         }
       }   
     }
-
-    
-
 
     // ajusto el ancho de la cabecera de las tablas al cargar el modal
     $('#verOtPreventivo').on('shown.bs.modal', function (e) {
@@ -3188,16 +3170,12 @@ function guardarpedido(){
                   <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="vFallaSolServicio">Causa:</label>
                     <input type="text" class="form-control " name="vFallaSolServicio" id="vFallaSolServicio" disabled>
-                  </div>
-
-         
+                  </div>         
                 </div>
 
               </div>
             </div>
           </div> 
-
-
 
           <!-- vista herramientas -->
           <div class="panel panel-default">
@@ -3218,7 +3196,7 @@ function guardarpedido(){
                           <ul class="nav nav-tabs" role="tablist">                
                             <li role="presentation" class="active"><a href="#herrSolicitu" aria-controls="profile" role="tab" data-toggle="tab">Herramientas</a></li>
                             <li role="presentation"><a href="#insumSolicitu" aria-controls="messages" role="tab" data-toggle="tab">Insumos</a></li>
-                            <li role="presentation"><a href="#TabAdjuntoBack" aria-controls="messages" role="tab" data-toggle="tab">Adjunto</a></li>                        
+                            <li role="presentation"><a href="#TabAdjuntoSolicitud" aria-controls="messages" role="tab" data-toggle="tab">Adjunto</a></li>                        
                           </ul>
                           <!-- /tabs -->
         
@@ -3242,9 +3220,7 @@ function guardarpedido(){
                                   </table>  
                                 </div>
                               </div><!-- /.row -->
-                            </div> <!-- /.tabpanel #herramin-->
-                            
-
+                            </div> <!-- /.tabpanel #herramin--> 
         
                             <div role="tabpanel" class="tab-pane" id="insumSolicitu">
                             
@@ -3273,9 +3249,8 @@ function guardarpedido(){
                                 <div class="col-xs-12">
                                   <table class="table table-bordered" id="tbladjSolicitud"> 
                                     <thead>
-                                      <tr>
-                                        <th></th>
-                                        <th>Archivo</th>
+                                      <tr>                                       
+                                        <th>Archivo/s</th>
                                       </tr>
                                     </thead>
                                     <tbody>
@@ -3292,17 +3267,10 @@ function guardarpedido(){
                         </div><!-- /.nav-tabs-custom -->
                       </div>
                     </div>
-
-
               </div>
             </div>
           </div>
           <!--  ./vista herramientas -->
-
-
-
-
-
 
         </div>
 

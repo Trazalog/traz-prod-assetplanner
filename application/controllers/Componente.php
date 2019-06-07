@@ -11,6 +11,7 @@ class Componente extends CI_Controller {
 	public function index($permission)
 	{	
 		$data['list']       = $this->Componentes->listadoABM();
+		//dump_exit($data['list']);
 		$data['permission'] = $permission;
 		$this->load->view('componente/listabm', $data);
 	}
@@ -27,9 +28,9 @@ class Componente extends CI_Controller {
 	//Carga vista agregar relacion comp/equipo
 	public function cargarcomp($permission)
 	{ 
-        $data['permission'] = $permission;          
-        $this->load->view('componente/view_', $data);
-    }
+		$data['permission'] = $permission;          
+		$this->load->view('componente/view_', $data);
+	}
 
 	// Trae equipos segun empresa logueada - Listo
 	public function traerequipo()
@@ -47,7 +48,7 @@ class Componente extends CI_Controller {
 		else echo "nada";
 	}
 
-    // Elimina la Asociacion compon/equipo
+  // Elimina la Asociacion compon/equipo
 	public function baja_comp()
 	{    
 		$idequip = $_POST['idequipo'];
@@ -56,7 +57,7 @@ class Componente extends CI_Controller {
 		print_r($result);	
 	}
 
-    // Devuelve descripcion de equipo segun id - Listo
+  // Devuelve descripcion de equipo segun id - Listo
 	public function getequipo()
 	{	
 		$id     = $_POST['idequipo'];
