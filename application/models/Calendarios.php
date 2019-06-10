@@ -240,7 +240,7 @@ class Calendarios extends CI_Model {
 
 
 
-    // Preventivo por Id
+    // Devuelve info de Preventivo por Id para llenar en OT
     function getPrevPorIds($data)
     {
         $id = $data;
@@ -253,7 +253,8 @@ class Calendarios extends CI_Model {
         $this->db->from('preventivo');
         $this->db->join('tareas', 'tareas.id_tarea = preventivo.id_tarea');
         $this->db->where('preventivo.prevId', $id);
-        $query = $this->db->get();      
+        $query = $this->db->get();  
+       
         return $query->result_array();                
     }
 
@@ -725,15 +726,14 @@ class Calendarios extends CI_Model {
             $id = $data;
             
             $this->db->select('predictivo.tarea_descrip,
-                                                tareas.descripcion,
-                                                predictivo.predId,
-                                                predictivo.id_equipo,
-                                                predictivo.fecha');
+                              tareas.descripcion,
+                              predictivo.predId,
+                              predictivo.id_equipo,
+                              predictivo.fecha');
             $this->db->from('predictivo');
             $this->db->join('tareas', 'tareas.id_tarea = predictivo.tarea_descrip');
             $this->db->where('predictivo.predId', $id);
-            $query = $this->db->get();      
-            
+            $query = $this->db->get();
             return $query->result_array(); 
         }
         // Trae herramientas por id de predictivo para guardar en OT

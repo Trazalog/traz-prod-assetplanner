@@ -38,7 +38,7 @@
                       if (strpos($permission,'Add') !== false) {
                         echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar" data-toggle="modal" data-target="#modalaviso"></i>';
                         
-                        if ($a['estado'] != "OT") {
+                        if( ($a['estado'] == 'S') || ($a['estado'] == 'PL') ) {
                           echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar" ></i>';
                         }
                        

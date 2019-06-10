@@ -44,22 +44,20 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 																					<!-- botones Tomar y soltar tareas -->
 																					<?php
 																					echo '<div class="row">';
-																					echo '<div class="col-md-4">';
-																					echo "<button class='btn btn-block btn-success' id='btontomar' style='width: 100px; margin-top: 10px ;display: inline-block;' onclick='tomarTarea()'>Tomar tarea</button>";
-																					echo "&nbsp";
-																					echo "&nbsp";
-																					echo "&nbsp";
-																					echo "<button class='btn btn-block btn-danger grupNoasignado' id='btonsoltr' style='width: 100px; margin-top: 10px; display: inline-block;' onclick='soltarTarea()'>Soltar tarea</button>";
-																					echo '</div>';																					
-																				
-																					echo '<div class="col-md-4 col-md-offset-4 oculto" id="llave">';	
-																					// echo '<i class="text-light-blue fa fa-fw fa fa-toggle-on fa-2x" id="onSwitch" title="Iniciar Tarea" style="cursor: pointer; margin-left: 15px;"><span class="" style="margin-left: 15px; font-size: 15px">Tarea</span>
-																					// </i>';
-																					// echo '<i class="text-light-blue fa fa-fw fa fa-toggle-off fa-2x" id="offSwitch" title="Iniciar Tarea" style="cursor: pointer; margin-left: 15px;"><span class="" style="margin-left: 15px; font-size: 15px">Tarea</span>
-																					// </i>';
-																					echo '<i class="text-light-blue	fa fa-play fa-2x" id="fa-play" title="Iniciar Tarea" style="cursor: pointer; margin-left: 15px;"><span class="" style="margin-left: 15px; font-size: 15px">Iniciar Tarea</span> </i>';
-																				
-																					echo '</div>';
+																					
+																						echo '<div class="col-md-4">';
+																							echo "<button class='btn btn-block btn-success' id='btontomar' style='width: 100px; margin-top: 10px ;display: inline-block;' onclick='tomarTarea()'>Tomar tarea</button>";
+																							echo "&nbsp";
+																							echo "&nbsp";
+																							echo "&nbsp";
+																							echo "<button class='btn btn-block btn-danger grupNoasignado' id='btonsoltr' style='width: 100px; margin-top: 10px; display: inline-block;' onclick='soltarTarea()'>Soltar tarea</button>";
+																						echo '</div>';											
+
+																						echo '<div class="col-md-4 col-md-offset-4" id="llave">';	
+																							echo '<button type="button" class="btn btn-success" id="iniciarTarea"><i class="fa fa-play"> </i> Iniciar Tarea</button>';
+																							echo '<button type="button" class="btn btn-success disabled" id="tareaIniciada"><i class="fa fa-play"> </i> Tarea Iniciada</button>';
+																						echo '</div>';
+
 																					echo '</div>';		
 																					echo "</br>";	
 																					?>
@@ -212,7 +210,7 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 							</div>
 							<div class="modal-footer">
 									<button type="button" id="cerrar" class="btn btn-primary" onclick="cargarVista()">Cerrar</button>
-									<button type="button" class="btn btn-success" id="hecho" onclick="validarSubtareas()">Hecho</button>
+									<button type="button" class="btn btn-success" id="hecho" onclick="validarSubtareas()">Terminar Tarea</button>
 							</div> <!-- /.modal footer -->
 						</div>
 				</div>
@@ -229,10 +227,9 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 <script>
 		// valida el estado de la OT y muestra llave segun corressponda 
 		validaInicio();
-		function validaInicio() { 
-			// $("#onSwitch").hide();
-			// $("#offSwitch").hide();
-			$("#fa-play").hide(); 
+		function validaInicio() { 			
+			$("#iniciarTarea").hide(); 
+			$("#tareaIniciada").hide(); 
 			var id_OT = $('#id_OT').val();
 			$.ajax({
 						type: 'POST',
@@ -240,9 +237,9 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 						url: 'index.php/Tarea/confInicioTarea', 
 						success: function(data){                   
 											if (data) {												
-												$("#fa-play").hide();											
-											} else {
-												$("#fa-play").show();											
+												$("#tareaIniciada").show();											
+											} else {												
+												$("#iniciarTarea").show();											
 											}									
 										},            
 						error: function(data){
@@ -253,7 +250,7 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 		}		
 
 		// Cambia el estado de Orden servicio y de solicitud de servicio
-		$(".fa-play").click(function () {  
+		$("#iniciarTarea").click(function () {  
 			
 			WaitingOpen('Iniciando Tarea...');
 			var id_OT = $('#id_OT').val();
@@ -264,8 +261,8 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 						success: function(data){   
 										WaitingClose();                
 										if (data) {
-											$("#fa-play").hide();
-											//$("#fa-play").show();										
+											$("#iniciarTarea").hide();
+											$("#tareaIniciada").show();										
 										} else {
 											alert('Error al iniciar a Tarea...');
 										}									
@@ -303,11 +300,11 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
     /* verifica estado de subrtareas para cerrar OT */
     function validarSubtareas() {
 
-        if (validarFormularios() && validarEstSubTareas()) {
-            ejecutarOT();
-        } else {
-            alert("Por favor cierre las Tareas que faltan antes de Terminar");
-        }
+			if (validarFormularios() && validarEstSubTareas()) {
+					ejecutarOT();
+			} else {
+					alert("Por favor cierre las Tareas que faltan antes de Terminar");
+			}
     }
 
     /* camba el estado de las subtareas en BD (tblListareas) */

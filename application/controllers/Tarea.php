@@ -141,15 +141,12 @@ class Tarea extends CI_Controller {
 									case '2':
 										$tipo = 'correctivo';
 										break;
-
 									case '3':
 										$tipo = 'preventivo';
-										break;
-									
+										break;									
 									case '4':
 										$tipo = 'backlog';
-										break;
-								
+										break;								
 									default:
 										$tipo = 'predictivo';
 										break;
@@ -227,8 +224,7 @@ class Tarea extends CI_Controller {
 				$id_OT = $this->input->post('id_OT');
 				$id_SS = $this->input->post('id_SS');
 				$idTarBonita = $this->input->post('idTarBonita');
-				$opcion = $this->input->post('opcion');				
-				
+				$opcion = $this->input->post('opcion');	
 				// averigua origen de OT
 				$origen = $this->Tareas->getOrigenOt($id_OT);
 				$numtipo = 	$origen[0]['tipo'];
@@ -238,15 +234,12 @@ class Tarea extends CI_Controller {
 					case '2':
 						$tipo = 'correctivo';
 						break;
-
 					case '3':
 						$tipo = 'preventivo';
-						break;
-					
+						break;					
 					case '4':
 						$tipo = 'backlog';
-						break;
-				
+						break;				
 					default:
 						$tipo = 'predictivo';
 						break;
@@ -362,6 +355,7 @@ class Tarea extends CI_Controller {
 			public function ejecutarOT(){
 				
 				$idTarBonita = $this->input->post('idTarBonita');
+				$id_OT = $this->input->post('id_OT');	
 				// trae la cabecera
 				$parametros = $this->Bonitas->conexiones();
 				// Cambio el metodo de la cabecera a "PUT"
@@ -373,20 +367,27 @@ class Tarea extends CI_Controller {
 
 				if ( json_decode($response['code']) < 300) {
 					
-					$respuesta['status'] = true;
-					$respuesta['msj'] = 'OK';
-					$respuesta['code'] = 'Exito';
-					echo json_encode($respuesta);
+					$resp = $this->Tareas->finTareas($id_OT);
+
+					if ($resp) {
+							$respuesta['status'] = true;
+							$respuesta['msj'] = 'OK';
+							$respuesta['code'] = 'Exito';
+							echo json_encode($respuesta);
+					} else {
+							$respuesta['status'] = false;
+							$respuesta['msj'] = 'ERROR';
+							$respuesta['code'] = 'ASP_0200, Error ASP_0200: Comunicarse con el Proveedor de Servicio';
+							echo json_encode($respuesta);
+					}			
+					
 				}else{
 					$respuesta['status'] = false;
 					$respuesta['msj'] = 'ERROR';
 					$respuesta['code'] = 'ASP_0200, Error ASP_0200: Comunicarse con el Proveedor de Servicio';
 					echo json_encode($respuesta);
 				}	
-
-			}
-
-			
+			}			
 			// trae datos para llenar notificaion estandar y formulario asociado
 			public function detaTarea($permission,$idTarBonita){
 
@@ -510,7 +511,7 @@ class Tarea extends CI_Controller {
 							break;
 				}
 			}	
-
+			//
 			function getIdSolServPorIdCase($caseId){
 				// trae la cabecera
 				$parametros = $this->Bonitas->conexiones();

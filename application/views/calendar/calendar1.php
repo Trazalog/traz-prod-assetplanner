@@ -25,26 +25,27 @@
 
 <script>
 
-function getTablas(month_, year_) 
-{
-  var mes = parseInt(month_) + 1;
-  var year = parseInt(year_);
-  var permission = '<?php echo $permission ?>';
-  //var permission = $('#permission').val();
-  $.ajax({
-    url: 'index.php/Calendario/getTablas',
-    type: "POST",
-    data: {mes:mes, year:year, permission: permission},
-    success: function(data) {
-      $('#tablas').html(data); 
-    },
-    error:function(data) {
-      alert('Error. No se encontraron tablas');
-    }
-  });
-}
+  // Trae tablas con tareas al costado del Calendar
+  function getTablas(month_, year_) 
+  {
+    var mes = parseInt(month_) + 1;
+    var year = parseInt(year_);
+    var permission = '<?php echo $permission ?>';
+    //var permission = $('#permission').val();
+    $.ajax({
+      url: 'index.php/Calendario/getTablas',
+      type: "POST",
+      data: {mes:mes, year:year, permission: permission},
+      success: function(data) {
+        $('#tablas').html(data); 
+      },
+      error:function(data) {
+        alert('Error. No se encontraron tablas');
+      }
+    });
+  }
 
-var mes = "";
+  var mes = "";
 
 
   function ini_events(ele) {
@@ -262,8 +263,8 @@ var mes = "";
     $("#new-event").val("");
   }); 
   
-///////////////////////////////////////////////////////////////
 
+/* EJECUTAR TAREA EN BPM */
   // Muestra modal con detalle de orden y btn para ejecutar tarea
   function verDetalleOT(id_orden){ 
     WaitingOpen();
@@ -272,8 +273,8 @@ var mes = "";
     $("#modalInformeServicios").load("<?php echo base_url(); ?>index.php/Calendario/verEjecutarOT/"+id_orden+"/");
     WaitingClose();
   }
+/* ./ EJECUTAR TAREA EN BPM */
 
-///////////////////////////////////////////////////////////////
   $(".fa-print").click(function (e) {
     $("#calendar").printArea();
   });
@@ -722,6 +723,7 @@ $("#fecha_progr_prevent_horas").datepicker({
   var idp = "";   // id predictivo
   var ide = "";   // id equipo
   var fecha_inicio = "";
+  var descripTarea = "";
 
   function fill_Predictivo(dato){
     $.ajax({
@@ -729,12 +731,12 @@ $("#fecha_progr_prevent_horas").datepicker({
           data: {id:dato},
           url: 'index.php/Calendario/getPredictPorId',  
           success: function(data){
-          //alert('sucess');
-                   tarea_descrip = data[0]['tarea_descrip'];
+          
+                   tarea_descrip = data[0]['tarea_descrip']; // id de tarea
                    fecha_inicio = data[0]['fecha'];
                    idp = data[0]['predId'];
                    ide = data[0]['id_equipo'];
-                   tarea_descrip = data[0]['descripcion'];
+                   descripTarea = data[0]['descripcion'];
                 },
           error: function(data){
 
@@ -769,7 +771,7 @@ $("#fecha_progr_prevent_horas").datepicker({
                   fecha_progr : progr_pred,
                   hora_progr : hora_pred,
                   fecha_inicio : fecha_inicio,
-                  descripcion : 'Predictivo',                  
+                  descripcion : descripTarea,                  
                   tipo : 5, //predictivo
                   ide : ide,
                   event_tipo: event_Predic,

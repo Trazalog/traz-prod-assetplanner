@@ -516,9 +516,14 @@ class  Equipo extends CI_Controller {
 			$ultimoId = $this->db->insert_id(); 
 			$nomcodif = $this->codifNombre($ultimoId, $id_empresa); // codificacion de nombre
 			$nomcodif = 'equipo'.$nomcodif;
+			// $config = [
+			// 	"upload_path"   => "./assets/filesequipos",
+			// 	'allowed_types' => "png|jpg|pdf|xlsx",
+			// 	'file_name'     => $nomcodif
+			// ];
 			$config = [
 				"upload_path"   => "./assets/filesequipos",
-				'allowed_types' => "png|jpg|pdf|xlsx",
+				'allowed_types' => "*",
 				'file_name'     => $nomcodif
 			];
 

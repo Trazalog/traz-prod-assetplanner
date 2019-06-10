@@ -67,30 +67,28 @@
                         echo '<td>'.$a['id_solicitud'].'</td>';
                         echo '<td>'.$a['nombre'].'</td>';                        
                       
-                      echo '<td>';           
-                            
-                      if($a['estado'] == 'PL'){
-                      echo '<small class="label pull-left bg-yellow">Planificada</small>';
-                      }
-                      if($a['estado'] == 'AS'){
-                      echo '<small class="label pull-left bg-purple">Asignada</small>';
-                      }
-                      if ($a['estado'] == 'C') {
-                        echo '<small class="label pull-left bg-green">Curso</small>' ;
-                      }
-                      if ($a['estado'] == 'T') {
-                      echo  '<small class="label pull-left bg-blue">Terminada</small>';
-                      }
-                      if ($a['estado'] == 'CE') {
-                        echo  '<small class="label pull-left bg-primary">Cerrada</small>';
-                      }
-                      if ($a['estado'] == 'S') {
-                        echo  '<small class="label pull-left bg-red">Solicitada</small>';
-                      }
+                        echo '<td>';  
+                        
+                          if ($a['estado'] == 'S') {
+                            echo  '<small class="label pull-left bg-red">Solicitada</small>';
+                          }
+                          if($a['estado'] == 'PL'){                           
+                            echo '<small class="label pull-left bg-orange">Planificada</small>';
+                          }
+                          if($a['estado'] == 'AS'){
+                            echo '<small class="label pull-left bg-yellow">Asignada</small>';
+                          }
+                          if ($a['estado'] == 'C') {
+                            echo '<small class="label pull-left  bg-blue">Curso</small>' ;
+                          }
+                          if ($a['estado'] == 'T') {
+                            echo  '<small class="label pull-left bg-navy">Terminada</small>';
+                          }
+                          if ($a['estado'] == 'CE') {
+                            echo  '<small class="label pull-left bg-green">Cerrada</small>';
+                          }      
 
-                      echo '</td>';
-
-
+                        echo '</td>';
                     }
                   }
                 }
@@ -225,24 +223,24 @@ $("#btn_cancGuardado").click(function (e) {
 
 
 // Elimina OT (estado = AN) - Ok
-function eliminarpred(){
-  var idpre = $(this).parent('td').parent('tr').attr('id');
-  console.log("Estoy por la opcion SI a eliminar")
-  console.log(gloid);
-          
-  $.ajax({
-    type: 'POST',
-    data: { gloid: gloid},
-    url: 'index.php/Otrabajo/baja_predictivo',
-    success: function(data){
-      regresa1();
-    },
-    error: function(result){
-      console.error("Error al eliminar OT. Ver console.table");
-      console.table(result);
-    }
-  });
-}
+  function eliminarpred(){
+    var idpre = $(this).parent('td').parent('tr').attr('id');
+    console.log("Estoy por la opcion SI a eliminar")
+    console.log(gloid);
+            
+    $.ajax({
+      type: 'POST',
+      data: { gloid: gloid},
+      url: 'index.php/Otrabajo/baja_predictivo',
+      success: function(data){
+        regresa1();
+      },
+      error: function(result){
+        console.error("Error al eliminar OT. Ver console.table");
+        console.table(result);
+      }
+    });
+  }
 
 
 ///// EDICION DE ORDEN DE TRABAJO  

@@ -21,8 +21,7 @@
             ?>
           </div><!-- /.box-header -->
           
-          <div class="box-body">
-            
+          <div class="box-body">            
               
               <div class="panel panel-default">
                 <div class="panel-heading">
@@ -234,6 +233,14 @@
 </section>
 
 <script> 
+// impide que se vya la pantalla al apretar enter
+$(document).ready(function() {
+    $("#formPredictivo input").keypress(function(e) {
+        if (e.which == 13) {
+            return false;
+        }
+    });
+});
 
 
 $("#formPredictivo").submit(function (event){   
@@ -814,3 +821,28 @@ $("#fecha").datepicker({
 }).datepicker("setDate", new Date());
 
 </script>
+
+<!-- Modal aviso eliminar -->
+<div class="modal fade" id="modalaviso">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" ><span class="fa fa-fw fa-times-circle" style="color:#A4A4A4"></span>  Eliminar</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" >&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <center>
+        <h4><p id="mensaje">¿ DESEA ELIMINAR ASOCIACIÓN ?</p></h4>
+        </center>
+      </div>
+      <div class="modal-footer">
+        <center>
+        <!-- <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminar()">SI</button> -->
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
+        </center>
+      </div>
+    </div>
+  </div>
+</div>

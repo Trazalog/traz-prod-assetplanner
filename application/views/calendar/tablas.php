@@ -46,16 +46,13 @@
                 echo '<tr id="'.$id_sol.'" data-idequipo="'.$id_eq.'" >';
                       //echo "<tr >";
                 echo "<td>";
-                      //  if (strpos($permission,'Del') !== false) {
-                            //alternativa a orden hecha fa fa-stop-circle-o
-               //dump($c, 'backlog:');
+                      
                 if ($c['estado'] != 'OT') {
                   echo '<i class="fa fa-stop-circle" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-correctivo" onclick="fill_Correc('.$c['id_solicitud'].')"></i>';
                 } else {
                   echo '<i class="fa fa-stop-circle-o" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden Generada"></i>';
                 }                          
                             
-                      //  }
                 echo "</td>";
                       // 1 // id equipo
                 echo "<td style='text-align: center' class='hidden'>".$c['id_equipo']."</td>";
@@ -118,7 +115,6 @@
             <?php
             if($list3!=false && count($list3) > 0) 
             {
-              //dump_exit($list3);
               foreach( $list3 as $p ) 
               {
                 //echo "<tr>";

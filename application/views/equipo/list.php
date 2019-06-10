@@ -75,8 +75,9 @@
                   echo '<td>'.$a['decri'].'</td>';
                   echo '<td>';
                     if($a['estado'] == 'AC' ) echo '<small class="label pull-left bg-green">Activo</small>' ;
-                    if($a['estado'] == 'IN' ) echo '<small class="label pull-left bg-blue">Inhabilitado</small>';
-                    if($a['estado'] == 'RE' ) echo '<small class="label pull-left bg-yellow">Reparación</small>' ;
+                    if($a['estado'] == 'IN' ) echo '<small class="label pull-left bg-yellow">Inhabilitado</small>';
+                    if($a['estado'] == 'RE' ) echo '<small class="label pull-left bg-orange">Reparación</small>' ;
+                    if($a['estado'] == 'AL' ) echo '<small class="label pull-left bg-blue">Alta</small>' ;
                     //: '<small class="label pull-left bg-teal">Alta</small>'))).'</td>';
                   echo '</tr>';
                 }

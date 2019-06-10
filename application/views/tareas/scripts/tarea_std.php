@@ -219,10 +219,12 @@
 		function ejecutarOT(){
 		
 			WaitingOpen('Cerrando Tarea');
-			var idTarBonita = $('#idTarBonita').val();		
+			var idTarBonita = $('#idTarBonita').val();
+			var id_OT = $('#id_OT').val();		
 			$.ajax({
 				type: 'POST',
-				data: {idTarBonita:idTarBonita},
+				data: {idTarBonita:idTarBonita,
+								id_OT: id_OT},
 				url: 'index.php/Tarea/ejecutarOT',
 				success: function(data) {
 								console.table(data);

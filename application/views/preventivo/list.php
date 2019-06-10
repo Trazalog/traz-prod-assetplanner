@@ -28,7 +28,7 @@
                 <th>Frecuencia</th>
                 <th>Fecha Base</th>
                 <th>Horas Hombre</th>
-                <th>Adjunto</th>
+                <!-- <th>Adjunto</th> -->
                 <th>Estado</th>
               </tr>
             </thead>
@@ -46,9 +46,16 @@
                   if (strpos($permission,'Add') !== false) {
                     echo '<i class="fa fa-fw fa-times-circle eliminarPreventivo text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar"></i>';
                     
-                    if ($a['estado'] != 'OT') {
+                    if( ($a['estado'] == 'S') || ($a['estado'] == 'PL') ) {
                       echo '<i class="fa fa-fw fa-pencil editarPreventivo text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar"></i>';
-                    }                   
+                    }   
+                    
+                    if ($a['prev_adjunto']) {
+                      echo '<a href="./assets/filespreventivos/'.$a['prev_adjunto'].'" target="_blank"><i class="fa fa-file-pdf-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Ver Pdf"></i></a>';
+                    }else {
+                      echo '<td></td>';
+                    } 
+
                   }
                   echo '</td>';
                   echo '<td>'.$a['prevId'].'</td>';
@@ -60,39 +67,36 @@
                   echo '<td>'.$a['cantidad'].'</td>';
                   echo '<td>'.date_format(date_create($a['ultimo']), 'd-m-Y').'</td>';
                   echo '<td>'.$a['horash'].' h.h</td>';
-                  if( $a['prev_adjunto'] != "")
-                  {
-                    echo '<td><a href="./assets/filespreventivos/'.$a['prev_adjunto'].'" alt="adjunto" target="_blank">'.$a['prev_adjunto'].'</a></td>';
-                  }
-                  else {
-                    echo '<td></td>';
-                  }
+                  // if( $a['prev_adjunto'] != "")
+                  // {
+                  //   //echo '<td><a href="./assets/filespreventivos/'.$a['prev_adjunto'].'" alt="adjunto" target="_blank">'.$a['prev_adjunto'].'</a></td>';
+                  // }
+                  // else {
+                  //   echo '<td></td>';
+                  // }
 
-                  echo '<td>';     
-                      if($a['estado'] == 'PL'){
-                      echo '<small class="label pull-left bg-yellow">Planificada</small>';
-                      }
-                      if($a['estado'] == 'AS'){
-                      echo '<small class="label pull-left bg-purple">Asignada</small>';
-                      }
-                      if ($a['estado'] == 'C') {
-                        echo '<small class="label pull-left bg-green">Curso</small>' ;
-                      }
-                      if ($a['estado'] == 'T') {
-                      echo  '<small class="label pull-left bg-blue">Terminada</small>';
-                      }
-                      if ($a['estado'] == 'CE') {
-                        echo  '<small class="label pull-left bg-primary">Cerrada</small>';
-                      }
+                  echo '<td>';
                       if ($a['estado'] == 'S') {
                         echo  '<small class="label pull-left bg-red">Solicitada</small>';
                       }
+                      if($a['estado'] == 'PL'){                           
+                        echo '<small class="label pull-left bg-orange">Planificada</small>';
+                      }
+                      if($a['estado'] == 'AS'){
+                        echo '<small class="label pull-left bg-yellow">Asignada</small>';
+                      }
+                      if ($a['estado'] == 'C') {
+                        echo '<small class="label pull-left  bg-blue">Curso</small>' ;
+                      }
+                      if ($a['estado'] == 'T') {
+                        echo  '<small class="label pull-left bg-navy">Terminada</small>';
+                      }
+                      if ($a['estado'] == 'CE') {
+                        echo  '<small class="label pull-left bg-green">Cerrada</small>';
+                      }      
                   echo '</td>'; 
-
-
-
-                  echo '</tr>';
-                    //}
+                  
+                  echo '</tr>';                    
                 }
               }
               ?>

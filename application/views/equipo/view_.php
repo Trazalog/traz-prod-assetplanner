@@ -173,8 +173,6 @@ $('#listado').click( function(){
   WaitingClose();
 });
 
-
-
 // Trae area y llena el select
 traer_area();
 function traer_area(){
@@ -348,8 +346,6 @@ function traer_marca(){
     },
   });
 }  
-
-
 
 // Agrega las areas nuevas
 function guardararea(){ 
@@ -626,8 +622,6 @@ function guardarmarca(){
     alert("Por favor complete la descripcion de Marca, es un campo obligatorio");
   }
 }
-
-
 
 // Guarda equipo/sector nuevo - Chequeado
 $("#formAgregarEquipo").submit( function (event){   
@@ -960,8 +954,7 @@ function regresa(){
     </div> <!-- /.modal-content -->
   </div>  <!-- /.modal-dialog -->
 </div>  <!-- /.modal fade -->
-<!-- / Modal -->
-    
+<!-- / Modal -->    
 
 <!-- Modal empresa -->
 <div class="modal fade" id="modalOrder" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

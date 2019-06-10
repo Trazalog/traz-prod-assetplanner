@@ -269,6 +269,15 @@ class Tareas extends CI_Model {
 		$result = $this->db->update('orden_trabajo',array('fecha_inicio'=>$fechaInicio));
 		return $result;
 	}
+	
+	// marca fin de Tarea en OT
+	function finTareas($id_OT){
+		$fechaFin = date("Y-m-d H:i:s");
+		$estado = 'T';
+		$this->db->where('id_orden', $id_OT);
+		$result = $this->db->update( 'orden_trabajo', array('fecha_terminada'=>$fechaFin, 'estado'=>$estado) );
+		return $result;
+	}
 
 	// cambbia de estado la Tareas(SServ, Prevent, Predic, Back y OT)
 	function cambiarEstado($id_solicitud, $estado, $tipo){						

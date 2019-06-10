@@ -74,24 +74,24 @@
 
                             echo '<td>';           
                             
-                            if($f['estado'] == 'PL'){
-                            echo '<small class="label pull-left bg-yellow">Planificada</small>';
-                            }
-                            if($f['estado'] == 'AS'){
-                            echo '<small class="label pull-left bg-purple">Asignada</small>';
-                            }
-                            if ($f['estado'] == 'C') {
-                              echo '<small class="label pull-left bg-green">Curso</small>' ;
-                            }
-                            if ($f['estado'] == 'T') {
-                            echo  '<small class="label pull-left bg-blue">Terminada</small>';
-                            }
-                            if ($f['estado'] == 'CE') {
-                              echo  '<small class="label pull-left bg-primary">Cerrada</small>';
-                            }
                             if ($f['estado'] == 'S') {
                               echo  '<small class="label pull-left bg-red">Solicitada</small>';
                             }
+                            if($f['estado'] == 'PL'){                           
+                              echo '<small class="label pull-left bg-orange">Planificada</small>';
+                            }
+                            if($f['estado'] == 'AS'){
+                              echo '<small class="label pull-left bg-yellow">Asignada</small>';
+                            }
+                            if ($f['estado'] == 'C') {
+                              echo '<small class="label pull-left  bg-blue">Curso</small>' ;
+                            }
+                            if ($f['estado'] == 'T') {
+                              echo  '<small class="label pull-left bg-navy">Terminada</small>';
+                            }
+                            if ($f['estado'] == 'CE') {
+                              echo  '<small class="label pull-left bg-green">Cerrada</small>';
+                            }                            
 
                             echo '</td>';            
                           

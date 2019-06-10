@@ -89,7 +89,7 @@ class Calendario extends CI_Controller {
 	}
 
 
-	//
+	// Devuelve info de Preventivo por Id para llenar en OT
 	public function getPrevPorId() //
 	{
 		$id   = $this->input->post('id');
@@ -163,7 +163,8 @@ class Calendario extends CI_Controller {
 						'id_empresa'    => $empId,
 						'lectura_programada' => $lectura_programada,
 						'lectura_ejecutada'  => $lectura_ejecutada,
-					);			
+					);
+					
 				// si el evento es unico lo guarda
 				if ($event_tipo == '1'){					
 					

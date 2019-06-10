@@ -174,19 +174,11 @@
 		var id_solicitud = $("#id_SS").val();
 		var idTarBonita = $("#idTarBonita").val();
 
-    // var id_sol = <?php //echo $id_OT ?> ;
-		// var id_eq  = <?php //echo $id_EQ ?> ;
-    // var id_solicitud = <?php //echo $id_SS ?> ; 
-    // var idTarBonita = <?php //echo $idTarBonita ?> ;    
     WaitingOpen();
     $('#modalInforme').modal('show');
-    $('#modalInformeServicios').empty();
-    // $("#modalInformeServicios").load("<?php //echo base_url(); ?>index.php/Ordenservicio/cargarOrden/"+id_sol+"/"+id_eq+"/"+id_solicitud+"/"+idTarBonita+"/");
-   
+    $('#modalInformeServicios').empty();   
 		$("#modalInformeServicios").load("<?php echo base_url(); ?>index.php/Ordenservicio/cargarOrden/"+id_sol+"/"+id_eq+"/"+id_solicitud+"/"+idTarBonita+"/");
-	 
-		
-	 
+	 	 
 	  WaitingClose();
   }
 

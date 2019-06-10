@@ -86,6 +86,16 @@
         <div class="panel-heading"><span class="fa fa-file-text-o icotitulo" aria-hidden="true"></span> Lecturas Realizadas
         </div>
         <div class="panel-body">
+
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="alert alert-danger alert-dismissable" id="errorLecturas" style="display: none">
+                <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                Por favor complete los campos obligatorios.
+              </div>
+            </div>
+          </div>
+
           
           <input type="hidden" name="id-comp" class="id-comp" id="id-comp" value="" disabled>
           <div class="row">
@@ -123,7 +133,7 @@
             <div class="col-xs-12">
               <div class="alert alert-danger alert-dismissable" id="errorTareas" style="display: none">
                 <h4><i class="icon fa fa-ban"></i> Error!</h4>
-                Revise que todos los campos obligatorios de las tareas realizadas estén seleccionados.
+               Al menos una tarea debe ser cargada en la tabla.
               </div>
             </div>
           </div>
@@ -650,132 +660,139 @@
       
   // Guarda orden de servicio
     function enviarOrden() {
+      
+      $('#error3').fadeOut('slow');
+      $('#error2').fadeOut('slow');          
+      
       var hayError = false;
       var hayError2 = false;
       var hayError3 = false;
-      if ($('#lectura_inicio').val() == '') {// nro de OT
-        hayError3 = true;
+
+      // validacion Lecturas Realizadas
+      if ($('#lectura_inicio').val() == '') {
+        hayError3 = true;       
       }
-      if ($('#lectura_fin').val() == '') {// nro de OT
-        hayError3 = true;
+      if ($('#lectura_fin').val() == '') {
+        hayError3 = true;        
       }
-      if ($('#fecha_inicio').val() == '') {// nro de OT
-        hayError3 = true;
+      if ($('#fecha_inicio').val() == '') {
+        hayError3 = true;      
       }
-      if ($('#fecha_fin').val() == '') {// nro de OT
-        hayError3 = true;
-      }        
+      if ($('#fecha_fin').val() == '') {
+        hayError3 = true;       
+      }  
+      // vallidacion tareas
       if( ! $('#tablalistareas').DataTable().data().any() ) {
-          console.info("tabla tarea vacia");
-          hayError2 = true;
+        console.info("tabla tarea vacia");
+        hayError2 = true;
       }
+
+      // Error Lecturas Realizadas
       if(hayError3 == true){
-        $('#error3').fadeIn('slow');
+        $('#errorLecturas').fadeIn('slow');
         activaTab('lecturaTab');
         return;
       }
+      // Error Lecturas Realizadas
       if(hayError2 == true) {
-        $('#errorTable').fadeIn('slow');
+        $('#errorTareas').fadeIn('slow');
         activaTab('tar');
         return;
       }
-      else {
-        $('#error').fadeOut('slow');
-        $('#error2').fadeOut('slow');
-        $('#errorTable').fadeOut('slow');      
-        // tarea 
-        var tarea = new Array(); 
-        var j = 0;
-        $("#tablalistareas tbody tr").each(function (index) {
-            var act = new Array();              
-            var i = 0;
-            $(this).children("td").each(function (index2) {
-              if (index2) {
-                act[i] = $(this).text();
-                i++;
-              }
-            });             
-            tarea[j] = act;
-            j++;
-        });        
-        // herramienta 
-        var herramienta = new Array(); 
-        var j = 0;
-        $("#tablalistherram tbody tr").each(function (index) {
-            var act = new Array();
-            var id_herramienta = $(this).attr('id');
-            var i = 0;
-            $(this).children("td").each(function (index2) {
-              if (index2) {
-                act[i] = $(this).text();
-                i++;
-              }
-            });
-            act[i]=id_herramienta;
-            herramienta[j] = act;
-            j++;
-        });
-        console.table(herramienta);      
-        // operario 
-        var operario = new Array(); 
-        var j = 0;
-        $("#tabModRecursos tbody tr").each(function (index) {
-            var act = new Array();
-            var id_operario = $(this).attr('id');
-            var i = 0;
-            $(this).children("td").each(function (index2) {
-              if (index2) {
-                act[i] = $(this).text();
-                i++;
-              }
-            });
-            act[i]=id_operario;
-            operario[j] = act;
-            j++;
-        });         
-        //datosInfoServicio
-        var datosInfoServicio = {
-          'id_equipo'              : $("#id_equipoSolic").val(),
-          'fecha'                  : $("#fechaOrden").val(),           
-          'id_solicitudreparacion' : $("#id_ordenservicio").val(),           
-          'id_ot'                  : $("#id_ot").val(),
-          'horometro_inicio'       : $("#lectura_inicio").val(),
-          'horometro_fin'          : $("#lectura_fin").val(),
-          'fecha_inicio'           : $("#fecha_inicio").val(),
-          'fecha_fin'              : $("#fecha_fin").val(),
-          'idTarBonita'            : $("#idTarBonita").val() 
-        };          
-        WaitingOpen('Guardando cambios');          
-        $.ajax({
-          data: {datosInfoServicio:datosInfoServicio, 
-                  tarea:tarea,  
-                  operario:operario,
-                  herramienta:herramienta, 
-                  func:'guardar'},
-          type: 'POST',
-          dataType: 'json',
-          url: 'index.php/Ordenservicio/setOrdenServ',
-          success: function(result){
-            WaitingClose();
-            if(result['status']){
-              $('#modalInforme').modal('hide');
-              $("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
-            }else{
-              WaitingClose();
-              $('#modalInforme').modal('hide');
-              alert(result['status']+ 'resultado cierre tarea: ');   
-            }            
-          },
-          error: function(result){
-            console.error("Error en guardado...");
-            console.table(result);
+            
+      var tarea = new Array(); 
+      var j = 0;
+      $("#tablalistareas tbody tr").each(function (index) {
+          var act = new Array();              
+          var i = 0;
+          $(this).children("td").each(function (index2) {
+            if (index2) {
+              act[i] = $(this).text();
+              i++;
+            }
+          });             
+          tarea[j] = act;
+          j++;
+      });        
+      // herramienta 
+      var herramienta = new Array(); 
+      var j = 0;
+      $("#tablalistherram tbody tr").each(function (index) {
+          var act = new Array();
+          var id_herramienta = $(this).attr('id');
+          var i = 0;
+          $(this).children("td").each(function (index2) {
+            if (index2) {
+              act[i] = $(this).text();
+              i++;
+            }
+          });
+          act[i]=id_herramienta;
+          herramienta[j] = act;
+          j++;
+      });
+      console.table(herramienta);      
+      // operario 
+      var operario = new Array(); 
+      var j = 0;
+      $("#tabModRecursos tbody tr").each(function (index) {
+          var act = new Array();
+          var id_operario = $(this).attr('id');
+          var i = 0;
+          $(this).children("td").each(function (index2) {
+            if (index2) {
+              act[i] = $(this).text();
+              i++;
+            }
+          });
+          act[i]=id_operario;
+          operario[j] = act;
+          j++;
+      });         
+      //datosInfoServicio
+      var datosInfoServicio = {
+        'id_equipo'              : $("#id_equipoSolic").val(),
+        'fecha'                  : $("#fechaOrden").val(),           
+        'id_solicitudreparacion' : $("#id_ordenservicio").val(),           
+        'id_ot'                  : $("#id_ot").val(),
+        'horometro_inicio'       : $("#lectura_inicio").val(),
+        'horometro_fin'          : $("#lectura_fin").val(),
+        'fecha_inicio'           : $("#fecha_inicio").val(),
+        'fecha_fin'              : $("#fecha_fin").val(),
+        'idTarBonita'            : $("#idTarBonita").val() 
+      };          
+      WaitingOpen('Guardando cambios');  
+      var func = 'guardar';        
+      $.ajax({
+        data: {datosInfoServicio:datosInfoServicio, 
+                tarea:tarea,  
+                operario:operario,
+                herramienta:herramienta, 
+                func:func},
+        type: 'POST',
+        dataType: 'json',
+        url: 'index.php/Ordenservicio/setOrdenServ',
+        success: function(result){
+          WaitingClose();
+          if(result['status']){
+            $('#modalInforme').modal('hide');
+            $("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+          }else{
             WaitingClose();
             $('#modalInforme').modal('hide');
-            alert(result['status']+ 'resultado cierre tarea: ');            
-          },
-        });
-      }
+            alert(result['status']+ 'resultado cierre tarea: ');   
+          }            
+        },
+        error: function(result){
+          console.error("Error en guardado...");
+          console.table(result);
+          WaitingClose();
+          $('#modalInforme').modal('hide');
+          alert(result['status']+ 'resultado cierre tarea: ');            
+        },
+      });
     }
+    
   
   //activa el tab= tab
     function activaTab(tab){
