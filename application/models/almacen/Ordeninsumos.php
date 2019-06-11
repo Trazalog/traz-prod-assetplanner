@@ -178,7 +178,7 @@ class Ordeninsumos extends CI_Model
         $this->db->select('ART.arti_id, ART.barcode, ART.descripcion, PEMA.cantidad as cant_pedida, sum(LOTE.cantidad) as cantidad_stock');
         $this->db->from('alm_deta_pedidos_materiales PEMA');
         $this->db->join('alm_articulos ART', 'ART.arti_id = PEMA.arti_id');
-        $this->db->join('alm_lotes LOTE','LOTE.arti_id = ART.arti_id');
+        $this->db->join('alm_lotes LOTE','LOTE.arti_id = ART.arti_id', 'left');
         $this->db->where('pema_id', $pema);
         $this->db->group_by('ART.arti_id');
         $A = '(' . $this->db->get_compiled_select() . ') A';
@@ -191,15 +191,8 @@ class Ordeninsumos extends CI_Model
         $this->db->group_by('B.arti_id');
         $B = '(' . $this->db->get_compiled_select() . ') B';
 
-        // OBTENER CANTIDADES RESERVADAS
-        $this->db->select('arti_id, sum(resto) as cant_reservada');
-        $this->db->from('alm_deta_pedidos_materiales');
-        $this->db->where('pema_id != ', $pema);
-        $this->db->group_by('arti_id');
-        $C = '(' . $this->db->get_compiled_select() . ') C';
-
         // OBTENER EXISTENCIAS
-        $this->db->select('A.barcode, A.descripcion, A.arti_id, A.cant_pedida, cantidad_stock as cant_disponible, IFNULL(B.cant_entregada,0) as cant_entregada');
+        $this->db->select('A.barcode, A.descripcion, A.arti_id, A.cant_pedida, IFNULL(cantidad_stock,0) as cant_disponible, IFNULL(B.cant_entregada,0) as cant_entregada');
         $this->db->from($A);
         $this->db->join($B, 'B.arti_id = A.arti_id', 'left');
        // $this->db->join($C, 'C.arti_id = A.arti_id ', 'left');

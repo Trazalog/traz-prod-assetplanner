@@ -25,17 +25,17 @@
               if($list) {
               foreach($list as $u)
               {
-                $idUnidadMedida = $u['id_unidadmedida'];
+                $idUnidadMedida = $u['tabl_id'];
                 echo '<tr data-idunidadmedida="'.$idUnidadMedida.'">';
                 echo '<td>';
-                if (strpos($permission,'Del') !== false) {
-                  echo '<a href="#" class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar componente" data-toggle="modal" data-target="#modaleliminar"></a>';
-                }
                 if (strpos($permission,'Edit') !== false) {
                   echo '<a href="#" class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar componente" data-toggle="modal" data-target="#modaleditar"></a>';
                 }
+                if (strpos($permission,'Del') !== false) {
+                  echo '<a href="#" class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar componente" data-toggle="modal" data-target="#modaleliminar"></a>';
+                }
                 echo '</td>';
-                echo '<td style="text-align: left">'.$u['id_unidadmedida'].'</td>';
+                echo '<td style="text-align: left">'.$u['tabl_id'].'</td>';
                 echo '</td>';
                 echo '<td style="text-align: left">'.$u['descripcion'].'</td>';
                 echo '</tr>';
