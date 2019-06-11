@@ -37,3 +37,13 @@ textarea.form-control {
 .ui-autocomplete a {
     display: block;
 }
+
+
+/* clase auxiliar para lo que no queremos imprimir */
+@media print
+{    
+    .no-imprimir, .no-imprimir *
+    {
+        display: none !important;
+    }
+}

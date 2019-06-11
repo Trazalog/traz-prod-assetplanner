@@ -129,6 +129,7 @@ class Ordeninsumo extends CI_Controller {
 		return $result;
 	}
 
+
 	public function alerta()
 	{
 		$deposito = $_POST['id_deposito'];

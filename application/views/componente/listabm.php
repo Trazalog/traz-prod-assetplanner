@@ -4,7 +4,7 @@
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">Componentes en abm</h3>
+          <h3 class="box-title">Componentes</h3>
           <?php
           if (strpos($permission,'Add') !== false) {
             echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" data-toggle="modal" data-target="#modalAddComp">Agregar</button>';
@@ -42,8 +42,9 @@
                 echo '<td>'.$a['marcadescrip'].'</td>';
                 echo '<td>'.$a['descripcion'].'</td>';
                 echo '<td>'.$a['informacion'].'</td>';
-                $url = base_url().'assets/files/equipos/'.$a['pdf'];
-                echo '<td><a href="'.$url.'" target="_blank">'.basename($a['pdf']).'</td>';
+                $url = base_url().'assets/files/equipos/'.$a['pdf']; 
+                echo '<td><a href="'.$url.'" target="_blank">Adjunto</td>';
+                //echo '<td><a href="'.$url.'" target="_blank">'.basename($a['pdf']).'</td>';
                 $idc++;
               }
               ?>

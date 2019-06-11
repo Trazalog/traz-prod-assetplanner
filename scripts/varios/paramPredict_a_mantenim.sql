@@ -1,0 +1,1 @@
+UPDATE `planner_assetcloudtest`.`sismenu` SET `parent`='7' WHERE `id`='33';

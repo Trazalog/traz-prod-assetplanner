@@ -33,7 +33,7 @@ class Predictivos extends CI_Model
     	$this->db->join('equipos','equipos.id_equipo = predictivo.id_equipo');
 			$this->db->join('tareas', 'tareas.id_tarea = predictivo.tarea_descrip');
 			$this->db->join('periodo', 'periodo.idperiodo = predictivo.periodo');    	
-    	$this->db->where('predictivo.estado', 'C');
+    	$this->db->where('predictivo.estado !=', 'AN');
     	$this->db->where('predictivo.id_empresa', $empId);    	    	
     	$query= $this->db->get(); 		
 	    
@@ -55,7 +55,7 @@ class Predictivos extends CI_Model
         
     	$this->db->select('equipos.id_equipo,equipos.codigo');
     	$this->db->from('equipos');
-    	$this->db->where('equipos.estado', 'AC');
+    	$this->db->where('equipos.estado!=', 'AN');
     	$this->db->where('equipos.id_empresa', $empId);    	
     	$query= $this->db->get();		
 		
@@ -75,9 +75,11 @@ class Predictivos extends CI_Model
 		$userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa']; 
         
-    	$this->db->select('equipos.*');
-    	$this->db->from('equipos');
-    	$this->db->where('equipos.estado', 'AC');
+    	$this->db->select('equipos.*,marcasequipos.marcadescrip,
+												marcasequipos.marcaid');
+			$this->db->from('equipos');
+			$this->db->join('marcasequipos', 'equipos.marca = marcasequipos.marcaid');
+    //	$this->db->where('equipos.estado', 'AC');
     	$this->db->where('equipos.id_empresa', $empId);
     	$this->db->where('equipos.id_equipo', $id);      	
     	$query= $this->db->get();   

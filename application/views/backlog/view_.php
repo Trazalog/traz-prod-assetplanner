@@ -86,6 +86,7 @@
                       <input type="text" id="tarea" name="tarea" class="form-control">
                       <input type="hidden" id="id_tarea" name="id_tarea">
                     </div>
+
                     <div class="col-xs-12 col-md-4">
                       <label for="vfecha">Fecha:</label>
                       <input type="text" class="datepicker form-control fecha" id="fecha" name="vfecha" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>                         
@@ -427,50 +428,6 @@ function cargarVista(){
     WaitingClose();
 }
 
-// Guarda Backlog - Chequeado
-// function guardar(){     
-//   var idComponenteEquipo = $('#idcomponenteequipo').val();
-//   var equipo = $('#equipo').val();
-//   var tarea  = $('#tarea').val();       
-//   var fecha  = $('#fecha').val();
-//   var horas  = $('#back_duracion').val();  
-//   console.log("Estoy guardando");
-
-//   if(equipo > 0 && tarea !=='' && horas !=='' ){
-    
-//       $.ajax({
-//           type: 'POST',
-//           data: {
-//             idce:idComponenteEquipo,
-//             equipo:equipo, 
-//             tarea:tarea,  
-//             fecha:fecha, 
-//             horas:horas
-//           },
-//           url: 'index.php/Backlog/guardar_backlog', 
-//           success: function(data){
-                 
-//                   console.log("exito");   
-//                   cargarVista();               
-//                 },
-//           error: function(result){
-//                   console.log(result);              
-//                 },
-//           dataType: 'json'        
-//       });    
-//   }
-//   else{
-//         var hayError = true;
-//         $('#error').fadeIn('slow');
-//         return;
-//       }
-
-//   if(hayError == false){
-    
-//     $('#error').fadeOut('slow');
-//   }    
-// }
-
 /* nuevo */
 // Guarda Backlog nuevo
 $("#formBacklog").submit(function (event){   
@@ -484,7 +441,7 @@ $("#formBacklog").submit(function (event){
   var unidad   = $('#unidad').val();
   var oper     = $('#cantOper').val();
   
-  if ((equipo < 0)||(tarea < 0) || (compon == "") || (duracion == "")|| (unidad < 0)||(oper == "")) {
+  if ((equipo < 0)||(tarea < 0)|| (duracion == "")||(unidad < 0)||(oper == "")) {
       $('#error').fadeIn('slow');
   }
   else{

@@ -22,6 +22,7 @@ class login extends CI_Controller {
 	}
 
 	public function sessionStart_(){
+		
 		$data = $this->Users->sessionStart_($this->input->post());
 
 		if($data  == false)

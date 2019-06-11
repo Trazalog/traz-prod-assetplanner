@@ -95,7 +95,7 @@
                     <div class="row">
                       <div class="col-xs-12 col-md-6">
                         <br>
-                        <label for="codigo">Código <strong style="color: #dd4b39">*</strong> :</label>
+                        <label for="codigo">Código Trazable:</label>
                         <input type="text" name="codigo" id="codigo" class="form-control">
                       </div>
                       <div class="col-xs-12 col-md-6">
@@ -116,12 +116,13 @@
                           <thead>
                             <tr>
                               <th>Acciones</th>
+                              <th>ID</th>
                               <th>Equipo</th>
                               <th>Componente</th>
                               <th>Código</th>
                               <th>Sistema</th>
-                              <th class="hidden"></th>
-                              <th class="hidden"></th>
+                              <th class=""></th>
+                              <th class=""></th>
                             </tr>
                           </thead>
                           <tbody>
@@ -416,7 +417,7 @@ function autoCompletarComponentes(){
     var j  = 1;
     var f  = 1;
     $("#tablaequipos tbody tr").each(function (index){
-      var campo1, campo2, campo3, campo4, campo5, campo6;
+      var campo1, campo2, campo3, campo4, campo5, campo6,campo8;
       $(this).children("td").each(function (index2){
         switch (index2){
           case 0: 
@@ -430,19 +431,23 @@ function autoCompletarComponentes(){
             break;
           case 3: 
             campo4    = $(this).text();
-            codigo[j] = campo4; 
+            //codigo[j] = campo4; 
             break;
           case 4: 
             campo5  = $(this).text();
+            codigo[j] = campo5;
             //sistemaid[j] = campo5;
             break;
           case 5: 
             campo6  = $(this).text();
-            comp[j] = campo6;
             break;
           case 6: 
             campo7  = $(this).text();
-            sistemaid[j] = campo7;
+            comp[j] = campo7;
+            break;
+          case 7:
+            campo8  = $(this).text();
+            sistemaid[j] = campo8;
             j++;
             break;
         }
@@ -556,6 +561,7 @@ function autoCompletarComponentes(){
       var rowNode = table.row.add( [
         "<i class='fa fa-ban elirow text-light-blue' style='cursor: 'pointer'></i>",
         id_equipo,
+        $equipo,
         $componente,
         codigo,
         sistema,
@@ -564,8 +570,8 @@ function autoCompletarComponentes(){
       ] ).node();
       rowNode.id = id_equipo;
       table.draw();
-      $( rowNode ).find('td').eq(5).addClass('hidden');
-      $( rowNode ).find('td').eq(6).addClass('hidden');
+      $( rowNode ).find('td').eq(5).addClass('');
+      $( rowNode ).find('td').eq(6).addClass('');
 
       $('#error').fadeOut('slow');
       //$('#descrip').val('');

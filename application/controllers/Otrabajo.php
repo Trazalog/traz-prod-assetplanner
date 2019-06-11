@@ -3,29 +3,29 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Otrabajo extends CI_Controller {
 
-	function __construct()
-    {
+	function __construct(){
 		parent::__construct();
 		$this->load->model('Otrabajos');
+		$this->load->model('Equipos');
+		
 	}
 
 	/**
 	 * Muestra pantalla de listado de Ordenes de Trabajo.
 	 *
-	 * @param 	String 	$permission 	Permisos de ejecución.
+	 * @param 	String 	$permission 	Permisos de ejecuci�n.
 	 */
 	public function index($permission) // Ok
 	{
 		$data['list']       = $this->Otrabajos->otrabajos_List();
+		$data['kpi'] = $this->Equipos->informe_equipos();
 		$data['permission'] = $permission;
 		$this->load->view('otrabajos/dash', $data);
-	}
-
-
+	}  
 	/**
 	 * Muestra pantalla de Nueva Orden de Trabajo.
 	 *
-	 * @param 	String 	$permission 	Permisos de ejecución.
+	 * @param 	String 	$permission 	Permisos de ejecuci�n.
 	 */
 	public function nuevaOT($permission) // Ok
 	{
@@ -33,41 +33,40 @@ class Otrabajo extends CI_Controller {
 		$data['permission'] = $permission;
 		$this->load->view('otrabajos/view_agregarOT', $data);
 	}
-
-
-	/**
+  /**
 	 * Muestra pantalla de listado de Ordenes de Trabajo.
 	 *
-	 * @param 	String 	$permission 	Permisos de ejecución.
+	 * @param 	String 	$permission 	Permisos de ejecuci�n.
 	 */
-	public function listOrden($permission) // Ok
+	public function listOrden($permission,$ot=null) // Ok
 	{
-		$data['list']       = $this->Otrabajos->otrabajos_List();
+		$this->load->library('BPM',null);
+		$data['list']    = $this->Otrabajos->otrabajos_List($ot);
 		$data['permission'] = $permission;
+		$data['list_usuarios'] = $this->bpm->ObtenerUsuarios();					
+		$data['opciones'] = $this->load->view('otrabajos/tabla_opciones',['permission'=>$permission],true);
 		$this->load->view('otrabajos/list', $data);
-	}
-
-	/**
-	 * Traer proveedores de empresa con estado AC.
-	 *
-	 * @return 	String 	Arreglo con proveedores.
-	 */
-	public function getproveedor() // Ok
-	{	
-		$proveedores = $this->Otrabajos->getproveedor();
-		if($proveedores)
-		{	
-			$arre=array();
-					foreach ($proveedores as $row ) 
-					{   
-							$arre[] = $row;
-					}
-			echo json_encode($arre);
-		}
-			else echo "nada";
-	}
-
-	/**
+		
+  }  
+  /**
+   * Traer proveedores de empresa con estado AC.
+   *
+   */
+  public function getproveedor() // Ok
+  {	
+    $proveedores = $this->Otrabajos->getproveedor();
+    if($proveedores)
+    {	
+      $arre=array();
+          foreach ($proveedores as $row ) 
+          {   
+              $arre[] = $row;
+          }
+      echo json_encode($arre);
+    }
+    else echo "nada";
+  }  
+  /**
   	 * Traer Sucursales de empresa con estado AC.
   	 *
   	 * @return 	String 	Arreglo con sucursales.
@@ -86,7 +85,6 @@ class Otrabajo extends CI_Controller {
 		}
 		else echo "nada";
 	}
-
 	/**
   	 * Traer Equipos de empresa con estado AC.
   	 *
@@ -105,9 +103,10 @@ class Otrabajo extends CI_Controller {
 			echo json_encode($arre);
 		}
 		else echo "nada";
-	}
-
-	/**
+  }
+  
+  // TODO: EN ESTA FUNCION AGREGAR LA INICIALIZACION A bpm
+  /**
 	 * Agrega nueva OTs.
 	 *
 	 * @return
@@ -141,10 +140,11 @@ class Otrabajo extends CI_Controller {
 
     $datos2 = array(
 			'id_tarea'			=> $id_tar,
-			'fecha_inicio'  => $fecha_inicio,
+			'fecha_program' => $fecha_inicio,
+			//'fecha_inicio'  => $fecha_inicio,
 			'fecha_entrega' => $fecha_entrega,
 			'descripcion'   => $descripcion,
-			'estado'        => 'C',
+			'estado'        => 'PL',
 			'id_usuario'    => $usrId,
 			'id_usuario_a'  => 1,
 			'id_sucursal'   => $sucursal,
@@ -154,11 +154,20 @@ class Otrabajo extends CI_Controller {
 			'id_empresa'    => $empresaId
 		);
 
-		$result['respOT'] = $this->Otrabajos->guardar_agregar($datos2);	
+		// guarda OT y devuelve el id de insercion
+		$ultimoId = $this->Otrabajos->guardar_agregar($datos2);	
+		
+		$this->load->library('BPM');
+		$contract = array(
+				"idSolicitudServicio"	=> 0,		// 0 NULL  FALSE       // "" ''
+				"idOT"  => 	$ultimoId
+		);	
+		$result = $this->bpm->LanzarProceso($contract);						
+		// guarda case id generado el lanzar proceso				
+		$respcaseOT = $this->Otrabajos->setCaseidenOTNueva($result['case_id'], $ultimoId);
 
-		if($result['respOT']){
+		if($ultimoId){
 
-			$ultimoId = $this->db->insert_id(); 	
 			////////// para guardar herramientas                 
 				if ( !empty($data['id_her']) ){
 					//saco array con herramientas y el id de empresa
@@ -236,10 +245,9 @@ class Otrabajo extends CI_Controller {
 			echo json_encode($result);
 		}
 		
-	}
-	
+	}	
 	// Codifica nombre de imagen para no repetir en servidor
-	// formato "12_6_2018-05-21-15-26-24" idpreventivo_idempresa_fecha(año-mes-dia-hora-min-seg)
+	// formato "12_6_2018-05-21-15-26-24" idpreventivo_idempresa_fecha(a�o-mes-dia-hora-min-seg)
 	function codifNombre($ultimoId,$empId){
 
 		$guion = '_';
@@ -254,8 +262,8 @@ class Otrabajo extends CI_Controller {
 		$nomImagen = $ultimoId.$guion.$empId.$guion.$strigHora;
 		
 		return $nomImagen;
-	}
-
+  }
+  
   	/**
   	 * Trae datos para editar
   	 *
@@ -264,11 +272,12 @@ class Otrabajo extends CI_Controller {
 	{
 		$id = $this->input->post('idp');
 		$result = $this->Otrabajos->getpencil($id);		
-	
+		//dump($result, 'info de OT: ');
 		if($result){
 			$arre['datos'] = $result;
 			// trae herramientas 
 			$herramientas = $this->Otrabajos->getOTHerramientas($id);
+		//dump($herramientas, 'herrramientas');
 			if($herramientas){
 				$arre['herramientas']=$herramientas;
 			}
@@ -297,7 +306,6 @@ class Otrabajo extends CI_Controller {
 		}			
 		
 	}
-
 	// Agrega adjunto desde modal edicion
 	public function agregarAdjunto(){
 		$userdata     = $this->session->userdata('user_data');
@@ -337,15 +345,13 @@ class Otrabajo extends CI_Controller {
 
 		echo json_encode($result);
 	}
-
 	public function eliminarAdjunto(){
 		
 		$id = $this->input->post('id_adjunto');
 		$response = $this->Otrabajos->eliminarAdjunto($id);		
 		echo json_encode($response);
-	}
-
-	/**
+  }  
+  /**
   	 * Actualiza la OT.
   	 *
   	 */
@@ -355,8 +361,9 @@ class Otrabajo extends CI_Controller {
     $empId = $userdata[0]['id_empresa'];
 
 		$data     = $this->input->post();
-		dump($data, 'datos en controller: ');
+		// dump($data, 'datos en controller: ');
 		
+		// dump_exit($data);
 		$id = $this->input->post('idOT');	
 		$datos    = $this->input->post('parametros');
 		$result   = $this->Otrabajos->update_edita($id, $datos);
@@ -421,11 +428,10 @@ class Otrabajo extends CI_Controller {
 			}	
 		//print_r($result);
 	}
-
 	/**
 	 * Muestra la vista de Asignar Tarea
 	 *
-	 * @param 	String 	$permission 	Permisos de ejecución.
+	 * @param 	String 	$permission 	Permisos de ejecuci�n.
 	 * @param 	Int 	$idglob 		Id de orden de trabajo.
 	 */
 	public function cargartarea($permission, $idglob) // Ok
@@ -472,14 +478,37 @@ class Otrabajo extends CI_Controller {
 		}
 		else echo "nada";
 	}
+	// Trae equipos por empresa logueada - Listo
+	public function getEquiposNuevaOT(){
+		
+		$equipo = $this->Otrabajos->getEquiposNuevaOT();
+		if($equipo){	
+			$arre=array();
+	        foreach ($equipo as $row ) 
+	        {   
+	           $arre[]=$row;
+	        }
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}
+	// Trae info de equipos por ID y por empresa logueada - Listo
+	public function getInfoEquipoNuevaOT(){
+		$id = $this->input->post('id_equipo');
+		$equipo = $this->Otrabajos->getInfoEquiposNuevaOT($id);
 
+		if($equipo)
+		{	
+			$arre=array();
+					foreach ($equipo as $row ) 
+					{   
+						$arre[]=$row;
+					}
+			echo json_encode($arre);
+		}
+		else echo "nada";
+	}	
 	
-
-
-
-
-
-
 	/**
 	 *
 	 *
@@ -581,26 +610,46 @@ class Otrabajo extends CI_Controller {
 	      $agregar = $this->Otrabajos->agregar($_POST);
 	      echo ($agregar===true)?"bien":"mal";
 	    }
-  	}
-
+    }
+    
   	public function guardar(){	
-		
-		$id=$_POST['id_orden'];
-		$fee=$_POST['fecha_entrega'];
-		$us=$_POST['usuario'];
 
+		$case_id = $this->input->post('case_id');
+		$task_id = $this->input->post('task_id');
+		$user_id = $this->input->post('usuario');
+
+
+		//CERRAR TAREA EN BONITA  
+		$this->load->library('BPM',0);
+
+		//CERRAR TAREA BPM
+		$result = $this->bpm->CerrarTareaBPM($task_id);
+		if(!$result['status']) {echo $result['msj'];return;}
+
+		//OBTENER TASK_ID EJECTURAR OT
+		$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Ejecutar OT');
+		if($task_id == 0) {echo ASP_0100; return;}
+
+		//ASIGNO USUARIO A TAREA EJECTURA OT
+		$result = $this->bpm->setUsuario($task_id, $user_id);
+		if(!$result['status']) {echo $result['msj'];return;}
+		
+		//GUARDAR DATOS DE OT EN BD MYSQL	
+		$id = $_POST['id_orden'];
+		$fee = $_POST['fecha_entrega'];
+	
 		$uno=substr($fee, 0, 2); 
         $dos=substr($fee, 3, 2); 
         $tres=substr($fee, 6, 4); 
-        $resul = ($tres."/".$dos."/".$uno); 
+        $resul = ($tres."-".$dos."-".$uno); 
 		$datos = array(	'fecha_entrega'=>$resul,
 						'estado'=>'As',
-						'id_usuario_a'=>$us
+						'id_usuario_a'=>$user_id
 						);
 		$result = $this->Otrabajos->update_guardar($id, $datos);		
+		
 		if($result >0)
 		{   echo 1;
-			
 		}
 		else echo "error al insertar";
 	}
@@ -620,8 +669,7 @@ class Otrabajo extends CI_Controller {
 		else echo "nada";
 	}
 
-//nuevo
-
+	//nuevo
 
 	//traer grupo
 	public function getgrupo(){
@@ -693,8 +741,7 @@ class Otrabajo extends CI_Controller {
 	    }
   	}
 
-  public function agregar_pedido()
-	{
+	  public function agregar_pedido(){
 
 	    $datos=$_POST['data'];
 	    $idot=$_POST['ido'];
@@ -724,24 +771,21 @@ class Otrabajo extends CI_Controller {
 	    }
 	   return $result2; 		
 	   
-  }
+  	}
   	
   	public function agregar_tarea(){
-
 	  
 	    $datos=$_POST['parametros'];
-
-	    //dump_exit($datos);
-
 	    $result = $this->Otrabajos->agregar_tareas($datos);
 	      	//print_r($this->db->insert_id());
 	   
 	   	if($result)
 	      		echo $this->db->insert_id();
-	      	else echo 0;	
+	    else echo 0;	
 	   
-  	}
-		// trae detalle de nota de pedido
+    }
+    
+    // trae detalle de nota de pedido
   	public function getmostrar(){
 
 	    $idm=$_POST['id'];
@@ -775,19 +819,7 @@ class Otrabajo extends CI_Controller {
 		print_r($result);
 	
 	}
-		//de aca para adelante nuevo 
-		/*public function cambiar_estado(){
 		
-			$idord=$_GET['id_orden'];
-			
-			$datos = array('tarea_realizada'=>'RE');
-			 //$this->load->model('modalbaja');
-
-			//doy de baja
-			$result = $this->Otrabajos->cambiar_estados($idord, $datos);
-			print_r($result);
-		
-		}*/
 	//modificada
 	public function TareaRealizada(){
 	
@@ -842,6 +874,194 @@ class Otrabajo extends CI_Controller {
 		$result = $this->Otrabajos->update_cambio($idequipo, $fecha);
 		print_r($result);	
 	}
+	
+	public function visibBtnEjecutar(){
+		
+		$id = $this->input->post('ot');
+		
+		$origenOT = $this->Otrabajos->getDatosOrigenOT($id);
+		$tipo = $origenOT[0]['tipo'];	
+				
+		if($tipo == 2){
+			$case_Id = $this->Otrabajos->getCaseIdenSServicios($id);
+		}else{
+			$case_Id = $this->Otrabajos->getCaseIdOT($id);
+		}				
+		//dump($case_Id, ' case id en controller: ');
+		if ($case_Id != NULL) {
+			echo json_encode(true);
+		} else {
+			echo json_encode(false);
+		}	
+	}
+  
+  //Obtener TaskID por OtID (Cuando hay procesos generados, sino los genera)
+  public function ObtenerTaskIDxOT(){ 	
+		
+		$id = (int)$this->input->post('ot');	
+		//dump($id, 'id de OT:');
+		$case_id = $this->Otrabajos->getCaseIdOT($id);	
+		//dump($case_id, 'caseId en 1: ');
+		$this->load->library('BPM');
+		$origenOT = $this->Otrabajos->getDatosOrigenOT($id);		
+		
+		$tipo = $origenOT[0]['tipo'];	
+		$id_solicitud = $origenOT[0]['id_solicitud'];// id de sol reparacion
+		//dump($tipo, 'tipo en origen: ');
+		//dump($id_solicitud, 'id solicitud guardada en OT: ');
+		// si viene de correctivo
+		if ($tipo == 2) {		
+				$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar"');
+				//dump($task_id, 'tadk id en *');
+				echo $task_id;
+				return;
+		} 
+		//dump($tipo, ' tipo de tarea(back, pred, et): ');
+		// si viene de backlog
+		if ($tipo == 4) {
+				//busco origen del backlog(tiene sore_id o no para diferenciar el origen item menu o SServicio)
+				//dump($id_solicitud, 'id solicitud tarea en 4 (back, red, et): ');
+				$idSolRep = $this->Otrabajos->getIdSolReparacion($id_solicitud);
+				//dump($idSolRep, 'sore_id: ');			
+				
+				if($idSolRep == NULL){	//viene de item menu 
+					// lanzar proceso
+					$contract = array(
+												"idSolicitudServicio"	=>	0,
+												"idOT"  => 	$id
+											);
+					$responce = $this->bpm->LanzarProceso($contract);
+					// guardo el caseid en OTrabajo
+					if($responce['status']){					
+						$case_id = $responce['case_id'];
+						$this->Otrabajos->setCaseidenOT($case_id, $id);					
+					}	
+					$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar" 2');			
+					//devueve task
+					echo $task_id;
+					return;		
+				}else{	// backlog generado desde una SServicios
+					
+					// con id solicitud (BACKLOG) busco el case desde solicitud de reparacion
+					$case_id = $this->Otrabajos->getCaseIdenSServicios($id);
+					//dump($id, 'id sollicitud');
+					//$case_id = 14001;
+					//dump($case_id, ' id case en controller: ');
+					$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar" 2');
+					// guarda case_id en Otrabajo
+					//dump($task_id, 'task en 2: ');	// BIEN!				
+					
+					///$this->Otrabajos->setCaseidenOT($case_id, $id);	SE GUARDA AL GENERAR LA OTRABAJO 
+					//dump($task_id, 'task para cerrar tarea: ');
+					echo $task_id;
+					return;			
+				}
+		}
+		
+		// Para el resto de las Tareas (Predictivo, Preventivo)
+		// lanzar proceso
+		$contract = array(
+			"idSolicitudServicio"	=>	0,
+			"idOT"  => 	$id
+		);
+		$responce = $this->bpm->LanzarProceso($contract);
+		// guardo el caseid en OTrabajo
+		if($responce['status']){					
+			$case_id = $responce['case_id'];
+			$this->Otrabajos->setCaseidenOT($case_id, $id);					
+		}
+		// retorna task id 		
+		$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar" 2');
+		echo $task_id;
+		return;
+
+	}
+
+	//Ejecuta Orden de Trabajo en BPM
+	public function EjecutarOT(){
+
+		$mostrar = $this->input->post();
+		//dump_exit($mostrar);
+
+		$task 				= (int)$this->input->post('task');
+		$ot 					= (int)$this->input->post('ot');
+		$usrId				= (int)$this->input->post('responsable');
+		$id_solicitud = (int)$this->input->post('id_solicitud');
+		$tipo					= (int)$this->input->post('tipo');
+		$estado				= 'AS';		
+		$id_tarea 		= (int)$this->input->post('tareastd');		
+		
+		$case_id = $this->Otrabajos->getCaseIdOT($ot);
+
+		// tarea estandar
+		if ($id_tarea != -1) {
+			$descripcion = $this->input->post('tareastdDesc');;
+		} else {
+			$descripcion = $this->input->post('tareaOpcional');;
+		}				
+
+		switch ($tipo) {			
+			case '3':
+				$tipo  = 'preventivo';
+				break;
+			case '4':
+				$tipo  = 'backlog';
+				break;
+			case '5':
+				$tipo  = 'predictivo';
+				break;
+			default:
+				$tipo  = 'correctivo';
+				break;
+		}
+
+		//Cargo Libreria
+		$this->load->library('BPM');	
+		$responce = $this->bpm->setUsuario($task,$usrId);
+	
+		if(!$responce['status']){echo json_encode($responce);return;}	
+		//Cerrar Tarea Ejectuar OT con ase que viene de pantalla
+		$responce = $this->bpm->CerrarTareaBPM($task);	
+		if(!$responce['status']){echo json_encode($responce);return;}
+
+		// buscar task pa asignar la tarea siguiente (ejecutar ot) a un responsable		
+		$nextTask = $this->bpm->ObtenerTaskidXNombre($case_id,'Ejecutar OT');
+	
+		if($nextTask == 0){
+			echo json_encode(['status'=>false, 'msj'=>'No Existe la actividad requerida']);
+			return;
+		}
+	
+		//Asignar Usuario a Tarea para Finanlizar
+		$responce = $this->bpm->setUsuario($nextTask,$usrId);
+		if(!$responce['status']){echo json_encode($responce);return;}
+	
+		//Cambiar Estado de OT ('ASignada') y en solicitud origen en BD		
+		if($this->Otrabajos->cambiarEstado($ot, $estado, 'OT')){
+				
+				//Cambiar Estado de solicitud origen de tarea(prevent, predic, backl)
+				if ($this->Otrabajos->cambiarEstado($id_solicitud, $estado, $tipo)) {
+					
+						$datos = array( 'id_tarea' =>$id_tarea,
+											'descripcion' =>$descripcion);						
+						// actualiza tarea en OT					
+						if($this->Otrabajos->updOT($ot, $datos)){
+								echo json_encode(['status'=>true, 'msj'=>'OK']);
+								return;
+						}else {
+								echo json_encode(['status'=>false, 'msj'=>'Error Base de Datos1']);
+								return;
+						}	
+
+				} else {
+						echo json_encode(['status'=>false, 'msj'=>'Error Base de Datos2']);
+						return;
+				}			
+				
+		}else{
+				echo json_encode(['status'=>false, 'msj'=>'Error Base de Datos3']);
+		}		
+	}
 
 	//Cambia de estado a "AN"
 	public function baja_predictivo(){
@@ -858,10 +1078,9 @@ class Otrabajo extends CI_Controller {
 		else {
 			return false;
 		}
-	}
-
-
-	public function getDisponibilidad()
+  }
+  
+  public function getDisponibilidad()
 	{
 		$idEquipo = $this->input->post('idEquipo');
 		$result   = calcularDisponibilidad($idEquipo);
@@ -874,16 +1093,12 @@ class Otrabajo extends CI_Controller {
 		echo json_encode($result);
  	}
 
-
-
-
-
 	//devuelve valores de todos los datos de la OT para mostrar en modal.
 	public function getOrigenOt()
 	{
 		$idot     = $_POST['idot'];
 		$response = $this->Otrabajos->getOrigenOt($idot);
-      	echo json_encode($response[0]);
+    echo json_encode($response[0]);
 	}
 	
 
@@ -891,8 +1106,35 @@ class Otrabajo extends CI_Controller {
 	public function getViewDataOt()
 	{
 		$idOt         = $_POST['idOt'];
-		$response     = $this->Otrabajos->getViewDataPreventivo($idOt);
-		echo json_encode($response[0]);
+		$response['otrabajo']     = $this->Otrabajos->getViewDataPreventivo($idOt);
+		
+		// trae herramientas 
+		$herramientas = $this->Otrabajos->getOTHerramientas($idOt);
+
+		if($herramientas){
+			$response['herramientas']=$herramientas;
+		}
+		else{ 
+			$response['herramientas']=0;
+		}
+		// trae insumos
+		$insumos = $this->Otrabajos->getOTInsumos($idOt);
+		if($insumos){
+				$response['insumos']=$insumos;
+		}
+		else{ $response['insumos']=0;}
+
+		// trae adjuntos
+		$adjuntos = $this->Otrabajos->getOTadjuntos($idOt);
+		
+		//dump($adjuntos, 'adjuntos: ');
+		if($adjuntos){
+				$response['adjunto']=$adjuntos;
+		}
+		else{ $response['adjunto']=0;}
+
+    echo json_encode($response);
+
 	}
 
 	//devuelve valores de todos los datos de la OT desde Preventivos para mostrar en modal.
@@ -900,8 +1142,35 @@ class Otrabajo extends CI_Controller {
 	{
 		$idOt          = $_POST['idOt'];
 		$idSolServicio = $_POST['idSolServicio'];
-		$response      = $this->Otrabajos->getViewDataSolServicio($idOt, $idSolServicio);
-		echo json_encode($response[0]);
+		$response['solicitud']      = $this->Otrabajos->getViewDataSolServicio($idOt, $idSolServicio);
+	
+		
+		// trae herramientas 
+		$herramientas = $this->Otrabajos->getOTHerramientas($idOt);
+
+		if($herramientas){
+			$response['herramientas']=$herramientas;
+		}
+		else{ 
+			$response['herramientas']=0;
+		}
+		// trae insumos
+		$insumos = $this->Otrabajos->getOTInsumos($idOt);
+		if($insumos){
+				$response['insumos']=$insumos;
+		}
+		else{ $response['insumos']=0;}
+
+		// trae adjuntos
+		$adjuntos = $this->Otrabajos->getOTadjuntos($idOt);	
+
+		if($adjuntos){
+				$response['adjunto']=$adjuntos;
+		}
+		else{ $response['adjunto']=0;}
+	
+		//dump($response, 'response');
+		echo json_encode($response);
 	}
 
 	//devuelve valores de todos los datos de la OT desde Preventivos para mostrar en modal.
@@ -909,8 +1178,39 @@ class Otrabajo extends CI_Controller {
 	{
 		$idOt         = $_POST['idOt'];
 		$idPreventivo = $_POST['idPreventivo'];
-		$response     = $this->Otrabajos->getViewDataPreventivo($idOt, $idPreventivo);
-		echo json_encode($response[0]);
+		$response['preventivo']  = $this->Otrabajos->getViewDataPreventivo($idOt, $idPreventivo);
+		
+
+		// trae herramientas 
+		$herramientas = $this->Otrabajos->getOTHerramientas($idOt);
+
+		if($herramientas){
+			$response['herramientas']=$herramientas;
+		}
+		else{ 
+			$response['herramientas']=0;
+		}
+		// trae insumos
+		$insumos = $this->Otrabajos->getOTInsumos($idOt);
+		if($insumos){
+				$response['insumos']=$insumos;
+		}
+		else{ $response['insumos']=0;}
+
+		// trae adjuntos
+		$adjuntos = $this->Otrabajos->getOTadjuntos($idOt);
+
+	
+
+		if($adjuntos){
+				$response['adjunto']=$adjuntos;
+		}
+		else{ $response['adjunto']=0;}
+
+
+		//dump($response['adjunto'], 'adjuntos: ');
+
+    echo json_encode($response);
 	}
 
 	//devuelve valores de todos los datos de la OT desde Backlog para mostrar en modal.
@@ -918,8 +1218,32 @@ class Otrabajo extends CI_Controller {
 	{
 		$idOt      = $_POST['idOt'];
 		$idBacklog = $_POST['idBacklog'];
-		$response  = $this->Otrabajos->getViewDataBacklog($idOt, $idBacklog);
-      	echo json_encode($response[0]);
+		$response['backlog']  = $this->Otrabajos->getViewDataBacklog($idOt, $idBacklog);
+
+		// trae herramientas 
+		$herramientas = $this->Otrabajos->getOTHerramientas($idOt);
+
+		if($herramientas){
+			$response['herramientas']=$herramientas;
+		}
+		else{ 
+			$response['herramientas']=0;
+		}
+		// trae insumos
+		$insumos = $this->Otrabajos->getOTInsumos($idOt);
+		if($insumos){
+				$response['insumos']=$insumos;
+		}
+		else{ $response['insumos']=0;}
+
+		// trae adjuntos
+		$adjuntos = $this->Otrabajos->getOTadjuntos($idOt);
+		if($adjuntos){
+				$response['adjunto']=$adjuntos;
+		}
+		else{ $response['adjunto']=0;}
+
+    echo json_encode($response);
 	}
 
 	//devuelve valores de todos los datos de la OT desde Predictivo para mostrar en modal.
@@ -927,8 +1251,34 @@ class Otrabajo extends CI_Controller {
 	{
 		$idOt         = $_POST['idOt'];
 		$idPredictivo = $_POST['idPredictivo'];
-		$response     = $this->Otrabajos->getViewDataPredictivo($idOt, $idPredictivo);
-		echo json_encode($response[0]);
+	
+		$response['predictivo'] = $this->Otrabajos->getViewDataPredictivo($idOt, $idPredictivo);
+		
+		// trae herramientas 
+		$herramientas = $this->Otrabajos->getOTHerramientas($idOt);
+
+		if($herramientas){
+			$response['herramientas']=$herramientas;
+		}
+		else{ 
+			$response['herramientas']=0;
+		}
+		// trae insumos
+		$insumos = $this->Otrabajos->getOTInsumos($idOt);
+		if($insumos){
+				$response['insumos']=$insumos;
+		}
+		else{ $response['insumos']=0;}
+
+		// trae adjuntos
+		$adjuntos = $this->Otrabajos->getOTadjuntos($idOt);
+		
+		if($adjuntos){
+				$response['adjunto']=$adjuntos;
+		}
+		else{ $response['adjunto']=0;}
+
+		echo json_encode($response);
 	}
 
 
@@ -958,5 +1308,4 @@ class Otrabajo extends CI_Controller {
 			break;
 		}
 	}
-
 }

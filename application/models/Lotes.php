@@ -48,6 +48,29 @@ class Lotes extends CI_Model {
 			return false;
 		}
 	}
+
+	public function getPuntoPedido()
+	{
+		$userdata  = $this->session->userdata('user_data');
+        $empresaId = $userdata[0]['id_empresa'];
+		$this->db->select('tbl_lote.*, 
+			articles.artDescription, articles.artBarCode, articles.punto_pedido, tbl_lote.cantidad, abmdeposito.depositodescrip, tbl_lote.lotestado');
+		$this->db->from('tbl_lote');
+		$this->db->join('articles', 'tbl_lote.artId = articles.artId');
+		$this->db->join('abmdeposito', ' tbl_lote.depositoId = abmdeposito.depositoid');
+		$this->db->where('articles.punto_pedido >= tbl_lote.cantidad');
+		$this->db->where('tbl_lote.id_empresa', $empresaId);
+		$query = $this->db->get();
+
+		if ($query->num_rows()!=0)
+		{
+			return $query->result_array();	
+		}
+		else
+		{	
+			return false;
+		}
+	}
 	
 	function getMotion($data = null){
 		if($data == null)
