@@ -136,32 +136,17 @@ class Backlogs extends CI_Model
 	function insert_backlog($data){
 		$query = $this->db->insert("tbl_back",$data);
 		return $query;
-	}  
-	// Guarda el bacht de datos de herramientas de Preventivo - Listo
-	// function insertBackHerram($herram){
-		
-	// 	$query = $this->db->insert_batch("tbl_backlogherramientas",$herram);
-	// 	return $query;
-	// }
-	// Guarda insumos del Preventivo - Listo 
-	// function insertBackInsum($insumo){
-
-	// 	$query = $this->db->insert_batch("tbl_backloginsumos",$insumo);
-	// 	return $query;
-	// }
+	}  	
 	// Guarda el nombre de adjunto
 	function updateAdjunto($adjunto,$ultimoId){
 		$this->db->where('backId', $ultimoId);
 		$query = $this->db->update("tbl_back",$adjunto);
 		return $adjunto;
 	}
-
-
-
 	// Trae datos de backlog para editar
 	function geteditar($id){
 
-		$this->db->select('tbl_back.*');	
+		$this->db->select('tbl_back.*, tareas.descripcion AS tareadescrip');	
 		$this->db->from('tbl_back');
 		$this->db->join('tareas', 'tareas.id_tarea = tbl_back.id_tarea', 'left');
 		$this->db->where('tbl_back.backId',$id);	    
@@ -175,19 +160,20 @@ class Backlogs extends CI_Model
 			return 0;
 		}
 	}
-
+	// trae info de equipos para edicion
 	function traerequiposBack($ide,$id){
-
-		$this->db->select('equipos.descripcion AS des, 
-											equipos.marca, 
+		
+		$this->db->select('equipos.descripcion AS des,
 											equipos.codigo, 
 											equipos.ubicacion, 
 											equipos.fecha_ingreso,
+											marcasequipos.marcadescrip AS marca,
 											componenteequipo.codigo as codcompeq,
 											componentes.descripcion as componente,
 											sistema.descripcion as sistema');
 		$this->db->from('tbl_back');
 		$this->db->join('equipos', 'equipos.id_equipo = tbl_back.id_equipo');	
+		$this->db->join('marcasequipos', 'equipos.marca = marcasequipos.marcaid');
 		$this->db->join('componenteequipo', 'componenteequipo.idcomponenteequipo = tbl_back.idcomponenteequipo','left');
 		$this->db->join('componentes', 'componentes.id_componente = componenteequipo.id_componente','left');
 		$this->db->join('sistema', 'sistema.sistemaid = componenteequipo.sistemaid','left');
@@ -202,46 +188,7 @@ class Backlogs extends CI_Model
 		else {
 			return 0;
 		}
-}
-
-
-	// Trae datos de equipo del backlog para editar
-			// function traerequiposBack($ide,$id){
-
-			//     $this->db->select('tbl_back.backId, 
-			// 											tbl_back.id_equipo,
-			// 											tbl_back.tarea_opcional, 
-			// 											tbl_back.fecha, 
-			// 											tbl_back.estado,
-			// 											tbl_back.horash, 
-			// 											equipos.descripcion AS des, 
-			// 											equipos.marca, 
-			// 											equipos.codigo, 
-			// 											equipos.ubicacion, 
-			// 											equipos.fecha_ingreso, 
-			// 											tareas.id_tarea, 
-			// 											tareas.descripcion as de1,
-			// 											componenteequipo.codigo as codcompeq,
-			// 											componentes.descripcion as componente,
-			// 											sistema.descripcion as sistema');
-			//     $this->db->from('tbl_back');
-			//     $this->db->join('equipos', 'equipos.id_equipo = tbl_back.id_equipo');
-			//     $this->db->join('tareas', 'tareas.id_tarea = tbl_back.id_tarea', 'left');
-			//     $this->db->join('componenteequipo', 'componenteequipo.idcomponenteequipo = tbl_back.idcomponenteequipo','left');
-			// 		$this->db->join('componentes', 'componentes.id_componente = componenteequipo.id_componente','left');
-			// 		$this->db->join('sistema', 'sistema.sistemaid = componenteequipo.sistemaid','left');
-			//     $this->db->where('tbl_back.backId', $id);
-			//     $this->db->where('tbl_back.id_equipo', $ide);
-			//     $query = $this->db->get();
-					
-			//     if( $query->num_rows() > 0)
-			//     {
-			//       return $query->result_array();	
-			//     } 
-			//     else {
-			//       return 0;
-			//     }
-			// }
+	}
 	// Trae herramientas ppor id de preventivo para Editar
 	function getBacklogHerramientas($id){
         
@@ -300,11 +247,6 @@ class Backlogs extends CI_Model
 		return $query;
 	 }
 
-	 function editarNuevo($datos,$idBacklog){
-		$this->db->where('backId', $idBacklog);
-		$query = $this->db->update("tbl_back",$datos);
-		return $query;
-	}
 	// borra herramientas en edicion 
 	function deleteHerramBack($id){
 		$this->db->where('backId', $id);
@@ -321,9 +263,8 @@ class Backlogs extends CI_Model
 		$this->db->where('backId', $id);
 		$query = $this->db->delete('tbl_backloginsumos');
 		return $query;
-	}
-	// guarda insumos en edicion
-	// Guarda insumos del Preventivo - Listo 
+	}	
+	// Guarda insumos - Listo 
 	function insertBackInsum($insumo){
 
 		$query = $this->db->insert_batch("tbl_backloginsumos",$insumo);

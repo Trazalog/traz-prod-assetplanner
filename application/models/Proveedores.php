@@ -11,46 +11,42 @@ class Proveedores extends CI_Model {
 	{
 		$userdata  = $this->session->userdata('user_data');
 		$empresaId = $userdata[0]['id_empresa'];
-		$this->db->where('estado', 'AC');
-		$this->db->where('abmproveedores.id_empresa', $empresaId);
-		$query = $this->db->get('abmproveedores');
+		
+		$this->db->select('alm_proveedores.prov_id AS provid, 
+											alm_proveedores.nombre AS provnombre,
+											alm_proveedores.cuit AS provcuit,
+											alm_proveedores.domicilio AS provdomicilio,
+											alm_proveedores.telefono AS provtelefono,
+											alm_proveedores.email AS provmail ,
+											alm_proveedores.eliminado AS estado');
+		$this->db->from('alm_proveedores');
+		$this->db->where('eliminado', '0');
+		$this->db->where('alm_proveedores.empr_id', $empresaId);
+		$query = $this->db->get();
 		if ($query->num_rows()!=0)
 		{
 			return $query->result_array();	
 		}
 	}
 
-	function Obtener_Proveedores($id)
-	{
-		$this->db->where('provid', $id);
-		$query = $this->db->get('abmproveedores');
-		if ($query->num_rows()!=0)
-		{   
-			return $query->result_array();  
-		}
-	}
-
 	function Guardar_Proveedores($data)
 	{
-		$userdata           = $this->session->userdata('user_data');
-		$data['id_empresa'] = $userdata[0]['id_empresa'];
-		$query              = $this->db->insert("abmproveedores", $data);
+		$query  = $this->db->insert("alm_proveedores", $data);
 		return $query;
 	}
 			
-	function Modificar_Proveedores($data)
+	function Modificar_Proveedores($id, $data)
 	{
-		$userdata           = $this->session->userdata('user_data');
-		$data['id_empresa'] = $userdata[0]['id_empresa']; 
-		$query              = $this->db->update('abmproveedores', $data, array('provid' => $data['provid']));
+		$this->db->where('alm_proveedores.prov_id',$id);
+		$query = $this->db->update('alm_proveedores', $data);
 		return $query;
 	}
 
 	function Eliminar_Proveedores($data)
 	{
-		$this->db->set('estado', 'AN');
-		$this->db->where('provid', $data);
-		$query = $this->db->update('abmproveedores');
+		$this->db->set('eliminado', '1');
+		$this->db->where('prov_id', $data);
+		$query = $this->db->update('alm_proveedores');
 		return $query;
 	}
 

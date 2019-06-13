@@ -39,7 +39,8 @@
                       echo '<td>';                     
                         if (strpos($permission,'Add') !== false) {
                           echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar" data-toggle="modal" data-target="#modalaviso"></i>';
-                          if( ($a['estado'] == 'S') || ($a['estado'] == 'PL') ){
+                         
+                          if( ($a['estado'] == 'S') || ($a['estado'] == 'C') ){
                             echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar" ></i>';
                           }   
                           if ($a['back_adjunto']) {
@@ -51,7 +52,8 @@
                       echo '<td>'.$a['codigo'].'</td>';
                       echo '<td>'.$a['componente'].'</td>';
                       echo '<td>'.$a['sistema'].'</td>';
-                      if ($a["id_tarea"] < 0) {
+                      
+                      if ($a["id_tarea"] <= 0) {
                         echo '<td>'.$a["tarea_opcional"].'</td>';
                       } else {
                         echo '<td>'.$a['de1'].'</td>';
@@ -147,7 +149,7 @@ $(document).ready(function(event) {
                             'marca':data['equipo'][0]['marca'],
                             'descripcion':data['equipo'][0]['des'],   
                             'fecha_ingreso':data['equipo'][0]['fecha_ingreso'],                            
-                            'tarea': data['equipo'][0]['tarea_descrip'],                            
+                                                      
                             'desta':data['equipo'][0]['de1'],
                             'hora':data['equipo'][0]['horash'],
                             'ubicacion':data['equipo'][0]['ubicacion'],   
@@ -157,15 +159,17 @@ $(document).ready(function(event) {
                             
                             'backId': idpred,
                             'idtarea': data['datos'][0]['id_tarea'],
+                            'tarea': data['datos'][0]['tareadescrip'], 
                             'fecha':data['datos'][0]['fecha'],
                             'duracion':data['datos'][0]['back_duracion'],
                             'unidtiempo':data['datos'][0]['id_unidad'],
                             'operarios':data['datos'][0]['back_canth'],
                             'hh':data['datos'][0]['horash'],
-                            'back_adjunto':data['datos'][0]['back_adjunto']               
+                            'back_adjunto':data['datos'][0]['back_adjunto'],
+                            'tarea_opcional':data['datos'][0]['tarea_opcional']               
                           };
 
-console.table(datos);
+                    console.table(datos);
 
 
                     var herram = data['herramientas'];             
@@ -229,7 +233,13 @@ function completarEdit(datos,herram,insum){
   $('#marca').val(datos['marca']);
   $('#ubicacion').val(datos['ubicacion']);
   $('#descripcion').val(datos['descripcion']);
+ 
   $('#tarea').val(datos['tarea']);
+  $('#idtarea').val(datos['idtarea']); 
+  
+  $('#tareaOpcional').val(datos['tarea_opcional']);      
+ 
+ 
   $('#fecha').val(fechater);
   $('#periodo').val(datos['periodo']);
   $('#horash').val(datos['duracion']); 
@@ -286,13 +296,14 @@ function getFormattedPartTime(partTime) {
 // Guarda Backlog Editado - Chequeado
   function guardar(){
       
-    var backid = $('#id_backlog').val();//
-    var tarea = $('#tarea').val();//
-    var fecha = $('#fecha').val();//
-    var hshombre = $('#hshombre').val();  
-    var duracion = $('#duracion').val(); 
-    var id_unidad = $('#unidad').val();
-    var back_canth = $('#cantOper').val();
+      var backid        = $('#id_backlog').val();//
+      var tarea         = $('#idtarea').val();//
+      var fecha         = $('#fecha').val();//
+      var hshombre      = $('#hshombre').val();  
+      var duracion      = $('#duracion').val(); 
+      var id_unidad     = $('#unidad').val();
+      var back_canth    = $('#cantOper').val();
+      var tareaOpcional = $('#tareaOpcional').val();
     
     // Arma array de herramientas y cantidades
     var idsherramienta = new Array();     
@@ -333,7 +344,8 @@ function getFormattedPartTime(partTime) {
                 idsherramienta: idsherramienta,
                 cantHerram: cantHerram,
                 idsinsumo: idsinsumo, 
-                cantInsum: cantInsum  },
+                cantInsum: cantInsum,
+                tareaOpcional: tareaOpcional },
         url: 'index.php/Backlog/editar_backlog', 
         success: function(data){
                   WaitingClose();
@@ -384,32 +396,73 @@ function getFormattedPartTime(partTime) {
   }
 
 // trae tareas para llenar select en edicion
-  traer_tarea();
-  function traer_tarea(){
-      $.ajax({
-        type: 'POST',
-        data: { },
-        url: 'index.php/Backlog/gettarea', //index.php/
-        success: function(data){
+  // traer_tarea();
+  // function traer_tarea(){
+  //     $.ajax({
+  //       type: 'POST',
+  //       data: { },
+  //       url: 'index.php/Backlog/gettarea', //index.php/
+  //       success: function(data){
               
-                var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-                  $('#tarea').append(opcion); 
-                for(var i=0; i < data.length ; i++) 
-                {    
-                      var nombre = data[i]['descripcion'];
-                      var opcion  = "<option value='"+data[i]['id_tarea']+"'>" +nombre+ "</option>" ; 
+  //               var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+  //                 $('#tarea').append(opcion); 
+  //               for(var i=0; i < data.length ; i++) 
+  //               {    
+  //                     var nombre = data[i]['descripcion'];
+  //                     var opcion  = "<option value='"+data[i]['id_tarea']+"'>" +nombre+ "</option>" ; 
 
-                    $('#tarea').append(opcion); 
+  //                   $('#tarea').append(opcion); 
                                   
-                }
-              },
-        error: function(result){
+  //               }
+  //             },
+  //       error: function(result){
               
-              console.log(result);
-            },
-            dataType: 'json'
-        });
-  }
+  //             console.log(result);
+  //           },
+  //           dataType: 'json'
+  //       });
+  // }
+
+  // limpia un input al seleccionar o llenar otro
+  $('#tarea').change(function(){    
+    $('#tareaOpcional').val(''); 
+  });
+  $('#tareaOpcional').change(function(){
+    $('#tarea').val('');
+    $('#idtarea').val('');
+  }); 
+
+  //Trae tareas y permite busqueda en el input
+  var dataTarea = function() {
+    var tmp = null;
+    $.ajax({
+      'async': false,
+      'type': "POST",
+      'dataType': 'json',
+      'url': 'index.php/Preventivo/gettarea',
+    })
+    .done( (data) => { tmp = data } )
+    .fail( () => alert("Error al traer tareas") );
+    return tmp;
+  }();
+  $("#tarea").autocomplete({
+    source:    dataTarea,
+    delay:     500,
+    minLength: 1,
+    focus: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#idtarea').val(ui.item.value);
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      $(this).val(ui.item.label);
+      $('#idtarea').val(ui.item.value);
+    },
+  });
+
+
+
 
 // Trae unidades de tiempo - Chequeado
   $(function(){  
@@ -759,24 +812,24 @@ function recargaTablaAdjunto(backAdjunto) {
      
           <div class="panel-body">
             <div class="row">
-              <div class="col-xs-12 col-sm-6 col-md-4">
+              <div class="col-xs-12 col-sm-6 col-md-3">
                 <label for="equipo">Equipos <strong style="color: #dd4b39">*</strong></label>
                 <!-- <select id="equipo" name="equipo" value="" class="form-control" ></select> -->
                 <input id="equipo" name="equipo" value="" class="form-control limpiar" disabled>
                 <input type="hidden" id="id_backlog" name="id_backlog">
               </div>
 
-              <div class="col-xs-12 col-sm-6 col-md-4">
+              <div class="col-xs-12 col-sm-6 col-md-3">
                 <label for="fecha_ingreso">Fecha:</label>
                 <input type="text" id="fecha_ingreso" name="fecha_ingreso" class="form-control limpiar input-md" disabled />
               </div>
 
-              <div class="col-xs-12 col-sm-6 col-md-4">
+              <div class="col-xs-12 col-sm-6 col-md-3">
                 <label for="marca">Marca:</label>
                 <input type="text" id="marca" name="marca" class="form-control limpiar input-md"  disabled />
               </div>
 
-              <div class="col-xs-12 col-sm-6 col-md-4">
+              <div class="col-xs-12 col-sm-6 col-md-3">
                 <label for="ubicacion">Ubicacion:</label>
                 <input type="text" id="ubicacion" name="ubicacion" class="form-control limpiar input-md" disabled/>
               </div>
@@ -811,19 +864,27 @@ function recargaTablaAdjunto(backAdjunto) {
           </div>
           <div class="panel-body">
             <div class="row">
-              <div class="col-xs-12">
-                <label for="tarea">Tarea <strong style="color: #dd4b39">*</strong>:</label>
-                <select id="tarea" name="tarea" value="" class="form-control limpiar" >
+              <div class="col-xs-12 col-sm-6 col-md-6">
+                <label for="tarea">Tarea Estandar<strong style="color: #dd4b39">*</strong>:</label>
+                <input type="text" class="form-control limpiar" id="tarea" name="tarea" placeholder="Busque Tarea..."/>
+                <input type="hidden" class="form-control limpiar" id="idtarea" name="idtarea"/>
+                <!-- <select id="tarea" name="tarea" value="" class="form-control limpiar" > -->
                 </select>                              
               </div>
+              <div class="col-xs-12 col-sm-6 col-md-6">
+                <label for="tarea">Tarea Personalizada<strong style="color: #dd4b39">*</strong>:</label>
+                <input type="text" class="form-control" id="tareaOpcional" name="tareaOpcional" value="" placeholder="Ingrese Tarea..."/> 
+                <!-- <select id="tarea" id="tareaOpcional" name="tareaOpcional" placeholder="Ingrese Tarea..." value="" class="form-control limpiar" >
+                </select>                               -->
+              </div>
               <div class="col-xs-12 col-sm-6 col-md-4">
-                <label for="vfecha">Fecha:</label>
+                <label for="vfecha">Fecha Creación:</label>
                 <!-- <input type="text" class="datepicker  form-control limpiar fecha" id="fecha" name="vfecha" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/> -->
                 <input type="text" class="form-control limpiar fecha" id="fecha" name="vfecha" size="27"/>
               </div>
               
               <div class="col-xs-12 col-sm-6 col-md-4">
-                <label for="duracion">Duración <strong style="color: #dd4b39">*</strong>:</label>
+                <label for="duracion">Duración Estandar <strong style="color: #dd4b39">*</strong>:</label>
                 <input type="text" class="form-control" id="duracion" name="duracion"/>
               </div> 
               <div class="col-xs-12 col-sm-6 col-md-4">
@@ -843,9 +904,6 @@ function recargaTablaAdjunto(backAdjunto) {
             </div><!-- /.row -->
           </div><!-- /.panel-body -->
         </div><!-- /.panel -->
-
-
-
 
         <!-- Tab nav -->
         <div class="nav-tabs-custom">
@@ -976,7 +1034,6 @@ function recargaTablaAdjunto(backAdjunto) {
           </div>
 
         </div><!--cierre de TabAdjunto--> 
-
 
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
