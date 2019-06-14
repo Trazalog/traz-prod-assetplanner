@@ -54,7 +54,7 @@
                                 echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar"></i>';
                             }                                      
 
-                            echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"  ></i> ';
+                            // echo '<i class="fa fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"  ></i> ';
 
                             echo '<i class="fa fa-picture-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imagen" data-imagen ="'.$f['foto'].'" data-toggle="modal" data-target="#foto"></i> '; 
 
@@ -72,7 +72,12 @@
                             echo '<td style="text-align: left">'.$f['ubicacion'].'</td>';
                             echo '<td style="text-align: left">'.$f['causa'].'</td>';
                             /*echo '<td style="text-align: center">'.($f['estado'] == 'C' ? '<small class="label pull-left bg-green">Curso</small>' : '<small class="label pull-left bg-yellow">Solicitado</small>').'</td>';*/
-                            echo '<td style="text-align: center">'.($f['estado'] == 'OT' ? '<small class="label pull-left bg-yellow">Curso</small>' :($f['estado'] == 'T' ? '<small class="label pull-left bg-green">Conforme</small>' : '<small class="label pull-left bg-red">Solicitado</small>')).'</td>';
+                            echo '<td style="text-align: center">'.($f['estado'] == 'PL' ? '<small class="label pull-left bg-yellow">Planificada</small>' 
+                            :($f['estado'] == 'AS' ? '<small class="label pull-left bg-warning">Asignada</small>' 
+                            :($f['estado'] == 'C' ? '<small class="label pull-left bg-info">Curso</small>' 
+                            :($f['estado'] == 'T' ? '<small class="label pull-left bg-green">Terminada</small>' 
+                            :($f['estado'] == 'CE' ? '<small class="label pull-left bg-primary">Cerrada</small>':  '<small class="label pull-left bg-red">Solicitado</small>'))
+                            .'</td>';
                             echo '</tr>';
 
                         } // if ($f['usrId'] == $usrId)
@@ -88,40 +93,41 @@
   </div><!-- /.row -->
 
 </section><!-- /.content -->
-<style>
-.ui-autocomplete {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1510 !important;
-  float: left;
-  display: none;
-  min-width: 160px;
-  width: 160px;
-  padding: 4px 0;
-  margin: 2px 0 0 0;
-  list-style: none;
-  background-color: #ffffff;
-  border-color: #ccc;
-  border-color: rgba(0, 0, 0, 0.2);
-  border-style: solid;
-  border-width: 1px;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
-  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  -webkit-background-clip: padding-box;
-  -moz-background-clip: padding;
-  background-clip: padding-box;
-  *border-right-width: 2px;
-  *border-bottom-width: 2px;
-}
 
-.ui-autocomplete{
-    z-index:1050;
-}
+<style>
+  .ui-autocomplete {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1510 !important;
+    float: left;
+    display: none;
+    min-width: 160px;
+    width: 160px;
+    padding: 4px 0;
+    margin: 2px 0 0 0;
+    list-style: none;
+    background-color: #ffffff;
+    border-color: #ccc;
+    border-color: rgba(0, 0, 0, 0.2);
+    border-style: solid;
+    border-width: 1px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    -webkit-background-clip: padding-box;
+    -moz-background-clip: padding;
+    background-clip: padding-box;
+    *border-right-width: 2px;
+    *border-bottom-width: 2px;
+  }
+
+  .ui-autocomplete{
+      z-index:1050;
+  }
 </style>
 
 <!-- carga solicitudes inactivas -->

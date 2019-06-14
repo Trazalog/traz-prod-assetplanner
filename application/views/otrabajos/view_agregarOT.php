@@ -71,7 +71,7 @@
                   </div>
                   <div class="row">
                     <div class="col-xs-12 col-sm-6">
-                      <label for="fechaInicio">Fecha Inicio:</label>
+                      <label for="fechaInicio">Fecha Programación:</label>
                       <input type="text" class="datepicker form-control fecha" id="fechaInicio" name="fechaInicio" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>
                     </div> 
                     
@@ -446,7 +446,7 @@ $(function() {
     $.ajax({
       type: 'POST',
       data: { },
-      url: 'index.php/Predictivo/getEquipo', 
+      url: 'index.php/Otrabajo/getEquiposNuevaOT', 
       success: function(data){
              
                var opcion  = "<option value='-1'>Seleccione...</option>" ; 
@@ -471,11 +471,11 @@ $('#equipo').change(function(){
   $.ajax({
       type: 'POST',
       data: { id_equipo: id_equipo},
-      url: 'index.php/Predictivo/getInfoEquipo', 
+      url: 'index.php/Otrabajo/getInfoEquipoNuevaOT', 
       success: function(data){    
-                  console.log(data);                     
+                  console.table(data);                     
                   var fecha_ingreso = data[0]['fecha_ingreso']; 
-                  var marca = data[0]['marca']; 
+                  var marca = data[0]['marcadescrip']; 
                   var ubicacion = data[0]['ubicacion']; 
                   var criterio1 = data[0]['criterio1']; 
                   var descripcion = data[0]['descripcion']; 
@@ -932,60 +932,6 @@ function ordenaArregloDeObjetosPor(propiedad) {
       $('#cant').val(''); 
   });
 ////// INSUMOS //////
-
-
-// Guarda Predictivo - Chequeado
-  // function guardar(){    
-  
-  //   console.log("guardando");
-  //   var equipo = $('#equipo').val();
-  //   var tarea = $('#id_tarea').val();        // Guarda id de tarea en tarea_descrip
-  //   var fecha = $('#fecha').val();        // Fecha actual de creacion de la tarea
-  //   var periodo = $('#periodo').val();    
-  //   var cantidad = $('#cantidad').val();  // Frecuencia (cantidad de dias)  
-  //   var horash = $('#hshombre').val(); // cantidad de horas hombre
-  //   var duracion = $('#duracion').val();  // Duracion de la tarea en minutos(guarda en pred_duracion)
-  //   var unidad = $('#unidad').val();      // id de unidad de tiempo
-  //   var operarios = $('#cantOper').val(); // Cantidad de operarios(guarda en pred_canth)
-
-  //   if((fecha !=='') || (cantidad !=='') || (duracion !=='') || (cantOper !=='') || (equipo > 0) || (tarea > 0) || (unidad > 0) || (periodo > 0 )){
-  //     $.ajax({
-  //           type: 'POST',
-  //           data: { equipo: equipo, 
-  //                   tarea: tarea, 
-  //                   fecha: fecha,
-  //                   periodo: periodo,  
-  //                   cantidad: cantidad,
-  //                   horash:horash, 
-  //                   duracion: duracion,
-  //                   unidad: unidad,
-  //                   operarios: operarios
-  //                 },
-  //           url: 'index.php/Predictivo/guardar_predictivo',  
-  //           success: function(data){
-  //             console.log("exito");   
-  //             cargarVista();
-  //           },
-  //           error: function(result){
-  //             console.log(result);                     
-  //           },
-  //           dataType: 'json'
-  //     });
-  //   } else{
-  //       var hayError = true;
-  //       $('#error').fadeIn('slow');
-  //       return;
-  //   }
-
-  //   if(hayError == false){
-  //     $('#error').fadeOut('slow');
-  //   }
-
-  // }
-
-// Guarda Preventivo  
-
-
 
 function limpiar(){
   

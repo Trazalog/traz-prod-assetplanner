@@ -173,8 +173,6 @@ $('#listado').click( function(){
   WaitingClose();
 });
 
-
-
 // Trae area y llena el select
 traer_area();
 function traer_area(){
@@ -348,8 +346,6 @@ function traer_marca(){
     },
   });
 }  
-
-
 
 // Agrega las areas nuevas
 function guardararea(){ 
@@ -626,8 +622,6 @@ function guardarmarca(){
     alert("Por favor complete la descripcion de Marca, es un campo obligatorio");
   }
 }
-
-
 
 // Guarda equipo/sector nuevo - Chequeado
 $("#formAgregarEquipo").submit( function (event){   
@@ -960,4 +954,307 @@ function regresa(){
     </div> <!-- /.modal-content -->
   </div>  <!-- /.modal-dialog -->
 </div>  <!-- /.modal fade -->
+<!-- / Modal -->    
+
+<!-- Modal empresa -->
+<div class="modal fade" id="modalOrder" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel"><span id="modalAction" class="fa fa-plus-square text-light-blue"></span>  Agregar Empresa </h4>
+      </div> <!-- /.modal-header  -->
+
+      <div class="modal-body" id="modalBodyArticle">
+        <div class="row" >
+          <div class="col-xs-12">
+            <label>Nombre de la empresa <strong style="color: #dd4b39">*</strong>: </label>
+            <input type="text"  id="nombre"  name="nombre" placeholder="Ingrese Nombre o Descripción" class="form-control input-md" size="30"/>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="guardaremp()" >Guardar</button>
+      </div>  <!-- /.modal footer -->
+    </div>  <!-- /.modal-body -->
+  </div>  <!-- /.modal-dialog modal-lg -->
+</div>  <!-- /.modal fade -->
 <!-- / Modal -->
+
+<!-- Modal Unidad indus.-->
+<div class="modal fade" id="modalunidad" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-plus-square" style="color: #A4A4A4"  ></span>     Agregar Unidad Industrial </h4>
+       </div> <!-- /.modal-header  -->
+
+      <div class="modal-body" id="modalBodyArticle">
+        
+        <div class="row" >
+                               
+            <div class="col-xs-12"><h4>Nombre de la unidad industrial <strong style="color: #dd4b39">*</strong>: </h4>
+              <input type="text"  id="nombreunidad"  name="nombreunidad" placeholder="Ingrese Nombre o Descripción" class="form-control input-md" size="30"/>
+            </div>
+                    
+                    
+          </div>
+        </div>
+      </div>
+       
+     
+
+      <div class="modal-footer">
+       
+        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="guardarunidad()" >Guardar</button>
+      </div>  <!-- /.modal footer -->
+
+       </div>  <!-- /.modal-body -->
+    </div> <!-- /.modal-content -->
+
+  </div>  <!-- /.modal-dialog modal-lg -->
+</div>  <!-- /.modal fade -->
+<!-- / Modal -->
+
+<!-- Modal criticidad-->
+<div class="modal fade" id="modalcrit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-plus-square text-light-blue"></span> Agregar Sector </h4>
+      </div> <!-- /.modal-header  -->
+
+      <div class="modal-body" id="modalBodyArticle">
+        <div class="row" >
+          <div class="col-xs-12">
+            <label>Criticidad <strong style="color: #dd4b39">*</strong>: </label>
+            <input type="text"  id="de"  name="de" placeholder="Ingrese criticidad" class="form-control"/>
+          </div>
+        </div>
+      </div>  <!-- /.modal-body -->
+       
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="guardarcri()" >Guardar</button>
+      </div>  <!-- /.modal footer -->
+
+    </div> <!-- /.modal-content -->
+  </div>  <!-- /.modal-dialog -->
+</div>  <!-- /.modal fade -->
+<!-- / Modal -->
+
+<!-- Modal area-->
+<div class="modal fade" id="modalarea" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-plus-square text-light-blue"></span> Agregar Área </h4>
+       </div> <!-- /.modal-header  -->
+
+      <div class="modal-body" id="modalBodyArticle">
+        <div class="row" >
+          <div class="col-xs-12">
+            <label>Nombre de Área: <strong style="color: #dd4b39">*</strong>: </label>
+            <input type="text"  id="nomarea"  name="nomarea" placeholder="Ingrese Nombre o Descripción" class="form-control input-md" size="30"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="guardararea()" >Guardar</button>
+      </div>  <!-- /.modal footer -->
+    </div> <!-- /.modal-content -->
+  </div>  <!-- /.modal-dialog -->
+</div>  <!-- /.modal fade -->
+<!-- / Modal -->
+
+<!-- Modal Proceso-->
+<div class="modal fade" id="modalproceso" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-plus-square text-light-blue"></span> Agregar Proceso </h4>
+      </div> <!-- /.modal-header  -->
+
+      <div class="modal-body" id="modalBodyArticle">
+        <div class="row" >
+          <div class="col-xs-12">
+            <label>Nombre de Proceso: <strong style="color: #dd4b39">*</strong>: </label>
+            <input type="text"  id="nomproceso"  name="nomproceso" placeholder="Ingrese Nombre o Descripción" class="form-control input-md" size="30"/>
+          </div>
+        </div>
+      </div>
+  
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="guardarproceso()" >Guardar</button>
+      </div>  <!-- /.modal footer -->
+    </div> <!-- /.modal-content -->
+  </div>  <!-- /.modal-dialog -->
+</div>  <!-- /.modal fade -->
+<!-- / Modal -->
+
+<!-- Modal Etapa-->
+<div class="modal fade" id="modaletapa" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-plus-square text-light-blue"></span> Agregar Sector/Etapa de Proceso </h4>
+       </div> <!-- /.modal-header  -->
+
+      <div class="modal-body" id="modalBodyArticle">
+        <div class="row" >
+          <div class="col-xs-12">
+            <label>Nombre de Sector/Etapa de Proceso: <strong style="color: #dd4b39">*</strong>: </label>
+            <input type="text"  id="nometapa"  name="nometapa" placeholder="Ingrese Nombre o Descripcion" class="form-control input-md" size="30"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="guardaretapa()" >Guardar</button>
+      </div>  <!-- /.modal footer -->
+    </div> <!-- /.modal-content -->
+  </div>  <!-- /.modal-dialog -->
+</div>  <!-- /.modal fade -->
+<!-- / Modal -->
+
+<!-- Modal Grupo-->
+<div class="modal fade" id="modalgrupo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-plus-square text-light-blue"></span> Agregar Grupo </h4>
+      </div> <!-- /.modal-header  -->
+
+      <div class="modal-body" id="modalBodyArticle">
+        <div class="row" >
+          <div class="col-xs-12">
+            <label>Nombre de Grupo: <strong style="color: #dd4b39">*</strong>: </label>
+            <input type="text"  id="nomgrupo"  name="nomgrupo" placeholder="Ingrese Nombre o Descripción" class="form-control input-md" size="30"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="guardargrupo()" >Guardar</button>
+      </div>  <!-- /.modal footer -->
+    </div> <!-- /.modal-content -->
+  </div>  <!-- /.modal-dialog -->
+</div>  <!-- /.modal fade -->
+<!-- / Modal -->
+
+<!-- Modal Marca-->
+<div class="modal fade" id="modalMarca" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-plus-square text-light-blue"></span> Agregar Marca </h4>
+      </div> <!-- /.modal-header  -->
+
+      <div class="modal-body" id="modalBodyArticle">
+        <div class="row" >
+          <div class="col-xs-12">
+            <label>Nombre de Marca: <strong style="color: #dd4b39">*</strong>: </label>
+            <input type="text"  id="nombreMarca"  name="nombreMarca" placeholder="Ingrese Nombre o Descripción" class="form-control input-md" size="30"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="guardarmarca()" >Guardar</button>
+      </div>  <!-- /.modal footer -->
+    </div> <!-- /.modal-content -->
+  </div>  <!-- /.modal-dialog -->
+</div>  <!-- /.modal fade -->
+<!-- / Modal -->
+
+<!-- Modal Clientes --> 
+<div class="modal" id="modalCliente">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Agregar Cliente</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+              <h4><i class="icon fa fa-ban"></i> Error!</h4>
+              Revise que todos los campos esten completos
+            </div>
+          </div>
+        </div>
+
+        <div class="row"> 
+          <div class="col-xs-12">
+            <label style="margin-top: 7px;">Nombre <strong style="color: #dd4b39">*</strong>: </label>
+            <input type="text" class="form-control" id="cliName" >
+          </div>
+        </div><br>
+        <div class="row"> 
+          <div class="col-xs-12">
+            <label style="margin-top: 7px;">Apellido <strong style="color: #dd4b39">*</strong>: </label>
+            <input type="text" class="form-control" id="cliLastName" >
+          </div>
+        </div><br>
+        <div class="row"> 
+          <div class="col-xs-12">
+            <label style="margin-top: 7px;">Dni <strong style="color: #dd4b39">*</strong>: </label>
+            <input type="text" class="form-control"  id="cliDni" >
+          </div>
+        </div><br>
+        <div class="row"> 
+          <div class="col-xs-12">
+            <label style="margin-top: 7px;">Direccion <strong style="color: #dd4b39">*</strong>: </label>
+            <input type="text" class="form-control"  id="cliAddress" >
+          </div>
+        </div><br>
+        <div class="row"> 
+          <div class="col-xs-12">
+            <label style="margin-top: 7px;">Telefono <strong style="color: #dd4b39">*</strong>: </label>
+            <input type="text" class="form-control"  id="cliPhone" >
+          </div>
+        </div><br>
+        <div class="row"> 
+          <div class="col-xs-12">
+            <label style="margin-top: 7px;">Email <strong style="color: #dd4b39">*</strong>: </label>
+          </div>
+          <div class="col-xs-5">
+            <input type="text" class="form-control"  id="cliEmail" >
+          </div>
+        </div><br>
+        <div class="row"> 
+          <div class="col-xs-12">
+            <label style="margin-top: 7px;">Razon Social <strong style="color: #dd4b39">*</strong>: </label>
+            <input type="text" class="form-control"  id="cliRazonSocial" >
+          </div>
+        </div><br>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" onclick="guardarCliente()" >Guardar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal --><!-- Modal -->

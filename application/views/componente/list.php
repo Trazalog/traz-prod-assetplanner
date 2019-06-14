@@ -126,21 +126,21 @@ var idequipo     = "";
 
   // Llena los datos del modal editar
   function llenarComponentes(idEquipo, idComponente) { // Ok
+
     $.ajax({
-      //data: { idequipo:idEquipo },
+
       dataType: 'json',
       type: 'POST',
-      //url:  'index.php/Componente/getcompo',
       url:  'index.php/Componente/getcomponente',
+
       success: function(data){
-         //console.log(data);
-        if(data == null || data.length == 0){alert('No data');return;}
         $('#componente').empty();
-        for(var i=0; i < data.length ; i++) {
-          var nombre = data[i]['label'];
+
+        for(var i=0; i < data.length ; i++) { 
           var selected = (idComponente == data[i]['value']) ? 'selected' : '';
-          var opcion  = "<option value='"+data[i]['value']+"' " +selected+ ">" +nombre+ "</option>" ; 
-          $('#componente').append(opcion); 
+          var opcion  = "<option value='"+data[i]['value']+"' " +selected+ ">"+ data[i]['label']+ "</option>" ;
+
+          $('#componente').append(opcion);
         }
       },
       error: function(result){
@@ -358,50 +358,3 @@ function traer_marca(){
 </div>
 <!-- / Modal -->
 
-<!-- Modal Agregar componente-->
-<div class="modal" id="modalOrder" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel"><span class="fa fa-plus-square text-light-blue"></span> Agregar Componente</h4>
-       </div> <!-- /.modal-header  -->
-
-      <div class="modal-body" id="modalBodyArticle">
-        <div class="row" >
-
-          <div class="alert alert-danger alert-dismissable" id="error1" style="display: none">
-            <h4><i class="icon fa fa-ban"></i> Error!</h4>
-            Revise que todos los campos esten completos...                  
-          </div>
-          <div class="col-xs-12 col-sm-6">
-            <label>Marca <strong style="color: #dd4b39">*</strong>: </label>
-            <select class="form-control input-md" id="ma" name="ma" />
-          </div>
-          <div class="col-xs-12 col-sm-6">
-            <label>Descripción <strong style="color: #dd4b39">*</strong>: </label>
-            <input type="text"   class="form-control input-md" id="descrip1"  name="descrip1" placeholder="Ingrese Descripcion" />
-          </div>
-          <div class="col-xs-12"><label>Información:</label>
-            <textarea class="form-control" id="informacion" name="informacion" placeholder="Ingrese Informacion Adicional"></textarea>
-          </div>
-          <div class="col-xs-12">
-            <label><span class="fa fa-file-pdf-o"></span> Adjuntar</label>
-            <input id="input-4" name="input4[]" type="file"  class="form-control input-md">
-          </div>
-
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="guardarcompo()">Guardar</button>
-      </div>  <!-- /.modal footer -->
-
-       </div>  <!-- /.modal-body -->
-    </div> <!-- /.modal-content -->
-
-  </div>  <!-- /.modal-dialog modal-lg -->
-</div>  <!-- /.modal fade -->
-<!-- / Modal -->

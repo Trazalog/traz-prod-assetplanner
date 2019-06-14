@@ -1,9 +1,9 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 class area extends CI_Controller {
 
-	function __construct()
-    {
+	function __construct(){
 		parent::__construct();
 		$this->load->model('areas');
 	}
@@ -58,4 +58,5 @@ class area extends CI_Controller {
 	}
 }	
 
-?>
+
+

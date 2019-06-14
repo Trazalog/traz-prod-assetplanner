@@ -11,8 +11,7 @@ class dash extends CI_Controller {
 		$this->load->model('Groups');
 		$this->load->model('Customers');
 		$this->load->model('Calendar');
-		//$this->_init_Menu();	// Inicializa el menu
-		//$this->output->enable_profiler(true);
+
 	}
 
 	/**

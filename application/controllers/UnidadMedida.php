@@ -17,7 +17,8 @@ class UnidadMedida extends CI_Controller {
     function __construct()
     {
         parent::__construct();
-        $this->load->model('UnidadMedidas');
+        //$this->load->model('UnidadMedidas');
+        $this->load->model(CMP_ALM.'/Lovs');
     }
 
     /**
@@ -27,7 +28,7 @@ class UnidadMedida extends CI_Controller {
      */
     public function index($permission) // Ok
     {
-        $data['list']       = $this->UnidadMedidas->UnidadMedida_List();
+        $data['list']       = $this->Lovs->lista('unidad');
         $data['permission'] = $permission;
         $this->load->view('unidadMedidas/list', $data);
     }
@@ -38,9 +39,8 @@ class UnidadMedida extends CI_Controller {
     public function agregarUnidadMedida() //
     {
         $descripcion = $this->input->post('descripcion');
-        $datos       = array( 'descripcion'=>$descripcion );
-        $result['unidadMedida'] = $this->UnidadMedidas->agregarUnidadMedida($datos);
-        echo json_encode($result);
+        $datos       = array( 'descripcion'=>$descripcion, 'tabla'=>'unidad' );
+        echo $this->Lovs->crear($datos);
     }
 
     /**
@@ -48,10 +48,10 @@ class UnidadMedida extends CI_Controller {
      */
     public function editarUnidadMedida()
     {
-        $datos  = $this->input->post('parametros');
-        $id     = $this->input->post('idunidadmedida');
-        $result = $this->UnidadMedidas->update_editar($datos,$id);
-        return true;
+        $data = $this->input->post('parametros');
+        $data['tabl_id']  = $this->input->post('idunidadmedida');
+        echo  $this->Lovs->modificar($data);
+    
     }
 
     /**
@@ -63,9 +63,7 @@ class UnidadMedida extends CI_Controller {
      */
     public function bajaUnidadMedida() // Ok
     {
-        $id     = $this->input->post('idUnidadMedida');
-        $result['isOk'] = $this->UnidadMedidas->bajaUnidadMedida($id);
-        $result['unidadMedida'] = $this->UnidadMedidas->UnidadMedida_List();
-        echo json_encode($result);  
+        $id = $this->input->post('idUnidadMedida');
+        echo $this->Lovs->eliminar($id); 
     }
 }

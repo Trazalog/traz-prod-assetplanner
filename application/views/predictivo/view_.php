@@ -21,8 +21,7 @@
             ?>
           </div><!-- /.box-header -->
           
-          <div class="box-body">
-            
+          <div class="box-body">            
               
               <div class="panel panel-default">
                 <div class="panel-heading">
@@ -41,7 +40,8 @@
                     </div>
                     <div class="col-xs-12 col-sm-6 com-md-4">
                       <label for="marca">Marca:</label>
-                      <input type="text" id="marca"  name="marca" class="form-control input-md"  disabled />
+                      <input type="text" id="marcadesc"  name="marcadesc" class="form-control input-md"  disabled />
+                      <input type="hidden" id="marca"  name="marca" class="form-control input-md"  disabled />
                     </div>
                     <div class="col-xs-12 col-sm-6 com-md-4">
                       <label for="ubicacion">Ubicacion:</label>
@@ -233,6 +233,14 @@
 </section>
 
 <script> 
+// impide que se vya la pantalla al apretar enter
+$(document).ready(function() {
+    $("#formPredictivo input").keypress(function(e) {
+        if (e.which == 13) {
+            return false;
+        }
+    });
+});
 
 
 $("#formPredictivo").submit(function (event){   
@@ -334,14 +342,17 @@ $('#equipo').change(function(){
       success: function(data){    
                   console.log(data);                     
                   var fecha_ingreso = data[0]['fecha_ingreso']; 
-                  var marca = data[0]['marca']; 
+                  var marca = data[0]['marca'];
+                  var marcadesc = data[0]['marcadescrip']; 
                   var ubicacion = data[0]['ubicacion']; 
                   var criterio1 = data[0]['criterio1']; 
                   var descripcion = data[0]['descripcion']; 
                   $('#fecha_ingreso').val(fecha_ingreso);       
                   $('#marca').val(marca);   
                   $('#descripcion').val(descripcion);       
-                  $('#ubicacion').val(ubicacion);  
+                  $('#ubicacion').val(ubicacion);
+                  $('#marcadesc').val(marcadesc);  
+                  
               },        
       error: function(result){
                     
@@ -810,3 +821,28 @@ $("#fecha").datepicker({
 }).datepicker("setDate", new Date());
 
 </script>
+
+<!-- Modal aviso eliminar -->
+<div class="modal fade" id="modalaviso">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" ><span class="fa fa-fw fa-times-circle" style="color:#A4A4A4"></span>  Eliminar</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" >&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <center>
+        <h4><p id="mensaje">¿ DESEA ELIMINAR ASOCIACIÓN ?</p></h4>
+        </center>
+      </div>
+      <div class="modal-footer">
+        <center>
+        <!-- <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminar()">SI</button> -->
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
+        </center>
+      </div>
+    </div>
+  </div>
+</div>

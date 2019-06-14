@@ -9,7 +9,7 @@ class Administraciones extends CI_Model
 	}
 	// trae todas las ot de una empresa
 	function otrabajos_List(){
-		
+
 		$userdata = $this->session->userdata('user_data');
 		$empId = $userdata[0]['id_empresa'];
 		
@@ -35,6 +35,8 @@ class Administraciones extends CI_Model
 			return false;
 		}
 	}
+
+
 
 	function cargartareas($idglob){
 		//var_dump($idglob);

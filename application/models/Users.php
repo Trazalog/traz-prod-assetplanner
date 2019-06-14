@@ -235,6 +235,9 @@ class Users extends CI_Model
 
 	function sessionStart_($data = null)
 	{
+
+		$this->load->library('BPM');
+
 		if($data == null)
 		{
 			return false;
@@ -254,14 +257,15 @@ class Users extends CI_Model
 			$this->db->join('empresas', 'empresas.id_empresa = usuarioasempresa.empresaid');
 			$this->db->where('sisusers.usrNick', $usr);
 			$this->db->where('sisusers.usrPassword', $pas);
-			$this->db->where('usuarioasempresa.tipo', 1);
+			$this->db->where('usuarioasempresa.tipo', 1); //!HARDCODE
 			$query = $this->db->get();
 			
 			if ($query->num_rows() != 0)
 			{
 				$datosSesionUsuario = $query->result_array();
-				
-				//dump_exit($datosSesionUsuario);
+
+				$datosSesionUsuario[0]['userBpm'] = $this->bpm->getUser($datosSesionUsuario[0]["usrNick"]);		
+
 				$this->session->set_userdata('user_data', $datosSesionUsuario);
 	 			return true;
 			} else {

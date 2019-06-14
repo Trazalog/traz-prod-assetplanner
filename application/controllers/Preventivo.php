@@ -161,8 +161,8 @@ class Preventivo extends CI_Controller {
 	}
 
 	// Guarda preventivo segun empresa logueada
-  	public function guardar_preventivo()
-  	{	
+	public function guardar_preventivo()
+	{	
 		$data     = $this->input->post();
 		$userdata = $this->session->userdata('user_data');
 		$empId    = $userdata[0]['id_empresa'];  		
@@ -174,7 +174,6 @@ class Preventivo extends CI_Controller {
 		$pe         =$this->input->post('periodo');
 		$can        =$this->input->post('cantidad');
 		$oper       = $this->input->post('cantOper');
-		//$unitiemp = $this->input->post('unidad');		
 		$com        =$this->input->post('id_componente');
 		$durac      =$this->input->post('duracion');
 		$unidad     =$this->input->post("unidad");
@@ -203,34 +202,34 @@ class Preventivo extends CI_Controller {
 		
 		if($response['resPrenvent']){
 
-			$ultimoId = $this->db->insert_id(); 			
+			$ultimoId = $this->db->insert_id();			
 
 			////////// para guardar herramientas                 
-	        if ( !empty($data['id_her']) ){
-		  		//saco array con herramientas y el id de empresa
-		  		$herr = $data["id_her"]; 
-		  		$i = 0;
-		  		foreach ($herr as $h) {
-		  			$herramPrev[$i]['herrId']= $h;
-		  			$herramPrev[$i]['id_empresa']= $empId;
-		  			$i++;                                
-		  		} 
-		  		//saco array con cant de herramientas y el id de preventivo 
-		  		$cantHerr = $data["cant_herr"];
-		  		$z = 0;
-		  		foreach ($cantHerr as $c) {
-		  			$herramPrev[$z]['cantidad']= $c;
-		  			$herramPrev[$z]['PrevId']= $ultimoId;
-		  			$z++;                                
-		  		}
-		  		// Guarda el bacht de datos de herramientas
-		  		$response['respHerram'] = $this->Preventivos->insertPrevHerram($herramPrev);
-	  		}else{
+				if ( !empty($data['id_her']) ){
+					//saco array con herramientas y el id de empresa
+					$herr = $data["id_her"]; 
+					$i = 0;
+					foreach ($herr as $h) {
+						$herramPrev[$i]['herrId']= $h;
+						$herramPrev[$i]['id_empresa']= $empId;
+						$i++;                                
+					} 
+					//saco array con cant de herramientas y el id de preventivo 
+					$cantHerr = $data["cant_herr"];
+					$z = 0;
+					foreach ($cantHerr as $c) {
+						$herramPrev[$z]['cantidad']= $c;
+						$herramPrev[$z]['PrevId']= $ultimoId;
+						$z++;                                
+					}
+					// Guarda el bacht de datos de herramientas
+					$response['respHerram'] = $this->Preventivos->insertPrevHerram($herramPrev);
+				}else{
 
-	  			$response['respHerram'] = "vacio";	// no habia herramientas
-	  		}
+					$response['respHerram'] = "vacio";	// no habia herramientas
+				}
 
-	  		////////// para guardar insumos
+	  	////////// para guardar insumos
 	  		if ( !empty($data['id_insumo']) ){
 		  		//saco array con herramientas y el id de empresa
 		  		$ins = $data["id_insumo"]; 
@@ -256,25 +255,25 @@ class Preventivo extends CI_Controller {
 	  		}	
 
 			////////// Subir imagen o pdf 
-			$nomcodif = $this->codifNombre($ultimoId,$empId); // codificacion de nomb  	
-			$nomcodif = 'preventivo'.$nomcodif;	
-			$config = [
-				"upload_path" => "./assets/filespreventivos",
-				'allowed_types' => "png|jpg|pdf|xlsx",
-				'file_name'=> $nomcodif
-			];
+				$nomcodif = $this->codifNombre($ultimoId,$empId); // codificacion de nomb  	
+				$nomcodif = 'preventivo'.$nomcodif;	
+				$config = [
+					"upload_path" => "./assets/filespreventivos",
+					'allowed_types' => "png|jpg|pdf|xlsx",
+					'file_name'=> $nomcodif
+				];
 
-			$this->load->library("upload",$config);
-			if ($this->upload->do_upload('inputPDF')) {
-				
-				$data = array("upload_data" => $this->upload->data());
-				$extens = $data['upload_data']['file_ext'];//guardo extesnsion de archivo
-				$nomcodif = $nomcodif.$extens;
-				$adjunto = array('prev_adjunto' => $nomcodif);
-				$response['respNomImagen'] = $this->Preventivos->updateAdjunto($adjunto,$ultimoId);
-			}else{
-				$response['respImagen'] = false;
-			}	
+				$this->load->library("upload",$config);
+				if ($this->upload->do_upload('inputPDF')) {
+					
+					$data = array("upload_data" => $this->upload->data());
+					$extens = $data['upload_data']['file_ext'];//guardo extesnsion de archivo
+					$nomcodif = $nomcodif.$extens;
+					$adjunto = array('prev_adjunto' => $nomcodif);
+					$response['respNomImagen'] = $this->Preventivos->updateAdjunto($adjunto,$ultimoId);
+				}else{
+					$response['respImagen'] = false;
+				}	
 		}
 
 		echo json_encode($response);		
@@ -434,11 +433,22 @@ class Preventivo extends CI_Controller {
         $this->load->view('preventivo/view_',$data);
     }
 
-    public function volver($permission){ 
-    	$data['list'] = $this->Otrabajos->otrabajos_List();
-        $data['permission'] = $permission;    // envia permisos       
-        $this->load->view('otrabajos/list',$data);
-    }
+  //   public function volver($permission){ 
+  //   	$data['list'] = $this->Otrabajos->otrabajos_List();
+  //       $data['permission'] = $permission;    // envia permisos       
+  //       $this->load->view('otrabajos/list',$data);
+  //   }
+
+	// public function getProducto (){
+  //   	$response = $this->Preventivos->getProductos($this->input->post());
+  //   	echo json_encode($response);
+  //   }
+
+	public function volver($permission){ 
+		$data['list'] = $this->Otrabajos->otrabajos_List();
+			$data['permission'] = $permission;    // envia permisos       
+			$this->load->view('otrabajos/list',$data);
+	}
 
 	public function getProducto (){
     	$response = $this->Preventivos->getProductos($this->input->post());

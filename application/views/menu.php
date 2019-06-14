@@ -23,6 +23,8 @@
 $(".sidebar .sidebar-menu a").click(function(event) {
     event.preventDefault();
     var permission  = $(this).data("permission");
+    if($(this).attr("href").includes('almacen')) {linkTo($(this).attr("href"));return;}
+   
     var url         = $(this).attr("href").split("/");
     var base        = '<?php echo base_url() ?>'.split('/');
     var base_folder = base[base.length-2];
@@ -63,8 +65,7 @@ $(".sidebar .sidebar-menu a").click(function(event) {
  */
 function cargarView(controller, action, actions) {
     WaitingOpen();
-    $('#content').empty();
-    $("#content").load("<?php echo base_url(); ?>index.php/"+controller+"/"+action+"/"+actions);
+    linkTo(controller+"/"+action+"/"+actions);
     WaitingClose();
 }
 </script>
