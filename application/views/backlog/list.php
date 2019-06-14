@@ -221,11 +221,13 @@ function eliminarpred(){
 // Completa los campos con datos de backlpog - Chequeado
 function completarEdit(datos,herram,insum){   
   
-  var fecha= new Date(datos['fecha']);
-  var day = getFormattedPartTime(fecha.getDate() + 1);
-  var month = getFormattedPartTime(fecha.getMonth() + 1);
-  var year = fecha.getUTCFullYear();
-  var fechater = day + '-' + (month) + '-' + year;
+  // var fecha= new Date(datos['fecha']);
+  // var day = getFormattedPartTime(fecha.getDate() + 1);
+  // var month = getFormattedPartTime(fecha.getMonth() + 1);
+  // var year = fecha.getUTCFullYear();
+  // var fechater = day + '-' + (month) + '-' + year ;
+
+  var fecha= datos['fecha'];
 
   $("#equipo").val(datos['codigo']);
   $("#id_backlog").val(datos['backId']);
@@ -240,7 +242,7 @@ function completarEdit(datos,herram,insum){
   $('#tareaOpcional').val(datos['tarea_opcional']);      
  
  
-  $('#fecha').val(fechater);
+  $('#fecha').val(fecha);
   $('#periodo').val(datos['periodo']);
   $('#horash').val(datos['duracion']); 
   $('#sistema_componente').val(datos['sistema']); 
@@ -296,14 +298,14 @@ function getFormattedPartTime(partTime) {
 // Guarda Backlog Editado - Chequeado
   function guardar(){
       
-      var backid        = $('#id_backlog').val();//
-      var tarea         = $('#idtarea').val();//
-      var fecha         = $('#fecha').val();//
-      var hshombre      = $('#hshombre').val();  
-      var duracion      = $('#duracion').val(); 
-      var id_unidad     = $('#unidad').val();
-      var back_canth    = $('#cantOper').val();
-      var tareaOpcional = $('#tareaOpcional').val();
+    var backid        = $('#id_backlog').val();//
+    var tarea         = $('#idtarea').val();//
+    var fecha         = $('#fecha').val();//
+    var hshombre      = $('#hshombre').val();  
+    var duracion      = $('#duracion').val(); 
+    var id_unidad     = $('#unidad').val();
+    var back_canth    = $('#cantOper').val();
+    var tareaOpcional = $('#tareaOpcional').val();
     
     // Arma array de herramientas y cantidades
     var idsherramienta = new Array();     
@@ -345,14 +347,17 @@ function getFormattedPartTime(partTime) {
                 cantHerram: cantHerram,
                 idsinsumo: idsinsumo, 
                 cantInsum: cantInsum,
-                tareaOpcional: tareaOpcional },
+                tareaOpcional: tareaOpcional, 
+                tipo: 'edit'},
         url: 'index.php/Backlog/editar_backlog', 
         success: function(data){
                   WaitingClose();
                   $('#modalSale').modal('hide');
-                  console.log(data);
-                  console.log("exito");
-                  Refrescar();                     
+                  if (data['status']) {                    
+                    Refrescar();
+                  } else {
+                    alert(data['msj']);
+                  }              
                 },
         error: function(result){            
                 WaitingClose();
@@ -395,33 +400,7 @@ function getFormattedPartTime(partTime) {
         });
   }
 
-// trae tareas para llenar select en edicion
-  // traer_tarea();
-  // function traer_tarea(){
-  //     $.ajax({
-  //       type: 'POST',
-  //       data: { },
-  //       url: 'index.php/Backlog/gettarea', //index.php/
-  //       success: function(data){
-              
-  //               var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-  //                 $('#tarea').append(opcion); 
-  //               for(var i=0; i < data.length ; i++) 
-  //               {    
-  //                     var nombre = data[i]['descripcion'];
-  //                     var opcion  = "<option value='"+data[i]['id_tarea']+"'>" +nombre+ "</option>" ; 
-
-  //                   $('#tarea').append(opcion); 
-                                  
-  //               }
-  //             },
-  //       error: function(result){
-              
-  //             console.log(result);
-  //           },
-  //           dataType: 'json'
-  //       });
-  // }
+// Trae tareas par  autocompletar, limpia uno u otra tarea 
 
   // limpia un input al seleccionar o llenar otro
   $('#tarea').change(function(){    
@@ -695,9 +674,13 @@ function Refrescar1(){
    WaitingClose();
 }
 
-$("#fecha").datepicker(); 
+//$("#fecha").datepicker(); 
 
-
+ // cargo plugin DateTimePicker
+ $('#fecha').datetimepicker({
+      format: 'YYYY-MM-DD HH:mm:ss',
+      locale: 'es',
+  });
 
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -879,7 +862,7 @@ function recargaTablaAdjunto(backAdjunto) {
               </div>
               <div class="col-xs-12 col-sm-6 col-md-4">
                 <label for="vfecha">Fecha Creación:</label>
-                <!-- <input type="text" class="datepicker  form-control limpiar fecha" id="fecha" name="vfecha" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/> -->
+                <!-- <input type="text" class="datepicker  form-control limpiar fecha" id="fecha" name="vfecha" value="<?php ///echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>  -->
                 <input type="text" class="form-control limpiar fecha" id="fecha" name="vfecha" size="27"/>
               </div>
               

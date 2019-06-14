@@ -12,12 +12,12 @@
     <div class="col-xs-12">
 
       <div class="box">
-        <div class="box-header">
-          <h3 class="box-title">Programación Backlog</h3>
-          <?php
-            if (strpos($permission,'Add') !== false) {
-              echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="listado">Ver Listado</button>';
-            }
+          <div class="box-header">
+            <h3 class="box-title">Programación Backlog</h3>
+            <?php
+              if (strpos($permission,'Add') !== false) {
+                echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="listado">Ver Listado</button>';
+              }
             ?>
           </div><!-- /.box-header -->
           <form id="formBacklog" role="form" action="<?php base_url();?>Backlog/guardar_backlog" method="POST" onKeypress="if (event.keyCode == 13) event.returnValue = false;" >
@@ -243,9 +243,9 @@
               <button type="submit" class="btn btn-primary">Guardar</button>
             </div>
           </form>
-        </div>
       </div>
     </div>
+  </div>
 </section>
 
 <script>

@@ -468,8 +468,7 @@ class Tarea extends CI_Controller {
 							$this->load->view('tareas/scripts/tarea_std');													
 							break;
 					case 'Editar Backlog':									
-							$data['info'] = $this->getEditarBacklog($id_SS);						
-							dump($data['info'], 'info backlog: ');
+							$data['info'] = $this->getEditarBacklog($id_SS);
 							$this->load->view('backlog/nuevo_edicion_view_',$data);
 							$this->load->view('tareas/scripts/tarea_std');
 							break;					
