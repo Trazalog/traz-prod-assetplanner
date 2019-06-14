@@ -35,6 +35,7 @@
             </thead>
             <tbody>
               <?php
+           
                 foreach($list as $a)
                 {
                   $id = $a['id_equipo'];                  
@@ -72,11 +73,12 @@
                   echo '<td>'.$a['depro'].'</td>';
                   echo '<td>'.$a['desec'].'</td>';
                   echo '<td>'.$a['decri'].'</td>';
-                  echo '<td>'
-                    .($a['estado'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' 
-                    :($a['estado'] == 'IN' ? '<small class="label pull-left bg-blue">Inhabilitado</small>'
-                    :($a['estado'] == 'RE' ? '<small class="label pull-left bg-yellow">Reparación</small>' 
-                    : '<small class="label pull-left bg-teal">Alta</small>'))).'</td>';
+                  echo '<td>';
+                    if($a['estado'] == 'AC' ) echo '<small class="label pull-left bg-green">Activo</small>' ;
+                    if($a['estado'] == 'IN' ) echo '<small class="label pull-left bg-yellow">Inhabilitado</small>';
+                    if($a['estado'] == 'RE' ) echo '<small class="label pull-left bg-orange">Reparación</small>' ;
+                    if($a['estado'] == 'AL' ) echo '<small class="label pull-left bg-blue">Alta</small>' ;
+                    //: '<small class="label pull-left bg-teal">Alta</small>'))).'</td>';
                   echo '</tr>';
                 }
               ?>
@@ -132,6 +134,7 @@ $(".fa-user ").click(function (e) {
  
 // Cambiar a estado - Chequeado
 $(".fa-toggle-on").click(function (e) { 
+  WaitingOpen('Cambiando estado...');
   var idequipo = $(this).parent('td').parent('tr').attr('id');
   console.log(idequipo);
   $.ajax({
@@ -140,7 +143,8 @@ $(".fa-toggle-on").click(function (e) {
     url: 'index.php/Equipo/cambio_equipo', 
     success: function(data){
       console.log(data);
-      alert("Se cambio el estado del equipo a INACTIVO");            
+      //alert("Se cambio el estado del equipo a INACTIVO");   
+      WaitingClose();         
       regresa();          
     },
     error: function(result){
@@ -154,7 +158,7 @@ $(".fa-toggle-on").click(function (e) {
 $(".fa-toggle-off").click(function (e) { 
   var idequipo = $(this).parent('td').parent('tr').attr('id');
   console.log("id de equipo: "+idequipo);
-
+  WaitingOpen('Cambiando estado...');
   habilitarEquipo(idequipo);
 });
 
@@ -169,6 +173,7 @@ function habilitarEquipo(idequipo) {
     url: 'index.php/Equipo/estado_alta', 
     success: function(data){
       console.table(data[0]['estado']);
+      console.table(data);
       if (data[0]['estado'] == 'AL') {
         var id_equipo   = idequipo;
         var lectura     = data[0]['ultima_lectura'];
@@ -186,6 +191,7 @@ function habilitarEquipo(idequipo) {
           'turno'       : turno,
           'estado'      : estado,
         }
+        console.log(parametros + 'parametros: ');
         alta_historial_lectura(parametros);
         cambiar_estado(id_equipo);
       } else if(data[0]['estado'] != 'AN') {
@@ -230,6 +236,7 @@ function cambiar_estado(idequipo, vuelve=true){
     url: 'index.php/Equipo/cambio_estado', 
     success: function(data){
       console.log(data);
+      WaitingClose(); 
       alert("Se cambio el estado del equipo a ACTIVO");
       if(vuelve==true){
         regresa();
@@ -749,7 +756,7 @@ function guardar(){
   var fecha_ultimalectura = $('#fecha_ultimalectura').val();
   var ultima_lectura      = $('#ultima_lectura').val();
   var fecha_garantia      = $('#fecha_garantia').val();
-  //var id_empresa        = $('#id_empresa').val();
+  var estado              = $('#estado').val();
   var sector              = $('#etapa option:selected').val();
   var criticidad          = $('#criticidad option:selected').val();
   var grupo               = $('#grupo').val();
@@ -774,7 +781,7 @@ function guardar(){
     'id_criticidad' : criticidad,
     'id_customer' : id_cliente,
     'numero_serie' : numero_serie,
-    'estado' : 'AC',
+    'estado' : estado,
     'fecha_ultimalectura': fecha_ultimalectura,
     'ultima_lectura': ultima_lectura,   
     'descrip_tecnica':descrip_tecnica,
@@ -1293,8 +1300,7 @@ function llenarCampos(data) {
   $('#fecha_ultimalectura').val( data[0]['fecha_ultimalectura'] );
   $('#ultima_lectura').val( data[0]['ultima_lectura'] );
   $('#destec').val( data[0]['descrip_tecnica'] );
-
-  $('#destec').val( data[0]['descrip_tecnica'] );
+  $('#estado').val( data[0]['estado'] );
   //info complementaria
   llenar_adjunto( data[0]['adjunto'] );
   //abro modal
@@ -1490,12 +1496,6 @@ function llenar_adjunto(adjunto) {
   }
   $('#accionAdjunto').html(accion);
 }
-
-
-
-
-
-
 
 // Agrega las areas nuevas - Listo
 function guardararea(){ 
@@ -1927,9 +1927,6 @@ $('#modaleditar').on('hidden.bs.modal', function (e) {
   });
 
 
-
-
-
 </script>
 
 
@@ -2199,6 +2196,7 @@ $('#modaleditar').on('hidden.bs.modal', function (e) {
                   <div class="col-xs-12">
                     <label>Descripción Técnica:</label>
                     <textarea class="form-control" id="destec" name="destec" placeholder="Ingrese Descripción Técnica..."></textarea>
+                    <input type="hidden" id="estado"  name="estado" class="form-control input-md">
                   </div>
                 </div>
               </div><!-- /.panel-body-->   

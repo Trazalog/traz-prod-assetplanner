@@ -233,14 +233,10 @@ $('#listado').click( function cargarVista(){
     WaitingClose();
 });
 
-
-
 $('#ultimo').datetimepicker({
   format: 'YYYY-MM-DD', 
   locale: 'es',
 });
-
-
 
 // Trae equipos
 WaitingOpen("Cargando Equipos...");
@@ -261,10 +257,32 @@ $.ajax({
 })
 .fail( () => alert("Error al traer Equipos.") )
 .always( () => WaitingClose() );
-
-
-
-
+// Con equipo seleccionado llama funcion para traer sus componentes
+$('#equipo').change(function(){
+  WaitingOpen("Cargando datos de Equipo...");
+  var id_equipo = $(this).val();
+  $.ajax({
+    type: 'POST',
+    data: { id_equipo: id_equipo},
+    dataType: 'json',
+    url: 'index.php/Preventivo/getEquipoNuevoPrevent', 
+  })
+  .done( (data) => {
+    var fecha_ingreso = data[0]['fecha_ingreso']; 
+    var marca         = data[0]['marca']; 
+    var ubicacion     = data[0]['ubicacion']; 
+    var criterio1     = data[0]['criterio1']; 
+    var descripcion   = data[0]['descripcion']; 
+    $('#fecha_ingreso').val(fecha_ingreso);       
+    $('#marca').val(marca);   
+    $('#descripcion').val(descripcion);       
+    $('#ubicacion').val(ubicacion);  
+    
+    traer_componente(id_equipo); 
+  })
+  .fail( () => alert("Error al traer Equipos.") )
+  .always( () => WaitingClose() );
+});
 // Trae componente segun equipo seleccionado
 function traer_componente(id_equipo){
   $('#componente').html("");
@@ -295,34 +313,6 @@ function traer_componente(id_equipo){
     },
   });
 }
-
-// Trae equipo seleccionado y llama fcion para traer sus componentes
-$('#equipo').change(function(){
-  WaitingOpen("Cargando datos de Equipo...");
-  var id_equipo = $(this).val();
-  $.ajax({
-    type: 'POST',
-    data: { id_equipo: id_equipo},
-    dataType: 'json',
-    url: 'index.php/Preventivo/getEquipoNuevoPrevent', 
-  })
-  .done( (data) => {
-    var fecha_ingreso = data[0]['fecha_ingreso']; 
-    var marca         = data[0]['marca']; 
-    var ubicacion     = data[0]['ubicacion']; 
-    var criterio1     = data[0]['criterio1']; 
-    var descripcion   = data[0]['descripcion']; 
-    $('#fecha_ingreso').val(fecha_ingreso);       
-    $('#marca').val(marca);   
-    $('#descripcion').val(descripcion);       
-    $('#ubicacion').val(ubicacion);  
-    
-    traer_componente(id_equipo); 
-  })
-  .fail( () => alert("Error al traer Equipos.") )
-  .always( () => WaitingClose() );
-});
-
 
 
 //Trae tareas y permite busqueda en el input
@@ -356,8 +346,6 @@ $("#tarea").autocomplete({
   }
 });
 
-
-
 // Trae periodo y llena select
 traer_periodo();
 function traer_periodo(periodoId){
@@ -387,8 +375,6 @@ function traer_periodo(periodoId){
   });
 }
 
-
-
 //Habilita lectura base y alerta si el periodo es horas ó ciclos
 $('#periodo').change(function(){
   //alert('hola');
@@ -402,8 +388,6 @@ $('#periodo').change(function(){
     $('#lectura_base').prop('disabled', 'disabled');
   }
 });
-
-
 
 // Trae unidades de tiempo y llena select
 $('#unidad').html("");
@@ -425,8 +409,6 @@ $.ajax({
   },
   dataType: 'json'
 });
-
-
 
 // Calcula horas hombre por tiempo y unidades
 function calcularHsHombre(){
@@ -461,8 +443,6 @@ $('#duracion, #unidad, #cantOper').change(function(){
     calcularHsHombre();
 });
 
-
-
 // Vuelve a la vista de listado de preventivos
 function cargarVista(){
     WaitingOpen();
@@ -470,8 +450,6 @@ function cargarVista(){
     $("#content").load("<?php echo base_url(); ?>index.php/Preventivo/index/<?php echo $permission; ?>");
     WaitingClose();
 }
-
-
 
 // Guarda Preventivo  
 $("#formPreventivo").submit(function (event){   
@@ -494,7 +472,7 @@ $("#formPreventivo").submit(function (event){
       $('#error').fadeIn('slow');
     }
   }
-  if ((equipo < 0)||(tarea < 0)||(periodo < 0)||(unidad < 0)||(duracion == "")||(freq == "")||(oper == "")||(hh == "")) {
+  if ((equipo < 0)||(tarea < 0)||(periodo < 0)||(unidad < 0)||(duracion == "")||(freq == "")||(oper == "")||(hh == "" || compon < 0)) {
       $('#error').fadeIn('slow');
   }
   else{
@@ -528,15 +506,6 @@ $("#formPreventivo").submit(function (event){
 });
 
 
-
-
-
-
-
-
-
-
-
 function ordenaArregloDeObjetosPor(propiedad) {  
   return function(a, b) {  
     if (a[propiedad] > b[propiedad]) {  
@@ -562,7 +531,6 @@ function ordenaArregloDeObjetosPor(propiedad) {
     .fail( () => alert("Error al traer Herramientas") );
     return tmp;
   }();
-
   // data busqueda por codigo de herramientas
   function dataCodigoHerr(request, response) {
     function hasMatch(s) {
@@ -609,8 +577,6 @@ function ordenaArregloDeObjetosPor(propiedad) {
     }
     response(matches);
   }
-
-
   //busqueda por marcas de herramientas
   $("#herramienta").autocomplete({
     source:    dataCodigoHerr,
@@ -637,7 +603,6 @@ function ordenaArregloDeObjetosPor(propiedad) {
     .append( "<a>" + item.codigo + "</a>" )
     .appendTo( ul );
   };
-
   //busqueda por marcas de herramientas
   $("#marcaherram").autocomplete({
     source:    dataMarcaHerr,
@@ -664,7 +629,6 @@ function ordenaArregloDeObjetosPor(propiedad) {
     .append( "<a>" + item.marca + "</a>" )
     .appendTo( ul );
   };
-
   //busqueda por descripcion de herramientas
   $("#descripcionherram").autocomplete({
     source:    dataHerramientas,
@@ -685,8 +649,6 @@ function ordenaArregloDeObjetosPor(propiedad) {
       $('#marcaherram').val(ui.item.marca);
     },
   });
-
-
   // Agrega herramientas a la tabla - Chequeado
   var nrofila = 0;  // hace cada fila unica
   $("#agregarherr").click(function (e) {
@@ -727,7 +689,6 @@ function ordenaArregloDeObjetosPor(propiedad) {
   });
 ////// HERRAMIENTAS //////
 
-
 ////// INSUMOS //////
 
   //Trae insumos
@@ -743,7 +704,6 @@ function ordenaArregloDeObjetosPor(propiedad) {
     .fail( () => alert("Error al traer Herramientas") );
     return tmp;
   }();
-
   // data busqueda por codigo de herramientas
   function dataCodigoInsumo(request, response) {
     function hasMatch(s) {
@@ -767,8 +727,6 @@ function ordenaArregloDeObjetosPor(propiedad) {
     }
     response(matches);
   }
-
-
   //busqueda por marcas de herramientas
   $("#insumo").autocomplete({
     source:    dataCodigoInsumo,
@@ -793,7 +751,6 @@ function ordenaArregloDeObjetosPor(propiedad) {
     .append( "<a>" + item.codigo + "</a>" )
     .appendTo( ul );
   };
-
   //busqueda por descripcion de herramientas
   $("#descript").autocomplete({
     source:    dataInsumos,
@@ -813,7 +770,6 @@ function ordenaArregloDeObjetosPor(propiedad) {
       $('#marcaherram').val(ui.item.marca);
     },
   });
-
   // Agrega insumos a la tabla 
   var nrofilaIns = 0; 
   $("#agregarins").click(function (e) {

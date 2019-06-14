@@ -18,7 +18,8 @@
                 <th>Fecha</th>
                 <th>Periodo</th>
                 <th>Cantidad</th>
-                <th>Horas.H</th>                
+                <th>Horas.H</th>
+                <th>Estado</th>                
               </tr>
             </thead>
             <tbody>
@@ -26,7 +27,7 @@
                 if(count($list['data']) > 0){                  
                   foreach($list['data'] as $a){
 
-                    if ($a['estado'] == "C") {
+                    //if ($a['estado'] == "C") {
                       
                       $id  = $a['predId'];
                       $ide = $a['id_equipo'];
@@ -36,7 +37,11 @@
                      
                       if (strpos($permission,'Add') !== false) {
                         echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar" data-toggle="modal" data-target="#modalaviso"></i>';
-                        echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar" ></i>';
+                        
+                        if( ($a['estado'] == 'S') || ($a['estado'] == 'PL') ) {
+                          echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar" ></i>';
+                        }
+                       
                       } 
                       if ($a['pred_adjunto']) {
                         echo '<a href="'.base_url().'assets/filespredictivos/'.$a['pred_adjunto'].'" target="_blank"><i class="fa fa-file-pdf-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Ver Pdf"></i></a>';
@@ -49,9 +54,28 @@
                       echo '<td>'.$a['periodo'].'</td>';
                       echo '<td>'.$a['cantidad'].'</td>';
                       echo '<td>'.$a['horash'].'</td>';
-                                       
+                      echo '<td>';     
+                        if($a['estado'] == 'PL'){
+                        echo '<small class="label pull-left bg-yellow">Planificada</small>';
+                        }
+                        if($a['estado'] == 'AS'){
+                        echo '<small class="label pull-left bg-purple">Asignada</small>';
+                        }
+                        if ($a['estado'] == 'C') {
+                          echo '<small class="label pull-left bg-green">Curso</small>' ;
+                        }
+                        if ($a['estado'] == 'T') {
+                        echo  '<small class="label pull-left bg-blue">Terminada</small>';
+                        }
+                        if ($a['estado'] == 'CE') {
+                          echo  '<small class="label pull-left bg-primary">Cerrada</small>';
+                        }
+                        if ($a['estado'] == 'S') {
+                          echo  '<small class="label pull-left bg-red">Solicitada</small>';
+                        }
+                      echo '</td>';                                        
                       echo '</tr>';
-                    }                    
+                    //}                    
                   }
                 } 
               ?>

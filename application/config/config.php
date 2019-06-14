@@ -23,7 +23,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://localhost/traz-prod-assetplanner/';
+//$config['base_url'] = 'http://192.168.1.147/traz-prod-assetplanner/';
+$config['base_url'] = 'https://holis/traz-prod-assetplanner/';
 
 /*
 |--------------------------------------------------------------------------
@@ -223,7 +224,7 @@ $config['allow_get_array'] = TRUE;
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 4;
+$config['log_threshold'] = 2;
 
 /*
 |--------------------------------------------------------------------------
