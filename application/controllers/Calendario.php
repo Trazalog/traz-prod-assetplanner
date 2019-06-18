@@ -468,6 +468,15 @@ class Calendario extends CI_Controller {
 	// carga modal ver OT y ejecutar OT
 	function verEjecutarOT($idOt){
 		
+		$this->load->model('traz-comp/Componentes');
+
+		$info = new StdClass();
+		$info->ortr_id = $idOt;
+
+		$data = $this->Componentes-> listaArticulos();
+
+		$data['info'] = $info;
+
 		$data['idOt'] = $idOt;
 		// ifno de la OTrabajo
 		$data['detaOT'] = $this->Calendarios->getDataOt($idOt);			

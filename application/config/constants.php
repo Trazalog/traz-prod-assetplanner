@@ -92,7 +92,7 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 | Version de Componente de Almacen
 |
 */
-define('CMP_ALM', 'almacen');  
+define('CMP_ALM', 'traz-comp-almacen');  
 /*
 |--------------------------------------------------------------------------
 | Bonita url
@@ -103,6 +103,8 @@ define('CMP_ALM', 'almacen');
 */
 
 define('BONITA_URL', 'http://localhost:8080/bonita/');  
+define('BPM_ADMIN_USER', 'mantenedor1');
+define('BPM_ADMIN_PASS', 'bpm');
 
 
 /*
@@ -113,7 +115,7 @@ define('BONITA_URL', 'http://localhost:8080/bonita/');
 | Id de proceso productivo (se usa para lanzar proceso)
 |
 */
-define('BPM_ADMIN_USER', 'mantenedor1');
+
 
 //? PEDIDOS NORMALES
  
@@ -133,7 +135,7 @@ define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '6013058915384903051');
 |
 */
  
-define('BPM_PROCESS_ID', '8092370659315893779'); // localhost -
+define('BPM_PROCESS_ID', '7503443566840192735'); // localhost -
 
 /*
 |--------------------------------------------------------------------------
@@ -164,3 +166,4 @@ define('ASP_0101', 'Error ASP_0101: Comunicarse con el Proveedor de Servicio');
 //Errores 200 < 300 de MySql
 define('ASP_0200', 'Error ASP_0200: Comunicarse con el Proveedor de Servicio'); 
 
+define('viewOT', true);

@@ -7,6 +7,8 @@
 
     </body>
 
+       <!--Arma Tablas -->
+       <script src="<?php echo base_url('lib/tabla.js'); ?>"></script>
     <script>
 
         var link = '';
