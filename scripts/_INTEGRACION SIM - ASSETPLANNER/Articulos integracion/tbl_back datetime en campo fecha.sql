@@ -1,0 +1,1 @@
+ALTER TABLE  tbl_back MODIFY fecha DATETIME;
