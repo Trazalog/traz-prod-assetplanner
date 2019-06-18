@@ -9,6 +9,7 @@ echo "<input type='text' class='hidden' id='usrName' value='$usrName' >";
 echo "<input type='text' class='hidden' id='usrLastName' value='$usrLastName' >";
 echo "<input type='text' class='hidden' id='case' value='" . $TareaBPM['caseId'] . "'>";
 echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
+echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 ?>
 
 <section class="content">
@@ -44,7 +45,7 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 																					<!-- botones Tomar y soltar tareas -->
 																					<?php
 																					echo '<div class="row">';
-																					
+																						// BTN Tomar y soltar Tarea
 																						echo '<div class="col-md-4">';
 																							echo "<button class='btn btn-block btn-success' id='btontomar' style='width: 100px; margin-top: 10px ;display: inline-block;' onclick='tomarTarea()'>Tomar tarea</button>";
 																							echo "&nbsp";
@@ -52,8 +53,8 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 																							echo "&nbsp";
 																							echo "<button class='btn btn-block btn-danger grupNoasignado' id='btonsoltr' style='width: 100px; margin-top: 10px; display: inline-block;' onclick='soltarTarea()'>Soltar tarea</button>";
 																						echo '</div>';											
-
-																						echo '<div class="col-md-4 col-md-offset-4" id="llave">';	
+																						// BTN Iniciar Tarea 
+																						echo '<div class="col-md-4 col-md-offset-4 oculto" id="llave">';	
 																							echo '<button type="button" class="btn btn-success" id="iniciarTarea"><i class="fa fa-play"> </i> Iniciar Tarea</button>';
 																							echo '<button type="button" class="btn btn-success disabled" id="tareaIniciada"><i class="fa fa-play"> </i> Tarea Iniciada</button>';
 																						echo '</div>';
@@ -225,21 +226,26 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 </section><!-- /.content -->
 
 <script>
-		// valida el estado de la OT y muestra llave segun corressponda 
+		// valida el estado de la OT y muestra llave segun corressponda 		
 		validaInicio();
 		function validaInicio() { 			
 			$("#iniciarTarea").hide(); 
 			$("#tareaIniciada").hide(); 
 			var id_OT = $('#id_OT').val();
+			//alert(id_OT + 'id de ot');
 			$.ajax({
 						type: 'POST',
 						data: {id_OT: id_OT},
 						url: 'index.php/Tarea/confInicioTarea', 
-						success: function(data){                   
+						success: function(data){
+							//alert(data);
+											// si la tarea esta iniciada el #estadoTarea de tarea es 1                   
 											if (data) {												
-												$("#tareaIniciada").show();											
+												$("#tareaIniciada").show();		
+												$("#estadoTarea").val(1);									
 											} else {												
-												$("#iniciarTarea").show();											
+												$("#iniciarTarea").show();
+												$("#estadoTarea").val(0);											
 											}									
 										},            
 						error: function(data){
@@ -262,7 +268,9 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 										WaitingClose();                
 										if (data) {
 											$("#iniciarTarea").hide();
-											$("#tareaIniciada").show();										
+											$("#tareaIniciada").show();	
+											// guarda el estado de la tarea (inicializado)
+											$("#estadoTarea").val(1);									
 										} else {
 											alert('Error al iniciar a Tarea...');
 										}									
@@ -301,7 +309,14 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
     function validarSubtareas() {
 
 			if (validarFormularios() && validarEstSubTareas()) {
-					ejecutarOT();
+					var iniciarTarea = $('#estadoTarea').val();
+					// valida que la tarea haya sido iniciallizada con anterioridad para poder terminarla
+					if (iniciarTarea == 1) {
+						ejecutarOT();
+					} else {
+						alert('Para Terminar Tarea, esta debe estar inicializada con anterioridad desde el boton Iniciar Tarea');
+					}
+					
 			} else {
 					alert("Por favor cierre las Tareas que faltan antes de Terminar");
 			}

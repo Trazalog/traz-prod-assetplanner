@@ -152,152 +152,134 @@
 <!-- / Modal -->
 
 <script>
-/*$('[data-toggle="tooltip"]').tooltip({
-    trigger:'hover'
-  });
-  $('body').tooltip({
-    selector: '[data-toggle="tooltip], [title]:not([data-toggle="popover"])',
-    trigger: 'hover',
-    container: 'body'
-  }).on('click mousedown mouseup', '[data-toggle="tooltip"], [title]:not([data-toggle="popover"])', function(){
-    $('[data-toggle="tooltip"], [title]:not([data-toggle="popover"])').tooltip('destroy');
-})*/
+  /*$('[data-toggle="tooltip"]').tooltip({
+      trigger:'hover'
+    });
+    $('body').tooltip({
+      selector: '[data-toggle="tooltip], [title]:not([data-toggle="popover"])',
+      trigger: 'hover',
+      container: 'body'
+    }).on('click mousedown mouseup', '[data-toggle="tooltip"], [title]:not([data-toggle="popover"])', function(){
+      $('[data-toggle="tooltip"], [title]:not([data-toggle="popover"])').tooltip('destroy');
+  })*/
 
-// agregar unidad de medida
-function guardar() {
-  var descripcion = $('#descripcion').val();
-  var hayError = false; 
-  $('#error').hide();
-  if($('#descripcion').val() == '')
-  {
-    hayError = true;
-  }
-  if(hayError == true){
-    $('#error').fadeIn('slow');     
-    return;
-  }
-  $.ajax({
-    data:{descripcion:descripcion},
-    // dataType: 'json',
-    type:"POST",
-    url: "index.php/UnidadMedida/agregarUnidadMedida",
-    success: function(data){
-      //console.log("data: "+data);
-      $('#modalagregar').modal('hide');
-      regresa();
-    },
-    error: function(result){
-        console.error("Error al agregar herramientas");
-        console.table(result);
-    },
-  });
-}
-
-// Carga datos del modal editar
-$(".fa-pencil").click(function (e) { 
-  var idunidadmedida = $(this).parent('td').next().html();
-  var descripcion    = $(this).parent('td').next().next().html();
-  //console.info(idunidadmedida);
-  $('#idunidadmedidaE').val(idunidadmedida);
-  $('#descripcionE').val(descripcion);
-});
-// edita unidad de medida
-function guardareditar(){
-  var idunidadmedida = $('#idunidadmedidaE').val();
-  var descripcion    = $('#descripcionE').val();
-  var parametros = {
-    'descripcion'     : descripcion,
-  };                                            
-  //console.log(idunidadmedida);
-  var hayError = false; 
-  $('#errorE').hide();
-
-  if($('#descripcionE').val() == '')
-  {
-    hayError = true;
-  }
-
-  if(hayError == true){
-    $('#errorE').fadeIn('slow');     
-    return;
-  }
-
-  $.ajax({
-    type:"POST",
-    url: "index.php/UnidadMedida/editarUnidadMedida",
-    data:{parametros:parametros, idunidadmedida:idunidadmedida},
-    success: function(data){
-      //console.log("data: "+data);
-      $('#modaleditar').modal('hide');
-      regresa();    
-    },
-    error: function(result){
-      console.error("Error al editar unidad de medida");
-      console.table(result);
-    },
-  });
-}
-
-// Saca el id de componente a eliminar
-$(".fa-times-circle").click(function (e) { // Ok
-    idUnidadMedida = $(this).parent('td').parent('tr').data('idunidadmedida');
-    console.log("El id de unidad de medida a eliminar es: "+idUnidadMedida);
-});
-// Elimina componente
-function eliminarUnidadMedida() { // Ok
-  WaitingOpen('Eliminando Unidad de medida');
-  $.ajax({
-    data: { idUnidadMedida:idUnidadMedida },
-    dataType: 'json',
-    type: 'POST',
-    url: 'index.php/UnidadMedida/bajaUnidadMedida',
-    success: function(data){
-      WaitingClose();
-      regresa();
-      /*console.table(data['unidadMedida']);
-      tabla = $('#tbl-unidadMedida').DataTable();
-      tabla.clear().draw();
-      for(i = 0; i < data['unidadMedida'].length; i++) {
-        var idUnidadMedida = data['unidadMedida'][i]['id_unidadmedida'];
-        var descripcion    = data['unidadMedida'][i]['descripcion'];
-        //agrego valores a la tabla
-        tablaCompleta = tabla.row.add( [
-          '<a href="#" class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar componente" data-toggle="modal" data-target="#modaleliminar"></a>'+
-          '<a href="#" class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar componente" data-toggle="modal" data-target="#modalEditar"></a>',
-          idUnidadMedida,
-          descripcion,
-        ]).node().id = idUnidadMedida;
-        $('#tbl-unidadMedida').DataTable().draw();
-        WaitingClose();
-      }*/
-    },
-    error: function(result){
-      console.error("Error al eliminar unidad de medida");
-      console.table(result);
-      WaitingClose();
-    }
-  });
-} 
-
-
-// recarga la vista del listado de componentes
-function regresa(){ // Ok
-  $('#content').empty();
-  $("#content").load("<?php echo base_url(); ?>index.php/UnidadMedida/index/<?php echo $permission; ?>");
-  WaitingClose();
-}
-
-
-$('#tbl-unidadMedida').DataTable({
-    "aLengthMenu": [ 10, 25, 50, 100 ],
-    "columnDefs": [ {
-      "targets": [ 0 ], 
-      "searchable": false
-    },
+  // agregar unidad de medida
+  function guardar() {
+    var descripcion = $('#descripcion').val();
+    var hayError = false; 
+    $('#error').hide();
+    if($('#descripcion').val() == '')
     {
-      "targets": [ 0 ], 
-      "orderable": false
-    } ],
-    "order": [[1, "asc"]],
-});
+      hayError = true;
+    }
+    if(hayError == true){
+      $('#error').fadeIn('slow');     
+      return;
+    }
+    $.ajax({
+      data:{descripcion:descripcion},
+      // dataType: 'json',
+      type:"POST",
+      url: "index.php/UnidadMedida/agregarUnidadMedida",
+      success: function(data){
+        //console.log("data: "+data);
+        $('#modalagregar').modal('hide');
+        regresa();
+      },
+      error: function(result){
+          console.error("Error al agregar herramientas");
+          console.table(result);
+      },
+    });
+  }
+
+  // Carga datos del modal editar
+  $(".fa-pencil").click(function (e) { 
+    var idunidadmedida = $(this).parent('td').next().html();
+    var descripcion    = $(this).parent('td').next().next().html();
+    //console.info(idunidadmedida);
+    $('#idunidadmedidaE').val(idunidadmedida);
+    $('#descripcionE').val(descripcion);
+  });
+  // edita unidad de medida
+  function guardareditar(){
+    var idunidadmedida = $('#idunidadmedidaE').val();
+    var descripcion    = $('#descripcionE').val();
+    var parametros = {
+      'descripcion'     : descripcion,
+    };                                            
+    //console.log(idunidadmedida);
+    var hayError = false; 
+    $('#errorE').hide();
+
+    if($('#descripcionE').val() == '')
+    {
+      hayError = true;
+    }
+
+    if(hayError == true){
+      $('#errorE').fadeIn('slow');     
+      return;
+    }
+
+    $.ajax({
+      type:"POST",
+      url: "index.php/UnidadMedida/editarUnidadMedida",
+      data:{parametros:parametros, idunidadmedida:idunidadmedida},
+      success: function(data){
+        //console.log("data: "+data);
+        $('#modaleditar').modal('hide');
+        regresa();    
+      },
+      error: function(result){
+        console.error("Error al editar unidad de medida");
+        console.table(result);
+      },
+    });
+  }
+
+  // Saca el id de componente a eliminar
+  $(".fa-times-circle").click(function (e) { // Ok
+      idUnidadMedida = $(this).parent('td').parent('tr').data('idunidadmedida');
+      console.log("El id de unidad de medida a eliminar es: "+idUnidadMedida);
+  });
+  // Elimina componente
+  function eliminarUnidadMedida() { // Ok
+    WaitingOpen('Eliminando Unidad de medida');
+    $.ajax({
+      data: { idUnidadMedida:idUnidadMedida },
+      dataType: 'json',
+      type: 'POST',
+      url: 'index.php/UnidadMedida/bajaUnidadMedida',
+      success: function(data){
+        WaitingClose();
+        regresa();     
+      },
+      error: function(result){
+        console.error("Error al eliminar unidad de medida");
+        console.table(result);
+        WaitingClose();
+      }
+    });
+  }
+  // recarga la vista del listado de componentes
+  function regresa(){ // Ok
+    $('#content').empty();
+    $("#content").load("<?php echo base_url(); ?>index.php/UnidadMedida/index/<?php echo $permission; ?>");
+    WaitingClose();
+  }
+
+
+  $('#tbl-unidadMedida').DataTable({
+      "aLengthMenu": [ 10, 25, 50, 100 ],
+      "columnDefs": [ {
+        "targets": [ 0 ], 
+        "searchable": false
+      },
+      {
+        "targets": [ 0 ], 
+        "orderable": false
+      } ],
+      "order": [[1, "asc"]],
+  });
 </script>

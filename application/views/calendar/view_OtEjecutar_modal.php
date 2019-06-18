@@ -10,8 +10,7 @@
 
           
           <div class="box-header">
-          <!-- <h3 class="box-title">Programación Predictivo</h3> -->
-          
+       
           </div><!-- /.box-header -->
           
           <div class="box-body">            
@@ -29,12 +28,12 @@
                         <ul class="nav nav-tabs" role="tablist">                
                           <li role="presentation" class="active"><a href="#detalle" aria-controls="profile" role="tab" data-toggle="tab">Detalle</a></li>
                           
-                          <?php if($btnVisibilidad){
-                          echo '<li role="presentation"><a href="#responsable" aria-controls="messages" role="tab" data-toggle="tab">Asignación Responsable</a></li>';
-                          
-                          echo '<li role="presentation"><a href="#tareas" aria-controls="messages" role="tab" data-toggle="tab">Agregar Tareas</a></li>';
-                            
-                        }                                   ?>        
+                          <?php 
+                            if($btnVisibilidad){
+                              echo '<li role="presentation"><a href="#responsable" aria-controls="messages" role="tab" data-toggle="tab">Asignación Responsable</a></li>';                          
+                              echo '<li role="presentation"><a href="#tareas" aria-controls="messages" role="tab" data-toggle="tab">Agregar Tareas</a></li>';                            
+                            }   
+                          ?>        
                         </ul>
                         <!-- /tabs -->
     
@@ -306,19 +305,20 @@
               }, 
         url: 'index.php/Otrabajo/EjecutarOT',  
         success: function(data){
-          WaitingClose();
-          // {"status":true,"msj":"OK"}
-          if(data.status) {
-            $('#modalInforme').modal('hide');
-          }else{
-            $('#modalInforme').modal('hide');
-            alert('Falla | No se pudo Ejecutar la Orden de Trabajo | '+data.msj);
-          }
+                    WaitingClose();
+                    // {"status":true,"msj":"OK"}
+                    if(data.status) {
+                      $('#modalInforme').modal('hide');
+                      regresa1();
+                    }else{
+                      $('#modalInforme').modal('hide');
+                      alert('Falla | No se pudo Ejecutar la Orden de Trabajo | '+data.msj);
+                    }
         },
         error: function(data){
-          WaitingClose();
-          $('#modalInforme').modal('hide');
-          alert('Error | No se pudo Ejecutar la Orden de Trabajo | '+data.msj);
+                    WaitingClose();
+                    $('#modalInforme').modal('hide');
+                    alert('Error | No se pudo Ejecutar la Orden de Trabajo | '+data.msj);
         },
         dataType: 'json'    
     }); 

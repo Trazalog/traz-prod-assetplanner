@@ -656,7 +656,7 @@ class Calendarios extends CI_Model {
 	/////	BACKLOG
 		function getBackPorIds($data){
 			$id = $data;
-			
+			//FIXME: ARREGLAR ACA LA TAREA OPCIONAL
 			$this->db->select('tbl_back.*,
 			tareas.descripcion as tareadesc');
 			$this->db->from('tbl_back'); 
