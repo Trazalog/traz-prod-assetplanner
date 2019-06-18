@@ -60,12 +60,12 @@ class Lotes extends CI_Model {
 		  $empresaId = $userdata[0]['id_empresa'];
 
 		  // OBTENER CANTIDADES RESERVADAS
-		  $this->db->select('arti_id, sum(resto) as cant_reservada');
+		  $this->db->select('arti_id, IFNULL(sum(resto),0) as cant_reservada');
 		  $this->db->from('alm_deta_pedidos_materiales');
 		  $this->db->group_by('arti_id');
 		  $C = '(' . $this->db->get_compiled_select() . ') C';
 
-		  $this->db->select('ART.arti_id, ART.barcode, ART.descripcion,punto_pedido, sum(LOTE.cantidad) as cantidad_stock, sum(LOTE.cantidad)-cant_reservada as cantidad_disponible');
+		  $this->db->select('ART.arti_id, ART.barcode, ART.descripcion, punto_pedido, IFNULL(sum(LOTE.cantidad), 0) as cantidad_stock, IFNULL(sum(LOTE.cantidad),0)-cant_reservada as cantidad_disponible');
 		  $this->db->from('alm_articulos ART');
 		  $this->db->join('alm_lotes LOTE','LOTE.arti_id = ART.arti_id');
 		  $this->db->join($C,'C.arti_id = ART.arti_id');

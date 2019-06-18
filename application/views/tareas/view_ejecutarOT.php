@@ -399,8 +399,14 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 			function load_view_insumos() {
 					var iort = $('#ot').val();
 					$('#body-pedidos').empty();
-					$("#body-pedidos").load("<?php echo base_url(); ?>index.php/almacen/Notapedido/agregarListInsumos/" + iort );
+					$("#body-pedidos").load("<?php echo base_url(); ?>index.php/almacen/Notapedido/agregarListInsumos/"+iort);
 			}
+
+			$('#pedidos').on('shown.bs.modal', function() {
+
+				$($.fn.dataTable.tables(true)).DataTable()
+					.columns.adjust();
+			});
 
 			function pedirInsumos() {
 					$('.modal#pedidos').modal('show');
