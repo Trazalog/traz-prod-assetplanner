@@ -276,10 +276,13 @@ class Tareas extends CI_Model {
 		$estado = 'T';
 		$this->db->where('id_orden', $id_OT);
 		$result = $this->db->update( 'orden_trabajo', array('fecha_terminada'=>$fechaFin, 'estado'=>$estado) );
+		
+		
+		
 		return $result;
 	}
 
-	// cambbia de estado la Tareas(SServ, Prevent, Predic, Back y OT)
+	// cambia de estado la Tareas(SServ, Prevent, Predic, Back y OT)
 	function cambiarEstado($id_solicitud, $estado, $tipo){						
 			
 		if ($tipo == 'correctivo') {
@@ -628,6 +631,21 @@ class Tareas extends CI_Model {
 			}
 
 		}
+
+		function getIdOTPorIdCaseEnBD($caseId){
+			$this->db->select('orden_trabajo.id_orden');
+			$this->db->from('orden_trabajo');
+			$this->db->where('orden_trabajo.case_id',$caseId);
+			$query= $this->db->get();
+			if( $query->num_rows() > 0){
+				return $query->row('id_orden');	
+			} 
+			else {
+				return 0;
+			}
+		}
+
+
 		// traee id de SServicio por caseid
 		function getIdSolServPorIdCase($caseId, $param){
 				// [URL_BONITA]/API/bpm/caseVariable/:caseId/gIdOT

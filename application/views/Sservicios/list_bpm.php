@@ -57,10 +57,10 @@
                             echo '<i class="fa fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"></i> '; 
 
                             if ($f['estado'] !== 'T') { 
-                            echo '<i class="fa fa-thumbs-up text-light-blue" data-toggle="modal" data-target="#modalConformidad" style="cursor: pointer; margin-left: 15px;" title="Conformidad"></i>';
+                            //echo '<i class="fa fa-thumbs-up text-light-blue" data-toggle="modal" data-target="#modalConformidad" style="cursor: pointer; margin-left: 15px;" title="Conformidad"></i>';
                             }   
                             
-                            echo '<i class="fa fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"></i> ';
+                            //echo '<i class="fa fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"></i> ';
 
                             echo '</td>';
                             echo '<td style="text-align: left">'.$f['id_solicitud'].'</td>';
@@ -651,7 +651,7 @@ $("#vstsolicita").autocomplete({
                     WaitingClose();
                     console.log(data);
                     if (data.status == true){
-                      alert("Solicitud generada exitosamente");
+                      //alert("Solicitud generada exitosamente");
                      
                       cargarView('Sservicio', 'index', permisos) ;           
                     } else{             

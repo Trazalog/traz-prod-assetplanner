@@ -279,7 +279,7 @@
     $("#calendar").printArea();
   });
 
-  //  Datatables listas
+//  Datatables listas
   $('#correctivo').DataTable({
     "paging": true,
     "lengthChange": true,
@@ -386,35 +386,35 @@
   });
 
 ///// Datepicker para modales
-$("#fecha_progr_pred").datepicker({
-  Format: 'dd/mm/yy',
-  startDate: '-3d'
-  //firstDay: 1
-}).datepicker("setDate", new Date());
+  $("#fecha_progr_pred").datepicker({
+    Format: 'dd/mm/yy',
+    startDate: '-3d'
+    //firstDay: 1
+  }).datepicker("setDate", new Date());
 
-$("#fecha_progr_correct").datepicker({
-  Format: 'dd/mm/yy',
-  startDate: '-3d'
-  //firstDay: 1
-}).datepicker("setDate", new Date());
+  $("#fecha_progr_correct").datepicker({
+    Format: 'dd/mm/yy',
+    startDate: '-3d'
+    //firstDay: 1
+  }).datepicker("setDate", new Date());
 
-$("#fecha_progr_prevent").datepicker({
-  Format: 'dd/mm/yy',
-  startDate: '-3d'
-  //firstDay: 1
-}).datepicker("setDate", new Date());
+  $("#fecha_progr_prevent").datepicker({
+    Format: 'dd/mm/yy',
+    startDate: '-3d'
+    //firstDay: 1
+  }).datepicker("setDate", new Date());
 
-$("#fecha_progr_back").datepicker({
-  Format: 'dd/mm/yy',
-  startDate: '-3d'
-  //firstDay: 1
-}).datepicker("setDate", new Date());
+  $("#fecha_progr_back").datepicker({
+    Format: 'dd/mm/yy',
+    startDate: '-3d'
+    //firstDay: 1
+  }).datepicker("setDate", new Date());
 
-$("#fecha_progr_prevent_horas").datepicker({
-  Format: 'dd/mm/yy',
-  startDate: '-3d'
-  //firstDay: 1
-}).datepicker("setDate", new Date());
+  $("#fecha_progr_prevent_horas").datepicker({
+    Format: 'dd/mm/yy',
+    startDate: '-3d'
+    //firstDay: 1
+  }).datepicker("setDate", new Date());
 
 
 //////////  CORRECTIVO (Listoooo)
@@ -645,32 +645,28 @@ $("#fecha_progr_prevent_horas").datepicker({
   function fill_Backlog(dato){    
       console.log('Rellenar Backlog...');
       $.ajax({
-          type: 'POST', //parametros:parametros
+          type: 'POST', 
           data: {id:dato},
-          url: 'index.php/Calendario/getBackPorId',  //index.php/
-          success: function(data){
-                    console.log('datos backlog: '); 
-                    console.table(data[0]['tarea_opcional']);
-                   id_de_tar = data[0]['id_tarea'];
-                   fec_sol_back = data[0]['fecha'];
-                   id_back = data[0]['backId'];
-                   id_equi = data[0]['id_equipo'];
-                   //tarea = data[0]['descripcion'];
-                   id_sol = data[0]['sore_id'];
-                   duracion = data[0]['back_duracion'];
-                   // si tiene tarea estandar grava eso sino la tarea custom
-                   if(id_de_tar != -1){
-                    desc_tarea_back = data[0]['tareadesc'];
-                    console.log('entre por tar estandar');
-                   }else{
-                    desc_tarea_back = data[0]['tarea_opcional']; 
-                    console.log('entre por tar custom');
-                  }
-                  
+          url: 'index.php/Calendario/getBackPorId', 
+          success: function(data){                    
+
+                      id_de_tar = data[0]['id_tarea'];
+                      fec_sol_back = data[0]['fecha'];
+                      id_back = data[0]['backId'];
+                      id_equi = data[0]['id_equipo'];
+                      //tarea = data[0]['descripcion'];
+                      id_sol = data[0]['sore_id'];
+                      duracion = data[0]['back_duracion'];
+                      // si tiene tarea estandar grava eso sino la tarea custom
+                      if(id_de_tar <= 0){                    
+                          desc_tarea_back = data[0]['tarea_opcional'];  
+                      }else{                    
+                          desc_tarea_back = data[0]['tareadesc'];
+                      }                  
                 },
           error: function(data){
 
-                console.log(data);
+                  console.log(data);
               },
           dataType: 'json'    
       });      
@@ -679,15 +675,12 @@ $("#fecha_progr_prevent_horas").datepicker({
   function setOtBacklog() {
     var progr_back = $('#fecha_progr_back').val();
     var hora_progr_back = $('#hora_progr_back').val();   
-    //alert('duracion: '+duracion);
-   
+     
     $.ajax({
           type: 'POST', 
           data: {
                   event_tipo: 1, // evento unico
-                  //id_sol : id_sol,
                   id_sol : id_back,
-                  //id_back: id_back,
                   id_tarea : id_de_tar,
                   fecha_progr : progr_back,
                   hora_progr:hora_progr_back,

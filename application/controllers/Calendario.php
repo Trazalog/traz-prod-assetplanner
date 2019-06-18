@@ -105,7 +105,7 @@ class Calendario extends CI_Controller {
 		$userdata = $this->session->userdata('user_data');
 		$usrId    = $userdata[0]['usrId'];
 		$empId    = $userdata[0]['id_empresa'];
-
+		
 	    if($_POST){
 				
 				if( isset($_POST['event_tipo']) ){
@@ -152,7 +152,7 @@ class Calendario extends CI_Controller {
 						'cliId'         => 1,//por defecto( no se usa)
 						'estado'        =>'PL',	// estado Planificado
 						'id_usuario'    => $usrId,
-						'id_usuario_a'  => 1,
+						//'id_usuario_a'  => 1,
 						'id_usuario_e'  => 1,
 						'id_sucursal'   => 1,
 						'id_solicitud'  => $id_solicitud,// id prev-correct-back-predict
@@ -473,8 +473,6 @@ class Calendario extends CI_Controller {
 		$data['detaOT'] = $this->Calendarios->getDataOt($idOt);			
 		// Tarea estandar
 		$data['tareas'] = $this->Calendarios->gettareas();
-		
-		//dump($data['tareas'], 'tareas cont: ');
 		// Datos de la Solicitud que le da origen a la OT
 		$origen = $this->Calendarios->getOrigenOt($idOt);
 		
@@ -490,6 +488,8 @@ class Calendario extends CI_Controller {
 		$data['infoSolicOrigen'] = $this->Calendarios->getInfoTareaProgram($numtipo, $id_solicitud);			
 		
 		$task = $this->ObtenerTaskIDxOT($idOt);
+
+		//dump();
 		if ($task) {
 			$data['btnVisibilidad'] = true;
 		} else {
@@ -504,7 +504,7 @@ class Calendario extends CI_Controller {
 	 function ObtenerTaskIDxOT($id){ 	
 				
 		$case_id = $this->Otrabajos->getCaseIdOT($id);		
-		
+		//dump($case_id, 'caseId en entrada al metodo: ');
 		$this->load->library('BPM');
 		$origenOT = $this->Otrabajos->getDatosOrigenOT($id);	
 		$tipo = $origenOT[0]['tipo'];	
@@ -517,18 +517,22 @@ class Calendario extends CI_Controller {
 		} 
 		// si viene de backlog
 		if ($tipo == 4) {
+			//dump($tipo, 'entre por backlog');
 				//busco origen del backlog(tiene sore_id o no para diferenciar el origen item menu o SServicio)			
 				$idSolRep = $this->Otrabajos->getIdSolReparacion($id_solicitud);					
 				
 				if($idSolRep == NULL){	//viene de item menu 
 					
 					$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas');
+					//dump($task_id, 'id task rep null');
 					return $task_id;		
 
 				}else{	// backlog generado desde una SServicios					
 					// con id solicitud (BACKLOG) busco el case desde solicitud de reparacion
 					$case_id = $this->Otrabajos->getCaseIdenSServicios($id);					
+					//dump($case_id, 'case id en ->  NO NULL');
 					$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas');	
+					//dump($task_id, 'task_id por ->  NO NULL');
 					return $task_id;			
 				}
 		}
@@ -536,26 +540,8 @@ class Calendario extends CI_Controller {
 		// Para el resto de las Tareas (Predictivo, Preventivo)
 		//  devuelve task		
 		$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas');			
-		
-		return $task_id;
-				
-		
-		
-		//TODO: ACA COMENTE
-					// // lanzar proceso
-					// $contract = array(
-					// 	"idSolicitudServicio"	=>	0,
-					// 	"idOT"  => 	$id
-					// );
-					// $responce = $this->bpm->LanzarProceso($contract);
-					// // guardo el caseid en OTrabajo
-					// if($responce['status']){					
-					// 	$case_id = $responce['case_id'];
-					// 	$this->Otrabajos->setCaseidenOT($case_id, $id);					
-					// }
-					// // retorna task id 		
-					// $task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas');		
-					// return $task_id;
+		//dump($task_id, 'resto de las tareas: ');
+		return $task_id;	
 	}
 
 	

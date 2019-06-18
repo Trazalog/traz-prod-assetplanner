@@ -81,7 +81,7 @@ class Sservicio extends CI_Controller
 				$contract = array(
 					"idSolicitudServicio"	=>	$id_solServicio,
 					"idOT"  => 	0
-				);
+				);			
 
 				//Lanzar Proceso
 				$responce  = $this->bpm->LanzarProceso($contract);
