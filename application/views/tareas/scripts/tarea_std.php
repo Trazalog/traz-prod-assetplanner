@@ -82,7 +82,7 @@
     });
      
 		function terminarTarea(){
-			
+			//FIXME: DESHARCODEAR ID DE OT PARA TRAER FORMULARIOS ASOCIADOS A TAREAS ESTANDAR
 			var formOt = [];
 			var i = 0;
 			$('.getFormularioTarea').each(function( index ) {

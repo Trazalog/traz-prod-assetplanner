@@ -39,6 +39,7 @@ class BPM
 		//dump($response, 'respuesta en libreria: ');		
 		$code = $response['response_code'];
 		$body  = json_decode($body);
+		
 		if($code<300){
 			return ['status'=>true, 'msj'=>'OK', 'code'=>$code, 'case_id'=> $body->caseId];
 		}else {

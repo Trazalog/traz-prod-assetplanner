@@ -23,7 +23,7 @@
                 <th></th>
                 <th>Id Orden</th>
                 <th>Fecha Program.</th>
-                <th>Fecha Entrega</th>
+                <th>Fecha Inicio</th>
                 <th>Fecha Terminada</th>
                 <th>Detalle</th>
                 <th>Equipo</th>
@@ -44,7 +44,7 @@
                   {
                     $gr = $a['grpId'];
                     //echo "grupo: ".$gr;
-                    if ($gr=='1') { 
+                   // if ($gr=='1') { 
                       //if (($a['estado'] =='As') || ($a['estado'] =='P') || ($a['estado'] =='C') || $a['estado']=='Ej' || ($a['estado'] =='PL')) {
                         $id          = $a['id_orden'];
                         $id_equipo   = $a['id_equipo'];
@@ -57,8 +57,8 @@
                         echo '<td>'.$a['id_orden'].'</td>';                       
                         $fecha_program = ($a['fecha_program'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_program']), 'd-m-Y');
                         echo '<td>'.$fecha_program.'</td>';
-                        $fecha_entrega = ($a['fecha_entrega'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_entrega']), 'd-m-Y');
-                        echo '<td>'.$fecha_entrega.'</td>';
+                        $fecha_inicio = ($a['fecha_inicio'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_inicio']), 'd-m-Y');
+                        echo '<td>'.$fecha_inicio.'</td>';
                         $fecha_terminada = ($a['fecha_terminada'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_terminada']), 'd-m-Y');
                         echo '<td>'.$fecha_terminada.'</td>';
                         echo '<td>'.$a['descripcion'].'</td>';
@@ -89,7 +89,7 @@
                           }      
 
                         echo '</td>';
-                    }
+                   // }
                   }
                 }
               ?>
@@ -300,29 +300,28 @@ $("#btn_cancGuardado").click(function (e) {
       type: 'POST',
       url: 'index.php/Otrabajo/getpencil',
       success: function(data){
-        console.table(data);
+        //console.table(data);
         var resp = data['datos'];
 
         datos = {
           'id_ot'         : resp[0]['id_orden'],        //
-          'nro'           : resp[0]['nro'], 
-          'fecha_program' : resp[0]['fecha_program'],          //
+          'nro'           : resp[0]['nro'],           
           'equipo_descrip': resp[0]['codigo'],          //
           'fecha_ingreso' : resp[0]['fecha_ingreso'],
           'id_equipo'     : resp[0]['id_equipo'],       //
           'marca'         : resp[0]['marca'],
           'ubicacion'     : resp[0]['ubicacion'],
           'descripcion'   : resp[0]['equipodescrip'],
-          'id_tarea'      : resp[0]['id_tarea'],            
+          'id_tarea'      : resp[0]['id_tarea'],
+          'fecha_program' : resp[0]['fecha_program'],          //            
           'fecha_inicio'  : resp[0]['fecha_inicio'],    //
-          'fecha_entrega' : resp[0]['fecha_entrega'],   //
+          'fecha_terminada' : resp[0]['fecha_terminada'],   //
           'idusuario'     : resp[0]['id_usuario'],      //
           'tareadescrip'  : resp[0]['tareadescrip'],     //
           'id_sucu'       : resp[0]['id_sucursal'],     //
           'sucursal'      : resp[0]['descripc'],        //
           'id_proveedor'  : resp[0]['provid'],          //
-          'nombreprov'    : resp[0]['provnombre']//,      //
-          //'adjunto'       :resp[0]['ot_adjunto']        //
+          'nombreprov'    : resp[0]['provnombre']//,      
         }
         
         var herram = data['herramientas'];             
@@ -353,11 +352,12 @@ $("#btn_cancGuardado").click(function (e) {
       $('#tarea').val(datos['tareadescrip']);    
     }else{
       $('#tareacustom').val(datos['tareadescrip']); }
-    $('#fechaInicio').val(datos['fecha_program']); 
-    $('#fechaEntrega').val(datos['fecha_entrega']);  
-    $("#suci").val(datos['id_sucu']);
-    $("#prov").val(datos['id_proveedor']);
     
+    $('#fechaProgramacion').val(datos['fecha_program']); 
+    $('#fechaInicio').val(datos['fecha_inicio']); 
+    $('#fechaTerminada').val(datos['fecha_terminada']);  
+    $("#suci").val(datos['id_sucu']);
+    $("#prov").val(datos['id_proveedor']); 
 
     $('#tablaherramienta tbody tr').remove();
     for (var i = 0; i < herram.length; i++) {
@@ -984,86 +984,86 @@ $("#btn_cancGuardado").click(function (e) {
   });
 
 // llena select usuario en modal Asignar OT - Ok
-function traer_usuario(id_usuario){
-  $("#usuario1").html("");
-  $.ajax({
-    data: {},
-    dataType: 'json',
-    type: 'POST',
-    url: "Otrabajo/getusuario",
-    success: function (data) {
-      $('#usuario1').text("");
-      for(var i=0; i < data.length ; i++) 
-      {
-        var selectAttr = '';
-        if(data[i]['usrId'] == id_usuario) { var selectAttr = 'selected';}
-        var nombre = data[i]['usrName']+' '+data[i]['usrLastName'];
-        var opcion = "<option value='"+data[i]['usrId']+"' "+selectAttr+">" +nombre+ "</option>";
-        $('#usuario1').append(opcion); 
-      }
-    },
-    error : function (data){
-      console.error('Error al traer usuarios en modal Asignar OT');
-      console.table(data);
-    },
-  });
-}
-// Asigna Responsable a OT
-function orden(){
-  WaitingOpen();
-  var id_orden = $('#id_orden').val();
-  var fecha_entrega = $('#fecha_entrega').val();
-  var usuario= $('#usuario1').val();
-  var cliente = $('#id_cliente').val();
-  var task_id = sessionStorage.getItem('task_id');
-  var case_id = sessionStorage.getItem('case_id');  
-  console.log("Guardando>> OT: "+id_orden+" | SOID: "+sol_id+" | USER:"+usuario);
-  $.ajax({
+  function traer_usuario(id_usuario){
+    $("#usuario1").html("");
+    $.ajax({
+      data: {},
+      dataType: 'json',
       type: 'POST',
-      data: { id_orden:id_orden, fecha_entrega:fecha_entrega, usuario:usuario, sol_id:sol_id,case_id:case_id, task_id: task_id},
-      url: 'index.php/Otrabajo/guardar',    
-      success: function(data){
-        WaitingClose();    
-        sessionStorage.clear();
-        regresa1();        
+      url: "Otrabajo/getusuario",
+      success: function (data) {
+        $('#usuario1').text("");
+        for(var i=0; i < data.length ; i++) 
+        {
+          var selectAttr = '';
+          if(data[i]['usrId'] == id_usuario) { var selectAttr = 'selected';}
+          var nombre = data[i]['usrName']+' '+data[i]['usrLastName'];
+          var opcion = "<option value='"+data[i]['usrId']+"' "+selectAttr+">" +nombre+ "</option>";
+          $('#usuario1').append(opcion); 
+        }
       },
-      error: function(result){
-        WaitingClose();    
-        console.log("ERROR>> "+result);
-        
-      }
-  });              
-}
+      error : function (data){
+        console.error('Error al traer usuarios en modal Asignar OT');
+        console.table(data);
+      },
+    });
+  }
+// Asigna Responsable a OT
+  function orden(){
+    WaitingOpen();
+    var id_orden = $('#id_orden').val();
+    var fecha_entrega = $('#fecha_entrega').val();
+    var usuario= $('#usuario1').val();
+    var cliente = $('#id_cliente').val();
+    var task_id = sessionStorage.getItem('task_id');
+    var case_id = sessionStorage.getItem('case_id');  
+    console.log("Guardando>> OT: "+id_orden+" | SOID: "+sol_id+" | USER:"+usuario);
+    $.ajax({
+        type: 'POST',
+        data: { id_orden:id_orden, fecha_entrega:fecha_entrega, usuario:usuario, sol_id:sol_id,case_id:case_id, task_id: task_id},
+        url: 'index.php/Otrabajo/guardar',    
+        success: function(data){
+          WaitingClose();    
+          sessionStorage.clear();
+          regresa1();        
+        },
+        error: function(result){
+          WaitingClose();    
+          console.log("ERROR>> "+result);
+          
+        }
+    });              
+  }
 
 // llena select clientes en modal Asignar OT - 
-function traer_clientes(id_cliente){
-  $.ajax({
-    type: 'POST',
-    data: {},
-    url: 'index.php/Otrabajo/traer_cli',
-    success: function(data){
-      console.info(data);
-      /*var selectAttr = '';
-      if(data[i]['cliId'] == id_cliente) { var selectAttr = 'selected'; console.log("sel")}
-      var nombre = data[i]['cliLastName']+'. .'+datos['cliName'];
-      var opcion = "<option value='"+data[i]['cliId']+"' "+selectAttr+">" +nombre+ "</option>";
-      $('#cli').append(opcion); 
-
-      /*var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-      $('#cli').append(opcion); 
-      for(var i=0; i < data.length ; i++) 
-      {    
+  function traer_clientes(id_cliente){
+    $.ajax({
+      type: 'POST',
+      data: {},
+      url: 'index.php/Otrabajo/traer_cli',
+      success: function(data){
+        console.info(data);
+        /*var selectAttr = '';
+        if(data[i]['cliId'] == id_cliente) { var selectAttr = 'selected'; console.log("sel")}
         var nombre = data[i]['cliLastName']+'. .'+datos['cliName'];
-        var opcion = "<option value='"+data[i]['cliId']+"'>" +nombre+ "</option>" ; 
-        $('#cli').append(opcion);          
-      }*/
-    },
-    error: function(result){
-      console.log(result);
-    },
-    dataType: 'json'
-  });
-}
+        var opcion = "<option value='"+data[i]['cliId']+"' "+selectAttr+">" +nombre+ "</option>";
+        $('#cli').append(opcion); 
+
+        /*var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+        $('#cli').append(opcion); 
+        for(var i=0; i < data.length ; i++) 
+        {    
+          var nombre = data[i]['cliLastName']+'. .'+datos['cliName'];
+          var opcion = "<option value='"+data[i]['cliId']+"'>" +nombre+ "</option>" ; 
+          $('#cli').append(opcion);          
+        }*/
+      },
+      error: function(result){
+        console.log(result);
+      },
+      dataType: 'json'
+    });
+  }
 
 $(document).ready(function(event) {
 
@@ -1367,9 +1367,9 @@ function guardarpedido(){
     WaitingClose();  
   }
 
-//  ASIGNAR OT (RESPONSBLE) 
+// ASIGNAR OT (RESPONSBLE) 
   // carga vista modal ejecutar ot y asignar responsable
-  function verDetalleOT(o){ 
+  function verEjecutarOT(o){ 
     var id_orden = $(o).closest('tr').attr('id');  
     WaitingOpen();
     $('#modalInforme').modal('show');
@@ -1388,8 +1388,7 @@ function guardarpedido(){
     $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/cargartarea/<?php echo $permission; ?>/"+iort+"");
     WaitingClose();  
   };
-// VER OT  
-
+// VER OT 
   function mostrarOT(o){
     let idot = $(o).closest('tr').attr('id'); 
     //console.log("id Orden de trabajo: "+idot);
@@ -1409,7 +1408,6 @@ function guardarpedido(){
     .fail( () => {alert( "Error al traer los datos de la OT." );WaitingClose(); } )
     .always( () => WaitingClose() );
   }
-
   // Elige a que fcion que trae datos de OT llamar, según su origen
   function traerDatosOt(idOt, tipo, idSolicitud) {
     console.info('id deot'+ idOt+' - '+idSolicitud + 'id solic');
@@ -2233,7 +2231,7 @@ function guardarpedido(){
 
 
 <!--  MODAL ASIGNAR OT Y EJECUTAR   -->
-<div class="modal fade bs-example-modal-lg" id="modalInforme" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal bs-example-modal-lg" id="modalInforme" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="row">
@@ -2306,7 +2304,7 @@ function guardarpedido(){
 
             <div class="panel-body">
               <div class="row">
-                <div class="col-xs-12 col-sm-6 com-md-4">                
+                <div class="col-xs-12 col-sm-3 com-md-3">                
                   
                   <input type="hidden" id="id_ot"  name="id_ot" class="form-control input-md" disabled />
                   
@@ -2314,15 +2312,15 @@ function guardarpedido(){
                   <input type="text" id="equipo_descrip"  name="equipo_descrip" class="form-control input-md" disabled />
                   <input type="hidden" id="equipo"  name="equipo" class="form-control input-md" disabled />
                 </div>
-                <div class="col-xs-12 col-sm-6 com-md-4">
+                <div class="col-xs-12 col-sm-3 com-md-3">
                   <label for="fecha_ingreso">Fecha:</label>
                   <input type="text" id="fecha_ingreso"  name="fecha_ingreso" class="form-control input-md" disabled />
                 </div>
-                <div class="col-xs-12 col-sm-6 com-md-4">
+                <div class="col-xs-12 col-sm-3 com-md-3">
                   <label for="marca">Marca:</label>
                   <input type="text" id="marca"  name="marca" class="form-control input-md"  disabled />
                 </div>
-                <div class="col-xs-12 col-sm-6 com-md-4">
+                <div class="col-xs-12 col-sm-3 com-md-3">
                   <label for="ubicacion">Ubicacion:</label>
                   <input type="text" id="ubicacion"  name="ubicacion" class="form-control input-md" disabled/>
                 </div>
@@ -2352,15 +2350,20 @@ function guardarpedido(){
                 </div>
               </div>
               <div class="row">
-                <div class="col-xs-12 col-sm-6">
+                <div class="col-xs-12 col-sm-4">
                   <label for="fechaInicio">Fecha Programación:</label>
                   <!-- <input type="text" class="datepicker form-control fecha" id="fechaInicio" name="fechaInicio" value="<?php //echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/> -->
-                  <input type="text" class="datepicker form-control fecha" id="fechaInicio" name="fechaInicio" size="27"/>
-                </div> 
+                  <input type="text" class="datepicker form-control fecha" id="fechaProgramacion" name="fechaProgramacion" size="27"/>
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                  <label for="fechaInicio">Fecha Inicio:</label>
+                  <!-- <input type="text" class="datepicker form-control fecha" id="fechaInicio" name="fechaInicio" value="<?php //echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/> -->
+                  <input type="text" class="datepicker form-control fecha" id="fechaInicio" name="fechaInicio" size="27" disabled/>
+                </div>  
                 
-                <div class="col-xs-12 col-sm-6">
-                  <label for="fechaEntrega">Fecha Entrega:</label>
-                  <input type="text" class="datepicker form-control fecha" id="fechaEntrega" name="fechaEntrega" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>
+                <div class="col-xs-12 col-sm-4">
+                  <label for="fechaEntrega">Fecha Terminada:</label>
+                  <input type="text" class="datepicker form-control fecha" id="fechaTerminada" name="fechaTerminada" value="<?php //echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27" disabled/>
                 </div>
 
                 <div class="col-xs-12 col-sm-6">
@@ -2525,53 +2528,52 @@ function guardarpedido(){
 
 <!--------------- MODALES ADJUNTO ------------->
 
-<!-- Modal Eliminar Adjunto -->
-<div class="modal" id="modalEliminarAdjunto">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"><span class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar</h4>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="idAdjunto">
-        <h4>¿Desea eliminar Archivo Adjunto?</h4>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminarAdjunto();">Eliminar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal Agregar adjunto -->
-<div class="modal" id="modalAgregarAdjunto">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"><span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar</h4>
-      </div>
-
-      <form id="formAgregarAdjunto">
+  <!-- Modal Eliminar Adjunto -->
+  <div class="modal" id="modalEliminarAdjunto">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title"><span class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar</h4>
+        </div>
         <div class="modal-body">
-          <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
-            <h4><i class="icon fa fa-ban"></i> Error!</h4>
-            Seleccione un Archivo Adjunto
-          </div>
-          <input type="hidden" id="idAgregaAdjunto" name="idAgregaAdjunto">
-          <input id="inputPDF" name="inputPDF" type="file" class="form-control input-md">
+          <input type="hidden" id="idAdjunto">
+          <h4>¿Desea eliminar Archivo Adjunto?</h4>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary" id="btnAgregarEditar">Agregar</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminarAdjunto();">Eliminar</button>
         </div>
-      </form>
+      </div>
     </div>
   </div>
-</div>
 
+  <!-- Modal Agregar adjunto -->
+    <div class="modal" id="modalAgregarAdjunto">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title"><span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar</h4>
+          </div>
+
+          <form id="formAgregarAdjunto">
+            <div class="modal-body">
+              <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+                <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                Seleccione un Archivo Adjunto
+              </div>
+              <input type="hidden" id="idAgregaAdjunto" name="idAgregaAdjunto">
+              <input id="inputPDF" name="inputPDF" type="file" class="form-control input-md">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary" id="btnAgregarEditar">Agregar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
 <!--------------- MODALES ADJUNTO ------------->
 
 

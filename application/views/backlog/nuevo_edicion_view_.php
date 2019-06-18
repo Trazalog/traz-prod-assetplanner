@@ -211,7 +211,7 @@
                                           </div>    
                                         <!-- bloque herram ins y adj -->	
                                           <!-- Tab nav -->
-                                          <div class="nav-tabs-custom">
+                                          <div class="nav-tabs-custom oculto">
                                             <ul class="nav nav-tabs" role="tablist">
                                               <li role="presentation" class="active"><a href="#herramin" aria-controls="profile" role="tab" data-toggle="tab">Herramientas</a></li>
                                               <li role="presentation"><a href="#insum" aria-controls="messages" role="tab" data-toggle="tab">Insumos</a></li>
@@ -220,7 +220,7 @@
                                           </div>
 
                                           <!-- Tab panes -->
-                                          <div class="tab-content">
+                                          <div class="tab-content oculto">
                                           <div role="tabpanel" class="tab-pane active" id="herramin">
                                             <div class="panel panel-default">
                                               <div class="panel-body">
@@ -344,7 +344,7 @@
                                           </div>
 
 
-                                          <!-- </div>                                           -->
+                                          <!-- </div> -->
 
                                           <div role="tabpanel" class="tab-pane" id="profile">
                                             <?php  

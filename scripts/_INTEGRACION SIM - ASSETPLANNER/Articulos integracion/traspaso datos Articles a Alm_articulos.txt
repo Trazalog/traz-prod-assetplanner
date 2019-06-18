@@ -1,0 +1,26 @@
+insert into alm_articulos  (arti_id
+,barcode
+,descripcion
+,costo
+,es_caja
+,cantidad_caja
+,punto_pedido
+,estado_id
+,unidad_id
+,empr_id
+,es_loteado
+,eliminado)
+select 
+artId
+,artBarCode
+,artDescription
+,artCoste
+,artIsByBox
+,artCantBox
+,punto_pedido
+,0
+,1
+,id_empresa
+,0
+,0
+ from articles
