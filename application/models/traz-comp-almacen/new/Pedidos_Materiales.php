@@ -42,6 +42,24 @@ class Pedidos_Materiales extends CI_Model
         return $this->db->get()->result_array();
     }
 
+    public function getPedidoMaterialesOT($ot)
+    {
+        $this->db->where('empr_id', empresa());
+        $this->db->where('ortr_id', $ot);
+        return $this->db->get($this->tabla)->first_row();
+    }
+
+    public function crear($ot)
+    {
+        $pema = array(
+            'fecha' => date('Y-m-d H:i:s'),
+            'ortr_id' => $ot,
+            'empr_id' => empresa(),
+        );
+        $this->db->insert($this->tabla, $pema);
+        return $this->db->insert_id();
+    }
+
     public function setEstado($id, $estado)
     {
         $this->db->where('pema_id', $id);
@@ -54,5 +72,36 @@ class Pedidos_Materiales extends CI_Model
         $this->db->set('case_id', $case);
         $this->db->where('pema_id', $id);
         $this->db->update('alm_pedidos_materiales');
+    }
+
+    public function getInsumosOT($ot)
+    {
+        $this->db->select('artId as arti_id, cantidad');
+        $this->db->where('id_empresa', empresa());
+        $this->db->where('otId', $ot);
+        return $this->db->get('tbl_otinsumos')->result();
+    }
+
+    public function crearPedidoOT($ot)
+    {
+        $result = $this->getInsumosOt($ot);
+
+        if(!$result) return false;
+
+        $pema_id = $this->crear($ot);
+
+        foreach ($result as $o) {
+            $detalle = array(
+                'pema_id' => $pema_id,
+                'arti_id' => $o->arti_id,
+                'cantidad' => $o->cantidad,
+                'resto' => $o->cantidad,
+             //   'prov_id' => $proveed,
+            );
+            $this->db->insert('alm_deta_pedidos_materiales', $detalle);
+        }
+
+        return true;
+
     }
 }

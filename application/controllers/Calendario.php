@@ -469,16 +469,19 @@ class Calendario extends CI_Controller {
 	function verEjecutarOT($idOt){
 		
 		$this->load->model('traz-comp/Componentes');
-
-		$info = new StdClass();
-		$info->ortr_id = $idOt;
-
+		$this->load->model(CMP_ALM.'/new/Pedidos_Materiales');
+		
+		#COMPONENTE ARTICULOS
 		$data = $this->Componentes-> listaArticulos();
 
+		#PEDIDO MATERIALES
+		$info = new StdClass();
+		$info->ortr_id = $idOt;
+		$info->pema_id = $this->Pedidos_Materiales->getPedidoMaterialesOT($idOt)->pema_id;
 		$data['info'] = $info;
 
-		$data['idOt'] = $idOt;
 		// ifno de la OTrabajo
+		$data['idOt'] = $idOt;
 		$data['detaOT'] = $this->Calendarios->getDataOt($idOt);			
 		// Tarea estandar
 		$data['tareas'] = $this->Calendarios->gettareas();

@@ -68,12 +68,12 @@ class Proceso extends CI_Controller
 
     public function tomarTarea($id)
     {
-        echo json_encode($this->bpmalm->setUsuario($id));
+        echo json_encode($this->bpmalm->setUsuario($id, usuario_bpm()));
     }
 
     public function soltarTarea($id)
     {
-        echo json_encode($this->bpmalm->setUsuario($id));   
+        echo json_encode($this->bpmalm->setUsuario($id, usuario_bpm()));   
     }
 
     public function cerrarTarea($task_id)
@@ -211,6 +211,8 @@ class Proceso extends CI_Controller
                 }
 
                 $data['list_deta_pema'] = $this->Ordeninsumos->get_detalle_entrega($data['pema_id']);
+
+                $data['estadoOT'] = false; #!HARDCODE
 
                 return $this->load->view(CMP_ALM.'/proceso/tareas/pedido_materiales/view_entrega_pedido_pendiente', $data, true);
 

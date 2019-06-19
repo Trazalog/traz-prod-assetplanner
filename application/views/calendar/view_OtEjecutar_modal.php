@@ -204,7 +204,7 @@
 DataTable('#tblOrden');
 
 
- 
+
 
 
 validarTarea();
@@ -265,7 +265,7 @@ $("#operario").autocomplete({
 //cierra la tarea ejecutar OT y asigna la tarea a la OT
 function EjecutarOT() {
 
-    $('#errorTable').fadeIn('slow');
+      $('#errorTable').fadeIn('slow');
 
     var task = $('#task').val();
     var ot = $('#idOt').val();
@@ -317,6 +317,7 @@ function EjecutarOT() {
             // {"status":true,"msj":"OK"}
             if (data.status) {
                 $('#modalInforme').modal('hide');
+                lanzarPedidoMateriales();
                 regresa1();
             } else {
                 $('#modalInforme').modal('hide');
@@ -336,4 +337,21 @@ function EjecutarOT() {
 function activaTab(tab) {
     $('.nav-tabs a[href="#' + tab + '"]').tab('show');
 };
+</script>
+
+
+<script>
+function lanzarPedidoMateriales() {
+    var pema_id = $('#pema_id').val();
+    if(pema_id == null || pema_id==''){
+        alert('No se pudo Realizar el Pedido de Materiales | ID Vacio');
+        return;
+    }
+    $.ajax({
+        type: 'POST',
+        url: "<?php echo CMP_ALM ?>/Proceso/pedidoNormal/"+pema_id,
+        success: function(result) {alert('Hecho'); return;},
+        error: function(result) {alert('No se pudo Realizar el Pedido de Materiales | Falla del Servidor');}
+    });
+}
 </script>

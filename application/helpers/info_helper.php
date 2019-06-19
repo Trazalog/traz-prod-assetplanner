@@ -104,6 +104,12 @@ if (!function_exists('info_orden')) {
         $userdata  = $ci->session->userdata('user_data');
 		return  $userdata[0]['id_empresa'];
     }
+    function usuario_bpm(){
+
+        $ci =& get_instance();			
+        $userdata  = $ci->session->userdata('user_data');
+		return  $userdata[0]['userBpm'];
+    }
 
     function msjStatus($status, $msj, $data=null){
         return array(

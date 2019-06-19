@@ -102,7 +102,7 @@ define('CMP_ALM', 'traz-comp-almacen');
 |
 */
 
-define('BONITA_URL', 'http://localhost:8080/bonita/');  
+define('BONITA_URL', 'http://holis:8080/bonita/');  
 define('BPM_ADMIN_USER', 'mantenedor1');
 define('BPM_ADMIN_PASS', 'bpm');
 define('BPM_USER_PASS', 'bpm');

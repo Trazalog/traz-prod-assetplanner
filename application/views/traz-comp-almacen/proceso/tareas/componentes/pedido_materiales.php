@@ -1,5 +1,5 @@
-<input id="pema_id" type="number" class="" value="<?php echo (isset($info->pema_id)?$info->pema_id:null)?>">
-<input id="ortr_id" type="number" class="" value="<?php echo (isset($info->ortr_id)?$info->ortr_id:null)?>">
+<input id="pema_id" type="number" class="hidden" value="<?php echo (isset($info->pema_id)?$info->pema_id:null)?>">
+<input id="ortr_id" type="number" class="hidden" value="<?php echo (isset($info->ortr_id)?$info->ortr_id:null)?>">
 
 <div class="row">
     <div
