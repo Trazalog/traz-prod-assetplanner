@@ -73,7 +73,9 @@
                                   echo '<td>'.$detaOT[0]["id_solicitud"].'</td>';
                                   echo '<td>'.$detaOT[0]['descripcion'].'</td>';                         
                                   echo '<td>'.$infoSolicOrigen[0]["duracionTarea"]." ".$infoSolicOrigen[0]["unidaddescrip"] .'</td>';
+                                  
                                   echo '<td>'.$infoSolicOrigen[0]['frecuencia'].'</td>';
+                                 
                                   echo '<td>'.$detaOT[0]['codigo'].'</td>';
                                   echo '<td>'.$detaOT[0]['descripcionEquipo'].'</td>';
                                 ?>  

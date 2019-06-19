@@ -111,10 +111,10 @@
                                                 
                                             </div>    <!-- /.panel-body -->
 
-                                          </div>   <!-- /.tabpanel-body -->
                                           
                                           
-                                          <!-- Formulario -->
+                                          
+                                          <!--  Datos del equipo -->
                                           <div class="panel panel-default oculto">
                                             <div class="panel-heading">
                                                 <h3 class="panel-title"><span class="fa fa-cogs"></span> Datos del equipo</h3>
@@ -209,6 +209,8 @@
                                                   </div><!-- /.row -->
                                               </div>
                                           </div>    
+                                        
+
                                         <!-- bloque herram ins y adj -->	
                                           <!-- Tab nav -->
                                           <div class="nav-tabs-custom oculto">
@@ -218,7 +220,6 @@
                                               <li role="presentation"><a href="#TabAdjunto" aria-controls="home" role="tab" data-toggle="tab">Adjunto</a></li>            
                                             </ul>
                                           </div>
-
                                           <!-- Tab panes -->
                                           <div class="tab-content oculto">
                                           <div role="tabpanel" class="tab-pane active" id="herramin">
@@ -342,16 +343,17 @@
                                         <!--	/  bloque herram ins y adj -->
 
                                           </div>
-
-
-                                          <!-- </div> -->
-
+                                        <!-- / bloque herram ins y adj -->  
+                                      </div>   <!-- /.tabpanel-body -->                     
+                                        <!-- Comentarios -->
                                           <div role="tabpanel" class="tab-pane" id="profile">
                                             <?php  
                                               echo $comentarios;																			
                                             ?>	
                                           </div>
+                                        <!--  / Comentarios -->  
 
+                                        <!-- Linea de Tiempo -->
                                           <div role="tabpanel" <?php echo ($device == 'android' ? 'class= "hidden"' : 'class= "tab-pane"') ?> id="messages">
                                               <!-- <div role="tabpanel" class="tab-pane" id="messages" > -->
 
@@ -364,8 +366,8 @@
                                               </div>
 
                                           </div>
-
-                                      </div>    
+                                        <!-- / Linea de Tiempo -->  
+                                      </div>    <!-- tab content -->
                                   </div>
                               </div>
                           </div>
