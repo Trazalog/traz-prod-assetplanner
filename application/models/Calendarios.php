@@ -535,9 +535,8 @@ class Calendarios extends CI_Model {
 					break;
 				// backlog
 				case '4':
-					$this->db->select('tbl_back.back_duracion AS duracionTarea,
-														tbl_back.back_duracion AS frecuencia,
-														unidad_tiempo.unidaddescrip');
+					$this->db->select('tbl_back.back_duracion AS duracionTarea,                                    
+                                    unidad_tiempo.unidaddescrip');
 					$this->db->from('unidad_tiempo');									
 					$this->db->join('tbl_back', 'unidad_tiempo.id_unidad = tbl_back.id_unidad');
 					$this->db->where('tbl_back.backId', $id_solicitud);

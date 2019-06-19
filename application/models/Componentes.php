@@ -7,30 +7,30 @@ class Componentes extends CI_Model
 		parent::__construct();
 	}
 
-    //
-    function listadoABM()
-    {
-        $userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa'];
+	//
+	function listadoABM()
+	{
+			$userdata = $this->session->userdata('user_data');
+			$empId = $userdata[0]['id_empresa'];
 
-        $this->db->select('componentes.id_componente, componentes.descripcion, componentes.informacion, componentes.marcaid, componentes.pdf,
-            marcasequipos.marcaid, marcasequipos.marcadescrip');
-        $this->db->from('componentes');
-        $this->db->join('marcasequipos', 'componentes.marcaid = marcasequipos.marcaid');
-        $this->db->where('componentes.id_empresa', $empId);
-        $this->db->where('componentes.estado', 'AC');
-        $this->db->where('marcasequipos.estado', 'AC');				
-				$query= $this->db->get();   
+			$this->db->select('componentes.id_componente, componentes.descripcion, componentes.informacion, componentes.marcaid, componentes.pdf,
+					marcasequipos.marcaid, marcasequipos.marcadescrip');
+			$this->db->from('componentes');
+			$this->db->join('marcasequipos', 'componentes.marcaid = marcasequipos.marcaid');
+			$this->db->where('componentes.id_empresa', $empId);
+			$this->db->where('componentes.estado', 'AC');
+			$this->db->where('marcasequipos.estado', 'AC');				
+			$query= $this->db->get();   
 
-        if ($query->num_rows()!=0)
-        {
-            return $query->result_array();
-        }
-        else
-        {
-            return false;
-        }
-    }
+			if ($query->num_rows()!=0)
+			{
+					return $query->result_array();
+			}
+			else
+			{
+					return false;
+			}
+	}
 
 	// Trae listado de componentes por empresa logueada - Listo
 	function componentes_List(){
@@ -185,36 +185,34 @@ class Componentes extends CI_Model
 
   // Asocia equipo/componente - Listo
 	function insert_componente($data2)
-    {
-        $userdata            = $this->session->userdata('user_data');
-        $data2['id_empresa'] = $userdata[0]['id_empresa'];  
-        $query = $this->db->insert("componenteequipo", $data2);
-        return $query;
-    }
+	{
+			$userdata            = $this->session->userdata('user_data');
+			$data2['id_empresa'] = $userdata[0]['id_empresa'];  
+			$query = $this->db->insert("componenteequipo", $data2);
+			return $query;
+	}
 
-    // Devuelve componentes asociados a un equipo
-    function getcompo($id)
-    {
-		$this->db->select('equipos.id_equipo, 
-				equipos.descripcion, 
-                marcasequipos.marcadescrip,
-				componentes.descripcion AS dee11, 
-                componentes.informacion,
-				componenteequipo.id_componente');
-    	$this->db->from('equipos');
-    	$this->db->join('componenteequipo', 'componenteequipo.id_equipo = equipos.id_equipo');
-    	$this->db->join('componentes', 'componentes.id_componente=componenteequipo.id_componente');
-        $this->db->join('marcasequipos', 'componentes.marcaid=marcasequipos.marcaid');
-    	$this->db->where('componenteequipo.id_equipo', $id);
-    	$this->db->where('componenteequipo.estado', 'AC');
-        $this->db->order_by('dee11');
-    	$query = $this->db->get();   
-		if($query->num_rows()>0){
-            return $query->result();
-        }
-        else{
-            return false;
-        }		
+	// Devuelve componentes asociados a un equipo
+	function getcompo($id){
+
+			$sql= "SELECT equipos.id_equipo, equipos.descripcion, marcasequipos.marcadescrip, 
+			componentes.descripcion AS dee11, componentes.informacion, componenteequipo.id_componente
+			FROM equipos			
+			LEFT JOIN componenteequipo ON componenteequipo.id_equipo = equipos.id_equipo 
+			AND componenteequipo.estado = 'AC'			
+			LEFT JOIN componentes ON componentes.id_componente=componenteequipo.id_componente
+			LEFT JOIN marcasequipos ON componentes.marcaid=marcasequipos.marcaid
+			WHERE equipos.id_equipo = $id
+			ORDER BY dee11";
+
+			$query = $this->db->query($sql);   
+
+			if($query->num_rows()>0){
+					return $query->result();
+			}
+			else{
+					return false;
+			}		
 	}
   
 	// guarda path de pdf subido

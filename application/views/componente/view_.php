@@ -621,38 +621,39 @@ $('#equipo').change(function(){
   ge = idequipo;
   //console.log("id de equipo: "+idequipo);
   $('#tablacompo tbody tr').html("");
-  
+  $('#descrip').html("");
   $.ajax({
     data: { idequipo:idequipo },
     dataType: 'json',
     type: 'POST',
     url: 'Componente/getcompo', 
-    success: function(data){                  
-      //console.table(data); 
-      if (data!= 0) {
-        var de = data[0]['descripcion']; 
-        var comp = data[0]['dee11'];
-        $('#descrip').val(de); 
-        for(var i=0; i < data.length ; i++){
-          var  table = "<tr id='"+i+"'>"+   
-          "<td>"+data[i]['dee11']+" - "+data[i]['marcadescrip']+" - "+data[i]['informacion']+"</td>"+
-          "<td class='hidden' id='"+data[i]['id_componente']+"' >"+data[i]['id_componente']+"</td>"+
-          "</tr>";
-          $('#tablacompo').append(table); 
-          s++;
-        }             
-
-        //console.log(table);
-        //console.log(s);
-        $('#tablacompo').val('');
-      }
-      else{
-        traer_descripcion(idequipo); 
-      } 
+    success: function(data){  
+              console.table(data);
+              if (data!= 0) {
+                var de = data[0]['descripcion']; 
+                var comp = data[0]['dee11'];
+                $('#descrip').val(de); 
+                for(var i=0; i < data.length ; i++){
+                  if(data[i]['marcadescrip'] != null){
+                    var  table = "<tr id='"+i+"'>"+   
+                    "<td>"+data[i]['dee11']+" - "+data[i]['marcadescrip']+" - "+data[i]['informacion']+"</td>"+
+                    "<td class='hidden' id='"+data[i]['id_componente']+"' >"+data[i]['id_componente']+"</td>"+
+                    "</tr>";
+                    $('#tablacompo').append(table); 
+                    s++;
+                  } else{
+                    $('#tablacompo').append('<tr> <td>Equipo sin componentes asociados</td></tr>')
+                  } 
+                }  
+                $('#tablacompo').val('');
+              }
+              else{
+                traer_descripcion(idequipo); 
+              } 
     },
     error: function(result){
-      console.table(result);
-      traer_descripcion(idequipo);
+          console.table(result);
+          traer_descripcion(idequipo);
     },
   });
 
