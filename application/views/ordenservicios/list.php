@@ -30,14 +30,38 @@
                     echo '<tr id="'.$id.'">';
                       echo '<td class="icono">';
                         echo '<i class="fa fa-sticky-note-o text-light-blue" data-toggle="modal" data-target="#modalOrder" style="cursor: pointer; margin-left: 15px;" title="Ver Informe"></i>'; 
-                        echo '<i class="text-light-blue fa fa-fw '.($a['estado'] == 'C' ? 'fa fa-toggle-on' : 'fa fa-toggle-off').'" title="'.($a['estado'] == 'C' ? 'Finalizar Informe' : 'Finalizado').'" style="cursor: pointer; margin-left: 15px;"></i>';
+                       // echo '<i class="text-light-blue fa fa-fw '.($a['estado'] == 'C' ? 'fa fa-toggle-on' : 'fa fa-toggle-off').'" title="'.($a['estado'] == 'C' ? 'Finalizar Informe' : 'Finalizado').'" style="cursor: pointer; margin-left: 15px;"></i>';
                       echo '</td>';
                       echo '<td>'.$a['id_orden'].'</td>';
                       echo '<td>'.$a['id_ot'].'</td>';
                       echo '<td>'.$a['descripcion_ot'].'</td>';
                       echo '<td>'.$a['equipo'].'</td>';
                       echo '<td>'.$a['fecha'].'</td>';
-                      echo '<td>'.($a['estado'] == 'C' ? '<small class="label pull-left bg-green">Curso</small>' :($a['estado'] == 'T' ? '<small class="label pull-left bg-blue">Terminado</small>' : '<small class="label pull-left bg-red">Solicitado</small>')).'</td>';
+                      //echo '<td>'.($a['estado'] == 'C' ? '<small class="label pull-left bg-green">Curso</small>' :($a['estado'] == 'T' ? '<small class="label pull-left bg-blue">Terminado</small>' : '<small class="label pull-left bg-red">Solicitado</small>')).'</td>';
+
+                      echo '<td>';           
+                            
+                      if ($a['estado'] == 'S') {
+                        echo  '<small class="label pull-left bg-red">Solicitada</small>';
+                      }
+                      if($a['estado'] == 'PL'){                           
+                        echo '<small class="label pull-left bg-orange">Planificada</small>';
+                      }
+                      if($a['estado'] == 'AS'){
+                        echo '<small class="label pull-left bg-yellow">Asignada</small>';
+                      }
+                      if ($a['estado'] == 'C') {
+                        echo '<small class="label pull-left  bg-blue">Curso</small>' ;
+                      }
+                      if ($a['estado'] == 'T') {
+                        echo  '<small class="label pull-left bg-navy">Terminada</small>';
+                      }
+                      if ($a['estado'] == 'CE') {
+                        echo  '<small class="label pull-left bg-green">Cerrada</small>';
+                      }                            
+
+                      echo '</td>';
+
   	                echo '</tr>';
       		        }                  
                 }

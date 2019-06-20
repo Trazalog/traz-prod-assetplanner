@@ -315,6 +315,12 @@ class Tareas extends CI_Model {
 			return $this->db->update('orden_trabajo');
 		}
 
+		if ($tipo == 'informe servicios') {			
+			$this->db->set('estado',$estado);
+			$this->db->where('id_ot',$id_solicitud);
+			return $this->db->update('orden_servicio');
+		}
+
 		return $response;
 	}
 
@@ -334,6 +340,14 @@ class Tareas extends CI_Model {
 			{
 					return false;
 			}
+	}
+	// devueve sore_id por id de backlog
+	function getSoreIdporBackId($id_solicitud){
+		$this->db->select('tbl_back.sore_id');
+		$this->db->from('tbl_back');
+		$this->db->where('tbl_back.backId', $id_solicitud);
+		$query = $this->db->get();
+		return $query->row('sore_id');
 	}
 
 	/*FORMULARIOS */

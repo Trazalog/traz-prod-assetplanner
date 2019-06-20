@@ -1392,6 +1392,16 @@ class Otrabajos extends CI_Model {
 			return $this->db->update('orden_trabajo', array('case_id'=>$case_id));			
 		}
 
+		// devuelve id de SServicio por Case_id
+		function getIdSServicioporCaseId($caseDeBacklog){
+			$this->db->select('solicitud_reparacion.id_solicitud');
+			$this->db->from('solicitud_reparacion');
+			$this->db->where('solicitud_reparacion.case_id', $caseDeBacklog);			
+			$query = $this->db->get();
+			$row = $query->row('id_solicitud');
+      return $row;
+		}
+
 		// cambbia de estado la Tareas(SServ, Prevent, Predic, Back y OT)
 		function cambiarEstado($id_solicitud, $estado, $tipo){						
 			
