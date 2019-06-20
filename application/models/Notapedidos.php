@@ -18,6 +18,7 @@ class Notapedidos extends CI_Model
         $this->db->from('tbl_notapedido');
         $this->db->join('orden_trabajo','tbl_notapedido.id_ordTrabajo = orden_trabajo.id_orden');
         $this->db->where('tbl_notapedido.id_empresa', $empId);
+    
         $query = $this->db->get();
 
         if ($query->num_rows()!=0)
@@ -29,6 +30,7 @@ class Notapedidos extends CI_Model
             return array();
         }
     }
+    
 
     //
     function getNotasxOT($id)

@@ -20,5 +20,12 @@ class Pedido_Material extends CI_Controller {
    {
        $this->Pedidos_Materiales->pedidoNormal($this->input->post('id'));
    }
+
+   public function getPedidos($ot = null)
+   {
+     $data['list'] = $this->Pedidos_Materiales->getListado($ot);
+     $data['permission'] = 'View';
+     $this->load->view(CMP_ALM.'/notapedido/list', $data);
+   }
 }
 ?>

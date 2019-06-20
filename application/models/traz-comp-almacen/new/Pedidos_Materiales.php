@@ -13,12 +13,28 @@ class Pedidos_Materiales extends CI_Model
         parent::__construct();
     }
 
+    public function getListado($ot = null)
+    {
+        $this->db->select('T.pema_id as id_notaPedido,T.fecha,T.ortr_id as id_ordTrabajo,orden_trabajo.descripcion,T.justificacion, T.estado');
+        $this->db->from('alm_pedidos_materiales T');
+        $this->db->join('orden_trabajo', 'T.ortr_id = orden_trabajo.id_orden','left');
+        $this->db->where('T.empr_id', empresa());
+        if($ot)  $this->db->where('orden_trabajo.id_orden', $ot);
+        $query = $this->db->get();
+
+        if ($query->num_rows() != 0) {
+            return $query->result_array();
+        } else {
+            return array();
+        }
+    }
+
     public function pedidoNormal($pemaId)
     {
         $this->load->library('BPMALM');
 
         $contract = [
-            'pIdPedidoMaterial' => $pemaId
+            'pIdPedidoMaterial' => $pemaId,
         ];
 
         $data = $this->bpmalm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES, $contract);
@@ -40,6 +56,16 @@ class Pedidos_Materiales extends CI_Model
         $this->db->where($this->key, $id);
         $this->db->where('T.eliminado', false);
         return $this->db->get()->result_array();
+    }
+
+    public function eliminar($id)
+    {
+        $this->db->where('pema_id', $id);
+        $this->db->delete('alm_deta_pedidos_materiales');
+
+        $this->db->where('pema_id', $id);
+        return $this->db->delete('alm_pedidos_materiales');
+
     }
 
     public function getPedidoMaterialesOT($ot)
@@ -86,7 +112,9 @@ class Pedidos_Materiales extends CI_Model
     {
         $result = $this->getInsumosOt($ot);
 
-        if(!$result) return false;
+        if (!$result) {
+            return false;
+        }
 
         $pema_id = $this->crear($ot);
 
@@ -96,12 +124,12 @@ class Pedidos_Materiales extends CI_Model
                 'arti_id' => $o->arti_id,
                 'cantidad' => $o->cantidad,
                 'resto' => $o->cantidad,
-             //   'prov_id' => $proveed,
+                //   'prov_id' => $proveed,
             );
             $this->db->insert('alm_deta_pedidos_materiales', $detalle);
         }
 
-        return true;
+        return $pema_id;
 
     }
 }

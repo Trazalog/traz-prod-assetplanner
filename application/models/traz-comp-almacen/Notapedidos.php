@@ -18,15 +18,13 @@ class Notapedidos extends CI_Model
 
     }
 
-    public function notaPedidos_List()
+    public function notaPedidos_List($ot = null)
     {
-        $userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa'];
-
         $this->db->select('T.pema_id as id_notaPedido,T.fecha,T.ortr_id as id_ordTrabajo,orden_trabajo.descripcion,T.justificacion, T.estado');
         $this->db->from('alm_pedidos_materiales T');
         $this->db->join('orden_trabajo', 'T.ortr_id = orden_trabajo.id_orden','left');
-        $this->db->where('T.empr_id', $empId);
+        $this->db->where('T.empr_id', empresa());
+        if($ot)  $this->db->where('orden_trabajo.id_orden', $ot);
         $query = $this->db->get();
 
         if ($query->num_rows() != 0) {

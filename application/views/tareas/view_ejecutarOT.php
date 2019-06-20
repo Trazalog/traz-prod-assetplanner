@@ -111,14 +111,15 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 																					</div>
 															</div>
 															
-															<div class="row">
-																	<div class="col-sm-12 col-md-12">
-																			<button type="button" id="pedidoInsumos" class="btn btn-primary" onclick="pedirInsumos()">Pedido de Insumos</button>
-																	</div>
-															</div>
+														
 															<br>
 
-																<div id="nota_pedido"></div>
+																<div id="nota_pedido">
+																
+																<?php 
+																	$this->load->view(CMP_ALM.'/notapedido/list');
+																?>
+																</div>
 															</div>
 															
 															<!-- Info Tarea-->
@@ -283,14 +284,7 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 			});
 		});																			
 
-    cargarPedidos();
-    function cargarPedidos() {
-        var iort = $('#ot').val();
-        $('#nota_pedido').empty();
-        $("#nota_pedido").load("<?php echo base_url(); ?>index.php/almacen/Notapedido/ObtenerNotasPedidosxOT/" + iort);
-
-    }
-
+   
     function validarFormularios() {
         console.log('Validando Formularios...');
         ban = true;
@@ -409,23 +403,7 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 
     /*  /. Formulario de subareas */
 
-    /* Pantalla pedido de insumos */
-			load_view_insumos();
-			function load_view_insumos() {
-					var iort = $('#ot').val();
-					$('#body-pedidos').empty();
-					$("#body-pedidos").load("<?php echo base_url(); ?>index.php/almacen/Notapedido/agregarListInsumos/"+iort);
-			}
-
-			$('#pedidos').on('shown.bs.modal', function() {
-
-				$($.fn.dataTable.tables(true)).DataTable()
-					.columns.adjust();
-			});
-
-			function pedirInsumos() {
-					$('.modal#pedidos').modal('show');
-			}
+  
 
 			function cargarNotasOffline() {
 					console.log("Cargando Pedidos Offline...");
@@ -445,12 +423,7 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 			}
 		/*  /.	Pantalla pedido de insumos */	
 </script>
-<!--	Modal Insumos	-->
-<div class="modal" id="pedidos" tabindex="-1" role="dialog">
-    <div class="modal-dialog" id="body-pedidos" role="document">
 
-    </div>
-</div>
 
 
 

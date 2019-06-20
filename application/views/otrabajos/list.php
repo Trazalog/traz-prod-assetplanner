@@ -1345,13 +1345,13 @@ function guardarpedido(){
   } 
 // MOSTRAR NOTA DE PEDIDO
   function mostrar_pedido(o) { 
-    $("#modallista tbody tr").remove();
-    var idorde = $(o).parent('td').parent('tr').attr('id');
+   // $("#modallista tbody tr").remove();
+    var idorde = $(o).closest('tr').attr('id');
     console.log("ID de orden de trabajo para mostrar pedido es: "+idorde);  
    
     WaitingOpen();
     $('#content').empty();
-    $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/getNotasxOT/<?php echo $permission; ?>/"+idorde+"");
+    $("#content").load("<?php echo base_url(); ?>index.php/<?php echo CMP_ALM ?>/new/Pedido_Material/getPedidos/"+idorde);
     WaitingClose(); 
   };
 

@@ -219,7 +219,7 @@ class Proceso extends CI_Controller
 
                 $ot = $this->Otrabajos->obtenerOT($aux['ortr_id']);
 
-                $data['estadoOT'] = !($ot['estado'] == 'T' || $ot['estado']=='CA'); #!HARDCODE
+                $data['estadoOT'] = !($ot['estado'] == 'T' || $ot['estado']=='CA');
 
                 return $this->load->view(CMP_ALM.'/proceso/tareas/pedido_materiales/view_entrega_pedido_pendiente', $data, true);
 

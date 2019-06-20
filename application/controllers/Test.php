@@ -9,7 +9,6 @@ class Test extends CI_Controller {
    }
    function index(){
      
-    echo var_dump(usuario_bpm());
      
    }
 }
