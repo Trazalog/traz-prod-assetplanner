@@ -121,8 +121,8 @@
                               <th>Componente</th>
                               <th>Código</th>
                               <th>Sistema</th>
-                              <th class=""></th>
-                              <th class=""></th>
+                              <th class="hidden"></th>
+                              <th class="hidden"></th>
                             </tr>
                           </thead>
                           <tbody>
@@ -570,8 +570,8 @@ function autoCompletarComponentes(){
       ] ).node();
       rowNode.id = id_equipo;
       table.draw();
-      $( rowNode ).find('td').eq(5).addClass('');
-      $( rowNode ).find('td').eq(6).addClass('');
+      $( rowNode ).find('td').eq(5).addClass('hidden');
+      $( rowNode ).find('td').eq(6).addClass('hidden');
 
       $('#error').fadeOut('slow');
       //$('#descrip').val('');

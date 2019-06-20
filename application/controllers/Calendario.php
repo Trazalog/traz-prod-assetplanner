@@ -397,12 +397,14 @@ class Calendario extends CI_Controller {
 	
 	// Guarda herramientas e insumos que vienen de Backlog, Prevent y Predictivo
 	function setHerramInsPorTarea($idOT, $tipo, $id_solicitud){
-		
+		dump($idOT, 'id de ot: ');
+		dump($tipo, 'tipo: ');
+		dump($id_solicitud, 'id solic: ');
 		switch ($tipo) {
 			case 'predictivo':		// Predictivo
 				$herra = $this->Calendarios->getPredictivoHerramientas($id_solicitud);				
 				$insumos = $this->Calendarios->getPredictivoInsumos($id_solicitud);			
-				$adjunto = $this->Calendarios->getAdjunto($id_solicitud,$tipo);				
+				$adjunto = $this->Calendarios->getAdjunto($id_solicitud,$tipo);		
 				// Guarda el bacht de datos de herramientas
 				if (!empty($herra)) {		
 					$result['respHerram'] = $this->Calendarios->insertOTHerram($idOT, $herra);
@@ -416,6 +418,7 @@ class Calendario extends CI_Controller {
 					$url = 'assets/filespredictivos/';
 					$file = $url.$adjunto;
 					$result['respAdjunto'] = $this->Calendarios->insertAdjunto($idOT,$file);
+					dump($result['respAdjunto'], 'resp insercion: ');
 				}
 				break;
 			case 'backlog':		//Backlog			
@@ -453,7 +456,7 @@ class Calendario extends CI_Controller {
 				break;
 
 			default:
-				// FIXME: AGRAGAR DATOS CUANDO SE CREE POR OT Y SE AGREGUEN COSAS
+				
 
 
 

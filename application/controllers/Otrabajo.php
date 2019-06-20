@@ -1274,9 +1274,9 @@ class Otrabajo extends CI_Controller {
 		// trae insumos
 		$insumos = $this->Otrabajos->getOTInsumos($idOt);
 		if($insumos){
-				$response['insumos']=$insumos;
+				$response['insumos'] = $insumos;
 		}
-		else{ $response['insumos']=0;}
+		else{ $response['insumos'] = 0;}
 
 		// trae adjuntos
 		$adjuntos = $this->Otrabajos->getOTadjuntos($idOt);
