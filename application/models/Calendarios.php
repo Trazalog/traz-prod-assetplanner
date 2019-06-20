@@ -438,7 +438,7 @@ class Calendarios extends CI_Model {
 		function getAdjunto($id_solicitud,$tipo){
 			
 			switch ($tipo) {
-				case '5':		// Predictivo
+				case 'predictivo':		// Predictivo
 								$this->db->select('predictivo.pred_adjunto');
 								$this->db->from('predictivo');
 								$this->db->where('predictivo.predId',$id_solicitud);
@@ -446,7 +446,7 @@ class Calendarios extends CI_Model {
 								$row = $query->row();
 								$result =  $row->pred_adjunto; 
 								break;
-				case '4':		//Backlog
+				case 'backlog':		//Backlog
 								$this->db->select('tbl_back.back_adjunto');
 								$this->db->from('tbl_back');
 								$this->db->where('tbl_back.backId',$id_solicitud);
