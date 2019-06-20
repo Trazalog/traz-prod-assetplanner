@@ -198,21 +198,28 @@ class Proceso extends CI_Controller
 
             case 'Entrega pedido pendiente':
 
+                $this->load->model('Otrabajos');
                 $proceso = $tarea['processId'];
+
+                $aux = null;
 
                 if ($proceso == BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS) {
 
-                    $data['pema_id'] = $this->Pedidoextra->getXCaseId($tarea['rootCaseId'])['pema_id'];
+                    $aux = $this->Pedidoextra->getXCaseId($tarea['rootCaseId']);
 
                 } else {
 
-                    $data['pema_id'] = $this->Notapedidos->getXCaseId($tarea['rootCaseId'])['pema_id'];
+                    $aux = $this->Notapedidos->getXCaseId($tarea['rootCaseId']);
 
                 }
 
+                $data['pema_id'] = $aux['pema_id'];
+
                 $data['list_deta_pema'] = $this->Ordeninsumos->get_detalle_entrega($data['pema_id']);
 
-                $data['estadoOT'] = false; #!HARDCODE
+                $ot = $this->Otrabajos->obtenerOT($aux['ortr_id']);
+
+                $data['estadoOT'] = !($ot['estado'] == 'T' || $ot['estado']=='CA'); #!HARDCODE
 
                 return $this->load->view(CMP_ALM.'/proceso/tareas/pedido_materiales/view_entrega_pedido_pendiente', $data, true);
 

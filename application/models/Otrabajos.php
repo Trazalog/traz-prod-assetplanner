@@ -1434,4 +1434,11 @@ class Otrabajos extends CI_Model {
 			return $this->db->update('orden_trabajo', $datos);	
 		} 
 
+		function obtenerOT($ot){
+			$this->db->where('orden_trabajo.id_orden', $ot);
+			return $this->db->get('orden_trabajo')->first_row();	
+		} 
+
+		
+
 }	
