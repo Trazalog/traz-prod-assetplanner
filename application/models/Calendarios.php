@@ -635,7 +635,7 @@ class Calendarios extends CI_Model {
         return $resposnse;
     }
 
-    ////// CORRECTIVOS 
+   	////// CORRECTIVOS 
         function getCorrectPorIds($data){
 
             $id = $data;
@@ -652,7 +652,7 @@ class Calendarios extends CI_Model {
                     return $query->result_array();  
         }
 
-	/////	BACKLOG
+		/////	BACKLOG
 		function getBackPorIds($data){
 			$id = $data;
 			//FIXME: ARREGLAR ACA LA TAREA OPCIONAL
@@ -664,6 +664,15 @@ class Calendarios extends CI_Model {
 			$query = $this->db->get();      
 			
 			return $query->result_array(); 
+		}
+		// devuelve id de SServicio por Case_id
+		function getIdSServicioporCaseId($caseDeBacklog){
+			$this->db->select('solicitud_reparacion.id_solicitud');
+			$this->db->from('solicitud_reparacion');
+			$this->db->where('solicitud_reparacion.case_id', $caseDeBacklog);			
+			$query = $this->db->get();
+			$row = $query->row('id_solicitud');
+      return $row;
 		}
 		// Trae herramientas ppor id de preventivo para Editar
 		function getBacklogHerramientas($id){

@@ -195,15 +195,17 @@ class Calendario extends CI_Controller {
 						// actualizo estado del backlog
 						$tipo = 'backlog';
 						//Actualizar Tablas >> Backlog ||Solicitud
-						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);					
-
+						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);			
 						$infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);	
 						$respCerrar = $this->cerrarTarea($infoTarea['taskId']);							
 						$resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);	
 						// averiguo case para saber si es autogenerado por BPM o no
 						$caseDeBacklog = $infoTarea['caseId'];
-
-						dump($caseDeBacklog, 'case de backlog segun Sservicios:');
+						$idSServicio = $this->Calendarios->getIdSServicioporCaseId($caseDeBacklog);	
+						// Si el backlog viene de una SServicios la actualializa a Planificada
+						if ($idSServicio != NULL) {
+							$this->Calendarios->cambiarEstado($idSServicio, 'PL', 'correctivo');	
+						}					
 					}
 					// $tipo == '5' -> Predictivo			
 					if($tipo == '5'){	
@@ -217,17 +219,16 @@ class Calendario extends CI_Controller {
 					//	dump_exit($idOT);						
 					// si es Preventivo o Predictivo lanza proceso nuevo
 					if ( ($tipo == 'preventivo') || ($tipo == 'predictivo') || ( ($caseDeBacklog == 0) && ($tipo != 'correctivo') ) ) {
-						dump($tipo, 'entre por if forrito: ');
-						dump($idOT, 'id de OT: ');
+					
 							$this->load->library('BPM');
 						
 							$contract = array(
 									"idSolicitudServicio"	=> 0,		// 0 NULL  FALSE       // "" ''
 									"idOT"  => 	$idOT
 								);
-							dump($contract, 'contrrato BPM: ');	
+						
 							$result = $this->bpm->LanzarProceso($contract);	
-							dump($result, 'respuesta lanzamiento proceso bpm: ');							
+													
 							// guarda case id generado el lanzar proceso				
 							$respcaseOT = $this->Calendarios->setCaseidenOT($result['case_id'], $idOT);					
 					}else{

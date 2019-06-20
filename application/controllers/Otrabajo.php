@@ -1006,6 +1006,8 @@ class Otrabajo extends CI_Controller {
 				break;
 			case '4':
 				$tipo  = 'backlog';
+				// trae id de SServicios para cambiar Estado
+				$idSServicios = $this->Otrabajos->getIdSServicioporCaseId($case_id);			
 				break;
 			case '5':
 				$tipo  = 'predictivo';
@@ -1040,8 +1042,13 @@ class Otrabajo extends CI_Controller {
 		if($this->Otrabajos->cambiarEstado($ot, $estado, 'OT')){
 				
 				//Cambiar Estado de solicitud origen de tarea(prevent, predic, backl)
-				if ($this->Otrabajos->cambiarEstado($id_solicitud, $estado, $tipo)) {
-					
+				if ($this->Otrabajos->cambiarEstado($id_solicitud, $estado, $tipo)) {			
+						
+					// SI backlog viene de SServicios, la cambia el estado a Asignado
+						if ($idSServicios != NULL) {
+							$respuestacambio = $this->Otrabajos->cambiarEstado($idSServicios, $estado, 'correctivo');
+						}					
+
 						$datos = array( 'id_tarea' =>$id_tarea,
 											'descripcion' =>$descripcion,
 											'id_usuario_a'=>$usrId);						
