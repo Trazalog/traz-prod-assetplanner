@@ -472,8 +472,28 @@ class Calendario extends CI_Controller {
 	// carga modal ver OT y ejecutar OT
 	function verEjecutarOT($idOt){
 		
-		$data['idOt'] = $idOt;
+		$this->load->model('traz-comp/Componentes');
+		$this->load->model(CMP_ALM.'/new/Pedidos_Materiales');
+		
+		#COMPONENTE ARTICULOS
+		$data = $this->Componentes-> listaArticulos();
+
+		#PEDIDO MATERIALES
+		$info = new StdClass();
+		$info->ortr_id = $idOt;
+
+		$info->pema_id = $this->Pedidos_Materiales->getPedidoMaterialesOT($idOt)->pema_id;
+		
+        if (!$info->pema_id) {
+            #NO EXISTE PEDIDO DE MATERIALES CREARA UNO CON INSUMOS OT    
+            $info->pema_id = $this->Pedidos_Materiales->crearPedidoOT($idOt);
+        }
+		
+		
+		$data['info'] = $info;
+
 		// ifno de la OTrabajo
+		$data['idOt'] = $idOt;
 		$data['detaOT'] = $this->Calendarios->getDataOt($idOt);			
 		// Tarea estandar
 		$data['tareas'] = $this->Calendarios->gettareas();

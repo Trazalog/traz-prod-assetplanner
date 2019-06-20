@@ -75,10 +75,13 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'root',
-	'password' => '',
+	'hostname' => 'holis',
+	'username' => 'glados',
+	'password' => 'glados',
 	'database' => 'planner_assetcloud_integracion',
+	// 'username' => 'root',
+	// 'password' => '',
+	// 'database' => 'planner_assetcloud_integracion',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,

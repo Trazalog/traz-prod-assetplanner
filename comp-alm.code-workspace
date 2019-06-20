@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "application\\controllers\\traz-comp-almacen"
+		},
+		{
+			"path": "application\\models\\traz-comp-almacen"
+		},
+		{
+			"path": "application\\views\\traz-comp-almacen"
+		}
+	],
+	"settings": {}
+}
