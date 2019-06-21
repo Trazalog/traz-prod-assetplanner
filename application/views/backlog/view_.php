@@ -58,7 +58,7 @@
 
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="codigo_componente">Código de componente-equipo :</label>
-                      <input type="text" id="codigo_componente" name="codigo_componente" class="form-control input-md" placeholder="Ingrese código de componente"/>
+                      <input type="text" id="codigo_componente" name="codigo_componente" class="form-control input-md" placeholder="Ingrese código de componente..."/>
                       <input type="hidden" id="idcomponenteequipo" name="idcomponenteequipo" value=""/>
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-4">
@@ -100,7 +100,7 @@
                     </div>                    
                     <div class="col-xs-12 col-sm-6 col-md-3">
                       <label for="duracion">Duración Estandar <strong style="color: #dd4b39">*</strong>:</label>
-                      <input type="text" class="form-control" id="duracion" name="duracion"/>
+                      <input type="text" class="form-control" id="duracion" name="duracion" placeholder="Ingrese valor..."/>
                       <input type="hidden" class="form-control" id="back_duracion" name="back_duracion"/>
                     </div> 
                     <div class="col-xs-12 col-sm-6 col-md-3">
@@ -109,7 +109,7 @@
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-3">
                       <label for="cantOper">Cant. Operarios <strong style="color: #dd4b39">*</strong>:</label>
-                      <input type="text" class="form-control" id="cantOper" name="cantOper"/>
+                      <input type="text" class="form-control" id="cantOper" name="cantOper" placeholder="Ingrese valor..."/>
                     </div>                    
 
                     <div class="col-xs-12 col-md-4" id="dato" name="" style="margin-top: 19px;"></div>
@@ -136,7 +136,7 @@
                         <div class="row">
                           <div class="col-xs-12 col-sm-6 col-md-4">
                             <label for="herramienta">Codigo <strong style="color: #dd4b39">*</strong>:</label>
-                            <input type="text" id="herramienta"  name="" class="form-control" />
+                            <input type="text" id="herramienta"  name="" class="form-control" placeholder="Buscar Código..."/>
                             <input type="hidden" id="id_herramienta" name="id_herramienta">
                           </div>                          
                           <div class="col-xs-12 col-sm-6 col-md-4">
@@ -149,7 +149,7 @@
                           </div>
                           <div class="col-xs-12 col-sm-6 col-md-4">
                             <label for="cantidadherram">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
-                            <input type="text" id="cantidadherram"  name="" class="form-control" placeholder="Ingrese Cantidad" />
+                            <input type="text" id="cantidadherram"  name="" class="form-control" placeholder="Ingrese Cantidad..." />
                           </div>
                           <br>
                           <div class="col-xs-12">
@@ -181,7 +181,7 @@
                         <div class="row">
                           <div class="col-xs-12 col-sm-6 col-md-4">
                             <label for="insumo">Codigo <strong style="color: #dd4b39">*</strong>:</label>
-                            <input type="text" id="insumo" name="insumo" class="form-control" />
+                            <input type="text" id="insumo" name="insumo" class="form-control" placeholder="Buscar Código..."/>
                             <input type="hidden" id="id_insumo" name="">
                           </div>
                           <div class="col-xs-12 col-sm-6 col-md-4">
@@ -190,7 +190,7 @@
                           </div>
                           <div class="col-xs-12 col-sm-6 col-md-4">
                             <label for="cant">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
-                            <input type="text" id="cant"  name="" class="form-control" placeholder="Ingrese Cantidad"/>
+                            <input type="text" id="cant"  name="" class="form-control" placeholder="Ingrese Cantidad..."/>
                           </div>
                         </div><!-- /.row -->
                         <div class="row">
