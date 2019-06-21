@@ -42,7 +42,7 @@ class Pedidos_Materiales extends CI_Model
         $this->setCaseId($pemaId, $data['case_id']);
     }
 
-    function list() {
+    function listado() {
         $this->db->select($this->columnas);
         $this->db->where('eliminado', false);
         return $this->db->get($this->tabla)->result_array();
