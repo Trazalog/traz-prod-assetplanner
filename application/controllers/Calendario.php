@@ -397,9 +397,7 @@ class Calendario extends CI_Controller {
 	
 	// Guarda herramientas e insumos que vienen de Backlog, Prevent y Predictivo
 	function setHerramInsPorTarea($idOT, $tipo, $id_solicitud){
-		dump($idOT, 'id de ot: ');
-		dump($tipo, 'tipo: ');
-		dump($id_solicitud, 'id solic: ');
+		
 		switch ($tipo) {
 			case 'predictivo':		// Predictivo
 				$herra = $this->Calendarios->getPredictivoHerramientas($id_solicitud);				
@@ -418,7 +416,7 @@ class Calendario extends CI_Controller {
 					$url = 'assets/filespredictivos/';
 					$file = $url.$adjunto;
 					$result['respAdjunto'] = $this->Calendarios->insertAdjunto($idOT,$file);
-					dump($result['respAdjunto'], 'resp insercion: ');
+					
 				}
 				break;
 			case 'backlog':		//Backlog			
