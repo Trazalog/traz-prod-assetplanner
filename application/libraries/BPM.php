@@ -263,7 +263,7 @@ class BPM
 
 			$data = array(
 					'username'=>$usrNick,
-					'password'=>'bpm',
+					'password'=> BPM_ADMIN_PASS,
 					'redirect'=>'false'
 					);
 			$url = http_build_query( $data );
@@ -317,7 +317,7 @@ class BPM
 
 			$data = array(
 					'username'=>$usrNick,
-					'password'=>'bpm',
+					'password'=> BPM_USER_PASS,
 					'redirect'=>'false'
 					);
 			$url = http_build_query( $data );
