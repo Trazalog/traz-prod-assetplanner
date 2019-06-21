@@ -16,10 +16,10 @@ class Ordeninsumos extends CI_Model
         $empresaId = $userdata[0]['id_empresa'];
 
         $this->db->select('A.enma_id as id_orden,C.ortr_id as id_ot, A.fecha, A.solicitante, A.comprobante');
-        $this->db->from('alm_entrega_materiales A');
+        $this->db->from('asset_almacen_v3.alm_entrega_materiales A');
         //$this->db->join('alm_deta_entrega_materiales B', 'B.enma_id = A.enma_id');
-        $this->db->join('alm_pedidos_materiales C','C.pema_id = A.pema_id');
-        $this->db->where('A.empr_id', $empresaId);
+        $this->db->join('asset_almacen_v3.alm_pedidos_materiales C','C.pema_id = A.pema_id');
+      //  $this->db->where('A.empr_id', $empresaId);
 
         $query = $this->db->get();
         if ($query->num_rows() > 0) {

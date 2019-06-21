@@ -25,11 +25,14 @@
                                 {
                                 $id = $z['id_notaPedido'];
                                 echo '<tr id="'.$id.'" class="'.$id.'" data-json=\''.json_encode($z).'\'>';
-                                echo '<td class="text-center"><i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer;" title="Detalle Pedido Materiales"></i></td>';           
+                                echo '<td class="text-center">';
+                                echo '<i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer;margin:5px;" title="Detalle Pedido Materiales"></i>';
+                                echo '<i class="fa fa-battery text-light-blue btn-estado" style="cursor: pointer; margin:5px;" title="Estado Pedido"></i> ';
+                                echo '</td>';           
                                 echo '<td class="text-center">'.bolita($z['id_notaPedido'],'blue').'</td>';
                                 echo '<td class="text-center">'.fecha($z['fecha']).'</td>';
                                 echo '<td>'.(viewOT?$z['descripcion']:$z['justificacion']).'</td>';
-                                echo '<td class="text-center '.(!viewOT?"hidden":null).'">'.bolita('OT: '.$z['id_ordTrabajo'],'yellow','Orden de Trabajo N°'.$z['id_ordTrabajo']).'</td>';
+                                echo '<td class="text-center '.(!viewOT?"hidden":null).'">'.bolita($z['id_ordTrabajo'],'yellow','Orden de Trabajo N°'.$z['id_ordTrabajo']).'</td>';
                                 echo '<td class="text-center">'.estadoPedido($z['estado']).'</td>';
                                 echo '</tr>';
                                 }
@@ -152,7 +155,7 @@ DataTable('#deposito');
                 </div>
             </div> <!-- /.modal-body -->
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="btnSave" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
             </div> <!-- /.modal footer -->
 
         </div> <!-- /.modal-content -->
