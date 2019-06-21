@@ -36,6 +36,8 @@ class Componente extends CI_Controller {
 	public function traerequipo()
 	{
 		$equipo = $this->Componentes->traerequipo();
+	
+		
 		if($equipo)
 		{	
 			$arre = array();
@@ -125,7 +127,7 @@ class Componente extends CI_Controller {
 	{
 		$datos = $_POST['parametros'];
 		//print_r($datos);
-        if ($datos >0) {
+    if ($datos >0) {
 			$descripcion = $datos['descripcion'];
 			//$equipId     = $datos['id_equipo'];
 			$fechahora   = date("Y-m-d H:i:s");
@@ -140,22 +142,50 @@ class Componente extends CI_Controller {
 				'marcaid'     => $marca
 			);
 	     	$result = $this->Componentes->agregar_componente($insert);
-	     	print_r(json_encode($result));
-	     	if ($result){
-	     		$ultimoId = $this->db->insert_id(); 
-				//print_r($ultimoId);
-	     		$path = "assets/files/equipos/".$ultimoId.".pdf"; 
-	     		file_put_contents($path,base64_decode($pdf));
-				//actualizar path en base de datos
-	     		$update = array(
-	     			'pdf' => $path
-	     		);
-	     		$comp = $this->Componentes->updatecomp($ultimoId,$update);
-				//print_r($comp);
-	     		return $comp;
-	     	}
-	    }
-  	}
+
+			 
+			if($result){
+
+				$ultimoId = $this->db->insert_id(); 
+				
+				////////// Subir imagen o pdf 
+					$nomcodif = $this->codifNombre($ultimoId,$empId); // codificacion de nomb  		
+					$config = [
+						"upload_path" => ".assets/files/equipos/",
+						'allowed_types' => "png|jpg|pdf|xlsx",
+						'file_name'=> $nomcodif
+					];
+	
+					$this->load->library("upload",$config);
+					
+					if ($this->upload->do_upload('inputPDF')) {					
+						$data = array("upload_data" => $this->upload->data());
+						$extens = $data['upload_data']['file_ext'];//guardo extesnsion de archivo
+						$nomcodif = $nomcodif.$extens;
+						$adjunto = array('back_adjunto' => $nomcodif);
+						$result = $this->Componentes->updatecomp($ultimoId,$update);
+					}else{
+						$result = false;
+					}							
+			}	
+
+		}
+		echo json_encode($result);
+  }
+		// Codifica nombre de imagen para no repetir en servidor
+	// formato "12_6_2018-05-21-15-26-24" idpreventivo_idempresa_fecha(año-mes-dia-hora-min-seg)
+	function codifNombre($ultimoId,$empId){
+		$guion = '_';
+		$guion_medio = '-';
+		$hora = date('Y-m-d H:i:s');// hora actual del sistema	
+		$delimiter = array(" ",",",".","'","\"","|","\\","/",";",":");
+		$replace = str_replace($delimiter, $delimiter[0], $hora);
+		$explode = explode($delimiter[0], $replace);		
+		$strigHora = $explode[0].$guion_medio.$explode[1].$guion_medio.$explode[2].$guion_medio.$explode[3];		
+		$nomImagen = $ultimoId.$guion.$empId.$guion.$strigHora;		
+		return $nomImagen;
+	}
+
 
   	// Asocia equipo/componente - Listo
 	public function guardar_componente()
