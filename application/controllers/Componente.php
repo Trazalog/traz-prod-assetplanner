@@ -122,12 +122,13 @@ class Componente extends CI_Controller {
 		// 	else echo "nada";
 		// }
 
+
 	// Agrega componente nuevo - Listo
 	public function agregar_componente()
 	{
 		$datos = $_POST['parametros'];
 		//print_r($datos);
-    if ($datos >0) {
+        if ($datos >0) {
 			$descripcion = $datos['descripcion'];
 			//$equipId     = $datos['id_equipo'];
 			$fechahora   = date("Y-m-d H:i:s");
@@ -142,36 +143,22 @@ class Componente extends CI_Controller {
 				'marcaid'     => $marca
 			);
 	     	$result = $this->Componentes->agregar_componente($insert);
-
-			 
-			if($result){
-
-				$ultimoId = $this->db->insert_id(); 
-				
-				////////// Subir imagen o pdf 
-					$nomcodif = $this->codifNombre($ultimoId,$empId); // codificacion de nomb  		
-					$config = [
-						"upload_path" => ".assets/files/equipos/",
-						'allowed_types' => "png|jpg|pdf|xlsx",
-						'file_name'=> $nomcodif
-					];
-	
-					$this->load->library("upload",$config);
-					
-					if ($this->upload->do_upload('inputPDF')) {					
-						$data = array("upload_data" => $this->upload->data());
-						$extens = $data['upload_data']['file_ext'];//guardo extesnsion de archivo
-						$nomcodif = $nomcodif.$extens;
-						$adjunto = array('back_adjunto' => $nomcodif);
-						$result = $this->Componentes->updatecomp($ultimoId,$update);
-					}else{
-						$result = false;
-					}							
-			}	
-
-		}
-		echo json_encode($result);
-  }
+	     	print_r(json_encode($result));
+	     	if ($result){
+	     		$ultimoId = $this->db->insert_id(); 
+				//print_r($ultimoId);
+	     		$path = "assets/files/equipos/".$ultimoId.".pdf"; 
+	     		file_put_contents($path,base64_decode($pdf));
+				//actualizar path en base de datos
+	     		$update = array(
+	     			'pdf' => $path
+	     		);
+	     		$comp = $this->Componentes->updatecomp($ultimoId,$update);
+				//print_r($comp);
+	     		return $comp;
+	     	}
+	    }
+  	}
 		// Codifica nombre de imagen para no repetir en servidor
 	// formato "12_6_2018-05-21-15-26-24" idpreventivo_idempresa_fecha(año-mes-dia-hora-min-seg)
 	function codifNombre($ultimoId,$empId){
@@ -257,157 +244,7 @@ class Componente extends CI_Controller {
 		echo json_encode($data);
 	}
 
-	//
-	// public function editarCompEq()  // Ok
-	// {
-	// 	$id     = $this->input->post('idCompEq');
-	// 	$datos  = $this->input->post('data');
-	// 	$result = $this->Componentes->updateEditar($datos,$id);
-	// 	print_r(json_encode($result));	
-	// }
-
-	//
-	// public function agregarComponente() // 
-	// {
-	// 	$descripcion   = $this->input->post("descrip1");
-	// 	$informacion   = $this->input->post("info");
-	// 	$marcaid       = $this->input->post("ma");
-	// 	$fechahora     = date("Y-m-d H:i:s");
-
-	// 	// si trae archivo 
-	// 	if(isset($_FILES) && $_FILES['pdf']['size'] > 0)
-	// 	{
-	// 		$config = [
-	// 			"overwrite"     => true,
-	// 			"upload_path"   => "./assets/files/equipos",
-	// 			'allowed_types' => "pdf",
-	// 			'file_name'     => "temp"
-	// 		];
-	// 		$this->load->library("upload",$config);
-		
-	// 		if ($this->upload->do_upload('pdf')) {
-
-	// 			$datos = array(
-	// 				"descripcion" => $descripcion,
-	// 				'id_equipo'   => -1 ,
-	// 				'fechahora'   => $fechahora,
-	// 				"informacion" => $informacion,
-	// 				"marcaid"     => $marcaid,           
-	// 				"pdf"         => "temp".$this->upload->data('file_ext'),
-	// 				"estado"      => "AC"
-	// 			);
-	// 			if($this->Componentes->agregar_componente($datos) == true)
-	// 			{
-	// 				$ultimoId = $this->db->insert_id();
-	// 				$path = "assets/files/equipos/comp".$ultimoId.".pdf"; 
-	// 	     		file_put_contents($path, file_get_contents($_FILES["pdf"]["tmp_name"]) );
-	// 				//actualizar path en base de datos
-	// 	     		$update = array(
-	// 	     			'pdf' => "comp".$ultimoId.".pdf"
-	// 	     		);
-	// 	     		$comp = $this->Componentes->updatecomp($ultimoId,$update);
-	// 				echo json_encode(true);
-	// 			}
-	// 			else
-	// 			{
-	// 				echo json_encode(false);
-	// 			}
-	// 		}
-	// 		else
-	// 		{
-	// 			echo json_encode(false);
-	// 		}
-
-	// 	}
-	// 	else
-	// 	{
-	// 		$datos = array(
-	// 			"descripcion" => $descripcion,
-	// 			'id_equipo'   => -1 ,
-	// 			'fechahora'   => $fechahora,
-	// 			"informacion" => $informacion,
-	// 			"marcaid"     => $marcaid,           
-	// 			"estado"      => "AC"
-	// 		);
-	// 		if($this->Componentes->agregar_componente($datos) == true)
-	// 		{
-	// 			echo json_encode(true);
-	// 		}
-	// 		else
-	// 		{
-	// 			echo json_encode(false);
-	// 		}
-	// 	}
-	// }
-
-	//
-	// public function bajaComponente() // Ok
-	// {
-	// 	$id     = $this->input->post('idComponente');
-	// 	$result = $this->Componentes->BajaComponente($id);
-	// 	echo json_encode($result);	
-	// }
-
-	//
-	// public function editarComponente() // Ok
-	// {
-	// 	//dump( $this->input->post() );
-	// 	//dump( $_FILES );
-	// 	$id_componente = $this->input->post("idComponenteE");
-	// 	$descripcion   = $this->input->post("descripcionE");
-	// 	$informacion   = $this->input->post("informacionE");
-	// 	$marcaid       = $this->input->post("marcaE");
-		
-	// 	// si trae archivo 
-	// 	if(isset($_FILES) && $_FILES['pdfE']['size'] > 0){
-	// 		dump("trae file");
-	// 		$config = [
-	// 			"overwrite"     => true,
-	// 			"upload_path"   => "./assets/files/equipos",
-	// 			'allowed_types' => "pdf",
-	// 			'file_name'     => "comp".$id_componente
-	// 		];
-	// 		$this->load->library("upload",$config);
-		
-	// 		if ($this->upload->do_upload('pdfE')) {
-	// 			$datos = array(
-	// 				"descripcion" => $descripcion,
-	// 				"informacion" => $informacion,
-	// 				"marcaid"     => $marcaid,           
-	// 				"pdf"         => "comp".$id_componente.$this->upload->data('file_ext')
-	// 			);
-	// 			if($this->Componentes->editarComponente($datos,$id_componente) == true)
-	// 			{
-	// 				echo json_encode(true);
-	// 			}
-	// 			else
-	// 			{
-	// 				echo json_encode(false);
-	// 			}
-	// 		}
-	// 		else
-	// 		{
-	// 			echo json_encode(false);
-	// 		}
-   
-	// 	}
-	// 	else // update sin pdf
-	// 	{
-	// 		$datos = array(
-	// 			"descripcion" => $descripcion,
-	// 			"informacion" => $informacion,
-	// 			"marcaid"     => $marcaid
-	// 		);
-	// 		if($this->Componentes->editarComponente($datos,$id_componente) == true)
-	// 		{
-	// 			echo json_encode(true);
-	// 		}
-	// 		else
-	// 		{
-	// 			echo json_encode(false);
-	// 		}
-	// 	}
-	// }
+	
 
 	public function getcomponente(){	
 		$compo = $this->Componentes->getcomponente();	
@@ -553,7 +390,7 @@ class Componente extends CI_Controller {
 		print_r(json_encode($result));	
 	}
 
-	//
+	// ESTE METODO AGREGA COMPNENTE NUEVO DESDE ABM COMPONENTE
 	public function agregarComponente() // 
 	{
 		$descripcion   = $this->input->post("descrip1");
@@ -561,70 +398,51 @@ class Componente extends CI_Controller {
 		$marcaid       = $this->input->post("ma");
 		$fechahora     = date("Y-m-d H:i:s");
 
-		// si trae archivo 
-		if(isset($_FILES) && $_FILES['pdf']['size'] > 0)
-		{
-			$config = [
-				"overwrite"     => true,
-				"upload_path"   => "./assets/files/equipos",
-				'allowed_types' => "pdf",
-				'file_name'     => "temp"
-			];
-			$this->load->library("upload",$config);
+		// arma array con datos
+		$datos = array(
+			"descripcion" => $descripcion,
+			'id_equipo'   => -1 ,
+			'fechahora'   => $fechahora,
+			"informacion" => $informacion,
+			"marcaid"     => $marcaid,           
+			"estado"      => "AC"
+		);
+		// inserta array
+		$response=$this->Componentes->agregar_componente($datos);	
+
+		if($response){
+
+				$ultimoId = $this->db->insert_id();
+			
+			
+				$nomcodif = $this->codifNombre($ultimoId,$empId); // codificacion de nomb  		
+			
+				$config = [
+					"upload_path" => "./assets/files/equipos",
+					'allowed_types' => "png|jpg|pdf|xlsx",
+					'file_name'=> $nomcodif
+				];
+			
+				$this->load->library("upload",$config);
+				
+				if ($this->upload->do_upload('inputPDF')) {	
+									
+					$data = array("upload_data" => $this->upload->data());
+				
+					$extens = $data['upload_data']['file_ext'];//guardo extesnsion de archivo
+					$nomcodif = $nomcodif.$extens;
+					$adjunto = array('pdf' => $nomcodif);
+					
+					$response = $this->Componentes->updatecomp($ultimoId,$adjunto);
+				}else{
+					$response = false;
+				}		
+
+		}
 		
-			if ($this->upload->do_upload('pdf')) {
-
-				$datos = array(
-					"descripcion" => $descripcion,
-					'id_equipo'   => -1 ,
-					'fechahora'   => $fechahora,
-					"informacion" => $informacion,
-					"marcaid"     => $marcaid,           
-					"pdf"         => "temp".$this->upload->data('file_ext'),
-					"estado"      => "AC"
-				);
-				if($this->Componentes->agregar_componente($datos) == true)
-				{
-					$ultimoId = $this->db->insert_id();
-					$path = "assets/files/equipos/comp".$ultimoId.".pdf"; 
-		     		file_put_contents($path, file_get_contents($_FILES["pdf"]["tmp_name"]) );
-					//actualizar path en base de datos
-		     		$update = array(
-		     			'pdf' => "comp".$ultimoId.".pdf"
-		     		);
-		     		$comp = $this->Componentes->updatecomp($ultimoId,$update);
-					echo json_encode(true);
-				}
-				else
-				{
-					echo json_encode(false);
-				}
-			}
-			else
-			{
-				echo json_encode(false);
-			}
-
-		}
-		else
-		{
-			$datos = array(
-				"descripcion" => $descripcion,
-				'id_equipo'   => -1 ,
-				'fechahora'   => $fechahora,
-				"informacion" => $informacion,
-				"marcaid"     => $marcaid,           
-				"estado"      => "AC"
-			);
-			if($this->Componentes->agregar_componente($datos) == true)
-			{
-				echo json_encode(true);
-			}
-			else
-			{
-				echo json_encode(false);
-			}
-		}
+		echo json_encode($response);
+		
+		
 	}
 
 	//

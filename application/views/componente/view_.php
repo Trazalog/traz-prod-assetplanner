@@ -182,7 +182,7 @@
             </div>
             <div class="col-xs-12">
               <label><span class="fa fa-file-pdf-o"></span> Adjuntar</label>
-              <input id="pdf" name="pdf" type="file"  class="form-control input-md">
+              <input id="inputPDF" name="inputPDF" type="file"  class="form-control input-md">
             </div>
 
           </div>
@@ -493,12 +493,12 @@ function autoCompletarComponentes(){
     var descripcion = $('#descrip1').val();
     var informacion = $('#informacion').val();
     var marcaid     = $('#ma').val();
-    var pdf         = $('#input-4').val();
+    //var pdf         = $('#input-4').val();
     var parametros  = {
       'descripcion' : descripcion,
       'informacion' : informacion,
       'marcaid'     : marcaid,
-      'pdf'         : pdf,
+      
     };                                              
     //console.log("marcaid"+marcaid);
     var hayError = false; 
