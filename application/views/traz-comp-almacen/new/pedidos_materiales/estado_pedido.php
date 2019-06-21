@@ -6,7 +6,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel"><span id="modalAction"
-                        class="fa fa-plus-square text-light-blue"></span> Estado Pedido Materiales</h4>
+                        class="fa fa-battery-full text-light-blue"></span> Estado Pedido Materiales</h4>
             </div> <!-- /.modal-header  -->
             <div class="modal-body">
                 <div class="row">
@@ -17,6 +17,7 @@
                                     <th>Cod. Artículo</th>
                                     <th class="text-center">Cant. Pedida</th>
                                     <th class="text-center">Cant. Pedida</th>
+                                    <th class="text-center">Estado</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -48,7 +49,7 @@ $('.btn-estado').click(function() {
         success: function(result) {
             var tabla = $('#detalle_pedido table');
             $(tabla).DataTable().destroy();
-            $(tabla).find('tbody').empty();
+            $(tabla).find('tbody').html('');
             result.forEach(e => {
                 $(tabla).append(
                     '<tr>' +
@@ -56,11 +57,14 @@ $('.btn-estado').click(function() {
                     '<td class="text-center"><b>' + e.cantidad + '</b></td>' +
                     '<td class="text-center"><b>' + (e.cantidad - e.resto) +
                     '</b></td>' +
+                    '<td class="text-center"><i class="fa '+
+                    (e.resto == 0?'fa-battery-full':(e.resto < e.cantidad?'fa-battery-2':(e.resto == e.cantidad?'fa-battery-0':'')))+
+                    '"></i></td>'+
                     '</tr>'
                 );
             });
 
-            DataTable(tabla);
+            //DataTable(tabla);
             $('#detalle_pedido').modal('show');
         },
         error: function(result) {
