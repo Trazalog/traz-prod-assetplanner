@@ -1,5 +1,4 @@
-<section>
-
+<section class="content">
     <div class="box box-primary">
         <div class="box-header">
             <h3 class="box-title">Pedido Materiales</h3>
@@ -12,9 +11,9 @@
                     <tr>
                         <th width="1%">Acciones</th>
                         <th width="10%">Pedido</th>
-                        <th width="20%" class="text-center">Fecha</th>
+                        <th width="10%" class="<?php echo(!viewOT?"hidden":null)?>">Ord.Trabajo</th>
+                        <th width="10%" class="text-center">Fecha</th>
                         <th>Detalle</th>
-                        <th class="<?php echo(!viewOT?"hidden":null)?>" width="10%">Ord.Trabajo</th>
                         <th width="10%">Estado</th>
                     </tr>
                 </thead>
@@ -25,11 +24,15 @@
                                 {
                                 $id = $z['id_notaPedido'];
                                 echo '<tr id="'.$id.'" class="'.$id.'" data-json=\''.json_encode($z).'\'>';
-                                echo '<td class="text-center"><i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer;" title="Detalle Pedido Materiales"></i></td>';           
+                                echo '<td class="text-center">';
+                                echo '<i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer;margin:5px;" title="Detalle Pedido Materiales"></i>';
+                                echo '<i class="fa fa-battery text-light-blue btn-entregas" style="cursor: pointer; margin:5px;" title="Estado Pedido"></i> ';
+                                echo '</td>';           
                                 echo '<td class="text-center">'.bolita($z['id_notaPedido'],'blue').'</td>';
+                                echo '<td class="text-center '.(!viewOT?"hidden":null).'">'.bolita($z['id_ordTrabajo'],'yellow','Orden de Trabajo N°'.$z['id_ordTrabajo']).'</td>';
+                               
                                 echo '<td class="text-center">'.fecha($z['fecha']).'</td>';
                                 echo '<td>'.(viewOT?$z['descripcion']:$z['justificacion']).'</td>';
-                                echo '<td class="text-center '.(!viewOT?"hidden":null).'">'.bolita('OT: '.$z['id_ordTrabajo'],'yellow','Orden de Trabajo N°'.$z['id_ordTrabajo']).'</td>';
                                 echo '<td class="text-center">'.estadoPedido($z['estado']).'</td>';
                                 echo '</tr>';
                                 }
@@ -92,6 +95,11 @@ function rellenarCabecera(json) {
 
 DataTable('#tabladetalle');
 DataTable('#deposito');
+
+$('.btn-entregas').click(function () {
+   $('#modal_detalle_entrega .body').load('<?php echo base_url(CMP_ALM) ?>/new/Entrega_Material');
+   $('#modal_detalle_entrega').modal('show'); 
+});
 </script>
 
 
@@ -152,10 +160,18 @@ DataTable('#deposito');
                 </div>
             </div> <!-- /.modal-body -->
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="btnSave" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
             </div> <!-- /.modal footer -->
 
         </div> <!-- /.modal-content -->
+    </div> <!-- /.modal-dialog modal-lg -->
+</div> <!-- /.modal fade -->
+<!-- / Modal -->
+
+<!-- Modal ver nota pedido-->
+<div class="modal fade" id="modal_detalle_entrega" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg body" role="document">
+       
     </div> <!-- /.modal-dialog modal-lg -->
 </div> <!-- /.modal fade -->
 <!-- / Modal -->
