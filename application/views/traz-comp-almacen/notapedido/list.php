@@ -49,7 +49,7 @@ function ver(e) {
     var tr = $(e).closest('tr')
     var id_nota = $(tr).attr('id');
     var json = JSON.parse(JSON.stringify($(tr).data('json')));
-
+    rellenarCabecera(json);
     getEntregasPedido(id_nota);
 
     if (id_nota == null) return;
@@ -60,7 +60,7 @@ function ver(e) {
         },
         url: 'index.php/almacen/Notapedido/getNotaPedidoId',
         success: function(data) {
-            $('#tabladetalle').DataTable().destroy();
+         //   $('#tabladetalle').DataTable().destroy();
             $('#tabladetalle tbody').html('');
             for (var i = 0; i < data.length; i++) {
                 var tr = "<tr style='color:'>" +
@@ -71,9 +71,9 @@ function ver(e) {
                     "</tr>";
                 $('#tabladetalle tbody').append(tr);
             }
-            DataTable('#tabladetalle');
+            //DataTable('#tabladetalle');
 
-            rellenarCabecera(json);
+            
 
             $('#detalle_pedido').modal('show');
         },

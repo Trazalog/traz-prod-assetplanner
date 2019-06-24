@@ -6,7 +6,7 @@
     <div class="box-body table-responsive">
         <table id="entregas" class="table table-bordered table-striped table-hover">
             <thead>
-                <tr>
+               
                     <th width="10%">Acciones</th>
                     <th width="10%">Pedido</th>
                     <th width="10%">Entrega</th>
@@ -15,16 +15,16 @@
                     <th>N° Comprobante</th>
                     <th>Entregado</th>
                     <th width="12%">Estado Ped.</th>
-                </tr>
+               
             </thead>
             <tbody>
                 <?php
                     foreach ($list as $o) {
                         echo '<tr data-id='.$o['enma_id'].' data-pema="'.$o['pema_id'].'" data-json=\''.json_encode($o).'\'>'; 
                         echo '<td>';
-                        echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin:3px" title="Imprimir"></i> ';
-                        echo '<i class="fa fa-fw fa-search text-light-blue btn-buscar" style="cursor: pointer; margin:3px" title="Consultar"></i> ';
-                        echo '<i class="fa fa-fw  fa-battery text-light-blue btn-estado" style="cursor: pointer; margin:3px" title="Estado Pedido"></i> ';
+                        echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin:2px" title="Imprimir"></i> ';
+                        echo '<i class="fa fa-fw fa-search text-light-blue btn-buscar" style="cursor: pointer; margin:2px" title="Consultar"></i> ';
+                        echo '<i class="fa fa-fw  fa-battery text-light-blue btn-estado" style="cursor: pointer; margin:2px" title="Estado Pedido"></i> ';
                         echo '</td>';
                         echo '<td class="text-center">'.bolita($o['pema_id'],'blue').'</td>';
                         echo '<td class="text-center">'.bolita($o['enma_id'],'aqua').'</td>';
@@ -48,6 +48,7 @@ $('.btn-buscar').click(function() {
     var tr = $(this).closest('tr');
     var id = $(tr).data('id');
     var json = JSON.parse(JSON.stringify($(tr).data('json')));
+    rellenarCabecera(json);
 
     $.ajax({
         type: 'POST',
@@ -56,8 +57,8 @@ $('.btn-buscar').click(function() {
             id
         },
         success: function(result) {
-            var tabla = $('#detalle_entrega table');
-            $(tabla).DataTable().destroy();
+            var tabla = $('#modal_detalle_entrega table');
+    
             $(tabla).find('tbody').html('');
             result.forEach(e => {
                 $(tabla).append(
@@ -70,10 +71,9 @@ $('.btn-buscar').click(function() {
                     '</tr>'
                 );
             });
-            DataTable(tabla);
-
-            rellenarCabecera(json);
-            $('#detalle_entrega').modal('show');
+         
+            $('#modal_detalle_entrega').modal('show');
+           
         },
         error: function(result) {
             alert('Error');
@@ -83,20 +83,20 @@ $('.btn-buscar').click(function() {
 });
 
 function rellenarCabecera(json) {
-    $('#detalle_entrega .enma_id').val(json.enma_id);
-    $('#detalle_entrega .pema_id').val(json.pema_id);
-    $('#detalle_entrega .orden').val(json.ortr_id);
-    $('#detalle_entrega .comprobante').val(json.comprobante);
-    $('#detalle_entrega .fecha').val(json.fecha);
-    $('#detalle_entrega .entregado').val(json.solicitante);
-    $('#detalle_entrega .estado').val(json.estado);
+    $('#modal_detalle_entrega .enma_id').val(json.enma_id);
+    $('#modal_detalle_entrega .pema_id').val(json.pema_id);
+    $('#modal_detalle_entrega .orden').val(json.ortr_id);
+    $('#modal_detalle_entrega .comprobante').val(json.comprobante);
+    $('#modal_detalle_entrega .fecha').val(json.fecha);
+    $('#modal_detalle_entrega .entregado').val(json.solicitante);
+    $('#modal_detalle_entrega .estado').val(json.estado);
 }
 </script>
 
 
 
 <!-- Modal ver nota pedido-->
-<div class="modal fade" id="detalle_entrega" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="modal_detalle_entrega" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog " role="document">
         <div class="modal-content">
             <div class="modal-header">

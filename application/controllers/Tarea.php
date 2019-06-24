@@ -533,9 +533,7 @@ class Tarea extends CI_Controller {
 							$data['list'] = $this->Notapedidos->notaPedidos_List($id_OT);
 							$data['permission'] = 'view';
 							$this->load->view('tareas/view_ejecutarOT', $data);
-							$this->load->view('tareas/scripts/tarea_std');
-					//		$this->load->view('tareas/scripts/abm_forms');
-					//		$this->load->view('tareas/scripts/validacion_forms');							
+							$this->load->view('tareas/scripts/tarea_std');						
 							break;
 					case 'Esperando cambio estado "a Ejecutar"':
 						$this->load->view('tareas/view_cambio_estado', $data);
