@@ -1555,7 +1555,6 @@ function guardarpedido(){
       $('#vFechaCreacion').val(datos['fecha_inicio']);
       $('#vFechaTerminOT').val(datos['fecha_terminada']);
 
-
       $('#vSucursal').val(datos['sucursal']);
       $('#vProveedor').val(datos['nombreprov']);
       $('#vIdOt').val(datos['id_ot']);
