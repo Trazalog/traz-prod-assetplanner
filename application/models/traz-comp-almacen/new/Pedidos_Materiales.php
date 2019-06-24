@@ -126,8 +126,7 @@ class Pedidos_Materiales extends CI_Model
                 'pema_id' => $pema_id,
                 'arti_id' => $o->arti_id,
                 'cantidad' => $o->cantidad,
-                'resto' => $o->cantidad,
-                //   'prov_id' => $proveed,
+                'resto' => $o->cantidad
             );
             $this->db->insert('alm_deta_pedidos_materiales', $detalle);
         }
