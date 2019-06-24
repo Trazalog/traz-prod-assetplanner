@@ -16,5 +16,11 @@ class Entrega_Material extends CI_Controller {
       $id = $this->input->post('id');
       echo json_encode($this->Entregas_Materiales->obtenerDetalles($id));
    }
+
+   public function getEntregasPedido($pema =10)
+   {
+      $data['list'] = $this->Entregas_Materiales->getEntregasPedido($pema);
+      $this->load->view(CMP_ALM.'/new/entregas_materiales/list', $data);
+   }
 }
 ?>
