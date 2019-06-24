@@ -56,16 +56,5 @@ class Proveedores extends CI_Model {
 		return $query;
 	}
 
-	public function map($data)
-	{
-		return array(
-			'nombre'=>   $data['provnombre'],
-			'cuit'=>     $data['provcuit'],
-			'domicilio'=>$data['provdomicilio'],
-			'telefono'=> $data['provtelefono'],
-			'email'=>    $data['provmail'],
-			'empr_id'=>  $data['id_empresa']
-		);
-	}
-
+	
 }
