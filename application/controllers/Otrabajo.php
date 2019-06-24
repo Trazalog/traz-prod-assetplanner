@@ -313,7 +313,7 @@ class Otrabajo extends CI_Controller {
 		$empId        = $userdata[0]['id_empresa'];
 
 		$id = $this->input->post('idAgregaAdjunto');
-
+		
 		$nomcodif = $this->codifNombre($id, $empId); // codificacion de nomb  		
 		$urlfile = "assets/filesOTrabajos/";
 		

@@ -538,8 +538,8 @@ $("#btn_cancGuardado").click(function (e) {
     $('#modalAgregarAdjunto .modal-title').html('<span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar');
 
     $('#modalAgregarAdjunto').modal('show');
-    // var idprev = $('#id_Predictivo').val();
-    // $('#idAgregaAdjunto').val(idprev);
+     var idOT = $('#id_ot').val();
+     $('#idAgregaAdjunto').val(idOT);
   });
   //abrir modal editar adjunto
   $(document).on("click",".editaAdjunto",function(){
@@ -1439,9 +1439,6 @@ function guardarpedido(){
         break;
       case '5': //predictivo  LISTO
         datos = getDataOtPredictivo(idOt, idSolicitud, "Predictivo");
-        
-        //console.table(datos);
-        
         fillModalViewPredictivo(datos);
         $('#verOtPredictivo').modal('show');
         WaitingClose();
@@ -1557,7 +1554,6 @@ function guardarpedido(){
       $('#vFechaProgram').val(datos['fecha_program']);      
       $('#vFechaCreacion').val(datos['fecha_inicio']);
       $('#vFechaTerminOT').val(datos['fecha_terminada']);
-
 
       $('#vSucursal').val(datos['sucursal']);
       $('#vProveedor').val(datos['nombreprov']);

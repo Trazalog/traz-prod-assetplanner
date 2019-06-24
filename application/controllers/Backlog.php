@@ -171,6 +171,7 @@ class Backlog extends CI_Controller {
 		$id_unidad 			= $this->input->post('id_unidad');//
 		$tareaOpcional 	= $this->input->post('tareaOpcional');//
 		$tipo 					= $this->input->post('tipo'); 
+		$idcomponenteequipo = $this->input->post('idcomponenteequipo'); 
 
 		// $uno		=  substr($fecha, 0, 2); 
 		// $dos		=  substr($fecha, 3, 2); 
@@ -197,7 +198,8 @@ class Backlog extends CI_Controller {
 													'back_canth'=> $back_canth,
 													'id_unidad' => $id_unidad,
 													'id_empresa'=> $empId,
-													'tarea_opcional'=>$tareaOpcional									
+													'tarea_opcional'=>$tareaOpcional,
+													'idcomponenteequipo'=>	$idcomponenteequipo								
 													);
 						$result = $this->Backlogs->editar_backlogs($datos,$id_back); 
 

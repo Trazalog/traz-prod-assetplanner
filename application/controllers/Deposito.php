@@ -38,11 +38,10 @@ class Deposito extends CI_Controller {
 		$data = array(
 							'descripcion' => $depositodescrip,
 							'direccion' => $direccion,
-							'GPS'	=> 	$gps,
-							'estado' => "AC",
+							'GPS'	=> 	$gps,							
 							'loca_id'=> $departamentos,
 							'esta_id' => $provincias,
-							'empr_id' => 6,
+							'empr_id' => $empId,
 							'fec_alta' => $fecha,						
 							'eliminado'=> 0);
 

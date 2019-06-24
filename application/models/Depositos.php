@@ -12,7 +12,7 @@ class Depositos extends CI_Model {
 		$userdata  = $this->session->userdata('user_data');
 		$empresaId = $userdata[0]['id_empresa'];
 		
-		$this->db->where('estado', 'AC');
+		$this->db->where('eliminado', 0);
 		$this->db->where('alm_depositos.empr_id', $empresaId);
 		$query = $this->db->get('alm_depositos');
 		if ($query->num_rows()!=0)
