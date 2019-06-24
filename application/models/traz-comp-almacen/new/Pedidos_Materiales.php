@@ -40,6 +40,8 @@ class Pedidos_Materiales extends CI_Model
         $data = $this->bpmalm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES, $contract);
 
         $this->setCaseId($pemaId, $data['case_id']);
+
+        return $this->setEstado($pemaId,'Solicitado');
     }
 
     function listado() {
@@ -80,6 +82,7 @@ class Pedidos_Materiales extends CI_Model
         $pema = array(
             'fecha' => date('Y-m-d H:i:s'),
             'ortr_id' => $ot,
+            'estado' => 'Creada',
             'empr_id' => empresa(),
         );
         $this->db->insert($this->tabla, $pema);
