@@ -5,10 +5,17 @@
                 <div class="box-header">
                     <h3 class="box-title">Artículos</h3>
                     <?php
+<<<<<<< HEAD:application/views/almacen/articulo/list.php
           if (strpos($permission,'Add') !== false) { 
             echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" onclick="LoadArt(0,\'Add\')">Agregar</button>';
           }
           ?>
+=======
+if (strpos($permission, 'Add') !== false) {
+    echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" onclick="LoadArt(0,\'Add\')">Agregar</button>';
+}
+?>
+>>>>>>> parent of d5ecaab... Merge remote-tracking branch 'origin/develop' into develop:application/views/traz-comp-almacen/articulo/list.php
                 </div><!-- /.box-header -->
                 <div class="box-body">
                     <table id="articles" class="table table-bordered table-hover">
@@ -23,6 +30,7 @@
                         </thead>
                         <tbody>
                             <?php
+<<<<<<< HEAD:application/views/almacen/articulo/list.php
                        
                   	foreach($list as $a)
                     {
@@ -48,6 +56,38 @@
                     }
        
                 ?>
+=======
+
+foreach ($list as $a) {
+
+    $id = $a['arti_id'];
+    echo '<tr  id="' . $id . '" >';
+
+    echo '<td class="text-center text-light-blue">';
+
+    echo '<i class="fa fa-search" style="cursor: pointer;margin: 5px;" title="Ver Detalles" onclick="ver_detalles(this);"></i>';
+    
+    if (strpos($permission, 'Edit') !== false) {
+        echo '<i class="fa fa-fw fa-pencil " style="cursor: pointer; margin: 5px;" title="Editar" data-toggle="modal" data-target="#modaleditar"></i>';
+    }
+    if (strpos($permission, 'Del') !== false) {
+        echo '<i class="fa fa-fw fa-times-circle" style="cursor: pointer;margin: 5px;" title="Eliminar" onclick="seleccionar(this)"></i>';
+    }
+
+   
+  
+    echo '</td>';
+
+    echo '<td>' . $a['barcode'] . '</td>';
+    echo '<td>' . $a['descripcion'] . '</td>';
+    echo '<td>' . ($a['medida'] == '' ? '-' : $a['medida']) . '</td>';
+    echo '<td class="text-center">' . ($a['valor'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' : ($a['valor'] == 'IN' ? '<small class="label pull-left bg-red">Inactivo</small>' : '<small class="label pull-left bg-yellow">Suspendido</small>')) . '</td>';
+    echo '</tr>';
+
+}
+
+?>
+>>>>>>> parent of d5ecaab... Merge remote-tracking branch 'origin/develop' into develop:application/views/traz-comp-almacen/articulo/list.php
                         </tbody>
                     </table>
                 </div><!-- /.box-body -->
@@ -137,6 +177,7 @@ $('#btnSave').click(function() {
     });
 });
 
+<<<<<<< HEAD:application/views/almacen/articulo/list.php
 $('#articles').DataTable({
     "aLengthMenu": [10, 25, 50, 100],
     "columnDefs": [{
@@ -152,6 +193,9 @@ $('#articles').DataTable({
         [1, "asc"]
     ],
 });
+=======
+DataTable('#articles');
+>>>>>>> parent of d5ecaab... Merge remote-tracking branch 'origin/develop' into develop:application/views/traz-comp-almacen/articulo/list.php
 </script>
 
 <script>
@@ -331,6 +375,60 @@ function eliminar_articulo() {
 
     });
 }
+<<<<<<< HEAD:application/views/almacen/articulo/list.php
+=======
+
+function ver_detalles(e) {
+    var idartic = $(e).closest('tr').attr('id');
+
+    $('#artBarCode').val('');
+    $('#artDescription').val('');
+    $('#artIsByBox').val('');
+    $('#artCantBox').val('');
+    $('#famId').html('');
+    $('#unidmed').html('');
+    $('#artEstado').val('');
+    $('#puntped').val('');
+    $.ajax({
+        data: {
+            idartic: idartic
+        },
+        dataType: 'json',
+        type: 'POST',
+        url: 'index.php/almacen/Articulo/getpencil',
+        success: function(data) {
+            datos = {
+                'codigoart': data[0]['barcode'],
+                'descripart': data[0]['descripcion'],
+                'artIsByBox': data[0]['es_caja'],
+                'artcant': data[0]['cantidad_caja'],
+                'estado_id': data[0]['estado'],
+                'idunidad': data[0]['unidadmedida'],
+                'unidadmedidades': data[0]['unidad_descripcion'],
+                'punto_pedido': data[0]['punto_pedido'],
+                'es_loteado': data[0]['es_loteado']
+            }
+            completarEdit(datos);
+            $('.btn-edit').hide();
+            $('#modaleditar input').prop('readonly', true);
+            $('#modaleditar select').prop('disabled', true);
+            $('titu').html('Detalles del Articulo');
+            $('#modaleditar').modal('show');
+        },
+        error: function(result) {
+            console.error("Error al traer datos para llenar Modal Editar");
+            console.table(result);
+        },
+    });
+}
+
+function reset() {
+    $('.btn-edit').show();
+    $('#modaleditar input').prop('readonly', false);
+    $('#modaleditar select').prop('disabled',false);
+    $('titu').html('Editar Articulo');
+}
+>>>>>>> parent of d5ecaab... Merge remote-tracking branch 'origin/develop' into develop:application/views/traz-comp-almacen/articulo/list.php
 </script>
 
 <!-- Modal -->
