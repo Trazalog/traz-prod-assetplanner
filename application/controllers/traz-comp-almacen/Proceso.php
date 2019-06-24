@@ -302,7 +302,7 @@ class Proceso extends CI_Controller
         }
     }
 
-    public function pedidoNormal($pemaId=1)
+    public function pedidoNormal($pemaId)
     {
         //? DEBE EXISTIR LA NOTA DE PEDIDO 
         $contract = [
@@ -313,7 +313,7 @@ class Proceso extends CI_Controller
 
         $this->Notapedidos->setCaseId($pemaId, $data['case_id']);
 
-        $this->index();
+        return $this->Pedidos_Materiales->setEstado($pemaId,'Creada');
     }
 
     public function pedidoExtraordinario($ot=1)
@@ -331,11 +331,9 @@ class Proceso extends CI_Controller
         $peex['fecha'] = date("Y-m-d");
         $peex['detalle'] = $pedidoExtra;    
         $peex['ortr_id'] = $ot; 
-        $peex['empr_id'] = 1; //!HARDCODE
+        $peex['empr_id'] =  empresa();
 
-        $this->Pedidoextra->set($peex);
-
-        $this->index();
+        return $this->Pedidoextra->set($peex);
     }
 
     public function guardarComentario()

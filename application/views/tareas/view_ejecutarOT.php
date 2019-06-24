@@ -29,8 +29,7 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 																	<li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Tareas</a></li>
 																	<li role="presentation"><a href="#info" aria-controls="info" role="tab" data-toggle="tab">Info </a></li>
 																	<li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Comentarios</a></li>
-																	<li <?php echo ($device == 'android' ? 'class= "hidden"' : 'class= ""') ?>role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Vista
-																					Global
+																	<li <?php echo ($device == 'android' ? 'class= "hidden"' : 'class= ""') ?>role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Trazabildad
 																			</a></li>
 															</ul>
 
@@ -64,10 +63,12 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 																					?>
 
 																					<input type="text" class="form-control hidden" id="asignado" value="<?php echo $TareaBPM["assigned_id"] ?>">
-																				
-																					<div class="panel panel-default">	
+
+																					<h4> <b>Tarea: </b><?php echo  $TareaBPM['displayName'] ?></h3>
+																					
 																						<?php 																							
 																							if ($subtareas !== NULL) { 		
+																								echo' <div class="panel panel-default">';	
 																								// echo 'entre en subtareas'	;
 																								// dump($subtareas , 'subtareas en vista:');			
 																								echo '<table id="subtask" class="table table-hover">';
@@ -105,10 +106,10 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 																										}
 																											
 																									echo'</tbody>';
-																								echo '</table>';																						
+																								echo '</table></div>';																						
 																							}																								
 																						?>	
-																					</div>
+																					
 															</div>
 															
 														

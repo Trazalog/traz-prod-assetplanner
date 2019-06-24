@@ -762,7 +762,24 @@ class Tareas extends CI_Model {
 		// Agrega datos desde BPM y BD local
 		function CompletarToDoList($data){
 			
+			
+
 			foreach ($data as $key => $value) {
+
+				if($value['processId'] == BPM_PROCESS_ID_PEDIDOS_NORMALES){
+					$res = $this->db->get_where('alm_pedidos_materiales',['case_id'=>$value['caseId']])->row();
+					$data[$key]['pema_id'] = $res->pema_id;
+					$data[$key]['ot'] = $res->ortr_id;
+					continue;
+				}
+
+				if($value['processId'] == BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS){
+					$res = $this->db->get_where('alm_pedidos_extraordinario',['case_id'=>$value['caseId']])->row();
+					$data[$key]['pema_id'] = $res->peex_id;
+					$data[$key]['ot'] = $res->ortr_id;
+					continue;
+				}
+				
 				$this->db->select('A.id_solicitud as \'ss\', id_orden as \'ot\'');
 				$this->db->where('A.case_id',$value['caseId']);
 				$this->db->from('solicitud_reparacion as A');
@@ -801,7 +818,6 @@ class Tareas extends CI_Model {
 				}	
 					
 			}
-			//dump($data, 'data en completar: ');
 			return $data;
 		}
 	/* 	./ TAREAS BPM */	
