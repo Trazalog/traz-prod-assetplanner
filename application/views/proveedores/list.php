@@ -125,7 +125,7 @@
           '</div>'+
           '<div class="col-xs-8">'+
               '<input type="text" class="form-control"  id="provnombreE" value="'+provnombre+'" >'+
-              '<input type="text" class="form-control"  id="idProveedor" value="'+ id_+'" >'+
+              '<input type="hidden" class="form-control"  id="idProveedor" value="'+ id_+'" >'+
           '</div>'+
       '</div><br>'+
         '<div class="row">'+
