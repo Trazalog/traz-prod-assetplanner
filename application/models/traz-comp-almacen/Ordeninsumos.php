@@ -118,9 +118,9 @@ class Ordeninsumos extends CI_Model
 
     public function insert_entrega_materiales($form)
     {
-        $userdata  =$this->session->userdata('user_data');
-        $data['empr_id'] = $userdata[0]['id_empresa'];
-
+       
+        $data['empr_id'] = empresa();
+        
         //CABECERA ENTREGA
         $info = json_decode($form['info_entrega'],true); 
         
