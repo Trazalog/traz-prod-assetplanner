@@ -63,7 +63,7 @@
                 <div class="panel-body"> 
                   <div class="row"> 
                     <div class="col-xs-12 col-sm-6">Tarea <strong style="color: #dd4b39">*</strong>:
-                      <input type="text" id="tarea" name="tarea" class="form-control">
+                      <input type="text" id="tarea" name="tarea" class="form-control" placeholder="Buscar Tarea...">
                       <input type="hidden" id="id_tarea" name="id_tarea">
                     </div>
                   </div>
@@ -75,16 +75,15 @@
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="periodo">Periodo:                       </label>
                       <select id="periodo" name="periodo" class=" selectpicker form-control">
-                        <!-- -->
                       </select>
                     </div> 
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="cantidad">Frecuencia <strong style="color: #dd4b39">*</strong>:</label>
-                      <input type="text" class="form-control" id="cantidad" name="cantidad"/>
+                      <input type="text" class="form-control" id="cantidad" name="cantidad" placeholder="Ingrese valor..."/>
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="duracion">Duración <strong style="color: #dd4b39">*</strong>:</label>
-                      <input type="text" class="form-control" id="duracion" name="duracion"/>
+                      <input type="text" class="form-control" id="duracion" name="duracion" placeholder="Ingrese valor..."/>
                     </div> 
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="unidad">U. de tiempo <strong style="color: #dd4b39">*</strong></label>
@@ -92,7 +91,7 @@
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="cantOper">Cant. Operarios <strong style="color: #dd4b39">*</strong>:</label>
-                      <input type="text" class="form-control" id="cantOper" name="cantOper"/>
+                      <input type="text" class="form-control" id="cantOper" name="cantOper" placeholder="Ingrese valor..."/>
                     </div>
                     <div class="col-xs-12" id="dato" name="" style="margin-top: 19px;"></div>
                     <input type="hidden" name="hshombre" id="hshombre">                
@@ -118,7 +117,7 @@
                         <div class="row">
                           <div class="col-xs-12 col-sm-6 col-md-4">
                             <label for="herramienta">Codigo <strong style="color: #dd4b39">*</strong>:</label>
-                            <input type="text" id="herramienta"  name="" class="form-control" />
+                            <input type="text" id="herramienta"  name="" class="form-control" placeholder="Buscar Código..."/>
                             <input type="hidden" id="id_herramienta" name="id_herramienta">
                           </div>                          
                           <div class="col-xs-12 col-sm-6 col-md-4">
@@ -131,7 +130,7 @@
                           </div>
                           <div class="col-xs-12 col-sm-6 col-md-4">
                             <label for="cantidadherram">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
-                            <input type="text" id="cantidadherram"  name="" class="form-control" placeholder="Ingrese Cantidad" />
+                            <input type="text" id="cantidadherram"  name="" class="form-control" placeholder="Ingrese Cantidad..." />
                           </div>
                           <br>
                           <div class="col-xs-12">
@@ -163,7 +162,7 @@
                         <div class="row">
                           <div class="col-xs-12 col-sm-6 col-md-4">
                             <label for="insumo">Codigo <strong style="color: #dd4b39">*</strong>:</label>
-                            <input type="text" id="insumo" name="insumo" class="form-control" />
+                            <input type="text" id="insumo" name="insumo" class="form-control" placeholder="Buscar Código..."/>
                             <input type="hidden" id="id_insumo" name="">
                           </div>
                           <div class="col-xs-12 col-sm-6 col-md-4">
@@ -172,7 +171,7 @@
                           </div>
                           <div class="col-xs-12 col-sm-6 col-md-4">
                             <label for="cant">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
-                            <input type="text" id="cant"  name="" class="form-control" placeholder="Ingrese Cantidad"/>
+                            <input type="text" id="cant"  name="" class="form-control" placeholder="Ingrese Cantidad..."/>
                           </div>
                         </div><!-- /.row -->
                         <div class="row">
