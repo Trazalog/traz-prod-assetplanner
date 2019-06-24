@@ -40,7 +40,7 @@ class Proveedores extends CI_Model {
 			
 	function Modificar_Proveedores($id, $data)
 	{
-		$id = $data['provid'];
+		//$id = $data['provid'];
 		// $userdata           = $this->session->userdata('user_data');
 		// $data['id_empresa'] = $userdata[0]['id_empresa']; 
 		// $data = $this->map($data);
