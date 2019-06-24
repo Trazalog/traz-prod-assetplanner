@@ -83,7 +83,7 @@ function edit() {
         success: function(data) {
             get_detalle();
             selectRow = null;
-            $('.modal').modal('hide');
+            $('#set_cantidad').modal('hide');
         },
         error: function(data) {
             alert('Error');
