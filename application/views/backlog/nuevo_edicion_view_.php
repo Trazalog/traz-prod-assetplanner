@@ -828,6 +828,7 @@
     var back_canth    = $('#cantOper').val();
     var tareaOpcional = $('#tareaOpcional').val();
     var idTarBonita   = $('#idTarBonita').val();
+    var idcompequipo  = $('#idcomponenteequipo').val();
     
     // Arma array de herramientas y cantidades
     var idsherramienta = new Array();     
@@ -870,7 +871,8 @@
                 idsinsumo: idsinsumo, 
                 cantInsum: cantInsum,
                 tareaOpcional: tareaOpcional,
-                idTarBonita: idTarBonita, 
+                idTarBonita: idTarBonita,
+                idcomponenteequipo: idcompequipo, 
                 tipo: 'editNuevo'},
 
         url: 'index.php/Backlog/editar_backlog', 
