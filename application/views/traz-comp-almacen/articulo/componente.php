@@ -62,7 +62,7 @@ function checkTabla(idtabla, idrecipiente, json, acciones) {
 
 var selectItem = null;
 $(document).off('click', '.tabla_articulos_nuevo').on('click', '.tabla_articulos_nuevo', function() {
-    $('.modal').modal('hide');
+    $('#modal_articulos').modal('hide');
     var item = $(this).closest('tr').data('json')[0];
     $('#inputarti').val(item.Codigo);
     var option = $('#articulos').find("[value='" + item.Codigo + "']");

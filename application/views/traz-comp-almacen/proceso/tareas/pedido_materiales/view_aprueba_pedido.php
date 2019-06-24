@@ -5,7 +5,7 @@
     <table id="tabladetalle" class="table table-striped table-hover">
         <thead>
             <tr>
-                <th>Código</th>
+                <!-- <th>Código</th> -->
                 <th>Descripcion</th>
                 <th class="text-center">Cantidad</th>
                 <th class="text-center">Fecha Nota</th>
@@ -58,7 +58,7 @@ function cargarPedidos() {
             $('tr.celdas').remove();
             for (var i = 0; i < data.length; i++) {
                 var tr = "<tr class='celdas'>" +
-                    "<td>" + data[i]['artBarcode'] + "</td>" +
+                    // "<td>" + data[i]['artBarcode'] + "</td>" +
                     "<td>" + data[i]['artDescription'] + "</td>" +
                     "<td class='text-center'>" + data[i]['cantidad'] + "</td>" +
                     "<td class='text-center'>" + data[i]['fecha'] + "</td>" +
