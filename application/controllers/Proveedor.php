@@ -41,7 +41,6 @@ class Proveedor extends CI_Controller {
 														'fec_alta'  => $fecha,
 														'eliminado' => 0);
 
-		//dump($data, 'datos en controller');
 
 		$sql           = $this->Proveedores->Guardar_Proveedores($data);
 		echo json_encode($sql);

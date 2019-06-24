@@ -50,4 +50,5 @@ class Proveedores extends CI_Model {
 		return $query;
 	}
 
+	
 }
