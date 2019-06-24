@@ -195,15 +195,17 @@ class Calendario extends CI_Controller {
 						// actualizo estado del backlog
 						$tipo = 'backlog';
 						//Actualizar Tablas >> Backlog ||Solicitud
-						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);					
-
+						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);			
 						$infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);	
 						$respCerrar = $this->cerrarTarea($infoTarea['taskId']);							
 						$resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);	
 						// averiguo case para saber si es autogenerado por BPM o no
 						$caseDeBacklog = $infoTarea['caseId'];
-
-						dump($caseDeBacklog, 'case de backlog segun Sservicios:');
+						$idSServicio = $this->Calendarios->getIdSServicioporCaseId($caseDeBacklog);	
+						// Si el backlog viene de una SServicios la actualializa a Planificada
+						if ($idSServicio != NULL) {
+							$this->Calendarios->cambiarEstado($idSServicio, 'PL', 'correctivo');	
+						}					
 					}
 					// $tipo == '5' -> Predictivo			
 					if($tipo == '5'){	
@@ -217,17 +219,16 @@ class Calendario extends CI_Controller {
 					//	dump_exit($idOT);						
 					// si es Preventivo o Predictivo lanza proceso nuevo
 					if ( ($tipo == 'preventivo') || ($tipo == 'predictivo') || ( ($caseDeBacklog == 0) && ($tipo != 'correctivo') ) ) {
-						dump($tipo, 'entre por if forrito: ');
-						dump($idOT, 'id de OT: ');
+					
 							$this->load->library('BPM');
 						
 							$contract = array(
 									"idSolicitudServicio"	=> 0,		// 0 NULL  FALSE       // "" ''
 									"idOT"  => 	$idOT
 								);
-							dump($contract, 'contrrato BPM: ');	
+						
 							$result = $this->bpm->LanzarProceso($contract);	
-							dump($result, 'respuesta lanzamiento proceso bpm: ');							
+													
 							// guarda case id generado el lanzar proceso				
 							$respcaseOT = $this->Calendarios->setCaseidenOT($result['case_id'], $idOT);					
 					}else{
@@ -401,7 +402,7 @@ class Calendario extends CI_Controller {
 			case 'predictivo':		// Predictivo
 				$herra = $this->Calendarios->getPredictivoHerramientas($id_solicitud);				
 				$insumos = $this->Calendarios->getPredictivoInsumos($id_solicitud);			
-				$adjunto = $this->Calendarios->getAdjunto($id_solicitud,$tipo);				
+				$adjunto = $this->Calendarios->getAdjunto($id_solicitud,$tipo);		
 				// Guarda el bacht de datos de herramientas
 				if (!empty($herra)) {		
 					$result['respHerram'] = $this->Calendarios->insertOTHerram($idOT, $herra);
@@ -415,6 +416,7 @@ class Calendario extends CI_Controller {
 					$url = 'assets/filespredictivos/';
 					$file = $url.$adjunto;
 					$result['respAdjunto'] = $this->Calendarios->insertAdjunto($idOT,$file);
+					
 				}
 				break;
 			case 'backlog':		//Backlog			
@@ -452,7 +454,7 @@ class Calendario extends CI_Controller {
 				break;
 
 			default:
-				// FIXME: AGRAGAR DATOS CUANDO SE CREE POR OT Y SE AGREGUEN COSAS
+				
 
 
 
@@ -468,8 +470,28 @@ class Calendario extends CI_Controller {
 	// carga modal ver OT y ejecutar OT
 	function verEjecutarOT($idOt){
 		
-		$data['idOt'] = $idOt;
+		$this->load->model('traz-comp/Componentes');
+		$this->load->model(CMP_ALM.'/new/Pedidos_Materiales');
+		
+		#COMPONENTE ARTICULOS
+		$data = $this->Componentes-> listaArticulos();
+
+		#PEDIDO MATERIALES
+		$info = new StdClass();
+		$info->ortr_id = $idOt;
+
+		$info->pema_id = $this->Pedidos_Materiales->getPedidoMaterialesOT($idOt)->pema_id;
+		
+        if (!$info->pema_id) {
+            #NO EXISTE PEDIDO DE MATERIALES CREARA UNO CON INSUMOS OT    
+            $info->pema_id = $this->Pedidos_Materiales->crearPedidoOT($idOt);
+        }
+		
+		
+		$data['info'] = $info;
+
 		// ifno de la OTrabajo
+		$data['idOt'] = $idOt;
 		$data['detaOT'] = $this->Calendarios->getDataOt($idOt);			
 		// Tarea estandar
 		$data['tareas'] = $this->Calendarios->gettareas();

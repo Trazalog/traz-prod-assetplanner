@@ -69,16 +69,12 @@
                     <input type="text" id="tareacustom" name="tareacustom" class="form-control" placeholder="Ingresar Tarea...">     
                   </div>
                   </div>
-                  <div class="row">
-                    <div class="col-xs-12 col-sm-6">
-                      <label for="fechaInicio">Fecha Programación:</label>
-                      <input type="text" class="datepicker form-control fecha" id="fechaInicio" name="fechaInicio" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>
-                    </div> 
+                  <div class="row">                   
                     
-                    <div class="col-xs-12 col-sm-6">
+                    <!-- <div class="col-xs-12 col-sm-6">
                       <label for="fechaEntrega">Fecha Entrega:</label>
                       <input type="text" class="datepicker form-control fecha" id="fechaEntrega" name="fechaEntrega" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>
-                    </div>
+                    </div> -->
 
                     <div class="col-xs-12 col-sm-6">
                       <label for="suci">Sucursal</label>
@@ -87,7 +83,12 @@
                     <div class="col-xs-12 col-sm-6">
                       <label for="prov">Proveedor</label>
                       <select  id="prov" name="prov" class="form-control" />
-                    </div>            
+                    </div> 
+
+                     <div class="col-xs-12 col-sm-6">
+                      <label for="fechaInicio">Fecha Programación:</label>
+                      <input type="text" class="datepicker form-control fecha" id="fechaInicio" name="fechaInicio" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>
+                    </div>           
                   </div>
                 </div>
               </div>

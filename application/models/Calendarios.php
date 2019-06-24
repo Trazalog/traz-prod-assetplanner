@@ -438,7 +438,7 @@ class Calendarios extends CI_Model {
 		function getAdjunto($id_solicitud,$tipo){
 			
 			switch ($tipo) {
-				case '5':		// Predictivo
+				case 'predictivo':		// Predictivo
 								$this->db->select('predictivo.pred_adjunto');
 								$this->db->from('predictivo');
 								$this->db->where('predictivo.predId',$id_solicitud);
@@ -446,7 +446,7 @@ class Calendarios extends CI_Model {
 								$row = $query->row();
 								$result =  $row->pred_adjunto; 
 								break;
-				case '4':		//Backlog
+				case 'backlog':		//Backlog
 								$this->db->select('tbl_back.back_adjunto');
 								$this->db->from('tbl_back');
 								$this->db->where('tbl_back.backId',$id_solicitud);
@@ -535,9 +535,8 @@ class Calendarios extends CI_Model {
 					break;
 				// backlog
 				case '4':
-					$this->db->select('tbl_back.back_duracion AS duracionTarea,
-														tbl_back.back_duracion AS frecuencia,
-														unidad_tiempo.unidaddescrip');
+					$this->db->select('tbl_back.back_duracion AS duracionTarea,                                    
+                                    unidad_tiempo.unidaddescrip');
 					$this->db->from('unidad_tiempo');									
 					$this->db->join('tbl_back', 'unidad_tiempo.id_unidad = tbl_back.id_unidad');
 					$this->db->where('tbl_back.backId', $id_solicitud);
@@ -636,7 +635,7 @@ class Calendarios extends CI_Model {
         return $resposnse;
     }
 
-    ////// CORRECTIVOS 
+   	////// CORRECTIVOS 
         function getCorrectPorIds($data){
 
             $id = $data;
@@ -653,7 +652,7 @@ class Calendarios extends CI_Model {
                     return $query->result_array();  
         }
 
-	/////	BACKLOG
+		/////	BACKLOG
 		function getBackPorIds($data){
 			$id = $data;
 			//FIXME: ARREGLAR ACA LA TAREA OPCIONAL
@@ -665,6 +664,15 @@ class Calendarios extends CI_Model {
 			$query = $this->db->get();      
 			
 			return $query->result_array(); 
+		}
+		// devuelve id de SServicio por Case_id
+		function getIdSServicioporCaseId($caseDeBacklog){
+			$this->db->select('solicitud_reparacion.id_solicitud');
+			$this->db->from('solicitud_reparacion');
+			$this->db->where('solicitud_reparacion.case_id', $caseDeBacklog);			
+			$query = $this->db->get();
+			$row = $query->row('id_solicitud');
+      return $row;
 		}
 		// Trae herramientas ppor id de preventivo para Editar
 		function getBacklogHerramientas($id){

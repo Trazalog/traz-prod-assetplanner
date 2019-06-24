@@ -15,7 +15,7 @@
           <table id="servicio" class="table table-bordered table-hover">
               <thead>
                   <tr>
-                      <th>Acciones</th>
+                      <th width="2%">Acciones</th>
                       <th>Nro</th>
                       <th>fecha</th>
                       <th>Solicitante</th>
@@ -49,10 +49,10 @@
 
                             if (strpos($permission,'Del') !== false) {
 
-                                echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar"></i>';
+                                //echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar"></i>';
                             }                                      
 
-                            echo '<i class="fa fa-picture-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imagen" data-imagen ="'.$f['foto'].'" data-toggle="modal" data-target="#foto"></i> '; 
+                            //echo '<i class="fa fa-picture-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imagen" data-imagen ="'.$f['foto'].'" data-toggle="modal" data-target="#foto"></i> '; 
                             
                             echo '<i class="fa fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"></i> '; 
 
@@ -91,7 +91,10 @@
                             }
                             if ($f['estado'] == 'CE') {
                               echo  '<small class="label pull-left bg-green">Cerrada</small>';
-                            }                            
+                            }  
+                            if ($f['estado'] == 'CN') {
+                              echo  '<small class="label pull-left bg-green">Conforme</small>';
+                            }                           
 
                             echo '</td>';            
                           

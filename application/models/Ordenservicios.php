@@ -272,11 +272,6 @@ class Ordenservicios extends CI_Model {
 					}
 			}
 
-			////// actualiza estado de solicitud de reparacion
-			$estado['estado'] = 'C';
-			$this->db->where('id_solicitud', $id_solicitudreparacion);
-			$this->db->update('solicitud_reparacion', $estado);  
-
 			// ////// guarda Operarios
 			if (!empty($data['operario'])) 
 			{

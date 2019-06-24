@@ -42,8 +42,13 @@
                 echo '<td>'.$a['marcadescrip'].'</td>';
                 echo '<td>'.$a['descripcion'].'</td>';
                 echo '<td>'.$a['informacion'].'</td>';
-                $url = base_url().'assets/files/equipos/'.$a['pdf']; 
-                echo '<td><a href="'.$url.'" target="_blank">Adjunto</td>';
+                if($a['pdf'] != NULL){
+                  $url = base_url().'assets/files/equipos/'.$a['pdf']; 
+                  echo '<td><a href="'.$url.'" target="_blank">Adjunto</td>';
+                }else{
+                  echo '<td>Sin Adjuntos</td>';
+                }
+               
                 //echo '<td><a href="'.$url.'" target="_blank">'.basename($a['pdf']).'</td>';
                 $idc++;
               }
@@ -90,7 +95,7 @@
             </div>
             <div class="col-xs-12">
               <label><span class="fa fa-file-pdf-o"></span> Adjuntar</label>
-              <input id="pdf" name="pdf" type="file"  class="form-control input-md">
+              <input id="inputPDF" name="inputPDF" type="file"  class="form-control input-md">
             </div>
 
           </div>

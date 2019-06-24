@@ -325,6 +325,7 @@ class Otrabajos extends CI_Model {
 			$this->db->from('tbl_otadjuntos');
 			$this->db->where('tbl_otadjuntos.otId', $id);
 			$query = $this->db->get();
+
 			if( $query->num_rows() > 0)
 			{
 				return $query->result_array();
@@ -996,18 +997,20 @@ class Otrabajos extends CI_Model {
     {
 			$this->db->select('orden_trabajo.id_orden, 
 				orden_trabajo.nro, orden_trabajo.descripcion AS descripcionFalla, 
-				orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, 
-    		orden_trabajo.fecha_program, orden_trabajo.descripcion AS estado, sisusers.usrName, sisusers.usrLastName, 
+				orden_trabajo.fecha_inicio,orden_trabajo.fecha_program, orden_trabajo.fecha_terminada, orden_trabajo.estado, 
+				sisusers.usrName, sisusers.usrLastName, 
     		orden_trabajo.tipo, orden_trabajo.id_solicitud,
     		sucursal.id_sucursal, sucursal.descripc,
     		abmproveedores.provid, abmproveedores.provnombre,
-				equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, equipos.descripcion AS descripcionEquipo,
+				equipos.codigo, equipos.fecha_ingreso, equipos.ubicacion, equipos.descripcion AS descripcionEquipo,
+				marcasequipos.marcadescrip AS marca,
 				grupo.descripcion AS grupodescrip, grupo.id_grupo');
         $this->db->from('orden_trabajo');
-        $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
+        $this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId', 'left');
         $this->db->join('sucursal', ' orden_trabajo.id_sucursal = sucursal.id_sucursal ', 'left');
         $this->db->join('abmproveedores', 'orden_trabajo.id_proveedor = abmproveedores.provid', 'left');
 				$this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
+				$this->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');
 				$this->db->join('grupo', 'grupo.id_grupo = equipos.id_grupo');
         $this->db->where('orden_trabajo.id_orden', $idOt);
 
@@ -1061,7 +1064,7 @@ class Otrabajos extends CI_Model {
 												orden_trabajo.nro, 
 												orden_trabajo.descripcion AS descripcionFalla, 
 												orden_trabajo.fecha_inicio, 
-												orden_trabajo.fecha_entrega, 
+												orden_trabajo.fecha_terminada, 
 												orden_trabajo.fecha_program, 
 												orden_trabajo.estado, 
 												sisusers.usrName, sisusers.usrLastName, 
@@ -1069,22 +1072,19 @@ class Otrabajos extends CI_Model {
 												orden_trabajo.id_solicitud,
 												sucursal.id_sucursal, 
 												sucursal.descripc,
-												 
-												
 												equipos.codigo, 
-												equipos.fecha_ingreso, 
-												equipos.marca, 
+												equipos.fecha_ingreso, 												 
 												equipos.ubicacion, 
-												equipos.descripcion AS descripcionEquipo');
+												equipos.descripcion AS descripcionEquipo,
+												marcasequipos.marcadescrip AS marca');
         $this->db->from('orden_trabajo');
-        $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
+        $this->db->join('sisusers', 'orden_trabajo.id_usuario_a  = sisusers.usrId', 'left');
         $this->db->join('sucursal', 'orden_trabajo.id_sucursal = sucursal.id_sucursal', 'left');
         $this->db->join('abmproveedores', 'orden_trabajo.id_proveedor = abmproveedores.provid', 'left');
         $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
-        //$this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
+        $this->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');
         $this->db->where('orden_trabajo.id_orden', $idOt);
-
-        $query = $this->db->get();
+				$query = $this->db->get();
         if($query->num_rows()!=0)
         {
             $datos = $query->result_array();
@@ -1100,9 +1100,9 @@ class Otrabajos extends CI_Model {
     
 	    function getViewDataTareaPreventivo($id_solicitud)
 	    {
-	    	$this->db->select('preventivo.prevId, preventivo.ultimo, preventivo.perido, preventivo.cantidad AS frecuencia, preventivo.lectura_base, preventivo.critico1 AS alerta, preventivo.prev_duracion, preventivo.prev_canth, preventivo.prev_adjunto,
+	    	$this->db->select('preventivo.prevId, preventivo.ultimo, preventivo.cantidad AS frecuencia, preventivo.lectura_base, preventivo.critico1 AS alerta, preventivo.prev_duracion, preventivo.prev_canth, preventivo.prev_adjunto,
 	    		tareas.descripcion AS tareadescrip,
-	    		unidad_tiempo.unidaddescrip,
+	    		unidad_tiempo.unidaddescrip AS perido,
 	    		componentes.descripcion AS descripComponente');
 	        $this->db->from('preventivo');
 	        $this->db->where('preventivo.prevId', $id_solicitud);
@@ -1186,20 +1186,21 @@ class Otrabajos extends CI_Model {
 			$this->db->select('orden_trabajo.id_orden, orden_trabajo.nro, 
 												orden_trabajo.estado,
 												orden_trabajo.descripcion AS descripcionFalla, 
-												orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, 
-												orden_trabajo.fecha_program, 
+												orden_trabajo.fecha_inicio, 
+												orden_trabajo.fecha_program,
+												orden_trabajo.fecha_terminada, 
 												sisusers.usrName, sisusers.usrLastName, 
 												orden_trabajo.tipo, orden_trabajo.id_solicitud,
 												sucursal.id_sucursal, sucursal.descripc,
 												abmproveedores.provid, abmproveedores.provnombre,
-												equipos.codigo, equipos.fecha_ingreso, equipos.marca, 
+												equipos.codigo, equipos.fecha_ingreso, marcasequipos.marcadescrip AS marca, 
 												equipos.ubicacion, equipos.descripcion AS descripcionEquipo');
         $this->db->from('orden_trabajo');
-        $this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
+        $this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId', 'left');
         $this->db->join('sucursal', 'orden_trabajo.id_sucursal =  sucursal.id_sucursal', 'left');
         $this->db->join('abmproveedores', 'orden_trabajo.id_proveedor = abmproveedores.provid', 'left');
         $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
-      	//$this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
+      	$this->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');
         $this->db->where('orden_trabajo.id_orden', $idOt);
 
         $query = $this->db->get();
@@ -1267,27 +1268,26 @@ class Otrabajos extends CI_Model {
 		function getViewDataPredictivo($idOt, $idSolicitud)
 		{
 			$this->db->select('orden_trabajo.id_orden, orden_trabajo.descripcion AS descripcionFalla, 
-												orden_trabajo.fecha_inicio, orden_trabajo.fecha_entrega, 
+												orden_trabajo.fecha_inicio, orden_trabajo.fecha_terminada, 
 												orden_trabajo.fecha_program, 
 												orden_trabajo.tipo, orden_trabajo.id_solicitud, 
 												orden_trabajo.estado,
 												sisusers.usrName, 
 												sisusers.usrLastName, 
-												equipos.codigo, equipos.fecha_ingreso, equipos.marca, equipos.ubicacion, 
-												equipos.descripcion AS descripcionEquipo,				
+												equipos.codigo, equipos.fecha_ingreso, equipos.ubicacion, 
+												equipos.descripcion AS descripcionEquipo,	
+												marcasequipos.marcadescrip AS marca,		
 												sucursal.id_sucursal, sucursal.descripc, 
 												abmproveedores.provid, abmproveedores.provnombre ');													
-			$this->db->from('orden_trabajo');					
+			$this->db->from('orden_trabajo');			
 			$this->db->join('sucursal', 'orden_trabajo.id_sucursal = sucursal.id_sucursal','left');
-			$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario_a');
+			$this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId', 'left');
 			$this->db->join('abmproveedores', 'orden_trabajo.id_proveedor = abmproveedores.provid', 'left');				
-			$this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');				
+			$this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
+			$this->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');				
 			$this->db->where('orden_trabajo.id_orden', $idOt);
-
-			$query = $this->db->get();
-			
-			// $d = $this->db->last_query();	
-			// dump($d, 'query: ');
+			$query = $this->db->get();	
+		
 			if($query->num_rows()!=0)
 			{
 					$datos = $query->result_array();
@@ -1299,15 +1299,7 @@ class Otrabajos extends CI_Model {
 			{
 					return false;
 			}
-		}
-
-
-
-
-
-
-
-	
+		}	
     //
     function getViewDataTareaPredictivo($id_solicitud)
     {
@@ -1330,8 +1322,8 @@ class Otrabajos extends CI_Model {
         {
             return null;
         }
-    }
-   
+		}
+		   
 		//Define si la OT tiene un proceso lanzado
 		function getCaseIdOT($id){	
 			$this->db->select('orden_trabajo.case_id');
@@ -1392,6 +1384,16 @@ class Otrabajos extends CI_Model {
 			return $this->db->update('orden_trabajo', array('case_id'=>$case_id));			
 		}
 
+		// devuelve id de SServicio por Case_id
+		function getIdSServicioporCaseId($caseDeBacklog){
+			$this->db->select('solicitud_reparacion.id_solicitud');
+			$this->db->from('solicitud_reparacion');
+			$this->db->where('solicitud_reparacion.case_id', $caseDeBacklog);			
+			$query = $this->db->get();
+			$row = $query->row('id_solicitud');
+      return $row;
+		}
+
 		// cambbia de estado la Tareas(SServ, Prevent, Predic, Back y OT)
 		function cambiarEstado($id_solicitud, $estado, $tipo){						
 			
@@ -1433,5 +1435,12 @@ class Otrabajos extends CI_Model {
 			$this->db->where('orden_trabajo.id_orden', $ot);
 			return $this->db->update('orden_trabajo', $datos);	
 		} 
+
+		function obtenerOT($ot){
+			$this->db->where('orden_trabajo.id_orden', $ot);
+			return $this->db->get('orden_trabajo')->first_row();	
+		} 
+
+		
 
 }	
