@@ -5,10 +5,10 @@
                 <div class="box-header">
                     <h3 class="box-title">Listado de Artículos</h3>
                     <?php
-if (strpos($permission, 'Add') !== false) {
-    echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" onclick="LoadArt(0,\'Add\')">Agregar</button>';
-}
-?>
+                    if (strpos($permission, 'Add') !== false) {
+                        echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" onclick="LoadArt(0,\'Add\')">Agregar</button>';
+                    }
+                    ?>
                 </div><!-- /.box-header -->
                 <div class="box-body">
                     <table id="articles" class="table table-bordered table-hover">
@@ -31,20 +31,20 @@ foreach ($list as $a) {
 
     echo '<td class="text-center text-light-blue">';
 
-    echo '<i class="fa fa-search" style="cursor: pointer;margin: 5px;" title="Ver Detalles" onclick="ver_detalles(this);"></i>';
+    echo '<i class="fa fa-search" style="cursor: pointer;margin: 3px;" title="Ver Detalles" onclick="ver_detalles(this);"></i>';
     
     if (strpos($permission, 'Edit') !== false) {
-        echo '<i class="fa fa-fw fa-pencil " style="cursor: pointer; margin: 5px;" title="Editar" data-toggle="modal" data-target="#modaleditar"></i>';
+        echo '<i class="fa fa-fw fa-pencil " style="cursor: pointer; margin: 3px;" title="Editar" data-toggle="modal" data-target="#modaleditar"></i>';
     }
     if (strpos($permission, 'Del') !== false) {
-        echo '<i class="fa fa-fw fa-times-circle" style="cursor: pointer;margin: 5px;" title="Eliminar" onclick="seleccionar(this)"></i>';
+        echo '<i class="fa fa-fw fa-times-circle" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="seleccionar(this)"></i>';
     }
 
    
   
     echo '</td>';
 
-    echo '<td>' . $a['barcode'] . '</td>';
+    echo '<td class="codigo">' . $a['barcode'] . '</td>';
     echo '<td>' . $a['descripcion'] . '</td>';
     echo '<td>' . ($a['medida'] == '' ? '-' : $a['medida']) . '</td>';
     echo '<td class="text-center">' . ($a['valor'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' : ($a['valor'] == 'IN' ? '<small class="label pull-left bg-red">Inactivo</small>' : '<small class="label pull-left bg-yellow">Suspendido</small>')) . '</td>';
@@ -112,6 +112,11 @@ $('#btnSave').click(function() {
         return;
     }
 
+    if(!validarCodigosExistentes($('#artBarCode').val())){
+        alert('Articulo Repetido');
+        return;
+    }
+
     $('#error').fadeOut('slow');
     WaitingOpen('Guardando cambios');
     $.ajax({
@@ -144,6 +149,17 @@ $('#btnSave').click(function() {
 });
 
 DataTable('#articles');
+
+function validarCodigosExistentes(newCodigo){
+    var ban = true;
+    $('#articles .codigo').each(function(){
+        if($(this).html() == newCodigo){
+            ban = false;
+        }
+    });
+
+    return ban;
+}
 </script>
 
 <script>
@@ -374,6 +390,15 @@ function reset() {
     $('#modaleditar select').prop('disabled',false);
     $('titu').html('Editar Articulo');
 }
+
+$('#artIsByBox').click(function() {
+  if($(this).is(':checked')){
+    $('#artCantBox').prop('disabled',false);
+  } else {
+    $('#artCantBox').val('');
+    $('#artCantBox').prop('disabled',true);
+  }
+});
 </script>
 
 <!-- Modal -->

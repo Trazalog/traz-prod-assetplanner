@@ -27,6 +27,22 @@ class Entregas_Materiales extends CI_Model
         return $this->db->get()->result_array();
     }
 
+    function getEntregasPedido($pema) {
+        $this->db->select('T.enma_id, T.fecha, T.comprobante, T.solicitante');
+        $this->db->select('A.pema_id, A.estado, A.ortr_id');
+        $this->db->from($this->tabla.' T');
+        $this->db->join('alm_pedidos_materiales A','A.pema_id = T.pema_id');
+        $this->db->order_by('T.fecha','desc');
+        $this->db->where('T.eliminado',0);
+        $this->db->where('T.empr_id',empresa());
+        
+        $this->db->where('A.pema_id', $pema);
+
+        return $this->db->get()->result_array();
+    }
+
+    
+
     public function obtenerDetalles($id)
     {
         $this->db->select('A.barcode, A.descripcion, B.descripcion as deposito, C.codigo as lote, T.cantidad');
