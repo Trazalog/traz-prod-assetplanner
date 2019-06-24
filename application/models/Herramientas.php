@@ -111,8 +111,10 @@ class Herramientas extends CI_Model
         $this->db->from('abmdeposito');
         $this->db->where('abmdeposito.id_empresa', $empresaId);
         $this->db->order_by('abmdeposito.depositodescrip');
+
         $query     = $this->db->get();
-		if($query->num_rows()>0){
+       // dump($this->db->last_query());
+        if($query->num_rows()>0){
 		    return $query->result();
 		}
 		else{

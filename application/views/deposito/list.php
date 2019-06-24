@@ -147,7 +147,7 @@
             descripcion:depositodescrip,  
             direccion:direccion, 
             gps: gps,
-            estado: 'AC',
+            eliminado: 0,
             loca_id: localidad,
             esta_id: provincia
              },
