@@ -31,9 +31,9 @@ class Proveedores extends CI_Model {
 
 	function Guardar_Proveedores($data)
 	{
-		$userdata           = $this->session->userdata('user_data');
-		$data['id_empresa'] = $userdata[0]['id_empresa'];
-		$data = $this->map($data);
+		//$userdata           = $this->session->userdata('user_data');
+		//$data['id_empresa'] = $userdata[0]['id_empresa'];
+		//$data = $this->map($data);
 		$query              = $this->db->insert("alm_proveedores", $data);
 		return $query;
 	}
@@ -41,9 +41,9 @@ class Proveedores extends CI_Model {
 	function Modificar_Proveedores($id, $data)
 	{
 		$id = $data['provid'];
-		$userdata           = $this->session->userdata('user_data');
-		$data['id_empresa'] = $userdata[0]['id_empresa']; 
-		$data = $this->map($data);
+		// $userdata           = $this->session->userdata('user_data');
+		// $data['id_empresa'] = $userdata[0]['id_empresa']; 
+		// $data = $this->map($data);
 		$query = $this->db->update('alm_proveedores', $data, array('prov_id' => $id));
 		return $query;
 	}
