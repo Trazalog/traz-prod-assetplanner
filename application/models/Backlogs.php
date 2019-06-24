@@ -50,7 +50,7 @@ class Backlogs extends CI_Model
 			
 		$this->db->select('equipos.*');
 		$this->db->from('equipos');
-		$this->db->where('equipos.estado', 'AC');
+		$this->db->where('equipos.estado !=', 'IN');
 		$this->db->where('equipos.id_empresa', $empId);    	
 		$query= $this->db->get();   
 
