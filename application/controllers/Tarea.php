@@ -266,7 +266,10 @@ class Tarea extends CI_Controller {
 								if($tipo != 'correctivo'){
 									// cambia el estado de la Tarea (Back, Prevent o Predict) a CERRADO
 									$result = $this->Tareas->cambiarEstado($id_solicitud, $estado, $tipo);
-								}				
+								}else{
+									// Cambio Inform Servicio  a TERMINADO					
+									$result = $this->Tareas->cambiarEstado($id_SS, 'T', $tipo);
+								}		
 																		
 								// Cierro la OT a CERRADO					
 								$result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT');
