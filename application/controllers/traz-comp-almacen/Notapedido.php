@@ -132,7 +132,8 @@ class Notapedido extends CI_Controller
             'fecha' => date('Y-m-d'),
             'ortr_id' => $idOT,
             'empr_id' => empresa(),
-            'justificacion' => $justificacion
+            'justificacion' => $justificacion,
+            'estado' => 'Creada'
         );
 
         $idnota = $this->Notapedidos->setCabeceraNota($cabecera);
