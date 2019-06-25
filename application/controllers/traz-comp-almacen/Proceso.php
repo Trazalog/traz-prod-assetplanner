@@ -313,7 +313,7 @@ class Proceso extends CI_Controller
 
         $this->Notapedidos->setCaseId($pemaId, $data['case_id']);
 
-        return $this->Pedidos_Materiales->setEstado($pemaId,'Creada');
+        return $this->Pedidos_Materiales->setEstado($pemaId,'Solicitado');
     }
 
     public function pedidoExtraordinario($ot=1)
