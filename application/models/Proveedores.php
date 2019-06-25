@@ -31,19 +31,19 @@ class Proveedores extends CI_Model {
 
 	function Guardar_Proveedores($data)
 	{
-		$userdata           = $this->session->userdata('user_data');
-		$data['id_empresa'] = $userdata[0]['id_empresa'];
-		$data = $this->map($data);
+		//$userdata           = $this->session->userdata('user_data');
+		//$data['id_empresa'] = $userdata[0]['id_empresa'];
+		//$data = $this->map($data);
 		$query              = $this->db->insert("alm_proveedores", $data);
 		return $query;
 	}
 			
 	function Modificar_Proveedores($id, $data)
 	{
-		$id = $data['provid'];
-		$userdata           = $this->session->userdata('user_data');
-		$data['id_empresa'] = $userdata[0]['id_empresa']; 
-		$data = $this->map($data);
+		//$id = $data['provid'];
+		// $userdata           = $this->session->userdata('user_data');
+		// $data['id_empresa'] = $userdata[0]['id_empresa']; 
+		// $data = $this->map($data);
 		$query = $this->db->update('alm_proveedores', $data, array('prov_id' => $id));
 		return $query;
 	}
@@ -56,16 +56,5 @@ class Proveedores extends CI_Model {
 		return $query;
 	}
 
-	public function map($data)
-	{
-		return array(
-			'nombre'=>   $data['provnombre'],
-			'cuit'=>     $data['provcuit'],
-			'domicilio'=>$data['provdomicilio'],
-			'telefono'=> $data['provtelefono'],
-			'email'=>    $data['provmail'],
-			'empr_id'=>  $data['id_empresa']
-		);
-	}
-
+	
 }

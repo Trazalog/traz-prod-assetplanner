@@ -18,7 +18,8 @@ class Ordenservicios extends CI_Model {
             orden_servicio.fecha, 
             orden_servicio.id_ot,
             orden_trabajo.descripcion AS descripcion_ot,
-            equipos.codigo AS equipo
+            equipos.codigo AS equipo,
+            equipos.id_equipo
         ');
             /*
             equipos.id_equipo,

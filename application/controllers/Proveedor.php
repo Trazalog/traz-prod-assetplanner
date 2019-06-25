@@ -36,12 +36,11 @@ class Proveedor extends CI_Controller {
 														'cuit'      => $provcuit,
 														'domicilio' => $provdomicilio,
 														'telefono'  => $provtelefono,
-														'email' 		=> $$provmail,	
+														'email' 		=> $provmail,	
 														'empr_id'   => $empId,
 														'fec_alta'  => $fecha,
 														'eliminado' => 0);
 
-		//dump($data, 'datos en controller');
 
 		$sql           = $this->Proveedores->Guardar_Proveedores($data);
 		echo json_encode($sql);

@@ -132,7 +132,8 @@ class Notapedido extends CI_Controller
             'fecha' => date('Y-m-d'),
             'ortr_id' => $idOT,
             'empr_id' => empresa(),
-            'justificacion' => $justificacion
+            'justificacion' => $justificacion,
+            'estado' => 'Creada'
         );
 
         $idnota = $this->Notapedidos->setCabeceraNota($cabecera);
@@ -222,10 +223,30 @@ class Notapedido extends CI_Controller
         echo $this->Notapedidos->eliminarDetalle($id);
     }
 
-    public function crearPedido()
+    public function crearPedido($ot=null)
     {   
         $this->load->model('traz-comp/Componentes');
         $data = $this->Componentes-> listaArticulos();
+        if($ot) {
+            $info = new stdClass();
+            $info->ortr_id = $ot;
+            $data['info'] = $info;
+        }
+        $data['hecho'] = false;
+        $this->load->view(CMP_ALM.'/notapedido/generar_pedido', $data);
+       
+    }
+
+    public function crearPedido2($ot=null)
+    {   
+        $this->load->model('traz-comp/Componentes');
+        $data = $this->Componentes-> listaArticulos();
+        if($ot) {
+            $info = new stdClass();
+            $info->ortr_id = $ot;
+            $data['info'] = $info;
+        }
+        $data['hecho'] = true;
         $this->load->view(CMP_ALM.'/notapedido/generar_pedido', $data);
        
     }

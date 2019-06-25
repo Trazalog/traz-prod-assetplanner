@@ -152,7 +152,7 @@ class Lotes extends CI_Model {
 		$this->db->where('depo_id',$depo);
 		$this->db->where('arti_id',$arti);
 		$this->db->where('empr_id', empresa());
-		return $this->db->get('alm_lotes')->num_rows()>0;
+		return $this->db->get('alm_lotes')->num_rows()>0?1:0;
 	}
 	
 }

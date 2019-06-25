@@ -66,9 +66,9 @@ class Remitos extends CI_Model {
 
 	function getproveedor()
     {
-        $userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-		$query     = $this->db->get_where('alm_proveedores', array('empr_id' => $empresaId));
+        $this->db->where('eliminado',0);
+        $this->db->where('empr_id',empresa());
+		$query = $this->db->get('alm_proveedores');
 			if($query->num_rows()>0){
 	   	 	return $query->result();
 	    }
@@ -411,9 +411,8 @@ class Remitos extends CI_Model {
 
     public function guardar_detalles($id, $detalles)
     {
-        $empr_id = 1;
         foreach ($detalles as $o) {
-            $o['empr_id'] = $empr_id;
+            $o['empr_id'] = empresa();
             $o['lote_id'] = $this->verificar_lote($o);
             $o['rema_id'] = $id;
             unset($o['codigo']);unset($o['depo_id']);unset($o['fec_vencimiento']);unset($o['loteado']);
