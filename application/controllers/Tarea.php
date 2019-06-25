@@ -113,6 +113,7 @@ class Tarea extends CI_Controller {
 			// Verifica si la tarea fue guardada la fecha de inicio
 			public function confInicioTarea(){
 				$id_OT = $this->input->post('id_OT');
+				//dump($id_OT, 'id_OT: ');
 				$fecha = $this->Tareas->confInicioTareas($id_OT);
 				//dump($fecha, 'fecha: ');
 				if ($fecha == '0000-00-00 00:00:00') {
@@ -146,6 +147,11 @@ class Tarea extends CI_Controller {
 										break;									
 									case '4':
 										$tipo = 'backlog';
+										// aca buscar sore_id y cambiar estado a sol de serv
+										$idSservicios = $this->Tareas->getSoreIdporBackId($id_solicitud);
+										if ($idSservicios != NULL) {
+											$response = $this->Tareas->cambiarEstado($idSservicios, $estado, 'correctivo');
+										}									
 										break;								
 									default:
 										$tipo = 'predictivo';
@@ -229,7 +235,7 @@ class Tarea extends CI_Controller {
 				$origen = $this->Tareas->getOrigenOt($id_OT);
 				$numtipo = 	$origen[0]['tipo'];
 				$id_solicitud = $origen[0]['id_solicitud'];
-				$estado = 'T';
+				$estado = 'CE';
 				switch ($numtipo) {
 					case '2':
 						$tipo = 'correctivo';
@@ -253,29 +259,37 @@ class Tarea extends CI_Controller {
 				// si cierra la tarea en BPM
 				if (json_decode($response['code']) < 300){
 
-						// La respuesta es Informe de Servicios correcto
+						// La respuesta es Informe de Servicios 'CORRECTO'
 						if($opcion){
-							// Si hay SServicios cambio estado a CERRADO
-							if ($id_SS != NULL) {
-								$result = $this->Tareas->cambiarEstado($id_SS, $estado, $tipo);																
-							}	else{	// sino cambio estado de la tarea origen(back, prevent, predict)
-								$result = $this->Tareas->cambiarEstado($id_solicitud, $estado, $tipo);	
-							}							
-							// Cierro la OT					
-							$result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT');
-							// si guarda en BD	
-							if ($result) {
-								echo json_encode(['status'=>true, 'msj'=>'OK']);
+							
+								// cambia el estado a lo que no sea SServicios(esta cambia con la conformidad del solicitante)
+								if($tipo != 'correctivo'){
+									// cambia el estado de la Tarea (Back, Prevent o Predict) a CERRADO
+									$result = $this->Tareas->cambiarEstado($id_solicitud, $estado, $tipo);
+								}else{
+									// Cambio Inform Servicio  a TERMINADO					
+									$result = $this->Tareas->cambiarEstado($id_SS, 'T', $tipo);
+								}		
+																		
+								// Cierro la OT a CERRADO					
+								$result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT');
+
+								// Cambio Inform Servicio  a TERMINADO					
+								$result = $this->Tareas->cambiarEstado($id_OT, 'T', 'informe servicios');
+
+								// si guarda en BD	
+								if ($result) {
+									echo json_encode(['status'=>true, 'msj'=>'OK']);
+									return;
+								}else{								
+									echo json_encode(['status'=>false, 'msj'=> ASP_0100.' | Error en Cambio Estado OT']);
+									return;
+								}
+						
+						}else{	// no conforme con trabajo	NO CAMBIA ESTADOS
+								echo $response;
 								return;
-							}else{								
-								echo json_encode(['status'=>false, 'msj'=> ASP_0100.' | Error en Cambio Estado OT']);
-								return;
-							}
-					
-					}else{	// no conforme con trabajo	NO CAMBIA ESTADOS
-							echo $response;
-							return;
-					}	
+						}	
 
 				} else {	// fallo al cerrar la tarea en BPM				
 					echo json_encode(['status'=>true, 'msj'=>'OK', 'code'=>$code]);
@@ -292,7 +306,7 @@ class Tarea extends CI_Controller {
 				$origen = $this->Tareas->getOrigenOt($id_OT);
 				$numtipo = 	$origen[0]['tipo'];
 				$id_solicitud = $origen[0]['id_solicitud'];
-				$estado = 'CE';
+				$estado = 'CNF';
 				switch ($numtipo) {
 					case '2':
 						$tipo = 'correctivo';
@@ -319,20 +333,21 @@ class Tarea extends CI_Controller {
 						if($opcion){
 								// Si hay SServicios cambio estado a CERRADO
 								if ($id_SS != NULL) {
-									$result = $this->Tareas->cambiarEstado($id_SS, $estado, $tipo);																
-								}	else{	// sino cambio estado de la tarea origen(back, prevent, predict)
-									$result = $this->Tareas->cambiarEstado($id_solicitud, $estado, $tipo);	
-								}							
-								// Cierro la OT				
-								if ($id_SS != 0) {	
-									// Viene de una SServicios, Back, Prev o Predict
-									$result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT');
-								} else {
-									// Termina las OT que no vienen de Tareas solicitadas
-									$result = $this->Tareas->cambiarEstado($id_OT, 'T', 'OT');
-								}
+									$result = $this->Tareas->cambiarEstado($id_SS, $estado, 'correctivo');																
+								}	
+								// else{	// sino cambio estado de la tarea origen(back, prevent, predict)
+								// 	$result = $this->Tareas->cambiarEstado($id_solicitud, $estado, $tipo);	
+								// }							
+								// // Cierro la OT				
+								// if ($id_SS != 0) {	
+								// 	// Viene de una SServicios, Back, Prev o Predict
+								// 	$result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT');
+								// } else {
+								// 	// Termina las OT que no vienen de Tareas solicitadas
+								// 	$result = $this->Tareas->cambiarEstado($id_OT, 'T', 'OT');
+								// }
 									
-								$result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT');
+								// $result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT');
 								// si guarda en BD	
 								if ($result) {
 									echo json_encode(['status'=>true, 'msj'=>'OK']);
@@ -356,7 +371,8 @@ class Tarea extends CI_Controller {
 				
 				$idTarBonita = $this->input->post('idTarBonita');
 				$id_OT = $this->input->post('id_OT');	
-				// trae la cabecera
+				dump($id_OT, 'id de OT: ');
+				//trae la cabecera
 				$parametros = $this->Bonitas->conexiones();
 				// Cambio el metodo de la cabecera a "PUT"
 				$parametros["http"]["method"] = "POST";
@@ -366,10 +382,45 @@ class Tarea extends CI_Controller {
 				$response = $this->bpm->CerrarTareaBPM($idTarBonita);
 
 				if ( json_decode($response['code']) < 300) {
-					
-					$resp = $this->Tareas->finTareas($id_OT);
+					//pone fecha terminada a la OT y pone estado 'T'
+					$resp = $this->Tareas->finTareas($id_OT);								
 
-					if ($resp) {
+					$origen = $this->Tareas->getOrigenOt($id_OT);
+					$numtipo = 	$origen[0]['tipo'];
+					$id_solicitud = $origen[0]['id_solicitud'];
+					
+					$estado = 'T';
+					switch ($numtipo) {
+						case '1':
+							$tipo = 'OT';
+							break;
+						case '2':
+							$tipo = 'correctivo';							
+							break;
+						case '3':
+							$tipo = 'preventivo';
+							break;					
+						case '4':
+							$tipo = 'backlog';							
+								// cambia el estado del backlog	
+								$response = $this->Tareas->cambiarEstado($id_solicitud, $estado, $tipo);
+								dump($id_solicitud, 'id solicitud creo q backlog: ');
+								// aca buscar sore_id y cambiar estado a sol de serv
+								$idSservicios = $this->Tareas->getSoreIdporBackId($id_solicitud);
+								dump($idSservicios, 'id SServicios en ejecutar ot:');
+								if ($idSservicios != NULL) {
+									$response = $this->Tareas->cambiarEstado($idSservicios, $estado, 'correctivo');
+								}		
+							break;				
+						default:
+							$tipo = 'predictivo';
+							break;
+					 }	
+					// cambia el estado para tareas que o sean Backlog ni Sol Servicios 
+				 	//$result = $this->Tareas->cambiarEstado($id_solicitud, $estado, $tipo);
+
+					///	
+					if ($response) {
 							$respuesta['status'] = true;
 							$respuesta['msj'] = 'OK';
 							$respuesta['code'] = 'Exito';
@@ -384,7 +435,7 @@ class Tarea extends CI_Controller {
 				}else{
 					$respuesta['status'] = false;
 					$respuesta['msj'] = 'ERROR';
-					$respuesta['code'] = 'ASP_0200, Error ASP_0200: Comunicarse con el Proveedor de Servicio';
+					$respuesta['code'] = 'ASP_0100, Error ASP_0100: Comunicarse con el Proveedor de Servicio';
 					echo json_encode($respuesta);
 				}	
 			}			
@@ -407,14 +458,17 @@ class Tarea extends CI_Controller {
 			
 				// Trae id de OT y de Sol Serv por CaseId			
 					$id_SS = $this->getIdSolServPorIdCase($caseId);	
-					
+					//dump($id_SS, 'id SolServicios en detatarea: ');
 				// si la tarea se origino en una SServicio
-					if ($id_SS == 0) {
-						$id_OT = $this->getIdOTPorIdCase($caseId);					
-					} else {	// sino busca el id de OTen BPM
-						$id_OT = $this->Tareas->getIdOtPorid_SS($id_SS);
-					}
-
+					// if ($id_SS == 0) {
+					// 	$id_OT = $this->getIdOTPorIdCase($caseId);					
+					// } else {	// sino busca el id de OT en BPM
+					// 	$id_OT = $this->Tareas->getIdOtPorid_SS($id_SS);
+					
+					// }
+					// TODO: AHORA TODAS LAS OT TIENEN UN CASE ASOCIADO		
+					$id_OT = $this->Tareas->getIdOTPorIdCaseEnBD($caseId);
+				
 				// Si hay Sol Serv trae el id de equpo sino por id de Ot
 					if($id_SS!= null){
 						$id_EQ = $this->Tareas->getIdEquipoPorIdSolServ($id_SS);
@@ -426,6 +480,7 @@ class Tarea extends CI_Controller {
 					$data['id_OT'] = $id_OT;
 					$data['id_SS'] = $id_SS;
 					$data['id_EQ'] = $id_EQ;
+					
 				
 				/* Bloque subtareas estandar */	
 					if($id_OT != 0){
@@ -468,8 +523,7 @@ class Tarea extends CI_Controller {
 							$this->load->view('tareas/scripts/tarea_std');													
 							break;
 					case 'Editar Backlog':									
-							$data['info'] = $this->getEditarBacklog($id_SS);						
-							dump($data['info'], 'info backlog: ');
+							$data['info'] = $this->getEditarBacklog($id_SS);
 							$this->load->view('backlog/nuevo_edicion_view_',$data);
 							$this->load->view('tareas/scripts/tarea_std');
 							break;					
@@ -478,10 +532,11 @@ class Tarea extends CI_Controller {
 							$this->load->view('tareas/scripts/tarea_std');													
 							break;							
 					case 'Ejecutar OT':
+							$this->load->model(CMP_ALM.'/Notapedidos');
+							$data['list'] = $this->Notapedidos->notaPedidos_List($id_OT);
+							$data['permission'] = 'view';
 							$this->load->view('tareas/view_ejecutarOT', $data);
-							$this->load->view('tareas/scripts/tarea_std');
-							$this->load->view('tareas/scripts/abm_forms');
-							$this->load->view('tareas/scripts/validacion_forms');							
+							$this->load->view('tareas/scripts/tarea_std');						
 							break;
 					case 'Esperando cambio estado "a Ejecutar"':
 						$this->load->view('tareas/view_cambio_estado', $data);
@@ -523,16 +578,16 @@ class Tarea extends CI_Controller {
 				return $response["value"];
 			}	
 			// traer id de OT por caseId
-			function getIdOTPorIdCase($caseId){
-					// trae la cabecera
-					$parametros = $this->Bonitas->conexiones();
-					// Cambio el metodo de la cabecera a "GET"
-					$parametros["http"]["method"] = "GET";				
-					$param = stream_context_create($parametros);
-					$response = $this->Tareas->getIdOTPorIdCase($caseId, $param);
-					//dump($response["value"], 'respuesta bonita');
-					return $response["value"];
-			}
+			// function getIdOTPorIdCase($caseId){
+			// 		// trae la cabecera
+			// 		$parametros = $this->Bonitas->conexiones();
+			// 		// Cambio el metodo de la cabecera a "GET"
+			// 		$parametros["http"]["method"] = "GET";				
+			// 		$param = stream_context_create($parametros);
+			// 		$response = $this->Tareas->getIdOTPorIdCase($caseId, $param);
+			// 		//dump($response["value"], 'respuesta bonita');
+			// 		return $response["value"];
+			// }
 			// Trae datos de backlog para editar
 			function getEditarBacklog($id_SS){
 				$result = $this->Tareas->geteditar($id_SS);	

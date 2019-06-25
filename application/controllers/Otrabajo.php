@@ -42,6 +42,7 @@ class Otrabajo extends CI_Controller {
 	{
 		$this->load->library('BPM',null);
 		$data['list']    = $this->Otrabajos->otrabajos_List($ot);
+		//dump($data['list'], 'listado');
 		$data['permission'] = $permission;
 		$data['list_usuarios'] = $this->bpm->ObtenerUsuarios();					
 		$data['opciones'] = $this->load->view('otrabajos/tabla_opciones',['permission'=>$permission],true);
@@ -146,7 +147,7 @@ class Otrabajo extends CI_Controller {
 			'descripcion'   => $descripcion,
 			'estado'        => 'PL',
 			'id_usuario'    => $usrId,
-			'id_usuario_a'  => 1,
+			//'id_usuario_a'  => 1,
 			'id_sucursal'   => $sucursal,
 			'id_proveedor'  => $proveedor,
 			'id_equipo'     => $equipo,
@@ -312,7 +313,7 @@ class Otrabajo extends CI_Controller {
 		$empId        = $userdata[0]['id_empresa'];
 
 		$id = $this->input->post('idAgregaAdjunto');
-
+		
 		$nomcodif = $this->codifNombre($id, $empId); // codificacion de nomb  		
 		$urlfile = "assets/filesOTrabajos/";
 		
@@ -981,7 +982,6 @@ class Otrabajo extends CI_Controller {
 	public function EjecutarOT(){
 
 		$mostrar = $this->input->post();
-		//dump_exit($mostrar);
 
 		$task 				= (int)$this->input->post('task');
 		$ot 					= (int)$this->input->post('ot');
@@ -1006,6 +1006,8 @@ class Otrabajo extends CI_Controller {
 				break;
 			case '4':
 				$tipo  = 'backlog';
+				// trae id de SServicios para cambiar Estado
+				$idSServicios = $this->Otrabajos->getIdSServicioporCaseId($case_id);			
 				break;
 			case '5':
 				$tipo  = 'predictivo';
@@ -1027,10 +1029,10 @@ class Otrabajo extends CI_Controller {
 		// buscar task pa asignar la tarea siguiente (ejecutar ot) a un responsable		
 		$nextTask = $this->bpm->ObtenerTaskidXNombre($case_id,'Ejecutar OT');
 	
-		if($nextTask == 0){
-			echo json_encode(['status'=>false, 'msj'=>'No Existe la actividad requerida']);
-			return;
-		}
+		// if($nextTask == 0){
+		// 	echo json_encode(['status'=>false, 'msj'=>'No Existe la actividad requerida']);
+		// 	return;
+		// }
 	
 		//Asignar Usuario a Tarea para Finanlizar
 		$responce = $this->bpm->setUsuario($nextTask,$usrId);
@@ -1040,21 +1042,27 @@ class Otrabajo extends CI_Controller {
 		if($this->Otrabajos->cambiarEstado($ot, $estado, 'OT')){
 				
 				//Cambiar Estado de solicitud origen de tarea(prevent, predic, backl)
-				if ($this->Otrabajos->cambiarEstado($id_solicitud, $estado, $tipo)) {
-					
+				if ($this->Otrabajos->cambiarEstado($id_solicitud, $estado, $tipo)) {			
+						
+					// SI backlog viene de SServicios, la cambia el estado a Asignado
+						if ($idSServicios != NULL) {
+							$respuestacambio = $this->Otrabajos->cambiarEstado($idSServicios, $estado, 'correctivo');
+						}					
+
 						$datos = array( 'id_tarea' =>$id_tarea,
-											'descripcion' =>$descripcion);						
+											'descripcion' =>$descripcion,
+											'id_usuario_a'=>$usrId);						
 						// actualiza tarea en OT					
 						if($this->Otrabajos->updOT($ot, $datos)){
 								echo json_encode(['status'=>true, 'msj'=>'OK']);
 								return;
 						}else {
-								echo json_encode(['status'=>false, 'msj'=>'Error Base de Datos1']);
+								echo json_encode(['status'=>false, 'msj'=>'Error Actualizando Tarea en OT']);
 								return;
 						}	
 
 				} else {
-						echo json_encode(['status'=>false, 'msj'=>'Error Base de Datos2']);
+						echo json_encode(['status'=>false, 'msj'=>'Error Cambio Estado en OT']);
 						return;
 				}			
 				
@@ -1266,9 +1274,9 @@ class Otrabajo extends CI_Controller {
 		// trae insumos
 		$insumos = $this->Otrabajos->getOTInsumos($idOt);
 		if($insumos){
-				$response['insumos']=$insumos;
+				$response['insumos'] = $insumos;
 		}
-		else{ $response['insumos']=0;}
+		else{ $response['insumos'] = 0;}
 
 		// trae adjuntos
 		$adjuntos = $this->Otrabajos->getOTadjuntos($idOt);

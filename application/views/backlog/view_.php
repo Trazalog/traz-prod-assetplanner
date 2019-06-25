@@ -12,12 +12,12 @@
     <div class="col-xs-12">
 
       <div class="box">
-        <div class="box-header">
-          <h3 class="box-title">Programación Backlog</h3>
-          <?php
-            if (strpos($permission,'Add') !== false) {
-              echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="listado">Ver Listado</button>';
-            }
+          <div class="box-header">
+            <h3 class="box-title">Programación Backlog</h3>
+            <?php
+              if (strpos($permission,'Add') !== false) {
+                echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="listado">Ver Listado</button>';
+              }
             ?>
           </div><!-- /.box-header -->
           <form id="formBacklog" role="form" action="<?php base_url();?>Backlog/guardar_backlog" method="POST" onKeypress="if (event.keyCode == 13) event.returnValue = false;" >
@@ -30,7 +30,7 @@
                 <div class="panel-body">
                   <div class="row">
                     <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="equipo">Equipos <strong style="color: #dd4b39">*</strong></label>
+                      <label for="equipo">Equipo <strong style="color: #dd4b39">*</strong></label>
                       <select  id="equipo" name="equipo" class="form-control" />
                       <!-- <input type="hidden" id="id_equipo" name="id_equipo">-->
                     </div>
@@ -50,14 +50,15 @@
                       <input type="text" id="ubicacion" name="ubicacion" class="form-control input-md" disabled/>
                     </div>
 
-                    <div class="col-xs-12">
+                    <div class="col-xs-8">
                       <label for="descripcion">Descripción: </label>
-                      <textarea class="form-control" id="descripcion" name="descripcion" disabled></textarea>
+                      <input type="text" id="descripcion" name="descripcion" class="form-control input-md" disabled/>
+                      <!-- <textarea class="form-control" id="descripcion" name="descripcion" disabled></textarea> -->
                     </div> 
 
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="codigo_componente">Código de componente-equipo :</label>
-                      <input type="text" id="codigo_componente" name="codigo_componente" class="form-control input-md" placeholder="Ingrese código de componente"/>
+                      <input type="text" id="codigo_componente" name="codigo_componente" class="form-control input-md" placeholder="Ingrese código de componente..."/>
                       <input type="hidden" id="idcomponenteequipo" name="idcomponenteequipo" value=""/>
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-4">
@@ -81,33 +82,37 @@
 
                 <div class="panel-body">  
                   <div class="row">
-                    <div class="col-xs-12 col-md-8">                    
-                      <label for="tarea">Tarea <strong style="color: #dd4b39">*</strong>:</label>
-                      <input type="text" id="tarea" name="tarea" class="form-control">
+                    <div class="col-xs-12 col-md-6">                    
+                      <label for="tarea">Tarea Estandar<strong style="color: #dd4b39">*</strong>:</label>
+                      <input type="text" id="tarea" name="tarea" class="form-control" placeholder="Buscar Tarea...">
                       <input type="hidden" id="id_tarea" name="id_tarea">
                     </div>
 
-                    <div class="col-xs-12 col-md-4">
-                      <label for="vfecha">Fecha:</label>
-                      <input type="text" class="datepicker form-control fecha" id="fecha" name="vfecha" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>                         
-                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <label for="tareaOpcional">Tarea Personalizadar<strong style="color: #dd4b39">*</strong>:</label>
+                        <input type="text" class="form-control" id="tareaOpcional" name="tareaOpcional" placeholder="Ingrese Tarea..." value="<?php echo $info[0]["tarea_opcional"] ?>" />
+                    </div>                    
                   </div>
                   <div class="row">
-                    
-                    <div class="col-xs-12 col-sm-6 col-md-4">
-                      <label for="duracion">Duración <strong style="color: #dd4b39">*</strong>:</label>
-                      <input type="text" class="form-control" id="duracion" name="duracion"/>
+                    <div class="col-xs-12 col-md-3">
+                      <label for="vfecha">Fecha Creación:</label>
+                      <input type="text" class="datepicker form-control fecha" id="fecha" name="vfecha" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>                         
+                    </div>                    
+                    <div class="col-xs-12 col-sm-6 col-md-3">
+                      <label for="duracion">Duración Estandar <strong style="color: #dd4b39">*</strong>:</label>
+                      <input type="text" class="form-control" id="duracion" name="duracion" placeholder="Ingrese valor..."/>
                       <input type="hidden" class="form-control" id="back_duracion" name="back_duracion"/>
                     </div> 
-                    <div class="col-xs-12 col-sm-6 col-md-4">
+                    <div class="col-xs-12 col-sm-6 col-md-3">
                       <label for="unidad">U. de tiempo <strong style="color: #dd4b39">*</strong></label>
                       <select  id="unidad" name="unidad" class="form-control" />
                     </div>
-                    <div class="col-xs-12 col-sm-6 col-md-4">
+                    <div class="col-xs-12 col-sm-6 col-md-3">
                       <label for="cantOper">Cant. Operarios <strong style="color: #dd4b39">*</strong>:</label>
-                      <input type="text" class="form-control" id="cantOper" name="cantOper"/>
-                    </div>
-                    <div class="col-xs-12" id="dato" name="" style="margin-top: 19px;"></div>
+                      <input type="text" class="form-control" id="cantOper" name="cantOper" placeholder="Ingrese valor..."/>
+                    </div>                    
+
+                    <div class="col-xs-12 col-md-4" id="dato" name="" style="margin-top: 19px;"></div>
                     <input type="hidden" name="hshombre" id="hshombre">                
                     <div class="col-xs-12" id="dato"></div> 
                   </div><!-- /.row -->
@@ -131,7 +136,7 @@
                         <div class="row">
                           <div class="col-xs-12 col-sm-6 col-md-4">
                             <label for="herramienta">Codigo <strong style="color: #dd4b39">*</strong>:</label>
-                            <input type="text" id="herramienta"  name="" class="form-control" />
+                            <input type="text" id="herramienta"  name="" class="form-control" placeholder="Buscar Código..."/>
                             <input type="hidden" id="id_herramienta" name="id_herramienta">
                           </div>                          
                           <div class="col-xs-12 col-sm-6 col-md-4">
@@ -144,7 +149,7 @@
                           </div>
                           <div class="col-xs-12 col-sm-6 col-md-4">
                             <label for="cantidadherram">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
-                            <input type="text" id="cantidadherram"  name="" class="form-control" placeholder="Ingrese Cantidad" />
+                            <input type="text" id="cantidadherram"  name="" class="form-control" placeholder="Ingrese Cantidad..." />
                           </div>
                           <br>
                           <div class="col-xs-12">
@@ -176,7 +181,7 @@
                         <div class="row">
                           <div class="col-xs-12 col-sm-6 col-md-4">
                             <label for="insumo">Codigo <strong style="color: #dd4b39">*</strong>:</label>
-                            <input type="text" id="insumo" name="insumo" class="form-control" />
+                            <input type="text" id="insumo" name="insumo" class="form-control" placeholder="Buscar Código..."/>
                             <input type="hidden" id="id_insumo" name="">
                           </div>
                           <div class="col-xs-12 col-sm-6 col-md-4">
@@ -185,7 +190,7 @@
                           </div>
                           <div class="col-xs-12 col-sm-6 col-md-4">
                             <label for="cant">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
-                            <input type="text" id="cant"  name="" class="form-control" placeholder="Ingrese Cantidad"/>
+                            <input type="text" id="cant"  name="" class="form-control" placeholder="Ingrese Cantidad..."/>
                           </div>
                         </div><!-- /.row -->
                         <div class="row">
@@ -238,9 +243,9 @@
               <button type="submit" class="btn btn-primary">Guardar</button>
             </div>
           </form>
-        </div>
       </div>
     </div>
+  </div>
 </section>
 
 <script>

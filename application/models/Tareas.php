@@ -276,10 +276,13 @@ class Tareas extends CI_Model {
 		$estado = 'T';
 		$this->db->where('id_orden', $id_OT);
 		$result = $this->db->update( 'orden_trabajo', array('fecha_terminada'=>$fechaFin, 'estado'=>$estado) );
+		
+		
+		
 		return $result;
 	}
 
-	// cambbia de estado la Tareas(SServ, Prevent, Predic, Back y OT)
+	// cambia de estado la Tareas(SServ, Prevent, Predic, Back y OT)
 	function cambiarEstado($id_solicitud, $estado, $tipo){						
 			
 		if ($tipo == 'correctivo') {
@@ -312,6 +315,12 @@ class Tareas extends CI_Model {
 			return $this->db->update('orden_trabajo');
 		}
 
+		if ($tipo == 'informe servicios') {			
+			$this->db->set('estado',$estado);
+			$this->db->where('id_ot',$id_solicitud);
+			return $this->db->update('orden_servicio');
+		}
+
 		return $response;
 	}
 
@@ -331,6 +340,14 @@ class Tareas extends CI_Model {
 			{
 					return false;
 			}
+	}
+	// devueve sore_id por id de backlog
+	function getSoreIdporBackId($id_solicitud){
+		$this->db->select('tbl_back.sore_id');
+		$this->db->from('tbl_back');
+		$this->db->where('tbl_back.backId', $id_solicitud);
+		$query = $this->db->get();
+		return $query->row('sore_id');
 	}
 
 	/*FORMULARIOS */
@@ -628,6 +645,21 @@ class Tareas extends CI_Model {
 			}
 
 		}
+
+		function getIdOTPorIdCaseEnBD($caseId){
+			$this->db->select('orden_trabajo.id_orden');
+			$this->db->from('orden_trabajo');
+			$this->db->where('orden_trabajo.case_id',$caseId);
+			$query= $this->db->get();
+			if( $query->num_rows() > 0){
+				return $query->row('id_orden');	
+			} 
+			else {
+				return 0;
+			}
+		}
+
+
 		// traee id de SServicio por caseid
 		function getIdSolServPorIdCase($caseId, $param){
 				// [URL_BONITA]/API/bpm/caseVariable/:caseId/gIdOT
@@ -730,7 +762,24 @@ class Tareas extends CI_Model {
 		// Agrega datos desde BPM y BD local
 		function CompletarToDoList($data){
 			
+			
+
 			foreach ($data as $key => $value) {
+
+				if($value['processId'] == BPM_PROCESS_ID_PEDIDOS_NORMALES){
+					$res = $this->db->get_where('alm_pedidos_materiales',['case_id'=>$value['caseId']])->row();
+					$data[$key]['pema_id'] = $res->pema_id;
+					$data[$key]['ot'] = $res->ortr_id;
+					continue;
+				}
+
+				if($value['processId'] == BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS){
+					$res = $this->db->get_where('alm_pedidos_extraordinario',['case_id'=>$value['caseId']])->row();
+					$data[$key]['pema_id'] = $res->peex_id;
+					$data[$key]['ot'] = $res->ortr_id;
+					continue;
+				}
+				
 				$this->db->select('A.id_solicitud as \'ss\', id_orden as \'ot\'');
 				$this->db->where('A.case_id',$value['caseId']);
 				$this->db->from('solicitud_reparacion as A');
@@ -769,7 +818,6 @@ class Tareas extends CI_Model {
 				}	
 					
 			}
-			//dump($data, 'data en completar: ');
 			return $data;
 		}
 	/* 	./ TAREAS BPM */	

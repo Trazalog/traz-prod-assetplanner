@@ -9,6 +9,7 @@ echo "<input type='text' class='hidden' id='usrName' value='$usrName' >";
 echo "<input type='text' class='hidden' id='usrLastName' value='$usrLastName' >";
 echo "<input type='text' class='hidden' id='case' value='" . $TareaBPM['caseId'] . "'>";
 echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
+echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 ?>
 
 <section class="content">
@@ -28,8 +29,7 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 																	<li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Tareas</a></li>
 																	<li role="presentation"><a href="#info" aria-controls="info" role="tab" data-toggle="tab">Info </a></li>
 																	<li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Comentarios</a></li>
-																	<li <?php echo ($device == 'android' ? 'class= "hidden"' : 'class= ""') ?>role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Vista
-																					Global
+																	<li <?php echo ($device == 'android' ? 'class= "hidden"' : 'class= ""') ?>role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Trazabildad
 																			</a></li>
 															</ul>
 
@@ -44,7 +44,7 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 																					<!-- botones Tomar y soltar tareas -->
 																					<?php
 																					echo '<div class="row">';
-																					
+																						// BTN Tomar y soltar Tarea
 																						echo '<div class="col-md-4">';
 																							echo "<button class='btn btn-block btn-success' id='btontomar' style='width: 100px; margin-top: 10px ;display: inline-block;' onclick='tomarTarea()'>Tomar tarea</button>";
 																							echo "&nbsp";
@@ -52,8 +52,8 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 																							echo "&nbsp";
 																							echo "<button class='btn btn-block btn-danger grupNoasignado' id='btonsoltr' style='width: 100px; margin-top: 10px; display: inline-block;' onclick='soltarTarea()'>Soltar tarea</button>";
 																						echo '</div>';											
-
-																						echo '<div class="col-md-4 col-md-offset-4" id="llave">';	
+																						// BTN Iniciar Tarea 
+																						echo '<div class="col-md-4 col-md-offset-4 oculto" id="llave">';	
 																							echo '<button type="button" class="btn btn-success" id="iniciarTarea"><i class="fa fa-play"> </i> Iniciar Tarea</button>';
 																							echo '<button type="button" class="btn btn-success disabled" id="tareaIniciada"><i class="fa fa-play"> </i> Tarea Iniciada</button>';
 																						echo '</div>';
@@ -63,10 +63,12 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 																					?>
 
 																					<input type="text" class="form-control hidden" id="asignado" value="<?php echo $TareaBPM["assigned_id"] ?>">
-																				
-																					<div class="panel panel-default">	
+
+																					<h4> <b>Tarea: </b><?php echo  $TareaBPM['displayName'] ?></h3>
+																					
 																						<?php 																							
 																							if ($subtareas !== NULL) { 		
+																								echo' <div class="panel panel-default">';	
 																								// echo 'entre en subtareas'	;
 																								// dump($subtareas , 'subtareas en vista:');			
 																								echo '<table id="subtask" class="table table-hover">';
@@ -104,20 +106,21 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 																										}
 																											
 																									echo'</tbody>';
-																								echo '</table>';																						
+																								echo '</table></div>';																						
 																							}																								
 																						?>	
-																					</div>
+																					
 															</div>
 															
-															<div class="row">
-																	<div class="col-sm-12 col-md-12">
-																			<button type="button" id="pedidoInsumos" class="btn btn-primary" onclick="pedirInsumos()">Pedido de Insumos</button>
-																	</div>
-															</div>
+														
 															<br>
 
-																<div id="nota_pedido"></div>
+																<div id="nota_pedido">
+																
+																<?php 
+																	$this->load->view(CMP_ALM.'/notapedido/list',array('ot'=>$id_OT,'autoLanzar'=>true));
+																?>
+																</div>
 															</div>
 															
 															<!-- Info Tarea-->
@@ -225,21 +228,26 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 </section><!-- /.content -->
 
 <script>
-		// valida el estado de la OT y muestra llave segun corressponda 
+		// valida el estado de la OT y muestra llave segun corressponda 		
 		validaInicio();
 		function validaInicio() { 			
 			$("#iniciarTarea").hide(); 
 			$("#tareaIniciada").hide(); 
 			var id_OT = $('#id_OT').val();
+			//alert(id_OT + 'id de ot');
 			$.ajax({
 						type: 'POST',
 						data: {id_OT: id_OT},
 						url: 'index.php/Tarea/confInicioTarea', 
-						success: function(data){                   
+						success: function(data){
+							//alert(data);
+											// si la tarea esta iniciada el #estadoTarea de tarea es 1                   
 											if (data) {												
-												$("#tareaIniciada").show();											
+												$("#tareaIniciada").show();		
+												$("#estadoTarea").val(1);									
 											} else {												
-												$("#iniciarTarea").show();											
+												$("#iniciarTarea").show();
+												$("#estadoTarea").val(0);											
 											}									
 										},            
 						error: function(data){
@@ -262,7 +270,9 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 										WaitingClose();                
 										if (data) {
 											$("#iniciarTarea").hide();
-											$("#tareaIniciada").show();										
+											$("#tareaIniciada").show();	
+											// guarda el estado de la tarea (inicializado)
+											$("#estadoTarea").val(1);									
 										} else {
 											alert('Error al iniciar a Tarea...');
 										}									
@@ -275,14 +285,7 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 			});
 		});																			
 
-    cargarPedidos();
-    function cargarPedidos() {
-        var iort = $('#ot').val();
-        $('#nota_pedido').empty();
-        $("#nota_pedido").load("<?php echo base_url(); ?>index.php/almacen/Notapedido/ObtenerNotasPedidosxOT/" + iort);
-
-    }
-
+   
     function validarFormularios() {
         console.log('Validando Formularios...');
         ban = true;
@@ -301,7 +304,14 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
     function validarSubtareas() {
 
 			if (validarFormularios() && validarEstSubTareas()) {
-					ejecutarOT();
+					var iniciarTarea = $('#estadoTarea').val();
+					// valida que la tarea haya sido iniciallizada con anterioridad para poder terminarla
+					if (iniciarTarea == 1) {
+						ejecutarOT();
+					} else {
+						alert('Para Terminar Tarea, esta debe estar inicializada con anterioridad desde el boton Iniciar Tarea');
+					}
+					
 			} else {
 					alert("Por favor cierre las Tareas que faltan antes de Terminar");
 			}
@@ -394,23 +404,7 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 
     /*  /. Formulario de subareas */
 
-    /* Pantalla pedido de insumos */
-			load_view_insumos();
-			function load_view_insumos() {
-					var iort = $('#ot').val();
-					$('#body-pedidos').empty();
-					$("#body-pedidos").load("<?php echo base_url(); ?>index.php/almacen/Notapedido/agregarListInsumos/"+iort);
-			}
-
-			$('#pedidos').on('shown.bs.modal', function() {
-
-				$($.fn.dataTable.tables(true)).DataTable()
-					.columns.adjust();
-			});
-
-			function pedirInsumos() {
-					$('.modal#pedidos').modal('show');
-			}
+  
 
 			function cargarNotasOffline() {
 					console.log("Cargando Pedidos Offline...");
@@ -430,12 +424,7 @@ echo "<input type='text' class='hidden' id='id_OT' value='" . $id_OT. "'>";
 			}
 		/*  /.	Pantalla pedido de insumos */	
 </script>
-<!--	Modal Insumos	-->
-<div class="modal" id="pedidos" tabindex="-1" role="dialog">
-    <div class="modal-dialog" id="body-pedidos" role="document">
 
-    </div>
-</div>
 
 
 

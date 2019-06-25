@@ -39,6 +39,7 @@ class BPM
 		//dump($response, 'respuesta en libreria: ');		
 		$code = $response['response_code'];
 		$body  = json_decode($body);
+		
 		if($code<300){
 			return ['status'=>true, 'msj'=>'OK', 'code'=>$code, 'case_id'=> $body->caseId];
 		}else {
@@ -262,7 +263,7 @@ class BPM
 
 			$data = array(
 					'username'=>$usrNick,
-					'password'=>'bpm',
+					'password'=> BPM_ADMIN_PASS,
 					'redirect'=>'false'
 					);
 			$url = http_build_query( $data );
@@ -316,7 +317,7 @@ class BPM
 
 			$data = array(
 					'username'=>$usrNick,
-					'password'=>'bpm',
+					'password'=> BPM_USER_PASS,
 					'redirect'=>'false'
 					);
 			$url = http_build_query( $data );

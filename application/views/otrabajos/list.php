@@ -21,9 +21,9 @@
             <thead>
               <tr>
                 <th></th>
-                <th>Id Orden</th>
+                <th>Nº Orden</th>
                 <th>Fecha Program.</th>
-                <th>Fecha Entrega</th>
+                <th>Fecha Inicio</th>
                 <th>Fecha Terminada</th>
                 <th>Detalle</th>
                 <th>Equipo</th>
@@ -44,7 +44,7 @@
                   {
                     $gr = $a['grpId'];
                     //echo "grupo: ".$gr;
-                    if ($gr=='1') { 
+                   // if ($gr=='1') { 
                       //if (($a['estado'] =='As') || ($a['estado'] =='P') || ($a['estado'] =='C') || $a['estado']=='Ej' || ($a['estado'] =='PL')) {
                         $id          = $a['id_orden'];
                         $id_equipo   = $a['id_equipo'];
@@ -57,8 +57,8 @@
                         echo '<td>'.$a['id_orden'].'</td>';                       
                         $fecha_program = ($a['fecha_program'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_program']), 'd-m-Y');
                         echo '<td>'.$fecha_program.'</td>';
-                        $fecha_entrega = ($a['fecha_entrega'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_entrega']), 'd-m-Y');
-                        echo '<td>'.$fecha_entrega.'</td>';
+                        $fecha_inicio = ($a['fecha_inicio'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_inicio']), 'd-m-Y');
+                        echo '<td>'.$fecha_inicio.'</td>';
                         $fecha_terminada = ($a['fecha_terminada'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_terminada']), 'd-m-Y');
                         echo '<td>'.$fecha_terminada.'</td>';
                         echo '<td>'.$a['descripcion'].'</td>';
@@ -89,7 +89,7 @@
                           }      
 
                         echo '</td>';
-                    }
+                   // }
                   }
                 }
               ?>
@@ -300,29 +300,28 @@ $("#btn_cancGuardado").click(function (e) {
       type: 'POST',
       url: 'index.php/Otrabajo/getpencil',
       success: function(data){
-        console.table(data);
+        //console.table(data);
         var resp = data['datos'];
 
         datos = {
           'id_ot'         : resp[0]['id_orden'],        //
-          'nro'           : resp[0]['nro'], 
-          'fecha_program' : resp[0]['fecha_program'],          //
+          'nro'           : resp[0]['nro'],           
           'equipo_descrip': resp[0]['codigo'],          //
           'fecha_ingreso' : resp[0]['fecha_ingreso'],
           'id_equipo'     : resp[0]['id_equipo'],       //
           'marca'         : resp[0]['marca'],
           'ubicacion'     : resp[0]['ubicacion'],
           'descripcion'   : resp[0]['equipodescrip'],
-          'id_tarea'      : resp[0]['id_tarea'],            
+          'id_tarea'      : resp[0]['id_tarea'],
+          'fecha_program' : resp[0]['fecha_program'],          //            
           'fecha_inicio'  : resp[0]['fecha_inicio'],    //
-          'fecha_entrega' : resp[0]['fecha_entrega'],   //
+          'fecha_terminada' : resp[0]['fecha_terminada'],   //
           'idusuario'     : resp[0]['id_usuario'],      //
           'tareadescrip'  : resp[0]['tareadescrip'],     //
           'id_sucu'       : resp[0]['id_sucursal'],     //
           'sucursal'      : resp[0]['descripc'],        //
           'id_proveedor'  : resp[0]['provid'],          //
-          'nombreprov'    : resp[0]['provnombre']//,      //
-          //'adjunto'       :resp[0]['ot_adjunto']        //
+          'nombreprov'    : resp[0]['provnombre']//,      
         }
         
         var herram = data['herramientas'];             
@@ -353,11 +352,12 @@ $("#btn_cancGuardado").click(function (e) {
       $('#tarea').val(datos['tareadescrip']);    
     }else{
       $('#tareacustom').val(datos['tareadescrip']); }
-    $('#fechaInicio').val(datos['fecha_program']); 
-    $('#fechaEntrega').val(datos['fecha_entrega']);  
-    $("#suci").val(datos['id_sucu']);
-    $("#prov").val(datos['id_proveedor']);
     
+    $('#fechaProgramacion').val(datos['fecha_program']); 
+    $('#fechaInicio').val(datos['fecha_inicio']); 
+    $('#fechaTerminada').val(datos['fecha_terminada']);  
+    $("#suci").val(datos['id_sucu']);
+    $("#prov").val(datos['id_proveedor']); 
 
     $('#tablaherramienta tbody tr').remove();
     for (var i = 0; i < herram.length; i++) {
@@ -538,8 +538,8 @@ $("#btn_cancGuardado").click(function (e) {
     $('#modalAgregarAdjunto .modal-title').html('<span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar');
 
     $('#modalAgregarAdjunto').modal('show');
-    // var idprev = $('#id_Predictivo').val();
-    // $('#idAgregaAdjunto').val(idprev);
+     var idOT = $('#id_ot').val();
+     $('#idAgregaAdjunto').val(idOT);
   });
   //abrir modal editar adjunto
   $(document).on("click",".editaAdjunto",function(){
@@ -984,86 +984,86 @@ $("#btn_cancGuardado").click(function (e) {
   });
 
 // llena select usuario en modal Asignar OT - Ok
-function traer_usuario(id_usuario){
-  $("#usuario1").html("");
-  $.ajax({
-    data: {},
-    dataType: 'json',
-    type: 'POST',
-    url: "Otrabajo/getusuario",
-    success: function (data) {
-      $('#usuario1').text("");
-      for(var i=0; i < data.length ; i++) 
-      {
-        var selectAttr = '';
-        if(data[i]['usrId'] == id_usuario) { var selectAttr = 'selected';}
-        var nombre = data[i]['usrName']+' '+data[i]['usrLastName'];
-        var opcion = "<option value='"+data[i]['usrId']+"' "+selectAttr+">" +nombre+ "</option>";
-        $('#usuario1').append(opcion); 
-      }
-    },
-    error : function (data){
-      console.error('Error al traer usuarios en modal Asignar OT');
-      console.table(data);
-    },
-  });
-}
-// Asigna Responsable a OT
-function orden(){
-  WaitingOpen();
-  var id_orden = $('#id_orden').val();
-  var fecha_entrega = $('#fecha_entrega').val();
-  var usuario= $('#usuario1').val();
-  var cliente = $('#id_cliente').val();
-  var task_id = sessionStorage.getItem('task_id');
-  var case_id = sessionStorage.getItem('case_id');  
-  console.log("Guardando>> OT: "+id_orden+" | SOID: "+sol_id+" | USER:"+usuario);
-  $.ajax({
+  function traer_usuario(id_usuario){
+    $("#usuario1").html("");
+    $.ajax({
+      data: {},
+      dataType: 'json',
       type: 'POST',
-      data: { id_orden:id_orden, fecha_entrega:fecha_entrega, usuario:usuario, sol_id:sol_id,case_id:case_id, task_id: task_id},
-      url: 'index.php/Otrabajo/guardar',    
-      success: function(data){
-        WaitingClose();    
-        sessionStorage.clear();
-        regresa1();        
+      url: "Otrabajo/getusuario",
+      success: function (data) {
+        $('#usuario1').text("");
+        for(var i=0; i < data.length ; i++) 
+        {
+          var selectAttr = '';
+          if(data[i]['usrId'] == id_usuario) { var selectAttr = 'selected';}
+          var nombre = data[i]['usrName']+' '+data[i]['usrLastName'];
+          var opcion = "<option value='"+data[i]['usrId']+"' "+selectAttr+">" +nombre+ "</option>";
+          $('#usuario1').append(opcion); 
+        }
       },
-      error: function(result){
-        WaitingClose();    
-        console.log("ERROR>> "+result);
-        
-      }
-  });              
-}
+      error : function (data){
+        console.error('Error al traer usuarios en modal Asignar OT');
+        console.table(data);
+      },
+    });
+  }
+// Asigna Responsable a OT
+  function orden(){
+    WaitingOpen();
+    var id_orden = $('#id_orden').val();
+    var fecha_entrega = $('#fecha_entrega').val();
+    var usuario= $('#usuario1').val();
+    var cliente = $('#id_cliente').val();
+    var task_id = sessionStorage.getItem('task_id');
+    var case_id = sessionStorage.getItem('case_id');  
+    console.log("Guardando>> OT: "+id_orden+" | SOID: "+sol_id+" | USER:"+usuario);
+    $.ajax({
+        type: 'POST',
+        data: { id_orden:id_orden, fecha_entrega:fecha_entrega, usuario:usuario, sol_id:sol_id,case_id:case_id, task_id: task_id},
+        url: 'index.php/Otrabajo/guardar',    
+        success: function(data){
+          WaitingClose();    
+          sessionStorage.clear();
+          regresa1();        
+        },
+        error: function(result){
+          WaitingClose();    
+          console.log("ERROR>> "+result);
+          
+        }
+    });              
+  }
 
 // llena select clientes en modal Asignar OT - 
-function traer_clientes(id_cliente){
-  $.ajax({
-    type: 'POST',
-    data: {},
-    url: 'index.php/Otrabajo/traer_cli',
-    success: function(data){
-      console.info(data);
-      /*var selectAttr = '';
-      if(data[i]['cliId'] == id_cliente) { var selectAttr = 'selected'; console.log("sel")}
-      var nombre = data[i]['cliLastName']+'. .'+datos['cliName'];
-      var opcion = "<option value='"+data[i]['cliId']+"' "+selectAttr+">" +nombre+ "</option>";
-      $('#cli').append(opcion); 
-
-      /*var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-      $('#cli').append(opcion); 
-      for(var i=0; i < data.length ; i++) 
-      {    
+  function traer_clientes(id_cliente){
+    $.ajax({
+      type: 'POST',
+      data: {},
+      url: 'index.php/Otrabajo/traer_cli',
+      success: function(data){
+        console.info(data);
+        /*var selectAttr = '';
+        if(data[i]['cliId'] == id_cliente) { var selectAttr = 'selected'; console.log("sel")}
         var nombre = data[i]['cliLastName']+'. .'+datos['cliName'];
-        var opcion = "<option value='"+data[i]['cliId']+"'>" +nombre+ "</option>" ; 
-        $('#cli').append(opcion);          
-      }*/
-    },
-    error: function(result){
-      console.log(result);
-    },
-    dataType: 'json'
-  });
-}
+        var opcion = "<option value='"+data[i]['cliId']+"' "+selectAttr+">" +nombre+ "</option>";
+        $('#cli').append(opcion); 
+
+        /*var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+        $('#cli').append(opcion); 
+        for(var i=0; i < data.length ; i++) 
+        {    
+          var nombre = data[i]['cliLastName']+'. .'+datos['cliName'];
+          var opcion = "<option value='"+data[i]['cliId']+"'>" +nombre+ "</option>" ; 
+          $('#cli').append(opcion);          
+        }*/
+      },
+      error: function(result){
+        console.log(result);
+      },
+      dataType: 'json'
+    });
+  }
 
 $(document).ready(function(event) {
 
@@ -1345,13 +1345,13 @@ function guardarpedido(){
   } 
 // MOSTRAR NOTA DE PEDIDO
   function mostrar_pedido(o) { 
-    $("#modallista tbody tr").remove();
-    var idorde = $(o).parent('td').parent('tr').attr('id');
+   // $("#modallista tbody tr").remove();
+    var idorde = $(o).closest('tr').attr('id');
     console.log("ID de orden de trabajo para mostrar pedido es: "+idorde);  
    
     WaitingOpen();
     $('#content').empty();
-    $("#content").load("<?php echo base_url(); ?>index.php/Notapedido/getNotasxOT/<?php echo $permission; ?>/"+idorde+"");
+    $("#content").load("<?php echo base_url(); ?>index.php/<?php echo CMP_ALM ?>/new/Pedido_Material/getPedidos/"+idorde);
     WaitingClose(); 
   };
 
@@ -1367,9 +1367,9 @@ function guardarpedido(){
     WaitingClose();  
   }
 
-//  ASIGNAR OT (RESPONSBLE) 
+// ASIGNAR OT (RESPONSBLE) 
   // carga vista modal ejecutar ot y asignar responsable
-  function verDetalleOT(o){ 
+  function verEjecutarOT(o){ 
     var id_orden = $(o).closest('tr').attr('id');  
     WaitingOpen();
     $('#modalInforme').modal('show');
@@ -1388,8 +1388,7 @@ function guardarpedido(){
     $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/cargartarea/<?php echo $permission; ?>/"+iort+"");
     WaitingClose();  
   };
-// VER OT  
-
+// VER OT 
   function mostrarOT(o){
     let idot = $(o).closest('tr').attr('id'); 
     //console.log("id Orden de trabajo: "+idot);
@@ -1409,7 +1408,6 @@ function guardarpedido(){
     .fail( () => {alert( "Error al traer los datos de la OT." );WaitingClose(); } )
     .always( () => WaitingClose() );
   }
-
   // Elige a que fcion que trae datos de OT llamar, según su origen
   function traerDatosOt(idOt, tipo, idSolicitud) {
     console.info('id deot'+ idOt+' - '+idSolicitud + 'id solic');
@@ -1441,9 +1439,6 @@ function guardarpedido(){
         break;
       case '5': //predictivo  LISTO
         datos = getDataOtPredictivo(idOt, idSolicitud, "Predictivo");
-        
-        //console.table(datos);
-        
         fillModalViewPredictivo(datos);
         $('#verOtPredictivo').modal('show');
         WaitingClose();
@@ -1455,6 +1450,31 @@ function guardarpedido(){
         WaitingClose();
         break;
     }
+  }
+  // devuelve palabra competa en funcion de estados
+  function getEstadosVer(letraestado){
+    var estado = "";
+    switch (letraestado) {
+      case 'S':
+        estado = 'Solicitado'; 
+        break;
+      case 'PL':
+        estado = 'Planificado'; 
+        break;
+      case 'AS':
+        estado = 'Asignado'; 
+        break;
+      case 'C':
+        estado = 'Curso'; 
+        break;
+      case 'T':
+        estado = 'Terminada'; 
+        break; 
+      default:
+        estado = 'Cerrada'; 
+        break;
+    }
+    return estado;
   }
 
   /***** 1 OT *****/  //LISTO Ver con adjunto y sin adjunto
@@ -1479,11 +1499,12 @@ function guardarpedido(){
           'fecha_inicio'   : data['otrabajo'][0]['fecha_inicio'],
           'fecha_entrega'  : data['otrabajo'][0]['fecha_entrega'],
           'fecha_program'  : data['otrabajo'][0]['fecha_program'],
+          'fecha_terminada': data['otrabajo'][0]['fecha_terminada'],
           'estado'         : data['otrabajo'][0]['estado'],
           'sucursal'       : data['otrabajo'][0]['descripc'],
           'nombreprov'     : data['otrabajo'][0]['provnombre'],
           'origen'         : origen,
-          'fecha_program'  : data['otrabajo'][0]['fecha_program'],
+          
           'asignado'       : data['otrabajo'][0]['usrLastName']+' '+data['otrabajo'][0]['usrLastName'],
           'estado'         : data['otrabajo'][0]['estado'],
           //Panel datos de equipos
@@ -1529,15 +1550,27 @@ function guardarpedido(){
       //llenar datos de ot
       $('#vNroOt').val(datos['nro']);
       $('#vDescripFalla').val(datos['descripcion_ot']);
+
+      $('#vFechaProgram').val(datos['fecha_program']);      
       $('#vFechaCreacion').val(datos['fecha_inicio']);
-      $('#vFechaEntrega').val(datos['fecha_entrega']);
+      $('#vFechaTerminOT').val(datos['fecha_terminada']);
+
       $('#vSucursal').val(datos['sucursal']);
       $('#vProveedor').val(datos['nombreprov']);
       $('#vIdOt').val(datos['id_ot']);
       $('#vOrigen').val(datos['origen']);
-      $('#vFechaProgram').val(datos['fecha_program']);
-      $('#vAsignado').val(datos['asignado']);
-      $('#vEstado').val(datos['estado']);
+      
+      if (datos['asignado'] != 'null null') {
+        $('#vAsignado').val(datos['asignado']);        
+      } else {
+        $('#vAsignado').val('Sin Asignar'); 
+      }
+
+      
+     
+      var estadoOtrab = getEstadosVer(datos['estado']);
+     
+      $('#vEstado').val(estadoOtrab);
       //llenar datos de equipo
       $('#vCodigoEquipo').val(datos['codigo']);
       $('#vMarcaEquipo').val(datos['marca']);
@@ -1582,14 +1615,13 @@ function guardarpedido(){
           'nro'            : data['solicitud'][0]['nro'],
           'descripcion_ot' : data['solicitud'][0]['descripcionFalla'],
           'grupo'          : data['solicitud'][0]['grupodescrip'],
-          'fecha_inicio'   : data['solicitud'][0]['fecha_inicio'],
-          'fecha_entrega'  : data['solicitud'][0]['fecha_entrega'],
           'fecha_program'  : data['solicitud'][0]['fecha_program'],
+          'fecha_inicio'   : data['solicitud'][0]['fecha_inicio'],
+          'fecha_terminada'  : data['solicitud'][0]['fecha_terminada'], 
           'estado'         : data['solicitud'][0]['estado'],
           'sucursal'       : data['solicitud'][0]['descripc'],
           'nombreprov'     : data['solicitud'][0]['provnombre'],
-          'origen'         : origen,
-          'fecha_program'  : data['solicitud'][0]['fecha_program'],
+          'origen'         : origen,          
           'asignado'       : data['solicitud'][0]['usrLastName']+' '+data['solicitud'][0]['usrLastName'],
           'estado'         : data['solicitud'][0]['estado'],
           //Panel datos de equipos
@@ -1629,7 +1661,8 @@ function guardarpedido(){
         }   
         recargaTablaAdjuntoSolic(adjunto);  
       })
-      .fail( () => alert( "Error al traer los datos de la OT." ) );
+      .fail( () => alert( "Error al traer los datos de la OT." ) )
+      .always( () => WaitingClose() );
       return datos;
     }
 
@@ -1639,15 +1672,21 @@ function guardarpedido(){
       $('#vNroOtSolServicio').val(datos['nro']);
       $('#vDescripFallaSolServicio').val(datos['descripcion_ot']);
       $('#vFechaCreacionSolServicio').val(datos['fecha_inicio']);
-      $('#vFechaEntregaSolServicio').val(datos['fecha_entrega']);
+      $('#vFechaTerminaSolServ').val(datos['fecha_terminada']);
       $('#vSucursalSolServicio').val(datos['sucursal']);
       $('#vProveedorSolServicio').val(datos['nombreprov']);
-
       $('#vIdOtSolServicio').val(datos['id_ot']);
       $('#vOrigenSolServicio').val(datos['origen']);
-      $('#vFechaProgramSolServicio').val(datos['fecha_program']);
-      $('#vAsignadoSolServicio').val(datos['asignado']);
-      $('#vEstadoSolServicio').val(datos['estado']);
+      $('#vFechaProgramSolServicio').val(datos['fecha_program']);     
+      if (datos['asignado'] != 'null null') {
+        $('#vAsignadoSolServicio').val(datos['asignado']);        
+      } else {
+        $('#vAsignadoSolServicio').val('Sin Asignar'); 
+      }
+
+      var estadoSol = getEstadosVer(datos['estado']);
+      
+      $('#vEstadoSolServicio').val(estadoSol);
       //llenar datos de equipo
       $('#vCodigoEquipoSolServicio').val(datos['codigo']);
       $('#vMarcaEquipoSolServicio').val(datos['marca']);
@@ -1696,16 +1735,13 @@ function guardarpedido(){
           'id_ot'          : data['preventivo'][0]['id_orden'],
           'nro'            : data['preventivo'][0]['nro'],
           'descripcion_ot' : data['preventivo'][0]['descripcionFalla'],
-          'fecha_inicio'   : data['preventivo'][0]['fecha_inicio'],
-          'fecha_entrega'  : data['preventivo'][0]['fecha_entrega'],
+          'fecha_inicio'   : data['preventivo'][0]['fecha_inicio'],          
+          'fecha_terminada'  : data['preventivo'][0]['fecha_terminada'],
           'fecha_program'  : data['preventivo'][0]['fecha_program'],
           'estado'         : data['preventivo'][0]['estado'],
-          'sucursal'       : data['preventivo'][0]['descripc'],
-          //'nombreprov'     : data['preventivo'][0]['provnombre'],
-          'origen'         : origen,
-          'fecha_program'  : data['preventivo'][0]['fecha_program'],
+          'sucursal'       : data['preventivo'][0]['descripc'],         
+          'origen'         : origen,     
           'asignado'       : data['preventivo'][0]['usrLastName']+' '+data['usrLastName'],
-          //'estado'         : data['preventivo'][0]['estado'],
           //Panel datos de equipos
           'codigo'         : data['preventivo'][0]['codigo'],
           'marca'          : data['preventivo'][0]['marca'],
@@ -1741,7 +1777,8 @@ function guardarpedido(){
         recargaTablaAdjuntoPreven(adjunto);
         
       })
-      .fail( () => alert( "Error al traer los datos de la OT." ) );
+      .fail( () => alert( "Error al traer los datos de la OT." ) )
+      .always( () => WaitingClose() );
       return datos;
     }
     //llena datos del modal preventivo
@@ -1750,15 +1787,19 @@ function guardarpedido(){
       $('#vNroOtPrev').val(datos['nro']);
       $('#vDescripFallaPrev').val(datos['descripcion_ot']);
       $('#vFechaCreacionPrev').val(datos['fecha_inicio']);
-      $('#vFechaEntregaPrev').val(datos['fecha_entrega']);
+      $('#vFechaTerminadaPrev').val(datos['fecha_terminada']);
       $('#vSucursalPrev').val(datos['sucursal']);
       $('#vProveedorPrev').val(datos['nombreprov']);
-
       $('#vIdOtPrev').val(datos['id_ot']);
       $('#vOrigenPrev').val(datos['origen']);
-      $('#vFechaProgramPrev').val(datos['fecha_program']);
-      $('#vAsignadoPrev').val(datos['asignado']);
-      $('#vEstadoPrev').val(datos['estado']);
+      $('#vFechaProgramPrev').val(datos['fecha_program']);   
+      if (datos['asignado'] != 'null undefined') {
+        $('#vAsignadoPrev').val(datos['asignado']);        
+      } else {
+        $('#vAsignadoPrev').val('Sin Asignar'); 
+      }
+      var estadoPrevent = getEstadosVer(datos['estado']);
+      $('#vEstadoPrev').val(estadoPrevent);
       //llenar datos de equipo
       $('#vCodigoEquipoPrev').val(datos['codigo']);
       $('#vMarcaEquipoPrev').val(datos['marca']);
@@ -1847,11 +1888,12 @@ function guardarpedido(){
           'fecha_inicio'   : data['backlog'][0]['fecha_inicio'],
           'fecha_entrega'  : data['backlog'][0]['fecha_entrega'],
           'fecha_program'  : data['backlog'][0]['fecha_program'],
+          'fecha_terminada'  : data['backlog'][0]['fecha_terminada'],
           'estado'         : data['backlog'][0]['estado'],
           'sucursal'       : data['backlog'][0]['descripc'],
           'nombreprov'     : data['backlog'][0]['provnombre'],
           'origen'         : origen,
-          'fecha_program'  : data['backlog'][0]['fecha_program'],
+          
           'asignado'       : data['backlog'][0]['usrLastName']+' '+data['backlog'][0]['usrLastName'],
           'estado'         : data['backlog'][0]['estado'],
           //Panel datos de equipos
@@ -1860,9 +1902,9 @@ function guardarpedido(){
           'ubicacion'      : data['backlog'][0]['ubicacion'],
           'descripcion_eq' : data['backlog'][0]['descripcionEquipo'],
           'comp_equipo'    : data['backlog'][0]['compEquipo'],
-          'tarea'          : data['backlog'][0]['tarea'],
-          //'adjunto'        : data['adjunto'][0]['ot_adjunto']
+          'tarea'          : data['backlog'][0]['tarea']         
         };
+        console.table(datos);
         var herram = data['herramientas'];
         var insum = data['insumos'];
         var adjunto = data['adjunto'];
@@ -1900,15 +1942,22 @@ function guardarpedido(){
       $('#vNroOtBack').val(datos['nro']);
       $('#vDescripFallaBack').val(datos['descripcion_ot']);
       $('#vFechaCreacionBack').val(datos['fecha_inicio']);
-      $('#vFechaEntregaBack').val(datos['fecha_entrega']);
+      $('#vFechaProgramBack').val(datos['fecha_program']);
+      $('#vFechaTerminadaBack').val(datos['fecha_terminada']);      
       $('#vSucursalBack').val(datos['sucursal']);
       $('#vProveedorBack').val(datos['nombreprov']);
-
       $('#vIdOtBack').val(datos['id_ot']);
-      $('#vOrigenBack').val(datos['origen']);
-      $('#vFechaProgramBack').val(datos['fecha_program']);
-      $('#vAsignadoBack').val(datos['asignado']);
-      $('#vEstadoBack').val(datos['estado']);
+      $('#vOrigenBack').val(datos['origen']);      
+      
+      if (datos['asignado'] != 'null null') {
+        $('#vAsignadoBack').val(datos['asignado']);        
+      } else {
+        $('#vAsignadoBack').val('Sin Asignar'); 
+      }
+      
+      
+      var estadoBack = getEstadosVer(datos['estado']);
+      $('#vEstadoBack').val(estadoBack);
       //llenar datos de equipo
       $('#vCodigoEquipoBack').val(datos['codigo']);
       $('#vMarcaEquipoBack').val(datos['marca']);
@@ -1919,7 +1968,7 @@ function guardarpedido(){
       // $('#vDescripCompBack').val( datos['tarea']['compEquipo']['descripComponente'] );
       // $('#vSistemaBack').val( datos['tarea']['compEquipo']['descripSistema'] );
       
-      console.table(datos['tarea']);
+      //console.table(datos['tarea']);
       if (datos['tarea']['id_tarea'] == 0) {
         $('#vTareaBack').val( datos['tarea']['tarea_opcional'] );    
       } else {
@@ -1933,8 +1982,7 @@ function guardarpedido(){
     // recarga tablas de adjuntos al iniciar la edicion
     function recargaTablaAdjuntoBack(Adjunto) {  
       $('#TabAdjuntoBack tbody tr').remove();       
-      if (Adjunto == 0) {
-        alert('sin adjuntos');
+      if (Adjunto == 0) {        
         $('#TabAdjuntoBack').html('<p>Sin Adjuntos</p>');
       } else {        
         for (var i = 0;  i < Adjunto.length; i++) { 
@@ -1969,11 +2017,11 @@ function guardarpedido(){
           'fecha_inicio'   : data['predictivo'][0]['fecha_inicio'],
           'fecha_entrega'  : data['predictivo'][0]['fecha_entrega'],
           'fecha_program'  : data['predictivo'][0]['fecha_program'],
+          'fecha_terminada': data['predictivo'][0]['fecha_terminada'],
           'estado'         : data['predictivo'][0]['estado'],
           'sucursal'       : data['predictivo'][0]['descripc'],
           'nombreprov'     : data['predictivo'][0]['provnombre'],
-          'origen'         : origen,
-          'fecha_program'  : data['predictivo'][0]['fecha_program'],
+          'origen'         : origen,          
           'asignado'       : data['predictivo'][0]['usrLastName']+' '+data['predictivo'][0]['usrLastName'],
           'estado'         : data['predictivo'][0]['estado'],
           //Panel datos de equipos
@@ -1981,8 +2029,7 @@ function guardarpedido(){
           'marca'          : data['predictivo'][0]['marca'],
           'ubicacion'      : data['predictivo'][0]['ubicacion'],
           'descripcion_eq' : data['predictivo'][0]['descripcionEquipo'],
-          'tarea'          : data['predictivo'][0]['tarea'],
-          //'adjunto'        : data['adjunto'][0]['ot_adjunto'] 
+          'tarea'          : data['predictivo'][0]['tarea']         
         };
 
         var herram = data['herramientas'];
@@ -1999,7 +2046,7 @@ function guardarpedido(){
           "</tr>";
           $('#tblherrPred tbody').append(tr);
         }
-        $('#tblinsPred tbody tr').remove();
+        $('#tblinsPredictivo tbody tr').remove();
         for (var i = 0; i < insum.length; i++){                                             
           var tr = "<tr id='"+insum[i]['artId']+"'>"+
          
@@ -2007,11 +2054,11 @@ function guardarpedido(){
           "<td>"+insum[i]['artDescription']+"</td>"+
           "<td>"+insum[i]['cantidad']+"</td>"+                   
           "</tr>";
-          $('#tblinsPred tbody').append(tr);
+          $('#tblinsPredictivo tbody').append(tr);
         }
         recargaTablaAdjuntoPred(adjunto);
       })
-      .fail( () => alert( "Error al traer los datos de la OT." ) )
+      .fail( () => {alert( "Error al traer los datos de la OT." ) })
       .always( () => WaitingClose() );
       return datos;
     }
@@ -2021,15 +2068,20 @@ function guardarpedido(){
       $('#vNroOtPred').val(datos['nro']);
       $('#vDescripFallaPred').val(datos['descripcion_ot']);
       $('#vFechaCreacionPred').val(datos['fecha_inicio']);
-      $('#vFechaEntregaPred').val(datos['fecha_entrega']);
+      $('#vFechaEntregaPred').val(datos['fecha_terminada']);
       $('#vSucursalPred').val(datos['sucursal']);
       $('#vProveedorPred').val(datos['nombreprov']);
 
       $('#vIdOtPr').val(datos['id_ot']);
       $('#vOrigenPred').val(datos['origen']);
-      $('#vFechaProgramPred').val(datos['fecha_program']);
-      $('#vAsignadoPred').val(datos['asignado']);
-      $('#vEstadoPred').val(datos['estado']);
+      $('#vFechaProgramPred').val(datos['fecha_program']);      
+      if (datos['asignado'] != 'null null') {
+        $('#vAsignadoPred').val(datos['asignado']);       
+      } else {
+        $('#vAsignadoPred').val('Sin Asignar'); 
+      }     
+      var estadoPred = getEstadosVer(datos['estado']);
+      $('#vEstadoPred').val(estadoPred);
       //llenar datos de equipo
       $('#vCodigoEquipoPred').val(datos['codigo']);
       $('#vMarcaEquipoPred').val(datos['marca']);
@@ -2097,7 +2149,7 @@ function guardarpedido(){
     console.info(idOt+' - '+idSolicitud);
     var datos = null;
     switch (tipo) {
-      case '1': //Orden de trabajo
+    case '1': //Orden de trabajo
         datos = getDataOt(idOt, "orden de Trabajo");
         fillPrintView(datos, tipo);
         WaitingClose();
@@ -2233,7 +2285,7 @@ function guardarpedido(){
 
 
 <!--  MODAL ASIGNAR OT Y EJECUTAR   -->
-<div class="modal fade bs-example-modal-lg" id="modalInforme" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal bs-example-modal-lg" id="modalInforme" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="row">
@@ -2306,7 +2358,7 @@ function guardarpedido(){
 
             <div class="panel-body">
               <div class="row">
-                <div class="col-xs-12 col-sm-6 com-md-4">                
+                <div class="col-xs-12 col-sm-3 com-md-3">                
                   
                   <input type="hidden" id="id_ot"  name="id_ot" class="form-control input-md" disabled />
                   
@@ -2314,15 +2366,15 @@ function guardarpedido(){
                   <input type="text" id="equipo_descrip"  name="equipo_descrip" class="form-control input-md" disabled />
                   <input type="hidden" id="equipo"  name="equipo" class="form-control input-md" disabled />
                 </div>
-                <div class="col-xs-12 col-sm-6 com-md-4">
+                <div class="col-xs-12 col-sm-3 com-md-3">
                   <label for="fecha_ingreso">Fecha:</label>
                   <input type="text" id="fecha_ingreso"  name="fecha_ingreso" class="form-control input-md" disabled />
                 </div>
-                <div class="col-xs-12 col-sm-6 com-md-4">
+                <div class="col-xs-12 col-sm-3 com-md-3">
                   <label for="marca">Marca:</label>
                   <input type="text" id="marca"  name="marca" class="form-control input-md"  disabled />
                 </div>
-                <div class="col-xs-12 col-sm-6 com-md-4">
+                <div class="col-xs-12 col-sm-3 com-md-3">
                   <label for="ubicacion">Ubicacion:</label>
                   <input type="text" id="ubicacion"  name="ubicacion" class="form-control input-md" disabled/>
                 </div>
@@ -2352,15 +2404,20 @@ function guardarpedido(){
                 </div>
               </div>
               <div class="row">
-                <div class="col-xs-12 col-sm-6">
+                <div class="col-xs-12 col-sm-4">
                   <label for="fechaInicio">Fecha Programación:</label>
                   <!-- <input type="text" class="datepicker form-control fecha" id="fechaInicio" name="fechaInicio" value="<?php //echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/> -->
-                  <input type="text" class="datepicker form-control fecha" id="fechaInicio" name="fechaInicio" size="27"/>
-                </div> 
+                  <input type="text" class="datepicker form-control fecha" id="fechaProgramacion" name="fechaProgramacion" size="27"/>
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                  <label for="fechaInicio">Fecha Inicio:</label>
+                  <!-- <input type="text" class="datepicker form-control fecha" id="fechaInicio" name="fechaInicio" value="<?php //echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/> -->
+                  <input type="text" class="datepicker form-control fecha" id="fechaInicio" name="fechaInicio" size="27" disabled/>
+                </div>  
                 
-                <div class="col-xs-12 col-sm-6">
-                  <label for="fechaEntrega">Fecha Entrega:</label>
-                  <input type="text" class="datepicker form-control fecha" id="fechaEntrega" name="fechaEntrega" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>
+                <div class="col-xs-12 col-sm-4">
+                  <label for="fechaEntrega">Fecha Terminada:</label>
+                  <input type="text" class="datepicker form-control fecha" id="fechaTerminada" name="fechaTerminada" value="<?php //echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27" disabled/>
                 </div>
 
                 <div class="col-xs-12 col-sm-6">
@@ -2525,53 +2582,52 @@ function guardarpedido(){
 
 <!--------------- MODALES ADJUNTO ------------->
 
-<!-- Modal Eliminar Adjunto -->
-<div class="modal" id="modalEliminarAdjunto">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"><span class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar</h4>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="idAdjunto">
-        <h4>¿Desea eliminar Archivo Adjunto?</h4>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminarAdjunto();">Eliminar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal Agregar adjunto -->
-<div class="modal" id="modalAgregarAdjunto">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"><span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar</h4>
-      </div>
-
-      <form id="formAgregarAdjunto">
+  <!-- Modal Eliminar Adjunto -->
+  <div class="modal" id="modalEliminarAdjunto">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title"><span class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar</h4>
+        </div>
         <div class="modal-body">
-          <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
-            <h4><i class="icon fa fa-ban"></i> Error!</h4>
-            Seleccione un Archivo Adjunto
-          </div>
-          <input type="hidden" id="idAgregaAdjunto" name="idAgregaAdjunto">
-          <input id="inputPDF" name="inputPDF" type="file" class="form-control input-md">
+          <input type="hidden" id="idAdjunto">
+          <h4>¿Desea eliminar Archivo Adjunto?</h4>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary" id="btnAgregarEditar">Agregar</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="eliminarAdjunto();">Eliminar</button>
         </div>
-      </form>
+      </div>
     </div>
   </div>
-</div>
 
+  <!-- Modal Agregar adjunto -->
+    <div class="modal" id="modalAgregarAdjunto">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title"><span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar</h4>
+          </div>
+
+          <form id="formAgregarAdjunto">
+            <div class="modal-body">
+              <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+                <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                Seleccione un Archivo Adjunto
+              </div>
+              <input type="hidden" id="idAgregaAdjunto" name="idAgregaAdjunto">
+              <input id="inputPDF" name="inputPDF" type="file" class="form-control input-md">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary" id="btnAgregarEditar">Agregar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
 <!--------------- MODALES ADJUNTO ------------->
 
 
@@ -2830,14 +2886,10 @@ function guardarpedido(){
 
                 <div class="row">
                   <div class="col-xs-12 col-sm-3">
-                    <label for="vIdOt">Id de OT:</label>
+                    <label for="vIdOt">Nº de OT:</label>
                     <input type="text" class="form-control " name="vIdOt" id="vIdOt" disabled>
                   </div>
-                  <div class="col-xs-12 col-sm-3">
-                    <label for="vNroOt">Número de OT:</label>
-                    <input type="text" class="form-control " name="vNroOt" id="vNroOt" disabled>
-                  </div>
-                  <div class="col-xs-12 col-sm-6">
+                  <div class="col-xs-12 col-sm-9">
                     <label for="vDescripFalla">Descripción:</label>
                     <input type="text" class="form-control vDescripFalla" id="vDescripFalla" disabled>
                   </div>
@@ -2851,8 +2903,8 @@ function guardarpedido(){
                     <input type="text" class="form-control " name="vFechaCreacion" id="vFechaCreacion" disabled>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3">
-                    <label for="vFechaEntrega">Fecha Entrega:</label>
-                    <input type="text" class="form-control " name="vFechaEntrega" id="vFechaEntrega" disabled>
+                    <label for="vFechaTerminOT">Fecha Terminada:</label>
+                    <input type="text" class="form-control " name="vFechaTerminOT" id="vFechaTerminOT" disabled>
                   </div>
 
                   <div class="col-xs-12 col-sm-6 col-md-3">
@@ -3047,14 +3099,11 @@ function guardarpedido(){
 
                 <div class="row">
                   <div class="col-xs-12 col-sm-3">
-                    <label for="vIdOtSolServicio">Id de OT:</label>
+                    <label for="vIdOtSolServicio">Nº de OT:</label>
                     <input type="text" class="form-control " name="vIdOtSolServicio" id="vIdOtSolServicio" disabled>
                   </div>
-                  <div class="col-xs-12 col-sm-3">
-                    <label for="vNroOtSolServicio">Número de OT:</label>
-                    <input type="text" class="form-control " name="vNroOtSolServicio" id="vNroOtSolServicio" disabled>
-                  </div>
-                  <div class="col-xs-12 col-sm-6">
+                 
+                  <div class="col-xs-12 col-sm-9">
                     <label for="vDescripFallaSolServicio">Descripción:</label>
                     <input type="text" class="form-control vDescripFallaSolServicio" id="vDescripFallaSolServicio" disabled>
                   </div>
@@ -3068,8 +3117,8 @@ function guardarpedido(){
                     <input type="text" class="form-control " name="vFechaCreacionSolServicio" id="vFechaCreacionSolServicio" disabled>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3">
-                    <label for="vFechaEntregaSolServicio">Fecha Entrega:</label>
-                    <input type="text" class="form-control " name="vFechaEntregaSolServicio" id="vFechaEntregaSolServicio" disabled>
+                    <label for="vFechaTerminaSolServ">Fecha Terminada:</label>
+                    <input type="text" class="form-control " name="vFechaTerminaSolServ" id="vFechaTerminaSolServ" disabled>
                   </div>
 
                   <div class="col-xs-12 col-sm-6 col-md-3">
@@ -3305,14 +3354,11 @@ function guardarpedido(){
 
                 <div class="row">
                   <div class="col-xs-12 col-sm-3">
-                    <label for="vIdOtPrev">Id de OT:</label>
+                    <label for="vIdOtPrev">Nº de OT:</label>
                     <input type="text" class="form-control " name="vIdOtPrev" id="vIdOtPrev" disabled>
                   </div>
-                  <div class="col-xs-12 col-sm-3">
-                    <label for="vNroOtPrev">Número de OT:</label>
-                    <input type="text" class="form-control " name="vNroOtPrev" id="vNroOtPrev" disabled>
-                  </div>
-                  <div class="col-xs-12 col-sm-6">
+                  
+                  <div class="col-xs-12 col-sm-9">
                     <label for="vDescripFallaPrev">Descripción:</label>
                     <input type="text" class="form-control vDescripFallaPrev" id="vDescripFallaPrev" disabled>
                   </div>
@@ -3326,8 +3372,8 @@ function guardarpedido(){
                     <input type="text" class="form-control " name="vFechaCreacionPrev" id="vFechaCreacionPrev" disabled>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3">
-                    <label for="vFechaEntregaPrev">Fecha Entrega:</label>
-                    <input type="text" class="form-control " name="vFechaEntregaPrev" id="vFechaEntregaPrev" disabled>
+                    <label for="vFechaTerminadaPrev">Fecha Terminada:</label>
+                    <input type="text" class="form-control " name="vFechaTerminadaPrev" id="vFechaTerminadaPrev" disabled>
                   </div>
 
                   <div class="col-xs-12 col-sm-6 col-md-3">
@@ -3581,29 +3627,25 @@ function guardarpedido(){
 
                 <div class="row">
                   <div class="col-xs-12 col-sm-3">
-                    <label for="vIdOtBack">Id de OT:</label>
+                    <label for="vIdOtBack">Nº de OT:</label>
                     <input type="text" class="form-control " name="vIdOtBack" id="vIdOtBack" disabled>
                   </div>
-                  <div class="col-xs-12 col-sm-3">
-                    <label for="vNroOtBack">Número de OT:</label>
-                    <input type="text" class="form-control " name="vNroOtBack" id="vNroOtBack" disabled>
-                  </div>
-                  <div class="col-xs-12 col-sm-6">
+                  <div class="col-xs-12 col-sm-9">
                     <label for="vDescripFallaBack">Descripción:</label>
                     <input type="text" class="form-control vDescripFallaBack" id="vDescripFallaBack" disabled>
                   </div>
 
                   <div class="col-xs-12 col-sm-6 col-md-3">
-                    <label for="vFechaProgram">Fecha Programación:</label>
-                    <input type="text" class="form-control " name="vFechaProgram" id="vFechaProgram" disabled>
+                    <label for="vFechaProgramBack">Fecha Programación:</label>
+                    <input type="text" class="form-control " name="vFechaProgramBack" id="vFechaProgramBack" disabled>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3">
                     <label for="vFechaCreacionBack">Fecha Inicio:</label>
                     <input type="text" class="form-control " name="vFechaCreacionBack" id="vFechaCreacionBack" disabled>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3">
-                    <label for="vFechaEntregaBack">Fecha Entrega:</label>
-                    <input type="text" class="form-control " name="vFechaEntregaBack" id="vFechaEntregaBack" disabled>
+                    <label for="vFechaTerminadaBack">Fecha Terminada:</label>
+                    <input type="text" class="form-control " name="vFechaTerminadaBack" id="vFechaTerminadaBack" disabled>
                   </div>
 
                   <div class="col-xs-12 col-sm-6 col-md-3">
@@ -3764,8 +3806,7 @@ function guardarpedido(){
                                 <div class="col-xs-12">
                                   <table class="table table-bordered" id="tblinsumBack"> 
                                     <thead>
-                                      <tr>                           
-                                        <th>Acciones</th>
+                                      <tr>
                                         <th>Código</th>
                                         <th>Descripcion</th>
                                         <th>Cantidad</th>
@@ -3845,14 +3886,14 @@ function guardarpedido(){
 
                 <div class="row">
                   <div class="col-xs-12 col-sm-3">
-                    <label for="vIdOtPr">Id de OT:</label>
+                    <label for="vIdOtPr">Nº de OT:</label>
                     <input type="text" class="form-control " name="vIdOtPr" id="vIdOtPr" disabled>
                   </div>
-                  <div class="col-xs-12 col-sm-3">
+                  <!-- <div class="col-xs-12 col-sm-3">
                     <label for="vNroOtPred">Número de OT:</label>
                     <input type="text" class="form-control " name="vNroOtPred" id="vNroOtPred" disabled>
-                  </div>
-                  <div class="col-xs-12 col-sm-6">
+                  </div> -->
+                  <div class="col-xs-12 col-sm-9">
                     <label for="vDescripFallaPred">Descripción:</label>
                     <input type="text" class="form-control vDescripFallaPred" id="vDescripFallaPred" disabled>
                   </div>
@@ -3866,7 +3907,7 @@ function guardarpedido(){
                     <input type="text" class="form-control " name="vFechaCreacionPred" id="vFechaCreacionPred" disabled>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3">
-                    <label for="vFechaEntregaPred">Fecha Entrega:</label>
+                    <label for="vFechaEntregaPred">Fecha Terminada:</label>
                     <input type="text" class="form-control " name="vFechaEntregaPred" id="vFechaEntregaPred" disabled>
                   </div>
 
@@ -4029,7 +4070,7 @@ function guardarpedido(){
                               </div><!-- /.row -->
                               <div class="row">
                                 <div class="col-xs-12">
-                                  <table class="table table-bordered" id="tblinsPreventivo"> 
+                                  <table class="table table-bordered" id="tblinsPredictivo"> 
                                     <thead>
                                       <tr>
                                         <th>Código</th>

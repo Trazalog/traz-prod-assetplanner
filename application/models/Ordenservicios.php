@@ -18,7 +18,8 @@ class Ordenservicios extends CI_Model {
             orden_servicio.fecha, 
             orden_servicio.id_ot,
             orden_trabajo.descripcion AS descripcion_ot,
-            equipos.codigo AS equipo
+            equipos.codigo AS equipo,
+            equipos.id_equipo
         ');
             /*
             equipos.id_equipo,
@@ -271,11 +272,6 @@ class Ordenservicios extends CI_Model {
 							return $this->db->error(); // Has keys 'code' and 'message'
 					}
 			}
-
-			////// actualiza estado de solicitud de reparacion
-			$estado['estado'] = 'C';
-			$this->db->where('id_solicitud', $id_solicitudreparacion);
-			$this->db->update('solicitud_reparacion', $estado);  
 
 			// ////// guarda Operarios
 			if (!empty($data['operario'])) 

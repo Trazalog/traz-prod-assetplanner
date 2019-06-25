@@ -17,15 +17,13 @@ class Proveedor extends CI_Controller {
 		$this->load->view('proveedores/list', $data);
 	}
 
-	public function Obtener_Proveedor()
-	{
-		$id     = $_POST['provid'];
-		$result = $this->Proveedores->Obtener_Proveedores($id);
-		echo json_encode($result);
-	}
-
 	public function Guardar_Proveedor()
 	{
+
+		$userdata = $this->session->userdata('user_data');
+		$empId = $userdata[0]['id_empresa'];		
+		$fecha = date("Y-m-d H:i:s");		
+
 		$provnombre    = $this->input->post('provnombre');
 		$provcuit      = $this->input->post('provcuit');
 		$provdomicilio = $this->input->post('provdomicilio');
@@ -33,17 +31,20 @@ class Proveedor extends CI_Controller {
 		$provmail      = $this->input->post('provmail');
 		$id_empresa    = $this->input->post('id_empresa');
 		$estado        = $this->input->post('estado');
-		$data          = array(
-			'provnombre'    => $provnombre,
-			'provcuit'      => $provcuit,
-			'provdomicilio' => $provdomicilio,
-			'provtelefono'  => $provtelefono,
-			'provmail'      => $provmail,
-			'estado'        => "AC",
-			'id_empresa'    => $id_empresa);
-	    $sql           = $this->Proveedores->Guardar_Proveedores($data);
-	    echo json_encode($sql);
-  	}
+		
+		$data          = array('nombre'    	=> $provnombre,
+														'cuit'      => $provcuit,
+														'domicilio' => $provdomicilio,
+														'telefono'  => $provtelefono,
+														'email' 		=> $provmail,	
+														'empr_id'   => $empId,
+														'fec_alta'  => $fecha,
+														'eliminado' => 0);
+
+
+		$sql           = $this->Proveedores->Guardar_Proveedores($data);
+		echo json_encode($sql);
+  }
 
 	public function Modificar_Proveedor()
 	{
@@ -53,20 +54,19 @@ class Proveedor extends CI_Controller {
 		$provdomicilio  = $this->input->post('provdomicilio');
 		$provtelefono   = $this->input->post('provtelefono');
 		$provmail       = $this->input->post('provmail');
-		$data           = array(
-			'provid'        => $id,
-			'provnombre'    => $provnombre,
-			'provcuit'      => $provcuit,
-			'provdomicilio' => $provdomicilio,
-			'provtelefono'  => $provtelefono,
-			'provmail'      => $provmail,);
-		$sql            = $this->Proveedores->Modificar_Proveedores($data);
-	    echo json_encode($sql);
-  	}
+		$data           = array('nombre'    => $provnombre,
+														'cuit'      => $provcuit,
+														'domicilio' => $provdomicilio,
+														'telefono'  => $provtelefono,
+														'email'      => $provmail);
+
+		$sql = $this->Proveedores->Modificar_Proveedores($id, $data);
+	  echo json_encode($sql);
+  }
 
 	public function Eliminar_Proveedor()
-	{
-		$id     = $_POST['provid'];	
+	{		
+		$id     = $this->input->post('provid');
 		$result = $this->Proveedores->Eliminar_Proveedores($id);
 		echo json_encode($result);	
 	}
