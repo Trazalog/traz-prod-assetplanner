@@ -130,7 +130,10 @@ function verificarExistenciaLote() {
         alert('Campos Obligatorios(*) Incompletos');
         return;
     }
-
+    if(selectItem.es_loteado == 0){
+        agregar();
+        return;
+    }
     var lote = $('#lote').val();
     var depo = $('#deposito').val();
     var arti = selectItem.arti_id;
@@ -138,6 +141,7 @@ function verificarExistenciaLote() {
     if (lote == null || lote == '') return;
     if (depo == null || depo == '') return;
     if (arti == null || arti == '') return;
+
 
     $.ajax({
         type: 'POST',
@@ -148,7 +152,7 @@ function verificarExistenciaLote() {
             arti
         },
         success: function(result) {
-            if(result){
+            if(result == 1){
                 $('#acumular').modal('show');
             }else{
                 agregar();
