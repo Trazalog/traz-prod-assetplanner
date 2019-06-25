@@ -222,7 +222,7 @@ class Notapedido extends CI_Controller
         echo $this->Notapedidos->eliminarDetalle($id);
     }
 
-    public function crearPedido($ot=4)
+    public function crearPedido($ot=null)
     {   
         $this->load->model('traz-comp/Componentes');
         $data = $this->Componentes-> listaArticulos();
