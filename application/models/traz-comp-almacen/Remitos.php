@@ -66,9 +66,9 @@ class Remitos extends CI_Model {
 
 	function getproveedor()
     {
-        $userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-		$query     = $this->db->get_where('alm_proveedores', array('empr_id' => $empresaId));
+        $this->db->where('eliminado',0);
+        $this->db->where('empr_id',empresa());
+		$query = $this->db->get('alm_proveedores');
 			if($query->num_rows()>0){
 	   	 	return $query->result();
 	    }
