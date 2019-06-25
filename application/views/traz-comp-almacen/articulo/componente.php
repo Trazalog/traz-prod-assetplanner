@@ -69,6 +69,7 @@ $(document).off('click', '.tabla_articulos_nuevo').on('click', '.tabla_articulos
     $('label#info').html($(option).html());
     var json = JSON.stringify($(option).data('json'));
     selectItem = JSON.parse(json);
+    if(existFunction('eventSelect'))eventSelect();
 });
 
 

@@ -411,9 +411,8 @@ class Remitos extends CI_Model {
 
     public function guardar_detalles($id, $detalles)
     {
-        $empr_id = 1;
         foreach ($detalles as $o) {
-            $o['empr_id'] = $empr_id;
+            $o['empr_id'] = empresa();
             $o['lote_id'] = $this->verificar_lote($o);
             $o['rema_id'] = $id;
             unset($o['codigo']);unset($o['depo_id']);unset($o['fec_vencimiento']);unset($o['loteado']);
