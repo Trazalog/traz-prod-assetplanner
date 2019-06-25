@@ -172,21 +172,30 @@ class Tarea extends CI_Controller {
 			// Usr Toma tarea en BPM (Vistas tareas comunes)
 			public function tomarTarea(){
 				$userdata = $this->session->userdata('user_data');
-						$usrId = $userdata[0]['usrId'];     // guarda usuario logueado
+						$usrId = $userdata[0]['userBpm'];     // guarda usuario logueado
 				//dump_exit($usrId);
 				$idTarBonita = $this->input->post('idTarBonita');
-				$estado = array (
-					"assigned_id"	=>	$usrId
-				);
-				// trae la cabecera
-				$parametros = $this->Bonitas->conexiones();
-				// Cambio el metodo de la cabecera a "PUT"
-				$parametros["http"]["method"] = "PUT";
-				$parametros["http"]["content"] = json_encode($estado);
-				// Variable tipo resource referencia a un recurso externo.
-				$param = stream_context_create($parametros);
-				$response = $this->Tareas->tomarTarea($idTarBonita,$param);
-				echo json_encode($response);
+
+
+				$this->load->library('BPM');
+				$res = $this->bpm->setUsuario($idTarBonita,$ursId);
+				if($res['status']){
+					echo json_encode(array('response_code'=>200));}
+				else{
+					echo json_encode(array('response_code'=>$res['code']));
+				}
+				// $estado = array (
+				// 	"assigned_id"	=>	$usrId
+				// );
+				// // trae la cabecera
+				// $parametros = $this->Bonitas->conexiones();
+				// // Cambio el metodo de la cabecera a "PUT"
+				// $parametros["http"]["method"] = "PUT";
+				// $parametros["http"]["content"] = json_encode($estado);
+				// // Variable tipo resource referencia a un recurso externo.
+				// $param = stream_context_create($parametros);
+				// $response = $this->Tareas->tomarTarea($idTarBonita,$param);
+				// echo json_encode($response);
 			}
 			// Usr Toma tarea en BPM  
 			public function soltarTarea(){
