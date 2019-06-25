@@ -3,7 +3,7 @@
         <div class="box-header">
             <h3 class="box-title">Pedido Materiales</h3>
             <button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
-                onclick="linkTo('almacen/Notapedido/crearPedido')">Agregar</button>
+                onclick="linkTo('almacen/Notapedido/crearPedido<?php echo'/'.$ot ?>')">Agregar</button>
         </div><!-- /.box-header -->
         <div class="box-body">
             <table id="deposito" class="table table-bordered table-striped table-hover">
