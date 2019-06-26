@@ -144,7 +144,7 @@ class Bonitas extends CI_Model
 
 			$data = array(
 					'username'=>$usrNick,
-					'password'=> BPM_USER_PASS,
+					'password'=>'bpm',
 					'redirect'=>'false'
 					);
 			$url = http_build_query( $data );
@@ -195,7 +195,7 @@ class Bonitas extends CI_Model
 		//$usrNick= $userdata[0]["usrNick"];
 
 		//$usrNick = 'admin';
-		$usrNick = BPM_ADMIN_USER;
+		$usrNick = 'supervisor1';
 		//dump_exit($userdata);
 		// Array de parametros (cabecera HTTP)
 		$opciones = array(
@@ -215,7 +215,7 @@ class Bonitas extends CI_Model
 
 			$data = array(
 					'username'=>$usrNick,
-					'password'=> BPM_ADMIN_PASS,
+					'password'=>'bpm',
 					'redirect'=>'false'
 					);
 			$url = http_build_query( $data );

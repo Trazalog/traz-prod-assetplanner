@@ -12,12 +12,13 @@ if(!function_exists('cargarCabecera')){
 				$ci->load->database();			
 				//get data from database		
 				$ci->db->select('equipos.descripcion AS descripcionEquipo,
-												equipos.fecha_ingreso,
-												equipos.marca,
+												equipos.fecha_ingreso,												
 												equipos.codigo,
 												equipos.ubicacion,
-												equipos.estado');	
-				$ci->db->from('equipos');			
+												equipos.estado,
+												marcasequipos.marcadescrip AS marca,');	
+				$ci->db->from('equipos');	
+				$ci->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');		
 				$ci->db->where('equipos.id_equipo', $id_EQ);
 				$query = $ci->db->get();			
 				if($query->num_rows() > 0){
@@ -47,7 +48,7 @@ if(!function_exists('cargarCabecera')){
 			if($id_OT != 0){
 				$ci->db->select('tareas.descripcion AS tareaDescrip,
 												orden_trabajo.descripcion AS otDescrip,
-												orden_trabajo.fecha,
+												orden_trabajo.fecha_program AS fecha,
 												orden_trabajo.id_orden,
 												orden_trabajo.duracion,
 												orden_trabajo.estado');	
@@ -101,12 +102,17 @@ if(!function_exists('cargarCabecera')){
 										<input type="text" class="form-control"  value="'.$result['fecha_ingreso'].'" disabled/>
 									</div>
 									<div class="col-xs-12 col-sm-4">
-										<label style="margin-top: 7px;">Estado: </label>
-										<input type="text" class="form-control"  value="'.$result['estado'].'" disabled/>
-									</div>
-
-									
-
+										<label style="margin-top: 7px;">Estado: </label>';
+										if ($result['estado'] == 'AC') {
+											echo  '<input type="text" class="form-control"  value="Activo" disabled/>';
+										}
+										if ($result['estado'] == 'IN') {
+											echo  '<input type="text" class="form-control"  value="Inactivo" disabled/>';
+										}
+										if ($result['estado'] == 'AL') {
+											echo  '<input type="text" class="form-control"  value="Alta" disabled/>';
+										}										
+									echo '</div>	
 								</div>
 								<!-- /.box-body -->
 						</div>
@@ -198,8 +204,7 @@ if(!function_exists('cargarCabecera')){
 										<label style="margin-top: 7px;">Nº Orden Trabajo: </label>
 										<input type="text" id="ot" class="form-control" value="'.$resultOT['id_orden'].'" disabled/>
 								</div>						
-							</div>
-								
+							</div>								
 							<div class="col-xs-12 col-sm-4">
 								<div class="form-group">
 										<label style="margin-top: 7px;">Descripción: </label>
@@ -208,29 +213,42 @@ if(!function_exists('cargarCabecera')){
 							</div>
 							<div class="col-xs-12 col-sm-4">
 								<div class="form-group">
-										<label style="margin-top: 7px;">Fecha: </label>
+										<label style="margin-top: 7px;">Fecha Programación: </label>
 										<input type="text" id="codigo" class="form-control" value="'.$resultOT['fecha'].'" disabled/>
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-4">
 								<label style="margin-top: 7px;">Duración: </label>
 								<input type="text" id="duracion" class="form-control"  value="'.$resultOT['duracion'].'" disabled/>
-							</div>
-							
+							</div>							
 							<div class="col-xs-12 col-sm-4">
 								<label style="margin-top: 7px;">Tarea: </label>
 								<input type="text" class="form-control"  value="'.$resultOT['tareaDescrip'].'" disabled/>
-							</div>
-							
+							</div>							
 							<div class="col-xs-12 col-sm-4">
-								<label style="margin-top: 7px;">Estado: </label>
-								<input type="text" class="form-control"  value="'.$resultOT['estado'].'" disabled/>
-							</div>
-							
-							
-
-							
-
+								<label style="margin-top: 7px;">Estado: </label>';								
+								if ($resultOT['estado'] == 'S') {								
+									echo  '<input type="text" class="form-control"  value="Solicitada" disabled/>';
+								}
+								if($resultOT['estado'] == 'PL'){    
+									echo  '<input type="text" class="form-control"  value="Planificada" disabled/>';
+								}
+								if($resultOT['estado'] == 'AS'){									
+									echo  '<input type="text" class="form-control"  value="Asignada" disabled/>';
+								}
+								if ($resultOT['estado'] == 'C') {								
+									echo  '<input type="text" class="form-control"  value="Curso" disabled/>';
+								}
+								if ($resultOT['estado'] == 'T') {								
+									echo  '<input type="text" class="form-control"  value="Terminada" disabled/>';
+								}
+								if ($resultOT['estado'] == 'CE') {								
+									echo  '<input type="text" class="form-control"  value="Cerrada" disabled/>';
+								}  
+								if ($resultOT['estado'] == 'CN') {
+									echo  '<input type="text" class="form-control"  value="Conforme" disabled/>';
+								} 							
+							echo '</div>
 						</div>
 						<!-- /.box-body -->
 				</div>
