@@ -1,3327 +1,0 @@
--- MySQL dump 10.16  Distrib 10.1.40-MariaDB, for Linux (x86_64)
---
--- Host: localhost    Database: assetv2
--- ------------------------------------------------------
--- Server version	10.1.40-MariaDB
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Temporary table structure for view `abmdeposito`
---
-
-DROP TABLE IF EXISTS `abmdeposito`;
-/*!50001 DROP VIEW IF EXISTS `abmdeposito`*/;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-/*!50001 CREATE TABLE `abmdeposito` (
-  `depositoId` tinyint NOT NULL,
-  `depositodescrip` tinyint NOT NULL,
-  `direccion` tinyint NOT NULL,
-  `GPS` tinyint NOT NULL,
-  `id_localidad` tinyint NOT NULL,
-  `id_provincial` tinyint NOT NULL,
-  `id_pais` tinyint NOT NULL,
-  `id_empresa` tinyint NOT NULL,
-  `estado` tinyint NOT NULL
-) ENGINE=MyISAM */;
-SET character_set_client = @saved_cs_client;
-
---
--- Temporary table structure for view `abmproveedores`
---
-
-DROP TABLE IF EXISTS `abmproveedores`;
-/*!50001 DROP VIEW IF EXISTS `abmproveedores`*/;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-/*!50001 CREATE TABLE `abmproveedores` (
-  `provid` tinyint NOT NULL,
-  `provnombre` tinyint NOT NULL,
-  `provcuit` tinyint NOT NULL,
-  `provdomicilio` tinyint NOT NULL,
-  `provtelefono` tinyint NOT NULL,
-  `provmail` tinyint NOT NULL,
-  `id_empresa` tinyint NOT NULL,
-  `fec_alta` tinyint NOT NULL,
-  `estado` tinyint NOT NULL
-) ENGINE=MyISAM */;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `admcustomers`
---
-
-DROP TABLE IF EXISTS `admcustomers`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `admcustomers` (
-  `cliId` int(11) NOT NULL AUTO_INCREMENT,
-  `cliName` varchar(50) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `cliLastName` varchar(50) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `cliDni` varchar(8) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `cliDateOfBirth` date DEFAULT NULL,
-  `cliNroCustomer` varchar(10) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `cliAddress` varchar(255) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `cliPhone` varchar(25) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `cliMovil` varchar(25) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `cliEmail` varchar(50) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `cliImagePath` varchar(100) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `zonaId` int(11) DEFAULT NULL,
-  `cliDay` int(11) DEFAULT '30',
-  `cliColor` varchar(7) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `estado` varchar(4) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `id_empresa` int(11) NOT NULL,
-  `cliRazonSocial` varchar(45) COLLATE utf8_spanish_ci NOT NULL,
-  `plant_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`cliId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `admcustomers`
---
-
-LOCK TABLES `admcustomers` WRITE;
-/*!40000 ALTER TABLE `admcustomers` DISABLE KEYS */;
-INSERT INTO `admcustomers` VALUES (1,'Cliente 1','aaa','1111',NULL,NULL,'aaaaa','222222',NULL,'qqqqq',NULL,NULL,30,NULL,'AC',6,'Cliente 1',NULL);
-/*!40000 ALTER TABLE `admcustomers` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `admstock`
---
-
-DROP TABLE IF EXISTS `admstock`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `admstock` (
-  `stkId` int(11) NOT NULL AUTO_INCREMENT,
-  `prodId` int(11) NOT NULL,
-  `stkCant` int(11) NOT NULL,
-  `usrId` int(11) NOT NULL,
-  `stkDate` datetime NOT NULL,
-  `stkMotive` varchar(50) COLLATE utf8_spanish_ci DEFAULT NULL,
-  PRIMARY KEY (`stkId`),
-  KEY `prodId` (`prodId`),
-  KEY `usrId` (`usrId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `admstock`
---
-
-LOCK TABLES `admstock` WRITE;
-/*!40000 ALTER TABLE `admstock` DISABLE KEYS */;
-/*!40000 ALTER TABLE `admstock` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `admvisits`
---
-
-DROP TABLE IF EXISTS `admvisits`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `admvisits` (
-  `vstId` int(11) NOT NULL AUTO_INCREMENT,
-  `vstDate` datetime NOT NULL,
-  `cliId` int(11) NOT NULL,
-  `vstNote` text COLLATE utf8_spanish_ci NOT NULL,
-  `vstStatus` varchar(2) COLLATE utf8_spanish_ci NOT NULL,
-  PRIMARY KEY (`vstId`),
-  KEY `cliId` (`cliId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `admvisits`
---
-
-LOCK TABLES `admvisits` WRITE;
-/*!40000 ALTER TABLE `admvisits` DISABLE KEYS */;
-/*!40000 ALTER TABLE `admvisits` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `alm_articulos`
---
-
-DROP TABLE IF EXISTS `alm_articulos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `alm_articulos` (
-  `arti_id` int(11) NOT NULL AUTO_INCREMENT,
-  `barcode` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
-  `descripcion` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
-  `costo` decimal(14,2) NOT NULL,
-  `es_caja` tinyint(4) NOT NULL,
-  `cantidad_caja` int(11) DEFAULT NULL,
-  `punto_pedido` int(11) DEFAULT NULL,
-  `estado_id` varchar(45) COLLATE utf8_spanish_ci DEFAULT '1',
-  `unidad_id` int(11) NOT NULL,
-  `empr_id` int(11) NOT NULL,
-  `es_loteado` tinyint(4) NOT NULL,
-  `fec_alta` datetime DEFAULT CURRENT_TIMESTAMP,
-  `eliminado` tinyint(4) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`arti_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=365 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `alm_articulos`
---
-
-LOCK TABLES `alm_articulos` WRITE;
-/*!40000 ALTER TABLE `alm_articulos` DISABLE KEYS */;
-INSERT INTO `alm_articulos` VALUES (2,'51574','FILTRO DE COMBUSTIBLE P/TAMROCK NÂ°88',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(10,'123456','BUJE DE ROTACION P/TAMROCK 680',0.00,0,6,0,'0',1,6,0,'2019-06-18 14:35:37',0),(11,'50686','BULON NRO. 86321729 P/TAMROCK HL 500',0.00,1,1,0,'0',1,6,0,'2019-06-18 14:35:37',0),(12,'51258','DIAFRAGMA N:04114808 P/TAMROCK',0.00,1,3,0,'0',1,6,0,'2019-06-18 14:35:37',0),(13,'51265','DIAFRAGMA P/COMP. TAMROCK HL 680-2 A',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(14,'51315','EJE P/ TAMROCK Nâ€  15178158',0.00,1,0,2,'0',1,6,0,'2019-06-18 14:35:37',0),(15,'51317','EJE P/TAMROCK 500 ART. 23313378',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(16,'51471','FILTRO  COMBUSTIBLE P 557440 TAMROCK',0.00,1,3,0,'0',1,6,0,'2019-06-18 14:35:37',0),(17,'51571','FILTRO TAMROCK ACEITE CAT 1R-0739',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(18,'51545','FILTRO TAMROCK AIRE â€ 88546679',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(19,'51546','FILTRO TAMROCK AIRE/CABINA PRIMARIO',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(20,'51548','FILTRO TAMROCK AIRE/COMPRESOR 885467',0.00,1,1,0,'0',1,6,0,'2019-06-18 14:35:37',0),(21,'51550','FILTRO TAMROCK CIRC/HID.RETORNO 8672',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(22,'51551','FILTRO TAMROCK CIRC/HID.SANDVICK 815',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(23,'51552','FILTRO TAMROCK COMB,Nâ€  1R-0751',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(24,'51553','FILTRO TAMROCK COMB,TRAMPA/AGUA 1466',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(25,'53605','TRAMPA DE AGUA PARA TAMROCK',0.00,1,2,0,'0',1,6,0,'2019-06-18 14:35:37',0),(26,'53701','TUERCA NRO.81125969 P/TAMROCK',0.00,1,1,0,'0',1,6,0,'2019-06-18 14:35:37',0),(27,'53947','KIT DE SELLOS NRO.879484449 TAMROCK',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(28,'53966','RETEN NRO 15074808 TAMROCK R -500',0.00,1,1,0,'0',1,6,0,'2019-06-18 14:35:37',0),(29,'53969','SELLOS NRO 81820039 TAMROCK R-500',0.00,1,3,0,'0',1,6,0,'2019-06-18 14:35:37',0),(30,'54022','BUJE P/TAMROCK N 15021838',0.00,1,4,0,'0',1,6,0,'2019-06-18 14:35:37',0),(31,'54469','VALVULA  ART 807 590 69 P/TAMROCK HL',0.00,1,2,0,'0',1,6,0,'2019-06-18 14:35:37',0),(32,'58076','FILTRO TAMROCK 500 AIRE COMPRESOR PR',0.00,1,1,0,'0',1,6,0,'2019-06-18 14:35:37',0),(33,'58077','FILTRO TAMROCK 500 AIRE SECUNDARIO M',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(34,'58078','FILTRO TAMROCK 500 AIRE  PRIMARIO MO',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(35,'58079','FILTRO TAMROCK 500 AIRE COMPRESOR SE',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(36,'58080','FILTRO TAMROCK 500 GASOIL ART8823923',0.00,1,3,0,'0',1,6,0,'2019-06-18 14:35:37',0),(37,'58081','FILTRO TAMROCK 500 GASOIL SEPARADOR',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(38,'58082','FILTRO TAMROCK 500 ACEITE MOTOR ART',0.00,1,3,0,'0',1,6,0,'2019-06-18 14:35:37',0),(39,'50190','ARANDELA DE BRONCE 7K-1840 P/CAT 966',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(40,'50236','ARANDELAS N  7K-1839 P/CATERPILLAR 9',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(41,'50465','BULON ART. NRO. 6729510 P/ BOB CATERPILLAR',0.00,0,0,5,'0',1,6,0,'2019-06-18 14:35:37',0),(42,'50712','BULON   P/ CAT- 966 DIENTE DE CARGAD',0.00,1,22,5,'0',1,6,0,'2019-06-18 14:35:37',0),(43,'50714','BULON  8T -6466 P/AIRE ACONDI CAT -',0.00,1,0,5,'0',1,6,0,'2019-06-18 14:35:37',0),(44,'50966','COMPRESOR DE AIRE Nâ€  8N 6105 P / CAT',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(45,'51084','CORREA DE ALTERNAD. P/BOBCAT ART.710',0.00,1,5,0,'0',1,6,0,'2019-06-18 14:35:37',0),(46,'51188','CORTA CORRIENTE DE 24 VOLT. P/CAT 98',0.00,1,1,0,'0',1,6,0,'2019-06-18 14:35:37',0),(47,'51208','CUBIERTA 10 X 16.5 SOLIDEAL P/BOBCAT',0.00,1,1,0,'0',1,6,0,'2019-06-18 14:35:37',0),(48,'51259','DIAFRAGMA Nâ€  5V 6125 P/ CAT 980',0.00,1,3,0,'0',1,6,0,'2019-06-18 14:35:37',0),(49,'51455','FILTRO BOBCAT ACEIT,HID.Nâ€ 6661248',0.00,1,2,0,'0',1,6,0,'2019-06-18 14:35:37',0),(50,'51456','FILTRO BOBCAT ACEIT,MOTOR Nâ€ 03974896',0.00,1,2,0,'0',1,6,0,'2019-06-18 14:35:37',0),(51,'51457','FILTRO BOBCAT AIRE PRIM.Nâ€ 06598492',0.00,1,8,0,'0',1,6,0,'2019-06-18 14:35:37',0),(52,'51458','FILTRO BOBCAT AIRE SEC.Nâ€ 06598362',0.00,1,9,0,'0',1,6,0,'2019-06-18 14:35:37',0),(53,'51459','FILTRO BOBCAT COMB.Nâ€ 06667352',0.00,1,7,0,'0',1,6,0,'2019-06-18 14:35:37',0),(54,'51460','FILTRO CAT-966 ACEIT/CONV Nâ€ 9740',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(55,'51461','FILTRO CAT-966 ACEIT/HID,Nâ€ 156-0741-',0.00,1,1,0,'0',1,6,0,'2019-06-18 14:35:37',0),(56,'51462','FILTRO CAT-966 ACEITE Nâ€ 1R-0739',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(57,'51463','FILTRO CAT-966 AIRE PRIMARIO 2453818',0.00,1,1,0,'0',1,6,0,'2019-06-18 14:35:37',0),(58,'51464','FILTRO CAT-966 AIRE SECUNDARIO 24538',0.00,1,1,0,'0',1,6,0,'2019-06-18 14:35:37',0),(59,'51465','FILTRO CAT-966 COMB,Nâ€ 1P-2299-BOSCH',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(60,'51466','FILTRO CAT-980 ACEITE MOTOR',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(61,'51467','FILTRO CAT-980 ACEIT/HIDRAULICO',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(62,'51468','FILTRO CAT-980 TRASMISION',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(63,'51469','FILTRO CAT-980 FILTRO SEPARADOR DE A',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(64,'51470','FILTRO CAT-980 CABINA',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(66,'51685','GUIA Nâ€  2 L-3650 P/CAT 966',0.00,1,1,0,'0',1,6,0,'2019-06-18 14:35:37',0),(67,'51825','JUNTA Nâ€  8S-1605 P/CAT.966',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(68,'51826','JUNTA Nâ€  9Y-1979 P/CAT.966',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(69,'51829','JUNTA NRO. 6684788 P/BOB CAT',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(70,'52317','PERNO DE BALDE  NRO. 8K- 5334 P/CAT.',0.00,1,2,0,'0',1,6,0,'2019-06-18 14:35:37',0),(71,'53371','SELLO  N: 2H-6368 P/CAT. 966',0.00,1,6,0,'0',1,6,0,'2019-06-18 14:35:37',0),(72,'53394','SELLO Nâ€  6D 692 P/ CAT -980',0.00,1,4,0,'0',1,6,0,'2019-06-18 14:35:37',0),(73,'53703','TUERCA P/BOBCAT S150 Nâ‚¬ 6674202',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(74,'53706','TUERCA PARA BULON DE RUEDA, P/ CAT.',0.00,1,20,0,'0',1,6,0,'2019-06-18 14:35:37',0),(75,'53918','COJINETE  5M 578 CAT-966',0.00,1,4,0,'0',1,6,0,'2019-06-18 14:35:37',0),(76,'54023','BULON 1604 P/CAT 980',0.00,1,8,0,'0',1,6,0,'2019-06-18 14:35:37',0),(77,'54042','CABLE DE ACELERADOR P/CAT 980 ART 3V',0.00,1,1,0,'0',1,6,0,'2019-06-18 14:35:37',0),(78,'54210','JUNTA 5S-4629 P/CAT-966',0.00,1,2,0,'0',1,6,0,'2019-06-18 14:35:37',0),(79,'57873','FILTRO DE COMBUSTIBLE CAT 966H 1R-07',0.00,1,3,0,'0',1,6,0,'2019-06-18 14:35:37',0),(80,'57874','FILTRO  DE  ACEITE MOTOR CAT 966H 1R',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(81,'57876','FILTRO  DE  ACEITE  HIDRAULICO  CAT',0.00,1,7,0,'0',1,6,0,'2019-06-18 14:35:37',0),(82,'54012','BASE  PORTA FILTRO  ART 6N 1044 CAT',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(83,'54833','CAMISA CILINDRO DE MOTOR CAT-3306',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(84,'54834','JUEGO DE AROS DE MOTOR CAT-3306',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(85,'57913','RADIADOR AGUA P/CAT 966H',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(86,'58036','TERMOSTATO  NRO 281- 8744 P/CAT 924',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(87,'58038','TERMOSTATO  NRO 248 -5513 P/CAT 966',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(88,'58275','FILTRO CAT-980 MOTOR 1R-1808',0.00,1,3,0,'0',1,6,0,'2019-06-18 14:35:37',0),(89,'58276','FILTRO CAT-980 GASOIL 1R0749',0.00,1,4,0,'0',1,6,0,'2019-06-18 14:35:37',0),(90,'58277','FILTRO CAT-980 GASOIL SEP 326-1644',0.00,0,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(91,'58278','FILTRO CAT-980 AIRE PRIMARIO 151-773',0.00,1,3,0,'0',1,6,0,'2019-06-18 14:35:37',0),(92,'58279','FILTRO CAT-980 AIRE SECUNDARIO 18902',0.00,1,7,0,'0',1,6,0,'2019-06-18 14:35:37',0),(93,'50182','ARANDELA ART, 01643-32260 P/ KOMATSU',0.00,1,0,88,'0',1,6,0,'2019-06-18 14:35:37',0),(94,'50400','BRACKET P/KOMATSU P/KOMATSU 470',0.00,1,2,0,'0',1,6,0,'2019-06-18 14:35:37',0),(95,'50436','BUJE Nâ€  17177-04530 P/KOMATSU WA 420',0.00,1,1,0,'0',1,6,0,'2019-06-18 14:35:37',0),(96,'50461','BUJIA NRO. 600-815-2770 P/KOMATSU 42',0.00,0,0,4,'0',1,6,0,'2019-06-18 14:35:37',0),(97,'50684','BULON NRO. 16202091-12050 P/ KOMATSU',0.00,1,22,5,'0',1,6,0,'2019-06-18 14:35:37',0),(98,'50685','BULON NRO. 419-70-13150 P/KOMATSU 25',0.00,1,12,5,'0',1,6,0,'2019-06-18 14:35:37',0),(99,'50689','BULON P/KOMATSU 470 N 2 ART. 09208-1',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(100,'50715','BULON  DE CARDAN P/ KOMATSU 420-3 Nâ€ ',0.00,1,9,0,'0',1,6,0,'2019-06-18 14:35:37',0),(101,'50716','BULON  P/ KOMATSU Nâ€  02090-11490',0.00,1,41,0,'0',1,6,0,'2019-06-18 14:35:37',0),(102,'50717','BULON   DE CARDAN P/ KOMATSU 420-3 N',0.00,1,23,0,'0',1,6,0,'2019-06-18 14:35:37',0),(103,'51179','CORREA NRO. 6732-81-6170 , P/KOMATSU',0.00,1,2,0,'0',1,6,0,'2019-06-18 14:35:37',0),(104,'51196','CRUCETA NRO. 418-20-34620 P/KOMATSU',0.00,1,1,0,'0',1,6,0,'2019-06-18 14:35:37',0),(105,'51197','CRUCETA NRO. 421-20-12620 P/KOMATSU',0.00,1,1,0,'0',1,6,0,'2019-06-18 14:35:37',0),(121,'51198','ESPEJO NRO. 421-54-25620 P/KOMATSU 4',0.00,0,NULL,NULL,'0',1,6,0,'2019-06-18 14:35:37',0),(130,'51195','CRUCETA NRO 418-20-32620 , P/KOMATSU',0.00,1,1,0,'0',1,6,0,'2019-06-18 14:35:37',0),(133,'51808','JUNTA ANULAR P/KOMATSU 470  ART.600-',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(134,'52304','PASADOR P/KOMATSU 470 ART, 092440251',0.00,1,3,0,'0',1,6,0,'2019-06-18 14:35:37',0),(135,'52408','PLATOS NRO. 421-70-22140  P/ KOMATSU',0.00,1,4,0,'0',1,6,0,'2019-06-18 14:35:37',0),(136,'53377','SELLO 421- 33 - 11480 P/ KOMATSU 420',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(137,'53637','TUERCA 09218 - 12219 P/ KOMATSU WA 4',0.00,1,2,0,'0',1,6,0,'2019-06-18 14:35:37',0),(138,'53693','TUERCA Nâ€  02290 - 11422 P/KOMATSU WA',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(139,'53695','TUERCA NRO. 02290-11625, P/KOMATSU 4',0.00,1,9,0,'0',1,6,0,'2019-06-18 14:35:37',0),(140,'53696','TUERCA NRO. 091218-12523 P/KOMATSU 2',0.00,1,16,0,'0',1,6,0,'2019-06-18 14:35:37',0),(141,'53698','TUERCA NRO. 16202290-12031 P/KOMATSU',0.00,1,21,0,'0',1,6,0,'2019-06-18 14:35:37',0),(142,'53700','TUERCA NRO.02290-11422 P/KOMATSU',0.00,1,2,0,'0',1,6,0,'2019-06-18 14:35:37',0),(143,'53721','TUERCAS N Âº 09218-12219 P/ KOMATSU',0.00,1,6,0,'0',1,6,0,'2019-06-18 14:35:37',0),(144,'53820','VALVULA P/ FILTRO DE AIRE P/KOMATSU',0.00,1,2,0,'0',1,6,0,'2019-06-18 14:35:37',0),(145,'53991','ACOPLE NRO  09281-00041 P/KOMATSU 25',0.00,1,1,0,'0',1,6,0,'2019-06-18 14:35:37',0),(146,'54019','BUJE 421-70-11272 P/KOMATSU 470',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(147,'54045','CABLE  NRO 424-9916110  P/KOMATSU',0.00,1,1,0,'0',1,6,0,'2019-06-18 14:35:37',0),(148,'54150','FILT.KOMATSU 470 /2 COMBUSTIBLE 600-',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(149,'54411','SEGURO NRO. 09283-00000 P/KOMATSU 25',0.00,1,1,0,'0',1,6,0,'2019-06-18 14:35:37',0),(150,'54432','TAPA  NRO 09282-00017 P/KOMATSU 250',0.00,1,1,0,'0',1,6,0,'2019-06-18 14:35:37',0),(151,'54504','TUERCA DE ACERO / KOMATSU 420',0.00,1,8,0,'0',1,6,0,'2019-06-18 14:35:37',0),(152,'54505','BULON NRO 16201010-62075 P/KOMATSU',0.00,1,3,0,'0',1,6,0,'2019-06-18 14:35:37',0),(153,'54929','JUNTA ANULAR PARA KOMATSU 470 ART: 1',0.00,1,1,0,'0',1,6,0,'2019-06-18 14:35:37',0),(154,'55204','TUERCA P/ EJE DELANTERO P/ KOMATSU 4',0.00,1,9,0,'0',1,6,0,'2019-06-18 14:35:37',0),(155,'55242','ALTERNADOR DE 24V. P/KOMATSU',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(156,'51439','FAROS  TOYOTA 3.0',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(157,'51486','FILTRO COMBUSTIBLE  CLARK TOYOTA 233',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(158,'51488','FILTRO CLARK TOYOTA MOTOR 90915-2000',0.00,1,3,0,'0',1,6,0,'2019-06-18 14:35:37',0),(159,'51490','FILTRO CLARK TOYOTA CONVERTIDOR 3267',0.00,1,1,0,'0',1,6,0,'2019-06-18 14:35:37',0),(160,'51516','FILTRO CLARK TOYOTA HIDRAULICO 67502',0.00,1,4,0,'0',1,6,0,'2019-06-18 14:35:37',0),(161,'51517','FILTRO CLARK TOYOTA AIRE SECUNDARIO',0.00,1,4,0,'0',1,6,0,'2019-06-18 14:35:37',0),(162,'51518','FILTRO CLARK TOYOTA AIRE PRIMARIO P8',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(163,'50386','BOMBIN DE GASOIL P/BOBCAT ART.665773',0.00,1,100,6,'0',1,6,0,'2019-06-18 14:35:37',0),(165,'56174','LLANTA NRO. NRPB03535239 P/ BOBCAT S',0.00,1,0,0,'0',1,6,0,'2019-06-18 14:35:37',0),(249,'57653456','bulon de escalera ',0.00,1,0,1,'0',1,7,0,'2019-06-18 14:35:37',0),(250,'1R-1825 ','filtro ',0.00,1,2,4,'0',1,7,0,'2019-06-18 14:35:37',0),(251,'sdsad','sdsd',0.00,1,0,2,'0',1,7,0,'2019-06-18 14:35:37',0),(252,'07','Mamelucos descartables ',0.00,1,23,10,'0',1,7,0,'2019-06-18 14:35:37',0),(254,'TVK ','Guantes ',0.00,1,22,12,'0',1,7,0,'2019-06-18 14:35:37',0),(256,'TVK 01','Mameluco Descartable Nobus ',0.00,1,25,10,'0',1,7,0,'2019-06-18 14:35:37',0),(257,'TVK 02 ','3M',0.00,1,3,1,'0',1,7,0,'2019-06-18 14:35:37',0),(258,'TVK 03','Dupont ',0.00,1,2,1,'0',1,7,0,'2019-06-18 14:35:37',0),(265,'1626105281// 1604707982','Valvulas',0.00,1,2,2,'0',1,7,0,'2019-06-18 14:35:37',0),(266,'3128082907','Mordazas',0.00,1,2,2,'0',1,7,0,'2019-06-18 14:35:37',0),(267,'3222327788','Sensor de Nivel',0.00,1,1,1,'0',1,7,0,'2019-06-18 14:35:37',0),(271,'265326447','Sensor de proximidad ',0.00,1,1,2,'0',1,7,0,'2019-06-18 14:35:37',0),(272,'165788','Sensor IFM ',0.00,1,2,2,'0',1,7,0,'2019-06-18 14:35:37',0),(273,'333','dsdasdad',0.00,0,0,4,'0',1,6,0,'2019-06-18 14:35:37',0),(274,'P164699','Filtro Hidraulico 52263183',0.00,1,3,1,'0',1,7,0,'2019-06-18 14:35:37',0),(275,'57516098','filtro cabina SC90271',0.00,1,6,1,'0',1,7,0,'2019-06-18 14:35:37',0),(276,'P182042','Filtro aire Motor 52252061',0.00,1,8,2,'0',1,7,0,'2019-06-18 14:35:37',0),(280,'P128408','filtro aire motor 52146966',0.00,1,8,2,'0',1,7,0,'2019-06-18 14:35:37',0),(282,'P551808','Filtro aceite motor  1R1808',0.00,1,8,2,'0',1,7,0,'2019-06-18 14:35:37',0),(285,'222','Filtro aire',0.00,0,0,0,'0',1,7,0,'2019-06-18 14:35:37',0),(286,'P551311','Filtro combustible 1R0749',0.00,1,8,2,'0',1,7,0,'2019-06-18 14:35:37',0),(287,'P564425','Filtro respiradero 50903236',0.00,1,6,1,'0',1,7,0,'2019-06-18 14:35:37',0),(288,'P165672','Filtro HidrÃ¡ulico 36860336',0.00,1,2,1,'0',1,7,0,'2019-06-18 14:35:37',0),(289,'P181054','Filtro aire cabina superior 59860841',0.00,1,6,1,'0',1,7,0,'2019-06-18 14:35:37',0),(290,'P520620','Filtro aire 56958945',0.00,1,2,1,'0',1,7,0,'2019-06-18 14:35:37',0),(291,'P552055','Filtro Refrigerante  56985971',0.00,1,6,2,'0',1,7,0,'2019-06-18 14:35:37',0),(292,'SC 90270','Filtro cabina 57516106',0.00,1,6,1,'0',1,7,0,'2019-06-18 14:35:37',0),(293,'P550900','Filtro trampa 3261643',0.00,1,6,2,'0',1,7,0,'2019-06-18 14:35:37',0),(294,'57569758','Filtro separador',0.00,1,2,1,'0',1,7,0,'2019-06-18 14:35:37',0),(295,'P566278','Filtro hidraulico 57336406',0.00,1,2,1,'0',1,7,0,'2019-06-18 14:35:37',0),(296,'57451890','Compresor Aire Acondicionado',0.00,1,1,1,'0',1,7,0,'2019-06-18 14:35:37',0),(297,'88257429','Compresor Aire Acondicionado. DP 1500',0.00,1,1,1,'0',1,7,0,'2019-06-18 14:35:37',0),(298,'57364366','Filtro secador A/A',0.00,1,1,1,'0',1,7,0,'2019-06-18 14:35:37',0),(299,'3128 0829 07','Mordazas mesa de quiebre ',0.00,1,4,2,'0',1,7,0,'2019-06-18 14:35:37',0),(300,'3222 3113 62','Espaciador ',0.00,1,2,2,'0',1,7,0,'2019-06-18 14:35:37',0),(301,' 0211 1963 16','Bulon  M12 ',0.00,1,8,4,'0',1,7,0,'2019-06-18 14:35:37',0),(302,'0211 1960 85','Bulon M12 ',0.00,1,4,2,'0',1,7,0,'2019-06-18 14:35:37',0),(303,'1626 1052 81','Valvulas ',0.00,1,2,1,'0',1,7,0,'2019-06-18 14:35:37',0),(304,'3222 3277 88','Sensor de nivel ',0.00,1,1,1,'0',1,7,0,'2019-06-18 14:35:37',0),(305,'3222 3208 86 ','Sensor de proximidad ',0.00,1,1,1,'0',1,7,0,'2019-06-18 14:35:37',0),(306,'2653 1264 47','Sensor de proximidad ',0.00,1,1,1,'0',1,7,0,'2019-06-18 14:35:37',0),(307,'3222 1488 00','Sensor de proximidad ',0.00,1,2,1,'0',1,7,0,'2019-06-18 14:35:37',0),(309,'Tyvek ','Mameluco descartables ',0.00,1,21,15,'0',1,7,0,'2019-06-18 14:35:37',0),(310,'Tyvek ll ','Mameluco para lluvia ',0.00,1,1,1,'0',1,7,0,'2019-06-18 14:35:37',0),(311,'Gafas ','Gafas oscuras ',0.00,1,6,5,'0',1,7,0,'2019-06-18 14:35:37',0),(312,'Gafas Claras ','Gafas claras ',0.00,1,23,5,'0',1,7,0,'2019-06-18 14:35:37',0),(313,'Gafas Amarillas','Gafas amarillas',0.00,1,1,2,'0',1,7,0,'2019-06-18 14:35:37',0),(314,'Protector auditivo ','Endeurales ',0.00,1,10,5,'0',1,7,0,'2019-06-18 14:35:37',0),(315,'Tijera','Tijera de bloqueo ',0.00,1,5,2,'0',1,7,0,'2019-06-18 14:35:37',0),(316,'Filtros P100','Filtro para semimascara ',0.00,1,2,1,'0',1,7,0,'2019-06-18 14:35:37',0),(317,'Semi-mascara ','Semi mascara ',0.00,1,5,1,'0',1,7,0,'2019-06-18 14:35:37',0),(321,'Protector auditivo C','Tipo copa ',0.00,1,2,1,'0',1,7,0,'2019-06-18 14:35:37',0),(322,'ArnÃ©s C ','ArnÃ©s para casco ',0.00,1,1,1,'0',1,7,0,'2019-06-18 14:35:37',0),(323,'Antiparras','para viento ',0.00,1,2,1,'0',1,7,0,'2019-06-18 14:35:37',0),(324,'Guantes ','Guantes multiflex ',0.00,1,2,1,'0',1,7,0,'2019-06-18 14:35:37',0),(326,'Guantes 1 ','Nitrillo ',0.00,1,10,8,'0',1,7,0,'2019-06-18 14:35:37',0),(327,'Guantes de Goma ','Goma ',0.00,1,2,1,'0',1,7,0,'2019-06-18 14:35:37',0),(328,'Guantes C. abrigo ','Guantes de cuero con abrigo ',0.00,1,21,10,'0',1,7,0,'2019-06-18 14:35:37',0),(329,'Guantes  S. Abrigo ','Guantes cuero sin abrigo ',0.00,1,6,10,'0',1,7,0,'2019-06-18 14:35:37',0),(330,'Casco ','de seguridad ',0.00,1,2,1,'0',1,7,0,'2019-06-18 14:35:37',0),(332,'Casco de seguridad ','casco completo ',0.00,1,2,1,'0',1,7,0,'2019-06-18 14:35:37',0),(333,'13AV1280','Correa 64 ',0.00,1,3,1,'0',1,7,0,'2019-06-18 14:35:37',0),(334,'13AV1290','Correa 64',0.00,1,3,1,'0',1,7,0,'2019-06-18 14:35:37',0),(335,'13AV1305','Correa 64',0.00,1,3,1,'0',1,7,0,'2019-06-18 14:35:37',0),(336,'C13AV1325 ','Correa TC',0.00,1,3,1,'0',1,7,0,'2019-06-18 14:35:37',0),(337,'C13AC1450','Correa TC ',0.00,1,2,1,'0',1,7,0,'2019-06-18 14:35:37',0),(338,'13AV1445','Correa 64 ',0.00,1,1,1,'0',1,7,0,'2019-06-18 14:35:37',0),(339,'Multis EP2','Grasa ',0.00,1,4,2,'0',1,7,0,'2019-06-18 14:35:37',0),(340,'Lampara 24V','A-2008 24V/5w',0.00,1,10,5,'0',1,7,0,'2019-06-18 14:35:37',0),(341,'T-1055','Terminal para baterÃ­a ',0.00,1,20,5,'0',1,7,0,'2019-06-18 14:35:37',0),(342,'23-35R','Abrazadera ',0.00,1,10,5,'0',1,7,0,'2019-06-18 14:35:37',0),(343,'30-45R','Abrazadera ',0.00,1,10,5,'0',1,7,0,'2019-06-18 14:35:37',0),(344,'50-70R','Abrazadera ',0.00,1,10,5,'0',1,7,0,'2019-06-18 14:35:37',0),(345,'70-90R','Abrazadera ',0.00,1,10,3,'0',1,7,0,'2019-06-18 14:35:37',0),(346,'90-110R','Abrazadera ',0.00,1,6,3,'0',1,7,0,'2019-06-18 14:35:37',0),(347,'AEA-24','Escobilla',0.00,1,10,4,'0',1,7,0,'2019-06-18 14:35:37',0),(348,'AEA-22','Escobilla',0.00,1,10,5,'0',1,7,0,'2019-06-18 14:35:37',0),(349,'LM-3500','Crema limpiadora de manos ',0.00,1,2,1,'0',1,7,0,'2019-06-18 14:35:37',0),(350,'CRF 3','Fusible 3A ',0.00,1,10,3,'0',1,7,0,'2019-06-18 14:35:37',0),(351,'GRF 5 ','Fusible 5A',0.00,1,10,3,'0',1,7,0,'2019-06-18 14:35:37',0),(352,'GRF3 ','Fusible 3A',0.00,1,10,3,'0',1,7,0,'2019-06-18 14:35:37',0),(353,'GRF15','Fusible 15A',0.00,1,10,3,'0',1,7,0,'2019-06-18 14:35:37',0),(354,'GRF10 ','Fusible 10A',0.00,1,10,3,'0',1,7,0,'2019-06-18 14:35:37',0),(355,'GRF25','Fusible 25A',0.00,1,10,3,'0',1,7,0,'2019-06-18 14:35:37',0),(356,'GRF20','Fusible 20A',0.00,0,0,3,'0',1,7,0,'2019-06-18 14:35:37',0),(357,'GRF30','Fusible 30A',0.00,1,10,3,'0',1,7,0,'2019-06-18 14:35:37',0),(358,'Tira LED','24V Blanco ',0.00,1,300,20,'0',1,7,0,'2019-06-18 14:35:37',0),(359,'Ficha para LED','Ficha para conexiÃ³n de tira LED ',0.00,1,15,4,'0',1,7,0,'2019-06-18 14:35:37',0),(360,'000001','aceite motor ',0.00,1,50,10,'0',1,8,0,'2019-06-18 14:35:37',0),(361,'EB-GZ','Articulo de Prueba',0.00,1,5,5,'1',0,1,1,'2019-06-20 14:54:54',0),(362,'FER-18','PERFECTO',0.00,1,3,6,'1',0,6,1,'2019-06-21 12:26:46',0),(363,'FDF100-0001','Rueda trasera',0.00,0,0,4,'1',0,6,0,'2019-06-21 20:12:21',0),(364,'Eli-Ber','articulo nuevo',0.00,1,6,12,'1',0,6,1,'2019-06-23 16:22:59',0);
-/*!40000 ALTER TABLE `alm_articulos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `alm_depositos`
---
-
-DROP TABLE IF EXISTS `alm_depositos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `alm_depositos` (
-  `depo_id` int(11) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(255) DEFAULT NULL,
-  `direccion` varchar(255) DEFAULT NULL,
-  `GPS` varchar(255) DEFAULT NULL,
-  `estado` varchar(4) DEFAULT NULL,
-  `loca_id` varchar(255) DEFAULT NULL,
-  `esta_id` varchar(255) DEFAULT NULL,
-  `pais_id` varchar(255) DEFAULT NULL,
-  `empr_id` int(11) NOT NULL,
-  `fec_alta` datetime DEFAULT CURRENT_TIMESTAMP,
-  `eliminado` tinyint(4) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`depo_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `alm_depositos`
---
-
-LOCK TABLES `alm_depositos` WRITE;
-/*!40000 ALTER TABLE `alm_depositos` DISABLE KEYS */;
-INSERT INTO `alm_depositos` VALUES (1,'Deposito A','Direccion A','AAA','1','1','1','1',1,'2019-06-03 14:10:31',0),(2,'Deposito B','Direccion B','BBB','1','1','1','1',1,'2019-06-03 14:10:31',0),(3,'Deposito C','Direccion C','CCC','1','1','1','1',1,'2019-06-03 14:10:31',0),(4,'Deposito 1','direccion 1','','AC','','',NULL,6,'2019-06-23 13:28:22',0),(5,'Deposito 2','direccion 2','','AC','','',NULL,6,'2019-06-23 13:28:02',0),(6,'Deposito 3','direccion 3','+34 -44','AC','','',NULL,6,'2019-06-23 12:33:07',0),(7,'Deposito 4','direccion 4','','AC','','',NULL,6,'2019-06-23 13:27:46',0);
-/*!40000 ALTER TABLE `alm_depositos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `alm_deta_entrega_materiales`
---
-
-DROP TABLE IF EXISTS `alm_deta_entrega_materiales`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `alm_deta_entrega_materiales` (
-  `deen_id` int(11) NOT NULL AUTO_INCREMENT,
-  `enma_id` int(11) NOT NULL,
-  `cantidad` int(11) NOT NULL,
-  `arti_id` int(11) NOT NULL,
-  `prov_id` int(10) DEFAULT NULL,
-  `lote_id` int(11) NOT NULL,
-  `depo_id` int(11) DEFAULT NULL,
-  `empr_id` int(11) NOT NULL,
-  `precio` double DEFAULT NULL,
-  `fec_alta` datetime DEFAULT CURRENT_TIMESTAMP,
-  `eliminado` tinyint(4) DEFAULT '0',
-  PRIMARY KEY (`deen_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `alm_deta_entrega_materiales`
---
-
-LOCK TABLES `alm_deta_entrega_materiales` WRITE;
-/*!40000 ALTER TABLE `alm_deta_entrega_materiales` DISABLE KEYS */;
-/*!40000 ALTER TABLE `alm_deta_entrega_materiales` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `alm_deta_pedidos_materiales`
---
-
-DROP TABLE IF EXISTS `alm_deta_pedidos_materiales`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `alm_deta_pedidos_materiales` (
-  `depe_id` int(11) NOT NULL AUTO_INCREMENT,
-  `cantidad` int(11) DEFAULT NULL,
-  `resto` int(11) DEFAULT NULL,
-  `fecha_entrega` date DEFAULT NULL,
-  `fecha_entregado` date DEFAULT NULL,
-  `pema_id` int(11) NOT NULL,
-  `arti_id` int(11) NOT NULL,
-  `fec_alta` datetime DEFAULT CURRENT_TIMESTAMP,
-  `eliminado` tinyint(4) DEFAULT '0',
-  PRIMARY KEY (`depe_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `alm_deta_pedidos_materiales`
---
-
-LOCK TABLES `alm_deta_pedidos_materiales` WRITE;
-/*!40000 ALTER TABLE `alm_deta_pedidos_materiales` DISABLE KEYS */;
-/*!40000 ALTER TABLE `alm_deta_pedidos_materiales` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `alm_deta_recepcion_materiales`
---
-
-DROP TABLE IF EXISTS `alm_deta_recepcion_materiales`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `alm_deta_recepcion_materiales` (
-  `dere_id` int(11) NOT NULL AUTO_INCREMENT,
-  `cantidad` double NOT NULL,
-  `precio` double NOT NULL,
-  `empr_id` int(11) NOT NULL,
-  `rema_id` int(11) NOT NULL,
-  `lote_id` int(11) NOT NULL,
-  `prov_id` int(10) NOT NULL,
-  `arti_id` int(11) NOT NULL,
-  `fec_alta` datetime DEFAULT CURRENT_TIMESTAMP,
-  `eliminado` tinyint(4) DEFAULT '0',
-  PRIMARY KEY (`dere_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `alm_deta_recepcion_materiales`
---
-
-LOCK TABLES `alm_deta_recepcion_materiales` WRITE;
-/*!40000 ALTER TABLE `alm_deta_recepcion_materiales` DISABLE KEYS */;
-/*!40000 ALTER TABLE `alm_deta_recepcion_materiales` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `alm_entrega_materiales`
---
-
-DROP TABLE IF EXISTS `alm_entrega_materiales`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `alm_entrega_materiales` (
-  `enma_id` int(11) NOT NULL AUTO_INCREMENT,
-  `fecha` date DEFAULT NULL,
-  `solicitante` varchar(100) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `dni` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `destino` varchar(100) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `comprobante` varchar(50) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `empr_id` int(11) NOT NULL,
-  `pema_id` int(11) DEFAULT NULL,
-  `fec_alta` datetime DEFAULT CURRENT_TIMESTAMP,
-  `eliminado` tinyint(4) DEFAULT '0',
-  PRIMARY KEY (`enma_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `alm_entrega_materiales`
---
-
-LOCK TABLES `alm_entrega_materiales` WRITE;
-/*!40000 ALTER TABLE `alm_entrega_materiales` DISABLE KEYS */;
-/*!40000 ALTER TABLE `alm_entrega_materiales` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `alm_lotes`
---
-
-DROP TABLE IF EXISTS `alm_lotes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `alm_lotes` (
-  `lote_id` int(11) NOT NULL AUTO_INCREMENT,
-  `prov_id` int(10) NOT NULL,
-  `arti_id` int(11) NOT NULL,
-  `depo_id` int(11) NOT NULL,
-  `codigo` varchar(255) DEFAULT NULL,
-  `fec_vencimiento` date DEFAULT NULL,
-  `cantidad` float DEFAULT NULL,
-  `empr_id` int(11) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `estado_id` int(11) DEFAULT NULL,
-  `fec_alta` datetime DEFAULT CURRENT_TIMESTAMP,
-  `eliminado` tinyint(4) DEFAULT '0',
-  PRIMARY KEY (`lote_id`,`prov_id`,`arti_id`,`depo_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `alm_lotes`
---
-
-LOCK TABLES `alm_lotes` WRITE;
-/*!40000 ALTER TABLE `alm_lotes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `alm_lotes` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `alm_pedidos_extraordinario`
---
-
-DROP TABLE IF EXISTS `alm_pedidos_extraordinario`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `alm_pedidos_extraordinario` (
-  `peex_id` int(11) NOT NULL AUTO_INCREMENT,
-  `fecha` date DEFAULT NULL,
-  `detalle` varchar(200) COLLATE utf8_turkish_ci DEFAULT NULL,
-  `motivo_rechazo` varchar(200) COLLATE utf8_turkish_ci DEFAULT NULL,
-  `case_id` int(11) DEFAULT NULL,
-  `pema_id` int(11) DEFAULT NULL,
-  `ortr_id` int(11) DEFAULT NULL,
-  `empr_id` int(11) DEFAULT NULL,
-  `fec_alta` datetime DEFAULT CURRENT_TIMESTAMP,
-  `eliminado` tinyint(4) DEFAULT '0',
-  PRIMARY KEY (`peex_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_turkish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `alm_pedidos_extraordinario`
---
-
-LOCK TABLES `alm_pedidos_extraordinario` WRITE;
-/*!40000 ALTER TABLE `alm_pedidos_extraordinario` DISABLE KEYS */;
-/*!40000 ALTER TABLE `alm_pedidos_extraordinario` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `alm_pedidos_materiales`
---
-
-DROP TABLE IF EXISTS `alm_pedidos_materiales`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `alm_pedidos_materiales` (
-  `pema_id` int(11) NOT NULL AUTO_INCREMENT,
-  `fecha` date NOT NULL,
-  `motivo_rechazo` varchar(500) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `justificacion` varchar(300) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `case_id` int(11) DEFAULT NULL,
-  `estado` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `ortr_id` int(11) NOT NULL,
-  `empr_id` int(11) DEFAULT NULL,
-  `fec_alta` datetime DEFAULT CURRENT_TIMESTAMP,
-  `eliminado` tinyint(4) DEFAULT '0',
-  PRIMARY KEY (`pema_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `alm_pedidos_materiales`
---
-
-LOCK TABLES `alm_pedidos_materiales` WRITE;
-/*!40000 ALTER TABLE `alm_pedidos_materiales` DISABLE KEYS */;
-/*!40000 ALTER TABLE `alm_pedidos_materiales` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `alm_proveedores`
---
-
-DROP TABLE IF EXISTS `alm_proveedores`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `alm_proveedores` (
-  `prov_id` int(10) NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(255) DEFAULT NULL,
-  `cuit` varchar(50) DEFAULT NULL,
-  `domicilio` varchar(255) DEFAULT NULL,
-  `telefono` varchar(50) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `empr_id` int(11) NOT NULL,
-  `fec_alta` datetime DEFAULT CURRENT_TIMESTAMP,
-  `eliminado` tinyint(4) DEFAULT '0',
-  PRIMARY KEY (`prov_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `alm_proveedores`
---
-
-LOCK TABLES `alm_proveedores` WRITE;
-/*!40000 ALTER TABLE `alm_proveedores` DISABLE KEYS */;
-INSERT INTO `alm_proveedores` VALUES (1,'Proveedor A','111','-','-','-',1,'2019-06-03 14:06:15',0),(2,'Proveedor B','222','-','-','-',1,'2019-06-03 14:06:15',0),(3,NULL,NULL,NULL,NULL,NULL,6,'2019-06-19 13:43:26',1),(4,NULL,NULL,NULL,NULL,NULL,6,'2019-06-19 13:45:12',1),(5,NULL,NULL,NULL,NULL,NULL,6,'2019-06-19 15:36:47',1),(6,NULL,NULL,NULL,NULL,NULL,6,'2019-06-19 15:39:05',1),(7,NULL,NULL,NULL,NULL,NULL,6,'2019-06-19 15:44:56',1),(8,NULL,NULL,NULL,NULL,NULL,6,'2019-06-19 21:00:54',1),(9,NULL,NULL,NULL,NULL,NULL,6,'2019-06-21 03:50:25',1),(10,NULL,NULL,NULL,NULL,NULL,6,'2019-06-21 03:55:44',1),(11,NULL,NULL,NULL,NULL,NULL,6,'2019-06-21 03:59:23',1),(12,NULL,NULL,NULL,NULL,NULL,6,'2019-06-21 04:01:38',1),(13,NULL,NULL,NULL,NULL,NULL,6,'2019-06-21 04:07:06',1),(14,NULL,NULL,NULL,NULL,NULL,6,'2019-06-21 04:08:20',1),(15,NULL,NULL,NULL,NULL,NULL,6,'2019-06-21 04:10:36',1),(16,'test final rodo','77777','sasfasf 234324','23432432',NULL,6,'2019-06-21 01:20:00',0),(17,'Proveedor 1','111111','aaaa','11111',NULL,6,'2019-06-21 09:56:57',0),(18,'Provee 3','2222','aaaaa','1111',NULL,6,'2019-06-21 10:18:35',0),(19,NULL,NULL,NULL,NULL,NULL,6,'2019-06-23 16:20:38',1);
-/*!40000 ALTER TABLE `alm_proveedores` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `alm_proveedores_articulos`
---
-
-DROP TABLE IF EXISTS `alm_proveedores_articulos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `alm_proveedores_articulos` (
-  `prov_id` int(10) NOT NULL,
-  `arti_id` int(11) NOT NULL,
-  PRIMARY KEY (`prov_id`,`arti_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `alm_proveedores_articulos`
---
-
-LOCK TABLES `alm_proveedores_articulos` WRITE;
-/*!40000 ALTER TABLE `alm_proveedores_articulos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `alm_proveedores_articulos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `alm_recepcion_materiales`
---
-
-DROP TABLE IF EXISTS `alm_recepcion_materiales`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `alm_recepcion_materiales` (
-  `rema_id` int(11) NOT NULL AUTO_INCREMENT,
-  `fecha` datetime NOT NULL,
-  `comprobante` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `empr_id` int(11) NOT NULL,
-  `prov_id` int(10) NOT NULL,
-  `fec_alta` datetime DEFAULT CURRENT_TIMESTAMP,
-  `eliminado` tinyint(4) DEFAULT '0',
-  PRIMARY KEY (`rema_id`),
-  UNIQUE KEY `comprobante_UNIQUE` (`comprobante`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `alm_recepcion_materiales`
---
-
-LOCK TABLES `alm_recepcion_materiales` WRITE;
-/*!40000 ALTER TABLE `alm_recepcion_materiales` DISABLE KEYS */;
-/*!40000 ALTER TABLE `alm_recepcion_materiales` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `area`
---
-
-DROP TABLE IF EXISTS `area`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `area` (
-  `id_area` int(11) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(100) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  `estado` varchar(45) COLLATE utf8mb4_spanish_ci NOT NULL,
-  PRIMARY KEY (`id_area`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `area`
---
-
-LOCK TABLES `area` WRITE;
-/*!40000 ALTER TABLE `area` DISABLE KEYS */;
-INSERT INTO `area` VALUES (1,'Area 1',6,'AC'),(2,'Area 2',6,'AC');
-/*!40000 ALTER TABLE `area` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Temporary table structure for view `articles`
---
-
-DROP TABLE IF EXISTS `articles`;
-/*!50001 DROP VIEW IF EXISTS `articles`*/;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-/*!50001 CREATE TABLE `articles` (
-  `artId` tinyint NOT NULL,
-  `artBarCode` tinyint NOT NULL,
-  `artDescription` tinyint NOT NULL,
-  `artCoste` tinyint NOT NULL,
-  `artIsByBox` tinyint NOT NULL,
-  `artCantbox` tinyint NOT NULL,
-  `punto_pedido` tinyint NOT NULL,
-  `artEstado` tinyint NOT NULL,
-  `unidadmedida` tinyint NOT NULL,
-  `id_empresa` tinyint NOT NULL
-) ENGINE=MyISAM */;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `asignaherramientas`
---
-
-DROP TABLE IF EXISTS `asignaherramientas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `asignaherramientas` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `herrId` int(11) DEFAULT NULL,
-  `id_orden` int(11) DEFAULT NULL,
-  `fechahora` date DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `herrId` (`herrId`),
-  KEY `id_orden` (`id_orden`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `asignaherramientas`
---
-
-LOCK TABLES `asignaherramientas` WRITE;
-/*!40000 ALTER TABLE `asignaherramientas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `asignaherramientas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `asignausuario`
---
-
-DROP TABLE IF EXISTS `asignausuario`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `asignausuario` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `usrId` int(11) DEFAULT NULL,
-  `id_orden` int(11) DEFAULT NULL,
-  `fechahora` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `usrId` (`usrId`),
-  KEY `id_orden` (`id_orden`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `asignausuario`
---
-
-LOCK TABLES `asignausuario` WRITE;
-/*!40000 ALTER TABLE `asignausuario` DISABLE KEYS */;
-/*!40000 ALTER TABLE `asignausuario` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `asp_detaplantillainsumos`
---
-
-DROP TABLE IF EXISTS `asp_detaplantillainsumos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `asp_detaplantillainsumos` (
-  `deta_id` int(11) NOT NULL AUTO_INCREMENT,
-  `artId` int(11) NOT NULL,
-  `plant_id` int(11) NOT NULL,
-  PRIMARY KEY (`deta_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `asp_detaplantillainsumos`
---
-
-LOCK TABLES `asp_detaplantillainsumos` WRITE;
-/*!40000 ALTER TABLE `asp_detaplantillainsumos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `asp_detaplantillainsumos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `asp_plantillainsumos`
---
-
-DROP TABLE IF EXISTS `asp_plantillainsumos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `asp_plantillainsumos` (
-  `plant_id` int(11) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(100) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `id_empresa` int(11) DEFAULT NULL,
-  `plant_nombre` varchar(50) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `estado` varchar(10) COLLATE utf8_spanish_ci DEFAULT NULL,
-  PRIMARY KEY (`plant_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `asp_plantillainsumos`
---
-
-LOCK TABLES `asp_plantillainsumos` WRITE;
-/*!40000 ALTER TABLE `asp_plantillainsumos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `asp_plantillainsumos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `asp_subtareas`
---
-
-DROP TABLE IF EXISTS `asp_subtareas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `asp_subtareas` (
-  `id_subtarea` int(11) NOT NULL AUTO_INCREMENT,
-  `tareadescrip` varchar(5000) COLLATE utf8_spanish_ci NOT NULL,
-  `id_tarea` int(11) NOT NULL,
-  `estado` varchar(5) COLLATE utf8_spanish_ci NOT NULL,
-  `duracion_prog` int(11) DEFAULT NULL,
-  `form_asoc` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id_subtarea`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `asp_subtareas`
---
-
-LOCK TABLES `asp_subtareas` WRITE;
-/*!40000 ALTER TABLE `asp_subtareas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `asp_subtareas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `ciudades`
---
-
-DROP TABLE IF EXISTS `ciudades`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ciudades` (
-  `idCiudades` int(11) NOT NULL AUTO_INCREMENT,
-  `Paises_Codigo` varchar(2) NOT NULL,
-  `Ciudad` varchar(100) NOT NULL,
-  PRIMARY KEY (`idCiudades`),
-  KEY `Paises_Codigo` (`Paises_Codigo`),
-  KEY `Ciudad` (`Ciudad`)
-) ENGINE=MyISAM AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ciudades`
---
-
-LOCK TABLES `ciudades` WRITE;
-/*!40000 ALTER TABLE `ciudades` DISABLE KEYS */;
-INSERT INTO `ciudades` VALUES (1,'AR','Buenos Aires'),(2,'AR','Santa Fe'),(3,'AR','CÃ³rdoba'),(4,'AR','Misiones'),(5,'AR','Entre Rios'),(6,'AR','Mendoza'),(7,'AR','San Juan'),(8,'AR','TucumÃ¡n'),(9,'AR','Tierra del Fuego'),(10,'AR','Chaco'),(11,'AR','La Pampa'),(12,'AR','Jujuy'),(13,'AR','Rio Negro'),(14,'AR','Chubut'),(15,'AR','Corrientes'),(16,'AR','Santa Cruz'),(17,'AR','Salta'),(18,'AR','San Luis'),(19,'AR','Neuquen'),(20,'AR','Catamarca'),(21,'AR','Santiago del Estero'),(22,'AR','La Rioja'),(23,'AR','Formosa');
-/*!40000 ALTER TABLE `ciudades` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `clientes`
---
-
-DROP TABLE IF EXISTS `clientes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `clientes` (
-  `clinteid` int(11) NOT NULL AUTO_INCREMENT,
-  `clientrazonsocial` varchar(255) DEFAULT NULL,
-  `clientdireccion` varchar(255) DEFAULT NULL,
-  `clientmail` varchar(255) DEFAULT NULL,
-  `clienttelefono` int(11) DEFAULT NULL,
-  `clientetelefono1` varchar(255) DEFAULT NULL,
-  `localidadid` varchar(50) DEFAULT NULL,
-  `paisid` varchar(2) DEFAULT NULL,
-  `provinciaid` int(11) DEFAULT NULL,
-  `cuenta_cuentaid` int(11) NOT NULL,
-  `plant_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`clinteid`),
-  KEY `fk_clientes_cuenta1_idx` (`cuenta_cuentaid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `clientes`
---
-
-LOCK TABLES `clientes` WRITE;
-/*!40000 ALTER TABLE `clientes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `clientes` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `componenteequipo`
---
-
-DROP TABLE IF EXISTS `componenteequipo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `componenteequipo` (
-  `idcomponenteequipo` int(11) NOT NULL AUTO_INCREMENT,
-  `id_equipo` int(11) NOT NULL,
-  `id_componente` int(11) NOT NULL,
-  `observacion` varchar(255) DEFAULT NULL,
-  `codigo` varchar(40) DEFAULT NULL,
-  `estado` varchar(4) NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  `sistemaid` int(11) NOT NULL,
-  PRIMARY KEY (`idcomponenteequipo`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `componenteequipo`
---
-
-LOCK TABLES `componenteequipo` WRITE;
-/*!40000 ALTER TABLE `componenteequipo` DISABLE KEYS */;
-/*!40000 ALTER TABLE `componenteequipo` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `componentes`
---
-
-DROP TABLE IF EXISTS `componentes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `componentes` (
-  `id_componente` int(11) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `id_equipo` int(11) DEFAULT NULL,
-  `fechahora` datetime DEFAULT NULL,
-  `informacion` text COLLATE utf8_spanish_ci,
-  `marcaid` int(11) DEFAULT NULL,
-  `pdf` varchar(255) COLLATE utf8_spanish_ci NOT NULL,
-  `estado` varchar(4) COLLATE utf8_spanish_ci NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`id_componente`),
-  KEY `id_equipo` (`id_equipo`),
-  KEY `marcaid` (`marcaid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `componentes`
---
-
-LOCK TABLES `componentes` WRITE;
-/*!40000 ALTER TABLE `componentes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `componentes` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `conffamily`
---
-
-DROP TABLE IF EXISTS `conffamily`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `conffamily` (
-  `famId` int(11) NOT NULL AUTO_INCREMENT,
-  `famName` varchar(50) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `estado` varchar(5) COLLATE utf8_spanish_ci NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`famId`)
-) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `conffamily`
---
-
-LOCK TABLES `conffamily` WRITE;
-/*!40000 ALTER TABLE `conffamily` DISABLE KEYS */;
-INSERT INTO `conffamily` VALUES (1,'Bulones','AC',6),(2,'Bujes','AC',6),(3,'Filtros','AC',6),(4,'Diafragmas','AC',6),(5,'Ejes','AC',6),(6,'Valvulas','AC',6),(7,'Sellos','AC',6),(8,'Retenes','AC',6),(9,'Tuercas','AC',6),(10,'Trampas de Agua','AC',6),(11,'Arandelas','AC',6),(12,'Guias','AC',6),(13,'Pernos','AC',6),(14,'Cojinetes','AC',6),(15,'Juntas','AC',6),(16,'Cables','AC',6),(17,'Termostatos','AC',6),(19,'Compresores','AC',6),(20,'Corta Corriente','AC',6),(21,'Correas','AC',6),(22,'Cubiertas','AC',6),(23,'Radiadores','AC',6),(24,'Motor','AC',6),(25,'Crucetas','AC',6),(26,'Espejos','AC',6),(28,'Pasador','AC',0),(29,'Platos','AC',0),(30,'Seguros','AC',0),(31,'Tapas','AC',0),(32,'Alternadores','AC',0),(33,'Faros','AC',0),(34,'Bombines','AC',0),(35,'Llantas','AC',0),(37,'Mamelucos Descartables ','AC',7),(38,'Guantes de vaqueta ','AC',7),(39,'Guantes de nitrillo descartables ','AC',7),(40,'Guantes de Nitrillo ','AC',7),(41,'Gafas Transparentes','AC',7),(42,'Gafas oscuras','AC',7),(43,'Gafas amarilla ','AC',7),(44,'Guantes multiflex ','AC',7),(45,'Barbijos ','AC',7),(46,'Semi-mascara ','AC',7),(47,'Protectores auditivos endoaurales ','AC',7),(48,'ProtecciÃ³n auditiva tipo copa ','AC',7),(49,'Casco ','AC',7),(50,'Antiparras para viento ','AC',7),(51,'Arnes de casco ','AC',7),(52,'Filtros para semi-mascara ','AC',7),(53,'Tijera de bloqueo ','AC',7),(54,'Mordazas ','AC',7),(55,'Sensor de nivel','AC',7),(56,'Sensor de proximidad','AC',7),(57,'Sensores IFM ','AC',7),(58,'Filtros','AC',7),(59,'Sistema Aire Acondicionado.','AC',7),(60,'Grasa de Litio ','AC',7),(61,'Lamparas ','AC',7),(62,'Terminal para baterÃ­a ','AC',7),(63,'Abrazadera ','AC',7),(64,'Crema desengrazante ','AC',7),(65,'Escobillas 22\" ','AC',7),(66,'Escobillas 24\"','AC',7),(67,'Fusible Ron-Bay','AC',7),(68,'Proveedor 1','AC',8);
-/*!40000 ALTER TABLE `conffamily` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `confsubfamily`
---
-
-DROP TABLE IF EXISTS `confsubfamily`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `confsubfamily` (
-  `sfamId` int(11) NOT NULL AUTO_INCREMENT,
-  `sfamName` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
-  `famId` int(11) DEFAULT NULL,
-  PRIMARY KEY (`sfamId`),
-  KEY `famId` (`famId`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `confsubfamily`
---
-
-LOCK TABLES `confsubfamily` WRITE;
-/*!40000 ALTER TABLE `confsubfamily` DISABLE KEYS */;
-INSERT INTO `confsubfamily` VALUES (8,'Cocina',5),(9,'Heladera',5),(10,'Microondas',5),(11,'FutÃ³n',6),(12,'Alacena',6),(13,'Sillas',6),(14,'Taladro',7),(15,'Amoladora',7),(16,'LLaves',7),(17,'Afeitadora',8),(18,'Secador de Cabello',8),(19,'Masajeador',8);
-/*!40000 ALTER TABLE `confsubfamily` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `confzone`
---
-
-DROP TABLE IF EXISTS `confzone`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `confzone` (
-  `zonaId` int(11) NOT NULL AUTO_INCREMENT,
-  `zonaName` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
-  PRIMARY KEY (`zonaId`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `confzone`
---
-
-LOCK TABLES `confzone` WRITE;
-/*!40000 ALTER TABLE `confzone` DISABLE KEYS */;
-INSERT INTO `confzone` VALUES (10,'Caucete'),(11,'Zonda'),(12,'Rivadavia'),(13,'Sarmiento'),(14,'Los Berros'),(15,'El EncÃ³n');
-/*!40000 ALTER TABLE `confzone` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `contratistaquipo`
---
-
-DROP TABLE IF EXISTS `contratistaquipo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `contratistaquipo` (
-  `id_equipo` int(1) NOT NULL,
-  `id_contratista` int(11) NOT NULL,
-  PRIMARY KEY (`id_contratista`,`id_equipo`),
-  KEY `id_equipo` (`id_equipo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `contratistaquipo`
---
-
-LOCK TABLES `contratistaquipo` WRITE;
-/*!40000 ALTER TABLE `contratistaquipo` DISABLE KEYS */;
-INSERT INTO `contratistaquipo` VALUES (16,17),(9,19),(12,19),(13,19),(16,19),(16,24);
-/*!40000 ALTER TABLE `contratistaquipo` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `contratistas`
---
-
-DROP TABLE IF EXISTS `contratistas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `contratistas` (
-  `id_contratista` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(50) CHARACTER SET latin1 NOT NULL,
-  `contradireccion` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
-  `contramail` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
-  `contramail1` varchar(50) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `contracelular1` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
-  `contracelular2` varchar(50) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `contratelefono` varchar(50) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `contracontacto` varchar(100) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `estado` char(4) COLLATE utf8_spanish_ci NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`id_contratista`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `contratistas`
---
-
-LOCK TABLES `contratistas` WRITE;
-/*!40000 ALTER TABLE `contratistas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `contratistas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `criticidad`
---
-
-DROP TABLE IF EXISTS `criticidad`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `criticidad` (
-  `id_criti` int(10) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(50) CHARACTER SET latin1 NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  `estado` varchar(45) COLLATE utf8_spanish_ci NOT NULL,
-  PRIMARY KEY (`id_criti`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `criticidad`
---
-
-LOCK TABLES `criticidad` WRITE;
-/*!40000 ALTER TABLE `criticidad` DISABLE KEYS */;
-INSERT INTO `criticidad` VALUES (1,'Baja',6,'AC');
-/*!40000 ALTER TABLE `criticidad` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `deta_ordeninsumos`
---
-
-DROP TABLE IF EXISTS `deta_ordeninsumos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `deta_ordeninsumos` (
-  `id_detaordeninsumo` int(11) NOT NULL AUTO_INCREMENT,
-  `id_ordeninsumo` int(11) DEFAULT NULL,
-  `loteid` int(10) NOT NULL,
-  `cantidad` double NOT NULL,
-  `precio` double DEFAULT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`id_detaordeninsumo`),
-  KEY `loteid` (`loteid`),
-  KEY `id_ordeninsumo` (`id_ordeninsumo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `deta_ordeninsumos`
---
-
-LOCK TABLES `deta_ordeninsumos` WRITE;
-/*!40000 ALTER TABLE `deta_ordeninsumos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `deta_ordeninsumos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `deta_ordenservicio`
---
-
-DROP TABLE IF EXISTS `deta_ordenservicio`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `deta_ordenservicio` (
-  `id_detasercicio` int(11) NOT NULL AUTO_INCREMENT,
-  `id_ordenservicio` int(11) NOT NULL,
-  `id_tarea` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
-  `tiempo` varchar(100) CHARACTER SET latin1 NOT NULL,
-  `observacion` text CHARACTER SET latin1,
-  `monto` double NOT NULL,
-  `id_componente` int(11) NOT NULL,
-  `rh` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id_detasercicio`),
-  KEY `id_ordenservicio` (`id_ordenservicio`),
-  KEY `id_componente` (`id_componente`),
-  KEY `deta_ordenservicio_ibfk_2` (`id_tarea`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `deta_ordenservicio`
---
-
-LOCK TABLES `deta_ordenservicio` WRITE;
-/*!40000 ALTER TABLE `deta_ordenservicio` DISABLE KEYS */;
-/*!40000 ALTER TABLE `deta_ordenservicio` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `deta_remito`
---
-
-DROP TABLE IF EXISTS `deta_remito`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `deta_remito` (
-  `detaremitoid` int(11) NOT NULL AUTO_INCREMENT,
-  `id_remito` int(11) NOT NULL,
-  `loteid` int(11) NOT NULL,
-  `cantidad` double NOT NULL,
-  `precio` double NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`detaremitoid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `deta_remito`
---
-
-LOCK TABLES `deta_remito` WRITE;
-/*!40000 ALTER TABLE `deta_remito` DISABLE KEYS */;
-/*!40000 ALTER TABLE `deta_remito` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `empresas`
---
-
-DROP TABLE IF EXISTS `empresas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `empresas` (
-  `id_empresa` int(50) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(50) CHARACTER SET latin1 NOT NULL,
-  `empcuit` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish_ci DEFAULT NULL,
-  `empdir` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish_ci DEFAULT NULL,
-  `emptelefono` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish_ci DEFAULT NULL,
-  `empemail` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish_ci DEFAULT NULL,
-  `cliImagePath` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish_ci DEFAULT NULL,
-  `localidadid` int(11) DEFAULT NULL,
-  `provinciaid` int(11) DEFAULT NULL,
-  `paisid` int(11) DEFAULT NULL,
-  `gps` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish_ci DEFAULT NULL,
-  `empcelular` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish_ci DEFAULT NULL,
-  `zonaId` int(11) DEFAULT NULL,
-  `emlogo` blob,
-  `clienteid` int(11) NOT NULL,
-  PRIMARY KEY (`id_empresa`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `empresas`
---
-
-LOCK TABLES `empresas` WRITE;
-/*!40000 ALTER TABLE `empresas` DISABLE KEYS */;
-INSERT INTO `empresas` VALUES (6,'Caleras San Juan',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),(7,'MINA CHINCHILLAS','20000000','2000000',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'ÿØÿà\0JFIF\0\0`\0`\0\0ÿÛ\0C\0		\n\n\r\n\n	\rÿÛ\0CÿÀ\0\0F\"\0ÿÄ\0\0\0\0\0\0\0\0\0\0\0	\nÿÄ\0µ\0\0\0}\0!1AQa\"q2‘¡#B±ÁRÑğ$3br‚	\n\Z%&\'()*456789:CDEFGHIJSTUVWXYZcdefghijstuvwxyzƒ„…†‡ˆ‰Š’“”•–—˜™š¢£¤¥¦§¨©ª²³´µ¶·¸¹ºÂÃÄÅÆÇÈÉÊÒÓÔÕÖ×ØÙÚáâãäåæçèéêñòóôõö÷øùúÿÄ\0\0\0\0\0\0\0\0	\nÿÄ\0µ\0\0w\0!1AQaq\"2B‘¡±Á	#3RğbrÑ\n$4á%ñ\Z&\'()*56789:CDEFGHIJSTUVWXYZcdefghijstuvwxyz‚ƒ„…†‡ˆ‰Š’“”•–—˜™š¢£¤¥¦§¨©ª²³´µ¶·¸¹ºÂÃÄÅÆÇÈÉÊÒÓÔÕÖ×ØÙÚâãäåæçèéêòóôõö÷øùúÿÚ\0\0\0?\0ıü¯5×lÏƒşÖï4ÍOâ·Ãm;RÓ§{[»K¯YC=¬¨Å^7F2º° ©\0‚5éUüÛ~İò{_¿ìxÖ¿ô¾z÷x{%†cRpœœyUô<÷7œg§wmOßoøn‚_ôX¾ÿ\0áYaÿ\0Çhÿ\0†èø%ÿ\0E‹á_ş–üv¿›j+ë?ÔJóõıÈùŸõÒ¿üû_{?¤Ÿøn‚_ôX¾ÿ\0áYaÿ\0Çimÿ\0n‚×S¤Q|_ø]$²0DDñUƒ31à\0<ŞI5üÚÒb—ú‰Cş~¿¹ıu­ÿ\0>—ŞÏêtQ^ÿ\0Çı¤á©?bßø†âãí\ZÍ·ö>®KnµÛb6vÿ\0jDËÿ\0mE{õ~s‰¡*eF{Åµ÷}F´jÓXm$šù…QXšŒ–e†6weD@K3\0rkËÿ\0áº>	ÑbøWÿ\0…e‡ÿ\0¯5ÿ\0‚¼şÒcökı‡üSskqäk~*_øGtÍ§áXJã¸)ÌÀö`½2+ğ¾»‡øefe^¬œUì­×¹òùï¼\rXÑ§&Õİÿ\0úIÿ\0†èø%ÿ\0E‹á_ş–üvøn‚_ôX¾ÿ\0áYaÿ\0Çkù¶¢½ÿ\0õ‡üır<?õÒ¿üû_{?¤Ÿøn‚_ôX¾ÿ\0áYaÿ\0Çj÷†?kï„¾7ñ¦“¢üQøu«ê·òml¬¼Igqqrç¢¤i!fcèkù¨¯wÿ\0‚bøØÂû şµ†\'‚hR£:ª«÷S{.ˆèÂñ}jµ¡IÓK™¥»êìDµÊüLøéàŸ‚ßbÿ\0„ËÆ>ğŸö—™ö?íZŞÃí^^İş_šë¿nôÎ3ë¢ºªü±ÿ\0ƒ—†áJÿ\0Üsÿ\0qÕñ™68Üd0ÒvR¾¾‰¿Ğú¼Û,&xˆ«µm=Z_©÷ßü7GÁ/ú,_\nÿ\0ğ¬°ÿ\0ã´Ãt|ÿ\0¢Åğ¯ÿ\0\nËş;_Íµ÷_ê%ùúşä|gúé_ş}¯½ŸÒOü7GÁ/ú,_\nÿ\0ğ¬°ÿ\0ã´Ãt|ÿ\0¢Åğ¯ÿ\0\nËş;_Íµ¨”?çëû®•ÿ\0çÚûÙı$ÿ\0Ãt|ÿ\0¢Åğ¯ÿ\0\nËş;Gü7GÁ/ú,_\nÿ\0ğ¬°ÿ\0ãµüÛQGú‰Cş~¿¹úé_ş}¯½ŸÒOü7GÁ/ú,_\nÿ\0ğ¬°ÿ\0ãµnÃöÇøEªD$¶ø§ğâæ6;CEâ[\'údI_Í]&)>¡Ò«û‘QãZ·Ö’ûÙıEøkÆ\ZOŒì~Õ£êšv­lß:Îå\'<ŒnBGP*ÑÍ.~ñ^©à½^-CFÔµ\r&ş˜îl®	£>¡Ğ‚?:ûö!ÿ\0‚ê|@ø-®Xèßnn¼{áuŠK¹°Ú½‚g—Yxóñœ•”–=œt>^;‚1âç†šºZÏå«Oğ=<aêÉB¼\\/Ö÷_=¬~ÕQX_\r~%h<¤øŸÃZŒ\Z¶‡­Û­ÕÔ$í•±äAHH €A»_(¸·+4}ri« ªšæ½eá&âÿ\0R¼µÓìmSÌšææUŠ(WûÌÌ@Ü×‡şß¿·ÿ\0…¿`¯…ñêº²jø‹Vß‹¢Ç&É/q¹Ù°vD™›¨\0kğëö®ı¹>$~Ù~*{ÿ\0\ZkÓÍb’´ÑíY¡Óla9Æqüm¹Ïv<WÑä¼5ˆÇ¯jß,;÷ô_®Ç…›ñäø§Ùtõ}?3ö?ãGü»ö}ø;q-´~*¹ñ}ì$‡ƒÃ¶mx¿Q;ÿ\0fCü«çßÿ\0ÁÉş\Z²¹q |+×5(AùPÖb±fu	ÀwîzWä¶(¯¹Ãğn]M{éËÕÛò±ñµø»7îZ>Šÿ\0ÏÓiÿ\0àå}¦sÂ}#,v+k²3ØäŒŸ|¥I§ÁÊšÌWˆ×	4ÉíÆw¤> ’\'<q†00ãøOõ¯ÌLRŠìÿ\0U²¿ùõøËüÎOõ›2ÿ\0Ÿ¿„ÈıjğÏüŸá«§_í¯…zí‚ãæ6ZÌW„pzŠ.øüÏ§>ÓğÃş»û>üDºXoµøBGá¶´¦\nO¡kv™WêÄ:×áX¥ÅrVàÜ¶kİN>üîuQâÜ|¼Ô½WùXşŸ~|UğÏÅÿ\0.­áOh¾$ÓíûV™yÔA±¥py½kù“ø%ñ÷Æ_³—añ‚|E©xwU„ŒÉk.u;%Œå$Oö\\í_µŸğKïø*–“ûrhoáßEi üHÓ!óg´ˆ‘m«D1™í÷AüÑ’JäHÎßŒÎøV¶\n.µ\'Ï¿uëåæ}nQÄ”q’öS\\³íÑú?Óó>Á¢Š+å¤\nşm¿nù=¯Œ_ö<k_ú_=I5üÛ~İò{_¿ìxÖ¿ô¾zûÎş=_EùŸÆŸÀ§êÿ\0#Ë(¢Šı0üğ(¢Š\0ıÿ\0ƒw?i?øDş3x›á…ôàYø¶×ûWMV?vòİO˜Š=^Xÿ\0×¸¯Ø\nşd~\0ü`Ô?gïñ®™ó^øgR†ıS8*0/ÿ\0eÓrf5ı,øÆšwÄoé Ò\'ZV¹g\rıœÀ`K¨ñVù_`=–*8˜­&µõ_ğ-øŸ¦p7Úá]	oø?ø7ü\rZ(®sâ÷Äı7à·Â¿x»Xpšg†´éõ˜)u‰ì\\ğY±´äŞ¾6r’ŒwgÕÉ¤®ö? ¿àà¯ÚKşOí;¥|?²Ÿ~›ğşËuÊ«­}r©#ôë¶!ç¡2sğo|Uø©|`ø™¯ø¯X“ÍÕ<G¨O©]0\'d®\\è£8°\0V\r~ñ–`–:û+_^¿‰ø¶eŒx¬Të¾¯ONŸ€QEÜp…{¿üşRğŸşÆ?­xE{¿üşRğŸşÆ?­qæ?îµÃ/É¹oûİ/ñGóGôK_–?ğrïüÑ_ûî:¿S«òÇş]ÿ\0š+ÿ\0qÏıÇWä¼\'ÿ\0#Z_ö÷ş’ÏÓxŸşE•íßı)–4QE~Ì~J™¥¯Úø\'Ÿü#à_ÆOØ»áï‰üKğşÇU×µ3Ï¼»{ë´ißÍq’©(QÀ\0é^Vm›ÒËéªµ“i»io^­¦U”ÔÇÎTé´¬¯©ø¿E@ÿ\0ğçÏÙ»ş‰~›ÿ\0ƒïş=Gü9óönÿ\0¢_¦ÿ\0àÆûÿ\0WÏÿ\0¯8/äŸÜ¿Ì÷ÔÌWóÇñÿ\0#ùøŠıéø‡ÿ\0Jı¼qá¹¬¬üqá«·E¦j—\"x¨Y]ão£!ü+ñöÄı™5OØûöˆñ€uK„¾}\"Uk[ÄM‹{m\"‡Š]¹;IF—\'k8Í{Oás	8Qº’ÖÏ·•›<œÓ!ÄàbªTiÅéuúeIih¯tñÑ¿ø7óöÉ»ğgÅ»ÏƒÚ½Ñ}ÅI-şŒ$b~É}\Zo’5ìX‘‰Ş‰qËœş¼êz¥¾‹¦Ü^]Í½­¤M4ÒÈp‘\"‚Y‰ô\0øWó?û6|@¸øQûBøÄ¶®c›C×l¯Aù‚N…”ã±\0‚=	¯èş\n­\\xöøµujş\\ëá[øÃ÷Pğ2=ğÇ±¯Ì8»-ŠÌ)Ê\Z{]­Ò¿âÒ¸[)`gëìöôµíùŸ„·íUªşØÿ\0´—ˆ|i¨I(±cm¤Z³¶(H† ;|ÍŒeİÎq^GŠ1Íú]\Z0¥MR¦¬’²?:¯Zuj:µÛwaZşø}¯|RñE¾‰á­T×õ‹²D6Z}«ÜÏ&9$\"p$ô“Yúáÿ\0âŸÂ¦ñØƒì_ğ°ª¿l·í?Ù¾T^NÎş_çnÇñmÏğ×Ÿœf/…–!G™«iëßÈîÊ2õÄª—*§cãÿ\0Áÿ\0hßØGrŞ\nµÒ\"•w Ôu{X¤Çº	Ôû0¦jø÷şÁûFxNší¼u{xyc¥êV×RÑ	<Æÿ\0€©<Wï©<Ñ¶¿>\\qæ¿,mÚÏüÏ»|åµåëuşGòãâ?\rê^×nô½_O½Òµ;W6w<Û¸ê®Œ+{š¥_»ğUÏø&,Ÿ·o†ô=KÂMáİÇš=È…õ\rI¤†+Ë­ºx£v%_k&T—n¯Œ´Ÿø7#â¼Â?·xÛáí¶sæyŞM·Ó Löô¯¯Àñ^µR´Ô%Õ+ŒáŒe:ÎóÇ£Ñ~»Ÿ•Ò|ø³­|	ø§ øÃÃ·-i¬øvò;ËY;§”aİr¬:bZıÑÿ\0àÛ?Î«ı¡ñK@µ%ğÂßHš|\'Ò&O^8ú×Qaÿ\0ÓÙFö¯ŒWS6~S…Ö ¾n›?¥iWŠ2–œ\'RéùIş„Rá¼ÑIJ4ìÖ·¼Ìıø)ñZÃãÂøÇK°ñ6™o©D›Ã„±‡1’?‰I*}ÔÑX²Wìñì§û=ø{áı¾¯u¯[xqf+Ûˆ„RÊ²O$ ·ÌÚ1ÙEøş!SUd©;ÆîŞ—ĞıR‹“„]EiY_×©éüÛ~İò{_¿ìxÖ¿ô¾zş’kù¶ıº?äö¾1Øñ­é|õöÜ	üz¾‹ó>7?OÕşG–QEúaùáwGğíæ¿ü–´Ë¦ÛË€½R ê…±ß×>ƒ\' 5J¾«ÿ\0‚6ü;Ó¾/~Ø“xWVC&™â?êúmĞæòæµdb3ÜÈ=ˆó—Åo‡:Áï‰¾ ğ¦¯—©øsQŸM¹ \"¡#Øã ÷\Zä†*2ÄKÕ$şNëôüNÊ˜G41+i6¾küÿ\0Cûiÿ\0\rı¤¿ánşÈ“ø:ö3Wøq{ö0Şk÷KnÄçœ0,K_‰uõŸüoö’ÿ\0†{ı¸ôK©ü­Çkÿ\0åà\'åY%e6Ï™¬k“Ñdzòø›õ¬â—½y|¿à\\ô¸sõltnô—ºş{~6?zkóãşı¤ÿ\0á^~Î\Z/Ã»€š/<ûÅWù–ÆÕ•È#¨ß1‡¸Ç<ãô<×óíÿ\0gı¤Çí5ûpx³P¶¹\Z\'‡\\xJ(ÛÁnÌÔªó4Î£Šüû„pXÇª’^ì=ïŸOÇ_‘÷<Oú¾\nQ[ÏOóü?3æÌQšZô?Ù/àE×í7ûIx7À–¢@<C©GËÆ2Ğ[/Ïq(ìB²7ü¿]«R4àêOd®ıùe*r©5N·eó8Ã×¾ÔÖş¶¸h!¹ãËš$š6ÿ\0#©üj}	ÿ\0VÑ­|=ÿ\0ø§ØÁ­•…İ½½¼1Œ$1¥œ\nª \0_=ÖxZŞÚ„*ÚÜÉ?½\\ÓEQ¯:Kì¶¾ç`¯wÿ\0‚bÊ@~ÿ\0ØÁõ¯¯wÿ\0‚bÊ@~ÿ\0ØÁõ¬³÷Z¿á—äÍrß÷º_âæè–¿,àåßù¢¿÷ÿ\0Üu~§Wåü»ÿ\04WşãŸû¯ÉxOşF´¿íïı%Ÿ¦ñ?ü‹*ÿ\0Û¿úR?,h¢Šı˜ü”+úÿ\0‚Sø×Â¯ûÿ\0íi+ùç«ÖŞ&Ô¬ X¡Ôo¢wU_ ¼<û&yÒSå³¾×è×t{yn°%QÇšêÛØş£¨¯åÓş_ş‚º—ş¿øÑÿ\0	¯ÿ\0A]Kÿ\0_ükåÔ)Ïÿ\0ü—ÿ\0¶>—ıu‡üúüúnøñ3Ã¿\n<;6¯âmsJĞ4»uf’êşé-â\0XŒœv×àüö¦Ò¿kßÛÄ>*Ğ?‡m¢‡KÒæxÌos+8‚Ü»(`VP@#À¯õRa%ÕÄ÷2´4²`=2{r:ƒnkßÈ¸f]QÖsæ“VÚÉ~,ñ3#:š£rÆ÷ŞíşZ(¢¾œù££ø7á{Ÿ|^ğ¦‰d%æ±¬ZY@¨»™YÑÜå‡ı%|~ødŸ\Z~xÇÂbğ“è·šZ¼ƒ+MÆ¯ßî³ €kñÏşQû#]üoı©áñåı«ÿ\0Â/ğä‹¿5—ä¹ÔH·ˆå2f8Î<´ïŠıºÅ~cÆ¸äñtéSzÓWônÏô_yúGàÜp“©5¤ßà´ÿ\03ùpñ‡ï|%âı\'R¶–ÏQÓ.d´º·•v¼ÆÅv!{U:ıkÿ\0‚Åÿ\0Á%u_Šş$¼ø¯ğ»MkınåCkúºşúù”cíP/ñI€Æ9|nbÀşL^ZM§^Koq°O˜äŠE*ñ°8*Àò ‚\r}ŞSšQÇĞUi½z®©ÿ\0[w>+4Ë*à«:sZt}×ù÷#­?ø×Yøwâ;]c@Õµ-V²mö÷¶/o<\'Õ]aø\ZÌ¢½&“Vg›8»§f}™ğSş¹ñãáE´º­ş‡ã‹(@@5«,\\ÿ\0®Ğ˜Ù›ı©7yÍ}?ğ³şFğÍÿ\0•~ëzY\\h·ñ_>¢9D%G¶öúšü”£áâxk-¯¬©$ü´ü´=¬?ftU.¼õü^¿‰ûçğÃş?û<|M5>7>ºrÙõ«­JıdÚÑãõôG€~,øWâ­“\\ø_Ä¾ñ%²€LºV£\râ\0ze£füÂb¬iZ½Ş…¨Ewcuqeu	İĞHc’3êExXÃËZ}lÿ\0Èö¨q¥eüjiú6¿Ìş¤úš\\Wà/ìùÿ\0‹øñğæÿ\0á.›Æ\ZLLØxğãÀœ‘:ñĞ	08àô¯Õ?ø\'ßükÀÿ\0·LcE7…¼yo	–mæPétª>w¶—ÌQÔ©ÀÉÁ\0µ|¦iÃÌ]F” º®«Ğúl»ˆp˜É*q|²ìÿ\0NŸ©õ8¢“>œÑ_8{Â×ómûtÉí|bÿ\0±ãZÿ\0ÒùëúI¯æÛöèÿ\0“ÚøÅÿ\0cÆµÿ\0¥ó×Şp\'ñêú/Ìø4ş?WùYEWé‡ç‡Ù_ğA±ÿ\0Ñì¨èšë?ààoÙÄü2ıª4ßY[ˆôÏˆV!¦ePo­‚G/N›¢06O,Kpk”ÿ\0‚\rÿ\0ÊC´_ûêú&¿H¿à³³ˆı¡?aMkn&Ö¼ÃÄv%T+\n°¸Lã804§«\"zWÂæ8ïªñ9=¥óoõ±÷Ör)Á-Smz¯óWGà•Igw.ŸyÄ<3ÀâHäFÚÑ°9ĞƒÎj,óK_t|:gîÏÿ\0à£6ñÿ\0Á%ÿ\0ár[]Gˆµi¶ëhµ—&ÙöÓË”I.8ÊG‘ÔWá;±‘Ë1,ÌrI9$×]wñÏÄWm>=ëYkrëémÉÍÓÂçèN\0ï#õÈW‹“dğÀ*Š?jMüº/‘íg9´±Î›f*ş½XWé‡ü¡û9\rkÇ¾1ø¥}mº\r¡iNË‘ö‰q%Ã©ìÉ~—\r_™ù¯èŸş	µû8Ùgö4ğ_…î-şÏ¬Kh5=\\Ãı²ã÷²#sÖ0V/¤B¼Ş1Ç{²‹Ö£·Ëwş_3»„ğ^Ûí^ĞWù½êşGã/ü¿şR3ñKşÂ0ÿ\0é,5ó•}ÿ\0oÿ\0”ŒüRÿ\0°Œ?úK\r|å^öWşåGü1ü‘âæŸïµ¿Å/Í…{¿üşRğŸşÆ?­xE{¿üşRğŸşÆ?­VcşëWü2ü˜²ß÷º_âæè–¿,àåßù¢¿÷ÿ\0Üu~§Wåü»ÿ\04WşãŸû¯ÉxOşF´¿íïı%Ÿ¦ñ?ü‹*ÿ\0Û¿úR?,h¢Šı˜ü”(Íú»ûÿ\0Áş~Ñ?²‚<m¯^øÖ-cÄZÚn–ÓQ†8ù¿*´,@Â¤×›™æ´0ÕJ÷³vÑ\\ôrÜ®¶:nmt¯©ùEIköÓş!ëøÿ\0Aˆ_ø5ƒÿ\0‘ëòÏöüıïÿ\0bŸÚ_ZğlÆâ} Ÿ¶è—“ºöÆB|¶$\0©\rà¾6ÀÁÍ–ñQÒ ß2WÕXéÌrV\nš«VÍ^Ú?ÌñŠ(¢½³Å-èZÿ\0Š5H¬tË+½Fösˆííai¥ú*¨$şöGìwÿ\0Bø«ûAkv×¾3°»øoáE`ÓË©Ã³S¸^é«aÕ¿Ú”(È\rµò÷ìóñ×]ıš>3h7ğÜşN« ],è¬ÄGr$†LJH…‘‡£õı\Z~Îß´ÚoàÆã\rÏæézõ°™P°2[H>Y!|ttpÊ}×1_%Å9¾3ı^+–Zsogé·¦ıOªá¬«	Œ”fÜ£öz5ùúü…ıŸgß\nşÌ?\n´Ïø;MM;FÓŒÓ\\È~üÒ¿äsÉcì\0\0\0;Z+;Tñ†“¡Üˆ/uM:Îb¡¼¹îR6 ÷Á9Å~Q9N¤Ü¤îŞçéŒc«$hâ¼Cöœÿ\0‚tü ı®\Z[ŸxFÑµ©X°cg¨pH˜ó08Pàvè~Ğ>·•ãxE2U•µ‹pT ü\Z¥ûRü2Ò¦İ|Eğ%´Œ7—_´F#×Nœ\Zßõª3S£Íİ]V\Z‘äª“]Î¿Œÿ\0ğmÙó¦ŸáçÄu’|«Yò£¶ëˆ:şé_2üNÿ\0‚%şÑ\rÚg‡Â6~&µ„œÜhº”3‡÷XÜ¤Çşı×í1ı®ş‰\"Cñ?áæù¤X£_øHìó#±Â¨g$\0êkĞò+èèñni‡²«i‰[ò±àÖáŒº³n—ü/üî2ßÿ\0g_ˆ¤eñW‚|WáĞ ¶íGJÙá™@#ÜWº¿©Ü\nòï‰±7ÂŒ0H#ømàİIä97KŠ+‘¸™È3ìÜ×±‡ãÅµz?sıùE~\nëF¯Ş¿UşGógšZıNÿ\0‚—ÿ\0Á¼#ğïàæ¿ñáCê\ZKxjÚMGQĞn.\ZæÚKXÆé^	™‘9Î)ÆÒ,kìrÌÓ¥íh?&èù<Ç,­‚©ìëuÙ­˜›kOÁŞ0Õ>x¯O×4Kû/WÒnêÎîİÊKo*«)õ³h¯A¤Õ™À¤ÓºÜş¿`?ÚšÛöXğÇŠÅ«q	´ÕáŒaa½ˆì—²±EádQœæŠùş\r¿ñ%Í×ìÿ\0ñJv&ÒÇÄ]D¤ı×–İUÿ\0HRŠü3:ÂG\r«F\'§£×õ?hÊ±Äa)Öíkê~WómûtÉí|bÿ\0±ãZÿ\0ÒùëúI¯æÛöèÿ\0“ÚøÅÿ\0cÆµÿ\0¥ó×Ôp\'ñêú/Ìù4ş?WùYEWé‡ç‡ÙğA¿ùHv‹ÿ\0`}Cÿ\0D×î]ı„\Z¥Œö×1G=½Ìm±È¡–Da‚¤wb¿\r?àƒòíşÀú‡ş‰¯İ\ZüŸ¿ä`¿Â¿6~¡Â?îöóıæ¿öÌø?ì½ûPxÓÀÒ«ˆt=IÖÍŸ¬¶’b[wêy0ºÏ#µy~ÿ\0ÁÆŸ³±ñ‚~*ØÛâ;ôoêÎª\0¦é­˜ú³!Iì\"A•ù…_¢d¸ï­à©×{µ¯ªÑŸœà¾«Œ%µî½«üƒQEz‡˜}ÿ\0¹ıœÇí9ûmø3B¹·ûF¦Üÿ\0mjÊFSì¶ÄHQ¿Ù’O.#ÿ\0]kú\ZÚ+ówş\rÖıœÏ†>x³âuõ¾Û¯İ\r\'Lvins+/b¯3m>ößŸé~EÆÿ\0¬cİ8íoŸ_òùªğ¶Ø`”Şó×åÓğ×æ>ğVÿ\0ùHÏÅ/ûÃÿ\0¤°×ÎUôoü¿şR3ñKşÂ0ÿ\0é,5ó•~Ÿ•ÿ\0¹Qÿ\0$~qš¾Öÿ\0¿6îÿ\0ğLOùHÂû şµáîÿ\0ğLOùHÂû şµYû­_ğËòbËŞéŠ?š?¢Zü±ÿ\0ƒ—æŠÿ\0Üsÿ\0qÕú_–?ğrïüÑ_ûî:¿%á?ù\ZÒÿ\0·¿ô–~›Äÿ\0ò,«ÿ\0nÿ\0éHü±¢Š+öcòP¯ègş	Mÿ\0(ñøUÿ\0`ı­%<Õıÿ\0Á)¿å?\n¿ìÿ\0µ¤¯‰ã¯÷:âıö\\şñSü?©ô|{ÿ\0™ı‰¿á«¿f9õ­\ZÏÎñ§€VMKO®d½¶À7Ã’UC¨ä—Tcy¯°©1_›à±u0µã^ñÒùŸ}ŠÃCFTjm%cùcÏµõÏüGö&ÿ\0†Jı§î5MÑ`ğWÚMOK®#³Ÿ ÜZ€8ƒ(%@3´ãäjı×‹§‰¡\Zô¶’¿ü–ÇãÌ,ğÕ¥B¦ñÓù‰¶¾ûÿ\0‚~İ¿ğ£>2?ÃŞğ¯îiÒJçf©‘µ1Ø,à,gıµ‹ ÜkàZt2½´É$nÑÉ¬§Hä{\ZŒÃO‡–¦Ïğ}È¼¿<%x×§Óñ]QıMšü}ÿ\0ƒ~Ï£|~ğ7¶:öˆúSÈ9{Y™Î{‚Rå\0õqĞ×Û?ğIOÛ¡?mÙºÕ®–Oø<G§ëŠÇçºsyÿ\0mU[wı4I8mu¿ğRØŞÛkö`Õ¼-‘ˆ¬XjZ\rÄ¸+¸ÁÂ1ì’)hÉè7†ÁÚ~M•U–Uš¨â4³å~¯¦ÏĞıC2¥Ë.n†¼ÊëÕtıç{¸­xKTğŠ/ôMjÂëKÕ´¹ŞÚîÒæ3Öò)Ã#)äk>¿dM5t~I(´ì÷\'h$WFdt;•”àƒê+ökş	÷ÿ\0ÁğGÅ_i~ø¯©ÁáYB–ïªİšn°T\0%2ıØ$8%ƒíLò­ÎÅüd£åæÙ=Âš…mÖÍnO+Í«àfçKT÷OfQñ¶ã½-o´=[LÖlœen,n’â&ú2*Ö¯¬Úh\Zl×—÷VÖV–ãt³Ï\"Çc8Éf8ë_Ë¥ÜÖ4Ë©¯eÈÇ{\Z“PÕîõmŸjº¹¹òó·Í¾ÜõÆzt•|‹à%Í¥}?Ãÿ\0ÛR¸Ù[Z:ÿ\0‹şûÿ\0lÿ\0‚°xÃ¿¼IğÛÀ\ZÖŸâÏx®Ò]*úëO•n,t»YWdù•r’JÈY¡;KÄ\nßT˜¥¯¯Êrš9}eK[êÛêÏ•ÍsZ¸ê¾Ö¢µ´It\n(¯fı…cşÜ¬|+¤$–ÚTnu½OnSL´?<•Eş&=”1õëÂ7V£´V­œ4(NµEJš»{ªğ@?„3ü<ıˆ%×nà1Oã]nãQ„·­£T·N=7Å)¡‡lQ_gxÁ:gÃ_é>ÑmRÇHĞìâ°²·O»1 D_Á@æŠü\'1Å¼V&x‡öş]?öœağğ ¾ÊHÕ¯æÛöè?ñ›¿ìxÖ¿ô¾zş’k\\ğŸ†, ºÔu-3A†$İ5ÅÍÍ¼J«İİ‡¤“^ŸçK.©9¸ss+ooÑ~u“ÿ\0hB0çååwÚÿ\0ª?˜*+úñí“û4øfQñÏÂ±\"}ä¶¸µ»uç+b·QYÚ\'íéû.ø‚ãÊƒÇ_\r#l›•Ùy8ûÒ\"¯<wÅ}’âÜC\\Ë	+|ÿ\0ùå\nPNÏ¾åÿ\0É—ßğA³ø(v‹ÿ\0`}Cÿ\0D×î•q<gğçÇ³5×‚u_ëRD›šmæÖå‘-	8Ší³_Ÿæo‰öÎ–IYüü—sì2l½`ğşÅK›Vïkoóg‹ÿ\0ÁBÿ\0gaûR~ÇŞ6ğŒ0yÚœö&÷K\n»›í6_Bì›³šşsLnUVS‚P}+ú›Îk¾xyØ“ èÄ“’M”G?øíwd<Jòêr¥(s&îµµ»ô~GwÃñÇÎ5ùZVÚ÷íÕm©ü¾UÏ\rè.ñ\r†•§@÷7úÌv–Ğ ËK,Œ{– Wôíÿ\0\nßÃ¿ô\0Ñğ/ş&Ÿmğÿ\0A²¹htM&)¢`èég\Z²092=ëİ|{iGÿ\0&ÿ\0€x«‚uÖ·şKÿ\0ÛçìÑğNËöqøáXÚ\ri‘Y¼ˆ0.&3KÛ—”»:½wTbšüò¥INnswoV}Ô £ìçÃş\nŞãcÿ\0ì#ş’Ã_9×õà}T»{‹­K¹^^Im#wsîHÉÿ\0ëT_ğ­ü;ÿ\0@\rÿ\0\0bÿ\0âkï0¼m\Z4!GØß•%ñvVì|f+ƒıµiÖöÖæmü=İûŸËí{·üÿ\0ÆÀ~ÿ\0ØÁõ¯è3ş¿‡è¢ÿ\0à_üMKgàMNº{}J·#¹$Ò4t> ‘U‰ãˆÕ¥*^ÆÜÉ¯‹ºôƒı•hUö×åiü=ÿ\0˜Õ¯Ëø9tóğWşãŸû¯Ôâpj–¯áÍ;Ä&/·ØY_y9òşÑË³8Î7Œà~UòF=`±pÄ¸órßM·M~§Óæx®a¥‡½¹­­¯³OË±ü¸Ñ_Ôü+ÿ\0ĞEÿ\0À¿øš_øVşÿ\0 ‹ÿ\0€1ñ5ö¿ëìçÇşMÿ\0\0ù/õ%ÿ\0Ïïü—ÿ\0¶?—Úş†?à”Çş5ãğ«şÀÿ\0ûZJöŸøWÏü€4_ü‹ÿ\0‰­k+4ÛT‚Ş­àˆmHãPˆƒĞÀ¯>âU˜Ñ%O–Îûß£]‘ìä¼?ıŸRUNk«moÕ’ÑHN)kåO£<7ş\nû ÙşÚß³·á\"°¦»n¿Ú\Z\rÔƒf¾Œ€Ë -p²‚@¯ç{\\Ño<5­Şiº…´Öwú|ïmso*•’	QŠº0ìCõıIu¬«¿hW÷RO>‹¤Í4¬Yä’Ò6g\'©$Œ“_Sñ4òêr£(óEêµµŸ^sçs®†>q¨¥Ë%£Ò÷_z?—š+ú‚ÿ\0…qáÓÿ\00\rÿ\0\0bÿ\0âhÿ\0…oáßú\0h¿øÿ\0^÷úûùñÿ\0“À<_õ%ÿ\0Ïïü—ÿ\0¶?/Ø+ö¾Ôÿ\0bÚ?Fñ˜šãK\'ìzİŠ7üX¹bã¦õÀtÏÑsÁ ÿ\0D\rñ~™ñÂZf½¢ŞÃ¨é\ZÍ¬w¶WQc¸†E=Šyæ«ÿ\0Â·ğé9şÁÑğ\n/ş&¹Ï~Ñß¾FlüCãx[ìÃÒóU¶µ‘xÎÕˆ°b}€Í|ŞwšC4©Ò¤ã5£³½×İĞú£-–]NP^hî®­oÅîx_üOş	?áÛ–Øë–SEáOˆñlVŠ\0Ğê*;¤/Àê1÷”¯È/Úcş	İñ{öN¼¸>+ğ…ûi01¬éÈo4Ù8o5Éœ	7+ö¾ïş\nŸû=XÜ<Oñ[Âå£8&7’E?FT şºïşÛŸ~#Î°èŸ<pí±-Ó[·YØñÒ6`är9È®Ü³:Í2ø(N›”Fš·£·ùœ™O—ã§Ï¨ÍõMkêºşşmsIšş~\'şÂ>5K%Çˆ¾\Zx?P¹¸ËIy–÷2ç¹š ²ûê¼ƒÄÿ\0ğC_ÙÇÄ.íoáSG.1ş…®]IÜ²8¶:`p}9ÁµûÈI?“ıWä|õ^Ä§û¹Å¯;¯ÑŸƒÔ™¯Ü_øpOìÿ\0ÿ\0>Ş0ÿ\0ÁÏÿ\0aVtßø §ìõc34ºW‰ïTŒ›Z÷ŸÌ×Gúë—v—Ü¿ÌÇıNÇ4~÷şGáqZğ«ã}j7EÓ5\rcQ¸8ŠÖÊİî\'”ú* ,_¿Şÿ\0‚F~Î~™$´ø]£Ü2ÿ\0§İ]_©>ë<®å^ãà/…~øW§5Ÿ…ü9 ønÑ±˜4½>+8Î:|±ª+†¿ĞK÷4›~m/Êç]ªßïª%è›üì~3~È¿ğB_Š?¯­5!øsá¦!İn”IªÜ\'uH3û¢y”©^»¥~»~Í?²ï‚ÿ\0dŸ†–şğF’šnŸO+÷7òà4Òuw8ö\0p¡@\0z)7WÆæ¹ö/íUÚ=–ßğ~gÖå¹6¿r½îïø!h¢ŠñOTó/Úÿ\0ö¢Ñ?c¿€\ZïõÅ7éˆ#³³W	&£tÿ\0,P)ç›’Ø;UY°vâ¿?jŸÛkâ/í‰ãOÆ~ »¹³iKÚéHÑiÚzäíXán@ã{eÛ±¯Óßø8ÊÇP¸ı’¼4	3iğx®3u°üˆÆÒäFXß`€œwüiÅ~£Áy}…úÛW›m_²]ù×cë}aaS´ROÖıÉl¬fÔ®’xd¸šC…4.Íß€95g]ğ¾§áyÖ-ON¿Ó¥~U. xY‡°`3Ô~u÷7ü£ş\nğ«ö5³ñ&•ãÍ.ëNÔuÛÄš[Y›£ıE\\È¨·9û«_¤úí\'û:şÛ¿o|-sãø“LÖâhZÂòö(.”•*$öÈ’.r®*yß™q#	ˆpxy8/µı+|¯÷™vACAN5Ò›û=¼·ùÛï?Ÿx‹Pğµm©iW÷ºf£fâ[{«IÚàqÑ‘Ô†R=A¯×ÿ\0ø#üZı¤5	~üD»ûŠ¬m\ZëHÕß]Vñ¾¿½2/Ì«¨bß2’ö4?ø7?á’^óÆŸ¯@\Z&¶¹²…qëÍ»ç<tÇã^­û8Á\Z~~ËŸtoøn÷Æ’ëºHÖ¦óS¢ãx›r¤HH(ìÎ9é^.yå8Ü<©»¹[İvÙÿ\0—sÖÉrlÏˆSºQê¯ºÿ\05ĞùOş@Ö¯4Ÿˆ_\nÖÖîêØ>¨JÉ»÷°uÁ¯Í?øLuú\nê_øÿ\0ã_¤ğrü”O…?öÔ?ôlù—_EÂñ_Ùt´ïÿ\0¥3ÁâZ’Y•DŸoı%\Z?ğ˜êÿ\0ôÔğ%ÿ\0ÆøLuú\nê_øÿ\0ã_©?ğGÿ\0ÙàgÆoØî\rkâ†|+ªxµ‹¸÷÷&9ŒJS`ÆñÀÉÇõ/ü;¿öVÿ\0¡\'À?øøíqbø¯\r‡­*¥&âí¢_æwáxc^ŒkFªJI>½OÁøLuú\nê_øÿ\0ã^éÿ\0ÌñF§wû}|)Š]FúXŸ_„2½Ã²°ç¨&¿^¿áİÿ\0²·ı	>ÿ\0Àãÿ\0Çk¢øUûşÏ¾\rñÅ†¿áxN\rwD”\\ÚÜÙ\\4²Ú¸èày„ÄWŸ‹ã-J¦©I]5²ê½Nì/b©V…IUME§×£?=?àâ­r÷Jıª|–·—VÈŞBV)Y?l¹çƒ_Ÿ_ğ˜êÿ\0ôÔ¿ğ%ÿ\0Æ¾ûÿ\0ƒäë|ÿ\0bšéeÍ~y×ĞğäWöm:~¬ùş!©5˜ÕIõ_’4á2Õÿ\0è+¨ÿ\0àKÿ\0ÆZ¸ÿ\0˜¦£ÿ\0/ş5ûÿ\0¦ÿ\0‚~ü\ZøİûøÅ+ø¢kzş§ı¡ö«Ûƒ\'™?—¨İD™ÃÂ\"¯N‹_A]ÿ\0Á\'?g[Ûv‰şè\n­ÔÇ-Äm×³,€Î¼¬O`èVS•âÚ{tvîzx~ÅÖ£\ZÑª½äŸ^ªçà6“ñ/Ä~¾[›kvW	²ÛßK®#X ÀWÜ?ğMïø->|GÒ¼-ñS_ºñGõI’Õµ-EÌ×Ú#1\0Lf9ybüêåˆ©*ß9ÁG~øOösı³|kàïÜ<ŞÒ\'„AÎgk7x#’Ks!å¼·f^I \0–×ˆW½[	…Ì0ÉÔ†’WZj®¿xtñ˜¬%¨ÏX»=tv‘÷ügöÕ~şÕIã\r*çP·ğçÄhMàLë½üaVæ1ƒüYI{dÊàp¼|Aÿ\0	¯ÿ\0A]Kÿ\0_üköÓöƒıš.?mø#×ƒ-ŒM{ã\r?ÁzGˆô·ÚZi¯#°Ş!Ü™‘¤ŒıçRzWáÈ9¯;†qŠ¾ØÏYS|¯å³û¿#Ğâ<<¨â}´Q¨¹—¯UúüÏßø#_í<ß´ŸìM¡G}p\'ñ‚›şı@³eİbPmå9äî€Æ¼èşøú³5ø‹ÿ\0ı¦?áM~×¯áéü­âE¯Ø0[—Ñn’ÙÔb¹™}+õ³öÊı¡íe_Ù—Æ:¡3è¶lb—îÜ^?îíã#©VLãøwÕùÿ\0eR£™:4–“iÇçÓï¹÷c\ZØZ£Ö*Òùuûµ?\"?à·Ÿµ­çÆ/Û6ûÃºF§s‡ğî#£F°LÈ’]çuÛœ¼$ÄGş¸\nøëş_ş‚ºş¿øÕm_U¹×µ[›ëÉ¤¹»½•çg9idbY˜ŸRI?}ÿ\0œı”GíeûdøO¾¶3øoÃGûwYÊåYJBŞ¢ILhG]¬ät¯ÔiÓ¡—`R—ÃN:ùÛõoó?8jøüoºİæôò_ğöÄ/ÙÛPı–à^(Pšò?xišî©#ÌÆX$ŸR±òáİÕvB#R¹À0µùUÿ\0	¯ÿ\0A]Kÿ\0_ük÷“şX?ãY_ÿ\0îÿ\0§[:ü\n¯„kË†«^¦ò¨ßáÕâ¨{E:TÛIA/ÅŸ¢ßğn®¹{ªşÕ>5K«Ë«”_\n9,¬à¶[sÉ¯Õ¯¼5û:ü0Õ|aâíJ-/BÑâó&•¹g$ácEêÎÌBªI5ù7ÿ\0ãÉÖøÛşÅ7ÿ\0ÒËjŸşı§¯|_ñßGøYgq\"h¾µQÔ!VÀúuÜ…‡q6úŸÔW…šå^Ï~¯²²oÑ/éŞ[™}O%UŞ®í/[Qûmÿ\0Ád>\'şÕ\ZÍî j7¾ğAriÚlæ+»¨óÃ\\Î¸v$uE\">Øln?!É+O#;³;¹ÜÌÇ$“ÜšLWéwü›ş	Oá¯ŞOŠ¿4ã«é7W£ÊÅmî–&(÷3Ë¯˜¬ª„àìbÁZû\ZõpYFG–+K-Ûı_©òT)ã3lO+•Ş÷{%ú|ÍñGzş¢<7à]ÁºÒ´JÒ´°»¤p@ÆÅq1Šùş\nEÿ\0ğwí=ğßQÖ<\ráí#ÃŸl£ó¬æ±,àÕÈ90\\(0ÈY[n[nE|ş(Tª©Ö¦àŸ[ßïÑi÷Ş\'ƒjÂ“*œÍtµ¾íYùEû\'ÁD~*~ÇZÕ³x[ÄwW\ZR6ƒ¨;\\i·œ•“û¢¿V÷ÇûûşØŞı·¾ÙøÇÃêÖsû.©¦ÊáæÓ.”Ñ’>òC+`nV\0åGåÃ¿ø7£ãWŠ%×5oøb3÷¢šú[«…ÿ\0€ÅCÿ\0+ï_ø&‡üûş	ñªx†îOˆ3x¢/ÛEÆŸ—ö;h¥‰IA2¹fs…È~œWÖÊqJ3^Õv[÷»Jß3ĞáºY¥	òW‹öo»Zz+ßä~2~Ó,Õaı¤ş!\"jz‚¢ø—QEÃ€Ú¤ã­pÇÆ:¸ÿ\0˜®£ÿ\0/ş5ÔşÔ?òrÿ\0?ìfÔ¿ôªJÀøeamª|Hğıµäi-¥Æ¥mèÿ\0u‘¥PÀûM}õF-®‹ò>&´ç,D¢¤õ“üÊ¿ğ˜êÿ\0ôÔ¿ğ%ÿ\0ÆøLuú\nê_øÿ\0ã_½£ş	ßû+cşDŸàqÿ\0ã´¿ğîÿ\0Ù[ş„Ÿ\0ÿ\0àqÿ\0ãµòë¦ş}Kî_æ}Oú£‹ÿ\0ŸËñ?á1Õÿ\0è+©àKÿ\0~³ÿ\0Á¸š½Ö­ğŸâc]]\\\\”Õí™d.W÷/Ó&¾‡ÿ\0‡wşÊßô$øÿ\0ÿ\0¯]ıŸ¿g?‡Ÿ³Ö…yÃ¿éZŸ¬H·`vxîYAUl–9À$q^>yÄØ|fXztä›¶­.ıÏO\'áìF«T¨šIé©èQE|!õçûBüğïí7ğZğOŠ­ZçF×!òä(@–İÁÜ“FÄ²#\0ÀàŒAñ‹öŸÿ\0‚|gø¬ŞOá,|DğÚ1h.ô’>Ú\'h’ÔŸ3~:ˆ¼Å÷í_¡ÿ\0·çüËLı‚ş.ZøGQğ&­¯Ï¥EªÛ]C¨Go¨òKŞUˆ!¢lñÜq‚\rx!ÿ\0ƒ”ôƒÿ\04Rÿ\0Â‰?ù¾Ó!†u†§í0”ù©Ë[6­ëºkú¹ò™Ô²œDı*|³—WºòÙ£òçÆÿ\0\rüCğÓU{è\Z×‡ï£mo©XËi*‘Ø¬Š?…bæ¿£/Ùö¹ğ7íõğFÛYÓ×K–yãÛ«øzæhî§Ó$ÜAIP¹N2®Tc¸_´ü“öyø…áMNÿ\0Å>ğ—‡­à·y.5{MíLÍ$[•ë™AW¹4Tê:8º2NÎÎÿ\0†Ÿ™ãÏƒùàªá«&ªêßŠ¿ä~|\'ı¥¾!|\n½YüãOxp®3¡,PÈÎ\Z0v8ÏfWêwü{ş«~Ò^:¶økñ<XŸ^Æí¤kpF¶ë©º)v‚X”Yv†*Éµ[v†ÆïÈ¿Yiúg‹uKm\"îMCJ·¼š++§Ms¹ÈW±e\0ã¶kÓàŸ–×—_·GÂ°´ãÆ\Zc°¯”·Q´¿‡–>Ù¯s9Ê°¸¬4åR+™&ÓµšÒÿ\0ğèñ²ŒÏ†ÄÂ“qm&¯tõ¶Ÿ£GÚßğrü”O…?öÔ?ôlù—_¦Ÿğrü”O…?öÔ?ôlù—QÂÿ\0ò+¥èÿ\0ô¦>&ÿ\0‘•_—ş’„î)kõ7ş	ğÛöqñOìƒ×Äûo…rø ëhÍ¯İZGyä›8‘ƒmëÕõü)Ø»ş|¾ÿ\0à~Ÿÿ\0Å×&/ŠaB´¨º3|®×KC³\rÂó­F5UX®dŸŞ~	Wèïüyÿ\0%ûâ/ı‹ğÿ\0éJ×Úğ¤bïùòøÿ\0úÿ\0]·À˜fßƒş*ağïPøI¢ëZï—c³GÔì–âø³‘GÜä¹QÉ$b¼lÛ‰cŠÁÏ\Z3NKv´İ3ØÊ¸rX\\T+Ê¬ZWÓÕ4~tÁÇ?òu¾	ÿ\0±M?ô²æ¿<ëô3ş9ÿ\0“­ğOıŠiÿ\0¥—5ùç_QÃŸò-£éú³æ8‹şF5}Wä«Ã<sà½\r3GñŸŠô:Ûw•kg«ÜA[˜³mDp£,I8’Oz¹?í3ñîŠ_ˆ6–)££ë·L¬§‚/‚í_¨?ğKïø%ïÀ¿Ú+öğ?Œ¼eàíkoûeçöÎ¡oçyZ…Ì)òE: Äq¢ğ£8ÉÉ$×ÈğXø\'ıŸìQñÂÊ÷Â¶3Zü>ñd>f˜4“ı‚â0ÖÆG%PêX’C‘“´Ö8\\ëˆÆË£i¦Ö©Y´õ¶­ù›WÊqÔ0qÅóŞ\r\'dİÒ{_Ky#M+ÜLÒHï$K31Éby$æ½Ëöı‚<eûpüQ³Ót‹»_ÛN¿ÛZãÆVÚÂ‚Ê¬xyˆác$œœ(f_»ÿ\0ğF¿ÛNÏö¨ı˜-4KÃkoâÿ\0G›©[Æ¢?´Ã‚ ºU\0\0++ühÇ€ËWÄY#„upñ¿Kÿ\0-úÛ¯ü1?€¡‹Äû:òµµ·ówWş´¹õ†<7eàï\réúF¶Óô»hìía‘Q¨DQxP~	Á^¿e/øeÛ/\\Æ×ìş\Zñy:î‘±Å\ZÊÇÎ…qÀË¼ì…8Áû÷_\ZÁo¿eøhØşëÄ\Zu¯âO‡.ÚÅ±Dİ$¶„wöØ_\\ÛÜ×ç\\/™¼.9s¿vz?W³ûÿ\0Ï½â,¿ë8)r¯z:¯–ëîıÃÏø÷Á&Óµ6áíu*ê+ËYĞá¡–7=Ã\0\nûçşÿ\0±ı¨~ü$ğ÷‡çE¶Ö´ØüU®Áe`º! ØŸXÜ\\äç1ŸJüø4˜¯Õq}*Õéâ\'ñS½¾kúhüÏ˜U£B¦;N×ùÁšıÇÿ\0‚şÊàì‘Šu+Sˆ¾$Hš¤›Ól‘X¨\"Ñ>Œ¬ÓiÇ¥~LşÁ?³ÿ\0µçíUáOìÛ«ŸµêÒ®scÏ1Èû¥”lSıù¿£]3L·Ñtë{;H\"¶´´‰a†”\"DŠ\0UP8\0\0\0Ò¾C3.JqÁAë-_¢Ûñ×ä}We÷”±“[h½zş\Z|Ùòÿ\0ü³şQ•ñ/şáúu³¯Àªıõÿ\0‚ÖÊ2¾%ÿ\0Ü/ÿ\0N¶uø]\\\rşá?ñ¿ı&\'\'¾Ãü+ó‘úÿ\0ãÉÖøÛşÅ7ÿ\0ÒËjùçş\nÅwy}ÿ\0ø¨÷Ã.ª±¨İ»÷KKsÿ\0,Â}:`t¯¡¿àÜoù:ßØ¦ÿ\0úYmXŸğpìïyğçö¹·ñÜVîtoˆ1œ•/-£XdŒúf%Á=K7÷MkF´aÄ3„·”^º?ÉZ2A	GìÊïïkõ>¯èçş	íac§~Âß#ÓÄKnŞÓeaãÍ{dy1Ÿ>ù¯ç\Z¿Y¿à‡_ğR/EğÂÏà×uK=UÑåqáÛË¹DPêHåÍ±vàJÍ´7«*•åq\n­|gI_‘İ¯+oòâéÒÅJ¹•—­öùŸ¦Ô„Òæ¾Yÿ\0‚‘ÁK<\'ûü.Ö,4ıbÊÿ\0âUõ³Á¤éVî“Kc+.æáy	\Zd0W€ `±_Ë°˜J¸šªvÿ\0¯¸ıˆ§B›«UÙ#êSÖŒf¿\nü5ÿ\0Şı¢t ¿j×¼?¬í&óC7qŒŸ$Gõã¿·ö×ü›ş\nuñ_öñø»«i!ğ·ƒìü9 éÆêûRÓ ¹…ã™Ø,2i/‰8â6<cİÇp®7JUª8òÇ{?óHñğ\\IƒÄÔTiß™÷_åsòcö¡ÿ\0“—ø‰ÿ\0c6¥ÿ\0¥RW	]ßíCÿ\0\'/ñşÆmKÿ\0J¤®{á´6—t¿5+u¹`Fc2®íÙãn3œö¯×(;Q‹ò_‘ùuxób%ò™E~ö‚?±v?ãËà\'şéÿ\0ü]/ü)Ø»ş|¾ÿ\0à~Ÿÿ\0Å×Ê®4ÿ\0çÄşãéÿ\0Õ\nŸóú\'à•Bÿ\0ğJ^à?\nÿ\0ìÿ\0µ¤®Wşì]ÿ\0>_\0ÿ\0ğ?Oÿ\0âëŞ>ø‹áÜşMáÆ«á+½ÃÑ¤BÏA½‚â=±E+Š¾3Œá½\r|÷g‹‡8Ò”lïv´Úß©ïd,°5¥9TRº¶ŸyÛÑEñGÕ!ÿ\0Á\\?àS~ÜŸ	ì5\r´x÷ÂY4ä”„T…À2Z3ŸºÄª²1;CnË/áÇÄ‡ øMâ»Äú.¥ kglÖwöïÉèv°±È$WõŠåş&üğwÆ0Yx¿Â¾ñ=ª‚=SOŠìGë½ISî¸\"¾³#âª˜\Z~Â¬y¡Óºÿ\03æ³§Ÿ¶„¹g×ª~¿æ2zN³w ß%ÕÕÍ•Ìrh%hä_£­|YñWm–\rwÄ¾ Ö¡#¿Ôf¹EÆq€ì@ÆOç_¼Úçüãömñ¬÷ôøË0b-µ;ëQ1ÀŠu\0{t¦èÿ\0ğGOÙ³C ÃğÂÅğÛÿ\0Ò5Kûí¤íÇ·JúgÆøï:r¿¤ù#ç×cWºªG—ÕşV?t]÷Äšµ½†gu}tâ8-­¢ie™EUPI\'Ğ\nıoÿ\0‚4Á)µ¯^$OŠßôó§x‰`hô\r\ZRÚp‘J½Ìà}ÙJENª‹\0Ø÷Â¯ÙÃÀcÛàïøcÃ,T«I§i±[Ë =w:¨füI®Ö¼ç‹êb©:#Ë»ê×o/=Ïk)ájxZŠ½isImÑ/ó?%¿àäóÿ\0áOıƒµı~fWôñã¿ƒ~ø£=´¾&ğ·‡<E%š²Û¶§¦ÃvĞÁ`¦E;AÀÎ:àVü2GÂŸú&?ğœ³ÿ\0ãu¾SÅÔ°xHa¥M·ë6Ì³N–/,B©nkinÉ.şGóKŠ+úZÿ\0†HøSÿ\0DÇáïş–ünød…?ôL~ÿ\0á9gÿ\0ÆëÑÿ\0_(ÿ\0Ï§÷£Ïÿ\0R§ÿ\0?Wİÿ\0şikÔ¿aù=¿ƒ§ş§ÿ\0Kà¯è#ş#áOı‡¿øNYÿ\0ñº±¤~Ëßü?«ZßØ|;ğ-õŒ©qoqo ÚÅ-¼ˆÁ•Ñ–0U”€A +*ÜqFtådõMn(ğlá8ÏÚ­\Z{Á?*?àã“ÿ\0[àŸûÓÿ\0K.kóÒ¿§O|ğ_ÄíJ+ÏøCÂş!»‚?&)õ=*¹#L“±ZE$.I8dšÅÿ\0†HøSÿ\0DÇáïş–ün¹r¾0¥…ÂÃ*m¸«^èêÌ¸Vx¬Lñ\n¢\\İ-ånçŒÿ\0ÁÉÿ\0‡eü4ÿ\0¸§şo+Ğÿ\0o?Ù7Oı´?f{ÁwBµ9íš5Üƒş<¯£Äùì­–¿Ø‘ñÎ+Õ<+á\'Àº\ZV‡¥éÚ6—k»É³±¶K{xw1fÚˆŒ³18’OzÑ¯‘­“ÆKKFää¼®î}5$c…¦©EEùÙXş\\|Sá­CÁ^&Ô4mZÒk\rSI¹’ÎòÚQ‰-æŠ:0õ?JôïØsö³Õ¿bßÚ3Dñ¶œ%¸³…¾Ë«Y#mşĞ²r<Ø½7pIèè§¦EA^!ıš¾ø»Z¹Ôµo\0x\'SÔo|÷Wz¬óÎİ73²cîMS²?Âÿ\04Çáïş–ün¾Ş§aêÒt«Qm5g©ò4¸B­*ª­*Öiİiÿ\0êüã­+âo‚´ŸhW±j:6·ií•ÌyÛ4R(elG¡ä\ri^ØÃ©YÍosW÷c–)2H¤`«ÁpAëU</á=/Á\Z¾—¢é¶\ZF™h‚ÎÊİ-à„,v¢\0£,Iàu$Ö…~y&¹Ÿ&İ¹íïn9_ğPOÙvÙö¯ñWƒ„R¦’—nÑdùmc1-	øŠó?Ş‰«Æ+útñÇÀÿ\0|NÔâ½ñ/„</âÈ\"G>§¥Aw,q‚X i¹bp8É>µ‹ÿ\0‘ğ§ş‰Ãßü\',ÿ\0øİ~…†ã˜Æ”cV›rKWu¯™ğØ\rç«)Ó©dŞŠÛyn|_ÿ\0ø~Êcá÷Ácâ–§m·Tñ¼†ËLgR\Z->!˜×Y”çÚÈë_¢UWDĞ¬¼5¤[iúu®Ÿae\ZÃommÅ£\nˆŠ\0U€\0À«UñY:XÌLñêşåÑ}Ç×à0qÂááBŞú¿›>Wÿ\0‚Öÿ\0Ëø—ÿ\0p¿ı:Ù×à]Q~*ğ“ã­}+\\ÒôígKºÛçYß[%Å¼ÛX2îGNTŒµqßğÉ\nè˜ü=ÿ\0ÂrÏÿ\0×ĞdKO.ÃÊ„àåy7¿’_¡ág|=,}uYO–ÊÛ_«}üÏËø7ÿ\0ÆVøÛşÅ7ÿ\0ÒËjıFı¬ÿ\0e~Øß5/x¦û-Ş&µ»ˆ´i·+Ÿ.x‰èÃ$Ñ•™O×Gà‚øc©Kyá¯x_Ã×sÇäË>™¥Ai$‰v3F •ÈŒ]>+ÊÍ³wŠÆırŠqjÖîš=<³,Xl\'Õ*>e­ôŞçóÉûgÁ6>&şÅ:ıÉ×4‰µ	1kâ-:’Æe?wÌê`“±I1È;K¸üı_ÔÔöéuÇ\",‘È¥]eX õáßà™¿~,ŞIs¬ü.ğ·Ú%ûòØBÚs¹õ&İ£$ûkê°<uh¨âéİ÷_“ÿ\03æ±œœœ°³²ìÿ\0Ïşüÿ\0éß<k¤hgL´ñ‡ŠmtÒ»~É«:AM¶ãğ®^I\Ziİ™İÎY‰Éb{šıõÿ\0‡)şÌ¿ôM?òáÕù&º\0ÿ\0Á,?g¿†×‘Üi¿\nü5,±}Ó©	u0=ñròûõ®×Æø¦éÓ•ı\"¿S‘p†6m*µ#oVÿ\0D~~Êß±ÄÛÅQişğıÍÅ”%Ş¯p›`;™&#\'bîsƒ…5û³û	şÅ^ı†>ZøWGe¾Ô®íZÎªñì—S¹#±ÎØÔ|¨™ù@ÉË31ö-7K¶Ñtøm,íà´µ·P‘Cb8âQĞ*\0ö>+äs¾$¯˜/gnXvïêÏ¨Ê2\n}>i¾¿äºÌçíBã%ş\"ØÍ©éT•Ââ¿¦\rCöWøa«_ÏuuğãÀwWWR4³M/‡íI]Y™Œy$’I\'’j/ød…?ôL~ÿ\0á9gÿ\0ÆëéiñÍÁGÙ=txx6s›ŸµZ»íÿ\0şih¯ékş#áOı‡¿øNYÿ\0ñº?á’>ÿ\0Ñ1ø{ÿ\0„åŸÿ\0«ÿ\0_(ÿ\0Ï§÷£?õ*óõ}ßğOæ–¿SàÚ/½ñ«şàû‘¯Ğßød…?ôL~ÿ\0á9gÿ\0Æë¡ğÂ?\n|,ûWü#ğ÷‡>İ³í?Ùzt6hÙ»fÿ\0-WvİÍŒôÜqÔ×™œqm<nxhÓiÊÚß³Oô=¯…ç„ÅGê_–ú[ºk¿™ĞÑEğçØÿÙ',2),(8,'CSJ-CIENAGUITA',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,3);
-/*!40000 ALTER TABLE `empresas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `envios`
---
-
-DROP TABLE IF EXISTS `envios`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `envios` (
-  `id_envio` int(10) NOT NULL AUTO_INCREMENT,
-  `fecha` date NOT NULL,
-  `ultimo_envio` varchar(10) NOT NULL,
-  PRIMARY KEY (`id_envio`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `envios`
---
-
-LOCK TABLES `envios` WRITE;
-/*!40000 ALTER TABLE `envios` DISABLE KEYS */;
-/*!40000 ALTER TABLE `envios` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `equipos`
---
-
-DROP TABLE IF EXISTS `equipos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `equipos` (
-  `id_equipo` int(11) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `fecha_ingreso` date NOT NULL,
-  `fecha_baja` date NOT NULL,
-  `fecha_garantia` date NOT NULL,
-  `marca` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `codigo` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `ubicacion` varchar(100) CHARACTER SET latin1 NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  `id_sector` int(11) NOT NULL,
-  `id_hubicacion` double NOT NULL,
-  `id_grupo` int(11) NOT NULL,
-  `id_customer` int(11) DEFAULT NULL,
-  `id_criticidad` int(11) NOT NULL,
-  `estado` varchar(2) CHARACTER SET latin1 NOT NULL,
-  `fecha_ultimalectura` datetime NOT NULL,
-  `ultima_lectura` double NOT NULL,
-  `tipo_horas` varchar(10) CHARACTER SET latin1 NOT NULL,
-  `id-centrodecosto` double NOT NULL,
-  `valor_reposicion` double NOT NULL,
-  `fecha_reposicion` date NOT NULL,
-  `id_proveedor` double NOT NULL,
-  `valor` double NOT NULL,
-  `comprobante` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `descrip_tecnica` text COLLATE utf8_spanish_ci NOT NULL,
-  `id_unidad` int(11) NOT NULL,
-  `id_area` int(11) DEFAULT NULL,
-  `id_proceso` int(11) DEFAULT NULL,
-  `numero_serie` double DEFAULT NULL,
-  `adjunto` varchar(255) COLLATE utf8_spanish_ci DEFAULT NULL,
-  PRIMARY KEY (`id_equipo`),
-  KEY `id_empresa` (`id_empresa`),
-  KEY `id_sector` (`id_sector`),
-  KEY `id_criticidad` (`id_criticidad`),
-  KEY `id_grupo` (`id_grupo`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `equipos`
---
-
-LOCK TABLES `equipos` WRITE;
-/*!40000 ALTER TABLE `equipos` DISABLE KEYS */;
-INSERT INTO `equipos` VALUES (1,'Equipo de trabajo 01','0000-00-00','0000-00-00','0000-00-00','1','Equipo-00','',6,1,0,1,1,1,'AC','0000-00-00 00:00:00',0,'',0,0,'0000-00-00',0,0,'','',6,1,23,1,'equipo1_6_2019-06-24-19-13-49.pdf'),(2,'equipo de prueba marca 1','0000-00-00','0000-00-00','0000-00-00','1','Equipo-01','',6,2,0,1,1,1,'RE','0000-00-00 00:00:00',0,'',0,0,'0000-00-00',0,0,'','',6,2,22,2,'equipo2_6_2019-06-24-19-15-29.pdf');
-/*!40000 ALTER TABLE `equipos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `fallas`
---
-
-DROP TABLE IF EXISTS `fallas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `fallas` (
-  `id_reparacion` int(100) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(255) NOT NULL,
-  PRIMARY KEY (`id_reparacion`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `fallas`
---
-
-LOCK TABLES `fallas` WRITE;
-/*!40000 ALTER TABLE `fallas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `fallas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `ficha_equipo`
---
-
-DROP TABLE IF EXISTS `ficha_equipo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ficha_equipo` (
-  `id_fichaequip` int(11) NOT NULL AUTO_INCREMENT,
-  `id_equipo` int(11) NOT NULL,
-  `marca` varchar(3000) COLLATE utf8_spanish_ci NOT NULL,
-  `modelo` varchar(3000) COLLATE utf8_spanish_ci NOT NULL,
-  `numero_motor` varchar(3000) COLLATE utf8_spanish_ci NOT NULL,
-  `numero_serie` varchar(3000) COLLATE utf8_spanish_ci NOT NULL,
-  `fecha_ingreso` date NOT NULL,
-  `dominio` varchar(3000) COLLATE utf8_spanish_ci NOT NULL,
-  `fabricacion` int(11) NOT NULL,
-  `peso` float NOT NULL,
-  `bateria` varchar(3000) COLLATE utf8_spanish_ci NOT NULL,
-  `hora_lectura` float NOT NULL,
-  PRIMARY KEY (`id_fichaequip`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ficha_equipo`
---
-
-LOCK TABLES `ficha_equipo` WRITE;
-/*!40000 ALTER TABLE `ficha_equipo` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ficha_equipo` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `frm_categorias`
---
-
-DROP TABLE IF EXISTS `frm_categorias`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `frm_categorias` (
-  `CATE_ID` int(11) NOT NULL AUTO_INCREMENT,
-  `NOMBRE` varchar(1000) CHARACTER SET latin1 NOT NULL,
-  `PISTA` varchar(2000) CHARACTER SET latin1 DEFAULT NULL,
-  `FEC_CREACION` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `FORM_ID` int(11) NOT NULL,
-  `ORDEN` int(11) DEFAULT NULL,
-  PRIMARY KEY (`CATE_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=7001 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `frm_categorias`
---
-
-LOCK TABLES `frm_categorias` WRITE;
-/*!40000 ALTER TABLE `frm_categorias` DISABLE KEYS */;
-INSERT INTO `frm_categorias` VALUES (1,'Condiciones Generales:',NULL,'2018-07-28 15:51:53',1,1),(2,'Eje, Cuerpo, Placa Trasera, Aros',NULL,'2018-07-28 16:09:49',1,2),(3,'Tilde las acciones a Realizar:',NULL,'2018-07-28 17:02:54',2,1),(4,'PIEZAS O COMPONENTES A DIAGNOSTICAR',NULL,'2018-07-28 17:15:23',3,1),(5,'A-TAPAS',NULL,'2018-07-28 17:17:25',3,2),(6,'B-PIEZAS EN REVOLUCION',NULL,'2018-07-28 17:33:29',3,3),(7,'C-LUBRICACION',NULL,'2018-07-28 18:00:05',3,4),(8,'D-REFRIGERACION',NULL,'2018-07-28 18:21:47',3,5),(9,'E - SISTEMA DE COMBUSTIBLE',NULL,'2018-07-28 18:39:18',3,6),(10,'14-Motores Nafteros:',NULL,'2018-07-28 19:06:57',3,7),(11,'1-Ingreso de Pieza, Identificada y Limpia',NULL,'2018-07-28 23:03:59',4,1),(12,'2-Control y Medicion de Apoyo y Altura de Levas',NULL,'2018-07-28 23:06:43',4,2),(13,'Observaciones:',NULL,'2018-07-28 23:12:14',4,3),(14,'3-Deteccion de Fisuras Magnaflux',NULL,'2018-07-28 23:12:56',4,4),(15,'4-Control de Dureza Rc o Brinell',NULL,'2018-07-28 23:15:48',4,5),(16,'5-Controlar y Verificar Los Item 1, 2, 3, 4',NULL,'2018-07-28 23:21:49',4,6),(17,'6-Controlar engranaje Bba. de Aceite y su Alineacion',NULL,'2018-07-28 23:22:47',4,7),(18,'7-Controlar Pernos:',NULL,'2018-07-28 23:23:02',4,8),(19,'1-Identificacion y Limpieza Compresor',NULL,'2018-07-28 23:29:33',5,1),(20,'2-Control Visual, Estado General del Conjunto Bielas',NULL,'2018-07-28 23:30:48',5,2),(21,'3-Deteccion de Fisuras Magna Flux',NULL,'2018-07-28 23:44:33',5,3),(22,'4-Medicion de Diametros,4 MuÃ±on y Ojo de Biela',NULL,'2018-07-28 23:47:56',5,4),(23,'5-Medicion Longitud de Biela',NULL,'2018-07-29 00:15:03',5,5),(24,'6-Control de Linealidad de Centros MuÃ±on/Ojo de Biela',NULL,'2018-07-29 04:22:22',5,6),(25,'7-Control de Pesos:',NULL,'2018-07-29 04:28:14',5,7),(26,'8-Control de Planos Alaveo, Torceduras, Deformaciones',NULL,'2018-07-29 04:32:47',5,8),(27,'9-Control de Encastre Tapas / Cuerpos',NULL,'2018-07-29 04:35:34',5,9),(28,'10-Control de Tornillos Longitud y Filetes',NULL,'2018-07-29 04:49:55',5,10),(29,'11-Bielas Perforadas, Control Conductos de Lubricacio?n',NULL,'2018-07-29 04:51:39',5,11),(30,'1-Identificacion y Limpieza',NULL,'2018-07-29 14:22:13',6,1),(31,'2-Diametro de Cilindros',NULL,'2018-07-29 14:22:22',6,2),(32,'3-Extraccion de Camisas',NULL,'2018-07-29 14:22:33',6,3),(33,'4-Busqueda de Fisuras e Incrustaciones',NULL,'2018-07-29 14:22:48',6,4),(34,'5-Control Planos en 4 Costados',NULL,'2018-07-29 14:23:00',6,5),(35,'6-Control de Roscas Internas y Prisioneros',NULL,'2018-07-29 14:23:08',6,6),(36,'7-Control Circuitos de Agua y Aceite â€“ Incrustaciones y/o Comunicacio?n',NULL,'2018-07-29 14:23:21',6,7),(37,'8-Control de Alojamiento, Tapones y Bomba de Agua, y Bases de Conectores',NULL,'2018-07-29 14:49:39',6,8),(38,'9-Control y Medicion de Cilindros (Rectificacion)',NULL,'2018-07-29 14:49:50',6,9),(39,'10-Control Tornillos, Bancadas: Longitud, Perfil Rosca, Estado de Cabeza',NULL,'2018-07-29 14:50:00',6,10),(40,'11-Control Tapas de Bancadas y Guias',NULL,'2018-07-29 14:50:12',6,11),(41,'12-Medida de Alojamiento Arbol de Levas Sin Cojinetes',NULL,'2018-07-29 14:50:21',6,12),(42,'13-Medida y Estado Reten de Bancada',NULL,'2018-07-29 14:50:36',6,13),(43,'1-Ingreso de Pieza, Identificada, Limpia y Desarmada c/componentes',NULL,'2018-07-29 15:07:09',7,1),(44,'2-Control y Evaluacion de Los Items 1,2,3',NULL,'2018-07-29 15:07:50',7,2),(45,'3-Prueba Hidraulica (Area de Produccion)',NULL,'2018-07-29 15:19:45',7,3),(46,'4-Control de Superficies de Elementos Anexos',NULL,'2018-07-29 15:28:07',7,4),(47,'5-Control de Conductos',NULL,'2018-07-29 15:30:16',7,5),(48,'6-Control de Superficie de Camaras de Combustion',NULL,'2018-07-29 15:35:31',7,6),(49,'7-Control de Prisioneros Roscas internas y Agujeros',NULL,'2018-07-29 15:39:42',7,7),(50,'8-Control y Medicion de Guias de Valvulas',NULL,'2018-07-29 15:40:55',7,8),(51,'9-Alojamientos de Botadores',NULL,'2018-07-29 15:43:15',7,9),(52,'10-Control Alojamiento Arbol de Levas (Tunel)',NULL,'2018-07-29 15:45:49',7,10),(53,'11-Control Alojamiento Precamaras',NULL,'2018-07-29 15:49:28',7,11),(54,'12-Control de Resortes Valvula',NULL,'2018-07-29 15:50:16',7,12),(55,'13-Seguros y Platillos de Valvulas y Roto valvulas',NULL,'2018-07-29 15:54:06',7,13),(56,'14-Asiento de Resortes Con y Sin Arandelas',NULL,'2018-07-29 16:05:25',7,14),(57,'15-Bujias de Pre Calentamiento',NULL,'2018-07-29 16:06:44',7,15),(58,'A â€“ Planilla de Control de VOLANTE',NULL,'2018-07-29 16:09:53',8,1),(59,'1-Identificacion y Limpieza de la pieza',NULL,'2018-07-29 16:10:52',8,2),(60,'2-Control de Fisuras y/o Deformaciones',NULL,'2018-07-29 16:11:25',8,3),(61,'3-Medicion de Durezas en Espejo',NULL,'2018-07-29 16:12:04',8,4),(62,'4-Control de Espesor',NULL,'2018-07-29 16:17:25',8,5),(63,'5-Control Brida Acople',NULL,'2018-07-29 16:20:47',8,6),(64,'6-Control Corona de Arranque Exterior-Interior',NULL,'2018-07-29 16:22:14',8,7),(65,'7-Control de Roscas y Guias',NULL,'2018-07-29 17:27:59',8,8),(66,'B â€“ Planilla de Control de PLACA DE EMBRAGUE',NULL,'2018-07-29 17:28:43',8,9),(67,'1-Identificacion y Limpieza de la pieza',NULL,'2018-07-29 17:29:57',8,10),(68,'2-Control de Elementos de Accionamiento',NULL,'2018-07-29 17:30:36',8,11),(69,'3-Control de espejo de presion',NULL,'2018-07-29 17:35:51',8,12),(70,'4-Control de Dureza',NULL,'2018-07-29 17:36:55',8,13),(71,'C â€“ Planilla de Control de POLEA',NULL,'2018-07-29 17:38:37',8,14),(72,'1-Identificacion y Limpieza de la pieza',NULL,'2018-07-29 17:39:09',8,15),(73,'2-Control Alojamiento de CigueÃ±al',NULL,'2018-07-29 17:39:50',8,16),(74,'3-Control Chavetero',NULL,'2018-07-29 17:40:58',8,17),(75,'4-Control Canal de Correas',NULL,'2018-07-29 17:42:05',8,18),(76,'1-Identificacion y Limpieza',NULL,'2018-07-29 17:52:00',9,1),(77,'2-Control y Medida de Bancadas y MuÃ±ones.',NULL,'2018-07-29 18:00:45',9,2),(78,'3-Medicion de Dureza de Bancada y MuÃ±on',NULL,'2018-07-29 21:14:16',9,3),(79,'4-Medicion de Radios de Bancadas y MuÃ±on',NULL,'2018-07-29 21:41:00',9,4),(80,'5-Control de MAGNAFLUX',NULL,'2018-07-29 23:14:50',9,5),(81,'6-Control y Medicion de los Items A, B, C, D, E, F',NULL,'2018-07-29 23:21:07',9,6),(83,'7-Control de Alineacion (Pandeo)',NULL,'2018-07-29 23:38:13',9,7),(84,'8-Estado de Roscas y Alojamientos Tapones',NULL,'2018-07-29 23:39:13',9,8),(85,'9-Control de Alojamiento Axial',NULL,'2018-07-29 23:43:44',9,9),(1000,'',NULL,'2018-07-30 00:36:02',1000,1),(1200,'Registro de Control de Calidad',NULL,'2018-07-31 12:51:37',1200,1),(1202,'Bancada',NULL,'2018-07-31 14:30:45',1200,2),(1203,'Bielas',NULL,'2018-07-31 14:38:42',1200,3),(1204,'Cilindros',NULL,'2018-07-31 14:46:57',1200,4),(1205,'Levas',NULL,'2018-07-31 14:55:15',1200,5),(1211,'CigueÃ±al:',NULL,'2018-07-31 15:47:06',1200,6),(1212,'Balanceo de Biela:',NULL,'2018-07-31 16:05:21',1200,7),(1213,'Otros:',NULL,'2018-07-31 16:13:22',1200,8),(1214,'CONTROLAR',NULL,'2018-07-31 17:28:38',1200,9),(1215,'Control de Calidad',NULL,'2018-07-31 18:06:22',1201,1),(1217,'Block CigueÃ±al',NULL,'2018-07-31 18:07:59',1201,2),(1218,'Paro de armado:',NULL,'2018-07-31 18:35:10',1201,3),(1219,'Control de Calidad',NULL,'2018-07-31 18:42:35',1202,1),(1220,'Bielas y Pistones',NULL,'2018-07-31 18:45:47',1202,2),(1221,'Paro el armado',NULL,'2018-07-31 19:18:22',1202,3),(1222,'Control de Calidad',NULL,'2018-07-31 19:21:56',1203,1),(1223,'Tapa de Cilindro',NULL,'2018-07-31 19:22:11',1203,2),(1224,'Paro el armado',NULL,'2018-07-31 19:55:00',1203,3),(1225,'Control de Calidad',NULL,'2018-07-31 19:59:54',1204,1),(1226,'Inyeccion Complemento',NULL,'2018-07-31 20:01:01',1204,2),(1227,'Paro el armado',NULL,'2018-07-31 20:05:13',1204,3),(1228,'Observaciones en General:',NULL,'2018-08-03 20:19:56',7,16),(2000,'1er Etapa:',NULL,'2018-08-07 14:39:44',2000,1),(2001,'2da Etapa:',NULL,'2018-08-07 14:47:54',2000,2),(2002,'3ra etapa: Solo para motor armado.',NULL,'2018-08-07 14:58:39',2000,3),(2003,'4ta Etapa:',NULL,'2018-08-07 15:01:25',2000,4),(2004,'5ta Etapa:',NULL,'2018-08-07 15:02:26',2000,5),(2005,'Comentario final:',NULL,'2018-08-07 15:03:20',2000,6),(2006,'TAPA DE CILINDRO',NULL,'2018-08-07 15:08:30',2001,1),(2007,'1ra Etapa - Controles Previos A Cada Puesta En Marcha',NULL,'2018-08-07 16:26:38',2003,1),(2008,'IMPORTANTE (conexiones y/o cambios extraordinarios)',NULL,'2018-08-07 20:08:31',2003,2),(2009,'2da Etapa - Prueba del motor',NULL,'2018-08-07 20:15:47',2003,3),(2010,'Tipo de ensayo: Vacio/ Duracion: 2hs',NULL,'2018-08-08 15:05:11',2003,4),(2011,'Tipo de ensayo: 25% / Duracion: 2hs',NULL,'2018-08-08 15:23:56',2003,5),(2012,'Tipo de ensayo: 50% a 70% / Duracion: 6hs',NULL,'2018-08-08 15:38:31',2003,6),(2013,'DESCARGA Y DETENCION DEL MOTOR',NULL,'2018-08-08 15:50:59',2003,7),(2014,'Tipo de ensayo: 25% / Duracion: 10min',NULL,'2018-08-08 15:58:52',2003,8),(2015,'Tipo de ensayo: vacio / Duracion: 10min',NULL,'2018-08-08 16:15:12',2003,9),(2016,'Apagado',NULL,'2018-08-08 17:08:10',2003,10),(2017,'Tipo de ensayo: vacio/ Duracion: 30min',NULL,'2018-08-08 17:34:29',2003,11),(2018,'Tipo de ensayo: 25% / Duracion: 15min',NULL,'2018-08-08 18:02:48',2003,12),(2019,'Tipo de ensayo: 50% a 70% / Duracion: 15min',NULL,'2018-08-08 18:35:08',2003,13),(2020,'Tipo de ensayo: 100% / 1er / Duracion: 5min',NULL,'2018-08-08 19:19:47',2003,14),(2021,'Tipo de ensayo: 100% / 2do / Duracion: 5min',NULL,'2018-08-08 19:32:50',2003,15),(2022,'Tipo de ensayo: 100% / 3er / Duracion: 5 min',NULL,'2018-08-11 23:32:00',2003,16),(2023,'3ra Etapa - Finalizacion de Blanqueo y Realizacion de Informe',NULL,'2018-08-11 23:50:39',2003,17),(2024,'DESCARGA Y DETENCION DEL MOTOR',NULL,'2018-08-13 03:05:55',2003,18),(2025,'Tipo de ensayo: 25% / Duracion: 10min',NULL,'2018-08-13 03:07:40',2003,19),(2026,'Tipo de ensayo: vacio / Duracion: 10min',NULL,'2018-08-13 03:16:55',2003,20),(2027,'Apagado Motor: DESMONTAJE',NULL,'2018-08-13 03:23:45',2003,21),(2028,'INFORME:',NULL,'2018-08-13 03:25:37',2003,22),(2500,'DETALLE DE TRABAJOS A REALIZAR',NULL,'2018-08-23 14:39:32',2500,1),(5000,'Cotizacion ',NULL,'2018-08-27 15:52:46',5000,1),(6000,'Presupuesto',NULL,'2018-08-30 13:54:10',6000,1),(7000,'Informe Tecnico',NULL,'2018-09-12 23:19:01',7000,1);
-/*!40000 ALTER TABLE `frm_categorias` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `frm_formularios`
---
-
-DROP TABLE IF EXISTS `frm_formularios`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `frm_formularios` (
-  `form_id` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(1000) NOT NULL,
-  `descripcion` varchar(3000) DEFAULT NULL,
-  `habilitado` tinyint(1) NOT NULL DEFAULT '1',
-  `fec_creacion` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fec_deprecado` timestamp NULL DEFAULT NULL,
-  `usuario` varchar(100) DEFAULT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`form_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7001 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `frm_formularios`
---
-
-LOCK TABLES `frm_formularios` WRITE;
-/*!40000 ALTER TABLE `frm_formularios` DISABLE KEYS */;
-INSERT INTO `frm_formularios` VALUES (1,'Registro de Diagnostico y Reparacion de turbo RE-TAL-031',NULL,1,'2018-07-28 15:50:08',NULL,NULL,6),(2,'Registro de diagnostico de bombas inyectoras RE-TAL-030',NULL,1,'2018-07-28 17:02:02',NULL,NULL,6),(3,'Registro diagnostico piezas no mecanizadas RE-TAL-008',NULL,1,'2018-07-28 17:12:16',NULL,NULL,6),(4,'Registro diagnostico arbol de levas RE-TAL-007',NULL,1,'2018-07-28 23:03:00',NULL,NULL,6),(5,'Registro diagnostico compresor RE-TAL-006',NULL,1,'2018-07-28 23:29:06',NULL,NULL,6),(6,'Registro diagnostico block de motor RE-TAL-005',NULL,1,'2018-07-29 14:21:34',NULL,NULL,6),(7,'Registro diagnostico tapa de cilindro RE-TAL-004',NULL,1,'2018-07-29 15:04:59',NULL,NULL,6),(8,'Registro diagnostico Volante Placa y Polea RE-TAL-003',NULL,1,'2018-07-29 16:08:45',NULL,NULL,6),(9,'Registro diagnostico cigueÃ±al RE-TAL-001',NULL,1,'2018-07-29 17:50:14',NULL,NULL,6),(1000,'Registro Recepcion de componente RE-TAL-009',NULL,1,'2018-07-30 00:35:27',NULL,NULL,6),(1200,'Registro de control de calidad RE-TAL-016',NULL,1,'2018-07-31 12:50:43',NULL,NULL,6),(1201,'Registro de control de calidad block RE-TAL-017',NULL,1,'2018-07-31 18:06:09',NULL,NULL,6),(1202,'Registro de control de calidad bielas y pistones RE-TAL-018',NULL,1,'2018-07-31 18:42:08',NULL,NULL,6),(1203,'Registro de control de calidad tapa de cilindro RE-TAL-019',NULL,1,'2018-07-31 19:21:33',NULL,NULL,6),(1204,'Registro de control de calidad inyeccion complemento RE-TAL-020',NULL,1,'2018-07-31 19:59:21',NULL,NULL,6),(2000,'Registro check list de despacho RE-TAL-034',NULL,1,'2018-08-07 14:38:15',NULL,NULL,6),(2001,'Registro de Armado de Tapa Cilindro RE-TAL-035',NULL,1,'2018-08-07 15:08:09',NULL,NULL,6),(2003,'Registro check list de banco de prueba RE-TAL-037',NULL,1,'2018-08-07 16:24:50',NULL,NULL,6),(2500,'Registro Trabajos a realizar RE-TAL-010',NULL,1,'2018-08-23 14:39:11',NULL,NULL,6),(5000,'Adjunto de Cotizacion',NULL,1,'2018-08-27 15:52:03',NULL,NULL,6),(6000,'Presupuesto',NULL,1,'2018-08-30 13:48:40',NULL,NULL,6),(7000,'Informe Tecnico',NULL,1,'2018-09-12 23:06:23',NULL,NULL,6);
-/*!40000 ALTER TABLE `frm_formularios` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `frm_formularios_completados`
---
-
-DROP TABLE IF EXISTS `frm_formularios_completados`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `frm_formularios_completados` (
-  `FOCO_ID` int(11) NOT NULL AUTO_INCREMENT,
-  `FORM_NOMBRE` varchar(1000) NOT NULL,
-  `CATE_NOMBRE` varchar(1000) NOT NULL,
-  `GRUP_NOMBRE` varchar(1000) NOT NULL,
-  `VALO_NOMBRE` varchar(2000) NOT NULL,
-  `TIDA_NOMBRE` varchar(100) NOT NULL,
-  `VALOR` longtext NOT NULL,
-  `FORM_ID` int(11) NOT NULL,
-  `REFERENCIA` text,
-  `FEC_CREACION` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `USUARIO` varchar(100) NOT NULL,
-  `ORDEN` int(11) DEFAULT NULL,
-  `INFO_ID` int(11) NOT NULL,
-  `NOM_VAR` varchar(20) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
-  `LITA_ID` int(11) NOT NULL,
-  `TIDA_ID` int(11) NOT NULL,
-  `VALO_ID` int(11) NOT NULL,
-  `OBLIGATORIO` tinyint(1) NOT NULL,
-  `VALIDADO` tinyint(1) NOT NULL,
-  `ID_EMPRESA` int(11) NOT NULL,
-  PRIMARY KEY (`FOCO_ID`),
-  KEY `INFO_ID` (`INFO_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=312 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `frm_formularios_completados`
---
-
-LOCK TABLES `frm_formularios_completados` WRITE;
-/*!40000 ALTER TABLE `frm_formularios_completados` DISABLE KEYS */;
-INSERT INTO `frm_formularios_completados` VALUES (1,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Arnes','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',1,1,'',80002,0,0,0,0,6),(2,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Bomba de aceite','checkbox','tilde',1000,NULL,'2018-07-30 00:35:27','1',2,1,'',80002,0,0,0,1,6),(3,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','CaÃ±o de combustible','checkbox','tilde',1000,NULL,'2018-07-30 00:35:27','1',3,1,'',80002,0,0,0,1,6),(4,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Polea balanceadora D/3','checkbox','tilde',1000,NULL,'2018-07-30 00:35:27','1',4,1,'',80002,0,0,0,1,6),(5,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Rompe olas','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',5,1,'',80002,0,0,0,0,6),(6,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Soporte de multiple de escape','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',6,1,'',80002,0,0,0,0,6),(7,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Inyectores','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',7,1,'',80002,0,0,0,0,6),(8,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Tapas de bancada','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',8,1,'',80002,0,0,0,0,6),(9,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Sensor','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',9,1,'',80002,0,0,0,0,6),(10,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Abrazadera caÃ±o de gases','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',10,1,'',80002,0,0,0,0,6),(11,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Bulbo temperatura de vigia','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',11,1,'',80002,0,0,0,0,6),(12,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Pernos de presion','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',12,1,'',80002,0,0,0,0,6),(13,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Carters c/bulones','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',13,1,'',80002,0,0,0,0,6),(14,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Resortes de balancines','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',14,1,'',80002,0,0,0,0,6),(15,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Engranaje de arbol de levas','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',15,1,'',80002,0,0,0,0,6),(16,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Tapa lateral','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',16,1,'',80002,0,0,0,0,6),(17,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Union ejes de balancines','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',17,1,'',80002,0,0,0,0,6),(18,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Bomba de agua','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',18,1,'',80002,0,0,0,0,6),(19,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','CaÃ±o de entrada de aceite','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',19,1,'',80002,0,0,0,0,6),(20,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Polea bomba de agua','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',20,1,'',80002,0,0,0,0,6),(21,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Cilindro de compresor','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',21,1,'',80002,0,0,0,0,6),(22,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Soporte filtro de gasoil DH','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',22,1,'',80002,0,0,0,0,6),(23,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Leva de embrague','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',23,1,'',80002,0,0,0,0,6),(24,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Tapon de block','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',24,1,'',80002,0,0,0,0,6),(25,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Alternador','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',25,1,'',80002,0,0,0,0,6),(26,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Bulon punta de cigueÃ±al','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',26,1,'',80002,0,0,0,0,6),(27,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Porta filtro aceite inferior','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',27,1,'',80002,0,0,0,0,6),(28,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Chapa cubre volante chica','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',28,1,'',80002,0,0,0,0,6),(29,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Seguro de valvulas','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',29,1,'',80002,0,0,0,0,6),(30,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Engranaje de cigueÃ±al','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',30,1,'',80002,0,0,0,0,6),(31,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Tapa balancines M/N - M/V','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',31,1,'',80002,0,0,0,0,6),(32,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Valvula corte de gas-oil vigia','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',32,1,'',80002,0,0,0,0,6),(33,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Bomba de nafta','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',33,1,'',80002,0,0,0,0,6),(34,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','CaÃ±o de retorno','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',34,1,'',80002,0,0,0,0,6),(35,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Porta termostato inferior','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',35,1,'',80002,0,0,0,0,6),(36,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Contrapesos','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',36,1,'',80002,0,0,0,0,6),(37,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Tapa de carcaza cubre volante','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',37,1,'',80002,0,0,0,0,6),(38,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Montantes de motor','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',38,1,'',80002,0,0,0,0,6),(39,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Tensor de alternador','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',39,1,'',80002,0,0,0,0,6),(40,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Arbol auxiliar','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',40,1,'',80002,0,0,0,0,6),(41,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Bulones de retorno','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',41,1,'',80002,0,0,0,0,6),(42,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Porta filtro aceite superior','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',42,1,'',80002,0,0,0,0,6),(43,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Chapa cubre volante grande','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',43,1,'',80002,0,0,0,0,6),(44,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Sensor de presion de aceite','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',44,1,'',80002,0,0,0,0,6),(45,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Esparragos de tapa de cilindros','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',45,1,'',80002,0,0,0,0,6),(46,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Tapa de distribucion','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',46,1,'',80002,0,0,0,0,6),(47,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Valvulas','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',47,1,'',80002,0,0,0,0,6),(48,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Arbol de levas','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',48,1,'',80002,0,0,0,0,6),(49,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Bulones de tapa de bancada ','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',49,1,'',80002,0,0,0,0,6),(50,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Pista reten','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',50,1,'',80002,0,0,0,0,6),(51,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Chaveta de arbol de levas','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',51,1,'',80002,0,0,0,0,6),(52,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Sensor de temperatura','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',52,1,'',80002,0,0,0,0,6),(53,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Filtro de aire','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',53,1,'',80002,0,0,0,0,6),(54,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Tapa de inspeccion','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',54,1,'',80002,0,0,0,0,6),(55,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Ventilador con tornillos','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',55,1,'',80002,0,0,0,0,6),(56,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Bomba Inyectora No','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',56,1,'',80002,0,0,0,0,6),(57,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','CaÃ±o inferior retorno de tubo','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',57,1,'',80002,0,0,0,0,6),(58,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Porta termostato superior','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',58,1,'',80002,0,0,0,0,6),(59,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Corona de arranque','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',59,1,'',80002,0,0,0,0,6),(60,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Tapa de cilindros','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',60,1,'',80002,0,0,0,0,6),(61,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Motor de arranque','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',61,1,'',80002,0,0,0,0,6),(62,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Varilla nivel de aceite','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',62,1,'',80002,0,0,0,0,6),(63,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Balancines','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',63,1,'',80002,0,0,0,0,6),(64,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Bulones de tapa de cilindros','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',64,1,'',80002,0,0,0,0,6),(65,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Piston de compresor','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',65,1,'',80002,0,0,0,0,6),(66,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Chaveta de cigueÃ±al','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',66,1,'',80002,0,0,0,0,6),(67,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Separador de bomba de agua','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',67,1,'',80002,0,0,0,0,6),(68,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Filtro de combustible','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',68,1,'',80002,0,0,0,0,6),(69,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Tapa de inspeccion con respirador','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',69,1,'',80002,0,0,0,0,6),(70,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Volante con bulones','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',70,1,'',80002,0,0,0,0,6),(71,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Botadores','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',71,1,'',80002,0,0,0,0,6),(72,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','CaÃ±os de inyector','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',72,1,'',80002,0,0,0,0,6),(73,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Prisioneros soporte balancin','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',73,1,'',80002,0,0,0,0,6),(74,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Depresor','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',74,1,'',80002,0,0,0,0,6),(75,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Tapa de compresor M/V M/N','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',75,1,'',80002,0,0,0,0,6),(76,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','CaÃ±o superior retorno de tubo','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',76,1,'',80002,0,0,0,0,6),(77,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Varilla alza valvulas','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',77,1,'',80002,0,0,0,0,6),(78,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Biela de compresor','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',78,1,'',80002,0,0,0,0,6),(79,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','CaÃ±o col.de adm.de turb.(alu.)','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',79,1,'',80002,0,0,0,0,6),(80,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Pistones','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',80,1,'',80002,0,0,0,0,6),(81,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','CigueÃ±al del compresor','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',81,1,'',80002,0,0,0,0,6),(82,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Separador de motor de arranque','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',82,1,'',80002,0,0,0,0,6),(83,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Gancho de motor delantero','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',83,1,'',80002,0,0,0,0,6),(84,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Tapa lateral','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',84,1,'',80002,0,0,0,0,6),(85,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Turbo','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',85,1,'',80002,0,0,0,0,6),(86,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Brida de arbol de levas','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',86,1,'',80002,0,0,0,0,6),(87,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Carburador','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',87,1,'',80002,0,0,0,0,6),(88,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS',' Radiadores de aceite con tornillos','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',88,1,'',80002,0,0,0,0,6),(89,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Disco de embrague','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',89,1,'',80002,0,0,0,0,6),(90,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Tapa de distribucion','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',90,1,'',80002,0,0,0,0,6),(91,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Mecanismo de aceleracion','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',91,1,'',80002,0,0,0,0,6),(92,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Torre de balancines','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',92,1,'',80002,0,0,0,0,6),(93,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Bielas','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',93,1,'',80002,0,0,0,0,6),(94,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','CaÃ±o colec.de escape','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',94,1,'',80002,0,0,0,0,6),(95,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Placa de embrague','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',95,1,'',80002,0,0,0,0,6),(96,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','CigueÃ±al','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',96,1,'',80002,0,0,0,0,6),(97,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Soporte de alternador','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',97,1,'',80002,0,0,0,0,6),(98,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Gancho de motor trasero','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',98,1,'',80002,0,0,0,0,6),(99,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Tapa balancines M/N - M/V','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',99,1,'',80002,0,0,0,0,6),(100,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Bujias','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',100,1,'',80002,0,0,0,0,6),(101,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Carcaza cubre volante','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',101,1,'',80002,0,0,0,0,6),(102,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Reguladores de balancines','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',102,1,'',80002,0,0,0,0,6),(103,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Distribuidor','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',103,1,'',80002,0,0,0,0,6),(104,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Tapa de inspeccion','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',104,1,'',80002,0,0,0,0,6),(105,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Multiple de admision','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',105,1,'',80002,0,0,0,0,6),(106,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Tuercas de inyectores','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',106,1,'',80002,0,0,0,0,6),(107,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Block de motor','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',107,1,'',80002,0,0,0,0,6),(108,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','CaÃ±o de alim.aceite de turbo','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',108,1,'',80002,0,0,0,0,6),(109,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Platillos de valvulas','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',109,1,'',80002,0,0,0,0,6),(110,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Chupador de bomba de aceite','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',110,1,'',80002,0,0,0,0,6),(111,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Soporte de motor','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',111,1,'',80002,0,0,0,0,6),(112,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Indicador de puestas a punto','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',112,1,'',80002,0,0,0,0,6),(113,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Vaina varilla de aceite','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',113,1,'',80002,0,0,0,0,6),(114,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','ECM o ECU','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',114,1,'',80002,0,0,0,0,6),(115,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Bulbo de aceite de vigia','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',115,1,'',80002,0,0,0,0,6),(116,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Carcaza de distribucion','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',116,1,'',80002,0,0,0,0,6),(117,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Resorte de valvulas','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',117,1,'',80002,0,0,0,0,6),(118,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Eje de balancines','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',118,1,'',80002,0,0,0,0,6),(119,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Tapa de inspeccion con respirador','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',119,1,'',80002,0,0,0,0,6),(120,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Multiple de escape','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',120,1,'',80002,0,0,0,0,6),(121,'Registro Recepcion de componente RE-TAL-009','','PARTES RECIBIDAS','Tuercas de tapas de cilindros','checkbox','notilde',1000,NULL,'2018-07-30 00:35:27','1',121,1,'',80002,0,0,0,0,6),(122,'Registro de control de calidad RE-TAL-016','Registro de Control de Calidad','Caracteristicas:','Armado','checkbox','',1200,NULL,'2018-07-31 12:50:43','1',1,2,'',80002,0,0,0,0,6),(123,'Registro de control de calidad RE-TAL-016','Registro de Control de Calidad','Caracteristicas:','Semi-Armado','checkbox','',1200,NULL,'2018-07-31 12:50:43','1',2,2,'',80002,0,0,0,0,6),(124,'Registro de control de calidad RE-TAL-016','Registro de Control de Calidad','Caracteristicas:','Desarmado','checkbox','',1200,NULL,'2018-07-31 12:50:43','1',3,2,'',80002,0,0,0,0,6),(125,'Registro de control de calidad RE-TAL-016','Bancada','Luz de Aceite','6','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',4,2,'',80002,0,0,0,0,6),(126,'Registro de control de calidad RE-TAL-016','Bancada','Luz de Aceite','7','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',5,2,'',80002,0,0,0,0,6),(127,'Registro de control de calidad RE-TAL-016','Bancada','Luz de Aceite','Marca de los Metales','select','',1200,NULL,'2018-07-31 12:50:43','1',6,2,'',80002,0,0,0,0,6),(128,'Registro de control de calidad RE-TAL-016','Bancada','Luz de Aceite','1','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',7,2,'',80002,0,0,0,0,6),(129,'Registro de control de calidad RE-TAL-016','Bancada','Luz de Aceite','Medidas:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',8,2,'',80002,0,0,0,0,6),(130,'Registro de control de calidad RE-TAL-016','Bancada','Luz de Aceite','2','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',9,2,'',80002,0,0,0,0,6),(131,'Registro de control de calidad RE-TAL-016','Bancada','Luz de Aceite','Fabrica pide maxima y minima:','textarea','',1200,NULL,'2018-07-31 12:50:43','1',10,2,'',80002,0,0,0,0,6),(132,'Registro de control de calidad RE-TAL-016','Bancada','Luz de Aceite','3','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',11,2,'',80002,0,0,0,0,6),(133,'Registro de control de calidad RE-TAL-016','Bancada','Luz de Aceite','4','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',12,2,'',80002,0,0,0,0,6),(134,'Registro de control de calidad RE-TAL-016','Bancada','Luz de Aceite','5','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',13,2,'',80002,0,0,0,0,6),(135,'Registro de control de calidad RE-TAL-016','Bielas','Luz de aceite','Marca de los Metales:','select','',1200,NULL,'2018-07-31 12:50:43','1',14,2,'',80002,0,0,0,0,6),(136,'Registro de control de calidad RE-TAL-016','Bielas','Luz de aceite','3','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',15,2,'',80002,0,0,0,0,6),(137,'Registro de control de calidad RE-TAL-016','Bielas','Luz de aceite','Medida:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',16,2,'',80002,0,0,0,0,6),(138,'Registro de control de calidad RE-TAL-016','Bielas','Luz de aceite','4','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',17,2,'',80002,0,0,0,0,6),(139,'Registro de control de calidad RE-TAL-016','Bielas','Luz de aceite','Fabrica pide maxima y minima:','textarea','',1200,NULL,'2018-07-31 12:50:43','1',18,2,'',80002,0,0,0,0,6),(140,'Registro de control de calidad RE-TAL-016','Bielas','Luz de aceite','5','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',19,2,'',80002,0,0,0,0,6),(141,'Registro de control de calidad RE-TAL-016','Bielas','Luz de aceite','6','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',20,2,'',80002,0,0,0,0,6),(142,'Registro de control de calidad RE-TAL-016','Bielas','Luz de aceite','7','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',21,2,'',80002,0,0,0,0,6),(143,'Registro de control de calidad RE-TAL-016','Bielas','Luz de aceite','8','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',22,2,'',80002,0,0,0,0,6),(144,'Registro de control de calidad RE-TAL-016','Bielas','Luz de aceite','Marca del CigueÃ±al:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',23,2,'',80002,0,0,0,0,6),(145,'Registro de control de calidad RE-TAL-016','Bielas','Luz de aceite','9','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',24,2,'',80002,0,0,0,0,6),(146,'Registro de control de calidad RE-TAL-016','Bielas','Luz de aceite','1','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',25,2,'',80002,0,0,0,0,6),(147,'Registro de control de calidad RE-TAL-016','Bielas','Luz de aceite','10','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',26,2,'',80002,0,0,0,0,6),(148,'Registro de control de calidad RE-TAL-016','Bielas','Luz de aceite','2','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',27,2,'',80002,0,0,0,0,6),(149,'Registro de control de calidad RE-TAL-016','Cilindros','','4','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',28,2,'',80002,0,0,0,0,6),(150,'Registro de control de calidad RE-TAL-016','Cilindros','','4','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',29,2,'',80002,0,0,0,0,6),(151,'Registro de control de calidad RE-TAL-016','Cilindros','','5','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',30,2,'',80002,0,0,0,0,6),(152,'Registro de control de calidad RE-TAL-016','Cilindros','','6','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',31,2,'',80002,0,0,0,0,6),(153,'Registro de control de calidad RE-TAL-016','Cilindros','','Estado:','select','',1200,NULL,'2018-07-31 12:50:43','1',32,2,'',80002,0,0,0,0,6),(154,'Registro de control de calidad RE-TAL-016','Cilindros','','7','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',33,2,'',80002,0,0,0,0,6),(155,'Registro de control de calidad RE-TAL-016','Cilindros','','Medidas de camisa:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',34,2,'',80002,0,0,0,0,6),(156,'Registro de control de calidad RE-TAL-016','Cilindros','','8','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',35,2,'',80002,0,0,0,0,6),(157,'Registro de control de calidad RE-TAL-016','Cilindros','','1','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',36,2,'',80002,0,0,0,0,6),(158,'Registro de control de calidad RE-TAL-016','Cilindros','','Marca de Piston:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',37,2,'',80002,0,0,0,0,6),(159,'Registro de control de calidad RE-TAL-016','Cilindros','','2','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',38,2,'',80002,0,0,0,0,6),(160,'Registro de control de calidad RE-TAL-016','Cilindros','','3','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',39,2,'',80002,0,0,0,0,6),(161,'Registro de control de calidad RE-TAL-016','Levas','Luz de aceite:','2','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',40,2,'',80002,0,0,0,0,6),(162,'Registro de control de calidad RE-TAL-016','Levas','Luz de aceite:','3','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',41,2,'',80002,0,0,0,0,6),(163,'Registro de control de calidad RE-TAL-016','Levas','Luz de aceite:','4','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',42,2,'',80002,0,0,0,0,6),(164,'Registro de control de calidad RE-TAL-016','Levas','Luz de aceite:','Otros:','textarea','',1200,NULL,'2018-07-31 12:50:43','1',43,2,'',80002,0,0,0,0,6),(165,'Registro de control de calidad RE-TAL-016','Levas','Luz de aceite:','1','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',44,2,'',80002,0,0,0,0,6),(166,'Registro de control de calidad RE-TAL-016','Levas','Medidas del Ap. Levas:','Otros:','textarea','',1200,NULL,'2018-07-31 12:50:43','1',45,2,'',80002,0,0,0,0,6),(167,'Registro de control de calidad RE-TAL-016','Levas','Medidas del Ap. Levas:','1','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',46,2,'',80002,0,0,0,0,6),(168,'Registro de control de calidad RE-TAL-016','Levas','Medidas del Ap. Levas:','2','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',47,2,'',80002,0,0,0,0,6),(169,'Registro de control de calidad RE-TAL-016','Levas','Medidas del Ap. Levas:','3','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',48,2,'',80002,0,0,0,0,6),(170,'Registro de control de calidad RE-TAL-016','Levas','Medidas del Ap. Levas:','4','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',49,2,'',80002,0,0,0,0,6),(171,'Registro de control de calidad RE-TAL-016','Levas','Eje de mando:','Observaciones:','textarea','',1200,NULL,'2018-07-31 12:50:43','1',50,2,'',80002,0,0,0,0,6),(172,'Registro de control de calidad RE-TAL-016','Levas','Fabrica pide maxima y minima','','textarea','',1200,NULL,'2018-07-31 12:50:43','1',51,2,'',80002,0,0,0,0,6),(173,'Registro de control de calidad RE-TAL-016','CigueÃ±al:','Reten:','Amianto:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',52,2,'',80002,0,0,0,0,6),(174,'Registro de control de calidad RE-TAL-016','CigueÃ±al:','Reten:','Rosca:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',53,2,'',80002,0,0,0,0,6),(175,'Registro de control de calidad RE-TAL-016','CigueÃ±al:','Reten:','Luz:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',54,2,'',80002,0,0,0,0,6),(176,'Registro de control de calidad RE-TAL-016','CigueÃ±al:','Reten:','Estado de Leva:','select','',1200,NULL,'2018-07-31 12:50:43','1',55,2,'',80002,0,0,0,0,6),(177,'Registro de control de calidad RE-TAL-016','CigueÃ±al:','Axial:','De cigueÃ±al:','textarea','',1200,NULL,'2018-07-31 12:50:43','1',56,2,'',80002,0,0,0,0,6),(178,'Registro de control de calidad RE-TAL-016','CigueÃ±al:','Biela de Compresor:','Luz de Aceite:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',57,2,'',80002,0,0,0,0,6),(179,'Registro de control de calidad RE-TAL-016','CigueÃ±al:','Biela de Compresor:','Medida:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',58,2,'',80002,0,0,0,0,6),(180,'Registro de control de calidad RE-TAL-016','CigueÃ±al:','Cilindro de Compresor:','Luz:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',59,2,'',80002,0,0,0,0,6),(181,'Registro de control de calidad RE-TAL-016','CigueÃ±al:','Cilindro de Compresor:','Estado:','select','',1200,NULL,'2018-07-31 12:50:43','1',60,2,'',80002,0,0,0,0,6),(182,'Registro de control de calidad RE-TAL-016','CigueÃ±al:','Cilindro de Compresor:','Medida:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',61,2,'',80002,0,0,0,0,6),(183,'Registro de control de calidad RE-TAL-016','CigueÃ±al:','Otros:','Bancadas:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',62,2,'',80002,0,0,0,0,6),(184,'Registro de control de calidad RE-TAL-016','CigueÃ±al:','Otros:','Radio Biela Compresor:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',63,2,'',80002,0,0,0,0,6),(185,'Registro de control de calidad RE-TAL-016','CigueÃ±al:','Otros:','Alojamiento Bielas:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',64,2,'',80002,0,0,0,0,6),(186,'Registro de control de calidad RE-TAL-016','CigueÃ±al:','Otros:','Luz de Pernos:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',65,2,'',80002,0,0,0,0,6),(187,'Registro de control de calidad RE-TAL-016','CigueÃ±al:','Otros:','Bancadas:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',66,2,'',80002,0,0,0,0,6),(188,'Registro de control de calidad RE-TAL-016','CigueÃ±al:','Otros:','Radio de Biela de CigueÃ±al:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',67,2,'',80002,0,0,0,0,6),(189,'Registro de control de calidad RE-TAL-016','CigueÃ±al:','Otros:','CigueÃ±al Biela:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',68,2,'',80002,0,0,0,0,6),(190,'Registro de control de calidad RE-TAL-016','CigueÃ±al:','Otros:','Radio de Bancada de CigueÃ±al:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',69,2,'',80002,0,0,0,0,6),(191,'Registro de control de calidad RE-TAL-016','Balanceo de Biela:','Control de peso:','4','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',70,2,'',80002,0,0,0,0,6),(192,'Registro de control de calidad RE-TAL-016','Balanceo de Biela:','Control de peso:','5','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',71,2,'',80002,0,0,0,0,6),(193,'Registro de control de calidad RE-TAL-016','Balanceo de Biela:','Control de peso:','6','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',72,2,'',80002,0,0,0,0,6),(194,'Registro de control de calidad RE-TAL-016','Balanceo de Biela:','Control de peso:','7','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',73,2,'',80002,0,0,0,0,6),(195,'Registro de control de calidad RE-TAL-016','Balanceo de Biela:','Control de peso:','8','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',74,2,'',80002,0,0,0,0,6),(196,'Registro de control de calidad RE-TAL-016','Balanceo de Biela:','Control de peso:','1','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',75,2,'',80002,0,0,0,0,6),(197,'Registro de control de calidad RE-TAL-016','Balanceo de Biela:','Control de peso:','9','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',76,2,'',80002,0,0,0,0,6),(198,'Registro de control de calidad RE-TAL-016','Balanceo de Biela:','Control de peso:','2','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',77,2,'',80002,0,0,0,0,6),(199,'Registro de control de calidad RE-TAL-016','Balanceo de Biela:','Control de peso:','Observaciones:','textarea','',1200,NULL,'2018-07-31 12:50:43','1',78,2,'',80002,0,0,0,0,6),(200,'Registro de control de calidad RE-TAL-016','Balanceo de Biela:','Control de peso:','3','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',79,2,'',80002,0,0,0,0,6),(201,'Registro de control de calidad RE-TAL-016','Otros:','Control de Bomba de Aceite con Arbol de Levas:','Estado:','select','',1200,NULL,'2018-07-31 12:50:43','1',80,2,'',80002,0,0,0,0,6),(202,'Registro de control de calidad RE-TAL-016','Otros:','Control de Bomba de Aceite con Arbol de Levas:','Presion Alta:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',81,2,'',80002,0,0,0,0,6),(203,'Registro de control de calidad RE-TAL-016','Otros:','Control de Bomba de Aceite con Arbol de Levas:','Presion Baja:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',82,2,'',80002,0,0,0,0,6),(204,'Registro de control de calidad RE-TAL-016','Otros:','Control de Bomba de Aceite con Arbol de Levas:','Medida:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',83,2,'',80002,0,0,0,0,6),(205,'Registro de control de calidad RE-TAL-016','Otros:','Luz de Axial:','De Bielas:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',84,2,'',80002,0,0,0,0,6),(206,'Registro de control de calidad RE-TAL-016','Otros:','Block:','Tiene rosca:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',85,2,'',80002,0,0,0,0,6),(207,'Registro de control de calidad RE-TAL-016','Otros:','Block:','Tapa de distribucion:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',86,2,'',80002,0,0,0,0,6),(208,'Registro de control de calidad RE-TAL-016','Otros:','Block:','Tapa de Cilindros:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',87,2,'',80002,0,0,0,0,6),(209,'Registro de control de calidad RE-TAL-016','Otros:','Botadores:','Luz entre aloj. y botador:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',88,2,'',80002,0,0,0,0,6),(210,'Registro de control de calidad RE-TAL-016','Otros:','Engranajes:','En que estado estan:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',89,2,'',80002,0,0,0,0,6),(211,'Registro de control de calidad RE-TAL-016','Otros:','Conductos de agua:','Repasar:','textarea','',1200,NULL,'2018-07-31 12:50:43','1',90,2,'',80002,0,0,0,0,6),(212,'Registro de control de calidad RE-TAL-016','Otros:','Controlar:','Conductos de aceite de leva:','textarea','',1200,NULL,'2018-07-31 12:50:43','1',91,2,'',80002,0,0,0,0,6),(213,'Registro de control de calidad RE-TAL-016','Otros:','Controlar:','Block:','textarea','',1200,NULL,'2018-07-31 12:50:43','1',92,2,'',80002,0,0,0,0,6),(214,'Registro de control de calidad RE-TAL-016','Otros:','Luz de Canaletas de Aros:','En el Piston:','textarea','',1200,NULL,'2018-07-31 12:50:43','1',93,2,'',80002,0,0,0,0,6),(215,'Registro de control de calidad RE-TAL-016','Otros:','Balanceo de:','CigueÃ±al:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',94,2,'',80002,0,0,0,0,6),(216,'Registro de control de calidad RE-TAL-016','Otros:','Balanceo de:','Volante:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',95,2,'',80002,0,0,0,0,6),(217,'Registro de control de calidad RE-TAL-016','Otros:','Balanceo de:','Polea:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',96,2,'',80002,0,0,0,0,6),(218,'Registro de control de calidad RE-TAL-016','Otros:','Escuadra de:','Pistones:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',97,2,'',80002,0,0,0,0,6),(219,'Registro de control de calidad RE-TAL-016','Otros:','Escuadra de:','Bielas:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',98,2,'',80002,0,0,0,0,6),(220,'Registro de control de calidad RE-TAL-016','Otros:','Altura de:','Camisas:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',99,2,'',80002,0,0,0,0,6),(221,'Registro de control de calidad RE-TAL-016','Otros:','Altura de:','Polea:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',100,2,'',80002,0,0,0,0,6),(222,'Registro de control de calidad RE-TAL-016','Otros:','Repasar rosca de tapa distribucion de:','Aluminio:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',101,2,'',80002,0,0,0,0,6),(223,'Registro de control de calidad RE-TAL-016','Otros:','Repasar rosca de tapa distribucion de:','Placa:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',102,2,'',80002,0,0,0,0,6),(224,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Controlar Tornillos de Contrapesos y apretar','textarea','',1200,NULL,'2018-07-31 12:50:43','1',103,2,'',80002,0,0,0,0,6),(225,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Largo de Tornillos de Bancadas y Bielas','textarea','',1200,NULL,'2018-07-31 12:50:43','1',104,2,'',80002,0,0,0,0,6),(226,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Aceite, si estan hermanadas','textarea','',1200,NULL,'2018-07-31 12:50:43','1',105,2,'',80002,0,0,0,0,6),(227,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Altura Pistones','textarea','',1200,NULL,'2018-07-31 12:50:43','1',106,2,'',80002,0,0,0,0,6),(228,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Apretar con Kilos o Grados','textarea','',1200,NULL,'2018-07-31 12:50:43','1',107,2,'',80002,0,0,0,0,6),(229,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Tapones Varios y Medidas','textarea','',1200,NULL,'2018-07-31 12:50:43','1',108,2,'',80002,0,0,0,0,6),(230,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Luz entre Dientes de engranajes de Distribucion','textarea','',1200,NULL,'2018-07-31 12:50:43','1',109,2,'',80002,0,0,0,0,6),(231,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Engranaje Bomba de Aceite, varios','textarea','',1200,NULL,'2018-07-31 12:50:43','1',110,2,'',80002,0,0,0,0,6),(232,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Indique apriete de Biela','textarea','',1200,NULL,'2018-07-31 12:50:43','1',111,2,'',80002,0,0,0,0,6),(233,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Taponar CigueÃ±al','textarea','',1200,NULL,'2018-07-31 12:50:43','1',112,2,'',80002,0,0,0,0,6),(234,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Carcaza de Distribucion, Leva y Bomba Inyectora','textarea','',1200,NULL,'2018-07-31 12:50:43','1',113,2,'',80002,0,0,0,0,6),(235,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Piezas de alumino, varios','textarea','',1200,NULL,'2018-07-31 12:50:43','1',114,2,'',80002,0,0,0,0,6),(236,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Indique apriete de Bancada','textarea','',1200,NULL,'2018-07-31 12:50:43','1',115,2,'',80002,0,0,0,0,6),(237,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Seguro de Pistones, varios','textarea','',1200,NULL,'2018-07-31 12:50:43','1',116,2,'',80002,0,0,0,0,6),(238,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Escuadra de Pistones','textarea','',1200,NULL,'2018-07-31 12:50:43','1',117,2,'',80002,0,0,0,0,6),(239,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Conducto Aceite - MuÃ±on de Leva y de Compresor','textarea','',1200,NULL,'2018-07-31 12:50:43','1',118,2,'',80002,0,0,0,0,6),(240,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Lugar:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',119,2,'',80002,0,0,0,0,6),(241,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Botadores si pasan por el Block y da, medidas varias','textarea','',1200,NULL,'2018-07-31 12:50:43','1',120,2,'',80002,0,0,0,0,6),(242,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Medir Centros de Agujeros, Pistones','textarea','',1200,NULL,'2018-07-31 12:50:43','1',121,2,'',80002,0,0,0,0,6),(243,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Ruleman de cola de CigueÃ±al','textarea','',1200,NULL,'2018-07-31 12:50:43','1',122,2,'',80002,0,0,0,0,6),(244,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Torsion de CigueÃ±al','textarea','',1200,NULL,'2018-07-31 12:50:43','1',123,2,'',80002,0,0,0,0,6),(245,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Medidas eje, Mando Perkins 6354','textarea','',1200,NULL,'2018-07-31 12:50:43','1',124,2,'',80002,0,0,0,0,6),(246,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Excentricos 1518 y 1114','textarea','',1200,NULL,'2018-07-31 12:50:43','1',125,2,'',80002,0,0,0,0,6),(247,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Biselado de conductos de aceites del CigueÃ±al','textarea','',1200,NULL,'2018-07-31 12:50:43','1',126,2,'',80002,0,0,0,0,6),(248,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Chapa de Identificacion','textarea','',1200,NULL,'2018-07-31 12:50:43','1',127,2,'',80002,0,0,0,0,6),(249,'Registro de control de calidad RE-TAL-016','CONTROLAR','','CaÃ±o de Bancada Central-Aceite','textarea','',1200,NULL,'2018-07-31 12:50:43','1',128,2,'',80002,0,0,0,0,6),(250,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Tapones Lubricacion de Eje, Mando Perkins 6354','textarea','',1200,NULL,'2018-07-31 12:50:43','1',129,2,'',80002,0,0,0,0,6),(251,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Medir Reten de Bancada.','textarea','',1200,NULL,'2018-07-31 12:50:43','1',130,2,'',80002,0,0,0,0,6),(252,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Block Rellenado:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',131,2,'',80002,0,0,0,0,6),(253,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Desplazamiento de Carcaza, Distribucion','textarea','',1200,NULL,'2018-07-31 12:50:43','1',132,2,'',80002,0,0,0,0,6),(254,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Angulo de Brunido','textarea','',1200,NULL,'2018-07-31 12:50:43','1',133,2,'',80002,0,0,0,0,6),(255,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Controlar engranaje de Arbol de Levas y Bomba de','textarea','',1200,NULL,'2018-07-31 12:50:43','1',134,2,'',80002,0,0,0,0,6),(256,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Controlar Rosca, CigueÃ±al varios y Reten','textarea','',1200,NULL,'2018-07-31 12:50:43','1',135,2,'',80002,0,0,0,0,6),(257,'Registro de control de calidad RE-TAL-016','CONTROLAR','','Soldado:','input_numerico','',1200,NULL,'2018-07-31 12:50:43','1',136,2,'',80002,0,0,0,0,6),(258,'Registro de control de calidad block RE-TAL-017','Control de Calidad','Caracteristicas:','Armado Completo','checkbox','',1201,NULL,'2018-07-31 18:06:09','1',1,3,'',80002,0,0,0,0,6),(259,'Registro de control de calidad block RE-TAL-017','Control de Calidad','Caracteristicas:','Motor:','input_numerico','',1201,NULL,'2018-07-31 18:06:09','1',2,3,'',80002,0,0,0,0,6),(260,'Registro de control de calidad block RE-TAL-017','Control de Calidad','Caracteristicas:','Semi-Armado','checkbox','',1201,NULL,'2018-07-31 18:06:09','1',3,3,'',80002,0,0,0,0,6),(261,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','1-Lavado de Block','Realizar','select','',1201,NULL,'2018-07-31 18:06:09','1',4,3,'',80002,0,0,0,0,6),(262,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','1-Lavado de Block','Observaciones:','textarea','',1201,NULL,'2018-07-31 18:06:09','1',5,3,'',80002,0,0,0,0,6),(263,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','1-Lavado de Block','Estado:','select','',1201,NULL,'2018-07-31 18:06:09','1',6,3,'',80002,0,0,0,0,6),(264,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Control de Limpieza de Conductor de Aceite','Realizar','select','',1201,NULL,'2018-07-31 18:06:09','1',7,3,'',80002,0,0,0,0,6),(265,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Control de Limpieza de Conductor de Aceite','Observaciones:','textarea','',1201,NULL,'2018-07-31 18:06:09','1',8,3,'',80002,0,0,0,0,6),(266,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Control de Limpieza de Conductor de Aceite','Estado:','select','',1201,NULL,'2018-07-31 18:06:09','1',9,3,'',80002,0,0,0,0,6),(267,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Colocar tapones de Lubricacion y refrigeracion (Pegamento)','Realizar:','select','',1201,NULL,'2018-07-31 18:06:09','1',10,3,'',80002,0,0,0,0,6),(268,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Colocar tapones de Lubricacion y refrigeracion (Pegamento)','Observacion:','textarea','',1201,NULL,'2018-07-31 18:06:09','1',11,3,'',80002,0,0,0,0,6),(269,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Colocar tapones de Lubricacion y refrigeracion (Pegamento)','Estado:','select','',1201,NULL,'2018-07-31 18:06:09','1',12,3,'',80002,0,0,0,0,6),(270,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','2-Hacer limpieza fina de cojinetes','Realizar:','select','',1201,NULL,'2018-07-31 18:06:09','1',13,3,'',80002,0,0,0,0,6),(271,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','2-Hacer limpieza fina de cojinetes','Observaciones:','textarea','',1201,NULL,'2018-07-31 18:06:09','1',14,3,'',80002,0,0,0,0,6),(272,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','2-Hacer limpieza fina de cojinetes','Estado:','select','',1201,NULL,'2018-07-31 18:06:09','1',15,3,'',80002,0,0,0,0,6),(273,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Friccionar con lubricante Molykote Limpiar y lubricar con Bardhal','Estado:','select','',1201,NULL,'2018-07-31 18:06:09','1',16,3,'',80002,0,0,0,0,6),(274,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Friccionar con lubricante Molykote Limpiar y lubricar con Bardhal','Realizar:','select','',1201,NULL,'2018-07-31 18:06:09','1',17,3,'',80002,0,0,0,0,6),(275,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Friccionar con lubricante Molykote Limpiar y lubricar con Bardhal','Observaciones:','textarea','',1201,NULL,'2018-07-31 18:06:09','1',18,3,'',80002,0,0,0,0,6),(276,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Colocar cojinetes en sus alojamientos','Realizar:','select','',1201,NULL,'2018-07-31 18:06:09','1',19,3,'',80002,0,0,0,0,6),(277,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Colocar cojinetes en sus alojamientos','Observaciones:','textarea','',1201,NULL,'2018-07-31 18:06:09','1',20,3,'',80002,0,0,0,0,6),(278,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Colocar cojinetes en sus alojamientos','Estado:','select','',1201,NULL,'2018-07-31 18:06:09','1',21,3,'',80002,0,0,0,0,6),(279,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','3. Limpieza de CigueÃ±al. Verificar limpieza de conductos de aceite','Realizar:','select','',1201,NULL,'2018-07-31 18:06:09','1',22,3,'',80002,0,0,0,0,6),(280,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','3. Limpieza de CigueÃ±al. Verificar limpieza de conductos de aceite','Observaciones:','textarea','',1201,NULL,'2018-07-31 18:06:09','1',23,3,'',80002,0,0,0,0,6),(281,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','3. Limpieza de CigueÃ±al. Verificar limpieza de conductos de aceite','Estado:','select','',1201,NULL,'2018-07-31 18:06:09','1',24,3,'',80002,0,0,0,0,6),(282,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Montar el cigueÃ±al. Verificar el chavetero y trinquero','Observaciones:','textarea','',1201,NULL,'2018-07-31 18:06:09','1',25,3,'',80002,0,0,0,0,6),(283,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Montar el cigueÃ±al. Verificar el chavetero y trinquero','Estado:','select','',1201,NULL,'2018-07-31 18:06:09','1',26,3,'',80002,0,0,0,0,6),(284,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Montar el cigueÃ±al. Verificar el chavetero y trinquero','Realizar:','select','',1201,NULL,'2018-07-31 18:06:09','1',27,3,'',80002,0,0,0,0,6),(285,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Ajustar tapas de bancadas.','Realizar:','select','',1201,NULL,'2018-07-31 18:06:09','1',28,3,'',80002,0,0,0,0,6),(286,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Ajustar tapas de bancadas.','Observaciones:','textarea','',1201,NULL,'2018-07-31 18:06:09','1',29,3,'',80002,0,0,0,0,6),(287,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Ajustar tapas de bancadas.','Estado:','select','',1201,NULL,'2018-07-31 18:06:09','1',30,3,'',80002,0,0,0,0,6),(288,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Controlar el giro liviano de cigueÃ±al','Realizar:','select','',1201,NULL,'2018-07-31 18:06:09','1',31,3,'',80002,0,0,0,0,6),(289,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Controlar el giro liviano de cigueÃ±al','Observaciones:','textarea','',1201,NULL,'2018-07-31 18:06:09','1',32,3,'',80002,0,0,0,0,6),(290,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Controlar el giro liviano de cigueÃ±al','Estado:','select','',1201,NULL,'2018-07-31 18:06:09','1',33,3,'',80002,0,0,0,0,6),(291,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Ajustar contrapesos correspondientes','Realizar:','select','',1201,NULL,'2018-07-31 18:06:09','1',34,3,'',80002,0,0,0,0,6),(292,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Ajustar contrapesos correspondientes','Observaciones:','textarea','',1201,NULL,'2018-07-31 18:06:09','1',35,3,'',80002,0,0,0,0,6),(293,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Ajustar contrapesos correspondientes','Estado:','select','',1201,NULL,'2018-07-31 18:06:09','1',36,3,'',80002,0,0,0,0,6),(294,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Controlar Alojamiento de O\'ring de camisas','Realizar:','select','',1201,NULL,'2018-07-31 18:06:09','1',37,3,'',80002,0,0,0,0,6),(295,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Controlar Alojamiento de O\'ring de camisas','Observaciones:','textarea','',1201,NULL,'2018-07-31 18:06:09','1',38,3,'',80002,0,0,0,0,6),(296,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Controlar Alojamiento de O\'ring de camisas','Estado:','select','',1201,NULL,'2018-07-31 18:06:09','1',39,3,'',80002,0,0,0,0,6),(297,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','* Colocar Camisas Humedas','Estado:','select','',1201,NULL,'2018-07-31 18:06:09','1',40,3,'',80002,0,0,0,0,6),(298,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','* Colocar Camisas Humedas','Realizar:','select','',1201,NULL,'2018-07-31 18:06:09','1',41,3,'',80002,0,0,0,0,6),(299,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','* Colocar Camisas Humedas','Observaciones:','textarea','',1201,NULL,'2018-07-31 18:06:09','1',42,3,'',80002,0,0,0,0,6),(300,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Controlar su ubicacion y altura','Realizar:','select','',1201,NULL,'2018-07-31 18:06:09','1',43,3,'',80002,0,0,0,0,6),(301,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Controlar su ubicacion y altura','Observaciones:','textarea','',1201,NULL,'2018-07-31 18:06:09','1',44,3,'',80002,0,0,0,0,6),(302,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Controlar su ubicacion y altura','Estado:','select','',1201,NULL,'2018-07-31 18:06:09','1',45,3,'',80002,0,0,0,0,6),(303,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Marcar si lleva juntas de camisas (laminas)','Realizar:','select','',1201,NULL,'2018-07-31 18:06:09','1',46,3,'',80002,0,0,0,0,6),(304,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Marcar si lleva juntas de camisas (laminas)','Observaciones:','textarea','',1201,NULL,'2018-07-31 18:06:09','1',47,3,'',80002,0,0,0,0,6),(305,'Registro de control de calidad block RE-TAL-017','Block CigueÃ±al','Marcar si lleva juntas de camisas (laminas)','Estado:','select','',1201,NULL,'2018-07-31 18:06:09','1',48,3,'',80002,0,0,0,0,6),(306,'Registro de control de calidad block RE-TAL-017','Paro de armado:','Descripcion:','Fecha:','input_numerico','',1201,NULL,'2018-07-31 18:06:09','1',49,3,'',80002,0,0,0,0,6),(307,'Registro de control de calidad block RE-TAL-017','Paro de armado:','Descripcion:','Motivo:','textarea','',1201,NULL,'2018-07-31 18:06:09','1',50,3,'',80002,0,0,0,0,6),(308,'Registro de control de calidad block RE-TAL-017','Paro de armado:','Descripcion 2:','Motivo:','textarea','',1201,NULL,'2018-07-31 18:06:09','1',51,3,'',80002,0,0,0,0,6),(309,'Registro de control de calidad block RE-TAL-017','Paro de armado:','Descripcion 2:','Fecha:','input_numerico','',1201,NULL,'2018-07-31 18:06:09','1',52,3,'',80002,0,0,0,0,6),(310,'Registro de control de calidad block RE-TAL-017','Paro de armado:','Descripcion 3:','Motivo:','textarea','',1201,NULL,'2018-07-31 18:06:09','1',53,3,'',80002,0,0,0,0,6),(311,'Registro de control de calidad block RE-TAL-017','Paro de armado:','Descripcion 3:','Fecha:','input_numerico','',1201,NULL,'2018-07-31 18:06:09','1',54,3,'',80002,0,0,0,0,6);
-/*!40000 ALTER TABLE `frm_formularios_completados` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `frm_grupos`
---
-
-DROP TABLE IF EXISTS `frm_grupos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `frm_grupos` (
-  `GRUP_ID` int(11) NOT NULL AUTO_INCREMENT,
-  `NOMBRE` varchar(1000) NOT NULL,
-  `PISTA` varchar(1000) DEFAULT NULL,
-  `FEC_CREACION` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `CATE_ID` int(11) DEFAULT NULL,
-  `ORDEN` int(11) DEFAULT NULL,
-  PRIMARY KEY (`GRUP_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=7001 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `frm_grupos`
---
-
-LOCK TABLES `frm_grupos` WRITE;
-/*!40000 ALTER TABLE `frm_grupos` DISABLE KEYS */;
-INSERT INTO `frm_grupos` VALUES (1,'A-Turbina',NULL,'2018-07-28 15:53:39',1,1),(2,'B-Rueda Compresora',NULL,'2018-07-28 16:01:40',1,2),(3,'C-Carcaza de Admision',NULL,'2018-07-28 16:03:06',1,3),(4,'D-Carcaza de Escape',NULL,'2018-07-28 16:04:05',1,4),(5,'E-Valvula WG',NULL,'2018-07-28 16:05:18',1,5),(6,'F-Valvula Electronica Geo Variable',NULL,'2018-07-28 16:06:03',1,6),(7,'G-Valvula Comandada por WG',NULL,'2018-07-28 16:07:51',1,7),(8,'H-Mecanismo de Geo Variable',NULL,'2018-07-28 16:08:38',1,8),(9,'1-Eje:',NULL,'2018-07-28 16:16:25',2,1),(10,'2-Cuerpo',NULL,'2018-07-28 16:20:01',2,2),(11,'3-Placa Trasera ',NULL,'2018-07-28 16:21:47',2,3),(12,'4-Sistema Axial',NULL,'2018-07-28 16:23:15',2,4),(13,'5-Aros',NULL,'2018-07-28 16:24:22',2,5),(14,'6-Bujes',NULL,'2018-07-28 16:24:28',2,6),(15,'Descripcion De Bomba:',NULL,'2018-07-28 17:04:30',3,1),(16,'Descripcio de Inyectores:',NULL,'2018-07-28 17:06:55',3,2),(17,'',NULL,'2018-07-28 17:15:26',4,1),(18,'1-Tapa Valvula',NULL,'2018-07-28 17:18:20',5,1),(19,'2-Tapa Distribucion',NULL,'2018-07-28 17:21:38',5,2),(20,'3-Carter',NULL,'2018-07-28 17:23:19',5,3),(21,'4-Carcaza Cubre Volante',NULL,'2018-07-28 17:24:48',5,4),(22,'5-Laterales de Block (inspeccion)',NULL,'2018-07-28 17:26:34',5,5),(23,'1-Volante',NULL,'2018-07-28 17:33:40',6,1),(24,'2-Corona de Arranque',NULL,'2018-07-28 17:33:56',6,2),(25,'3-Polea de CigueÃ±al',NULL,'2018-07-28 17:34:10',6,3),(26,'4-Engranaje de Distribucion',NULL,'2018-07-28 17:35:12',6,4),(27,'5-Cadena de Distribucion ',NULL,'2018-07-28 17:35:32',6,5),(28,'6-Tensor y Patin de Cadena',NULL,'2018-07-28 17:42:47',6,6),(29,'7-Placa y Disco Embrague',NULL,'2018-07-28 17:43:53',6,7),(30,'8-Paleta de Ventilador',NULL,'2018-07-28 17:45:59',6,8),(31,'9-Poleas de Accesorios (Bomba de Agua)',NULL,'2018-07-28 17:51:54',6,9),(32,'10-Polea Multicanal',NULL,'2018-07-28 17:56:28',6,10),(33,'11-Tensores Multicanal',NULL,'2018-07-28 17:56:38',6,11),(34,'1-Bomba de Aceite',NULL,'2018-07-28 18:00:26',7,1),(35,'2-Bulbo Presion de Aceite',NULL,'2018-07-28 18:01:13',7,2),(36,'3-Tubo Carga de Aceite',NULL,'2018-07-28 18:01:24',7,3),(37,'4-Tubo de Alimentacion de Turbo',NULL,'2018-07-28 18:01:33',7,4),(38,'5-Tubo Retorno de Turbo',NULL,'2018-07-28 18:01:45',7,5),(39,'6-Tubo Porta Varilla de Aceite',NULL,'2018-07-28 18:01:53',7,6),(40,'7- Varilla de Aceite',NULL,'2018-07-28 18:02:25',7,7),(41,'8-Porta Filtro de Aceite Inferior',NULL,'2018-07-28 18:07:04',7,8),(42,'9-Porta Filtro de Aceite Superior',NULL,'2018-07-28 18:07:16',7,9),(43,'10-Respiradero de Motor',NULL,'2018-07-28 18:07:27',7,10),(44,'11-Tubos de Lubricacion de Accesorios',NULL,'2018-07-28 18:07:44',7,11),(45,'12-Chupador de Bomba de Aceite',NULL,'2018-07-28 18:08:04',7,12),(46,'13-Radiador de Aceite',NULL,'2018-07-28 18:08:18',7,13),(47,'1-Bomba de Agua',NULL,'2018-07-28 18:22:31',8,1),(48,'2-Bulbo de Temperatura',NULL,'2018-07-28 18:22:47',8,2),(49,'3-Termostato',NULL,'2018-07-28 18:22:54',8,3),(50,'4-Porta Termostato Inferior',NULL,'2018-07-28 18:23:03',8,4),(51,'5-Porta Termostato Superior',NULL,'2018-07-28 18:23:13',8,5),(52,'6-Inter Cooler',NULL,'2018-07-28 18:23:24',8,6),(53,'7-Polea de Ventilador',NULL,'2018-07-28 18:23:35',8,7),(54,'8-Tuberia de Accesorios de Agua',NULL,'2018-07-28 18:23:44',8,8),(55,'9-Tuberia de Agua Turbo',NULL,'2018-07-28 18:23:55',8,9),(56,'10- Mangueras de Agua',NULL,'2018-07-28 18:24:11',8,10),(57,'1-Bomba Inyectora',NULL,'2018-07-28 18:39:54',9,1),(58,'2-Bomba de Presion Principal',NULL,'2018-07-28 18:41:44',9,2),(59,'3-Inyectores',NULL,'2018-07-28 18:43:54',9,3),(60,'4-Bujias de Precalentamiento',NULL,'2018-07-28 18:45:06',9,4),(61,'5-Tubos de Inyectores',NULL,'2018-07-28 18:46:51',9,5),(62,'6-Tubo Alimentador Comb.',NULL,'2018-07-28 18:48:20',9,6),(63,'7-Tubo Retorno Comb.',NULL,'2018-07-28 18:51:39',9,7),(64,'8-Porta Filtro de Aire',NULL,'2018-07-28 18:53:49',9,8),(65,'9-Sistema de Aceleracion',NULL,'2018-07-28 18:54:46',9,9),(66,'10-Sistema de Arranque y Parada',NULL,'2018-07-28 18:56:05',9,10),(67,'11-Sistema de Purgado',NULL,'2018-07-28 18:57:53',9,11),(68,'12-Porta Filtro de Combustible',NULL,'2018-07-28 18:59:52',9,12),(69,'13-Multiple de Admision',NULL,'2018-07-28 19:01:33',9,13),(70,'a)Inyectores',NULL,'2018-07-28 19:07:18',10,1),(71,'b)Motores PAP',NULL,'2018-07-28 19:07:33',10,2),(72,'c)Bomba Alimentador',NULL,'2018-07-28 19:07:52',10,3),(73,'d)Tubos Distribucion',NULL,'2018-07-28 19:08:06',10,4),(74,'e)Porta Filtros',NULL,'2018-07-28 19:08:24',10,5),(75,'f)Tubos de Retorno',NULL,'2018-07-28 19:08:38',10,6),(77,'15-Bomba Alimentadora',NULL,'2018-07-28 22:42:55',10,8),(78,'16-CaÃ±erias de Combustible en General',NULL,'2018-07-28 22:43:15',10,9),(79,'17-Valvulas de Sobre Presion de Combustible',NULL,'2018-07-28 22:43:28',10,10),(80,'',NULL,'2018-07-28 23:04:07',11,1),(81,'Levas Admision',NULL,'2018-07-28 23:07:10',12,1),(82,'Levas Escape',NULL,'2018-07-28 23:07:17',12,2),(83,'Apoyo de Levas',NULL,'2018-07-28 23:07:25',12,3),(85,'',NULL,'2018-07-28 23:12:17',13,1),(86,'',NULL,'2018-07-28 23:13:47',14,1),(87,'Levas Admision',NULL,'2018-07-28 23:17:10',15,1),(88,'Levas Escape:',NULL,'2018-07-28 23:17:57',15,2),(89,'Apoyo de Leva:',NULL,'2018-07-28 23:18:49',15,3),(90,'1 â€“ Roscas Internas',NULL,'2018-07-28 23:21:58',16,1),(91,'2 â€“ Chavetero',NULL,'2018-07-28 23:22:04',16,2),(92,' 3 â€“ Brida',NULL,'2018-07-28 23:22:10',16,3),(93,'4 â€“ Otros',NULL,'2018-07-28 23:22:17',16,4),(94,'',NULL,'2018-07-28 23:23:05',17,1),(95,'',NULL,'2018-07-28 23:23:11',18,1),(96,'',NULL,'2018-07-28 23:29:50',19,1),(97,'01',NULL,'2018-07-28 23:30:59',20,1),(98,'02',NULL,'2018-07-28 23:31:01',20,2),(99,'03',NULL,'2018-07-28 23:31:04',20,3),(101,'04',NULL,'2018-07-28 23:33:30',20,4),(102,'05',NULL,'2018-07-28 23:33:32',20,5),(103,'06',NULL,'2018-07-28 23:33:35',20,6),(104,'07',NULL,'2018-07-28 23:33:40',20,7),(105,'08',NULL,'2018-07-28 23:33:47',20,8),(106,'09',NULL,'2018-07-28 23:33:51',20,9),(107,'10',NULL,'2018-07-28 23:33:54',20,10),(108,'11',NULL,'2018-07-28 23:33:56',20,11),(109,'12',NULL,'2018-07-28 23:33:58',20,12),(110,'13',NULL,'2018-07-28 23:34:00',20,13),(111,'14',NULL,'2018-07-28 23:34:03',20,14),(112,'15',NULL,'2018-07-28 23:34:06',20,15),(113,'16',NULL,'2018-07-28 23:34:09',20,16),(114,'n',NULL,'2018-07-28 23:34:12',20,17),(122,'01',NULL,'2018-07-28 23:45:30',21,1),(123,'02',NULL,'2018-07-28 23:45:32',21,2),(124,'03',NULL,'2018-07-28 23:45:35',21,3),(125,'04',NULL,'2018-07-28 23:45:37',21,4),(126,'05',NULL,'2018-07-28 23:45:39',21,5),(127,'06',NULL,'2018-07-28 23:45:41',21,6),(128,'07',NULL,'2018-07-28 23:45:45',21,7),(129,'08',NULL,'2018-07-28 23:45:48',21,8),(130,'09',NULL,'2018-07-28 23:45:51',21,9),(131,'10',NULL,'2018-07-28 23:45:53',21,10),(132,'11',NULL,'2018-07-28 23:45:55',21,11),(133,'12',NULL,'2018-07-28 23:45:57',21,12),(134,'13',NULL,'2018-07-28 23:46:00',21,13),(135,'14',NULL,'2018-07-28 23:46:03',21,14),(136,'15',NULL,'2018-07-28 23:46:06',21,15),(137,'16',NULL,'2018-07-28 23:46:09',21,16),(138,'n',NULL,'2018-07-28 23:46:11',21,17),(140,'',NULL,'2018-07-28 23:50:10',22,1),(141,'01',NULL,'2018-07-28 23:51:32',22,2),(142,'02',NULL,'2018-07-28 23:51:34',22,3),(143,'03',NULL,'2018-07-29 00:01:37',22,4),(144,'04',NULL,'2018-07-29 00:01:42',22,5),(145,'05',NULL,'2018-07-29 00:01:45',22,6),(146,'06',NULL,'2018-07-29 00:01:48',22,7),(147,'07',NULL,'2018-07-29 00:02:04',22,8),(148,'08',NULL,'2018-07-29 00:02:07',22,9),(149,'09',NULL,'2018-07-29 00:02:11',22,10),(150,'10',NULL,'2018-07-29 00:02:15',22,11),(151,'11',NULL,'2018-07-29 00:02:17',22,12),(152,'12',NULL,'2018-07-29 00:02:19',22,13),(153,'13',NULL,'2018-07-29 00:02:22',22,14),(154,'14',NULL,'2018-07-29 00:02:25',22,15),(155,'15',NULL,'2018-07-29 00:02:28',22,16),(156,'16',NULL,'2018-07-29 00:02:32',22,17),(157,'N',NULL,'2018-07-29 00:02:35',22,18),(158,'',NULL,'2018-07-29 00:15:10',23,1),(159,'01',NULL,'2018-07-29 00:15:44',23,2),(160,'02',NULL,'2018-07-29 00:15:48',23,3),(161,'03',NULL,'2018-07-29 00:15:52',23,4),(162,'04',NULL,'2018-07-29 00:15:56',23,5),(163,'05',NULL,'2018-07-29 00:15:59',23,6),(164,'06',NULL,'2018-07-29 00:16:05',23,7),(165,'07',NULL,'2018-07-29 00:16:08',23,8),(166,'08',NULL,'2018-07-29 00:16:10',23,9),(167,'09',NULL,'2018-07-29 00:16:13',23,10),(168,'10',NULL,'2018-07-29 00:16:16',23,11),(169,'11',NULL,'2018-07-29 00:16:18',23,12),(170,'12',NULL,'2018-07-29 00:16:20',23,13),(171,'13',NULL,'2018-07-29 00:16:22',23,14),(172,'14',NULL,'2018-07-29 00:16:24',23,15),(173,'15',NULL,'2018-07-29 00:16:27',23,16),(174,'16',NULL,'2018-07-29 00:16:30',23,17),(175,'n',NULL,'2018-07-29 00:16:32',23,18),(176,'01',NULL,'2018-07-29 04:22:29',24,1),(177,'02',NULL,'2018-07-29 04:22:46',24,2),(178,'03',NULL,'2018-07-29 04:22:54',24,3),(179,'04',NULL,'2018-07-29 04:23:05',24,4),(180,'05',NULL,'2018-07-29 04:23:13',24,5),(181,'06',NULL,'2018-07-29 04:25:22',24,6),(182,'07',NULL,'2018-07-29 04:25:30',24,7),(183,'08',NULL,'2018-07-29 04:25:38',24,8),(184,'09',NULL,'2018-07-29 04:25:49',24,9),(185,'10',NULL,'2018-07-29 04:25:59',24,10),(186,'11',NULL,'2018-07-29 04:26:05',24,11),(187,'12',NULL,'2018-07-29 04:26:12',24,12),(188,'13',NULL,'2018-07-29 04:26:20',24,13),(189,'14',NULL,'2018-07-29 04:26:30',24,14),(190,'15',NULL,'2018-07-29 04:26:39',24,15),(191,'16',NULL,'2018-07-29 04:26:48',24,16),(192,'n',NULL,'2018-07-29 04:26:57',24,17),(193,'',NULL,'2018-07-29 04:28:23',25,1),(194,'01',NULL,'2018-07-29 04:29:28',25,2),(195,'02',NULL,'2018-07-29 04:29:34',25,3),(196,'03',NULL,'2018-07-29 04:30:06',25,4),(197,'04',NULL,'2018-07-29 04:30:13',25,5),(198,'05',NULL,'2018-07-29 04:30:24',25,6),(199,'06',NULL,'2018-07-29 04:30:33',25,7),(200,'07',NULL,'2018-07-29 04:30:38',25,8),(201,'08',NULL,'2018-07-29 04:30:43',25,9),(202,'09',NULL,'2018-07-29 04:30:47',25,10),(203,'10',NULL,'2018-07-29 04:30:50',25,11),(204,'11',NULL,'2018-07-29 04:30:52',25,12),(205,'12',NULL,'2018-07-29 04:30:54',25,13),(206,'13',NULL,'2018-07-29 04:30:57',25,14),(207,'14',NULL,'2018-07-29 04:31:00',25,15),(208,'15',NULL,'2018-07-29 04:31:04',25,16),(209,'16',NULL,'2018-07-29 04:31:07',25,17),(210,'n',NULL,'2018-07-29 04:31:10',25,18),(211,'01',NULL,'2018-07-29 04:32:56',26,1),(212,'02',NULL,'2018-07-29 04:32:59',26,2),(213,'03',NULL,'2018-07-29 04:33:02',26,3),(214,'04',NULL,'2018-07-29 04:33:04',26,4),(215,'05',NULL,'2018-07-29 04:33:07',26,5),(216,'06',NULL,'2018-07-29 04:33:10',26,6),(217,'07',NULL,'2018-07-29 04:33:13',26,7),(218,'08',NULL,'2018-07-29 04:33:17',26,8),(219,'09',NULL,'2018-07-29 04:33:20',26,9),(220,'10',NULL,'2018-07-29 04:33:25',26,10),(221,'11',NULL,'2018-07-29 04:33:26',26,11),(222,'12',NULL,'2018-07-29 04:33:28',26,12),(223,'13',NULL,'2018-07-29 04:33:31',26,13),(224,'14',NULL,'2018-07-29 04:33:34',26,14),(225,'15',NULL,'2018-07-29 04:33:36',26,15),(226,'16',NULL,'2018-07-29 04:33:43',26,16),(227,'n',NULL,'2018-07-29 04:33:46',26,17),(228,'01',NULL,'2018-07-29 04:35:48',27,1),(229,'02',NULL,'2018-07-29 04:35:51',27,2),(230,'03',NULL,'2018-07-29 04:35:56',27,3),(231,'04',NULL,'2018-07-29 04:35:59',27,4),(232,'05',NULL,'2018-07-29 04:36:03',27,5),(233,'06',NULL,'2018-07-29 04:36:06',27,6),(234,'07',NULL,'2018-07-29 04:36:13',27,7),(235,'08',NULL,'2018-07-29 04:36:16',27,8),(236,'09',NULL,'2018-07-29 04:36:20',27,9),(237,'10',NULL,'2018-07-29 04:36:23',27,10),(238,'11',NULL,'2018-07-29 04:36:25',27,11),(239,'12',NULL,'2018-07-29 04:36:27',27,12),(240,'13',NULL,'2018-07-29 04:36:29',27,13),(241,'14',NULL,'2018-07-29 04:36:32',27,14),(242,'15',NULL,'2018-07-29 04:36:35',27,15),(243,'16',NULL,'2018-07-29 04:36:38',27,16),(244,'n',NULL,'2018-07-29 04:36:41',27,17),(245,'01',NULL,'2018-07-29 04:50:09',28,1),(246,'02',NULL,'2018-07-29 04:50:12',28,2),(247,'03',NULL,'2018-07-29 04:50:15',28,3),(248,'04',NULL,'2018-07-29 04:50:18',28,4),(249,'05',NULL,'2018-07-29 04:50:20',28,5),(250,'06',NULL,'2018-07-29 04:50:22',28,6),(251,'07',NULL,'2018-07-29 04:50:25',28,7),(252,'08',NULL,'2018-07-29 04:50:27',28,8),(253,'09',NULL,'2018-07-29 04:50:30',28,9),(254,'10',NULL,'2018-07-29 04:50:32',28,10),(255,'11',NULL,'2018-07-29 04:50:34',28,11),(256,'12',NULL,'2018-07-29 04:50:36',28,12),(257,'13',NULL,'2018-07-29 04:50:38',28,13),(258,'14',NULL,'2018-07-29 04:50:40',28,14),(259,'15',NULL,'2018-07-29 04:50:42',28,15),(260,'16',NULL,'2018-07-29 04:50:44',28,16),(261,'n',NULL,'2018-07-29 04:50:46',28,17),(262,'01',NULL,'2018-07-29 04:52:05',29,1),(263,'02',NULL,'2018-07-29 04:52:09',29,2),(264,'03',NULL,'2018-07-29 04:52:16',29,3),(265,'04',NULL,'2018-07-29 04:52:22',29,4),(266,'05',NULL,'2018-07-29 04:52:27',29,5),(267,'06',NULL,'2018-07-29 04:52:33',29,6),(268,'07',NULL,'2018-07-29 04:52:39',29,7),(269,'08',NULL,'2018-07-29 04:52:45',29,8),(270,'09',NULL,'2018-07-29 04:52:53',29,9),(271,'10',NULL,'2018-07-29 04:52:59',29,10),(272,'11',NULL,'2018-07-29 04:53:04',29,11),(273,'12',NULL,'2018-07-29 04:53:09',29,12),(274,'13',NULL,'2018-07-29 04:53:15',29,13),(275,'14',NULL,'2018-07-29 04:53:23',29,14),(276,'15',NULL,'2018-07-29 04:53:30',29,15),(277,'16',NULL,'2018-07-29 04:53:38',29,16),(278,'n',NULL,'2018-07-29 04:53:43',29,17),(279,'',NULL,'2018-07-29 14:23:41',30,1),(292,'Medida:',NULL,'2018-07-29 14:27:00',31,1),(293,'Medida:',NULL,'2018-07-29 14:27:02',31,2),(294,'Medida:',NULL,'2018-07-29 14:27:09',31,3),(295,'Medida:',NULL,'2018-07-29 14:27:11',31,4),(296,'Medida:',NULL,'2018-07-29 14:27:13',31,5),(297,'Medida:',NULL,'2018-07-29 14:27:15',31,6),(298,'Medida:',NULL,'2018-07-29 14:27:16',31,7),(299,'Medida:',NULL,'2018-07-29 14:27:19',31,8),(300,'Medida:',NULL,'2018-07-29 14:27:22',31,9),(301,'Medida:',NULL,'2018-07-29 14:27:24',31,10),(302,'',NULL,'2018-07-29 14:28:41',31,11),(303,'Medida:',NULL,'2018-07-29 14:31:50',32,1),(304,'Medida:',NULL,'2018-07-29 14:31:52',32,2),(305,'Medida:',NULL,'2018-07-29 14:31:54',32,3),(306,'Medida:',NULL,'2018-07-29 14:31:55',32,4),(307,'Medida:',NULL,'2018-07-29 14:31:57',32,5),(308,'Medida:',NULL,'2018-07-29 14:31:59',32,6),(309,'Medida:',NULL,'2018-07-29 14:32:01',32,7),(310,'Medida:',NULL,'2018-07-29 14:32:02',32,8),(311,'Medida:',NULL,'2018-07-29 14:32:04',32,9),(312,'Medida:',NULL,'2018-07-29 14:32:06',32,10),(313,'',NULL,'2018-07-29 14:34:13',32,11),(314,'',NULL,'2018-07-29 14:43:33',33,1),(327,'Superior:',NULL,'2018-07-29 14:47:14',34,1),(328,'Inferior:',NULL,'2018-07-29 14:47:19',34,2),(329,'Frontal:',NULL,'2018-07-29 14:47:24',34,3),(330,'Trasero:',NULL,'2018-07-29 14:47:30',34,4),(331,'Planos Multiples:',NULL,'2018-07-29 14:47:39',34,5),(332,'Roscas Internas:',NULL,'2018-07-29 14:48:16',35,1),(333,'Prisioneros:',NULL,'2018-07-29 14:48:25',35,2),(334,'Agua:',NULL,'2018-07-29 14:48:55',36,1),(335,'Aceite:',NULL,'2018-07-29 14:49:01',36,2),(336,'Alojamiento:',NULL,'2018-07-29 14:50:55',37,1),(337,'Bases:',NULL,'2018-07-29 14:50:59',37,2),(338,'Medida:',NULL,'2018-07-29 14:51:52',38,1),(339,'Medida:',NULL,'2018-07-29 14:52:14',38,2),(340,'Medida:',NULL,'2018-07-29 14:52:16',38,3),(341,'Medida:',NULL,'2018-07-29 14:52:18',38,4),(342,'Medida:',NULL,'2018-07-29 14:52:20',38,5),(343,'Medida:',NULL,'2018-07-29 14:52:22',38,6),(344,'Medida:',NULL,'2018-07-29 14:52:25',38,7),(345,'Medida:',NULL,'2018-07-29 14:52:27',38,8),(346,'Medida:',NULL,'2018-07-29 14:52:30',38,9),(349,'Banc 1',NULL,'2018-07-29 14:55:11',39,1),(350,'Banc 2',NULL,'2018-07-29 14:55:14',39,2),(351,'Banc 3',NULL,'2018-07-29 14:55:19',39,3),(352,'Banc 4',NULL,'2018-07-29 14:55:22',39,4),(353,'Banc 5',NULL,'2018-07-29 14:55:25',39,5),(354,'Banc 6',NULL,'2018-07-29 14:55:28',39,6),(355,'Banc 7',NULL,'2018-07-29 14:55:34',39,7),(356,'Banc n',NULL,'2018-07-29 14:55:39',39,8),(357,'Banc 1',NULL,'2018-07-29 14:58:27',40,1),(358,'Banc 2',NULL,'2018-07-29 14:58:30',40,2),(359,'Banc 3',NULL,'2018-07-29 14:58:34',40,3),(360,'Banc 4 ',NULL,'2018-07-29 14:58:37',40,4),(361,'Banc 5',NULL,'2018-07-29 14:58:40',40,5),(362,'Banc 6',NULL,'2018-07-29 14:58:44',40,6),(363,'Banc n',NULL,'2018-07-29 14:58:48',40,7),(364,'Indique Estado de Guias:',NULL,'2018-07-29 14:59:58',40,8),(365,'Medida:',NULL,'2018-07-29 15:01:12',41,1),(366,'Medida:',NULL,'2018-07-29 15:01:14',41,2),(367,'Medida:',NULL,'2018-07-29 15:01:16',41,3),(368,'Medida:',NULL,'2018-07-29 15:01:18',41,4),(369,'Medida:',NULL,'2018-07-29 15:01:21',41,5),(370,'',NULL,'2018-07-29 15:02:51',42,1),(371,'',NULL,'2018-07-29 15:07:16',43,1),(372,'1 - Altura de Tapa',NULL,'2018-07-29 15:08:07',44,1),(373,'2 - Control de Planos',NULL,'2018-07-29 15:08:28',44,2),(374,'3 â€“ Fisuras Expuestas',NULL,'2018-07-29 15:08:41',44,3),(375,'',NULL,'2018-07-29 15:22:46',45,1),(376,'Sup. Base Bomba de Agua',NULL,'2018-07-29 15:28:19',46,1),(377,'Sup. Base Admision â€“ Escape',NULL,'2018-07-29 15:28:26',46,2),(378,'Sup. Base Taba Valvulas',NULL,'2018-07-29 15:28:34',46,3),(379,'Otros',NULL,'2018-07-29 15:28:42',46,4),(380,'Conductos de Lubricacion:',NULL,'2018-07-29 15:30:58',47,1),(381,'Conductos de Refrigeracion:',NULL,'2018-07-29 15:31:13',47,2),(382,'Comunicados',NULL,'2018-07-29 15:31:24',47,3),(383,'',NULL,'2018-07-29 15:35:40',48,1),(384,'Observaciones:',NULL,'2018-07-29 15:35:52',48,2),(385,'Prisioneros:',NULL,'2018-07-29 15:39:57',49,1),(386,'Roscas Internas:',NULL,'2018-07-29 15:40:06',49,2),(387,'Agujeros:',NULL,'2018-07-29 15:40:14',49,3),(388,'',NULL,'2018-07-29 15:41:59',50,1),(389,'Observaciones:',NULL,'2018-07-29 15:42:46',50,2),(390,'',NULL,'2018-07-29 15:43:36',51,1),(391,'',NULL,'2018-07-29 15:46:02',52,1),(392,'',NULL,'2018-07-29 15:49:36',53,1),(393,'Tension de Precamara:',NULL,'2018-07-29 15:50:45',54,1),(394,'Tension de Carga:',NULL,'2018-07-29 15:50:52',54,2),(395,'Cambiar:',NULL,'2018-07-29 15:50:59',54,3),(396,'Observaciones:',NULL,'2018-07-29 15:51:06',54,4),(397,'Seguros:',NULL,'2018-07-29 15:54:21',55,1),(398,'Platillos:',NULL,'2018-07-29 15:54:29',55,2),(399,'',NULL,'2018-07-29 16:05:50',56,1),(400,'',NULL,'2018-07-29 16:06:50',57,1),(401,'',NULL,'2018-07-29 16:11:04',59,1),(402,'',NULL,'2018-07-29 16:11:30',60,1),(403,'Medir dureza en cuatro puntos del espejo, a 90o c/u',NULL,'2018-07-29 16:12:20',61,1),(410,'Valor Obtenido:',NULL,'2018-07-29 16:15:46',61,2),(411,'Observaciones:',NULL,'2018-07-29 16:16:44',61,3),(412,'',NULL,'2018-07-29 16:17:38',62,1),(414,'Pista:',NULL,'2018-07-29 16:20:57',63,1),(415,'Respaldo:',NULL,'2018-07-29 16:21:08',63,2),(416,'Agujeros:',NULL,'2018-07-29 16:21:38',63,3),(417,'Altura de Dientes:',NULL,'2018-07-29 16:22:31',64,1),(418,'Angulo de Entrada:',NULL,'2018-07-29 16:22:39',64,2),(420,'Fisura:',NULL,'2018-07-29 16:24:10',64,3),(421,'Linealidad:',NULL,'2018-07-29 16:24:21',64,4),(422,'Roscas:',NULL,'2018-07-29 17:28:13',65,1),(423,'Guias:',NULL,'2018-07-29 17:28:17',65,2),(424,'Observaciones:',NULL,'2018-07-29 17:28:26',65,3),(425,'',NULL,'2018-07-29 17:30:03',67,1),(426,'',NULL,'2018-07-29 17:33:57',68,1),(427,'',NULL,'2018-07-29 17:36:02',69,1),(428,'Medir dureza en cuatro puntos del espejo a 90o c/u',NULL,'2018-07-29 17:37:10',70,1),(429,'Valor Obtenido:',NULL,'2018-07-29 17:37:44',70,2),(430,'',NULL,'2018-07-29 17:39:16',72,1),(431,'',NULL,'2018-07-29 17:39:56',73,1),(432,'',NULL,'2018-07-29 17:41:03',74,1),(433,'',NULL,'2018-07-29 17:42:08',75,1),(434,'',NULL,'2018-07-29 17:52:05',76,1),(435,'B1',NULL,'2018-07-29 18:05:18',77,1),(436,'B2',NULL,'2018-07-29 18:05:29',77,2),(437,'B3',NULL,'2018-07-29 18:05:32',77,3),(438,'B4',NULL,'2018-07-29 18:05:35',77,4),(439,'B5',NULL,'2018-07-29 18:05:38',77,5),(440,'B6',NULL,'2018-07-29 18:05:42',77,6),(441,'B7',NULL,'2018-07-29 18:05:46',77,7),(442,'B8',NULL,'2018-07-29 18:05:50',77,8),(443,'B9',NULL,'2018-07-29 18:06:00',77,9),(444,'B10',NULL,'2018-07-29 18:06:05',77,10),(445,'Bn',NULL,'2018-07-29 18:06:13',77,11),(446,'M1',NULL,'2018-07-29 19:17:56',77,12),(447,'M2',NULL,'2018-07-29 19:17:59',77,13),(448,'M3',NULL,'2018-07-29 19:18:02',77,14),(449,'M4',NULL,'2018-07-29 19:18:05',77,15),(450,'M5',NULL,'2018-07-29 19:18:07',77,16),(451,'M6',NULL,'2018-07-29 19:18:10',77,17),(452,'M7',NULL,'2018-07-29 19:18:12',77,18),(453,'M8',NULL,'2018-07-29 19:18:14',77,19),(454,'M9',NULL,'2018-07-29 19:18:18',77,20),(455,'M10',NULL,'2018-07-29 19:18:23',77,21),(456,'M11',NULL,'2018-07-29 19:18:31',77,22),(457,'M12',NULL,'2018-07-29 19:18:45',77,23),(458,'M13',NULL,'2018-07-29 19:18:49',77,24),(459,'M14',NULL,'2018-07-29 19:18:53',77,25),(460,'M15',NULL,'2018-07-29 19:18:57',77,26),(461,'M16',NULL,'2018-07-29 19:19:01',77,27),(462,'Mn',NULL,'2018-07-29 19:19:06',77,28),(463,'B1',NULL,'2018-07-29 21:24:12',78,1),(464,'B2',NULL,'2018-07-29 21:24:16',78,2),(465,'B3',NULL,'2018-07-29 21:24:20',78,3),(466,'B4',NULL,'2018-07-29 21:24:24',78,4),(467,'B5',NULL,'2018-07-29 21:24:27',78,5),(468,'B6',NULL,'2018-07-29 21:24:37',78,6),(469,'B7',NULL,'2018-07-29 21:24:41',78,7),(470,'B8',NULL,'2018-07-29 21:24:45',78,8),(471,'B9',NULL,'2018-07-29 21:24:51',78,9),(472,'B10',NULL,'2018-07-29 21:24:55',78,10),(473,'M1',NULL,'2018-07-29 21:29:01',78,11),(474,'M2',NULL,'2018-07-29 21:29:04',78,12),(475,'M3',NULL,'2018-07-29 21:29:09',78,13),(476,'M4',NULL,'2018-07-29 21:29:12',78,14),(477,'M5',NULL,'2018-07-29 21:29:14',78,15),(478,'M6',NULL,'2018-07-29 21:29:16',78,16),(479,'M7',NULL,'2018-07-29 21:30:12',78,17),(480,'M8',NULL,'2018-07-29 21:30:16',78,18),(481,'M9',NULL,'2018-07-29 21:30:22',78,19),(482,'M10',NULL,'2018-07-29 21:31:04',78,20),(483,'M11',NULL,'2018-07-29 21:31:07',78,21),(484,'M12',NULL,'2018-07-29 21:31:11',78,22),(485,'M13',NULL,'2018-07-29 21:31:13',78,23),(486,'M14',NULL,'2018-07-29 21:31:19',78,24),(487,'M15',NULL,'2018-07-29 21:31:24',78,25),(488,'M16',NULL,'2018-07-29 21:31:27',78,26),(489,'Mn',NULL,'2018-07-29 21:31:31',78,27),(490,'B1',NULL,'2018-07-29 21:41:52',79,1),(491,'B2',NULL,'2018-07-29 21:41:56',79,2),(492,'B3',NULL,'2018-07-29 21:42:25',79,3),(493,'B4',NULL,'2018-07-29 21:42:27',79,4),(494,'B5',NULL,'2018-07-29 21:42:31',79,5),(495,'B6',NULL,'2018-07-29 21:42:33',79,6),(496,'B7',NULL,'2018-07-29 21:42:38',79,7),(497,'B8',NULL,'2018-07-29 21:42:42',79,8),(498,'B9',NULL,'2018-07-29 21:42:46',79,9),(499,'B10',NULL,'2018-07-29 21:42:48',79,10),(500,'Bn',NULL,'2018-07-29 21:42:52',79,11),(501,'M1',NULL,'2018-07-29 21:46:36',79,12),(502,'M2',NULL,'2018-07-29 21:46:41',79,13),(503,'M3',NULL,'2018-07-29 21:46:43',79,14),(504,'M4',NULL,'2018-07-29 21:46:45',79,15),(505,'M5',NULL,'2018-07-29 21:46:47',79,16),(506,'M6',NULL,'2018-07-29 21:46:51',79,17),(507,'M7',NULL,'2018-07-29 21:46:55',79,18),(508,'M8',NULL,'2018-07-29 21:46:58',79,19),(509,'M9',NULL,'2018-07-29 21:47:00',79,20),(510,'M10',NULL,'2018-07-29 21:47:04',79,21),(511,'M11',NULL,'2018-07-29 21:47:08',79,22),(512,'M12',NULL,'2018-07-29 21:47:10',79,23),(513,'M13',NULL,'2018-07-29 21:47:13',79,24),(514,'M14',NULL,'2018-07-29 21:47:16',79,25),(515,'M15',NULL,'2018-07-29 21:47:19',79,26),(516,'M16',NULL,'2018-07-29 21:47:25',79,27),(517,'Mn',NULL,'2018-07-29 21:47:29',79,28),(518,'Bancada',NULL,'2018-07-29 23:15:00',80,1),(519,'MuÃ±on',NULL,'2018-07-29 23:15:04',80,2),(520,'A: Rosca Interna Punta de CigueÃ±al',NULL,'2018-07-29 23:21:34',81,1),(521,'B: Chavetero',NULL,'2018-07-29 23:21:41',81,2),(522,'C: Cono Interferencia Polea Reconstruir a:',NULL,'2018-07-29 23:21:52',81,3),(523,'D: Pista de Reten',NULL,'2018-07-29 23:31:34',81,4),(524,'E: Alojamiento Ruleman Directa',NULL,'2018-07-29 23:31:42',81,5),(525,'Observaciones:',NULL,'2018-07-29 23:32:06',81,6),(526,'F: Marcado de Contrapesos y Estado de Tornillos',NULL,'2018-07-29 23:33:47',81,7),(527,'01',NULL,'2018-07-29 23:34:07',81,8),(528,'02',NULL,'2018-07-29 23:34:09',81,9),(529,'03',NULL,'2018-07-29 23:34:13',81,10),(530,'04',NULL,'2018-07-29 23:34:15',81,11),(531,'05',NULL,'2018-07-29 23:34:17',81,12),(532,'06',NULL,'2018-07-29 23:34:20',81,13),(533,'07',NULL,'2018-07-29 23:34:24',81,14),(534,'08',NULL,'2018-07-29 23:34:26',81,15),(535,'09',NULL,'2018-07-29 23:34:30',81,16),(536,'10',NULL,'2018-07-29 23:34:33',81,17),(537,'n',NULL,'2018-07-29 23:34:35',81,18),(538,'Observaciones:',NULL,'2018-07-29 23:37:33',81,19),(539,'',NULL,'2018-07-29 23:38:25',83,1),(540,'',NULL,'2018-07-29 23:43:13',84,1),(541,'',NULL,'2018-07-29 23:43:48',85,1),(1000,'PARTES RECIBIDAS',NULL,'2018-07-30 00:36:15',1000,1),(1201,'Caracteristicas:',NULL,'2018-07-31 12:52:02',1200,1),(1210,'Luz de Aceite',NULL,'2018-07-31 14:30:54',1202,1),(1212,'Luz de aceite',NULL,'2018-07-31 14:41:04',1203,1),(1213,'',NULL,'2018-07-31 14:50:20',1204,1),(1215,'Luz de aceite:',NULL,'2018-07-31 15:17:28',1205,1),(1216,'Medidas del Ap. Levas:',NULL,'2018-07-31 15:21:06',1205,2),(1217,'Eje de mando:',NULL,'2018-07-31 15:21:56',1205,3),(1218,'Fabrica pide maxima y minima',NULL,'2018-07-31 15:23:02',1205,4),(1226,'Reten:',NULL,'2018-07-31 15:47:22',1211,1),(1229,'Axial:',NULL,'2018-07-31 15:51:01',1211,2),(1230,'Biela de Compresor:',NULL,'2018-07-31 15:53:16',1211,3),(1231,'Cilindro de Compresor:',NULL,'2018-07-31 15:54:43',1211,4),(1233,'Otros:',NULL,'2018-07-31 15:59:17',1211,5),(1234,'Control de peso:',NULL,'2018-07-31 16:05:33',1212,1),(1235,'Control de Bomba de Aceite con Arbol de Levas:',NULL,'2018-07-31 16:13:58',1213,1),(1236,'Luz de Axial:',NULL,'2018-07-31 16:17:38',1213,2),(1237,'Block:',NULL,'2018-07-31 16:18:00',1213,3),(1238,'Botadores:',NULL,'2018-07-31 16:20:28',1213,4),(1239,'Engranajes:',NULL,'2018-07-31 16:21:10',1213,5),(1240,'Conductos de agua:',NULL,'2018-07-31 16:22:15',1213,6),(1241,'Controlar:',NULL,'2018-07-31 16:22:51',1213,7),(1242,'Luz de Canaletas de Aros:',NULL,'2018-07-31 16:23:56',1213,8),(1243,'Balanceo de:',NULL,'2018-07-31 16:24:14',1213,9),(1244,'Escuadra de:',NULL,'2018-07-31 16:25:21',1213,10),(1245,'Altura de:',NULL,'2018-07-31 16:25:48',1213,11),(1246,'Repasar rosca de tapa distribucion de:',NULL,'2018-07-31 16:26:56',1213,12),(1247,'',NULL,'2018-07-31 17:28:41',1214,1),(1248,'Caracteristicas:',NULL,'2018-07-31 18:06:50',1215,1),(1249,'Operacion:',NULL,'2018-07-31 18:09:10',1217,1),(1250,'1-Lavado de Block',NULL,'2018-07-31 18:16:48',1217,2),(1251,'Control de Limpieza de Conductor de Aceite',NULL,'2018-07-31 18:18:04',1217,3),(1252,'Colocar tapones de Lubricacion y refrigeracion (Pegamento)',NULL,'2018-07-31 18:19:30',1217,4),(1253,'2-Hacer limpieza fina de cojinetes',NULL,'2018-07-31 18:21:02',1217,5),(1254,'Friccionar con lubricante Molykote Limpiar y lubricar con Bardhal',NULL,'2018-07-31 18:22:04',1217,6),(1255,'Colocar cojinetes en sus alojamientos',NULL,'2018-07-31 18:23:01',1217,7),(1256,'3. Limpieza de CigueÃ±al. Verificar limpieza de conductos de aceite',NULL,'2018-07-31 18:24:16',1217,8),(1257,'Montar el cigueÃ±al. Verificar el chavetero y trinquero',NULL,'2018-07-31 18:25:41',1217,9),(1258,'Ajustar tapas de bancadas.',NULL,'2018-07-31 18:26:59',1217,10),(1259,'Controlar el giro liviano de cigueÃ±al',NULL,'2018-07-31 18:27:57',1217,11),(1260,'Ajustar contrapesos correspondientes',NULL,'2018-07-31 18:29:21',1217,12),(1261,'Controlar Alojamiento de O\'ring de camisas',NULL,'2018-07-31 18:30:20',1217,13),(1262,'* Colocar Camisas Humedas',NULL,'2018-07-31 18:32:02',1217,14),(1263,'Controlar su ubicacion y altura',NULL,'2018-07-31 18:32:51',1217,15),(1264,'Marcar si lleva juntas de camisas (laminas)',NULL,'2018-07-31 18:33:51',1217,16),(1265,'Descripcion:',NULL,'2018-07-31 18:35:26',1218,1),(1266,'Descripcion 2:',NULL,'2018-07-31 18:36:08',1218,2),(1267,'Descripcion 3:',NULL,'2018-07-31 18:36:31',1218,3),(1268,'Caracteristicas:',NULL,'2018-07-31 18:44:54',1219,1),(1269,'1. Hacer limpieza fina de bielas y pistones',NULL,'2018-07-31 18:46:01',1220,1),(1270,'Verificar seguros de pernos de piston',NULL,'2018-07-31 18:48:22',1220,2),(1271,'Colocar aros correspondientes en pistones',NULL,'2018-07-31 18:50:05',1220,3),(1272,'Lubricar cilindros',NULL,'2018-07-31 18:52:34',1220,4),(1273,'Colocar conjunto biela piston',NULL,'2018-07-31 18:53:47',1220,5),(1274,'2. Lubricar muÃ±ones de bielas',NULL,'2018-07-31 18:54:52',1220,6),(1275,'Colocar tapas de bielas',NULL,'2018-07-31 18:55:48',1220,7),(1276,'Ajustar tapa de bielas segun normas',NULL,'2018-07-31 18:57:13',1220,8),(1277,'Controlar altura de pistones',NULL,'2018-07-31 18:58:36',1220,9),(1278,'Reapretar los tornillos de avance de la bomba en la distribucion y Controlar el seguro',NULL,'2018-07-31 18:59:25',1220,10),(1279,'3. Lavado de bomba de aceite',NULL,'2018-07-31 19:00:12',1220,11),(1280,'Colocacion y control de luz de engranajes.',NULL,'2018-07-31 19:01:12',1220,12),(1281,'Ajustes de tornillos sobre el block',NULL,'2018-07-31 19:03:56',1220,13),(1282,'Control estado del chupon',NULL,'2018-07-31 19:12:05',1220,14),(1283,'Colocar chupon, verificar ajuste de tornillos',NULL,'2018-07-31 19:12:55',1220,15),(1284,'Controlar si lleva chapa rompe ola en block o carter',NULL,'2018-07-31 19:14:18',1220,16),(1285,'Colocar carter con junta y cemento',NULL,'2018-07-31 19:15:27',1220,17),(1286,'Controlar ajuste de tornillos de carter y tapon',NULL,'2018-07-31 19:16:43',1220,18),(1287,'Descripcion:',NULL,'2018-07-31 19:18:30',1221,1),(1289,'Descripcion 2:',NULL,'2018-07-31 19:19:01',1221,2),(1290,'Descripcion 3:',NULL,'2018-07-31 19:19:06',1221,3),(1291,'Caracteristicas:',NULL,'2018-07-31 19:22:29',1222,1),(1292,'1. Lavado de caja de distribucion y elementos correspondientes.',NULL,'2018-07-31 19:23:16',1223,1),(1293,'Colocar caja de distribucion',NULL,'2018-07-31 19:24:11',1223,2),(1294,'Ajustar tornillos.',NULL,'2018-07-31 19:25:44',1223,3),(1295,'Lavado de arbol de levas.',NULL,'2018-07-31 19:28:29',1223,4),(1296,'Lavado de engranajes de distribucion',NULL,'2018-07-31 19:29:44',1223,5),(1297,'Armado de conjunto y puesta a punto',NULL,'2018-07-31 19:30:33',1223,6),(1298,'Verificar la puesta a punto final x 2',NULL,'2018-07-31 19:31:23',1223,7),(1299,'Colocar el motor, ajustar tornillos de bridas',NULL,'2018-07-31 19:32:34',1223,8),(1300,'Colocar reten en tapa de distribucion',NULL,'2018-07-31 19:33:36',1223,9),(1301,'Colocar tapa de distribucion y ajustar tornillos',NULL,'2018-07-31 19:34:31',1223,10),(1302,'2. Colocar botadores.',NULL,'2018-07-31 19:36:05',1223,11),(1303,'Colocar juntas tapa de cilindros , verificar posicio?n y colocar marca de juntas',NULL,'2018-07-31 19:37:07',1223,12),(1304,'Armar tapa de cilindro',NULL,'2018-07-31 19:39:08',1223,13),(1305,'Colocar tapa, ajustar tornillos, reapretar,etc',NULL,'2018-07-31 19:40:29',1223,14),(1306,'Verifique operaciones anteriores',NULL,'2018-07-31 19:41:55',1223,15),(1307,'3. Limpieza y prueba de estanqueidad de radiador de aceite, si se probo coloque si',NULL,'2018-07-31 19:42:51',1223,16),(1308,'Colocar radiador, ajustar tonillos.',NULL,'2018-07-31 19:43:52',1223,17),(1309,'4. Limpieza de volante, verificar corona y superficie de trabajo',NULL,'2018-07-31 19:45:23',1223,18),(1310,'Colocar volante, ajustar tornillos',NULL,'2018-07-31 19:46:19',1223,19),(1311,'Colocar placa y disco de embrague',NULL,'2018-07-31 19:47:24',1223,20),(1312,'Controlar con una directa',NULL,'2018-07-31 19:48:35',1223,21),(1313,'Controlar cojinetes guia de directa',NULL,'2018-07-31 19:49:35',1223,22),(1314,'Ajustar tornillos de placa',NULL,'2018-07-31 19:50:35',1223,23),(1315,'5. Colocar polea, ajustar trinquete.',NULL,'2018-07-31 19:51:22',1223,24),(1316,'Colocar cubre volante, ajustar tornillos',NULL,'2018-07-31 19:52:18',1223,25),(1317,'6. Colocar compresor',NULL,'2018-07-31 19:53:35',1223,26),(1318,'Descripcion:',NULL,'2018-07-31 19:55:09',1224,1),(1319,'Descripcion 2:',NULL,'2018-07-31 19:55:12',1224,2),(1320,'Descripcion 3:',NULL,'2018-07-31 19:55:15',1224,3),(1321,'Caracteristica:',NULL,'2018-07-31 20:00:06',1225,1),(1322,'1. Verificar limpieza de bomba inyectora',NULL,'2018-07-31 20:01:09',1226,1),(1323,'Verificar todos los elementos exteriores y sellos',NULL,'2018-07-31 20:01:15',1226,2),(1324,'Colocar bomba, ajustar tornillos.',NULL,'2018-07-31 20:01:20',1226,3),(1325,'Verificar punto final',NULL,'2018-07-31 20:01:26',1226,4),(1326,'Verificar juego de engranajes, conductor y conducido',NULL,'2018-07-31 20:01:32',1226,5),(1327,'Colocar caÃ±os de inyectores (verificar ajuste), caÃ±os de descarga',NULL,'2018-07-31 20:01:39',1226,6),(1328,'2. Colocar multiple de escape.',NULL,'2018-07-31 20:01:44',1226,7),(1329,'Colocar multiple',NULL,'2018-07-31 20:01:51',1226,8),(1330,'Controlar estado de bomba de agua',NULL,'2018-07-31 20:01:57',1226,9),(1331,'Colocar bomba, ajustar tornillos.',NULL,'2018-07-31 20:02:03',1226,10),(1332,'Colocar polea y paleta de ventilador',NULL,'2018-07-31 20:02:08',1226,11),(1333,'Colocar alternador',NULL,'2018-07-31 20:02:13',1226,12),(1334,'Colocar motor de arranque',NULL,'2018-07-31 20:02:19',1226,3),(1335,'Colocar patas de motor',NULL,'2018-07-31 20:02:26',1226,4),(1336,'Verificacion de todas las operaciones anteriores',NULL,'2018-07-31 20:02:36',1226,5),(1337,'3. Verificar corte de combustible de la bomba',NULL,'2018-07-31 20:02:42',1226,6),(1338,'Lavar soportes de filtros',NULL,'2018-07-31 20:03:11',1226,7),(1339,'Colocar soportes de filtros',NULL,'2018-07-31 20:03:15',1226,8),(1340,'Verificar valvulas de alivio de filtro de aceite',NULL,'2018-07-31 20:03:21',1226,9),(1341,'Colocar filtros en general.',NULL,'2018-07-31 20:03:27',1226,10),(1342,'4. Colocar varillas levanta valvulas',NULL,'2018-07-31 20:03:34',1226,11),(1343,'Colocar balancines y eje de balancines',NULL,'2018-07-31 20:03:38',1226,12),(1344,'Regular luz de valvulas',NULL,'2018-07-31 20:03:43',1226,13),(1345,'Colocar tapa de valvulas',NULL,'2018-07-31 20:03:53',1226,14),(1346,'5. Puesta a punto inyeccion o ignicion',NULL,'2018-07-31 20:04:03',1226,15),(1347,'Colocar aceite segun caracteristicas',NULL,'2018-07-31 20:04:10',1226,16),(1348,'Colocar medidas de aceite a la bomba',NULL,'2018-07-31 20:04:15',1226,17),(1349,'Verificacion de las operaciones anteriores',NULL,'2018-07-31 20:04:21',1226,18),(1350,'Emision a sala de banco de prueba',NULL,'2018-07-31 20:04:27',1226,19),(1351,'Verificar Asiento al inyector electronico',NULL,'2018-07-31 20:04:36',1226,20),(1352,'Colocar Inyector y apretar segun manual',NULL,'2018-07-31 20:04:41',1226,21),(1353,'Regular altura de Inyectores',NULL,'2018-07-31 20:04:46',1226,22),(1354,'Colocar Harnes de inyectores: corroborar que este bien',NULL,'2018-07-31 20:04:52',1226,23),(1355,'Se Pre lubrico',NULL,'2018-07-31 20:05:00',1226,24),(1356,'Se hizo prueba hidraulica de agua',NULL,'2018-07-31 20:05:07',1226,25),(1357,'Descripcion:',NULL,'2018-07-31 20:05:34',1227,1),(1359,'Descripcion 2:',NULL,'2018-07-31 20:05:50',1227,2),(1360,'Descripcion 3:',NULL,'2018-07-31 20:05:54',1227,3),(1362,'',NULL,'2018-08-03 20:20:10',1228,1),(1363,'1) Estado de casquillos y alojamientos de vÃ¡lvulas de admision y escape (Altura)    2) Control de estado de vÃ¡lvulas de admisiÃ³n y escape                         3) Estado de precamaras (Alturas)',NULL,'2018-08-03 20:20:46',1228,2),(2000,'Documemntacion necesaria para el despacho:',NULL,'2018-08-07 14:44:39',2000,1),(2002,'a) Controle el motor o componente con la planilla de â€œRegistro de recepcion de componenteâ€',NULL,'2018-08-07 14:52:03',2001,2),(2003,'b) Si el legajo tiene anexado un Remito del cliente, entonces comparar con este:',NULL,'2018-08-07 14:55:31',2001,3),(2004,'c) Controle el motor con la planilla de â€œRegistro de pedido de materiales interior y exteriorâ€',NULL,'2018-08-07 14:56:28',2001,4),(2005,'d) Compare con las fotos',NULL,'2018-08-07 14:56:53',2001,5),(2006,'e) Consultar en almacen si ha quedado algun repuesto, insumo, componente, etc.',NULL,'2018-08-07 14:57:25',2001,6),(2007,'a) Controle visualmente si encuentra alguna anomalia, a saber:',NULL,'2018-08-07 14:58:49',2002,1),(2008,'Tomar Fotos:',NULL,'2018-08-07 15:01:36',2003,1),(2009,'Confeccionar remito de salida:',NULL,'2018-08-07 15:02:36',2004,1),(2010,'',NULL,'2018-08-07 15:03:24',2005,1),(2013,'1. Verificar y controlar limpieza total. Exterior e Interior. Libre de polvillo, aceites, manchas en general.',NULL,'2018-08-07 15:23:34',2006,1),(2014,'2. Verificar superficie',NULL,'2018-08-07 15:24:14',2006,2),(2016,'3. Verificar roscas',NULL,'2018-08-07 15:25:03',2006,3),(2017,'4. Verificar tapones',NULL,'2018-08-07 15:32:21',2006,4),(2018,'5. Verificar precamaras y asientos de inyector',NULL,'2018-08-07 15:35:13',2006,5),(2019,'6. Controlar guias',NULL,'2018-08-07 15:36:04',2006,6),(2020,'7. Controlar alineacion de valvula',NULL,'2018-08-07 15:36:50',2006,7),(2021,'8. Medir presion de resortes',NULL,'2018-08-07 15:37:46',2006,8),(2022,'9. Arandelas - Asientos Resortes',NULL,'2018-08-07 15:39:28',2006,9),(2023,'10. Retenes',NULL,'2018-08-07 15:41:40',2006,10),(2024,'11. Armar resortes',NULL,'2018-08-07 15:43:40',2006,11),(2025,'12. Controlar si giran los platillos',NULL,'2018-08-07 15:45:55',2006,12),(2026,'13. Platillos',NULL,'2018-08-07 15:46:49',2006,13),(2027,'14. Seguros',NULL,'2018-08-07 15:47:52',2006,14),(2028,'15. Regular valvulas',NULL,'2018-08-07 15:49:03',2006,15),(2029,'Realizar descarga de datos del ECM y/o chequeo de codigos de falla',NULL,'2018-08-07 16:26:52',2007,1),(2030,'Cargar codigos E-trim, solo para motores CAT',NULL,'2018-08-07 16:28:20',2007,2),(2031,'Disponer de los datos del motor (en caso de no tenerlos pedirlo a Coordinador y/o Jefe Tecnico) Estos datos son necesarios para banquear el motor.',NULL,'2018-08-07 16:29:31',2007,3),(2032,'Acoplar motor a banco (Conectar cardan y verificar el acoplamiento (buloneria, aprietes, estado de cardan, etc.), chequear juego axial y niveles del mismo)',NULL,'2018-08-07 16:31:30',2007,4),(2033,'Realizar y/o chequear conexiones de circuito de aceite',NULL,'2018-08-07 16:32:05',2007,5),(2034,'Chequear circuito de aceite externo (mangueras, caÃ±os, conexiones varias), inspeccionar que no tenga perdidas y/o tapones que puedan obstruir la lubricacion.',NULL,'2018-08-07 16:33:12',2007,6),(2035,'Rellenar aceite al motor y controlar nivel (dejar a medida)',NULL,'2018-08-07 16:34:23',2007,7),(2036,'Realizar y/o chequear conexiones de circuito de refrigeracion (bridas, can?os, uniones)',NULL,'2018-08-07 16:35:07',2007,8),(2037,'Armar intercooler',NULL,'2018-08-07 16:36:03',2007,9),(2038,'Rellenar y/o chequear niveles de refrigerante (dejar en rango adecuado)',NULL,'2018-08-07 18:28:20',2007,10),(2039,'Chequear presion de agua',NULL,'2018-08-07 18:31:31',2007,11),(2040,'Conectar sensor presion de combustible',NULL,'2018-08-07 18:34:32',2007,12),(2041,'Conectar sensor de temperatura de agua',NULL,'2018-08-07 18:38:12',2007,13),(2042,'Conectar sensor de temperatura de escape',NULL,'2018-08-07 19:11:19',2007,14),(2043,'Conectar sensor de temperatura de aceite',NULL,'2018-08-07 19:13:48',2007,15),(2044,'Conectar sensor de presion de aceite',NULL,'2018-08-07 19:15:29',2007,16),(2045,'Conectar sensor de presion de turbo',NULL,'2018-08-07 19:23:28',2007,17),(2046,'Controlar informacion del diagrama electrico',NULL,'2018-08-07 19:48:48',2007,5),(2047,'Realizar y Chequear Conexiones electricas (bateria, ECM, Intercomunicador, PC, etc.)',NULL,'2018-08-07 19:49:42',2007,6),(2048,'Verificar y chequear arnes de motor y sus conexiones',NULL,'2018-08-07 19:51:26',2007,7),(2049,'Realizar y/o chequear conexiones de circuito de combustible (caÃ±os, mangueras, porta filtros, filtros, etc.)',NULL,'2018-08-07 19:52:44',2007,8),(2050,'Chequear Nivel de combustible',NULL,'2018-08-07 19:55:15',2007,9),(2051,'Chequear presion de combustible',NULL,'2018-08-07 19:55:52',2007,10),(2052,'Chequear conexion y estado de carga de bateria',NULL,'2018-08-07 19:57:27',2007,11),(2053,'Chequear que el motor no tenga bloqueos mecanicos y/o hidraulicos',NULL,'2018-08-07 20:00:14',2007,12),(2054,'Despejar area en general (retirar herramienta, trapos, tachos, carros, etc.)',NULL,'2018-08-07 20:02:51',2007,13),(2055,'Chequear presencia de perdidas de fluido en Gral.',NULL,'2018-08-07 20:03:31',2007,14),(2056,'Controlar solenoide de inyectores (solo para linea CAT)',NULL,'2018-08-07 20:04:22',2007,15),(2057,'Verificar que no existan partes sueltas.',NULL,'2018-08-07 20:05:00',2007,16),(2058,'Conexiones o cambios extraordinarios (informar sobre cualquier conexion, by-pass, tapones, bloqueo de mangueras, cambio de piezas, etc.) que se realicen antes del arranque. En caso de existir observaciones informar a coordinador / Jefe tecnico antes del arranque. Se debera firmar su conformidad',NULL,'2018-08-07 20:13:04',2008,1),(2060,'Control de Fugas:',NULL,'2018-08-08 15:05:30',2010,1),(2061,'Control de Temperatura de admision:',NULL,'2018-08-08 15:06:53',2010,2),(2062,'Control de Temperatura de aceite:',NULL,'2018-08-08 15:07:48',2010,3),(2063,'Controlar Temperatura de escape:',NULL,'2018-08-08 15:13:21',2010,4),(2064,'Control de Presion de turbo:',NULL,'2018-08-08 15:14:50',2010,5),(2065,'Controlar Cardan de acoplamiento:',NULL,'2018-08-08 15:15:41',2010,6),(2066,'Control de Fugas:',NULL,'2018-08-08 15:24:16',2011,1),(2067,'Control de Temperatura de admision:',NULL,'2018-08-08 15:25:41',2011,2),(2068,'Control de Temperatura de aceite:',NULL,'2018-08-08 15:26:26',2011,3),(2069,'Control de Temperatura de escape:',NULL,'2018-08-08 15:27:59',2011,4),(2070,'Control de Presion de Turbo:',NULL,'2018-08-08 15:31:32',2011,5),(2071,'Control de Potencia:',NULL,'2018-08-08 15:32:17',2011,6),(2072,'Control de Torque:',NULL,'2018-08-08 15:33:38',2011,7),(2073,'Control de Fugas:',NULL,'2018-08-08 15:38:50',2012,1),(2074,'Control de Temperatura de admision:',NULL,'2018-08-08 15:42:26',2012,2),(2075,'Control de Temperatura de aceite:',NULL,'2018-08-08 15:45:29',2012,3),(2076,'Control de Temperatura de escape:',NULL,'2018-08-08 15:46:19',2012,4),(2077,'Controlar Presion de Turbo:',NULL,'2018-08-08 15:47:26',2012,5),(2078,'Control de Potencia:',NULL,'2018-08-08 15:49:00',2012,6),(2079,'Control de Torque:',NULL,'2018-08-08 15:49:43',2012,7),(2082,'Control de Fugas:',NULL,'2018-08-08 15:59:13',2014,1),(2083,'Control de Temperatura de admision:',NULL,'2018-08-08 16:05:38',2014,2),(2084,'Control de Temperatura de aceite:',NULL,'2018-08-08 16:06:19',2014,3),(2085,'Control de Temperatura de escape:',NULL,'2018-08-08 16:07:12',2014,4),(2086,'Control de Presion de Turbo:',NULL,'2018-08-08 16:08:01',2014,5),(2087,'Control de Potencia:',NULL,'2018-08-08 16:09:01',2014,6),(2088,'Control de Torque:',NULL,'2018-08-08 16:09:48',2014,7),(2089,'Control de Fugas:',NULL,'2018-08-08 16:15:25',2015,1),(2090,'Control de Temperatura de Admision:',NULL,'2018-08-08 16:18:01',2015,2),(2091,'Control de Temperatura de aceite:',NULL,'2018-08-08 16:21:52',2015,3),(2092,'Control de Temperatura de escape:',NULL,'2018-08-08 16:59:42',2015,4),(2093,'Control de Presion de turbo:',NULL,'2018-08-08 17:00:32',2015,5),(2094,'Control de Cardan de acoplamiento:',NULL,'2018-08-08 17:07:31',2015,6),(2095,'Regular Valvulas:',NULL,'2018-08-08 17:08:26',2016,1),(2096,'Re torqueo:',NULL,'2018-08-08 17:08:33',2016,2),(2097,'Prueba de inyectores:',NULL,'2018-08-08 17:08:39',2016,3),(2098,'Chequeo de fugas y niveles:',NULL,'2018-08-08 17:08:47',2016,4),(2099,'Control de Fugas:',NULL,'2018-08-08 17:41:55',2017,1),(2100,'Control de Temperatura de admision:',NULL,'2018-08-08 17:45:21',2017,2),(2101,'Control de Temperatura de aceite:',NULL,'2018-08-08 17:46:20',2017,3),(2102,'Control de Temperatura de escape:',NULL,'2018-08-08 17:48:01',2017,4),(2103,'Control de Presion de turbo:',NULL,'2018-08-08 17:59:51',2017,5),(2104,'Control de Cardan de acoplamiento:',NULL,'2018-08-08 18:01:03',2017,6),(2105,'Control de Fugas:',NULL,'2018-08-08 18:03:02',2018,1),(2106,'Control de Temperatura de admision:',NULL,'2018-08-08 18:19:18',2018,2),(2107,'Control de Temperatura de aceite:',NULL,'2018-08-08 18:20:04',2018,3),(2108,'Contorl de Temperatura de escape:',NULL,'2018-08-08 18:20:40',2018,4),(2109,'Control de Presion de turbo:',NULL,'2018-08-08 18:21:23',2018,5),(2110,'Control de Potencia:',NULL,'2018-08-08 18:23:20',2018,6),(2111,'Control de Torque:',NULL,'2018-08-08 18:24:40',2018,7),(2112,'Control de Fugas:',NULL,'2018-08-08 18:56:54',2019,1),(2113,'Control de Temperaturas de admision:',NULL,'2018-08-08 18:58:28',2019,2),(2114,'Control de Temperatura de aceite:',NULL,'2018-08-08 18:59:23',2019,3),(2115,'Control de Temperatura de escape:',NULL,'2018-08-08 19:00:56',2019,4),(2116,'Control de Presion de turbo:',NULL,'2018-08-08 19:04:52',2019,5),(2117,'Control de Potencia:',NULL,'2018-08-08 19:06:18',2019,6),(2118,'Control de Torque:',NULL,'2018-08-08 19:07:47',2019,7),(2119,'Control de Fugas:',NULL,'2018-08-08 19:20:20',2020,1),(2120,'Control de Temperatura de admision:',NULL,'2018-08-08 19:22:15',2020,2),(2121,'Control de Temperatura de aceite:',NULL,'2018-08-08 19:23:05',2020,3),(2122,'Control de Temperatura de escape:',NULL,'2018-08-08 19:23:42',2020,4),(2124,'Control de Presion de Turbo:',NULL,'2018-08-08 19:26:24',2020,5),(2125,'Control de Potencia:',NULL,'2018-08-08 19:27:08',2020,6),(2126,'Control de Torque:',NULL,'2018-08-08 19:28:33',2020,7),(2127,'Control de Fugas:',NULL,'2018-08-08 19:33:31',2021,1),(2128,'Control de Temperatura de admision:',NULL,'2018-08-08 19:36:38',2021,2),(2129,'Control de Temperatura de aceite:',NULL,'2018-08-08 19:38:13',2021,3),(2131,'Control de Temperatura de escape:',NULL,'2018-08-08 19:39:53',2021,4),(2132,'Control de Presion de turbo:',NULL,'2018-08-08 19:41:40',2021,5),(2133,'Control de Potencia:',NULL,'2018-08-08 19:43:20',2021,6),(2134,'Control de Torque:',NULL,'2018-08-08 19:44:59',2021,7),(2135,'Control de Fugas:',NULL,'2018-08-11 23:33:44',2022,1),(2136,'Control de Temperaturas de admision:',NULL,'2018-08-11 23:34:06',2022,2),(2137,'Control de Temperatura de Aceite:',NULL,'2018-08-11 23:34:33',2022,3),(2138,'Control de Temperatura de escape:',NULL,'2018-08-11 23:34:46',2022,4),(2139,'Control de Presion de Turbo:',NULL,'2018-08-11 23:35:00',2022,5),(2140,'Control de Potencia:',NULL,'2018-08-11 23:37:12',2022,6),(2141,'Control de Torque:',NULL,'2018-08-11 23:37:20',2022,7),(2143,'Datos:',NULL,'2018-08-13 03:00:47',2023,1),(2144,'Control de Fugas:',NULL,'2018-08-13 03:08:59',2025,1),(2145,'Control de Temperatura de admision:',NULL,'2018-08-13 03:09:14',2025,2),(2146,'Control de Temperatura de aceite:',NULL,'2018-08-13 03:09:30',2025,3),(2147,'Control de Temperatura de escape:',NULL,'2018-08-13 03:09:42',2025,4),(2148,'Control de Presion de turbo:',NULL,'2018-08-13 03:09:53',2025,5),(2149,'Control de Potencia:',NULL,'2018-08-13 03:10:02',2025,6),(2150,'Control de Torque:',NULL,'2018-08-13 03:10:09',2025,7),(2151,'Control de Fugas:',NULL,'2018-08-13 03:17:43',2026,1),(2152,'Control de Temperatura de admision:',NULL,'2018-08-13 03:18:04',2026,2),(2153,'Control de Temperatura de aceite:',NULL,'2018-08-13 03:18:16',2026,3),(2154,'Control de Temperatura de escape:',NULL,'2018-08-13 03:18:32',2026,4),(2155,'Control de Presion de turbo:',NULL,'2018-08-13 03:18:43',2026,5),(2156,'Control de Cardan de acoplamiento:',NULL,'2018-08-13 03:18:57',2026,6),(2157,'Desconectar motor mecanica y electronicamente:',NULL,'2018-08-13 03:24:31',2027,1),(2158,'Desconectar cardan:',NULL,'2018-08-13 03:24:40',2027,2),(2159,'Drenar aceite; solo si corresponde:',NULL,'2018-08-13 03:24:50',2027,3),(2160,'Drenar agua:',NULL,'2018-08-13 03:24:59',2027,4),(2161,'Dializar con refrigerante:',NULL,'2018-08-13 03:25:07',2027,5),(2162,'Desmontar motor de banco:',NULL,'2018-08-13 03:25:18',2027,6),(2163,'Compilar y realizar infrome de banqueo:',NULL,'2018-08-13 03:25:51',2028,1),(2164,'Grabar CD:',NULL,'2018-08-13 03:25:58',2028,2),(2165,'Imprimir Informe:',NULL,'2018-08-13 03:26:06',2028,3),(2166,'Datos:',NULL,'2018-08-13 03:33:43',2009,2),(2167,'Datos:',NULL,'2018-08-13 03:34:24',2024,1),(2500,'LAVADO',NULL,'2018-08-23 14:41:53',2500,1),(2501,'CILINDRO',NULL,'2018-08-23 14:45:44',2500,2),(2502,'COMPRESOR',NULL,'2018-08-23 15:04:43',2500,3),(2503,'BOMBA ACEITE BOTAD. Y BALANCINES',NULL,'2018-08-23 15:10:26',2500,4),(2504,'SOLDADURAS',NULL,'2018-08-23 15:26:17',2500,5),(2505,'TAPA DE CILINDRO',NULL,'2018-08-23 15:33:20',2500,6),(2506,'BANCADA',NULL,'2018-08-23 16:06:32',2500,7),(2507,'BIELAS',NULL,'2018-08-26 23:11:32',2500,8),(2508,'PRUEBAS HIDRAULICAS',NULL,'2018-08-26 23:19:22',2500,9),(2509,'CIGUEÃ‘AL',NULL,'2018-08-27 00:59:09',2500,10),(2510,'SUPERFICIES',NULL,'2018-08-27 01:03:44',2500,11),(2511,'CIGUEÃ‘AL',NULL,'2018-08-27 04:15:40',2500,12),(2512,'TORNERIA',NULL,'2018-08-27 04:23:11',2500,13),(2513,'BALANCEO',NULL,'2018-08-27 04:30:58',2500,14),(2514,'ARBOL DE LEVAS',NULL,'2018-08-27 04:39:18',2500,15),(2516,'SEMI-ARMADO DE MOTOR',NULL,'2018-08-27 04:42:41',2500,16),(2517,'ARMADO PUESTA EN MARCHA',NULL,'2018-08-27 04:47:08',2500,17),(2518,'ARMADO DE MOTOR',NULL,'2018-08-27 04:53:08',2500,18),(2519,'BOMBA INYEC. E INYECTORES',NULL,'2018-08-27 05:02:08',2500,19),(2520,'DIFERENCIAL',NULL,'2018-08-27 05:03:40',2500,20),(2521,'SERVICIOS EN CAMPO',NULL,'2018-08-27 05:04:30',2500,21),(2522,'TURBOS',NULL,'2018-08-27 05:06:52',2500,22),(2523,'CARDAN',NULL,'2018-08-27 05:08:12',2500,23),(2524,'VARIOS',NULL,'2018-08-27 05:09:17',2500,24),(5000,'',NULL,'2018-08-27 15:53:35',5000,1),(6000,'',NULL,'2018-08-30 13:49:54',6000,1),(7000,'',NULL,'2018-09-12 23:24:56',7000,1);
-/*!40000 ALTER TABLE `frm_grupos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `frm_instancias_formulario`
---
-
-DROP TABLE IF EXISTS `frm_instancias_formulario`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `frm_instancias_formulario` (
-  `info_id` int(11) NOT NULL AUTO_INCREMENT,
-  `ortra_id` int(11) NOT NULL,
-  PRIMARY KEY (`info_id`),
-  KEY `info_id` (`info_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `frm_instancias_formulario`
---
-
-LOCK TABLES `frm_instancias_formulario` WRITE;
-/*!40000 ALTER TABLE `frm_instancias_formulario` DISABLE KEYS */;
-INSERT INTO `frm_instancias_formulario` VALUES (1,1),(2,1),(3,1);
-/*!40000 ALTER TABLE `frm_instancias_formulario` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `frm_tipos_dato`
---
-
-DROP TABLE IF EXISTS `frm_tipos_dato`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `frm_tipos_dato` (
-  `TIDA_ID` int(11) NOT NULL,
-  `NOMBRE` varchar(100) NOT NULL,
-  `FEC_CREACION` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`TIDA_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `frm_tipos_dato`
---
-
-LOCK TABLES `frm_tipos_dato` WRITE;
-/*!40000 ALTER TABLE `frm_tipos_dato` DISABLE KEYS */;
-INSERT INTO `frm_tipos_dato` VALUES (1,'input','2018-07-05 14:41:04'),(2,'select','2018-07-05 15:06:02'),(3,'checkbox','2018-07-08 22:45:17'),(4,'textarea','2018-07-13 13:16:26'),(5,'input_numerico','2018-08-28 02:40:51'),(6,'input_fecha','2018-08-28 02:40:51'),(7,'input_archivo','2018-08-28 02:41:58');
-/*!40000 ALTER TABLE `frm_tipos_dato` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `frm_valores`
---
-
-DROP TABLE IF EXISTS `frm_valores`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `frm_valores` (
-  `VALO_ID` int(11) NOT NULL AUTO_INCREMENT,
-  `NOMBRE` varchar(2000) CHARACTER SET latin1 NOT NULL,
-  `PISTA` varchar(2000) CHARACTER SET latin1 DEFAULT NULL,
-  `LONGITUD` int(11) DEFAULT NULL,
-  `VALOR_DEFECTO` varchar(1000) CHARACTER SET latin1 DEFAULT NULL,
-  `OBLIGATORIO` tinyint(1) NOT NULL DEFAULT '0',
-  `FEC_CREACION` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `TIDA_ID` int(11) NOT NULL,
-  `GRUP_ID` int(11) NOT NULL,
-  `ORDEN` int(11) DEFAULT NULL,
-  PRIMARY KEY (`VALO_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=7001 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `frm_valores`
---
-
-LOCK TABLES `frm_valores` WRITE;
-/*!40000 ALTER TABLE `frm_valores` DISABLE KEYS */;
-INSERT INTO `frm_valores` VALUES (1,'Estado:',NULL,NULL,NULL,0,'2018-07-28 15:53:54',2,1,1),(2,'Estado:',NULL,NULL,NULL,0,'2018-07-28 16:02:21',2,2,1),(3,'Estado:',NULL,NULL,NULL,0,'2018-07-28 16:03:23',2,3,1),(4,'Estado:',NULL,NULL,NULL,0,'2018-07-28 16:04:23',2,4,1),(5,'Estado',NULL,NULL,NULL,0,'2018-07-28 16:05:27',2,5,1),(6,'Estado:',NULL,NULL,NULL,0,'2018-07-28 16:06:14',2,6,1),(7,'Estado:',NULL,NULL,NULL,0,'2018-07-28 16:08:00',2,7,1),(8,'Estado:',NULL,NULL,NULL,0,'2018-07-28 16:08:49',2,8,1),(9,'Pieza:',NULL,NULL,NULL,0,'2018-07-28 16:18:21',2,9,1),(10,'Estado:',NULL,NULL,NULL,0,'2018-07-28 16:18:29',2,9,2),(11,'Comentario:',NULL,NULL,NULL,0,'2018-07-28 16:18:39',4,9,3),(12,'Pieza:',NULL,NULL,NULL,0,'2018-07-28 16:20:10',2,10,1),(13,'Estado:',NULL,NULL,NULL,0,'2018-07-28 16:20:19',2,10,2),(14,'Comentario:',NULL,NULL,NULL,0,'2018-07-28 16:20:32',4,10,3),(15,'Pieza',NULL,NULL,NULL,0,'2018-07-28 16:22:06',2,11,1),(16,'Estado:',NULL,NULL,NULL,0,'2018-07-28 16:22:14',2,11,2),(17,'Comentario:',NULL,NULL,NULL,0,'2018-07-28 16:22:22',4,11,3),(18,'Pieza:',NULL,NULL,NULL,0,'2018-07-28 16:23:27',2,12,1),(19,'Estado:',NULL,NULL,NULL,0,'2018-07-28 16:23:35',2,12,2),(20,'Comentario:',NULL,NULL,NULL,0,'2018-07-28 16:23:46',4,12,3),(21,'Pieza:',NULL,NULL,NULL,0,'2018-07-28 16:24:37',2,13,1),(22,'Estado:',NULL,NULL,NULL,0,'2018-07-28 16:24:47',2,13,2),(23,'Comentario:',NULL,NULL,NULL,0,'2018-07-28 16:24:56',4,13,3),(24,'Pieza:',NULL,NULL,NULL,0,'2018-07-28 16:25:04',2,14,1),(25,'Estado:',NULL,NULL,NULL,0,'2018-07-28 16:25:10',2,14,2),(26,'Comentario:',NULL,NULL,NULL,0,'2018-07-28 16:25:17',4,14,3),(27,'Cod:2065 Desarmar y Armar',NULL,NULL,NULL,0,'2018-07-28 17:05:59',3,15,1),(28,'Cod:3066 Controlar y Calibrar',NULL,NULL,NULL,0,'2018-07-28 17:06:34',3,15,2),(29,'Cod:2068 Desarmar y Armar',NULL,NULL,NULL,0,'2018-07-28 17:07:33',3,16,1),(30,'Cod:2069 Controlar y Calibrar',NULL,NULL,NULL,0,'2018-07-28 17:08:07',3,16,2),(31,'Cod.2070 Asentar Toberas',NULL,NULL,NULL,0,'2018-07-28 17:08:27',3,16,3),(32,'Motor:',NULL,NULL,NULL,0,'2018-07-28 17:15:28',4,17,1),(33,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 17:18:38',2,18,1),(34,'Estado:',NULL,NULL,NULL,0,'2018-07-28 17:18:45',2,18,2),(35,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 17:20:38',4,18,3),(36,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 17:21:47',2,19,1),(37,'Estado:',NULL,NULL,NULL,0,'2018-07-28 17:21:54',2,19,2),(38,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 17:21:59',4,19,3),(39,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 17:23:29',2,20,1),(40,'Estado:',NULL,NULL,NULL,0,'2018-07-28 17:23:37',2,20,2),(41,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 17:23:46',4,20,3),(42,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 17:24:58',2,21,1),(43,'Estado:',NULL,NULL,NULL,0,'2018-07-28 17:25:06',2,21,2),(44,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 17:25:15',4,21,3),(45,'Caracteristicas:',NULL,NULL,NULL,0,'2018-07-28 17:26:51',2,22,1),(46,'Estado:',NULL,NULL,NULL,0,'2018-07-28 17:26:57',2,22,2),(47,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 17:27:01',4,22,3),(48,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 17:35:55',2,23,1),(49,'Estado:',NULL,NULL,NULL,0,'2018-07-28 17:36:23',2,23,2),(50,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 17:37:28',4,23,3),(51,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 17:37:44',2,24,1),(52,'Estado:',NULL,NULL,NULL,0,'2018-07-28 17:37:56',2,24,2),(53,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 17:38:00',4,24,3),(54,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 17:38:52',2,25,1),(55,'Estado:',NULL,NULL,NULL,0,'2018-07-28 17:39:01',2,25,2),(56,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 17:39:05',4,25,3),(57,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 17:39:54',2,26,1),(58,'Estado:',NULL,NULL,NULL,0,'2018-07-28 17:39:59',2,26,2),(59,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 17:40:05',4,26,3),(60,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 17:41:28',2,27,1),(61,'Estado:',NULL,NULL,NULL,0,'2018-07-28 17:41:41',2,27,2),(62,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 17:41:45',4,27,3),(63,'Estado:',NULL,NULL,NULL,0,'2018-07-28 17:43:02',2,28,1),(64,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 17:43:17',4,28,2),(65,'Estado:',NULL,NULL,NULL,0,'2018-07-28 17:44:07',2,29,1),(66,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 17:44:11',4,29,2),(67,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 17:46:27',2,30,1),(68,'Estado:',NULL,NULL,NULL,0,'2018-07-28 17:46:37',2,30,2),(69,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 17:46:40',4,30,3),(70,'Caracteristicas:',NULL,NULL,NULL,0,'2018-07-28 17:52:08',2,31,1),(71,'Estado:',NULL,NULL,NULL,0,'2018-07-28 17:52:15',2,31,2),(72,'(*) Indique en Orden de Reparacion Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 17:54:19',4,31,3),(73,'Estado:',NULL,NULL,NULL,0,'2018-07-28 17:57:29',2,32,1),(74,'(*) Indique en Orden de Reparacion Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 17:57:33',4,32,2),(75,'Estado:',NULL,NULL,NULL,0,'2018-07-28 17:57:40',2,33,1),(76,'(*) Indique en Orden de Reparacion Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 17:57:44',4,33,2),(77,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:02:44',2,34,1),(78,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:02:51',2,34,2),(79,'(*) Indique en Orden de Reparacion Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:03:03',4,34,3),(80,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:03:42',2,35,1),(81,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:03:49',2,35,2),(82,'(*) Indique en Orden de Reparacion Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:03:53',4,35,3),(83,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:04:18',2,36,1),(84,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:04:34',2,36,2),(85,'(*) Indique en Orden de Reparacion Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:04:38',4,36,3),(86,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:05:27',2,37,1),(87,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:05:34',2,37,2),(88,'(*) Indique en Orden de Reparacion Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:05:38',4,37,3),(89,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:05:49',2,38,1),(90,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:05:56',2,38,2),(91,'(*) Indique en Orden de Reparacion Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:05:59',4,38,3),(92,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:06:12',2,39,1),(93,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:06:20',2,39,2),(94,'(*) Indique en Orden de Reparacion Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:06:24',4,39,3),(95,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:06:36',2,40,1),(96,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:06:44',2,40,2),(97,'(*) Indique en Orden de Reparacion Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:06:47',4,40,3),(98,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:08:36',2,41,1),(99,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:08:44',2,41,2),(100,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:08:47',4,41,3),(101,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:08:59',2,42,1),(102,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:09:08',2,42,2),(103,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:09:13',4,42,3),(104,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:09:38',2,43,1),(105,'Estados',NULL,NULL,NULL,0,'2018-07-28 18:09:44',2,43,2),(106,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:09:49',4,43,3),(107,'Caracteristicas:',NULL,NULL,NULL,0,'2018-07-28 18:10:01',2,44,1),(108,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:10:09',2,44,2),(109,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:10:13',4,44,3),(110,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:10:26',2,45,1),(111,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:10:36',2,45,2),(112,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:10:40',4,45,3),(113,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:10:51',2,46,1),(114,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:10:56',2,46,2),(115,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:10:59',4,46,3),(116,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:24:33',2,47,1),(117,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:24:42',2,47,2),(118,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:24:58',4,47,3),(119,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:25:06',2,48,1),(120,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:25:14',2,48,2),(121,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:25:18',4,48,3),(122,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:25:26',2,49,1),(123,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:25:33',2,49,2),(124,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:25:37',2,49,3),(125,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:25:47',2,50,1),(126,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:25:54',2,50,2),(127,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:25:58',4,50,3),(128,'Caractreristica:',NULL,NULL,NULL,0,'2018-07-28 18:26:07',2,51,1),(129,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:26:16',2,51,2),(130,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:26:20',4,51,3),(131,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:26:30',2,52,1),(132,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:26:36',2,52,2),(133,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:26:39',4,52,3),(134,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:26:48',2,53,1),(135,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:26:54',2,53,2),(136,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:26:59',4,53,3),(137,'Caracterisitica:',NULL,NULL,NULL,0,'2018-07-28 18:27:40',2,54,1),(138,'Estados:',NULL,NULL,NULL,0,'2018-07-28 18:27:51',2,54,2),(139,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:27:55',4,54,3),(141,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:28:24',2,55,2),(142,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:28:28',4,55,3),(144,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:28:43',2,56,2),(145,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:28:46',4,56,3),(146,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:40:07',2,57,1),(147,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:40:16',2,57,2),(148,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:40:31',4,57,3),(149,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:42:00',2,58,1),(150,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:43:05',2,58,2),(151,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:43:09',4,58,3),(152,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:44:06',2,59,1),(153,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:44:12',2,59,2),(154,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:44:15',4,59,3),(155,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:45:28',2,60,1),(156,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:45:35',2,60,2),(157,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:45:54',4,60,3),(158,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:47:03',2,61,1),(159,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:47:16',4,61,2),(160,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:48:28',2,62,1),(161,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:48:36',4,62,2),(163,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:52:20',2,63,2),(164,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:52:25',4,63,3),(165,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:53:57',2,64,1),(166,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:54:02',4,64,2),(167,'Caracterisitica:',NULL,NULL,NULL,0,'2018-07-28 18:54:55',2,65,1),(168,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:55:01',2,65,2),(169,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:55:04',4,65,3),(170,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:56:14',2,66,1),(171,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:56:19',2,66,2),(172,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:56:23',4,66,3),(173,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 18:58:06',2,67,1),(174,'Estado:',NULL,NULL,NULL,0,'2018-07-28 18:58:14',2,67,2),(175,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 18:58:18',4,67,3),(176,'Caracterisitica:',NULL,NULL,NULL,0,'2018-07-28 19:00:00',2,68,1),(177,'Estado:',NULL,NULL,NULL,0,'2018-07-28 19:00:07',2,68,2),(178,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 19:00:16',4,68,3),(179,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 19:01:48',2,69,1),(180,'Estado:',NULL,NULL,NULL,0,'2018-07-28 19:01:55',2,69,2),(181,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 19:01:58',4,69,3),(182,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 22:23:48',5,70,1),(183,'Estado:',NULL,NULL,NULL,0,'2018-07-28 22:24:44',2,70,2),(184,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 22:26:19',5,71,1),(185,'Estado:',NULL,NULL,NULL,0,'2018-07-28 22:26:32',2,71,2),(186,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 22:27:44',5,72,1),(187,'Estado:',NULL,NULL,NULL,0,'2018-07-28 22:27:52',2,72,2),(188,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 22:29:23',5,73,1),(189,'Estado:',NULL,NULL,NULL,0,'2018-07-28 22:29:29',2,73,2),(190,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 22:30:31',5,74,1),(191,'Estado:',NULL,NULL,NULL,0,'2018-07-28 22:30:38',2,74,2),(192,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 22:33:02',5,75,1),(193,'Estado:',NULL,NULL,NULL,0,'2018-07-28 22:37:51',2,75,2),(194,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 22:43:44',5,77,1),(195,'Estado:',NULL,NULL,NULL,0,'2018-07-28 22:43:52',2,77,2),(196,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 22:44:10',5,78,1),(197,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 22:44:26',4,70,3),(198,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 22:44:32',4,71,3),(199,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 22:44:37',4,72,3),(200,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 22:44:42',4,73,3),(201,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 22:44:47',4,74,3),(202,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 22:44:52',4,75,3),(203,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 22:44:57',4,77,3),(205,'Estado:',NULL,NULL,NULL,0,'2018-07-28 22:45:35',2,78,2),(206,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 22:45:38',4,78,3),(207,'Caracteristica:',NULL,NULL,NULL,0,'2018-07-28 22:46:01',5,79,1),(208,'Estado:',NULL,NULL,NULL,0,'2018-07-28 22:46:07',2,79,2),(209,'(*) Indicar en Orden de Reparacion, Trabajos a Realizar:',NULL,NULL,NULL,0,'2018-07-28 22:46:11',4,79,3),(210,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:04:16',2,80,1),(211,'Indique Motivo de Rechazo:',NULL,NULL,NULL,0,'2018-07-28 23:04:31',4,80,2),(214,'Medida Requerida:',NULL,NULL,NULL,0,'2018-07-28 23:10:03',5,81,1),(215,'Medida Obtenida:',NULL,NULL,NULL,0,'2018-07-28 23:10:15',5,81,2),(216,'Medida Requerida:',NULL,NULL,NULL,0,'2018-07-28 23:10:24',5,82,1),(217,'Medida Obtenida:',NULL,NULL,NULL,0,'2018-07-28 23:10:34',5,82,2),(218,'Medida Requerida:',NULL,NULL,NULL,0,'2018-07-28 23:10:48',5,83,1),(219,'Medida Obtenida:',NULL,NULL,NULL,0,'2018-07-28 23:11:00',5,83,2),(221,'',NULL,NULL,NULL,0,'2018-07-28 23:12:23',4,85,1),(222,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:13:50',2,86,1),(223,'Indique Motivo del Rechazo',NULL,NULL,NULL,0,'2018-07-28 23:14:08',4,86,2),(224,'Dureza Requerida:',NULL,NULL,NULL,0,'2018-07-28 23:17:28',5,87,1),(225,'Dureza Obtenida:',NULL,NULL,NULL,0,'2018-07-28 23:17:37',5,87,2),(226,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:17:41',2,87,3),(227,'Dureza Obtenida:',NULL,NULL,NULL,0,'2018-07-28 23:18:09',5,88,1),(228,'Duraza Requerida:',NULL,NULL,NULL,0,'2018-07-28 23:18:27',5,88,2),(229,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:18:28',2,88,3),(230,'Dureza Reuqerida:',NULL,NULL,NULL,0,'2018-07-28 23:19:01',5,89,1),(231,'Dureza Obtenida:',NULL,NULL,NULL,0,'2018-07-28 23:19:10',5,89,2),(232,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:19:14',2,89,3),(233,'Metodo:',NULL,NULL,NULL,0,'2018-07-28 23:19:45',2,87,4),(234,'Metodo:',NULL,NULL,NULL,0,'2018-07-28 23:20:38',2,88,4),(235,'Metodo:',NULL,NULL,NULL,0,'2018-07-28 23:21:00',2,89,4),(236,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:22:21',2,90,1),(237,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:22:23',2,91,1),(238,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:22:25',2,92,1),(239,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:22:27',2,93,1),(240,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:23:07',2,94,1),(241,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:23:12',2,95,1),(242,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:29:54',2,96,1),(243,'Indique Motivo de Rechazo:',NULL,NULL,NULL,0,'2018-07-28 23:30:08',4,96,2),(244,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:31:28',2,97,1),(245,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:32:09',2,98,1),(246,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:32:43',2,99,1),(247,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:34:24',2,101,1),(248,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:34:31',2,102,1),(249,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:34:38',2,103,1),(250,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:36:38',2,104,1),(251,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:37:01',2,105,1),(252,'Estado',NULL,NULL,NULL,0,'2018-07-28 23:37:24',2,106,1),(253,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:37:50',2,107,1),(254,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:38:24',2,108,1),(255,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:38:47',2,109,1),(256,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:39:14',2,110,1),(257,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:39:39',2,111,1),(258,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:40:06',2,112,1),(259,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:40:35',2,113,1),(260,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:40:57',2,114,1),(261,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:46:15',2,122,1),(262,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:46:17',2,123,1),(263,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:46:19',2,124,1),(264,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:46:21',2,125,1),(265,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:46:23',2,126,1),(266,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:46:25',2,127,1),(267,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:46:27',2,128,1),(268,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:46:30',2,129,1),(269,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:46:33',2,130,1),(270,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:46:39',2,131,1),(271,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:46:41',2,132,1),(272,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:46:50',2,133,1),(273,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:46:53',2,134,1),(274,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:46:54',2,135,1),(275,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:46:57',2,136,1),(276,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:46:59',2,137,1),(277,'Estado:',NULL,NULL,NULL,0,'2018-07-28 23:47:02',2,138,1),(279,'Referencia STD MuÃ±on:',NULL,NULL,NULL,0,'2018-07-28 23:50:45',5,140,1),(280,'Referencia de Ojo:',NULL,NULL,NULL,0,'2018-07-28 23:51:09',5,140,2),(281,'Medida MuÃ±on:',NULL,NULL,NULL,0,'2018-07-29 00:03:58',5,141,1),(282,'Medida Ojo:',NULL,NULL,NULL,0,'2018-07-29 00:04:10',5,141,2),(283,'Medida MuÃ±on:',NULL,NULL,NULL,0,'2018-07-29 00:05:04',5,142,1),(284,'Medida Ojo:',NULL,NULL,NULL,0,'2018-07-29 00:05:16',5,142,2),(285,'Medida MuÃ±on:',NULL,NULL,NULL,0,'2018-07-29 00:06:37',5,143,1),(286,'Medida Ojo:',NULL,NULL,NULL,0,'2018-07-29 00:06:47',5,143,2),(287,'Medida MuÃ±on:',NULL,NULL,NULL,0,'2018-07-29 00:06:52',5,144,1),(288,'Medida Ojo:',NULL,NULL,NULL,0,'2018-07-29 00:06:59',5,144,2),(289,'Medida MuÃ±on:',NULL,NULL,NULL,0,'2018-07-29 00:07:03',5,145,1),(290,'Medida Ojo:',NULL,NULL,NULL,0,'2018-07-29 00:07:10',5,145,2),(291,'Medida MuÃ±on:',NULL,NULL,NULL,0,'2018-07-29 00:07:15',5,146,1),(292,'Medida Ojo:',NULL,NULL,NULL,0,'2018-07-29 00:07:21',5,146,2),(293,'Medida MuÃ±on:',NULL,NULL,NULL,0,'2018-07-29 00:07:33',5,147,1),(294,'Medida Ojo:',NULL,NULL,NULL,0,'2018-07-29 00:07:41',5,147,2),(295,'Medida MuÃ±on:',NULL,NULL,NULL,0,'2018-07-29 00:07:46',5,148,1),(296,'Medida Ojo:',NULL,NULL,NULL,0,'2018-07-29 00:07:53',5,148,2),(297,'Medida MuÃ±on:',NULL,NULL,NULL,0,'2018-07-29 00:07:59',5,149,1),(298,'Medida Ojo:',NULL,NULL,NULL,0,'2018-07-29 00:08:05',5,149,2),(299,'Medida MuÃ±on:',NULL,NULL,NULL,0,'2018-07-29 00:08:10',5,150,1),(300,'Medida Ojo:',NULL,NULL,NULL,0,'2018-07-29 00:08:16',5,150,2),(301,'Medida MuÃ±on:',NULL,NULL,NULL,0,'2018-07-29 00:08:22',5,151,1),(302,'Medida Ojo:',NULL,NULL,NULL,0,'2018-07-29 00:08:28',5,151,2),(303,'Medida MuÃ±on:',NULL,NULL,NULL,0,'2018-07-29 00:08:32',5,152,1),(304,'Medida Ojo:',NULL,NULL,NULL,0,'2018-07-29 00:08:39',5,152,2),(305,'Medida MuÃ±on:',NULL,NULL,NULL,0,'2018-07-29 00:08:44',5,153,1),(306,'Medida Ojo:',NULL,NULL,NULL,0,'2018-07-29 00:08:51',5,153,2),(307,'Medida MuÃ±on:',NULL,NULL,NULL,0,'2018-07-29 00:09:20',5,154,1),(308,'Medida Ojo:',NULL,NULL,NULL,0,'2018-07-29 00:09:28',5,154,2),(309,'Medida MuÃ±on:',NULL,NULL,NULL,0,'2018-07-29 00:11:09',5,155,1),(310,'Medida Ojo:',NULL,NULL,NULL,0,'2018-07-29 00:11:16',5,155,2),(311,'Medida MuÃ±on:',NULL,NULL,NULL,0,'2018-07-29 00:11:22',5,156,1),(312,'Medida Ojo:',NULL,NULL,NULL,0,'2018-07-29 00:11:33',5,156,2),(313,'Medida MuÃ±on:',NULL,NULL,NULL,0,'2018-07-29 00:11:37',5,157,1),(314,'Medida Ojo:',NULL,NULL,NULL,0,'2018-07-29 00:11:44',5,157,2),(315,'Medida de Referencia STD:',NULL,NULL,NULL,0,'2018-07-29 00:15:33',5,158,1),(316,'Medida:',NULL,NULL,NULL,0,'2018-07-29 00:26:20',5,159,1),(317,'Medida:',NULL,NULL,NULL,0,'2018-07-29 00:26:25',5,160,1),(318,'Medida:',NULL,NULL,NULL,0,'2018-07-29 00:26:30',5,161,1),(319,'Medida:',NULL,NULL,NULL,0,'2018-07-29 00:26:36',5,162,1),(320,'Medida:',NULL,NULL,NULL,0,'2018-07-29 00:26:59',5,163,1),(321,'Medida:',NULL,NULL,NULL,0,'2018-07-29 00:27:12',5,164,1),(322,'Medida:',NULL,NULL,NULL,0,'2018-07-29 00:27:19',5,165,1),(323,'Medida:',NULL,NULL,NULL,0,'2018-07-29 00:27:24',5,166,1),(324,'Medida:',NULL,NULL,NULL,0,'2018-07-29 00:27:35',5,167,1),(325,'Medida:',NULL,NULL,NULL,0,'2018-07-29 00:27:40',5,168,1),(326,'Medida:',NULL,NULL,NULL,0,'2018-07-29 00:27:46',5,169,1),(327,'Medida:',NULL,NULL,NULL,0,'2018-07-29 00:27:57',5,170,1),(328,'Medida:',NULL,NULL,NULL,0,'2018-07-29 00:28:02',5,171,1),(329,'Medida:',NULL,NULL,NULL,0,'2018-07-29 00:28:07',5,172,1),(330,'Medida:',NULL,NULL,NULL,0,'2018-07-29 00:28:12',5,173,1),(331,'Medida:',NULL,NULL,NULL,0,'2018-07-29 00:28:18',5,174,1),(332,'Medida:',NULL,NULL,NULL,0,'2018-07-29 00:28:23',5,175,1),(333,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:22:41',2,176,1),(334,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:22:49',2,177,1),(335,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:22:58',2,178,1),(336,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:23:08',2,179,1),(337,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:23:16',2,180,1),(338,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:25:25',2,181,1),(339,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:25:33',2,182,1),(340,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:25:40',2,183,1),(341,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:25:54',2,184,1),(342,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:26:02',2,185,1),(343,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:26:08',2,186,1),(344,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:26:15',2,187,1),(345,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:26:25',2,188,1),(346,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:26:33',2,189,1),(347,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:26:43',2,190,1),(348,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:26:52',2,191,1),(349,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:27:00',2,192,1),(350,'Referencia Rotativo:',NULL,NULL,NULL,0,'2018-07-29 04:28:46',5,193,1),(351,'Referencia Alternativo:',NULL,NULL,NULL,0,'2018-07-29 04:29:12',5,193,2),(352,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:29:30',2,194,1),(353,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:29:36',2,195,1),(354,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:30:08',2,196,1),(355,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:30:16',2,197,1),(356,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:30:27',2,198,1),(357,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:31:17',2,199,1),(358,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:31:20',2,200,1),(359,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:31:23',2,201,1),(360,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:31:26',2,202,1),(361,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:31:28',2,203,1),(362,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:31:31',2,204,1),(363,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:31:34',2,205,1),(364,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:31:37',2,206,1),(365,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:31:39',2,207,1),(366,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:31:42',2,208,1),(367,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:31:45',2,209,1),(368,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:31:47',2,210,1),(369,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:34:25',2,211,1),(370,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:34:27',2,212,1),(371,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:34:29',2,213,1),(372,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:34:32',2,214,1),(373,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:34:34',2,215,1),(374,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:34:36',2,216,1),(375,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:34:39',2,217,1),(376,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:34:41',2,218,1),(377,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:34:44',2,219,1),(378,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:34:47',2,220,1),(379,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:34:50',2,221,1),(380,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:34:54',2,222,1),(381,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:34:56',2,223,1),(382,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:34:59',2,224,1),(383,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:35:02',2,225,1),(384,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:35:04',2,226,1),(385,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:35:07',2,227,1),(386,'Tipo:',NULL,NULL,NULL,0,'2018-07-29 04:37:00',2,228,1),(387,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:37:05',2,228,2),(388,'Tipo:',NULL,NULL,NULL,0,'2018-07-29 04:37:58',2,229,1),(389,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:37:59',2,229,2),(390,'Tipo:',NULL,NULL,NULL,0,'2018-07-29 04:38:54',2,230,1),(391,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:38:55',2,230,2),(392,'Tipo:',NULL,NULL,NULL,0,'2018-07-29 04:40:27',2,231,1),(393,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:40:28',2,231,2),(394,'Tipo:',NULL,NULL,NULL,0,'2018-07-29 04:41:16',2,232,1),(395,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:41:17',2,232,2),(396,'Tipo:',NULL,NULL,NULL,0,'2018-07-29 04:42:26',2,233,1),(397,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:42:26',2,233,2),(398,'Tipo:',NULL,NULL,NULL,0,'2018-07-29 04:43:28',2,234,1),(399,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:43:29',2,234,2),(400,'Tipo:',NULL,NULL,NULL,0,'2018-07-29 04:43:52',2,235,1),(401,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:43:53',2,235,2),(402,'Tipo:',NULL,NULL,NULL,0,'2018-07-29 04:44:18',2,236,1),(403,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:44:20',2,236,2),(404,'Tipo:',NULL,NULL,NULL,0,'2018-07-29 04:45:20',2,237,1),(405,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:45:21',2,237,2),(406,'Tipo:',NULL,NULL,NULL,0,'2018-07-29 04:46:10',2,238,1),(407,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:46:11',2,238,2),(408,'Tipo:',NULL,NULL,NULL,0,'2018-07-29 04:46:53',2,239,1),(409,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:46:54',2,239,2),(410,'Tipo:',NULL,NULL,NULL,0,'2018-07-29 04:47:19',2,240,1),(411,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:47:19',2,240,2),(412,'Tipo:',NULL,NULL,NULL,0,'2018-07-29 04:47:48',2,241,1),(413,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:47:48',2,241,2),(414,'Tipo:',NULL,NULL,NULL,0,'2018-07-29 04:48:09',2,242,1),(415,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:48:10',2,242,2),(416,'Tipo:',NULL,NULL,NULL,0,'2018-07-29 04:48:51',2,243,1),(417,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:48:52',2,243,2),(418,'Tipo:',NULL,NULL,NULL,0,'2018-07-29 04:49:19',2,244,1),(419,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:49:20',2,244,2),(420,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:50:49',2,245,1),(421,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:50:51',2,246,1),(422,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:50:53',2,247,1),(423,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:50:55',2,248,1),(424,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:50:58',2,249,1),(425,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:51:00',2,250,1),(426,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:51:02',2,251,1),(427,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:51:04',2,252,1),(428,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:51:07',2,253,1),(429,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:51:09',2,254,1),(430,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:51:11',2,255,1),(431,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:51:14',2,256,1),(432,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:51:18',2,257,1),(433,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:51:20',2,258,1),(434,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:51:23',2,259,1),(435,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:51:26',2,260,1),(436,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:51:29',2,261,1),(437,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:52:07',2,262,1),(438,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:52:12',2,263,1),(439,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:52:18',2,264,1),(440,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:52:24',2,265,1),(441,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:52:30',2,266,1),(442,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:52:35',2,267,1),(443,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:52:42',2,268,1),(444,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:52:49',2,269,1),(445,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:52:55',2,270,1),(446,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:53:01',2,271,1),(447,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:53:07',2,272,1),(448,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:53:12',2,273,1),(449,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:53:19',2,274,1),(450,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:53:26',2,275,1),(451,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:53:33',2,276,1),(452,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:53:41',2,277,1),(453,'Estado:',NULL,NULL,NULL,0,'2018-07-29 04:53:46',2,278,1),(454,'Estado:',NULL,NULL,NULL,0,'2018-07-29 14:23:47',2,279,1),(455,'Indicar Motivo del Rechazo:',NULL,NULL,NULL,0,'2018-07-29 14:24:04',4,279,2),(456,'01',NULL,NULL,NULL,0,'2018-07-29 14:27:34',5,292,1),(457,'02',NULL,NULL,NULL,0,'2018-07-29 14:27:39',5,293,1),(458,'03',NULL,NULL,NULL,0,'2018-07-29 14:27:46',5,294,1),(459,'04',NULL,NULL,NULL,0,'2018-07-29 14:27:53',5,295,1),(460,'05',NULL,NULL,NULL,0,'2018-07-29 14:28:02',5,296,1),(461,'06',NULL,NULL,NULL,0,'2018-07-29 14:28:08',5,297,1),(462,'08',NULL,NULL,NULL,0,'2018-07-29 14:28:14',5,298,1),(463,'12',NULL,NULL,NULL,0,'2018-07-29 14:28:21',5,299,1),(464,'16',NULL,NULL,NULL,0,'2018-07-29 14:28:28',5,300,1),(465,'n',NULL,NULL,NULL,0,'2018-07-29 14:28:36',5,301,1),(466,'Observaciones:',NULL,NULL,NULL,0,'2018-07-29 14:28:52',4,302,1),(467,'01',NULL,NULL,NULL,0,'2018-07-29 14:32:24',3,303,1),(468,'02',NULL,NULL,NULL,0,'2018-07-29 14:32:30',3,304,1),(469,'03:',NULL,NULL,NULL,0,'2018-07-29 14:32:39',3,305,1),(470,'04',NULL,NULL,NULL,0,'2018-07-29 14:32:48',3,306,1),(471,'05',NULL,NULL,NULL,0,'2018-07-29 14:32:53',3,307,1),(472,'06',NULL,NULL,NULL,0,'2018-07-29 14:33:02',3,308,1),(473,'08',NULL,NULL,NULL,0,'2018-07-29 14:33:30',3,309,1),(474,'12',NULL,NULL,NULL,0,'2018-07-29 14:33:34',3,310,1),(475,'16',NULL,NULL,NULL,0,'2018-07-29 14:34:03',3,311,1),(476,'n',NULL,NULL,NULL,0,'2018-07-29 14:34:09',3,312,1),(477,'Observaciones:',NULL,NULL,NULL,0,'2018-07-29 14:34:26',4,313,1),(488,'Estado:',NULL,NULL,NULL,0,'2018-07-29 14:44:14',2,314,11),(489,'Indicar Motivo de Rechazo:',NULL,NULL,NULL,0,'2018-07-29 14:44:18',4,314,12),(509,'',NULL,NULL,NULL,0,'2018-07-29 14:46:48',4,326,1),(510,'Estado:',NULL,NULL,NULL,0,'2018-07-29 14:47:43',2,327,1),(511,'Estado:',NULL,NULL,NULL,0,'2018-07-29 14:47:45',2,328,1),(512,'Estado:',NULL,NULL,NULL,0,'2018-07-29 14:47:47',2,329,1),(513,'Estado:',NULL,NULL,NULL,0,'2018-07-29 14:47:49',2,330,1),(514,'Estado:',NULL,NULL,NULL,0,'2018-07-29 14:47:52',2,331,1),(515,'Estado:',NULL,NULL,NULL,0,'2018-07-29 14:48:27',2,332,1),(516,'Indique cantidad de elementos con defectos:',NULL,NULL,NULL,0,'2018-07-29 14:48:31',4,332,2),(517,'Estado:',NULL,NULL,NULL,0,'2018-07-29 14:48:33',2,333,1),(518,'Indique cantidad de elementos con defectos:',NULL,NULL,NULL,0,'2018-07-29 14:48:37',4,333,2),(519,'Estado:',NULL,NULL,NULL,0,'2018-07-29 14:49:05',2,334,1),(520,'Indique Anomalias y/o Comunicacion de los circuitos (Perforaciones):',NULL,NULL,NULL,0,'2018-07-29 14:49:09',4,334,2),(521,'Estado:',NULL,NULL,NULL,0,'2018-07-29 14:49:11',2,335,1),(522,'Indique Anomalias y/o Comunicacion de los circuitos (Perforaciones):',NULL,NULL,NULL,0,'2018-07-29 14:49:15',4,335,2),(523,'Estado:',NULL,NULL,NULL,0,'2018-07-29 14:51:08',2,336,1),(524,'Indique Anomalias (Corrosion, Falta Mat.):',NULL,NULL,NULL,0,'2018-07-29 14:51:12',4,336,2),(525,'Estado:',NULL,NULL,NULL,0,'2018-07-29 14:51:14',2,337,1),(526,'Indique Anomalias (Corrosion, Falta Mat.):',NULL,NULL,NULL,0,'2018-07-29 14:51:18',4,337,2),(527,'01:',NULL,NULL,NULL,0,'2018-07-29 14:52:40',5,338,1),(528,'02:',NULL,NULL,NULL,0,'2018-07-29 14:52:46',5,339,1),(529,'03:',NULL,NULL,NULL,0,'2018-07-29 14:52:55',5,340,1),(530,'04:',NULL,NULL,NULL,0,'2018-07-29 14:53:16',5,341,1),(531,'05:',NULL,NULL,NULL,0,'2018-07-29 14:53:26',5,342,1),(532,'06:',NULL,NULL,NULL,0,'2018-07-29 14:53:34',5,343,1),(533,'08:',NULL,NULL,NULL,0,'2018-07-29 14:53:42',5,344,1),(534,'12',NULL,NULL,NULL,0,'2018-07-29 14:54:13',5,345,1),(535,'n:',NULL,NULL,NULL,0,'2018-07-29 14:54:21',5,346,1),(537,'Estado:',NULL,NULL,NULL,0,'2018-07-29 14:55:48',2,349,1),(538,'Indique Motivo Rechazo:',NULL,NULL,NULL,0,'2018-07-29 14:55:53',4,349,2),(539,'Estado:',NULL,NULL,NULL,0,'2018-07-29 14:55:55',2,350,1),(540,'Indique Motivo Rechazo:',NULL,NULL,NULL,0,'2018-07-29 14:55:59',4,350,2),(541,'Estado:',NULL,NULL,NULL,0,'2018-07-29 14:56:05',2,351,1),(542,'Indique Motivo Rechazo:',NULL,NULL,NULL,0,'2018-07-29 14:56:09',4,351,2),(543,'Estado:',NULL,NULL,NULL,0,'2018-07-29 14:56:14',2,352,1),(544,'Indique Motivo Rechazo:',NULL,NULL,NULL,0,'2018-07-29 14:56:19',4,352,2),(545,'Estado:',NULL,NULL,NULL,0,'2018-07-29 14:56:21',2,353,1),(546,'Indique Motivo Rechazo:',NULL,NULL,NULL,0,'2018-07-29 14:56:25',4,353,2),(547,'Estado:',NULL,NULL,NULL,0,'2018-07-29 14:56:29',2,354,1),(548,'Indique Motivo Rechazo:',NULL,NULL,NULL,0,'2018-07-29 14:56:36',4,354,2),(549,'Estado:',NULL,NULL,NULL,0,'2018-07-29 14:56:40',2,355,1),(550,'Indique Motivo Rechazo:',NULL,NULL,NULL,0,'2018-07-29 14:56:45',4,355,2),(551,'Estado:',NULL,NULL,NULL,0,'2018-07-29 14:56:49',2,356,1),(552,'Indique Motivo Rechazo:',NULL,NULL,NULL,0,'2018-07-29 14:56:54',4,356,2),(553,'Medida:',NULL,NULL,NULL,0,'2018-07-29 14:58:59',5,357,1),(554,'Medida:',NULL,NULL,NULL,0,'2018-07-29 14:59:45',5,358,1),(555,'Medida:',NULL,NULL,NULL,0,'2018-07-29 14:59:47',5,359,1),(556,'Medida:',NULL,NULL,NULL,0,'2018-07-29 14:59:49',5,360,1),(557,'Medida:',NULL,NULL,NULL,0,'2018-07-29 14:59:51',5,361,1),(558,'Medida:',NULL,NULL,NULL,0,'2018-07-29 14:59:53',5,362,1),(559,'Medida:',NULL,NULL,NULL,0,'2018-07-29 14:59:55',5,363,1),(560,'',NULL,NULL,NULL,0,'2018-07-29 15:00:03',4,364,1),(561,'01',NULL,NULL,NULL,0,'2018-07-29 15:01:29',5,365,1),(562,'02:',NULL,NULL,NULL,0,'2018-07-29 15:01:36',5,366,1),(563,'03:',NULL,NULL,NULL,0,'2018-07-29 15:01:43',5,367,1),(564,'04:',NULL,NULL,NULL,0,'2018-07-29 15:01:52',5,368,1),(565,'05:',NULL,NULL,NULL,0,'2018-07-29 15:01:59',5,369,1),(566,'Medida:',NULL,NULL,NULL,0,'2018-07-29 15:02:58',5,370,1),(567,'Estado:',NULL,NULL,NULL,0,'2018-07-29 15:02:59',2,370,2),(568,'Indicar Motivo de Rechazo:',NULL,NULL,NULL,0,'2018-07-29 15:03:11',4,370,3),(569,'Estado:',NULL,NULL,NULL,0,'2018-07-29 15:07:19',2,371,1),(570,'Indique Motivo de Rechazo:',NULL,NULL,NULL,0,'2018-07-29 15:07:27',4,371,2),(571,'Estado:',NULL,NULL,NULL,0,'2018-07-29 15:08:58',2,372,1),(572,'Medida STD:',NULL,NULL,NULL,0,'2018-07-29 15:09:09',5,372,2),(573,'Medida Real:',NULL,NULL,NULL,0,'2018-07-29 15:09:18',5,372,3),(574,'a-Tapas Rectas:',NULL,NULL,NULL,0,'2018-07-29 15:18:05',2,373,1),(575,'b-Tapas Convexas',NULL,NULL,NULL,0,'2018-07-29 15:18:28',2,373,2),(576,'Estado:',NULL,NULL,NULL,0,'2018-07-29 15:19:08',2,374,1),(577,'Indique Lugar:',NULL,NULL,NULL,0,'2018-07-29 15:19:28',4,374,2),(578,'Tiempo de Prueba:',NULL,NULL,NULL,0,'2018-07-29 15:22:51',5,375,1),(579,'Temperatura de Agua:',NULL,NULL,NULL,0,'2018-07-29 15:23:00',5,375,2),(580,'Presion de Prueba:',NULL,NULL,NULL,0,'2018-07-29 15:23:10',5,375,3),(581,'Estado:',NULL,NULL,NULL,0,'2018-07-29 15:23:12',2,375,4),(582,'Indique Motivo de Rechazo:',NULL,NULL,NULL,0,'2018-07-29 15:23:28',4,375,5),(583,'Estado:',NULL,NULL,NULL,0,'2018-07-29 15:28:44',2,376,1),(584,'Estado:',NULL,NULL,NULL,0,'2018-07-29 15:28:46',2,377,1),(585,'Estado:',NULL,NULL,NULL,0,'2018-07-29 15:28:48',2,378,1),(586,'Estado:',NULL,NULL,NULL,0,'2018-07-29 15:28:50',2,379,1),(587,'Indique Motivo de Rechazo:',NULL,NULL,NULL,0,'2018-07-29 15:29:09',4,376,2),(588,'Indique Motivo de Rechazo:',NULL,NULL,NULL,0,'2018-07-29 15:29:13',4,377,2),(589,'Indique Motivo de Rechazo:',NULL,NULL,NULL,0,'2018-07-29 15:29:18',4,378,2),(590,'Indique Motivo de Rechazo:',NULL,NULL,NULL,0,'2018-07-29 15:29:23',4,379,2),(591,'Estado:',NULL,NULL,NULL,0,'2018-07-29 15:31:37',2,380,1),(592,'Estado:',NULL,NULL,NULL,0,'2018-07-29 15:32:02',2,381,1),(593,'',NULL,NULL,NULL,0,'2018-07-29 15:32:16',2,382,1),(594,'Normales:',NULL,NULL,NULL,0,'2018-07-29 15:36:03',5,383,1),(595,'Picadas:',NULL,NULL,NULL,0,'2018-07-29 15:36:10',5,383,2),(596,'Quemadas:',NULL,NULL,NULL,0,'2018-07-29 15:36:19',5,383,3),(597,'Inscrustaciones:',NULL,NULL,NULL,0,'2018-07-29 15:36:33',5,383,4),(598,'',NULL,NULL,NULL,0,'2018-07-29 15:36:40',4,384,1),(599,'Estado:',NULL,NULL,NULL,0,'2018-07-29 15:40:28',2,385,1),(600,'Indique Motivos de Rechazo:',NULL,NULL,NULL,0,'2018-07-29 15:40:31',4,385,2),(601,'Estado:',NULL,NULL,NULL,0,'2018-07-29 15:40:33',2,386,1),(602,'Indique Motivos de Rechazo:',NULL,NULL,NULL,0,'2018-07-29 15:40:37',4,386,2),(603,'Estado:',NULL,NULL,NULL,0,'2018-07-29 15:40:39',2,387,1),(604,'Indique Motivos de Rechazo:',NULL,NULL,NULL,0,'2018-07-29 15:40:42',4,387,2),(605,'Medida Actual:',NULL,NULL,NULL,0,'2018-07-29 15:42:15',5,388,1),(606,'ALesar:',NULL,NULL,NULL,0,'2018-07-29 15:42:22',5,388,2),(607,'Cambiar:',NULL,NULL,NULL,0,'2018-07-29 15:42:30',5,388,3),(608,'No Cambiar:',NULL,NULL,NULL,0,'2018-07-29 15:42:36',5,388,4),(609,'',NULL,NULL,NULL,0,'2018-07-29 15:42:50',4,389,1),(610,'Tipo:',NULL,NULL,NULL,0,'2018-07-29 15:43:38',2,390,1),(611,'Estado:',NULL,NULL,NULL,0,'2018-07-29 15:44:44',2,390,2),(612,'Indique Defecto Encontrado:',NULL,NULL,NULL,0,'2018-07-29 15:45:20',4,390,3),(613,'Bancada 1:',NULL,NULL,NULL,0,'2018-07-29 15:46:15',5,391,1),(614,'Bancada 2:',NULL,NULL,NULL,0,'2018-07-29 15:46:19',5,391,2),(615,'Bancada 3:',NULL,NULL,NULL,0,'2018-07-29 15:46:24',5,391,3),(616,'Bancada n:',NULL,NULL,NULL,0,'2018-07-29 15:46:28',5,391,4),(617,'Alesar:',NULL,NULL,NULL,0,'2018-07-29 15:46:40',5,391,5),(618,'Cambiar Bujes:',NULL,NULL,NULL,0,'2018-07-29 15:46:51',5,391,6),(619,'Otros:',NULL,NULL,NULL,0,'2018-07-29 15:46:58',5,391,7),(620,'Estado:',NULL,NULL,NULL,0,'2018-07-29 15:49:39',2,392,1),(621,'Indique Motivo de Rechazo:',NULL,NULL,NULL,0,'2018-07-29 15:49:52',4,392,2),(622,'Requerida:',NULL,NULL,NULL,0,'2018-07-29 15:51:52',5,393,1),(623,'Requerida:',NULL,NULL,NULL,0,'2018-07-29 15:52:02',5,394,1),(624,'Obtenida:',NULL,NULL,NULL,0,'2018-07-29 15:52:12',5,393,2),(625,'Obtenida:',NULL,NULL,NULL,0,'2018-07-29 15:52:16',5,394,2),(626,'Admision:',NULL,NULL,NULL,0,'2018-07-29 15:52:39',5,395,1),(627,'Escape:',NULL,NULL,NULL,0,'2018-07-29 15:52:51',5,395,2),(628,'',NULL,NULL,NULL,0,'2018-07-29 15:52:55',4,396,1),(634,'Marcados:',NULL,NULL,NULL,0,'2018-07-29 16:00:51',3,397,1),(635,'Abollados:',NULL,NULL,NULL,0,'2018-07-29 16:01:00',3,397,2),(636,'Fisurados:',NULL,NULL,NULL,0,'2018-07-29 16:01:08',3,397,3),(637,'Gastados:',NULL,NULL,NULL,0,'2018-07-29 16:01:16',3,397,4),(638,'Accion:',NULL,NULL,NULL,0,'2018-07-29 16:01:23',2,397,5),(639,'Marcados:',NULL,NULL,NULL,0,'2018-07-29 16:02:19',3,398,1),(640,'Abollados:',NULL,NULL,NULL,0,'2018-07-29 16:02:26',3,398,2),(641,'Fisurados:',NULL,NULL,NULL,0,'2018-07-29 16:02:37',3,398,3),(642,'Gastados:',NULL,NULL,NULL,0,'2018-07-29 16:02:45',3,398,4),(643,'Accion:',NULL,NULL,NULL,0,'2018-07-29 16:03:01',2,398,5),(644,'Marcado:',NULL,NULL,NULL,0,'2018-07-29 16:06:07',3,399,1),(645,'Gastado:',NULL,NULL,NULL,0,'2018-07-29 16:06:18',3,399,2),(646,'Indique Reparacion a Realizar:',NULL,NULL,NULL,0,'2018-07-29 16:06:30',4,399,3),(647,'Estado:',NULL,NULL,NULL,0,'2018-07-29 16:06:54',2,400,1),(648,'Proceso de Extraccion:',NULL,NULL,NULL,0,'2018-07-29 16:07:03',4,400,2),(649,'Estado:',NULL,NULL,NULL,0,'2018-07-29 16:11:07',2,401,1),(650,'Indique Motivo de Rechazo:',NULL,NULL,NULL,0,'2018-07-29 16:11:14',4,401,2),(651,'Estado:',NULL,NULL,NULL,0,'2018-07-29 16:11:32',2,402,1),(653,'Indique Motivo de Rechazo:',NULL,NULL,NULL,0,'2018-07-29 16:11:49',4,402,2),(660,'1:',NULL,NULL,NULL,0,'2018-07-29 16:15:56',5,410,1),(661,'2:',NULL,NULL,NULL,0,'2018-07-29 16:16:00',5,410,2),(662,'3:',NULL,NULL,NULL,0,'2018-07-29 16:16:04',5,410,3),(663,'4:',NULL,NULL,NULL,0,'2018-07-29 16:16:09',5,410,4),(664,'',NULL,NULL,NULL,0,'2018-07-29 16:16:49',4,411,1),(665,'Medida STD:',NULL,NULL,NULL,0,'2018-07-29 16:17:53',5,412,1),(666,'Medida Actual:',NULL,NULL,NULL,0,'2018-07-29 16:18:06',5,412,2),(667,'Estado:',NULL,NULL,NULL,0,'2018-07-29 16:18:10',2,412,3),(670,'Observaciones:',NULL,NULL,NULL,0,'2018-07-29 16:19:49',4,412,4),(671,'Estado:',NULL,NULL,NULL,0,'2018-07-29 16:20:59',2,414,1),(672,'Estado:',NULL,NULL,NULL,0,'2018-07-29 16:21:11',2,415,1),(673,'Estado:',NULL,NULL,NULL,0,'2018-07-29 16:21:40',2,416,1),(674,'Estado:',NULL,NULL,NULL,0,'2018-07-29 16:22:33',2,417,1),(675,'Estado:',NULL,NULL,NULL,0,'2018-07-29 16:22:41',2,418,1),(678,'',NULL,NULL,NULL,0,'2018-07-29 16:24:24',5,420,1),(679,'',NULL,NULL,NULL,0,'2018-07-29 16:24:28',5,421,1),(680,'Estado:',NULL,NULL,NULL,0,'2018-07-29 17:28:31',2,422,1),(681,'Estado:',NULL,NULL,NULL,0,'2018-07-29 17:28:33',2,423,1),(682,'Estado:',NULL,NULL,NULL,0,'2018-07-29 17:30:06',2,425,1),(683,'Indique Motivo de Rechazo:',NULL,NULL,NULL,0,'2018-07-29 17:30:19',4,425,2),(684,'Patas:',NULL,NULL,NULL,0,'2018-07-29 17:34:18',5,426,1),(685,'Gastadas:',NULL,NULL,NULL,0,'2018-07-29 17:34:25',5,426,2),(686,'Altura:',NULL,NULL,NULL,0,'2018-07-29 17:34:37',2,426,3),(687,'Diafragma:',NULL,NULL,NULL,0,'2018-07-29 17:35:05',2,426,4),(688,'Fisurado:',NULL,NULL,NULL,0,'2018-07-29 17:36:19',3,427,1),(689,'Rayado:',NULL,NULL,NULL,0,'2018-07-29 17:36:29',3,427,2),(690,'Deformado:',NULL,NULL,NULL,0,'2018-07-29 17:36:35',3,427,3),(691,'Otro:',NULL,NULL,NULL,0,'2018-07-29 17:36:41',3,427,4),(692,'1:',NULL,NULL,NULL,0,'2018-07-29 17:37:55',5,429,1),(693,'2:',NULL,NULL,NULL,0,'2018-07-29 17:37:59',5,429,2),(694,'3:',NULL,NULL,NULL,0,'2018-07-29 17:38:03',5,429,3),(695,'4:',NULL,NULL,NULL,0,'2018-07-29 17:38:07',5,429,4),(696,'Observaciones:',NULL,NULL,NULL,0,'2018-07-29 17:38:17',4,429,5),(697,'Estado:',NULL,NULL,NULL,0,'2018-07-29 17:39:18',2,430,1),(698,'Indique Motivo del Rechazo:',NULL,NULL,NULL,0,'2018-07-29 17:39:28',4,430,2),(699,'Estado:',NULL,NULL,NULL,0,'2018-07-29 17:40:05',2,431,1),(700,'Observaciones:',NULL,NULL,NULL,0,'2018-07-29 17:40:43',4,431,2),(701,'Estado:',NULL,NULL,NULL,0,'2018-07-29 17:41:11',2,432,1),(702,'Observaciones:',NULL,NULL,NULL,0,'2018-07-29 17:41:22',4,432,2),(703,'Picado:',NULL,NULL,NULL,0,'2018-07-29 17:42:21',3,433,1),(704,'Gastado:',NULL,NULL,NULL,0,'2018-07-29 17:42:30',3,433,2),(705,'Fisurado:',NULL,NULL,NULL,0,'2018-07-29 17:42:37',3,433,3),(706,'Cambiar:',NULL,NULL,NULL,0,'2018-07-29 17:42:44',3,433,4),(707,'Observaciones:',NULL,NULL,NULL,0,'2018-07-29 17:43:22',4,433,5),(708,'Estado:',NULL,NULL,NULL,0,'2018-07-29 17:52:08',2,434,1),(709,'Indicar Motivo de Rechazo:',NULL,NULL,NULL,0,'2018-07-29 17:52:20',4,434,2),(710,'Medida:',NULL,NULL,NULL,0,'2018-07-29 18:11:14',2,435,1),(711,'Estado:',NULL,NULL,NULL,0,'2018-07-29 18:11:32',2,435,2),(712,'Medida:',NULL,NULL,NULL,0,'2018-07-29 19:02:49',2,436,1),(713,'Medida:',NULL,NULL,NULL,0,'2018-07-29 19:02:53',2,437,1),(714,'Medida:',NULL,NULL,NULL,0,'2018-07-29 19:02:58',2,438,1),(715,'Medida:',NULL,NULL,NULL,0,'2018-07-29 19:03:04',2,439,1),(716,'Medida:',NULL,NULL,NULL,0,'2018-07-29 19:03:10',2,440,1),(717,'Medida:',NULL,NULL,NULL,0,'2018-07-29 19:03:17',2,441,1),(718,'Medida:',NULL,NULL,NULL,0,'2018-07-29 19:03:23',2,442,1),(719,'Medida:',NULL,NULL,NULL,0,'2018-07-29 19:03:31',2,443,1),(720,'Medida:',NULL,NULL,NULL,0,'2018-07-29 19:03:39',2,444,1),(721,'Medida:',NULL,NULL,NULL,0,'2018-07-29 19:03:46',2,445,1),(722,'Estado:',NULL,NULL,NULL,0,'2018-07-29 19:06:12',2,436,2),(723,'Estado:',NULL,NULL,NULL,0,'2018-07-29 19:06:17',2,437,2),(724,'Estado:',NULL,NULL,NULL,0,'2018-07-29 19:06:36',2,438,2),(725,'Estado:',NULL,NULL,NULL,0,'2018-07-29 19:06:41',2,439,2),(726,'Estado:',NULL,NULL,NULL,0,'2018-07-29 19:06:46',2,440,2),(727,'Estado:',NULL,NULL,NULL,0,'2018-07-29 19:06:51',2,441,2),(728,'Estado:',NULL,NULL,NULL,0,'2018-07-29 19:06:56',2,442,2),(729,'Estado:',NULL,NULL,NULL,0,'2018-07-29 19:07:04',2,443,2),(730,'Estado:',NULL,NULL,NULL,0,'2018-07-29 19:07:10',2,444,2),(731,'Estado:',NULL,NULL,NULL,0,'2018-07-29 19:07:28',2,445,2),(732,'Medida:',NULL,NULL,NULL,0,'2018-07-29 20:42:03',2,446,1),(733,'Medida:',NULL,NULL,NULL,0,'2018-07-29 20:42:08',2,447,1),(734,'Medida:',NULL,NULL,NULL,0,'2018-07-29 20:42:13',2,448,1),(735,'Medida:',NULL,NULL,NULL,0,'2018-07-29 20:42:19',2,449,1),(736,'Medida:',NULL,NULL,NULL,0,'2018-07-29 20:43:37',2,450,1),(737,'Medida:',NULL,NULL,NULL,0,'2018-07-29 20:43:43',2,451,1),(738,'Medida:',NULL,NULL,NULL,0,'2018-07-29 20:43:48',2,452,1),(739,'Medida:',NULL,NULL,NULL,0,'2018-07-29 20:43:53',2,453,1),(740,'Medida:',NULL,NULL,NULL,0,'2018-07-29 20:43:59',2,454,1),(741,'Medida:',NULL,NULL,NULL,0,'2018-07-29 20:44:05',2,455,1),(742,'Medida:',NULL,NULL,NULL,0,'2018-07-29 20:44:11',2,456,1),(743,'Medida:',NULL,NULL,NULL,0,'2018-07-29 20:45:29',2,457,1),(744,'Medida:',NULL,NULL,NULL,0,'2018-07-29 20:45:35',2,458,1),(745,'Medida:',NULL,NULL,NULL,0,'2018-07-29 20:45:41',2,459,1),(746,'Medida:',NULL,NULL,NULL,0,'2018-07-29 20:45:48',2,460,1),(747,'Medida:',NULL,NULL,NULL,0,'2018-07-29 20:45:55',2,461,1),(748,'Medida:',NULL,NULL,NULL,0,'2018-07-29 20:46:01',2,462,1),(749,'Estado:',NULL,NULL,NULL,0,'2018-07-29 20:47:11',2,446,2),(750,'Estado:',NULL,NULL,NULL,0,'2018-07-29 20:47:15',2,447,2),(751,'Estado:',NULL,NULL,NULL,0,'2018-07-29 20:47:51',2,448,2),(752,'Estado:',NULL,NULL,NULL,0,'2018-07-29 20:47:57',2,449,2),(753,'Estado:',NULL,NULL,NULL,0,'2018-07-29 20:48:02',2,450,2),(754,'Estado:',NULL,NULL,NULL,0,'2018-07-29 20:48:07',2,451,2),(755,'Estado:',NULL,NULL,NULL,0,'2018-07-29 20:48:38',2,452,2),(756,'Estado:',NULL,NULL,NULL,0,'2018-07-29 20:48:44',2,453,2),(757,'Estado:',NULL,NULL,NULL,0,'2018-07-29 20:48:50',2,454,2),(758,'Estado:',NULL,NULL,NULL,0,'2018-07-29 20:48:55',2,455,2),(759,'Estado:',NULL,NULL,NULL,0,'2018-07-29 20:49:00',2,456,2),(760,'Estado:',NULL,NULL,NULL,0,'2018-07-29 20:49:04',2,457,2),(761,'Estado:',NULL,NULL,NULL,0,'2018-07-29 20:49:11',2,458,2),(762,'Estado:',NULL,NULL,NULL,0,'2018-07-29 20:49:20',2,459,2),(763,'Estado:',NULL,NULL,NULL,0,'2018-07-29 20:49:53',2,460,2),(764,'Estado:',NULL,NULL,NULL,0,'2018-07-29 20:50:58',2,461,2),(765,'Estado:',NULL,NULL,NULL,0,'2018-07-29 20:52:51',2,462,2),(766,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:25:07',2,463,1),(767,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:25:11',2,464,1),(768,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:25:16',2,465,1),(769,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:25:21',2,466,1),(770,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:25:25',2,467,1),(771,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:25:30',2,468,1),(772,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:25:41',2,469,1),(773,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:25:46',2,470,1),(774,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:25:50',2,471,1),(775,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:25:55',2,472,1),(776,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:31:52',2,473,1),(777,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:31:57',2,474,1),(778,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:32:02',2,475,1),(779,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:32:07',2,476,1),(780,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:32:54',2,477,1),(781,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:32:59',2,478,1),(782,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:33:07',2,479,1),(783,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:33:12',2,480,1),(784,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:33:19',2,481,1),(785,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:33:29',2,482,1),(786,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:33:34',2,483,1),(787,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:33:47',2,484,1),(788,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:33:52',2,485,1),(789,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:33:57',2,486,1),(790,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:34:01',2,487,1),(791,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:34:06',2,488,1),(792,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 21:34:11',2,489,1),(793,'Radio:',NULL,NULL,NULL,0,'2018-07-29 21:43:05',2,490,1),(794,'Radio:',NULL,NULL,NULL,0,'2018-07-29 21:43:12',2,491,1),(795,'Radio:',NULL,NULL,NULL,0,'2018-07-29 21:43:16',2,492,1),(796,'Radio:',NULL,NULL,NULL,0,'2018-07-29 21:43:21',2,493,1),(797,'Radio:',NULL,NULL,NULL,0,'2018-07-29 21:43:26',2,494,1),(798,'Radio:',NULL,NULL,NULL,0,'2018-07-29 21:43:31',2,495,1),(799,'Radio:',NULL,NULL,NULL,0,'2018-07-29 21:43:37',2,496,1),(800,'Radio:',NULL,NULL,NULL,0,'2018-07-29 21:43:45',2,497,1),(801,'Radio:',NULL,NULL,NULL,0,'2018-07-29 21:43:49',2,498,1),(802,'Radio:',NULL,NULL,NULL,0,'2018-07-29 21:43:55',2,499,1),(803,'Radio:',NULL,NULL,NULL,0,'2018-07-29 21:44:00',2,500,1),(804,'Radio:',NULL,NULL,NULL,0,'2018-07-29 23:08:43',2,501,1),(805,'Radio:',NULL,NULL,NULL,0,'2018-07-29 23:08:47',2,502,1),(806,'Radio:',NULL,NULL,NULL,0,'2018-07-29 23:08:52',2,503,1),(807,'Radio:',NULL,NULL,NULL,0,'2018-07-29 23:09:00',2,504,1),(808,'Radio:',NULL,NULL,NULL,0,'2018-07-29 23:09:07',2,505,1),(809,'Radio:',NULL,NULL,NULL,0,'2018-07-29 23:09:12',2,506,1),(810,'Radio:',NULL,NULL,NULL,0,'2018-07-29 23:09:32',2,507,1),(811,'Radio:',NULL,NULL,NULL,0,'2018-07-29 23:09:42',2,508,1),(812,'Radio:',NULL,NULL,NULL,0,'2018-07-29 23:09:48',2,509,1),(813,'Radio:',NULL,NULL,NULL,0,'2018-07-29 23:10:06',2,510,1),(814,'Radio:',NULL,NULL,NULL,0,'2018-07-29 23:10:11',2,511,1),(815,'Radio:',NULL,NULL,NULL,0,'2018-07-29 23:10:22',2,512,1),(816,'Radio:',NULL,NULL,NULL,0,'2018-07-29 23:10:26',2,513,1),(817,'Radio:',NULL,NULL,NULL,0,'2018-07-29 23:10:30',2,514,1),(818,'Radio:',NULL,NULL,NULL,0,'2018-07-29 23:10:35',2,515,1),(819,'Radio:',NULL,NULL,NULL,0,'2018-07-29 23:10:41',2,516,1),(820,'Radio:',NULL,NULL,NULL,0,'2018-07-29 23:10:46',2,517,1),(822,'Estado:',NULL,NULL,NULL,0,'2018-07-29 23:15:29',2,518,1),(823,'Estado:',NULL,NULL,NULL,0,'2018-07-29 23:15:32',2,519,1),(824,'Indique Lugar de Fisura y Orientacion:',NULL,NULL,NULL,0,'2018-07-29 23:15:51',4,518,2),(825,'Indique Lugar de Fisura y Orientacion:',NULL,NULL,NULL,0,'2018-07-29 23:15:55',4,519,2),(826,'Estado:',NULL,NULL,NULL,0,'2018-07-29 23:24:54',2,520,1),(827,'Reconstruir:',NULL,NULL,NULL,0,'2018-07-29 23:25:08',5,520,2),(828,'Inserto:',NULL,NULL,NULL,0,'2018-07-29 23:25:20',5,520,3),(829,'Estado:',NULL,NULL,NULL,0,'2018-07-29 23:25:25',2,521,1),(830,'Reconstruir:',NULL,NULL,NULL,0,'2018-07-29 23:25:37',5,521,2),(831,'Medida Mayor:',NULL,NULL,NULL,0,'2018-07-29 23:27:03',5,522,1),(832,'Medida Menor:',NULL,NULL,NULL,0,'2018-07-29 23:27:10',5,522,2),(833,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 23:27:35',5,522,3),(834,'Estado:',NULL,NULL,NULL,0,'2018-07-29 23:32:13',2,523,1),(835,'Dureza:',NULL,NULL,NULL,0,'2018-07-29 23:32:25',5,523,2),(836,'Reconstruir:',NULL,NULL,NULL,0,'2018-07-29 23:32:34',5,523,3),(837,'Estado:',NULL,NULL,NULL,0,'2018-07-29 23:32:40',2,524,1),(838,'Encamisar:',NULL,NULL,NULL,0,'2018-07-29 23:32:50',5,524,2),(839,'Marcado:',NULL,NULL,NULL,0,'2018-07-29 23:34:58',5,527,1),(840,'Marcado:',NULL,NULL,NULL,0,'2018-07-29 23:35:02',5,528,1),(841,'Marcado:',NULL,NULL,NULL,0,'2018-07-29 23:35:08',5,529,1),(842,'Marcado:',NULL,NULL,NULL,0,'2018-07-29 23:35:13',5,530,1),(843,'Marcado:',NULL,NULL,NULL,0,'2018-07-29 23:35:18',5,531,1),(844,'Marcado:',NULL,NULL,NULL,0,'2018-07-29 23:35:23',5,532,1),(845,'Marcado:',NULL,NULL,NULL,0,'2018-07-29 23:35:29',5,533,1),(846,'Marcado:',NULL,NULL,NULL,0,'2018-07-29 23:35:33',5,534,1),(847,'Marcado:',NULL,NULL,NULL,0,'2018-07-29 23:35:38',5,535,1),(848,'Marcado:',NULL,NULL,NULL,0,'2018-07-29 23:35:43',5,536,1),(849,'Marcado:',NULL,NULL,NULL,0,'2018-07-29 23:35:47',5,537,1),(850,'Estado Tornillos',NULL,NULL,NULL,0,'2018-07-29 23:35:58',2,527,2),(851,'Estado Tornillos',NULL,NULL,NULL,0,'2018-07-29 23:36:02',2,528,2),(852,'Estado Tornillos',NULL,NULL,NULL,0,'2018-07-29 23:36:07',2,529,2),(853,'Estado Tornillos',NULL,NULL,NULL,0,'2018-07-29 23:36:11',2,530,2),(854,'Estado Tornillos',NULL,NULL,NULL,0,'2018-07-29 23:36:16',2,531,2),(855,' Estado Tornillos',NULL,NULL,NULL,0,'2018-07-29 23:36:24',2,532,2),(856,'Estado Tornillos',NULL,NULL,NULL,0,'2018-07-29 23:36:30',2,533,2),(857,'Estado Tornillos',NULL,NULL,NULL,0,'2018-07-29 23:36:52',2,534,2),(858,'Estado Tornillos:',NULL,NULL,NULL,0,'2018-07-29 23:36:59',2,535,2),(859,'Estado Tornillos',NULL,NULL,NULL,0,'2018-07-29 23:37:09',2,536,2),(860,'Estado Tornillos',NULL,NULL,NULL,0,'2018-07-29 23:37:13',2,537,2),(861,'',NULL,NULL,NULL,0,'2018-07-29 23:37:29',4,525,1),(862,'',NULL,NULL,NULL,0,'2018-07-29 23:37:37',4,538,1),(863,'Medida:',NULL,NULL,NULL,0,'2018-07-29 23:38:31',5,539,1),(864,'Correccion:',NULL,NULL,NULL,0,'2018-07-29 23:38:38',5,539,2),(865,'Estado:',NULL,NULL,NULL,0,'2018-07-29 23:38:42',2,539,3),(866,'Observaciones:',NULL,NULL,NULL,0,'2018-07-29 23:38:51',4,539,4),(867,'Estado:',NULL,NULL,NULL,0,'2018-07-29 23:43:17',2,540,1),(868,'Indicar Motivo de Rechazo:',NULL,NULL,NULL,0,'2018-07-29 23:43:27',4,540,2),(869,'Accion Correctiva:',NULL,NULL,NULL,0,'2018-07-29 23:43:34',4,540,3),(870,'Estado:',NULL,NULL,NULL,0,'2018-07-29 23:43:50',2,541,1),(871,'Motivo de Rechazo:',NULL,NULL,NULL,0,'2018-07-29 23:44:00',4,541,2),(872,'Correcciones:',NULL,NULL,NULL,0,'2018-07-29 23:44:07',4,541,3),(1000,'Abrazadera caÃ±o de gases',NULL,NULL,NULL,0,'2018-07-30 00:45:40',3,1000,1),(1001,'Alternador',NULL,NULL,NULL,0,'2018-07-30 00:45:47',3,1000,2),(1002,'Arbol auxiliar',NULL,NULL,NULL,0,'2018-07-30 00:46:01',3,1000,3),(1003,'Arbol de levas',NULL,NULL,NULL,0,'2018-07-30 00:46:05',3,1000,4),(1004,'Balancines',NULL,NULL,NULL,0,'2018-07-30 00:48:40',3,1000,5),(1005,'Biela de compresor',NULL,NULL,NULL,0,'2018-07-30 00:48:47',3,1000,6),(1006,'Bielas',NULL,NULL,NULL,0,'2018-07-30 00:49:24',3,1000,7),(1007,'Block de motor',NULL,NULL,NULL,0,'2018-07-30 00:49:31',3,1000,8),(1008,'Bomba de aceite',NULL,NULL,NULL,0,'2018-07-30 00:49:53',3,1000,9),(1009,'Bomba de agua',NULL,NULL,NULL,0,'2018-07-30 00:50:00',3,1000,10),(1010,'Bomba de nafta',NULL,NULL,NULL,0,'2018-07-30 00:50:07',3,1000,11),(1011,'Bomba Inyectora No',NULL,NULL,NULL,0,'2018-07-30 00:50:14',3,1000,12),(1012,'Botadores',NULL,NULL,NULL,0,'2018-07-30 00:50:21',3,1000,13),(1013,'Brida de arbol de levas',NULL,NULL,NULL,0,'2018-07-30 00:50:29',3,1000,14),(1014,'Bujias',NULL,NULL,NULL,0,'2018-07-30 00:50:44',3,1000,15),(1015,'Bulbo de aceite de vigia',NULL,NULL,NULL,0,'2018-07-30 00:50:55',3,1000,16),(1016,'Bulbo temperatura de vigia',NULL,NULL,NULL,0,'2018-07-30 00:51:03',3,1000,17),(1017,'Bulon punta de cigueÃ±al',NULL,NULL,NULL,0,'2018-07-30 00:51:14',3,1000,18),(1018,'Bulones de retorno',NULL,NULL,NULL,0,'2018-07-30 00:51:22',3,1000,19),(1019,'Bulones de tapa de bancada ',NULL,NULL,NULL,0,'2018-07-30 00:51:28',3,1000,20),(1020,'Bulones de tapa de cilindros',NULL,NULL,NULL,0,'2018-07-30 00:51:36',3,1000,21),(1021,'CaÃ±o col.de adm.de turb.(alu.)',NULL,NULL,NULL,0,'2018-07-30 00:57:48',3,1000,22),(1022,'CaÃ±o colec.de escape',NULL,NULL,NULL,0,'2018-07-30 00:58:50',3,1000,23),(1023,'CaÃ±o de alim.aceite de turbo',NULL,NULL,NULL,0,'2018-07-30 00:58:57',3,1000,24),(1024,'CaÃ±o de combustible',NULL,NULL,NULL,0,'2018-07-30 00:59:07',3,1000,25),(1025,'CaÃ±o de entrada de aceite',NULL,NULL,NULL,0,'2018-07-30 00:59:16',3,1000,26),(1026,'CaÃ±o de retorno',NULL,NULL,NULL,0,'2018-07-30 00:59:23',3,1000,27),(1027,'CaÃ±o inferior retorno de tubo',NULL,NULL,NULL,0,'2018-07-30 00:59:31',3,1000,28),(1028,'CaÃ±os de inyector',NULL,NULL,NULL,0,'2018-07-30 00:59:39',3,1000,29),(1029,'Carburador',NULL,NULL,NULL,0,'2018-07-30 00:59:45',3,1000,30),(1030,'Carcaza cubre volante',NULL,NULL,NULL,0,'2018-07-30 00:59:56',3,1000,31),(1031,'Carcaza de distribucion',NULL,NULL,NULL,0,'2018-07-30 01:00:03',3,1000,32),(1032,'Carters c/bulones',NULL,NULL,NULL,0,'2018-07-30 01:00:12',3,1000,33),(1033,'Chapa cubre volante chica',NULL,NULL,NULL,0,'2018-07-30 01:00:28',3,1000,35),(1034,'Chapa cubre volante grande',NULL,NULL,NULL,0,'2018-07-30 01:00:41',3,1000,36),(1035,'Chaveta de arbol de levas',NULL,NULL,NULL,0,'2018-07-30 01:00:48',3,1000,37),(1036,'Chaveta de cigueÃ±al',NULL,NULL,NULL,0,'2018-07-30 01:00:56',3,1000,38),(1037,'CigueÃ±al del compresor',NULL,NULL,NULL,0,'2018-07-30 01:01:03',3,1000,39),(1038,'CigueÃ±al',NULL,NULL,NULL,0,'2018-07-30 01:01:10',3,1000,40),(1039,'Chupador de bomba de aceite',NULL,NULL,NULL,0,'2018-07-30 01:01:37',3,1000,41),(1040,'Rompe olas',NULL,NULL,NULL,0,'2018-07-30 01:01:43',3,1000,82),(1041,'Cilindro de compresor',NULL,NULL,NULL,0,'2018-07-30 01:01:50',3,1000,42),(1042,'Contrapesos',NULL,NULL,NULL,0,'2018-07-30 01:01:58',3,1000,43),(1043,'Corona de arranque',NULL,NULL,NULL,0,'2018-07-30 01:02:05',3,1000,44),(1044,'Depresor',NULL,NULL,NULL,0,'2018-07-30 01:02:24',3,1000,45),(1045,'Disco de embrague',NULL,NULL,NULL,0,'2018-07-30 01:02:31',3,1000,46),(1046,'Distribuidor',NULL,NULL,NULL,0,'2018-07-30 01:02:37',3,1000,47),(1047,'Eje de balancines',NULL,NULL,NULL,0,'2018-07-30 01:02:43',3,1000,48),(1048,'Engranaje de arbol de levas',NULL,NULL,NULL,0,'2018-07-30 01:02:51',3,1000,49),(1049,'Engranaje de cigueÃ±al',NULL,NULL,NULL,0,'2018-07-30 01:02:57',3,1000,50),(1050,'Esparragos de tapa de cilindros',NULL,NULL,NULL,0,'2018-07-30 01:03:10',3,1000,51),(1051,'Filtro de aire',NULL,NULL,NULL,0,'2018-07-30 01:03:21',3,1000,52),(1052,'Filtro de combustible',NULL,NULL,NULL,0,'2018-07-30 01:03:44',3,1000,53),(1053,'Gancho de motor delantero',NULL,NULL,NULL,0,'2018-07-30 01:03:51',3,1000,54),(1054,'Gancho de motor trasero',NULL,NULL,NULL,0,'2018-07-30 01:03:59',3,1000,55),(1055,'Indicador de puestas a punto',NULL,NULL,NULL,0,'2018-07-30 01:04:08',3,1000,56),(1056,'Inyectores',NULL,NULL,NULL,0,'2018-07-30 01:04:15',3,1000,57),(1057,'Leva de embrague',NULL,NULL,NULL,0,'2018-07-30 01:04:21',3,1000,58),(1058,'Montantes de motor',NULL,NULL,NULL,0,'2018-07-30 01:04:28',3,1000,59),(1059,'Motor de arranque',NULL,NULL,NULL,0,'2018-07-30 01:04:34',3,1000,60),(1060,'CaÃ±o superior retorno de tubo',NULL,NULL,NULL,0,'2018-07-30 01:05:06',3,1000,28),(1061,'Mecanismo de aceleracion',NULL,NULL,NULL,0,'2018-07-30 01:05:34',3,1000,62),(1062,'Multiple de admision',NULL,NULL,NULL,0,'2018-07-30 01:06:17',3,1000,63),(1063,'Multiple de escape',NULL,NULL,NULL,0,'2018-07-30 01:06:23',3,1000,64),(1064,'Pernos de presion',NULL,NULL,NULL,0,'2018-07-30 01:06:34',3,1000,65),(1065,'Porta filtro aceite inferior',NULL,NULL,NULL,0,'2018-07-30 01:06:42',3,1000,66),(1066,'Porta filtro aceite superior',NULL,NULL,NULL,0,'2018-07-30 01:06:48',3,1000,67),(1067,'Pista reten',NULL,NULL,NULL,0,'2018-07-30 01:06:55',3,1000,68),(1068,'Piston de compresor',NULL,NULL,NULL,0,'2018-07-30 01:07:02',3,1000,69),(1069,'Pistones',NULL,NULL,NULL,0,'2018-07-30 01:12:44',3,1000,70),(1070,'Placa de embrague',NULL,NULL,NULL,0,'2018-07-30 01:12:51',3,1000,71),(1071,'Platillos de valvulas',NULL,NULL,NULL,0,'2018-07-30 01:13:01',3,1000,72),(1072,'Polea balanceadora D/3',NULL,NULL,NULL,0,'2018-07-30 01:13:08',3,1000,73),(1073,'Polea bomba de agua',NULL,NULL,NULL,0,'2018-07-30 02:09:22',3,1000,74),(1074,'Porta termostato inferior',NULL,NULL,NULL,0,'2018-07-30 02:09:29',3,1000,75),(1075,'Porta termostato superior',NULL,NULL,NULL,0,'2018-07-30 02:09:36',3,1000,76),(1076,'Prisioneros soporte balancin',NULL,NULL,NULL,0,'2018-07-30 02:09:43',3,1000,77),(1077,' Radiadores de aceite con tornillos',NULL,NULL,NULL,0,'2018-07-30 02:10:19',3,1000,78),(1078,'Reguladores de balancines',NULL,NULL,NULL,0,'2018-07-30 02:10:31',3,1000,79),(1079,'Resorte de valvulas',NULL,NULL,NULL,0,'2018-07-30 02:10:40',3,1000,80),(1080,'Resortes de balancines',NULL,NULL,NULL,0,'2018-07-30 02:10:50',3,1000,81),(1081,'Seguro de valvulas',NULL,NULL,NULL,0,'2018-07-30 02:12:35',3,1000,83),(1082,'Sensor de presion de aceite',NULL,NULL,NULL,0,'2018-07-30 02:12:49',3,1000,84),(1083,'Sensor de temperatura',NULL,NULL,NULL,0,'2018-07-30 02:12:59',3,1000,85),(1084,'Separador de bomba de agua',NULL,NULL,NULL,0,'2018-07-30 02:13:09',3,1000,86),(1085,'Separador de motor de arranque',NULL,NULL,NULL,0,'2018-07-30 02:13:20',3,1000,87),(1086,'Soporte de alternador',NULL,NULL,NULL,0,'2018-07-30 02:13:54',3,1000,88),(1087,'Soporte de motor',NULL,NULL,NULL,0,'2018-07-30 02:14:04',3,1000,89),(1088,'Soporte de multiple de escape',NULL,NULL,NULL,0,'2018-07-30 02:14:26',3,1000,90),(1089,'Soporte filtro de gasoil DH',NULL,NULL,NULL,0,'2018-07-30 02:14:44',3,1000,91),(1090,'Tapa de carcaza cubre volante',NULL,NULL,NULL,0,'2018-07-30 02:15:48',3,1000,92),(1091,'Tapa de cilindros',NULL,NULL,NULL,0,'2018-07-30 02:16:00',3,1000,93),(1092,'Tapa de compresor M/V M/N',NULL,NULL,NULL,0,'2018-07-30 02:16:26',3,1000,94),(1093,'Tapa de distribucion',NULL,NULL,NULL,0,'2018-07-30 02:16:36',3,1000,95),(1094,'Tapa de inspeccion',NULL,NULL,NULL,0,'2018-07-30 02:16:43',3,1000,96),(1095,'Tapa de inspeccion con respirador',NULL,NULL,NULL,0,'2018-07-30 02:16:54',3,1000,97),(1096,'Tapa lateral',NULL,NULL,NULL,0,'2018-07-30 02:17:05',3,1000,98),(1097,'Tapa balancines M/N - M/V',NULL,NULL,NULL,0,'2018-07-30 02:17:39',3,1000,99),(1098,'Tapa de distribucion',NULL,NULL,NULL,0,'2018-07-30 02:17:55',3,1000,100),(1099,'Tapa de inspeccion',NULL,NULL,NULL,0,'2018-07-30 02:18:07',3,1000,101),(1100,'Tapa de inspeccion con respirador',NULL,NULL,NULL,0,'2018-07-30 02:18:16',3,1000,102),(1101,'Tapa lateral',NULL,NULL,NULL,0,'2018-07-30 02:18:56',3,1000,103),(1102,'Tapa balancines M/N - M/V',NULL,NULL,NULL,0,'2018-07-30 02:19:06',3,1000,104),(1103,'Vaina varilla de aceite',NULL,NULL,NULL,0,'2018-07-30 02:19:45',3,1000,108),(1104,'Tapas de bancada',NULL,NULL,NULL,0,'2018-07-30 02:19:56',3,1000,105),(1105,'Tapon de block',NULL,NULL,NULL,0,'2018-07-30 02:20:07',3,1000,106),(1106,'Tensor de alternador',NULL,NULL,NULL,0,'2018-07-30 02:20:22',3,1000,107),(1107,'Varilla nivel de aceite',NULL,NULL,NULL,0,'2018-07-30 02:20:31',3,1000,109),(1108,'Varilla alza valvulas',NULL,NULL,NULL,0,'2018-07-30 02:20:40',3,1000,110),(1109,'Torre de balancines',NULL,NULL,NULL,0,'2018-07-30 02:20:48',3,1000,111),(1110,'Tuercas de inyectores',NULL,NULL,NULL,0,'2018-07-30 02:21:06',3,1000,106),(1111,'Tuercas de tapas de cilindros',NULL,NULL,NULL,0,'2018-07-30 02:21:22',3,1000,106),(1112,'Union ejes de balancines',NULL,NULL,NULL,0,'2018-07-30 02:21:33',3,1000,107),(1113,'Valvula corte de gas-oil vigia',NULL,NULL,NULL,0,'2018-07-30 02:22:11',3,1000,115),(1114,'Valvulas',NULL,NULL,NULL,0,'2018-07-30 02:22:25',3,1000,116),(1115,'Ventilador con tornillos',NULL,NULL,NULL,0,'2018-07-30 02:23:08',3,1000,117),(1116,'Volante con bulones',NULL,NULL,NULL,0,'2018-07-30 02:23:18',3,1000,118),(1117,'Turbo',NULL,NULL,NULL,0,'2018-07-30 02:23:25',3,1000,107),(1118,'Arnes',NULL,NULL,NULL,1,'2018-07-30 02:23:35',3,1000,0),(1119,'ECM o ECU',NULL,NULL,NULL,0,'2018-07-30 02:23:46',3,1000,120),(1120,'Sensor',NULL,NULL,NULL,0,'2018-07-30 02:23:54',3,1000,84),(1200,'Armado',NULL,NULL,NULL,0,'2018-07-31 12:52:15',3,1201,1),(1201,'Semi-Armado',NULL,NULL,NULL,0,'2018-07-31 12:52:27',3,1201,2),(1202,'Desarmado',NULL,NULL,NULL,0,'2018-07-31 12:52:37',3,1201,3),(1203,'1',NULL,NULL,NULL,0,'2018-07-31 14:31:05',5,1210,1),(1204,'2',NULL,NULL,NULL,0,'2018-07-31 14:31:08',5,1210,2),(1205,'3',NULL,NULL,NULL,0,'2018-07-31 14:31:12',5,1210,3),(1206,'4',NULL,NULL,NULL,0,'2018-07-31 14:31:15',5,1210,4),(1207,'5',NULL,NULL,NULL,0,'2018-07-31 14:31:19',5,1210,5),(1208,'6',NULL,NULL,NULL,0,'2018-07-31 14:31:24',5,1210,6),(1209,'7',NULL,NULL,NULL,0,'2018-07-31 14:31:28',5,1210,7),(1210,'Marca de los Metales',NULL,NULL,NULL,0,'2018-07-31 14:31:42',2,1210,8),(1211,'Medidas:',NULL,NULL,NULL,0,'2018-07-31 14:32:16',5,1210,9),(1212,'Fabrica pide maxima y minima:',NULL,NULL,NULL,0,'2018-07-31 14:37:33',4,1210,10),(1223,'Marca del CigueÃ±al:',NULL,NULL,NULL,0,'2018-07-31 14:41:13',5,1212,1),(1224,'1',NULL,NULL,NULL,0,'2018-07-31 14:41:16',5,1212,2),(1225,'2',NULL,NULL,NULL,0,'2018-07-31 14:41:19',5,1212,3),(1226,'3',NULL,NULL,NULL,0,'2018-07-31 14:41:21',5,1212,4),(1227,'4',NULL,NULL,NULL,0,'2018-07-31 14:41:25',5,1212,5),(1228,'5',NULL,NULL,NULL,0,'2018-07-31 14:41:28',5,1212,6),(1229,'6',NULL,NULL,NULL,0,'2018-07-31 14:41:38',5,1212,7),(1230,'7',NULL,NULL,NULL,0,'2018-07-31 14:41:42',5,1212,8),(1231,'8',NULL,NULL,NULL,0,'2018-07-31 14:41:44',5,1212,9),(1232,'9',NULL,NULL,NULL,0,'2018-07-31 14:41:49',5,1212,10),(1233,'10',NULL,NULL,NULL,0,'2018-07-31 14:41:53',5,1212,11),(1234,'Marca de los Metales:',NULL,NULL,NULL,0,'2018-07-31 14:42:14',2,1212,12),(1235,'Medida:',NULL,NULL,NULL,0,'2018-07-31 14:42:20',5,1212,13),(1236,'Fabrica pide maxima y minima:',NULL,NULL,NULL,0,'2018-07-31 14:46:26',4,1212,14),(1237,'Estado:',NULL,NULL,NULL,0,'2018-07-31 14:50:28',2,1213,1),(1238,'Medidas de camisa:',NULL,NULL,NULL,0,'2018-07-31 14:51:08',5,1213,2),(1239,'1',NULL,NULL,NULL,0,'2018-07-31 14:51:24',5,1213,3),(1240,'2',NULL,NULL,NULL,0,'2018-07-31 14:51:26',5,1213,4),(1241,'3',NULL,NULL,NULL,0,'2018-07-31 14:51:29',5,1213,5),(1242,'4',NULL,NULL,NULL,0,'2018-07-31 14:51:32',5,1213,6),(1243,'4',NULL,NULL,NULL,0,'2018-07-31 14:51:36',5,1213,7),(1244,'5',NULL,NULL,NULL,0,'2018-07-31 14:51:39',5,1213,8),(1245,'6',NULL,NULL,NULL,0,'2018-07-31 14:51:45',5,1213,9),(1246,'7',NULL,NULL,NULL,0,'2018-07-31 14:54:34',5,1213,10),(1247,'8',NULL,NULL,NULL,0,'2018-07-31 14:54:38',5,1213,11),(1248,'Marca de Piston:',NULL,NULL,NULL,0,'2018-07-31 14:54:50',5,1213,12),(1252,'1',NULL,NULL,NULL,0,'2018-07-31 15:20:19',5,1215,1),(1253,'2',NULL,NULL,NULL,0,'2018-07-31 15:20:21',5,1215,2),(1254,'3',NULL,NULL,NULL,0,'2018-07-31 15:20:27',5,1215,3),(1255,'4',NULL,NULL,NULL,0,'2018-07-31 15:20:31',5,1215,2),(1256,'Otros:',NULL,NULL,NULL,0,'2018-07-31 15:20:47',4,1215,3),(1257,'1',NULL,NULL,NULL,0,'2018-07-31 15:21:14',5,1216,1),(1258,'2',NULL,NULL,NULL,0,'2018-07-31 15:21:17',5,1216,2),(1259,'3',NULL,NULL,NULL,0,'2018-07-31 15:21:20',5,1216,3),(1260,'4',NULL,NULL,NULL,0,'2018-07-31 15:21:23',5,1216,4),(1261,'Otros:',NULL,NULL,NULL,0,'2018-07-31 15:21:41',4,1216,5),(1262,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 15:22:10',4,1217,1),(1263,'',NULL,NULL,NULL,0,'2018-07-31 15:23:04',4,1218,1),(1282,'Amianto:',NULL,NULL,NULL,0,'2018-07-31 15:47:33',5,1226,1),(1283,'Rosca:',NULL,NULL,NULL,0,'2018-07-31 15:47:40',5,1226,2),(1284,'Luz:',NULL,NULL,NULL,0,'2018-07-31 15:47:55',5,1226,3),(1285,'Estado de Leva:',NULL,NULL,NULL,0,'2018-07-31 15:48:19',2,1226,4),(1287,'De cigueÃ±al:',NULL,NULL,NULL,0,'2018-07-31 15:51:18',4,1229,1),(1288,'Luz de Aceite:',NULL,NULL,NULL,0,'2018-07-31 15:54:16',5,1230,1),(1289,'Medida:',NULL,NULL,NULL,0,'2018-07-31 15:54:28',5,1230,2),(1290,'Luz:',NULL,NULL,NULL,0,'2018-07-31 15:54:49',5,1231,1),(1291,'Estado:',NULL,NULL,NULL,0,'2018-07-31 15:54:58',2,1231,2),(1292,'Medida:',NULL,NULL,NULL,0,'2018-07-31 15:55:15',5,1231,3),(1295,'Radio de Biela de CigueÃ±al:',NULL,NULL,NULL,0,'2018-07-31 15:59:59',5,1233,1),(1296,'CigueÃ±al Biela:',NULL,NULL,NULL,0,'2018-07-31 16:00:31',5,1233,2),(1297,'Radio de Bancada de CigueÃ±al:',NULL,NULL,NULL,0,'2018-07-31 16:01:13',5,1233,3),(1298,'Bancadas:',NULL,NULL,NULL,0,'2018-07-31 16:01:56',5,1233,4),(1299,'Radio Biela Compresor:',NULL,NULL,NULL,0,'2018-07-31 16:02:17',5,1233,5),(1300,'Alojamiento Bielas:',NULL,NULL,NULL,0,'2018-07-31 16:02:30',5,1233,6),(1301,'Luz de Pernos:',NULL,NULL,NULL,0,'2018-07-31 16:02:47',5,1233,7),(1302,'Bancadas:',NULL,NULL,NULL,0,'2018-07-31 16:02:54',5,1233,8),(1303,'1',NULL,NULL,NULL,0,'2018-07-31 16:05:41',5,1234,1),(1304,'2',NULL,NULL,NULL,0,'2018-07-31 16:05:44',5,1234,2),(1305,'3',NULL,NULL,NULL,0,'2018-07-31 16:05:49',5,1234,3),(1306,'4',NULL,NULL,NULL,0,'2018-07-31 16:06:01',5,1234,4),(1307,'5',NULL,NULL,NULL,0,'2018-07-31 16:06:04',5,1234,5),(1308,'6',NULL,NULL,NULL,0,'2018-07-31 16:06:11',5,1234,6),(1309,'7',NULL,NULL,NULL,0,'2018-07-31 16:06:15',5,1234,7),(1310,'8',NULL,NULL,NULL,0,'2018-07-31 16:06:20',5,1234,8),(1311,'9',NULL,NULL,NULL,0,'2018-07-31 16:06:24',5,1234,9),(1312,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 16:08:17',4,1234,10),(1314,'Medida:',NULL,NULL,NULL,0,'2018-07-31 16:16:33',5,1235,1),(1315,'Estado:',NULL,NULL,NULL,0,'2018-07-31 16:16:40',2,1235,2),(1316,'Presion Alta:',NULL,NULL,NULL,0,'2018-07-31 16:17:10',5,1235,3),(1317,'Presion Baja:',NULL,NULL,NULL,0,'2018-07-31 16:17:21',5,1235,4),(1318,'De Bielas:',NULL,NULL,NULL,0,'2018-07-31 16:17:52',5,1236,1),(1319,'Tiene rosca:',NULL,NULL,NULL,0,'2018-07-31 16:18:25',5,1237,1),(1320,'Tapa de distribucion:',NULL,NULL,NULL,0,'2018-07-31 16:20:07',5,1237,2),(1321,'Tapa de Cilindros:',NULL,NULL,NULL,0,'2018-07-31 16:20:18',5,1237,3),(1322,'Luz entre aloj. y botador:',NULL,NULL,NULL,0,'2018-07-31 16:20:46',5,1238,1),(1323,'En que estado estan:',NULL,NULL,NULL,0,'2018-07-31 16:21:23',5,1239,1),(1324,'Repasar:',NULL,NULL,NULL,0,'2018-07-31 16:22:34',4,1240,1),(1325,'Conductos de aceite de leva:',NULL,NULL,NULL,0,'2018-07-31 16:23:03',4,1241,1),(1326,'Block:',NULL,NULL,NULL,0,'2018-07-31 16:23:10',4,1241,2),(1327,'En el Piston:',NULL,NULL,NULL,0,'2018-07-31 16:24:07',4,1242,1),(1328,'CigueÃ±al:',NULL,NULL,NULL,0,'2018-07-31 16:24:26',5,1243,1),(1329,'Volante:',NULL,NULL,NULL,0,'2018-07-31 16:24:33',5,1243,2),(1330,'Polea:',NULL,NULL,NULL,0,'2018-07-31 16:24:39',5,1243,3),(1331,'Pistones:',NULL,NULL,NULL,0,'2018-07-31 16:25:33',5,1244,1),(1332,'Bielas:',NULL,NULL,NULL,0,'2018-07-31 16:25:39',5,1244,2),(1333,'Camisas:',NULL,NULL,NULL,0,'2018-07-31 16:26:06',5,1245,1),(1334,'Polea:',NULL,NULL,NULL,0,'2018-07-31 16:26:14',5,1245,2),(1335,'Aluminio:',NULL,NULL,NULL,0,'2018-07-31 16:27:05',5,1246,1),(1336,'Placa:',NULL,NULL,NULL,0,'2018-07-31 16:27:11',5,1246,2),(1337,'CaÃ±o de Bancada Central-Aceite',NULL,NULL,NULL,0,'2018-07-31 17:28:52',4,1247,1),(1338,'Angulo de Brunido',NULL,NULL,NULL,0,'2018-07-31 17:29:03',4,1247,2),(1339,'Largo de Tornillos de Bancadas y Bielas',NULL,NULL,NULL,0,'2018-07-31 17:29:11',4,1247,3),(1340,'Tapones Varios y Medidas',NULL,NULL,NULL,0,'2018-07-31 17:29:25',4,1247,4),(1341,'Taponar CigueÃ±al',NULL,NULL,NULL,0,'2018-07-31 17:30:46',4,1247,5),(1342,'Escuadra de Pistones',NULL,NULL,NULL,0,'2018-07-31 17:30:57',4,1247,6),(1343,'Medir Centros de Agujeros, Pistones',NULL,NULL,NULL,0,'2018-07-31 17:31:12',4,1247,7),(1344,'Excentricos 1518 y 1114',NULL,NULL,NULL,0,'2018-07-31 17:31:21',4,1247,8),(1345,'Medir Reten de Bancada.',NULL,NULL,NULL,0,'2018-07-31 17:31:29',4,1247,9),(1346,'Controlar Rosca, CigueÃ±al varios y Reten',NULL,NULL,NULL,0,'2018-07-31 17:31:36',4,1247,10),(1347,'Altura Pistones',NULL,NULL,NULL,0,'2018-07-31 17:31:44',4,1247,11),(1348,'Engranaje Bomba de Aceite, varios',NULL,NULL,NULL,0,'2018-07-31 17:31:55',4,1247,12),(1349,'Piezas de alumino, varios',NULL,NULL,NULL,0,'2018-07-31 17:32:29',4,1247,5),(1350,'Seguro de Pistones, varios',NULL,NULL,NULL,0,'2018-07-31 17:32:37',4,1247,12),(1351,'Botadores si pasan por el Block y da, medidas varias',NULL,NULL,NULL,0,'2018-07-31 17:32:47',4,1247,13),(1352,'Medidas eje, Mando Perkins 6354',NULL,NULL,NULL,0,'2018-07-31 17:32:56',4,1247,14),(1353,'Tapones Lubricacion de Eje, Mando Perkins 6354',NULL,NULL,NULL,0,'2018-07-31 17:33:04',4,1247,5),(1354,'Controlar engranaje de Arbol de Levas y Bomba de',NULL,NULL,NULL,0,'2018-07-31 17:33:14',4,1247,12),(1355,'Aceite, si estan hermanadas',NULL,NULL,NULL,0,'2018-07-31 17:33:22',4,1247,13),(1356,'Luz entre Dientes de engranajes de Distribucion',NULL,NULL,NULL,0,'2018-07-31 17:33:34',4,1247,14),(1357,'Carcaza de Distribucion, Leva y Bomba Inyectora',NULL,NULL,NULL,0,'2018-07-31 17:34:55',4,1247,5),(1358,'Conducto Aceite - MuÃ±on de Leva y de Compresor',NULL,NULL,NULL,0,'2018-07-31 17:35:06',4,1247,6),(1359,'Ruleman de cola de CigueÃ±al',NULL,NULL,NULL,0,'2018-07-31 17:35:15',4,1247,14),(1360,'Biselado de conductos de aceites del CigueÃ±al',NULL,NULL,NULL,0,'2018-07-31 17:35:24',4,1247,15),(1361,'Block Rellenado:',NULL,NULL,NULL,0,'2018-07-31 17:38:08',5,1247,16),(1362,'Soldado:',NULL,NULL,NULL,0,'2018-07-31 17:38:21',5,1247,17),(1363,'Lugar:',NULL,NULL,NULL,0,'2018-07-31 17:41:07',5,1247,18),(1364,'Torsion de CigueÃ±al',NULL,NULL,NULL,0,'2018-07-31 17:41:47',4,1247,19),(1365,'Chapa de Identificacion',NULL,NULL,NULL,0,'2018-07-31 17:42:00',4,1247,20),(1366,'Desplazamiento de Carcaza, Distribucion',NULL,NULL,NULL,0,'2018-07-31 17:42:11',4,1247,20),(1367,'Controlar Tornillos de Contrapesos y apretar',NULL,NULL,NULL,0,'2018-07-31 17:42:21',4,1247,14),(1368,'Apretar con Kilos o Grados',NULL,NULL,NULL,0,'2018-07-31 17:42:36',4,1247,15),(1369,'Indique apriete de Biela',NULL,NULL,NULL,0,'2018-07-31 17:42:50',4,1247,20),(1370,'Indique apriete de Bancada',NULL,NULL,NULL,0,'2018-07-31 17:42:59',4,1247,14),(1371,'Semi-Armado',NULL,NULL,NULL,0,'2018-07-31 18:07:04',3,1248,1),(1372,'Armado Completo',NULL,NULL,NULL,0,'2018-07-31 18:07:18',3,1248,2),(1373,'Motor:',NULL,NULL,NULL,0,'2018-07-31 18:07:32',5,1248,3),(1379,'Realizar',NULL,NULL,NULL,0,'2018-07-31 18:17:02',2,1250,1),(1380,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:17:30',4,1250,2),(1381,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:17:39',2,1250,3),(1382,'Realizar',NULL,NULL,NULL,0,'2018-07-31 18:18:16',2,1251,1),(1383,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:18:23',4,1251,2),(1384,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:18:30',2,1251,3),(1385,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:19:38',2,1252,1),(1386,'Observacion:',NULL,NULL,NULL,0,'2018-07-31 18:19:51',4,1252,2),(1387,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:19:56',2,1252,3),(1388,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:21:12',2,1253,1),(1389,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:21:21',4,1253,2),(1390,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:21:34',2,1253,3),(1391,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:22:15',2,1254,1),(1392,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:22:32',4,1254,2),(1393,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:22:38',2,1254,3),(1394,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:23:12',2,1255,1),(1395,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:23:33',4,1255,2),(1396,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:23:45',2,1255,3),(1397,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:24:28',2,1256,1),(1398,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:24:41',4,1256,2),(1399,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:24:46',2,1256,3),(1400,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:25:55',2,1257,1),(1401,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:26:11',4,1257,2),(1402,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:26:17',2,1257,3),(1403,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:27:08',2,1258,1),(1404,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:27:19',4,1258,2),(1405,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:27:26',2,1258,3),(1406,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:28:07',2,1259,1),(1407,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:28:23',4,1259,2),(1408,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:28:30',2,1259,3),(1409,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:29:36',2,1260,1),(1410,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:29:45',4,1260,2),(1411,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:29:50',2,1260,3),(1412,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:30:32',2,1261,1),(1413,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:30:48',4,1261,2),(1414,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:30:53',2,1261,3),(1415,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:32:14',2,1262,1),(1416,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:32:27',4,1262,2),(1417,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:32:33',2,1262,3),(1418,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:33:03',2,1263,1),(1419,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:33:11',4,1263,2),(1420,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:33:20',2,1263,3),(1421,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:33:59',2,1264,1),(1422,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:34:05',4,1264,2),(1423,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:34:10',2,1264,3),(1424,'Motivo:',NULL,NULL,NULL,0,'2018-07-31 18:35:53',4,1265,1),(1425,'Fecha:',NULL,NULL,NULL,0,'2018-07-31 18:35:59',5,1265,2),(1426,'Motivo:',NULL,NULL,NULL,0,'2018-07-31 18:36:17',4,1266,1),(1427,'Fecha:',NULL,NULL,NULL,0,'2018-07-31 18:36:23',5,1266,2),(1428,'Motivo:',NULL,NULL,NULL,0,'2018-07-31 18:36:48',4,1267,1),(1429,'Fecha:',NULL,NULL,NULL,0,'2018-07-31 18:36:54',5,1267,2),(1430,'Semi-Armado',NULL,NULL,NULL,0,'2018-07-31 18:45:06',3,1268,1),(1431,'Armado Completo',NULL,NULL,NULL,0,'2018-07-31 18:45:16',3,1268,2),(1432,'Motor:',NULL,NULL,NULL,0,'2018-07-31 18:45:22',5,1268,3),(1433,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:47:01',2,1269,1),(1434,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:47:08',4,1269,2),(1435,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:47:25',2,1269,3),(1436,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:48:34',2,1270,1),(1437,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:48:42',4,1270,2),(1438,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:49:32',2,1270,3),(1439,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:50:20',2,1271,1),(1440,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:50:34',4,1271,2),(1441,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:50:48',2,1271,3),(1442,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:52:47',2,1272,1),(1443,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:52:58',4,1272,2),(1444,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:53:11',2,1272,3),(1445,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:53:58',2,1273,1),(1446,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:54:13',4,1273,2),(1447,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:54:21',2,1273,3),(1448,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:55:03',2,1274,1),(1449,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:55:08',4,1274,2),(1450,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:55:14',2,1274,3),(1451,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:55:57',2,1275,1),(1452,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:56:05',4,1275,2),(1453,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:56:11',2,1275,3),(1454,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:57:24',2,1276,1),(1455,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:57:31',4,1276,2),(1456,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:57:41',2,1276,3),(1457,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:58:44',2,1277,1),(1458,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:58:51',4,1277,2),(1459,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:58:57',2,1277,3),(1460,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 18:59:33',2,1278,1),(1461,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 18:59:42',4,1278,2),(1462,'Estado:',NULL,NULL,NULL,0,'2018-07-31 18:59:48',2,1278,3),(1463,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:00:20',2,1279,1),(1464,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:00:40',4,1279,2),(1465,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:00:47',2,1279,3),(1466,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:01:31',2,1280,1),(1467,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:01:55',4,1280,2),(1468,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:02:02',2,1280,3),(1469,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:11:13',2,1281,1),(1470,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:11:20',4,1281,2),(1471,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:11:26',2,1281,3),(1472,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:12:13',2,1282,1),(1473,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:12:18',4,1282,2),(1474,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:12:34',2,1282,3),(1475,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:13:06',2,1283,1),(1476,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:13:15',4,1283,2),(1477,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:13:23',2,1283,3),(1478,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:14:26',2,1284,1),(1479,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:14:34',4,1284,2),(1480,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:14:44',2,1284,3),(1481,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:15:35',2,1285,1),(1482,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:15:53',4,1285,2),(1483,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:16:02',2,1285,3),(1484,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:16:50',2,1286,1),(1485,'Observaciones:(Tapon...kg  Tornillos...kg)',NULL,NULL,NULL,0,'2018-07-31 19:17:29',4,1286,2),(1486,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:17:36',2,1286,3),(1487,'Motivo:',NULL,NULL,NULL,0,'2018-07-31 19:19:26',4,1287,1),(1488,'Fecha:',NULL,NULL,NULL,0,'2018-07-31 19:19:32',5,1287,2),(1489,'Motivo:',NULL,NULL,NULL,0,'2018-07-31 19:19:39',4,1289,1),(1490,'Fecha:',NULL,NULL,NULL,0,'2018-07-31 19:19:45',5,1289,2),(1491,'Motivo:',NULL,NULL,NULL,0,'2018-07-31 19:19:51',4,1290,1),(1492,'Fecha:',NULL,NULL,NULL,0,'2018-07-31 19:19:56',5,1290,2),(1493,'Semi-Armado',NULL,NULL,NULL,0,'2018-07-31 19:22:41',3,1291,1),(1494,'Armado Completo',NULL,NULL,NULL,0,'2018-07-31 19:22:51',3,1291,2),(1495,'Motor:',NULL,NULL,NULL,0,'2018-07-31 19:22:57',5,1291,3),(1496,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:23:28',2,1292,1),(1497,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:23:35',4,1292,2),(1498,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:23:40',2,1292,3),(1499,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:24:19',2,1293,1),(1500,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:24:31',4,1293,2),(1501,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:24:56',2,1293,3),(1502,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:25:51',2,1294,1),(1504,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:26:04',2,1294,3),(1505,'Kg:',NULL,NULL,NULL,0,'2018-07-31 19:28:08',5,1294,4),(1506,'Grados:',NULL,NULL,NULL,0,'2018-07-31 19:28:20',5,1294,5),(1507,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:28:46',2,1295,1),(1508,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:28:57',4,1295,2),(1509,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:29:02',2,1295,3),(1510,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:29:51',2,1296,1),(1511,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:29:59',4,1296,2),(1512,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:30:08',2,1296,3),(1513,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:30:41',2,1297,1),(1514,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:30:49',4,1297,2),(1515,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:30:56',2,1297,3),(1516,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:31:51',2,1298,1),(1517,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:31:59',4,1298,2),(1518,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:32:05',2,1298,3),(1519,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:32:42',2,1299,1),(1520,'Kg:',NULL,NULL,NULL,0,'2018-07-31 19:33:01',5,1299,2),(1521,'Grados:',NULL,NULL,NULL,0,'2018-07-31 19:33:07',5,1299,3),(1522,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:33:14',2,1299,4),(1523,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:33:47',2,1300,1),(1524,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:34:05',4,1300,2),(1525,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:34:09',2,1300,3),(1526,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:34:39',2,1301,1),(1528,'Kg:',NULL,NULL,NULL,0,'2018-07-31 19:35:13',5,1301,2),(1529,'Grados:',NULL,NULL,NULL,0,'2018-07-31 19:35:29',5,1301,3),(1530,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:35:43',2,1301,4),(1531,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:36:15',2,1302,1),(1532,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:36:33',4,1302,2),(1533,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:36:43',2,1302,3),(1534,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:37:17',2,1303,1),(1535,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:37:54',4,1303,2),(1536,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:38:00',2,1303,3),(1537,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:39:25',2,1304,1),(1538,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:39:59',4,1304,2),(1539,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:40:06',2,1304,3),(1540,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:40:47',2,1305,1),(1542,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:41:08',2,1305,3),(1543,'Kg:',NULL,NULL,NULL,0,'2018-07-31 19:41:41',5,1305,4),(1544,'Grados:',NULL,NULL,NULL,0,'2018-07-31 19:41:47',5,1305,5),(1545,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:42:11',2,1306,1),(1546,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:42:25',4,1306,2),(1547,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:42:30',2,1306,3),(1548,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:43:01',2,1307,1),(1549,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:43:10',4,1307,2),(1550,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:43:16',2,1307,3),(1551,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:44:04',2,1308,1),(1552,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:44:10',4,1308,2),(1553,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:44:18',2,1308,3),(1554,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:45:36',2,1309,1),(1555,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:45:43',4,1309,2),(1556,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:45:50',2,1309,3),(1557,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:46:27',2,1310,1),(1558,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:46:42',4,1310,2),(1559,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:46:58',2,1310,3),(1560,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:47:39',2,1311,1),(1561,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:47:48',4,1311,2),(1562,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:48:03',2,1311,3),(1563,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:48:55',2,1312,1),(1564,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:49:04',4,1312,2),(1565,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:49:11',2,1312,3),(1566,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:49:54',2,1313,1),(1567,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:50:00',4,1313,2),(1568,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:50:06',2,1313,3),(1569,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:50:44',2,1314,1),(1570,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:50:59',4,1314,2),(1571,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:51:07',2,1314,3),(1572,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:51:33',2,1315,1),(1573,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:51:51',4,1315,2),(1574,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:51:57',2,1315,3),(1575,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:52:27',2,1316,1),(1576,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:52:45',4,1316,2),(1577,'Estado:',NULL,NULL,NULL,0,'2018-07-31 19:52:51',2,1316,3),(1578,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 19:53:51',2,1317,1),(1579,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 19:54:24',4,1317,2),(1580,'Estados:',NULL,NULL,NULL,0,'2018-07-31 19:54:38',2,1317,3),(1581,'Motivo:',NULL,NULL,NULL,0,'2018-07-31 19:55:24',4,1318,1),(1582,'Motivo:',NULL,NULL,NULL,0,'2018-07-31 19:55:27',4,1319,1),(1583,'Motivo:',NULL,NULL,NULL,0,'2018-07-31 19:55:32',4,1320,1),(1584,'Fecha:',NULL,NULL,NULL,0,'2018-07-31 19:55:42',5,1318,2),(1585,'Fecha:',NULL,NULL,NULL,0,'2018-07-31 19:55:46',5,1319,2),(1586,'Fecha:',NULL,NULL,NULL,0,'2018-07-31 19:55:53',5,1320,2),(1587,'Semi-Armado:',NULL,NULL,NULL,0,'2018-07-31 20:00:26',3,1321,1),(1588,'Armado Completo:',NULL,NULL,NULL,0,'2018-07-31 20:00:36',3,1321,2),(1589,'Motor:',NULL,NULL,NULL,0,'2018-07-31 20:00:43',5,1321,3),(1590,'Motivo:',NULL,NULL,NULL,0,'2018-07-31 20:06:06',4,1357,1),(1591,'Motivo:',NULL,NULL,NULL,0,'2018-07-31 20:06:10',4,1359,1),(1592,'Motivo:',NULL,NULL,NULL,0,'2018-07-31 20:06:15',4,1360,1),(1593,'Fecha:',NULL,NULL,NULL,0,'2018-07-31 20:06:26',5,1357,2),(1594,'Fecha:',NULL,NULL,NULL,0,'2018-07-31 20:06:30',5,1359,2),(1595,'Fecha:',NULL,NULL,NULL,0,'2018-07-31 20:06:34',5,1360,2),(1596,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:06:51',2,1322,1),(1597,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:06:56',2,1323,1),(1598,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:07:00',2,1324,1),(1599,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:07:05',2,1325,1),(1600,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:07:09',2,1326,1),(1601,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:07:13',2,1327,1),(1602,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:07:17',2,1328,1),(1603,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:07:22',2,1329,1),(1604,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:07:27',2,1330,1),(1605,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:07:32',2,1331,1),(1606,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:07:39',2,1332,1),(1607,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:07:47',2,1333,1),(1608,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:07:51',2,1334,1),(1609,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:07:56',2,1335,1),(1610,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:08:01',2,1336,1),(1611,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:08:07',2,1337,1),(1612,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:08:18',2,1338,1),(1613,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:08:25',2,1339,1),(1614,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:08:30',2,1340,1),(1615,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:08:36',2,1341,1),(1616,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:08:41',2,1342,1),(1617,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:08:45',2,1343,1),(1618,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:08:49',2,1344,1),(1619,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:08:54',2,1345,1),(1620,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:08:59',2,1346,1),(1621,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:09:04',2,1347,1),(1622,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:09:08',2,1348,1),(1623,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:09:14',2,1349,1),(1624,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:09:19',2,1350,1),(1625,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:09:23',2,1351,1),(1626,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:09:27',2,1352,1),(1627,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:09:36',2,1353,1),(1628,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:09:42',2,1354,1),(1629,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:09:47',2,1355,1),(1630,'Realizar:',NULL,NULL,NULL,0,'2018-07-31 20:09:56',2,1356,1),(1631,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:15:51',4,1322,2),(1632,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:15:58',4,1323,2),(1633,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:16:03',4,1324,2),(1634,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:16:08',4,1325,2),(1635,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:16:12',4,1326,2),(1636,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:16:17',4,1327,2),(1637,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:16:22',4,1328,2),(1638,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:16:27',4,1329,2),(1639,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:16:31',4,1330,2),(1640,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:16:35',4,1331,2),(1641,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:16:41',4,1332,2),(1642,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:16:46',4,1333,2),(1643,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:16:53',4,1334,2),(1644,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:17:00',4,1335,2),(1645,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:17:04',4,1336,2),(1646,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:17:09',4,1337,2),(1647,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:17:21',4,1338,2),(1648,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:17:26',4,1339,2),(1649,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:17:31',4,1340,2),(1650,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:17:35',4,1341,2),(1651,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:17:43',4,1342,2),(1652,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:17:47',4,1343,2),(1653,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:17:52',4,1344,2),(1654,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:17:56',4,1345,2),(1655,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:18:01',4,1346,2),(1656,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:18:08',4,1347,2),(1657,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:18:11',4,1348,2),(1658,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:18:16',4,1349,2),(1659,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:18:20',4,1350,2),(1660,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:18:25',4,1351,2),(1661,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:18:30',4,1352,2),(1662,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:18:34',4,1353,2),(1663,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:18:39',4,1354,2),(1664,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:18:43',4,1355,2),(1665,'Observaciones:',NULL,NULL,NULL,0,'2018-07-31 20:18:50',4,1356,2),(1666,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:19:06',2,1322,3),(1667,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:19:10',2,1323,3),(1668,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:19:14',2,1324,3),(1669,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:19:18',2,1325,3),(1670,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:19:22',2,1326,3),(1671,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:19:26',2,1327,3),(1672,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:19:30',2,1328,3),(1673,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:19:37',2,1329,3),(1674,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:19:41',2,1330,3),(1675,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:19:47',2,1331,3),(1676,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:19:52',2,1332,3),(1677,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:19:56',2,1333,3),(1678,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:20:00',2,1334,3),(1679,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:20:05',2,1335,3),(1680,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:20:12',2,1336,3),(1681,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:20:17',2,1337,3),(1682,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:20:21',2,1338,3),(1683,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:20:25',2,1339,3),(1684,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:20:29',2,1340,3),(1685,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:20:33',2,1341,3),(1686,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:20:38',2,1342,3),(1687,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:20:44',2,1343,3),(1688,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:20:50',2,1344,3),(1689,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:20:58',2,1345,3),(1690,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:21:02',2,1346,3),(1691,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:21:06',2,1347,3),(1692,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:21:10',2,1348,3),(1693,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:21:15',2,1349,3),(1694,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:21:20',2,1350,3),(1695,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:21:25',2,1351,3),(1696,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:21:29',2,1352,3),(1697,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:21:34',2,1353,3),(1698,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:21:39',2,1354,3),(1699,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:21:44',2,1355,3),(1700,'Estado:',NULL,NULL,NULL,0,'2018-07-31 20:21:49',2,1356,3),(1701,'01:',NULL,NULL,NULL,0,'2018-08-03 15:50:43',3,314,1),(1702,'02:',NULL,NULL,NULL,0,'2018-08-03 15:50:50',3,314,2),(1703,'03:',NULL,NULL,NULL,0,'2018-08-03 15:50:54',3,314,3),(1704,'04:',NULL,NULL,NULL,0,'2018-08-03 15:50:59',3,314,4),(1705,'05:',NULL,NULL,NULL,0,'2018-08-03 15:51:10',3,314,5),(1706,'06:',NULL,NULL,NULL,0,'2018-08-03 15:51:16',3,314,6),(1707,'08:',NULL,NULL,NULL,0,'2018-08-03 15:51:33',3,314,7),(1708,'12',NULL,NULL,NULL,0,'2018-08-03 15:52:56',3,314,8),(1709,'16',NULL,NULL,NULL,0,'2018-08-03 15:53:00',3,314,9),(1710,'n',NULL,NULL,NULL,0,'2018-08-03 15:53:05',3,314,10),(1711,'Obsevaciones:',NULL,NULL,NULL,0,'2018-08-03 16:15:01',4,314,13),(1712,'Indique: Ovalos / Conicidad y Altura:',NULL,NULL,NULL,0,'2018-08-03 18:26:50',4,338,2),(1713,'Indique: Ovalos / Conicidad y Altura:',NULL,NULL,NULL,0,'2018-08-03 18:27:00',4,339,2),(1714,'Indique: Ovalos / Conicidad y Altura:',NULL,NULL,NULL,0,'2018-08-03 18:27:05',4,340,2),(1715,'Indique: Ovalos / Conicidad y Altura:',NULL,NULL,NULL,0,'2018-08-03 18:27:11',4,341,2),(1716,'Indique: Ovalos / Conicidad y Altura:',NULL,NULL,NULL,0,'2018-08-03 18:27:18',4,342,2),(1717,'Indique: Ovalos / Conicidad y Altura:',NULL,NULL,NULL,0,'2018-08-03 18:27:23',4,343,2),(1718,'Indique: Ovalos / Conicidad y Altura:',NULL,NULL,NULL,0,'2018-08-03 18:27:28',4,344,2),(1719,'Indique: Ovalos / Conicidad y Altura:',NULL,NULL,NULL,0,'2018-08-03 18:27:34',4,345,2),(1720,'Indique: Ovalos / Conicidad y Altura:',NULL,NULL,NULL,0,'2018-08-03 18:27:40',4,346,2),(1724,'(*)Indique valor',NULL,NULL,NULL,0,'2018-08-03 19:48:17',5,97,2),(1725,'(*)Indique valor',NULL,NULL,NULL,0,'2018-08-03 19:48:25',5,98,2),(1726,'(*)Indique valor',NULL,NULL,NULL,0,'2018-08-03 19:48:31',5,99,2),(1727,'(*)Indique valor',NULL,NULL,NULL,0,'2018-08-03 19:48:38',5,101,2),(1728,'(*)Indique valor',NULL,NULL,NULL,0,'2018-08-03 19:48:44',5,102,2),(1729,'(*)Indique valor',NULL,NULL,NULL,0,'2018-08-03 19:48:49',5,103,2),(1730,'(*)Indique valor',NULL,NULL,NULL,0,'2018-08-03 19:48:58',5,104,2),(1731,'(*)Indique valor',NULL,NULL,NULL,0,'2018-08-03 19:49:02',5,105,2),(1732,'(*)Indique valor',NULL,NULL,NULL,0,'2018-08-03 19:49:07',5,106,2),(1733,'(*)Indique valor',NULL,NULL,NULL,0,'2018-08-03 19:49:12',5,107,2),(1734,'(*)Indique valor',NULL,NULL,NULL,0,'2018-08-03 19:49:50',5,108,2),(1735,'(*)Indique valor',NULL,NULL,NULL,0,'2018-08-03 19:49:56',5,109,2),(1736,'(*)Indique valor',NULL,NULL,NULL,0,'2018-08-03 19:50:03',5,110,2),(1737,'(*)Indique valor',NULL,NULL,NULL,0,'2018-08-03 19:50:09',5,111,2),(1738,'(*)Indique valor',NULL,NULL,NULL,0,'2018-08-03 19:50:21',5,112,2),(1739,'(*)Indique valor',NULL,NULL,NULL,0,'2018-08-03 19:50:27',5,113,2),(1740,'(*)Indique valor',NULL,NULL,NULL,0,'2018-08-03 19:50:33',5,114,2),(1742,'',NULL,NULL,NULL,0,'2018-08-03 20:20:55',4,1363,1),(2000,'Legajo en Mano',NULL,NULL,NULL,0,'2018-08-07 14:44:43',3,2000,1),(2001,'Planilla de â€œRegistro de recepcio?n de componenteâ€, se encuentra en el Legajo.',NULL,NULL,NULL,0,'2018-08-07 14:44:59',3,2000,2),(2002,'â€œRemito del clienteâ€, aplica solo si a trai?do. Se encuentra en el Legajo.',NULL,NULL,NULL,0,'2018-08-07 14:45:10',3,2000,3),(2003,'Planilla de â€œRegistro de pedido de materiales interior y exteriorâ€, se encuentra en el Legajo.',NULL,NULL,NULL,0,'2018-08-07 14:45:42',3,2000,4),(2004,'Fotos del componente, impreso o con acceso en pantalla.',NULL,NULL,NULL,0,'2018-08-07 14:45:52',3,2000,5),(2005,'Ca?mara de Fotos, sera? necesario para registrar que se esta? despachando.',NULL,NULL,NULL,0,'2018-08-07 14:46:49',3,2000,6),(2006,'Planilla de â€œRemito de despacho de componenteâ€, se encuentra en el Legajo.',NULL,NULL,NULL,0,'2018-08-07 14:47:32',3,2000,7),(2008,'Se encuentran todos los i?tems nombrados en ella',NULL,NULL,NULL,0,'2018-08-07 14:52:14',3,2002,1),(2009,'Esta todo lo descripto en el remito del cliente.',NULL,NULL,NULL,0,'2018-08-07 14:55:43',3,2003,1),(2010,'Se encuentran todos los i?tems nombrados en ella',NULL,NULL,NULL,0,'2018-08-07 14:56:38',3,2004,1),(2011,'Se encuentran todos los componentes tal cual muestran las fotos',NULL,NULL,NULL,0,'2018-08-07 14:57:15',3,2005,1),(2012,'No ha quedado ningu?n repuesto, insumo, componente, etc. de este interno en almace?n',NULL,NULL,NULL,0,'2018-08-07 14:57:47',3,2006,1),(2013,'Arne?s ele?ctrico SIN cables cortados',NULL,NULL,NULL,0,'2018-08-07 14:59:04',3,2007,1),(2014,'Arne?s ele?ctrico SIN cables sueltos',NULL,NULL,NULL,0,'2018-08-07 14:59:32',3,2007,2),(2015,'Arne?s ele?ctrico SIN cables pelados',NULL,NULL,NULL,0,'2018-08-07 14:59:46',3,2007,3),(2016,'Arne?s ele?ctrico SIN cintas y/o corrugado protector roto o suelto',NULL,NULL,NULL,0,'2018-08-07 14:59:55',3,2007,4),(2017,'Arne?s ele?ctrico SIN sujetadores, precintos, agarres varios suelto',NULL,NULL,NULL,0,'2018-08-07 15:00:05',3,2007,5),(2018,'Arne?s ele?ctrico SIN fichas y/o conectores rotos',NULL,NULL,NULL,0,'2018-08-07 15:00:19',3,2007,6),(2019,'Carter y protecciones varias sin abolladuras',NULL,NULL,NULL,0,'2018-08-07 15:00:28',3,2007,7),(2020,'Sin traspiraciones y/o pe?rdida de aceites',NULL,NULL,NULL,0,'2018-08-07 15:00:37',3,2007,8),(2021,'Sin pe?rdida de refrigerante y/o algu?n fluido',NULL,NULL,NULL,0,'2018-08-07 15:00:47',3,2007,9),(2022,'Controlar que la boca de admisio?n, escape, can?eri?as varias de ingreso y/o egreso de algu?n fluido este?n con sus tapones correspondiente. En caso de no tener tapo?n se debe tapar con algu?n insumo.',NULL,NULL,NULL,0,'2018-08-07 15:00:58',3,2007,10),(2023,'Cuna o soporte adecuado (ante la duda consultar a coordinador)',NULL,NULL,NULL,0,'2018-08-07 15:01:08',3,2007,11),(2024,'Tomar fotos del estado del componente a despachar',NULL,NULL,NULL,0,'2018-08-07 15:01:48',3,2008,1),(2025,'Realizar remito de salida, marcar todo los componentes incluyendo repuestos nuevos y/o usados.',NULL,NULL,NULL,0,'2018-08-07 15:02:53',3,2009,1),(2026,'Observacion:',NULL,NULL,NULL,0,'2018-08-07 15:03:33',4,2010,1),(2047,'Realizar:',NULL,NULL,NULL,0,'2018-08-07 15:23:43',2,2013,1),(2048,'Observacion:',NULL,NULL,NULL,0,'2018-08-07 15:24:01',4,2013,2),(2049,'Realizar:',NULL,NULL,NULL,0,'2018-08-07 15:24:22',2,2014,1),(2050,'Observacion:',NULL,NULL,NULL,0,'2018-08-07 15:24:52',4,2014,2),(2051,'Realizar:',NULL,NULL,NULL,0,'2018-08-07 15:25:17',2,2016,1),(2052,'Observacion:',NULL,NULL,NULL,0,'2018-08-07 15:25:37',4,2016,2),(2053,'Realizar:',NULL,NULL,NULL,0,'2018-08-07 15:32:58',2,2017,1),(2054,'Observacion:',NULL,NULL,NULL,0,'2018-08-07 15:33:38',4,2017,2),(2055,'Estado:',NULL,NULL,NULL,0,'2018-08-07 15:33:51',2,2017,3),(2056,'Realizar:',NULL,NULL,NULL,0,'2018-08-07 15:35:21',2,2018,1),(2057,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 15:35:41',4,2018,2),(2059,'Realizar:',NULL,NULL,NULL,0,'2018-08-07 15:36:11',2,2019,1),(2060,'Observacion:',NULL,NULL,NULL,0,'2018-08-07 15:36:27',4,2019,2),(2061,'Realizar:',NULL,NULL,NULL,0,'2018-08-07 15:36:58',2,2020,1),(2062,'Observacion:',NULL,NULL,NULL,0,'2018-08-07 15:37:21',4,2020,2),(2063,'Realizar:',NULL,NULL,NULL,0,'2018-08-07 15:37:57',2,2021,1),(2064,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 15:39:03',4,2021,2),(2065,'Realizar:',NULL,NULL,NULL,0,'2018-08-07 15:39:37',2,2022,1),(2066,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 15:39:54',4,2022,2),(2067,'Estado:',NULL,NULL,NULL,0,'2018-08-07 15:40:00',2,2022,3),(2068,'Realizar:',NULL,NULL,NULL,0,'2018-08-07 15:41:55',2,2023,1),(2069,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 15:42:09',4,2023,2),(2070,'Estado:',NULL,NULL,NULL,0,'2018-08-07 15:42:16',2,2023,3),(2071,'Realizar:',NULL,NULL,NULL,0,'2018-08-07 15:43:48',2,2024,1),(2072,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 15:45:11',2,2024,2),(2073,'Realizar:',NULL,NULL,NULL,0,'2018-08-07 15:46:16',2,2025,1),(2074,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 15:46:31',4,2025,2),(2075,'Realizar:',NULL,NULL,NULL,0,'2018-08-07 15:47:07',2,2026,1),(2076,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 15:47:25',4,2026,2),(2077,'Estado:',NULL,NULL,NULL,0,'2018-08-07 15:47:32',2,2026,3),(2078,'Realizar:',NULL,NULL,NULL,0,'2018-08-07 15:48:01',2,2027,1),(2079,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 15:48:28',4,2027,2),(2080,'Estado:',NULL,NULL,NULL,0,'2018-08-07 15:48:44',2,2027,3),(2081,'Realizar:',NULL,NULL,NULL,0,'2018-08-07 15:49:11',2,2028,1),(2083,'Luz de Valvula:',NULL,NULL,NULL,0,'2018-08-07 15:49:47',4,2028,2),(2084,'Completar:',NULL,NULL,NULL,0,'2018-08-07 16:27:14',2,2029,1),(2085,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 16:27:50',4,2029,2),(2086,'Completar:',NULL,NULL,NULL,0,'2018-08-07 16:28:31',2,2030,1),(2087,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 16:29:18',4,2030,2),(2088,'Completar:',NULL,NULL,NULL,0,'2018-08-07 16:29:45',2,2031,1),(2089,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 16:30:14',4,2031,2),(2090,'Completar:',NULL,NULL,NULL,0,'2018-08-07 16:31:41',2,2032,1),(2091,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 16:31:47',4,2032,2),(2093,'Completar:',NULL,NULL,NULL,0,'2018-08-07 16:32:26',2,2033,1),(2094,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 16:32:53',4,2033,2),(2095,'Completar:',NULL,NULL,NULL,0,'2018-08-07 16:33:27',2,2034,1),(2096,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 16:33:38',4,2034,2),(2097,'Completar:',NULL,NULL,NULL,0,'2018-08-07 16:34:35',2,2035,1),(2098,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 16:34:42',4,2035,2),(2099,'Completar:',NULL,NULL,NULL,0,'2018-08-07 16:35:17',2,2036,1),(2100,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 16:35:26',4,2036,2),(2102,'Completar:',NULL,NULL,NULL,0,'2018-08-07 16:36:24',2,2037,1),(2103,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 16:36:31',4,2037,2),(2104,'Completar:',NULL,NULL,NULL,0,'2018-08-07 18:28:34',2,2038,1),(2105,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 18:29:44',4,2038,2),(2106,'Completar:',NULL,NULL,NULL,0,'2018-08-07 18:31:45',2,2039,1),(2107,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 18:34:22',4,2039,2),(2108,'Completar:',NULL,NULL,NULL,0,'2018-08-07 18:34:45',2,2040,1),(2109,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 18:38:03',4,2040,2),(2110,'Completar:',NULL,NULL,NULL,0,'2018-08-07 18:44:57',2,2041,1),(2111,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 18:58:11',4,2041,2),(2112,'Completar:',NULL,NULL,NULL,0,'2018-08-07 19:11:36',2,2042,1),(2113,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 19:13:41',4,2042,2),(2114,'Completar:',NULL,NULL,NULL,0,'2018-08-07 19:14:01',2,2043,1),(2115,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 19:14:26',4,2043,2),(2117,'Completar:',NULL,NULL,NULL,0,'2018-08-07 19:16:10',2,2044,1),(2118,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 19:20:52',4,2044,2),(2119,'Completar:',NULL,NULL,NULL,0,'2018-08-07 19:47:25',2,2045,1),(2120,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 19:47:31',4,2045,2),(2121,'Completar:',NULL,NULL,NULL,0,'2018-08-07 19:49:02',2,2046,1),(2122,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 19:49:31',4,2046,2),(2123,'Completar:',NULL,NULL,NULL,0,'2018-08-07 19:50:43',2,2047,1),(2124,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 19:50:49',4,2047,2),(2125,'Completar:',NULL,NULL,NULL,0,'2018-08-07 19:51:38',2,2048,1),(2126,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 19:52:31',4,2048,2),(2127,'Completar:',NULL,NULL,NULL,0,'2018-08-07 19:53:28',2,2049,1),(2128,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 19:53:50',4,2049,2),(2129,'Completar:',NULL,NULL,NULL,0,'2018-08-07 19:55:24',2,2050,1),(2130,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 19:55:41',4,2050,2),(2131,'Completar:',NULL,NULL,NULL,0,'2018-08-07 19:56:00',2,2051,1),(2132,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 19:56:21',4,2051,2),(2133,'Completar:',NULL,NULL,NULL,0,'2018-08-07 19:57:37',2,2052,1),(2134,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 19:58:56',4,2052,2),(2135,'Completar:',NULL,NULL,NULL,0,'2018-08-07 20:00:41',2,2053,1),(2136,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 20:02:17',4,2053,2),(2137,'Completar:',NULL,NULL,NULL,0,'2018-08-07 20:03:00',2,2054,1),(2138,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 20:03:19',4,2054,2),(2139,'Completar:',NULL,NULL,NULL,0,'2018-08-07 20:03:48',2,2055,1),(2140,'Observaciones',NULL,NULL,NULL,0,'2018-08-07 20:04:06',4,2055,2),(2141,'Completar:',NULL,NULL,NULL,0,'2018-08-07 20:04:29',2,2056,1),(2142,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 20:04:49',4,2056,2),(2143,'Completar:',NULL,NULL,NULL,0,'2018-08-07 20:05:12',2,2057,1),(2144,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 20:05:34',4,2057,2),(2145,'Observaciones:',NULL,NULL,NULL,0,'2018-08-07 20:13:39',4,2058,1),(2148,'Estado:',NULL,NULL,NULL,0,'2018-08-08 15:05:38',2,2060,1),(2149,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 15:05:47',4,2060,2),(2150,'Estado:',NULL,NULL,NULL,0,'2018-08-08 15:07:01',2,2061,1),(2151,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 15:07:08',4,2061,2),(2152,'Estado:',NULL,NULL,NULL,0,'2018-08-08 15:07:55',2,2062,1),(2153,'Observaiones:',NULL,NULL,NULL,0,'2018-08-08 15:12:52',4,2062,2),(2154,'Estado:',NULL,NULL,NULL,0,'2018-08-08 15:13:28',2,2063,1),(2155,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 15:13:35',4,2063,2),(2156,'Estado:',NULL,NULL,NULL,0,'2018-08-08 15:14:57',2,2064,1),(2157,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 15:15:05',4,2064,2),(2158,'Estado:',NULL,NULL,NULL,0,'2018-08-08 15:15:52',2,2065,1),(2159,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 15:16:00',4,2065,2),(2160,'Estado:',NULL,NULL,NULL,0,'2018-08-08 15:24:24',2,2066,1),(2161,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 15:25:05',4,2066,2),(2162,'Estado:',NULL,NULL,NULL,0,'2018-08-08 15:25:48',2,2067,1),(2163,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 15:25:55',4,2067,2),(2164,'Estado:',NULL,NULL,NULL,0,'2018-08-08 15:26:38',2,2068,1),(2165,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 15:26:44',4,2068,2),(2166,'Estado:',NULL,NULL,NULL,0,'2018-08-08 15:28:06',2,2069,1),(2168,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 15:28:38',4,2069,2),(2169,'Estado:',NULL,NULL,NULL,0,'2018-08-08 15:31:39',2,2070,1),(2170,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 15:31:50',4,2070,2),(2171,'Estado:',NULL,NULL,NULL,0,'2018-08-08 15:32:24',2,2071,1),(2172,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 15:32:36',4,2071,2),(2173,'Estado:',NULL,NULL,NULL,0,'2018-08-08 15:33:45',2,2072,1),(2174,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 15:33:52',4,2072,2),(2175,'Estado:',NULL,NULL,NULL,0,'2018-08-08 15:38:59',2,2073,1),(2176,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 15:39:06',4,2073,2),(2177,'Estado:',NULL,NULL,NULL,0,'2018-08-08 15:42:34',2,2074,1),(2178,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 15:42:42',4,2074,2),(2179,'Estado:',NULL,NULL,NULL,0,'2018-08-08 15:45:39',2,2075,1),(2180,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 15:45:53',4,2075,2),(2181,'Estado:',NULL,NULL,NULL,0,'2018-08-08 15:46:27',2,2076,1),(2182,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 15:46:35',4,2076,2),(2183,'Estado:',NULL,NULL,NULL,0,'2018-08-08 15:47:38',2,2077,1),(2184,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 15:47:58',4,2077,2),(2185,'Estado:',NULL,NULL,NULL,0,'2018-08-08 15:49:07',2,2078,1),(2186,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 15:49:14',4,2078,2),(2187,'Estado:',NULL,NULL,NULL,0,'2018-08-08 15:50:23',2,2079,1),(2188,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 15:50:36',4,2079,2),(2189,'Estado:',NULL,NULL,NULL,0,'2018-08-08 15:59:20',2,2082,1),(2190,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 15:59:27',4,2082,2),(2191,'Estado:',NULL,NULL,NULL,0,'2018-08-08 16:05:49',2,2083,1),(2192,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 16:05:57',4,2083,2),(2193,'Estado:',NULL,NULL,NULL,0,'2018-08-08 16:06:25',2,2084,1),(2194,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 16:06:32',4,2084,2),(2195,'Estado:',NULL,NULL,NULL,0,'2018-08-08 16:07:19',2,2085,1),(2196,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 16:07:28',4,2085,2),(2197,'Estado:',NULL,NULL,NULL,0,'2018-08-08 16:08:08',2,2086,1),(2198,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 16:08:14',4,2086,2),(2199,'Estado:',NULL,NULL,NULL,0,'2018-08-08 16:09:08',2,2087,1),(2200,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 16:09:18',4,2087,2),(2201,'Estado:',NULL,NULL,NULL,0,'2018-08-08 16:09:54',2,2088,1),(2202,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 16:10:02',4,2088,2),(2203,'Estado:',NULL,NULL,NULL,0,'2018-08-08 16:15:34',2,2089,1),(2204,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 16:15:40',4,2089,2),(2205,'Estado:',NULL,NULL,NULL,0,'2018-08-08 16:18:07',2,2090,1),(2206,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 16:18:13',4,2090,2),(2207,'Estado:',NULL,NULL,NULL,0,'2018-08-08 16:22:37',2,2091,1),(2208,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 16:22:45',4,2091,2),(2209,'Estado:',NULL,NULL,NULL,0,'2018-08-08 16:59:53',2,2092,1),(2210,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 17:00:00',4,2092,2),(2211,'Estado:',NULL,NULL,NULL,0,'2018-08-08 17:00:40',2,2093,1),(2212,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 17:00:51',4,2093,2),(2213,'Estado:',NULL,NULL,NULL,0,'2018-08-08 17:07:39',2,2094,1),(2214,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 17:07:47',4,2094,2),(2215,'Estado:',NULL,NULL,NULL,0,'2018-08-08 17:09:00',2,2095,1),(2216,'Estado:',NULL,NULL,NULL,0,'2018-08-08 17:09:04',2,2096,1),(2217,'Estado:',NULL,NULL,NULL,0,'2018-08-08 17:09:10',2,2097,1),(2218,'Estado:',NULL,NULL,NULL,0,'2018-08-08 17:09:15',2,2098,1),(2219,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 17:09:27',4,2095,2),(2220,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 17:09:32',4,2096,2),(2221,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 17:09:37',4,2097,2),(2222,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 17:09:42',4,2098,2),(2223,'Estado:',NULL,NULL,NULL,0,'2018-08-08 17:42:02',2,2099,1),(2224,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 17:42:10',4,2099,2),(2225,'Estado:',NULL,NULL,NULL,0,'2018-08-08 17:45:29',2,2100,1),(2226,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 17:46:05',4,2100,2),(2227,'Estado:',NULL,NULL,NULL,0,'2018-08-08 17:46:32',2,2101,1),(2228,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 17:47:44',4,2101,2),(2229,'Estado:',NULL,NULL,NULL,0,'2018-08-08 17:48:10',2,2102,1),(2230,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 17:48:16',4,2102,2),(2231,'Estado:',NULL,NULL,NULL,0,'2018-08-08 18:00:10',2,2103,1),(2232,'Observacion:',NULL,NULL,NULL,0,'2018-08-08 18:00:22',4,2103,2),(2233,'Estado:',NULL,NULL,NULL,0,'2018-08-08 18:01:30',2,2104,1),(2234,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 18:01:43',4,2104,2),(2235,'Estado:',NULL,NULL,NULL,0,'2018-08-08 18:03:33',2,2105,1),(2236,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 18:03:49',4,2105,2),(2237,'Estado:',NULL,NULL,NULL,0,'2018-08-08 18:19:26',2,2106,1),(2238,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 18:19:39',4,2106,2),(2239,'Estado:',NULL,NULL,NULL,0,'2018-08-08 18:20:11',2,2107,1),(2240,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 18:20:19',4,2107,2),(2241,'Estado:',NULL,NULL,NULL,0,'2018-08-08 18:20:47',2,2108,1),(2242,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 18:20:58',4,2108,2),(2243,'Estado:',NULL,NULL,NULL,0,'2018-08-08 18:21:29',2,2109,1),(2244,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 18:21:36',4,2109,2),(2245,'Estado:',NULL,NULL,NULL,0,'2018-08-08 18:23:26',2,2110,1),(2246,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 18:23:32',4,2110,2),(2247,'Estado:',NULL,NULL,NULL,0,'2018-08-08 18:33:06',2,2111,1),(2248,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 18:33:24',4,2111,2),(2249,'Estado:',NULL,NULL,NULL,0,'2018-08-08 18:57:14',2,2112,1),(2250,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 18:57:29',4,2112,2),(2251,'Estado:',NULL,NULL,NULL,0,'2018-08-08 18:58:47',2,2113,1),(2252,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 18:59:07',4,2113,2),(2253,'Estado:',NULL,NULL,NULL,0,'2018-08-08 18:59:31',2,2114,1),(2254,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 18:59:37',4,2114,2),(2255,'Estado:',NULL,NULL,NULL,0,'2018-08-08 19:01:08',2,2115,1),(2256,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 19:01:18',4,2115,2),(2257,'Estado:',NULL,NULL,NULL,0,'2018-08-08 19:04:59',2,2116,1),(2258,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 19:05:06',4,2116,2),(2259,'Estado:',NULL,NULL,NULL,0,'2018-08-08 19:06:28',2,2117,1),(2260,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 19:06:35',4,2117,2),(2261,'Estado:',NULL,NULL,NULL,0,'2018-08-08 19:07:56',2,2118,1),(2262,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 19:10:14',4,2118,2),(2263,'Estado:',NULL,NULL,NULL,0,'2018-08-08 19:21:26',2,2119,1),(2264,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 19:21:46',4,2119,2),(2265,'Estado:',NULL,NULL,NULL,0,'2018-08-08 19:22:25',2,2120,1),(2266,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 19:22:41',4,2120,2),(2267,'Estado:',NULL,NULL,NULL,0,'2018-08-08 19:23:12',2,2121,1),(2268,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 19:23:18',4,2121,2),(2269,'Estado:',NULL,NULL,NULL,0,'2018-08-08 19:23:49',2,2122,1),(2270,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 19:24:03',4,2122,2),(2271,'Estado:',NULL,NULL,NULL,0,'2018-08-08 19:26:34',2,2124,1),(2272,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 19:26:41',4,2124,2),(2273,'Estado:',NULL,NULL,NULL,0,'2018-08-08 19:27:20',2,2125,1),(2274,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 19:27:29',4,2125,2),(2275,'Estado:',NULL,NULL,NULL,0,'2018-08-08 19:28:44',2,2126,1),(2276,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 19:28:53',4,2126,2),(2277,'Estado:',NULL,NULL,NULL,0,'2018-08-08 19:33:52',2,2127,1),(2278,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 19:34:13',4,2127,2),(2279,'Estado:',NULL,NULL,NULL,0,'2018-08-08 19:36:46',2,2128,1),(2280,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 19:37:10',4,2128,2),(2281,'Estado:',NULL,NULL,NULL,0,'2018-08-08 19:38:38',2,2129,1),(2282,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 19:38:50',4,2129,2),(2283,'Estado:',NULL,NULL,NULL,0,'2018-08-08 19:40:31',2,2131,1),(2284,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 19:40:40',4,2131,2),(2285,'Estado:',NULL,NULL,NULL,0,'2018-08-08 19:41:47',2,2132,1),(2286,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 19:41:56',4,2132,2),(2287,'Estado:',NULL,NULL,NULL,0,'2018-08-08 19:43:39',2,2133,1),(2288,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 19:43:53',4,2133,2),(2289,'Estado:',NULL,NULL,NULL,0,'2018-08-08 19:45:16',2,2134,1),(2290,'Observaciones:',NULL,NULL,NULL,0,'2018-08-08 19:45:33',4,2134,2),(2291,'Estado:',NULL,NULL,NULL,0,'2018-08-11 23:37:50',2,2135,1),(2292,'Estado:',NULL,NULL,NULL,0,'2018-08-11 23:37:54',2,2136,1),(2293,'Estado:',NULL,NULL,NULL,0,'2018-08-11 23:37:58',2,2137,1),(2294,'Estado:',NULL,NULL,NULL,0,'2018-08-11 23:38:03',2,2138,1),(2295,'Estado:',NULL,NULL,NULL,0,'2018-08-11 23:38:09',2,2139,1),(2296,'Estado:',NULL,NULL,NULL,0,'2018-08-11 23:38:14',2,2140,1),(2297,'Estado:',NULL,NULL,NULL,0,'2018-08-11 23:38:18',2,2141,1),(2298,'Observaciones:',NULL,NULL,NULL,0,'2018-08-11 23:39:46',4,2135,2),(2299,'Observaciones:',NULL,NULL,NULL,0,'2018-08-11 23:39:51',4,2136,2),(2300,'Observaciones:',NULL,NULL,NULL,0,'2018-08-11 23:39:56',4,2137,2),(2301,'Observaciones:',NULL,NULL,NULL,0,'2018-08-11 23:40:00',4,2138,2),(2302,'Observaciones:',NULL,NULL,NULL,0,'2018-08-11 23:40:06',4,2139,2),(2303,'Observaciones:',NULL,NULL,NULL,0,'2018-08-11 23:40:19',4,2140,2),(2304,'Observaciones:',NULL,NULL,NULL,0,'2018-08-11 23:40:23',4,2141,2),(2306,'Print de pantalla al 100%:',NULL,NULL,NULL,0,'2018-08-13 03:02:12',4,2143,1),(2308,'Filmar una prueba desde arranque hasta apagado:',NULL,NULL,NULL,0,'2018-08-13 03:04:43',4,2143,2),(2309,'Estado:',NULL,NULL,NULL,0,'2018-08-13 03:10:56',2,2144,1),(2310,'Estado:',NULL,NULL,NULL,0,'2018-08-13 03:11:01',2,2145,1),(2311,'Estado:',NULL,NULL,NULL,0,'2018-08-13 03:11:05',2,2146,1),(2313,'Estado:',NULL,NULL,NULL,0,'2018-08-13 03:11:18',2,2147,1),(2314,'Estado:',NULL,NULL,NULL,0,'2018-08-13 03:11:23',2,2148,1),(2315,'Estado:',NULL,NULL,NULL,0,'2018-08-13 03:11:48',2,2149,1),(2316,'Estado:',NULL,NULL,NULL,0,'2018-08-13 03:11:53',2,2150,1),(2317,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:12:09',4,2144,2),(2318,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:12:15',4,2145,2),(2319,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:12:21',4,2146,2),(2320,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:12:26',4,2147,2),(2321,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:12:31',4,2148,2),(2322,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:12:36',4,2149,2),(2323,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:12:41',4,2150,2),(2324,'Estado:',NULL,NULL,NULL,0,'2018-08-13 03:19:46',2,2151,1),(2325,'Estado:',NULL,NULL,NULL,0,'2018-08-13 03:19:50',2,2152,1),(2326,'Estado:',NULL,NULL,NULL,0,'2018-08-13 03:19:56',2,2153,1),(2327,'Estado:',NULL,NULL,NULL,0,'2018-08-13 03:20:01',2,2154,1),(2328,'Estado:',NULL,NULL,NULL,0,'2018-08-13 03:20:05',2,2155,1),(2329,'Estado:',NULL,NULL,NULL,0,'2018-08-13 03:20:10',2,2156,1),(2330,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:22:15',4,2151,2),(2331,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:22:22',4,2152,2),(2332,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:22:30',4,2153,2),(2333,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:22:37',4,2154,2),(2334,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:22:45',4,2155,2),(2335,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:22:51',4,2156,2),(2336,'Estado:',NULL,NULL,NULL,0,'2018-08-13 03:26:51',2,2157,1),(2337,'Estado:',NULL,NULL,NULL,0,'2018-08-13 03:26:56',2,2158,1),(2338,'Estado:',NULL,NULL,NULL,0,'2018-08-13 03:27:00',2,2159,1),(2339,'Estado:',NULL,NULL,NULL,0,'2018-08-13 03:27:07',2,2160,1),(2340,'Estado:',NULL,NULL,NULL,0,'2018-08-13 03:27:13',2,2161,1),(2341,'Estado:',NULL,NULL,NULL,0,'2018-08-13 03:27:18',2,2162,1),(2342,'Estado:',NULL,NULL,NULL,0,'2018-08-13 03:27:26',2,2163,1),(2343,'Estado:',NULL,NULL,NULL,0,'2018-08-13 03:27:31',2,2164,1),(2344,'Estado:',NULL,NULL,NULL,0,'2018-08-13 03:27:36',2,2165,1),(2345,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:31:52',4,2157,2),(2346,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:31:57',4,2158,2),(2347,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:32:03',4,2159,2),(2348,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:32:08',4,2160,2),(2349,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:32:12',4,2161,2),(2350,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:32:16',4,2162,2),(2351,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:32:23',4,2163,2),(2352,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:32:27',4,2164,2),(2353,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:32:31',4,2165,2),(2354,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:33:57',4,2166,1),(2355,'Observaciones:',NULL,NULL,NULL,0,'2018-08-13 03:34:27',4,2167,1),(2500,'850-LAVADO DE MOTOR DE 4 CILINDRO',NULL,NULL,NULL,0,'2018-08-23 14:42:19',3,2500,1),(2501,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 14:42:30',5,2500,2),(2502,'860-LAVADO DE MOTOR DE 5 CILINDRO',NULL,NULL,NULL,0,'2018-08-23 14:42:59',3,2500,3),(2503,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 14:43:11',5,2500,4),(2504,'870-LAVADO DE MOTOR DE 6 CILINDRO',NULL,NULL,NULL,0,'2018-08-23 14:44:03',3,2500,5),(2505,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 14:44:21',5,2500,6),(2506,'880-LAVADO DE MOTOR DE 8 CILINDRO',NULL,NULL,NULL,0,'2018-08-23 14:44:40',3,2500,7),(2507,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 14:44:45',5,2500,8),(2508,'881-LAVADO DE MOTOR DE 12 CILINDRO',NULL,NULL,NULL,0,'2018-08-23 14:45:22',3,2500,9),(2509,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 14:45:33',5,2500,10),(2510,'10-RECTIFICAR Y BRUÃ‘IR CILINDROS',NULL,NULL,NULL,0,'2018-08-23 14:46:04',3,2501,1),(2511,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 14:46:10',5,2501,2),(2512,'20-BRUÃ‘IR CILINDROS',NULL,NULL,NULL,0,'2018-08-23 14:46:32',3,2501,3),(2513,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 14:46:41',5,2501,4),(2514,'30-ENCAMISAR RECT. Y BRUÃ‘IR CILINDROS',NULL,NULL,NULL,0,'2018-08-23 14:49:36',3,2501,5),(2515,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 14:49:46',5,2501,6),(2516,'100-SACAR, COLOCAR Y CONTROLAR CAMISAS',NULL,NULL,NULL,0,'2018-08-23 14:50:03',3,2501,7),(2517,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 14:50:22',5,2501,8),(2518,'108-BRUÃ‘IR ALOJAMIENTO DE CAMISAS',NULL,NULL,NULL,0,'2018-08-23 14:50:59',3,2501,9),(2519,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 14:51:05',5,2501,10),(2520,'110-CONTROLAR Y/O DAR ALTURA A CAMISA',NULL,NULL,NULL,0,'2018-08-23 14:51:29',3,2501,11),(2521,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 14:51:35',5,2501,12),(2522,'112-DAR ALTURA A CAMISAS (P/ESP. NOCIVO)',NULL,NULL,NULL,0,'2018-08-23 14:51:58',3,2501,13),(2523,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 14:52:09',5,2501,14),(2524,'120-CONTROLAR Y/O DAR ALTURA A PISTONES',NULL,NULL,NULL,0,'2018-08-23 14:52:33',3,2501,15),(2525,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 14:52:39',5,2501,16),(2526,'130-ENCAMISAR CILINDROS ?SIN RECTIFICAR?',NULL,NULL,NULL,0,'2018-08-23 14:52:53',3,2501,17),(2527,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 14:52:59',5,2501,18),(2528,'140-REACONDICIONA ALOJAMIENTO DE CAMISAS',NULL,NULL,NULL,0,'2018-08-23 14:53:12',3,2501,19),(2529,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 14:53:16',5,2501,20),(2530,'142-REACONDICIONAR ALOJ. RELLENADO DE CAMISAS',NULL,NULL,NULL,0,'2018-08-23 14:53:30',3,2501,21),(2531,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 14:53:37',5,2501,22),(2532,'1300-RECONSTRUIR MUÃ‘ON DE LA BIELA',NULL,NULL,NULL,0,'2018-08-23 15:05:40',3,2502,1),(2533,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:05:45',5,2502,2),(2534,'1310-RECONSTRUIR INTERIOR DE BIELA',NULL,NULL,NULL,0,'2018-08-23 15:06:10',3,2502,3),(2535,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:06:15',5,2502,4),(2536,'1320-CAMBIAR Y ALESAR BUJES DE BIELA',NULL,NULL,NULL,0,'2018-08-23 15:07:37',3,2502,5),(2537,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:07:44',5,2502,6),(2538,'1330-AJUSTAR PERNO DE BIELA',NULL,NULL,NULL,0,'2018-08-23 15:08:02',3,2502,7),(2539,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:08:08',5,2502,8),(2540,'1340-ENCAMISAR CILINDRO',NULL,NULL,NULL,0,'2018-08-23 15:08:44',3,2502,9),(2541,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:08:51',5,2502,10),(2542,'1350-BRUÃ‘IR CILINDRO',NULL,NULL,NULL,0,'2018-08-23 15:09:17',3,2502,11),(2543,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:09:22',5,2502,12),(2544,'1360-AJUSTAR COJINETE DE BIELA',NULL,NULL,NULL,0,'2018-08-23 15:09:33',3,2502,13),(2545,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:09:43',5,2502,14),(2546,'2041-REPARACION BASE DE COMPRESOR',NULL,NULL,NULL,0,'2018-08-23 15:10:03',3,2502,15),(2547,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:10:12',5,2502,16),(2548,'970-CONTROLAR BOMBA DE ACEITE',NULL,NULL,NULL,0,'2018-08-23 15:10:42',3,2503,1),(2549,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:10:50',5,2503,2),(2550,'980-REPARAR BOMBA DE ACEITE',NULL,NULL,NULL,0,'2018-08-23 15:11:23',3,2503,3),(2551,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:11:28',5,2503,4),(2552,'990-RECTIFICAR BALANCINES',NULL,NULL,NULL,0,'2018-08-23 15:11:41',3,2503,5),(2553,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:11:52',5,2503,6),(2554,'991-RECTIFICAR BOTADORES',NULL,NULL,NULL,0,'2018-08-23 15:12:05',3,2503,7),(2555,'CANTIDAD',NULL,NULL,NULL,0,'2018-08-23 15:12:13',5,2503,8),(2556,'992-CAMBIAR BUJES DE BALANCINES Y ALESAR',NULL,NULL,NULL,0,'2018-08-23 15:12:25',3,2503,9),(2557,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:12:31',5,2503,10),(2558,'2033-SOLDAR BLOCK',NULL,NULL,NULL,0,'2018-08-23 15:26:53',3,2504,1),(2559,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:27:03',5,2504,2),(2560,'2034-SOLDAR TAPA DE CILINDRO',NULL,NULL,NULL,0,'2018-08-23 15:27:50',3,2504,3),(2561,'CANTIDAD',NULL,NULL,NULL,0,'2018-08-23 15:27:55',5,2504,4),(2562,'2035-SOLDAR Y RELLENAR TAPA CON ALUMINIO',NULL,NULL,NULL,0,'2018-08-23 15:32:20',3,2504,5),(2563,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:32:29',5,2504,6),(2564,'2036-RELLENAR BANCADA DE BLOCK',NULL,NULL,NULL,0,'2018-08-23 15:32:45',3,2504,7),(2565,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:32:50',5,2504,8),(2566,'2037-SOLDAR BLOCK C/SOLDADURA ELECTRICA',NULL,NULL,NULL,0,'2018-08-23 15:33:06',3,2504,9),(2567,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:33:12',5,2504,10),(2568,'748-LAVADO DE TAPA DE CILINDRO',NULL,NULL,NULL,0,'2018-08-23 15:35:51',3,2505,1),(2569,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:35:58',5,2505,2),(2570,'750-GRANALLADO DE TAPA DE CILINDRO',NULL,NULL,NULL,0,'2018-08-23 15:36:12',3,2505,3),(2571,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:36:20',5,2505,4),(2572,'600-RECTIFICAR VALVULAS',NULL,NULL,NULL,0,'2018-08-23 15:36:31',3,2505,5),(2573,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:36:38',5,2505,6),(2574,'610-RECTIFICAR ASIENTOS DE VALVULAS',NULL,NULL,NULL,0,'2018-08-23 15:36:56',3,2505,7),(2575,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:37:04',5,2505,8),(2576,'620-ENCASQUILLAR Y RECTIF. ASIENTOS DE VALV.',NULL,NULL,NULL,0,'2018-08-23 15:37:17',3,2505,9),(2577,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:37:23',5,2505,10),(2578,'630-ENCASQUILLAR ASIENTOS DE VALV. (S/RECTIF)',NULL,NULL,NULL,0,'2018-08-23 15:37:48',3,2505,11),(2579,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:37:53',5,2505,12),(2580,'640-REPOSICION DE GUIAS DE VALVULAS',NULL,NULL,NULL,0,'2018-08-23 15:38:06',3,2505,13),(2581,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:38:14',5,2505,14),(2582,'650-ENTUBAR GUIAS DE VALVULAS',NULL,NULL,NULL,0,'2018-08-23 15:38:25',3,2505,15),(2583,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:38:31',5,2505,16),(2584,'660-AJUSTAR VASTAGOS DE VALVULAS A GUIAS',NULL,NULL,NULL,0,'2018-08-23 15:38:44',3,2505,17),(2585,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:38:49',5,2505,18),(2586,'670-ADAPTAR GUIAS DE VALVULAS',NULL,NULL,NULL,0,'2018-08-23 15:40:48',3,2505,19),(2587,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:40:53',5,2505,20),(2588,'680-MAQUINAR GUIAS PARA ADAPTAR RETENES',NULL,NULL,NULL,0,'2018-08-23 15:55:10',3,2505,21),(2589,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:55:20',5,2505,22),(2590,'681-SACAR CONTROLAR Y COLOCAR PRECAMARAS',NULL,NULL,NULL,0,'2018-08-23 15:55:38',3,2505,23),(2591,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:55:44',5,2505,24),(2592,'682-RECONSTRUIR ASIENTOS DE PRECAMARAS',NULL,NULL,NULL,0,'2018-08-23 15:56:19',3,2505,25),(2593,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 15:56:43',5,2505,26),(2594,'683-SACAR CONTROLAR Y COLO, CAMISAS INYEC',NULL,NULL,NULL,0,'2018-08-23 16:01:50',3,2505,27),(2595,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 16:02:00',5,2505,28),(2596,'684-RECTIFICAR VALVULAS TOP BRAKE',NULL,NULL,NULL,0,'2018-08-23 16:02:24',3,2505,29),(2597,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 16:02:31',5,2505,30),(2598,'685-RECTIFICAR ASIENTOS DE TOP BRAKE',NULL,NULL,NULL,0,'2018-08-23 16:02:52',3,2505,31),(2599,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 16:02:58',5,2505,32),(2600,'745-HACER RANURAS DE PARALLAMAS',NULL,NULL,NULL,0,'2018-08-23 16:03:16',3,2505,33),(2601,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 16:03:23',5,2505,34),(2602,'780-ARMAR/REGULAR TAPA C/PLATILLOS 2 CIL.',NULL,NULL,NULL,0,'2018-08-23 16:03:36',3,2505,35),(2603,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 16:03:40',5,2505,36),(2604,'782-ARMAR/REGULAR TAPA C/PLATILLOS 3 CIL.',NULL,NULL,NULL,0,'2018-08-23 16:03:53',3,2505,37),(2605,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 16:04:00',5,2505,38),(2606,'784-ARMAR/REGULAR TAPA C/PLATILLOS 4 CIL.',NULL,NULL,NULL,0,'2018-08-23 16:04:22',3,2505,39),(2607,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 16:04:28',5,2505,40),(2608,'790-ARMAR/REGULAR TAPA C/PLATILLOS 5 CIL.',NULL,NULL,NULL,0,'2018-08-23 16:04:40',3,2505,41),(2609,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 16:04:47',5,2505,42),(2610,'792-ARMAR/REGULAR TAPA C/PLATILLOS 6 CIL',NULL,NULL,NULL,0,'2018-08-23 16:05:02',3,2505,43),(2611,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 16:05:08',5,2505,44),(2612,'794-ARMAR/REGULAR TAPA C/BOTADORES HIDRAU.',NULL,NULL,NULL,0,'2018-08-23 16:05:33',3,2505,45),(2613,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 16:05:39',5,2505,46),(2614,'190-PRESENTAR COJINETES DE BANCADA',NULL,NULL,NULL,0,'2018-08-23 16:06:46',3,2506,1),(2615,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 16:06:52',5,2506,2),(2616,'210-ALESAR Y PRESENTAR COJ. DE BANCADA',NULL,NULL,NULL,0,'2018-08-23 16:07:09',3,2506,3),(2617,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-23 16:07:17',5,2506,4),(2618,'220-REACONDICIONA ALOJ. DE COJ.DE BANCADA',NULL,NULL,NULL,0,'2018-08-26 22:39:12',3,2506,5),(2619,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-26 22:39:19',5,2506,6),(2620,'480-ALESAR BANCADA RETEN DE BLOCK',NULL,NULL,NULL,0,'2018-08-26 22:39:36',3,2506,7),(2621,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-26 22:39:45',5,2506,8),(2622,'500-ALESAR Y AJUSTAR COJ.ARBOL LEVAS',NULL,NULL,NULL,0,'2018-08-26 22:40:31',3,2506,9),(2623,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-26 22:40:40',5,2506,10),(2624,'501-ALESAR ALOJ. P/ADAPTAR ARBOL LEVAS',NULL,NULL,NULL,0,'2018-08-26 22:40:54',3,2506,11),(2625,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-26 22:41:02',5,2506,12),(2626,'510-ALESAR ALOJ. ARBOL LEVA P/ADAPTAR COJINETES',NULL,NULL,NULL,0,'2018-08-26 22:43:04',3,2506,13),(2627,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-26 22:43:10',5,2506,14),(2628,'560-RECTIFICAR APOYOS DE EJE DE MANO/BALAN.',NULL,NULL,NULL,0,'2018-08-26 22:44:55',3,2506,15),(2629,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-26 22:45:01',5,2506,16),(2630,'570-ALESAR Y AJUSTAR COJ.EJE MAND/BALANC.',NULL,NULL,NULL,0,'2018-08-26 22:46:50',3,2506,17),(2631,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-26 22:46:56',5,2506,18),(2632,'580-ALESAR ALOJ. EJE MAN/BALANC.P/ADAP COJ',NULL,NULL,NULL,0,'2018-08-26 22:51:34',3,2506,19),(2633,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-26 22:51:46',5,2506,20),(2634,'40-AJUSTAR PERNO Y ARMAR BIELA',NULL,NULL,NULL,0,'2018-08-26 23:11:47',3,2507,1),(2635,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-26 23:11:54',5,2507,2),(2636,'50-CAMBIAR BUJAS DE BIELA Y ALESAR',NULL,NULL,NULL,0,'2018-08-26 23:14:02',3,2507,3),(2637,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-26 23:14:08',5,2507,4),(2638,'60-ARMAR BIELAS CON PERNOS A PRESION',NULL,NULL,NULL,0,'2018-08-26 23:14:26',3,2507,5),(2639,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-26 23:14:31',5,2507,6),(2641,'70-BRUÃ‘IR ALOJAMIENTO DE PISTON',NULL,NULL,NULL,0,'2018-08-26 23:15:08',3,2507,7),(2642,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-26 23:15:15',5,2507,8),(2643,'80-REACONDICIONAR OJO DE BIELA',NULL,NULL,NULL,0,'2018-08-26 23:15:28',3,2507,9),(2644,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-26 23:15:35',5,2507,10),(2645,'160-RECTIFICAR INTERIOR DE BIELA DE MOTOR',NULL,NULL,NULL,0,'2018-08-26 23:17:20',3,2507,11),(2646,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-26 23:17:25',5,2507,12),(2647,'170-RECTIFICAR INTERIOR DE BIELA DENTADA',NULL,NULL,NULL,0,'2018-08-26 23:17:39',3,2507,13),(2648,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-26 23:17:46',5,2507,14),(2649,'180-PRESENTAR Y AJUSTAR COJINETES DE BIELAS',NULL,NULL,NULL,0,'2018-08-26 23:17:59',3,2507,15),(2650,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-26 23:18:09',5,2507,16),(2651,'200-ALESAR Y PRESENTAR COJINETES DE BIELAS',NULL,NULL,NULL,0,'2018-08-26 23:18:20',3,2507,17),(2652,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-26 23:18:25',5,2507,18),(2653,'800-PRUEBA HIDRAULICA A TAPA DE 1 CIL.',NULL,NULL,NULL,0,'2018-08-27 00:41:09',3,2508,1),(2654,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 00:41:37',5,2508,2),(2655,'802-PRUEBA HIDRAULICA A TAPA DE 2 CIL.',NULL,NULL,NULL,0,'2018-08-27 00:55:06',3,2508,3),(2656,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 00:55:12',5,2508,4),(2657,'804-PRUEBA HIDRAULICA A TAPA DE 3 CIL.',NULL,NULL,NULL,0,'2018-08-27 00:55:30',3,2508,5),(2658,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 00:55:41',5,2508,6),(2659,'806-PRUEBA HIDRAULICA A TAPA DE 4 CIL.',NULL,NULL,NULL,0,'2018-08-27 00:55:57',3,2508,7),(2660,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 00:56:03',5,2508,8),(2661,'810-PRUEBA HIDRAULICA A TAPA DE 5 CIL',NULL,NULL,NULL,0,'2018-08-27 00:56:18',3,2508,9),(2662,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 00:56:27',5,2508,10),(2663,'812-PRUEBA HIDRAULICA A TAPA DE 6 CIL.',NULL,NULL,NULL,0,'2018-08-27 00:57:52',3,2508,11),(2664,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 00:57:59',5,2508,12),(2665,'2100-REALIZAR PRUEBA AFTERCOOLER',NULL,NULL,NULL,0,'2018-08-27 00:58:21',3,2508,13),(2666,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 00:58:26',5,2508,14),(2667,'2101-REALIZAR PRUEBA TUBO ENFRIADORES',NULL,NULL,NULL,0,'2018-08-27 00:58:44',3,2508,15),(2668,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 00:58:57',5,2508,16),(2669,'150-RECTIFICAR CUELLO DE CIGUEÃ‘AL',NULL,NULL,NULL,0,'2018-08-27 00:59:31',3,2509,1),(2670,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:00:17',5,2509,2),(2671,'152-PULIR CUELLO DE CIGUEÃ‘AL',NULL,NULL,NULL,0,'2018-08-27 01:01:01',3,2509,3),(2672,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:01:06',5,2509,4),(2673,'230-CONTROL DE DETECTOR DE FISURA 2 CIL',NULL,NULL,NULL,0,'2018-08-27 01:01:17',3,2509,5),(2674,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:01:23',5,2509,6),(2675,'240-CONTROL DE DETECTOR DE FISURA 3 CIL',NULL,NULL,NULL,0,'2018-08-27 01:01:39',3,2509,7),(2676,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:01:50',5,2509,8),(2679,'250-CONTROL DE DETECTOR DE FISURA 4 CIL',NULL,NULL,NULL,0,'2018-08-27 01:02:25',3,2509,9),(2680,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:02:31',5,2509,10),(2681,'260-CONTROL DE DETECTOR DE FISURA 5 CIL',NULL,NULL,NULL,0,'2018-08-27 01:02:42',3,2509,11),(2682,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:02:46',5,2509,12),(2683,'270-CONTROL DE DETECTOR DE FISURA 6 CIL',NULL,NULL,NULL,0,'2018-08-27 01:03:01',3,2509,13),(2684,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:03:07',5,2509,14),(2685,'280-CONTROL DE DETECTOR DE FISURA 8 CIL',NULL,NULL,NULL,0,'2018-08-27 01:03:27',3,2509,15),(2686,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:03:32',5,2509,16),(2687,'689-RECONST SUPERFICIE DE TAPA DE VALVULA',NULL,NULL,NULL,0,'2018-08-27 01:03:59',3,2510,1),(2688,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:04:03',5,2510,2),(2689,'690-RECTIFICAR SUPERFICIE DE TAPA 1 CIL.',NULL,NULL,NULL,0,'2018-08-27 01:04:15',3,2510,3),(2690,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:04:20',5,2510,4),(2691,'700-RECTIFICAR SUPERFICIE DE TAPA 2 CIL.',NULL,NULL,NULL,0,'2018-08-27 01:05:18',3,2510,5),(2692,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:05:24',5,2510,6),(2693,'710-RECTIFICAR SUPERFICIE DE TAPA 3 CIL.',NULL,NULL,NULL,0,'2018-08-27 01:05:48',3,2510,7),(2694,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:05:52',5,2510,8),(2695,'720-RECTIFICAR SUPERFICIE DE TAPA 4 CIL.',NULL,NULL,NULL,0,'2018-08-27 01:06:05',3,2510,9),(2696,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:06:09',5,2510,10),(2697,'730-RECTIFICAR SUPERFICIE DE TAPA 5 CIL.',NULL,NULL,NULL,0,'2018-08-27 01:06:24',3,2505,47),(2698,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:06:29',5,2505,48),(2699,'730-RECTIFICAR SUPERFICIE DE TAPA 5 CIL.',NULL,NULL,NULL,0,'2018-08-27 01:08:22',3,2510,11),(2700,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:08:27',5,2510,12),(2701,'740-RECTIFICAR SUPERFICIE DE TAPA 6 CIL.',NULL,NULL,NULL,0,'2018-08-27 01:08:40',3,2510,13),(2702,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:08:46',5,2510,14),(2703,'910-RECTIFICAR SUP. DE BLOCK 2 CILINDROS',NULL,NULL,NULL,0,'2018-08-27 01:09:04',3,2510,15),(2704,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:09:12',5,2510,16),(2705,'920-RECTIFICAR SUP. DE BLOCK 3 CILINDROS',NULL,NULL,NULL,0,'2018-08-27 01:10:09',3,2510,17),(2706,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:10:15',5,2510,18),(2707,'930-RECTIFICAR SUP. DE BLOCK 4 CILINDROS',NULL,NULL,NULL,0,'2018-08-27 01:10:32',3,2510,19),(2708,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:10:36',5,2510,20),(2709,'940-RECTIFICAR SUP. DE BLOCK 5 CILINDROS',NULL,NULL,NULL,0,'2018-08-27 01:10:50',3,2510,21),(2710,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:10:59',5,2510,22),(2711,'950-RECTIFICAR SUP. DE BLOCK 6 CILINDROS',NULL,NULL,NULL,0,'2018-08-27 01:11:17',3,2510,23),(2712,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:11:23',5,2510,24),(2713,'960-RECTIFICAR BASE DE CARTER',NULL,NULL,NULL,0,'2018-08-27 01:11:32',3,2510,25),(2714,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:11:37',5,2510,26),(2715,'965-RECTIFICAR BASE DE BANCADA A BLOCK',NULL,NULL,NULL,0,'2018-08-27 01:11:48',3,2510,27),(2716,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:11:54',5,2510,28),(2717,'1225-RECTIF.BASE MULTIPLE DE ESCAPE 1 o 2 CIL.',NULL,NULL,NULL,0,'2018-08-27 01:12:10',3,2510,29),(2718,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:12:15',5,2510,30),(2719,'1226-RECTIF.BASE MULTIPLE DE ESCAPE 3 o 4 CIL.',NULL,NULL,NULL,0,'2018-08-27 01:12:26',3,2510,31),(2720,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:12:31',5,2510,32),(2721,'1227-RECTIF.BASE MULTIPLE DE ESCAPE 5 o 6 CIL.',NULL,NULL,NULL,0,'2018-08-27 01:12:41',3,2510,33),(2722,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 01:12:47',5,2510,34),(2723,'410-ENDEREZAR CIGUEÃ‘AL',NULL,NULL,NULL,0,'2018-08-27 04:17:37',3,2511,1),(2724,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:17:51',5,2511,2),(2725,'420-CONTROLAR DUREZA DE CIGUEÃ‘AL',NULL,NULL,NULL,0,'2018-08-27 04:18:35',3,2511,3),(2726,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:18:44',5,2511,4),(2727,'430-SAC. Y COL. TAP.CIGUEÃ‘AL C/LIMP-S/MAT',NULL,NULL,NULL,0,'2018-08-27 04:19:56',3,2511,5),(2728,'CANTIDAD',NULL,NULL,NULL,0,'2018-08-27 04:20:02',5,2511,6),(2729,'440-SAC. Y COL. TAP.ROSC.CIGUEÃ‘AL C/LIMP - S/MAT',NULL,NULL,NULL,0,'2018-08-27 04:21:07',3,2511,7),(2730,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:21:21',5,2511,8),(2731,'450-SACAR/COLOCAR Y MANDRILAR TUBOS CIG.',NULL,NULL,NULL,0,'2018-08-27 04:22:02',3,2511,9),(2732,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:22:08',5,2511,10),(2733,'460-SACAR/COLOCAR CONTRAPESOS A PRESION CIG.',NULL,NULL,NULL,0,'2018-08-27 04:22:29',3,2511,11),(2734,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:22:40',5,2511,12),(2735,'35-RECTIFICAR PISTONES',NULL,NULL,NULL,0,'2018-08-27 04:23:31',3,2512,1),(2736,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:23:36',5,2512,2),(2737,'90-HACER Y/O AMPLIAR RANURA DE AROS',NULL,NULL,NULL,0,'2018-08-27 04:24:26',3,2512,3),(2738,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:24:31',5,2512,4),(2739,'95-CAMBIAR INYECTORES DE PISTON',NULL,NULL,NULL,0,'2018-08-27 04:24:57',3,2512,5),(2740,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:25:07',5,2512,6),(2741,'1200-FRESAR CABEZA DE PISTON',NULL,NULL,NULL,0,'2018-08-27 04:25:21',3,2512,7),(2742,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:25:27',5,2512,8),(2743,'470-ROSCA CIGUEÃ‘AL Y MODIFICAR RETEN',NULL,NULL,NULL,0,'2018-08-27 04:26:14',3,2512,9),(2744,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:26:20',5,2512,10),(2745,'1220-REACONDICIONAR ENGRANAJE',NULL,NULL,NULL,0,'2018-08-27 04:27:37',3,2512,11),(2746,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:27:45',5,2512,12),(2747,'1400-RECTIFICAR VOLANTE',NULL,NULL,NULL,0,'2018-08-27 04:28:37',3,2512,13),(2748,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:28:47',5,2512,14),(2749,'1410-ENCAMISAR POLEA',NULL,NULL,NULL,0,'2018-08-27 04:29:06',3,2512,15),(2750,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:29:12',5,2512,16),(2751,'1420-CAMBIAR CORONA DE ARRANQUE',NULL,NULL,NULL,0,'2018-08-27 04:29:27',3,2512,17),(2752,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:29:32',5,2512,18),(2753,'1430-COLOCAR INSERTOS PARA ROSCA',NULL,NULL,NULL,0,'2018-08-27 04:29:48',3,2512,19),(2754,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:29:54',5,2512,20),(2755,'290-BALANCEO SUELTO 2 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:31:42',3,2513,1),(2756,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:31:48',5,2513,2),(2757,'300-BALANCEO COMPLETO 2 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:32:32',3,2513,3),(2758,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:32:38',5,2513,4),(2759,'310-BALANCEO SUELTO 3 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:33:13',3,2513,5),(2760,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:33:19',5,2513,6),(2761,'320-BALANCEO COMPLETO 3 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:33:32',3,2513,7),(2762,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:33:38',5,2513,2),(2763,'330-BALANCEO SUELTO 4 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:34:33',3,2513,3),(2764,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:34:39',5,2513,4),(2765,'340-BALANCEO COMPLETO 4 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:35:26',3,2513,5),(2766,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:35:31',5,2513,6),(2767,'350-BALANCEO SUELTO 5 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:36:03',3,2513,7),(2768,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:36:09',5,2513,8),(2769,'360-BALANCEO COMPLETO 5 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:36:38',3,2513,9),(2770,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:36:43',5,2513,10),(2771,'370-BALANCEO SUELTO 6 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:36:57',3,2513,11),(2772,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:37:03',5,2513,12),(2773,'380-BALANCEO COMPLETO 6 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:37:16',3,2513,13),(2774,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:37:21',5,2513,14),(2775,'390-BALANCEO SUELTO 8 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:37:33',3,2513,15),(2776,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:37:40',5,2513,16),(2777,'392-BALANCEAR VOLANTE, PLACA Y POLEA',NULL,NULL,NULL,0,'2018-08-27 04:37:54',3,2513,17),(2778,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:38:00',5,2513,18),(2779,'393-BALANCEAR POLEA',NULL,NULL,NULL,0,'2018-08-27 04:38:25',3,2513,19),(2780,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:38:30',5,2513,20),(2781,'400-BALANCEO COMPLETO 8CIL.',NULL,NULL,NULL,0,'2018-08-27 04:38:53',3,2513,21),(2782,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:38:58',5,2513,22),(2783,'490-RECTIFICAR APOYO ARBOL DE LEVAS',NULL,NULL,NULL,0,'2018-08-27 04:39:36',3,2514,1),(2784,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:39:44',5,2514,2),(2785,'491-PULIR ARBOL DE LEVAS',NULL,NULL,NULL,0,'2018-08-27 04:40:20',3,2514,3),(2786,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:40:26',5,2514,4),(2787,'520-RECTIFICAR ARBOL DE LEVA',NULL,NULL,NULL,0,'2018-08-27 04:40:38',3,2514,5),(2788,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:40:44',5,2514,6),(2789,'540-RECTIFICAR EXENTRICO ARBOL LEVAS',NULL,NULL,NULL,0,'2018-08-27 04:40:57',3,2514,7),(2790,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:41:05',5,2514,8),(2791,'550-CONTROLAR ARBOL LEVAS C/DETEC FISURAS',NULL,NULL,NULL,0,'2018-08-27 04:41:17',3,2514,9),(2792,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:41:23',5,2514,10),(2793,'590-RECTIFICAR EXENTRICO EJE MANDO/BALANC',NULL,NULL,NULL,0,'2018-08-27 04:41:36',3,2514,11),(2794,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:41:42',5,2514,12),(2795,'1000-REPARAR ARBOL DE BALNCINES',NULL,NULL,NULL,0,'2018-08-27 04:41:55',3,2514,13),(2796,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:42:05',5,2514,14),(2798,'1014-SEMI-ARMADO MOTOR NAFTERO 4 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:43:23',3,2516,1),(2799,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:43:32',5,2516,2),(2800,'1020-SEMI-ARMADO MOTOR NAFTERO 5 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:43:53',3,2516,3),(2801,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:43:59',5,2516,4),(2802,'1022-SEMI-ARMADO MOTOR NAFTERO 6 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:45:28',3,2516,5),(2803,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:45:33',5,2516,6),(2804,'1024-SEMI-ARMADO MOTOR NAFTERO 8 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:45:46',3,2516,7),(2805,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:45:51',5,2516,8),(2806,'1062-SEMI-ARMADO MOTOR GASOLERO GR. 6 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:46:06',3,2516,9),(2807,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:46:12',5,2516,10),(2808,'1064-SEMI-ARMADO MOTOR GASOLERO GR. 8 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:46:31',3,2516,11),(2809,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:46:36',5,2516,12),(2810,'1065-SEMI-ARMADO MOTOR GASOLERO GR.12 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:46:50',3,2516,13),(2811,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:46:58',5,2516,14),(2812,'1154-ARM./PUESTO/MARCHA GASOLERO CH.4 CIL',NULL,NULL,NULL,0,'2018-08-27 04:49:05',3,2517,1),(2813,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:49:12',5,2517,2),(2814,'1160-ARM./PUESTO/MARCHA GASOLERO CH.5 CIL',NULL,NULL,NULL,0,'2018-08-27 04:49:26',3,2517,3),(2815,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:49:36',5,2517,4),(2816,'1162-ARM./PUESTO/MARCHA GASOLERO CH.6 CIL',NULL,NULL,NULL,0,'2018-08-27 04:49:58',3,2517,5),(2817,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:50:03',5,2517,6),(2818,'1182-ARM./PUESTO/MARCHA GASOLERO GR.6 CIL',NULL,NULL,NULL,0,'2018-08-27 04:50:18',3,2517,7),(2819,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:50:24',5,2517,8),(2820,'1184-ARM./PUESTO/MARCHA GASOLERO GR.8 CIL',NULL,NULL,NULL,0,'2018-08-27 04:50:40',3,2517,9),(2821,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:50:46',5,2517,10),(2822,'1189-ARM./PUESTO/MARCHA GASOLERO GR.12 CIL',NULL,NULL,NULL,0,'2018-08-27 04:51:05',3,2517,11),(2823,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:51:14',5,2517,12),(2824,'1192-ARM./PUESTO/MARCHA GASOLERO GR.16 CIL',NULL,NULL,NULL,0,'2018-08-27 04:51:27',3,2517,13),(2825,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:51:36',5,2517,14),(2826,'1188-COLOCAR Y PROBAR MOTOR EN BANCO PRUEBA',NULL,NULL,NULL,0,'2018-08-27 04:52:07',3,2517,15),(2827,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:52:13',5,2517,16),(2828,'1191-MANO DE OBRA DESARME & EVALUACION',NULL,NULL,NULL,0,'2018-08-27 04:52:46',3,2517,17),(2829,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:52:55',5,2517,18),(2830,'1074-ARMADO DE MOTOR NAFTERO 4 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:53:32',3,2518,1),(2831,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:53:44',5,2518,2),(2832,'1080-ARMADO DE MOTOR NAFTERO 5 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:54:12',3,2518,3),(2833,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:54:21',5,2518,4),(2834,'1082-ARMADO DE MOTOR NAFTERO 6 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:54:44',3,2518,5),(2835,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:54:50',5,2518,6),(2836,'1084-ARMADO DE MOTOR NAFTERO 8 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:55:10',3,2518,7),(2837,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:55:17',5,2518,8),(2838,'1094-ARMADO DE MOTOR GASOLERO CH. 4 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:55:58',3,2518,9),(2839,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:56:04',5,2518,10),(2840,'1100-ARMADO DE MOTOR GASOLERO CH. 5 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:56:35',3,2518,11),(2841,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:56:41',5,2518,12),(2842,'1102-ARMADO DE MOTOR GASOLERO CH. 6 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:56:55',3,2518,13),(2843,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:57:01',5,2518,14),(2844,'1104-ARMADO DE MOTOR GASOLERO CH. 8 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:57:19',3,2518,15),(2845,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:57:35',5,2518,16),(2846,'1114-ARMADO DE MOTOR GASOLERO GR. 4 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:57:56',3,2518,17),(2847,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:58:03',5,2518,18),(2848,'1120-ARMADO DE MOTOR GASOLERO GR. 5 CIL.',NULL,NULL,NULL,0,'2018-08-27 04:58:35',3,2518,19),(2849,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 04:58:50',5,2518,20),(2850,'1122-ARMADO DE MOTOR GASOLERO GR. 6 CIL.',NULL,NULL,NULL,0,'2018-08-27 05:00:15',3,2518,21),(2851,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 05:00:26',5,2518,22),(2852,'1124-ARMADO DE MOTOR GASOLERO GR. 8 CIL.',NULL,NULL,NULL,0,'2018-08-27 05:01:37',3,2518,23),(2853,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 05:01:45',5,2518,24),(2854,'2066-CONTROLAR Y CALIBRAR BOMBA INYECTORA',NULL,NULL,NULL,0,'2018-08-27 05:02:49',3,2519,1),(2855,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 05:02:55',5,2519,2),(2856,'2069-CONTROLAR Y CALIBRAR INYECTORES',NULL,NULL,NULL,0,'2018-08-27 05:03:24',3,2519,3),(2857,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 05:03:30',5,2519,4),(2858,'2075-CAMBIO DE PUNTA DE MANGA DIFERENCIAL',NULL,NULL,NULL,0,'2018-08-27 05:03:56',3,2520,1),(2859,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 05:04:01',5,2520,2),(2860,'2080-DESVASTAR ALOJAMIENTO RULEMAN PILOTO,HACERCAMISA DE FUNDICION DEJAR TERMINADO A MEDIDA DE RULEMAN',NULL,NULL,NULL,0,'2018-08-27 05:04:16',3,2520,3),(2861,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 05:04:24',5,2520,4),(2862,'2110-MANO DE OBRA DE SERVICIO EN CAMPO',NULL,NULL,NULL,0,'2018-08-27 05:05:44',3,2521,1),(2863,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 05:05:51',5,2521,2),(2864,'2110-TRASLADO PARA SERVICIO EN CAMPO',NULL,NULL,NULL,0,'2018-08-27 05:06:08',3,2521,3),(2865,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 05:06:13',5,2521,4),(2866,'2102-COLOCAR ESCANER PARA EXTRAER DATOS',NULL,NULL,NULL,0,'2018-08-27 05:06:39',3,2521,5),(2867,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 05:06:45',5,2521,6),(2868,'2045-REPARAR TURBO CAMION',NULL,NULL,NULL,0,'2018-08-27 05:07:06',3,2522,1),(2869,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 05:07:15',5,2522,2),(2870,'2050-REPARAR TURBO AUTOMOVIL',NULL,NULL,NULL,0,'2018-08-27 05:07:28',3,2522,3),(2871,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 05:07:37',5,2522,4),(2872,'2060-REPARAR TURBO MAQUINA INDUSTRIAL',NULL,NULL,NULL,0,'2018-08-27 05:07:58',3,2522,5),(2873,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 05:08:04',5,2522,6),(2874,'2038-BALANCEO CARDAN 1 TRAMO',NULL,NULL,NULL,0,'2018-08-27 05:08:28',3,2523,1),(2875,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 05:08:33',5,2523,2),(2876,'2039-BALANCEO CARDAN 2 TRAMOS',NULL,NULL,NULL,0,'2018-08-27 05:08:46',3,2523,3),(2877,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 05:08:51',5,2523,4),(2878,'2040-BALANCEO CARDAN 3 TRAMOS',NULL,NULL,NULL,0,'2018-08-27 05:09:04',3,2523,5),(2879,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 05:09:09',5,2523,6),(2880,'2043-MANO DE OBRA POR HACER ENCAMISADO A 6 (SEIS) ALOJAMIENTOS DE SUPLEMENTOS DE CAMISAS',NULL,NULL,NULL,0,'2018-08-27 05:09:30',3,2524,1),(2881,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 05:09:36',5,2524,2),(2882,'2044-ABRIR ALOJAMIENTO DE BOTADOR Y FABRICAR AL TORNO DOS CAMISAS Y COLOCAR EN BLOCK',NULL,NULL,NULL,0,'2018-08-27 05:09:47',3,2524,3),(2883,'CANTIDAD:',NULL,NULL,NULL,0,'2018-08-27 05:09:53',5,2524,4),(5000,'',NULL,NULL,NULL,0,'2018-08-27 15:54:07',7,5000,1),(6000,'',NULL,NULL,NULL,0,'2018-08-30 13:50:47',7,6000,1),(7000,'',NULL,NULL,NULL,0,'2018-09-12 23:33:54',7,7000,1);
-/*!40000 ALTER TABLE `frm_valores` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `frm_valores_validos`
---
-
-DROP TABLE IF EXISTS `frm_valores_validos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `frm_valores_validos` (
-  `VAPO_ID` int(11) NOT NULL AUTO_INCREMENT,
-  `VALOR` varchar(100) NOT NULL,
-  `FEC_CREACION` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `VALO_ID` int(11) NOT NULL,
-  PRIMARY KEY (`VAPO_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2328 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `frm_valores_validos`
---
-
-LOCK TABLES `frm_valores_validos` WRITE;
-/*!40000 ALTER TABLE `frm_valores_validos` DISABLE KEYS */;
-INSERT INTO `frm_valores_validos` VALUES (1,'Aprobado','2018-07-28 15:54:05',1),(2,'Rechazado','2018-07-28 15:54:10',1),(3,'Aprobado','2018-07-28 16:02:39',2),(4,'Rechazado','2018-07-28 16:02:45',2),(5,'Aprobado','2018-07-28 16:03:42',3),(6,'Rechazado','2018-07-28 16:03:46',3),(7,'Aprobado','2018-07-28 16:04:31',4),(8,'Rechazado','2018-07-28 16:04:42',4),(9,'Aprobado','2018-07-28 16:05:33',5),(10,'Rechazado','2018-07-28 16:05:38',5),(11,'Aprobado','2018-07-28 16:06:22',6),(12,'Rechazado','2018-07-28 16:06:29',6),(13,'Aprobado','2018-07-28 16:08:07',7),(14,'Rechazado','2018-07-28 16:08:15',7),(15,'Aprobado','2018-07-28 16:08:55',8),(16,'Rechazado','2018-07-28 16:09:02',8),(17,'Normal','2018-07-28 16:18:51',9),(18,'Desgastada','2018-07-28 16:19:00',9),(19,'Aprobado','2018-07-28 16:19:06',10),(20,'Rechazado','2018-07-28 16:19:11',10),(21,'Normal','2018-07-28 16:21:04',12),(22,'Desgastada','2018-07-28 16:21:10',12),(23,'Aprobado','2018-07-28 16:21:14',13),(24,'Rechazado','2018-07-28 16:21:19',13),(25,'Normal','2018-07-28 16:22:35',15),(26,'Desgastado','2018-07-28 16:22:41',15),(27,'Aprobado','2018-07-28 16:22:45',16),(28,'Rechazada','2018-07-28 16:23:00',16),(29,'Normal','2018-07-28 16:23:52',18),(30,'Desgastada','2018-07-28 16:23:59',18),(31,'Aprobado','2018-07-28 16:24:03',19),(32,'Rechazada','2018-07-28 16:24:08',19),(33,'Normal','2018-07-28 16:25:25',24),(34,'Desgastada','2018-07-28 16:25:31',24),(35,'Aprobado','2018-07-28 16:25:35',25),(36,'Rechazado','2018-07-28 16:25:40',25),(37,'Normal','2018-07-28 16:26:16',21),(38,'Desgastada','2018-07-28 16:26:20',21),(39,'Aprobado','2018-07-28 16:26:24',22),(40,'Rechazado','2018-07-28 16:26:28',22),(41,'Chapa','2018-07-28 17:19:00',33),(42,'Aluminio','2018-07-28 17:19:07',33),(43,'Otro','2018-07-28 17:19:12',33),(44,'Aprobado','2018-07-28 17:19:25',34),(45,'Rechazado:','2018-07-28 17:19:40',34),(46,'Aprobado_Reparar(*)','2018-07-28 17:20:05',34),(47,'Chapa','2018-07-28 17:22:13',36),(48,'Aluminio','2018-07-28 17:22:19',36),(49,'Otro','2018-07-28 17:22:22',36),(50,'Aprobado','2018-07-28 17:22:42',37),(51,'Rechazado','2018-07-28 17:22:48',37),(52,'Aprobado-Reparar(*)','2018-07-28 17:23:00',37),(53,'Chapa','2018-07-28 17:23:56',39),(54,'Aluminio','2018-07-28 17:24:00',39),(55,'Aprobado','2018-07-28 17:24:11',40),(56,'Rechazado','2018-07-28 17:24:17',40),(57,'Aprobado-Reparar(*)','2018-07-28 17:24:26',40),(58,'Fundicion','2018-07-28 17:25:31',42),(59,'Aluminio','2018-07-28 17:25:35',42),(60,'Aprobado','2018-07-28 17:25:42',43),(61,'Rechazado','2018-07-28 17:25:47',43),(62,'Probado-Reparar(*)','2018-07-28 17:26:04',43),(63,'Fundicion','2018-07-28 17:27:15',45),(64,'Aluminio','2018-07-28 17:27:19',45),(65,'Aprobado','2018-07-28 17:27:29',46),(66,'Rechazado','2018-07-28 17:27:32',46),(67,'Aprobado-Reparar(*)','2018-07-28 17:27:49',46),(68,'Embrague','2018-07-28 17:36:06',48),(69,'Convertidor','2018-07-28 17:36:11',48),(70,'Aprobado','2018-07-28 17:36:45',49),(71,'Rechazado','2018-07-28 17:36:50',49),(72,'Aprobado-Reparar(*)','2018-07-28 17:37:01',49),(73,'Abulonada','2018-07-28 17:38:12',51),(74,'Clavada','2018-07-28 17:38:18',51),(75,'Aprobado','2018-07-28 17:38:23',52),(76,'Rechazado','2018-07-28 17:38:29',52),(77,'Aprobado-Reparar(*)','2018-07-28 17:38:38',52),(78,'Armonica','2018-07-28 17:39:14',54),(79,'Fija','2018-07-28 17:39:18',54),(80,'Vias','2018-07-28 17:39:21',54),(81,'Aprobado','2018-07-28 17:39:29',55),(82,'Rechazado','2018-07-28 17:39:35',55),(83,'Aprobado-Reparar(*)','2018-07-28 17:39:45',55),(84,'Rectos','2018-07-28 17:40:18',57),(85,'Helicoidales','2018-07-28 17:40:26',57),(86,'Aprobado','2018-07-28 17:40:32',58),(87,'Rechazado','2018-07-28 17:40:36',58),(88,'Aprobado-Reparar(*)','2018-07-28 17:40:48',58),(89,'Cerrada','2018-07-28 17:41:51',60),(90,'Fija','2018-07-28 17:41:55',60),(91,'Aprobada','2018-07-28 17:42:05',61),(92,'Rechazada','2018-07-28 17:42:13',61),(93,'Aprobada-Reparar(*)','2018-07-28 17:42:26',61),(94,'Aprobado','2018-07-28 17:43:11',63),(95,'Rechazado','2018-07-28 17:43:29',63),(96,'Aprobado-Reparar(*)','2018-07-28 17:43:38',63),(97,'Aprobado','2018-07-28 17:45:17',65),(98,'Rechazado','2018-07-28 17:45:23',65),(99,'Aprobado-Reparar(*)','2018-07-28 17:45:32',65),(100,'Chapa','2018-07-28 17:51:09',67),(101,'Plastica','2018-07-28 17:51:13',67),(102,'Aprobado','2018-07-28 17:51:20',68),(103,'Rechazado','2018-07-28 17:51:25',68),(104,'Aprobado-Reparar(*)','2018-07-28 17:51:40',68),(105,'Fundicion ','2018-07-28 17:53:34',70),(106,'Aluminio','2018-07-28 17:53:39',70),(107,'Vias','2018-07-28 17:53:43',70),(108,'Aprobado','2018-07-28 17:53:52',71),(109,'Rechazado','2018-07-28 17:53:56',71),(110,'Aprobado-Reparar(*)','2018-07-28 17:54:06',71),(111,'Aprobado','2018-07-28 17:58:24',73),(112,'Rechazado','2018-07-28 17:58:30',73),(113,'Aprobado-Reparar(*)','2018-07-28 17:58:47',73),(114,'Aprobado','2018-07-28 17:59:00',75),(115,'Rechazado','2018-07-28 17:59:04',75),(116,'Aprobado-Reparar(*)','2018-07-28 17:59:16',75),(117,'Engranaje','2018-07-28 18:12:17',77),(118,'Lobulo','2018-07-28 18:12:22',77),(119,'Aprobado','2018-07-28 18:12:28',78),(120,'Rechazado','2018-07-28 18:12:33',78),(121,'Aprobado-Reparar(*)','2018-07-28 18:12:52',78),(122,'Mecanico','2018-07-28 18:13:03',80),(123,'Electrico','2018-07-28 18:13:07',80),(124,'Aprobado','2018-07-28 18:13:12',81),(125,'Rechazado','2018-07-28 18:13:17',81),(126,'Aprobado-Reparar(*)','2018-07-28 18:13:31',81),(127,'Chapa','2018-07-28 18:13:44',83),(128,'Aluminio','2018-07-28 18:13:47',83),(129,'Aprobado','2018-07-28 18:13:52',84),(130,'Rechazado','2018-07-28 18:13:56',84),(131,'Aprobado-Reparar(*)','2018-07-28 18:14:11',84),(132,'Chapa','2018-07-28 18:14:21',86),(133,'Aluminio','2018-07-28 18:14:25',86),(134,'Aprobado','2018-07-28 18:14:31',87),(135,'Rechazado','2018-07-28 18:14:36',87),(136,'Aprobado-Reparar(*)','2018-07-28 18:14:46',87),(137,'Chapa','2018-07-28 18:14:54',89),(138,'Aluminio','2018-07-28 18:15:03',89),(139,'Aprobado','2018-07-28 18:15:10',90),(140,'Rechazado','2018-07-28 18:15:14',90),(141,'Aprobado-Reparar(*)','2018-07-28 18:15:24',90),(142,'Chapa','2018-07-28 18:15:42',92),(143,'Aluminio','2018-07-28 18:15:45',92),(144,'Aprobado','2018-07-28 18:15:51',93),(145,'Rechazado','2018-07-28 18:15:54',93),(146,'Aprobado-Reparar(*)','2018-07-28 18:16:04',93),(147,'STD','2018-07-28 18:16:18',95),(148,'Modificada','2018-07-28 18:16:51',95),(149,'Aprobada','2018-07-28 18:16:59',96),(150,'Rechazada','2018-07-28 18:17:06',96),(151,'Fundicion','2018-07-28 18:17:19',98),(152,'Aluminio','2018-07-28 18:17:23',98),(153,'Aprobado','2018-07-28 18:17:29',99),(154,'Rechazado','2018-07-28 18:17:33',99),(155,'Aprobado-Reparar(*)','2018-07-28 18:17:44',99),(156,'Fundicion','2018-07-28 18:18:08',101),(157,'Aluminio','2018-07-28 18:18:14',101),(158,'Aprobado','2018-07-28 18:18:20',102),(159,'Rechazado','2018-07-28 18:18:24',102),(160,'Aprobado-Reparar(*)','2018-07-28 18:18:38',102),(161,'Chapa','2018-07-28 18:18:46',104),(162,'Aluminio','2018-07-28 18:18:50',104),(163,'Aprobado','2018-07-28 18:19:00',105),(164,'Rechazado','2018-07-28 18:19:07',105),(165,'Aprobado-Reparar(*)','2018-07-28 18:19:19',105),(166,'Chapa','2018-07-28 18:19:34',107),(167,'Flexibles','2018-07-28 18:19:39',107),(168,'Aprobado ','2018-07-28 18:19:52',108),(169,'Rechazado','2018-07-28 18:19:55',108),(170,'Aprobado-Reparar(*)','2018-07-28 18:20:06',108),(171,'Chapa','2018-07-28 18:20:18',110),(172,'Aluminio','2018-07-28 18:20:23',110),(173,'Aprobado','2018-07-28 18:20:28',111),(174,'Rechazado','2018-07-28 18:20:33',111),(175,'Aprobado-Reparar(*)','2018-07-28 18:20:45',111),(176,'Chapa','2018-07-28 18:20:57',113),(177,'Aluminio','2018-07-28 18:21:02',113),(178,'Aprobado','2018-07-28 18:21:08',114),(179,'Rechazado','2018-07-28 18:21:13',114),(180,'Aprobado-Reparar(*)','2018-07-28 18:21:22',114),(181,'Turbina Fundicion','2018-07-28 18:29:29',116),(182,'Turbina Aluminio','2018-07-28 18:29:37',116),(183,'Turbina Plastico','2018-07-28 18:29:53',116),(184,'Turbina Bronce','2018-07-28 18:30:00',116),(185,'Aprobado','2018-07-28 18:30:29',117),(186,'Rechazado','2018-07-28 18:30:35',117),(187,'Aprobado-Reparar(*)','2018-07-28 18:30:47',117),(188,'Agua','2018-07-28 18:31:03',119),(189,'Metal','2018-07-28 18:31:07',119),(190,'Aprobado','2018-07-28 18:31:14',120),(191,'Rechazado','2018-07-28 18:31:20',120),(192,'Aprobado-Reparar(*)','2018-07-28 18:31:30',120),(193,'Apertura','2018-07-28 18:31:40',122),(194,'Aprobado','2018-07-28 18:31:49',123),(195,'Rechazado','2018-07-28 18:32:07',123),(196,'Aprobado-Reparar(*)','2018-07-28 18:32:16',123),(197,'Fundicion','2018-07-28 18:33:03',125),(198,'Aluminio','2018-07-28 18:33:07',125),(199,'Aprobado','2018-07-28 18:33:12',126),(200,'Rechazado','2018-07-28 18:33:16',126),(201,'Aprobado-Reparar(*)','2018-07-28 18:33:31',126),(202,'Fundicion','2018-07-28 18:33:44',128),(203,'Aluminio','2018-07-28 18:33:51',128),(204,'Aprobado','2018-07-28 18:33:58',129),(205,'Rechazado','2018-07-28 18:34:02',129),(206,'Aprobado-Reparar(*)','2018-07-28 18:34:16',129),(207,'Fundicion','2018-07-28 18:34:55',131),(208,'Aluminio','2018-07-28 18:35:03',131),(209,'Aprobado','2018-07-28 18:35:08',132),(210,'Rechazado','2018-07-28 18:35:12',132),(211,'Aprobado-Reparar(*)','2018-07-28 18:35:21',132),(212,'Chapa','2018-07-28 18:35:31',134),(213,'Plastico','2018-07-28 18:35:37',134),(214,'Aprobado','2018-07-28 18:35:42',135),(215,'Rechazado','2018-07-28 18:35:49',135),(216,'Aprobado-Reparar(*)','2018-07-28 18:36:01',135),(217,'Chapa','2018-07-28 18:36:10',137),(218,'Aluminio','2018-07-28 18:36:14',137),(219,'Aprobado','2018-07-28 18:37:19',138),(220,'Rechazado','2018-07-28 18:37:23',138),(221,'Aprobado-Reparar(*)','2018-07-28 18:37:33',138),(222,'Aprobado','2018-07-28 18:38:06',141),(223,'Rechazado','2018-07-28 18:38:10',141),(224,'Aprobado-Reparar(*)','2018-07-28 18:38:21',141),(225,'Aprobado','2018-07-28 18:38:36',144),(226,'Rechazado','2018-07-28 18:38:41',144),(227,'Aprobado-Reparar(*)','2018-07-28 18:38:52',144),(228,'Lineal','2018-07-28 18:41:15',146),(229,'Rotativa','2018-07-28 18:41:21',146),(230,'Aprobado','2018-07-28 18:41:26',147),(231,'Rechazado','2018-07-28 18:41:29',147),(232,'Aprobado-Reparar(*)','2018-07-28 18:41:40',147),(233,'Comman Rail','2018-07-28 18:43:01',149),(234,'Aprobado','2018-07-28 18:43:18',150),(235,'Rechazado','2018-07-28 18:43:23',150),(236,'Aprobado-Reparar(*)','2018-07-28 18:43:33',150),(237,'Mecanico','2018-07-28 18:44:23',152),(238,'Electrico','2018-07-28 18:44:26',152),(239,'Aprobado','2018-07-28 18:44:31',153),(240,'Rechazado','2018-07-28 18:44:35',153),(241,'Aprobado-Reparar(*)','2018-07-28 18:44:46',153),(242,'Directa','2018-07-28 18:46:11',155),(243,'Indirecta','2018-07-28 18:46:15',155),(244,'Aprobado','2018-07-28 18:46:20',156),(245,'Rechazado','2018-07-28 18:46:24',156),(246,'Aprobado-Reparar(*)','2018-07-28 18:46:39',156),(247,'Aprobado','2018-07-28 18:47:31',158),(248,'Rechazado','2018-07-28 18:47:36',158),(249,'Aprobado-Reparar(*)','2018-07-28 18:47:48',158),(250,'Aprobado','2018-07-28 18:50:22',160),(251,'Rechazado','2018-07-28 18:50:27',160),(252,'Aprobado-Reparar(*)','2018-07-28 18:50:49',160),(253,'Aprobado','2018-07-28 18:53:01',163),(254,'Rechazado','2018-07-28 18:53:09',163),(255,'Aprobado-Reparar(*)','2018-07-28 18:53:22',163),(256,'Aprobado','2018-07-28 18:54:07',165),(257,'Rechazado','2018-07-28 18:54:13',165),(258,'Aprobado-Reparar(*)','2018-07-28 18:54:23',165),(259,'Mecanico','2018-07-28 18:55:13',167),(260,'Electrico','2018-07-28 18:55:17',167),(261,'Aprobado','2018-07-28 18:55:26',168),(262,'Rechazado','2018-07-28 18:55:30',168),(263,'Aprobado-Reparar(*)','2018-07-28 18:55:40',168),(264,'Mecanico','2018-07-28 18:56:31',170),(265,'Electrico','2018-07-28 18:56:39',170),(266,'Aprobado','2018-07-28 18:56:46',171),(267,'Rechazado','2018-07-28 18:57:20',171),(268,'Aprobado-Reparar(*)','2018-07-28 18:57:38',171),(269,'Manual','2018-07-28 18:58:23',173),(270,'Electrico','2018-07-28 18:58:31',173),(271,'Aprobado','2018-07-28 18:58:42',174),(272,'Rechazado','2018-07-28 18:58:46',174),(273,'Aprobado-Reparar(*)','2018-07-28 18:59:00',174),(274,'Fundicion','2018-07-28 19:00:35',176),(275,'Aluminio','2018-07-28 19:00:41',176),(276,'Aprobado','2018-07-28 19:00:50',177),(277,'Rechazado','2018-07-28 19:00:56',177),(278,'Aprobado-Reparar(*)','2018-07-28 19:01:09',177),(279,'Simples','2018-07-28 19:02:04',179),(280,'Combinados','2018-07-28 19:02:10',179),(281,'Aprobado','2018-07-28 19:02:16',180),(282,'Rechazar','2018-07-28 19:02:22',180),(283,'Aprobado-Reparar(*)','2018-07-28 19:02:31',180),(284,'Aprobado','2018-07-28 22:25:22',183),(285,'Rechazado','2018-07-28 22:25:27',183),(286,'Aprobado-Reparar(*)','2018-07-28 22:25:38',183),(287,'Aprobado','2018-07-28 22:26:43',185),(288,'Rechazado','2018-07-28 22:26:53',185),(289,'Aprobado-Reparar(*)','2018-07-28 22:27:30',185),(290,'Aprobado','2018-07-28 22:27:57',187),(291,'Rechazado','2018-07-28 22:28:05',187),(292,'Aprobado-Reparar(*)','2018-07-28 22:28:18',187),(293,'Aprobado','2018-07-28 22:29:36',189),(294,'Rechazado','2018-07-28 22:29:41',189),(295,'Aprobado-Reparar(*)','2018-07-28 22:29:58',189),(296,'Aprobado','2018-07-28 22:32:15',191),(297,'Rechazado','2018-07-28 22:32:20',191),(298,'Aprobado-Reparar(*)','2018-07-28 22:32:33',191),(299,'Aprobado','2018-07-28 22:38:01',193),(300,'Rechazado','2018-07-28 22:38:10',193),(301,'Aprobado-Reparar(*)','2018-07-28 22:38:44',193),(302,'Aprobado','2018-07-28 22:46:31',208),(303,'Rechazado','2018-07-28 22:46:35',208),(304,'Aprobado-Reparar(*)','2018-07-28 22:46:49',208),(305,'Aprobado','2018-07-28 22:46:59',205),(306,'Rechazado','2018-07-28 22:47:04',205),(307,'Aprobado-Reparar(*)','2018-07-28 22:47:18',205),(308,'Aprobado','2018-07-28 22:47:26',195),(309,'Rechazado','2018-07-28 22:48:08',195),(310,'Aprobado-Reparar(*)','2018-07-28 22:48:18',195),(311,'Aprobado','2018-07-28 23:04:16',210),(312,'Rechazado','2018-07-28 23:04:16',210),(316,'Aprobado','2018-07-28 23:13:50',222),(317,'Rechazado','2018-07-28 23:13:50',222),(318,'Aprobado','2018-07-28 23:17:41',226),(319,'Rechazado','2018-07-28 23:17:41',226),(320,'Aprobado','2018-07-28 23:18:28',229),(321,'Rechazado','2018-07-28 23:18:28',229),(322,'Aprobado','2018-07-28 23:19:14',232),(323,'Rechazado','2018-07-28 23:19:14',232),(324,'Brinell','2018-07-28 23:20:06',233),(325,'Rc','2018-07-28 23:20:09',233),(326,'Brinell','2018-07-28 23:20:44',234),(327,'Rc','2018-07-28 23:20:47',234),(328,'Brinell','2018-07-28 23:21:10',235),(329,'Rc','2018-07-28 23:21:13',235),(330,'Aprobado','2018-07-28 23:22:21',236),(331,'Rechazado','2018-07-28 23:22:21',236),(332,'Aprobado','2018-07-28 23:22:23',237),(333,'Rechazado','2018-07-28 23:22:23',237),(334,'Aprobado','2018-07-28 23:22:25',238),(335,'Rechazado','2018-07-28 23:22:25',238),(336,'Aprobado','2018-07-28 23:22:27',239),(337,'Rechazado','2018-07-28 23:22:27',239),(338,'Aprobado','2018-07-28 23:23:07',240),(339,'Rechazado','2018-07-28 23:23:07',240),(340,'Aprobado','2018-07-28 23:23:12',241),(341,'Rechazado','2018-07-28 23:23:12',241),(342,'Aprobado','2018-07-28 23:29:54',242),(343,'Rechazado','2018-07-28 23:29:54',242),(344,'Fundido','2018-07-28 23:31:46',244),(345,'(*)Desgaste Axial','2018-07-28 23:31:52',244),(346,'Reemplazar','2018-07-28 23:31:57',244),(347,'Fundido','2018-07-28 23:32:19',245),(348,'(*)Desgaste Axial','2018-07-28 23:32:30',245),(349,'Reemplazar','2018-07-28 23:32:36',245),(350,'Fundido','2018-07-28 23:33:04',246),(351,'(*)Desgaste Axial','2018-07-28 23:33:12',246),(352,'Reemplazar','2018-07-28 23:33:21',246),(353,'Fundida','2018-07-28 23:35:08',247),(354,'(*)Desgaste Axial','2018-07-28 23:35:15',247),(355,'Reemplazar','2018-07-28 23:35:23',247),(356,'Fundido ','2018-07-28 23:35:30',248),(357,'(*)Desgaste Axial','2018-07-28 23:35:41',248),(358,'Reemplazar','2018-07-28 23:35:48',248),(359,'Fundida','2018-07-28 23:35:57',249),(360,'(*)Desgaste Axial','2018-07-28 23:35:59',249),(361,'Reemplazar','2018-07-28 23:36:11',249),(362,'Fundida','2018-07-28 23:36:41',250),(363,'(*)Desgaste Axial','2018-07-28 23:36:43',250),(364,'Reemplazar','2018-07-28 23:36:49',250),(365,'Fundida','2018-07-28 23:37:09',251),(366,'(*)Desgaste Axial','2018-07-28 23:37:11',251),(367,'Reemplazar','2018-07-28 23:37:16',251),(368,'Fundida','2018-07-28 23:37:30',252),(369,'(*)Desgaste Axial','2018-07-28 23:37:33',252),(370,'Reemplazar','2018-07-28 23:37:38',252),(371,'Fundido','2018-07-28 23:38:00',253),(372,'(*)Desgaste Axial','2018-07-28 23:38:02',253),(373,'Reemplazar','2018-07-28 23:38:14',253),(374,'Fundido','2018-07-28 23:38:32',254),(375,'(*)Desgaste Axial','2018-07-28 23:38:34',254),(376,'Reemplazar','2018-07-28 23:38:39',254),(377,'Fundido','2018-07-28 23:38:54',255),(378,'(*)Desgaste Axial','2018-07-28 23:38:58',255),(379,'Reemplazar','2018-07-28 23:39:02',255),(380,'Fundido','2018-07-28 23:39:21',256),(381,'(*)Desgaste Axial','2018-07-28 23:39:23',256),(382,'Reemplazar','2018-07-28 23:39:30',256),(383,'Fundido','2018-07-28 23:39:49',257),(384,'(*)Desgaste Axial','2018-07-28 23:39:51',257),(385,'Reemplazar','2018-07-28 23:39:57',257),(386,'Fundido','2018-07-28 23:40:11',258),(387,'(*)Desgaste Axial','2018-07-28 23:40:13',258),(388,'Reemplazar','2018-07-28 23:40:17',258),(389,'Fundido','2018-07-28 23:40:39',259),(390,'(*)Desgaste Axial','2018-07-28 23:40:41',259),(391,'Reemplazar','2018-07-28 23:40:47',259),(392,'Fundido','2018-07-28 23:41:02',260),(393,'(*)Desgaste Axial','2018-07-28 23:41:05',260),(394,'Reemplazar','2018-07-28 23:41:11',260),(395,'Aprobado','2018-07-28 23:46:15',261),(396,'Rechazado','2018-07-28 23:46:15',261),(397,'Aprobado','2018-07-28 23:46:17',262),(398,'Rechazado','2018-07-28 23:46:17',262),(399,'Aprobado','2018-07-28 23:46:19',263),(400,'Rechazado','2018-07-28 23:46:19',263),(401,'Aprobado','2018-07-28 23:46:21',264),(402,'Rechazado','2018-07-28 23:46:21',264),(403,'Aprobado','2018-07-28 23:46:23',265),(404,'Rechazado','2018-07-28 23:46:23',265),(405,'Aprobado','2018-07-28 23:46:25',266),(406,'Rechazado','2018-07-28 23:46:25',266),(407,'Aprobado','2018-07-28 23:46:27',267),(408,'Rechazado','2018-07-28 23:46:27',267),(409,'Aprobado','2018-07-28 23:46:30',268),(410,'Rechazado','2018-07-28 23:46:30',268),(411,'Aprobado','2018-07-28 23:46:33',269),(412,'Rechazado','2018-07-28 23:46:33',269),(413,'Aprobado','2018-07-28 23:46:39',270),(414,'Rechazado','2018-07-28 23:46:39',270),(415,'Aprobado','2018-07-28 23:46:41',271),(416,'Rechazado','2018-07-28 23:46:41',271),(417,'Aprobado','2018-07-28 23:46:50',272),(418,'Rechazado','2018-07-28 23:46:50',272),(419,'Aprobado','2018-07-28 23:46:53',273),(420,'Rechazado','2018-07-28 23:46:53',273),(421,'Aprobado','2018-07-28 23:46:54',274),(422,'Rechazado','2018-07-28 23:46:54',274),(423,'Aprobado','2018-07-28 23:46:57',275),(424,'Rechazado','2018-07-28 23:46:57',275),(425,'Aprobado','2018-07-28 23:46:59',276),(426,'Rechazado','2018-07-28 23:46:59',276),(427,'Aprobado','2018-07-28 23:47:02',277),(428,'Rechazado','2018-07-28 23:47:02',277),(429,'Aprobado','2018-07-29 04:22:41',333),(430,'Rechazado','2018-07-29 04:22:41',333),(431,'Aprobado','2018-07-29 04:22:49',334),(432,'Rechazado','2018-07-29 04:22:49',334),(433,'Aprobado','2018-07-29 04:22:58',335),(434,'Rechazado','2018-07-29 04:22:58',335),(435,'Aprobado','2018-07-29 04:23:08',336),(436,'Rechazado','2018-07-29 04:23:08',336),(437,'Aprobado','2018-07-29 04:23:16',337),(438,'Rechazado','2018-07-29 04:23:16',337),(439,'Aprobado','2018-07-29 04:25:25',338),(440,'Rechazado','2018-07-29 04:25:25',338),(441,'Aprobado','2018-07-29 04:25:33',339),(442,'Rechazado','2018-07-29 04:25:33',339),(443,'Aprobado','2018-07-29 04:25:40',340),(444,'Rechazado','2018-07-29 04:25:40',340),(445,'Aprobado','2018-07-29 04:25:54',341),(446,'Rechazado','2018-07-29 04:25:54',341),(447,'Aprobado','2018-07-29 04:26:02',342),(448,'Rechazado','2018-07-29 04:26:02',342),(449,'Aprobado','2018-07-29 04:26:08',343),(450,'Rechazado','2018-07-29 04:26:08',343),(451,'Aprobado','2018-07-29 04:26:15',344),(452,'Rechazado','2018-07-29 04:26:15',344),(453,'Aprobado','2018-07-29 04:26:25',345),(454,'Rechazado','2018-07-29 04:26:25',345),(455,'Aprobado','2018-07-29 04:26:33',346),(456,'Rechazado','2018-07-29 04:26:33',346),(457,'Aprobado','2018-07-29 04:26:43',347),(458,'Rechazado','2018-07-29 04:26:44',347),(459,'Aprobado','2018-07-29 04:26:52',348),(460,'Rechazado','2018-07-29 04:26:52',348),(461,'Aprobado','2018-07-29 04:27:01',349),(462,'Rechazado','2018-07-29 04:27:01',349),(463,'Aprobado','2018-07-29 04:29:30',352),(464,'Rechazado','2018-07-29 04:29:30',352),(465,'Aprobado','2018-07-29 04:29:36',353),(466,'Rechazado','2018-07-29 04:29:36',353),(467,'Aprobado','2018-07-29 04:30:08',354),(468,'Rechazado','2018-07-29 04:30:08',354),(469,'Aprobado','2018-07-29 04:30:16',355),(470,'Rechazado','2018-07-29 04:30:16',355),(471,'Aprobado','2018-07-29 04:30:27',356),(472,'Rechazado','2018-07-29 04:30:27',356),(473,'Aprobado','2018-07-29 04:31:17',357),(474,'Rechazado','2018-07-29 04:31:17',357),(475,'Aprobado','2018-07-29 04:31:20',358),(476,'Rechazado','2018-07-29 04:31:20',358),(477,'Aprobado','2018-07-29 04:31:23',359),(478,'Rechazado','2018-07-29 04:31:23',359),(479,'Aprobado','2018-07-29 04:31:26',360),(480,'Rechazado','2018-07-29 04:31:26',360),(481,'Aprobado','2018-07-29 04:31:28',361),(482,'Rechazado','2018-07-29 04:31:28',361),(483,'Aprobado','2018-07-29 04:31:31',362),(484,'Rechazado','2018-07-29 04:31:31',362),(485,'Aprobado','2018-07-29 04:31:34',363),(486,'Rechazado','2018-07-29 04:31:34',363),(487,'Aprobado','2018-07-29 04:31:37',364),(488,'Rechazado','2018-07-29 04:31:37',364),(489,'Aprobado','2018-07-29 04:31:39',365),(490,'Rechazado','2018-07-29 04:31:39',365),(491,'Aprobado','2018-07-29 04:31:42',366),(492,'Rechazado','2018-07-29 04:31:42',366),(493,'Aprobado','2018-07-29 04:31:45',367),(494,'Rechazado','2018-07-29 04:31:45',367),(495,'Aprobado','2018-07-29 04:31:47',368),(496,'Rechazado','2018-07-29 04:31:47',368),(497,'Aprobado','2018-07-29 04:34:25',369),(498,'Rechazado','2018-07-29 04:34:25',369),(499,'Aprobado','2018-07-29 04:34:27',370),(500,'Rechazado','2018-07-29 04:34:27',370),(501,'Aprobado','2018-07-29 04:34:29',371),(502,'Rechazado','2018-07-29 04:34:29',371),(503,'Aprobado','2018-07-29 04:34:32',372),(504,'Rechazado','2018-07-29 04:34:32',372),(505,'Aprobado','2018-07-29 04:34:34',373),(506,'Rechazado','2018-07-29 04:34:34',373),(507,'Aprobado','2018-07-29 04:34:36',374),(508,'Rechazado','2018-07-29 04:34:36',374),(509,'Aprobado','2018-07-29 04:34:39',375),(510,'Rechazado','2018-07-29 04:34:39',375),(511,'Aprobado','2018-07-29 04:34:41',376),(512,'Rechazado','2018-07-29 04:34:41',376),(513,'Aprobado','2018-07-29 04:34:44',377),(514,'Rechazado','2018-07-29 04:34:44',377),(515,'Aprobado','2018-07-29 04:34:47',378),(516,'Rechazado','2018-07-29 04:34:47',378),(517,'Aprobado','2018-07-29 04:34:51',379),(518,'Rechazado','2018-07-29 04:34:51',379),(519,'Aprobado','2018-07-29 04:34:54',380),(520,'Rechazado','2018-07-29 04:34:54',380),(521,'Aprobado','2018-07-29 04:34:56',381),(522,'Rechazado','2018-07-29 04:34:56',381),(523,'Aprobado','2018-07-29 04:34:59',382),(524,'Rechazado','2018-07-29 04:34:59',382),(525,'Aprobado','2018-07-29 04:35:02',383),(526,'Rechazado','2018-07-29 04:35:02',383),(527,'Aprobado','2018-07-29 04:35:04',384),(528,'Rechazado','2018-07-29 04:35:04',384),(529,'Aprobado','2018-07-29 04:35:07',385),(530,'Rechazado','2018-07-29 04:35:07',385),(531,'Aprobado','2018-07-29 04:37:05',387),(532,'Rechazado','2018-07-29 04:37:05',387),(533,'Guias','2018-07-29 04:37:18',386),(534,'Dentadas','2018-07-29 04:37:28',386),(535,'Fracturadas','2018-07-29 04:37:37',386),(536,'Aprobado','2018-07-29 04:37:59',389),(537,'Rechazado','2018-07-29 04:37:59',389),(538,'Guias','2018-07-29 04:38:05',388),(539,'Dentadas','2018-07-29 04:38:10',388),(540,'Fracturadas','2018-07-29 04:38:18',388),(541,'Aprobado','2018-07-29 04:38:55',391),(542,'Rechazado','2018-07-29 04:38:55',391),(543,'Guias','2018-07-29 04:39:03',390),(544,'Dentadas','2018-07-29 04:39:11',390),(545,'Fracturadas','2018-07-29 04:39:22',390),(546,'Aprobado','2018-07-29 04:40:28',393),(547,'Rechazado','2018-07-29 04:40:28',393),(548,'Guias','2018-07-29 04:40:34',392),(549,'Dentadas','2018-07-29 04:40:43',392),(550,'Fracturadas','2018-07-29 04:41:04',392),(551,'Aprobado','2018-07-29 04:41:17',395),(552,'Rechazado','2018-07-29 04:41:17',395),(553,'Guias','2018-07-29 04:42:05',394),(554,'Dentadas','2018-07-29 04:42:12',394),(555,'Fracturadas','2018-07-29 04:42:19',394),(556,'Aprobado','2018-07-29 04:42:26',397),(557,'Rechazado','2018-07-29 04:42:26',397),(558,'Guias','2018-07-29 04:42:31',396),(559,'Dentadas','2018-07-29 04:42:36',396),(560,'Fracturadas','2018-07-29 04:42:42',396),(561,'Aprobado','2018-07-29 04:43:29',399),(562,'Rechazado','2018-07-29 04:43:29',399),(563,'Guias','2018-07-29 04:43:34',398),(564,'Dentadas','2018-07-29 04:43:39',398),(565,'Fracturadas','2018-07-29 04:43:44',398),(566,'Aprobado','2018-07-29 04:43:53',401),(567,'Rechazado','2018-07-29 04:43:53',401),(568,'Guias','2018-07-29 04:43:58',400),(569,'Dentadas','2018-07-29 04:44:03',400),(570,'Fracturadas','2018-07-29 04:44:08',400),(571,'Aprobado','2018-07-29 04:44:20',403),(572,'Rechazado','2018-07-29 04:44:20',403),(573,'Guias','2018-07-29 04:44:43',402),(574,'Dentadas','2018-07-29 04:44:47',402),(575,'Fracturadas','2018-07-29 04:44:54',402),(576,'Aprobado','2018-07-29 04:45:21',405),(577,'Rechazado','2018-07-29 04:45:21',405),(578,'Guias','2018-07-29 04:45:32',404),(579,'Dentada','2018-07-29 04:45:40',404),(580,'Fracturada','2018-07-29 04:45:46',404),(581,'Aprobado','2018-07-29 04:46:11',407),(582,'Rechazado','2018-07-29 04:46:11',407),(583,'Guias','2018-07-29 04:46:18',406),(584,'Dentadas','2018-07-29 04:46:22',406),(585,'Fracturada','2018-07-29 04:46:27',406),(586,'Aprobado','2018-07-29 04:46:54',409),(587,'Rechazado','2018-07-29 04:46:54',409),(588,'Guias','2018-07-29 04:46:59',408),(589,'Dentadas','2018-07-29 04:47:04',408),(590,'Fracturada','2018-07-29 04:47:09',408),(591,'Aprobado','2018-07-29 04:47:20',411),(592,'Rechazado','2018-07-29 04:47:20',411),(593,'Guias','2018-07-29 04:47:25',410),(594,'Dentadas','2018-07-29 04:47:33',410),(595,'Fracturadas','2018-07-29 04:47:39',410),(596,'Aprobado','2018-07-29 04:47:48',413),(597,'Rechazado','2018-07-29 04:47:48',413),(598,'Guias','2018-07-29 04:47:52',412),(599,'Dentadas','2018-07-29 04:47:56',412),(600,'Fracturadas','2018-07-29 04:48:01',412),(601,'Aprobado','2018-07-29 04:48:10',415),(602,'Rechazado','2018-07-29 04:48:10',415),(603,'Guias','2018-07-29 04:48:24',414),(604,'Dentadas','2018-07-29 04:48:30',414),(605,'Fracturadas','2018-07-29 04:48:36',414),(606,'Aprobado','2018-07-29 04:48:52',417),(607,'Rechazado','2018-07-29 04:48:52',417),(608,'Guias','2018-07-29 04:48:57',416),(609,'Dentadas','2018-07-29 04:49:03',416),(610,'Fracturadas','2018-07-29 04:49:11',416),(611,'Aprobado','2018-07-29 04:49:20',419),(612,'Rechazado','2018-07-29 04:49:20',419),(613,'Guias','2018-07-29 04:49:26',418),(614,'Dentadas','2018-07-29 04:49:32',418),(615,'Fracturada','2018-07-29 04:49:37',418),(616,'Aprobado','2018-07-29 04:50:49',420),(617,'Rechazado','2018-07-29 04:50:49',420),(618,'Aprobado','2018-07-29 04:50:51',421),(619,'Rechazado','2018-07-29 04:50:51',421),(620,'Aprobado','2018-07-29 04:50:53',422),(621,'Rechazado','2018-07-29 04:50:53',422),(622,'Aprobado','2018-07-29 04:50:55',423),(623,'Rechazado','2018-07-29 04:50:55',423),(624,'Aprobado','2018-07-29 04:50:58',424),(625,'Rechazado','2018-07-29 04:50:58',424),(626,'Aprobado','2018-07-29 04:51:00',425),(627,'Rechazado','2018-07-29 04:51:00',425),(628,'Aprobado','2018-07-29 04:51:02',426),(629,'Rechazado','2018-07-29 04:51:02',426),(630,'Aprobado','2018-07-29 04:51:04',427),(631,'Rechazado','2018-07-29 04:51:04',427),(632,'Aprobado','2018-07-29 04:51:07',428),(633,'Rechazado','2018-07-29 04:51:07',428),(634,'Aprobado','2018-07-29 04:51:09',429),(635,'Rechazado','2018-07-29 04:51:09',429),(636,'Aprobado','2018-07-29 04:51:11',430),(637,'Rechazado','2018-07-29 04:51:11',430),(638,'Aprobado','2018-07-29 04:51:14',431),(639,'Rechazado','2018-07-29 04:51:14',431),(640,'Aprobado','2018-07-29 04:51:18',432),(641,'Rechazado','2018-07-29 04:51:18',432),(642,'Aprobado','2018-07-29 04:51:21',433),(643,'Rechazado','2018-07-29 04:51:21',433),(644,'Aprobado','2018-07-29 04:51:23',434),(645,'Rechazado','2018-07-29 04:51:23',434),(646,'Aprobado','2018-07-29 04:51:26',435),(647,'Rechazado','2018-07-29 04:51:26',435),(648,'Aprobado','2018-07-29 04:51:29',436),(649,'Rechazado','2018-07-29 04:51:29',436),(650,'Aprobado','2018-07-29 04:52:07',437),(651,'Rechazado','2018-07-29 04:52:07',437),(652,'Aprobado','2018-07-29 04:52:12',438),(653,'Rechazado','2018-07-29 04:52:12',438),(654,'Aprobado','2018-07-29 04:52:18',439),(655,'Rechazado','2018-07-29 04:52:18',439),(656,'Aprobado','2018-07-29 04:52:24',440),(657,'Rechazado','2018-07-29 04:52:24',440),(658,'Aprobado','2018-07-29 04:52:30',441),(659,'Rechazado','2018-07-29 04:52:30',441),(660,'Aprobado','2018-07-29 04:52:35',442),(661,'Rechazado','2018-07-29 04:52:35',442),(662,'Aprobado','2018-07-29 04:52:42',443),(663,'Rechazado','2018-07-29 04:52:42',443),(664,'Aprobado','2018-07-29 04:52:49',444),(665,'Rechazado','2018-07-29 04:52:49',444),(666,'Aprobado','2018-07-29 04:52:55',445),(667,'Rechazado','2018-07-29 04:52:55',445),(668,'Aprobado','2018-07-29 04:53:01',446),(669,'Rechazado','2018-07-29 04:53:01',446),(670,'Aprobado','2018-07-29 04:53:07',447),(671,'Rechazado','2018-07-29 04:53:07',447),(672,'Aprobado','2018-07-29 04:53:12',448),(673,'Rechazado','2018-07-29 04:53:12',448),(674,'Aprobado','2018-07-29 04:53:19',449),(675,'Rechazado','2018-07-29 04:53:19',449),(676,'Aprobado','2018-07-29 04:53:26',450),(677,'Rechazado','2018-07-29 04:53:26',450),(678,'Aprobado','2018-07-29 04:53:33',451),(679,'Rechazado','2018-07-29 04:53:33',451),(680,'Aprobado','2018-07-29 04:53:41',452),(681,'Rechazado','2018-07-29 04:53:41',452),(682,'Aprobado','2018-07-29 04:53:46',453),(683,'Rechazado','2018-07-29 04:53:46',453),(684,'Aprobado','2018-07-29 14:23:47',454),(685,'Rechazado','2018-07-29 14:23:47',454),(706,'Aprobado','2018-07-29 14:44:14',488),(707,'Rechazado','2018-07-29 14:44:14',488),(726,'Aprobado','2018-07-29 14:47:43',510),(727,'Rechazado','2018-07-29 14:47:43',510),(728,'Aprobado','2018-07-29 14:47:45',511),(729,'Rechazado','2018-07-29 14:47:45',511),(730,'Aprobado','2018-07-29 14:47:47',512),(731,'Rechazado','2018-07-29 14:47:47',512),(732,'Aprobado','2018-07-29 14:47:49',513),(733,'Rechazado','2018-07-29 14:47:49',513),(734,'Aprobado','2018-07-29 14:47:52',514),(735,'Rechazado','2018-07-29 14:47:52',514),(736,'Aprobado','2018-07-29 14:48:27',515),(737,'Rechazado','2018-07-29 14:48:27',515),(738,'Aprobado','2018-07-29 14:48:33',517),(739,'Rechazado','2018-07-29 14:48:33',517),(740,'Aprobado','2018-07-29 14:49:05',519),(741,'Rechazado','2018-07-29 14:49:05',519),(742,'Aprobado','2018-07-29 14:49:11',521),(743,'Rechazado','2018-07-29 14:49:11',521),(744,'Aprobado','2018-07-29 14:51:08',523),(745,'Rechazado','2018-07-29 14:51:08',523),(746,'Aprobado','2018-07-29 14:51:14',525),(747,'Rechazado','2018-07-29 14:51:14',525),(748,'Aprobado','2018-07-29 14:55:48',537),(749,'Rechazado','2018-07-29 14:55:48',537),(750,'Aprobado','2018-07-29 14:55:55',539),(751,'Rechazado','2018-07-29 14:55:55',539),(752,'Aprobado','2018-07-29 14:56:05',541),(753,'Rechazado','2018-07-29 14:56:05',541),(754,'Aprobado','2018-07-29 14:56:14',543),(755,'Rechazado','2018-07-29 14:56:14',543),(756,'Aprobado','2018-07-29 14:56:21',545),(757,'Rechazado','2018-07-29 14:56:21',545),(758,'Aprobado','2018-07-29 14:56:29',547),(759,'Rechazado','2018-07-29 14:56:29',547),(760,'Aprobado','2018-07-29 14:56:40',549),(761,'Rechazado','2018-07-29 14:56:40',549),(762,'Aprobado','2018-07-29 14:56:49',551),(763,'Rechazado','2018-07-29 14:56:49',551),(778,'Aprobado','2018-07-29 15:02:59',567),(779,'Rechazado','2018-07-29 15:02:59',567),(780,'Aprobado','2018-07-29 15:07:19',569),(781,'Rechazado','2018-07-29 15:07:19',569),(782,'Aprobado','2018-07-29 15:08:58',571),(783,'Rechazado','2018-07-29 15:08:58',571),(784,'Aprobado','2018-07-29 15:18:40',574),(785,'Rechazado','2018-07-29 15:18:44',574),(786,'Aprobado','2018-07-29 15:18:50',575),(787,'Rechazado','2018-07-29 15:18:56',575),(788,'Aprobado','2018-07-29 15:19:08',576),(789,'Rechazado','2018-07-29 15:19:08',576),(790,'Aprobado','2018-07-29 15:23:12',581),(791,'Rechazado','2018-07-29 15:23:12',581),(792,'Aprobado','2018-07-29 15:28:44',583),(793,'Rechazado','2018-07-29 15:28:44',583),(794,'Aprobado','2018-07-29 15:28:46',584),(795,'Rechazado','2018-07-29 15:28:46',584),(796,'Aprobado','2018-07-29 15:28:48',585),(797,'Rechazado','2018-07-29 15:28:48',585),(798,'Aprobado','2018-07-29 15:28:50',586),(799,'Rechazado','2018-07-29 15:28:50',586),(800,'Obstruidos','2018-07-29 15:31:51',591),(801,'Normales','2018-07-29 15:31:55',591),(802,'Obstruidos','2018-07-29 15:32:07',592),(803,'Normales','2018-07-29 15:32:11',592),(804,'SI','2018-07-29 15:32:25',593),(805,'NO','2018-07-29 15:32:27',593),(806,'Aprobado','2018-07-29 15:40:28',599),(807,'Rechazado','2018-07-29 15:40:28',599),(808,'Aprobado','2018-07-29 15:40:33',601),(809,'Rechazado','2018-07-29 15:40:33',601),(810,'Aprobado','2018-07-29 15:40:39',603),(811,'Rechazado','2018-07-29 15:40:39',603),(812,'A-Fijos','2018-07-29 15:43:51',610),(813,'B-Hidraulicos','2018-07-29 15:44:00',610),(814,'Normales:','2018-07-29 15:44:50',611),(815,'Fisurados','2018-07-29 15:44:57',611),(816,'Deformados','2018-07-29 15:45:06',611),(817,'Aprobado','2018-07-29 15:49:39',620),(818,'Rechazado','2018-07-29 15:49:39',620),(831,'Cambiar','2018-07-29 16:01:29',638),(832,'No Cambiar','2018-07-29 16:01:33',638),(833,'Cambiar','2018-07-29 16:03:09',643),(834,'No Cambiar','2018-07-29 16:03:16',643),(835,'Aprobado','2018-07-29 16:06:54',647),(836,'Rechazado','2018-07-29 16:06:54',647),(837,'Aprobado','2018-07-29 16:11:07',649),(838,'Rechazado','2018-07-29 16:11:07',649),(839,'Aprobado','2018-07-29 16:11:32',651),(840,'Rechazado','2018-07-29 16:11:32',651),(841,'Aprobado','2018-07-29 16:18:10',667),(842,'Rechazado','2018-07-29 16:18:10',667),(843,'Aprobado','2018-07-29 16:20:59',671),(844,'Rechazado','2018-07-29 16:20:59',671),(845,'Aprobado','2018-07-29 16:21:11',672),(846,'Rechazado','2018-07-29 16:21:11',672),(847,'Aprobado','2018-07-29 16:21:40',673),(848,'Rechazado','2018-07-29 16:21:40',673),(849,'Aprobado','2018-07-29 16:22:33',674),(850,'Rechazado','2018-07-29 16:22:33',674),(851,'Aprobado','2018-07-29 16:22:41',675),(852,'Rechazado','2018-07-29 16:22:41',675),(853,'Aprobado','2018-07-29 17:28:31',680),(854,'Rechazado','2018-07-29 17:28:31',680),(855,'Aprobado','2018-07-29 17:28:33',681),(856,'Rechazado','2018-07-29 17:28:33',681),(857,'Aprobado','2018-07-29 17:30:06',682),(858,'Rechazado','2018-07-29 17:30:06',682),(859,'Bajas','2018-07-29 17:34:50',686),(860,'Desparejas','2018-07-29 17:34:54',686),(861,'Gastado','2018-07-29 17:35:12',687),(862,'Desparejo','2018-07-29 17:35:17',687),(863,'Aprobado','2018-07-29 17:39:18',697),(864,'Rechazado','2018-07-29 17:39:18',697),(865,'Aprobado','2018-07-29 17:40:17',699),(866,'Reprobado','2018-07-29 17:40:23',699),(867,'Encamisar','2018-07-29 17:40:31',699),(868,'Aprobado','2018-07-29 17:41:33',701),(869,'Rechazado:','2018-07-29 17:41:39',701),(870,'Reconstruir','2018-07-29 17:41:46',701),(871,'Aprobado','2018-07-29 17:52:08',708),(872,'Rechazado','2018-07-29 17:52:08',708),(873,'STD','2018-07-29 18:47:39',710),(874,'Otra Medida','2018-07-29 18:47:53',710),(875,'Fundida','2018-07-29 19:02:00',711),(876,'Fuera de Medida','2018-07-29 19:02:09',711),(877,'STD','2018-07-29 19:04:02',712),(878,'Otra Medida','2018-07-29 19:04:19',712),(879,'STD','2018-07-29 19:04:28',713),(880,'Otra Medida','2018-07-29 19:04:34',713),(881,'STD','2018-07-29 19:04:41',714),(882,'Otra Medida','2018-07-29 19:04:45',714),(883,'STD','2018-07-29 19:04:52',715),(884,'Otra Medida','2018-07-29 19:04:55',715),(885,'STD','2018-07-29 19:05:02',716),(886,'Otra Medida','2018-07-29 19:05:04',716),(887,'STD','2018-07-29 19:05:10',717),(888,'Otra Medida','2018-07-29 19:05:12',717),(889,'STD','2018-07-29 19:05:19',718),(890,'Otra Medida','2018-07-29 19:05:22',718),(891,'STD','2018-07-29 19:05:30',719),(892,'Otra Medida','2018-07-29 19:05:33',719),(893,'STD','2018-07-29 19:05:41',720),(894,'Otra Medida','2018-07-29 19:05:43',720),(895,'STD','2018-07-29 19:05:50',721),(896,'Otra Medida','2018-07-29 19:05:52',721),(899,'Fundida','2018-07-29 19:07:56',722),(900,'Fuera de Medida','2018-07-29 19:08:11',722),(901,'Fundida','2018-07-29 19:08:18',723),(902,'Fuera de Medida','2018-07-29 19:08:32',723),(903,'Fundida','2018-07-29 19:08:41',724),(904,'Fuera de Medida','2018-07-29 19:08:44',724),(905,'Fundida','2018-07-29 19:08:51',725),(906,'Fuera de Medida','2018-07-29 19:08:54',725),(907,'Fundida','2018-07-29 19:09:01',726),(908,'Fuera de Medida','2018-07-29 19:09:05',726),(909,'Fundida','2018-07-29 19:09:14',727),(910,'Fuera de Medida','2018-07-29 19:09:16',727),(911,'Fundida','2018-07-29 19:09:24',728),(912,'Fuera de Medida','2018-07-29 19:09:26',728),(913,'Fundida','2018-07-29 19:09:34',729),(914,'Fuera de Medida','2018-07-29 19:09:36',729),(915,'Fundida','2018-07-29 19:09:43',730),(916,'Fuera de Medida','2018-07-29 19:09:48',730),(917,'Fundida','2018-07-29 19:09:57',731),(918,'Fuera de Medida','2018-07-29 19:10:05',731),(919,'STD','2018-07-29 20:53:45',732),(920,'Otra Medida','2018-07-29 20:53:51',732),(921,'STD','2018-07-29 20:54:03',733),(922,'','2018-07-29 20:54:08',733),(923,'Otra Medida','2018-07-29 20:54:25',733),(924,'STD','2018-07-29 20:54:32',734),(925,'Otra Medida','2018-07-29 20:55:42',734),(926,'STD','2018-07-29 20:55:56',735),(927,'Otra Medida','2018-07-29 20:56:03',735),(928,'STD','2018-07-29 20:56:10',736),(929,'Otra Medida','2018-07-29 20:56:23',736),(930,'STD','2018-07-29 20:56:30',737),(931,'Otra Medida','2018-07-29 20:56:39',737),(932,'STD','2018-07-29 20:57:12',738),(933,'Otra Medida','2018-07-29 20:59:01',738),(934,'STD','2018-07-29 20:59:12',739),(935,'Otra Medida','2018-07-29 20:59:23',739),(936,'STD','2018-07-29 20:59:38',740),(937,'Otra Medida','2018-07-29 20:59:44',740),(938,'STD','2018-07-29 20:59:51',741),(939,'Otra Medida','2018-07-29 20:59:57',741),(940,'STD','2018-07-29 21:00:18',742),(941,'Otra Medida','2018-07-29 21:00:24',742),(942,'STD','2018-07-29 21:00:30',743),(943,'Otra Medida','2018-07-29 21:00:37',743),(944,'STD','2018-07-29 21:00:43',744),(945,'Otra Medida','2018-07-29 21:00:49',744),(946,'STD','2018-07-29 21:00:58',745),(947,'Otra Medida','2018-07-29 21:01:04',745),(948,'STD','2018-07-29 21:01:12',746),(949,'Otra Medida','2018-07-29 21:01:29',746),(950,'STD','2018-07-29 21:01:38',747),(951,'Otra Medida','2018-07-29 21:01:44',747),(952,'STD','2018-07-29 21:01:52',748),(953,'Otra Medida','2018-07-29 21:02:02',748),(954,'Fundida','2018-07-29 21:02:19',749),(955,'Fundida','2018-07-29 21:02:23',750),(956,'Fundida','2018-07-29 21:02:27',751),(957,'Fundida','2018-07-29 21:02:32',752),(958,'Fundida','2018-07-29 21:02:37',753),(959,'Fundida','2018-07-29 21:02:41',754),(960,'','2018-07-29 21:03:34',754),(961,'Fundida','2018-07-29 21:04:24',755),(962,'Fundida','2018-07-29 21:04:30',756),(963,'Fundida','2018-07-29 21:04:34',757),(964,'Fundida','2018-07-29 21:04:39',758),(965,'Fundida','2018-07-29 21:05:35',759),(966,'Fundida','2018-07-29 21:05:40',760),(967,'Fundida','2018-07-29 21:05:45',761),(968,'Fundida','2018-07-29 21:05:50',762),(969,'Fundida','2018-07-29 21:05:54',763),(970,'Fundida','2018-07-29 21:05:59',764),(971,'Fundida','2018-07-29 21:06:04',765),(972,'Fuera de Medida','2018-07-29 21:08:05',749),(973,'Fuera de Medida','2018-07-29 21:08:14',750),(974,'Fuera de Medida','2018-07-29 21:08:21',751),(975,'Fuera de Medida','2018-07-29 21:08:26',752),(976,'Fuera de Medida','2018-07-29 21:08:30',753),(977,'Fuera de Medida','2018-07-29 21:08:37',754),(978,'Fuera de Medida','2018-07-29 21:08:42',755),(979,'Fuera de Medida','2018-07-29 21:08:46',756),(980,'Fuera de Medida','2018-07-29 21:08:51',757),(981,'Fuera de Medida','2018-07-29 21:08:56',758),(982,'Fuera de Medida','2018-07-29 21:11:26',759),(983,'Fuera de Medida','2018-07-29 21:11:30',760),(984,'Fuera de Medida','2018-07-29 21:11:36',761),(985,'Fuera de Medida','2018-07-29 21:11:45',762),(986,'Fuera de Medida','2018-07-29 21:11:49',763),(987,'Fuera de Medida','2018-07-29 21:11:55',764),(988,'Fuera de Medida','2018-07-29 21:12:00',765),(989,'Normal','2018-07-29 21:26:22',766),(990,'Falta de Dureza','2018-07-29 21:26:24',766),(991,'Normal','2018-07-29 21:26:32',767),(992,'Falta de Dureza','2018-07-29 21:26:34',767),(993,'Normal','2018-07-29 21:26:41',768),(994,'Falta de Dureza','2018-07-29 21:26:42',768),(995,'Normal','2018-07-29 21:26:55',769),(996,'Falta de Dureza','2018-07-29 21:26:57',769),(997,'Normal','2018-07-29 21:27:04',770),(998,'Falta de Dureza','2018-07-29 21:27:07',770),(999,'Normal','2018-07-29 21:27:17',771),(1000,'Falta de Dureza','2018-07-29 21:27:19',771),(1001,'Normal','2018-07-29 21:27:26',772),(1002,'Falta de Dureza','2018-07-29 21:27:28',772),(1003,'Normal','2018-07-29 21:27:34',773),(1004,'Falta de Dureza','2018-07-29 21:27:36',773),(1005,'Normal','2018-07-29 21:27:42',774),(1006,'Falta de Dureza','2018-07-29 21:27:44',774),(1007,'Normal','2018-07-29 21:27:50',775),(1008,'Falta de Dureza','2018-07-29 21:27:52',775),(1009,'Normal','2018-07-29 21:35:07',776),(1010,'Falta Dureza','2018-07-29 21:35:16',776),(1011,'Normal','2018-07-29 21:35:26',777),(1012,'Falta Dureza','2018-07-29 21:35:28',777),(1013,'Normal','2018-07-29 21:35:35',778),(1014,'Falta Dureza','2018-07-29 21:35:37',778),(1015,'Normal','2018-07-29 21:35:43',779),(1016,'Falta Dureza','2018-07-29 21:35:49',779),(1017,'Normal','2018-07-29 21:35:58',780),(1018,'Falta Dureza','2018-07-29 21:36:00',780),(1019,'Normal','2018-07-29 21:36:08',781),(1020,'Falta Dureza','2018-07-29 21:36:09',781),(1021,'Normal','2018-07-29 21:36:33',782),(1022,'Falta Dureza','2018-07-29 21:36:35',782),(1023,'Normal','2018-07-29 21:36:46',783),(1024,'Falta Dureza','2018-07-29 21:36:48',783),(1025,'Normal','2018-07-29 21:37:00',784),(1026,'Falta Dureza','2018-07-29 21:37:02',784),(1027,'Normal','2018-07-29 21:37:07',785),(1028,'Falta Dureza','2018-07-29 21:37:09',785),(1029,'Normal','2018-07-29 21:37:17',786),(1030,'Falta Dureza','2018-07-29 21:37:18',786),(1031,'Normal','2018-07-29 21:37:27',787),(1032,'Falta Dureza','2018-07-29 21:37:29',787),(1033,'Normal','2018-07-29 21:38:41',788),(1034,'Falta Dureza','2018-07-29 21:38:43',788),(1035,'Normal','2018-07-29 21:38:49',789),(1036,'Falta Dureza','2018-07-29 21:38:52',789),(1037,'Normal','2018-07-29 21:39:17',790),(1038,'Falta Dureza','2018-07-29 21:39:19',790),(1039,'Normal','2018-07-29 21:39:27',791),(1040,'Falta Dureza','2018-07-29 21:39:28',791),(1041,'Normal','2018-07-29 21:39:33',792),(1042,'Falta Dureza','2018-07-29 21:39:35',792),(1043,'Normal','2018-07-29 21:44:16',793),(1044,'Falta de Radio','2018-07-29 21:44:24',793),(1045,'Normal','2018-07-29 21:44:30',794),(1046,'Falta de Radio','2018-07-29 21:44:32',794),(1047,'Normal','2018-07-29 21:45:05',795),(1048,'Falta de Radio','2018-07-29 21:45:07',795),(1049,'Normal','2018-07-29 21:45:16',796),(1050,'Falta de Radio','2018-07-29 21:45:18',796),(1051,'Normal','2018-07-29 21:45:23',797),(1052,'Falta de Radio','2018-07-29 21:45:24',797),(1053,'Normal','2018-07-29 21:45:29',798),(1054,'Falta de Radio','2018-07-29 21:45:31',798),(1055,'Normal','2018-07-29 21:45:36',799),(1056,'Falta de Radio','2018-07-29 21:45:38',799),(1057,'Normal','2018-07-29 21:45:52',800),(1058,'Falta de Radio','2018-07-29 21:45:53',800),(1059,'Normal','2018-07-29 21:45:58',801),(1060,'Falta de Radio','2018-07-29 21:46:01',801),(1061,'Normal','2018-07-29 21:46:10',802),(1062,'Falta de Radio','2018-07-29 21:46:13',802),(1063,'Normal','2018-07-29 21:46:19',803),(1064,'Falta de Radio','2018-07-29 21:46:21',803),(1065,'Normal','2018-07-29 23:11:04',804),(1066,'Normal','2018-07-29 23:11:09',805),(1067,'Normal','2018-07-29 23:11:13',806),(1068,'Normal','2018-07-29 23:11:18',807),(1069,'Normal','2018-07-29 23:11:24',808),(1070,'Normal','2018-07-29 23:11:52',809),(1071,'Normal','2018-07-29 23:11:56',810),(1072,'Normal','2018-07-29 23:12:08',811),(1073,'Normal','2018-07-29 23:12:15',812),(1074,'Normal','2018-07-29 23:12:20',813),(1075,'Normal','2018-07-29 23:12:24',814),(1076,'Normal','2018-07-29 23:12:29',815),(1077,'Normal','2018-07-29 23:12:33',816),(1078,'Normal','2018-07-29 23:12:38',817),(1079,'Normal','2018-07-29 23:12:42',818),(1080,'Normal','2018-07-29 23:12:46',819),(1081,'Normal','2018-07-29 23:12:55',820),(1082,'Falta de Radio','2018-07-29 23:13:17',804),(1083,'Falta de Radio','2018-07-29 23:13:22',805),(1084,'Falta de Radio','2018-07-29 23:13:26',806),(1085,'Falta de Radio','2018-07-29 23:13:30',807),(1086,'Falta de Radio','2018-07-29 23:13:34',808),(1087,'Falta de Radio','2018-07-29 23:13:38',809),(1088,'Falta de Radio','2018-07-29 23:13:42',810),(1089,'Falta de Radio','2018-07-29 23:13:46',811),(1090,'Falta de Radio','2018-07-29 23:13:52',812),(1091,'Falta de Radio','2018-07-29 23:13:57',813),(1092,'Falta de Radio','2018-07-29 23:14:01',814),(1093,'Falta de Radio','2018-07-29 23:14:05',815),(1094,'Falta de Radio','2018-07-29 23:14:09',816),(1095,'Falta de Radio','2018-07-29 23:14:13',817),(1096,'Falta de Radio','2018-07-29 23:14:17',818),(1097,'Falta de Radio','2018-07-29 23:14:22',819),(1098,'Falta de Radio','2018-07-29 23:14:25',820),(1099,'Aprobado','2018-07-29 23:15:29',822),(1100,'Rechazado','2018-07-29 23:15:29',822),(1101,'Aprobado','2018-07-29 23:15:32',823),(1102,'Rechazado','2018-07-29 23:15:32',823),(1103,'Aprobado','2018-07-29 23:24:54',826),(1104,'Rechazado','2018-07-29 23:24:54',826),(1105,'Aprobado','2018-07-29 23:25:25',829),(1106,'Rechazado','2018-07-29 23:25:25',829),(1107,'Aprobado','2018-07-29 23:32:14',834),(1108,'Rechazado','2018-07-29 23:32:14',834),(1109,'Aprobado','2018-07-29 23:32:40',837),(1110,'Rechazado','2018-07-29 23:32:40',837),(1111,'Aprobado','2018-07-29 23:38:42',865),(1112,'Rechazado','2018-07-29 23:38:42',865),(1113,'Aprobado','2018-07-29 23:43:17',867),(1114,'Rechazado','2018-07-29 23:43:17',867),(1115,'Aprobado','2018-07-29 23:43:50',870),(1116,'Rechazado','2018-07-29 23:43:50',870),(1200,'Importado','2018-07-31 14:31:56',1210),(1201,'Nacional','2018-07-31 14:32:02',1210),(1202,'Importado','2018-07-31 14:42:35',1234),(1203,'Nacional','2018-07-31 14:42:39',1234),(1204,'Rectificado','2018-07-31 14:50:44',1237),(1205,'Encamisado (*)','2018-07-31 14:50:55',1237),(1208,'Nuevo ','2018-07-31 15:31:39',1275),(1209,'Usado','2018-07-31 15:31:50',1275),(1212,'','2018-07-31 15:45:00',1281),(1213,'Nueva','2018-07-31 15:48:27',1285),(1214,'Usada','2018-07-31 15:48:30',1285),(1215,'Nuevo ','2018-07-31 15:55:03',1291),(1216,'Usado:','2018-07-31 15:55:07',1291),(1219,'Nueva:','2018-07-31 16:16:47',1315),(1220,'Usada','2018-07-31 16:16:54',1315),(1229,'Si','2018-07-31 18:17:06',1379),(1230,'No','2018-07-31 18:17:08',1379),(1231,'Bueno','2018-07-31 18:17:45',1381),(1232,'Malo','2018-07-31 18:17:49',1381),(1233,'Nuevo','2018-07-31 18:17:55',1381),(1234,'Si ','2018-07-31 18:18:36',1382),(1235,'No','2018-07-31 18:18:38',1382),(1236,'Bueno','2018-07-31 18:18:44',1384),(1237,'Malo','2018-07-31 18:18:46',1384),(1238,'Nuevo','2018-07-31 18:18:53',1384),(1239,'Si','2018-07-31 18:19:41',1385),(1240,'No','2018-07-31 18:19:44',1385),(1241,'Bueno','2018-07-31 18:20:07',1387),(1242,'Malo','2018-07-31 18:20:12',1387),(1243,'Nuevo','2018-07-31 18:20:16',1387),(1244,'Si','2018-07-31 18:21:39',1388),(1245,'No','2018-07-31 18:21:42',1388),(1246,'Bueno','2018-07-31 18:21:48',1390),(1247,'Malo','2018-07-31 18:21:51',1390),(1248,'Nuevo','2018-07-31 18:21:56',1390),(1249,'Si','2018-07-31 18:22:19',1391),(1250,'No','2018-07-31 18:22:21',1391),(1251,'Bueno','2018-07-31 18:22:43',1393),(1252,'Malo','2018-07-31 18:22:48',1393),(1253,'Nuevo','2018-07-31 18:22:53',1393),(1254,'Si','2018-07-31 18:23:16',1394),(1255,'No','2018-07-31 18:23:19',1394),(1256,'Bueno','2018-07-31 18:23:52',1396),(1257,'Malo','2018-07-31 18:23:56',1396),(1258,'Nuevo','2018-07-31 18:24:01',1396),(1259,'Si','2018-07-31 18:25:19',1397),(1260,'No','2018-07-31 18:25:21',1397),(1261,'Bueno','2018-07-31 18:25:25',1399),(1262,'Malo','2018-07-31 18:25:29',1399),(1263,'Normal','2018-07-31 18:25:33',1399),(1264,'Si','2018-07-31 18:26:00',1400),(1265,'No','2018-07-31 18:26:02',1400),(1267,'Bueno','2018-07-31 18:26:28',1402),(1268,'Malo','2018-07-31 18:26:32',1402),(1269,'Nuevo','2018-07-31 18:26:44',1402),(1270,'Si','2018-07-31 18:27:30',1403),(1271,'No','2018-07-31 18:27:35',1403),(1272,'Bueno','2018-07-31 18:27:40',1405),(1273,'Malo','2018-07-31 18:27:43',1405),(1274,'Normal','2018-07-31 18:27:46',1405),(1275,'Si','2018-07-31 18:28:12',1406),(1276,'No','2018-07-31 18:28:14',1406),(1277,'Bueno','2018-07-31 18:28:34',1408),(1278,'Malo','2018-07-31 18:28:36',1408),(1279,'Nuevo','2018-07-31 18:28:39',1408),(1280,'Si','2018-07-31 18:29:54',1409),(1281,'No','2018-07-31 18:29:56',1409),(1282,'Bueno','2018-07-31 18:30:03',1411),(1283,'Malo','2018-07-31 18:30:06',1411),(1284,'Nuevo','2018-07-31 18:30:10',1411),(1285,'Si','2018-07-31 18:30:38',1412),(1286,'No','2018-07-31 18:30:41',1412),(1287,'Bueno ','2018-07-31 18:30:58',1414),(1288,'Malo','2018-07-31 18:31:01',1414),(1289,'Nuevo','2018-07-31 18:31:05',1414),(1290,'Si','2018-07-31 18:32:18',1415),(1291,'No','2018-07-31 18:32:20',1415),(1292,'Bueno','2018-07-31 18:32:38',1417),(1293,'Malo','2018-07-31 18:32:41',1417),(1294,'Nuevo','2018-07-31 18:32:44',1417),(1295,'Si','2018-07-31 18:33:25',1418),(1296,'No','2018-07-31 18:33:28',1418),(1297,'Bueno','2018-07-31 18:33:32',1420),(1298,'Malo','2018-07-31 18:33:35',1420),(1299,'Nuevo','2018-07-31 18:33:40',1420),(1300,'Si','2018-07-31 18:34:15',1421),(1301,'No','2018-07-31 18:34:18',1421),(1302,'Bueno','2018-07-31 18:34:22',1423),(1303,'Malo','2018-07-31 18:34:25',1423),(1304,'Nuevo','2018-07-31 18:34:33',1423),(1305,'Si','2018-07-31 18:47:30',1433),(1306,'No','2018-07-31 18:47:33',1433),(1307,'Bueno','2018-07-31 18:47:43',1435),(1308,'Malo','2018-07-31 18:47:48',1435),(1309,'Nuevo','2018-07-31 18:47:52',1435),(1310,'Si','2018-07-31 18:49:39',1436),(1311,'No','2018-07-31 18:49:41',1436),(1312,'Bueno','2018-07-31 18:49:46',1438),(1313,'Malo','2018-07-31 18:49:50',1438),(1314,'Nuevo','2018-07-31 18:49:55',1438),(1315,'Si','2018-07-31 18:50:25',1439),(1316,'No','2018-07-31 18:50:27',1439),(1317,'Bueno','2018-07-31 18:50:56',1441),(1318,'Malo','2018-07-31 18:50:59',1441),(1319,'Nuevo','2018-07-31 18:51:02',1441),(1320,'Si','2018-07-31 18:53:16',1442),(1321,'No','2018-07-31 18:53:18',1442),(1322,'Bueno','2018-07-31 18:53:29',1444),(1323,'Malo','2018-07-31 18:53:32',1444),(1324,'Nuevo','2018-07-31 18:53:35',1444),(1325,'Si','2018-07-31 18:54:02',1445),(1326,'No','2018-07-31 18:54:05',1445),(1327,'Bueno','2018-07-31 18:54:26',1447),(1328,'Malo','2018-07-31 18:54:29',1447),(1329,'Nuevo','2018-07-31 18:54:32',1447),(1330,'Si','2018-07-31 18:55:20',1448),(1331,'No','2018-07-31 18:55:23',1448),(1332,'Bueno','2018-07-31 18:55:27',1450),(1333,'Malo','2018-07-31 18:55:33',1450),(1334,'Nuevo','2018-07-31 18:55:38',1450),(1335,'Si','2018-07-31 18:56:18',1451),(1336,'No','2018-07-31 18:56:21',1451),(1337,'Bueno','2018-07-31 18:56:50',1453),(1338,'Malo','2018-07-31 18:56:53',1453),(1339,'Normal','2018-07-31 18:56:56',1453),(1340,'Si','2018-07-31 18:57:45',1454),(1341,'No','2018-07-31 18:57:47',1454),(1342,'Bueno','2018-07-31 18:57:53',1456),(1343,'Malo','2018-07-31 18:57:56',1456),(1344,'Nuevo','2018-07-31 18:58:00',1456),(1345,'Si','2018-07-31 18:59:01',1457),(1346,'No','2018-07-31 18:59:03',1457),(1347,'Bueno','2018-07-31 18:59:10',1459),(1348,'Malo','2018-07-31 18:59:13',1459),(1349,'Normal','2018-07-31 18:59:16',1459),(1350,'Si','2018-07-31 18:59:52',1460),(1351,'No','2018-07-31 18:59:54',1460),(1352,'Bueno','2018-07-31 18:59:58',1462),(1353,'Malo','2018-07-31 19:00:00',1462),(1354,'Normal','2018-07-31 19:00:04',1462),(1355,'Si','2018-07-31 19:00:25',1463),(1356,'No','2018-07-31 19:00:29',1463),(1357,'Bueno','2018-07-31 19:00:53',1465),(1358,'Malo','2018-07-31 19:00:56',1465),(1359,'Normal','2018-07-31 19:00:59',1465),(1360,'Si','2018-07-31 19:01:38',1466),(1361,'No','2018-07-31 19:01:40',1466),(1362,'Bueno','2018-07-31 19:02:09',1468),(1363,'Malo','2018-07-31 19:02:13',1468),(1364,'Normal','2018-07-31 19:02:17',1468),(1365,'Si','2018-07-31 19:11:32',1469),(1366,'No','2018-07-31 19:11:38',1469),(1367,'Bueno','2018-07-31 19:11:42',1471),(1368,'Malo','2018-07-31 19:11:44',1471),(1369,'Nuevo','2018-07-31 19:11:52',1471),(1370,'Bueno','2018-07-31 19:12:43',1474),(1371,'Malo','2018-07-31 19:12:45',1474),(1372,'Nuevo','2018-07-31 19:12:48',1474),(1373,'Si','2018-07-31 19:13:28',1475),(1374,'No','2018-07-31 19:13:31',1475),(1375,'Bueno','2018-07-31 19:13:39',1477),(1376,'Malo','2018-07-31 19:13:42',1477),(1377,'Nuevo','2018-07-31 19:13:47',1477),(1378,'Si','2018-07-31 19:14:50',1478),(1379,'No','2018-07-31 19:14:52',1478),(1380,'Bueno','2018-07-31 19:14:57',1480),(1381,'Malo','2018-07-31 19:15:00',1480),(1382,'Nuevo','2018-07-31 19:15:04',1480),(1383,'Si','2018-07-31 19:15:39',1481),(1384,'No','2018-07-31 19:15:41',1481),(1385,'Bueno','2018-07-31 19:16:09',1483),(1386,'Malo','2018-07-31 19:16:11',1483),(1387,'Nuevo','2018-07-31 19:16:14',1483),(1388,'Si','2018-07-31 19:17:40',1484),(1389,'No','2018-07-31 19:17:42',1484),(1390,'Bueno','2018-07-31 19:17:46',1486),(1391,'Malo','2018-07-31 19:17:48',1486),(1392,'Nuevo','2018-07-31 19:17:54',1486),(1393,'Si','2018-07-31 19:23:46',1496),(1394,'No','2018-07-31 19:23:48',1496),(1395,'Bueno','2018-07-31 19:23:54',1498),(1396,'Malo','2018-07-31 19:23:56',1498),(1397,'Nuevo','2018-07-31 19:23:59',1498),(1398,'Si','2018-07-31 19:25:15',1499),(1399,'No','2018-07-31 19:25:17',1499),(1400,'Bueno','2018-07-31 19:25:21',1501),(1401,'Malo','2018-07-31 19:25:23',1501),(1402,'Nuevo','2018-07-31 19:25:27',1501),(1403,'Si','2018-07-31 19:26:11',1502),(1404,'No','2018-07-31 19:26:13',1502),(1405,'Bueno','2018-07-31 19:26:18',1504),(1406,'Malo','2018-07-31 19:26:21',1504),(1407,'Nuevo','2018-07-31 19:26:24',1504),(1408,'Si ','2018-07-31 19:29:11',1507),(1409,'No','2018-07-31 19:29:13',1507),(1410,'Bueno','2018-07-31 19:29:25',1509),(1411,'Malo','2018-07-31 19:29:31',1509),(1412,'Normal','2018-07-31 19:29:34',1509),(1413,'Si','2018-07-31 19:30:12',1510),(1414,'No','2018-07-31 19:30:14',1510),(1415,'Bueno','2018-07-31 19:30:19',1512),(1416,'Malo','2018-07-31 19:30:22',1512),(1417,'Normal','2018-07-31 19:30:25',1512),(1418,'Si','2018-07-31 19:31:00',1513),(1419,'No','2018-07-31 19:31:03',1513),(1420,'Bueno','2018-07-31 19:31:07',1515),(1421,'Malo','2018-07-31 19:31:12',1515),(1422,'Normal','2018-07-31 19:31:15',1515),(1423,'Si','2018-07-31 19:32:09',1516),(1424,'No','2018-07-31 19:32:12',1516),(1425,'Bueno','2018-07-31 19:32:17',1518),(1426,'Malo','2018-07-31 19:32:20',1518),(1427,'Nuevo','2018-07-31 19:32:27',1518),(1428,'Si','2018-07-31 19:32:47',1519),(1429,'No','2018-07-31 19:32:50',1519),(1430,'Bueno','2018-07-31 19:33:20',1522),(1431,'Malo','2018-07-31 19:33:23',1522),(1432,'Nuevo','2018-07-31 19:33:27',1522),(1433,'Si','2018-07-31 19:33:56',1523),(1434,'No','2018-07-31 19:33:58',1523),(1435,'Bueno','2018-07-31 19:34:14',1525),(1436,'Malo','2018-07-31 19:34:16',1525),(1438,'Nuevo','2018-07-31 19:34:19',1525),(1441,'Si','2018-07-31 19:34:59',1526),(1442,'No','2018-07-31 19:35:02',1526),(1443,'Bueno','2018-07-31 19:35:47',1530),(1444,'Malo','2018-07-31 19:35:50',1530),(1445,'Nuevo','2018-07-31 19:35:53',1530),(1446,'Si','2018-07-31 19:36:21',1531),(1447,'No','2018-07-31 19:36:23',1531),(1448,'Bueno','2018-07-31 19:36:50',1533),(1449,'Malo','2018-07-31 19:36:53',1533),(1450,'Nuevo','2018-07-31 19:36:58',1533),(1451,'Si','2018-07-31 19:37:21',1534),(1452,'No','2018-07-31 19:37:22',1534),(1453,'Bueno','2018-07-31 19:38:05',1536),(1454,'Malo','2018-07-31 19:38:08',1536),(1455,'Nuevo','2018-07-31 19:38:17',1536),(1456,'Si','2018-07-31 19:39:46',1537),(1457,'No','2018-07-31 19:39:48',1537),(1458,'Bueno','2018-07-31 19:40:13',1539),(1459,'Malo','2018-07-31 19:40:17',1539),(1460,'Nuevo','2018-07-31 19:40:21',1539),(1461,'Si','2018-07-31 19:41:13',1540),(1462,'No','2018-07-31 19:41:17',1540),(1463,'Bueno','2018-07-31 19:41:22',1542),(1464,'Malo','2018-07-31 19:41:25',1542),(1465,'Nuevo','2018-07-31 19:41:28',1542),(1466,'Si','2018-07-31 19:42:15',1545),(1467,'No','2018-07-31 19:42:17',1545),(1468,'Bueno','2018-07-31 19:42:33',1547),(1469,'Malo','2018-07-31 19:42:36',1547),(1470,'Nuevo','2018-07-31 19:42:43',1547),(1471,'Si','2018-07-31 19:43:20',1548),(1472,'No','2018-07-31 19:43:23',1548),(1473,'Bueno','2018-07-31 19:43:27',1550),(1474,'Malo','2018-07-31 19:43:30',1550),(1475,'Nuevo','2018-07-31 19:43:41',1550),(1476,'Si','2018-07-31 19:44:22',1551),(1477,'No','2018-07-31 19:44:24',1551),(1478,'Bueno','2018-07-31 19:44:28',1553),(1479,'Malo','2018-07-31 19:44:31',1553),(1480,'Nuevo','2018-07-31 19:44:34',1553),(1481,'Si','2018-07-31 19:45:56',1554),(1482,'No','2018-07-31 19:45:59',1554),(1483,'Bueno','2018-07-31 19:46:04',1556),(1484,'Malo','2018-07-31 19:46:07',1556),(1485,'Nuevo','2018-07-31 19:46:10',1556),(1486,'Si','2018-07-31 19:46:30',1557),(1487,'No','2018-07-31 19:46:33',1557),(1488,'Bueno ','2018-07-31 19:47:03',1559),(1489,'Malo','2018-07-31 19:47:05',1559),(1490,'Nuevo','2018-07-31 19:47:16',1559),(1491,'Si','2018-07-31 19:48:09',1560),(1492,'No','2018-07-31 19:48:12',1560),(1493,'Bueno','2018-07-31 19:48:17',1562),(1494,'Malo','2018-07-31 19:48:22',1562),(1495,'Nuevo','2018-07-31 19:48:27',1562),(1496,'Si','2018-07-31 19:49:15',1563),(1497,'No','2018-07-31 19:49:17',1563),(1498,'Bueno','2018-07-31 19:49:21',1565),(1499,'Malo','2018-07-31 19:49:24',1565),(1500,'Nuevo','2018-07-31 19:49:28',1565),(1501,'Si','2018-07-31 19:50:10',1566),(1502,'No','2018-07-31 19:50:12',1566),(1503,'Bueno','2018-07-31 19:50:16',1568),(1504,'Malo','2018-07-31 19:50:19',1568),(1506,'Nuevo','2018-07-31 19:50:25',1568),(1507,'Si','2018-07-31 19:50:48',1569),(1508,'No','2018-07-31 19:50:49',1569),(1509,'Bueno','2018-07-31 19:51:10',1571),(1510,'Malo','2018-07-31 19:51:12',1571),(1511,'Nuevo','2018-07-31 19:51:15',1571),(1512,'Si ','2018-07-31 19:51:38',1572),(1513,'No','2018-07-31 19:51:41',1572),(1514,'Bueno','2018-07-31 19:52:06',1574),(1515,'Malo','2018-07-31 19:52:09',1574),(1516,'Nuevo','2018-07-31 19:52:12',1574),(1517,'Si','2018-07-31 19:52:31',1575),(1518,'No','2018-07-31 19:52:38',1575),(1519,'Bueno','2018-07-31 19:52:55',1577),(1520,'Malo','2018-07-31 19:52:57',1577),(1521,'Nuevo','2018-07-31 19:53:01',1577),(1522,'Si ','2018-07-31 19:54:05',1578),(1523,'No','2018-07-31 19:54:09',1578),(1524,'Bueno','2018-07-31 19:54:42',1580),(1525,'Malo','2018-07-31 19:54:44',1580),(1526,'Nuevo','2018-07-31 19:54:48',1580),(1527,'Si','2018-07-31 20:10:22',1630),(1528,'No','2018-07-31 20:10:26',1630),(1529,'Si','2018-07-31 20:10:33',1629),(1530,'No','2018-07-31 20:10:36',1629),(1531,'Si','2018-07-31 20:10:43',1628),(1532,'No','2018-07-31 20:10:46',1628),(1533,'Si','2018-07-31 20:10:51',1627),(1534,'No','2018-07-31 20:10:55',1627),(1535,'Si','2018-07-31 20:11:05',1626),(1536,'No','2018-07-31 20:11:07',1626),(1537,'Si','2018-07-31 20:11:11',1625),(1538,'No','2018-07-31 20:11:17',1625),(1539,'Si','2018-07-31 20:11:22',1624),(1540,'No','2018-07-31 20:11:25',1624),(1541,'Si','2018-07-31 20:11:37',1623),(1542,'No','2018-07-31 20:11:40',1623),(1543,'Si','2018-07-31 20:11:45',1622),(1544,'No','2018-07-31 20:11:47',1622),(1545,'Si','2018-07-31 20:11:51',1621),(1546,'No','2018-07-31 20:11:54',1621),(1547,'Si','2018-07-31 20:12:03',1620),(1548,'No','2018-07-31 20:12:05',1620),(1549,'Si','2018-07-31 20:12:12',1619),(1550,'No','2018-07-31 20:12:17',1619),(1551,'Si','2018-07-31 20:12:24',1618),(1552,'No','2018-07-31 20:12:27',1618),(1553,'Si','2018-07-31 20:12:34',1617),(1554,'No','2018-07-31 20:12:38',1617),(1555,'Si','2018-07-31 20:12:45',1616),(1556,'No','2018-07-31 20:12:47',1616),(1557,'Si','2018-07-31 20:12:57',1615),(1558,'No','2018-07-31 20:12:59',1615),(1559,'Si','2018-07-31 20:13:04',1614),(1560,'No','2018-07-31 20:13:07',1614),(1561,'Si','2018-07-31 20:13:12',1613),(1562,'No','2018-07-31 20:13:16',1613),(1563,'Si','2018-07-31 20:13:23',1612),(1564,'No','2018-07-31 20:13:26',1612),(1565,'Si','2018-07-31 20:13:33',1611),(1566,'No','2018-07-31 20:13:37',1611),(1567,'Si','2018-07-31 20:13:46',1610),(1568,'No','2018-07-31 20:13:48',1610),(1569,'Si','2018-07-31 20:13:52',1609),(1570,'No','2018-07-31 20:13:57',1609),(1571,'Si','2018-07-31 20:14:02',1608),(1572,'No','2018-07-31 20:14:04',1608),(1573,'Si','2018-07-31 20:14:08',1607),(1574,'No','2018-07-31 20:14:09',1607),(1575,'Si','2018-07-31 20:14:15',1606),(1576,'No','2018-07-31 20:14:18',1606),(1577,'Si','2018-07-31 20:14:24',1605),(1578,'No','2018-07-31 20:14:28',1605),(1579,'Si','2018-07-31 20:14:32',1604),(1580,'No','2018-07-31 20:14:36',1604),(1581,'Si','2018-07-31 20:14:43',1603),(1582,'No','2018-07-31 20:14:45',1603),(1583,'Si','2018-07-31 20:14:51',1602),(1584,'No','2018-07-31 20:14:53',1602),(1585,'Si','2018-07-31 20:15:00',1601),(1586,'No','2018-07-31 20:15:02',1601),(1587,'Si','2018-07-31 20:15:08',1600),(1588,'No','2018-07-31 20:15:10',1600),(1589,'Si','2018-07-31 20:15:14',1599),(1590,'No','2018-07-31 20:15:17',1599),(1591,'Si','2018-07-31 20:15:22',1598),(1592,'No','2018-07-31 20:15:24',1598),(1593,'Si','2018-07-31 20:15:27',1597),(1594,'No','2018-07-31 20:15:30',1597),(1595,'Si','2018-07-31 20:15:33',1596),(1596,'No','2018-07-31 20:15:38',1596),(1598,'Bueno','2018-08-03 17:48:10',1666),(1599,'Malo','2018-08-03 17:48:13',1666),(1600,'Nuevo','2018-08-03 17:48:17',1666),(1601,'Bueno','2018-08-03 17:48:57',1667),(1602,'Malo','2018-08-03 17:49:00',1667),(1603,'Nuevo','2018-08-03 17:49:04',1667),(1604,'Bueno','2018-08-03 17:49:12',1668),(1605,'Malo','2018-08-03 17:49:14',1668),(1606,'Nuevo','2018-08-03 17:49:18',1668),(1607,'Bueno','2018-08-03 17:49:42',1669),(1608,'Malo','2018-08-03 17:49:46',1669),(1609,'Nuevo','2018-08-03 17:49:51',1669),(1610,'Bueno','2018-08-03 17:49:57',1670),(1611,'Malo','2018-08-03 17:50:03',1670),(1612,'Nuevo','2018-08-03 17:50:07',1670),(1613,'Bueno','2018-08-03 17:50:16',1671),(1614,'Malo','2018-08-03 17:50:20',1671),(1615,'Nuevo','2018-08-03 17:50:24',1671),(1616,'Bueno ','2018-08-03 17:50:31',1672),(1617,'Malo','2018-08-03 17:50:34',1672),(1618,'Nuevo','2018-08-03 17:50:40',1672),(1619,'Bueno','2018-08-03 17:50:46',1673),(1620,'Malo','2018-08-03 17:50:49',1673),(1621,'Nuevo','2018-08-03 17:50:53',1673),(1622,'Bueno','2018-08-03 17:51:04',1674),(1623,'Malo','2018-08-03 17:51:07',1674),(1624,'Nuevo','2018-08-03 17:51:09',1674),(1625,'Bueno','2018-08-03 17:51:15',1675),(1626,'Malo','2018-08-03 17:51:18',1675),(1627,'Nuevo','2018-08-03 17:51:22',1675),(1628,'Bueno','2018-08-03 17:51:27',1676),(1629,'Malo','2018-08-03 17:51:30',1676),(1630,'Nuevo','2018-08-03 17:51:34',1676),(1631,'Bueno','2018-08-03 17:51:48',1677),(1632,'Malo','2018-08-03 17:51:50',1677),(1633,'Nuevo','2018-08-03 17:51:55',1677),(1634,'Bueno','2018-08-03 17:52:04',1678),(1635,'Malo','2018-08-03 17:52:06',1678),(1636,'Nuevo','2018-08-03 17:52:09',1678),(1637,'Bueno','2018-08-03 17:52:14',1679),(1638,'Malo','2018-08-03 17:52:18',1679),(1639,'Nuevo','2018-08-03 17:52:21',1679),(1640,'Bueno','2018-08-03 17:52:26',1680),(1641,'Malo','2018-08-03 17:52:30',1680),(1642,'Nuevo','2018-08-03 17:52:33',1680),(1643,'Bueno','2018-08-03 17:52:38',1681),(1644,'Malo','2018-08-03 17:52:43',1681),(1645,'Nuevo','2018-08-03 17:52:46',1681),(1646,'Bueno','2018-08-03 17:52:58',1682),(1647,'Malo','2018-08-03 17:53:01',1682),(1648,'Nuevo','2018-08-03 17:53:04',1682),(1649,'Bueno','2018-08-03 17:53:13',1683),(1650,'Malo','2018-08-03 17:53:19',1683),(1651,'Nuevo','2018-08-03 17:53:24',1683),(1652,'Bueno ','2018-08-03 17:53:55',1684),(1653,'Malo','2018-08-03 17:53:58',1684),(1654,'Nuevo','2018-08-03 17:54:02',1684),(1655,'Bueno','2018-08-03 17:55:06',1685),(1656,'Malo','2018-08-03 17:55:09',1685),(1657,'Nuevo','2018-08-03 17:55:13',1685),(1658,'Bueno','2018-08-03 17:55:21',1686),(1659,'Malo','2018-08-03 17:55:25',1686),(1660,'Nuevo','2018-08-03 17:55:30',1686),(1661,'Bueno','2018-08-03 17:55:38',1687),(1662,'Malo','2018-08-03 17:55:45',1687),(1663,'Nuevo','2018-08-03 17:55:49',1687),(1664,'Bueno','2018-08-03 17:56:05',1688),(1665,'Malo','2018-08-03 17:56:07',1688),(1666,'Nuevo','2018-08-03 17:56:11',1688),(1667,'Bueno ','2018-08-03 17:56:18',1689),(1668,'Malo','2018-08-03 17:56:21',1689),(1669,'Nuevo','2018-08-03 17:56:26',1689),(1670,'Bueno','2018-08-03 17:56:34',1690),(1671,'Malo','2018-08-03 17:56:37',1690),(1672,'Nuevo','2018-08-03 17:56:42',1690),(1673,'Bueno','2018-08-03 17:56:47',1691),(1674,'Malo','2018-08-03 17:56:50',1691),(1675,'Nuevo','2018-08-03 17:56:53',1691),(1676,'Bueno','2018-08-03 17:56:59',1692),(1677,'Malo','2018-08-03 17:57:03',1692),(1678,'Nuevo','2018-08-03 17:57:06',1692),(1679,'Bueno','2018-08-03 17:57:11',1693),(1680,'Malo','2018-08-03 17:57:14',1693),(1681,'Nuevo','2018-08-03 17:57:18',1693),(1682,'Bueno','2018-08-03 17:57:25',1694),(1683,'Malo','2018-08-03 17:57:29',1694),(1684,'Nuevo','2018-08-03 17:57:31',1694),(1685,'Bueno','2018-08-03 17:57:56',1695),(1686,'Malo','2018-08-03 17:57:59',1695),(1687,'Nuevo','2018-08-03 17:58:08',1695),(1688,'Bueno','2018-08-03 17:58:12',1696),(1689,'Malo','2018-08-03 17:58:16',1696),(1690,'Nuevo','2018-08-03 17:58:24',1696),(1691,'Bueno','2018-08-03 17:58:29',1697),(1692,'Malo','2018-08-03 17:58:32',1697),(1693,'Nuevo','2018-08-03 17:58:35',1697),(1694,'Bueno','2018-08-03 17:58:42',1698),(1695,'Malo','2018-08-03 17:58:46',1698),(1696,'Nuevo','2018-08-03 17:58:56',1698),(1697,'Bueno','2018-08-03 17:59:04',1699),(1698,'Malo','2018-08-03 17:59:08',1699),(1699,'Nuevo','2018-08-03 17:59:11',1699),(1700,'Bueno','2018-08-03 17:59:17',1700),(1701,'Malo','2018-08-03 17:59:23',1700),(1702,'Nuevo','2018-08-03 17:59:26',1700),(1703,'Aprobado','2018-08-03 19:40:00',850),(1704,'Rechazado','2018-08-03 19:40:04',850),(1705,'Aprobado','2018-08-03 19:40:23',851),(1706,'Rechazado','2018-08-03 19:40:30',851),(1707,'Aprobado','2018-08-03 19:40:42',852),(1708,'Rechazado','2018-08-03 19:40:48',852),(1709,'Aprobado','2018-08-03 19:40:58',853),(1710,'Rechazado','2018-08-03 19:41:04',853),(1711,'Aprobado','2018-08-03 19:41:11',854),(1712,'Rechazado','2018-08-03 19:41:17',854),(1713,'Aprobado','2018-08-03 19:41:26',855),(1714,'Rechazado','2018-08-03 19:41:30',855),(1715,'Aprobado','2018-08-03 19:41:38',856),(1716,'Rechazado','2018-08-03 19:41:43',856),(1717,'Aprobado','2018-08-03 19:41:50',857),(1718,'Rechazado','2018-08-03 19:41:56',857),(1719,'Aprobado','2018-08-03 19:42:02',858),(1720,'Rechazado','2018-08-03 19:42:06',858),(1721,'Aprobado','2018-08-03 19:42:12',859),(1722,'Rechazado','2018-08-03 19:42:16',859),(1723,'Aprobado','2018-08-03 19:42:22',860),(1724,'Rechazado','2018-08-03 19:42:27',860),(2023,'Si','2018-08-07 15:23:48',2047),(2024,'No','2018-08-07 15:23:50',2047),(2025,'Si','2018-08-07 15:24:26',2049),(2026,'No','2018-08-07 15:24:28',2049),(2027,'Si','2018-08-07 15:25:22',2051),(2028,'No','2018-08-07 15:25:26',2051),(2029,'Si','2018-08-07 15:33:26',2053),(2030,'No','2018-08-07 15:33:29',2053),(2031,'Nuevo','2018-08-07 15:33:59',2055),(2032,'Usado','2018-08-07 15:34:03',2055),(2033,'Si','2018-08-07 15:35:25',2056),(2034,'No','2018-08-07 15:35:27',2056),(2035,'Si','2018-08-07 15:36:19',2059),(2036,'No','2018-08-07 15:36:21',2059),(2037,'Si','2018-08-07 15:37:05',2061),(2038,'No','2018-08-07 15:37:07',2061),(2039,'Si','2018-08-07 15:38:05',2063),(2040,'No','2018-08-07 15:38:07',2063),(2041,'Si','2018-08-07 15:39:44',2065),(2042,'No','2018-08-07 15:39:46',2065),(2043,'Nuevo ','2018-08-07 15:40:07',2067),(2044,'Usado','2018-08-07 15:40:10',2067),(2045,'Si','2018-08-07 15:41:59',2068),(2046,'No','2018-08-07 15:42:01',2068),(2047,'Nuevo','2018-08-07 15:42:20',2070),(2048,'Usado','2018-08-07 15:42:23',2070),(2049,'Si','2018-08-07 15:43:55',2071),(2050,'No','2018-08-07 15:43:57',2071),(2051,'Si','2018-08-07 15:46:21',2073),(2052,'No','2018-08-07 15:46:23',2073),(2053,'Si','2018-08-07 15:47:11',2075),(2054,'No','2018-08-07 15:47:13',2075),(2055,'Nuevo','2018-08-07 15:47:41',2077),(2056,'Usado','2018-08-07 15:47:44',2077),(2057,'Si','2018-08-07 15:48:05',2078),(2058,'No','2018-08-07 15:48:09',2078),(2059,'Nuevo','2018-08-07 15:48:48',2080),(2060,'Usado','2018-08-07 15:48:51',2080),(2061,'Si','2018-08-07 15:49:15',2081),(2062,'No','2018-08-07 15:49:17',2081),(2063,'Ok','2018-08-07 16:27:30',2084),(2064,'No corresponde','2018-08-07 16:27:37',2084),(2065,'Ok','2018-08-07 16:28:40',2086),(2067,'No corresponde','2018-08-07 16:29:04',2086),(2068,'Ok','2018-08-07 16:29:55',2088),(2069,'No corresponde','2018-08-07 16:30:01',2088),(2070,'Ok','2018-08-07 16:31:51',2090),(2071,'No corresponde','2018-08-07 16:31:55',2090),(2072,'Ok','2018-08-07 16:32:29',2093),(2073,'No corresponde','2018-08-07 16:32:35',2093),(2074,'Ok','2018-08-07 16:33:43',2095),(2075,'No corresponde','2018-08-07 16:33:48',2095),(2076,'Ok','2018-08-07 16:34:48',2097),(2077,'No corresponde','2018-08-07 16:34:56',2097),(2078,'Ok','2018-08-07 16:35:44',2099),(2079,'No corresponde','2018-08-07 16:35:52',2099),(2080,'Ok','2018-08-07 16:36:36',2102),(2081,'No corresponde','2018-08-07 16:36:44',2102),(2082,'Ok','2018-08-07 18:31:10',2104),(2083,'No corresponde','2018-08-07 18:31:17',2104),(2084,'Ok','2018-08-07 18:31:52',2106),(2085,'No corresponde','2018-08-07 18:32:08',2106),(2086,'Ok','2018-08-07 18:36:04',2108),(2087,'No corresponde','2018-08-07 18:36:11',2108),(2088,'Ok','2018-08-07 18:45:02',2110),(2089,'No corresponde','2018-08-07 18:57:55',2110),(2090,'Ok','2018-08-07 19:13:26',2112),(2091,'No corresponde','2018-08-07 19:13:32',2112),(2092,'Ok','2018-08-07 19:14:05',2114),(2093,'No corresponde','2018-08-07 19:14:17',2114),(2094,'Ok','2018-08-07 19:17:21',2117),(2095,'No corresponde','2018-08-07 19:17:27',2117),(2096,'Ok','2018-08-07 19:47:35',2119),(2097,'No corresponde','2018-08-07 19:47:50',2119),(2098,'Ok','2018-08-07 19:49:14',2121),(2099,'No corresponde','2018-08-07 19:49:21',2121),(2100,'Ok','2018-08-07 19:51:00',2123),(2101,'No corresponde','2018-08-07 19:51:17',2123),(2102,'Ok','2018-08-07 19:51:45',2125),(2103,'No corresponde','2018-08-07 19:51:50',2125),(2104,'Ok','2018-08-07 19:53:32',2127),(2105,'No corresponde','2018-08-07 19:53:40',2127),(2106,'Ok','2018-08-07 19:55:27',2129),(2107,'No corresponde','2018-08-07 19:55:33',2129),(2108,'Ok','2018-08-07 19:56:04',2131),(2109,'No corresponde','2018-08-07 19:56:14',2131),(2110,'Ok','2018-08-07 19:57:40',2133),(2111,'No corresponde','2018-08-07 19:57:50',2133),(2112,'Ok','2018-08-07 20:00:47',2135),(2113,'No corresponde','2018-08-07 20:02:07',2135),(2114,'Ok','2018-08-07 20:03:05',2137),(2115,'No corresponde','2018-08-07 20:03:12',2137),(2116,'Ok','2018-08-07 20:03:52',2139),(2117,'No corresponde','2018-08-07 20:03:58',2139),(2118,'Ok','2018-08-07 20:04:34',2141),(2119,'No corresponde','2018-08-07 20:04:39',2141),(2120,'Ok','2018-08-07 20:05:19',2143),(2121,'No corresponde','2018-08-07 20:05:24',2143),(2124,'Ok','2018-08-08 15:06:03',2148),(2125,'No Ok','2018-08-08 15:06:08',2148),(2126,'Ok','2018-08-08 15:07:14',2150),(2127,'No Ok','2018-08-08 15:07:18',2150),(2128,'Ok','2018-08-08 15:12:35',2152),(2129,'No Ok','2018-08-08 15:12:38',2152),(2130,'Ok','2018-08-08 15:13:54',2154),(2131,'No Ok','2018-08-08 15:14:00',2154),(2132,'Ok','2018-08-08 15:15:09',2156),(2133,'No Ok','2018-08-08 15:15:14',2156),(2134,'Ok','2018-08-08 15:16:12',2158),(2135,'No Ok','2018-08-08 15:16:18',2158),(2136,'Ok','2018-08-08 15:25:12',2160),(2137,'No Ok','2018-08-08 15:25:15',2160),(2138,'Ok','2018-08-08 15:25:59',2162),(2139,'No Ok','2018-08-08 15:26:02',2162),(2140,'Ok','2018-08-08 15:26:52',2164),(2141,'No Ok','2018-08-08 15:26:56',2164),(2142,'Ok','2018-08-08 15:28:45',2166),(2143,'No Ok','2018-08-08 15:28:50',2166),(2144,'Ok','2018-08-08 15:31:54',2169),(2145,'No Ok','2018-08-08 15:31:58',2169),(2146,'Ok','2018-08-08 15:32:47',2171),(2147,'No Ok','2018-08-08 15:32:56',2171),(2148,'Ok','2018-08-08 15:33:56',2173),(2149,'No Ok','2018-08-08 15:34:06',2173),(2150,'Ok','2018-08-08 15:39:11',2175),(2151,'No Ok','2018-08-08 15:39:14',2175),(2152,'Ok','2018-08-08 15:42:49',2177),(2153,'No Ok:','2018-08-08 15:42:54',2177),(2154,'Ok','2018-08-08 15:45:57',2179),(2155,'No Ok','2018-08-08 15:46:04',2179),(2156,'Ok','2018-08-08 15:46:48',2181),(2157,'No Ok','2018-08-08 15:46:52',2181),(2158,'Ok','2018-08-08 15:48:04',2183),(2160,'No Ok','2018-08-08 15:48:13',2183),(2161,'Ok','2018-08-08 15:49:18',2185),(2162,'No Ok','2018-08-08 15:49:23',2185),(2163,'Ok','2018-08-08 15:50:39',2187),(2164,'No Ok','2018-08-08 15:50:42',2187),(2165,'Ok','2018-08-08 15:59:32',2189),(2166,'No Ok','2018-08-08 15:59:38',2189),(2167,'Ok','2018-08-08 16:06:02',2191),(2168,'No Ok','2018-08-08 16:06:08',2191),(2169,'Ok','2018-08-08 16:06:57',2193),(2170,'No Ok','2018-08-08 16:07:00',2193),(2171,'Ok','2018-08-08 16:07:31',2195),(2172,'No Ok','2018-08-08 16:07:36',2195),(2173,'Ok','2018-08-08 16:08:21',2197),(2174,'No Ok','2018-08-08 16:08:26',2197),(2175,'Ok','2018-08-08 16:09:25',2199),(2176,'','2018-08-08 16:09:25',2199),(2177,'No Ok','2018-08-08 16:09:32',2199),(2178,'Ok','2018-08-08 16:10:11',2201),(2179,'No Ok','2018-08-08 16:10:16',2201),(2180,'Ok','2018-08-08 16:15:47',2203),(2181,'No Ok','2018-08-08 16:15:52',2203),(2182,'Ok','2018-08-08 16:23:16',2207),(2183,'No Ok','2018-08-08 16:23:28',2207),(2184,'Ok','2018-08-08 17:00:05',2209),(2185,'No Ok','2018-08-08 17:00:11',2209),(2186,'Ok','2018-08-08 17:03:10',2211),(2187,'No Ok','2018-08-08 17:03:16',2211),(2188,'Ok','2018-08-08 17:07:52',2213),(2189,'No Ok','2018-08-08 17:07:59',2213),(2190,'Ok ','2018-08-08 17:09:53',2215),(2191,'No Ok','2018-08-08 17:09:58',2215),(2192,'Ok','2018-08-08 17:10:05',2216),(2193,'No Ok','2018-08-08 17:10:10',2216),(2194,'Ok','2018-08-08 17:10:16',2217),(2195,'No Ok','2018-08-08 17:10:22',2217),(2196,'Ok','2018-08-08 17:10:29',2218),(2197,'No Ok','2018-08-08 17:10:35',2218),(2198,'Ok','2018-08-08 17:42:15',2223),(2199,'No Ok','2018-08-08 17:42:21',2223),(2200,'Ok','2018-08-08 17:45:34',2225),(2201,'No Ok','2018-08-08 17:45:38',2225),(2202,'Ok','2018-08-08 17:47:28',2227),(2203,'No Ok','2018-08-08 17:47:33',2227),(2204,'Ok','2018-08-08 17:50:11',2229),(2205,'No Ok','2018-08-08 17:50:16',2229),(2206,'Ok','2018-08-08 18:00:28',2231),(2207,'No Ok','2018-08-08 18:00:44',2231),(2208,'Ok','2018-08-08 18:01:58',2233),(2209,'No Ok','2018-08-08 18:02:02',2233),(2210,'Ok','2018-08-08 18:04:47',2235),(2211,'No Ok','2018-08-08 18:04:51',2235),(2212,'Ok','2018-08-08 18:19:44',2237),(2213,'No Ok','2018-08-08 18:19:48',2237),(2214,'Ok','2018-08-08 18:20:23',2239),(2215,'No Ok','2018-08-08 18:20:26',2239),(2216,'Ok','2018-08-08 18:21:03',2241),(2217,'No Ok','2018-08-08 18:21:06',2241),(2218,'Ok','2018-08-08 18:21:42',2243),(2219,'No Ok','2018-08-08 18:21:46',2243),(2220,'Ok','2018-08-08 18:24:20',2245),(2221,'No Ok','2018-08-08 18:24:27',2245),(2222,'Ok','2018-08-08 18:34:14',2247),(2223,'No Ok','2018-08-08 18:34:21',2247),(2224,'Ok','2018-08-08 18:57:19',2249),(2225,'No Ok','2018-08-08 18:57:22',2249),(2226,'Ok','2018-08-08 18:58:52',2251),(2227,'No Ok','2018-08-08 18:58:56',2251),(2228,'Ok','2018-08-08 18:59:47',2253),(2230,'No Ok','2018-08-08 18:59:52',2253),(2231,'Ok','2018-08-08 19:01:26',2255),(2232,'No Ok','2018-08-08 19:01:30',2255),(2233,'Ok','2018-08-08 19:05:11',2257),(2234,'No Ok','2018-08-08 19:05:16',2257),(2235,'Ok','2018-08-08 19:07:06',2259),(2236,'No Ok','2018-08-08 19:07:13',2259),(2237,'Ok','2018-08-08 19:10:18',2261),(2238,'No Ok','2018-08-08 19:10:23',2261),(2239,'Ok','2018-08-08 19:21:31',2263),(2240,'No Ok','2018-08-08 19:21:35',2263),(2241,'Ok','2018-08-08 19:22:29',2265),(2242,'No Ok','2018-08-08 19:22:33',2265),(2243,'Ok','2018-08-08 19:23:23',2267),(2244,'No Ok','2018-08-08 19:23:26',2267),(2245,'Ok','2018-08-08 19:24:09',2269),(2246,'No Ok','2018-08-08 19:24:13',2269),(2247,'Ok','2018-08-08 19:26:45',2271),(2248,'No Ok','2018-08-08 19:26:48',2271),(2249,'Ok','2018-08-08 19:27:32',2273),(2250,'No Ok','2018-08-08 19:27:36',2273),(2251,'Ok','2018-08-08 19:28:59',2275),(2252,'No Ok','2018-08-08 19:29:03',2275),(2253,'Ok','2018-08-08 19:34:53',2277),(2254,'No Ok','2018-08-08 19:35:00',2277),(2255,'Ok','2018-08-08 19:37:17',2279),(2256,'No Ok','2018-08-08 19:37:25',2279),(2257,'Ok','2018-08-08 19:38:55',2281),(2258,'No Ok','2018-08-08 19:39:09',2281),(2259,'Ok','2018-08-08 19:40:44',2283),(2262,'No Ok','2018-08-08 19:40:51',2283),(2263,'Ok','2018-08-08 19:42:42',2285),(2264,'No Ok','2018-08-08 19:42:47',2285),(2265,'Ok','2018-08-08 19:44:21',2287),(2266,'No Ok','2018-08-08 19:44:23',2287),(2267,'Ok','2018-08-08 19:45:36',2289),(2268,'No Ok','2018-08-08 19:45:41',2289),(2269,'Ok','2018-08-11 23:38:26',2297),(2270,'No Ok','2018-08-11 23:38:31',2297),(2271,'Ok ','2018-08-11 23:38:37',2296),(2272,'No Ok','2018-08-11 23:38:42',2296),(2273,'Ok','2018-08-11 23:38:48',2295),(2274,'No Ok','2018-08-11 23:38:52',2295),(2275,'Ok','2018-08-11 23:38:58',2294),(2276,'No Ok','2018-08-11 23:39:03',2294),(2277,'Ok','2018-08-11 23:39:09',2293),(2278,'No Ok','2018-08-11 23:39:13',2293),(2279,'Ok','2018-08-11 23:39:18',2292),(2280,'No Ok','2018-08-11 23:39:23',2292),(2281,'Ok','2018-08-11 23:39:29',2291),(2282,'No Ok','2018-08-11 23:39:35',2291),(2283,'Ok','2018-08-13 03:12:57',2309),(2284,'No Ok','2018-08-13 03:13:01',2309),(2286,'Ok','2018-08-13 03:13:43',2310),(2287,'No Ok','2018-08-13 03:13:49',2310),(2288,'Ok','2018-08-13 03:13:59',2311),(2289,'No Ok','2018-08-13 03:14:06',2311),(2290,'Ok','2018-08-13 03:14:14',2313),(2291,'No Ok','2018-08-13 03:14:23',2313),(2292,'Ok','2018-08-13 03:14:29',2314),(2293,'No Ok','2018-08-13 03:14:35',2314),(2294,'Ok','2018-08-13 03:15:33',2315),(2295,'No Ok','2018-08-13 03:15:38',2315),(2296,'Ok','2018-08-13 03:15:45',2316),(2297,'No Ok','2018-08-13 03:15:53',2316),(2298,'Ok','2018-08-13 03:20:17',2324),(2299,'No Ok','2018-08-13 03:20:21',2324),(2300,'Ok ','2018-08-13 03:20:28',2325),(2301,'No Ok','2018-08-13 03:20:35',2325),(2302,'Ok','2018-08-13 03:21:07',2326),(2303,'No Ok','2018-08-13 03:21:11',2326),(2304,'Ok','2018-08-13 03:21:17',2327),(2305,'No Ok','2018-08-13 03:21:24',2327),(2306,'Ok ','2018-08-13 03:21:30',2328),(2307,'No Ok','2018-08-13 03:21:36',2328),(2308,'Ok','2018-08-13 03:21:43',2329),(2309,'No Ok','2018-08-13 03:21:49',2329),(2310,'Ok','2018-08-13 03:28:43',2336),(2311,'No Ok','2018-08-13 03:28:50',2336),(2312,'Ok ','2018-08-13 03:28:59',2337),(2313,'No Ok ','2018-08-13 03:29:04',2337),(2314,'Ok ','2018-08-13 03:29:11',2338),(2315,'No Ok ','2018-08-13 03:29:17',2338),(2316,'Ok ','2018-08-13 03:29:22',2339),(2317,'No Ok ','2018-08-13 03:29:30',2339),(2318,'Ok ','2018-08-13 03:30:17',2340),(2319,'No Ok ','2018-08-13 03:30:23',2340),(2320,'Ok ','2018-08-13 03:30:30',2341),(2321,'No Ok ','2018-08-13 03:30:36',2341),(2322,'Ok ','2018-08-13 03:30:44',2342),(2323,'No Ok ','2018-08-13 03:30:49',2342),(2324,'Ok ','2018-08-13 03:30:55',2343),(2325,'No Ok ','2018-08-13 03:30:58',2343),(2326,'Ok ','2018-08-13 03:31:22',2344),(2327,'No Ok ','2018-08-13 03:31:27',2344);
-/*!40000 ALTER TABLE `frm_valores_validos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `grupo`
---
-
-DROP TABLE IF EXISTS `grupo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `grupo` (
-  `id_grupo` int(10) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(50) CHARACTER SET latin1 NOT NULL,
-  `estado` varchar(5) COLLATE utf8_spanish_ci NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`id_grupo`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `grupo`
---
-
-LOCK TABLES `grupo` WRITE;
-/*!40000 ALTER TABLE `grupo` DISABLE KEYS */;
-INSERT INTO `grupo` VALUES (1,'Grupo 1','AC',6);
-/*!40000 ALTER TABLE `grupo` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `herramientas`
---
-
-DROP TABLE IF EXISTS `herramientas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `herramientas` (
-  `herrId` int(11) NOT NULL AUTO_INCREMENT,
-  `herrcodigo` varchar(255) NOT NULL DEFAULT '',
-  `herrmarca` varchar(255) DEFAULT NULL,
-  `modid` int(10) DEFAULT NULL,
-  `tipoid` int(10) DEFAULT NULL,
-  `equip_estad` varchar(4) DEFAULT NULL,
-  `herrdescrip` varchar(255) DEFAULT NULL,
-  `depositoId` int(11) DEFAULT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`herrId`),
-  UNIQUE KEY `1` (`herrcodigo`) USING BTREE,
-  KEY `depositoId` (`depositoId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `herramientas`
---
-
-LOCK TABLES `herramientas` WRITE;
-/*!40000 ALTER TABLE `herramientas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `herramientas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `historial_lecturas`
---
-
-DROP TABLE IF EXISTS `historial_lecturas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `historial_lecturas` (
-  `id_lectura` int(10) NOT NULL AUTO_INCREMENT,
-  `id_equipo` int(10) NOT NULL,
-  `lectura` int(10) NOT NULL,
-  `fecha` datetime NOT NULL,
-  `usrId` int(11) NOT NULL,
-  `observacion` text,
-  `operario_nom` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
-  `turno` varchar(11) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
-  `estado` varchar(4) NOT NULL,
-  PRIMARY KEY (`id_lectura`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `historial_lecturas`
---
-
-LOCK TABLES `historial_lecturas` WRITE;
-/*!40000 ALTER TABLE `historial_lecturas` DISABLE KEYS */;
-INSERT INTO `historial_lecturas` VALUES (1,1,0,'0000-00-00 00:00:00',1,'Lectura al cargar equipo','-','alta','AC'),(2,2,0,'0000-00-00 00:00:00',1,'Lectura al cargar equipo','-','alta','AC'),(3,2,1000,'2019-06-24 19:16:24',1,'reparacion ','eliana','tarde','RE');
-/*!40000 ALTER TABLE `historial_lecturas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `infocomponentes`
---
-
-DROP TABLE IF EXISTS `infocomponentes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `infocomponentes` (
-  `infocompid` int(11) NOT NULL AUTO_INCREMENT,
-  `infocompdescrip` varchar(255) DEFAULT NULL,
-  `archivo` varchar(255) DEFAULT NULL,
-  `fecha` datetime DEFAULT NULL,
-  `id_equipo` int(11) DEFAULT NULL,
-  PRIMARY KEY (`infocompid`),
-  KEY `id_equipo` (`id_equipo`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `infocomponentes`
---
-
-LOCK TABLES `infocomponentes` WRITE;
-/*!40000 ALTER TABLE `infocomponentes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `infocomponentes` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `infoequipos`
---
-
-DROP TABLE IF EXISTS `infoequipos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `infoequipos` (
-  `infoid` int(11) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(255) DEFAULT NULL,
-  `archivo` varchar(255) DEFAULT NULL,
-  `id_equipo` int(11) DEFAULT NULL,
-  PRIMARY KEY (`infoid`),
-  KEY `id_equipo` (`id_equipo`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `infoequipos`
---
-
-LOCK TABLES `infoequipos` WRITE;
-/*!40000 ALTER TABLE `infoequipos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `infoequipos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `informacionequipo`
---
-
-DROP TABLE IF EXISTS `informacionequipo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `informacionequipo` (
-  `id_informacion` int(11) NOT NULL AUTO_INCREMENT,
-  `titulo` varchar(50) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `descripcion` varchar(100) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `id_equipo` int(11) NOT NULL,
-  `id_empresa` int(10) NOT NULL,
-  PRIMARY KEY (`id_informacion`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `informacionequipo`
---
-
-LOCK TABLES `informacionequipo` WRITE;
-/*!40000 ALTER TABLE `informacionequipo` DISABLE KEYS */;
-/*!40000 ALTER TABLE `informacionequipo` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `marcasequipos`
---
-
-DROP TABLE IF EXISTS `marcasequipos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `marcasequipos` (
-  `marcaid` int(11) NOT NULL AUTO_INCREMENT,
-  `marcadescrip` varchar(255) DEFAULT NULL,
-  `estado` varchar(3) NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`marcaid`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `marcasequipos`
---
-
-LOCK TABLES `marcasequipos` WRITE;
-/*!40000 ALTER TABLE `marcasequipos` DISABLE KEYS */;
-INSERT INTO `marcasequipos` VALUES (1,'Marca 1','AC',6);
-/*!40000 ALTER TABLE `marcasequipos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `modelo_aÃ±o`
---
-
-DROP TABLE IF EXISTS `modelo_aÃ±o`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `modelo_aÃ±o` (
-  `id_aÃ±o` int(100) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(10) NOT NULL,
-  PRIMARY KEY (`id_aÃ±o`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `modelo_aÃ±o`
---
-
-LOCK TABLES `modelo_aÃ±o` WRITE;
-/*!40000 ALTER TABLE `modelo_aÃ±o` DISABLE KEYS */;
-INSERT INTO `modelo_aÃ±o` VALUES (1,'wqeqewqeqw');
-/*!40000 ALTER TABLE `modelo_aÃ±o` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `orden_insumos`
---
-
-DROP TABLE IF EXISTS `orden_insumos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `orden_insumos` (
-  `id_orden` int(11) NOT NULL AUTO_INCREMENT,
-  `fecha` date DEFAULT NULL,
-  `solicitante` varchar(100) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `destino` varchar(100) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `comprobante` int(255) DEFAULT NULL,
-  `id_empresa` int(11) NOT NULL,
-  `id_ot` int(11) NOT NULL,
-  PRIMARY KEY (`id_orden`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `orden_insumos`
---
-
-LOCK TABLES `orden_insumos` WRITE;
-/*!40000 ALTER TABLE `orden_insumos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `orden_insumos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `orden_pedido`
---
-
-DROP TABLE IF EXISTS `orden_pedido`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `orden_pedido` (
-  `id_orden` int(11) NOT NULL AUTO_INCREMENT,
-  `id_proveedor` int(11) NOT NULL,
-  `nro_trabajo` int(11) NOT NULL,
-  `descripcion` text NOT NULL,
-  `fecha` datetime NOT NULL,
-  `fecha_entrega` datetime NOT NULL,
-  `fecha_entregada` datetime NOT NULL,
-  `estado` varchar(2) NOT NULL,
-  `id_trabajo` int(11) NOT NULL,
-  `observacion` text NOT NULL,
-  `numero_remito` int(11) DEFAULT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`id_orden`),
-  KEY `id_trabajo` (`id_trabajo`),
-  KEY `id_proveedor` (`id_proveedor`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `orden_pedido`
---
-
-LOCK TABLES `orden_pedido` WRITE;
-/*!40000 ALTER TABLE `orden_pedido` DISABLE KEYS */;
-/*!40000 ALTER TABLE `orden_pedido` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `orden_servicio`
---
-
-DROP TABLE IF EXISTS `orden_servicio`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `orden_servicio` (
-  `id_orden` int(11) NOT NULL AUTO_INCREMENT,
-  `lectura` double DEFAULT NULL,
-  `fecha` date NOT NULL,
-  `comprobante` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `id_equipo` int(11) NOT NULL,
-  `id_contratista` int(11) NOT NULL,
-  `id_solicitudreparacion` int(11) NOT NULL,
-  `valesid` int(11) DEFAULT NULL,
-  `estado` varchar(5) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `id_ordenherraminetas` int(11) DEFAULT NULL,
-  `id_orden_insumo` int(11) DEFAULT NULL,
-  `id_ot` int(11) DEFAULT NULL,
-  `id_empresa` int(11) NOT NULL,
-  `fechahorainicio` datetime NOT NULL,
-  `fechahorafin` datetime NOT NULL,
-  `horometroinicio` double NOT NULL,
-  `horometrofin` double NOT NULL,
-  PRIMARY KEY (`id_orden`),
-  KEY `id_equipo` (`id_equipo`) USING BTREE,
-  KEY `id_empresaservicio` (`id_contratista`) USING BTREE,
-  KEY `id_solicitudreparacion` (`id_solicitudreparacion`) USING BTREE,
-  KEY `id_orden_insumo` (`id_orden_insumo`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `orden_servicio`
---
-
-LOCK TABLES `orden_servicio` WRITE;
-/*!40000 ALTER TABLE `orden_servicio` DISABLE KEYS */;
-/*!40000 ALTER TABLE `orden_servicio` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `orden_trabajo`
---
-
-DROP TABLE IF EXISTS `orden_trabajo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `orden_trabajo` (
-  `id_orden` int(11) NOT NULL AUTO_INCREMENT,
-  `id_tarea` int(11) DEFAULT NULL,
-  `nro` varchar(100) DEFAULT NULL,
-  `fecha` date NOT NULL,
-  `fecha_program` datetime NOT NULL,
-  `fecha_inicio` datetime NOT NULL,
-  `fecha_entrega` datetime NOT NULL,
-  `fecha_terminada` datetime NOT NULL,
-  `fecha_aviso` datetime NOT NULL,
-  `fecha_entregada` datetime NOT NULL,
-  `descripcion` text NOT NULL,
-  `cliId` int(11) NOT NULL DEFAULT '1',
-  `estado` varchar(2) NOT NULL,
-  `id_usuario` int(11) NOT NULL DEFAULT '1',
-  `id_usuario_a` int(11) DEFAULT NULL,
-  `id_usuario_e` int(11) NOT NULL,
-  `id_sucursal` int(11) NOT NULL DEFAULT '1',
-  `id_proveedor` int(11) NOT NULL,
-  `id_solicitud` int(11) NOT NULL,
-  `tipo` varchar(2) NOT NULL,
-  `id_equipo` int(11) NOT NULL,
-  `duracion` double DEFAULT NULL,
-  `id_tareapadre` int(11) DEFAULT NULL,
-  `id_empresa` int(11) NOT NULL,
-  `lectura_programada` double DEFAULT NULL,
-  `lectura_ejecutada` double DEFAULT NULL,
-  `case_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id_orden`),
-  KEY `orden_trabajo_ibfk_1` (`cliId`) USING BTREE,
-  KEY `id_usuario` (`id_usuario`) USING BTREE,
-  KEY `id_usuariosolicitante` (`id_usuario_a`) USING BTREE,
-  KEY `usuario_entrega` (`id_usuario_e`) USING BTREE,
-  KEY `id_sucursal` (`id_sucursal`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `orden_trabajo`
---
-
-LOCK TABLES `orden_trabajo` WRITE;
-/*!40000 ALTER TABLE `orden_trabajo` DISABLE KEYS */;
-/*!40000 ALTER TABLE `orden_trabajo` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `paises`
---
-
-DROP TABLE IF EXISTS `paises`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `paises` (
-  `Codigo` varchar(2) NOT NULL,
-  `Pais` varchar(100) NOT NULL,
-  PRIMARY KEY (`Codigo`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `paises`
---
-
-LOCK TABLES `paises` WRITE;
-/*!40000 ALTER TABLE `paises` DISABLE KEYS */;
-INSERT INTO `paises` VALUES ('AR','Argentina');
-/*!40000 ALTER TABLE `paises` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `parametroequipo`
---
-
-DROP TABLE IF EXISTS `parametroequipo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `parametroequipo` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `paramId` int(11) NOT NULL,
-  `id_equipo` int(11) NOT NULL,
-  `valor` varchar(255) NOT NULL,
-  `fechahora` datetime NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `id_equipo` (`id_equipo`),
-  KEY `paramId` (`paramId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `parametroequipo`
---
-
-LOCK TABLES `parametroequipo` WRITE;
-/*!40000 ALTER TABLE `parametroequipo` DISABLE KEYS */;
-/*!40000 ALTER TABLE `parametroequipo` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `parametros`
---
-
-DROP TABLE IF EXISTS `parametros`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `parametros` (
-  `paramId` int(11) NOT NULL AUTO_INCREMENT,
-  `paramdescrip` varchar(255) DEFAULT NULL,
-  `min` varchar(255) DEFAULT NULL,
-  `estado` varchar(5) NOT NULL,
-  `id_empresa` int(11) DEFAULT NULL,
-  PRIMARY KEY (`paramId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `parametros`
---
-
-LOCK TABLES `parametros` WRITE;
-/*!40000 ALTER TABLE `parametros` DISABLE KEYS */;
-/*!40000 ALTER TABLE `parametros` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `periodo`
---
-
-DROP TABLE IF EXISTS `periodo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `periodo` (
-  `idperiodo` int(11) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(255) NOT NULL,
-  `estado` varchar(4) NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`idperiodo`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `periodo`
---
-
-LOCK TABLES `periodo` WRITE;
-/*!40000 ALTER TABLE `periodo` DISABLE KEYS */;
-INSERT INTO `periodo` VALUES (1,'Diario','AC',6),(2,'mensual','AC',6),(3,'semestral','AC',6),(4,'anual','AC',6),(5,'horas','AC',6),(6,'Ciclos','AC',6),(7,'kilÃ³metros','AC',6),(8,'Diario','AC',8),(9,'Mensual','AC',8),(10,'Semestral','AC',8),(11,'Anual','AC',8),(12,'Horas','AC',8),(13,'Ciclos','AC',8);
-/*!40000 ALTER TABLE `periodo` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `predictivo`
---
-
-DROP TABLE IF EXISTS `predictivo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `predictivo` (
-  `predId` int(11) NOT NULL AUTO_INCREMENT,
-  `id_equipo` int(11) NOT NULL,
-  `tarea_descrip` varchar(2000) COLLATE utf8_spanish_ci NOT NULL,
-  `fecha` date NOT NULL,
-  `periodo` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
-  `cantidad` int(11) NOT NULL,
-  `horash` float DEFAULT NULL,
-  `estado` varchar(5) COLLATE utf8_spanish_ci NOT NULL,
-  `pred_duracion` int(11) NOT NULL,
-  `id_unidad` int(11) NOT NULL,
-  `pred_canth` int(11) NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  `pred_adjunto` varchar(255) COLLATE utf8_spanish_ci DEFAULT NULL,
-  PRIMARY KEY (`predId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `predictivo`
---
-
-LOCK TABLES `predictivo` WRITE;
-/*!40000 ALTER TABLE `predictivo` DISABLE KEYS */;
-/*!40000 ALTER TABLE `predictivo` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `preventivo`
---
-
-DROP TABLE IF EXISTS `preventivo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `preventivo` (
-  `prevId` int(11) NOT NULL AUTO_INCREMENT,
-  `id_equipo` int(11) NOT NULL,
-  `id_tarea` int(11) NOT NULL,
-  `perido` varchar(50) NOT NULL,
-  `cantidad` double NOT NULL,
-  `ultimo` date NOT NULL,
-  `id_componente` int(11) NOT NULL,
-  `critico1` double DEFAULT NULL,
-  `fechaprobable` date DEFAULT NULL,
-  `horash` int(11) NOT NULL,
-  `estadoprev` char(255) DEFAULT NULL,
-  `prev_duracion` double NOT NULL,
-  `id_unidad` int(11) NOT NULL,
-  `prev_canth` double NOT NULL,
-  `prev_adjunto` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish_ci DEFAULT NULL,
-  `id_empresa` int(11) NOT NULL,
-  `lectura_base` double DEFAULT NULL,
-  PRIMARY KEY (`prevId`),
-  KEY `id_equipo` (`id_equipo`),
-  KEY `id_tarea` (`id_tarea`),
-  KEY `id_componente` (`id_componente`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `preventivo`
---
-
-LOCK TABLES `preventivo` WRITE;
-/*!40000 ALTER TABLE `preventivo` DISABLE KEYS */;
-/*!40000 ALTER TABLE `preventivo` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `proceso`
---
-
-DROP TABLE IF EXISTS `proceso`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `proceso` (
-  `id_proceso` int(11) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(100) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  `estado` varchar(45) COLLATE utf8mb4_spanish_ci NOT NULL,
-  PRIMARY KEY (`id_proceso`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `proceso`
---
-
-LOCK TABLES `proceso` WRITE;
-/*!40000 ALTER TABLE `proceso` DISABLE KEYS */;
-INSERT INTO `proceso` VALUES (1,'un proceso nuevo 1',0,'AN'),(2,'nuevo proceso 001',0,'AN'),(3,'ExtracciÃ³n y Transporte',0,'AC'),(4,'proceso nuevo',6,'AN'),(5,'proceso emp 6',6,'AN'),(6,'proceso testing',6,'AN'),(7,'EXTRACCIÃ“N Y TRANSPORTE DE MINERAL',6,'AC'),(8,'ExtracciÃ³n y Transporte De Mineral',6,'AC'),(9,'Proceso de prueba',6,'AC'),(11,'PerforaciÃ³n',7,'AC'),(12,'PerforaciÃ³n y Voladura',6,'AC'),(13,'Operaciones',7,'AC'),(14,'Mantenimiento',7,'AC'),(15,'Capacitacion',7,'AC'),(16,'PROCESO NUEVO',6,'AN'),(17,'Minado',8,'AC'),(18,'proceso prueba hugo',6,'AC'),(19,'Cales Vivas Molidas',6,'AC'),(20,'PERFORACIÃ“N Y DESARROLLO',6,'AC'),(21,'CARGA DE PIEDRA',6,'AC'),(22,'MÃ³dulos habitacionales',6,'AC'),(23,'Proceso 1',6,'AC');
-/*!40000 ALTER TABLE `proceso` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `remitos`
---
-
-DROP TABLE IF EXISTS `remitos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `remitos` (
-  `remitoId` int(11) NOT NULL AUTO_INCREMENT,
-  `fecha` datetime NOT NULL,
-  `provid` int(11) NOT NULL,
-  `comprobante` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`remitoId`),
-  KEY `provid` (`provid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `remitos`
---
-
-LOCK TABLES `remitos` WRITE;
-/*!40000 ALTER TABLE `remitos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `remitos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `rubro`
---
-
-DROP TABLE IF EXISTS `rubro`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `rubro` (
-  `id_rubro` int(10) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(50) NOT NULL,
-  PRIMARY KEY (`id_rubro`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `rubro`
---
-
-LOCK TABLES `rubro` WRITE;
-/*!40000 ALTER TABLE `rubro` DISABLE KEYS */;
-/*!40000 ALTER TABLE `rubro` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sector`
---
-
-DROP TABLE IF EXISTS `sector`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sector` (
-  `id_sector` int(10) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(50) CHARACTER SET latin1 NOT NULL,
-  `estado` varchar(5) COLLATE utf8_spanish_ci NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`id_sector`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sector`
---
-
-LOCK TABLES `sector` WRITE;
-/*!40000 ALTER TABLE `sector` DISABLE KEYS */;
-INSERT INTO `sector` VALUES (1,'Sector 1','AC',6),(2,'Etapa 2','AC',6);
-/*!40000 ALTER TABLE `sector` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `seguro`
---
-
-DROP TABLE IF EXISTS `seguro`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `seguro` (
-  `id_seguro` int(11) NOT NULL AUTO_INCREMENT,
-  `asegurado` varchar(3000) COLLATE utf8_spanish_ci NOT NULL,
-  `ref` int(11) NOT NULL,
-  `numero_pliza` int(11) NOT NULL,
-  `fecha_inicio` datetime NOT NULL,
-  `fecha_vigencia` datetime NOT NULL,
-  `cobertura` varchar(3000) COLLATE utf8_spanish_ci NOT NULL,
-  `id_equipo` int(11) NOT NULL,
-  PRIMARY KEY (`id_seguro`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `seguro`
---
-
-LOCK TABLES `seguro` WRITE;
-/*!40000 ALTER TABLE `seguro` DISABLE KEYS */;
-/*!40000 ALTER TABLE `seguro` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `setupparam`
---
-
-DROP TABLE IF EXISTS `setupparam`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `setupparam` (
-  `id_equipo` int(11) NOT NULL,
-  `id_parametro` int(11) NOT NULL,
-  `maximo` double NOT NULL,
-  `minimo` double NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`id_parametro`,`id_equipo`),
-  KEY `id_equipo` (`id_equipo`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `setupparam`
---
-
-LOCK TABLES `setupparam` WRITE;
-/*!40000 ALTER TABLE `setupparam` DISABLE KEYS */;
-/*!40000 ALTER TABLE `setupparam` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sisactions`
---
-
-DROP TABLE IF EXISTS `sisactions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sisactions` (
-  `actId` int(11) NOT NULL AUTO_INCREMENT,
-  `actDescription` varchar(20) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
-  `actDescriptionSpanish` varchar(20) CHARACTER SET utf8 COLLATE utf8_spanish_ci DEFAULT NULL,
-  PRIMARY KEY (`actId`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sisactions`
---
-
-LOCK TABLES `sisactions` WRITE;
-/*!40000 ALTER TABLE `sisactions` DISABLE KEYS */;
-INSERT INTO `sisactions` VALUES (1,'Add','Agregar'),(2,'Edit','Editar'),(3,'Del','Eliminar'),(4,'View','Consultar'),(5,'Imprimir','Imprimir'),(6,'Saldo','Consultar Saldo'),(7,'Asignar','Asignar'),(8,'Finalizar','Finalizar'),(9,'OP','OP'),(10,'Pedidos','Pedidos'),(11,'Supervisor','Supervisor'),(12,'Entregar','Entrega de Ordenes'),(13,'Lectura','Lect horas equipos '),(14,'Correctivo','Ver Correctivos'),(15,'Preventivos','Ver Preventivos'),(16,'Backlog','Ver Backlog'),(17,'Predictivo','Ver Predictivos');
-/*!40000 ALTER TABLE `sisactions` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sisgroups`
---
-
-DROP TABLE IF EXISTS `sisgroups`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sisgroups` (
-  `grpId` int(11) NOT NULL AUTO_INCREMENT,
-  `grpName` varchar(20) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
-  `grpDash` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`grpId`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sisgroups`
---
-
-LOCK TABLES `sisgroups` WRITE;
-/*!40000 ALTER TABLE `sisgroups` DISABLE KEYS */;
-INSERT INTO `sisgroups` VALUES (1,'Administrador','Otrabajo',6),(2,'Vendedor','Sservicio',6),(3,'DepÃ³sito','Sservicio',6),(4,'Operario1','Sservicio',6),(5,'Supervisor de Taller','Sservicio',6),(7,'Mecanicos','escritorio',6),(10,'Administrador','Otrabajo',8),(11,'Recepcion','Otrabajo',8),(12,'R.R.H.H.','Otrabajo',8),(13,'Administracion','Otrabajo',8),(14,'Cobranzas','Otrabajo',8),(15,'Operaciones','Otrabajo',8),(16,'Ceo','Otrabajo',8),(17,'Compras','Otrabajo',8),(18,'DepÃ³sito','Otrabajo',8),(19,'SupervisiÃ³n','Otrabajo',8),(20,'asistente','',6);
-/*!40000 ALTER TABLE `sisgroups` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sisgroupsactions`
---
-
-DROP TABLE IF EXISTS `sisgroupsactions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sisgroupsactions` (
-  `grpactId` int(11) NOT NULL AUTO_INCREMENT,
-  `grpId` int(11) NOT NULL,
-  `menuAccId` int(11) NOT NULL,
-  PRIMARY KEY (`grpactId`),
-  KEY `grpId` (`grpId`) USING BTREE,
-  KEY `menuAccId` (`menuAccId`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2089 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sisgroupsactions`
---
-
-LOCK TABLES `sisgroupsactions` WRITE;
-/*!40000 ALTER TABLE `sisgroupsactions` DISABLE KEYS */;
-INSERT INTO `sisgroupsactions` VALUES (154,151,1),(158,158,1),(159,159,1),(160,160,1),(987,4,116),(988,4,155),(989,4,156),(1129,7,23),(1171,10,2),(1190,10,6),(1191,10,7),(1192,10,8),(1193,10,9),(1194,10,10),(1195,10,11),(1196,10,12),(1197,10,13),(1199,21,9),(1200,22,9),(1201,23,9),(1202,24,9),(1203,25,6),(1204,25,7),(1205,25,8),(1206,25,9),(1207,25,10),(1208,25,11),(1209,25,12),(1210,25,13),(1211,25,14),(1212,25,15),(1213,25,16),(1214,25,17),(1215,25,18),(1216,25,19),(1217,25,20),(1218,25,21),(1219,25,23),(1220,25,24),(1221,25,25),(1222,25,151),(1223,25,26),(1224,25,27),(1225,25,28),(1226,25,29),(1227,25,30),(1228,25,31),(1229,25,32),(1230,25,33),(1231,25,34),(1232,25,35),(1233,25,36),(1234,25,37),(1235,25,38),(1236,25,39),(1237,25,40),(1238,25,41),(1239,25,42),(1240,25,43),(1241,25,115),(1242,25,116),(1243,25,117),(1244,25,155),(1245,25,156),(1246,25,157),(1247,25,118),(1248,25,119),(1249,25,120),(1250,25,152),(1251,25,153),(1252,25,154),(1253,25,176),(1254,25,177),(1255,25,178),(1256,25,179),(1257,25,180),(1258,25,158),(1259,25,159),(1260,25,160),(1261,25,209),(1262,25,210),(1263,25,211),(1264,25,212),(1265,25,64),(1266,25,65),(1267,25,66),(1268,25,67),(1269,25,68),(1270,25,69),(1271,25,70),(1272,25,71),(1273,25,72),(1274,25,73),(1275,25,74),(1276,25,75),(1277,25,85),(1278,25,86),(1279,25,87),(1280,25,88),(1281,25,89),(1282,25,90),(1283,25,91),(1284,25,92),(1285,25,93),(1286,25,94),(1287,25,95),(1288,25,96),(1289,25,97),(1290,25,98),(1291,25,99),(1292,25,100),(1293,25,101),(1294,25,102),(1295,25,103),(1296,25,104),(1297,25,105),(1298,25,106),(1299,25,107),(1300,25,108),(1301,25,109),(1302,25,110),(1303,25,111),(1304,25,170),(1305,25,171),(1306,25,172),(1307,25,181),(1308,25,182),(1309,25,183),(1310,25,184),(1311,25,185),(1312,25,186),(1313,25,187),(1314,25,188),(1315,25,189),(1316,25,190),(1317,25,191),(1318,25,192),(1319,25,193),(1320,25,194),(1321,25,195),(1322,25,196),(1323,25,197),(1324,25,198),(1325,25,199),(1326,25,200),(1327,25,201),(1328,25,202),(1329,25,203),(1330,25,204),(1331,25,205),(1332,25,206),(1333,25,207),(1334,25,208),(1335,25,127),(1336,25,128),(1337,25,129),(1338,25,130),(1339,25,132),(1340,25,139),(1341,25,140),(1342,25,141),(1343,25,142),(1344,25,143),(1345,25,144),(1346,25,145),(1347,25,146),(1348,25,147),(1349,25,148),(1350,25,149),(1351,25,150),(1352,25,45),(1353,25,46),(1354,25,47),(1355,25,48),(1356,25,49),(1357,25,50),(1358,25,54),(1359,25,55),(1360,25,56),(1361,25,57),(1362,25,58),(1363,25,59),(1364,25,60),(1365,25,79),(1366,25,80),(1367,25,81),(1368,25,121),(1369,25,122),(1370,25,123),(1371,26,9),(1372,27,9),(1373,28,9),(1595,11,151),(1596,11,226),(1597,11,227),(1598,11,228),(1599,11,230),(1600,11,231),(1601,11,232),(1602,11,233),(1603,11,177),(1604,11,178),(1605,11,179),(1606,11,180),(1607,11,212),(1608,11,220),(1609,11,221),(1610,11,222),(1611,11,223),(1612,11,184),(1613,11,188),(1614,11,192),(1615,11,196),(1616,11,200),(1617,11,204),(1618,11,208),(1619,11,214),(1620,11,215),(1621,11,217),(1622,11,60),(1623,11,225),(1624,11,218),(1656,13,226),(1657,13,227),(1658,13,228),(1659,13,230),(1660,13,231),(1661,13,232),(1662,13,233),(1663,13,177),(1664,13,178),(1665,13,179),(1666,13,180),(1667,13,212),(1668,13,220),(1669,13,221),(1670,13,222),(1671,13,223),(1672,13,184),(1673,13,188),(1674,13,192),(1675,13,196),(1676,13,200),(1677,13,204),(1678,13,208),(1679,13,236),(1680,13,237),(1681,13,214),(1682,13,215),(1683,13,217),(1684,13,60),(1685,13,225),(1686,13,218),(1687,12,226),(1688,12,227),(1689,12,228),(1690,12,230),(1691,12,231),(1692,12,232),(1693,12,233),(1694,12,177),(1695,12,178),(1696,12,179),(1697,12,180),(1698,12,212),(1699,12,220),(1700,12,221),(1701,12,222),(1702,12,223),(1703,12,184),(1704,12,188),(1705,12,192),(1706,12,196),(1707,12,200),(1708,12,204),(1709,12,208),(1710,12,236),(1711,12,237),(1712,12,214),(1713,12,215),(1714,12,217),(1715,12,60),(1716,12,225),(1717,12,218),(1799,18,220),(1800,18,221),(1801,18,222),(1802,18,223),(1803,18,236),(1804,18,237),(1805,18,214),(1806,18,215),(1807,18,217),(1808,18,60),(1809,18,225),(1810,18,218),(1811,19,23),(1812,19,24),(1813,19,25),(1814,19,151),(1815,19,226),(1816,19,26),(1817,19,27),(1818,19,28),(1819,19,227),(1820,19,29),(1821,19,30),(1822,19,31),(1823,19,228),(1824,19,32),(1825,19,33),(1826,19,34),(1827,19,35),(1828,19,36),(1829,19,37),(1830,19,231),(1831,19,38),(1832,19,39),(1833,19,40),(1834,19,232),(1835,19,41),(1836,19,42),(1837,19,43),(1838,19,233),(1839,19,115),(1840,19,116),(1841,19,117),(1842,19,155),(1843,19,156),(1844,19,157),(1845,19,118),(1846,19,119),(1847,19,120),(1848,19,152),(1849,19,153),(1850,19,154),(1851,19,176),(1852,19,177),(1853,19,178),(1854,19,179),(1855,19,180),(1856,19,158),(1857,19,159),(1858,19,160),(1859,19,209),(1860,19,210),(1861,19,211),(1862,19,212),(1863,19,220),(1864,19,221),(1865,19,222),(1866,19,223),(1867,19,214),(1868,19,215),(1869,19,217),(1870,19,60),(1871,19,225),(1872,19,218),(1873,14,226),(1874,14,227),(1875,14,228),(1876,14,230),(1877,14,231),(1878,14,232),(1879,14,233),(1880,14,177),(1881,14,178),(1882,14,179),(1883,14,180),(1884,14,212),(1885,14,220),(1886,14,221),(1887,14,222),(1888,14,223),(1889,14,184),(1890,14,188),(1891,14,192),(1892,14,196),(1893,14,200),(1894,14,204),(1895,14,208),(1896,14,236),(1897,14,237),(1898,14,214),(1899,14,215),(1900,14,217),(1901,14,60),(1902,14,225),(1903,14,218),(1908,20,41),(1909,20,42),(1910,20,233),(1916,1,6),(1917,1,7),(1918,1,8),(1919,1,9),(1920,1,10),(1921,1,11),(1922,1,12),(1923,1,13),(1924,1,14),(1925,1,15),(1926,1,16),(1927,1,17),(1928,1,18),(1929,1,19),(1930,1,20),(1931,1,21),(1932,1,23),(1933,1,24),(1934,1,25),(1935,1,151),(1936,1,26),(1937,1,27),(1938,1,28),(1939,1,29),(1940,1,30),(1941,1,31),(1942,1,32),(1943,1,33),(1944,1,34),(1945,1,35),(1946,1,36),(1947,1,37),(1948,1,38),(1949,1,39),(1950,1,40),(1951,1,41),(1952,1,42),(1953,1,43),(1954,1,94),(1955,1,95),(1956,1,96),(1957,1,115),(1958,1,116),(1959,1,117),(1960,1,155),(1961,1,156),(1962,1,157),(1963,1,118),(1964,1,119),(1965,1,120),(1966,1,152),(1967,1,153),(1968,1,154),(1969,1,177),(1970,1,178),(1971,1,179),(1972,1,180),(1973,1,209),(1974,1,210),(1975,1,211),(1976,1,212),(1977,1,64),(1978,1,65),(1979,1,66),(1980,1,67),(1981,1,68),(1982,1,69),(1983,1,70),(1984,1,71),(1985,1,72),(1986,1,73),(1987,1,74),(1988,1,75),(1989,1,85),(1990,1,86),(1991,1,87),(1992,1,88),(1993,1,89),(1994,1,90),(1995,1,91),(1996,1,92),(1997,1,93),(1998,1,97),(1999,1,98),(2000,1,99),(2001,1,100),(2002,1,101),(2003,1,102),(2004,1,103),(2005,1,104),(2006,1,105),(2007,1,106),(2008,1,107),(2009,1,108),(2010,1,109),(2011,1,110),(2012,1,111),(2013,1,170),(2014,1,171),(2015,1,172),(2016,1,181),(2017,1,182),(2018,1,183),(2019,1,184),(2020,1,185),(2021,1,186),(2022,1,187),(2023,1,188),(2024,1,189),(2025,1,190),(2026,1,191),(2027,1,192),(2028,1,193),(2029,1,194),(2030,1,195),(2031,1,196),(2032,1,197),(2033,1,198),(2034,1,199),(2035,1,200),(2036,1,201),(2037,1,202),(2038,1,203),(2039,1,204),(2040,1,205),(2041,1,206),(2042,1,207),(2043,1,208),(2044,1,238),(2045,1,239),(2046,1,240),(2047,1,241),(2048,1,241),(2049,1,130),(2050,1,132),(2051,1,139),(2052,1,140),(2053,1,141),(2054,1,142),(2055,1,143),(2056,1,144),(2057,1,45),(2058,1,46),(2059,1,47),(2060,1,214),(2061,1,48),(2062,1,49),(2063,1,50),(2064,1,215),(2065,1,54),(2066,1,55),(2067,1,56),(2068,1,217),(2069,1,57),(2070,1,58),(2071,1,59),(2072,1,60),(2073,1,79),(2074,1,80),(2075,1,81),(2076,1,225),(2077,1,121),(2078,1,122),(2079,1,123),(2080,1,218),(2081,1,242),(2082,1,243),(2083,1,244),(2084,1,245),(2085,1,246),(2086,1,247),(2087,1,248),(2088,1,249);
-/*!40000 ALTER TABLE `sisgroupsactions` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sismenu`
---
-
-DROP TABLE IF EXISTS `sismenu`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sismenu` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `parent` int(11) DEFAULT NULL,
-  `name` varchar(50) NOT NULL,
-  `icon` varchar(30) NOT NULL,
-  `slug` varchar(50) NOT NULL,
-  `number` int(11) NOT NULL,
-  `estado` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `parent` (`parent`)
-) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sismenu`
---
-
-LOCK TABLES `sismenu` WRITE;
-/*!40000 ALTER TABLE `sismenu` DISABLE KEYS */;
-INSERT INTO `sismenu` VALUES (2,NULL,'Seguridad','fa fa-lock','',2,'AC'),(3,2,'Usuarios','fa fa-fw fa-user','user',2,'AC'),(4,2,'Grupos','fa fa-fw fa-users','group',1,'AC'),(5,2,'Menu','fa fa-fw fa-bars','menu',3,'AC'),(6,2,'Database','fa fa-fw fa-database','backup',4,'AC'),(7,NULL,'Mantenimiento','fa fa-wrench ','',3,'AC'),(8,7,'Equipos','fa fa-fw fa-cogs','Equipo',1,'AC'),(9,7,'Componentes','fa fa-fw fa-cogs','Componente/asigna',2,'AC'),(10,7,'Preventivo','fa fa-fw fa-tasks','Preventivo',5,'AC'),(12,7,'Backlog','fa fa-fw fa-tasks','Backlog',6,'AC'),(13,7,'Registro de Parametros','fa fa-fw fa-tasks','Lectura',10,'AC'),(14,7,'Predictivo','fa fa-fw fa-tasks','Predictivo',7,'AC'),(15,7,'Solicitud de Servicio','fa fa-fw fa-sitemap','Sservicio',3,'AC'),(16,NULL,'PaÃ±ol','fa fa-briefcase','',4,'AC'),(17,59,'Articulos','fa fa-fw fa-barcode ','almacen/Articulo/index',1,'AC'),(18,59,'Stock','fa fa-fw fa-cubes','almacen/Lote/index',2,'AC'),(20,59,'Entrega Materiales','fa fa-fw fa-check','almacen/new/Entrega_Material/index',3,'AC'),(21,59,'Recepcion de Materiales','fa fa-fw fa-paperclip ','almacen/Remito/index',4,'AC'),(23,16,'Herramientas','fa fa-fw fa-sign-out ','Herramienta',5,'AC'),(24,16,'Salida Herramientas','fa fa-fw fa-paper-plane','Order',6,'AC'),(25,16,'Entrada Herramientas','fa fa-fw fa-paper-plane','Unload',7,'AC'),(26,16,'Trazabilidad Componentes','fa fa-fw fa-exchange','Trazacomp',8,'AC'),(28,59,'Punto Pedido','fa fa-fw fa-bookmark','almacen/Lote/puntoPedList',10,'AC'),(29,NULL,'ABM','fa fa-book','',6,'AC'),(30,29,'ABM Grupo','fa fa-fw fa-server ','Grupo',2,'AC'),(31,29,'ABM Sector','fa fa-fw fa-sitemap ','Sector',3,'AC'),(32,29,'ABM Contratista','fa fa-fw fa-life-ring','Contratista',4,'AC'),(33,7,'Parametrizar Predictivo','fa fa-fw fa-bullhorn','Parametro',5,'AC'),(34,29,'ABM Deposito','fa fa-fw fa-qrcode','Deposito',5,'AC'),(35,29,'ABM Tareas','fa fa-fw fa-street-view','Tarea/index2',6,'AC'),(36,29,'ABM Parametros','fa fa-fw fa-adjust','Altparametro',6,'AC'),(37,29,'ABM Proveedor','fa fa-fw fa-truck','Proveedor',7,'AC'),(38,29,'ABM Familia','fa fa-fw fa-check-square','Family',8,'AC'),(40,7,'Ordenes de trabajo','fa fa-fw fa-tasks','Otrabajo/listOrden',8,'AC'),(41,7,'Administrar Ordenes','fa fa-fw fa-thumbs-up','Envio',10,'AC'),(43,59,'Pedidos Materiales','fa fa-fw fa-cart-plus','almacen/Notapedido/index',11,'AC'),(44,NULL,'Compras','fa fa-shopping-cart ','',5,'AC'),(46,44,'RecepciÃ³n pedidos','fa fa-fw fa-check','Administracion',2,'AC'),(47,NULL,'Reportes','fa fa-line-chart ','',8,'AC'),(49,47,'Rep Informe de Servicios','fa fa-fw fa-file-text-o ','Reporte',3,'AC'),(50,47,'Rep Ordenes de trabajo','fa fa-fw fa-file-text-o ','Reporteorden',2,'AC'),(53,29,'ABM modelos','','',0,'AC'),(54,7,'Plan de Mantenimiento','fa fa-fw fa-calendar','calendario/indexot',9,'AC'),(55,7,'trazabilidad Activos','fa fa-fw fa-exchange','fa fa-calendar',11,'AC'),(58,NULL,'Equipos','fa fa-exchange','',0,'AC'),(59,NULL,'Almacenes','fa fa-check','',4,'AC'),(60,29,'ABM Marca','fa fa-fw fa-copyright','Marca',9,'AC'),(61,47,'Rep articulos pedidos','fa fa-fw fa-file-text-o ','Reportepedido',6,'AC'),(62,29,'ABM Area','fa fa-fw fa-asterisk','Area',1,'AC'),(63,29,'ABM Clientes','fa fa-fw fa-user','Cliente',2,'AC'),(64,29,'ABM Criticidad','fa fa-fw fa-line-chart','Criticidad',3,'AC'),(65,29,'ABM Procesos','fa fa-fw fa-sitemap','Proceso',5,'AC'),(66,29,'ABM Componentes','fa fa-fw fa-cogs','Componente',2,'AC'),(67,29,'ABM Unidad de medida','fa fa-fw fa-thermometer','UnidadMedida',11,'AC'),(68,29,'ABM Sucursales','fa fa-fw fa-building','Sucursal',10,'AC'),(69,7,'Informe de Servicios','fa fa-fw fa-file-text-o','Ordenservicio',4,'AC'),(70,29,'ABM Sistemas','fa fa-fw fa fa-cogs','SistemaABM',12,'AC'),(71,NULL,'Mis Tareas','glyphicon glyphicon-list-alt','Tarea',10,'AC'),(72,29,'ABM Plantilla Insumos','fa fa-fw fa-server','Plantillainsumo',3,'AC');
-/*!40000 ALTER TABLE `sismenu` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sismenuactions`
---
-
-DROP TABLE IF EXISTS `sismenuactions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sismenuactions` (
-  `menuAccId` int(11) NOT NULL AUTO_INCREMENT,
-  `menuId` int(11) NOT NULL,
-  `actId` int(11) DEFAULT NULL,
-  PRIMARY KEY (`menuAccId`)
-) ENGINE=InnoDB AUTO_INCREMENT=250 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sismenuactions`
---
-
-LOCK TABLES `sismenuactions` WRITE;
-/*!40000 ALTER TABLE `sismenuactions` DISABLE KEYS */;
-INSERT INTO `sismenuactions` VALUES (1,1,1),(2,1,2),(3,1,3),(4,1,4),(5,2,1),(6,3,1),(7,3,2),(8,3,3),(9,3,4),(10,4,1),(11,4,2),(12,4,3),(13,4,4),(14,5,1),(15,5,2),(16,5,3),(17,5,4),(18,6,1),(19,6,2),(20,6,3),(21,6,4),(22,7,1),(23,8,1),(24,8,2),(25,8,3),(26,9,1),(27,9,2),(28,9,3),(29,10,1),(30,10,2),(31,10,3),(32,12,1),(33,12,2),(34,12,3),(35,13,1),(36,13,2),(37,13,3),(38,14,1),(39,14,2),(40,14,3),(41,15,1),(42,15,2),(43,15,3),(44,16,1),(45,17,1),(46,17,2),(47,17,3),(48,18,1),(49,18,2),(50,18,3),(51,19,1),(52,19,2),(53,19,3),(54,20,1),(55,20,2),(56,20,3),(57,21,1),(58,21,2),(59,21,3),(60,21,4),(61,22,1),(62,22,2),(63,22,3),(64,23,1),(65,23,2),(66,23,3),(67,24,1),(68,24,2),(69,24,3),(70,25,1),(71,25,2),(72,25,3),(73,26,1),(74,26,2),(75,26,3),(76,27,1),(77,27,2),(78,27,3),(79,28,1),(80,28,2),(81,28,3),(82,29,1),(83,29,2),(84,29,3),(85,30,1),(86,30,2),(87,30,3),(88,31,1),(89,31,2),(90,31,3),(91,32,1),(92,32,2),(93,32,3),(94,33,1),(95,33,2),(96,33,3),(97,34,1),(98,34,2),(99,34,3),(100,35,1),(101,35,2),(102,35,3),(103,36,1),(104,36,2),(105,36,3),(106,37,1),(107,37,2),(108,37,3),(109,38,1),(110,38,2),(111,38,3),(112,39,1),(113,39,2),(114,39,3),(115,40,1),(116,40,2),(117,40,3),(118,41,1),(119,41,2),(120,41,3),(121,43,1),(122,43,2),(123,43,3),(124,44,1),(125,44,2),(126,44,3),(127,45,1),(128,45,2),(129,45,3),(130,46,1),(131,46,52),(132,46,3),(133,47,1),(134,47,2),(135,47,3),(136,48,1),(137,48,2),(138,48,3),(139,49,1),(140,49,2),(141,49,3),(142,50,1),(143,50,2),(144,50,3),(145,51,1),(146,51,2),(147,51,3),(148,52,1),(149,52,2),(150,52,3),(151,8,13),(152,54,1),(153,54,2),(154,54,3),(155,40,9),(156,40,7),(157,40,10),(158,55,1),(159,55,2),(160,55,3),(161,56,1),(162,56,2),(163,56,3),(164,58,1),(165,58,2),(166,58,3),(167,58,4),(168,59,1),(170,60,1),(171,60,2),(172,60,3),(173,47,1),(174,47,2),(175,47,3),(176,54,13),(177,54,14),(178,54,15),(179,54,16),(180,54,17),(181,62,1),(182,62,2),(183,62,3),(184,62,4),(185,63,1),(186,63,2),(187,63,3),(188,63,4),(189,64,1),(190,64,2),(191,64,3),(192,64,4),(193,65,1),(194,65,2),(195,65,3),(196,65,4),(197,66,1),(198,66,2),(199,66,3),(200,66,4),(201,67,1),(202,67,2),(203,67,3),(204,67,4),(205,68,1),(206,68,2),(207,68,3),(208,68,4),(209,69,1),(210,69,2),(211,69,3),(212,69,4),(213,16,4),(214,17,4),(215,18,4),(216,19,4),(217,20,4),(218,43,4),(219,22,4),(220,23,4),(221,24,4),(222,25,4),(223,26,4),(224,27,4),(225,28,4),(226,8,4),(227,9,4),(228,10,4),(229,11,4),(230,12,4),(231,13,4),(232,14,4),(233,15,4),(236,45,4),(237,46,4),(238,70,1),(239,70,2),(240,70,3),(241,70,4),(242,71,1),(243,71,2),(244,71,3),(245,71,4),(246,72,1),(247,72,2),(248,72,3),(249,72,4);
-/*!40000 ALTER TABLE `sismenuactions` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sistema`
---
-
-DROP TABLE IF EXISTS `sistema`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sistema` (
-  `sistemaid` int(11) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(255) NOT NULL,
-  `estado` varchar(5) NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`sistemaid`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sistema`
---
-
-LOCK TABLES `sistema` WRITE;
-/*!40000 ALTER TABLE `sistema` DISABLE KEYS */;
-INSERT INTO `sistema` VALUES (1,'Electrico','AC',6),(2,'Hidraulico','AC',6),(3,'ElÃ©ctrico','AC',7),(4,'MecÃ¡nico','AC',7),(5,'HidrÃ¡ulico','AC',7),(6,'Gas','AN',7),(7,'Motriz','AC',8),(8,'Hidraulico','AC',8),(9,'Carga','AC',8),(10,'Tren de Fuerza','AC',8);
-/*!40000 ALTER TABLE `sistema` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sisusers`
---
-
-DROP TABLE IF EXISTS `sisusers`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sisusers` (
-  `usrId` int(11) NOT NULL AUTO_INCREMENT,
-  `usrNick` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
-  `usrName` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
-  `usrLastName` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
-  `usrPassword` varchar(5000) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
-  `usrimag` blob NOT NULL,
-  PRIMARY KEY (`usrId`)
-) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sisusers`
---
-
-LOCK TABLES `sisusers` WRITE;
-/*!40000 ALTER TABLE `sisusers` DISABLE KEYS */;
-INSERT INTO `sisusers` VALUES (1,'mantenedor1','mantenedor','mantenedor apellido','2dc4e4a6fbeab8a7f828efa9aec7d7ad',''),(2,'supervisor1','supervisor','supervisor','2dc4e4a6fbeab8a7f828efa9aec7d7ad',''),(3,'planificador1','planificador','planificador','2dc4e4a6fbeab8a7f828efa9aec7d7ad',''),(4,'solicitante1','solicitante','solicitante','2dc4e4a6fbeab8a7f828efa9aec7d7ad',''),(16,'m.rodriguez@mrsservice.com.ar','Mariano','Rodriguez','21232f297a57a5a743894a0e4a801fc3','ÿØÿà\0JFIF\0,,\0\0ÿÛ\0C\0	\Z!\Z\"$\"$ÿÀ\0ÖÂ\0ÿÄ\0\0\0\0\0\0\0\0\0\0\0\0\0\0	ÿÄ\0R\0\n\0\0!1AQa\"Bq	2T‘’“¡±Ñ#3RVbr²ÁÒáğ$S‚CUc¢%Ds„”4Fd³ÂÃÿÚ\0\0\0?\0˜À–×Zy8ı…r¢\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"¥îİÀ.<‚£«—ıSò¹r Œ‚¸Á,Ã\\rÓÈÏ¹QR÷nà—AİÜ’rãÌª‘| AP	i\rwG»À®DDDDDDDDDDDDDDDDDDDDDDDDDT½Û¸\0eÇF7w$œ¸ó*¤D_FATZC]Å§‘îğ+‘/vî\0qäİÉ\'.<Ê©ÂU\0–ù®9iäOg\\ˆˆˆˆˆˆˆˆ¼}Y¨lú[OÕß¯ÕÑPÛ©¿,²ÀÒy\09¨aµ™:²á-6Ïí”ÖÊ’WY–y?[tù­+\Z»¤şÚœòïñh9À£„İ_?	ıµ~—Ÿş?ÊŸ„şÚ¿KÏÿ\0å^¾éi¶eS$­¹[îĞçCSFÆ‡¹®úÔ·èù·½7µ˜B#÷§P@Íéh$8H;_½!áÌ}k2\"\"\"\"\"\"\"\"\"\"\"*^ì`—AİÜ’rãÌª‘| ‚2\n Óºã–G»À®DDDDDDDE½ÑzZÉvUe«‚y…47PÚˆÚâàèİº\\;pGZˆ‹$th¤¬­ÛÆ§¡¨–cqcËãqiİh.pÏqkH>µµDDDDDDDDDDT½ØÀ.<‚1»¹$åÇ™U\"\"\"\"\"ø@#d@%§uÇ-<w\\ˆˆˆˆˆ‹©t¸PÚíóWÜjà£¤¥òÍ3ÃÆd“À(‹·N—ÑÓ¾{ËádÎcïósÿ\0I‡Ÿí;äíYã£«¯Ö›Ó÷Û­[êî/Hª¦Â{Ù#›“Ò\0>ÕäôÊ³{õÑçR44Q²:À{º·‚~¬­e\"\")ĞÍï–İ[^æoGm·Í6{œì5¿i[P“h=\'5~‡é©èiİ\rßMÓVŠo ›‡WÕ´1ı[Ç’àãÇ#*Lìwkš7j6¯)Óµû•‘´\Z›|ølğŸéÖ!\"\"\"\"\"\"\"\"\"¥îÇ\02ãÈ#»’N\\y•R\"\"\"\"\"/„0FATZw\\rÓÈ÷xÈˆˆˆˆ­­¢ë]= 4ÅF¡ÔµÍ¥£„a£›åcßIÅk«¤İ5>Õ®n†I$¶éøŸškloà{!ôİõÅˆTø÷:o\"¯eW›+¼û}ĞÈy6V•ùT‚Ú©—½}´=›â®ß4A½ä°ãëÂÔTñ>	ä†A‡ÆâÇâ\nâDE3½Í‹0ÜÕÚ€ŒÁFÓáÅçø)‰W<t´“TLwc‰{Ïp%jXÜå¼êË½ŞwoIY[4î=åÏ\'øªtİöí¦ï4÷‹Âz\nêgÅ4/İp?Äx>º/tŒ·m´Şª’~¨ 1Ù\rŠ»¬î{~E\"QR÷c\0¸òÆîä“—eTˆˆˆˆˆˆ‹á\0ŒU\0–×´ò=Şr\"\"\"/Zê[>ÓÚûVÚ[}fIyæ´v¸\0w•¬Í¾ífùµ}_%Ê¹ï§¶@Kmô!Şlï=ï=§Ø±ª)cîo^L\ZãRØœü2®•\ræøß±åNsÇZ–Û-˜éí«j‹60)ns±¾­òGÔU ˆ‹b½¬¾öì*ç³¹×Í8w{>¶¹d­½ŞEƒc:¶ëÓ®f4ø¼n­ËT\'ñsÒTOKUM4¯†xœŒv×Aì+a6ïÑ­Lj9™©¡ˆîB¶!é×ö÷âB¢\"\"\"\"\"\"¥îÆ\0qäİÉ\'.<Ê©Â#!P	iÁ9oaîğ+‘|$\0I8™Zòé§¶5Ö°~“²U§lÒ–ÇyµUƒ{Ãxí=ª:¢,ÓĞ®ò,ı!ôşñÃk„´g=¥ì8úÀ[/ZŞéÑf÷§¤Î¡¬ÜŠãM[<IfëÎiX!×:>Ù…ƒbšBÖ[ºæZâ‘ãÃ¤c‡Êâ±ßOK×½›©£d»’Ü«a§óš	s‡ı«\\è‹×Ò—ë¦˜Ô47ë-Sékè¦l°ÈÓŒØ{ÁäGh[EØ^Ñm»NÙå¥£Ü ªºœ˜\'hó›êí+ñ/v8—AÜq\'.<Ê©Â#!P	iÁ9oaîğ+‘é´§lÿ\0eÛ§êïW¢hèËOHüdƒÔÓâàµªI$’rO5ñ\\›1ººÅ´M=wc÷<–åvq†ïŒıY[qŠFË%aË^ĞæğT$÷IíqG©´…äÖÔÑÏLáÛˆŞ×ÿ\0iQzZj‹ß=Gm¶ï†yU\\PïCyàgë[~¢‚:jH)¢hlqFÖ5£\0`=Ò{Ö)t–k¾ç¬p\00gç‘gÎ…;L~†ÚŒVZù‹l×÷6–`O›Ùü\\Néğ>cˆˆˆˆˆŠ—»\0Ë Œn2IË2ªDDDDDDDDDEğ€FÈTZpN[Ø{¼\näDZ×é§­ß¬6×p¥†mû}y8-.o=n\'äX=K]–tÄ­°é*{6®Ó³]ê¨âCYO0c¥hoXn1ÄsîXCo;V½mgW6ót‰””´ñu4Tq¸¹°³99=®\'™õw,rˆ¹#‘ñ½²Fâ×´‡4`Õ/4\'M	íÚ^\ZS¥å¹])âŠºz†±³0ö‘æüeG´í&õµ-k6¤½áóT´±YOäÑg‰$ö•c\"\"äŠWÅ+eÅ¯cƒšáÌÈ­¨ttÖ¿ãíØu²oÕ˜<°ÿ\0ÖÍq>¼íYRçc€qäÇrO2ªDDDDDDDDDDD ƒÅq‚Xpx·°÷x.Eoíı–Ğ—ÍE)Ãmô2Ô{ZÒG×…©\nú©ë«ª+ªd¢WK+¤çIùJë\"\"\"\"\"\"\"\"\"™şæş¨s¡ÔÚ>i80Ç_NÒîÿ\01àcOµL”DDDT½Øà\\ycwx“’y•R\"\"\"\"\"\"\"\"\"\"\"!\0Œ+ŒÃƒÅ½‡»Á`şœ·‡Zº=İ¡å’\\* ¤iÅáÎÖ´…­´DDDDDDDDEº^kéj§Îr¦¨¤wÔß\\al‰R÷c€qäİâNIæUHˆˆˆˆˆˆˆˆˆˆˆˆ¾Áâa÷Cœév_c¶²P-Û­c§¹Æ3ßç(àZâ×8 ö*Qdn52RíëFKÂ7X™ìqİ?Q[RDDEK‰<‚5¸ãÌeTˆˆˆˆˆˆˆˆˆˆˆˆ‹«s®¤¶Ûê.Ó²–š7K4¯8kÑ’O±Am²ô¹ÕWkÍEÏŞË572©ñÔNø|x0À8÷•‚uÆÒuÖ¶§‚ŸUjZë¬4òadÎÄc#\0v/Í¹³\\ÑêæûWœàZâ×8 ö*QzËs¯³]©n¶º™)k©%l°OÃ£x9x¬¯¦ºKíŠË\\Ê‰5\\·FeĞ×DÙ\ZáÚ9=…M¾[f´msNK4p6†óE]E¿Üò{kW%–.v8$òÖã‰âO2ªDDDDDDDDDDDDDX7§Ò²ÙÑæğ(Şc5sÁM+‡únxŞÜake@A‚9½»rf\\ÑÀòæûWœàZâ×8 ö*Qgnƒ7JËH]=6û¢®§š\n†ƒÃwwxê-dH©s±À¸òÖãŸy•R\"\"\"\"\"\"\"\"\"\"\"\"\"+?lZ*›h[7¼i:‡ˆÍl?‰Œõr´ï1ŞÇ\0µm®4÷Fj*›£·KC]Nâ^ÜÇ4òsOaÀEP$A D/DnÜÙƒ†×4p<„Ãù¾Õç8¸µÀ‚=Š”DDDDDDD_@$àq*jôØıÖÓY.ÒuèúÚsª	ZZ÷5ß\nRÓÈ0=¥L%K\0eÇF·¹\'™U\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"ğ5nÒÚº‘´ºšÁo»DÜîyLå™çºîmöfş{ı¶|é?™?½Œş€Û>tŸÌŸƒŞÆ@mŸ:OæAÑóc@‚4´È‡IüÉ>À¶=$»óhKcÉô‹¤Ï·ÎúÓğ{ØÏè\r³çIüÉø=ìgôÙó¤şdüö3úlùÒ2~{ı¶|é?™?½Œş€Û>tŸÌŸƒŞÆ@mŸ:OæOÁïc? 6Ï\'ó\'à÷±ŸĞgÎ“ù“ğ{ØÏè\r³çIüÉø=ìgôÙó¤şdüö3úlùÒ2~{ı¶|é?™?½Œş€Û>tŸÌŸƒŞÆ@mŸ:OæOÁïc? 6Ï\'ó\'à÷±ŸĞgÎ“ù—¡§ö1²Ë\rs+­z\ZÏCX÷ÃÖ–ñ¾NˆY\0\0\0\0`ñÎÇ\02ãÈ#[Ü“Ìª‘Z[R×ú{fúmº‡S>©”&vÁ½O•ÁÎŒÈp<V6³ô«ÙÖëKl¥­»yE\\Ì†-úï8€2sÀd¬ìˆFF\n yœÁì=Ê´DDDDDEö»µÍ²Æ[Ÿ«**ã €SÓ™O™»œàğøA[z¤†Í5¶­ Òö\n‹¬·*ç9°¶J\"Æù­.9$ğàÒ³\"¥ÎÇÅÇF·¹\'™U\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\",\'ÓjØn]oåŒŞ}#à©o€l­Ş?4•­û=K¨îôulvë¡’İ‡·h¬eÂ×G_äê`dÍõ9 µvÑÈÁTgpàüÃÜ«DDDDDE=Ò©—\\i›;^i­ïÃ<œùû\Z—Ğ2Ø. ¨êKr((**sÜpÿ\0ö¶2çc€qä­Ç‰<Ê©£¶/ø‹ešÈ]Wl6ğäíÃƒëÊÔ±ÈàF\nÚ—FËïø‹aºNä\\ ·²	8òt~f>F…‘QŒŒ@óÁì=Ê´DDDDE­>›7±zé	{dnÌvöEFqc÷ÖJÊ~æı‰æõª5‘ÖSÅIi..³ƒT×kqâO2ªDDDDDDDDDDDDDDDDDTHÆÉ£xË\\#¼©±Ø¥¶§©l/nè¤¸ÊÖ\08n7ê!LŸs·R‹†ÌnºjGƒ-ª¸ÈÆçW(Î}[ÁÊP¢\"‘‚¨gğ{r­u.•Û­µW\n‡5°ÓBé^IÀ “ö-Lj»ÔZªïª.W][,íƒŸ¼âCG€SÇ …•ôy¢ê¥»ÖÉ;Z\0c1áÀ©ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆµıîƒéWZ6³I¨âŒŠ{ÕKˆl~k‡¯§Ú¼~‚šÀi­¶Áj¨—r’û¨İ“Ö:2} ·ıËc(ˆˆxğ*–ŞÈìU\"\"\"\"Ã1õ„ZKa×QŸó7w6İ·K·ó¿Ç³ãêZİh©»Üà¦‰™’i10p8\0¶}›éè´‚±i¸šÖ‹}P»‹ÃFñö»%\\Hˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ‹\0ôèÑ®ÔûéMYY`˜V·\'ªø2Vqı…¯;%ÎªÏy¢»PÊèê¨çdğ¼skÚàà~P¶Ï³MQG­t%›TP¹¦+…+%sAÎãñ‡·ØàG±\\hˆˆˆˆˆˆ º®›ÚM‘¢›~’Áë°x\Z‰0]ò44zò­†:0êíºZåš-ú07\Z‚G³òcÚòÓàVËu.´T×;mMº²&ËMS¡•k†ù\nÕ×4}VƒÚ-çKU’©p…ä|8;Ç-#Û•\'=Ï-£†›†Í®3½½[lŞ=¿ñ>§|ªg\"\"\"\"\"\"+KkšÎ‹gû=»êªç7p	ü¤§ƒ=n!jÿ\0t­¾^«o7Œµ•³¾y{\\ã“ö©õĞ+A3²É55l;•ú†A+w†§fDcÚwíR=qÉ,Qã¬‘­Ï,œ*ÁAä¾¢â|ğFpù£iî.r¢\"\"\"\"\"\"\"\"\"\"\"\"¢R[œ9€HP×¦6–›Ri¹uÔtÑ>¦Ûa«sçË¼×“àN=¡DÍ¹imQmÔV™ŒUÖú†Ï»È<Ağ# øµ=“k‹^Ğô-»UZŞ®ª1×Eœ˜%3âÕƒÚ®ÔEnWßäQÁjŠ0•­{n{•Æ­ªKôÕz£Şæ±¬…íwiq\0«•éÙµQªõtz\ZËQ¿i²HMSØrÙª¹X`áë%aİ†è\Zİ£í2Õ¦)ÚæÁ,md¸á\râ÷|œ‰huıVÒì†İ#†C}h {§FUÔWZ_=K÷ä38gÃ{ˆˆ™Efm%Îk¨‹\\Fw¹R¹­Ò²;=4²=¬`§cœç\07GVÛJ-¤äšÙ¤¨ß©îŒóL±’ÚHİû|ßşŞ**m¤V×u<ÏeF¡ÍLüâšÜŞ ûCÎöåbúûíêá8ºñp«—x;~j—½ÙIæ¦§D^‘Œ¿²—BkºÖ¶ìĞ#·Ü%vP£yüşãÛëRÅy—»Í%©3éğX9•àŒß½Ÿ\";êà³\\ã»P¾x˜æ\0KH=øXÚĞÍm¹Û.TB¶’áJêia<œ×p ûÚ¾“n…Öµ–…²FÓ‡oÒOÄu‘æŸ_añ\"ôKÚt»5ÖÑÛ*ê6•¾Ùsÿ\0—”cê>¥:ô¤é	±˜ŒBV=Èp8Á»ŠöîU¥·ÔT´:(ÜğnW‘a¾Íq·ÖT:&µĞ´Şÿ\0eÔ\\ç–úÛ‘‡µÁ˜í^ÙÕ·SÊ„|Â¼J+•U=íÕñBîsæé<ó\nõÒ×jë“§”â!¾iùWyÕUXê;TG»¿º\\Iğu©o´25×\ZLÆãéÄXO¨«ÂÙ]Â‰•P1Ãˆ<Ú{AVµãUU¾µÔvˆC·]»¿»¼ç\0±~ß6¹sÑ:6¶ÔéÌWúè¿âÍ×SBA—ıñõ(\ZÚúÊÙä÷®¸Ş%Ïs:Ç¸×8ö•6º$hA¢l]®ö¦Gu½îoÁºè æÖärÏÂ>Îå›µüµá‚(šM!`2Ş\0ç½xV:‹ìtE–Ö9Ğïœá¹ó°3üÛYvšÙ§!ª«nj7wO;Š¶ÛuÔ•mD¸î[¬à¯->ú—Ú)ßY¼ƒ¿‘Çá}I~¸6Ûm’©Ã$y­äòV}3õëz¢Øóƒ€¹èn·›MÅ”×ß+yc\'á|ÚÅU55u\\Ì‚Hù$yÀk@’¡ïHMº]u|ØìÕS[´…=4aıY-–âíÑÁÇ˜gêü«QTÎòû¥d†*VÅÄŞç±£Áx×*ÉkªßQ1âãÀ@w.ª—İz:>ºj- kº72‘…³ZíÒHâÙd›Úo>JlÀ/¨ˆˆˆˆˆˆˆˆˆˆ±ş°ü^¬Z¦¹ÔùŒã½£j¹é«,5µŒ4øpÀ\0½*()éáÜ¦c[;Øo.*ÆÙäqÉwœHÆ»29à­î”›+¡Ú.Îk]<B÷m‚Iè%Æˆ1“Üqò­}i*zŠy¥£¬‰ñMIZĞèŞ0Xí×‡=‹;t0ÛlZräí+«ê÷mF ÊJÙÿ\0LKÚ3\'ìõ)¿x‘“iúÙ#{^ÇRÈæ¹§ ‚Ó‚\n·öiÆ\Zö#,ÿ\0ú]Û\ZÍ}C@o_pôUùÔÅş›~Eb[\Z´\'´»×ËÃı®WÄà6RÑºw/RÇº6¾Šİpšjçnæ=ÖÜœçŠöõşË]h¨¦l®|o™˜ÏÂì_4İï%kwšòG‡š±>¹Ú½Ÿe¶K•ÆvÇYy4ßä¨·¼ç8¸\rçw0g·Pnç©núÏTİ®ú†àê›•Ò7#İ½ZÑØ\Z\0À‹,ôMÙÿ\0¿ï}õ=²gXmÕM•¬>o”ÎŞLÁøL	ùôµêK]d¯0¼ğk^1ìî\\ÚÄgMV~Ëx/?fçÿ\0˜ù.ıÖªv‰ä¶Ón0¸‰»^¦”in£kiâ¬®KÕÚÕo¨\"B@À^¶ªev—¥ª‹!’T4ŒşË—­£1ş\Z£Àìwïê>(Şö½ÌkœŞDJôşÚY­«¥Ğ–Z‚)é$¾oaøra¤EêÏ©E7Öšùèa¬qe,Md\\;\0\0«ÔÎ˜Wuhe<c5¿w°ûW¥çD>n¸šM}¯¨O‘Km¶ÌßËv‰dÑîoo3ÁM¦µ­hk@\r\0ÀR\"\"\"\"\"\"\"\"\"\"\"éÜ­ôwúº¨Úò9Ğ­ë’£e<³SÌøÜÆ—<­_)¥•ÅìŒÒ{9ğ]y·Êÿ\0Dû‚¼ïC6zÑßO\'î•ö¯±·ê8kun–¥ë£’¶™ƒRÀ7š;^>°¡Å¦	÷\Z\'4²wBæ8`ïG¯‚Ï]z@jA>“Õl©¹iÖÒÈ!‘À™¨øri?	Ÿ«ÙÙÜ¥æÃµ›RÚª®6;Œ´¯Ü;Ñ»%§`øÙÕÎòm_\rKÁÜş°1÷+æš¦\nˆÚøecÃ†F\n°æ™´\ZíÓÏæ°NâOƒúÕ÷ÖÅSÄ2²L´üg˜X÷KÓĞKx–šäÖ`‚\Zqçe]7^š·Àf¬§‚&Îqãõ¬/¶\r¿é-¬º&(.÷Z°æ™¡võ59\r?	Ùóú£Ú ­ÆõtÔ×«µâ®JÊÉÙ¼ù$?®8à;\0ä¯û!ºíKSyÎ’‹OĞ¸>åpÆ=Æ×Ÿ«šÙœ³i«^Ÿ£³Z¡¥4q6([â\Z;Ï2OiVî´‚ÛOW·î¶^=cXrwµ]W(f©Ò’FğL®§ƒü½¡nô´1OIU ‹yûíqåÈ}Jöc¢&Èİ×±Ã-<×uu%½Œ526&¸áªĞ×Z*újxéf9¯$ã±sÜèæv¥náŞˆ¶B<8ıëŸGŞ¨b´ÇKQ3b’\"GÚ2Oñ^>Ô6—C¤tÅÆï< RÓ¹Ã“ù0üœ-lëÉ¥ªi¬¨¨}EEEdÓM#I{ğç}euå’z:Kk˜Ø¤}3$ŠN÷‘ÄZëSW­5¾eLDˆîÿ\0Í*Eô\'Ø§WWTk]R#©¤µÕu4ö÷7Í’`Ş“½£#´óS¹­\rhk@k@À\0pTˆˆˆˆˆˆˆˆˆˆˆŠÔ¾Û¯Ï¹ÉWG7˜qºĞì`/=Ô:¢±¦dxaç“…qé›3-ÎÛóIÅîşÍÒö:ËuÚZ‰Ë:·0ƒâ\n¸ëâtÔ3Âß…$nhõ‘…âhû5M¥ÕPæ³w¾Q÷¤ÏFfjšêc úº;Û‰–¦àÇR{\\ßÍÔT5»Ú¯VêÚ‹]â«Èª!qhf¯iíÜÑúÒñ \'u^‘¿ÖRW=ísŸÃàæH#ÒÖ­$4[C°â¦1†Ümœ7¿j\'°ú‚ÌÛ9ÛVÉ¦ª5^PÓ‡3tEXÇ@àIÁ^×mK³@ÁUO­,mpë[X%yT;JÙmCî;D±?|1“‡;†y\0NV(Ú?I=–6¦GéÉ.\n³œ»¨1@]ûGÎö€TyÚ×õ¯l”õš´ÃÎŠÛÚdÎ{°OÙà±ÜhEÎ›˜(`Ş\r`óFñï%f^;¹í\"in/®‹MÈCe¬}7VeÀ–Å’w0>¥<4æ‰ÓúkGÃ¥lM·[an\ZØ¾kœ}\"OJèË¢8æ*ĞGë3¿hÒtts6z‰\rCÚrh?Å\\˜Æ8w+~á¤­ÕSºV9ğ—ŞKÚ¢´Ô‘S´—66†‚{pº—ËDh£w¹¢2Hİñ]\n=%m§˜Hâùps‡r^ó˜ÇFc-„cá…oÖé|òÆ]O!ÉGîœ³Si“PÒQùõW;‹#%ıŒc\\òG´5B®Tï¡õ°¾R$s÷Ç¸.•¬ª–BÃb¬o<`İ)ç¾®—¬€°;ã’]\0ë[_²Ë¬í‹«>ù–Ÿ1¼TDD^&¡Õ:{NÕÛéo—ŠK|÷úŠ6M i™øä?¾åí¢\"\"\"\"\"\"\"\"/\'Qj+¢umúñCl§hÉ}LíŒcÚx¬/¬ºYìšÂçÃAWp¿NÒF(iüÌşÛËA¬¬Q¨zn\\^ç7OhzXG£%u[Ÿòµ€cåW/F‘º»i{X:sQÓÚ)(å¡–XKšL­- eÎ$ù»ß\"–‹í§bš/jt\'ßš3IucqÊ˜ÌÎàîÇ·ÀıJmw£VÑ´²ÕSĞ:ÿ\0gfKkh\\æ·õãøMúÇŠÂ²Æø¤tr1Í{N×Uˆ®­³ıa®n-¢ÒÖ\nÛ‹ÉÃ¤dx‰.yó@õ•/öÑ\nÑf–ÎÑªb»Ö7e¶|™‡õİÎOWëRš–:ZH#‚šQ´5¬\0r°‹ô†Öµ›>ÙëTÛ®¥lm¦ë[¼Ò÷½­\0Şj(Y:kkšw´]ôÅŠº1Ï©2BóíŞpú–IÒ½4ô]kÙ¢ÓwkKœxÉ›Q}ß Y«CmfºÌ1¶]n–wò§šN¦_˜ü~‚AäBúˆ¡ÿ\0ºVãï6ŒnN\rEQ#ı±¨Nˆ§¿¹ÕQöWy¦lÑºhî…ÏŒ8o4;\n”(ˆ¬-µm?Ol·IÉz½Ê$¨x-¢£c¿S&8\0;yìZÕÚĞµÑu|ú’ÿ\0VçLãŠxXâ#¦fx1ƒ³üÉâ¥¿Bı½ÕjwÓìçWLùîÑÄ}ì¬9.¨c\ZIçóšĞHwhãŒ°DDDDDDDEö«µí	³J#&£¼Ä*÷s9TIê`ä<Nˆ›Sé¬ïÎš‹EÒÅ§(ZÙÜµNûÇÍo°dw•µúõ¨+Ÿ[{ºÖ\\j^K%LÎyÉçÏ’òÑ\\Û/Õuz_Ùµ].’İRÙ\\Ìã¬g\'³ÚÒGµmkHßíz«MĞj+=Kj(+¡lĞ¼ÃØ{ˆ<ïØDEaë­‘lç[;Pé;|ó¸cÊ#ª”½¸+ê†=¬•ï´_/v²x¶=öLÁó†÷Ö­‡ô¤ß;›@œ7<·qó×~ÑĞNÆğnºÚéPŞÑOLÈ³ó·–JÑ½¶C§ddï°ÉwÆc+IïÜàß©fU¶‚ÕFÊ;m=;4{î\"\"…>è&Òa¸UĞìÒÏ7\\i%W3Ïã1ˆâáÚ.#Äw(€ö¹,{K\\#B©®sÒZàr<BÊ[3ÛîÓt#ãİ¨&® aãE^LÑÜ3Å¾Â³ÙK]ªŸ¿UÄtÅÍøh’GoÒÈ|Í§pñR.–x*©ÙQM4sC Şd‘¸9®àk™E¯tjÒú­™X¯°»Èn[È²Fxü­hö¨ˆ¯”kıC³m[O¨´íWW#lğ8ª¢<ñcÇhñæ9…²­‹m;NíKIE{±Ê;0ÚÚ\'¸u´Òc‹OxîwhùúŠÂÛVÔ4öËtœ—«Ô¢J‡‚Ú:6;ñ•2v\0;yìZÓÚ®¿Ô[GÕ“êCRd•ä¶ZOx1ƒ°}ªĞYû e¡÷.4Um²†¢¥Ç»-êÇÿ\0±liJïr ´[g¹]+ ¢£§a|ÓÌğÆ1£´’¡ßú\\UU¾¢Á³êja–Ix‘¿Œ“ÿ\0I§àÖ<|‰w:êÛtÕ×\Z¹êê¦qt³Lò÷¼÷’x•ÔDDYó¢¶ß*ö]p÷÷ÖÖij¹C¤cx¾çœŒ£½½½œVÂ4ÕòÑ©,Ô÷›ÆáAPĞø¦ÁÍ#øÄ/QRçc€âân<IæUHˆˆŠ;t éjÙõ¾£NiZ˜kõ\\ƒp–ùÑĞƒé<ò/îo´øëîã]Yp¸Op®©–¢®¢C,ÓHì¹ï\'$“ß•ØmÁ!µcÏ(î>=Çû{Úæ<±í-sN#B\"ÊûÛ®¹Ù…\\p[«\rÆÌ\\:ËmS‹£#õ6WÈ¶C³ëüº§G[5¶šÛK«¡ù%XXóxì<ÇÅ}5ïÚVƒb7k6¢¬\r­¹4e;8É$Ìps]Æ‚Oß…­´DW^ÌµŞ¢Ùæ¨‡Piº×SÔFq$nãìícÛÚÔ³Ÿá¥´oùŸú9?™?\r-¢ÿ\0È´÷ÑÉüËíC_ê=£j™µ¤¬ë§w›MáìcØ>ŞÕh¢œ~çNŒ}—½ëz¨°ë”¢’‘ÿ\0<—ëqÇûTµDDDDDDVÖÑu®Ğ\Zb£PêZæÒÑÂ0ÑÍò¿±Œo¤âµÑÒnZ›j÷WE,’[´ü/Í-¶7ù¾úNú‡bÄhˆˆˆ¯í‘ícZlÂéåZjäáM#†o>	½mì>#Lı’ô²ĞZ©Ñj‡/sv3»z•çÂOGıØõ©n®¢¸ÒGWAY]<ƒy’Ã {\\;Á;ƒº8¸¯­nèï\'™ïU\"\"\"ÇÛGÛÏ6Nó¨µ3jš2(©Ü%¨w†ãyzÎŠˆ;mégªuTsZ4T2iË[ò×TofªVşĞàÀ|8ø¨×,²M+¥•î|%ÎsK‰æI\\Kè$zMsn†Õ´a<£¸ø÷ìyïk˜òÇ´µÍ8 ŒUèœ’TÌè‡ÑËI´\r Ñqá-²Ù3yv‰eå\r>²¤6Ü¶­§vS¤Ÿuº<M[(,  c°ú‡õ4vÏZÖ¦Ó5Æ Úª¨ÔZ¬ÍS)ÄqÂÎÆ0v4+]]2Ñ—m­­Ú^Ïtõ’€÷ãÍ†1Åò;¸’¶«¡ôå»Hé+f›µG¹Go§l1÷»‹‰9>Õí¢\"\"\"\"\"·¶«¬zJVê]CTÚj\ZVdŸJGz,híq<\0ZĞÛ¾ÖoûWÕN¹ÜŞiíĞe´\rvY;Ï{Ïiş¢\"\"\"\"+ÇBë\rU£d+£¸Ú£Ëb‚r3‡{>	$L¿¤úaí2Õ†]é-7¸‡l±¤>·4ÿ\0“ì=6ì2²÷¢ëéİé>š¥¯oÈ@*ñ é…²IØ:ñ~¥v9:ˆò‡/Tt­ØÉ\0ûùZ?öO]jÎ–Û§eÂëQÃ8Š„üœHVåç¦Ï©÷®Á~¯=íd9úÊÇšŸ¦Æ¡œ>=;¤mô`6Z¹+š}CaÍmÒk\Z´IÃVURS?=ùvÛç}kK#å‘ÒJ÷=î9sœrIñ+ĞH9\nôšæ\\#µ•mcÏ(î>=Çû{ØöÈcs\\Hâr™]ú9cÉ6´\n.<%¶[&o.Ñ, ü¡§ÖT‡ÛÕ´şÊt›®·G¶jéAe\r‡Ô?ø4vÅ­]¦kA´-YS¨µYªcˆãñp3±ŒÕZ¨ˆˆˆ‹×Ò¶¾§¾ÓXì43W\\*Ÿ¹17$øà9“Ø¶9Ñ“b–í“iÃ5K£«Ô•ì]TÇ>©Ÿª3Ú}‹2¢\"\"\"\"\"ëÖUSÑQÍWW3 §†Id{°Ö4’O`kc¥NÙjö§¬OA+ãÓ6×¹”çiäfpï=ÁadDDDDEèRÀÆÇåu`õ^ƒ9OİŞ±×«¨’¦^±øhà\Z;\0®ˆˆˆˆˆˆŠ¡œŒg=˜SK¢wGÃ3h5şĞ­Ã®n$·PÊŞ$z2ÌÓÛÜ>^ÌH\r¹í[Oì£J:ët{f­”ĞĞ±Ø}Cÿ\0ƒGiZÕÚf¸ÔBÕ•:‹QU™ªf81ù8#ìccGõVª\"\"ïÜ-WKsauÂİWFÚ†	!3Àæ	y9¹Gˆ]\\ô´óÕNÊzh$Wœ1‘°¹Î=Àk7ì›£Ñµ¬‘U\\¨¦íNÁ5ì\"W7õbøYõáMÍŒì{Gl®Ô`°Ñõ×	ZMÆpóxgÑoê­ddDDDDDEz{ímöë{vcb©İ©¬`–ï#Å‘-‡ıÜÏ†iP…z°1±ù]X\"/AœŒ§îï?ØëÕÔIS&ûñÜÖ£°\0ºèˆˆˆˆˆˆ¾€IÀ*ftDèå$ÚĞh¸ğ–Ùl™¼»D²ƒò†ŸYRn{VÓÛ(Òoºİ\\\'­˜PĞ±Ø}Cñõ4v•®\r¡ë[ÖÓ5$÷½EW½qy\"ƒˆ™r\"hô@ì=½½êÍ{\\Ç–=¥®iÁ`‚¨DE,z\"tr}ıôºï^Q¹¶–‘%¾İ+pjˆå$ƒı>áéz¹Ík¥–Ïu¢òªŠ¶˜\rŞ¦x\Zöc»aX}€ìvæ÷>«AZšçsòpø°FFV‹£†Åi$ë\"Ğ”nwıZ‰¤#B¾tÖŠÒ:d§ôÍ¢ØHÁu5#ãë d«…·´YoÑ\ZíªnO};¤\r\'á¿“X<KˆÕª=a¸jOpÔWiŒµ·\n‡O+y<‡€Ô¼tDDDD^…,l~WVUè3‘”ıİçûzº‰*eßyÍhà\Z;\0®ˆˆˆˆˆˆ‹èœ’TÌè‡ÑËI´\r Ñqá-²Ù3yv‰eå\r>²¤>Ü¶­§¶S¤İtº=³WJhhì>¡ÿ\0Á£´ö-jí/\\j¢jºG¨ëõ3GáìccGõ*Ö!zMs.1ˆä U´a<ƒóOqşÇö¹,{K\\Ó‚ÁPŠXôDèæûü”ºï^Q¹––‘%ºİ+pjˆå$ƒı>áéz¹ÍÓ=%<ôôFh!|\"wƒKƒGÖö€1Ë’í\"\"\"\"\"\"\"\"\"†Şè®»pÍ³Ê)Èÿ\0Ä.§Ÿ1ıÎÇì¨`ˆˆˆˆ‹¿Kª«iê½r2Ÿ»¼ÿ\0c¯UQ%L½d„w5£€hîĞ	8$©™Ñ£–<“_í‹	m–É›Ë´K(?(o´©\r·=«iİ”é7İ.’	ë¥´ö8Ô?ø4v»³Öµ©´Ís¨6‡ªê5£«3TÊqcƒ!gc;\Z®‹è89Òk™p`BTÑ†<ğÍ>=Çû{ØèŞæ=¥®iÁqJîˆ}Ÿ~’—]ëÊ72ÒÒ$·[¥n\rYì’AşŸpô½\\å†Öö‰¦ö]£¤¾_&kÆõt”‘àIPüpcÚy\0µûW·}YuÛ•¯iJƒşB¨u4Q¼ˆ¡¦\'‰¾¶““Úx­—Z«é®–Ê[•‚Zj¸Y</œÇ\0Aù\ní¢\"\"\"\"\"\"\"¢G¶8İ#Èk\Z	q=€-RíçVI­v·¨µçE5cã§çv&ÖV±~–6!WVUè3‘”ıİçûuTÊd~;šÑÀ4v\0]Ğ	8$©™Ñ£–<“_í‹	m–É›íÊÊí*CmÏjÚwe:I÷K¤‚zérÊ\n;¨ğhíwg­kWizçPmUÔj-EVf©”â8ÇBÎÆ0v4+YÑÀä)qÑ?£ëµ#huæĞh-Ñú\n9\r`IGæÎşŞ\nTíkhšoeÚ>Kíòf±Œ]%$xT?Áüy\0µ«¶¤ê-§êé¯×ùÎ2[KHÂzªhóÁiæJ±ÖÇú\rê÷jm‡ÒPÔMÖUÙ\'uòrz¿…}‡ÅQX] õÒÛÕ7¦IÕÍ¾FBê<n7ërÕ\"\"\"\"\"ïÒÁcU`õ^„|Œ§îï?Øà«¨’¦S#ñÜÖ£°\0ºèˆˆˆˆˆˆ¾€IÀ%LÎˆ}qäšÿ\0h\\xKl¶LŞ]¢YAùC}¥Hm¹í[Nì§I>éuM[(,  c±%Cÿ\0ƒGk»=kZ»L×:ƒhZ®£Qj*³=LÇÆâágc;\0V²\"\"–]ú9¾ÿ\0%6¼×”e––‘%¾ß+pjˆå#Çú}ÃÒõs–ZÚ&›Ù~’ù}•¬c[ÕÒQÇ%CñÂ6ãÈ­ı«í÷µ}M%Şû8Šv’Ú\Zf8õ0ÅœˆÀ<ëv~ØèŞæ=¥®iÁqP¥o¹Ë¨I¯/ÚbIW_B*cgfüNÁ?#¾¥:ÑG/tğmû\rŠÜ×`ÜîÂ@<ÚĞé>L°-z\"\"\"\"ïÒÓÆÈEUX=_ ÎFC÷xÿ\0c¯UQ%L¦Iî\0p\rÁp\"\"\"\"\"\"\"ú$\02J™ú9cÉ6´\Z.<%¶[&o.Ñ, ü¡§ÖT†ÛÕtîÊt“®—G‰«¥”vPñö4v»³Öµ«´Íq¨6…ªê5¢«3TÊq`ş.v1ƒ±¡ZÈˆŠXôCèæûô”Úó^Q¹––‘%¾ß+pjÏdé÷KÕÎXíkhšoeÚ>Kåöf±Œnå%$xT?Áö@-jí‡i:‹j\Z¶kõşsº2ÚJFÕSG\rhûO2U8q^“Ë„b9TÑ†<ğÍ>=Çû{ØèŞæ=¥®iÁqeˆwZ:Cii7Ëc©™ô²x‡±Àº¶xˆˆˆˆˆˆˆŠ û¥5®e‹FÛ÷¸KSS1o~ãX3ÿ\0z„¨ˆˆ‹¿KOpŠª°z¯AœŒ‡îñşÇ^ª¢J™L’Ü\0à\Z;‚àDDDDDDDS\'¡ÇGˆ§†‹hšâ=ÄÖ«t­àG£4€ü­Õ\"¶åµm=²$û­ÑâjÙAe‡Ô<©£´özÖµv™®5Ğµ]F¢Ôufj™N#Œ2v1ƒ±¡ZÈˆŠXôCèæëóéµæ¼£s--\"Ku¾VàÕÉ?Óî—«œ±ÚŞÑ4ŞË´t·ËäÍcİÊJHğ$¨~81ƒí<€ZÕÛÒuÔ5l×ëüçte””Œ\'ª¦<\ZÑöd«ÑÃŠô˜æ\\#ÈàÚ¦Œ1ç€~iñî?ØööGQ%·k:V¥À±Ğ^©KáŒJÜ“+mCˆÊ\"\"\"\"\"\"\"(gî˜ö/şûÿ\0ğPÍ~–8âU`õğãäd?wŠëÕÔIS1’B;€Gpğ\\ˆˆˆˆˆˆ‹-tRÙì[EÚıºİ]’ÕB\rmpÇ1„a‡öêÊØ†Ôµ•§g;>¸jkˆ\nƒa…¼:ÙFßYÀõ-_í/\\ê\r¡jÊ­G¨ªÌõ3G>dçƒ;\0ş©¥6y­õ]+ª´î•»\\ ns4Î1úƒ¹à¼kåíc¸>ßz¶V[ªÙğ¡ª…Ñ¼{2¼äE,z!ôsuıôÚó^Q9¶–‘%ºß+pj1#Çú}ÃÒõs–[Ú&›Ùv–û|™¬cå%$xTI`ûO µ¶Ã´Cµ\r]5şÿ\09‹i)OUMx5£í<ÉV:\"\"º´;ã®ÕÖ6ÌğÊ¦WÁ¹!å 7Í>=ÇûlòmõR\"\"\"\"\"\"\"‡~ée+İnÑUƒ;‘ËWîË„D~éP­w©iãUVWÿ\0>FC÷x®\nª‰*e2HGp€hîÓ÷5íQy¯½¹Ÿë)éZïÕÃœGÊæ÷Hï•Ùt¦cœØj¦š®@98Æ\ZĞÏÊtM.ĞvÃcÓ7|ŠWºj¦ƒ‚ø£i{šf@ÂÚ=ªßEj·An¶ÒCIGNÁ0ÄÀÖ1 `\0Å}+6sg×›*»M=$bïl¦}]Pgã\Zæ\râÌóİpíìZÆE,z!ôruùôºï^Q–ÚZD–ët­Á«=’H?Óî—«œ±ÚŞÑ4ŞË´„—ËìÍc\Z:ºJHğ$¨~81ƒí<€ZÕÛÒuÔ5l×ëüä7%´”Œ\'ª¦<\ZÑöd«Ë²ÚS]´Í/F½×İécÆyæV…¶æ¨è~ïô\\¨ˆˆˆˆˆˆŠ6{¡vgWìV’érm—H¤{±Ék™ö¹«_Hˆ»Ô´ñÇª«‹ô#äd?wŠàª¨’¦S$‡ÀÀ4wÀˆˆˆˆˆˆˆˆ¦_¹³y…®Õº}îükúŠÆ{ó>p^Çº=¦ç«ÒzsTCŸ¾¦Jiˆ²€A?î`Õ6®³­¨YµaÒÁK)mLmøN…àµàxà•´=ªôş°²ÃyÓ·Zk…Í‰à–ç±Ã›OX¥ÎØl\Z;g·M7Eq§ªÔwHM4R:®tÇÁÀÎâN¹±è‰ÑÉ÷÷Òë½yFæÚZD–ût­Áª#”’ôû‡¥êç,v·´M7²í%òû3XÆÊJHğ$¨~81ƒí<€ZÕÛÒuÔ5l×ëüçte´”Œ\'ª¦<\ZÑöd«en‰–W_:@éZpÂèéê\\‡óDm.çü«hKò±û¿Ñr\"\"\"\"\"\"\"³6×¥†´Ù^¢Óa ËWDñFq+FóÎj‚¢)æ’	˜c–7=§›\\+…z–8áUcñğãäd?wŠàª¨’¦S$‡ \0ÑÜ\"\"\"\"\"\"\"\",‘ÑÏhfÛWµj	‹½ï.4Õí°¿ƒ;Çì[,ÕV;Ğ´5U»«­´]éFì‘r×µí=ãkOmÛ!Õ[-ÔÑİ©$Ú÷Ÿ#¸ÆÒb™¹á“è»¼aQÜ+è³äUµ4ÛÜU+™Ÿ®:Z‰râùdqÆI.sŠ–]ú5Ô]*©õ®Ğí¯‚İPÚçnPîaò´ò`ìiçÛÃœ«ÚÖÑ4ŞË´|—ËìÍcİÊJHğ$¨~81ƒí<€ZÕÛÒuÓõt×ëüç[IHÂzªhóÁiæJ±ÑKŸs“H¾£Q_µ¬ñª’CLóÚ÷çãÔ~U7ÑqşOö?wú.DDDDDDDZæé±³)tFÓ¦¿PÓ–Ù/ïuD.k|Ø¦ÿ\0‰‡8x€zš8áUcñğãíıŞ+‚ª¢J™L’<€Gp\\ˆˆˆˆˆˆˆˆˆ¤ÇE^’è(áÒ\ZÄÍU¦Ë±MRß:JXô£ğæ;;”â¡¬ÒúçMõÔ³ÛoÖŠ¦qÆìÑ<Â?XâùÑ“b÷j§T¿H¶’G‘IU,,õµÛ£Ø¿¡ö%²íTÚ»¡©‡,¨Ÿzy\Z|!${dÛ&‹Ù…ªI¯7ê.[¿ˆ¶Ó¼:yfG¢<Nº6Ã´E´ı]5úÿ\09ÇÒR0ªš<ğcGÚy’¬tDDD]ËMeÖçKl·ÀúŠº©[0eÏ{\0Ò¶°]Í¶ckÓ,İuK×VÈßNwñyõ\0x\".?ÉşÇîÿ\0EÈˆˆˆˆˆˆ­¬h;&Ñô]v—¾C˜§nô34yôòƒ#|GÖ2´¶Ÿ³{æÌµ=E£TÓØÜ|’F|\nÆv9§»¿´rVMUD•$<y\08áà¸\\\Z?Xê!Wåzjı_j”ó4ó‡zÇ\"²­Jİ´RÓˆ]~£©İäé¨\".ù@^F¨é!¶CNêz[5.-¡‰”ùÙhëX¦¶ª¦¶¥õU•ÔO!Ëä•åÎqñ%uÑrDÇË#c{ÜpÖ´d“Üçèg°tÈ‡h\ZÊ˜6ñ+3m£‘¼i\ZáùGw<C°zÔ­DD\\_“ıİş‹•qÎëx¸ı^*ØÚ.Òû@Ó²Xõ=º:¸çG\')aç±ÜÚTÛOE]k£åšã¥™&¥²Œ¸u-ÿ\05{¥ëoÈ|ª§–wÓÔÃ$2°áÌ‘¥®iñp\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"¾6k²½u´:ÖÓé‹\rMD%À>®Fõtñø¹ç‡°d©½Ñÿ\0£.™ÙÜ_/ïŠı¨Ú›#™ş^™ßôÚyŸÖ<{€R	q~Kÿ\0O÷¢åDDDDECÜsºŞ.?WŠúÆ†òy“ÚªEeëÍ–è-pÇ‰´ÍlÎÿ\0Ì÷&;íÁXXt,Ò5®|ºcRÜ­.\'ÍŠ¡‚¢6ıúÖ+Ô=\r6•Bç:Ós±İ£‡Zèd>ÇÜ¬K¿Fí³ÛwºÍU;G¥M<RçØ×­šİ’í:ˆŸ)Ğ\Z’1œdÛ¤#åÅ©Ñú²›Q¦¯g–õƒ?RéMf»Ã![UtoÚêwö.?zîòêÏ¡wÜ¨ò*ß‰Ô}û“È«~\'QôGîO\"­øGÑ¹<Š·âuD~äò*ß‰Ô}û“È«~\'QôGîO\"­øGÑ¹<Š·âuD~äò*ß‰Ô}û“È«~\'QôGîO\"­øGÑ¹<Š·âuD~äò*ß‰Ô}û“È«~\'QôGîO\"­øGÑ¹<Š·âuD~äò*ß‰Ô}û•M·\\ğ(*ê…Çø/¾õÜÿ\0åÕŸBï¹váÓZŠbÎªÅs~ş7wi^sXà½J=œëúÃŠ]¨&9İó-ò=Ü—¿lØF×®v{fyuğu?¿…yXú%mŠàáåVÛe¨f®¹§G¼²F•èIZ÷G&¨ÖÄÏN}1s½yÇı«4hNŒ{&Ò®wÙzªf[r“¬¡œ\Z>E™(©i¨iKGM\r4Œ2(˜Æà\0»ˆˆˆ‹‹ò_±û¿Ñr¢\"\"\"¡î î·‹ÕâWÖ44w“ÌÕR\"\"\"&rùÜµ¤`ò.·½ô?¦ú&ıÉï}Ä©¾‰¿r{ßCñ*o¢oÜ÷ĞüJ›è›÷\'½ô?¦ú&ıÉï}Ä©¾‰¿r{ßCñ*o¢oÜ÷ĞüJ›è›÷\'½ô?¦ú&ıÉï}Ä©¾‰¿r{ßCñ*o¢oÜ÷ĞüJ›è›÷\'½ô?¦ú&ıÉï}Ä©¾‰¿r{ßCñ*o¢oÜ÷ĞüJ›è›÷\'½ô?¦ú&ıË– „1Æ0Ö•ÉÜÜàˆˆˆˆˆˆˆˆ¸%û»ı>ÅÌˆˆŠ‡¸ƒºŞ.?W‰_XĞÑŞO2{UHˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ‹‡ò_±û¿Óì\\Èˆ¨{ˆ;­âãõx•õ\räó\'µTˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ¸%û»ı>ÅÌ‹î î³‹È<J©\räñ\'½Tˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ¸\'ÿ\0§û¿Óìû9•-hnp9œ•R\"\"\"\"\"\"\"\".µ}T4TSÖT<ÇºY_‚wZÑ’p8±|¶ÖÓÜ-ôÕô’u´õ16h_ºFóiÁâ2æ¾ÕUÒÒ63US8–VÅ•á»ïqÃZ3ÍÄğ™_!«¦¢¢ja’jgO^¢%¡À8-%¤=„Ú]zÚšj*Yjë\'ŠšX_$Ò¼1Œh.q<\0ås4‡49¤FAŠ©t,Wjå¦šëk¨ëèª™¿›nó{ğàö…ßDEÇ$Œ7I#ƒĞKœã€\0í*Û´kİ#umcè¯9”tæªwHÇÄ#œ ¼\0æ~³r<U\Zÿ\0I×ĞÖVÒ]$TLcço’Ì$k^pÇË7ÜÒy8[GÑòÒÉW\rÎy\"\'¶‚ –I»½º[¹‘ÀƒËµ&Ú>‹†×Es}ñK[åÍ§•ÄÆÇn¹å¡»Í`#Î\0x®Åç]é;=T4÷İ<Oš&NÒÖ¹ìlo8kŞæ‚Ö4ö9Ä—=s¥í—†Ú+®CXù£4“ºGãq¡á›§9ªªm¥ë¯şñRŞ\"’¿¬|MŒ1á¯{>\Zò7æàå ’0{•Vk¥î··Yh.ÑO\\¬xl…‡y¯-íİ\'\nãDDDDDDD\\]K?4ü§ï\\¨ˆˆˆˆˆˆŠÀÛ4Wèí5OWUq¡F)Úç¶h_KG0×º7ç°4•cÛ¬šº‚Ã[pšïUY¥«)©mñîÉ¿_2:Gµ¼ßÖA+[‘œ–c±uìúo\\Ë`¼PÜs5–;y©·Jàğ*êætUD0ú[¯‰Ñã7Èí^ˆVCª%¸^­×³mhªÔ¢>¡åÂIYÕ²­í{[¾z¾`ã†Jj*Kœºöñ=-ª÷[åôµ\0õÔ•šf\Z\"\Z#\\a–\"àÕ$q88Êó«´İîÕ`ê¬ÖÛÛzí)G-S×=Ïª¢\"æàŸÊ†oÁÇ\0ì]UCY©n«Ä–MDûdWËML,4Õ0Êúv46wGÃÎ8ğxsÀ+“QXîtµ;DuŠÛ|²åäu4r5•lÔØ€T5§8ë8H72\rÀK&œ¸WÏe¥|w“dšÿ\03ä…”•TQÃ¸2¶\'H=-Ğ\\ç\00Fzw½=s­Ÿ[Ú©­Wªá[o¸9“MM;Ù ‘®†íã\rC?YÄ4¸q!rêÊ&‚CŸUÉ	Ó,‹O6:z½úk€|»Åş”oÏTw¤Àİğ½ëC5ôòjK~£–õåğº†®™’šVS\nfH?Öu»Í>q$åljA¥¨á“SZ/59´Åïx§¢”ù+¥²Sº?FB\\É†{…Ü¢¡¯÷ïP“oÔÍÕoª¹š:Æ¶VÒù;˜ÿ\0&‘Çª,ÇV\ZÖåÁã$­ÓkºK`­‹OZµE,n²QÅpdÑTÇ$•âª\"÷0?ÎsÃ:Íç³#q^ÙÒõ¶íKQSn ¼±”ººˆQ²w±”Š.½Íc.s÷Ë#‰à²õÖ*ÙíòÅo«e%S±ÕÌøºÀÎ#>nFxds\\•ÅÍ£ì§uK›‹a!ÇÁãÃ.<Ô¶ëÆª—SÔZmWéS¦%¦dW:LhåëáKšĞğCNNÅ­óøá]T—JÊİayÖVİ=ym5šê\rU¾X%¡²>Qàò\0-eØrÔZ/6’ÒÙíí«}îó4QÜ*ãŒ™#–ªAå3»-İ~	ø;­îM§6+~™:^×m¿ÑDëa‚ªÑAå!Øih¥~\Zç0ºrwsØàAV†¯¶_èlõôËmÂ’²ı§)hê¨¡³>²LØ]Š)Û&!İŞİq”œ	*ş§µ×Öë»5%Âšo{tı­“ÆòÓÕM[&cÈ\'ƒŒlk¼A”åeZ­7Áª4öœ£éïUŸPO]ÕÕYŸQ\';Îªß1Ê	“\r!Şw%ëlúªmA©í—[ı²ıo«¦ëÍ¶ÚlSÒÑĞµÁÅò¹˜|…œ2Hn\\@9YqÿÙ'),(17,'rosanchez@trazalog.com','Roberto ','Sanchez','21232f297a57a5a743894a0e4a801fc3','ÿØÿà\0JFIF\0\0\0\0\0\0ÿÛ\0„\0	\r\r4,$\Z*!=-15,.11 3D5,C49:-\n\n\n\r\Z- %777-/+7-7+,1/-3357-+/.-1+---/+-/7-+-777+-7---+++--ÿÀ\0\0d\0d\"\0ÿÄ\0\0\0\0\0\0\0\0\0\0\0\0\0\0ÿÄ\0=\0\0\0\0\0\0\0\0!1AQaq‘\"23BRSbr¡Ñğ#%C’“¢±ÂâÿÄ\0\Z\0\0\0\0\0\0\0\0\0\0\0\0\0ÿÄ\0(\0\0\0\0\0\0\0\0\0!1\"AQa#R‘¡ÿÚ\0\0\0?\0¼Q\0DD/j¼KÃèèKECt0ÓYÙG¸è<¸öUıw5DÅ,·–ùòJïí²ÆQ²‹eè‹Ï­ñ«½Ìt„tÉ0ÿ\0u2Ù?ij\\Økî9	°“6zwÔño.:wL àÑh\"ùc\0A\ZÍ},š„D@\0DD\n¦ñ—nßOû®•å“9 ÔÊÍÂ6N#RyuV­LÂ6:GhÖ4¹Ç h¹^DÅñÕO5[õ|Ò½ç¶bl<€°û­›Â9f\Z\"-	Â\" -_víğÊÌ*¥Ù©ä9ióğÜüGpb¯eãPâ5Ä‚9¨>|¤6_Äü:¥‘Ç$â\n‚Æ¶¤šd°³œoÍn™ãê‰Ú/ˆŞhEˆ!}­ˆÂ\" ˆ€Ñí¼¥˜us‡G=¿‘Áy</Zím>ö†²!©}$àå² ü3ÙÑ;½İ(¼Q›DÓÁòhoäİ>ß%_Qjªl±§ƒ›Â8Á|:šhwÒÉîw¸e¹7ôå§]°„^ö6ÎŞ°¹¤ú:Å\\«Å#¥ŒÏ.}Ø \\û^ümËºáÇ¨ÜçÇ9ô:oM¹(Ê¬\"¦/„‚hş³o[,x |ÈÆ¹îù,is½·Ÿâfğ6¨ÇòÄNõ&Ë{G\\×À*ÛÚxak[3€½…‡3ËÍ[–ºØ,Î¼ª!\'å‘QQl>#-­eÎ›ç2>ÜÍÖóõ?‹Úùiü·ßò¥t;qF÷Ä¨y#\ZÃ$/\rsœà\0¸Ñ\\[ÒYm™ÿ\0Hí+j6ÃJÃv“!ÑÁ$Ô÷öéØæÔBáÎÁ¦í=ÀõW>Îc\r­§¨G$9ïš)ÚXøŞÒCšoÄ\\VÒÈ®¤To\'(ˆ²`\"\"S´3¹±Yºf6\'µŠŠÄÆ¶À\0\Z>+lÑ÷)½tms×Ø4I¶Ô-ÂÄ‹ÜÄs^«FJÅ,ğut\r8µNíì_6¨ÛLasÚÓ\0¸í’>ğ°Ñs£sM</ÑrU&±—ı&û†dİånîÖÉa–İ-ÂÊ/Q0d¥Œ°¯\0¶À‚4½ïöú.->\\™´·{^«_ÕëãjŠ‚Æ\nš}, ŞânøXğš×4@p8»‚ƒRãU.©Š›8İçmÃ@-ö%NWkO|nèœë©•Oå‚ ˆˆ.ºk\'İ±ÒZùEì9®å×Q{\\ÃÁÀ…¤óµã¹•Œ¬‘\nê÷Ì}£fòhà?…+ò‚ãÀ\rWlÑ8±ÜA×óÑb×üş¯à¼…’œ§çîz\Zã·±‹_…Õæ³ï‡¤Ø(ÚÃ$OˆoXâCŸ,M…ùh·‘x»ejÈo®®:ıW+9D¶}¿·o`ïñe.^¥¼ÔßÉÇ×¿©øˆºeˆˆ\" 5¸Ùµ÷¯Guì{(Î)ƒÔ9¡…÷\Zd±¾ªn–ToĞUl·>Áf­TëX\\¢ª%XÔC(=@[*x*Æ§”ı&·UaÙ,¡}*·êÉ¼B~È„²Šcü)›H__£æù·ú)¥’ËO¯îcÄ\'ì6†:2d~\"Á½æËrˆºTÓ\Z ¡Å;,s–ærˆŠS@ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"ÿÙ'),(18,'m.muriel@mrsservice.com.ar','Marcelo','Muriel','21232f297a57a5a743894a0e4a801fc3','ÿØÿà\0JFIF\0\0\0\0\0\0ÿÛ\0„\0	\r\r4,$\Z*!=-15,.11 3D5,C49:-\n\n\n\r\Z- %777-/+7-7+,1/-3357-+/.-1+---/+-/7-+-777+-7---+++--ÿÀ\0\0d\0d\"\0ÿÄ\0\0\0\0\0\0\0\0\0\0\0\0\0\0ÿÄ\0=\0\0\0\0\0\0\0\0!1AQaq‘\"23BRSbr¡Ñğ#%C’“¢±ÂâÿÄ\0\Z\0\0\0\0\0\0\0\0\0\0\0\0\0ÿÄ\0(\0\0\0\0\0\0\0\0\0!1\"AQa#R‘¡ÿÚ\0\0\0?\0¼Q\0DD/j¼KÃèèKECt0ÓYÙG¸è<¸öUıw5DÅ,·–ùòJïí²ÆQ²‹eè‹Ï­ñ«½Ìt„tÉ0ÿ\0u2Ù?ij\\Økî9	°“6zwÔño.:wL àÑh\"ùc\0A\ZÍ},š„D@\0DD\n¦ñ—nßOû®•å“9 ÔÊÍÂ6N#RyuV­LÂ6:GhÖ4¹Ç h¹^DÅñÕO5[õ|Ò½ç¶bl<€°û­›Â9f\Z\"-	Â\" -_víğÊÌ*¥Ù©ä9ióğÜüGpb¯eãPâ5Ä‚9¨>|¤6_Äü:¥‘Ç$â\n‚Æ¶¤šd°³œoÍn™ãê‰Ú/ˆŞhEˆ!}­ˆÂ\" ˆ€Ñí¼¥˜us‡G=¿‘Áy</Zím>ö†²!©}$àå² ü3ÙÑ;½İ(¼Q›DÓÁòhoäİ>ß%_Qjªl±§ƒ›Â8Á|:šhwÒÉîw¸e¹7ôå§]°„^ö6ÎŞ°¹¤ú:Å\\«Å#¥ŒÏ.}Ø \\û^ümËºáÇ¨ÜçÇ9ô:oM¹(Ê¬\"¦/„‚hş³o[,x |ÈÆ¹îù,is½·Ÿâfğ6¨ÇòÄNõ&Ë{G\\×À*ÛÚxak[3€½…‡3ËÍ[–ºØ,Î¼ª!\'å‘QQl>#-­eÎ›ç2>ÜÍÖóõ?‹Úùiü·ßò¥t;qF÷Ä¨y#\ZÃ$/\rsœà\0¸Ñ\\[ÒYm™ÿ\0Hí+j6ÃJÃv“!ÑÁ$Ô÷öéØæÔBáÎÁ¦í=ÀõW>Îc\r­§¨G$9ïš)ÚXøŞÒCšoÄ\\VÒÈ®¤To\'(ˆ²`\"\"S´3¹±Yºf6\'µŠŠÄÆ¶À\0\Z>+lÑ÷)½tms×Ø4I¶Ô-ÂÄ‹ÜÄs^«FJÅ,ğut\r8µNíì_6¨ÛLasÚÓ\0¸í’>ğ°Ñs£sM</ÑrU&±—ı&û†dİånîÖÉa–İ-ÂÊ/Q0d¥Œ°¯\0¶À‚4½ïöú.->\\™´·{^«_ÕëãjŠ‚Æ\nš}, ŞânøXğš×4@p8»‚ƒRãU.©Š›8İçmÃ@-ö%NWkO|nèœë©•Oå‚ ˆˆ.ºk\'İ±ÒZùEì9®å×Q{\\ÃÁÀ…¤óµã¹•Œ¬‘\nê÷Ì}£fòhà?…+ò‚ãÀ\rWlÑ8±ÜA×óÑb×üş¯à¼…’œ§çîz\Zã·±‹_…Õæ³ï‡¤Ø(ÚÃ$OˆoXâCŸ,M…ùh·‘x»ejÈo®®:ıW+9D¶}¿·o`ïñe.^¥¼ÔßÉÇ×¿©øˆºeˆˆ\" 5¸Ùµ÷¯Guì{(Î)ƒÔ9¡…÷\Zd±¾ªn–ToĞUl·>Áf­TëX\\¢ª%XÔC(=@[*x*Æ§”ı&·UaÙ,¡}*·êÉ¼B~È„²Šcü)›H__£æù·ú)¥’ËO¯îcÄ\'ì6†:2d~\"Á½æËrˆºTÓ\Z ¡Å;,s–ærˆŠS@ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"ÿÙ'),(20,'a.lazarini@mrsservice.com.ar','Lazzarini ','Alejandro','21232f297a57a5a743894a0e4a801fc3',''),(21,'pauspont@trazalog.com','Paula','Auspont','21232f297a57a5a743894a0e4a801fc3',''),(22,'f.molina@mrsservice.com.ar','Federico','Molina','21232f297a57a5a743894a0e4a801fc3',''),(23,'c.llampa@mrsservice.com.ar','Cesar ','Llampa','21232f297a57a5a743894a0e4a801fc3',''),(24,'g.rodriguez@mrsservicve.com.ar','Guillermo','Rodriguez','21232f297a57a5a743894a0e4a801fc3',''),(25,'user test1','nombre test1','apellido test1','21232f297a57a5a743894a0e4a801fc3','ÿØÿà\0JFIF\0\0\0\0\0\0ÿí\0œPhotoshop 3.0\08BIM\0\0\0\0\0€g\0hm7aN0DVWSPv_aetDtmO(\0bFBMD01000abc0300009e110000ce25000005260000752600002e3800004f540000bd57000098590000ae5c0000eb9e0000ÿâICC_PROFILE\0\0\0lcms\0\0mntrRGB XYZ Ü\0\0\0\0)\09acspAPPL\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0öÖ\0\0\0\0\0Ó-lcms\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\ndesc\0\0\0ü\0\0\0^cprt\0\0\\\0\0\0wtpt\0\0h\0\0\0bkpt\0\0|\0\0\0rXYZ\0\0\0\0\0gXYZ\0\0¤\0\0\0bXYZ\0\0¸\0\0\0rTRC\0\0Ì\0\0\0@gTRC\0\0Ì\0\0\0@bTRC\0\0Ì\0\0\0@desc\0\0\0\0\0\0\0c2\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0text\0\0\0\0FB\0\0XYZ \0\0\0\0\0\0öÖ\0\0\0\0\0Ó-XYZ \0\0\0\0\0\0\0\03\0\0¤XYZ \0\0\0\0\0\0o¢\0\08õ\0\0XYZ \0\0\0\0\0\0b™\0\0·…\0\0ÚXYZ \0\0\0\0\0\0$ \0\0„\0\0¶Ïcurv\0\0\0\0\0\0\0\Z\0\0\0ËÉc’kö?Q4!ñ)2;’FQw]íkpz‰±š|¬i¿}ÓÃé0ÿÿÿÛ\0C\0		\n\n	\r\r\"##!  %*5-%\'2(  .?/279<<<$-BFA:F5;<9ÿÛ\0C\n\n\n9& &99999999999999999999999999999999999999999999999999ÿÂ\0XÂ\0\"\0ÿÄ\0\0\0\0\0\0\0\0\0\0\0\0\0\0ÿÄ\0\0\0\0\0\0\0\0\0\0\0\0\0\0ÿÄ\0\0\0\0\0\0\0\0\0\0\0\0\0\0ÿÚ\0\0\0\0\0É³õ†ÄšŞ&æŠ\0í¹K’‹•«¢î¡uP»ZÏ41\ZGIİi-ƒšÍX·ó¥uudÕŸ§f;^bK¹eÂ5sú\\Ú²…$³Õ¢Ç0Dİ“Zà•$Ïb•ïhJ¬\0±–?3iW$A!.T\n.T$ª\n Í×Œß¡.†•kÓ9¢¥Ômæô¹´wVYCR/¨É`rİÕ–TF®~üvGµ#¹°¥£»&¬úlçÉ3q9=ê<LIU,~7¬¹P•$Jº$¨·Uê¡k$®k2Gh4Yc«€PU\"ìçt9ö’+’Ş”>ÌF³”ìn˜A¦Ã3æp³h¥’îê´çÒœèRVë™hFTMØfeBåH•(•)nªêT•QY›†ë;è¡ÉjÅT2ÓuÒ\'ré«ˆBEéÏ£NyQE•ìÔ¥(!êr…\ZÎS!*²£°t+iÉk2â5fİT4ã×ŒmI-H%Ôê¨¹R®‰é”÷‚o‚ˆä.™¯E¼NwDVWæ£$®%\Z3FmZsô[Q¼ú)lÄÂ«ºÈÀ83Ô+6XËçê—ŸJÊªÊØ½5š”ÒUŒ²¥0IQÖ—@¢†HÑYèÓym5^R4Z	[CeÕÀÔ™½kŒc{|×k(JšË£ :\"Y‘‹qz¦Fqd¥¥³›$”¥L­àº[*KÄ•(ƒ5 ¾ jÖµh$p5”S\\Ç\r¥„ç€×{04ØyYOµupZŞ&M@)‰ª!Æ¢¦šYFäõ5œ™9¶TrÛ¬\'çÑ§6I5.¦&CŸO’¥ª‚XÆXÇŠ —KP\\ÊŒZXPÚÆ²Ü~‚Å†Åíú-UFÖóZ½&`y´²´l¡QŸ>å™ÇQ0Öu¯¬Ü††JÒ[)„dÑŸN§:ÍMÓqEBeÔ•TÅÄ¥Ä©¤RXrˆÂØƒ‰z«f}ñµÇèV/KÄÂÃ5·ó_áyª(êÄàˆÕ™èÂÃz]g=©d­j¨lYj¥érë5ZrëÅæhË ±±Ya¥»Z‚mP5zlÉd@¢Mx¬Ó‡¡Îk1š3í9{Ë%‰Ê-§8NÊÓ’GIØ4.²KK””êX¦¥ºÏ=‰Ğ4×³¦CJsf¿N]Ïƒ1¡Õ‘ù`ÑëZĞÔšeZÉ‡W‘Ømxøc.Bv[x©Æ¦›9½>`eOZêceœóK Š‰iÊrsä OZÌšV¹zÁ ØHm3£blÁ©•¨üùÊ\rÊpnÎî“$çkFWæãjeHšèÔ«ÌÜĞd-Ğç•v¼÷G &wø§GÌ&‡etu9]TU\0[²j^C€‘¤¹+_‹}s·T’îP[VSYÎ‹ğé—U©µÑ2æßšÄ0Àõ›nwéÏ’cC§.œ2Ì¦+@ôµ\n„5pÇ«A(¨©]\Zî=GÌı:x6ïÎtò.¨t¬bÈRµä²À·*öa$Ê`R”¦¨Õ‹vVicÑnˆ$R4\r˜iùé„»ŞoN=5ŠUJ:3iåq\ZŒ­¸zg~yrèHĞæ¯ZcÑMë/·0öÊéØÑãú,·IæÑí9Ç—Õ˜¥ØI#F~[4)j‰A+VJ;\n†\0k|äv7ÔV¾~«v·3ÆUÊN]ÙÓÓuÚÁš–<É—SFm9¼ö%‹}.gM&}åÉ×ät6{ˆİ™õ]v­öLÅ¯7Éñş…Ê³f¼½S¾»ùºDóÌõ\rO?ÏöÎ<=û>zùÄîÃ\ZqéËT³èB˜+¦!ù‘d¡qfıtÖ²S*ÔÑL™7s€È#%ÔÔ‚Qt¹2!è—.ü;“Ï¸lP]Î¿ï]æ·/KÃú¾™ó®íf¨z\nè-Ê*‹KyU«‡Û#ÁOYä+beÅ,Ö;.¼•pF,D\rZ°k6»+ìuEÕsw óúh¢I#Jz<á¹´\"§Êê))Ê2t¹İ4òö7\rEoçk­yõeÓæo^·WÃú3°¼ÉªR&ÎLz^ÏÎğıÊôÌ<I”ùæœğÖ`;.¬•A«\\3XÑ¥ª}…:ÉŸJN:7àŠ’ÏÈıÅËË±»ÕäuG©.n—3ªNJU	¯.ºÙ‹vºqô#V&å®¿¥ğş¦]\"ÊÓ?ôZ4jÅÙŒ “ìüFó×?&³Ÿâ½®ZòUY#«Œ÷YZ”ZàJ44lÓI¥ÙŸcVcX¹}~X¹&^ƒ™XéQPÓ³³}\\\\}?bO -YrÆ±UÑçôD¼ëpü»yæ¯Rû¿Í£¼ï©óìµ´ÀÔš6†×ÛëàyÊúôK‡ªjôŞfğ¶] ªFİ8µ\Z_•Õ¦†ìG7¥Ï2É2zX©b:J»Ä·.N\'\'g`uÑFåšyÌ‚Ú—Ë«ÕäØt\ZÏfÌ[(|­çËÀºèÊ…ê}W•ô6ÜzœşGÎ“Fyß=í(ñ•£­15lCMÎÅÔIe¸ìÇ*FÀPÃUT\nŸUÓÑ‡x¥èÌ¬àz¿-$ÕMnÈÔ\rrevb—­û¬Ì¥’ô}W‡úrNg9ü[†^.s&ıK6ÚÌÎËex_¡xèèôy4tÙÄî…Âè²¼¤ö|hãkÁ¾k5i¤ÂÉ£5c•ÂC%@(wSÕ·F]+Ök8.Êã~vç4lçtvâÎj<ºÌCewÑ¼Oº¬Ü¾ò8¾À‘Ş¸f-Ê²c¼¶³Âš½Ç…ö<±€x]0¶ò/7³Æ%ØÂ”ÉD\Zƒ,	©¦¬r¡±.ª‰¿œúìŞg*4(Ï6¾·*4†möK› Îi8Ñ§¥ÆÅk=‡x¤ò<¤úBÔ¼twĞr7!;Ş•œ$ô\0÷71İfÚémÁg\'©óĞ¹UTË–ìaj5bªÎŒ:€¢jÄ©@v6ñút`ìÒèò¾·†rÉËB~6Vš$Ã÷rô-zŞ?¼­pùjı7ôİìú„ø~¿@”ÈN”?1ã­\05-(Ôuº¾{=·‚ìàI\"ªA–0’©m&„ÁiØ„md[@ku‚Î-ê’^Èó«ßÏE© )ÃöâbúïYƒ}cò}Gg‘õÈ´iùÙÊÓ›¡vG[\0‚‹n*»¡‚¤4[+9¡˜5—*Â«¥ª‚Vwe2É+°²!Ú  rÌú³të\"˜¨Ù³›®İĞ¡Ü>¡\'t„c6™ŸÑq>‹odÉ§¢òŒõÆ]µxşˆ§6¸Êì­Rµ¦%”[ŞfÑÕÏº(^’0º°Z²iÄƒ.[ê“±Iœ˜°ïN¢í¨ü«®ã1kU2…Áô˜ã–VÄìt°\r¾×Æ—u<ÓÒå¯ŞğH‡!²¹Š´‚ü¡Ò İÁº³–r\"ÉrƒòDp†\ZK¢€–¢\0dhYpâ÷Á£\"Á«Ôt¨RÕªÖğŒ¸ú(M\Z³QÒ=rnRNš(uQH×Ÿ¡òH®5b4¶UCÏ=›rôÄVœÒˆÒB\re-eÑR@õB`¨–Rí\"Œ§±* [2opY–iQw‘F¦rúB²hA6rôËÒ¸M5eĞwÑåıw‹¡¢ˆ	6;gG!(ÓyÊ\Züu”A¢µ6ê¥‰A’QYÍv›Á²\\‘} d«4!Z‡åjÅÑŠ‚˜‰¦ÕB³ÏŸnqúø»”Îõ\npÙ˜kOœô¼y1\n¨zZ±W×¿Ë9F†d#nmtfbœV×,’Â¢àE&ÔRí0Z¬º¸Pí)ŠPëc}€ ‰Š©\Z#2íU¹XÜğÀÌ£F}¹Ğ5rÛo]¼ı0å¶ìV¼ËÏÜÃ—ÕåG¸ˆã×K=¹­¦İĞ“{£Xôª\"Ë\n\\Z¢ˆ¨¢ª™m²ªHôïX¥u³éZö¬ÈéØÀÔ\\Ş©•m]\0¦9udrŒÙö­3mÊšì·Ó}äj°a\"©ÔP¤Ñ¤sA‰º$¡ •K	b –+©P–Ü…BóBZŠd	Ü•!l(†F“KZš !”@ÀNü=;3/båÊ:…üº©º€Ñˆ#¨Î[« XÛ2CUfƒ¦x<R*ĞPHÕ©cT°±•RâË¨÷rXÀ Ã¾ÒUA±ŠZÙ¥œÛY`®mÊ›ß	[‚,].g^²©ËKŒ5¦épê.\0™€ÙyÖiPá\\-vİ…‡RÊ’­âvVh:°èn=J,*Xd·Âôò÷ƒ‘€.Œ`k:!§5\0KKhYŸ±‡Yz„É5(­<Í‚2ëÎc…QŠ¹,©tK–*é€\\»ªÑJ4©VIRK•±»J=pcˆÔİE\r¬Ùfº !	ZÑùíuCnnc š–—(X®—7¤%P…5bE†.š\"Å€\\(.-	QF½[5ÕØÙr¡v6\\¨\\¨zAº’ªÄ;ç±ª1®0ôÕª’„µ˜‚³êçÑš…lZÚ:Ü®¥fK\nQ<\n`€\r\"L\0\Z\"á@DèS–t\"ÕÂèêÚ± ¥Y\nÜîË Šès÷ŠªİJ“¿5Ò^ü®$1@`*¬«§“f h‚(LDt°n¬™öjIÈJ±bŞ§\0,\0(Ä1ˆM9ŞÅFŠ¨eÑ$0è€ÿÄ\0-\0\0\0\0 !\"1023#4AB$DCÿÚ\0\0\0»â¯…\\ÄöÏ1Û“lªXÚC7İ°àWüuˆŸ–§Æ§jjêË-Ê×ˆîÕš*ê3İ…ìÒşşÕ¨ôí» MN8K],ù–ØÇ¥Xû¤ÍCx\\˜\"şZŒ}D®¢ÒëGâ;­DÅÖ›On”fíÕKe(ö3í‰ªÆ#y®ƒBB.õBy¿İ&7ºÕÙ?-Oö)¯&Ë3¾Ÿ8ƒ$€´\rSrÚ\\uÿ\0Ñ*¬ØÆÕ¢|öj±ÂŠ&œ,nGo™s\0\0Àû†9ñO˜ •şo_-E–ìÓ|î ´bºrI\'Q“_v›ÅçòZ±.¿‘íÔ‘Â,ÒÔl²Æw¯(«îoºe™iXÀiÓœÕYÎîÍ/–ÚªÍ®Öô×k³ôİÚ|õîÒl±­níQ\"ÊP%nÜÀ:†ºÆiòucj«/:®°ÿ\07f›I]9K­çÙn~”vÒ†ÃE¡^Ó›{õDšj¥Ìq½^Õçû¦9š<VWYsc,«ö]ûû4‡ù–µ »—=ı>Å«ˆºÓa£Åºßß¨?Å+UDf$íòu\rÅ@Àû¤Ë[Æˆªµ,]‚+ı—şı³.Ú`*±œ³ölªIş:«{\ZÆ•şÍWö;±M•t´òç8Ş‘î\'ŸwƒĞÌúTŠ@œDã8Â™<!C36V‘§ÏÔ·‡Ümãé­³8Ó×òÕÿ\0c·âp½U™¦9Ënç§J~?h)0U÷18Ä{?fÙİ1ôõÒ],¸qíÖjGehÖ¢V„–7Ÿüİˆ9> ò³ìŒ˜µï™™™™™™Ÿ±ˆD+\"ffr”\'J»-/ß­Ô6Jü½Ğmq?KÙWµ–û\n™ƒffffffr™™œ¦ff{ñ…bÖÌã§RVîê~´¨ƒå¸iÚÇkXon~“²â”ğ½é\\ÌÌÌÌÌÌÌÌÌå9NS”å3333İ‰ŒB&œ îÖc­UEÃÜ}¶OzÁgÕ7;{Ñ1\'Îffg)Êrœ§)Êrœ§)Êr i™™â %f1°ìù—\në±ífÖgé<ïNlî­faäfLÌÌæpiÓğÕ\"Ö\0‰G*Ú¹†òYÊ hg´Â!^ÅV`Î´kò~û3ô›±+§«ãµ0™™˜LhL&\"™ZâØ]†Ö~Šë;r;j3ÄŒÌLâ 0q®ÕV¸k‰¬MiÉ×ÏÒo« *ø€dü¶a0™ù—AS1ÌyXÆÙ€gLïÍ¶Ä´õQÊyX\Z€Àf{Hˆİ7v.ĞMY&¸ ØnT/Ò>Õ/+5-ÎŞÔÃ	„Âeu›¸¦“>_ş¥5r—?=8ì·M²Òª–Øl2ÄœÀĞÏi„Õg£A²\'%gGµä|ÛØ£$ìa†\"ò6Ùãc4À¶£şª¯™wåúƒ±²t€fZƒ1v˜Ÿ¥˜Ä\r@`=¤C¶¯= Ùv^±fhßÓÚ¯ÁgbxÂa1T±¸Š×s4@u*Cc;CŸ£‰R5´å)™Éİ‡ş=ˆ€Å0a†|MH?N Ùj2Ë¼ˆ#ü›Ñ_ÎãÉ†gÌÓÔ¿M­Ï-Úzx<Û®ØÎoZ5„2-C·Út£zêk 8Š`0Ã–r*\"#<=:ÒË\ZÖ‚á~“cız¾7¬C;c­G\Z.Ó%ôº5l6ÿ\0­(à‚¸è\r«¨ÙÄ§ñX;ôl)\nËÂ3>\"˜°Â%jœšóÃaÍÇèöëWøî¿‰†1‹ÉS)°¤²´Ô+z}ùpTÒ¹jO\'A)Ï+«¶ÎdM>z¢7§—\0.˜’[r3pu0;„Cãq¾Wèö·úõş&aŸàØD|3½6iõzØa–i³ÎÒy±*\n¶ÚÖ‘¶Ÿû1`Û3”Ñ){M¼Ss¶³İ¨)€À{Œ7X}Öÿ\0Y?«ü¡?ÕòTv /b±Ie4jh\Z—>i‹]a{`ÙNP\0¿lÅ ®Î­ ö™«åÖ1Lì\"70Ÿü[YıdüvªcAaw3D¡ê©°Å°¬»MF¦jtĞkP¡,n®¤Ôˆ7Õÿ\0b\0]€ZcÆ¢æğı†jê+rªb˜‘o†~;7õ“ñÚ¿ÄÆ†€ö\",õZÏÒ¤ôÛ\ZÚñ²ØD»GF¦_¥³NÚ¿Ú¦\rõ\\ˆª£ksT]âú€F£°ËQš\n‘VË\ZÒÃLÂ#	™˜2Ä/ÓéÛVå§ÿ\0š¿ÇeüLhÓNªÓXÊ®-1mÌå4»Òòt:o¥Mf´£®µ–+Sßn£Óë¼YM”i™Ê-keYÉwi¬ê6ÌÌDk%Œ´¦ÇÌ\"˜ ÜÆÏh&¶»\nßÔÆËæŠş64iJ…MC—·e¹xiuU<ø€ˆ»_§ã}Ù3Ò‰5³:¡…¾]’Ú/¢R¢=¡´ ö<Õ\0bbQˆÏís8İ¢˜¦ØfxIŒg0Sjµ~`ùÙ¡„›Dlaš={,SƒG¬0³Ójy]i§¯U«seZ‹D¦Ñb˜£ÊÚÓ´TX#Ñ§yg§)—Sm1Œ¸ƒ°ì(„–&1\'IØ\"˜ ÜÆ–x–4Q½-ÅØqº/ÎÍ?êætne?*ÌššoK¢Ù2\ZpÉÖĞÕ[YšSüØbW˜¨oö2f6@Õzz¸¼°Jª/9á63İôªb˜ İ¥ãÚ=ÄlvÔ|Åü¶iòÚ¿ëÁ¹”)fÖ¿òƒF³”l‰[Ycj4âàşs§Ò\nQ‰e‰\\G6ÿ\05ZÕÒŠ5	}sW¤MJ³:¾æ//fb˜¦Íbˆy4+Ç‰ØíùV¿çf˜äÚÏêÁ¿ÌüQPM-Œ\rL¶DÔ²Çd  ÀÄOP««G¤rèY}uÆõ:šõtÙ=GFuKéÚVÓT„eÆ\'©iõÖÛ™W–Æ(ÓµÅÂ(YÌ\0ŒLUipó¶ª¾‘‹0ã`ùÙ¦2úßëÁ¿ú³QøA(ı¹j­ÓjºŠjÌârŠØšİoJ6\\êm&¢ú–JêGMã{Ôôİ\'S‘Ó‘˜`ŠÕ]BË\ZÆ0qŠ@€ÁÍ.6×SÉHÚÏrƒÄh,×qz»ÊË1ôÛVØ7T‚Û,/4š’„\0Ñ¶±úUä³fc–›¤”Çbí[šÛOjİZ,FF®¢¦ÒÛ´„A‰C<æµìLÌ`‚\rŒ²&¾µ®Ø¦|üa™âú„åGbA<.Ê‚‘«$Ø6ôÛ9V~g©S™R½®‡¥¦ßGwJß‚&¥q&©5:{4ÍÔšV=r•ÒÌìÓ;`1`‚\rŒhÿ\0”mA—YÈlŞV“”†Êáü;\r¸p\"Wæ304óäê?PÛÓ› üçÔ¿Uó½•üÍ%]?V¼Ú3[ø=UdÔúv³¢/`/\r333¸‚61¥Ÿ1Œhfb´§ÄÇ•ò1¿(!—<Ò{›\"„³ÎmCq¹¾}MmWÔ‚úzòv ÿ\07ÁßÒRê.ÓßQ&›ÖyÆöFºšõK­¥’Àg)™™“àAí-ØÃ„LÊ[0lóMúµ<z»\'Qûµ,µ;xq:q·)[u)ÏŒsVN/‘e«Æİ³=ó™-ù#Ê{[ÃW§Â\nœÌÌíQğÆYÚa£‡]šPø¯ÔSµ6V]ÙÀşZì%w®Œë33_VwÔc«¶g¤V^f<´•Jõ.,àev7iëÕèzNÈ­aAZÁleŸ¦gLÎ›B†˜ò‡Äi[qm}yQ^f¡ù&³÷Ó‘Õ(yZ1c¡³§}ƒ‹ÄMV˜¡3S“¶\"i€*®Ï\r}Jÿ\0Ğ¶kÿ\0 ğ¼Òá«ôòR=„®˜‘`ß;ı¹3¨Óœ¤ägÃñ>	3™2Üâ	ªÆÙšuvmM,ØLu*9]ƒ€·è¹Ë«±ºÍ‘Ê(èŒy¦iêuğÔzhÊërÍ¢¼±ÇñÄ²ÀJ‹5t¡G¦Ø;[ìPpWf•ŒÍWğGÇJ	~N%AA~sWùˆ ó+Kkä15ºcu:.¨«¨LöÌÏQ[ƒél6Uh?+ø^-s_G·KË­5‹’Æ¸ñaê/ÔV±[µ¾Âø+³	§,­©AePœÓˆ½Z=”ÂKšŸÖ š\Zºº¬¬4Ã!ìÏ­¾ªç^§Û1¢°¶‘¥uºÊËÓ*ï±ù¬ÌÏ{}šÿ\0«lºÔ(âVv®²Ñtó°–yÓA=&®4îFcSXvª×K€êÊoµ\n>TÏƒŒ\r;OU«.TÛüîiŸ±QÁ^S„qÿ\0±l38‰Â=…¦›ó‚<Ó4õ›mE\n³Ô½A•èÖŞ§¹o®È²ın³g©mö[µà˜ºw#’×KÊÅe²|¹ÍGíû&æbc·àÖĞFŠü%Ã’˜£&fTØ{0,€Í?—Fú¯Ü¦z?é™óê~ n}³*¥ìÕW[1s±ŸGñ×b8–şİŒÍ3öi8Švq‡X¾äR6Zym™[{º­Mbª¶õ?Ovzt\Z—:zF‘=gUÁ-_t®·µ’ºªå§–Ó3¹•dÒ)§W“nE»÷øîÌAÒØˆ†D¬ª³×šùœhXÃ²²ºÙâ²×=>®¦¢jo]=ıkyéµ¨®|ÍMË§ªË\rÖñæ«R©6°Ê±Ç·OÇ”TÙ©kâ}§ÛØLâL\n1G\'´å”Ä;0”ûæ¡@²‘\r„ÄòtUttóÖóÓ…¾\'«jú÷%GøéÇfŸ=nÌÍ3böF-ÒJ‹9h =æ[ñ±3É1±†R8©™ˆ`0ÁíwL­ÊªÛ1·¤QÖÔF—Ò·Õÿ\0Æ³–—Nšj§ªêMu,É%pjS33µgZ1d31ì)X®_g>wH;Œ³æy1k˜Ü‰Œ›=°ì¡¢˜Jˆ\rm\\¾!°Îd·#“K££¥©®z¬ôïRv´œm}«MZ‹šûDŒ—™š’M¦\"5Œ)­Úaš¯Èo§PÖüãäÆ+Ø+4é>\r J«§\'¥\r‰:íØÄh§fYzzšFe{h+¨U§ÔµFB[=j–[ı6¦»W·¬jº¯Èpö6í9Ö(®²\\•†¨É¯uü»˜øÙº|ùÔ\'_Á¾ÒI0™Ç‚ÌVÁF€ÃAb4ÔÒÇª¶µ›ÌV*iÕ£ŠÕÏVÖt*>ê ßQ’û(ge¡PYaè3±1Œÿ\07UÇaİÌ†i×•Œy»F€p\nÓ0ˆÂVİ@Úz•‹=š}KR[UZéµ7µöÓîØLíf:xÉM8Ÿ?üâfff» ÉÜìa‡äv˜bö+NV±ÌNÄL`³3\0sÛH-oª9\r¸µŸœÌÌSŒÎv11ÃlÂ{GÆÇcc¦Vœì°òx3£dé \'¢³H†Ì-–;•h§b6#0öSìK¬6>Ùƒ1jœÂÊÉh\Zfgj2NÆÅNÃÆ íé;\Z¨à„T£­Z“¨³Ìa†0â¦?ìDø„fÙW‘õéQ¸ùD\r3*l;xpw oÁíJú}¦c°ß‰Õ¬+jÃe–5‡Çašu\rc7\"aŒ\'âQâ¶øò³Kî»^¬Ã‡œ$<\"ñ$ãlÀeÇ-™™˜„‡¿Å¹ƒu§§ÚaØì ÛÎæiÄ=¦T8Pw1„N\\Õ hØØx{¸³Û¦6®ÌåfffcVlª½«G´ J;I„Âv0A·ÉÎÇg°À2ÖşGe­ÚtOµPœlÆUàhØ„EwI”f¶±-ÑN‹Ş/Mc¹z’»,+¥Køì0˜v0Aº\'#ËO±šeÍ‡ç³æQKu:>ïá\0ê1\ZÛfqCF\n<V€ÀvÄ\"-“«Îr­”éU§Ñ«FÑ4:Krh·«\Z-6˜4wAéà@ºjĞÜÇ°³	„Âa;\r³\'¦Æˆ\rtO&t_J”õ*V:—\nÆ£Øf2ÖøcŒ±[Z¦wÄÄ\0ˆn´Ádê‡ETÉ´)êÙƒ“Ù˜L30˜LÌ\'aÙO¶g\'e­í¬óÍ5·Ô0„“±Ÿ&ÏoišP\r¬rvÄe‹|©\rNS=ØÛş·ÌÌ&ff3	™ï­yµ¯Èí×	)¶ÃYóÚf”§kM?¶“¾3:lV)ê¸¬BŞUàh\Zrœ¦fffff}Ó33330˜L&fg¼	âªûÚ¦V\ni»Lom}Î*Ù^¡ò]¦—ò\"2Â³$Ad\r9NS”å9LÌùÌå9NS30™™Ÿ²ŸÂ;4ÉÎÖbÍØ`kxò;ñc:5KG+î1²{Óø ÃŒ!¼—\'\rÎrœ§)Êrœ§)Êr™™œ¾È*Õ{+hí3J­Ô\'\'¡dãR¿Q5Ö2™¤ØaíÇ1ÜÆü¦\n™OøÁ,&gügï%lÓ¯¾Ö,{\0,F™ù ¦ºïÀ–nÃ*\0QØ`ònÆNà:-Š+­,gÂ»»Ïÿ\0–ãì­LfkHÌXıƒ·²\n—‰5³PïY®>îÃµ™ZûÓ©{­nV-Nğ¢êV¬oxIšÁ„\"ÙŸnã¼N«L“ök[õ•­vÜÍ*†rI=†V2÷c©ØµXòŠU#^ÙÎæQãLa‡c\0ûb8ó÷Ì1x?išO²Óc)J’uÕ­v”~£Øa‹¦‡c\0ÌÇgûßò‡ï˜Š]®l·išt~‡­úü!vnÅt°îv|ŠL0À9v¨û	ö€&tß´Í*“	Éİì\"ÀQg$#ºÌqì;[ŒLù cµ ï1~X`öç`Ø™|xí1T.š`˜iàÜêFk¶AÍînVv£\'Q§a˜ó¨?È~]\\Eî[¼Áñoåöá?ÿÄ\0\Z\0\0\0\0\0\0\0\0\0\0\0\0@Pp`ÿÚ\0?†qc|î2æ¬øeÿÄ\0\0\0\0\0\0\0\0\0\0\0\0@\00 P!`ÿÚ\0?`t½ÃÃ\ZiA›íğ ğ€–ĞÅ´4Æ¦„å@Ë‚ƒ4İËœô×ĞÂõâGà¯ÿÄ\05\0\0\0\0\0! 1AQ\"a02q@BR‘#r¡±3b‚’PCÿÚ\0\0\0?måch§Kÿ\0µ…”oiÖïêáîŸïy®5(Y²Ê¶c;#é\n´hÔ£geFÎ¼å‹ÉÂÔgÒÁüİcûré-\Zªkód£½B«¿Ÿ&áîŸ\ZMØ¾A©PÁ…ŸİÖ½ÛÊÑúG¥pİ†a:dª—Õû5TĞi}”}7¨¥®Óù9<H£J¼ÿ\0kÇººÄúYò°6–cA}¬}`\'x€ìÕeûs¶QºslºÕ–ÇöäÅIÉD\ZÅy7·İZ›C\rT£Fƒ%¤}%z­7à)5*ÄöÎÔS]iÒÒ¡,Ó5í¿²Ò	ş²x¢8X¿~êrb&\Z\r2»ö›ğ£eg¦îæû+¾§Ìû)qÏcûo¥I¾J\r`”yì«y?(Õ3zÑ?ß)Åô›¼G-ÊÂÁ…ƒ%Ÿsp¥Y‰—kÊw¿‘cûn×İAZä6“Q¢.ø¸ì)u4\Z¬,£?´Øå?ß/2\nµ¯\rUüq”÷Ê×ÚÑŸÊ§KxL÷O÷ò,}®ÂêJ“|QGÀZùTáÙûÜİª­=òan¥a#´ş\'s˜öuğ•ÕÕhváKÍ÷O|‹İ˜ Ó®§!8£•\'o;ER«T@Ğê©L“|\0‡‡ëŠ¹2µ”áß3ùÅphİÙ™tz¸È=ÓçœøŞcÊ³„\\rAl_6¾{IÒSÓšØ{\"ù†Ğ³³Ñ¿9BurÃB†õZO\nI%XÓœ h¢gË¯Ä<Ú’&\rã;²M§CBs,úXMö~ù\\ü24Dÿ\0ğCZ$•õZÿ\0[¸™–ù/n.·}+FR“• :w>M~.Ö>\"›„N€nPe—İÙ›û²\0*´ßÈ“ñ‡â3ÂÅh>Q\rXtoÙÁvG:HD{g“åú8‰%VQyt\r»ªªø)hÓTß\nñ«“Nøkä3ŒY6‡SÎiË\"ş%W©@;_gMÊÆíÓ•:_bgåøëc…£mÊğÛFwY˜ù<Æ,€<ØŠªë˜9æu*rYsYÈ\\ó±ùó1@1Ê.q“}Œ—Èõ/[?7\0w>gnV2	ú‚“pÑ‹±>A–Î•Ş]k3³U~Ã‹¬Ü\Z×Ÿ:Ãˆ¦rù†×E*÷¾H›„Pq‘±Ê>êO¤jPhô\rš;\\±\Z?UDïòÏ§„\\ê“{xÇçX{eÂÚ”ì}o\Z\r•M8Sş×ÚŠ#å€8×,•`g§û¹ÜbËjÆö(xu´İÜ)9	ŸŸO:Æ´®FºĞàaİ~Kb;›çıÖ·:›êïåb\"kÊléËA4X¹¾Òº’²µf¡•w9­> á‘FO”ĞiwH˜ÕÓ^ÁKÎIßúï¦YÍá–É@¶…apŒ…Ó-¦KaŠ^N\Z•‚ÊŒşÕ¨\"e™­„q{mé?.åPaoÒ<¿Ô0Ñü¬éfoöÇx¦şTÜpî‡HqjÂ%C„\'@œKg§ñ’Õ jË‹ÉÂÑü¨hÂÁ ºdšÙ£vU@)Â´°RLäÃç™õc½ºê‡‘\n/”b,ßı¡i­\"Pä‰‰¬°åVƒa}b©Ã¾S°Âd¯ÏO«s˜˜>¸ïmwòg(o*‹©¸\\±jÅ[ØûOIĞr\'|%>4œ…ÖÄ·†îSZzZ\03õPÀóâ>{Û¦¾qµwÙC^&ÿ\0¡ËIoeâ?ìŞPwuh\r+”˜‰v‰%slØ,N2S	&©Ã¾aˆƒÒ.Å9çÍpÛúoæ†ò›ƒA­Å¦¥·Á¨RŞ—®¡NP32Ñ–ÉÆ*Õ\Z\rİÂÃe®ïÜŞ×pSäEtÍe‡¨¹ªm¿f….û<ÈJq´‡WÓÂ&Ÿ‹ºä*ˆØ/ñá<d/PjÓªÅfáÉ’V©xéÛ•‰µèSV+áCÆF9Î†4™A£ƒ+¤Éç)Â(5<+?Ò`‚ï7ÄyÂİ¹(2Ì`hü§œ_6—½í;oÜ§|9•ú–\n5ßÁ¾Qy:û¦¸î†Ã&V‡‹ş;ã±]L0…¥§£ÊpÃ]NÙ›zFF¾ŞŒ5ÊÀŞ›?¤+:Tæbªn\"³7½³¨G>&˜hmòà´êoô¥¦n‡	ÒõBÂÍkL\0½R©¯Æ£º­‹?\n–-_àoáuY€¿Ië­¿{¬ÈÓvŠ”àbÑüì¸ÍÍ@ı~ŒÕNİ‘Lîs:[¼®š;…UB°Ô‘s|˜pÄÔ_cøVAâ BMŸÔ¼;:6~ç\'úãóJœ­9„¢N³LÀ€\Zj‹\r¯ş”È]/¯u.‡B—;®(ª¤d %Ç`±5bbÆÖ6X->]2ÚWB)åóì¸FR8Ì*~Ñ–ıÊlé¿¨p±Y•¢œ¡›¨¨¼H˜.hºŞ‚õÓh\n³õ|CÔ¤QbÅ³õQ’ÚMb™jp0T¸ =Ï7Ğ.§J ¾o\"øÊ&)Éİ¢öÖÂj\nıA‡¾ÅKT(¿=Ò—J³tÌ¶ìNw@ÙÛª*étìWŒÏI×#Á-1|4S\\ş·ë‡`¥×nU“ŠğwAî\'M3²•ÖğœûJ	£w(\r\Z4o½*os¸EÇSp†™_©~Ã…‰ÆJÄÕ?•†ãbÿ\0²Â};^ L‚.=6dúŠ{ldo¿U-ô›£b¡Áá´\r3šèí/Åh%û54“2Ñ~«oì,SÅ›«LG\'úoÄORå·3²-:İ°\Z!\'M>\rø²L‰ËZˆš**Á´ã`¤«#¯oû,Oé³å``ÂßíZc§+¾‹ Møm„V6ƒÂğÚ\"µ;”ø2\'á=Ñ$D\0÷È)¸²}AtÖÓ/×ÒëØ{Ü-[=“]ê»\\)3L¶ŒZy]ââ4;.—•N\Z|Oi]\"É¬Ñ@A¬ê\'ÔQí)]r1ü…	Ìä#sHå8prZ(¢Œ“¹Xm„«p±ÙÄ\nÁŒ–:BkÆ„iÆIŒ-Š¬toö‡º}fºßhÙÕ¦üV‡NÑ`laĞ_â·}}ï8t9şNJj*µLİM7®Š;…]/†„æƒ‰Üù\'Jw[~nÓ1GQ9í3/Äê54L_1âD¬0eKáÖƒm””Ş\r/,uZuT¨Û½Ön#V¡E§ù\'Ğ\0í“tàyDp«q+\r¨ÿ\0²ÄÍÿ\0k ìĞƒthÙ@ÜyºªßHy7Ô«3Úû2ôß\"€W	ÂÏæõ;œöQvúJÅbe08BúZ5\'eƒş;¾³ª“Wå,;è‹Æ×İÉO5é^²uØÕ‹e‰ÀZ;~\Zƒ¬çíDÁiø;\ZĞJÄÑ­í1}™â—bµ§\rİp8	‡tŒ•5ºZ};.¹Zû¯ñ·ñsÒpí8ë—­²š\Z!¡<·İ5Àhj‹Š¯B×D£qÆ›#Ñ3±Ù§Á:>’†Íoæøï! —©;\'[¬ŒÍ?´l+|ÑB)t9à*<dÃ=mşPÚÌ…Nj±0ò>¤Õ<8F¢ƒqI£yVŒ³ Ã÷94uş!ÕÙh´É%a²ÿ\0Ò$L°·ªv@»¤àÌÊ,ú–0:·	€ñğ½FU¦-t•Šfšß‰ß‹¢&FKA=ÅÍ`İÆÊÈÄjTã.÷Aâú¨ìºë­Æë7«Q/è×è7	ˆÄuºµ¤¦‚nêƒİ‡p>—jÆÔaœ §F—áú„\\ëcì/w½Ï÷¼ÙY˜³ÎLZ2cÑf}Ge.2yÉE/“XT7;ßâ	×WºÃ!‘®ä^bhİÓX—›[Šu\n<2ŞîBÍ·x,=NÕ\Z‰»”¿Qül«øN5ÓšÔR5RÓ5â©Àóğ]NnUêÈqhD&ãÄR6QÆL7vå~¿RñM@ÍØÊÑ±ÂÆÛÍ£‘{µ*Ï—hµ3ş£T\Z:Z6Ú‚~Zfpví¸8j\'05pßàÀÍgÒ‰‚\r{å’»qs[¾÷3‹­x¿OCV\'-şWéÒ®ù`	Ff@š§´˜@Û;ú4¨Ñ³8GÁ—×¶`x*×ÄÈ•Ó¡æúYSuc—ù>æï\r‡©Ú*yRJ´ŠeiÒ©ÑÎHcI)´~ş–§±†LÓÎ¢®`Ï¦ùƒt€FÉ˜ôĞ8(Â(¶¾úSw…fb5(Y[\rî´v¸ë~óÍˆˆÄ&ì-Jë8Ÿ:\rÂ04ìÛ§Hœ§æQä†½ôi*aVŒ¿áì‡¨òŒYº8\n®9p™hS·tH\"ânuµ “£BíÂ¦¼/ård\n&ü\rôç =Ó€ÒrÙ–Kˆm{/Õ8©éj\r hØ_ª²êœ€*]j]ìè.÷(a³h^¥SpoÜùLÅ!Ãæå;“ùPuX[ùAô‹¤,À.€Ğ;]§­ßÂ™¨9CÌ/ÂĞI+õIÇ>€º˜¶ø™4Î`2¸9˜ÄstûÊÂÆán^GÇ:\'=Û§3‘•±P*Pu©ôV1„OŞãÕ£´ø}ZŒÃ…9€Å¦™š\"yXh(À©\Z2hp€tİE˜Ãß|–ƒÓñäç†¯âê)ÊêµoÚ«WœàÇp$¬!Rã9¤j»äu®ú&øº^ì?Ú†O\Z—¯\0Ä·ÈïçÀiOsàlë$ïtYû(<*›ÚÉĞy<¸ºs\0í—[Â# ‘=”fx™iÅhOí\ne\'’†‚8RIAƒlÕ0$ùU\\„Íêœ4Šêªà¥n¨‹LÜŒ€S½ò‡ZjtoÀ—“¦yŸ^hÃ“N¿T_fLƒé‹İí–2‡´@Ñÿ\0ô1øºÙT‡¿‡Á6Î”®`¤EôiR\\Ñ÷U´$v	Î\r+¥±Ÿ¥Åc¥ŞPkÚ_g³€_§5ĞBxp#È©…¦#İ	:Qt´•úÏÿ\0¨XlÆğ<ØQ¶ı•,ß÷â\"ZÚ”s+õÖÿ\0(úœPÀÆ¶;*¸ŞÚz«tù.*-±4‚°	“õhQ%¬±].wz#m?*\Zÿ\0jœâ¨Â´]v±öBˆïİ! ñğ\Zê»×WüšİA+@î†+L\\á]6sû‘\r†ÉÎ.Ö‘šD@Œ•ò½eVÍ¤òºÁ²‹Óÿ\0mÕCûn¿L<ÕF**™øjßHåMàÊÄa:JŞÓøG0Mğƒ>šNƒU9aAøğÁºÚ¼à³oŞ©ÎÇtñ?Ò5ÎçMM#%*§	MÇ\0kªw©Çe¤|otX —z²Bm-×<ıg=›0×U†{£‰ÄñÙ×’¤C}‚‰)Î3AñøÌ‡ŸNZ˜Š¬NÔæ… %Qhæ±ubuh°´Œ#…Zåyi˜§ÃQKªş8Rr™NÓÛ>1òUÊ†ú—U¦!ş¡6`÷r\rÅAµØ‡Ê\';z«9¸ºJ’àµ%P]=üùĞrT3_«8é–\0$¨~~âŒËÜM6X\r‚’g)?14Î\0Ød ”	€ÉOêÇ\rÙak@î¤¸åûùµ†ë¤b<•$ù]-%KíC{j¨Ò]É+ˆØ(Ü ÈŒ3Ù°ñ9š)Æ\"J0\"9Rm:¸Ë=>¤k¬]hHÛ<yz(=•|¡â¼wÃU6vúª«BIˆ¤ë˜`ÈÛ)ÂÓE‰Ö€:(Êl™‡¹©RâNWMøšu“?låød4VüXzy(M¦.CTÙ07Şª®*ÑÑ;gm+9gÍöøÑº\rˆÀ0ç8>s…~«çö#á°6wÔª“WÔj3Ù¤OÁÏ•A+Òs:Ğ@•\'|Æ’‰{ÚÈZ9Ïï¢³”¨Ïf\"msÙÁ›ãÏ\"€*º«3]=N5ºàs*XÌ_½\ZÄñKƒFëHŠgƒòˆÏ¤QBôŸ‹õÿÄ\0(\0\0\0\0\0!1AQa q‘¡±ÁÑğ0áñÿÚ\0\0\0?!ä{Š,J›q-ùE	d\ntF2€\n§‰YaÆüo,µeDïİøƒ<ºƒFïË.•iÔ1gjj<“÷ÅºÀÕ…êZx€yMŸ?¥ş§oßÃ¸İ\nrÃ6şÒòË@*ã,›‡Ã.ñô¹ü§[KŒØêÂ…¼¿ğ¹y\n\0í‰y+k©˜úY}?ÙÂ£E·©§À•Ôf‘ìÏ\r´>>E§Ñş§z]@A¯¶SšŠ0xMï¦~¦ƒp79\"P[mî-Æ.Ğñã:àÿ\09îq›Åü¤‘ÔKkï+ÂS{)«JÌŒP½®[7\r\"ÖuÍ	¹@ÜMGœ<7åè—’İzıM«nå@•8~L)sÉ-T¤Ôô÷Ğ£€Ã7 ¶YÎÏÛÿ\0X¡–›·7•ZCØ0ù}A<Oà§å–½K6S´Q%œ±¦<oó|*+5{”@5p®|¨Œ:´;%@•–FÎ\n2£N`´ãPä¡,4¬|qÿ\0’åË‹â #õ…ËT¶%–úÉÀåÓª†»W¢[O¶*Tç+¢!	êéÜiôzMÓxõ*T¬¼FQwƒº!æ÷¢¿t\\	%!zGí\0‡_û”Jİ£ua:jeÊWœ%Wƒ/:Î5,ËZ íûø×©U`BuŠÍò›¨¼ùO‘â\\j¶„>)(CÂ~ r‚‹S€I·×QÍÃ\"Ôl\rù^/•)&ìí·¹Â6§bğDkCùy—;Ô©}ºoKƒ(%h *±ÿ\02Á¡Ğã Á±:µÎ 7[®Ñ]|&%AºÍ5ÖğÁÔ°å¹¯0X YçÄD›c€@-z…N;{e^VåùŞ* nŞ \0¸‚Çg–Îø7\rÛx8`/@C\rÔ\"ûøïs +G9 áÇvÏõ-~’`„¨cå²xO-ÊJK/g„}Ä}œ¿?;ø2æØp`P[Ş	ºĞ<Á÷9¬Tšn.^ã –„±0ïş²q4\\§×\'Á½•PàîóQÿ\0çkµ>`¥Ë`„?¸C÷,Ú¿İw[Ô¿ríÕëáSŞPVÜ»ø\\¸üx’y“„1rşu2À(A²N2Ô©ó\\ a\Za½‰TÔc®ge’wår¢ÛÎP9¿ü;!¯¤¶³Üd>†~€¦ÑvÅâ—_ƒÿ\0\\	A*Üh5/ÿ\0×.\\¼ÔbÙáÖ@H\'/ÍÌB»ì<2NÉNµãœ&òRµyH´\r—¶–š½3óü|,Å‚¯¹õİ;Ãîñ\0Ñƒ,¿.Ïƒ\\¿™9ÕN|›ÛŠŞÅàeÿ\0rÀtP…@º SG„sa`èvwñ`*ğÁAç.¸ì?ˆsŒ²ãeøğ‚$“üÅ•Š3²ºÙO0}Å.„~ 6­ô=¦ Ä÷,çlC\r¦´¹Yl¼M á—,æUìŠPÏ;Œ2ËÀä3I ~4ªÅõûƒî)p|ÁaKŸ‘}Í¶ÃÆB•l2²ÙÑÀó6Ø9¼S&èrG4}ã\"t\nÆúJüËÑåâ§ŒãñÙ54;…;şñ47——E\"óP`¢xŒ, RúıNb°—ÏeÉ+ „€;®×ğ¸²å¸ÀÃÍ¿”Â±îI®¯ŒxXGÄkù\'™pêJı‡€u0Úÿ\0]ÀÙ7.pËòÎTrÄÁÜ@`–hyUÿ\0/\r´,ECqÙêWÖmTüÁIñÕTE|M˜ÙâWÒ5·ÔZ”ë¸8˜DnÑà:ÅKK¸¯‘Ä0ÀE‡ücfş8¤^*&\n›Ş	e\'¸`‡G—Â,	¤%M’¥Ù<éá„Hî0<¢as°yÀ¾ÑÍvğÁÈ¨Š±gUw\Z(jõ: ]<ï>ˆ*4Óá*)Î]V”µUÏîı¾¥ŸˆPq, X†|-\"ò™3Xj«—ùCâ\nŒğï;|F\rõ=’Ï8V©QÓèœF8úˆ¢Å¸âSSÈMøK—TöŒ/ø©Q)Ã•QÎß×Œ<Ôˆ¨mê6,tûG‚\r1ƒ¿UUæQÜ¶ÇÆ°r˜B§,•zıÁÈAÄ¬J!4_Êimt!á}Éf.Òµælÿ\0Œ1‹ß1bÌè\\v¼é·‡Gê8¹ÆTÛS°ğ<!Ï´ ×­xb›©İe^\'êô\"™-y¸@Â¶:¯é+ÉñÜ€NRëË¡ãyI ·ú‚ »‡û\'òÀ«mòšÁƒóA¦L:#¢¢¨üE*Ñ_“(ö~¨*«<GÔáe~c±.ŸõJl­.&E¾Õ½Bñ[²¬ôÁõ“4ø6¼DTüŒJxPn<šKŠešWôû›dañfñ¢~øç}Ë‹l\n9w\07ıNæ›ã¸åHò`±Ø›¸çã`Û-J¿9iÉetÿ\0?y^r*\"ÀÃµ¼‡Ä\"ÆI7ƒ‚0mœµÓğhÅAŠíp]úK±ºíû„>¬,ÅËÀ/s^.\ZÀğyO@8ˆ7H{PŠ\rH÷°:`7¾÷;Ğ€‡ƒÚ®¼Xë—À”İÁ„Ó©£ñ\ZözS\\J	jpƒÛßæ!i{•dİeÜ‰B.4†.SÌ¶C4	ÔqÇ¸èX*‡PÀ®©¨3Pİe@Gº]RO4p[Óø`­† à‚º,iqé`3Lmİª\'+p&%&ĞÓõ*~ß2R¤´U?^NÚœ8¸nÆãg¡;Û	|¨p-x•\0òB¥\n F£eÌ5]T=C‚à+¾aÚ¢I¬•8ÖqI£ı§áA‡­àKŠ[µ®_‰xúKN9Æ/Áh,¨òóáĞ™Å¥ÆşØÒİPş,³[Í\Z²—¬ìÓÁ‘m¯qàOñ7áu?1qh‚ìüïûb´/+4št•AË8ÂÜQFMÛ_‡ÁñRğXõ\\ñ/ÿ\0:=9Î<\\şlsÌûAè¤-Ü÷²=Gk‰ü?PÒˆHÖŞòÜÂu\r†ğú”Cæ8Š-Bÿ\0àã.\'\"“p‹ı!.\\¼¹.¿ÔO°ú_sQ5 àz–lã,¡‡4ûbŠ¤è…Àz——¹Øƒqq§E¥BãPœ2<¯$Öt8q;˜\0¯<ìø\"m]MåEæ_lC‘¨N„¸ÙL÷M‘\'¸pŠ‚õúŠ	ÿ\0÷Ã„Ğ$\r;Ô%å³\'à Šóº~2Ose`q|FÛ”QÔ†gÊÆÔän>øĞ[¤gÃçá˜¥zñ…ŒsEÂ\Z” ÊáBØfæ…¬–TñWH­šÑWf¥Biç‰z¾>É®åÍ„­5‘âyÔšA\'Ü¹ï\"UEÿ\0Œ8ñ-üt6Y@×ÌY=ü™jDœYq‹G­ÊK”Ëú•Î³ù#×¼<g\08\"¯2¹Ï/(×Ö½À¥a=,ËÓÌ0:¿Sï±^ç¯¶ˆİ‡†1áÚ6”mü!qå%\'’§	üH•´Wmx@«!üB:Œ0Ç‚T.9ÿ\0;—À½ãË(¨qc½M(`A6Î²W*1ëxœ0Î„.Zá©ôëğÎ³Üi+Ùğœ¿ÙŒk¬áÂÒÑWP\"w¦}%¨¨²†£~pœ¥_08iõDÑ\nF/‚oç,EüùıJÖsşIYì-Ô8—,r(F	°90Ze{›hyV80á@•«TñÆ=Nô\"h\rùD\"w\0ı	¢ÿ\0IÌüĞÿ\0†h¾·6f>ç†LğJY¼@Rá|fÄo‡0frÔ®ÿ\0²Qg”°ÍéáPpàl÷nW?\0JĞ›Gh¸üÂ¢7L˜Êá»EúN8G‹Ú¦¶!xyaˆªrË.¶ÿ\0ùK•!†Ÿ´f‹{ù\'!!eVeùq7<%€¹šwà-jÒĞ{ƒ¢çêrUâã\0qRòJĞSztDT³ã¸«¿¿r†W4g£Ã…ÁUí:ŒX C2Ç,)²YGÇåˆîô‡PN-ÍA«ŒÜK®i„ÚÍŠo¢ÿ\0¼rÃ:SˆT&ø½AÇóZ¹u¡ s).ÙQç%7iqûê\'Ğ˜åæhÿ\0âSÄ%Éô›«ì›ÎNN£ÌM\ZòR\rc‡ö—¨§§´‘·W¿rá_£‚o*òN#\"<Å–}s£­ÆÉ©L˜.xD\r?X!¾\"v0TôÍëvƒ¡:×9í°°:„ME³i)p<°æá± ãïX!õ§¸/õx—z—D×Z{EW]ÛüBäY¶mâ{‡ë*€C¦_2.9eQæ4Í*lDÃ./d«Ôw\"j7keªıw’0nñEëDÁŠîzöÃçÍ[@@äaB\nüÃ‰ÂÔÿ\0âƒy©¦­ó¥Â\Z4t|Äb>_skm*ÇÀ}Îu‚‡AX¢›0qEâ–åû2ÉpÔ99”Æ€_0­.C_-cš¹ÎSln>\"*ÃkÁòÿ\0ë°µîQt§Ìp”\rAJ6UÍ‡ÚR3Âùú&¦£ãŸ´°æ82ã	¡ªg@!™Æw!–İ·b8$î¤î,,XYtÜqÅ2Y\\±	©¯¤úŒ‚\0· (a©!XKé–Ÿrµ?úêmmÆäÒ¸~ğ¾j£¾/`+H¤Øá÷·¥AÑC¤Óìœ„x½î]´´ÉlcôJVÜÊ\r/ñë¨5Ô¦Xìb¢ƒ¬<„„Ş§˜ãÄú»±ıe¨\rx5g\rğ÷(İ³pÂ¼¾ˆù£(È øŠ\\Ór¦é–òú…<^ØÇFšFo•ÅÏ´ßè”Õ¬{€ºûÂ*µÄyGDúÑøb›Sá9©XQ:~æÑy…,—qcMâ^F{¨s‡D~ŒVziI<r©î«”®šöö‹k¼, q¸ó%pş†\Zn	_«o•Ğ˜n*\'¬£%ìäÆO&‰h7pÇP°ÍJ˜¹x‹è÷ùüD¿*—.±íĞ~cúÛÂ/rñäÃŞ“„½£E×-svµéšZ\\aÄ X@)QGc¨\"ÿ\0óËÀé£;!lZ‹4‡UÆÅTŞÑØû–%Yn|©zå¡pƒ¤µlr‚A@ŸĞÔIekÁ6‰t?ÈÃ‡%áG\nJìB\"ùDNÉ[œ[gyEÿ\07æm¸A¹àr?0úc*/8âj‹Šp›ŸœoÌ|Ò‡”ëb½eS˜8n\\FõPXxpiŒÔi•Ô¨8hbÛ\\@çJb?/úÁ#â]¥–r´S¿UÜ¸¤~	`ò\"ZRåGü!£]Ëâ\rã„pıoí+Â\'á\rÓQ:M Më= (oÔHÈz5”«³ÅıÄN4V¨ó²wpçå¨‘&‚(Ã\ZÂÛAÔaĞl{—qK/.Ñ`Ç,°¤é‹f_üBƒãŠ{§óE€°{0î‹F’\nu®”\rø”è‡Òåß…‹ºš¹üÍlğeÆMãBİTĞ­§sbÂ\nå^¿PYHVñ cÊŞb2+#¡ØWô`\n>}é4!fèƒƒoÅŠ–8`çDs»}Eàú«#œ\r×‰åÄ}ËÂ«·\r»p……ÁäJİãkÄ?ÔÅ¾`qæá\rÈGL@à.mâİáIIx€(¾\"õ~á„Í‚@o>çx}°cõ‹ÁwòqiÄj^§\"0×A(us.4ìïÚ¾\\ó*[¢ı·÷å°x~¾iª+¼+Hçüÿ\0éŞâTgyGº)¹h/,Ù,‚¶ã‡Ü]0.S÷Çy¸àìî8Ys~&ã~cÑÌ·€>ææØ Ò¡Úm\0iR×–àÔîïÖ#½Á·¾*pÔQF+¶‚½­@b‚ŒtB£¯\'b¹ŞO\'‰p2Š€&¯‰O´rñÖ.–Ÿ¢Zÿ\0ÔAÅg#ıNVó4W‘\ZoÃ€;Ü±P§„nS^zƒ?ÙôÌ¡Ö°Šà¹¨¬(E¯VÛ‘†¦–pÂ6rSÔ vjààV\nÙ´\njq/ÅØ\\ª6E;è9‰Yt¤š\"Æ(ƒà@:ü	aïÙÃ…ªÒ1J´\\Î„ú—ğ‹_3n‚&nÈÄÊ1æ{WF\r˜_m¸Añq]¬Ó¹¬@Í[$/Mà ›¤®_,:Üü=Ò½0jÁ8nmëÿ\0s›Pp8\'(~ÙW6\rYz\nrì•6“‡ÄfâÅN^XÆxaXøÜMŞ£º×äñ…\\¸†ë:Š;t.qª@úFwüD÷rÇó—RÅ49|Í¼ßâ)k7;|ev[ÕşSÆ\r£˜klYí.*‘WINÃËÿ\0(œ,‹oGÊ—.,fê«î,Vi,c5‡ü¥¦4Á›‹60Æ8TQÉîW‰SX:¨J5¢_S\\kÓB10:œFıJ‚X[}oídìÜ]Æ»pÀÔõÉ=²’ÔÖÿ\0Âlì?}¸c\0UÔÙ©qeÆÖ´©Ø\0×Rº[úÁÚ\ZÎ2–ebÅ^\0á5nXë/m,to\rĞ\\RÎNÜœÁcw&/‰H°¨ôÿ\0W_~˜KwiÊá•@ú%·rrI÷.%%¾ØK\rå\0´‚£L(ÇwËQËÅ·u}ÇÕ;Gj†ÄÛ~a†1bğğÖvo‚DÀ¡ Ñ*”ıãKÁ*‡-aæh‹bÒï~†yÖSJÛÔ+¬ß¨òš¨Y¸á¶Åû¤\r}¸‡¸èhıÍòıd¹£fÓMA—.hİF\0©CëjF£ËÂ7ÜBÄT¿üKUÖ`¨rxsR¾¦²ÅÃ®9Vä×r°å1è›ÚCË>©c\"8íVÿ\0Â´â×Q=(rãó5a¬[Íë>Æµ¼ïñ±5öf¹µy¢:{e±6Ÿq}üùCœ	uqÊ¢¼,gù1\n0ßàûaß¥\n•]aôÃã>·ÇÁ§ 7[yÃÅ”&‰z´rÃ†WPj}ÕÆMËñÈË¸:¤H˜ı<öK Ö\r@½S§ˆU¶æìKURv0_ä\\uëÛæi%­½¥“vÎõÔ¸sı#ü ƒÆæ¥Xº‹\nà0ıIWÁí›[º#çYK€%µ:>\rËœ¬QbÎ¬ŒTL†Ç“q•ç–	7Sp^·ˆ´»	õı­-K\"\néi\'¦¾ëÌ¼\\¢>Xdœx÷â;[_©pU!ŠrÇ)D§A7°êĞìWùEœ¿Cÿ\0¸°|\"¼@_§À6JÅà±EÁ•Ç-yMàá\"c\0<6Ë\nî7!?FğrYÇŠ÷ãápéê6<ãÔ ‚¶@à+Ô%ßºiÏ÷ËlËŠ5¼l1rãµ3¾ rùø¢”øÅG;¶Z4ÓÔg ?S¹_It\Z¥üfñ	¦\'š„½İn\\ÊÌ›ÁÄğ˜=]v>×ƒà<Æ\\a!rĞ&XUHxæ»~İ³[¼Ë5CÊ„³~á)çğ¨—^2±E(í‚†Ş!¿§Î£®w‘\\ƒjµËA\"ĞÔÚ³†ú”‹L›W-Â7ƒpŸdÙU2¢r¥PFŠ+]gá‘€‹:¡İO¥8.\\°`ê‘ØºeÇ˜G\Zˆ¬ñûa¨á‹ÀC_Òxì0ò0àSÃD8:á¹R˜‘%F(-æ•.K%¾¨	w€n%Æ‘¦£ª(¥8t¡IÅİİmG¬µı†ú†É·t ÀªRr–¶ß”GœùÑ³Eÿ\0³+(¢Å°àµ**1T2ñ~ö%Uæ1Œcš µIë_ğ‘Y*ã<DpïÜjÚã~%„vÕ8iÖ4•.U¸9I²ÍUÊÖÛôyºêm,N_Ã6¶±‹àÅpaÄ?ØÛ°6=ÇaÔ_:ÍEC«•½úçQ1{éÚW ¥ ¦®â«÷rîófãƒOB\'¨[°Ê¥-ÓkîPìÕ¿‘÷/„áÖ\\q.â3À}Ê\"jıc×CÁJõ5ĞOl¦†ºòıù•…‹. ‚Ş‘ªİ6ë„E¦%ª%‹^£–WA–şóFÏ1g;zx\'Ğ•6—‹¯Å|áçå¶©-ÓÏÀÎc‚]\0ñ5ˆ¡!àköCŒÚ®O©h-D;«péBÜ{\\×rÍCX\"¼ôÜé}nk»Pz+Ä\0A*1åË(ì\rÿ\0¦^Hõ=FR}\';ìªšqx%ÓNµk‹’‚0Ğ¼aQ2ØJj•3;H®£Û˜¦2Ê64’¹l8Cs¿8«÷È5šSËp_¹{B…Îl-µÜKl½²±qÀQÈ	u\r·4µ\r^DU\\5áB˜³ƒê=+ïKšóĞO>97SÌ-°4j1Œpo=\"\"VûŒHÇªR‰iæ2„f*T¬(ŸĞ‰ò…¼¹ËÀy=J@§™Æ;áÜMb8=¬NË*Vâê<ô#µn1Œp{¿‹2Úz‹‚ƒº”§Jİ§˜]¸‹J –áöB>Ç/Ô¼a‡à‡äXÜ®*æŒ†ÔkşI±ÇjR}aÃw¥o74éíÃ~ãÃPiÊ]Æ¾¸¥;U|\\Ù\n.Î¾1Rï	\'À8Î(âDa—ÿ\0Â¸@~§™~~U`ş‘’_&Ç ZÅ@4”ùÁprWâu@½·Ä­)¨ÕãÄ¶ÕæV:Y¥<ä³,\0^Ş¥å ñïß6ıÏ¶2ËóæX€µˆé>:ı£-‹/.0Â«%øn×œòÂ‰ñ=ÕMs åÃ­‰‰î-§ÍŠÕó“óÈÛŒNŠé»›;–DÕÇD÷U{IúÔqT×rğŞİé-ÁÌcŸ\nòÀ8~V}%rıG7• :>°²ñnC@M£Ilu\Z$}ŒrÒ÷•Š?¬ı\'q+¢P»B\'‡&r·ÒzÑ!Ê\"x­Ùí¦Ø©F#*V1˜å¦/ÌÚ?&şÅ~¦ü¿ğb–ÚÎ`«ã´\ZwÍÔ¢Øx\rT ¬…Åî$c—,5¶©~ãAl#6pE•\r—Z›²ÿ\0šã}¯w­>¤Sk(°MÃ,Ê$HÎ\Z}ünYP.XØ~åf—Ò(µrÿ\0ğ¸qK¦è,#T;ÉmÌÊ›Y1¸©ímcÇ\0k‹ÜK\\ëéäÔ£“Äî(\'”$@h“Ü©QÂÂ&€` ‰‡c*T¨ÀÔOƒ?¤éqÌâ_ş7ñX\nJíŒáÆüÊ°YCÓÈ¢Y}Qşg@JµiirıÇN©?´HÇ%ÊÑõûŸM…DÅ]0Ê•†Ê¡ú0Jÿ\0Éø)ÈJ©p€| Ğ½âi(oî{Q¢NŞÜDX81Ã¹§–C&»‰èÂ¥DŒØ¸~g/QŒgÉO_\r:`X¢•\rXÉ³,c„\'597*–ÖXÃ°U	g4Ñ(0T¨Æw)2äpy”~˜±7Só\0U|á)V*T¬\'˜#¯jTº¸áÇç‰qıéÔL¬®b‰·Qa®PÊ;ÁÑ+×C·øŒ-Q^n?\"tK¨Æ1Â„DXk€>á¯v?-¬\"ê.¶JşñùÃIQ\"J•»wtÆ$eJ•8…+Qbœ>çÿÚ\0\0\0\0\0\Z°\nK”ˆ©Šá@;Íõ‡¤ßnD\r§Õ%m4Uâ1\"İ,	Ï*){\0L\"¤ K{Ï¥ËX=Â},¥KdR?”wçC^#¸‹£ú,R.¸¢}Í\0»•Úšb 6W{}øC´ÀôöÒæ)µÆùuYã¹F¹0$ØÒ×]o‡¨”rn\0:ÒŠ	²ä{RI…%-œ‹y6’‹0ª\n‚2\0–À`¼}¬½¬D\rl³FF\"_b(Œb!wƒ’^1ônŠ‰äĞË9RÁ\"µcÛ/\n}”r—Øğ³üªäÃt8=F\nÙL!ˆ %¯ĞË[ĞüË~ßƒ”„`‘É……C3¤ÄZ¥†¸øG›ªH¥,®ÄxdL$Su\nw°>Náëj3€óÀÓ@Ôl´d³Ï‚²M­Ô8NbIE	‰,§_—¹8ßX.ö÷ş\"*€¢DƒÍso—\0t·ÛçŠy°y`mõ’!L¢Ğ›¾5eqh»ÿ\0Gã€\"\Z!Ê`R(&ê€,½TÃ_™ñ<LâYv7°ğ	ˆÆ‡MVÃJÒa ü?u#Ù§O¹«]÷YÃ¨(ÄíÀıµÎªCÈ‰1íÔıÛ§YUXiÚNÙ$–±a!«Ü\rÊ‰û’»—§¹d3óÔ¹,];j°«ÏîùiÙ®å8ã\ZÓEáÎéD±->®ñ»ã@\0<÷\"ú°ÓBp<ôt\\1 \0}±_èùŸÈYW0¡PÈ—!p#‚¸Sa”“Ë¡Â+;MÑ<4¢mĞ=½Ó6\\áú ¡|µ°ràÃ…rJˆ¦ÎA4ãày\r58ç0õOœµ®\0µÃ±—ëNçm)ö%öƒW€ø	ªØzâdü8Ì•0ü–<}\r=K,pŠÖÔHôµÏÁw{L1dşÑ)ÉUc%txˆÓEÔ}ótòşÎ;rÂ-İtèÄfr8÷K¡ˆ™|<a¥ğSn‘…²[tFg;¶a?~ƒšô›X²Q\rP{ù2õH²v9©<òŠ<z:Ñ]7ÅÕ±‹î”‚Y Uà¶kà‹<rrÇæ€F¼<y1[üä¢‹g_oï_ÿÄ\0\"\0\0\0\0\0\0\0\0\0 !01AQ@PaqÿÚ\0?Br³ğHkct%»Ş¾—/£¾„¨tØE×{ûÅßCURËÙ¶UBJ…À›±è]Ílwà•!ù\r±x\'\nãÚlQìY[—Ô;n•-¸²ÑªÑ¯’¸h¤Tû/¢ş	QpŞ†éX•ì­j_ÁaqX,İĞ¡—½Œ$ßbĞÊpûájÕCEú%ë†y++/\n:àz6ô5PÆÅ«.>¸Ô>\'\rĞØ\r‚Ä…jmC±}š]\Z±ìUö(|\r[¡$†ËÑLy¼=+èÅ×¡ı;Eğ2ŠeuÄÆ‡³ÌjĞ“o…ÆÆ$ë\'²š\Z÷YLÿ\0qYj.VKEÑi©I.¹\\W\ntÆšîgú!ñ(j<íÕMÊ~N¹T{…ïBĞ+…Ët\\\'††Sóò­à‹;†,7®sbq\\6(pÖVò«\Z„÷X²¸–)ş%eV!•æo‚²¨Eø1;…÷•MÆñ{ê)>Í¦vvñ|tPÖu-?\n¥Qrú/ŸyÜÑï.Êã¼+ğ¾¢ğcsqX²Ë~rÑ¸®D.ÂùLE—úë=š¥ee›(çïğ/ŸÿÄ\0 \0\0\0\0\0\0\0\01 !AQ0aqÿÚ\0?;j%‘fâ×\\ïìYäb•DN²wÌºÀ î-ÃîâÓ‚ƒñ`²/†Cp\0¶\nàÅu:·	ì¢W±ß;@¸½u/@â«ŞAp=bÖT©±pt_7Ï\'™\Z\"ßxÚè¶6Ó€¾àOö_ÔaÎUöQ.\\¹xº†«;BˆªÀÔ;`u7.ÙF±àK—ùÂ®ˆ¶à tÏh“QVd§\Z*9>ÅıF›ÂttÇÉ7¸l–Â-¼/5‹©Ü¹¿ÂŒ° ¨°ä	]“şM¸.³¶.81©¾#Sm¸\\!é*S±ÍãY©­Gêk7wÀãÒˆ™lñË¬TeB\\c¨ŞMâ¸Š@‹X ¤•G¥$qVKù\rÇx%Ö^‚¡²Tó[åG]`åE¸â£ÀŠ{%ç‘ŞLßqhqu„¬\'±oõ/€÷\0=Ë}EÍõšX„’ğ±I×˜`Eù<‹òWàn/ÙCğuÜUï\0Áû(Ü»Çœ;üF£«}•Ê€C­DŠ%8ó÷Şğà½C>p`K”»÷2‘,¼\ZšÖHa,—,ó+«bÆÇ³Øâ„ƒdH`É.:äÁóşÅ¼0Â{8î{Š{Š¹Y%â¸û*¡‡Qù»‹q1UƒW\Z‡n;äóóˆMu„êoŸ_µcÔ¹şÅ­Nå¤¹w¹¬ŠáÁÖÄ—DÜ£Ø¹¹ç|üuäaÜ»{—ä¯ÀÜ¾qqÉö±)›Šh†|ÀA®F*u(p\ZšÀÔ¡Ô_ QÄ%†°~FLœ\0»eÛÜs­C‹;ÍJN¹ºÎ¦ò¿•’Ø«ø‘ß=â¾ñxU7*uƒ=J<”›ÅËÅ>Ís7RÈnS(ö)äß#Î¥Ëüt`b¾ò1L?³¹rn;”Ê	Ô·î\\ï}…W‘ÔT¢\\¿ÆøT²[ÄŒ•ö(j*ïãïâG!D³È«¼1Ášı/&y&N/3ÿÄ\0\'\0\0\0\0\0!1AQaq‘¡±ÁÑáğñ ÿÚ\0\0\0?yKŠ]ËÈç±ÅK¢^x—Ö­«¾TêP<X{ŠîPˆ]°6Ç¨Æ ¬µÛ\Z\0P=ò~ÿ\0G¨=À+3Eî|ˆ-Áïî-À[¦\Zkzò±€éet@V¡KN3¸é7{[pf<kÔ±¦¾kùƒªÒğ8>efŞG´¾<F±@ğÚ!!«êxÇÁğLù† N‹jÊ€gbÎmÖbĞt\\¶/\n,ÅÁà€ÖìuÒÀÿ\0É-\\×(•Í—İÀSÜ®ëı•ñÂÖk5}ÁLlÌj ëÌÈÔú¡³ú”5	ÂÄ ÛnK=†l3R¤Ø‚‚¢¨h¤)ĞvÇ …Pc7‚¼E®f\rÆÆLÂ¢ğ_q{_ÍŞ¦ÜG_ƒ¨ï0oªâ4ßÒå†`Ä?Ş¦ÌÄ ¼ªÕ¯0Æ°\nVË‰éX ÑD+5¨\0XÕšíñR(k±s÷*e–¤G>\"v*¼A³ÿ\0T5ŒõEŸ3şDtjü@P#\rw“Æ¥ôh@hkl®à@æ eæ.*-¾íR”¡AôÀçœËœ÷ƒÌQØ.Ø#­r%pÿ\0DÈĞ‹€÷…i–SÂ±ºÃRŞ}Ê;…áÕÃ*öJB€Ì°äØ†Tx5î:äU¯lK‘Vá	¼<§A*:â†‘mV2øAtê;Ì3¨áˆ5¸®1b¯ı—­Å£r¡Ì28­•C‚1¼ÒóËkr´Áè\n±†°/ÅUÊööÿ\0æñ]â	ÑL]QŒÍıÓÏ7ÌÚf¬âBU–ø®åDëae«ÁğÅÙF³ÄÑø2ë7†š.êÿ\0‘ÆTëQu‚·J;€gKò\\1¬’…—’4«ÔIZv†5{¼ÅJ$Ú­¬ô˜\rúfŒó\Z*Y\Z4^?¹~¢JJB%+ÃU\0”´U¾Df0ÿ\0bÕî,JaŠĞ³]ÀmNÕ8¨f¶ö÷ÿ\0Qª™\\ËâKÕK¦ãøZîYpq*#»hî\r©Ä½C_ò(.°=7’‚)\\–\Z40>_,(!u*âÊfÁ6V‰J2¯sÁ¾JÃ¼%º~#ÔØ´Go‚2nÄLWi\ZU[µó) ÛaKÃ.·Ì!Ÿ¾=L\Z»êˆJ¶‘1\nI¼¤/Î«r†h<÷0]äéòí¾¡85¨i†¡ÉÈq.·®!z†‹X¡Ç÷2ğËììîVEª–Š7lI}J ã»b\\Å¸AI\"ÕL¾*2Åg=±oqj,²KÌ¿¨ÛLşRŒ¢êoçBãC–Tày˜œw\nT($2«£Ì®[äj|¬)¯PoÄ¦/™­~âÓdÈrµ¨y»{&w§Ç÷+†â½µaë\\¢ƒ££Ï0ÉÎ|ÀÖ1{;—ii\\ìÃ¢?y¨_/1õ˜:ØÜßP°3‰á\n§âZ%÷Ø«kÌAq ƒ‚a¤şÀÍ¶¿ûP3Êi.¯Ä’u_ä\'\0QjŠrü?p€ZŸQï¨§4ÛÀx\ZuÖåfÄ,%¶róX`Q7¼F.åúeÅó.ñ÷â+§÷üšÑ<Mn7âuû‰@6BÆ…¨ğjãË0;ñ´ µz;|B (F@í\r¬U@JBù8ÒË\Z*)Ç©f Õ5‹—dóî*ÕP¹Uä:Âlµsu©WƒP+&áY6ÔJ”nÁÃ—ÌÙÍEñá!ğœjôãÉÔJã şâªÅŸíê7ãG,àuÛ)$¥´ÌÉ*†R¿‰]^à>ù€àåÿ\0ßÿ\0š˜2c‡ÄSA’„\Z+÷3ÿ\0Äµ”L.ƒ€$ºnôÀëÔ_J¦¢û€TÂ«UÃôGpl»ËËø{ulûÀÅ¢yKÙã1_eçÕÌ:e½Ë”çÔ4h)TÆHh¯;š`.´r1KD(º1heX:[”SlÔLVs2.Ç¹nŸ¸ÑBäb”-ŒİãÀĞq,à8˜ş˜T¡”î¥¨PCXûŒ£]f1¾|@Á†µÜ;)x¿[ÑCšK(éîSb‚!«­²ûƒYº…Ëpîë:‹_¢óÃÄTã{/PŞoÔ{şe[ùçÌMZaÖsî\rú40—ŠıÊ•‡\\áíÙ¢Ö¬WˆÇ Õ„áÍ6®[7PÈùcÛ.µûŒÌñÄNs=ß¦x3Zú‹à<Åã>¥íóÜh)ÎåCÍBĞ%Í¸è(]¯‚#ÅEø:ñpQçŠâU$uoq*6ä*ÛÜ\0á–Î³‰†Ì½›Œ)Ôv½CÔ€8aj¦Ö0…Š­»Ô?P^½ËÌ]b‚üK…báˆâ\rÎ¨»ëÔ]Ø µ|DH>€íóâ\"â!Tƒ‚c¼×µ](M•pV\Zq*ïÌ¬yñ6Î™›fî½Ã•ü¼@úÍ7Ì¢7­·†$\nXâú0Ê±[À*ş£\r®ÃhëÕO,Ëı—qrp\Z3ê%/+™ê|“Gl¶/˜§š¤¿|.YÃş²Ÿ>&D\Z\n·ÄØÛ‰¢EÍÑ›\"Ñ)á\0é—¼JXYÔ£ƒê=­±6KÅZÔÚ½³z4Ëª/\Zy…E§Y[/Ízw\ZT<rŞû¸U6g­³fá9ıÁñ™Ûõó0¸Ú\"TE\Z8²0…¨§\Zî—#äïî\"”*Ú®Yİ«½²ãP€:Í™”éjÚ«(¬K•ÑŸ$<_˜mñËÄÍÓä?’=4ö­Ä–êörÜH¼J)+Êœ-„ê[h=÷/Ò	öà³h\Z/ÔõõÛ8™W`­(<zŒNÍ½²ñQbÇƒ\"Á<Ù/¬º—‹›!;„Ów‚‡ê”9ü,Ô¿2Èîn$yT\'\'¦ê;\09O0¶Šd.ß3&ázëÇ0¸ÍyšsÆãbœnªº¥7ó*Crô/AÊÃ$ÃETÊ»1ùæ5Öõ/¸\nÎ›Œ°ìm2ˆAOèX\\_„zÌi¬áâ\ZaÍŸòTRrµíà€°=U°¯rÈˆ®€ÑÑ.PÈ³aXü\næ-Ï¯PÑŠ\',6PĞ¼â#F\rF.?sqk¨´ç=E–óÄ¥Ö4ÊõÁ€Ô©8úÔi†1ö… {Ä3ş\'¬-0˜•q¹ÔÈaåÉ;a\nå³»ãşJõÆÎ¿Ùˆæ·ˆ–å@æYÀ¬}P=×uÌ3¨®üËÆwxƒzÃ½Vd¬Â¢éE[TVfX¬î˜wUŸÜÅã¦f¸&ÒœÊÔ§k ëÄ\r¹D\nÓ\\÷„ş+æYÚÇâî¢¢šÂçêfÙ+ñn}ÏüÅ¬ç9õÉ{‹^ÔvÌÊû50^ü²’€~ãWr§sË,Ô|ãæûü)Ë½C»,æ`+,<á½°><K¹w!˜‡‰`â9S\rV\"(]«¯r ¼EÍ¨ëÊ×©sÍUd\nõÔk«~åúqtAÆÛº…±Üº+\\NıÜ¡V¡A|\\)À¸-ØŠù…§\ZÊ.½EŞĞ*ñ+\0jIz`^ki·Ò\0êdÎ–j‹O¸ªÍ4çŠÿ\0Ú–ø—*ÿ\0ö§]g\ZOÔu›r|Şg¹~[ŠİEõÌÁŒ3+F[ÅB§Vşak¡¢lÔ¯8®¥îâ¯ƒË÷˜HôByç–kÌ×™~/\\MPÊX7¾¥		uâ864‘Fßp>Õ‘uP‡õÄÕ|çÜ3â¹­ÔU¤Æ–*½Õæ¸ŠëuÍFñ‘²·“o`Sõ/Í`Å…ò±60£ğt)E\\ªİ³Š\Z§¨\0º—EÑê¢D.FòQÿ\0¾¥º%Áñ+*jLD„Ö(Ğ|Ëæ.m—ybÔ]Åµº¨@èê	ˆ×Ø ¨¹”»•s˜ùÌ{vPn=_ÃÎÃë<ò­O/ïRşa<¿‹5>ş ¸¸#0Äx\rÇÒÑ¢’\'†\0‹[ºáğ@æï“şC›\rÍÊšÏ¸*,R\0m—z€FH§À*UÀ4ıüÀ/PÌüÔ¨õÏÄ­zÍJ_R¨läª?ÙìŸrşâ°^¼-à?qåu¯–^?È±Ômæ4‹ªå·L4oJää„—xe\\şI_0ƒEÂÕ ¼ˆÕ\n¶|Ë$Et§6D…†l\Z_Se)ËO]ÊEhS|ÆãCYÃrÉPª%“Ä©ó<“FI}eËçò}Kù¸_S~b\\m-¹~Î#5,:#KL¥ì‰ÃøÄ[øû/Ì\\À\\\nê®!nËE`ãÁ·M¤LÔ¾—]Â–O’?º„«oÔ\n·£\r\\P1â¶;\Z+?så÷Ûş YÜÌ å³ââ9%-q{‹G˜ÓK,(şf!Åûe&k‘eoÑè{#f¨}_ú(ë¶ÛŸW-°:è¸ïk°˜N2aZsâb9{C£ÌSC \Z\0sµ9å…c‚Çšˆ,VTÅ³bÏQ?‰nÚï0Ô¦¼w)nwK%ş Ä¨.ãÍ¡3pŠ#efÈ€	T°“\\BÕAµ^×<bº¼™ñÍºjË>¢a¬î®#6Eo¼î?ûMñ,\ZuŒ~¦Oç„\nÌÒë?rİ}ãPW\0«Á0:®–Àur¨©q~â©œT[şê d¼¾& ™{³[yÏ]ªõ(µÜD¦Š1›=ÁjÔ^”ªÛß+R0Ä(†¢-H5ë‰…@4W‰mb)8\"Æu	V 6(â\n–õ?¥9ÏQ¯½VÕ çpÔ²vKë0¬o\\Ï®kÊù}s\0œÄë˜ÁNÉA’PXxSšÜ{‰mBã?ö\nÍÕmcˆÊĞTø«<ïRÌëçXÇyñ­¶™×=(Büñ\r¬_2ù*„ºhÜ),yÈğgÙ`Št#(TÖ1¨±Ô]£ÄX°ùæüFY¿9ûh¾¥[”Í€sk‰ˆ²duoòFÀV«j÷:±²  Z—’\0(Z\nª.4!wY¾üC_=ãkã{˜ÜåÀxQıÌ;ƒbºÌÜ5Uóhä°A3;ƒªœ;1ˆXmŸòE 8Œƒ€ä8UšÓg˜Mf¼¹—Õ?,ó»ÿ\0l…¹ÜŒù%œL–Clê3ÖbkD9¥a‡qÿ\0µ(èJ¿™w»ù`¬ém;Sˆ«UA`şæÕfÇ²1DñÀY€Ğ\Zæ‹Uã<x‹+lø—±ÀØÖG>)Úİ,¸]ÅzÄq¹VlejQ®¡g5.3¸Ü¯smJzá•Z+Ü1Â.	ƒÜmæ8faXO\",?1¢«B¹cÂ\\<#ıxš5ß·Ë‰¨E|z‹UQİLÒCeÚ¶Åº\'Ä2Å€WˆÜA€ëËâ?UZ¿×ˆPb ºãõ/É›]|0B…Œv„ş\'jüÃC2ÊÊzâ¯î~*åÓv#«ˆ©ÊUS\"§H2e‹—{õiØ]sñ0)L½`¸¨Ídl¼?ök6²ù¾á`ÁwjÙäW‰ZH5cjå÷TšcÏ$\ZÔYöZ(êdY@\rËMÅß¢Y™Ò¾#JïRÇ&ÆÍ¿s^!y^!$)Vnù‰¼ËHÚ:\\:ÁJ±°kR½‹UV€åXbÕÚWÊ¿Ô?#Ì§ŸØÓ¯mÌzš ½Ja«•ucÀšM™GiNãiR¥jï}ÀÙÅ°+æV>9Ä k\Z-ÓüÃÛ¯P¾ffôÇ\ZpËk!,çé—Õªú˜·pbAøÑV¬Òwğ†\r\\íÌ»[ßÌ!›Z~sİÕ=9Ü5‚¨y@Ímo6 Mµ±o‰º¶íkp”µÿ\0fGÙ\0hJÆ<K8¿Ô¾¥¤¸Ò{üTR9AÙÌ \r&GRÑÛÄñ2ø1ñŠéK:ìØñ)´…|åßr®\'-ËJs‰‡(¨«çÜ¼@ŞÚôz9îcª†İ>î°Ü%¥×eÅGRÆMË1h:Ğ«ˆ=DlU…Ğ5æZ<,¨ù\\A‡Ô,\nulD¯gŞ#èê?¸kÙ+C£ÊğP%¡›‚êşgÄËåÜK˜gŠ4 *¸/uî=\ró‹Ši­Z\0µ]zŒ²ÊHÉäyâ.f°\n\0Ğ\Z~\n¬qÿ\0e[İÄwp¡âßŠ>?¤§Æ—y1¤òfY,Rñ‚*¹ß¨&¨õhw/»:;a±YceµZT·NBŸÄk4”…%/â}Ó	ÅÛ.†€eöê\\g-Û;µ8î˜Ô¨uBóÅÜ7©¨Tt[@tvø–f€¾ÃŸñ2ÂX±ğbd3™İÇwè¯3LäuAK°Õ/så)„÷à¨â5À¸¶9®0Pùk–	Nøy!ô#Ü¾…Yf”¾z–WU²2¿™¸Û2ÛÄ³dE¶àu}Ê.uüš8Ô;êóóØAVñ7)Š‡¯Ü¹/¥ÚV½bx?QÎ˜ÏJ¶Š¨jêÚÙÌG9‹–>î>âÜÉw6S¨Ëlc¸®Ê½Ê-æ@R|ã˜î¥æ¯5\0ÍØCiÀçq–=#HÆ8ÚèyŠğ%Ò°—Ô¨ìŒ½‡÷	ëÌ3j?È?ÚìËìV!ƒA®^×¹A˜0ÑÖ¡ÄÆ£Æ1A& 	cHÎâ0&Uq_0°xP·y\Z½F¨ Z´\rˆdÂá\0ZÌ°A€ÒYW§Ü¾©«IiRé¸—<4n=:p_¿ê5¸ç!û†«7üTók†/#X¤ÊW	™Âd@WZâ\ZÁXî9‹¦ê\nÚ\Z)Á\0¹º]KÚ: Œ\0WÌÃqĞËtéğø†à«j¯®*›Å`¾rš„¨)^üÀ²ºU7÷(°ÃüşÛ²ë‘ã6±ã@\n@Ë¾/Œe€H\Z:AşÍ8Æáæ®÷*èÅ«³şCs$xÒÇõƒItºÏ1ÁÃ¤fm>aÁ±±Á“ÌlBõ•KAÑÛßkø7X”]FâÄKŒj´©\ZÜB)Ü$-÷	¬ÿ\0RÍüKçğ!2È]˜óDÇ?3Kà2ÿ\0pqGªó¢á¦Ä/?RŞÒêm°gæ=+U‹‹¨Òg:.;¾#ÜT9Ô?p+U4g˜`+æ7\0Ë‰¡uÀecáIVÈ£e-ß‰Ÿu¶·5’Ä¶\"3.åº¯0·šò^ë[¯<Æ@XÒ€4Ç¨îŠÁ¨µ0İWq¦,¥/>¥%v±»Ÿ¦U7ú‹~Íq‘Éh£?PĞ †Ô±§ErÄhVl5U¼«µÜ±MÒ™ŠÈ¯3†¡ç½ËMw\0Êª\r9¿$´)¦0‰¤‡e&f«góEspİË¯ÑÀbª¼·öFï—Ôt1+Æ:âQ[Q+‚ôıOoÔXÔpÑ—Æ7õ¸¹uæ/ˆ‰ÿ\0ìtb-Ì\Z¬#–şP€+SÈ‘PÖå\"°¦4rÌÔÊ¬.WQ#Ë,OQ²``_|FÎêÂ¼C j Š;è?qC$Å\0à#17ŠÂƒ‡Ì{™ãÄ\\_÷Ç,Ã™‹>*Ç\\;‚&.ãÚ\0Uf>l°3ƒ„ı½-ªÕ÷\nÀeõÌeŠÅµ>¯PMğA¾ï¨xÜ-«u2\\K4%kç…”àC˜¸ªÊĞ%¶çDq/RşZ¼TÔ_û0B$°aõ½Ü1x*42æ¯Ü®„¾`íV¥Ì©¼F×­j]ZX7Ëf¢·ø‹D|¡¢öXTÃÔXó7{–Ğr„Æ%Æî\rÇS`à/G/ÔF‰0Q÷\02õRİ)ƒÛÂà–™Fcp	ÙT«	¯YÅyœ·±wTª©¯1Ø-ÅF•ªç:Œõ;RBüÑ˜E\r•^ëˆ…­Q*ÌQÉN7)i¯¨”kÕBVÌµh•û„(Ì¦Û7WÎãJ€õ6«ÏQS1·¸/!›§‚ÂmpVåg\r ’€Ñ4ƒ³úf©pZc÷/ˆjq’áˆd2\\¦è&ËBŞ,ûÀUà;—<¶ŒAéò£Î‹ª5–XãQå`-à+ù–W)1K‚ƒ¨˜ª9Ìhæ\Z€\nåoˆ9$)©¶=hıÂaó*äú‡]«¸×l»SİpMÃl¥[äyõ3lE†\0ĞF6-¦òR³)ÂÜŠÑ‘ÉHĞROL[NXèNkÌjj£_ò 3x„ÕSK:)nˆ!İs±(9UÙË­:¸wªıG­GI\Z¤¤áîÆ(±¦¢0`zfïúˆ5î¸c]®p¤•¯€Zµş·\0ÀÎVÙ£¡ºÔòü¿ì¬ë\\EVŒm®1ÌÔV»—s˜æà²Uråd/ê[kO=Íz;q\ZZ”;Å çÁ€†Cª×\r?w.ç”R;5¡«b®Ã0¤c™€t€\\À®>¢\'mƒö4#€Á†áz‚ÓÜ4+ áš¹Iû˜Šáèé…5\ZêP^êPÁnG‚\\óRøéÃ!¢\r\0ÕK^¶…2@…Š)pi¬Ÿì´‹1Há–xÊ±@÷*‡jÔüÉ|fÌåp¦åÛ¥ªÎÂ°œ‘*ùo–gÁrwc®!çêé¶œF%n-·KÏ†]r¸œñ»^±jæÙ\nà¼½FÖs»]©Û0Üqª4óN%ÆKãª–|j8sÃ³Õy‰ŒóÃ²¿PŸ¹w\\7Pd”Áe]8¸mXQWGÑ\rÓ^H9tªîÿ\00U*ì6‡÷d[æ;7¤\ZQeqXîÓÆâT•Vû\\_Q>»‡µš!®ÿ\0˜(™ª†®4ıÜ’œKM7OIÄ8<u{Œî%‡“³²ª\0¬ï\ZúÍC}—Ünh«Ùù‡×=”càO-£Éâão¸Ëd¬ˆÌè0 |ÅDQ³üB¯©ÑkJ;€A³ş( âÌQæûÇÅÊÂ²»ŠkáÄ×‰¶-³»ì‹Yzó×\0-óx3ašì8Dl¦Wn8õjâRƒŞfÁOáŒÖ|æa…<bS×ybrSŠ«Äwxš.^<ømÅzõ*É‰¢cfMİ1ªÌ­u*.YH¦sš,¦f+À×1DWäšª€^Ë­Õæ£ŠĞÈJÃŒ·ñsSD£(\n¢Ä)Ùr«\\Å…S·©qa6­)ØÇkx+„÷ÜBN$ØR¯Ü1cXIÌbw(5\ZQ\Z£ñ3ô³)‰/Ñ€òE¬¦å;Öbì‹^S‡\nŠğ‰ÒQ.ªKÏ“ŸæTè¤nÃ¶n8ÂQ:lº:¶6fÓVüXĞÜ(yâ,8òÀD²(¼-·Òr¸Òµ*aÎ|õñ«¼G‘>¥U85ıËzÿ\0\"TBArÃÔ³07Al²­\rSRˆª5\r]7[` PVv]î/´‡óÄH½˜a(	ªà~³óøy”E™B•ê*Õhjñü`Z¼ÇŠö‘—\'³Ÿq©¨—pA‚ò\nKß”\Z´U	ÉÏd%ét„=]1QihåÛåÀ•˜n\nj;®¨(_«ƒS\ZKº—‰šŒ*\r02í¢Ò4][âz¥¼ñ³ÜCÆ?óPÕ[\\‡?Ìˆ\n¨\rQÁ	,ü+#»»¯BaHXİƒ|W÷1Jì¬Epæ5İ³}1{©u=Ë3ıÓ\n®Ãß8\'„ßP8†R²\"‘j”«—Ü«Š|†V%?ø•(Øê£¦ô8JËØKHïT$È=O»11û†ÖD+F^ø‹ Ph\Z)ï~\n b¸(-($ŠÜ>b±åm_™´6”Ä%.le²õ¨I!Ø´¾ÙRõÀKş\"¨in#jÕÜÈ\Z¾áTäcØRÛ&ŠÏˆÃœVôø¸Î…œ²ík\ZV’Çä¦t¨şåN2èÙOc,Lo0UW—¸šĞUXö;˜ÁÂ&!ì˜^á¨ªDØ˜n]ŠÜV5}ú—­øŞHWíÕÖes†\0ÙÁÿ\0c¯®³(²¦B8£jÒI[<œ!ÀJ÷ûƒ€ÃTfdEß@zî\'¤tJ+û”ô»pôÛ•´Ã‡úRûÎC±pç=ÊŒ)Ãe”Ê©¶µ[•7’;ªoâåõSª[¾£F(¤\nyn?1TrÒàod3î$¨‚”‚ÀùÌóS§ó\ZUbUt8w.Dğ›¥ıJH)5VóâhS×Ä-Él*ñú\\í”3-[eÁmhvùñ2geWÿ\0ÈÂ…|Ğ\"‘1Õu(šF’2¢¢ÅÍQÍÆmÄE…J|$,±l=ÊV*V¥ÛE5«‡Ù¦\r‚ñÌù|@²XÕĞ,[€§^ñ+3ğ¬(Ä(å µ£¢©Œhp3*Â†\r1ùÒ\0€Ğ/HPl¶„õK¶Şs+[—5gî+c«€2ÕäJÅÊó/ÖŠP·\Z†[)\ZGˆn;ÇŠƒ\0j`¹rø Ùÿ\0\"z¸NÙ\ZÍ÷E@¶yÊÅ‹1Ç7Bè”ÇP:DWÌ¤D%êÈ…Ğ—ŠÀgr€	l4?ËåÌD.¡[æU\0Ùõ(…CiÔpÊÎ#fÊèŠq…\\ÂŠ—ªáÊ†:§–ÂÁlæÙ´+3˜¸•Jà\0Ğş…á:aÙ)9DJÓ”·^=Bw\"TJ\nÑ\ndôÁ52ş<¼ÿ\02¹mëæ^\nAEŞ\\k3èå£Ïˆ8-£n:Åâ3’°WÀ¹CÔôy–CäÔİÇ‘Ò÷ÄwZô%UçîfÏÌòN.0Ry4@¡Ó?ö¡PÃl°0R¹rD²âÈ,äÍ—,>*Y%DJ\Z%pÊÜ7¶bNq¢­Ä^añ8Äk•D±9†h/.(…K…0Çè‹¼Pj¼N/×î[eÁ£¨X/D`%•µ½ËS6·@UÀ²ø/Å­Qè\Z^ne7yİÜgsæøˆ´(N³˜(»Ğ¸j ”\\©Ù\ZZ|Eáé„®43=ı7(bÌB–†şáÊÚ;v®S£°qJ\0`—	Ë´2F7MrDo™eÿ\0°Š©Ÿ	e_ó\ZÍ×‰ÙŒ63æ–YÜÌªmUæZ\rcSÉ™c\'Ü¨@à–Õá—š™ãW\0&\0§Ì6pÜ®€\Zà/+ù‰”ÁŒŒG¥CRY‘KÅ>¡+@¬0u—@Ûı8‹ØëSjÀîe6„7wËL°#ó‰’©KŞÈc9nİáÕi¥òSz4P]<¿¢5ÂòŞ_>´DhCê)4uÌ~#CL•Ãª9v& §²_P›ˆä²›®	=œNTGİ>`ÃcRg€81qB+¸G7ï3”¾³Ä«’şñ\Z“Ÿ´õË×s]œÌVy%õıDğûeuıË·æ=\"³Ä”„¿¼MDo1%ìä”QPYt<ËÒT6/$Ğƒu(_q¡ìB‚®FùÃp˜ª­­oˆ‰2fmC«§n7ó\'Wğ®óÈ¥\'Ò;|ËMŠª®ÖW˜5\"¹)–ú²:£ù‡ó\ZÛÅÄiÉü;pšOwÄ¡Ğ\n\Z¦Ÿ™’ª´ræh£©SÑG-Tõw°ùu_ód8â-œkê:à\0/oï3÷Â¹6#ÍË‘BÉ~ë0Çmm.ÏYŸ2µ„Ô=•ˆ9ÏïM²¢U€8ÔmŸ¹İ¿9Ÿø*æ4ÆZú–iº—şL1t}Ê5Êš¶åõ½K‡ŸSI€ù—î^òÁc	Cd¼JpÁ´ZĞ®+¨O˜{2Ûkæ\"Á©€F¯¶áñ,™«â ×ˆŒ;\rÆàUhÖŒ|A—ëw@WŠƒ¥h\0:§a®ˆCÅ1\nñ1ˆ0äè7á¹¡¹5Ë8ÈÜ—a|…1°©[¤~a)Ì<&OÙÉ”§N“î-gâ“atdß‰SÔ\n`s¹x—9¦móf©ï2Ìİ‹¯P`l-9!)äµ=ÆE8¹Y’®2¶FTxı@¶S@û:{„·en^¼¼1>#!Iÿ\0%¾=Ë¼¥J9·â7ßQš9¢rR“Uü~>á­ÆÑØîwÃøf¸ãO´ÌØö¦bâUËîæ3]ßÜQî0€å’beÜÛxÍG v¨\0»^£T%_°åèğLñ¨Ófw(dFTA¹e?‰ìÌ‡.8Ü\Z?¸5çˆ\nÔP8G–\"%\0WM«µwîßÌmHÙ:vc\\—ÕÄEÈÁY¼Xû„¼2•\\…İù¸¸‰5îR¾ØşÖj$h+\rß»˜Ñ{+]°Ìˆgc»‡^Q)ÂVĞ:”a†Ë¤şãÂ‰waïÏ¦8)˜¯	Ãÿ\0QÎß¨õ¬Òİ¬¬X×BFÉå€¯û>‡QÖxñ¹WøâZ–+Åî˜ê±RÖ™õÜ½±E˜kúŠR…ØÙí(º˜Ä¹¤e€„×hAù‰Pâ}¨–”`ÈŒÅrù¸(Ç¹kÀÚ¥>!ß™]ac¡Ö{|ÁÄE^n0b¤V8«”Val²÷¬–ª!Gyˆh^;lkRöTc]¾S£æ?Hph<ƒÁE%wÃ¯Üe¦Á­İ: Æ]®“É59Øè§QCn4†å4$)»-g§\Z‹z–4úÕàH®%mKXjŒœÁJ`*‰¤º”ÛæÈ\"0Ï»B ŒRƒ¤Re\"°x’²€½µq®C9TmlÏfA<¸ç!1°ğğø`œ\"†Ok@}³Rë4\re{^Ø´-­%ó­Lú.£6¾c5e¿LÅÅió9Ö.\\\'1ÚÆÉÿ\0™\"jÔG9b„D@\'9Îå³cUnq*¤N\r/ÚA¼ \Z¡Á*™Ì½ñ,$BGtÜ«5ëo*Sû–yJ	Õ2ƒâ#  ‰ˆÚ¹<ÎÈÌf Ka.ºEÁãğ ÕÔ-Ã+¦2[Ş0”‚.Ê:x3Ü»çÌfÚP‰²˜ÀÒ`À¹H Ôq;]Ç¨êV©ìxeØQUğœû!˜€£6\0äwsD€bw[_0‰\n•\rS¡vã9‡ÏBğlõ&s\Z.ê¥Aà¨ÅFàõ×Ü[}Á<Ió¸‚ƒ­ÿ\01VÂh¥ŠTE»j\"F½Š4:ÌbÆìœË¯4àNâkCÓÊñyæB¡5–(»3º„g84<ú©‹1\\cqcè2D†ÿ\0[ómx—Š_Ş%™¸°æ!n·ê?¨œFÓÑRíK–áÈKz†ÍÂ2‘©avö1«\Z²m<3!}ÎHG	báäÂ¨*Æîİæ\ZÆaõOV(ëËqú~£\\×/lb\0ïU,»©h\\V…Ê€œZ’½+Pc*„r<Fr•¨˜OLa±Š4ÀµåÄG\r7Üz£ £ê«¥ ÄíÃ\rÄVò­1p¸…½\Zcp~`9Yb5LQª¼YËæQ	M³ĞÎK´[P(È³îãPW8Ñ\Zˆd¤¾¦Ó,\Zj³w+§’ pÁ¤W²óÜ;JÌ,^\rŠ«|@\0Œ\n‚İD*7\\S¼_MEM•oMß’	Fµ„j?ÙÜ|s.	^7’/\Z‰¸*¥9Ã˜hD$ºã¨‰LãÌ«Z’P³ØC2ìHXU92Ë¦WY„}‰ ŠoƒÜÒÉ8õ¥-KX¹ÍË5zÓ\Z8=g™æ!Kkü¯º”§ ¯Àm\n7ß¹È„Øcµ6»jÆºó\Z±ÜW+^b˜—ß¿3¼QA\ZÃŠÜb™äÚ{	£¢é~áRŒqNeÀšz†Atw÷P\r°Mx˜Ùæ\rˆå=5û†õµF“âô`?Ä·¨263Lm‰mæıî&¼sÿ\0`ºÉãdÍ‚ÿ\0Îãô\rÅs#ß_‡c–Y•q*œLÑÉ†1æ•*dğ`Ç–³â\\,áB…<ÆˆŒ­‘Z	Õ›¾‘à™Ä[‚¡Õ8ô¾GMr	yã\Z	egî\"ïû•j‰e ãm5ëê¥i™†Æ¤™úÿ\0ş(¨ÌÍ®i€.+$pÒ$r®£–U —hjªö©Lê\nëH9¼¼Íƒ~%ÊŒR¼Ü3† ‚­µ°÷Q%àÔ\0”]Ë7e #\0Íp}Åi)æZÒwˆœÃÈ*ƒæ}Ïo¹—&ë¢zßpX5ò‘C8É·xIg×ˆŸUæRçÍ¢Ââ&±s¤{Šú ¦H§;h˜a}¯êÍ]Ñ‚\r\0|°í„ËP½<T&‚³æ(©Ã0Š^\r\"ÚzTíà–a\nƒÁıÊÒ‹ÂÅ0üAQlSòK<£Oé‹UÜŠz9~+‡#€+ğ„BAµäÈn˜Ÿ:ø‚Ò\"¯Êä€u \'™N“*à>cõa ²ıê‚vZ|\r‹¡ğL%WŠî³á‘Ÿ4@j@J),66fõP9gr§‚¸æ´¼ÛnxŠäôË8½$­bˆ‹Ré¨–‡\'$* U=ÄB¢\\ZïÌVô§>¦*ıîTóÜ2Qæ//Ì\ZsÎB.<³¸»¹e\'8¹zK<à/¸Ğj¢²1w‡#s¸…Ê[”¥w1öï¤òC²¿2ÔT‰Y”\\¾ˆª¦—pÓ(ª©jXÎU„iÉ<Ò§q+‹PYxˆˆ¤i\'‹3\'Ûü‹X7X•ö­­{¼ÂMñ\nÚUï¨ã°ˆ„šÓ€\r·.®¥o®¥pbsÜC˜P ¥s½´u.UTN×›ÄXí¶ÒÅ)ÍwÅÔÎ%i\Za¦,¾ÜB($ÆÔùŠ\ZÇÄv¼Ø˜ÑXÌTél3ˆ5Ü¦0/ê^³é‹äù—Û:µ2}\\rbÅ²3H¢ãE[ãˆälñ/–œ	©ÁA„ë¸—Z(FğÔ°£û%ƒ…æàS™˜ÙÔB*“õ²ªŠÁAPr—¢¢[€r¯_9†\n±.òåÏ9ü,UäPä`–Ÿrg/Á•}¾×ÿ\0j¦K³²WĞK=?0°Œ„ª¿xŠ‡Är¶6ĞU\\Ë¼ämu´9k¥8\nQÕí´ ,ëyŸXˆVkægÉëü‰ğ=sæ©ê5¼ë‰_ƒ·wcV˜jÁáşeĞØ®¬\0â­—’\ZÇuÁ9¼cÇ\"£Qv½UËœ÷Z–àõ™VœKMâ™nãqæa1#«œŠâ\nàVî=“#V\0HSÙJƒ¹ª™Pş%Ä©¶Ÿ¹dÇå¨ØÀÏ\"oqöÎw@ş¡IJpàÌ]–ş*ZA–ªé?Ø?	PMë^ç¿\0)ñ–5šh<î9åQAğfq3šÑ¹}C?¯!{—$fŸo¯ÃË°æ€P¯ 5´¯pÎæIj€zYJ”¸‚`‹û¨t1C{WjöÅå»î13šıDL6ƒ„¿EÔ±æÜË›ñÔjæ S4¸šthi`øÄ# ¾¸ˆD€R‰¨D¬‰ÁÖı@¸maN·ÔÁ¼Ş¡˜«¨¹ş\"ÇÒùó,Ü¢q.e1”b0­ù7ÅWl®ê^ÆEÑtrÌ¨@¡MÂ¥´,K·ëL%Ü$ê‹ÈodµĞ=¬-=	–LRÇªÍÆ\"‘¡÷ÂxÁ}°„* ,¤\0¾K~3Z£íŠşãí\0à·ŸİD±;%ÀËn£­ÆkqÌÿ\0’¢­NHå6ÙCŒ4€™\rq\nÅ±ËpJòs[#WYğÍL0(w©’ØF¥9ß™–±écï	Ú.È]Ş9Ç1	Hº\r[Ñ¸«…8Aã<†a©t-3üûa¶ì†ıÅ£­û‚_ı¨½ÌŸÜ\nó0Y1ù/á¬#l0¹fiì`§˜™Uî0uô<ş¦Æˆ¹¯2©˜a¾¡¾([«ãÌ±Õfw‘Ùœ‘}ÈAì{¦ ´ëlÅ‚ãUƒkŒL0\nÆ`*p5Ö¢ãÁ÷ü~VóR DÙi#ÃF½wó-3/Kşql+¬¡ñ~Şº‹ÄTkz?Ø ‡mU¬Ñ4„¼z¿Æ„ÕÄë­Ec²ŸÔO‹,ò^©xsğÇºÜlU± àªè=ÊøK#K ß©sŠ‚‹‚[´ğµv¾  T­¨êÑ, õ?øÄÆ×î/üG7}O†R‡³2®\0\ZZÁó: B€Ã¸ „µ@!–(€ØòHØ¢‘\\P[\r‰A(«šo0Ad¹wÁ1Hğ½—Äb&\Z\n‡YOÍ©[ªrßñ`´OüAŠNtA(0D¢ ´Âu°Îô|Ïá8 d¥ÑĞ\\½Å°RpÆ=\0µÔ(ek¸²‚é\\•ˆi}/€ôA{Œ!«\ZÒ?¼K§,cÉe¦ã^cÌÈÑBØJG^¢\Z°÷+ÜŠ`ón€Û1)²`¯+ÑP=a…ƒCÊùw	/äR\\tË¡T}A/mx•ÔŸQ˜6J\n)†Øµ[n^\Zƒ¹ù‹Ãí÷û‹³Dfr>eˆóR™k¦Ò‰À¿QÏï¹J\0´E®àÏ/¥!¾©eLÁTb¯!Ì5á@ µÏÄ¿Ìl¨+‹º¢­{=ÀÏ%\0ßkÜ¶¨[Gó¸H˜Ë\Zš¢/$\\È¹¯$Œ-³»1¤ß‰UİvÅáH$æ†™_R„®rœ|u‡E©ŸåŠ !0 ½âVqŠ`åíÔ«â8‹ğ…ò\ZŠÃ˜üfigî\ZÄ!CM^s,¦©¾\Zr~¥ëÌI‰^\\õ?ì7+z@…à‚ú)7Â»ƒU¼J…*®[µv¯+#õXà†ôNn\\bê‚±YvÔ× f2ïØša[ªm\\ÛßÄk¬ÄêËŸæUÔõF&Mù&mú4jñW]t°–Dæ/jÅ:ã¬q,C-ÆµÀ®`Á‘M0f=z—­É¦09AWr«¢V	Y«¦Ç÷XÑ\n1²Í)±~J@Ô\"‚ÅE	•Xƒ\0+_•üNÖ#I\r‘q]=ó,:\"{Ç2‘¯9å}º!ŠMp&şåÒˆ_qvò5Xº¬ùÄ\0ÛcŠ\nyWÄ`~\0Øğ¢¥hQÅ@(o+Ê¼ÀLVe†WüÁ,}owE¬ø²,¨Ä.ªó\0kH¿DyŠg‚ú•xŸ‚w2ï¶Ø3\r}ÂYEÔJ® –Ë,È>ÙL7-\n.»üNLL¸µ••õ|‰‡r¥ÜÈk2¶ÍßÔ?ÊòE\rts¸.³/12É 6[SÊÿ\0_U3í‚¬\\£cë¦Rd¤[x{\\·5àÁR\"+¤É_R§É™æ€ç0<\"ÚÑFÊ}1èˆUtº‘KA»4‹`ØmËŒîÑ‰½[^VÛŠÉS„J?¨‡0Ã1õ—ÍÎm/¹rp	UŒÇ™Y\0¼x˜-âãNc—?÷ğPuÜgxÑKÜùÁóˆ<n\ZÖ\"¶ È³E i¿3X—-13ä„‹Vq”[è9–0UvúAh¸n/0„\'D |5Ê]VÂöW˜È0ZW[Gc,‡ïÌ¨(—†×Áe\0ªœ×yÜ¤î¢„¥ÕœØ‡WCÄÇ\ns\0ªĞ¬¹—èÑÆ+pyÖp*ñŸN	aEVÕme8ÜSˆÊTÂ^	kâ\Zwê`qó0äª©ÀÖ!ƒğëæAÎ5ñU£)Ûı±\Z/ó\rŞ¢Å?3Ùïğ\\VİA{™ËÎ%ƒê=Ê˜*Ğs\"€\ZVñŞ¢«F[E¨5í` gœñ)6!³×e®µ@ãy˜\reùÈhˆ¶õëÁo©¦ĞKùÏ3Iqƒ†lG2\\¾{ğÂP¯gòL›—3W\n=PKD&Ö´k¸‘X°š•g™F¢\Z*d^\'Z ‚\r7G%p>a³ígêéù-7o©ÜŸÈ»©ùˆ0<èó‰l³Z÷P<ıÁv²ë2Î\"ÅÍİT¿bàóæ%1qÌó1òûy›q;‰ÁƒñÕRŸÂ•p‚«@QÊCmµˆN\nínÚ«¸®\n4œ–ó+l,»Újâi\0\0_‰Bœ(Uh‰Í¬mU¬€«w.¸hâ*-^H F\Z”8„œDK%kS¡¸IÊèxc_P–²–*´w.İ½½}ÄJ­Kõbó’âèC†šˆ¶«{ó-ÍÃµ\r%M;.‘2~¢$\'/™˜Ï;U÷–\Zâ(\"dH„ª>\"²¿¹€Eî\ZO‰lNı„9}ÎÜEê=çÄætKbq\n²œ¹ƒÄ¿\nP.Kuî,DZz‡G6¢…JÓ¬±K…\nUx„)¬Î{fx1—ñ9§…ì+_m¸ËUpY˜!²gùnîYY‡#dAO²ªáÕk°ˆF”ÀÒ=ünå—W…y[¹Š\0Zç¬sîN\ZOî¼ÎÉƒÏ˜jÕ$°æ²Êª›Cvíî \0§yßá¥dÆ@\Zâ“	ú%˜W,-ïPä˜‰ÁÊ\0fPa¼İF]÷¢í‚KP\n­\0ezŒ¶í é®»­ÊU\\ûbÔİO¹‹?¹º×Ô¦æì°Aâ&÷RÚ¢\ru®l—ç9ó0n\nšP \nØzkÔfU*¯+1Ì3Ôm•–<È2>-ˆ\rÜWLÀıCÜŠˆ©à.^ÌÕl¸ˆæ%»Çø¦ FbØ[GJQ Ñ£¢n7\\ÄhÈšŒ™„wßài¨!Û.Go‰O0ÃsÙÚÃ\"Ô#\r.ÕêTï@*¸e\rµÇ\n„Ôº0{]¹[©dèòù~%©Jå¶â8ajå{}LÄİk<„>ã¤¢â\ZH ¿Ç‘pç¹OüÊ‘À˜mŠ¨ÓëñLÏ(1©•ˆÙ½±Ü8-¢œüÄG-z%v‘v náQszZ5\n´ÛÀ_fFd¡h(çy‚VtRÓíNFüKù‚„D±“ÇQÚ…Å¬hpD÷g	ºMs‰v^bâ‚ü1–)˜u.YMÀG\"èó™ÄYÆ`–û–4%q‚âãdEVãÁ˜òÇ\n±^@ñÜ/¶FQEãËñ4!Vöâ0\nE[¾À÷Ô-†Ùİ½¯s\rÅ«Ü®ôÎéOõŸÁ‡ÌÛÂr3Ëê\n5Q¨FáPU4¹ZŠšTÜ“%OSgê*°(ƒÇº†$‹ÁÇ™B,6+t,iòX¥YÁWæaà¶oTs… š\ZÊ±’Rˆ\r»WqÛ‹vY•­Wî*\ZjåñB)v¤÷\r%Ñ¦tC\r¬Ëë0‰ßàJ×²Øû5*­ÅÅ\'ˆ2‘à^ÈrÂr4ºÙ^à<sFHp–”\0t×®8\n±2ctÚ¨ÀÃj–Ğv¥ÀiRºÛæ6^JñıÄ¬‚Á¢øŞq‹‡ñB™Q«\\€ˆb•)WÀË;Ê÷(F@Ôó¿‹¹Ïâ ÛFù…\\Ê*\Zw*ñE4B•E\Zl\'1D(²û@ÙÜ¯ÔÄ[ƒW¶•&eCù–¥UĞ·õ}Ôæ‡3#»c(x\\x‰\Z´\rGº(øˆHeß¢É°åß4õ@¦ÿ\0q«øR²UÅCÿ\0®¶€*ÌêÛ¤3öÁpÄ½	¤šãæ\Zòšsp\'àSPñî¾ *ÄÂGI\r\"„ù2&Ô¢nóMGî#\0¾J½»„çÆ8ñ(HêSJĞ+{º„º©:;¢¨¿Qˆ´¢¥»ksƒ	v0À\rb4•L˜fû«y›)™T³÷(œâ6qA†ó®ß»î¢UUv«k÷/É-@Ô—XÛtA)àĞŒÔ®•Ä¯@•”ˆ–qJ¿ng´l·¶ İjPäP÷ào5Ê¾s3—¨qçÌp‡D°´İF8¥Skå†åã§rÂéî+¥İ‘îÜ&³ƒJ!•Û9”‰f®¢]u“îdÇáhÕ±˜ÖÉox€œÏı\\ ›j[}B-¼EÓP0†àÂšÄ\\§˜æUKĞy_Ñ‚¨AßjîŞàñ/Ô\0o6\nº¡qú„mø\0e%rWÔjÂö·å9•MÍÂé‚ÖSÅüÆ¨•VÜ¿Y5S¨­Jh*ò¿Ä|EkÄ¨_ÍA€¯Ô}·¤:Ÿ1ª‚  0sâ][ØWnÕñ‚UBçµ¾aò¯3R×Ây½æz îù”Æe;ˆ˜¥ì»3I‡ƒñù§}œn\rUûÌK4ÍÙó.\\À¯Pó¸>agFX„Sh¯AÌXILnÕ¦õ-©lJğ}B0ªĞwpçN®ÆÍ?¢mı\\O¨óø=ÜjÔ\n”­ŒÇˆ®ã‚aŸì¸½FSM¥Ù¨†¥†Pxİø–*8)>UÑâ\'…+iXÄfÑU…E4š[*ùk¸‘š™•8/Å°3Ph\"›91fĞ”SÈâ_0ó&kÌ½î7‡4pˆŒ¥Î¢{ÈıO<òùhûËW,áÍÃRàÓ7­¼@j1Áˆ\n{Èô|Åª«V×¶-·Ü¿3eˆ6,óRıÕU±Ô_‚İÅŒ1Ö.€-YL aXkÜ^ÿ\0ã0Ñ1@D—ª¸\0UI6[l,Tåvüºª$Õ®qıE­.Skœ¨\nîX\"ëEÕm¯8šAn§P–^,•ìÉâZ¦6|E5Ú7•=Áu”`a¸ßœšñ)ÙùG2ÎbÓ™‡˜ÏÎÙwé—r«úŠL¬j\"¢¨Õê Dò£÷|ZUjÂ/ŸLêzş¢x;`£Æeõ|ÄŠgFbçÃšˆ¥ã¸G‘İlkûIlPÎVãÌİ‚Ğİ¦Ãâ>–ÑoBñæ¢¬ENƒÌvAV |J¥`Yt ±®#:•¯-Á‰YNø„&3:nU0§¨js¨-ş`¤\ZjÈ-&D0ıÂ=•U·˜¥Mµ mâ£¶Ö¡¢:5fÀù¨$)+u_ò5®¸ƒ¤­Àyj¥ÜÆŞXí	aƒPj)åÄq2¸”4w)0e­Tºk•ğMÃb6Áû‰VÛnÕæ?RøÄ¶ Ë|ÃD/I…üî(BÍG•Ë¬ıÂ.jW‚r (ê‹oÄc2Â§ß’áÀ*j9-[_¸ÅWjW÷+=ó*½!™f3Ô©ûN—õ4UøŒÃBE* pºM›ªòSæ,ç¸½àß¨hz¯¬Æ)c(VñÄTÔA‘ëaæ*8L¹Ëš­Q^(,×‹^º#be*ìêºŒsûæû•õ2(#KäkR¹w-Ä¿‰š~ ÎbD²Q\rÔ-2î \nè.\08 ½9.ÃlTi5Ø1ZÜ|…x8/th—/™sRåãŸRß¸­µµËæSÎˆÅ#`P{\\ÆªwX˜&uA¾å\n4+æĞyZÜ-ªØ†ï÷1AãÌ\Zî8‹õ‰üÔ­`¥½Óê¡ïÔ®fŒu‰b|Ã<‘XnÅæ›ª€ÀÂõ·¿ˆ^Ä¡p)¡W~%¢Õ[MW!8İZÑ!$¨QjÔ  å¯Ä+Q½ÃÔ¥qîVõ2şå™ÑJ«Ú½C@ÜL\\4/lW¸æV İ|¦a¤ì³ßPÆŒ@ª6”çzPVÙ–âß9—~._.¥ıÂ>ÿ\0ª¨Ğº÷RÅÅ€Eì‡â?t;A¡}Ô«]Çqü@0°H†X*Ìd\r±µí‰™‡şÜQzÔ±›’†‹Ïê²íµ\0`<Dj*©xcé½Wl6\r˜¡Õ­gÄDpWD9F£Ô°%Vrö«‹ôb\'åKìPşæ\nó,.U¦ñÍŒ8Ën·æcÉ(|Åpc‹ü4ÕÇ±,\rÊ‰\\Odª”ÄÓlŠ‘Ò„`ZÀ)±ˆ­bƒîåÖ%òË¹uõs.S¹\\îWq(ÌºÖ9”}D-á²\Z0(G¥œn;Å{‹ç1Öx\'\'ä˜_Ô6òaVPı±wnwR¬ù\n—Ìv$dØ.ßQ”Ú`‚çÈE‚+wœÕ¢©{­D0+J\\\'Ôå[æeì=Ì’êH§”4=Ü8à‡¼û•-€Ìek¦å$ıeQ(¶4´\"V â8w\Zj%A~!ªwˆmªî½ ¿QCˆ7¼K©sıœÜR´Kœñ+ÄÔ¼ÍQñ‹y#PŞÁká¦ÅM¤Z)ÌQşX¸§Ô²ëÄZµÎn^+€U2íÔ]+\nÂè+²à¹”¡ tº¾h„À‰°¼´{‰nX<Ç;b0rĞ&@)Okºƒ-ï©®¥­¨|ñF0[0Ém\"üG´ºŠ¯ùê3&¥ºïÏ‰@\0ªÅ>#´cY††Éu\\\"RóD]D²%ç¸1üCH˜¦ãº*c¦IX;7vy‚o\rÁ“üÄE)>#š—Z¨à‰ÁEÜ(?‚+cŠ‡>#3öJæã‰ÕmĞF:ÙNÕ¶tWs©Ì_Y‚Ç,£µà÷äÈ2xó\r›[à6{œºÛ9xCœsíû_¸Ò“ñØ¢ó\0Z”5v¨ıMq+ÍıDƒ‡¸jÿ\0û’ªÚ…Î#v]=J0ëPÄcÏÛ¢	»uİÀ7æ:<š÷*yVbV±Ìm¹@ˆu*QTŞ`<Jùªê0Dº ]¥âŒ‰÷2°Á÷~ã2nº™’W´.,2•İĞq?ñ¾._ñŞã6|f?@¨¡=¼ÊÃ8Ôh³ AÊà#¢Œ9kÅüÊ^ØØ+¦˜ÇS hBˆ…J÷A%-î+Ê+0«ıCõÄ:ƒ~!ó§î=Ê¾í@®/U—ki£q7¸ó‡XÌ[óıD¹`ß¨ªÒÔÜ\'±²®À. 43\0Zø­mÖ)İf\rk+ÛxîQÛê\'ao‰AéælK2–GÂ#”@\'0wx˜6­%î\"8´,‡]WâŒ0öÄ,!¤¦%S8¬ÁCkDßÔ‘ÿÙ'),(26,'permaurcio@gmail.com','Mauricio','Perez','21232f297a57a5a743894a0e4a801fc3','ÿØÿà\0JFIF\0\0\0\0\0\0ÿÛ\0„\0	\r\r4,$\Z*!=-15,.11 3D5,C49:-\n\n\n\r\Z- %777-/+7-7+,1/-3357-+/.-1+---/+-/7-+-777+-7---+++--ÿÀ\0\0d\0d\"\0ÿÄ\0\0\0\0\0\0\0\0\0\0\0\0\0\0ÿÄ\0=\0\0\0\0\0\0\0\0!1AQaq‘\"23BRSbr¡Ñğ#%C’“¢±ÂâÿÄ\0\Z\0\0\0\0\0\0\0\0\0\0\0\0\0ÿÄ\0(\0\0\0\0\0\0\0\0\0!1\"AQa#R‘¡ÿÚ\0\0\0?\0¼Q\0DD/j¼KÃèèKECt0ÓYÙG¸è<¸öUıw5DÅ,·–ùòJïí²ÆQ²‹eè‹Ï­ñ«½Ìt„tÉ0ÿ\0u2Ù?ij\\Økî9	°“6zwÔño.:wL àÑh\"ùc\0A\ZÍ},š„D@\0DD\n¦ñ—nßOû®•å“9 ÔÊÍÂ6N#RyuV­LÂ6:GhÖ4¹Ç h¹^DÅñÕO5[õ|Ò½ç¶bl<€°û­›Â9f\Z\"-	Â\" -_víğÊÌ*¥Ù©ä9ióğÜüGpb¯eãPâ5Ä‚9¨>|¤6_Äü:¥‘Ç$â\n‚Æ¶¤šd°³œoÍn™ãê‰Ú/ˆŞhEˆ!}­ˆÂ\" ˆ€Ñí¼¥˜us‡G=¿‘Áy</Zím>ö†²!©}$àå² ü3ÙÑ;½İ(¼Q›DÓÁòhoäİ>ß%_Qjªl±§ƒ›Â8Á|:šhwÒÉîw¸e¹7ôå§]°„^ö6ÎŞ°¹¤ú:Å\\«Å#¥ŒÏ.}Ø \\û^ümËºáÇ¨ÜçÇ9ô:oM¹(Ê¬\"¦/„‚hş³o[,x |ÈÆ¹îù,is½·Ÿâfğ6¨ÇòÄNõ&Ë{G\\×À*ÛÚxak[3€½…‡3ËÍ[–ºØ,Î¼ª!\'å‘QQl>#-­eÎ›ç2>ÜÍÖóõ?‹Úùiü·ßò¥t;qF÷Ä¨y#\ZÃ$/\rsœà\0¸Ñ\\[ÒYm™ÿ\0Hí+j6ÃJÃv“!ÑÁ$Ô÷öéØæÔBáÎÁ¦í=ÀõW>Îc\r­§¨G$9ïš)ÚXøŞÒCšoÄ\\VÒÈ®¤To\'(ˆ²`\"\"S´3¹±Yºf6\'µŠŠÄÆ¶À\0\Z>+lÑ÷)½tms×Ø4I¶Ô-ÂÄ‹ÜÄs^«FJÅ,ğut\r8µNíì_6¨ÛLasÚÓ\0¸í’>ğ°Ñs£sM</ÑrU&±—ı&û†dİånîÖÉa–İ-ÂÊ/Q0d¥Œ°¯\0¶À‚4½ïöú.->\\™´·{^«_ÕëãjŠ‚Æ\nš}, ŞânøXğš×4@p8»‚ƒRãU.©Š›8İçmÃ@-ö%NWkO|nèœë©•Oå‚ ˆˆ.ºk\'İ±ÒZùEì9®å×Q{\\ÃÁÀ…¤óµã¹•Œ¬‘\nê÷Ì}£fòhà?…+ò‚ãÀ\rWlÑ8±ÜA×óÑb×üş¯à¼…’œ§çîz\Zã·±‹_…Õæ³ï‡¤Ø(ÚÃ$OˆoXâCŸ,M…ùh·‘x»ejÈo®®:ıW+9D¶}¿·o`ïñe.^¥¼ÔßÉÇ×¿©øˆºeˆˆ\" 5¸Ùµ÷¯Guì{(Î)ƒÔ9¡…÷\Zd±¾ªn–ToĞUl·>Áf­TëX\\¢ª%XÔC(=@[*x*Æ§”ı&·UaÙ,¡}*·êÉ¼B~È„²Šcü)›H__£æù·ú)¥’ËO¯îcÄ\'ì6†:2d~\"Á½æËrˆºTÓ\Z ¡Å;,s–ærˆŠS@ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"ÿÙ'),(27,'ebernaldez@trazalog.com','r.sanchez@mrsservice.com.ar','Bernaldez11','21232f297a57a5a743894a0e4a801fc3','ÿØÿà\0JFIF\0\0v\0v\0\0ÿÛ\0C\0\n\n\n		\n\Z%\Z# , #&\')*)-0-(0%()(ÿÛ\0C\n\n\n\n(\Z\Z((((((((((((((((((((((((((((((((((((((((((((((((((ÿÀ\0  \"\0ÿÄ\0\0\0\0\0\0\0\0\0\0\0\0\0ÿÄ\0`\0	\r	\0!1AQRq‘\"#234SarBbt¡±$\'7C²Á(8UVsuv‚“”ÑÒc¢áğ%&6W’³ÂÃñ5TDeÓEd„ÿÄ\0\0\0\0\0\0\0\0\0\0\0\0ÿÄ\0\'\0\0\0\0\0\0\0!1A2Q\"qa‘±RbÿÚ\0\0\0?\0üÈˆ‹é¼¢\" ,£yÁÍ;V(‚ÔŒlÌå\"Îjª³ŠGFíf­ÒÆ%g+ÿ\0œÔ_U‘DDD@DDD@DDD@DDD@DDD@DDD@DDD@DDD@DDR–A\nTÙMcd²ÊÉd4ÆÈ²²Y²²‹ „D@DDD@DD(|ñì+AŞVú<{\nĞw”>!·Ê\n·Ê7Öùÿ\0€UÕŠß?ğ\nºBú\"\"\" \"\"\" ,â‘Ñ?Y¿Ò°Df²7•‹wĞ«-ÊbuÆî#¥n|[>Xï¾ª¢±Í%öw§4—ÙŞ›M+¢±Í%öw§4—ÙŞ›4®ŠÇ4—ÙŞœÒ_gzlÒº+Ò_gzsI}é³Jè¬sI}éÍ%öw¦Í+¢±Í%öw§4—ÙŞ›4®ŠÇ4—ÙŞœÒ_gzlÒº+Ò_gzsI}é³Jè¬sI}ë\\±:\"5†ô4Öˆˆˆ€ˆˆˆ€ˆˆˆ€ˆˆ\n@R\0RÆ±Ma« Õ¹¬YˆÓk¥pÅ:ŠÈO&¦Í*(-VÌk\ZlÒ©\nVÅ¬µSM6PBØBÄ„gLI\nX¡óÇ°­y[è|÷À­8‚,Pø„D@DDD@DDD@DDD@DDD@DDD@DDD@DDD@Rß((Rß( ß[çşWV+|ÿ\0À*éèˆˆˆ€ˆˆˆ€ˆˆ\nA#qPˆ&ç¤¥ÏIPˆ&ç¤¥ÏIPˆ&ç¤¥ÏIPˆ&ç¤¥ÏIPˆ&ç¤¥ÏIPˆ&ç¤¥ÏIPˆ&ç¤¥ÏIPˆ&ç¤¥ÏIPˆ&ç¤­ğÊŞJ]­;B®ˆm²hŒN±İÀô­jÌ2	ÉK»èZeÑ¿UßÒƒD@DDD@DDD@R\0,ÚÔhºÜÆ£CZ¶±‹8Ø¬G\ZÍ«#Sc[›±X%aûÛZR©ä—Ñl>nzÚéòŒ+[¢_YĞ{—ÃìM¦Ÿ%ñ­ObúrD«I\ZÔ©§ÏsV§rF-j¬«±!lpX•Q‚)*DA –A±\nĞ-©m›(ãÒª)ƒq½¹¥®!ÂÄ,U¦¹µ-Õ~ÉãÒ«½…-p±AŠ\" \"\"\" \"\"\" \"\"\" \"\"\" \"\"\" \"\"\" \"\"–ùAB–ùAúß?ğ\nº±[çşWH_DD@DDD@DDD@DDD@DDD@DDD@DDD@DDD@V¢x™œ”»şk•TAœŒ1¸µÛÖ\nÔn³““cÇ’å]ì,qk…ˆAŠ\" \"\"\"”Šl¤\0³hPÆXÍV#bÂ0­DÕ-j6E\Z¹K¾„¬ZÜˆŠÒr–Š1\\Z€b˜Äôø\n±ª®:¥Íék	ä‹ğºô9?.ay.ÓfÌáL*±\nŸ\nÂŸóñ#Áø»…·’\0 [šô©mz’ÓpËêSÒ´ıƒíqö®W-øÔ‹|×EX€[ŒæJ†ï{O%>Í­ÙŞŸº=Ú=xgXVo¿ö¯¯û‘Èùrñæ,n§¯nÇÓáÂÌaè.ÿ\02;s½\Z‘¨rŞ*ÖnåIÖí·(³ÿ\0•|’ôY˜<]5V-–ªäš>ÒK¾ğ¼ŞuÑ~3–¨Î!‡ÁÜ5›]DuØÒá½£Û´{W»)æ_(ã²Ò×­¢Ä›mo`u¯İ¬¾\r+™´aº’HÈÙhgğ ¨fâ[ÃûCãĞ¬·àãòÃìTæ‹Ø»^²–ŒeóœòLz˜y6Ä0ğ<*7ñ pnİ£p¸#fîA<{×LrÛ6>4¬Udbú“±Q•«r±b‹Úµ¬È‡\r«lµ±[õŠ2Å¥B)²„¬±íº’›8nrªˆ,óoö¬ïNmşÕê²\"ô³Í¿Ú³½9·ûVwªÈ‡K•Ö:®kˆà‚,lw©k‹MŠ³vT¶l¿zª\"ÉìsgŠ ˆˆˆ€ˆˆˆ€ˆˆˆ€ˆˆˆ€ˆˆˆ€¥¾PP¥¾PA¾·Ïü®¬Vùÿ\0€UÒÑYü[é§âßMJÈ¬ş-ôÓño¦†•‘Yü[é§âßM\r+\"³ø·ÓOÅ¾š\ZVEgño¦Ÿ‹}44¬ŠÏâßM?úhiYŸÅ¾š~-ôĞÒ²+?‹}4ü[é¡¥dVúiø·ÓCJÈ¬ş-ôÓño¦†•‘Yü[é§âßM\r+\"³ø·ÓOÅ¾š\ZVEd\nbmw‹ñ+TÑ:\'XîàQ4Öˆˆˆ‚U–¸T³Uû$Jª³‡Î³´!¹¥®-p±\nê¡øÃÖ¤²”A\nQ\"ƒ&­¬SVøÂ5â\nì-Ub\nôbµiÚº^†2Ìƒ65øoÉXtf¶¬»É-næŸa;ı€®sL7.Ñ“ÿ\0è}f\\B?|R±”Ã~ ã¸½sÎôÜW­š¿J\Z@¶wòtìw“OxÛ³ié%{ú¾^¦¦<Úiè ¸¬¬Ægn{œá¶×Øm¼ìÑXù&fœÆÁj¦1´TÎê¹Ö¹7¹z\\!Ç-èâ•ñßŸão%Ò_Âl#…û?X®WôÛŒ¯”Ï6Ã0èñ¼J=’UTÛ’k¸†£»½mıÜb‡cğÌ%Ğz£µ»Õ\\+	†¤7‘:®ê•ö†[“Y­tvJ}F—3\\a¤\0Æ¥Ù£ó2»€¶Á~ãÚªS	1Î[\"ç¡lF;ü^í¯cí°k|àFãÄl;l«f*aÊÍfÆÛfî*Æo|˜æEÃó\0q¾8§–aå8\\¸üuOÄ ğ¹+¨Èyæl?`3<Ğâ0;kNÀÿ\0h½ø´•ä4£•ÿ\0r™Â¿æ”-3µ½Û[ğ]MĞGˆ1DĞß•¨A–Ş± _ìu¾çitü¯²&?\'…Q%3è¦wYk_â×w­ËÜ¬×¨nõóæjúµ|éÂí¯Ÿ U¹B¬ğ·hrÄ¬Ü±*²„DD%”¢Qd¢È!ÙB•‚Ë%l­ÔŸàåªh¶íqZÕ™ı\Z_U‘DDD@DDD@DDD@DDD@DD-ò‚…-ò‚\rõ¾àub·Ïü®¾ˆˆ€ˆˆˆ€ˆˆˆ€ˆˆˆ€ˆˆˆ€ˆˆˆ€ˆˆˆ€¬C(-äæÚÎ¡WDgˆÄî–Åj[[3„F2uø-H¦ÊPE–pùÖv…ŠÎ:ÎĞƒ*¯HzÔ¶ÕzCÖ¤…,¥%”¢\"\"³jİ\ZĞÕ¾4Xµ~\n„JôbµR›‚ìôş7ğv‡So#eÁÿ\0P\\V˜î]§D_õƒ#æì¨5RDÚúF/e®Å¬ï\\³ıºG×Ë>;B8Ë#Úè1(ä“İ<šôyˆ‰²M©ÌŠS·\0ÛıÇ¹y\râóÕbykw\'M@bi?6`¯ÆÄü@^³(qCˆdluâ›‚c%Ü$uG°ï!Ås½V–²ü¬kšJ÷Òb0E†¶àFÀx®S*ğ¼EÔx„N‚xÏ„×q ñÕn³å	ŞØ³bö;ÍjKŒNäßÕvåLÆê=f\'O±³ÕFÈı¤^ßóÁ|ê\ZjÜÁˆ6Œ¾B|\'üØÇYÇ€û×ÔÌe¸¶\'„d|¼şZ™×«Ÿx/ùî>è\'â@àŸô<¾’üNò-<tÅ,¶;ÃM­÷…ò³·ŠĞVLû%dò7İ¼Ÿæ/bqc™º,3ğá cpúf·h{ïcoíXeTÓÌÑaÏË¹ZáÌÁ¨\ZÙHİÊ¼ıûKSâW©â¾lëèT9|éŠïªRª¯VeU·­.X¬œ±U‘,¢ÊQ\"”²\",ˆ\n¢²…’„¬ÏèĞªöV\'ôhQb²\"\"ˆ€ˆˆˆ€ˆˆˆ€ˆˆˆ€ˆˆˆ€¥¾PP¥¾PA¾·Ïü®¬Vùÿ\0€UÒÑÙÈ¥gghXÙgghA5^}ëZµ4ò9Áì±ö¬y«ºìïMµ¥tV9«ºìïZ¥ÑºÎïéDÓD@@ˆ7 í¸NOÈYC%`8Î‘İ‹Wbìf¢šv¨‚–s¶‹›Ç€ØJóZ^É4Y?Ã\'À«d­À1ŠQ[C,¾XaµÚí‚ö»Mì7íÚÛÀ4‘”ñL„à\ZJË•x™Áe\r]ºäöx·øMÙ`ò`\"ë×æVa:uËPÏ“Øì71åø]X$²7Vj[‹rvÙ}€lÜ|À®²îºugOÏÑ•r*oŠZyä†xßÑ¸±ì{K\\×b;ˆè[¢rëR>¬^¯$f:œ±˜èqj?\nJwİÌ½„Œ;ÓÚ/ö/Õø$Ü±fÚ•Û4‘‚EÔùË+½ÏÀ±\'	ÃãØig&äy>s®:¤Ã±\\/ItĞ×ÕG…æúv†ER|êÀÜ\r·;Ù¼¢ãbæ\Z8ÏÓågÏGWq³Á«¡“hp;›}Öø<öuÙ‹¦v/£zøñ\n3áI‡JıZŠsÕÛ¿°ÛØJãf½mìêó7‚R¶‡=`*@Ïµ6Ûn‘ ?aé_+÷M×n	ˆ¹ş¨ÏàşºòT¹û:e\'ó:Éjbc<oˆÂ\\\0èÖ6ì*ñÓ>*³pÌ	²úÑNoúÊq¦ŞÂS2æj_“²\nÜ	~ÇÎeÇÉaşè\'Ú¾;˜0¬‰ƒÔàÙ^¥µ¸åKu+q6îˆu#öönŞI;¼ÍflÎÙåæõµq¿a‚†-Híô‹x{ÆËêÒäÌ&ÓÇŠi\"²#(\ZĞ`´Î’SÃ^Ü;<“Á5¯F\Z9Ã)òö6}ÌŒ-£¥a°;cªf7Âü7Øö‘æ^§Åk1\ZçëÔÕJéd<.x`Ü=}ı\"çšüãˆ²Z†¶š†œjRQF|[û]k\\ü‚ğóÈºc>Ôµ¦wİP™Ë|ÏTårë­]åm­ZŒ0+²+PDDD@DDDAE(ˆ„K\"ß?£B´+ú4)H¬¡d¢È!·Ê\n·Ê7Öùÿ\0€UÕŠß?ğ\nºBú\"\"\" \"\"\" \"\"\" \"\"\" \"\"\" \"\"\" )K)@DDE(\"ÊQDD@²YY‰ÂfrRy%VA~%í,qk…ˆP­XTÇşÕ¿j­k&ÄYM‘H_GÅëğ,Z—Â*d¥®¦~¼RÆv´şĞwv¾r„~ƒÄhp­8à’âøPaúB£ˆ:»U˜ƒFÍv_Aáä»eœ¸t‘ËMQ$¾)¢qd‘ÈÒ×1ÀØ‚â‹W`˜­6%„ÔÉK]Lıx¦Œíiı î ì#bî•ÔXfœğI1\\:|?HtQ[B«1mv_\0xy.Ùg._‡øéë‰Æõn)=«çÍÔµÓÔÄøg‰Å’G#K\\Çb;ˆ[õ«o¯Ëéa˜­VTÊš\n™©jYäËË>!yæH·2_jÎšÛ°ašjÍğ1PbĞ\ršµ´à“Ú[küW»æœh³÷XÜ«—ÅwÊ<Ë“æÃRÖò¯kßâ¿4¶e×`»ÿ\0­ŸÇÿ\0±sË	4Ô­8Æ™set\nJšl.œìÔ¡€0Ç‘ğ²ç5µÓÕTI=TÒM<†ï’G—9ÇÚNÒ¬ED÷·`*µ]+£ájI<ešüUI$J‚ZJ¨÷­ÈÁ#Õg¹KÜ´¼­HË•©Ë\'ZDˆ‚Y\"”A¦Êr€;–Ñ¤å\\—IÊú/Ì†€Õáx\\³S‹P–±®#xÄ_à³–r51Û’º\'7xZ×·Ìyr§	ª–š¶H*\":¯FÙÍ>Õãê¢äŞU™l¸é^ÊÄş\nĞ·ÏèĞ*Êº\"\"!¢QM” \"\"\" \"\"\" \"\"\" \"\"–ùAB–ùAúß?ğ\nº±[çşWH_DD@DDD@DDD@DDD@DDD@DDE(!J)@DD²İO‘ä:û¯±jEĞˆˆˆ€ˆˆ	e(€ˆˆ2c‹Ób‡˜%³ÜâÇà*ªlƒ\'OëOrrtş´÷-\nT]·òtş´÷\'\'OërĞˆ,†SúÓÜ¯à¸ŒØ.)MˆáUòÒÖÓ<>)£ØZhàAØFÂ¾:È&—oĞÕÔxFœğy1, AA¤*(«¤iÕf\"À-®Ûñè<<“²ÅpêÊY¨§’)ã’9#qdŒ‘¥®c±iqZ0lR·Å)±*¦JZÚg‰\"š3bÓûGÂ6Ş¤Ó	%v>¤:(¯UH¬xŒ`[Y·ãíŞ7–#Ÿáş5ë„5ëcdXWÒÍAW-=LRE,o,|r4µÌp6- î!h[EæIµw¡ÿ\0ƒƒãşÅÀÛ%Šî]G\'ø36KîÌ6û<çc]W äì‹+áUu¸d8!‰FfwY‘°p/b=«Ãé»*a¸9Ãñ\"#%|nw Mù76×·°Ü/A¡,âúÜµŒáøŒÕÒ`ôn¬…¯,¿FÏµrı$é§6Õ²z†Ç13R\"òcoí>ÕËy6æ¸\ry_%ÎVñ	õŞWÎs—¦G*—9k%	X•Q¨BŠ¢ÊQP²D¢›%B\" YK<¥\nA¶Ô›sCÅÈÕûw «›-eÃAñQ²‚1ÍÚó£—TYÎİùé_²XÃ4w—`ÎúE‡Zª_Á²IŸ¼Hğw°íØÑ´í°^kÒv;âõ8]|ÑI7‚#‚W1‘³ƒ\ZÜ=»Nò¼ÙÎw§lnğ“«¡Ÿ1SÇ‘KYOJØªËm}É±ö€~_œq;r†ËìâX»§¹s®OµyÚ‰uÜW_ãÇŒg*Ğ¬MèĞ-,clĞI[ªF¬Q0‘¬7…ÑÍ]E”¢E*Rˆ1E*·Ê\n·Ê7Öùÿ\0€UÕŠß?ğ\nºBú\"\"\" \"\"Ø!€C\rŠÖ¶	d\0\0÷X{PO!/P§!/P¨å¤ë»½9i:îïEé<„½Bœ„½B£–“®îôå¤ë»½“ÈKÔ)ÈKÔ*9i:îïNZN»»Ğé<„½Bœ„½B£–“®îôå¤ë»½“ÈKÔ)ÈKÔ*9i:îïNZN»»Ğé<„½Bœ„½B£–“®îôå¤ë»½˜¹i³¦‘S«¼ëw•T‚	a‚\"YJ\"*ÅœwºUqµX£ó÷JÆšÏ­RºN\nßÉ®Õ¾ªõù.I˜1º6œµ²ÕJ#væßy=‚å~‡:!ÉòµØU=F(ÜE·µ¯·\"é@ÚÛZİ;>ÕË/äÕn`ü}=3£Şb6¯wœ0I0œJ®¡ MO+¢x®Ócnåâgn«ÊŞ7lå4ÕdDZdE)d²”@DK \"›\"*,¦È¦È!ÙM@Wp|N·Äé±.¦JZÚg‰\"š3g1ßó°Äl*”©GèYcÂtíÉUBÊ|;H´pŞ¢˜Hñ4[Y·ãíŞ7‹Áké*0úÉ©k\"’\Zˆ^Y$r7UÍp6 FˆÖa•6!†TÉK[Nñ$SFlæ8qå¸‹¸còaZaÑî+™ùaÙË/Ó‰1M–Š¶ \rœ:\ršmÄZÆâÄsü?Æıp›®É…¿‚©pşQÿ\0é\\bë±ƒûÔOõ“ÿ\0J¹üÿ\0R/~u.~¤K“àà±ë>±ÏcnxÖ¿cÿ\0Fi\'ú½/ÜõÅÚ|öÆj[Ócß¬v•D[e\n¥•¢ÊÉd¨²ÊÊ,‚,ŠQ\"Y°¬:³Äiè0Êijëj©17YÏ>À½†mÑ&uÊxGÊ˜Öèè[nRXfdÂ+õõIÕİŞÕíÿ\0¼:¦lóŠWGLñl±óâĞYK#‹uI\'eÈÙÑ~Øål»˜´m„glWI8ÌS`õ”2Ó²Õ™Í|îò^ÖÄ‹‹oğ¶ì_ÉfZÌz~[í]Ï$e#G~Ÿ<éR¶OÀa$ÏŞ$ÖØvìnó¶ÁNHÊXV2õ6xÒ=?+ˆ¼`Ø­¯,€\\I ;­°íòwŸ€¹^wÍx¶tÌãåG+S&Æ1»81ƒƒGÛ¼íZ·ŸSÄü{©Ï»Î™†|cŸ”¨“ÁdmØÈYÁŒ\0ï\'iÚ¾•ÃŠÖ‹¤šñ³»ä6%m61­;­ôBQùR¢´\\nMÏJŠÚúƒmX†£}›Ö„EPDDDA¥B ¡J Å¨@DDD@DDD@DD-ò‚…-ò‚\rõ¾àub·Ïü®¾ˆˆ€ˆˆ¥B\" \"\"\" \"\"\" \"\"	R¡J	i-p Ø…bF‰ãå<1åYgÌoÒ„`­óÆÇäşÅ¡DD(¼ã½Ò±¦v«ÂÊ‹Î;İ+CMŠ+£d,Á&ŒÑb4Å¼µ4‚F‡n6à}„\\|Wé*=0å&º*¹hñ§|òÄ,èãqØç»{¯ì_ijÌ|Uï•«mb¸åü|«¤ÍÖôí–êpÚßİ,ãÀ1g™ ¯hÖy\'QÖÜwÛ¦İ …Ãªw•Óôc¤æeñQ€æz”ò~#vUÒ<koúHÇOû\\X´ô·£weGSã8\rOÊ™C³è«Øuµ/º9ãĞxÛ+‡õ¼jeßqÍ”Ù®®b\"Y,¥DSe6AK)R‚,¤î@.WĞ¢¥2‘`¥«¥¤/Y÷²áª•~èovÙg’ñyô[fQË]–‘±hGóu¥èvıÒ®?eØ´$?\'zXş‡oİ*Çòx¸úãk±à¢¬ŸúW²ìCø)ë\'ş”ÏçúbËğvÿ\0íšIş¯K÷=q†y\rì´~ÿ\0ı³I?Õé~ç®2Áà7°&?•/‘E•’Ël±E•”Y\"›(²…(‚,¢Ë$Taeít]£ìG?c.‚Â“¦¥v! ñtìŞv…Ä^ÃâlÏEº=Ä3î0ø¡x£ÂiG)_ˆH-;7§aq\0Ø|NÀ½.”t…‡Œ¹#GŒ4yJ›ÁšvùÌEü\\ã¼´Ÿü]–emã­Iö£J:AÃ£Á[‘ôvÓI”é¬õ\r>38ï-$kØ\0íe·‡èã/Rg}$²JœMÂø+Éyvñ#Á¾­¶†ì&î rvWÂt_€Sçm!S	ñ‰¼,}ƒË·‰du¶¾OµÄÊ3¦jÅs–`¨Æ1Úƒ5T»\ZÑ±‘3ƒ84}»ÎÒ³&ú-ºî£:æ¼[9ãóâøíAš¦MhØÈYÁŒ\Z>İæå|%*MkÆ/b‹)EQ¾ô¾ê¬¬Òn—İUÈˆ!¨@DDDA¥B ¡J Å•ˆ€ˆˆˆ€ˆˆ\n[å\n[åë|ÿ\0À*êÅoŸø]!}Y«òa÷Uef¯É‡İU’DDD@DDD@DD( \" @\nQ[`—Pí¬vğ“ÅÉ»fÖÅj[£”rN@Kx[‚\r(ˆX¢ó÷JĞ¬QyÇ{¥WQ~\nnT)UÒôK¤•ÛQ€æJ•2n#vVQ<krWß$c§‰}®,@+š¢Íœ¦ªË§HÒÖ”ù¾5€T|©“ñ>Šº3­©}ÑÈzzp …Í×JÑ.’Vça§ùS\'b7eeÆ·\'}òF:x‘Æ× ÒÖÿ\0r¼ßËÕ*dìFÏ£®aÖäïº9OAãkB˜Û/š³}Ç6E6RÛ(²›\"”D²€–Se6A1/S€1¥àºÛ6¯.Ób¾ÆWÉ8mYÉ¬_²°<-eœ\Z†–«¢©j6ÔÍQRÀîPŸšÛƒo‡±qı<eº00aÌäéªàmCb?£$[Ù±2¶š«°¬–‚¿¡Å#¤°§}EÃãp¾ÛÛßÚ¾•hÀß²ŒòÖÇa˜ã­5!hŞ\0ù m#ûBûmç’ã—n»~yÄ\0*\nÍLœ£¯{İh²õG\ZÅv-	~nô¯ıßºUÇì»„ÿ\07zWş‡oİ*Çò~+®:»ş\nGúÉÿ\0¥r.Â?‚™ş²éLş¤mü\Zâ}`ÏØ}0å+*ğ#‚@tğ…‡ÅÃ½q‰\"’ºã|rÆKÇ‹9® î ğ_CÅëğb—Â*_K]Lıx¥gÄÄ°ƒ°…Ú³‡i£.Íš2­<t¹Ö‰€âØS¥\0-ÊÇÒvléòNĞ	[Ç-ß)ìp4[Ò×¸¸Eˆ=,l¶ËYY,ƒSdAQe(ƒ/o¢ÍWçÌ^F2AEƒÒR¿“c `Ú@\'aq°á¼ìYè·G•ùó‘¬Q`Ôƒ^¿—c fò;­ÃpNÍşƒJZA —	$èş3G”i¬’6ü¦\"ûí{ÎòÒvíÚã´ì°XË+oZ“í4£¤,=Ø;2N#4yJ˜ÚY[~S}ö¹Çyi;vívÎíe¯„è·§ÎšA€OL5ğ|	Ö×Öá$ƒß\'Úë9K,áz)À©ó§ãó\rlyğƒ¸K àFÃ·Éö¸€9&pÌ¸¦nÇª1|r ÏW1á±±·ƒ84t|NÒ³&ú-ıÓ9f|S8cõÆ9Pf«˜Ø±‘3ƒ84Äí+âYJ.³¦+(Y(!QP¥o¥òf÷Uef—ÍÍîªê\nJ,ª!B)P€ˆˆˆ‚J„AARˆ1E%B\" \"\"\" )o”)o”o­óÿ\0\0««¾àt…ôDDDAf¯É‡İU•ˆæk›ÉÌ.Ş¡c4&=£ÂaÜB-iDDA„R€ˆˆ\nQDD@DD\0¥Š/:ïtªêÅwºV„_‚”@.l\0.l¸ádma¬óóGk[Lİgm”î:F™e»ÉRµ\"Õ=,Rn…İë¦hÃ;şå#©Á±ª\'bYK»k(d\Zá—ß#ãÒ8Û\0©ÑVLıÕãÔøxC|²Zú¬nò=»‡Åv,cD¹b¾†zL	õğbŒ‰Ò@ê“xê5wğãÒ-ØWóWI;K\Z8ƒ+6ŸËï8QÄ,êJÈİ­É_tr\0ö±±škÁêzì<~ä\'ªÁñÊo”²!vVĞ<kj_a{OHãn¾–tpÜµ>?–ª>TÉØKXÃ¬a\'tr\0ö±±w_+6~œï^ŸÕ;½N½=íÉŸjĞèz\"ÌYo¨Äplë…ÁUã\rlRÖj^j7ê½®Şssm¢Àí±w©¶gn!aw‹n¨¶åìôI’[³C¨jjÍINúÊÚ,‰¶½¯²äçvÓ·rÏJz<®È˜¤wW`•#‹&a\0‘°:Ü7´lİ£EyÚ\\‰š>Ræ­­¢RÖR¸Û•‰Ö¸ì¸ »7*[¼wŠë¾Şò\\£ìå€c’èÚ»ÁéÍS Äv²®&ïsxaÙ´‹«‰pÜv¯ÓÚ=«Èx¶špmE>\ršqZGÊÄæ›ëGÖu€öî;CWæìW¬Á±*Œ;¦’–²™Üœ°È,æû:â6…œ/vS/Ú–lqj„]XmK€Ş½DÎø¾JÌb¸<¾ğfäòuñc‡Üwƒ´/,¦ÊY/«ºìú@É˜VqËòçÍDy½Ë±l£ÆQÉ½ÎkGÍâ@Ùol¸]z\\œ±l˜\"ÅpYlñàÍÉäçg<}Çx;BèÙû&áY×/ÍŸ4o\r£/ƒ4xÊI7¹ìhá¼6á b^=_×]‡B›Í+D7î•r´\\Ùÿ\0ºo•°-!`’Â1\\SÒC#Ã9W%À\'£Xw«üŸ‰®/eÖ´O™°C-Uh÷;O„WÔsŠLEÕ4µ&ÀpµÀ±Ü.AØn9u}N[=|SÕÀó°ÊİW1Ãx!W°W)Ê$ºzm!äœW\"æ	0¼^0A»éêX<]D}fşÑ¼?3,cø–XÇ)ql¥Ôõ´î»\\6‡-pâÓ¸…Ôt{ğ¬É€Gô’òü1ÖnŠ¸øÊ	74›À¸l>ï	¤L‘ŠäL}øn,Àæ:ï¦ª`ñuõ›íéÁø%ßõÉoî:fgÀ0Í/à3æÜ•)³];uñ|‡lÇÖÇÒOOÎÜ|!·„¹®k‹\\p6 ‹z\nú¹gÄ²Î5MŠà•O¥­€İ¯nĞáÅ®9§ˆ+×iK6eÌç\r-C‚Í…æ‰\\~SäˆæÓlòÛ¶úÄñ°Ù¾æÅ$¸İ|:®v‹+%–ÑŠ)²Y6^ßEº<®Ïx¬–Pà”c”¯Äd°d,äv[†à6›òÑfksÖ\')t¢‡¢¥~#%ƒ!` °ºß\06ŸoÜÒ–èêğ¸ònDˆĞdê?–Ü>½Àí{ÎòÒvØíqÚxŒ²¶ñÅdûM)iŠ§‹&dO¤:®snˆ>û^ó¼´¶;\\v\0}ì§—0½à4ùË>S¶£1N5ğlçÂc¸K(àFÃ·Éö¸€9TÆæËyÆi©éªg¢—•dU,ÖÆÄeîS›s)›1Úœ_©5“ûšÆğcGö’S‡ÉáËê3neÅ3n;Q‹ã•&¢²cØØÛÁŒ\Z8‰¹Ú¾5”ÙBÜšD¡d–DbŠHPŠ‹(²ÉB¨İMæ§÷Uk+Py™ûdŠT\"\"ÊJ\nDDŠT \"\"\" „RT\"\n¨Aˆ€ˆˆˆ€¥¾PP¥¾PA¾·Ïü®¬Vùÿ\0€UÒÑm†gG³{NğV¤Ag^ŸÕ»½5éı[»ÕdCk:ôş­İé¯OêİŞ«\"Y×§õnïMzVîõYÚÎ½?«wzkÓú·wªÊBX§õnïS¯OêİŞ«¢hÚÆ½?«wzkÓú·wªáJiV©É±c‡¶ë\\ÑİÒÓ¸­k|ŞN]¬;B+B,æŒÄûÜJÁRˆ€¥\0$€ÉVšÖÓ7Yöt§pèA14S°¾Cá`ÕUKŞç¸¹ÆåBŠ\0I°VÚLİgm”îU\'¤1D×2¼»UV.q{‹œnJ¹Bğ×‚©…“ZT¨ëÚ/Î/Ê¸í6!(eÙ$dÛ]‡x¿ø/Ğ{H9_ÄE„ÏQ‡âõp:\ZY+EâB65¶vûğÙ{[Ø¿ÓÖ¹›Š²ìIälq¸ãuÇ/âÛ¤Éè´ƒ…â©Ã1ŠwAWÚĞğw=§‹OOíW´W¤gå)ªp¬jŸå<¥ˆİ•Ø{Æ°\0ì20Ò8Û\0¯g–3>¥œªM˜a\Z¸>6áµîá‡‰;Òö8xşmËx¦SÇªpŒr˜ÁY	íkÛÁì<ZxÚZÇ¹Ç$·ì{-+èá¹n3X¨ùS&â}-[±†û£“îöüÕt-i\Z\\¡5F‹Óü§”ñ²»k…ìf·Hùİ¶*Î•´s^†Ÿ1ej”òf!gÓU0ë	ı‡·`\'¢Çnû-—IgØµ¢Í!ÑÒardìù¯ÉÕ.¹}‰Øöá í°ÚÓ´qâiKG•™ˆ¶Q_VRƒÅ“0‹€HØoG³Ã®§¢İ!ÑÑa’äüõ	Ä2ua·…rúå³ˆmöØmhâ\nËÜ=ê¹-DÔ•1TRË$5¼I±¸µÌp7¸…İèk0İ:`‘á¸´”ø~‘h¢\"’°Hñ\rº·‘ÃÊ.=Ò+2>%‘Ê+ğ\nÑÊPb1Ø²Vp×°:ß6 xºiæ¥¨Š¢šWÃ<NHÜZæ8‚ÜBY2›‡Vüc­Á±:œ;¦’–¶™æ9aX´şÑÄ°¡S²ï˜}n§,,/’?H”qjÒV‘«\"ÆíÔu¸ôSv]«‰c8]vŠTá¸­4”µÔÏÔ–ÖŸÚğFÂ6«[êúX£dSe6ZD/G³†-’3X¶.¬ƒÁš“ÉÏö±ã£ ïh^zÉe/}QÚ3ŞNÂs¾6zÑ¼%¡¾-‚´xÊWïsØÑÃy l#kx…ÉpzÚœ:vÖáõSÕ@á$3Dë9ˆ+éäLİŠäœÁ-‚M«+|buù9ã¾Ö<t{wƒ´.2òíVxÑÌ%¦ÅØ¶\nÑã)¤µÜö4oi°ØFÑÄ.{ãÕñ¯{[-Ãtï‚\\sl;I4íù‘bq´}„»íiÙÃ1\n\Zœ6º¢Š¾Jjºw˜å†FÙÌpŞSAYS‡ÖÁYAQ%=TE4NÕs7Ws\rÓ®\ZóM‡i\"‚‡c\"ÄãhûêûZv?ğõÀíì]‹G™Û\nÌ9}™I//Âa†â>2‚MÍÇæğîÜ|ÜŸ¡ªÃk§¢¯‚Jj¸c–[ªæ8o*ö[²e]=>‘r>)‘1çaØ£Câ}ßKVÁâê#ë7 î¸áÙb|­—cÑÖwÂñÜ¹Hî2`ï!¸~$ãã0ù74k›Àƒ»Äé#b¹8~(Á$2]ôµqPÎ³zë·‡e‰˜åòúYö<•’Ë$²Ò1^çEš;¬ÏŒ²I( Àh¼e~#%ƒ\"h-i;­ğiàÍèö§<bsºIÙC‚P%}t„7Ø_f±\0ïØÓĞ}~ÍTø¦SÉP\Z¡Gà€Û‡V¸-üH¾Û¤í<\0ÆY|L~¾”³õ%fOÈ°šG°ÚáõÏkŞw–ßmÒv\0r¢:W¶Ä2Í]$\r’¢–x˜ÿ\0%ÒFæ‡v6¯3[Jb\'b¸êu+æÙd(²Û,T²²„ÙBÍAŒT²Pƒ\"ÊËoƒÌOØ«¬CèÓ-µ‚,ˆXªˆE*AP²PQˆˆ!•ˆ€ ©Dˆˆˆ*JB\" \"\"–ùAB–ùAúß?ğ\nº±[çşWH_DD@DDD@DDD@DD’€¥	DDQX…í‘œ”¿Ù=[¡{Ai>Ğ°·\n‰@¶·Ø¢°äßÕwr‘É\01Û}‹>s/_ìSÎ%ëıŠ6]´Í°³¥<zgâI7%@Rˆ©<ûTKç_ÚVT}‹|ãûJŸUŠ\"\0²Pˆ$ëºe,Ë„é[¦ÉÙş Sæ¦;Ês¸E)âNÁ·Êö8x`\nTË¬º}œİ–qL£Taå9‚®}›[#x=‡‹OOÀíÔh§HÓdéª0ìRœbyW»+°ù°±Ø^Àvk[xÜîÛìr†eÂô§€ÓäÌıP Ç!\Z¸66ı®Öá‡ö\r¾W±ÀÊs†WÅr†=Q„c”æ\Z¸¶‚6²Fp{Ÿø³¾_×/WÎãØiWGPà4ôù“*T|¥“1:¥‡XÓ“ú98ïØ	Û}‡nşjè\Z)Ò$¹:¢£ÄéşRÊØ…Ù_‡È5a{Ù­mãs»lEİ*hê–Ë”j\'“kìè*\ZKLIórqß°¶ûİélºÈ½÷tY¤*:6\\¡\"5ù6´êë—Ğ¸Ÿ8Î!·Ú@ÚÑÄ‘¥=ÕäŠøf†aˆeúÑ¯AˆÇbÉZEÃ\\FÀë|Ú8á€]CEšB¥Ã0ù²u„â6»Á{rê\'ç#âö6ƒ´m¸2Ë.áïUÌéæ–šxç§‘ñMƒã‘-s\rÁn ñ]Û\r­Ã4á‚E…cRÁ‡éŠ-Z:ç\rVbun=#‡”İ—ÀéKG•y&ºéæ†^­ğè1ìæÈÒ.\Zâ6[àFÑÄ²SÏĞHø¦Áì‘-s\\\rÁn#¥[&Spñg\ZÂk°<V§\rÅi¤¥®¦~¤±<miı ïl!R²ï8]~¦ì,–\nÿ\0Em áªÊö\rº·‘ÃÊo¸®7„×`x­N‹SIK]NíI\"möƒ¼°„Ç-õ},P²•6Se¤ceéòkÅ2f41lmI˜\0’\'_“™œXñÄ} íÍYX§&nÅ,ÜXëùã(áYó\0›<èêÉ[ábø+Eä§“{Æàí6Ú6Ü/•¡Ü‘Ëst¸>XÂ^\'mqd•4ìdDmµö7ù#míãr>lÅr^?-‚M©3<#vØæg<qh;BûZOÒF\'Ÿj l°Ç‡á4Ş‡Àë±‡‹‰°Övı¶¸“eøü^½tÜj|¹§®z0¨[ƒgJ=cFÉŞ-ˆSÍq8ÒßkooÏøV_QEˆSÉMWNó°È,æ8o%UE\rdtSIOUÄ‘Kµ\\Ç\rÄw8¤Ã4ç‚¶\ZƒO‡iŠG%µ\"Ä£hÜ}¿kw‹¶à?ğõÀì»~CÅ*3V„s¾˜5+ À)YS†É(¼”î³ì·Øjìö7l\\sÃêğ¼B¢‡§’š²æ9aYÌpàWVĞçæÃJÿ\0Ñ‘ıÒ«Ÿ›\'®:FÔYµ,¶Ë³è¸ş…i$tÉM÷µzÁş‚‚¯7B+Y\'É6:AkwŸ‚óš3v®ô–z$¦ûÚ¼vM‡TG=4ÏŠhÜÇ±Ö-#ˆ+›Û¤¯ØX“dÅiñju‚l$Ò=ó:hu/F©ãm»}—_Š±Æ4=Ö]ßL¹»9&5õ²êb˜/T\0Là#>·ï;7/ÏXW*ân§ñM.Uò¤Áfí¥E—w&*Y¡Q‚,¬¢È1!A$D`ŠHDbôY•urÓÊÖíqàª9¤o¨PB”D`‹\"*ˆE%B\"\n…’„…\"\"\" \nTAARˆ1E%B\" )o”,âi{Àh¹A¶·Ïü®·Ög6<„…LclÁrƒ[¹¼½CŞœŞ^¡ïCM(·syz‡½9¼½CŞ†šQnæòõz\niz‡½\r5¢ÛÍåêôæòõzlÓR•°SËÔ=êy¼½B‹¦¤Y=a³…ŠÅH@DD¥B”!@RŠ,‚€H6ÒúCù×ö•\'¤1}Œ£I™ó†‚E(…ÕõMƒ”\"ú€›—[€;mÒ¾\nWè¨°MVgi4yŠC^ÙDÌoœ8¸Ô4İ·µ®òm~\0m\\1aRàyƒÂj×ÍCS%3ŞİÎ,q¶º˜åÈ³Oœ²dÈË–ñLâ7-lWEµğ¹»ÂÂÈwŸ™ğ½\'`4ù+H^/Çµáû„r¾ûß+Øà	â\n@YÊl—Oµœ2¾)”1êŒ#§0ÕE´µ’³ƒØx´ÿ\0ÀíÒè«HsäÚ©è±%–1¿5À‹°Öá¹ÃaàG±ÉÙ§ÒVO’´ƒ8‹ˆjàøã¶½Ü#÷Ø6ù[b~\\¿ƒîdÏk((ec\\@{k\Z…÷€v‹ûV.SÌÚ×Øß-6ƒ¤•ïevn‰®q!ŒcG@»	°ö’±æzş2Î?İô*ÿ\0şŸôƒü[Eş5ŠÖø=ç‰±\ZX«éi)i#[4â©1²şƒFò7ÿ\0#¿ÓÙå¼í¢Œ++Uå‰kó!U›\Z|F˜½°v¹…­»vìÜEÅïÊ4¥£ÊŒ—]\rMÃË•Ş#kÚEÃ\\FÍk|6 tÆa:+©ÎïÑìywŠ±²º‰¸×8&CPĞIÙ}×^Ö¿\06¯/”3ly/ÆrwˆbÙKœÉK3$Ó88V> |âĞv·¼Ç®âßûrH%’hæ‚GÅ4ncØâ×5ÀÜFâİ0¬K\rÓf˜e‚‡>QÆE\"F«+š6òo·‘ı¦ñÂéKG“äÚ¸*ègZ¯ğè1Ès\\Ò.â6k[ç\r£ˆ¬–¾9cp{Çæ¸‚ÜGJİÖSq<ZÇ0Šü©Ã1ji)k©©$OŞHéx#a\n•—sŸ§Ò¦‰ñÌK¦ÕÍZ¹¸Œ@U½šñı“nÑk¸u¶«[ô±•ŠqâfìZl·Ó7b¢º)RÔFQÆ^W×Âà©¦ª†ªI ©…âHåŒê¹ˆ<\n¯‡Dñuİô7’ğ¼Z’¿ÆØùhèµZ aÕåí×#m·wû2ËMHÂZj3à­†·ÃôE£˜HñÛÀûWxğnÄÑ¶W„d-.Ğâ4òSÕÁ‡±’E ³š@—şoÅt!dœ*—/Ïeêip|C‘’6JH±\"Îi¹±gµT¦ÍÑæıç™ki#¥Âù\Zº¨Ú\0©f«ù7qÇìØl9rë¯\ZÓò±JÆËcÅœW¼ÑneÍõ×âsü›•ğû¾»yÕ\0\r¥Œ\'fµ·Ÿ›Û`}-MÖ‹G‘ÈßÁ÷I’–8Fù)Ã^FÇ[p\\w®DÙ\\Ó½tm)ir–·”éşLÉôì\Z¦¤ƒç$ã¿hmö»ªh·G’æùê1N£äÜ¯Aw×bĞ\0ÚXÂvk[yÜŞÛ‰u-«ÿ\0QèôÙ!E¤ø9?îÄ¸Û‰;×BÓs ÍXC€Rs\\¿‚Ài(¯¯#6\rc}ÃÁm¶¦ÃŸYk	¨•…’Ë+qÜ„-#±²Ì¨²#(YÙE®ƒ+…Îà¥ÔÎrlÒ¸W)i„X-1ÆCö¯qğcc˜~Â\Zú©™qÜÛ›]L®–M¾xT€µ¤«×aúí.km Ş:WìzMä·6\\%¸t’ZéˆÈzíö[Ø¿8iù¯ ×u4®\\k¸üE—,“u»‹–HÂ×w…‚ú•±¶r\\Í’\rã¥|Â-¿zï.ÜüBÄ…’…QŠ‚²*B…(ˆÅ•B•\"DB…’‚‚Èbt®³wq=\"(İ#µZ?à·É#ai-®âåÊØÛÉÃñwJ¬‹àˆˆ‚\" \",âÒ;U½ıFéªÕ¾Iy8ßœåÈØ›ÉÅ¿ç9VEñŸ+\']İéÊÉ×wzÁò²uİŞœ¬ww¬|¬ww¬¹Y:îïZÂ”ò²uİŞœ¬ww¬ ÙÊ?®îôå×wzÁVc{fo\')ğ¾k–‰èİªíÿ\0zÅYí™¼œ»şk‘}VR²’7FíWò±D…$-i\'b½}\n\n~QÃb,ŠÍÄnR`sx.¥‘´mŒæÁ!Âiã‹ÎK#ƒÓÑs¼û¯²+•j/Ha{Æ³ÒÇc†şÍëòMé¾.bE· Úv+µ”å \r«µ´ÍÖ~ÙNáĞ·¶t1¢ºÏÛ)Ü:Ü«ÁñzLO—’­¤™³Äû^Ïi¸ÙÄ{7ç8Ü•!¤îMÑ™7L™&¯:RcöPƒ\nÇj<]F3ÃÙ‹uyMR./¸¤\rä‹®_¥¬“Œe,Ó4˜¤Üş—‘õ4Ø›Tu‰Ù°;nÑñ†;}—ZÑv ùÙ\'HQšÌ«PmîÛ&şiŞ\Z	¾Ï\'Ú.><;Å­ïªçø],à,ºÖ¡ŒÏ]„2º<=cÙ®Èä•¬‘Ã§TîøÙQÆ²eF³M=Õ®Áä•“RÖFeL@‡[fÀëoÛ…~Ÿ£ŒcX“1Œ:ª\Zª)› ™²›Â”5GNİ‡§jåcr?ãØ,”Ëñº9cqk˜ábÒ7‚—=W.Õ¦ìB’¿:âÓR7Uœ§&nİR\\Ğ\ZãcÒA\\r´‚òºáwÊ)€¥J•¶gŸVùu_ß;üÕp ±Ï«?üº¯ïŸşjÖbxf#K]E]RÊši[4N2¹À9¦âà›ì_8\n+¶6am¬~=O‘pØ³‹ãÔ8—+vbıK^ööŞÛ5—­ªº¶¢®®GKS<–Y½Ïq¹=å`O&2f2x¶íÑô[¤0zIòÆnƒå_àÍs©\\Oœ¯´¶ûFİÿ\0/J¹÷ŒS\nJØñ‹œáõMp%ñlØëqFÂ= x«.¿¦áÿ\0R´]ı\rÿ\0¦%/Yuõ}Œ4Kù¨Ò§Ô!ÿ\0Ü\\¥uÍÉN•>£şâä¤m)´¬l¬S7bÓebœx™»ÑZÈ²²YÚ	5`Ñ>{~^¬u$2ª‚¹ÌŠhm´›Ò/ñ\\U§T¯­€Õ9¸Æ/ÿ\0îbıv¬eÖWèm9ç“gªÊx};)éÛ©,òké‰ÀmÜ7tî^7F³rº9Ò™ÿ\0øÖ}Ò¯—øGÔik`;Tÿ\0ùM_wğv¥¡ÄòÎiqš£I†ËKjgÖ\räã´ºÆçvË®zÖk}¼.Œ4y&o¨¨ÄqJ“2½ß[ˆHuE†ÒÆ³[¤üŞÛcJZA‹§ƒ.eX>MÉôm=3©¨#ô’qß´Úvî)i™‚2şX§ù7(PY´Ô¬\Z¦r?I\'Çh´íİ_Eº=~l–£Åê>MÊØ}ß[^óªKOÎé</Ó`·ÿ\0Û&ê0Ñv%ÍÓO‰b“ü›•¨.úìBCª,6–0Ÿmçs{l\r)é,z\n|»• ù7\'áöm=3©¨#ô’qß´Úvî)i	™‚(2şYƒäÜŸAfSR0j™íºInĞiÛ»œ¬–İÔÿ\0%®v,€$Ø“Ğ»~UËxf‹p83~z§løôÃ[Á\\|&»„’l;|ŸkˆW-m«,ålF¹z,Ù¤*VUc\r\'\nÀ¤\0’måÊÓ»ö¸€8½lÜæ²yù(¡ådtœœMÕc.IÕhàìBúÙ·1ây«¨Å±ªƒ=\\Ç±±·ƒ84t|NÒ¾)	Œ×t¬,±²Ì…HÁn¦]Ák²¹@F¸ºR=K_4PÓÄé%‘Á¬cË‰Ü\0^ûĞÎgÃğ‰+åÃØèãf»Ù­|Œ%£Âêæê¡ƒ<aZñ:Rç9€5ºÄÒ­Ğ7…ú¹Á1Y1¬J®\ZL>ŞfÌIœÃTñİaìÙ½yóÎË§Y†+©yÅÒô\'•ê±JãUU|——ğ—‰ê1Q¬Â£	Şw\\ğö’³–r4Y¿Äq¬Ra„å\n9-U[¯ƒry6›	áí$ç´§¤q˜E>–©şMÊ}™KHÁªf#ô’´º÷;NÍîåÔgÇdÄôß€¶¾ª³À•ÄCS4š¡Û,æ{Û†ûq‚fÜzl^º¦®ªNRyŞéî’MÊòâªKo*´Ó¹ûÕÇøäK“	å<¦³MŠ:Hdğ¤aÖãe¥ÛÔ×L7^œüÇ¬ƒ ?1ëe?(á±{Ì™£ü_5T:\ZŒÌæ\riç±ƒ†³İ½få\"É·>s 1ëY4ã{º.zÑÎ7”ÆhÄqÍ~NhŞíÂã°ÙsÊ¸y7Ç)K4ÃZ›¨õ\ZÔİG÷­\n\nŞ™oÖ¦ê?½5©ºïZ\r·ëSuŞšÔıG÷ªè®·ëSuŞšÔİG÷­BoÖ§ê?½5©úïZ4›oÖ§ê=5©ºïZĞ±­MÔz‚ên£ûÖ„M&Ûõ©ºïQ$ÃSRªŞ=%hP†ÄD@E²‡ÊÖ»qXÈdp²QZ{¹*fl×%UVj<ÄˆEdD@D[à„8kÉ²1ö ˆ tÖ¸hé+>jî»;Ö¹å2\rŒ‚Ö‹Ód±­w~…‚\" ¥@R€ˆˆ¢\"‚Ã%kÙ©5önrjÓúÇ÷*èš]¬†SúÇ÷)§\'Î?¹WV)#×xP‹RÂò,÷÷/A„ÒB×´—;¹zM\Zä*üáˆ\Z\\9±±±³”šyM™zOìİfVeÜ\'å(+)1\ZWËLO€wmÛ®Yg7§I‹¤hzZW!EƒRÍª§©tµåú„Üoü;U}?GJÂ(êš÷?œ=ñÉbæÆİSàk[Ú?ğûçék¤¡qÕqiA²õYIÔ”ĞM–ó«\rvV­ğ_­rúGŞ6¾ÒÑ¼q—½Æ¶å¸£àîtws¸_‚ø/%Ï.q¹+ éo!ÖdÌF¢˜WàÃ” Äc±d­\"á®#`u¾m@ç«Ñ¬ÜsËÖq·YËìaØy˜‹ó)EŞRÑ=#›pŠLCWšÍPÆHÀáÑñ6Êéq›yßÜìüÜKÈ¿“;õN­ûw/‰]B`qÙk/Ş,™Ó×É„ÍI2.0s3OâÄ yWİmÛ7/ÈzG¢¤¡ÌX5ƒ©¡¨‘‘Şí m\\pÏu»_EºB¢‹vNÏ`ÔåzƒhfqğèÁÍ;ÃAÛ³Éì¸[³èÏ¥š–±ï¢òØ~%ğ&nñ{lÖ¶ñ¸¢à®;Q±æË¨è¿HT1á/É™ù†³)UXå;_‡¿ƒÚw†ƒ·g“¼l¸[Ëw—ãÚW·ÓV	-^!¡Ï´QkTR_U•ì5›~>ŞËùúº)©êæ§ªŠHg‰å’G#K\\Çb;ˆ^ç=e,wEÙ¢¶†±ï¤s„øf-NF¬¢×FÍk­ÜFë‚½Í]&§<õøk)ğí\"QEzškêGˆ±¢ÚÍöûxn;,D—Ûƒ)nª¦šªjj¸d‚¢˜äŠFê¹ÄÀ…­ua (¢³M»–†ï__\n`/mÖjÅê,%óªÒoì[+ğI©¶KØíösH?jıø?áÔfR¼E¸…3 n±`7»€éØ?ä¯M¤˜#Ær9>,È¤}k¨êù-G9×\0´{ï±q¿É«¦ôüyS&Jêšnõ/Eÿ\0Ğß²%Ïqf4Hë.‰¦áÿ\0S4aı~è–íî2ÃDÃòU¥?¨Åÿ\0¸¹1ŞWZÑ8ü•iOê1î.NFÒ®>Ò±²ß\0ñ3v-VV *^Å¡VÊl²²›\"0²úùG«Å3>G‡SÉQS%Le±Æ.HŸ`\0O§ÁëñÜZ›\rÂiŸS[PíXãg’O\07’v\0»+ˆaºÁ¦ÁrôĞ×gš¸õkñ‹¶‰§o&ËñèÚw\0³•×SÕ‘å¿÷²]/ã&7µá¬§TŞÄDÛÕô4@?&ZTşî•r™¤’i_,Ït’½ÅÏ{É.q&ä’w’ºÆˆGäÏJÑ±ıÒ¬å5‰ëŸäŠÍtÙ›ù3%Î¢Æöú ğ.İ~ÓiGHMÌQA€åÊ“2ƒMHÁ«ËºIÚé¹¹İÏˆÚ±²Ş»ØÀ…\Z¤Òv-¤\0$€´®Ù–p3E8%>kÎ´í©Ìµ\rÖÂpg±[\'Aîû\\v.ZM0ÊÙ{Ñ^O›³½;j3ã[Áœv°ğ–AÀ÷}®;9VjÌ8iÆª1\\n¥ÕsûšÆğcGö¬³F?‰fŒn£Æªõs§sXŞhàÑÀ~Õó±Ø¤Ÿoª®AX–•ö)ğ÷I¸-“aocnZV¶iğT­T@XNÅ\\4¹Ú \\•Q€iq\0’¾Æ…Ôâxµ.†ÓKYˆT?R8¢ŞOìy\'pÚ£Â«qLNŸÁéŸW‰T»R8Ø6ßö¼“°\r¥vSÃt\'‚Ë„`’Ã_¤\nØ€®¯Y”;u~=”îg,¾BGÓ­ÅpáOÂ°Éb¯ÎõQWTß	”-;u~=yŞvX/‹p	³ªÆ±ú¹h²Ítµ¸„ò®F×5„ïwIá~$€¼¶Œr¹¾jÌÁ™«_C•¨œé«ñC¦uîæ5Ç{‰Şí¶¿@Zô«¤cš9\0§ù3(áöe¯)mÒH:xÂ÷7$•=ê5ÉwJšG‡36§uU¡³ii5yKn‘ã§ˆuîv•àiia”‹FåóàğŸµtá0bÙ‹¡¨~¤U5‰îâ66[ÔÆt“·Àù&=_6ëô]|ÚÚ8b&ñ¹~ß\rÁÛPì¸&0æ¼Sr‹Æºâú÷èã}ün¿,i?§Á³6)ALíhiçtl$ÜÛ€>Ñ»à±ònµqs\n€ÍaÉ´›­-ò•Š¡g•]wO½‚†òºıe ü9µú=¯¥-–9êEçoƒÊ¶ÀjƒÆÖ#ãÚ¸.ˆr#qªzŒÇ™ê>MÉø}İQTóªg#ôqüv;İß_;iVLz¢:<\"/“²õ™GFÏ`Øûqöpí¹\\3œ®£¦=GPÓ ¥Á4pü\n®©“ÖÍX\'§ƒ_XÓÆ>á¼hÙ~TÅ@å\r—ŞÅ±·ÔÜ½ä“¼’¾şQÑ^\'š°#WbØ^ƒ>C8Œš¢w\\lÙpEÉÛc`UÂp¦]øåNŞ¡z­!äŒ_\"cMÃ±–ÂşV>V¦kE;:Í?x;GÄåWyw7ĞˆQB’¡B”(!¢ „DDAP²X \"\"\rÔ¾Å„Şuı¥gKéXMç_ÚPøÁš1b¬¬Ôyˆ;VDDéâò1»ı«æ2\rŒ‚ØÏB¼«\"ŠB…(‰DDDD(HP¥«´áR[\"yiº‹¢t™0ª*\\kÆ*…X¬Lk*Îæ9·qà·fÏjì™–X¢Ñ2Ì*ZlYÍŒG1¡-pŒo/ M†ßşâšEÑZÆË×dÍ!âyC‹Ã$ŞĞ<ø¹ÙÅ®ı‡x+Ï—ñİî:ÌŸ+0U5ò¸°ì+ËM!sÕÚô‰”ğÌã—%ÏZ8ŒšfÜâ¸CGŒ£~÷9­7‰e¼!²àpíûzW\\.ã9:ŠôK†aÓe,íÊ92¸ê½Ï¢q>r>6¾ÒĞv·åiWGuY\"¾\ZŠi†#—kÇ)‡â1ÙÍ‘¤\\5Äl·ÁÃhâ‚]GEZD¥Âè&ÊyÖˆäÊïñ¸:ÄùÈø}¤\r ín\nËÜIwë™ÂíW]z#u;Úæ¸´ƒpAµ—ÚÒ¦êrMlTsŒG-×zF2×´‹†¸Öø8m@ğÌ·r½e7ãô^Ó¦?‡ÍJÜJfb41ø2Å#\Z${7y}>Óñ_3JùFšL¹Ç$Èk²½O…+µô/â×á·Ù·Éã²ÅqaPëo^ÇFZCÄr6.ùah¬Âª|\nì>CvT3qß°8\rÇàv.|5Ş-rÛÆHuœ±«é; aÿ\0#³;hıæ¯)Õi hğğçñc†ğĞvmò{,W)]%–tÍ©£\r ÑC…?&çØÍnP«ğX÷m~ûì{ğĞvìòw—ÕLªÈ:sÊTm¬mUMlUq;Ï@çÛm·\\°®Bï!İ‡î_£³—çGCQ¡ıp±—W¯«;r3şv3_×ß÷5xĞ´Ó?ç_5}}ÿ\0p^1k!}¢ÈP_¢›QÁRë6›nR«£äÌÛ[â0O‡T¾	uƒ	A‹‚ÂAü#35ss[ğgT¿˜CR¶±ºÎié=»—¡™Âª\r¿¤gëÓÿ\0	yÒµ[o³šSş©\\î?Ú5¾œÎ¶nQÅu-4F_“tca»ı‘.OKİµw]%P\Z¼©£v}\\\"ßîÄ®]XNßEpè·J\0*†/ıÅÉ_i7_¨t}qHtš)ßqIS1”­‘ú¥ÖÚz¸²àY“©Â1\nŠ:èL.-|nAÿ\0*c”¶–<Å–øŠ—±`öØ­°/bèŠöWğ,¿Å©ğÜ&™õ5µÕ6}¤\0o$ì,¯Ç±jl3	¦}MmCµc¿i\'€É;—_ÆqL;CØ4ØYš*ÌéTÀÜGh¸¤o\'øû>\'m€ÍË]OM#Ä°í`³`Yrh«s½\\a¸†$ÑvÑ´íäã¿ı£À.%+ß,’W¹ò=ÅÎ{Ë‰ÚI\'yYÊ÷Ë#ä•î|qsœãrâv’IŞVI41]gD?›M)FÇ÷J¹S#tk#c÷Öµ¢ä“¸Ä®ÔÜ6-è¯¥Ì3ÿ\0Ö,ÑN\"‹\rÅÔñ€àóÃÊ7öØí*gzÑ@¨\Z\\@h$“`\0¹%f\Z\\à\ZœM€ä€jË¸¢lÑœ`eNi¨ivƒ¸ù“ëdè#ıİÃÂİnZåÌÑFOšsœ\r©Ìó·_\nÁœvÄxI\'AîîvîW˜qœO5cU8¶3Rfª˜øO;\ZÑÁ­\Z8Ú§Æ1ÑTâØÕK§ª˜İï;G´phàÏ‘úÃU‚ÌjIöú1æíõ­Vè©šç‹ÈÅAËu$š¯\nÑ¢ŸG˜1Øá­}é£ašF°Ø¼l¿\r¤.©dŒ·RÕá”Ø<8mciİ=5L¾íÁı;ÆûöİxMÑ»+a?»LÉPú5­-¤†Ş2°¸l³OÍ<:m}€\\³6˜ùÎY…SáÓÕ´²jıw–`±öí\\.íé·Æ(˜Ç›HÀ¾…C¤<zÓÅ*+â¿i]ãÔÿ\0/Ï}üÚ£õÏÑŞI‹8ã˜Ş-˜±G—p©_>%U$îçPwÜØİİ×$/£ø0şwğÿ\0«T~¢¹‘?3z\\şr×rÎWVëşˆóšUÒ!Í\\ßÀ©şLÊX}™GBÁ«¯mÒH:zñ$•ÎˆY¸m+»jé$“Qš˜İªëî²ïz9Ë´97/Á³àtq¸‡axaÙ-K÷µäÃˆ†ÓÀ‘ò~’ğsŞ‘¡%‡ÂÂpgW&ö½í<7À<#ÀŸó-œ3ñ\\bmg¸ZY~NœÁ÷äí+ûõ\Z;%V1¹ ›’§Ã •÷™±’øÚxMºHø.3âÏ­šIf‘Ï‘ä¹Îq¹$í$¯Îİmê¼³9çz¸á\'…É„îÖq]EZ:‡¥¨ÌÙº á¹3»§¨q-uI£ı„·Ø6îÛ¢­Sãt5Ÿ8NpÜŸ@u¦¨q-5$~>$_a#mö\r»©éOH£9TSĞP@ì;,áşÕk@x5­¸nhØ6Ü•¶ÿ\0XÎ¾Ö­+i\ZláQO‡aTÿ\0&e\\:Ì Ãã\Z °=àlÖ¶áó{nO‚lÎVÃÍú¡¢Î\rkd.&ÀrOBÔ’MCÖ³+ŞàÉ&À\r¤•úW1dˆqÍd,5cØvSÆ¨!‘Ì¥Ä$n¬±³›¬uµO°’³àåÌ¿‚èƒ¥Í™ÒœTæš†ëá8+ÍÌ\'„²tüİÂîİÇó^aªÍXåN/TKS[9ğœv5£ƒZ84p¶ëûŞ¾/½Æœó	WI•rÆ\\¯8­&]£4ïÄxNò\ZiâĞÃfÛÙrr¬“MÑ\"mĞõÓÆi›Úª…gñn‡¡æİZÚiYAVoMĞõ›t=CJÈ­5´òVë5Çq*¼Œtn-pÚˆÁDA¨D*\nDD©}!‹	¼ëûJÎ—Ò°›Î¿´¡ñ‚\" +5bÅYY¨óv ¬ˆˆ,³ĞŸï*ÊË=	şò¬‹R¥@Rˆ E!DDA(ˆ‚B•J•J+&’Zç¥b ôÚ?Î˜¶FÌ1b¸4¶pğgäòußk>ã¼¡t|ı’°œç—æÏš5ˆò#ÂÅpVG&÷9­7y l¶Öì¸L/Ks–-‘³8¶	.«Çƒ4/\'“;ícÇGAŞĞ±–?g­Kò¼ÚÈ.ÕŸrf°	sæ¡!€ëbØ+Œ¤“{ÆÉaG8°İ±\\rä–iÓ´U¤Jl\"Š|«œ 8L¯ğe‰À¹Ô\'ÎGÆ×Ú@ÚÑ¶àĞÒ¦ªrU\\tsG-WÙôŒd9¯iy­Çs†ÑÄ\0OÑ^‘!Ái\'Ë¾‰dÊÿ\0hJIó‘ñûHo´mß›5w~«™©vLw@YLAÓä×Rc8íRUó¦1ÎÛ@u÷‘Ò6fáDhHÅ4¿ã¢ÿ\04ÿ\0“ÙÆ¼öŒ3ö!ñwÍ^T5+°ù‹¨fî;€½ÀÜ/[¥m\ZÓÁƒSç|“ïÊÕñŠ‡Ó>2Ù(µ½‡o\'~<=¢Å}¹¢˜2Dsæ],ˆ ÃhˆæøtR¶WÖË¼7fÂ>6h7ù‘iÓ1~îŒT1’`Ò3›¿¿ˆæıQÃ^ß:Ûw[WbÆ÷w‚üíÈßæßØ~åú79şt43õ\Z×éÃ+`ø%…âYo”	Çh¹ü4Ò6Æœx#Ùá·YtLåùĞĞÏÔh\\&Wz¿êÉ§)Ó?ç_5}yÿ\0p^5{=3~uóW×Ÿ÷ã€[ÇÈ—Ğ\n\0Y…@)\0Y€ ÙH?ƒùÆ~°]Gğ˜•ŠÏªSş©\\ÂŒ~7óŒı`ºá1ùØ«ú¥?ê•›ùEøæT¶ôFo8rîÜûòP;{#_œã:¥v­+Õ2ˆ6¾²%œçqc¸â¢ÍXu\r^ˆQÓÄÀ×I#åÕ}=¶îàGÁ~Ó–7CgZºœ5í’‘²(İ!hÚáìÛkûŒ~.ç2Äİ|ªº£)7*c†ªÚ£7”¯åü.«Ä!Ãpè¹ZÊ§ˆ¢eÀ»I;‡µ|ó´¯s¡AùNËß[ªå»uì±¬WÑ\r>–&³9T°7Å\Z.)AÛÉÇĞGÃyÛ`8¤|’9ò9Ï{‰sœãrâv’O½&’å3IT~¹^rÊc5ØÂË(ã|²28˜çÈò\ZÖ´\\¸€Ä­‘Dù¥dq1ÒH÷µŒ.\'`\0\råv¬#Ã´=ƒÃf(¢­ÎµQëaøi7m?¤}¸ôŸƒx•nZ4ÃÂğÍàĞc¹–«s¥S°ü1ÆâzÇô“ğnÛ•È±Ì[Ì8Äø)<•Uõ/»FÒw´\rÀn\0,ñ¬OÌÄø†\'<•uõ/»EËàĞáÀ\0ºÖƒaº$Á`Ìy®êómKu°Ì%ÇÑÿ\0ÚIĞGO\rÃmÈÏãİôa—ğL;D¸,›6ÀÊ¬×PÒì/	qóí$è#§†áánå8ö/ˆælf£Æª]=TÆï{¶\085£ƒG\0£1ãX†bÆ*1Lb¡Õ“›¹Ç`ƒZ84p\n¥EÆ«ÆÚö\nÉ®ï£\\ÖğX,À°\"Áf\Z±zÒ4½umä¬7	ÁwÒ1`‘hh<e|›Ûàño@ã¼ø#ny%á˜>3¶ÚcÁ™cC‡¸xÊ÷ïo‚w· qŞ|ş7Hy×Îøá®ÄHŠ;²–‘‡ÅÓ³ t×<{,måÔ<nÏ¹÷Î˜Ñ­¯pŠ;²–’3âéÙĞ:Në>Á`¼Ä•n#z¬BÄ­I!²G—­%l!bB¨êƒç{úµGê+™ó7¥¿ç!ıw*Ÿƒç{úµGê+™ó9¥¿~×rç—¿øÿ\0ÚÇwî]· d:,Ÿ•İ¤- ÑM-4:¯Ãğ±&W“à>Qk4klâxò´7‚àt¸.?³$WÓ``‚ jË3­ªç_e-Ù»‰½€Y`ºmÆÎm®­ÌÌn\'bC‘«Âˆ¼L‹pÄÇÊã¶Ä\\­½Btğy÷7â¹Û›Æ¥Öø1BÒy8#¾Æ0ttäí+áÕşİ]—1hJ·,[FrÓâÙn¹¼¬\Zõ\rğtÆu·ÛwHµÑsój4¤êjá4»½6?óZ™âš®Hº^‹4w3I>hÎœ;&ĞxSLâZê¢›¯°‘¶ûİŞƒ/hJ¯\\cIòSáYn…¼¬Â:†Èúƒ}‘]×ï7°Ún<†•4‰Sjà¥¤€aÙnƒÀ Ã£­c@°{€Ø]oƒFÁÄ—.]bk^±Ò®ê3¥\\t07,Ğxt`5¬hx5­ÃsFÁÄŸ\0VE\ZÒ÷5¬Îq\0\0.I;€rI:glZ×=Á¬isœ@\0’Nàî¹o\0Ã4;Ášó­;*³mCK°ŒÇÌ[/AîîéË˜¡¼\nŸ4ç*xêó…SK°œçÑÿ\0ÚËĞGO\rÃÂİÆó>?‰f|j§ÆêS[9»í£ƒZ>kG\0?>§‹ø™£0bY£©Å±º—TÖÔ¹Ç`hàÖ\rùJÓÄ¬Q\n„D\"±TB!DF*Ìo4G)ğ¾k•r¡R±Ñ»UÃjÁZí™œœ»şk•yèİªáµ Å)PQDAŠ)Pƒu/¤1a7iYÒúCy×ö”>0DDf£ÌAØ«+5bÄ‘–zıåYYg¡?ŞU‘jB•\nQ* \"\"(¤(R ”DA*B…!’\"…(Ù£È9ÇÉ‚,[›VAàËüÜñßk::ğv…Ò³æOÂ³Î_›>hâİ_ÁZ<e,›Üö4oÉaG8 ^‹!æü[$fqlmY[àË¯ÉÏö±ã£Û¼¡g,~ÏZ—åyá´qY.Õr†òüùëG=/‚4RûËØÑ¼¦ÃaFÛ…ÅFİ£rc–ÒÅ¸+ë`ŒGeTQ·s#íhì\0Ùl®#üc]ş%ÿ\0æ©\0²Q¾zºšŞsS<ú¾O++ŸnË‹WØ€)¶ÃØŠëÚ{ÿ\0³š7ş¯·îbõÙÈ~Sô5õ\Z/×ÈéïşÎhßú¾ß¹‹×ç/Î~†¾£Eúápù?ımÊ´Ì?*Ù«ëÏû‚ñ /i¦AùUÍ_^ÜtÇÈÍbÈ:ª@T\0Y\0€,‚\r´—óŒı`º‡á-ù×«ú¥?ê•Ìi=.çúÁtÿ\0ÂT~Uêş©Oú¥bşQ~9`®iœ‘“tgoâÙä .µ¦qÿ\0Stgıû\"KìXå!Å7  †6^çBƒò›—¾¶?UËÄ€½Î…¿9™{ëcõ\\³—”‘¤qùAÌ¿Ò3ş¹^~dšVE$¯pkÁw8€\07’½‘…ôƒ™¤gırºU‹\nÑ®HÃód,Äs,Ç|•šy*`7½Ç¦Ä_Û%7¨7a8n¡ì\Z,kŠ*ÌíWuãvÑ´ìån=\'û#‰\\‹Äkñü^züFyjëêŸw<‹¹Äì\0Ãp\0v³Äqš»šZÌB©à¹Ä]ÏqØ\0à\0u¬	Ã´IƒÃ˜341Õæú–a¸cÅ0õ’[qöğÜ6Ü‰ø÷}`x>¢LÃša¯7T0»\rÂœn)¿ÚIĞGO\rÃmÈä¹ƒÄ3/Q‰âõ¨¬×{Îà84\r€à³Ç±zü¨Äñj‡ÔÖNíg½ß`€€—Î²²kº5ÙX¨oŒ‹X\nÍK|1î­\nÄX.¥ò^‚àŒÎºA<%–uáã+Ÿ½·iù½ófïİ‘rv`­Îš@afÂA‡8xÊ×ïi-?7ˆ~ó³†ÏùÇÎ¸ã±MÁ‘´SÓ0øºvu[íé<{,7Ë¨1ÒsÄó¶8êüIÂ8YvSR°øºvuGIİsÇ²ÁybÂ$-É¯­A2*£%l!`B¥ø2~wpÿ\0«T~¢¹‘3šZşr×r©ø2şwpÿ\0«T~¢¹‘3ºZşr×rç—¿øÿ\0ÛQ[$½\"ıj›õ£\\€ï]$½\"ıj›õ£\\„­cíf¶Ã[WLÂÊjª˜XMõc™Ìé°*Õ^)ˆx»b¾Oÿ\0’ÿ\0ó_<î[j÷Çî­£\ZŠÚº†TUÔÌÀn,Îx¿M‰U–EÇHö²6¹ïq\rkZ.\\NÀ\0âUDÀã¬È¹G¸€ĞÉ\'`\0q+ºàxV¡ÌŸ2æêHj³•S5°¼ ‘ø°õ²tÓÃpÛr1Àpl+C8$—6Ánuªa~„8ÜRğådè#‰á¸m¹c2c˜dÆª±\\j¥õ5ÕÖ|Ø\0àÖ\r€—?ÏükÆìË™qÉŒÔâ¸Ôœæ¶ İïvà85£ƒFàËåÇªbÒT.’FvÜj©bp=K’±WFÛÍ@õ,XóêXµŠhÛy¨©‹P=K¥‰MoçÔ±DÑ5Íåaòx…¡e‰×oÄt¦‘¬¨V¦‰¯o+î-èUUˆ+½³7“”íù®UĞ ™#tnÕwÿ\0+f9+y9wü×-2ÆèİªïşP`…\"\"\"\n…%B\rÔ¾Å„Şuı¥gKéXMç_ÚPøÁš1b¬¬Ôyˆ;VDDYèO÷•ee„ÿ\0yWµ(ˆˆ*”Q¨R€¤(RJ@‚VAbø\"2ŒÊU ˆÈz\Z7•¹Õ\Z¾ j+\\Ò‚98öF>Õ¨(«<êN†÷ ª“¡½Êºš6³Î_ĞŞå\"ªN†÷*êBš6ôù\':bù7‡Á¥k%oƒ$N¾¤Ì¾Ö<qh;Bé¹Ó,a¹ó/Í4qlÌğ±|ÉNıî{\0Ş7›\r„mn\r^\"æ|[\'f1|nNvx/ÛY38±ãˆ=àíVrÇìõe|QTş\Z½Ë!U\'C{—mÆiôK›jÆ7S‰â™v¶­¡õTôÅìd¿8ƒ¨Fİû6ö•ó]•ô>İù×ÿ\0Äşµsôº®L*dèor¹\r6#=êá¡©’‘—×=Ñ·¦îÁtèrŞ‡Ñ‡glh‚àuh;xO`ö®§™±œù‚éSÀr–l ÑOCHO$$QÎ’Ş¯…ÄnmöËŸê,	ƒM‡iƒ%Pà<¤X~vÁ)LT\Zî´5Ğµ£Áö~ íïgÈç¢ÒÆˆéjcäæ–’9XwµÂ@ï“én*LKXØË2sXéj›$FœêòêµÎ\r¶ë<ÍË®dÃ„écË²ãÒ²‡;àSÇ4R´Y•ğµÁÎm¸;y n;FÂ@ÍšïâÏÓ’iŠ¡íÒ¦ihÕ°®`^DT¿¡½ËÕi™n•³HsKO>qÚ-°µ¶+ÇÒy­\n‡ô7¹lÕlí»vH7•P-¬qi¨jØØ©ehÔ6ãdƒ‡J×«¶ÄmPM ünçúÁtÿ\0ÂSó­WõJÕ+šR7ñ¸?œgëÓ	6şUjÏÿ\0êSş©Y¿”W-u3Øí\ZCşÈ—(vÈ¨ét­£ü&‡	›ÍYr—‘28ÕÅf‚æŸv‡aLº²‘Å@Y\0¶TA-5D°TFø§‰Å’Föê¹#X-€µäúŠMèªƒ7ÑáTØ5ˆU¾!QR	e#Z\\\0Ù¸^$»~Ë.,\Z½ÎCÒ1”è*èéYI[‡JyGQÖF_·H±nà±”ÜXûÚ_¥¡Å²ÆYÎ”ø{pÌCt«§g“#…Ï*;m¿ˆp¿JÇIƒòI£/«Ï÷1yëœ1|åˆÅUŒIl-Ô‚êEx†»ì6»ö:K’]ı^¹ŠkZh\nh+365-,5˜>êºNTÖH¶Û§e¯ÂæËœã˜µ~=ŠO‰bÕ/©¬œë>G}€\0n\0n]+BşˆÒô#şç®R‚;Ÿ•\Zì–[,«HÅ­_{.Å¹»ŠV5ñ¾²¹FÜĞ¾;[±}Ì³ÿ\0m0¯Sÿ\0æµ*½á‰VVé3¦ª¨|”ôE‘SÄ|˜šX×´§³¡sB@Ó§ç_0ÿ\0:Ïü¦/B˜ùµ±!l!bBÒ5±!fV%X•™X•GQü¿;¸Õª?Q}ÍàÕ¹‡G\ZMÂp¸ÄµµuÅ\\íQr÷m\'€oÁ|_Á™®:[¡-i!´µØn\Z m_{6æœ?E¸5~RÉ&£«¿Åš|ÓÍüú#èû\\vrËòÔÿ\0¦§™¤\Zü äš½à2·Å*äd¸Í}ü=¤HÕØ7Üœ†|6º\nFUOEW,DÏÍc¯Ğâ,W²Ğ­‰éS\0§ÆÃ$¥’w;R]­’@×9u÷İÀoßñ]Ï*ãëÒ^9ç<*ùEÌ¨dñÏHQòe²[Â¸·¼–ÙmáÒkoÉÅn¬ıººÌ™oC¢G±  ZŒ‘kôò{{VérÆˆß©|éîÙj#ÿ\0õ­s†œf8ß,Œ&9ò<†µ­.\'`\0\rçØ»–ƒášÁ Ìy®«3­S°¼%Æânåd¶â8†Û‘]£mŠŒo-UWf<ÀÆêPÅ[8wÈ|ŸÀZ÷\\o2b¸?ŒTâ˜ÍL•UÕÖ’Gı€\r€~}|O\Z³5ˆæ,f«Æj_U]Píi$wØ\0àĞ6\07/–VebWFX•‰Y¬J¢\nÁf±(ˆ+²PPB‚¥ATb¡J‚ƒ8¤tN»~#¥lš0öò°îâŞ…¡e‰÷oÄt¨hU™clåaİÅ½\n²¢˜ä·“—Ír¬ˆ2’7FíWò±V#‘²7“—û.Z¤Ñ»Uİı(5¢DB…’Åê_HbÂo:şÒ³¥ô†,&ó¯í(|`ˆˆ\nÍG˜ƒ±VVj<Äˆ+\"\",ô\'ûÊ¸VèO÷•p‹Rˆˆ‰ˆŠ\"\"\0R¨Y%!B”VÚxùGM€ÚVÉ¥jG²1ö¥ù=Õ¡EJÈ,BÈ\" ¶Ã%aÖ“…÷ii!ÂÅ ± ƒ8›w/A„PŞÖµ·\'€_\ngí2[i+©ç°&)\ZğãbìXÊµ‹­aÚ\rª’Š×bø}\';5ã¢’åİ„ƒ°ö¹fjËX.#SEZÆÅQ‹Òî?´q_ªáÌÙOaÅåÅ©iù@ÇÉû&ˆ·ƒxğábæ¹ËMu°â•\' Âä¤Ö´Nª§.y‰³†õÃ²Û¥‘ùÆjR×?üKÖašEÎ˜f0ªËU\r[¨Æ´º6ô5ä4vœ¯ŸO™‘®!¸F\\=´nÿ\0ZÔ4ÿ\0™Š2ßø\'­tş×ØÇNRa’G¹Î‘¯y$¸—\\’x’·R\nª:¨ji\'0ÔBñ$rÆò×1Ãh ğ+´àÙËÒÍ;òÖw¥ÃğŒRG_ÄèâäÚÉ¶£\'EìíÛ\rŠäùÇ+â™CŸ	Æ äª#Ú×\r¬•œÃÅ§ìÜv«2ßTuúwáÚjÁYG‰>ƒHTqZ«Écvê»Ûìá¼l¸OÃk0ŒJ¢ƒ§’š²æ9bX´ÿ\0Îã¸«ELÔuQTRÊøg‰Áì‘Õs\\7Fâ»%F¦Ü:,BH(3ıV§©#U•ìu]n?vñ²áOÃü=p ³\nÖ-†V`ø•F‰ÓÉM[NıIbX´şÑÄÄ*¡mâÒ6*ÛH·\rşÕL,ÂŠ¸Ø°‚A]«Ä0ı+à°eüÕ,T¹²™š¸n*G¤³“¤;ÆÛƒÃ\ZVøæ½®c‹\\ ƒb\nÍ›WÒÌ8!—±yğÜZĞVBlæ ˆ<\nÕ„ÕÖá8=~<”Õ;^9c6-?åÒ7Ù2ö)A¥L5JÊ|ÑLİ\\;póãÕÉÒOGãmïäjò./C[SIS‡ÔrôæÒjFç¶Ü mReò®¦¶ƒLx;ë°øà¡Ï”q^¢˜VW°lÖo·ÛÃqÙb¸ÌôòÓTIDOŠxœXøŞİW1Ãx#^(ë0LB\nÚ	¤¦¬§v¼r°Ø´ÿ\0ÎñÅtZú<?LSêèc‚ƒ=ÑÇy U•ìG·ÛÃqÙb&øÿ\0ƒ‰\0¬@<T½Š*)¦¥¨–\n˜Ÿñ8²HŞİW1Ãx#[ *^Å´WhÚSÒPü“hÓêó}Ì\\Á£h]GI#òO£_«Í÷1g/b£B#şˆÏÿ\0Ğû¹[G‚;WĞ˜ÿ\0¢s÷ô#şç®V‚;{FY5« Õ±­°Z\ZÜ,×Ë?öÓ\0úõ?şkWÈ‘{åJìÃ›)+!Õ§ÃpÉcª«¬—dqµÖÕ¿XÛà6•-ÔtçùÖÌ?Î³ÿ\0)‹Á½v•1j<{HÖ%†He£aÉIkk†±­¸ö\r½‹ÉÇÈ•¬…‰aX¡¬…‰Y•‰Dk+êe|½‰fŒnŸ\nÁ©ÌõsÆ±¼^ãÁ£‰ı«<¯—±,ÑA…`´æz¹OcXŞ/qàÑÓûWQÍ9ƒ\rÑ~	Q”²MCgÇæ\Z¸¶2ß)®ãgGÑ÷‰\"\\¾OC3ãøfŠğJŒ©’jQ˜ç\Z¸¶2Ñ¶3ê£<ÿ\0wÚã³ˆ¸’I$’v’x¬İ¾åz}dŒO<ãb‹*h¬úªÇNÎ“ÒwÙ¼}‚å$˜ÍÓ×“¤kØòÉ\ZCšàëFâêñm&g[8V!˜ë&¡suÂæƒ#zàœ;NŞ+¢ã:PÂò9‹/hãÃjğú;¶zúØŒ®«—‹\\lß¸ğ\0—ÿ\0×ÜËüQ–ÿ\0Á;ıjnŞô9!®6ÖëÚå¼½Sbtt‰jg!ŒmşÒx\06’½l\Z{Ìnu„eÁÙFïõ¯k”´ÑZüZŒâôdtn>5Ô´å¯h<G„wt)•Ëô²GÎÄ4U\rG0Åè+±\ZvkKGÃ¶pûOhˆâôƒœµ—ìgæ\\©‚SœN,V–¤°=ñG»æ»¿ˆÕùC6U6¦²y…‘îy…Íÿ\0jŸÇ•¾­+u\\µ•º}¯+I]Ü˜¬JÈ¨*ŒV%d ¢1PT¡AŠ‚¥BJ‚²*\n¢*\n#(¤tn»~#¥m–6ÈŞR/‹zuœR:7k7â:T£Z-õmkd¢ÚÂöZb«É‡İUÕŠ¯\"ubˆQX¬”i}!‹	¼ëûJÎ—Ò°›Î¿´¡ñ‚\" +5bÅYY¨óv ¬ˆˆ,³ĞŸï*áXg¡?ŞUÂ-J\"\"%DDA!\"ÉB” ¥B”Uš=ò{«BßG¾OuhQRK²DHØv+L‘³42]àåT,‘[$ÑºÎø•ˆ[¡˜êMµ=\n%ˆ³h:Ì;Šƒ¾•Yˆ«æ6K6²½TxÓÃ-®{Õ\nÚó-îWÈ*nJÏÛ7»Xİ@P¤*Œ‚íy34ašCÀ`Éyş~N¾?Æµñ¿pBwß`Ûån;lW6îYÊmcïg¯Šez|+\Z€ÅQÖ<md¬àö-?fãµ|º:™©*b¨¦‘ñMƒØö8µÍ#h Åuü™š°Í `Pd½ ÏÉÕ³ÁÂ1§m|OÜòwß`Ûån;lW7ÎY[ÉøôØN5\'<~İ¬™œÃÄğvªKò«­ÑÔáºjÁ# Ää‚‡>QÄE-Y\Z¬®`Û¨ûqöpŞ6\\.s&ó¤R¾7e|\\¹„´–S—n‚6íËÑÔÍGSôÒ>9cp{^Ç¹¤‚ÜGJöCJÃùI‹z?ÉMYâú¨4wœ¿’ØÏøW,†ó—ò_ÿ\0\nåli?8)1_ïGù,†“³‡ò“şô’c¥Q£Ìãü—Æ?Â¹i¯ÉÙ“	£}f\'€âT”±Û^i©ÜÖ6æÂç‚úcI¹¿ùIŠÿ\0z?É}¬«¥ÜsÄïTÔcXTÍ1TÑÕ¼9‡~­Æşİ‡qéû<Şa+H$8mo~¿ee[¨p×ÒO,:•l­g(f}†Çùâ¿<ç<£E‡PEš2ƒnVª:À´’êGä<o\0—;AØx«Ò.+ƒĞóZ\né¢ƒm™±Á½—½¾N]ÆŸN””fRêv1“Kd¬Ü$7ûH±\\‚\ZÊœ3†·ôõp?^9c6-?óÃŠú¸Î8kç’j—I,²g½î¹qé%|	ÈkÅ»ˆ[Æjh®»SM‡éƒ\nuU`¡ÏT‘xè/«{\0Ş=¾ŞËÉK5$•TõQ>â%’G#læ8op)†×TáÕ°VPÎúz¨¬6sHâ»™‡éw	|ôí‚‹<RÅãb+˜8oİ¸ì±ñÿ\0Å\Zİ¡u\r$ÉN¾¯7ÜÅÎë(§¡«–š®\'Ã<N,{,ZFğBèúG’½}^o¹‰}ƒáXÎ#„Å]TúvVÂiê@ñ‘Ÿ›´lømÚWÎ²Ûe\Z«CÕ.Ø`/W£ü“U›ëäs¤x=(×¬®}ƒbh °ºß¼ûVèhÑîH«Î8Œ0Ra¾msö2&¤v[»yöı%çzi°èò®Ng4Ëûæì}kºÎ;õo·nıç€M\"çjJŒ:<­“c4™^—cˆ¸}k¸½çymöíß¼ğÊÍ×o”Ğ³&û¢™_z“#æšÊhªi2î+5<­FS8‡4î#Ø½ÆGÉøvƒ79çöa¬!Ôs‡Œ­~ö’Óóx€wï;7üLK¿Åg«¦Åêpè|]-+€dM€Ù´ô*îßÆ:=ÎÉŒcü3–\'G¹Çù/Œ†r²t“?”øŸ÷ƒü–\'IY×ùOŠx?É_ìŠ§G™Çù/Œ…rß‡hÃ9××ÁJÜ»ˆÀexo+Q	6{\\ã¸:KÎ¿Ê|SûÁşKTÚHÎ’Fæ?3â…®¤	m³´§ö:{ŒÕ˜°İ`“å,8›”jâØËG„Æ8Ï6O¼IUÛMÊÍËÔhï#â9ã\Zæ”V‚W[ ñtìé=.;l?`%Y&3u=a£Ì‘‰gŒo™PZ\ZX€}]cÇ‹§gIé\'m‡ÀJõzDÏv‚~âtxLWmesOŒÄ¹Ç[‹OÇp³FÙÒ.xÃhpC’´|\r>_ˆ–ÕÖ´øÌAÿ\08—qiâ~váfì<˜©\'.éã‰Ş³+- ×j•ö[\\b1ØüÕñ·U’9?u,%}é1™,^{×Æ­¬2“µR/+n’±q¹X‘PV™`T‘X”¨*JQ‚BƒBˆ1*•\nˆP¥¢\"\rõ¾T~ê®¬VùQûªºO\n+^D>ê®¬Uyû¨+•\nJ„AAR  ÛKéXMç_ÚVt¾Å„Şuı¥ŒY¨óv*ÊÍG˜ƒ±dDAe„ÿ\0yW\nÃ=	şò®jQ(ˆŠ\"\"	HR )@\nT(«T{ä÷Uub|ê®¢²8İ¨ğën`¢-Ù0.‡c¸µh ƒc°¨c‹]v›h9“Ø?Á“ƒºSÅWt3ö¬;ÂÖøİ³‡Ç¥X’[¯»:: ¦)®ßˆé[ùHÓ®zV²ht­İë ø=[»ĞjRíh=[»ÖAğz·w¨­Ad7-¡Ğz·w¬Ã õnïPjÕÙr†nÂ3¾^\'é C4 ü—ÈF´¶ÆÈãÃ`;ØvØ®B«wzÈ:Vå›6±Ô†‰0ïûÆÊßõ,†‰pïûÅÊŸßõ/2ö)üA‹‚—ı+1—±Oâ[ü¿éS¿Ú½èÑ6ÿ\0x™Sûáş¥Ñ>ÿ\0x™Wûáş¥à†^Å?ˆqoğrÿ\0¥f2ö)üCŠÿ\0ƒ—ı*wû‡7dJL½ƒšè3vŠ¼HÖsj9/!¿.v+ÅõÛ—ñAÿ\0ø,[ü¿éGåü`ÛSÅGMèåÿ\0J³şÇİÑ¶z«É¸Œ1óÌ\Z«À­ ~ÖÊÓ°Àë|ãìûÚCÉ´Ô˜ty§&Êk2­^Òrê\'ìxŞ}—;·ø	0<ZŸ,øV#L\ZÎ{édkZ:I\"À/G£ŒóY“q	\0ŒVa^m›Y+NÂ@;­ğ;²Yö+Ëw¬¢yc®BÒH£ƒ5äÉ\r^Wª7s[µôNâÇ\rá·Ù·vãÀv—bÓ˜İx÷qv[S‡VÁYC<”õP¸>9c6sOHU¡ya¸ø…½Ìo)î#¡dÃKØI{YŞ’?\rƒÁesíû·–#çéF–j=èşšª\'Ã<QNÇÆñg5ÃRà…ÌpêºŠ\nØ*è¦|0¼>9c6sHâ]Òö+6?‘².#^*j¢™ï,\ZÖeì8.zÕŠãºª5Vç°°ÙËÕhû%ÔfºÙ$–AGƒRxu•¯ØØÚ6	Ù­o€O·véhÿ\0$ÕfÚÙéKáVW?cch °ºß¼ûoé:ÒÕĞG–2Œf+Òìğv:±Ãç¿‰Ûc¿yàÍ!çJzÚ(òŞTŒÑåŠ_Ü:­Ãç¿¯¶Ç~óÀtñ¾êI¾èĞî+©dl§‡eì™Ï=´¶„mÃğÒ<ec÷´–Ÿ›ÄÚvoÏ%å<7.à¬Î9ö3Ìö?pğêß¼8´üŞ œNËâ3ÎlÄs†4üCx\rl4ø3ªßÚx÷ß. Ï=f¬G:âÎÄ1ÛPÃLÓà@Î«iãÜ”!}†`XĞ!ÌÂ13ÄI&ß÷VråìbVë·ÄÃøi&ß÷V¦§CÑeíÑbø-%|¹×.Ğ>vk\Zj‰m$[w8k\r«èaß÷…•¾ê^åÜjÿ\0ı—ÿ\0\'úV\'.ã_Ä¸Ÿø)?Ò§±ïN‰ğïûÃÊ¿ßõ,N‰°ïûÄÊ¿ßõ/ræ5üKŠ‚“ı+—1¿âLSü¿éNÿ\0hè1h—\n2°M¤\\®\"Ö\ZÅ’‚à8ÚîµÖ\"ç|:+ ^½	\"ª¬ˆ?çî-=?;ØĞçó`ÄQ>Ip|I‘°9Î£¼’[°/–v«1ßµ6À¬JÌ…[Fbå‘X¹Ü·V~İZJÛWú?uQ\\¬\nÌ¬F%ARTF%bVEbPbP¡B©X¨*TF%¢J…%B¢Š\" ±[¾?uVVkwÇîªÉ<(¬Uyûªº±UäCî ®¡J„J(*Ti}!‹	¼ëûJÎ—Ò°›Î¿´¡ñ‚\" +5bÅYY¨óv ¬ˆˆ,³ĞŸï*áXg¡?ŞUÂ-J\"\"%DDA!\"	\nT(J€¥j|ê®¬Qï“İUÔVAJ€¥!d±$\"›ÁÔ”k3í	,%£Y‡Y+@[b•Ñ›¸…ˆY¼ÆÉAt;Å«Eˆ$…Ad!dc%’Åd#n±_F‰ÏÁi `s‚êš3Êc2c4Ô!â0û—¾×Õh\'µg+¦¤s—áÏhòJëY_-az2ÁaÍÙâœTcRøXNï(;„’l;|Ÿkˆ±`Ù#*aXäBŠŠyqXct”¦±äÇ#ÀØî‹ƒìö…ù?â˜;UWã3jÜâÒ>l`!£ƒGüw®s.}5­>½N›3ìÕ2ÈÌlB×¸¸G4Z¬îi6ÒJÀiŸ?(ş\Zô.vág)|1ı3ºè£LÙûù@ÿ\0ğĞÿ\0¡d4ËŸßş\Zô.va8ÏÒíÑ˜óçñûÿ\0ÃCş…Ó|ş?øhĞ¹ãw¬ÂœgèÛ§`ÚjÍô¸”2â•¬ÄèA´Ô’Ã[+Â.Ö‚GUŒı“0êì÷eï6-Í]şp-àÑÄpŞ<³•ëÕèÿ\09â/çtVš–PUHóàNÎƒĞFÛ—\n\\uŞ*·£œïY“±ÁW„Õ\rJÚídÍ\"Ä€v[¿qÙ»îé$ÑE†35ä©\r^X©Úö—Ñ;‹\\7†ßfİÛË·>dÌ;ÁqÈDÍ‚IwUÑ4xÊñ\Z¼\Z8ÅÛ»Ïhï;VdìIïcVR5+(_µ“3uÅö[qã¸ìSŞàó\r[¡ya¸ø…Ğ4’hÙ†75ä·ó¬³Qá>1µôNâ×\rá ìÛäî;,W;Rì[,ğãİÄt.•¤OÍn˜›îbæÈXğGÄ.£¤q­¢İ¹ƒÁM÷1g/`óú>Ë_ºÜRZzª¨é()#çu/p‘ƒÂü}»†óíúzDÎÖQÇ–ò¼<Ç,Òìk[±ÕD|÷ñµöØí\'ièø·~Â¶	Ôíàä×{\ZKºWPÉÙWË¸4yÃ=2ÔŞV†8xuOŞ×9§‡iÙ°²~UÃò¾ÌßŸ#ñ ßÃ<:§ïsO Ó²Àølçš±ÛIˆâ’mòb…§À…œ\ZÑ÷ä§åÔg|ÑˆæüfLG“wƒ->ê·öä¯q•2Ö‘ğ8svxƒ”«qÖÃ0—yr;x{Áİm‡níçm‚Ë+eì?\"àĞæÌï½kü,/	w—#÷‡¼ÖØvù;ÎÛàsVcÄ3N!>\'‹MÊN÷Y­DMàÆ\0}»ÎÕ=êx>ín˜ó¼ÕRË.)Ø÷6(éã-`ê‹´›iZ¡Òöyt ;}¾­úW†{T@ß¸ÏĞöÓ{ cÏßÿ\0ãCş…‰Ó|ş?øhĞ¼‚Ï=«QWŒı#ß2gßã÷ÿ\0†‡ı¦\\ûü~ÿ\0ğĞÿ\0¡x°)ÇÑ·KÂ´İ©q&­Ä™_LÇxÚY`­•¼[v´Û÷«ùë$a˜öìé£öarkğà<e›ÜCGÍé7w\'…·p]/EÎ#—±Øª0Çk	ˆŠjwv“äŸnİ‡‡xRÍw	ÛŸœ=ú·²¥QNY¼/Ø8ş2kjäuMe1¨xÖu;íw\07\r»mb;üó¤¬°ì³˜«0É$äH,k0‹´Û±Ls•ls‡ƒ–ú†ÙåhrèÃ¶ÕşİZ¹n¬ıº¨¬V2°*£ ©*\n#±+\"±(1(P¡T¬T*\n#ˆQ‰P¤¨UˆˆŒQŠİñûª²³[¾?uVIáEb«È‡İUÕŠ¯\"uu\nT\"QAR  ÛKéXMç_ÚVt¾Å„Şuı¥ŒY¨óv*ÊÍG˜ƒ±dDAºPÛ±âìvÿ\0bM	ŒÜmaÜV•¾mPY&ØÏØŠÔ‹lğ˜ÍÆÖÅjDJ\"\"ˆˆ‚B D¥b²J\nT)EY£ß\'º´-ô{ä÷V…!d±|Q	#:®ñƒ‡±°²XÚÆÇaY\"$)P„Vlqi¦ÅXµŞ\\MsºU`²\n\"hıKVBhıKUP²M*×-©j‘4~¥ª¸RWÕ¡©¯(.•£Üàrî-M]M.Œíi6i#¹rHÜZv+ĞU¹›ŠÎXíe~ Å4½€ÓA-n‡Uü¯$e¬3¼rp“¼¦ÿ\0\0>óÖ/^Éå{İsœI$ä¯–ú÷8oUd”¼íYÇ	ŠÚÚé£¿š\nD±ú «ZE¡,~¨,„±ú «AhJÏTbVz ª…˜EZÇê‚Ë•ai´@X,šT¯ çG&c\"²€‰iä•4¯>ìè= ğì¸_OItù]õ4X¶O«`§ÄZé&Ãˆ³èŞ-pG\0I6Í›-o\n\nÌ5ŞÇ°Ñæv­É¸›¤‰¢«\r¨\Z•”Oò&fî;€Ü~bû\ZNËU6™2¼úØ0\\aÀ‡ÀñµÌÛÃaË[h±\\äÔ³yü…äO¬Ô}ò,Ş¬±\\Ù§h][?8èŞÛŒÜÅÉØv…Õt³Eú5şbo¹‰—°s9¬$p®º>0\\	Ë²gŒÕjš:yÌT\r3Î7kpµ÷\rÛ	;€\\Òwx×v®“X{­ôã¾ç¦CÊfìÓˆg^JÜZOh†6y³ªÑ÷å}İÍ•ğ\n\n¬ÉÍv)I/\'C„î’×;ÙĞwæÁx]ãZµÊ|7v«®´>®kÌxhÆfÄñyÌµlkFÆFŞ`àüNÕóC¿>òĞJÎÿ\0ŠŸyQºÙNA”*…Ëe3üpøªˆ•·s»V‡5lsü#Ú±$\Z·+ZÕDBë9zœ¿ˆóY£‘®³šAp!y#±mŠ¡Ìâ–l•ú’=-à5TPÏŒaõoÄ\"\0–BáÉJá¸›‘öƒñ\\;HYš\\ÉÕâU!­’wlcNÆ´À”8ƒµm¬©OP_¼¬c„‹kMC®ò«¹fMÊÀï]#\\¶Ö~İZ\\·VoİTV+‘X•Q‰PT•Š\"\nÄ©*\nJPU¡D(ŒJ!D•\nJ…D\"(DB\" ß[åGîªêÅo•º«¤ğ¢±UäCîªêÅW‘º‚¹P¤¨D*\n\r´¾Å„Şuı¥gKéXMç_ÚPøÁ©ÊÓ0³n ±\nªÙ†\'Ü|GJ\rh¬MsyX¼#¡W@R)7Ã6 ,xÖŒğèY^›ªõ]FÖ/MÕz^›ªõ \"ivßzn«ÔŞ›ªõ]FÖ¦ê½k—“$r@ÆëXR€²X©J%J…!¶9=m—¸²ÅbHfÇZlBÁd¬Ú–ÜXJ7•€‚^¡ZA Ü°Hş»»ÑYŠyz…d —¨V¾Qıww©?®îõ;<½B²KÔZÄë»½H‘ıww Ú —¨VB	z…jå×wzÈHş»»Ñ[Dõ\n‘½E¬Hş»»Ö\\£úîïQ[õ\nÌA-ü’´‰×wzË”]İè7rõJÈA\'Uj?®îõ‘ıww¨7dê¬„uV¡#úÎïY	Öwz+h†NªÌC\'Ui?¬îõ‘ıgw¨7dê¬Ä2uV‘#úÎïY	Öwz+x†N©Ydê­\"GõŞ²?¬îõñUZlábµ‰Öwz°Ç	Ú\ZãgÇ¥ ®§›Ïä+\"}j£ï‘r£vºÎ!uLßù‰ÈŸZ¨ûäYËâÇ5x]SHfÚ.Ñ¯ó}Ì\\©¦Ë¨éşKtfØM÷1L½ƒ˜Nï\ZşÕÒëïs şœwÜõËæ>5İ«§VŞãAı8ï¹êåğsHj×)ñí*`>9«\\§ÃwiZD¶_ñG{ËA+eÿ\0w¼ƒKŠÊ›Ï¨­”çÇ\Z|#Ú±ÖGŸö¬	Tg® ›­D¨ÖDfàµ8,µ”ƒS®µ•¹Ë[‚¨ÖVfà°*ŒJÛW¾?ui+u_èıÔÊÄ©+ª!bT•‰PT¬J¢+ˆ„(  …\nTT*\n  ©PQˆ‰Fúß*?uWV+wÇîªé\n+^D>ê®¬Uyû¨+Bˆ‚‚¥bƒu/¤1a7iYÒúCy×ö”>0DDDA¶	LN¾öág<BÜ¤[X~Å]lŠgÅ}]ÇA…B\0zşw\'ÑîNw\'ÑîC¦›„±è[ùÜŸG¹9ÜŸG¹š@E¼UÉô{“Iô{‘ZoçR}å<îO£Ü‚ºÉnçr}å<êO£Ü Ğoçr}å\"®O£ÜªôĞ¤ĞVîw\'ÑîR*äú=Ê\r\"ıd¶ó¹>r‘U\'ÑîA¥Hì[¹ÔŸG¹Hª“è÷\"µ|ŠÛÎ¤ú=ÊE\\ŸG¹¥!nçR}å\"ªO£Ü Ô²`ª“è÷,…TŸG¹ ²hª“è÷)R}äV±~…’Ø*¤ú=Ë!U\'ÑîPj0³R}åª“è÷\"°mÖAgÎ¤ú=Ë!S\'ÑîPbAd*¤ú=Ë1S\'ÑîE`Af*dú=ÊEKşrƒ³\nELŸG¹d*dú=È ,Y6¥×ğ€-ã±%f­œÍ¬;‘@V@ÛrÖ\nÈ#pœ¿cÆâº†pº\nÈ€ïU|‹“3zë™²Òè+\"ëÔÔXüdXËØ®[­´.£¤cù+Ñó}Ì\\¡ÆÎ±àWTÒ1ü”èÃù‰¾æ%ö]3¼kûWO¬?½¾ƒúußs×-™Ş5ı«¨VŞÛ@şußsÓ/ƒ™SŸÕ„§Æ;´¥9ñÍZå>1İ¥iVĞ>òÑu²ÿ\0Š»ŞA¨•9ñÃâ´’¶S\Z|#Ú°%KÏ„{V¢`J’V$ªˆ%F²‰A:Ê	ºÀ• È­n\nu”t\ZÊİWú?ujrÛWú?uQT¬JÈ¬J¨‚±*JÄ¢¤¬J ±+\"±DB‚¤¬J‚¥ATb ©P€ ©PQ‡r!Üƒ}føıÕ]X¬ßº«¤(¬Uyûªº±UäCî ¬QX©Pƒu/¤1a7iYÒúCy×ö”>0DDD@DDDA*T(\nT)@DDQHP¤ )Pˆ2DD²!’EA(2\nT(2\nBÄ,‘Y’À,‚ƒ ²\0²¬Ô¬BÈ(26•¬,‚+`Y¬*\r€¬‚Ö\nÈYµ‚²A°º	C|íaû`V@¢¬JÍGt´î*S€NO$î=æ>Å±›×XÍGò~µS÷È¹(+«æÃù\nÑÿ\0Öª~ù2ø±Ê|k»WVÒ9ü”h¿ù‰¾æ.Lóã]Úº¾’äŸEßÌO÷12ö#–L|kûWQ¬?½®ƒúyßs×+˜ø×ö®¥X{Uôó¾ç¦_0§>9«	ŒwiJsãš°øÇv­+eÿ\0>òÑu¶ÿ\0ŠŸy¢VtÇÇ¤•²˜øáñDk”îÕ*^|\'v¬	@%bŠ	UV©%bPBÄ•$¬J¢	X’¤¬QVê³æıÕ¡Ëm_èıÔ\Z\nÄ©ºÅTAX¬ŠÅŠ’¡Qb¤¨D\nÅIP€±*JÄª\n¢ÅIPˆ(*T+7ÇîªêÅføıÕ]!E¾«È‡İZú¯\"utDDAP¤¨Aº—Ò°›Î¿´¬é}!‹	¼ëûJ\"\"<íıV÷\';U½Ê²&Õvş«{“¿ªŞåYFêÏ;U½ÉÎßÕor¬‰£udU¿ªŞå<íıV÷*ÊSFêÇ;U½ÉÎŸÕor®4»YçOê·¹9Óú¬îUÑ4mc?ªÎäçOê³¹WDÒî¬ó§õYÜœíıVw*è¦¬Š§õYÜ§?ªÎåX)MXoê³¹O:UÊ²•tmhU?ªŞäçOê³¹V%4»XOê·¹eÎŸÕorªA4,s§õYÜ²çOê·¹UYÑµ‘Tş«;”Š§õ[Ü«)\nhZOê·¹HªU½Ê²š6µÎŸÕorÈU?ªŞåT)	¥ÚĞªU½Ë.tş«{•P²M\"©ıV÷,…Sú­îUT¢ílU?ªŞå©wC{•@V@©¡hU?ªŞå©wU½Ê¨R\np¶6– ØïX5ÄA±\nË­35Ûåá¨+ZÈFÆï\nÕGŠ£7«5\'Æ|XÄ¹u|Ø!\Z>úÕOß\"äeË­f³ùÑïÖª~ùrø±Ê\\|aí]gI\'òM¢ßæ\'û˜¹Ïwjë\ZMv®ˆ´Zíö§Ÿîbeì#–L|kûWS¬?½£şwÜõÉŞıg—Z×]Z°şö|?úyßsÓ/„rêsãš°øÇv”§>9«	ŒwiZBëh?ŠyhºË”ñE–Şot’¶S>+MÖÊcãÂ\ro>íX)”{V$ª+P•‰(¬IRJÀ ‰*IX•P*\n,IAn«ıº´º¯ô~ê¢¹PT¬J\"\n‚Š\n¢\n‚¥bQ…QŠ’¡QT\" (RT ±Y¾?uWV+7Çîªé\n-õ^D>êĞ·Õyû¨+¢\"\"\" İKéXMç_ÚVt¾Å„Şuı¥ŒNZ{““ƒÖåYÚÏ\'­=ÉÉÁëOr¬ˆmg“ƒÖääàõ§¹VD6³ÉÁëOrNŸÖåUHCk<?­=ÉÉÓúÓÜ«¢YÔƒÖäÔƒÖå]v±ÉÓúÓÜœ?­=Êº!µ€ÊZ{”òpzÓÜ«)Qv±ÉÓúÓÜ²äéıiîUT„ÑµNŸÖå\":Z{•dmd2Z{–ZzÓÜª¬‚ºUNŸÖå!zÓÜ« PZÔƒÖå!zÓÜ«AkRZ{”†AëOr¬\n”Ğ²­=ÊC õ§¹V%4,êAëOrÈ2Z{•PT¢­AëOrÈ=iîU”‚‚Ğd´÷)ƒÖåYH*hZƒÖå&&¹…Ñ;ZÛÂª¶G!ÁÍÿ\0å ¬[$kdg)ö‚Ğ\n\r€­‘HXàà´‚²PYœ6Fy.àµ‚³yüV.Õ©¨­Í+}Yñ¿\0«¶ÕŸğ5ßjë™°şAt{õºŸ¾EÈ]{6È&>·S÷È±—Â9;ÏwjêúPüÏè»êóıÌ\\•çÆ»µu(şg´[õyşæ&^ÁÊ.º½aıì¸ôû¾ç®KuÖk?ƒ&ı>ï¹é—Â9m9ñÍXH|c»JSŸÕ„‡Æ;´­Ô]EÔ]TJÛL|pì+EÖÚSã‚+[Ï„{V$£Ï„{V‰%bJ±@%A(JÅT\"‚P	X”PJ¢\nİWú?uh+u_èıÔ\Z\nÅ\n‚ˆŠ’¡QB¤¨D+¨…J„J‚ˆ„DAX¬ò£÷Uub³ÊİUÒ[ê¼ˆ}Õ\\«^D>ê\nê\n•ˆƒu/¤1a7iYÒúCy×ö”>0DDcĞ–=;“è÷\';“è÷!ÓEBXô-üîO£ÜœîO£Ü‡M=	cĞ·ó¹>rs¹>r4Xô%BßÎäú=ÉÎäú=ÈtÓcĞ–=;—è÷\';—è÷\'gM „±è+w;—è÷)çR}ä^š,z\nXô¿Iô{“Iô{h±è*Eú\nßÎåú=ÉÎäú=È½4ØôÛĞVşu\'ÑîNw/ÑîPé¦Ç ¥A[Å\\¿G¹9Ü¿G¹›‚¤_ ­Â®_£Ü§Ëô{•\Z¶ô±è+hª“è÷,¹ÔŸG¹Eiè+-½lçr}åª“è÷ Ó· ¬…ú\nÛÎ¤ú=ÉÎ¤ú=È5mè+!~‚¶ó©>r\n©>rƒ^Ş‚²è+`ª“è÷)çR}ä\Zöô;z\nØ*¤ú=Ë!U\'ÑîEkR·2q\'0;ˆàµË‰Ö;G‚R±R\n\r±HcuÛñ+t¬o)î#¡U[!”ÆëÜBŠ)eRĞÉlİÄ]k·ŸÅ¢íZÁY;ÑbíZî ÏYm«>7à{í[ªÏøºÖt$~Ú= ØóºŸ¾EÈ]o;Ş÷£ß­Ôıò,åìXå\0í]oJGò;¢Ï«O÷1rv…×4¦#š,ú´ÿ\0sËØG&ºë5‡÷±aÿ\0Óîû¹×Z­?½‡ş°;îz¹|#”n6ÜíXİEÖ‘•Òë¨A$­´§ÇÅ¢ëm)ñãâƒŸ	İ«Qş[»V$ª%bJ(º ¡€JÅ¨¡([«?Gî­­Õ£÷PhX’¤•Š  •%bQˆ ”Q‰RT* ¢\"\")*¢„DAb³ÊİUÕŠÏ*?uWHT+^D>ê®¬Uyû¨Šë%B\" İKéXMç_ÚVt¾Å„Şuı¥Œ…+’Dˆˆ¢\" Š ,–*B	R\"	 ±RY DPd@*Pd\n•‚È!b¤\"²Y³’!¨%œ}‹Rƒ5bAo\'.ÖÇ¡Udƒt±˜ÏKNâ°[!”jòrmaûMŒô´î(¨HŞ°ºv ³V|oÀ-!m«>7à¢­¼ş+jÓu²Cø¤]ª½Ôƒµo«>7àa½o¬>4vF°W\\ÎÇ÷½èóëu?|‹‚ºæwş:<úİOß\"Æ^ÅNĞºæ”ÏäoEVŸîbä\0í®éPşF´Uõişæ&^Â9%×\\­?½ş°;îzä7]r·ø/aßÖ}ÏL¾ÉnšË¨ºÚ2º‹¨º‹¢2ºÛH|xì*ºİH|xì(­o>»V(ÿ\0-İ¥B —PJ…@•	uĞI*(D„¨@+u_èıÕ •º³ô~ê\nè‹U@•…\0¬P¢( ¡PUD(*T (R¡ˆ€T\" \"\"T~ê¬UšÍñûª²BŠÅW‘º«­õ~D>ê\"º„DDAº—Ò°›Î¿´¬é}!‹	¼ëûJ\"\"	\"ÆÅB´æ¶¥šÍ°o*ª\" \"\"\" )\nHˆ‚B([âsï±¦ÖEŒHPˆ%J•\nP•\n[´ÒŠÈ)IYÉHZMì  • ¬¢”.±µ…ÖEdŠRˆÈ+  İ¦\'t´ïdÑ‹r‘íaûe¶	LgnÖáŠVÉ£\rñíŒı‹Rƒ%e„š7ƒÀìUn¬Gè’v¥XÕu íX©ÑjÏø¨_ø¦è«RÅbíZVÉâ±v­*†õ¾°øï€UÚ¬Vğ­@®¹ïxÑßÖêZEÈ]s<ın«õ¤YËØG%ÂëÚUüÍh«êÓıÌ\\|o¯iWó3¢Ÿ«O÷1L½„r5×+Oï]Ã¿¬û¹\nëµ¿Ásş°»îz¹|#‘¥Ô%Ö‘7QuK •¶øöüV‹­´‡ÇÂƒŸö¬QçÂwjÆê‰º‚T]EÑ¢êè\n	Qt@PJ‚T*o«ıºµ1…îÕnõ[{Z\rõEŠ\r$¬Q¡*$ªB((Š¡\n(@DDD;o­ò£÷Uub·ÊİUÒ%ú¿\"uWV*¼ˆ}Ô‘n¥ô†,&ó¯í+:_HbÂo:şÒ‡Æˆ‚Åœwº´+^qŞê®‡Ä\"\"\" \"\"\" ¥b²@V#ô9{B®¬Gèrö„«\Z•\nB¡d¥[{BÄ,™å·´(7VzC»ÒêÏHw`ZU‹V¨÷ÉîªãrßG¾Ouh”T©B\"2E\0©A*V\nAAf•ä<0ík¶V\0ÙàRŸÏ3µDşyıª}T+ŸÅ$í\nµÕˆıNÔ£P*AÚ±@v µV|oÀ-7[+ø¦é¬Éè±v­7[$ôX»V›¤F`í[ëøX«}añß\0ŠÔ\nëÙãø;hïëu_|‹İuüóü´uõº¯Ö‘c/bÇ#h]Jß™ıZ¹‹´.Á¥cùÑGÕ§û˜™{ä7]z·ø-áßÖ}Ï\\~ë¯Vÿ\0œ;úÂÿ\0¹éŸÂ9\Z…ÒëhÊéuÑ7[i¢ëu!ñã°¥\Zßå;µct”îÕA*.¢êI*AT. ”P€¥/pkEÉF´¹Á­%n{…;uo!Şî„	 i3áŸ)Êª\"„¨D€JÅP*T \"!Aˆ€²kàâÑp7©Š3+¬7q=dÒ\0ŞJ/ o=(4(*JÅf·ÊİUÕŠß*?uV)\nb«È‡İU•š¯\"udD@DD©}!‹	¼ëûJÎ—Ò°›Î¿´¡ñ‚\" ³EçîªêÅœwº«¡ñˆ€ˆˆˆ€ˆˆ\nB„A’±¡ËÚ`¬Çèrö„«Â•\nB ‹(Øé	\rŞÖ(¢\" ”P¥fÏ-½¡`²g–ŞĞƒug¤;à´­ÕîÀ´©¬Ñï“İUÁØ·Ño“İZåFWR±ºPJT)h.pyØ¢¥í,qk·„º#m7Ÿgj™jŠo>ÎÕù÷ö§ÕB±¢IÚPU˜ıNÔ¤iºv¬P ³Yç¾iYÔÈÙ$»wYkº‚Ì‡ñH»JÑu›äiŒP;V´ƒ v­õ{à`¶ÔÈ$’íİd…×³ÏğuÑ×Öê¿ZEÇîºşy?½ÓG?[ªıirö,r v…Øt¯ù—Ñ?Õ§û˜¸è;Bì\ZW?‘}ıZ£îb™{	år®¿ZzÎıaÜõÇ®»iıêøwõ‰ÿ\0sÕËçúG!º]ctºÒ%.±º]W[©åu¾hŞV¸b2†åe4 Hö0}¨58İÆİ*]o‰¢6r²ÿ\0e½(2cD,å$ò’Õ:“¡½ËL’:G—9`š9Ü\rîQÎ¤èorĞ •tmc?¡½Ê\r[úÜ«İBhX5R[æ‚ĞvïP ”6›¨%EÖè\"\ZòlŒ}¨iŒpHöë4{JËšËĞ;Ö3Ld;64nQqé(7óizzƒK/C{Ö‹“Ş¢ç¤÷«Ú7óYzŞ£šËô{ÖcÒ{Ô\\ôõ\r·óYzŞ ÒËĞŞõ¤¸ôõ=\'½›¹¬½\rïNk/@ïZnzOz\\ôô:næ²ô7½G5—¡½ëMÏIïK“Ş©Ów5—¡½è)d¿õ¦ç¤÷¨¹é(t±3Älä¢şÑéUÑAD´P¥B\"Ío•º«+5»ã÷UT…š¯\"uVVj¼ˆ}Ô‘n¥ô†,&ó¯í+:_HbÂo:şÒ‡Æˆ‚Íœwº««^qŞê®‡Ä\"\"\" \"\"\" \"\"	Vcô9{Bª¬Åèrö„«\Zb‹Î;İZú/8ïuhE\"	Y3ËohX›<¶ö„k=!ß¥n¬ô‡v¡\nµG¾OuW}ù=Õ]EdŠª2gghZ–ÈOghJ6Uy÷­KeOŸzÖ¢¶ÓÎÕ3ùçö¬i¼û;RsãßÚƒb?C“´*×VcôI;BR4¦ëDf‹©º	SuDTİMÖ(ƒ+®Á¿ƒ~·UúÒ.:»zşZ8úİWëH±—±cáv,~e´Mõj¹‹´.Å¥ŸÌ®‰¾­Q÷12öÊãË°Vÿ\0|7úÄÿ\0¹ëİv\Zïà­†ÿ\0XŸ÷=3ùş‘È.—XİÑ•ÖÈc2ŒÊÒ¬<‘INÕM0#R=‘µiº…ºÁòl`ûUğL1€ŞV_$n+\\²sğ	4¦Gt4n]ĞJ‹¨º„DİB\"]A*.‚IP‹lr„—l`ŞQH\"×»Ÿ²1¼¨]rv0n\ng›_ÁfÆ\rÁh%4¨V!‰­o+7“Àt¨åâõ\rWcB…c–‹Ô5G-¨j›F…Xåãõ\rQËGêŞ‚º+´~¡©ËGê\Z›Ô+´~¡©ËGê\Z©¥tV9hıCS–Ô5]Z?PÕ´~¡¨4\nÇ-¨j×+Úûj02İj\n•,VïİU–rHé-­m‚ÛQYªò!÷Uef«È‡İAYê_HbÂo:şÒ³¥ô†,&ó¯í(|`ˆˆ,ÑyÇ{ªº±Eçîªè|B\" \"\"\" \"\"\" +1ú½ª²³¡ËÚ‹Â•Š”Eš/8ïuW\nÅœwº«§ÕJ(\nPdÏ-½¡b¥[{B\rõ}İh[«=!ß¥HUš-ò{ª¸V(÷ÉîªÊŒ‘EÔ ]l‡Î³´-k8|ë;B+eW¤=kºÎ«Òµ ßOçÙÚ¢<şÕÇÇ³µ\'>9ıª+b?C“´*ë|~‡\'hJF›©ºÅ.ˆÉ].‚TİEÑİMÖ(ƒ WaÏ_ÁËG\\ªıi]‡=}r«õ¤XËØÔúä\0í±igó-¢o«T}Ì\\lo±ékó+¢_«T}ÌL½„ò¸õ×a®ş\n¸oõ‰ÿ\0s×]†»ø*a¿Ö\'ıÏLş¤r¥Ö¶Ë+­òŸÅ\"íU•‰=.ÔªÑt¹µ¯±B\"—Qt—Qu$•D@Ed1™]a±£yA0Äd;v4o)<ÁÃR=‘µ\'”[“‹cÚ´$Qo† ÊË±ƒpéHb\Z¼¤»7•®yL®¹ØÑ¸*Jé]s°pZ\"3±EÑB\" (D@DDD@Pˆˆ\"((B\"\" +5^D>ê¬¬Õyû¨+\"\"\" İKéXMç_ÚVt¾Å„Şuı¥Œš/8ïuWV(¼ã½Õ]ˆDDD@DDD@DDf?C—µVVcô9{Qb²\"\"-PùÇ{ªºßCçî­|\" ”Qu(¢–ymí\n³ËohA¶³ÒğZVêÏHw`ZRf|ê®·Ñï“İZ‹ğR¡D¬áó¬íZÙ	ñ¬í3ªô‡­W[j½!ëR‘[i¼û;R?\'jŠo>ÎÔœø÷öª1º±üRNĞ«+ú¡*Æ•+©j\"Qn«°–À°nZTİ.·H5ˆØ^ûÖ”tº½n¬\0M°\0,7 ×uØs×ğqÑÇÖê¿ZEÇìYïø8hßëu_­\"Æ^ÅŸ\\€¡v--~etKõj¹‹ƒ´.Ç¥¿Ì¦‰>­Q÷12öÊã·]Š»ø*a¿Ö\'ıÏ\\në±×<7úÄÿ\0¹éŸÏôŸ\\zéuÑm–W[ä?ŠEÚ«-òú$]¥¦ê.ˆˆ\"(A(¢ê.¨”º‹¬¢Ò¿U¿Ğ‚bŒÊû\rÜOBÙ< 7’‹ÉÏJM#XŞJ-ÜOJ­tT­ĞÄ5yIvF>ÕDå$ÙûV3ÊewCFà¢ÊewCFàµ¢‹¢¡b‘¬:0ûô¬ùxıCUtº†Ö9xıKTrñú†ªè®—k¼~¡©ËÇê\Z«¢hÚÇ/©jrñú–ªèšM¬rñú–¨åãõ\rUÑ4mc—Ô59xıCUu	¤ÚÁ?PÔåãõ\rU‘4mg—Ô59xıCUdMYåãõ\rN^?PÕYFÖyxıCV¹ååulİP6-H†ÄD@E66½¶nº„©}!‹	¼ëûJÎ—Ò°›Î¿´¡ñ‚\" ³EçîªêÅœwº«¡ñˆ€ˆˆˆ€ˆˆ‹l™OCFòFWt4o+)å\Z¼œ[>ÔQ«ÉÅ±ƒíZDDDY¢ó÷Uub‹Î;İUøÉ)@@ˆ‚T³ËohX¬™å·´\"¶ÖzC¾JİYéø-)\n±G¾OuWV(÷Éîªè©º(DD¬âó¬íœ^u¡u^şÕªëeWŸzÔ…n¦óìíQQçäíJo>ÎÔœø÷ö¨¿+ŸÄäí\nº±¡ÉÚ	ÅB\ráQf·Ï|Ñuº´øáî…¢é\n³!üR.Õ¢ët¾‡iUÆÒ‘Y¥Y¬a3|ÎŠ˜Êà½K0	êy_!\r†4ºÃà³rÒÉ·Œ, ®ÃŸ\Zæş\Z7Ö^®¨‹à™,U¼ƒ£:C&lÏ4yZÂlFáõÏàÆú¤ìÙµÛ†Ë•âô³ŸkóÎ1¤ˆQ`ôc“ Ãã°dİrÂâ\0¹Ü7\r‹åf¾.µo²ioó)¢O«T}ÌT4W£Ê\ZŒ*LéŸ¤49:Œë5¸~ ğv1ƒyi;6mqØ8‘çô«¤\Z¼ûŒÅ!”8=L8}`ÁÁ¶Û5ˆü€·ûe5ñ<»kIü°â f\'\\»c×\Zºé:%Ò;r°©À³7Êy;»k(5¹;ì20tî¸ã`Eˆ\\åÖá‹œ\"èÚYÑ¹Ê‚ŸÀ*>TÉøŸG]ÖÔ¾èä==¸Bæ÷ZÆÌ¦âY¤«Å\"í*µÖù}.ÔF›¥Ö(¨›¥Ô%ĞEÖLcàÖ‹’‚ca‘ú­ÿ\0án–A9(ßœä‘ârqç9VPè\"\ZòlŒ}©AÀ¾ChÇ•Œór†Í`Ü\'”Èl60nUÔ\"ºAnca,ï!ÜEiE¿VŸÖ;¹5)ıc»”]+¢±©OëÜš”ş±İÊšWE¿RŸÖ;¹5 õîM¦šoÔƒÖ;¹5)ık»“fš+\Z”şµİÉ©OëÜ›4®ŠÆ¥?¬wrjSúÇw&ÓJÊ÷¶Ò[#‹¸-ˆ€ˆˆˆ€ˆˆl™\rÎÆ\rå „Ènv0o+)æjG²1ö¢“ÊäãŒ}«B\"#u/¤1a7iYÒúCy×ö”>0DDh¼ã½Õ]X¢ó÷Ut>!Ø!2ŒÊ™\r÷4o+)årql`ûRyœ{#jĞŠ\"\" ˆˆ,ÑyÇ{ª²³EçîªÈ|¨D\"ÅJ	RÏ-½¡B–ymí7UúC¾JÛYéø-WHµb|ê®7+{ä÷Uq¹pùÖv…‚Î/:ÎĞƒ:¯>õ©lªô‡­WP­ÔŞ}ª\'óòv¥7ŸgjOçŸÚ‹ñ­YŒş\'\'hU•ˆıNĞ­#B‘½b¤oDX­óßÙBİZ|wÀ-R-Y—Ñ\"íZcò–é}.Õ\\ƒÔ`k¤mí½~ÍÊQ3ÉøÁC!†¦˜O=Saå²ØSoi#á`¿á•|“ºë[JXö^ÃŒM~­1ÛÉHÆÈxØ¸&6ºã^ÿ\0ğœ–IeÀÙ4®aæ¦GRƒàFò|«t£à¹¾òQ‡Ôg<÷;irÈ_Ã®”6Ğ6Úû\r¶“°X\\¯3šóUf9[-f#RúŠ™<§¼í=Ø=z¬Ù&¿àÅ•]ÓÏÿ\0¼’\\d…±ãô©¤JìùŠÆLb‡£ƒ `°ºÜw°lßá”\"ï$“QÊİ¥,˜ÂíÁQÚôAWQ>„ô«C4Ï’\n8åŠ›²7¸I¬æê´ö€¸™;JíZ…ÍÑ&–…¼¬>ºUÆd‰Í\'bÆ?•jù\Zî·Ëèqv­\risƒZ.JßSfEW»›´­2¯tDUDh.p\r%±¥î\rh¹*ÃÜ)ØY¼‡ÊwB9Â™š­±”ï=\n©7Ş§«áuºµîçìŒo=* ‹^îq´cyIæ×³X-Ü\'›”:­ØÁ¸-(Š ‰u&ê]¨DD]B\"\" \"\"\"±-å&ØŞ¥tV5©½[»ÔëSz·w¡¥e¶Œ†çcò³Ö¦õnïQ4ÚÍ`Õ`áÒŠO0pÔdcíZDAº—Ò°›Î¿´¬é}!‹	¼ëûJ\"\"4^qŞê®¬QyÇ{ªº¶G¤¾ ½–µf›dS[ª„cÍeêı©Íeêı«V»ºÎïMwuŞ‡M¼Ö^¯ÚœÖ^¯Úµk»¬îô×wYİètÜÊWëxÏ¼MÔO0#R=‘µj.q.6íX¡±Y¢ó÷Uef‹Î;İUø\"\"\" ›¬™å·´,Qùmí7VzC¾JİYéø-)\n±G¾Ouh–ú=ò{ªº*QEÔ ,âó¬íœ^u¡U^õ©m©óïZ­”Ş}©?ŸjSyöv¥GŸ“µ>¯ÆV#ô9;B¬¬Gèrv„¤hR7¬n¤¨‹¾{àub´T;\n®¤*Ä¾‰jĞ¬<G¶ØíU’›^[¹[¦¬’7x\'gÒ¨«Tqë<%XúÓ·”Šå§xè]_2R¸ş™V;mÔçÿ\09yü–çÇ1jZ\n6´ÍPğÁ­¸t“ìå~‰Ç4sC]©rm,ÃˆQNú¨Œ‘¶Y,âæ{„weÃ<õc¬Åø²hK\nÒ½v?ƒIIQ,2†²HÜXæàƒb›’‘ÁŞS;×ivçqW`»—ÜÂ¨ygeóa¥pxğ™Ş½†Wk\"ª…òê=­p%·ŞÚÊ®1İtW£üfçŸDc~7FÆR1î\rt–Ûc¸akÚëf|>²jjˆ_DN,{,ZFğBı°Ã:èqŒ2ªJFÃ¼®©¥·•³§Ø~+óñœ;ÎXNöIŒÈİÎ-hÃ§·Ø¼øemt²iÄ*@¤»Y¶C¼ô*İ[¯7ªkÕjnŠ€I°ÚU@â\0%Y6¦e…Œ§ìAjf_a”ıŠ±$’I¹*/77;JÙ\\¡»¶0o)\\¡¹ØÁ¼©`á©´cí@]{1›#‡JÒ¡Ò&èĞ\\à\0¹(Ö—8‹’¬’ÚfØXÊw„óI:[ŞœÖN–÷­’nMÊ„Uk\'K{ÓšÉÒŞõ]9¬-ïNk\'K{ÕtAcšÉÒŞõÖN–÷ª÷D6±Í$éozsI:[Ş«¢\"Ç4“¥½éÍ$éoz¯uAcšÉÒŞõÒN–÷­ƒ4“¥½éÍ$éozĞˆ7>™ìiq-°ö­ˆŠÄ1·”—Éà:P!‰­o)6Æğ+\\Ò™]s°p	4¦W\\îà:´E \\ØoA¬\nWÛkšEÔóWu™Ş›4¬‹dÑˆ Ü_bÖ€ˆˆ7RúCy×ö•/¤1a7iCãDAf‹Î;İUÕŠ/8ïuWCâšo3?º«+4Şfu*ÅdDDš/8ïuVVh¼ã½ÕY‚\" \"\"É[{V+&ymíA¶³ÒğZVêÏHwÁhB­Qï“İU•Š=ò{ªºˆˆ&ë8¼ë;BÖ³‡Î³´ Î§Ï½j[j|ûûV¤VÊ>ÎÕùçö©§óìíQ?j+ú¡WV \ZğI>Ú¬WD ƒc°„DX†@[ÉKäÇ¡j–7DëÜJÁX†FÈÎJ_ì»¡ÖÌbwKNğ³š!«ÊEµ‡ìZ¥Ñ¼µßü©†SºZw„]\\¡xkÂÓ4CW”‹kñĞµ1Å¦ê:şŒ3@Ë˜ı\"$>îeí¬Ò\"ı„®ûˆi;&ÓjâğUÖUÕBÇ\Zzn£İ}î\"Ãyâwñ_)kİâ­ÉŠ½Í¶±\\rş-×I›êfÌHâ…UT¤r“Èé_m×q$ıëÈÊnâ·ÔÔ™	Úª»c4ÆWlšlWÓ ¬1b¾RHK6’éìâÇåd%‚Gâû\nùx†$é¯r¾*î’ ¸åIŒ[“9_®ë­ji”ïÜ¬€)™¬í²Ã¡ÑNÍw‹È|–ô*Ïq{‹œnJ‹àçI¹+dNÓfå ˆÊî†åe< N-‘µQÊ5#ÙûV”DAKAs€h¹(Ö—8‹’¬ÚfÙ¶2ç¡’ÚfÙ¶2ç¡U$“s´¡77;ÑEÑº\" \"(A*.ŠY† Æò³nà:P!‰¬o+7“Àt­SJé]s»€èI¥t®¹İÀt-hŠ@$Øm(\0l6•e¡´ÍÖuŒ§pèRi™wXÊw…UÎ.q.7%Ä¹ÅÎ%Æä¬Qk<¦{ª²³Yå3İU’DD©}!‹	¼ëûJÎ—Ò°›Î¿´¡ñ‚\" ³EçîªêÅœwº«¡ñ\nÍ7™ŸİU•šo3?º•b²\"\"ˆ€ˆˆˆ€ŠRÈ!ÙMo¢ó÷UejˆxÇ{«Fª+[5T†\"i©JÚ#R#EÓM”°xmíx‰g>{BlÓ]`üaß¢Å}*¸/;¾X§ö)µ±ªŒÉîªú¥}z:m²lù«P¥ö&Í>v©MR¾ ¤ö,ÛEìMœ_\'P©k\\×7…ö[EìY¶‚ü’ñ|ÇEÎ[®ÁiñÒ«rn\nô1Ğ¸ì*ÑÃCušÛH7•9/–k×\r„+.ƒœ3Y‚Ò\rã¥}Á…©[cÂÜ×4…9^W‘wBÉ±=¤pBöGåÛ®ÆYüE–\rÁ]Ô=ÉÌàó/§5×`´ƒxéU¹t/iö¸´ß±X~\0eo(ÆmùÂÉÍx¼ î„æîè^ä`?1ln]yù‰Ìàñ‘Äfg\' ğ‡’å¡ô’1Å®i¸^õ¹nN*ÛrÛçf«˜uÆãmês89Ô1É·]§xé[M,$Şïà÷Ÿ¹Y±Œß±HÊ²ú³ÜœÎÍ\"ë?¹O5‹¬şåïÆT›Õå?¹9½QîNg>æõŸÜœÒ³û—AıÉÍêr~äæõG¹9¯>æõŸÜœÒ³û—¿9RoV{”«7ÏrsN/Í!ë?¹9¤=g÷/}û“¨; ş±vT¨â#·bs8¼5‡¬şå-†(³uœá¸½Ã²ÄŞ\Zµ;.¸pû‘Åá$ïqs¶’²†‘ò;uš7•î—\\ç[TÛ‰²‰°rÉÆÂ\Z7ûUæpx©ÁÕäâ`ûU~EİÙ»#æ­nÁˆù©É8¼‡$î„äœ½YÂU`ì(õUäqy¸‰Õo†~rÔXëÜï^•Øg±kvn	ÈâóºèMB¾ùÃı‹Y ö\'$âøz¥F©_hÑ{Ø¯$âù\Z¥5Jú†“Ø°4¾ÄÙÅó¬TY_4şÅ§ö+´Ò–Ô±VÌ\nlÒ²+%‰\r4\"İ¨±-DÓZ,õSU²ÕV\"ˆFŞRmÜÒ†‘McyY·p+TÒºW]Û¸„™î‘×wÀt,,‚€I\0’€&ÃiV€m3nle;‡B\0ÚfÜØÊxt*®qs‰q¹(¾qs‰q¹*E“ç¸5¢åúÏ)ê¬¬V‘®Ğ\rÈ*ºBˆˆƒu/¤1a7iYÒúCy×ö”>0DDh¼ã½Õ]X¢ó÷Ut>!Y¦ó3ûª²³H5™+Fò6«‘I±\nD@DD!B É*Pd¤,.—Ar‡Î;İ+@[(Œwº«ë\"í¸²-\ZÉ¬†ÖA0B©¯íR$EÚè!lŒfö¯ŸÊ›&³=*hÛêÔ‘Ë»à±i\nEH|ÅÍ79SK·Ü£snÿ\0ub×5|ê:ƒy=Õ¤T•4»}¶¹«k\\Åğ…YéY\nÃÒœM½^Åµg±y±ZzVb¸ô©Åy=C$Ø·Å4m ‚^LW•ÄOJq^OnÍÖmƒÆñÒ¥’Ä7Ùx¶bi:Ä+_)ríÖa´ƒxéSŠò{8j\"c]^SÈİv[[ˆ\\äb®.VÈñ—±ÀµÊq§(è±ÔÀ8«”õĞ1Àß·jæîÅLŒå#vŞ-Z†4áó“‰Ê:ß;¥Õi\Z§±o‹£õ~ÅÈáÇß¶¸–ál—s,æ:ì;”â¼’,N€oî\nì8®\Z-à0ÿ\0d.1ùç¬†a—Öõ8£ô$®(ÛzÃèªì8†<¸)ş$ù¿÷C/¬wzÃ\'\\÷§”~œ‹Ë£ÎAN{	VYeAåR1İ„¯Ëº):ç½OîŠN¹ïSş3”~¤v;”­³ï‘jv;–>nÆBWæİ°÷§îŠN¹ïOøÎQúbL{\0ù”P7°ÿ\0š§67„»É`oc€ı‹ó—î†N¹ïQû¡“®{Óş3”wùñ<)üş?ø*2ÕáGs~Ğ¸iÌuÏzÄãïë•x£´KQ‡Û;•9% \'Êà!8ëúç½bqÇõÊ¼)Ê:¥Ee\0\Z‘»g«½P’¢“ƒ‡rçwY`q—u•âr$ô¼Şå¨ò.mÚæX¯qwu–wY8Ôååìƒ£ïUŞÆu™Ş¼YÅ]ÖXœLô«Æ§(õÏ½fw­/Œt³½yC‰•ÄJq§(ôïˆt³½it^Öw¯6kÏJÀ×•xÓ“Ñ:/k{Ö§Cíozø´ô¬\rYéN59>ë¡=-ïZéozø¦¨ô¬MIéWŠr°êsÒÎõ­Ôîégzù& ô¬Lå]}GS»¥ëNî–w¯šf+)WI¸ú&™İ,ïX\Zgt³½På\n‚ÿ\0ji73ºYŞ±4¯éoz¥®£Y4n.\ZWô³½cÍ_Ögz©¬šÊ›‹‰°İóm¸*¼Ò]w|BÕtºi6ÉAQu‰[a•±‡[¿ZQ¹ÅÎ%Æä¨D@D[a„Êz\Z7”Å¤u›ñ={äl-,‡k¸¹c,Á­äáØŞ\'¥WEñ+të\ry\r£j˜a\Z¼¤»>Õ„ó\r†Æ\rÁ2¹®y,n«VˆÔ¾Å„Şuı¥gKéXMç_ÚPøÁY¢ó÷Uu”o1¼9«t‘¶Vò‘oùÍEVR×¸›¡ÈmKn,%jªA‚,B4–A±\n×ƒRŞQö¢ú¨ŠH EˆPˆ\"\"\" \"\"\" ³EçîªËdrN&×¸²Ö€ˆˆˆ€ˆˆ%\"4{ä÷U{­ôîÛXX-RFèİªä_ŒnRåB\"&å.T\"	Ö*uŠÅe¬T¶G1À´Ø…‚ ºO9n³6J7•W]ÀØŞêâÇ4Ø…eÁµ-Öm„£xéEõª*‡ÆàæŸø­òøÆr±i½\n™6;ÖQHèŸvüGJeÊ•º\n’Û±ûc;ı‹£kÛÊÅ»ˆèUĞñjFH×xsNâ6›¨şå©³HĞ^@.q/\\¡¶v›¨şä´İG÷,9Ä½rœâ^¹PÛ;MÔrZn£»–â^¹N^^¹Clí7QİÉiºîXròõÊròõÊgiºîKMÔrÃ——®S——®PÛ;MÔrZn£û–¼½rœâ^¹Cl­7QİÉiºîXó‰zå9Ä½r©¶Z³uÜš²õÜ±çõÊs‰zå\r²Õ—¨îå\Z’õÜ±çõÊs‰zå;6ËR^£»”jKÔwrq/\\§8—®PN¤½Gw(Ô—¨îäçõÊs‰zåN^£»““—¨îäçõÊs‰zåN^£»“’—¨îäçõÊs‰zå‘ÉKÔwrrRõÜ§œK×)Î%ë”:G%\'QİÉÉIÔwrq/\\§8—®Pé”Gw\'#\'QİÊyÄ½rœâ^¹C¤r2uÜœŒGw)çõÊs‰zå‘ÈÉÔwrr2uÜ§œK×)Î%ë”:G#\'QİÉÈÉÔwrq/\\§8—®PéŒGw\'#\'QİÊyÄ½rœâ^¹C¤r2uÜœŒGw)çõÊs‰zå‘ÈÉÔwrƒÀ¹c€ìYs‰zåC¦‘À‚âADé­dÍ]q¯}^6[f›XjF5cjĞˆ\nÄQ5­å&ØŞ¥Lq¶&ò“|\ZµK#¥uİğ¾Jevİ€nZ-ğÂKä:¬j\'­¬jÓußÜ§V›®şäÙ¦¾Å„Şuı¥oŒÓ±áÁî¸ö-éFâQX\"\" ³GFíf¬©#lÍå\"ßóšª¬ã{£v³Jß#3yH¼¯œÔ_UT´–A±\noÁ©o(ûURIX„i- ƒb¯¥¼£íEõQ¸’±\nD@DDD@DDD@DDD@DDf93y9wü×*Èƒ9ctnÕpÿ\0ŠÁYŠFÊŞNmÿ\05ËM($Ütİ\r4\"İÍ¥ê}©Í¥ê}¨i¥îm/SíNm/SíCM(¥Í-q!BÉ®-p-6!bˆ-¸6¥ºÍ°”o*©6;Ñ®-p-6!Y!µ-Öm„£xéEõ¦LN¸İÄt­“DŞV/\'ˆèZ ØïYÃ)‰×AŞ\ZÑZt\rëÄö†‚jzìïM®•‘Yæ§®Îôæ§®ÎôÚiYjzìïNjzìïMšVEgš»;Óš»;Óf•‘Yæ§®Îôæ§®ÎôÙ¥dVy©ë³½9©ë³½6iYjzìïNjzìïMšVEgš»;Óš»;Óf•‘Yæ§®Îôæ§®ÎôÙ¥dVy©ë³½9©ë³½6iYjzìïNjzìïMšVEgš»;Óš»;Óf•‘Yæ§®Îôæ§®ÎôÙ¥dVy©ë³½9©ë³½6iYjzìïNjzìïMšVEgš»;Óš»;Óf•‘Yæ§®Îôæ§®ÎôÙ¥dVy©ë³½9©ë³½6iYjzìïNjzìïMšVEgš»;Óš»;Óf•‘Yæ§®Îôæ§®ÎôÙ¥dVy©ë³½búrÖ—k´Û ¦Í4\"\"´Æ6‰%Úî\rXÂc‰œ¡ğŸÀt-/{âç”_$‘ÚÎ+[à„8kÉ²1ö¢zA#”“dcíXÏ)ìØÑ¸$ò™\r†Æ\rÁj@DDD@DDD@YÆ÷Fíf•‚ µ#3yH¼¯œÕUgİµšv­ò1³·”‹ÊùÍEõUKIi¡ü\Z–ğµUp-$bÒ6!Zğj[ÀJ>Ô_UKi ‹¡DDD@DDD@DDD@DDD@Yòë»½`ˆ3å×wzrë»½`ˆ3å×wzrë»½`ˆ-´¶¥º®Ù(ÜzUg4µÄ8X…\0ØÜoVZ[RİWl”n=(¾ª¢Éí,qk…ˆX¢\nZâ×Ób\"d6¥·m„£xéUH Øì(×¸›­Ú–İ¶ã¥<_UI…B ˆˆˆ€ˆˆˆ€ˆˆˆ€ˆˆˆ€ˆˆˆ€ˆˆˆ€ˆˆˆ€ˆˆˆ€ˆˆˆ€ˆˆˆ€ˆˆˆ€ˆ·A¿„ı‘åÁ¿†ı‘ç¥Dór†ÍØÁ¸$ókÙ­ØÁ¸-(ˆ€ˆˆˆ€ˆˆˆ€ˆˆ8ŞèÜÓµ`ˆ-HÆÎŞR/+ç5UYF÷FàæªÃØÙÛÊG±ãÊj/ªªA ‚\rˆPˆ‹<éÜZÒzlœéİFw*Èš6³ÎÔgrs§uÜ«\"hÚÏ:wQÉÎÔgr¬‰£mï¨/an£EúĞˆ€ˆˆ$m;‡1ÄuÀ28l\nch§g) »Ï’w¸½ÅÎ7%Æ(ˆˆ\"\"\" \"\"\" \"\"ln\"Msj[ªı’\rÇ¥WsK\\Zíá@67vïAˆ€¥®-p-6!B ²jí¯‰¥ÜJrñú†ªÈš6³ËÇê\Zœ¼~¡ª²&¬òñú†§/¨j¬‰£k<¼~¡©ËÇê\Z«\"hÚÏ/¨jrñú†ªÈš6³ËÇê\Zœ¼~¡ª²&¬òñú†§/¨j¬‰£k<¼~¡©ËÇê\Z«\"hÚÏ/¨jrñú†ªÈš6³ËÇê\Zœ¼~¡ª²&¬òñú†§/¨j¬‰£k<¼~¡©ËÇê\Z«\"hÚÏ/¨jrñú†ªÈš6³ËÇê\Zœ¼~¡ª²&¬òñú†§/¨j¬‰£k<¼~¡©ËÇê\Z«\"hÚÏ/¨jrñú†ªÈš6³ËÇê\Zœ¼~¡ª²&¬òñú†§/¨j¬‰£k<¼~¡©ËÇê\Z«\"hÚÏ/¨jrñú†ªÈš6³ËÇê\Zœ¼~¡ª²&¬òñú†§/¨j¬‰£k<¼~¡«	¦2\0Ğ5X8¥Øˆˆˆ€ˆˆˆ€ˆˆ?ÿÙ'),(28,'ehogalde@simsanjuan.com',' Enrique ','Hogalde','21232f297a57a5a743894a0e4a801fc3',''),(29,'fechegaray@simsanjuan.com',' Federico ','Echegaray','21232f297a57a5a743894a0e4a801fc3',''),(30,'afabregas@simsanjuan.com','Andres','Fravegas','21232f297a57a5a743894a0e4a801fc3',''),(31,'soporte','Hugo','Gallardo','21232f297a57a5a743894a0e4a801fc3','ÿØÿá\0$Exif\0\0II*\0\0\0\0\0˜‚\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0ÿì\0Ducky\0\0\0\0\0<\0\0ÿá)http://ns.adobe.com/xap/1.0/\0<?xpacket begin=\"ï»¿\" id=\"W5M0MpCehiHzreSzNTczkc9d\"?> <x:xmpmeta xmlns:x=\"adobe:ns:meta/\" x:xmptk=\"Adobe XMP Core 5.0-c061 64.140949, 2010/12/07-10:57:01        \"> <rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"> <rdf:Description rdf:about=\"\" xmlns:xmp=\"http://ns.adobe.com/xap/1.0/\" xmlns:xmpMM=\"http://ns.adobe.com/xap/1.0/mm/\" xmlns:stRef=\"http://ns.adobe.com/xap/1.0/sType/ResourceRef#\" xmp:CreatorTool=\"Adobe Photoshop CS5 Windows\" xmpMM:InstanceID=\"xmp.iid:586F2B7E1A3F11E98424F8C387FCBA79\" xmpMM:DocumentID=\"xmp.did:586F2B7F1A3F11E98424F8C387FCBA79\"> <xmpMM:DerivedFrom stRef:instanceID=\"xmp.iid:586F2B7C1A3F11E98424F8C387FCBA79\" stRef:documentID=\"xmp.did:586F2B7D1A3F11E98424F8C387FCBA79\"/> </rdf:Description> </rdf:RDF> </x:xmpmeta> <?xpacket end=\"r\"?>ÿí\0HPhotoshop 3.0\08BIM\0\0\0\0\0Z\0%G\0\0\0\08BIM%\0\0\0\0\0üá‰È·Éx/4b4Xwëÿî\0Adobe\0dÀ\0\0\0ÿÛ\0„\0		\n\n\n\n\r\r\Z\ZÿÀ\0„„\0ÿÄ\0¦\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0!1AQa\"q‘¡±2B#ÁRbğÑr3áñ‚S$¢²ÂC’Òc&s4%5\0\0\0\0!1AQ\"a2#qB3¡RbÿÚ\0\0\0?\0×eûGä!Y\0È€d \0È€d(\n“ e\0¨\0¦\0Ê‘C(P2€d!€ÈR2(d\"L„d*”\"†DŠFD+\"‘ˆ2(d@È¡ˆFE‚FD¨V@2€e¬‰€È¡‘*@2€d \0ÈQC*@2ˆ2 e\0Ê€dÊdªP€eT2 dPÈ„dR²”*‘\"†DEˆU# DHÊ+ \0È¡‘\"à¬€d \0È@¬ Mª€e\0Ê…e\0È• @2 d @2d 2(d 2(d \0ÈÀe@Ê\0ÈT=+ \0È‘JÈ@2 P2€d*P€d 2!Y2 dÈ@2Š2P2‘C 2‘C\"@2(dB2dÈ@2d \0È$d*P+ \0È@2d \0È@2\rªŠ2€eT2e EˆF@2eC&@ÈDŠF@2¹(@\0€d\"E€d@Ê¨e\0È•@Ê€dR2	YP2 dÕ¬ªPª†Q2\0È‘C 2LƒjP P2”Ê”åeãbWîäLWXã#ÁgnÉ¯ËZémğåz§î/L¢áF 9¸;ˆ¬ñğva¬ñî¿C{óáËu¯Ü±vê¨G H‰˜’,€@Apwaxû?°Ûi‡¯OCYs|¹Éw÷tP}ÑÔ,g 9„Ãsä¼ÿ\0íoùwÿ\0S¯ğÜéÿ\0¼ù•Ñ\nóñãm±mÖÃIH?8ğr«Oìv“ËÍÙın¶ø®»£~çöçPÙU“8¹S\">İŸuÈşq£rÕ{zııvñ^>ÏG}|Ï1ÖcäÑ‘Tm¦qœ$J$ß%ì×y~Mµ²ùJËyd2€d*@2€e\0Ê„dÈ\0Ê•(’•ÊQR2 d\nÈP+ µ2@2€d \0È\r©2)v¦B2‘0I£	NZF!ÉYÛy>Z×[~/v~àÇÏÓ`lÕì1q§áÕ¾•ò{ÿ\0°¿\Z¾§G¡÷³Îlîn«Ô¯“Ù<˜—1¦VzÆší ¾nİ»_šúZõk¯ÄeÖqÄ÷_\\ã	›;ÏÒÂÃ¤‹YxX÷RlÃ²ÙL´ge±>\0jVr¸W·§×úpa8ÍË‰ûÜÜr!K[šå ÑX¸z§\"D4}>móRlİëğ¡(^\"d ê\"0ñ!nWªörõŒ,ˆN¬»*2ß	ã¬Bï§u×íçß§]¾cÔû_÷RŒí´õ\Z£M’Ò2&/Á‹ê¾ŸO¿Ÿ>ow¡:½‹ª¾uHN$8 ¸ú—Ñ×y~;mp“jÒ\rª Ú 6ª¡€dB2Ú 6”RmT€Úˆ6m*˜&ÔAµ2$Ú™0]¨¸S&ÔÈ]¥LƒiDPP€dÔQµíLƒjdTÈ6ª\rªdÀÚUÈ6©m)•Á—Y\nj•¶°€&DòK´“$×7%îÏİ_u¸øì¡\rĞÒ\\´äø>Ï±w¾>w×õ¦“ÏËÎoÉÎ»ç)pËÒ@Åõ^;^ÉºGLÒ1ç(e&k\0ÀpÚbD¹j³É¾5©—‹Ôp2¿ÛÃOË:)WÅÖWnŠò§	JcdÈm2añ™Ô2×Ï§ÛMpØL¥÷¬Œ˜;ñ\rú,]²ï®•§—ÛVdôÚ…Ô\r dÿ\0\'ÓëXåå×‡“vä,Œ„7˜×‘&óŸ»k³Ë¾ŒÛ1•™S e\"ò ;’é+ˆj¾Ú-şR¦:qäµ+7W¤v?î)éôÇ.¯zƒ ,¹Ì§â[Á{ıjëâ¼Ç«7óÇ‹m9TFêd\'\\ÃÆ@¸!}}{%™“¶–|¥öŠ×&xd§#ˆ§#ˆöS‘Ä{)ÈÀöS‘Ä\n‚r8”V™\\Ö‘ƒ} ¯$À5ENE€B*äÀÙ¦LÂ*æ˜\"™1	°&Pÿ\0hø+“Û>	ÈÁ}´É±2`lL˜‚dÀÙä¦LTO$äq/³#É9/ìKÁ9A¦IÈâOh§$â_h§%ÀöTäq,isÁK±ÄóŒTæ¼	ì\'3ˆöS‘Ä{IÉf§{A”ä¸y‡î÷rÛˆzEŸç1ÈœHGùt×UóıŞÿ\0ıcèz]y<¬)Àû¾ìä BB |bc/µ|›_VGCÓûläB$‰Ö5èOÈè5\\vì‘èëêµ~=\ZÜh‘8[T¡­sÜÌ|^ÃÑ¯Rùë8÷ÓÔ!´˜ì9q$‰\Z;ô×ÉÖåpß®Ãñğ\"6\neX˜c2¹·ø¥¬.ôêª§&&§ŸÉ1¸ä|ÖwvÒ×MÒórh×€C9?ÓÁy7ŞJöé¥¬®µÙ˜ÙQ1•DÈT*éÜ›ô¹›{^ŞœDF8GŒçÓÓ¡›ä½3±æ½9so¶±Æã à‰Ìî ø¢?bë§f\\;:lU·§XĞ/œ¨°Á„8vô»1\ZhWl¼Ö=\'ö×­ÛÓsOMÈŸ¹‹”A¢B^˜Ëœ€àÒ>Ûêwq¸¿o·ÓÊf|Ç«±_]òª™#Bj5DP!Üªd¤”Áå*j€d\0QB{¢±†ò)Šµ<€íH¢UBÆQğRÂSã(>¥fÊÔ°+	Æ™„÷\"¯\Zdn‰ä¦)˜ÄòJ\0J è˜3ƒ½Ğ§äiœJ¸Lšep„6CÁ^4»+ææU‹nEŸr¨™—ò—ÄÉ¯›‡õÌlÎµ‘Ôî™¦ZÎÓ¶1(F#Y_íß6×èzµÄÁİ¿Ñ+™…—T!®\" yŸ\0¼›½ı=_—s…\\|—‹m«éé×#^•‡~1®Êâò‹	p!ùƒÉr»Ù]g[+µ³k2¾³¤c`1ÄhWYÚç·[++·º•£ÙÇsYeTØ6®ïÖv¼ûzÎ¯µ»#6ªã~D4\0\"êYììÉ×ÓŠêãÓ0#™ñ^M«ß¤‘ñàkÛ1®¤aÖ\Zã–VWO–İ¢M¨Œ¼õ¦½®W¦0úŸB¢Ø\0 +™ĞÅ·ô®úö¸ïÒáû‹ û1.ğ[wKÕ^ÓÀsìêîËçwôa“Ğanl7^aMd‘-NÂ †-ñ^œ¼V>èÙÃ/¦Ñq”¥¸ùÇæ¿AÑ·-%~¿^;Ø»¸x®ØrÈ$x¢d…Ph€pÈdš\"\rrMeL‘hˆ]Fˆdh¢Jº¬‡)…ÈÜS	‘¹0d»“éƒ!Êa¡è@9LÉ0d/Âä¿$R¸ğLÂä„«„ÉF\'xäŒ~ŞÊ“ú¦qó2 .ÅÆ•ßÖ™ì\'9?®»ôóoj¯¹H\0Œ¥.oÌ¯Íîı&‘¯‡n}Ø\r‚òm|>Ÿ\\t8Ø‘§%åÙìÑ·‡µ˜ñ\\k¼kW\rÑ4*y0³‹Š,¶ Àm¤ùò]5ËHŞôÓIˆ¾@3ºÛ‡k?\'VHúó:©bÇmvÂ¤ğÈpoÄ,ño“;&–\Zñ+67–uãO‚º³c#;œ˜ÎDvĞ!¹ñ]µ¸yû5ÌyTèóèù’Ê§uq¯vİšÄÿ\0NÒÿ\05ôúîcâvëŠõÛŒ«rú,g2ú0Ëî_|/ì$å+­öä¾†_?öÊdÀö¤ÉÈÁ=¹&Ll²dÁ6r`l)”&ÔÈ6”06”É´¦Lc©•&År˜Qp6¨Ê³’²(ù ]<€d\"¥`€dŠ\0²)]\0S\0p˜2B©B dPÁÄşí[e}¬Eznº¥à\"òûC/\'»ë¯g¥?ìy>SÎA÷z|Òå~wè:¾]KDø0^NÊú}nŒ.+ÉkÛ«V™ì”OÎºêŞÄ¶¿Óng/ÏÁ]YÚy_Å²‰DC¼8-Æ,«•Î©6Ñê\'ÃšÓU±,]…ÙøÑ_~Y¹y0; \"^VÕ×;]´Ö°î¾2w:‡ÕrµèÃ3 ú˜p*ÄP´Ä:í>¶g­µ‘ÊÇ³Õùf`hm>&.½ıÃâûSù7ie:ú^F9ÿ\0.¹DˆæAÈùñ_sĞó—ÁşÃûÜéq|ŞCÜ	Ää=Ï$âr&ñà¯#xğL&I¸x&“pWHá$ÑS$D+\"†@… Ù2¨Ev¡€ÈL€d\nÉ2PPÀd 2`2ƒÏ?{¬5v¥2Ş`Tgl˜/\'½ÿ\0Ö÷zıŸü<ƒ¤Ü/êQ—å@?Ì[S§Ğ¾ï½Õòô7‡]ù/Ÿİ_Wª7«#^<™ì,YduáÁcjéU\\õk ğ	*áoÕ\'#_ÂºÄÙf¹Ö¶ˆÆ÷L9$¦.2 ¶Ÿ/ÅbÖäğÅÈ³ó¬ˆØÉs±ÒOÀ­KŸŒÕ	»Íw;¸îâÊF©U2ü«àí¡;„¾L½ı_‹ì\\×Uûk¶7dÔ$%k„á/æØÑà¾Çõûy¯‰ı†¹‘Şûkêò|¬ÛW&¶™Li9Êr^#Ù)Èâ_aNgì§#‰=”äq\'´¯#ÚNFí)ÉpCYW’`ÑğNF	íä`»JÓ8.ÔÈ6¦@Èd2ˆ²d# V@2Š@2¨2™ òÿ\0!3cWDéXÏê»\"v7•po¶kÃïíüd}ëõşVÿ\0‡™ö®,EÉ<F­ğ_wŞé@è_†¿Q‘\'ä¼Ñôzk¥Æ£õq`\r¡^|aë›Æµ8s„€âGz,áÒlßÇ„E@Hi£¦0—eÃMS»`Ô	¦fŞÙ\ná“\n„¶™ƒ©ğïZO„ÿ\0¤Ç$ú¹Ì•çU²(¯ha©ÔV8·®Ì|Ê=F@è4b±‡IYòºQgÀpETœ‰”N±]u¯?cÎ{Ğİ›ú’¤‚H\Zú›ûÂú7Ãä{\Zâ¶f:´në†©ƒºÊ¬Øw0ÄÄE}?Nÿ\07È÷gğ{`}wÇ\r<„høªŠ\0€€L…B2# D *™Iƒ#q)ƒ%yx)…5–ÜÃ*@mC€d\"@¬€ÚŠ\0È‘C 6©2dS dÈùû÷×­eçwúYı/Ma\\@õÙÊFRóğ_#İí·n?‡ÛôzdÓ—İr.Æ5ÒŒ}QæÎËçîú]W\rª;’XÇ	Û?Æúñ\\wÓ/N½˜…£»úå2Ğ‰kÅÛåÃ‚ÍëÊ~ÚèºGîUrÉ¤˜4×ŸÉsÛ¡×_gòïú?yau\Zb`ğå(K†İxzôíÊõ}NÈçD‰‚$\0åÕr‘ß]¥XêrÑd¸ÅÚKN—$§­ãc›ä\0:‡:„š×\r¶Š™}ûÛÑ™¨IçÃ~k¤Ò×+Û†M½ã…tfaY™‰õm×hş`xı4Ä,3±s\",Œƒò\0èW-´±ŞvÊ«Y2²L}¯›*g.[÷8±è¿¨²@X\'²¡Ì’\nôô|¼>Ü˜Ëı¢–t;ËèDş’;å‘iÒ1‰jxjJú¿fºï3pøŞÇNÛéf³/¢İ}ççm®$*Ê€r˜2Iƒ%ÜTÂänòLSCH¢—j™0C™L\r…\\˜$)•+\"†Z`Œ™\nÉ”S*]¥2`mL¦Ğ™\\@2 dÔÊ©”™&@È¡+(„dÈù«÷V‹«ïş´e¨‘„áğ•q1_ÛŸöWèı;ÿ\0N¬N‘ÓòÅ8™\0‰cî„m¤Ä’^[¨puæßhï¤¿)P$®Ù	@–€Óäb‹Í|½Sø’êîÃ7ÇğÀ@Kåª—«Rvm~!ù]K»s¶Ï#§†v7{&¿¦Z-M$ø¦v·á§Ñ:ua\\%	[ú¥U3„¢5;d5ÿ\0á*]¿Ër_ÆOï#ÕèFM’œEÕU7˜‰ğÒEøx®;uË3ğôtö\\âº®èï\Z¡‰Q†&f=Ö#^N9¬ İ)ƒµ¾\Zôÿ\0˜ïÛÙdÎG]ê}SQ—eXº³¶\0üGé[ÒÏ¨óm-ùª=/®öÅwF9–¯†\'è]-ßê8qÖı»^»Ğ¬ŒgÒs*ªÆ0”h°À‘ ÅÄ‰â\nÏìÚ~[×ª_ŒTâ[Ærq&$‘e›Û–ç^>õÎà§Â»sr¤ÓÆ™öã\\c3µ§-Ñ”‹ƒ÷b¯_^›üæUß·}><°;¯3¨tšz¦h;)”eúS§åH\'î¿Òºéu—\Z¸öò³5×ô¯Ğâô,j:(ÿ\0©ˆœ¤~èqÆÉ-à8¯&ü­¹}.‹®&>Ş“Ó÷KS/#\\w0¯×z›ç«[şƒ÷ôãİ¼ÿ\0úXØ½y0MŠäÀ0L¦	±2`»\ndÀØTä¸.Å2¸#2¨FT.Ñâ¦TàÊU‚˜\\ƒ ˜L‘Â¸µ\\³´ ]B b€Ú™Aµ2CjepT 2W e\0Êä 2\r©mLÿ\0}è8½åï\0ÑÊÅªÃæbõÿ\0é_#ß×ù¾÷õ»g¯ŠÎídJÜ}³öëÇİÑÉq _?Ùÿ\0Œ}[şUŞË¡aæcY‰Û)XÆ$D|Ä@šù¼±_Nuæ3¨í|6STrqâ^•m1ó¯fVuqkáÓ‘°SV«\'FÚ\0ÿ\0ÄÊs¿–¦²ı¡Òk§\ZÛ4ÇË!ª“%È¼|›äÛ\\FGíßL]Jü»¥)ÚH€•œLF€‡ñe×»|ÌF}n¯6× ÷,z‡o_´NÃY5üÑÖ:üBá®ø±èìë—[l:M“é4!½ØF_˜šh5~[v/>Æe‘wCé¸~³W\\OŞöÁêçfßEéÕOcvŞd±¢=ÂÄl”c«jt+_ìW;ëj^Û}K§HŠz”¬¨Øä{¤™2Åì—éuëÚàì.‹‘Öÿ\0[ÔÅ“§ŸÒÑl6™’@ˆ”F‚1Úëw|k‰òÇ>[ıc\Z\Z¦	‰K`<Õë¸òÖúç\Zºİéø”âôêê§ØÇ¬ÅáÇR9üJóó·k—·M8Ì:loòAfrHD•úïëµ³£Wá¿¶Ş_gl%^×Í\n.Iª&FªƒTåª2\0ÈL„d •E™@È\0È(@ U2 d VL“ ÚS!v2¼FÔÉ€À B3ÿ\0ä7A¶ÁÒúÅr1-£ÀƒîDı«ÁïiœWÕş·³ÕÂvîi¯6šôU	ÉÏ\05_+Øø}^ÿ\0\'§tî¡TB\"LI“\rËÛWÖë¹t¸w`ú<÷€¹W§ØYWN®¢}Ú‰êCü9>¡—“(‡ôŸ‘]tÖ¹n·Ò±}»ÉiXÚ/÷-m<;uk†ì£+\Z3›GÁsâë´ğ¯‘9wr;«‰i×#ÄÇù¢|Æ{*z1:e•jÿ\0D¸Fc_©36ü:>.³¬Ö˜†©ŸòÆ/áŸeóª„O¹7\'ÔJe«teA­¢fIÖQ\ZëÇDÖ¹ì£ÓÁ³«@XA‹È“É˜¯\\ÿ\0‹†|ºÚk…X1öÇ¤ÎG1ø‡Ø¼úk±ÍöÄÍjÂ½Œ?”ô/ÛõëÇY?ç]ÛóŞíù¥e¼¹†L˜™@É•™B2¹PÉ”¦@È¡“(FW!YL¨Ú™0M©“	v2¸S)€\"™\\b™06…r`2!2jdÀerƒj™\\Û<‚œ—8TTä¼J+K²ñ)‹&WePŒS ÚUÊ`mS&ÁTq?¼UãO°ó%xõBÊ¥Gÿ\0¨dßùI\\=ŸøW¯ÒÏì˜|ÿ\0‹	Ã(Ü4„i\'Ãqø¯‹Úûİ_/[íŠğı˜HÂ2“T€2úJùİ×ËëtOÓ/\Z¨ƒ!¾kÍšöqË/«uÜÂÃ¾0DÎÉôÄkª³5¬r«±.İ&Ù™s/Á×«Yãn“§B¹¶Ş\'@kİ­ğØËÄökˆ6XÚüRÈšï•¨®Ñ(Ïî³…Ê¹îÏÀîtŞ¥ØÆTZ7cZ@.—æ²ı,ÆÓü»\Zòğ,§uUÖò6…œ³Â³2=¨ÌÊºãò 7Ö±•³Ã?\"á»ÛÖO£r%jG›j©Ó¨6u\ZëÜA›‰HxmÕzu¾¤Íu=6ÈÍİ¤i¬îcÄs?Ázÿ\0®èåÛ/ãËËı§±Ã¢şo†ë/Ó¿\\˜2dÁYE&ÔÉ€É“jdÀÚ™06¡€È`0@2d2ËeÚ™É“jeœ\r¥\\˜(¬©Éf§{Ag›\\Kí\'3EqS•jkÛÉLÕÄ\Z(•É´&SjdÀØäq&ÔÊ`›J¹L\r‰ÈâM¡2˜bw—lWÜş•+}‰Xc:­mÂ3pã˜YìÓ”Ã¯OoëÛ“æî¥‡oOÈÍé–+èÊÈÅÚ^É“³òuñ;uÆØü?AÓ·-s>İouÙÒe\\Ÿòô#šğ÷jú];¶hë÷õ¹`âÊu·ªìƒ¨ŒOá€şo±qááé½ßH;èş“µo¯²Ó”³ã-¤ú‰—5¾™œû7Äÿ\0/8Ãï.£…Vp‡\0ü—²õÊñÏbÇqÛ¿¹Øˆ{3ã t×æ¸oÓ^şŸo[<·òu:5ï³ Ş˜Q? ë”êµ×gIöƒ¥~åcu¼Ø`ôún7Úv‚bÀæ>\0+·Mkóo‡S×ûv®«Ó?L-ös)Xw·İ²#Ÿ‘æ¸ë¶+µ¸™sµŞY4eO¤uXœ~¡vÎ<|%ÌIÙ×÷^Ù³°·¨	Ö»$5\\°m³>7ï&G‡÷.˜yv¾KÑ%Oú¬%94`\')“Ú|\'_ŸB=¶À<ga—ˆŸjûßÖk»5ùÏï6ÿ\0¶kø=¥},¾.ÂœŒ\rŠr8Šò8Šr^%ÚÉµ2`Œ®L\r¥2`l)“Ú™06¦L\r©“Ø¦N#bep—bÏ&¸—j™^#br8—`NG²™\\EÀb™L\r¥2q‘Ä»’ñr8—hS+€Á2˜\Z BJ±ÅTÀÚS&Å2¼FĞ™8¡\\¦<~åô£‹û™‘\r¦5eíÊ­´sdFæÿ\0Š%|¯vck_oÑÛ:D¸İ3¾ç”f\Z9UBÚÃ°vi·ÿ\0\nù7ku}m\'–Ÿt~ƒ£pÄT%kº\0·ƒğYê¹ğ½+º0s¡*¬É„2„¸Iù]vÛ\\&·’Áí®¨ó¢øâNZÄÕ cğ1\'ìR{|¯ú¹V?±½FÈ©êNƒ÷‰„·\0Kp®“Ù•ËWi]gDı è]3ßÌ¤çß¡Z6Ã^BŞ¹oß~:ú0ŞÄÁÄéâ_§Ç¯3m„_Ÿá\\®Ùùz5œR£8ËvÒ\rN…ÛÍI¬.îºº_¨dBÁGTÅÓ’85öåı\'ê]fØğå3œ§éTu,Lja“3mVÀÛÂQ-¬dßQ\\/ËÑšÓ±!. ¾¿5%òÅ\Z•Ñ±3ò2îÊ¨[M`ÆNÛä]ôn\0/³ètË›f_ûgm$šÜW{]U\\k®À4aÀ ¾¼ñğø;[µÍóNÚ™L\rªäÀÚ™0M¥2˜&Ò®L\r‰ÈâQQ<œÖjw±?ø¬^Øé:v¢TÊ<B³²_„ÛªÏ“}µ®LñØNG°)Èâ]2qTÊàlNFd\\CN\neqN‘à	S”&´F¤ÚñRöHŞ½V§³B¡=âR%¶W)ìfü:ÿ\0¯ãå cÅv×y\\vÒêE¦Bˆ-“&\"†DÀÑ!€d0L¦*<Ó÷Ÿ·½Ülã¦¬é³å©4Y-ü3?Zòû}|µÏáîô{8íËŒë8ÖY…Nv9\"Ì²2ˆrj,K|Á×ÆcôlJÑÔz~%—µˆ”=Æpò\Z}+–¾+wÌyŸxşİgâßfgFQ;­ÄõGÎñ%íëî—ÅqÛ¢üê;¥õ>·Ÿ<\n2ãDê®Vtj!÷ƒ>ªvø4îÛW©vïlw½Tâ]‹m9e@úë¸ˆAµi;¸ø/ß\\½ZûşÑ¿Wjwöd¯N]TrÕ½’—¸[ğí\Z|ÖnÚ­öçÔbwOh÷ïM§ÜÃêåLDÎÈ1Œ¢\0å¸ëªºo­Iìgæ9^“ÛóÖ3¨=K©{]0z²R\'‡¢;||]zm×XºÍ·ÿ\0Ã¬êİ;¤U\\±aíÔ\Z2\Z’ÇMIâ¸]­MµÂZægTÀ‚@~/£¬HÕØîµ1EuãÄ³€À+Ó3Yì¸Ó²°/oÒd\ZyW„‹Gÿ\0_¦õ4ã£òŞöü»/øo/KÈ\"!Y2™02¸Y§é±1ÛÌ®÷Èï§E­*©®áÍx¶Ş×·]$.Dk0\"E‡ŠÎ¶­Šö«ƒ™o¬H]å¹bàÂqd¶™i·ËxÅÓJ‚TÌjÄğ!uÓ·òã¿Gà‘ªrOÁtç]ü1o ‘Áföë>Ú[~Ê2„2Ü²ü1u°İUBÆC«*õş¹øM©‹ƒ[EõX·kö³MgÑÒ¾ØóVü\Z2g»‹GÀ+ÄÉ±÷l&M¸+™×ˆ\'ˆW)ÄøˆÊ§?&æå‹àºfy0FR-ÿ\0ŞvÏ·›n‹ô—ô—î,9³¬ÿ\0±ªÿ\0­²$¬ŞW+×´ú#­9ĞèdnL&C”\\Ñªb™1C2¸¥*e©­S‘Æªr8*õZz}½3*®¤aŸer†T¬\"0È1ye½eÏ—„ô®£Feı>ŒÊú†%²¦90õFÚ	1À¯Ïû]\\vñğı/«ÛË_?+ıG7#¢LïÃÈ‡ê0¦ÿ\0v$í”á,ËÏ|ùGÇ…Œ«ëÌƒÂm§’Ş\ZÓ{9=3¤gfÇ#2¹Õ˜#*¿Sa¦Ë+Úc9@ƒ-4[ådzg^›ù°Ú?l21å:peàA¸BÙ—¦P)w—æF¯£¦<[/²ÿ\0r`Ó=åÔeYÖ[dNƒÎÃ%´Òÿ\0êÄõtŸ;øiÙÓ§9UVvvWUÉ¨˜ÂY6>²ââ\" ÿ\0Ä¹I\'ÄÃÑ:tŸ\r¼\Zı D@6ĞäÁgk—>ÍçÒ±e×*­—!êÓ€X¾+Ï·˜Îé5Áåx]DÄÌîK|a`ÇÄ³®uÚ°«%‰İtÇà¬Qş{ı>Œ¼^ç±Æ=Vªkª¨S\\v×\\D!Ê1ûÒáù»ææœÊå02`Œ™0¦Sè×)Éù¬íÙ#zõÚ’‰ÓVDDÆğ|9.;ív×Ã¿^“[å²-¤Y©‚åìJv722z¶DaÛÎŸ%êèÓ5Ç·|FE¹æ8/f½^^}»|m”\'!¸DğK¦|&»cåk§õ8×‘(Ø\Z2?ŞŒÌÇm;|ùM\"a•dª-¸¼G\"\nå<Ï.—ån9o¬€F‡Ásºµ“ee2Õ£&ç¢ÔÌfâªûƒõG·âÁ—O¯òÎ<ü3ÄËè»áœŸ5bVx®Nß¦¥ÙL5“}è¸Ü@WŠs‹ê4Õ\\=R<O%‹Óo’vÅCsÈ—Ô®ÓF9¤ªâƒ¬m«SeÜ)\0HĞ\'Íqìn$ÍÌ®ºˆ|ğYêë¶›ï$d«\rr†\"äó^Ù×3—ïii±¸É‡š¶~ñ~S×v9ÙKhşn!K¶Ò1úµµdÕVáÙ“À¹Îëøoıx’fo¶Q q×‚Íö$YëŸ^e#p8ä6ö?Ãs×ÑMÔ¼Ï\'nÛV¿NºÅz#+2\0—&?­î!¤ÍkJŒ\Z\0ò,¼sk^ŒH¥—…-ÂØ›¢~¾ß§-úşØ}ÉÜ=\'¶ºVGWêömÇª-UCïÛg(@xŸ©nïã×OËåÜÜşâîÌÙË.óOOşŸ²ÕB<œ½/2³n&±Û}Füq3\\ˆ;ÁgmYyûg(ôtíÅéuƒ:úVX!é¼×cè}»büÅášbØ÷İó%t½]¬\"½alZ±aÓ;kse^íNãÄ-_.šmcg2Š£dK»?Y²½SÚŸm˜õN­³¾è× æÇèRÍ“÷ë~Çœ	üšÈ?ÏÅş±uj÷e£Œá$“Ä©}îj<òlœqã&óHå³şYÎnW6Œz…·¤\0ë]Zİ®jöï5×	»G¨Ï§ÚrDl¸ştOG>ìú÷câ{Zòñ^™^e6S«;¡`x¯tÛ/›úéUXâZ‰zì,2h—	Ñ\\VJr)që\Zè¦	““\nëÙ_«põÌrK–¹Ú»İxÅJ3fÉÍÀáâË¶ırùŒi²h[1\"@Ísºøj|µ«ÈÇ$HÌÜ]xöÖ½2ÄsëuUp®^¨»n–µõ®Ó,mİ%Â—]²©Y\\á\'‘§1â½¤³2¸ûxeÊN<ÊöGšXuP­„§ÖD¦‚Æß\rê¿aödîL4ø¯7dòôi|\Ze!.^_||¥·áÜòZÊag~/éŸ_uşç%ËrtÌÂ±‹ÓÅËİ)|<U“İ²†SïIe¹\'Ûj{MK9bšN®´ÈŞAÕ0e<,$.[jé)ñÎ•n 5<ÖN~Wöãáí•²rVæ¼clŸ\\jˆİ-eÊ<¾k;[ñHŠ^©ø¹á›äùDr+2®ŒNå«REºnº—1$nÔ®;I³¬ÌY§¨Â¹oõ ®[tÛáÒv;%“k™kÈ-I4‰µ»Uì)YÜ\Z`ú_šóöüºõü,[ú‰F;H+¼cw.g½?qzhaF]Fïw6qz1+ÖÉŸü#Ì­k×Ê³Ÿ˜¿sqú§wfBy\0Q‰KşŸ˜ÅøÈr+ÑdŒëåçWKŠá]bïGÛ°rbç]5tæYm±‘!Áo;¯œºËãLí^¯WRÂÙf ø€\nòwi‡·£y[Pé‘ªÂ°\'B¼ÜŞ©¢ı=\n¬†hå BÔÙ.z{tWQ”à|•åXãäÛ(\r hòË•Ùèš¥Å®5ĞmŸ? ’åÏy†&Npˆ²ÂZRô1Ëë[Û\\Ü1¦ØòËÆ¢y&Ì›µ®\'IhC\0|IuŞ	·)9íŸ¨µ„şéÁ{º/‡Ïö§ótX=O\'jŸ¤k²ZWªmcÇfk[¸ñm¯ {S:	qûIØÍÑ¡u`cÏšôé³‡f§S\\cæ|VwÛ-i¤‡ÎEØ,ÈŞÕ©Ü\\RÜßw¯&oe§^/Ãñ¾bQd%÷K.x³å×2ü.Z„å†x˜gôpKr9Ô2×IXº“puS›ÌxqSåg…Ün©:¡°ÀHq\\7èås—m;pCœ-“ÈyıX‰;%¥±—áK®ÎRl.ÜÙÖrª‘ˆx¯F\\0%/Ã…MM#Œ—=÷tÓD²\0òĞ.rºa«ƒêjmYºÄ3©…Âë7sÛCZ`0àµ˜Æ(cÁÒÓ	#y3¬ÚÔ‰\\.wgI©€—`˜<Gƒ¬ÚÜÔéøT‹I%Ä¸)f~8ùHÕÍc6:q”†–Ö%jv~RõşUŸ•H—æ@x¬íÕ®ßm´IŸÜØ¸˜S°‚oÛU^2øøkÍ¿MÖ»i¼¯?p»?¬u>·>°2}ó“/Î²>†Ğÿ\0O€]5Ùlr_ö×®ÃYx¦`eUn&Ã‹Å6Û$*„¥D±Bšã³¤ht¸µëÓV,â$a.ú–[t©Ô§ÓóD4Û2Óa\\÷×1×¯n5éø¹õdVBG=\nğm¦G^Ì·02Ìc¡ˆaÅØ…$9-ÇªÙ¶Bo¨õ1â•e?u‹™0gØ|üÖlo“+­õJãW³IyÅ¹|Vúôûpîß>îU!TKÛ=\"²ÄÛY3—\r­økS‘ŸV0!÷‘Ì|~+8Ûm³‡¢]t×Šq-ªÙÎL71gòò^şl_3Ùì×m¼$•â%‰bteè•åHYu¬²îpëÚËd~ÅÚm\\î°ùu¹Y°ÂH.´”èMµâ¦ĞÖÂNáÖ3†¾PK_N‹¬ís½_‚Š­!İNs\'\r°†[cô.‘Êä›‰ ©TÉãOÅ–dkôÓ¥KY^´d-ÊÆ\r”O%fÌØ*pü“eÔïr{¾ñSsr’;\0êR&®ä=¶t×SÍš²Ìä‚eõà–&A†úÒRÂÆ½š]–k\rl|µİ´Á±Ú½j±!I\'A Yk\r«7ËYÁ®IòZKOE•†’y-% „‰Õ9DÁğĞ¬ÚÔğy”‡Ág¬Õ|¥ƒ‹o¶1#ğñ—Ğµ¨å3:ÏË7ÄKTO<~k–ûeÓY†g[¦SÀ˜‰i3‚ÎÄj±[¢ÈÏ.À€Òù%#ÎxûFˆã½‡X„ÄÄ3c÷·Mšs}\nÍj8[P;]µ‹ÁEhcÌÚ¶GìYµ¨ÚéÓ“ƒ\\„¥é,GÈ®{k+¦»X×¯¿17	g\ru:·ÉsıQ¿ÛWÿ\0ÿ\0FÄ‡·“\r7Kl¸zò+7¥©Üe¿¹$šp¡fF\\Ú5Ä‹ùÈòù+:\'Úşí¯ÃF¾¡v&?½›?s\"^›e \Zë¶°y|TùøøLáw£àäBêY?æZ@®\'OOõ&¸»MM¿·o²õ~æ®dŒzÌ2°âgn-„×&ˆ}	ñ\Zî“m¤íã‡WÀ†L\\Õkš¤H$7KÂAnT­İX¸ÂDn<•erˆBİ‡~‘´\rÅ\\\"ıİÅ‘nnM›qh‰œãğä‰äºk¾Û\\¶;w¹ºGpàÇ/¦dÆøiîWÂÊÉü3•Úm/˜å‹>[Ë*skˆÛÉŠdÀÜD%µQH‘G·uNXLd{!ı)Ïòq6På§Š²¦ø­˜‡òW)„R‹8.“g¡¦ 8«–q“½™¬ó~º»¹‡€\\]rd¦çNR!¬®Lš	³,ár]åÓK)	*I‚ù4D\0ËV¤…,SN«Q)£Š2ziÁKBğQ¥¾·ƒŒñ÷m‚\Zı\'‚ÍÙ©«+­u§ˆ—±Yü0âŞgŠçwnjÉËØ)1rg7¹·2²¢2;\0ˆ‡+PÜ‰û•ív#—% ÎéÒ5Y!§Fø+Pş½Óªê#/a†US€\'‘#Ò~Ebµ+ÃçÒò0.–=ÑÛ(zH>!p›eìºaêÔ¡iŒ\n\'*¬T¤jÆ1È†øPâdV³É\0<¼S8}½—“ê5˜WÊD,İ°ÔÑÒtü^ŸÑè”£ .!§»ïKÉùÎÛ³\rŞ‰ÓíÉ3ê=B&Ôvª¬ t‰úBãÛÙÓ¯¯>k;¬uÎáë=\'®ôÚx¸7Yex±;¥eQôËÏÓëôñó~^_k·7Óµèùı¹Öze=O\'‹-\'ó¬„e!$ÅÏ‚õ¼Noµ¡…_F¢Ü\n£Mp”´ÔüIgoåç÷,3-zpj€Ü³#Ëâ·†rëi0ƒ6ˆS(òŸÜê—VÉ=3ÃşŸ\"g!ÿ\0»hÑÿ\0Ã_JÍ­Hæ:WTê½2İ;\"xÙ5ğ²Ÿúd8Hx‚¬Ø±ï·?ºu÷6cusÔ1£Ym@Ê›,ãœ%ı?Bë7Ë6;Úòq®ÿ\0.ÈÈ@ëô-JÍƒnÒt[ÎXÁ%®‰\nPÑôL€H¾ˆÁÔªq–ÉL5”v@qBÔ¬Ø€ºÛ&‘¢¹Jlt>kU™àıú²Æ\ZÊI*ÆiºÓ’‚2]Á¹0d›‹ñL	U\n WeC7­âĞvWù¶øG€ø•›¶\Zšå‹•Ô³²t²DVxW\rÏÅr»eÖj©8´XGhV2Ö\r°íƒñ*<L¬Œî·™7n5>2³ï\\~±’ÔJÓ”ã\ZKW\0d<Ï%@W*r·»-\nğÚK~p×šQû…ÙÑÏèxı{½Ó­êÍ\ZÆÈøùHz‡Íxöœn~î­ùL}Ç’[(¸!–òX©e<ã¡æ)„Ø“²$!KÙÃ¾™‘9D	+t•±‡›—e‘§ƒl¤ï«O¯Ğ¹Ü:GIÒ»Y­Ò7ß)n…EÌb¦>>k–ıŸ‡]4û]ï{-éİ­‘TFÛ³Dqh¯ŒŒí-Ày.}s–Ñ×{ˆ¹Ğz]X=&œ04¦¨Ö<Ø1_bL>×5‰n]+¦õA!‹íZXpà.ß9-2¡ÚC\nxõbQ!*± !2Îût~\Z¨:Šr£u³nc\r§QµøæV£.k÷º† éxrl» öÎ\'Zë—\'şi}‹;U1ñYSè®Ü›«Çª³eöÈB¸\rI$è{—göİ¤FÒÈ±§“`üVyy¬Œ·Œ@‰ ÕJ³Õ²éf—¹ä¿ZÔ©cW«âÜÑŸåLò—‘[›1…Ó u~+HpQJeÉL†J¨<4€RT2p<V¥fÄ:ºèÉ>z¢`ñuDé ¦(x êAnIHP{Ó’‰:˜d¬‰Jé€®¡„99´cC}²oå3ğ;\\5#ÏêÙYdÆ\'Ú§ùÔÿ\0ˆ®WwY®„=.8®v· œ¤T’‘œqAW¨dU‰…<œ‰Q_ªÉ\0\rJã¸ïD/.d,¯¨Ë.·,%TÜüuWhG­âİNf<2(²6BÈƒ‚Š’#Û/ÁĞ:ê7ÇpåÀ¨M8|•?hæÕï]ƒ“f.lv[QàHáóğ\\ö×-M±æ0{»ö¦‹EUQix[ñ>R¤¼]—m/ø}.­çdÿ\0.j³İ:â:Èøú÷¬°ë:Õ²fÿ\0Ig»úÓn?=°i|õe~RõD¸½‰Òêô›OYÓêY½©ÁĞàô*(k‹£hØ¹m³®º¶q0+ ë<eÍ—-«´3¸,ÿ\0Vï\\|@ÿ\0¤èµû×k¡È³îçªöú}o·Ùqùm	˜Öç€âWĞ|·?ŸÔqº•§€gUs‰É˜f&%Ä5óbRğpú}™Ók…™’—½t¨UggŸ(Çø+”ÂNåë˜]½Ó¡F;Nò¢.g/Åe‡Ÿö	n</*ì›åuÓ6[a2œJÂ¢&,ÿ\0¥ûwÚˆulèÕßÅ®CZë?‹üRûäÂW U8Ïïh<8­DK7-«²¨h‚( \\|U‰SS•·7‹ıÓ¨ú¦ÌİZx½j6\0„¼y¹´fËò~§Ç:C|ÓÈ¢òÌRè¼‹¾>+83)†â’-¨%f®ºM\\ò7Å¸ëà˜\\©°er`ñ9C{öx¡‚ş¢Ïm‘æŠMåîÌp*¡¶2\"OÕXÜBaT2ºÄá)UYİhÓÈ%sÛy]meÙdí³u„ÎgŒŠóÛ—i\rDëÀó*V%‡r—û‘KN²-ò*÷g¸F>:5góníÄüE]bWˆ_\"dJl±ÚşŞşàO£ÈágHÏd\ZäN°?°µì¸=S>˜ÙD„âC¼Nº‡ÔqZ••ºç1÷hW‰}Ñ ó<Sño•ÂÚ¥¬H?B•cÖzeÕäàÕ; \'“#	ø¥fë˜ºÛ/…L¾Ê¯y¿§Mÿ\0Ø°è?Ã/ï^.ÏRê÷u{Ÿ[23:^M\0ÂúÌõ\rÀğ^=´Û_˜÷i¾»OËgtéU=ÕšıŞ!IZâ—NZH\0|Vm\\&ÎÉ§ü«Š`fÀ9$p\0y•$Í/‡Ú˜™ÇÉê§ş³¨],œ‰@éü¢¾ÏVœuÃãû=œ¶ñğ£Özİ½JéàôË=¼:Ü¬ÑÏÆøŸº¼ì,,£›|úOnT1ğéhäõK=[O=¼Œ¼GTÒ»O¡’ïlËÙ)¶Ûç.dıIn•u­QÍ³+\"DÊGAÊ1äÁc*ÏrOÇD·í×g©“ş¥™\rØIë®CüÛ#ÃşóZÖ%¯Tœˆ¶DfÃM°ÄFŠ²™1‰\ZÄóV ‘Ô¿Ì¨yÛ ãB9 FtáÉT(cçğU\ZyÛ\Z«dñáøyÓMÜöÕ¢#Är+®\\ği*å0d7š¨«¹e¼Ê…Ü „®Pn(\rÅ\0ASªgCS\ZÛ-+ŸÉcm°Ô™etíÓÅ…³\'t‰”¹êW›jë¬X”@åÏE–…‘ô–*÷›:¡ºñE-WT[İı‡Ü½O¬õ\\ê6^\'!*£¹¤`‘ˆ>zãß—“eÓm6Î«`ad	Œá ÄÄ±[ˆ`…lô~æê½*qö-&¡ÿ\0¶IĞqôI`ôNû±`ÌôOÿ\0ş`ªaÖ`÷×BÉˆl§›4€ú©“\r\\~µÓm Ã&™‚yËiø1er=;±zæ%ôÇ¥Ù!¹4	åõ ,Õv°„ê-ËÁTM!	Å¤¢x‚}fÆ¥ÂOotl‘ù˜Ññ0xı‹İ\Z_§m}çÚ‰ì®†$ñ‘òşğ¹ÿ\0«£¯û½Ÿáçıÿ\0wJÇ¼tÎœöN%¯œ¥¸nşPÍ÷y•®¿_YsßÙßiŠó¡f^d§Ó0löj§7(>Ÿı8y‘Äò^§™C±gnd\rÙrÿ\0L†±Á­á	Äï·ÇÅ_é¬=3¡ô¹ZĞÆÃÇ#ÀÃŠ#îNáÉêùÆëÚ£é¦§qÿ\0yæ¹«ıíN©AĞvj_Öó„×…QÉ¸r¡ê*ÈWµaãÑ‰]xøĞUTD!À\0¶ÍJa»WÔ+‚UlèhH·§Wø(«N&ˆº¨Œ¸ùjO		æ¨_p‚ü8PµÊÑIŒC”Ê41²å\\EgP>ëı‹¦•¼&9guâÇ3ÆVî1N8Y´(œ>\ny<ZbI\n ÷ÏÕ2ar˜\Z¦LS!2\rS Ü¨RT\rœá™H´bŸ ƒ“ê¹rÉ÷/“ˆ€EqğŠá¶Ùt‘{¦Ä¬r!—:Ü[”´aÅEEdƒùqE2lèˆdI2-À\"ŸëPEL¥¶ëyND‡QåŸº]¡,zÎFVÇLÊà5”yXÃÃQ¨òÑQ“S\r\rÚT2p\ZÄ˜Ÿ¢–.RÕÔº¼‰Ä\Z©…mô>õëXyuLf[dH1¾³¬H.(>ìÏŞÎùªˆÛÔcGstè°»ÙŒêÇÀzf[‘úSÛ{[º»{º:`ê$]P;n¦Cm´ÙÎÀë&Q±ìEUsïÜpè=,˜È~¯ Ğã%†æİ‘m²“‘s“!Æ\0?bm¦hGB<|~%i\Z™7â`ãNû¤+ª¸™Y#Àª”xçw÷Uık(ˆ“^Gò*ÿ\0Õ/3ËÁbÕs€™*\r^Şèg¨Ã\Z.eê²ÆôÂäUËÛzWDÃé=.xÑÛ\nõ3üR‘ã)y•Ö2y“âRªÅvbA™š$b8K*­Óí‰Ç\0|‚±,I\"Ä_Ş®BO-O\r~¥$ËE¡miz¾hE¬H;†²r~–rU­£oVTÁÑ™çÅz´Û1Ãi‚îZAÍ)3—QGº|TE.õ“ruPn@n4ÀÆë¹¡ã‡¬½V·‡ ±½kXÈê1ÛÒ²	à N«‹«G6zú€iÈ#š#¶/?Š¡of^\Z¨I\ZıH©,–Úå3£ßI”2ßË¦º¸èø•H€gâ²ª}O±û_¨Æ_¨À¯ÜŸ`=¹?‹Å•ärßÙÎÙ”ı7d@xn‰ûB¹L~Éöß•’GƒÃÿ\0•2©ñÿ\0h;N™<ãuÚê\'6ÿ\0Ê™L/ÚŞÉœXàkâ,Ÿ÷¦U‰×f:\rôtÉÙ‡‘ ‘÷ ~ ê¢¹ƒ×»s®×–ctÁ™õSg„Iû9„‘Ò:ÏTèù°î^‹WQ¯òú¦\nòa¿\\Çó0’ï\'¹ñz¯nÓ×ğîè-¨İºcXíûĞ“~(Èm*\"î^¿‘Ö:•ıFíj¬E|£ÃŠƒ6¬cşl¾ü€•„ø_%¨‹8P…p•Ó“\0	yh\0ITy‡}÷ê¹ÃÅ‘O¤ñáîÈ~#ı#’ÅªâÉÜxè².t—™Ô²êÄÄ¯}¶±i>\0xª=³¶û¡`Ç\Z¯UÅ¥‘sk9päIk7 +RbtJ\Z$b~À¢¬Æq”óZ¨¥^Dë?w—ÁHµfèz4ùª‘NÃÇåâ¢”ÍøŸöª†ˆnİ¤OğKV-Õ“Ø#â ½_A0ÅÇ\0·®ØchnáÉz2æQ/®R	H3:™\\°ø«É0”IE.å\0å9LÑ•r¨ï¾S;¦Z0TÎ9z§<‹¬È³YØL¾K†ÕÒ­N#¢äG„ˆˆÃqgí¶„gíÓXæÜ©®aËëÎ*4’z‡Ôè|ÙxH~Ÿx<K‚!•O\'JÒsm‘‡(ú¥ü3Qä9°¿,•b|:§‡Š‚Ôƒ.JˆgO(\'€,vñdÄ1aÍ@;ğÔ…FwWèx=[X¹uîˆ\"UÌi(K”¢y‹‹‹‘ÓrÄo‘.EwLŸ¿¶?—cx‘¡DM_qu.†oí#ş‘Õnı]~õÖ?¦LêX¹.fh·«`tz	rNgøa¤Ìı‰¯:K5ÜYmwßä.ŒºONŸı4FÜ›¢Ì?Êğ­sµc²frÕglL+òn®œh-¶[aêI:h¨öÍí*:ë6ÙÔo‘h×hã²Àsñ[‘+zb$•´C bİÔÚyŸŠ¢<6ËPAä¢­W8ÈÇV\'Sæªªl£n<\n¢+X`Xx(¦@»÷|~Ô‰O´4t‚UVÇ´ûà;m:¨µ»Wª2ğ*Ä¨HÚ»é·Ó†ï]pÈŞÊ÷S”î²ÂdÀ2¸”\nşha‹×r\r†?Õc}Agj²*bV\"œÜºåkQŞV\Z:$ì‡zÇ‡æÅ\'ËMyÈ‘\0t,)H|	?	|ÔTÆf4ÊM ~*b6âÄôª\nY·º5%=\"Q®S<e©U•½2ÇU£DZÎ¨	z¤|Q\r“™ïA$FœHXÇëEE!«\"^_R‹†ª\nıK9XòˆÚ,>Ù.Î5<Ğs}sœ¼lm¨Õ‘W¸+Òq–à‰–Ë2¢n‹Ò«¯*¾«d§nUØÃŞ¸Ê2€2òô¥îx)\næ{Û½Œ«—Jé¶0s¬ˆIçŸüÅKHó«%)àVT´S;\'Æ&S‘Ú\"5rOš_ì~Ğ‡G ff@¥l~ïj\'ş£Ì­ëÕLêÁi$F:qñ@Én›0×ÇÉP¢üPC•ìÔiÃâ¢¢&@‰G^`„Qjî?ËÉÑ*HÉçÁƒ3-Ú\0‹r!fª\ZÉŒZ^Mö µÇqü#E)XR3Ë“i\nè‰\0D;İÔ”7Éo[†lU:x¯Frçƒw™¦EË-$äA¹¹w\\*®VKîÄ9J¬ %`D‹›	:®6µ\"JbÑrY­0ûüÏş×Ë1?t×#ò˜Iò­œ)ûØ8¶ÿ\0=q<|Bµ˜´Ş’\0e–‘gÏf$‰àLGÒTŠ–ã¶¨\'A¯ÔªC*;¤ ú\\Ç—õ¡S{û£dOá,‚<Xï›üÔV†€7‚ Œ]ø¢Ù-C¿U+yê çô”C%Àòn(¦Gïp$Äèƒ7«Ó:UóÜ=ÚÜy{‘?ÅAÄw~M]§.¥Û]7&ëí9W¬‹›t;}¨mìø,Úaç–Úe&ø••6ºÌŠ£Õ{²£‡L:¯P¯ş®añiÿ\0.\'ñ‘üÇ—‚Ş±-v„r+hI8à“ö d¥´75°“\r~”¬<ÒÇ×Ä†>jÔ•ã¶!ùhTVFéQÕ#@‰öí&@¿§N<PmVt\Z¿\0®Q)¤Î·QIˆœ IàìTUƒ2:|µÑÈ*_’2ú;Îfz±‘b~(WEl´¼x•PİŞ¨©…[‰×ä«*ùn8×M™±¼˜&‰”ÂgQKªÊÊd	‘ŸÕm20Æ‡z§ğm]R!ÉrËfâÍàü’Š=Û‡<¾ÛÏ¦\0JRªF#Î>¯à¢©v.\\²ûk\rÕGo›ÇE½«1¿\\ŞÃr6•ºŒÉÆ®½¬²nzIşÀŸbÖ@yËFB\'Œ¶Úˆ‰ùDj?Š$L)÷¦wCü‘p`\0\'š*Ä¥$DÄCm‹¹àêebÀ2¡Í«ı($1\0x¨¨§÷„‰ÓÁ6ÚAÑ “òæƒ…ï¾í¢¼kºF,„í´¶UœDòê?RÍªóŒ¬›.‘”äg3ÆgRO™ÕÖUp\'ÓIäˆôŸÛşÆ\r¯Ô¡éûØ˜òO+$>À·\"W¡Ïõ­! ‰ ŠZxDa§©*)â#_­r“?!1Ëâµ(\\ˆóâ®²0³`İ{ùlªØÇ—¨m?bw2qÊ4şğ£ç‚D­eÆ5<‹>Ÿ% ÛlÈ‘¨b «Ô²=tÀà	ú¸­f¬GĞéSL[ğ<4ƒ~ÀA?$©¥h6·Uêdñj²u°¬ø«­À¡\"»e¦Fÿ\0ú¿ó#õ®¾:ş¡şkÿ\0›­?t?Pÿ\0@³şhú÷ÅıeóĞ§î‡ê$ºŒL¥pˆr[OÜ~§-Cİu¹‰ô‡’ŞÕÊD–í•r’Ê¨aeXä‚å° ÀğcóEq=‹e¸9ùı*ÏOµi0}2:äµQØûd_X¾Óñä³UGªJqÏéñˆ;eeä}²b™º~iÌ¦FCm´ÎTÙ41@·´ï¯Vw°©@ù÷qĞpT_®;\"À1P<Á‚¨xÔS¦=?`Dğàè\Zliğù l²\"X\r>*(ŒÜxõ ¯‘<|İŞê:}RÀéóÎ!¯´j*ş¯±fÕye·ÊNI2‘$™x¬„ªÉ™ÊAì^Éu.¥YãÕD‡ù„p”¿§ÃÅjj–½.OÉ›È-¡¶ú Š\rÅùªe¥äP7kì8èŠl¢$ÅAX‰U.M®¼Áªg+‘cø|•FWZÅ¶0§\"°M˜–4ç¤ÇĞ£LŞå‘Ç7U¨ÿ\0ûiÇİ@4ZDdüô,Q­´Ê³c¸Úd.ÉôŞ§Y©‰wàÅø2²•[”­§\'\\‹=ÉşeÎŸY¿$i`hG\"¨Ø¼ŸdJ#8MåõºªÒÅ“Äy\"T»†â<Tğzv&HğDâu×ˆ*m½k¬«_èX^JÏí­ğ„=G7‰5ÏsMÿ\0PÍ#ICâµS4Ó™ÔN¢ÚÓøHrz¶Ÿ™~	.©ü™İo;©×‰ìÛ`#ĞÑgn2ú–ôšÛá­Œú+ˆ«h\Z­Öa‚\'qJŠÌ ÕšçîO_‚¨Ô¦bQ×ŸĞ¢¸üÌjñ{¶›ãéıD%àLuSá+¨›Ê ¿Ş³_¨GÜÇÿ\0Š‰‹%ğÔTXÈé9“§«uxÓ+)º÷Ô/ô*•«Ò¦n÷²Iİ¸íƒjàsH4)¥½dqà¨¹F¼¼8ğuÆ:*R@Ñ-4:hˆl Í¹\"šc\"Ä|,FØ8¨8şöïH`Öppf%› ÖÙÿ\0(\\~÷Ø³vYWuó²gS)Ìñw$“Åù¬ĞÈÂbf2L$üŠç°»>@¡˜Ã¢B1«“ÓCık]Qê—í‰ˆ\"Ì\0Ğ\0\0¶†	_‘ş(yı+Èì—’¡dnc‘LrÜ¹!²;kjypEF}`‚¥û†©‡ÓÍ‰H]T0¨ÌÌÂ†F˜–kU°•Gá ÃèPdô+,·¦W]¯ïB2ªİÚ<‡¥ş¥á@Æ@3ßIâ…^¶¸YÔ£s<¨ QÈòş«•Ù²@\"F½çv$H<‘#0nİ§É\ZkaıÇHÍK9-8Sí¶ØĞmªF\r[Á\\$Ë7ıvı¯ïËÃšåÏFñ±Ç¨İùrû»ª<AÊŞSG+eæùèºNÚ—X³VF$#ù@HŸíÍjo–qƒ¿Ô3Ú ,·Æ1ËoÃ3+\"ìÌÿ\0ÍfÇ@7O×]qÛ~Rú´úS- ³p³=PV¾¯t—\Z‡úRÒÆ¹òmÍî›“ÀÆïlù‰Äÿ\0¬+ru@³âTT´À³;ùñRsxYDVY\0S»ˆJÚ?Ê‹]7O„(¢º`\0„\0\0†åğU•ßp°Åf\ZsD;vÑ§J‡AÙÛÍĞ¸YÔ”1 EE/¼4ÑTğš|\\y÷¤zhÁÎõLj*Çú¼mXò›ò,²ÉÎR2œÉ2‘Ô’K’ëQÂ>®DŸãı¿·0é:jæ_ĞòzÅ¤×‹LH«ëĞíş‘â¬†^Øÿ\0í*Oñ[‰~[ùRİ|G€âª©?(W%E`\'åÅî\rà¦hÅ•Àt>è*aI+,yóD 1Ğ‚;uvĞ)b¢ªïlÚr  }Ñ1iô“¸?8ø|•F={ß=Ó1å»ÔxüTj¿ÛÉ²r}•L<Kè5qàOªzGtôæx¢d0×iàƒnGş_E0“sE­\\H‘\0J¨’Ø±\'êP>‚ğ”%À…Fèçúÿ\0Ó·¥ßä¼Üsã*±Ëœ¢vÄ¯šá%ªHÛnĞ$^CŒ¼~Jã,«Ş”g)†± ³’¸¶™’l2”§ Ö\\BO4Ë_§S²€e÷¿J÷WÚÈèEG9pÇ‘H…Øˆw(*dQíÎ6Eü Èî¡:\r¶ºxÒ…ÀBAş¤ŠÑÂ¸Ï\n¹Aè`tJ—Ã|$ÅˆÖ$)Zs¸vYwUÉİ-1¥·ã#\\üHWCDâc÷uü^R¨»[IœºPÚ5T>Dæ(”v¨eÆœU	î„’ˆ«lÚL9*®K»ûÂ¾™	bâÈO¨ÌyP<åæy›VG–ääÎÛ%d¤e9“#\"\\’y¿öşü¡)??—döe½Nú³s\"cÓa6~Ù\rLcı>%Y£÷}5×Ùùp¦º¡\\öB!„DG\0Ü–’)öí\Z<\0æ¨ŞÈ\r’˜W|GŸöL¥Mq13à^H\"‘ h4æª˜Iv\n‰éƒÊ1#TD¢˜Ê·q&rü88ûB‚œØî ·ÉU1İùüU²4‹|–U=wÆQöäÁÖ™QË¨FèÙl¼v¸û\n•Y¿¤?¯¶rÒ¡-Ñ‡tˆçğPjĞÂ‘>–çÅx„Êoeßæ…mäz1à8y*ª5IìòtJØ£î(‡XASkİiÄ\"ìCõŸªmvmúÔãç&~œ‰Ê…Õ¾$µğãä¾fÛß‡|BcÛ}•n¶&vo‚Ö¶ãÊØ‹0æKl(®RIK€]¦R›‡}vÂ6ÌÊR‘w<—o[ªK–;6uQm€p’õ×8uz,ÊUW¸5ãÁ ]Òt´ñğA—×1AÂ¸3ÂÈHüB\nı²ú5q„®¥€V¤]y˜\nXÓŒèù2÷ï®ØÛ;¬6Dõn.5ğ\nÑaØÛ\\†æÚ}J²Ø¢È°ñäŠœÈ<Â‹ğ%Ğ>?Xä“°\'àC ûtĞèƒîşí«¦ÀããH¡1£j+Ì|ü™\\<Ã\"û.²VÎFvL™Jd’I<K¬d20åõqA×vgeÙÕgú¼§¯§Tu<\r’şX´«&JõÚ*ª˜QMUŠêª F¸†\0|êF_wÛ!ÚCöì‰ùº\nı‰şÒ¨¸@Óà¬O¶½Ä‹€üÕ¹woŠŠm›‡¿BDILÀ\Zêü‘Q_(DnC¡\n¢81\"C–ˆ$²1Ü \"Dˆ2ŞlÌåÃUEM‘íÄ	xƒ#\"L×ñKèFPÈXh\"Z´ˆÔñ/£êYÙ#QXÏÒy7p¨§-Á›–Œ €LÄ7Ö\ndgQ¬uùÈÍ…ò³>è=¹m×›ª‹Wsî?N¶Ïå‰øù!èõí†##º”ˆÕêcÈ ¯Œ5Ô\0OmSG›*†Zbb¤SjŸ©ù\n‹‡sràˆâ±q+Çf¤ğ\'ˆ_?é˜‚ˆV\'Å®H•ÆRt0^Ş½q«ß-9°§˜[0ms¾ÁE6â7‰7ŒbG6Áñ$¶¿õx>À,bû:evËÇp“i÷HàËU#H†?j8>ğÌFë5äú3”‡îA„µk(ê µÓz•™›\0v¸$$u5QÑâä¡Ò2\Z>¾h4kµÃ	¹ân5äÂaË¨#º`L¾¨9òîøtš5ÜêşX<\'/àÊÇ•]•mÖJÛdedÎéNEÉ>.²e¦§ûjƒ¯ìË»­ä‹òbké•Í°hl#ğÃÿ\0Qä¬™K^³uccÕMtÀÆ® àËbÇã\ZêÚ\'Ğç;âmÚ9QvyKAÏŠİŒ[µñÇÉ¾À Ø¹½í5>(‰	`>‡E6Éó¹q@–ú‡—0PAU†˜L§PAâˆ·UõÃ{D³E›‡ÁŞu›€g‰p™Š¢­ó³C¸j%Áü´ğQU$Aáô ËŸ©T2d?ˆæRcÇóLOİ˜cá¯”BÃ›N¤[ ~ –P§w÷W‡ŠäË*Ø‰mşZÆùådVÏLĞxAŸn§ÄŸš*\\>E˜ø+­EdıHˆd}?\rYØLƒüZ÷¶Ú2#šˆ€¬“@èíÍ|ë³¾\r²ì:Ÿ|õ‚ç{W\nõuZì¸UUnà˜¿9­ôëwÛ	µÄoáT+ e}:á¿JÉL$€[‚*2ò\ZÄCãó@Ç;]õ}\nÍ–ú$ÎİAPevírŒ\'‹1Z¨Ñ¼Ê\"Dh’ÃÈ,´ò.äÈë}k¨S‰•‰úJ±eú¨FÇ÷\'œ¸h¤ZêzV4ñèë! ×‡‡5¦[Ø…€Ôúé›ÿ\0<SÆ`x}?j\0XÄ÷¨9òï<nA¢¢-êVÇòjâ ãŸ—‡ŠecÉ2r®ÊÈ×LÙm‡tæN¤¬\rŸ«ø ê{\'´§×r·[?k’\rÒ“‘şX¬†^Õ‰F&%tcÂ5Õ\0#\\\"\Z ´3,½1<\Z@éÇE”X}È×êW	ï}n=¯“¡w>|õQRvg§¶h‡òÈÅÛùX-DlZç øª% ™qáÍAË¦¼‘¬}|TRØxƒÉQ\r€H6Çâ‚#\"	ˆäÑÇÒè\"”‹T44ûTüP1å#à>´Æ’ñÚX‚ªQ…}™ßqÙJëÃq¾AES–wsZvşOO¨UjÆÛH2aå¬+±Á„j¨Ë‰Qy3º1\Z‚uu ¡i\ZfM<TDE›RŠH\0	W(Ÿt}¶çà¢áÆæÇ6gòdHëåÚï†4¨êµJ[ˆÉÉ%„a\0çÄ­]e}¬éF#:M€éÇOñ^¿[Y‹c—eútÑ ªïY#ú¿¹)Äğâ!Ò\'_¡ã/G$Ú$<ø eÏ,i1b‰›Ñ·W‘ud³úƒÿ\0`­FœÈ2ğ>K-9©<;ò.œ«úÂÀ€Äñ?áR-\\‡±(†b@qp~KL¦„dXq\Zbˆ–6\0ÚéàTÊï³ã”µşäW3ŞïÑhöh1»©X?*¾\"\0ş9·Ô9©’G’İ—“‘‘<Œ›%mö—²É”ğYR¿ôø¢:nÌíàËXõtêÏç^ÚÈÿ\0$<üO%a^©^>\'MëX˜˜ÕÆº9…q€\0~\\¼¿Ä·ĞH†\nÒxz~½U JëUİéİ³– €O×æ¢Âv©?öıeˆ™:ù*Ï„­ˆ‰{Ê‡ND	Èèè+{$ÖK±JĞ$.|Ø D|]H	DËñ ®I%­¡T5‰ ñ*çğ@„qtvĞ3 oUÊÉÂè™YØõ{öãÕ+cX}v.*+‘éıÍE}\"YSÙú\"úÊG€fñ*\rÎßÂºŒXFÒù“nL¿ú³;¤ßà®QĞÛfÊÄAo‚•b…`ÎùHp\ZEQ±‰Éb|BN@S\"\\ñb‚Ë\rŒÈn?¦®áDøÏEñ·ßÃÕ\"ßê=B5Öú8›7Ér½—eI€%m³œ¸“ö/·×§dy-Íhèî¶ÄqñA¢òbè$\"BÔIÓÄ [ véó#ä¢ªZ^\"<ÕEzba–óÚ ·2I~>j1î^µoDî¼løÈcf=ØY\0<Xş\"ñ*4:vU‘L*”ÀœFŞz·ÏŠÖQ¿Õjº[w\0Iô“/Åz7On²r‰GËà¢¹îéïl~‘íĞcwP¶\'eg„\r¾Ü¥U~NFNDò2,6ßi2²ÉjI*)Ñ:1çÇà¢:~Ïí®»»nêºmGóîàdGà‡õx•d+ÚºN6.<(Æª5cÓµÖ€-á\"ŸVıc¦ìM£O„OŠÛ‘ DıœA\'0\'ÁePÛé \nÄfw‘—ı±–b€wäåEAÚò~ŞÃ#XH»\0C<Ÿ%Q½\nır<ù:¢¶]±àjE[çÍˆh8»ğ¢N@È—p8¨¸ãàU\ne49óA\0î”H~J\'(Äqîêå#ñJ‡‰†Üu\'É@ÀGÃÍŒÌ¸áôÜ‹vï0ªs0â\Z$¿ÅJ¯)í\ZåÕ²1§(6Ş™ZG¤ÃÅ\nôìj$íşÅjËZ?ªZòQOÂ‰a§Q³KÆCmŸ2‘˜–ŒŠ–\0@ëÏ‚&òşHŒ›¡|„¶0¦\\×Èıèæ’ÿ\0¥œ \ZQüVºı}yÄ»\\.aVkª%µ:Ÿâ¾½yâÔ¦¾Õ•!´@@rP8Ö\"	@•J0Ç’¶e¸iª\nv‡«BäkªŠƒFVÀ\\B¨¾C¹<xÅşäôºÇE®ñÌÇ¸N§`LH\"Qr òSWUè¹‘6Õ<{ xHhV+µèİc·:åQÆÌ¢Ï:Fø–y>ŒD¸º§lƒ…+éÎĞ\'\Z¾BVG_—ŠdyÍ×_}Ó¾é›.°™NrâIYRD–\Z¨:®ÉìÌ®àÊ÷,¾T¿:Şgù!ñæy+×±~›\n¼\\j£U\Zë€`\0[Œá§†%\Zbx’«/ªÿ\0ı·M6“o1á	\nÜ·îÇ`lO ê’‚+—.^	u‘×Î~uß\n,Tí1íö·M¾à-ÁÜ²±+nÛvÀÅ‹*(’duâ™T‘ôèB!wjÄú†Šm<U¹!†œÈ(7á«cÅ@Ó2ÁøóTEp.,RŠò Iƒí?JÆÏÂúUŒHï˜>>(Œÿ\0Ü<ÃÚ9öT»t5dq{Nß±ÔXÃí.“•Ò1ñ¥l}Óç.?Vˆ:q&ˆc¯ˆA]Ì­r?Â+O;µf~(‹ñ™Œ~!°™v@@Â\'ªà<Øt%ÔÀß™NŸe‡¹ş[êÜ[û—ÏtIèÿ\0Mkøûü¯¢éÑfÿ\0²İ·Ñ÷[Oö/er‚î*;to½ÍX%ƒ0d\r³sh¨¯ërş:©Tép.Û~µÙ·—ğTA_·ï~_ù» ·.¯š¹ï~>Óo÷bîÿ\0wWà²¬Ş§ş—ú?ÿ\0”ö}†õûÌß\'HW–÷ıŸîŸôowİ×îÿ\0”ş[½KHæ®÷½ãúşîî>æm8ùpXªMSb~—õş¯wé÷sgŞÛÍ}\rÚß ÿ\0MÇı·ú]ƒÙöşîÖòZŒ-u¾ävğpª®c·²8³sãõ\"ÆOXÙş«Ò™øÛàìÃÅ\"VäŸl~ş…RWİ/ÁE%»vëòñH2;Õÿ\0í|¯ğ·ÉEAÚ{í–ïø_è.´<§÷ò@È·÷:å¹ñTöâá¿±R„üÎlŞ~1o5iúXx°gú¸¨¢O¿_ŸÑäˆt›f¼yª(YÇÍõñP&ºnİµı?ÅÔV—OmÑnŸÅTaşäoı\'J÷ôß¯«ßİÃîËk¾»Å\"§ÆÚÑgşÜ‚Îšñæ¨X¶àş<¾¿’ˆÕÁÚÚº¢{6¶ˆŠÅşZ¢£ßìTH7óû¾jú}åÿÙ'),(32,'recepcionsim@simsanjuan.com','Melanie ','Ruiz','21232f297a57a5a743894a0e4a801fc3',''),(33,'test2','test2','test2','21232f297a57a5a743894a0e4a801fc3',''),(34,'nmareca@simsanjuan.com','Nahuel ','Mareca','21232f297a57a5a743894a0e4a801fc3',''),(35,'nmareca@simsanjuan.com','Nahuel','Mareca','21232f297a57a5a743894a0e4a801fc3',''),(36,'mibiza@simsanjuan.com','Matias','Ibiza','21232f297a57a5a743894a0e4a801fc3',''),(37,'jmbarrena@simsanjuan.com','Martin','Barrena','21232f297a57a5a743894a0e4a801fc3',''),(38,'ehogalde@simsanjuan.com','Enrique','Enrique Hogalde','21232f297a57a5a743894a0e4a801fc3',''),(39,'jmbarrena@simsanjuan.com','Martin','Barrena','21232f297a57a5a743894a0e4a801fc3',''),(40,'mibiza@simsanjuan.com','Matias','Ibiza','21232f297a57a5a743894a0e4a801fc3',''),(41,'dario.baidez','Dario','Baidez','21232f297a57a5a743894a0e4a801fc3',''),(42,'ariel.caseres','Ariel','Caseres','21232f297a57a5a743894a0e4a801fc3',''),(43,'gabriel.maldonado','Gabriel','Maldonado','21232f297a57a5a743894a0e4a801fc3',''),(44,'cecilia.paez','Cecilia','Paez','21232f297a57a5a743894a0e4a801fc3',''),(45,'juan.vega','Juan','Vega','21232f297a57a5a743894a0e4a801fc3',''),(46,'rodrigo.sanchez','Rodrigo','Sanchez','21232f297a57a5a743894a0e4a801fc3',''),(47,'gloria.cornejo','Gloria','Cornejo','21232f297a57a5a743894a0e4a801fc3',''),(48,'hugo.heredia','Hugo','Heredia','21232f297a57a5a743894a0e4a801fc3',''),(49,'elianabernaldez','eliana','bernaldez','202cb962ac59075b964b07152d234b70','ÿØÿà\0JFIF\0\0\0\0\0\0ÿÛ\0C\0	\n\n			\n\n		\r\r\nÿÛ\0C	ÿÀ\0E\0\"\0ÿÄ\0\0\0\0\0\0\0\0\0\0\0\0\0\0	\nÿÄ\0c\0\n\0\0\0	!1AQaq\"28Rv‘#7BVWbru’“•¡³´ÑÓ36St‚¢²ÁÒ$4Ccs…”¤±µÃÄ%5UÂ9EGTdƒ£ÿÄ\0\0\0\0\0\0\0\0\0\0\0\0ÿÄ\0G\0	\0\0\0\0!1AQaq24‘¡±²ÁÑ\"35Brsá6CRb‚ğ#S’ÂÒU“¢ñÿÚ\0\0\0?\0Õ4D@\0DDD@\0DDD@\0D_–åuµÙ©_x¹RĞÓGìæ©™±FßKœ@\nKVLbæ÷b®ÏÔŠ%É¸®á÷çmv¦[*äotvĞúÒãäæ…®høHQuû¤KIhy£°âÙ-Ñíît‘ÃO½½ÎøÚ¼Us,¢óßÔtx-Ï³zIµÒââ¼ò²-Z*\'wé#¿J\\,:YAL>•Õ—7ÏğÈÙÿ\0Óî=!:áXãàv¬R…¾!Ï?	|¤~EâĞàcÂMö\'ï±Òaù)ÚZŞ=8Ã¶qÿ\0ñ£ˆ³¯n#*NğåVúO46šsıv¹~	8ÓâZOş¤#mşŠÀö›¾Ì¼ËâlcÈŞ%­JKú§î©H²Ö>58—g~¤#¬ô±\\\'EÓí×döê­¿µ@7ûÆµÓ`ßÙ—™|DùÏâ´©Iÿ\0T½ğFœ¢ÎkgHf¶QìÚû.)^ß}ÌyøY0‘w7I%Ú2éU$à÷¾Šèè¶şkã~ÿ\0Yá´8	q“]©û®kq•m5aJ3ìœäâ^„UcéÒ‰lwìw$´<÷¼CDCákÃ¿ ¥,cŠ]\0ËKc¶ju¦	]ÙÕÜê#¿“çá€ŸA+İK2ÂVñ*/=½g7Ù÷/Mâ0“Is¨¶¼ñºô’ª/¢Š¾†åLÊËudTò\rÙ,±Ş‡Â¾õíNüu§gÄ\"\"\0DDD@\0DDD@\0DDD@\0DDD@\0DDD@\0E\nê·Z7¥†{|÷ÏW¯0îÓn´‘3˜ÿ\0$’oÕÇ±ï—rU>ÔŞ:u‹7tÔX¼ĞâÇîÖ²€óÕı•C†àùãZ¬fs„Áü×+Ë¡kùÆCÉîyŸ¥R?Mı©üÕÜ¼gÜ­Öh&k©Ú}§4¾œeö»;Ky˜Ê‰À–AöŞÿ\0æ‚«~}Ò#Ú%&â—‚VîU[¼ŸÌæ‚#‡˜µŠªa|=ëÆ²VÅ/t¨°õ’]îò:¤ßéúÉ}t¿Ìæ*Å`tìêêu+?|‡°¾Ë(ü< “ø1éZ¯Ò¦?ÉiîÇ¥ü^dv«e6/f>»Åøj‹Œ#Âı°¼—|’!¬ÛÍ{ËËá¢È)qÊWÿ\0‘´Sİ·‹ç¯.µpô(º:=QÕk‘š*l£.®\'bğÚŠé>SëˆZk†p­ ¸?$¶Í<·ÖÔ³cá@k^OºRZÓö­\nT§¦§£”Ô”ñÁc•‘ÆÀÖ´y\0GèV+\\]kõjıvõ|§ä¹2ğy^£üÏv/¿uI¾ù\\Ë¬wƒ\"2.Y>A…²•¸ÖÃŞ–sŞ©.ÉÑÇ¨U!§\"Ïñú\0}¤Šj¢ß¾Ê¯ú/e-›ÁCÆ¼»_ÂÆ‡ÊîĞâ>‡rŸİı§/QNí]Ø„!¾­êmâ¬dihb§ßÑÌé6ü«µPt|h]#@©¸eU§Æf¯‰»ıäMVi²>)¯Kõœõ}¿Ú\\GŒ’ì´}”ˆ—)Û´¸½Â¤ùeºÔı5~ÆpMÃS=–ŸHÿ\0¶¼WdÁNh³,·¿u2<ÚìşZ¼m_ı’^ò\n“‚Nìp)™ö·Šßí”®>«j7ê¬—zmÿ\0ŠºJvûşeaQ[ƒº™\r¯ÏáªÆÕÿ\0|Ÿ­•náÑß¢õ;º‡\"Ë¨Ü{€«§‘ƒàt;şUÔ®İV‰9bÕzÊrÊ»SfßÒæÈÍ¾%tQ`K€Ÿ\ZkÒ½LØĞåi°ş&.OµF^Òfyßz:õ^‹™ö³\Z¹±½Í•óSÈï@äs~7(ß#áˆ|k™óéÕUtMî’İ<U\\Ş†Fâÿ\0«UxêlŞ~+qïø•üÿ\0¥eN¢ë‹Oÿ\0–— ÆøäÔı*¹‰#vMˆ×ïş~†RGˆûT·…qÍ¯8££Šëw¡Éi°ê®”­çÛÍ,\\\'Îâå¥Õ”Tw\ZwÑÜ)!©‚A³âš0ö8yÁì*/ËøXĞ<Ğ=×-8¶RNÿ\0òöÆš\'ƒî¶„µ®?l\nò~ÅáuÂW·Sºõ]z\rÛå7#ÎVæ{—\'üËvOºê-wH‰ğ.Í7½º*Ló¹ãs;`êˆO†Ó)% H=ô«‡j\r¨4~…e–ËÌ@?Á*\Z÷ÇöìöL>g\0UWÍz91êú>Ïë¨_Ú[Mvµ\'ÉÖGÈZ?šâ œ›„Î$4ª´^ìÖJªãHîh®İS¥•‡ÊÖ·–qéY#Íp^SK}t®>‚<µ6obv‹\\£à*?³;Û³çÙù¤û\r@Eœ:{Ç.³éõSl¹í#2jZgurÅpa§®ŒZiÿ\0H×8VçJ¸²Ñ½V0ĞĞßÅšñ.ÍÛ¯,9çÅ÷,“sÜ\Zîo±g„Î0˜¿š¥it=?#Ïy?Ï2êÔ§á)ÿ\0>r·K\\WkVë&TD[CŠˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"à³LãÓËù6g|¦µ[©ı”³;µÎñ1¹î;v5 “äT?\\xæÌ³¹fÅô\Z¬zÑ3Œ>?ó\Z°{)nıH>F’ÿ\0²µøìÊ†?æ=y’âu;7±ùÔT¶¦¸ÎZEwó¾¥wÓe©ku—Š],Ñ–KCs¹ú­~`õ¶‹{ƒæk¼]k½Œ#»Ùzíá¥QİLâ—[µÒàq«Cê­¶ê×˜¡²XÚó$àı,oÏ&$wÆŸrkÑsıAtY¥TTbö‰[ÔÈŞkH=¤ò;²-û}t»ì;«¿¦Z-¦ÚCoğ\Z§£•í\r¶AÖUOöò»×¿o(Ù£ÄÓø<Ç7ÖoÁS|Üïßç²ê;ÿ\0•ì–Á|Ü4~Y‹_iÛr/«ŠVêŞ—3’)&”ğ¨ÙhŠç¨•ñbvçìïå×<} <±ïöN.6«w¦|.èÆ•ˆª,x¤U÷(ö>©]6©¨æLŞaÉó±­RÂ-®(Â`õ„nú^¯òî8œûosÌı¸×«¹Mıˆ|Ø÷ó¾öÂ\"-™Æ„D@\0DDD@\0DDD@uŒ×LtûQ©Mo‡Úï\rååkê lcì%=ŸÍ!VmFèîÄ®bZİ1Êª¬µw6†ã½M1>&‰Ò0yÏXUÀEãÄåølZÿ\0:	¾9ĞdûSœd-|†¼£á½ãş×uè¹@­™oÜ(–ÓåVJœ›¦Ø+İYJÈÇñu\rŞJ \0ÑîœÑ¾)ô¯Y[\r¶éêEùàZ.•ÎòDïc0ïö\'›a¹hSÀµÀ{*Õ4oR]%Æ)Æ¯.<í¸YÀ‡w÷‡>-º·vö“°q÷AxáƒÅ`|š{ñş{¥ñĞß×ÏòM¤úßà+?ŞÑZ7Ó:mëÖÓŞ&äU–ÏtâW‡ZÊß6ªa0v6çnİ¨¢7ÄãÍ(rA.ÛøÀ;íê&©–&dXUöåHãË aÚHãd±Ÿ]‡‘Ày{»Wº†.5ä“ŒºîfºÑÍfYl~QNQ«Eğ©xõ).0—òÉ\'Ñu©Ùz(DDD@\0DDD@\0DDD@\0DD	ñÅ6¡ô’ZØæ^²™#ŞT2vC¸ì}C‡ïmñ†û\'vl6<Â/â{:LMÕ˜‘ÕÅW{o45·†ìøhqd>)%7vµ½Ş¸ïËğ÷ÁîS«uŒÔ=Z¾†ÅW\'…L÷xuØ¸î^\\ï\\ÈİŞ^}sõ½áÃC‹Í*U©ò\\ŞŸ;æ_ß÷v}?!Ø¼.³½¨—ƒ¡Æ0á:\ZqIô-ZÖñZÛe×¾2s‡×O4•‘@şY*¦æŠÛkŒöò0\rÀ;mëZ÷m¹ß´«½¡œ)éÎŠÅÎ:q|ÉC~yv¬Œoñˆ#í?kçwmØ¥lkÇ°ë-6;‹Yém–Ú6òCMMk\Z<gÎOy\'rOi$®QfÀåğÒğÕıGÎıß_´»{‹Î)üƒ„Z(GK¯ækÙZtßˆDE¸8\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆè¹c7KéÌ±ù\'Æ2»nö®XßP;ùjb ÇRÂvÜHÒ{;OjïH©:q¨­%sÑ†ÅÖÂIÎ„šoGĞ×C\\\Z|éİ3†±UäLh·åtşÁ³khƒ¼\Z {®Gè]åc‹€Ü\0÷víÌ¢+EYXÇRj¤·’K³€DE&0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"àĞ\\â\0rO‰Q~*¸Á«½ÔUi^W¼Ò½Æ–ãx¥$¾©Äì`¦#·“~ÂñÚîæúŞ×<]ñUY’WThŞ“VÉ-#äğ;­Â“w>¶ByM,½¥›ö8f}hõ»óÈ¼(pG§ôš‡¨´QÔår´KIFğ¨ãätÛwæ÷İÊçqXº¹•WƒÁ;ExÒ÷/ï^Ãë&GÙvƒhc½RZÑ£Îß4¤¹ºuÒ+Wy4»ÂïY¡k¹“Ü}lô)ZÊod¨Î“És~›sØÛ‘Üˆ¶ø<,\r?I|_iÁçûCÚL[Åã¥wÌ—‹Ğ—öß8DEë4aD@\0DDD@\0DDD@\0DDD@\0DDD@\0DDD@\0DDD@\0DDS¾4øŸ}‚*ÓË‰J†uwºèÛK‡ø³ÿ\0(à}qÄ»Éå“8²â\Z\rÃ½K±TFì¶ù™ogc,]Î©póv†Şï(k‚„8-á¾|¹šç©4ÒTÄfuE–¯w:ª~mÍdœİà;~Mûİ»¼M\'E˜âªb*şÂ¿œügü+ûşõ>™²96+Á½©ÎÕéAÚ”9êO›¹?SoHëİx<áV,—TuÚIRÁ%¶†fÿ\0å±8vHöŸòÎ»éÛÙµ²D[L&\n’¥Iiëëgç¸Í¢ÆËŒ•äø.h®h®¥éâõa¤Ó„D@\0DDD@\0DDD@\0DDD@\0DDD@\0DDD@\0DDD@\0DDÖµP1ı/Âîy¾K?%¶ş@G<òÆDÏ+œâ\0ôî{+²¬÷â›QoÜCë-·D´éæ®İl­4q;çu5İ¢iÜGù8šĞïlZüËò*;ÑÖOH®–u[!³¿¬Y‚¥UîÑ‚ß©.	Aq×™¾£WÌpÚ7€å<_ëeÇP3Ş°Ø)*Qr ‘ ıæ†#â\rİ¡ ’yœ	ÑÊZZj\Zhh¨©ã‚6ÅQ´5‘±£fµ v\0\0\0\0º¦’é•‡H°;n``1ÑÇÍQQË³êªûäÎó¸÷\rop¸*å˜‘Ò¼õœµ“ëüŒ»c´¿¬Å:İÃR[´£Á(­/n—nåeÌl@\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"/‡9¬i{Ü\ZÖÉ\'`\râ÷ZNétğÚ*ú¬‹#ç ¶–»gÂİ¾}8ûFñ=ìó¨ÿ\0€İùÅäÕÌk¶CWllõĞPï¿X7î2‘¿Ú5¤\\TI\\*øÉâ¬ÒG$’aöG–s4ÖÛ ®p>\'O!ì=àH<LZMMOGM$ÃlqGCZÆ4l\Z\0ì\0¶ËC„_¤±’ÅËÄ†‘íçß¸ú~y?Õ‚CKLF!*•Ÿ:Ù§ñ]¼Ò>ÔEVzCµÿ\0RxuÒa¦\nJ;•~I\r¶wÔÒ2¡¦RÔH@kûæ‰¾o:ß=˜¥rÓ\"ÅOšÅßÕU‹ñ?êOšÅßÕU‹ñ?êUŞE·µh±Sæ£qwõUbüGOú“æ£qwõUbüGOú“y\rÆmZ,Tù¨Ü]ıUX¿Óş¥0n!µ6ûÑíSÄ=ÆãFüÒ+Ú½µ-£caë©ë*\"ŒõCÖìw=”©\\‡‹^‹>j7UV/Ätÿ\0©|·¥‹ A9E…Şccƒõ(ŞDî3j‘bü=*œYGìîX´¿oehÿ\0ƒ‚ç-.<KĞÈßT±Ìåş¸Im©äy‹*\0Mä7°ˆ¨‡+:w¨·ºLKWñ‘ƒ×V=°Áu¯¯¶¾CÜ%.\r}8\'`	çhïsšîkšæ‡5À‚7Â§r­5ÄùDY‡Æºù£üEäÚk¦·ÛU5–ÇmlöÈ§y–JX¦ó¸oì¤ÛoÈİ‚W4ñ*|Ôn.şª¬_ˆéÿ\0R|Ôn.şª¬_ˆéÿ\0Rä[q›V‹>j7UV/Ätÿ\0©l.™eG:ÓlS7%¤äJ¡-\rç’v}ò”îC‹GfDX×˜ôšqcfË¯vz¢ÈÚj•M4!ÖH	d®kA;vö\0Ø…›(‹>j7UV/Ätÿ\0©>j7UV/Ätÿ\0©Fò-¸Í«EŠŸ5‹¿ª«â:Ô­·GWz×Än}•Ø5Fñn¬£´Ùã¬¦m5¾:rÙLÍa$°vr)&CƒZ—Õdç#œG`šña8&Cg§±ã÷ª‹e$rÚa•íêÕ¿w¸nO;]Ş¥»•ÍcEŠŸ5‹¿ª«â:ÔŸ5‹¿ª«â:Ô£yÜfÕ¢Åº”®,b®§’¿$²MLÉXé£m’—°ÌĞvìÜn7[?MSe4UtÒ	!’7ç4ÁRÊ¸´}¨º¬ä7<KKòÌ¦Ë##¸Z,Õ•´¯{ÚÙc…Îi-=„nbÏo—³ˆı~Õø®Ôµ¸ìÖ†_%\n©ëÑÿ\0éØlÖÄf[UFuğ.	AÙï6µµù“4Õe|½œCÿ\0ëö¯Åpş¥k¸5Ö|ïYñœŠçÖÓTÏn¯ŠÍ„:>bojÇ„ÎğØÚª4îúWæ{3ŞNs}ÀË0ÅÊi=Ù6õv\\bºzKˆ‹npAO×Ş:l¸-Æ«Òê\Z[õŞ™Æ*›Œî&ŠAØZÀÒÎ»CAñ»´\n“”qA¯™lïšã©÷ªV¼¢¶Íà1´y6‡—qéÜùV´\\,œ#y5ÑÃÏğ>•‘r[g4c‰©»FU½}æºwRõ´k2,tƒWõfšQ=>¨e±ÈüÍ½Tƒ¿§IX\'\Zšó…ÔD+rVä”-#–ï”¸xö™»Jœ¸1^Z{O‡“´à×¤Üã9ÍiSrÃW„ßC¼oÙÅyìj\n(‹@ø”Âuæİ$vÆº×£ŒIYh¨9ío`ë\"wgYä\rö7q¼ºº\Z5©â ªRwLùNa—b²¬D°˜È8Tÿ\0½WCZ>`‹è®®¢¶QOq¹UÃKIK¦yQ´nç9Ç°\0$•Iõ¯¤ª*êŒEh 0ÄçFëåtEıa8!;\0<“}ıÀïX1˜úïV}‹›=ŸÙŒËi«:9|/n2zF=¯Ü®ú‹¾‹\"oœCk–E3§¹ê¶M»»K)®SG÷–·ò/ÁA­ZÃk•³Pj[šw\0^jO¥¥û„-Úš7Ò›·qô˜ò-˜8^X¨)tZMyôõ\n‹6´ß\rbÄj¡ƒ0’›-¶´Œ©c`©\rû	£oÛµÊõé³àÚÕüa—çBZÊÊ)ÀeM„n#wî=»8Ó±Øö6¸Û\r{´İ¥Ğøşg´›\r›ìÄ|.*\nTÿ\0:Ç¿D×z·CgzDE³8àˆˆ\" ¸›½ÛÀ®ö;dnŞKT­sTÊy]èK‚åD@Æ«?M´zªÙm©ê¯Sk¥-;9–ïQ ô0òn;A‘¥OªŠgñ;Š1épV—M‹á…ĞÖ\0waT“ä/˜¶Çˆ4­fkZTèx:~<Şêïãè;-‡Ë¨âó?–c>ƒV}‘àºï+iÎ®MétÛI ¿Ü©:»ŞZp©.º:mƒÅ÷¤¼ıä ÷+¿–1‘±±ÆĞÖ´\0Ö°Èô½˜l<p´cF9üã4­cêãñ5Fßbæ]‰Y.¤éö¼âüéÿ\0A¬W±Gº× ÚgÄ&5Gˆê–{²‚¹·(\"†²ZbÙÛãæÍ$rÊñ±;vù–gª5ÉÙxQm·ÌÆàïë{rü[ûEºùŠY0MpÏğ¬j™Ôö›Kr¶ĞÂé#£‚\Z‡²6—8—8†´\rÉÜª5c*’gCDSï:KƒëovM=Ô[dµö:Ú:é¦‚*™ s;ŞÃÏ8\Z‚ÍØ€–³iwÿ\0jßzÙüÆ­J3ƒ¿­íËñıoí7¯šg‡èïyşœ`Vù(l6|bä) ’wÌæu¯|¯İï%ÇwÈóÚ|{+¥c’f\"\"¡yÑjÏD}–Íh.yj¿Zh®TU1d´Õ2h¤i£„æ<A\"}qQ„Ù´çˆ½BÃ1Ú8é-vëí@¢¦ØAÏXÈÛö-kÃG˜-sİˆ­lÇEÖ¸]5SAj0ì’½Õw|­–ÆË#Ë¤}¾FsR—ão,±±‰¾=Ö3­èpºÍ¡ê5²m\r]–­íòºÜÖŸ€Nï#Ä‰­\rR^~x¶È¾J¸œÔûÈ“‡(¯¦Ûû(à™Ğ°7,az\0¬«‚‚’zê©!§ÒÈãô­hÜŸˆ/6™\râ|†ÿ\0r¿Õo×\\ë&¬“sôÒ<¼şR¦E`~EÈ],•Öz{eEk9u£ğèªëdŒ„Äãè!TÈqëw¸ÉşJøCÓŠçIÍ%¾[cÆı­ğZ‰`h?Í§ĞBÂ°}?ªü6İ±ùdŞ[QU¿t2Ã­?İ/Ä­%\'À»«Î¢ır»5¿Ÿzô~ªõÏ£_„[ÅÊ®ï_€Ü_S[<•38_k\Z#Ü\\ã°“aÚOb™+”Œ¬b-1ã³„NxvĞ\Zì¿Â«)rkÂ–Õg’[Í\\­dÏq’G:B´1MŞ6Üµfr£V2§p´¡Óè±Ÿ{İ‡ô–¬üZmĞé§U‘Rgú±RÚZ‡Óãô~åï`ëç\'ÑÏN¥ÊW%ÀÒîÒ¼áj>DrıCÊ2Âşs{½VÜy½×];äßúKĞ~°ä_\"\ZK›eg!²ã·+€wÅM#ÇõWœå2+L\"/ß|²Wcõ±Ğ\\É,´t•Íæª)ã3ğ²VŸ…TÈ~è[†œŸäË‡­7É]\'<µ¸½µÓ»}ş|Úv6_éµËÏJÛÎŸä„J™òsÍd©¸[$;ûš©$`ø#•ƒàV“àLÚıôÏıíÜGzÈU¯ZıôÏıíÜGzÈUÆíOÓSì÷Ÿ¡¹ú»÷×²÷èßşæu`üÊ¡\nûôoÿ\0sº°~exvËãØıGGÊ§ìÅnØ{H¸*¼ñ³¬Úc¥¬³XjOyÊå}31Û>\Zf´äiñ;g1€øºÍÆÄa•é¸>Lÿ\0µ’Ê{<•¾ dÍ\'áê‡Äºüê¼°ø)Ê^Èø7\'™e,×h°ôk«Á^Mtî¦×uí~¢¢\".K¤e~Ij¡‘¡Ì¨®‚\'4÷é\Zü«æé]Øıw9ªqs|Ç?”èî§á8İ]•áwe¢æZ)ª§h\0—4¹¡Àf 8v+§-Bãr’*ryÀM,ÖùXOÒ“Y7ÈøV^­–m€]]Rƒºi={×¸ã¶iëm^[,mx(J3q²½´QkTµ9Ü4¿iæYlÌñš³OpµÎÙ¢;W¦c€ïc›»\\<`•°FYnÎğû6ejÜR^h¡­¤îYÎĞK§vŸ8+–¢pMp}wË$y{©%®§ÜŸª”ğ\0¶»/^J´ès5~õeï8YòÊSÀPÌ’ùñåúc$Ş½:v²é\nÕ»•©:?f«|VÓ‹¥Ø±ÄYÎæÃ	Ûéy˜÷‘ã!‡ÅÛGTñÆıÂJŞ$2:w¸–ĞÁANÎŞàibşY\nÖ§8¯*øÚOƒ²îĞî¶.¥–ìö4Õœà¦úÜÖõßsK±#î¡¡¬¹ÖÓÛmÔ²ÔÕÕÊÈ ‚&>Y@kZÑÚI$\0•vŒÿ\0HõKMÏ±:Ë8¸µÎ¥t¥dœ»s\0æ†ãv“¸Üv.ËÂÕUÜAàĞË{[tlÀuğ~Ğ~mºF)#~“cµå€ÉDÈZï }4äè‰_\r—Æ¾®)½cÃÑñ<ù¾ÕVËv’Æ	Â²nMŞëŠVÖÜV·O¸Ïeß4GU®ú9¨¶¼ÊÛ4\r­†åNÓÙSFç²2;‰Ûµ¾G5§Äº\Z-m:’£5RÍjuø¼%u	á±Ş„ÓMt¦m¥=D5pGUM+d†f	#{NáÍ#pG˜…ö.ƒ Wi/š%ƒ\\¥<°ÑG#½ÓÙXãñ´®ü¾¯J~šçIŸ‡±¸wƒÄÔÃ¾0“™Ø\"\"¹æˆ€gº›¯Ôv(»1¬.¦²©£´sÜ+adùm¶£o3Š’”	ÃÅĞæº»®ú…¹©[”Òáô§ì-Tl€ëêj¤•=¨D°ˆŠH:v°ç°i†™dYÌ¥¼öº\'¾™®î}K¶d->c#˜˜¨/€8šË§÷P¼µÒ]s\n§å“µşœ9·=»¾S#”ôñÏu¸ä¬Át7~÷ºîÉehúXØDqóı‰|…Ûÿ\0™\'Ä¬Æ1[±,r×‹Ú\"êè­4pÑS·ÇÕÆÀÑ¿ŸaÚ|«T£òœÁÉğ¤¬¾ô¸úâu?Cì¬iGJ˜É¹?Â¦ì—|îúÒ94D[S‡ˆ€/>\\V{fõ_ßçôÉ ÕçËŠÏlŞ«ûó¼ş™\"¬‹Ã‰+]ÑíÁÆ¾ç]?D‘Ukº0=¸8×Üë§è’*.&Ip6ÉC<eûUuKŞÍgõÌ¡2ıªº¥ïf³ú‹+0®&¢\"Äg5›¡ãè)›{éÿ\0´…P3îô÷¾*µBº–F>6äU4ÜÌ;‚a\"#Ûéa]C	×=`Ólz¿ÓíG¿c–»œÆ¢®e[©úÙ‹Ù³åh‡ÄºD²Ë<¯y$’8½ïyİÎq;’Iï*[ÒÅR³¹ü­èq¶M.£ê%å¬ùÕ-’’•Îò:YËš>(]ñ*#ˆ`y¶ ]c²`Ø•Şÿ\0_+ƒ[Om£’¡ı¾2ÃÊO`ñ­œèöázıÃf”W»9Š(rÜ¶ª:Û<R6AGl-‚ÏnáÏo<®qä ¶å¨›Ğ˜8È¾D¸}ÔŒ²rICŠİ$„ÿ\04Ï…å¡yæ[“Ò;‘|ğ{IË5ÈPÛ¢íïëk!çƒ,6S\"!À+Åæò‹@!êÍÇJ,•Ó\r¶Úy$¨|€ùÇ0İ@4´ÓVTÅGLÂù§‘±ÆÑŞç8ìÆUıémÃáÅ¯ZDÊf¦r¢Ï€ì-¥|[Šañªó|QŸËJz\Zò~JíOÃ%“~¶+eÎoİÊgSı8~%šÊçtNäş¢qG-•òlÌ‡®¢k	ì/ñTé\rÿ\0R¸‘.É\"/‚CAsˆ\0\rÉ>%Âe?Kş§ú¯¨Ø~’ÑTsAÛ¤»Vµ§³ÂjÊÆ¸y[!ÃÍ2Ï…&ñ5©ÎÖ=|Î5“™©n·y[Bâwÿ\0‹hi¿ş1Æ£%‰êÌñVAoŸ\ZWûpÓƒâUİMÆk{n· FÏğª£×=®ó°=±ú#8RÒÃ¬üBàú5?]CYt¦âÒ7Š\0fœ&ñÆæ;‚ôİØ¢Ro˜€x÷È¾F8CÔ«€+ª-‘Û‡oiğªˆ #â”ü¬[!ÒÉ‘zÂä–É³¯Ù5\rnı¥ŒiÉô~0±½%Ä˜pêÁqÕƒşçÜATc‚©´øæ=Y¶Àu6ªjsùa*)Ò<wä¿U°¼O«çõk!·[ËvïëªcfßÒV·¥¾Ñêv«ƒYënx•åŞW6¢ª2>&7ã\n¼Å¯©I–°ô<dş¤9Îé9iÈ£¸ïÚÖÔÓ1ƒàŞ•ß•dòĞ~‡<ŸÁ5CP0Ó&ŞªØiîA»÷šZ¯şìüjcÄ‰ğ4o_¾Ùÿ\0½»èïY\nµë_¾Ùÿ\0½»èïY\n¸í©új}óô/\"ßWb~úöB¾ıÿ\0ÀœÃî¬™T!_~ÿ\0àNa÷VÌ¯Ïù|{¨èùTı˜­ÛigoH£ÉÖ›#7ìn/N~:º¯Ô´IgGHy\'[í@ø±šQşóTºm£òÚòJ¯´‘û“÷ysXGğÒÁ÷R—ó­\\*æ°á¥ƒî¥/çZ¸*~:í?Pb¾‚}Ôi‡\ZÖ|Ëı]ÿ\00§Yjµ+Ok>eş®ÿ\0˜S¬µ]Óù\\~êõ³å|ŒıC[ñ¥ìSK¸7´÷ZÑı µfŠÒI:>+Í`ş¢¦Íykû¯Üz9_WÙåø‘õH§<`Í×ñ!š?ÉQLÏ½¤„b‡½ÅÇ¶36şYèñ(…jqŞUWïKÖÎãf•²\\\Z_éSö.p—íŠÂ–Éù‰ÀéµÜîÚ3f¦µ[ª«%nON÷GO¤po‚U\rÈh\'mÈíó…OøKöÅa?ËdüÄ‹LîZ©¦jùíwGÅ¨kiÉ55Mâ)bw‘ÌsÁióºL–”+åÕhÎ[ªN×îGÈ¹EÆWËv¯¡IÔté©n«ëó§Ğ¼ÆDü…f_RWŸö	ºŸ!Y—Ô•çı‚_î­mıÙô{ë±†ş=¥şú~ìú=õØÃÒÿ\0}Wõwş¿¡|L¿âÎiÿ\0Œ~yĞëü/SÕÒhM]M-<ñ[ù¬,{v‘ı„ÑØ¥%ùmw[]î‚­–åK_ERŞxjifl±Hİöİ¯i Áî+õ.²„*Q‚w²KĞ|32ÄËŒ­ˆœw\\å)5Ñvİ»¸DYO]gS³z4Ó¬›P®\\¦Ÿ´Õ\\Ş×¹ú¨œğÏKˆ\rrfU¤·0¸3H1ıÇ%ÿ\0Çµc#£±SÆ=‘²±ò·oï¦™„xÄ…CĞ”®ÎùÀn7]`ás¸^é.¹Cjrjùœ=tòÖÎùÚóç1¾/‰XÆc8ı»Æí8­¢>®†ÍC¾•æck>õ¡rjQ\"/Éw¹ÒÙm5·šçrÓPSÉU3¼ŒcKœ~ T6’»-¹ÉF<YY±\Z?İO¬£/”uÖÍ6·Gj¥qí\r«{\\Òß\'cŸWğ´+H .¬túQS^#ÿ\0Ås«½]ò¥çÙºBÆæõ®xÿ\0H§ÕáËcşG…|fÜ¼ü=:m¯®cò8?™‡Œi/èV“ïóïˆ½ç.\0^|¸¬öÍê¿¿;Ïé’/A«Ï—Ù½W÷çyı2EY‡,V»£Ûƒ}Îº~‰\"ª*×t`{pq¯¹×OÑ$T\\L’àm’†xËöªê—½šÏê)™C<eûUuKŞÍgõVa\\LDEˆÎJ\Z_ÃºkF/qÌt»\0©Èmvš“IW%5U;dd¡ü¢\'ÈÙy\\­iïÛ¿±F•t•TSP×SKOSO#¢šXXøŞÓ³šæĞA{AZÃĞñôÍ½ôÿ\0ÚB³ÿ\0ŒÛd6*µF’›’UÔò°ŞWu¤ü%äü*ZÒåS»±Çèßºï õP?Nµ\nåKo…üî´TÈj-Ò÷p4ïİßÆær»Èà{VÏp“ÄÍŠ-+‡4¤¤İ{ —Ào–Ö<¸SU\0s	í1=¤9¤÷v´’ZJÀµ¢=\r÷iâÏu\"Äî¦ªÑEVæïÙÍÏh;z&rEêDÖ—&~—œ‹Ôî±Üz99d¼eP9Ãe4Ó¹ßÓtK!Ö”tÊä\\õú_‰G&İT7KŒÍß¿ÔñÆ~I~5šé.$ÃŞt\"ËòI­ú{òs–Sj¤#Ìú¸Ú!Z+Ó#dğŒM²>Müï_CÍäëáû|>ù|ğß›bÚm®¸NšøW¨¸ıÚ+WƒEÖË´{¹¼­$nyÃ|jİqóÆ¾ƒñ)£6ì+\0ù ›vAOua®·6ÌM‚x9ƒÏoÏÛo.ŞèÏÕ9ğ7“ü‰qi¦7N³T^Ùl\'~ÿ\0ô»|=rƒ7ƒdRb¶?–ÂH}’éIqiûÃ3d}ê‚ÌôŠ¡.4u?÷#á—;Êà¨êkæ¶ºÕo ìáSVDs|ìë†5E,sFÉ¢x{$hs\\Ó¸ ÷³o¦#Sú«~	£tuº¢I²K„`ìyX6şPKª~ƒ#Ñ\"®ÌÆDEŒÎhïCÖ•ø^A›k=u6ñÛ©ãÇ­ÏpÜe\"j‚<k\0ôJV¡¨-+ıÉ8^Âì•4İMÊïKêõÄ³Œõ<hp÷LˆÅÿ\0F§õ‘hŒ2wfoôÊd]N?¦8“$ßÂë.w¿wTÈ#a>¹ÿ\0Y~¯KşEáÚñŠc1ÉÌËN,Ê‡\rıŒ³ÕM¸ûØ£?TAR\\L‘àN<Y}_âÓL(y9º«ìu»\'cçßàê·V“¦JÉÔfšg’rZî4<Ş^¢XŸ·ûÇåUcƒ-WÁ´?ˆ\\{T5Ã½I²Ã]ş%N&—­š–X[³IŸ=>57ô†ñm¢üNã˜e6›ú¹ê†=[W$Ş¨PˆÔÍ`ò÷ny¢obs}â‘+YÑ‹“üq{ĞºNHïôcÎı‡üÓ´Kàhôªš”xZÉşC¸ÓL…ÒuqSåèçvıĞÉ;cıãÜ¡q%ğ7G_¾Ùÿ\0½»èïY\nµë_¾Ùÿ\0½»èïY\n¸ı©új}óô\'\"ßWb~úöB¾ıÿ\0ÀœÃî¬™T!_~ÿ\0àNa÷VÌ¯Ïù|{¨èùTı˜­Ûig?HÑÂ×ïf—ôš•£:ºD™Ë­¶w{¬^˜ÿ\0½Uì].ÑùíGÇ¹$ı£ÜŸ¸«‹šÂ?†–º”¿jáW5„\r,u):ÕÁÓñ×iúôì~£L8Ôö³æ_êïù…:ËU©\\j{Yó/õwüÂeªè6ŸÊã÷W­Ÿ+ägê\Zß/b˜ZQÀ\'Ğ	Ÿvk?àÅšëJøo/ğuw¬?•£û=šòßé~ãÓÊÿ\0ìòüHú¤S..=±™·òÈG‰D*^âçÛ›+‡ôx”BµXï*©÷Ÿ­ÆÍıK„ü*~Â%Îı±XOòÙ?1\"üœP{`s¯ºÒU«õğ—íŠÂ–Éù‰€ã;†ì?ÇòMp¤½^d¼×Ü |”²I¦i•áØöï\\½ôpÕ1d¥³&ßfê9lÃ7Âå{eJ!´êÑŒ#eœê»_£´¤hˆ´ÇĞÍ_áKÚñƒıÏwç^¥•p¥íxÁşç»ó¯RÊú¦É©ıÕê?m×¿Å©í0ˆ‹ÒiÂ¡Wzï–\'¤îÑe¥w„cš#i’¦}»c5ãbâ‰â¢x\ZGÿ\0Šï&êâk¤Ú´KrM¼–\ZlvÛ5`ÎØM(E>WÈXÁçpU\'¢§»»Os={Êùç½j=òG¶¦Aë¦‚¼¾P~Î¢YÁòõaCãbËEró¢\"’¡EœO]«-z”AmÕ×ˆ\"²Ó0×ÉY+)öÍ‘ÇàRš5^ƒä‡$Ó¼\\·xß’6ñQäêhiå•»ôæœ|+Ï‹»£(®/O>ók‘¸C1¥V¢¼`÷ÚéPùíw¥c¸b8åŠÙñKx\rg¡‚†#¶Û¶&|çmşË¢,ñŠŠQ\\­©RU¦êMİ·vúØDE%\" Ï—Ù½W÷çyı2Eè5yòâ³Û7ªşüï?¦H«\"ğâEŠ×t`{pq¯¹×OÑ$UEZîŒn5÷:éú$Š‹‰’\\\r²PÏ~Õ]R÷³YıE3(gŒ¿j®©{Ù¬ş¢ÊÌ+‰€¨ˆ±Ífèxú\nfŞúí!TC¯mÆ§}Ùÿ\0£\Z½ıALÛßOı¤*ˆqÕí¸Ôï»?ôcV|\n/B¿½ï#Y3–x2ÓñUEúÕWï¡ãèÏ›û×¥Ä¡q&\\¹ÒÙ‘z­ÄÍºÊÇîË-GNæïİ$“O1?dâ\n“«Ò‘|“q¨µm“š:JÊks‰¾KN~ÇI*¼(|I\0ŠHáÇJhõ¿[±=+¸Ü*hir\n·Ã=M0i–(Ùäsšßfõqx èÏÓíĞ¬§U±½BÉ.—tÒÇIY)%TQ?˜±¡İŒ‘ÎxÀKÒv3É“Ğ÷9?ÉƒiæRé9ä¹cÉæ;ïóãLÎ°|Æ<5?÷Vâ—7¼ÓÔu¶ûEg¨4Ú\"¤S‹O®”JñöëC8NÖWâ=ƒPZzêì\"Ïz…Ûpg†iNÓæÙğƒæÜ¬wyªf’¦¢WË,®/‘ï;¹Î\'rIñ’U¤ô1ÁjÏáI7é|šÍ®˜VšõN’ñv‰µÁ½â=å©wÁ$>•®Õ¦š£hşPÌÓMòÙoQC%;+#‚)\\ÈŞ6xF¸\rÀÛ}·Ûqã*¦Fz48á±DÆ±Œ­kFÁ w\0<AK	~h/Ÿ^ë—âú/Ø«•Ñ—Ä¶¸ë¢fmUÏê²\n+m–*ªX¦¦§ˆG)­.(ÚOa#µ]I3ƒZ•;¤§\"ù ã3‰’sÃh†ßnŒù9hâ{ÇÁ$\n°)?Š‹ä³ˆíL¿6Nxê2«“avığ²¡ìú\rjŒ•p¦tÕÄ¶Piòñ[k ¨¢«¬ª¬t¬FKvv¸´Îâ¬=x7\rz6íLÅ³«ıâª;­5”õÑÂØÄR‡îíØĞwkGÂRÜâé;M}ôµ6Êêk•œ•’²xî^ÒOÆú	=	jíæ›#á»,Èhÿ\0xºaõu±vïë$¤sÇäpY*´_M²’ş›}äÉÖ9ºo5İ¾ä¾š•ôî\'ÏÍ	ßÎ³¡qûQôÔû=çè>E¾®Å}õì…}ú7ÿ\09‡İX?2¨BîÚ­z¡¥´uvü-ÑO]+f¨dpDş±àl¯cˆìò->W‹†«TM¥~‡}¶y}£Éêeøi(ÎN.ò½´’|É¾nƒ`–ztŒS9º·Vc.9cÒÚš‚®gòŞñõĞ­ÿ\0c¥ı’ŸzG1*¹iğìòœêxºûUSöìc´‘||³|At8üÆk«àbÖæëw·;êlùFÌl¦/bv›±õ!/ªEn·Æ1O[¥ÆêÅ!\\Æñcb{»›s¥\'ğ­\\:û¨ê¥¡¬‚¶”ò6Vîšw”.>/vIŸ}­Rœ ¹ÓF¡q¬ğŞ\Z2öŸ§u½£ı¾œÿ\0bËut8¢âÓLõKF†…Op’åw©¦–²	é]¥7	\\ãë\\îv°RGyÜxézİí\"–\'¥JWJ)iÚß¼ùÏ%™V3(ÉgGMÂn¤¤¬í»:ai¯tÎƒ‡{T®î¨¯®zÅ¿ûVe-gá‹«Â4°×Äèª¼ÖLÇ\rœÇÔHéù\\<Du€æYöb\râ¥.e[F·–LD)ä”¨ßçJ¢Ó©FWôµç3ûŒX]Y›İ¹¦¤xô:ıªV[ìR¦É­íÈŒnğlŠ×O;$ÛÖõ±¥ìßÆCY?niZœÊ2¬_ñ?K¹Üì†\"8œƒR÷p]ñŠOÒ™-ğ˜àŞ\"p‚ã°ğéÇ];^Öpñskkî-´ì+=ôŸ3‹O5/\ZÍª!’Z{=Ê\Zš†F{¡Ú@İû9¹¶ßÇ²²œ`qK§š­§öì#O*ë+5|uÕÓKJø[#cÃbÙàâçƒ¸ÜNóºÚeøº4²Úô§+IŞË¦é#ŠÚ¼Úü»B›•8nïI-#»\'\'wÍ£ÒüyŠ~ˆ‹>°jÿ\0\n^×Œî{¿:õ,¨›…/kÆ÷=ßz–WÕ0^MOî¯Qø“h¾¸Åş-Oi„EÆä¹ŸÇny^CZÊ;]júÚ‡û ‰…ïqô5¤¯I§(\'J¦§İ¯õ7\nøAuMã+®‚á_O½tÒõ4P¼O”½äîª3ãW‹J´úÕ¥:mi½”4Òc¶È(\Zğİº×1€>R=ÓßÌóçqYÏÀí®ñÅ‡Ù—ıMÇetöèeõÍŠ¢V˜¨à#ÔÓ±Ä‘Üñ»Üµ\rUk©ii DEb¡uÉíŞ¨twG7²Ñf¨„oã5sDwp(Ïßy×c_À†6Ìú€ß^öµ„ùšIÖ*²õ‘–•WI¶¸´×ŸGèº?´DV1D@\0^|¸¬öÍê¿¿;Ïé’/AªÈø/á{-¿Ü²œG,Õ×[½TµÕµRI?4óÈâç¼ìğ7.$ö\Z†®Z.Æ«]ÑíÁÆ¾ç]?D‘i¿ÊÂ\'Ö2ÅøJÚ.Ç§ü)ğõ¥y=>g§Ú[j²^©Y$pÖS¾Rö5í-xÏ#µ¤åUYÍ4K\nã/Ú«ª^ök?¨¦eÅe8½ƒ6Çn8–UlŠãh»Sº–¶’RC&‰Ãg4ìAØùŠ¹mo/ÊÂ\'Ö2ÅøJÚ\'ÊÂ\'Ö2ÅøJÚ*n³.ú ‡ ¦mï§şÒD8êöÜjwİŸú1­¶Ó\rÓ-´ÕØô¿£Ç¨+ª<.¢\ng<¶I¹CyÏ;‰ß• |§åüğÑŸd·Ç0Ò;EÒóu—¯¬¬™óÌı€æ<¯¸à¥­\n©$î`¿}F|ßŞ¸ı.%z¾Pî>±–/ÂT~Ñw-0áÇDtbëW{Òı<·cÕÕôş	S53¤.’.`îSÎâ6æh?…™.i«?®YÉ~´ç¹H“·lšçZÃ¿ÒIU#š˜éyŸÀÒ=Ò?C¬ns‰$™j	\'ËûâøùC¸DúÆX¿	QûDİdï£0z2­>©q‹ˆÕó6ÙIt«>mè¦ˆPµ3{gªÜ(j…//7&==NßèH—ÿ\0bæ´ç…ÍÒ<ŒeÚq¦6»à@úaWNéKÄOÛ™¾¹ävì<JBÈ±ë.[`¹bÙ¾:ûUŞ’Z\ZÚY7ä	Xö¶;’;ıªR²±G+»lo/ÊÂ\'Ö2ÅøJÚ\'ÊÂ\'Ö2ÅøJÚ(İe÷ÑEøSÉü?£“ˆ,Iòs>Ñ$õö¶:šh@h$?	T	z\rÅø]Ğ,/\ZÈğü_Lí–û6]t÷º8Ÿ)elqóò5û¼‘·Xşâ=’êÿ\0(wŸXËá*?h,…4Œ\ZE¼¿(wŸXËá*?hŸ(wŸXËá*?h›¬ô`Ò¿w*{6¡jUâ°í*Ú™O‘Œœ8ş@UíùC¸DúÆX¿	QûEÚ°NtL›xf¦¶Û0È(_l¹x;åÿ\0	¥w²ÜÏ;¿‹bŠ-æš±çæçp¨»\\ªîµæ¶y*%>W½ÅÄüd¯Ì·—åáëbü%Gíåáëbü%Gíu“¾ŒùèŠ´øowË“Û»-Ø…[Ú|}U+ôKÕÜé3¶x@næßUk©oğø#\'â©wL8sÑ-ºV^´»O-Øõu}8¥©š™ÒIpw)çqìæ\0ü¶føF)¨øµ~œY »Ù.mc*è§.”5í{Aå ö9=‡Ä¥-,Q»»nÑo/ÊÂ\'Ö2ÅøJÚ\'ÊÂ\'Ö2ÅøJÚ(İe÷Ñ_¸-Éı_èÛËíFNcSäVÍ·ö<Ñ\Z­¿Ş¿*¨k^°­Ò:Ä.øƒPÚqûó¤uÆ‚Èc¨2F#yw3‰±¡§b;\0\\\'Ê£ÃÇÖ²Õ÷ó}h³Œ¢®c8Êœ’²¶·øOØ»ÀìµU9ÉÎI­Ût[£(jÿ\0Ê£ÃÇÖ²Õ÷ó}>U>µ–¯¿›ûëOú¯‰ş8ú~}ş3äÿ\0èUóGşÆP-Ô}=°j–\rrÁ²H‹¨îP	\Z<ÖJÍş™®\0.ÛÂBéÿ\0*ZËWßÍıõ,\0\0Øx–ë(Ê\'HÖjJváßYóÍ»Û¼>ÒÕÂWË£:s äîìŞãMY¾¦Bjş‹fú-’IaË-Ïê÷xÆ6MYîsåÛmØ}s|~\"z\ZÚ{ö=aÊmsYr[5Ò‚q´”Õp6Xİç-p#!ñ((à;@òßQn¢¼Øò\\[m®Ş=şÖfÉ°ó\r‡“e©ÅìÍE\',4“]çè;|‹–<$èÆqNQšã(+ÅõÚé®ÅuÙÀÍZG>“6PêŒÏ-’=ı‹e¦iÛÓÔŸø)#áA°\Z˜®xx»WBAeMŞSTZGq¢Î¸^j{7Œ›´ì—oÀİbù^È(Sr §R\\ÉFŞvÚõ2¥p™Â­ëQo´9şuj’“¡‘µÅPÂ×]^Ó»ZÖøwöNîpõ£}Én÷vkZĞ\ZĞ\0`ˆ/•×eù}<º—ƒ†­ñ}\'Á¶¯j±{YŒùN%nÆ:F+„W½¾wÏÔ’DGÄÎ…Óë®Ÿ:ÍK,T×Ûd†®ÓQ\'cD»lè{Ã6â\Z{vØå¾O‹d8]ò«Ê­6Ëù&§¨g+š|DxœÓŞ7v‚BÚEÔ5I4ëU¨oÏqZ; ˆÎ“Ã¿¸•„=£~İØøÁ^Û%=øZnÓô>ß‰Ól7(•6^‹ƒ©‡nêŞ4[ãkèÓèº×Tøß—ËZç¸1.sÀ¹\'È´BáÑİ£•5}}M–QÂã¹…µ0<äit;‡u i‡ú-¥W(¯–›%MÖëNàè+nó	ß‡s˜ĞÖÆ×yËÌ<D-=›ÆJv’é½Ï¨âù^ÈhĞs §9óGvÚõ¶ì»¯ØÌëÔıÌt–ß‹ÖåÔŞüŞêèá-!ôîkö0¿§tN#ÅÖl{A]	l~w¦¦ÓÒRç˜Å%æ*ºJa?0êœàˆ- ö€7ôÓşU>µ–¯¿›ûë×_f*:ÀInõŞş®“I–rÍ…\Z+1£7W[î(îñvµäŠÈp¥íxÁşç»ó¯RÊãqÌrÉˆÙ)1¼nİ¶]5<d–ÆİÉØnIï%rK¬ÃÓthÆ›â’^d|/4ÅG­Š‚²œå%~6“o_8YùÒµÄ,ÖNÙÃ#R÷Ş2Î®¶òØ7tŒ¡lŸ9ƒaÛÍ4­ßaÛËlõvµCQñ#Óûî¤f]E¦ÁFú©ÈÛšB;7ï{ŞZÆœÌ~	°L“Œ^+²\'5:—­´ãµí¹ˆ»¡uu+7ïdc_åùÜ\\ŞÍd}Š+—Óƒ‡‡ÇğzŠv2ùTÏU/ÏnÛ¾¾`ÚHï´2 |b0|jmDV+Ä\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆªÏ\\YÓpß¦²c¬9îUZXÒ¨aö2V¸x¹wÚ=ûßâ!	À”®U‘~¾kÖ¬Z8PÒ%Êšİtš¹´Îì¸^\\yıİ\\Ä{9ËÉıì ¼6èe‹‡] ±é•˜Ç4Ô‘øEÎ±­ÛÃkä\0Í7—b@kAíc‰S~‹nª-toâwPhŞë•Ú9\"Æ\"¨¾8¸š¸ïÛÍ\'®c¸/wh‘¤hºªé&O™DV*\0DDD@\0DDD@\0DDD@\0DDD@\0DDD@\0DDD@\0DDD@\r™f8ÎŸb×<Ó1¼SÚì¶zwUVUÎí›cò’NÀ4n\\H\0@@utÖ¼3‡ı6ºjVoUËIBŞJjV8	«ªœWO=ïq†´9Ç±¤¬­Ğ-.ÏúD¸“ºê–©:Vâ–úˆê/Œ¹±2ÿ\0‹Úéxİ£bGho;Éçpæü:Ÿ¨Z³ÒSÄU»	Â(ç¡Æ¨¤‘¶ºY·0ÛhC€š¾«—³¬påÜî#näîícÑ\rÃtMíZiƒÒ˜èmÌæš¡àuÕ•.Û¬¨”÷¸@­€+ã2ş*ë;­\r\r²ŠÛn¤†–’’&A°28£h\rk\ZÑØ\Z\0\0ÜûÑŠD@\0DDD@\0DDD@\0DDD@\0DDD@\0DDD@\0DDD@\0DDEÂf™®)§XÅÃ3ÍïÔ–k-®#5UeSùXÆø‡•Î\'`\Zs‰\0HÕä6<NÇ]“d×ZkeªÙêk+*dŠš7sœãÜ\0XıÄÿ\0ú•Çn«[t_FmuîÅ|;ª´ÛZr•»ï[Uâc\ZŞg\0îÈÙ»ÚNßO<Rê¯ú‘C£º?e¹3–°Ek³Eëf¹HÓş5VAåkZpi<‘´H.ZÁ¿ø—X—_9§»g7hZ/€ÎÆÃàÔûÛHÂò¶Íkkã¶î¬æxIáWákO›a·:+†KtšıxäÙÕ3Ù{ö¶nC[ãÜ¸ö¸©Ñ[Fî\0DDD@\0DDD@\0DDD@}ÊløÃYQTxÈi¯˜mM‰Ø	dî‹sØıšI}È]Ã\\×´9®¤n=„/”D@\0DDD@\0DDD@\0DDD@BâÓ¤ON4	•x~êLÃ;`tn¦Š^jkû·©‘‡×<ò,<İ„8³°“v%+ğ\'mtâL¸vÃ¤Ìu&øÚXİÌÊ*v}eÂP7êàp\\{Fî;5»‚âÉ=KÕ®\":F5n“Äì³Çh†c%ºÅ§À­°ïÊjêåÛg8Û#‡•İÜ®ş4ÇD¸•éÔªŒë,½Õz’%×ä—È££Œü\Z’!³\\à	Ú6lĞNïsy·:Û ü>é§˜\\XfœÙ„\rw+ë«æÙõw	€Û¬šM†ç´ìÑ³[¹\rWYÒ=§Lá7„…¬S¨¶2;¶[q‰¢ñ~–-¤”ö¦z„ØÑÚâq$\0\'ÄEn¸DDD@\0DDD@\0DDD@\0DDÅñ>	âd‘ÈÒÇ±í®iAïh€‚²&Õ=3|™¹\r#iXL“à7ç¹öyÇy2[Ş{vcIƒr7cFåqzuÆî—dY´ëT¨ë´«=Â9ì9FĞ±ï=Æ«²)˜ï¥$´¿ZÒ;U‰Qæ³è”kö:q½PÄ©n‘°;ÁjÀêêèÜ~š›ë˜wØ‘¿+¶ÀÅ„ß¤šæ¹¡Íp Á°…ò³ªÿ\0¢¼pğ\\çİxwÍêõ7O)	xÇ.Q\ZªŠHGo §Ü8å¥sI;“¹hßJÖerGaÖK\rÇOïLwS4îcêè:Àv ¹­ëb;ø\rñ¿³t¿I;½ãEÃâ™%Ù¢Èp¬š×}¶Oûİeº­•¸ù9˜HßÊ;Âæ•ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆº.«k–“h…ŸÕ½QÎm–^ÒèašNjš»ÄP3y$şkNŞ=éGºË¯ºO XñÈµC/¤µFö¸ÒÒÖUÖ8},0·×¿·`NÜ£qÌ@íYñÄKeşîÊŒw‡|mÖZwnÃ^\"dµNXiıtqù!~àû•é	|Nñ“‘îùSq×^ğêœ³%–W6Voİ\0w¯ŸnĞ6Œm±sUwº¨ó³½q+ÒG«ZïS&£tG®‚µ”/»ÜùÁ|½‡nWäîA{ÁÙwşú-.×óGñ*Éí–÷rÍO‹C!eU@ï#Nğ´ÿ\0ÓÖvö˜ÈØÜŞ8+Ñ\Z(â¬Ç-^¬å.–£\"¹F×ÕFÎl-ö4ì=½Œí#±ÎvÛ©õéVÑv?X±;%7ŒYèíV«tB\nJ:H[0Æ;šÖ´\0äQŠD@\0DDD@\0DDD@\0DDD@\0DDëïúÄLsVæ8«mùÙ—ûO-5p;l„Ù€ìH×l;¶S¢ ½Œ‰Ïøâã†;Ìù§¹u× ·Äyü#¨’’ä#¼³R|øx¹Xdß·vØ¾Í3éZ×İ=ªùÖLBß—6ıMC¥ˆÚîq¸vòÆ˜÷C;÷•®J4ÕŞ´G]i]§iİ®íSÉÉÀF`®ˆxƒj#-îy¹{;AUµ¸Ş¿ÒŞ“^5EKzÈ«°«Œ›ú˜²ïÕÄçyg¡YÜs)Æ3k/8–Gk½ÛäövêÈêaw¡ñ’Óñ¬ßÖ‡éÚùîz©,sîe§$fÄxömT-íò\0è‡‹wxÕAË´Šşî²^«±|Ãu?ÿ\0;²THiùGqğªW·Ë³œ™.×ºŸ|‘b&ô•ñeàªÍ¨òªH¶ÚŸ  däúf«˜ü2cpn˜øÈŸRôUÀöu•v+ÿ\04~u7‘ÒäU/éCá\')äeÏ\'½ãÉ°¼Yå;!u7ZÑé$3âüNğí™ò7Öì*®Wû\rê¦?ş§¸?ò)º\"Íj/¦’¶áj¨*á©…şÆHdiôØ¾å$D@\0DDZÉ57MğĞó—ê5cäö^©]`¦åôõ(o/éá\rç¯Xh.S³}¢´SO]Î|Ï‰†?À%É³e‰EŸy×L.–Û:ÈtïK2;ôİ­–çS\rº\"|£“®qÓèU³QzU¸›Ì:ÊlMö*•Û†›u¨©å>êZ‚öïçk\ZUw‘*\r›u»Úl6ù®×Ë¥%º†¼ÓTÕÎØbŒy\\÷\0ô•Xµs¤£†\r/lÔ–¬¦lÚëàRã±‰âæñsT¸¶_;ò<‹%úÎ#¸ŸÈ„=fo¨·6¿pÒêŠÖÓïãñ²ıëB³ZEÑ+­ycà¸j¶EiÂ(³ŸK…Â¿nı¹c\"ïåë	ä÷%Ûà[u.\'­*ºó¨šÕ¦ô4:k“võ”§Âîiñ\Z‰\Z\ZÏK#k‡ºQ¦•p…Å/×q–z‘tuÅâIòŒ¢¦VE0?N×ÉÍ-G¦6¼yHZ•¢üpÓ¢®§¸[ğ¦ä—¸6pºä%µ’µãé™È=Å¬è«\0`67[âFò\\\n}ÃçF^†iƒ_s¸¿t’-ŸÖÜ¡\r·Àñü].å®ÛË)p 5\\ãÙ1µ‘±¡­kFÁ w\0<AH­km¾!€ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€/‚òˆgS8:á§Vİ-Ne¤v7VË¹uu¾3ATç{§INX^~ß˜*·¨]Zsst•:cª—ËÎîm5Ú–;„[û–½†\'´yÏ9ô­\nED©4cNqÑIÅ2d“n3—B7,û˜§˜²mH ùƒÏ¥A™w\nJ`ÜîÉtC0‚(ıœğZäª¾™a`ø× ”Qº‹o³Íœ5yF!psiên–JÖ{ ÇÉM+};lBîv$ø‡°ò‹FºgÔ¬otlÈêù>ğÉÊ~%è.íb²_éüûf¡¸ÁüU];&gÄàBè¸rÈyßBp)Şîù>G©Y\'ßµß•Fé;ë Æ\n9x¶·†ˆ5×$/w^øæøúÆ×3HP\0­ugowh·?ş4åjµÃ€¾î[øF†ØÙ¿ÿ\0o5D›‘«…—£{‚ùI\'F\ZÒ}ÎAtoü*Suèô’ş‘¾3ä®Ö™@û±¿ğ¦_‚¯¤Œ:ÖrM­÷6ƒüM\rGãd ­C‹£o‚øÿ\0¸áyû<†èîW%CÑõÁİ½üğhµäp­˜|RLBYèôsãŠk³\\Ê­}ÍØßà×iiÏÇnË£ŞµWT²nfäZ‘•]ºÎÇ\nÛÅDüŞwÖìÚ¸AárÊöÉE X;œŞãSf†§oÂ‡.ÿ\0bÓì-8Æ`´{\0¶ÃO·£‘¡7Xß]Ÿl_C5«7äv!¤¹…å’v‰hìµ2ÇÛã/åÎJ›0¾..s®Jœ‹§“m§½]!‹oLq™%Ş\"Ò7Ù˜úĞã\\óF©ë,·YGĞ:Mü»TN[·àJ³ºmÑÉÂ†œ::“€?)­‹mªrJ“X¦\0øcVmÙäÙø¬ö[6=oŠÓ`´Ñ[(`EMG!Š1äk\0\0_µIPˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆ\" ˆ€\"\"\0ˆˆÿÙ'),(50,'rrrr','rrrr','rrrr','202cb962ac59075b964b07152d234b70',''),(52,'admin','admin','admin','21232f297a57a5a743894a0e4a801fc3','‰PNG\r\n\Z\n\0\0\0\rIHDR\0\0\0×\0\0\0×\0\0\0‰}Äµ\0\07<IDATxÚí}÷w×¶¦şˆyéÎürgÖ[3÷¾™;ë­7sï¼öÅccclÀ˜k›ŒÁ˜lÀ,ÀäœA$@A$‘ƒH\"H$\"c’É9Z öÔwÄ.®>º»ºût«j­½RwÕ9uöwvŞ\'ãyA-Je*ŸQ‹ê¿ó:ıõ¯¥fÍšQÓ¦Méí·ßÿgzã7èı÷ßkŞ¼9µjÕŠ¾şúkOÔ¶m[úüóÏÅ÷ù~ï¾û®øîÂÿñ{üìå~_~ù¥ù]™>ùä[úôÓO•ß±R‹-¨uëÖÔ®];ÏsL4aœX¼³ÕCjSªó e¤òàï.®/Ó;ï¼#Àfó‹)\0Ê÷Ş{OÜ\0Ã7nÜXüàsû~Ë–-Mà»\r6ã|óÍ7CÆ	a¸‡Lõë×§?üPl6˜¿@Ã&ƒ±bC:¼€K7jÕäu% \"‘LÑçÕ©SÇ”’NÏlß¾=}õÕWTüq˜de\0¸^Hõ}\'zë­·¨Aƒlñ~7ÀÒ\0\\Y}^3™RÃO	å…À¨ü|H	§Ï2°>øàƒ\0R¿“ù96¼Ü÷Ç»QIuü-Ñï¬¦,%ÁU2±¶©\n&“AXEt\Z$ª\Z>‹ïx±Íü&Œ6l‚\0Z2%Zº,#•í¬d0©Ì¬»ÏÀÖãƒ` ]Ô2lPo™©Y\0\0“\r°tqr¤¸¾oU¥b·M&s²#àqr`0°\0B¿Õ??7\nÌ‡m9ü›ŒïÏÆæ	/p\0®Ò¶QµM	l†dpÙ1!œ¬\nºÙdº¹É1Şd©°¨P[°Kóp%\\ÔÁgpÙı4•€e•\"˜# K¤:m@x`›¼€+4¾«ê S“&MlÁÅÀKU`YAöÑG	%òİã™x‡ğ\nàŠ#A=`[@†ƒÊÇ™ v»®— r*$æ”H§{cáÀg\'†ú?vb0œ\rˆ?qÊ‰®„Ïá;ø.ÔÒ¿ıíoaBü\r;<PWç…66\'GŸ€fûfA\0®8Å´œ\\ŞnÌÀñ0=²*Ü2\ZÄiDÈ¨°ş&?‹óu°	aAuK”ı³ \0—Ï„ b4R€³”øÌà…X±‚\r@ãŒ\nY¢Y™ §“Ã|ã-¥Ù9oq\0.Ÿm-¯R‹ÌÁQ?THvKËVH>Ä® µ\0(d ã¹é®ºåZÆsŞü~SM=ÌH¡×Rx\ZÚ¸?ÆZNœ­[·®§4¨H¤$$@í–À‹Ïà³‰HVö²Ås¸ª©‡Zƒ«iƒ×µñªlvÇšçÆQ%ØFCœ”›,b\"¼‡©’½¡-¸_†‰]Yw5Ç\"ìB«‡ÍÙó¨õr*d‚ôÂçUua¸7‘.ª*çsvşüõ\0\\~¸ßuª?rS9Ö\r`ø¬*–6rus´„\0gõŠâwÉLtö;3&’{3tvd¤j  ±“ø«pŒ\0±Ê)TÀ‰Ã²dLei–JÎ\r-ÁµøÇÚfOŒtòª±©I¢’TØAj{%¸íTGìöÖ\nh0hª¾_®×=5JKpqù~ºØ\nr­÷Ş3>¢™\'TOnœiÙ¿µyO*‚ŒKStÎœÏTÂøgn4jÔH\0*–†1\0•w“í6nLãDøœ\nŒÉªµÍ‚Î•Ëºª„º{	#Uab‘œn$ƒ¢^½z,Pû¢µÉğ]\0R¾o*½w·®Ò+#ğÆ¿²6ÚøŞµç¤à_|!îíDmÚ´	IPv\ZTUYuM)Æe]¥—Và‚÷G§Ò’h„Ù¥>¨O7Êìı-m›3œÊ¦(iãì”;!“ºuşÆÖù!÷¶ˆÕeà!e‹;DÉ$÷ûH•<Iiè(½´—ñë¼¨œÅ)J¼Û×¯W—&ôëDÇ–M¤Ê½9€áŞ¸\'{ã9Ø~pnr`°9Næ%nØ^)\0®Hr	ã©j€©Uù}ªô¤¾¿¢¢¬!QÊJçVO¥oÛ\'OØXªAML[LWÛ+CG¼Ÿé2UÙ	$d$]l›~ô>unÙŒfîN¥9£èş¶9¾€Ê/z¸}¾P7w-C+§ıL£öQªœ^«­ñş ÅdõTÇğK/İâ^º¹à£-Š´Ö©ÜÕNµÀÚ½­	“Ë\'hhiÅ¤Ô³csS3Ê7xÉ8a©‹ƒ&q/²62t³·¢Éèæº+f\0®$ÆïäwÓ„¾T<c I%F¤x¼ĞM³éPîZ3y€ØDì6¹¸”r°æCâ=ë¦&rÈC§œÃŒTµ·8Q;g’«b>HûÁ}ÇôlK×O1éÉÆi5XvÉ°AZp­š5²Íâà#˜ä£”t\nôsÎ¡NíØ2RÑŞÂ®Š“;\0(§s« Îàsõßy›®¯®Šsk<¸œ@\'\rÔc8l 2[Á&g†è“äğ….õ^Ú€Ë‹½°à3NMcdâŞ3úwÖã\rSéÅ…¢rv`ÓÁãz/]ÜòZ€‹;<ÙÅ·¸1¥µAŒˆˆÕ¨¤Ö³­³ÀÄH¹£¾Q#u‰‡‰3Ú\Z¼€ËzÖ–*h\n`}öÙgçÍÙJ-ƒ^/\0â]Y;]Ølf`‰ègèÅ±¡C#Ñó	ùl+ù¬_ùèÓh¤Ö“MÓPÄImD0Ùğ‰.1/-À¥jDƒ´n[¦:¥1Z©82âGªCŠ%ÛÑ¡KŸ]’u½ìvÈ\Zğ*µpO«Ô*aàÈˆ;ÁËÈd¤²‰SYšà2^‚Çd^úFà~™¾\nÖÓ-3æOÁ•Ï^ÅDœ9Ø]ãÁÅÎ/;œ{‹K&ÎåTBì°DñÅî\Z.îï%!ÔÉŞB0™S:5o¬ÀK˜|;,Qj\"·_«ñà‚áéµ8ÒN\r´f´#‡Ğ\n¬ÀK¨‡–ˆŠœ©QãÁå5‹åşr‡Yşù“ßSJ­gÛ²&×@M”ÏñjŠƒû\"C¾Fƒ9`^7eg†\\Š@á»h¬i— Ëô|×ü€Á5rv4mX?¤Q)\';ÙÓl³¹™\0WwÅGRfg—Ÿc1¬ù…NPÀÔzRĞPöƒX$ld¦æ«Z\'€°¦Ø<±Örgb„dÜj»j<¸¼z\n¹–À²KÚÅßZ~ÒP	¬ÀŞÒ~Û>G¹Vë&ôw”^pjy	\"×ø\r/mÔ b\'²kÿÌÍbpŸ…™]ÔöV¨«=ß¶NGæ¡Éı:9‚\ZLşäC\rtp/‡ ®ËI%â[z’u &¶ø´‘ãZÃöör†²É:z\n¡6hĞÀs7Y86ì¼„3C_zºyF¸¸!©¹93X‹©ÑYñvB¨ˆh±ÌıÜ2á!Õœ¼„3Co§†¼NˆO²\rnG^È5\Z\\*O!€Ä­š½ff°^8œš;5Šf‡¬<‡\"Vi£± q©¸¸\"¢FKF’Sè.H9»ø YWs§†¡®«À…‹İÙe©’´›TpErà‚›½eç‚aw95<†.ëùĞçróà’r\n½v{ŠÅŞ\n<…©ã1dpTHfBÇ&!oĞ©WG\0.ƒûå%aıËíÀÅÆkÁÈ^§0ÀegsAUä3ÅàMVi=¢aiMoPmÂ®*¾…à£¸‚2“ÔqÇ»j!}ç†J‚éRâŸ²à²#e¬À\rŸ^à’½È|Î˜5Ï0\0Wà²mã<FóÏ€S\'ÖÅq.»üQ·³¤Á+¸^†j$àÂÃßcg†]Õ±pÃ»bÀÀ©ëB††\\Li\0Y·c\\“î-tKgapa7“³â4»F4¸j&¸XrérNWÒƒÈn§Üã…q)¿|èƒKÕ›0\0WúËK\0™{ÅërŒPÒÀÅ-ÕÜª(¸^­{Ns±K{\nJûSƒ*vÎ)9ÁšÂY\r¸X-Ô!¯0éYñn±.\0J,\\Øí‚ìŒôIb[<pérºdRÁÅmÕTñ\nüy»Ëj—S€+½Àå%õI—–jZ€º±êè ØYhXâ”SÈàrŠqàJMp©ÊN¼ä àRô‰·ºä5jdVhª¬x|Ç1Æ€+%Á…5e	1Q8±œ@SA—Ô\'mš‚ÊÙñ8‹ŞA\0Š£ïvàrŠqàJMpaMíCç®½\0‘*„£KK5mÀÅª!úeà…áÅYû$ÈçtàJop!n©JÂËy…Ø|‘¸k\rãà²Ğ¥yU^C€EU…lwº	Ê¸Ò»`ÒÎæÂÙm\0FÎˆG`\0.ÕĞKò®[êS\0®Ô—] Ù­ë“Nı\nµ—[ç]Õ¡w¸Ò\\ˆoFÒõI·Ô\'mÀå% Œú\0\\é.Ä-U±.7W<óD\0®ÊT¶V àJ?pq¬½Q¢—.©OZ‹UCk@Ùê1äêã\0\\é.uE.x›p¹¨†ğøØéÔ,±¸\n9\0Wz‚‹c]rN©¸tjª%¸X5ÄKUªº¸Ò\\ªX—[n¡.§Ij.§2>”AséOé	.U/\r·¬xZªi	.rÃTª!2äe5!HÜM_p¡U5Öå\\:Õª5¸Æw\rW\rñ3R]äL\r/àŠ¤•õƒÂ	t·`d]Ëş‘.NífKø;ß…Ép¯[¹ƒ}9T®|psño,÷ßƒÓ;\0aÜÖwçõù*p©Énà?è”ú¤%¸T§ŸpŠ‹Lv;¦ÕK™?àJV*íö·­ííûæM:úcS:=¢uU‡ßá3ø@+¸ğ,ÜÏ²išãFÂàÀg÷ièë;\0aşvc0+‘wÌ\r[7U¬Ë\r\\:u}Ò\\²j¨ŠÊs¼ËK%²¸˜¡¿Ê‘ÁĞ y~H.|O~õY‰$\' [O:±+št;áŸ×)¯P[p±j¨j^Ãª!’6İzh¨À…;»t¬ä‡ÔbHu›€\rÍ+¸p¸¼ÃØD™ànWy’u:ªU{p±jˆjd»Şñ^º?=Ùº[²ú¥×1&ÉN=L–¤r“bò\\íÀåV×Åö˜®©OÚ‚Ë-Sú7ºB¹õ-ävÖXL,ªREûşc:3º]ÕËj#èÁšq!„ß]×Ï¤ó¾Ÿ—	÷©¤Ë;Ù%ñòÄÁ¶Š`Öy”g~6Wù]\\Ïö¾@ø=>‹w¾·ãJ)Æ tèR­N®A¸Ò\n©LË@«Aa-Ÿ:\n^Xücí\0\\‘QZÁ%¿P·@2t}«\ZÆHT`ò›¬à´şOW7˜Øéùñ?Ï99¬EĞ ¢[ÏE¶Æº¬Y\Z0¬¶¸ÙZƒË®¿†\\ßÅ=ãí€uwÙÓˆ…ÅN|+HB*Šw,I§¹^˜Ú•ö|ßØœAÊµãX—HN¥Ô\'­Á%§C©TC7wüƒUãŒEü€J»Öj•R›Çõ¤)=¿¢áß4£OŞ©mÒŸşøßé÷¿ÿ}Ô$ßKE­\Z¾%	*ú­‡ß`º°z2í3˜f\rø†ÆöjM?´nä:®wkÿß˜æïó½º4«oÎ¯|şO¶ª#6;lz·r‡ØÆº\"lõ\0\\>dÊC5têº{bpsúuö÷\"\"/*\0+€ü¦?ıË¨G‹FÑêî–,¦úuş]«¹ñ†£TvhX+l†*pÉåş©”ú¤¸îÏ«E§Õ\n3~ë½¡N‡B.3°z±`ò±­O·Î‹™ıC;sÁ[7ıFöî@Óv§msGz²EÌÄ÷²£U“‹ç‚0†wëÔaÄ¶ŸÔ@‰Xë&õ\05Áú?ÿ…š5|ukOcèF3‡ôq×ü)1Ïıôš9!süñ›TëÏÿfJ¶+KGVƒ«p|È™ÈòšÉdö\n:‘\\ÂÙ§Š—p½¢;Yµh_‡ZJVß†êLyÎÖÀßú´ıÌ5¿ğdÎĞWRâ¾0’_ôì`!]Ø¾”fıü=Õşó¿Š1BŠE¢2¨z´lBë²FRåÉ¢zQ¾5©sìÚâS1¾®_|d‚ëYQVØ±­ª@²pq*œéìPÅS¸Ân#Så¼µß7µyá…Cª!àèvÃ ŸWí †¤ˆ˜AJ×Ğƒ=tsÃü¨èFáÛ{W”m4Ap·d\rÕşKÕNĞx€ˆÏÏ\ZÒ‹*Ol\rÓ³Ck«Ÿ[²ŠXõ|n®›MvæF$Íy¥Ê+´‚‹KŒìÀÅ\'›ôhş±à3Ö\'\0=Ê©òüTÔ¹e3åY^ø?«nY\Z,fëOÏUÓ‰]ôÛé½!Tqá==SJ·ö¬£kÛ\n|¡;WÓİ[èÉ‰âêgÙG•¿”\ZTB•g‹©òÔvjûYã*°ö“p±:XV˜M•§wVİ÷»x*¯­¦«\'è·_ÓÃ£»èö¾\r¾ÎëŞÁ-aïğYù÷\\ûßÿ\"ÆY8á{Ç¤]™ê¿ó¶™e.®ã*Ê\Z\"î	b~oÕhp][Ë,Úe)¬™<À6æÅ\"«Ç°õGu•ÆõÅƒ;èÅ•ã@vÜ(^OOoşJ¿İ½I‡wl¦«ó¨dãr*5hË²“VåfSÁâl*\\šC»7Ğ¶µKh…ñ»Ç_O®^Œxsw!=:^,üÉ©ıÃŸ¤—×O›Tyf—°‘X5t³½Êr«%‚P¨äû1=¿tŒ;DÊ÷ĞÃc»ÅXníßB•Ï+Ì1–îÙE…Æ|vlX.æ€9Öæ/0çºkMÜ\\@û7.£­Ësèîåóâı<8}D€s\ny—ËŒg¥ç—ÑÀ>]•ëQ:Ë>71L\'p±ÔjÕ¬QHŞ(ÎÁ[5\Z\\åık™i1NŒÔô£÷•İ¡©W%ğÖú?ÿ;l!aäW^«fhüŒıÅ¯\'à.\0¸[¶Çd¼Šß~£Uùiû†e´kc­^²Ğd<+m]“/\0¶eÍ:r`?É×Ãóå‚©Ù*1H .sÌï¿©$–Ä!à2$Ÿ<?+a×·¯¤ë;V‡\0ËœãzÌq9­Ì[`;Ç\"xª9b#Â}ï6l¼_ËÃÆq±t‹\\vô.U%2k-¥9£Bx…³qÀ[5\Z\\lo©’:eš=¸»2™—\ZV¡j!ó&ªÃ…JÆƒ\Zxc÷ZztéL(n^¿FWå†íè*‚ô*6vöƒîÚº‘¬×½òR0H‘`]-¯Ré€`ˆÆİ½;zÀÎíµÔA\0 âá½°9nXáqËQñ–bÅÛBçøâécºmhwJ6 ‡ÌÑPWë¿õ×°qüösOà²6åu‡É`åÎ!M¶İ•tp•vö®ûÛæĞGo…—¢p3H/à2Ğ°Gä…‡º5ÉÊtÌx›•ÌtéÜ	ñ»ò²Ã¶Œ·Ç`<ìş{Š6‘êÀÀä&ÓÁ6‚Äyåx¨ıÿBƒ¹ˆ[!,TFÙõnnìÀ\0P\rI(Ï€VKcñÖÕô¼¢BH²ÕK»Ì±€ölWÏRúVñ:¡\níàü>ÛÃ+¸¬ö6gç\\Y;İ\\à­\Z\r.vÁËà‚ŞŒLq«[~RÓ×”yU9†ï¾ög{p1^:LOì6ƒ¬&Él\'H.×­×mÁµÕP•\\G•İu«d=9¶½Êù yôî–®\r	,#~å4FLŒ?˜V˜—L}ùˆ)µ`©.€	àÚ¿c=İ¿sSÌqıÊe.s, Ãû‹mçˆg]ß¶Œ*m6Ç£×Êáİ<Kegwoğš²”…ÁŞ\nÔBK=2Åí2·T¶Ú^Ğ½­àÚ6ñ;ú¡u“…€Ë û»–Òƒ³GÉí*È™MÙ“¢ÅÓ‡Ğ¢©ƒiXßî4ä»®!4f`oZ2kåÍJsÆ¤ËÎÛŞïÅ³\'t»(?><V\'`ÉÄ\0ƒÄsrÃ?<wÜqk—Ì7ç8gÜÀ°ù¦\rïGË²†‹9Îu™#Ïóf‘°£›BÀ…v£“Ô’Áeµ· ½€¶´ªæ`ì’¯ñj!ƒKvh°÷ÿĞŒÎí èHßFb·²•İÜñMë½.,øóçÉËuçÖMš<´Í\ZÙ›æûMìGêJv1¨+ÍÖ“`È×—fïEë\nr]ïùòÅó0ôh×ÜÌÒğÚëâEñF+vıLÄsÌ6hÜ€Î4^Ì±Íóİ«9~/æ¸ae§w÷²â©pËËàBš×‹=ÅÍA.dãXXã;ıMğ†¼ñZ\Z5\\rÊ¿.ƒÇïwÆ/ûÒô´ğóğökë°[$H0;\ZÖ/œñ.¢—oŠ]ÖéºrñåÌK³G÷¶pB?Z<¹¿ lÙãûRÖè¾´oÇfw†»sI0¼u,H[bæó®¢ÙT±s5yë?ìçÇ.ú[¿ĞË§]f#\0ÂÏØ<æûŠÖ¯r•X\0É\Zy~»Å¸8ˆŒË²ÔB2â_Hbpq®c~oq®W//Éœ .UGÖ4¿ldOãwxé²jÈ:¸İáãp÷\n‰ğYc[Õ	L\0;èé…cTqÿ¶-ã=¸ŠV/ -Y´õí(\\Hvm \'»K+xÏG˜U&Ï]šp=Û:‹&woî>¿WôòŞUWğŸ:zvmÈ™#~Ş»u¥ã_8AONí£ç§‹mç‡‚hLcl\nNÀ:2HXl“W\\ +÷IÀ¯ºpñïk|œ9`ü2Pš.’Y5”“:ñÿõC«”\\vÍj¨t³Kdz²%=:¼™nî\\I/Ÿq›Û…]üÅı\"&ïâV‚C\"Ò¼BÁ ¦Ò©œŸMÕN×9B’ «¸{ƒb¹ğnîßOw÷¬¦G%…¦m¥\"¶\'Yåµ+ï·KÊåF0ğ;\07Zğˆ¬&s÷+P²óµÈ-´+ygáõªw4ÃîÊlÚÀ†cN 8¨luj¸QEù6áø¸¹5_ç7÷nN0–	†+İD÷÷­@õòvÁïšqCÍ{+FA˜KŞmn07€ãŞábn»İ¼ÃÂ†ƒw‡Ì“…óâÄ6ÓŞÊQU¿†’nÎk56QÎ#…‰ÀıGäw\";Ã‚Ä]É©ªak§&üuYüÒOomÚ]ì’÷®E™ßVgiD\0.[ï[ñ2%9íŞv[	cƒã%’Rv\n@-Ú•õ“)=I/©m7·hïY¶f^ˆJ(ÀeSŞ/çÂQeµ·fv‡ƒ‹[Èï„+ÏƒÄİWtaD¨İ%¿,±;/’_ú/“:Sa‹*pñË÷.V\r£‘^ñ$xøx\\«GE^•µ¥òO·Ì0%áuÔe~²—Pö‚:y¢ªx&Ö*¡.k¿æ#ğT\0®W…’ªx»U±3›Et†ŠÈNHÀõ°p¢é’G\Z.ŒÇYğP[áœˆ\\\0\0×½•£…ÊÅ@Yò\ZÌoİœ±Õ›Ú+/(ÂNàâ*dk¢¶ì¸¬ù¨rë<\n&µ©DæL\r«júö’ŸC_¾ñ¹–ïVW({×ƒÕãE`™\Z	²Éf<VAª¦#îë^4[€¾Ï¶W¬ê¡„ç³ûãòZjÂÎ93ãÛömCDìÓbo±J˜ìÌíÀ%Ç»dÕõ9Ğ«CÜ´}	a$’ëşÊ±!1¯H¿	ª©5¿6TÄ§„ìÎàNCE¼³y–™wè‡}°8Qã‘‹?½z\nep\rhß\\ô2äÏ\\›×?¤şOV	“ßÒ\\7¦©UC]È/N\rx¹:™Áeçª’\\ã„jˆŸ»~öAui¼aŸ$z‡°xGÇX\"=‘%¬»îüèêÜ¾¯ú4N§²Å£L€%c~PÙûù§?ş:¼`XÈx¡ş:m°²J8¤ıg!ÉÙXOÙ™!«„à¥\0\\=ÍW«†üeï¼‡Hâıâ“Po¡Ó‚=\\3A,ÿ	£rÍl0E¼œâ$Z¼ögºº|ŒT¥hÁucá@.\0–7¼‡ù0z¼¥4æU[ÎêÇÆùYÕ]7O!·²–Á•Õ­yˆf‚÷%ƒKV	ÁK¸TC~qT–Ae¸ãüª‘gp=Z7™î¯ò;,¼ªbYîœÀEã]³á»¸€k­ebÆSõ´øà…¼!\\w—Kê³¡\"Mé\'$‡ª+ì½hç…ï¬<7k™6-¹Œ§KÚ“\n\\v6=…ÖÍˆC6:©„ÚKÎÖ°”­»İÆõ(«]Ã°à¢YÁÅ„ØbªêeğÜÈéûğXÂy!??\ZG†l¿ÜÎjØ\\?Òí¼¡as€aÓÉ ³Àá6\'U¡£•°QY+‹!E­6b4àÚ<y@ÈgdpÉcº>iÛ”‹\'AN§a ¡wyÛz&¸ÜzÆp­\Zëú\0\r*#€¼€ÎH¸Ç´Ş­ XR9Ä-¸à-”3Yìb}<7\0!–yp›mk;K_ÕawnàêÑ¾UXW^9å‰ù%ÙÅ‘ÚƒKNäE˜¸ş\"ƒËé(!Y5¹}Î	x`$7Âç¼Ş3©UD\"ÀU%½D5//s²ÛÉPM­P7O¡\n\\9ß4R^#Ÿ¤©C¢®öà’[­¡ŒÀnÇãÄM\Z÷{Yp‘Óf,z´\0ó“Ü•õB\'˜à‚íåE:\'„ŒwŒÄbUĞ;pAj!ôb½·\\¤K+µÔ8ü®xÌKxD9\n§Å8líÀëE5IóÁşˆ\\²ä=\\;1ù›‡\r°8]Ë¸8A »İ!éoò¦„2³™lıøXKpÉ1/ªÀ»kd»O©Ï§ïE,-°ø°w’Å€±ªƒfònñº³d˜	.¸ãÅæ‘$€áıÚm\ZniO2¸°aBjY«\"ä5Ô1¶•§œpÌ‹óÇTeá\\v0©Í‡1€œUF„G+QÌ‡gù,•j 1#û&A ƒºm\'­BêÏ<Üö3*Í!µ°¾v-ÊY%Ô%İ)eÀ¥*ÿWÁ…¿£Q‰õ\Z\'Rí¬`F0=²ü”h¸vZ0„j ’iqËª¡¼¼‰på2Æõ†b€UÌÇ¸îIğÛ‹3CTgv¡Ÿ56{¨¨T{ÙK¨Sl+%Àuubx@YÅ8àÎZóå—JÆ‰–¢ÉŒ…XgpÅêŞyqfp‰ÿ¢UUè(1\n[?Cr]UB­Á%—¡°K^u85ò­lÜ(šÒİIV\rï¯£å#QQùüdÕ©“Ğ2ä¾–º¤;¥ÔÉ’ÖD^UtŸë»JºÔ‹HUK7paN²jhM9J6yÉÌ°†YäæDÖŒîv¨‡¾ü›Rà²S-œv9;J´ÚoâL\r&?bh~Û…^×†«ŒUÚ«ôºô&LYpq*”œghİakAjÙéç¶v—‹g+Ù¶IåşÜˆÁu%ë;¬{£„K^§9¹•™¨ìh¨üvyŠ¸âĞ—wÁ«sú†µºÆ¢x¶»¶e%á¬ıBL&Ü0…*­ Ê’|ïjáæé&¸ğ~P@ygÙp}ÔVŞI8f¬ëŠ\r¬màŠ¸™ç†V²\\ÏÔ£˜¼{#•‡ıÁçDå¾ETyj‡g€H\0æÿãç²şŸh,/­«­±K™°ÖXsù¼şg‡àŠ)\rJÎ1”íãsïdXœHƒÉÉ Õ‘Il7™Ş¾²µôòÌ.ª<²¦\nl.÷éO¯¤!~>5¬¥ö–Çà1ˆ[Tc]A\"ù ¹eµ]R\\rË5kG(¼t¹•ÏÂUmƒÉ1TÿÆJ,¡ÂAŠ>Z7)$ÉüìÑõTY¾™*o¤ÊÒ¥öG¸öo\"¾Ï¿NàR…Pl;?½Zo–Tˆga­­ÚK\0®8»˜µ¤œÄé5[’\"™à‚]${ø¢õöá]”g~!\0ÊY¸~—Jöl+U0Ä9ÉÇÚ.YçÆn¦ZDÎ5óª\ZZ«d\r®KÓ{˜`ÂÏ2Ávò«‚S.k|Ç\nÖC½?L){ëÄ+ußÚ2{À«Êú‘É€+Æ²«¤R«†aõ?\ZÆ»^=\r\\›ßŸöv¨bÄãÿç\'|c0¨Zr-\0Åà:üİG)coAÛàx¥Ê‹ªZgİÊúS\n\\Hká—hİÍÔêÇ´ˆ½†‰w=Ú>Oœï|aéh*éVŸ.Lî,€p5ïgº”û3›ÙÊ¦ö¦c¾¥C[Ûªøl*ü+K­ëy†ÌúNNéAe“º‹3ƒAw¶d‰çVì^ e|ËN%´Û˜t9l!eÁBz‹×—.{\r½”ã•gøtç|ÁĞ`ì“Ë&*ÍF%Y?	Rı\rt0g$]È,8.\0Îc‹FPYÎÛïÚQYŞX1ó«&Óµõ3èâ™–‹J¨:MÓô ö¯€Ë/»Kî°ªzéX~ñ^s\rıÈ3„4\0ƒHg\n&Ñ¡Å£#fx\':½|‚,3aCÀóü|èø’qtqÍTº¹q–°~rFš¨‹5TÅÿT*¡ÎöVJ€Knªôs9CZ&¯¹†Ñ$¹2˜ üfr+ÃÛ©r\0ß@¶K·hÔI€$ÚÀ1T?«í%K·NO)	..?‘æDP#Y•´æ¦ymÿå$¡Àl~30\0Âª#îÏvÀãeLø‡¥\'ßä\0±‘@Õõ¬\Z»pg\rcİ¼¬3>£Ã)&i.kñ¤Š*Å#ş¬WÕĞKŸv01¤ˆWFdÆ–™íjW´Äc`›ª`$ ôz/u­¹„\049¾©\"İÕÁ”·]CI7€ÂÏ°É¬»˜¬Jzy¹1\n¤Ó³&Úo&6§ „ÃÆ<Oªº,¬5ÖÖºŞºµOKpEÓƒÃk:”“KŞÉy\0FL·ÂKhv ƒúê‡ËKRE\Zà²´	ğórrÉÛÙYP©ÒX^6\')í¥¤Ÿ«Èu:™$\0W„12O\r©‹«•¢a®t\";¨íåµ¤Ÿc[ºvo\nÀåÁ	‚Š—d^•jh·sC]Š<uZX]Râ“h§	·—t2³œÅ°\'#Q\r½dÁs[<]Î/ÀCŒÌ‹cC¥\ZBõ³óF’¤«:)ÀB¬ˆKv›èìP‘l0^TBvdè\\I€Ë…P©êÙ-¯P\ríì­HÀ… 7˜\Z)\\(jŒTz!I#î‡{1¸\0Lv®l|cÀ}İ’dİì®h½„Ü÷$5\\ò©)^¤—µa¨]N`$à’A €ñ!5¬`°’*ë=RâBC\0Ü®T\'pY]ò^¼„œ‘‘\nY¸<ºå½”¢XÊ~‚K¥¦áYú¸	@‘¥î!KµDz­I¿^TB¬CºK­\Z.¹.ÌËqr®¡]Ö‚àJw¼./½	ÙıîR«Æ€Kî$åEzÉåÿN	µ5\\È<ñ./½àkŠÔªQàŠDzÉe(N9v5\\vS9Öå¥¼„¥–Î-¨pÅ(½¼xÙ±á®šD¶‹sÉY*^œê¤si~\0®x¹û’¸âYÁ«Ù9u\\^šĞp\\K÷êá\0\\>Ä½¼dm ¯¡¸â™[Èq(ÀåTŠ‚\rÆ-#ƒ›Ï¤ka\0.EÖ†õ k•ôrÚµQ†·#w`#÷±.«ëƒÆ‡z5vL¼3ã6˜{[g{.†Ô¹Ç`\0®8äºeÌ—çIŠSƒ¿Lì\\Õv­M-“|ßÈ<IÓK¡g,„’\Z§ùßZë­«S:§9àŠÒ5táp_ªrc9æjÕõì‚¬ª¬ß‡—Gbo•,A×WwT9Í)•ŠpùàÜğ’Ô{.w$íÏîØÀ%ÒË©5Y¼¥¼¡NËŞÙƒéúŠq:€+:õàÚ“•éXòˆ®µâ{‰ÑÌÔ.„\r§xÆÀˆË÷pÕ â¼C»ƒó.--˜hßÜ¡¶ŒIG¤tqÁcÃ±ZÚ±w°&ªƒ¸$ï!«òBíJL¸×ª‚¸Vw8ªƒãjïí´C`£áw¢²³Ò¹/F\0®ú\"Zí¯»k&šŒ´wÎÏ¥~Ë­é(€—È¬l0ü>ÌRãJ÷pÅhY;õ23ìœñpl8µs“Éïˆ\0µ]àN;pAò×t;+\0—K_zkö˜H˜zè·ôòÚ¤Óïönv‰ºûçypö¨JIjRF\0®(:FÁn`€XÊTvŞC?m/·Ìˆx=×ÎÖ’ÕA¦_òG…80Ò¹ÙL\0.ƒË²‘=†2Ùyıò:e¢Ç3`ç!dï LpöÈÀªéŒ\0\\€‹v}é¨0Æ²³¿Àè~Ø@Nnğx•¿Ø©ƒ²wP&ÄXHˆø\'\0—çCÎ9Ã\0\0Û3µ?í9(Œ,\ZE\r@ÉT¾l|ÌÌn½§İÜ›[ßWİ·tÁå¼÷Nèe¦6Õä,Œ\0\\Q‚Kv-¯íø.\0Û7kPíŸIUI,™NÄ\00”qXïçF¿¬5°nmš¥¼\'Nµ´Î´clOZßşí	€+\0WÄàb€mlY›–´y›vëiµj¹:o(ÉFåKÇÓƒ¢¹QÙ[ªû¹Ñ£‘©£ÅlŸu8w•Î6WÌ?¯EÚÚª¶™â€+\0WÔàÏlN¹_Ô¦|ƒ±vïI¥³\n¡ƒó‡Š€¯ŠÀÀ=2şİ­³mïãFÇòÇyz@ucãL:a€ßî^Œ\rÃ:GÌóÏû¢:Ø€+\0—\'z±£=ºxŠj.Pé˜Î”×Ü`-ëPÑĞ¯éàœÌ:œı3[2Î– É.NöÍ³]Ùa}ÃLñ§{x!<ã¡!1eÂ½è>³b’ë÷1ëÜ0_Ìtx|×ê\0»®ÊkèÅ‘q/à²Ğêzôòñ¯„ëùã`ª<Ãİc»ÓRc÷Î7vïu½>¥ıSûÑ¡¹ƒM:²`˜h»–ª„ñËóa˜/æùß[31\\·÷®ïîeÅz¾¾qÀO¸ª©òL.Y¯ge›Ã\0v|ÁÏT:­­êğ-1vñe†Û=²³Èâ`*3èÄ²	)E(•çyñ<ñï¾I}èÔ¢áuùK!íåëåÍOàzEÆNkwUœÙÂL×\n›dş:”5¶g¶¡¥Ík	Ú6 …ø=ÓQ„ğ\\>A{Â8.2şÍı>7ç¶®{#1_üşÖ*©òxó,ª¸uEùŞ^”À€«ÊVpº_.Œdö…X6–vIÙü¡´w\\*0¤×2cw_ÛùC*™üø½ ã3ŸZ>Q[Âø.fã_mH)ÌgeÛº!ó¹¼tLuãÔİ¹Tyÿ¦í;ƒŠ€+Zäå#É\0{¸v2]Y6†êÈœŸ¨ğ›ú´üËÚ‚¶j)~/È§É\0G‚n„qñ81Œ{E«:bz4¿ÃßÎæ¥72°^V<s}g5]ze¶V.y½*ŸÜŒ%«‰÷\'	æƒ-V<¼#­4˜³À`ÎÕíêÒ¾1]ÄïA§–Œ¥³+\'iC\rã^kl7h×vâ÷\'s†ÑMK\ZØ¡^¯—÷NàªÉïV$vìg\nÃØÙÏç¤²¬is¯Æ´â«Ú‚ÖuªOûÇv¥£ÊEçVN¦ó«¦$ğ|ŒãÁ¸0>+Æ}l^&\\4LØ–a-¾9L‘^Ï·|€«FÆµö|GÑ^*O\"ƒYô\'õ¢õã®4˜„ŸKf†48W0A¤+%šğÜ“‹†‹qÈcÛØµ!ö=2@uuùX¡ò†ÌËP‡_Ü¾Õ{‚f€+pdD¾+ÃÑaÓıêâ¯†Mvh|7Z÷u]Zm01?g¶¢Ó“_X5YdoÄ›ğœó3iïÏí©°us,\r€×UŒå²±!`Ìa\'¾e;:.\\%}\rvld*al×óëçB*º½jßU0336hK·†tĞ\0ßÙü‘t©pªïtjáqës·õj\"~	{­`œTÂ¾2Ô_/‹@5ÀE;æ}N#\'ô£–?O¤İgî_—ÊÑ¡¢‡ë&ÓÕÜa´·_3Zßö\r*lQÛ¤-]Ğ¾¡mèøÌ~t~ÉhQ[)œ7ˆÊ¦ô¦â_ŠûÉ÷_×¦ø’Nfı 2M¬d?VÄ¯¢°¯T×Ñ+¨qæLZ4ı:¼ q\0®t ó‹ß§5Y­é‡1™Tw`6ıç^C¨î˜bòûú­|‡§“ìå>ê‡~ø”¶µƒÖµ¨e€ ”¶vı€¶÷näJø\\¡âû;Ô@;5­·ğúÜncŠU\r”¯{O*è/Cw„¼÷?|·JlnÓ§ô›]\0® ìŠX°.#GÒ_úç‡IE£7œõ`PŸÍdÜ‡âüÄÎtøÇf´ëÛz´¥UmQæ²RÇ#íîõ1•ø‚NMîN×ò†Ùª{JPmšN§vÓËç¿ùö.º.>êi Ù Q\0l·—¼€+™„`ãeUô‡¶ÒÅÛO|ôÅÑ\râ|-§^ï^\0‡®JnävR‹S¯yÑ»$Ÿ^Şğw£Y[v=êu¦š4\0\\qVñ ³Û©x±P“©%¯ëåÕUgmíÎÄA:D4_hÃTq¼*@Ó E¹ËÉ\"zùì¡¯óÆ†…Ë¯5‚&‚M4ÕTÉİĞÑıÓïz¬§êºŠş¡S>¼?€İ¿F%Õ\'—L\ri°ñAñ\"HMH\'Ü€ÃôL@ ­.‰ËœMÜ)Şo<Öí6›Î’-C\'{	/,î`ê˜K×nı§Ö³Lúoß. {ŸQ<¯Ê_Jì\n2˜ÌïíÎv®F>¾ÉwiÅ×ğ¥Õï¶íúû‹è¾]JÿÔmM\\Á†ÚN`K\Z¸ OGâ|ˆ†ş±Ë\n!™ş®}v˜TÔwQ1Åû‚«<¸\"y\'—@Zªj¼®\'~u}ÏX¬	6ºxI7€m¶d:H2m;aÒñ»äß½Ğu‘U´óäµøìùoR,nt¶ØWO`˜ÛİüÿÚ{qÄïZ¤Û?v^7é–,2#Q6Äv<^ÛM^¤“ÕT@‰º„++Œ?¨I‰gÅûj>qCÌï_P›,SºAóğ›_àƒ=Ÿ eÄT±¸Ê\0…İ:½/*Ñ´Ç(‘œ\nqUU@ùÊÙyÒ÷uPI7¿UIhPh).ìqTô_;Í§‹·%`Ï\n—¸ov•Øxª€òuäÂ-ñÎâ½.vv›_Ò,¶YF<¼~Å¢ ƒÃ»	åDÍ\'m¢d\\19<ªXì¬x€\r6Ûïº¯Õ\n`¾ƒ+V50Y€²R<c_® »qÖ;È ş%T|Õ¸,éÀ\n#ƒoÀ?°×\"xW[pE«\nê(™°##ñ4™—\0™Ó 2şPáê”U¤°lì5x½\rŞlíÀ…@°ìw3<u”•ú-ŞK:\\!®{€àısº¦m(K	`)¥ša«¹Í¯+ßÀÅv@%2 Úd…,\0e%ìÉ¾„Ãã¸å´»Öø%5e!7/¢öW†ßê \0Ï«	`—-ÿ-Uv…Òë•\r©uãÎ}‘\ra¥tôÆKUL„z˜áGÖ…©\ZâÖ\Z´J®T\\¨A‰¼.Ü| )KMvÕ¿|t‡úd­³İâ%iáL`±wÑ‹ıkåtÌà’3/Tq(k”€KµÅ\0SáãíÖF0öÃ«•R“ƒÍ¸Ş¸Ğq¬Pİü›–Á8ƒ+VïaF¬²C5\0Np´yÉ&0}<®Ó—oRÏ¹Ûèw­¦*Ÿ;²°¼ÚsX’OÏ=£î0Ãu¼ÈN÷ëÂøÒX*p!Ff0$ÿ&\\rLö•]®˜u\"©º(~2,ì¦A9Û]ŸùÏ=–V˜o¢³.%tC˜T°3­€¥òÀÁæäÜH8¸d©Å´›Œ¬\Z¦ªİå§÷êŸgûÅx¯¹û¯TË°»ò7ï‹Ø!m­Z¼su\0R¨Tæ‹LÑæføaka`“é˜›òv—\\î“5³â{Ñd·˜µO€v—3Ão€aù/íf¦=¸X“‚¹âTk>#V¡\';Ê\"vSÕîbê4{GB¦jxõımø’è3N<v`ºxİÀ%›3NÁe„›.Ä\0lİï6$Â!%ÕhÑî³‰ó¶›š˜Bzı¯NÓcŠÙ¹,İ<ƒnà’ë\0­¶˜Uz%\\rŸ[G†=7•	}7Ê.ßó¤^ùÁ¬Ó·¦_O‰{PüİÌ¥i\r,+/†ø\n ôèˆ+¸ğ\0ùÖf/^UÃtX¤72W;&÷ú™Ñ\0UtÅÎÃşÜ+«(¥“qıtÅ»ÅecñfÄâÈğªªTÃTvjÈÔ9{_BR…àV™ç_¼Éšu2auI\0–.•#ÎÉ±iRoF,ŒHså€²=/´ c“X¼÷BBrğ>ºÄ×ûqX!]]înZ”ÿ:96\"ÉÚÈˆ¥^+âìv) œêÃû«Ki¥£ÂşBÂoººÜİ²âíø×É±IÎaDà’[¢EæT¯T¡ëWºuN5‘œƒ‹cı6}r¬BbUÑ6‹1<Ät’\\¥¹µuóÒšÍ3¸€ÖtÉ²( Wÿ€‹cÃKPùÿ[íè‰eì*Ö\0\0\0\0IEND®B`‚‰PNG\r\n\Z\n\0\0\0\rIHDR\0\0\0×\0\0\0×\0\0\0‰}Äµ\0\07<IDATxÚí}÷w×¶¦şˆyéÎürgÖ[3÷¾™;ë­7sï¼öÅccclÀ˜k›ŒÁ˜lÀ,ÀäœA$@A$‘ƒH\"H$\"c’É9Z öÔwÄ.®>º»ºût«j­½RwÕ9uöwvŞ\'ãyA-Je*ŸQ‹ê¿ó:ıõ¯¥fÍšQÓ¦Méí·ßÿgzã7èı÷ßkŞ¼9µjÕŠ¾şúkOÔ¶m[úüóÏÅ÷ù~ï¾û®øîÂÿñ{üìå~_~ù¥ù]™>ùä[úôÓO•ß±R‹-¨uëÖÔ®];ÏsL4aœX¼³ÕCjSªó e¤òàï.®/Ó;ï¼#Àfó‹)\0Ê÷Ş{OÜ\0Ã7nÜXüàsû~Ë–-Mà»\r6ã|óÍ7CÆ	a¸‡Lõë×§?üPl6˜¿@Ã&ƒ±bC:¼€K7jÕäu% \"‘LÑçÕ©SÇ”’NÏlß¾=}õÕWTüq˜de\0¸^Hõ}\'zë­·¨Aƒlñ~7ÀÒ\0\\Y}^3™RÃO	å…À¨ü|H	§Ï2°>øàƒ\0R¿“ù96¼Ü÷Ç»QIuü-Ñï¬¦,%ÁU2±¶©\n&“AXEt\Z$ª\Z>‹ïx±Íü&Œ6l‚\0Z2%Zº,#•í¬d0©Ì¬»ÏÀÖãƒ` ]Ô2lPo™©Y\0\0“\r°tqr¤¸¾oU¥b·M&s²#àqr`0°\0B¿Õ??7\nÌ‡m9ü›ŒïÏÆæ	/p\0®Ò¶QµM	l†dpÙ1!œ¬\nºÙdº¹É1Şd©°¨P[°Kóp%\\ÔÁgpÙı4•€e•\"˜# K¤:m@x`›¼€+4¾«ê S“&MlÁÅÀKU`YAöÑG	%òİã™x‡ğ\nàŠ#A=`[@†ƒÊÇ™ v»®— r*$æ”H§{cáÀg\'†ú?vb0œ\rˆ?qÊ‰®„Ïá;ø.ÔÒ¿ıíoaBü\r;<PWç…66\'GŸ€fûfA\0®8Å´œ\\ŞnÌÀñ0=²*Ü2\ZÄiDÈ¨°ş&?‹óu°	aAuK”ı³ \0—Ï„ b4R€³”øÌà…X±‚\r@ãŒ\nY¢Y™ §“Ã|ã-¥Ù9oq\0.Ÿm-¯R‹ÌÁQ?THvKËVH>Ä® µ\0(d ã¹é®ºåZÆsŞü~SM=ÌH¡×Rx\ZÚ¸?ÆZNœ­[·®§4¨H¤$$@í–À‹Ïà³‰HVö²Ås¸ª©‡Zƒ«iƒ×µñªlvÇšçÆQ%ØFCœ”›,b\"¼‡©’½¡-¸_†‰]Yw5Ç\"ìB«‡ÍÙó¨õr*d‚ôÂçUua¸7‘.ª*çsvşüõ\0\\~¸ßuª?rS9Ö\r`ø¬*–6rus´„\0gõŠâwÉLtö;3&’{3tvd¤j  ±“ø«pŒ\0±Ê)TÀ‰Ã²dLei–JÎ\r-ÁµøÇÚfOŒtòª±©I¢’TØAj{%¸íTGìöÖ\nh0hª¾_®×=5JKpqù~ºØ\nr­÷Ş3>¢™\'TOnœiÙ¿µyO*‚ŒKStÎœÏTÂøgn4jÔH\0*–†1\0•w“í6nLãDøœ\nŒÉªµÍ‚Î•Ëºª„º{	#Uab‘œn$ƒ¢^½z,Pû¢µÉğ]\0R¾o*½w·®Ò+#ğÆ¿²6ÚøŞµç¤à_|!îíDmÚ´	IPv\ZTUYuM)Æe]¥—Và‚÷G§Ò’h„Ù¥>¨O7Êìı-m›3œÊ¦(iãì”;!“ºuşÆÖù!÷¶ˆÕeà!e‹;DÉ$÷ûH•<Iiè(½´—ñë¼¨œÅ)J¼Û×¯W—&ôëDÇ–M¤Ê½9€áŞ¸\'{ã9Ø~pnr`°9Næ%nØ^)\0®Hr	ã©j€©Uù}ªô¤¾¿¢¢¬!QÊJçVO¥oÛ\'OØXªAML[LWÛ+CG¼Ÿé2UÙ	$d$]l›~ô>unÙŒfîN¥9£èş¶9¾€Ê/z¸}¾P7w-C+§ıL£öQªœ^«­ñş ÅdõTÇğK/İâ^º¹à£-Š´Ö©ÜÕNµÀÚ½­	“Ë\'hhiÅ¤Ô³csS3Ê7xÉ8a©‹ƒ&q/²62t³·¢Éèæº+f\0®$ÆïäwÓ„¾T<c I%F¤x¼ĞM³éPîZ3y€ØDì6¹¸”r°æCâ=ë¦&rÈC§œÃŒTµ·8Q;g’«b>HûÁ}ÇôlK×O1éÉÆi5XvÉ°AZp­š5²Íâà#˜ä£”t\nôsÎ¡NíØ2RÑŞÂ®Š“;\0(§s« Îàsõßy›®¯®Šsk<¸œ@\'\rÔc8l 2[Á&g†è“äğ….õ^Ú€Ë‹½°à3NMcdâŞ3úwÖã\rSéÅ…¢rv`ÓÁãz/]ÜòZ€‹;<ÙÅ·¸1¥µAŒˆˆÕ¨¤Ö³­³ÀÄH¹£¾Q#u‰‡‰3Ú\Z¼€ËzÖ–*h\n`}öÙgçÍÙJ-ƒ^/\0â]Y;]Ølf`‰ègèÅ±¡C#Ñó	ùl+ù¬_ùèÓh¤Ö“MÓPÄImD0Ùğ‰.1/-À¥jDƒ´n[¦:¥1Z©82âGªCŠ%ÛÑ¡KŸ]’u½ìvÈ\Zğ*µpO«Ô*aàÈˆ;ÁËÈd¤²‰SYšà2^‚Çd^úFà~™¾\nÖÓ-3æOÁ•Ï^ÅDœ9Ø]ãÁÅÎ/;œ{‹K&ÎåTBì°DñÅî\Z.îï%!ÔÉŞB0™S:5o¬ÀK˜|;,Qj\"·_«ñà‚áéµ8ÒN\r´f´#‡Ğ\n¬ÀK¨‡–ˆŠœ©QãÁå5‹åşr‡Yşù“ßSJ­gÛ²&×@M”ÏñjŠƒû\"C¾Fƒ9`^7eg†\\Š@á»h¬i— Ëô|×ü€Á5rv4mX?¤Q)\';ÙÓl³¹™\0WwÅGRfg—Ÿc1¬ù…NPÀÔzRĞPöƒX$ld¦æ«Z\'€°¦Ø<±Örgb„dÜj»j<¸¼z\n¹–À²KÚÅßZ~ÒP	¬ÀŞÒ~Û>G¹Vë&ôw”^pjy	\"×ø\r/mÔ b\'²kÿÌÍbpŸ…™]ÔöV¨«=ß¶NGæ¡Éı:9‚\ZLşäC\rtp/‡ ®ËI%â[z’u &¶ø´‘ãZÃöör†²É:z\n¡6hĞÀs7Y86ì¼„3C_zºyF¸¸!©¹93X‹©ÑYñvB¨ˆh±ÌıÜ2á!Õœ¼„3Co§†¼NˆO²\rnG^È5\Z\\*O!€Ä­š½ff°^8œš;5Šf‡¬<‡\"Vi£± q©¸¸\"¢FKF’Sè.H9»ø YWs§†¡®«À…‹İÙe©’´›TpErà‚›½eç‚aw95<†.ëùĞçróà’r\n½v{ŠÅŞ\n<…©ã1dpTHfBÇ&!oĞ©WG\0.ƒûå%aıËíÀÅÆkÁÈ^§0ÀegsAUä3ÅàMVi=¢aiMoPmÂ®*¾…à£¸‚2“ÔqÇ»j!}ç†J‚éRâŸ²à²#e¬À\rŸ^à’½È|Î˜5Ï0\0Wà²mã<FóÏ€S\'ÖÅq.»üQ·³¤Á+¸^†j$àÂÃßcg†]Õ±pÃ»bÀÀ©ëB††\\Li\0Y·c\\“î-tKgapa7“³â4»F4¸j&¸XrérNWÒƒÈn§Üã…q)¿|èƒKÕ›0\0WúËK\0™{ÅërŒPÒÀÅ-ÕÜª(¸^­{Ns±K{\nJûSƒ*vÎ)9ÁšÂY\r¸X-Ô!¯0éYñn±.\0J,\\Øí‚ìŒôIb[<pérºdRÁÅmÕTñ\nüy»Ëj—S€+½Àå%õI—–jZ€º±êè ØYhXâ”SÈàrŠqàJMp©ÊN¼ä àRô‰·ºä5jdVhª¬x|Ç1Æ€+%Á…5e	1Q8±œ@SA—Ô\'mš‚ÊÙñ8‹ŞA\0Š£ïvàrŠqàJMpaMíCç®½\0‘*„£KK5mÀÅª!úeà…áÅYû$ÈçtàJop!n©JÂËy…Ø|‘¸k\rãà²Ğ¥yU^C€EU…lwº	Ê¸Ò»`ÒÎæÂÙm\0FÎˆG`\0.ÕĞKò®[êS\0®Ô—] Ù­ë“Nı\nµ—[ç]Õ¡w¸Ò\\ˆoFÒõI·Ô\'mÀå% Œú\0\\é.Ä-U±.7W<óD\0®ÊT¶V àJ?pq¬½Q¢—.©OZ‹UCk@Ùê1äêã\0\\é.uE.x›p¹¨†ğøØéÔ,±¸\n9\0Wz‚‹c]rN©¸tjª%¸X5ÄKUªº¸Ò\\ªX—[n¡.§Ij.§2>”AséOé	.U/\r·¬xZªi	.rÃTª!2äe5!HÜM_p¡U5Öå\\:Õª5¸Æw\rW\rñ3R]äL\r/àŠ¤•õƒÂ	t·`d]Ëş‘.NífKø;ß…Ép¯[¹ƒ}9T®|psño,÷ßƒÓ;\0aÜÖwçõù*p©Énà?è”ú¤%¸T§ŸpŠ‹Lv;¦ÕK™?àJV*íö·­ííûæM:úcS:=¢uU‡ßá3ø@+¸ğ,ÜÏ²išãFÂàÀg÷ièë;\0aşvc0+‘wÌ\r[7U¬Ë\r\\:u}Ò\\²j¨ŠÊs¼ËK%²¸˜¡¿Ê‘ÁĞ y~H.|O~õY‰$\' [O:±+št;áŸ×)¯P[p±j¨j^Ãª!’6İzh¨À…;»t¬ä‡ÔbHu›€\rÍ+¸p¸¼ÃØD™ànWy’u:ªU{p±jˆjd»Şñ^º?=Ùº[²ú¥×1&ÉN=L–¤r“bò\\íÀåV×Åö˜®©OÚ‚Ë-Sú7ºB¹õ-ävÖXL,ªREûşc:3º]ÕËj#èÁšq!„ß]×Ï¤ó¾Ÿ—	÷©¤Ë;Ù%ñòÄÁ¶Š`Öy”g~6Wù]\\Ïö¾@ø=>‹w¾·ãJ)Æ tèR­N®A¸Ò\n©LË@«Aa-Ÿ:\n^Xücí\0\\‘QZÁ%¿P·@2t}«\ZÆHT`ò›¬à´şOW7˜Øéùñ?Ï99¬EĞ ¢[ÏE¶Æº¬Y\Z0¬¶¸ÙZƒË®¿†\\ßÅ=ãí€uwÙÓˆ…ÅN|+HB*Šw,I§¹^˜Ú•ö|ßØœAÊµãX—HN¥Ô\'­Á%§C©TC7wüƒUãŒEü€J»Öj•R›Çõ¤)=¿¢áß4£OŞ©mÒŸşøßé÷¿ÿ}Ô$ßKE­\Z¾%	*ú­‡ß`º°z2í3˜f\rø†ÆöjM?´nä:®wkÿß˜æïó½º4«oÎ¯|şO¶ª#6;lz·r‡ØÆº\"lõ\0\\>dÊC5têº{bpsúuö÷\"\"/*\0+€ü¦?ıË¨G‹FÑêî–,¦úuş]«¹ñ†£TvhX+l†*pÉåş©”ú¤¸îÏ«E§Õ\n3~ë½¡N‡B.3°z±`ò±­O·Î‹™ıC;sÁ[7ıFöî@Óv§msGz²EÌÄ÷²£U“‹ç‚0†wëÔaÄ¶ŸÔ@‰Xë&õ\05Áú?ÿ…š5|ukOcèF3‡ôq×ü)1Ïıôš9!süñ›TëÏÿfJ¶+KGVƒ«p|È™ÈòšÉdö\n:‘\\ÂÙ§Š—p½¢;Yµh_‡ZJVß†êLyÎÖÀßú´ıÌ5¿ğdÎĞWRâ¾0’_ôì`!]Ø¾”fıü=Õşó¿Š1BŠE¢2¨z´lBë²FRåÉ¢zQ¾5©sìÚâS1¾®_|d‚ëYQVØ±­ª@²pq*œéìPÅS¸Ân#Så¼µß7µyá…Cª!àèvÃ ŸWí †¤ˆ˜AJ×Ğƒ=tsÃü¨èFáÛ{W”m4Ap·d\rÕşKÕNĞx€ˆÏÏ\ZÒ‹*Ol\rÓ³Ck«Ÿ[²ŠXõ|n®›MvæF$Íy¥Ê+´‚‹KŒìÀÅ\'›ôhş±à3Ö\'\0=Ê©òüTÔ¹e3åY^ø?«nY\Z,fëOÏUÓ‰]ôÛé½!Tqá==SJ·ö¬£kÛ\n|¡;WÓİ[èÉ‰âêgÙG•¿”\ZTB•g‹©òÔvjûYã*°ö“p±:XV˜M•§wVİ÷»x*¯­¦«\'è·_ÓÃ£»èö¾\r¾ÎëŞÁ-aïğYù÷\\ûßÿ\"ÆY8á{Ç¤]™ê¿ó¶™e.®ã*Ê\Z\"î	b~oÕhp][Ë,Úe)¬™<À6æÅ\"«Ç°õGu•ÆõÅƒ;èÅ•ã@vÜ(^OOoşJ¿İ½I‡wl¦«ó¨dãr*5hË²“VåfSÁâl*\\šC»7Ğ¶µKh…ñ»Ç_O®^Œxsw!=:^,üÉ©ıÃŸ¤—×O›Tyf—°‘X5t³½Êr«%‚P¨äû1=¿tŒ;DÊ÷ĞÃc»ÅXníßB•Ï+Ì1–îÙE…Æ|vlX.æ€9Öæ/0çºkMÜ\\@û7.£­Ësèîåóâı<8}D€s\ny—ËŒg¥ç—ÑÀ>]•ëQ:Ë>71L\'p±ÔjÕ¬QHŞ(ÎÁ[5\Z\\åık™i1NŒÔô£÷•İ¡©W%ğÖú?ÿ;l!aäW^«fhüŒıÅ¯\'à.\0¸[¶Çd¼Šß~£Uùiû†e´kc­^²Ğd<+m]“/\0¶eÍ:r`?É×Ãóå‚©Ù*1H .sÌï¿©$–Ä!à2$Ÿ<?+a×·¯¤ë;V‡\0ËœãzÌq9­Ì[`;Ç\"xª9b#Â}ï6l¼_ËÃÆq±t‹\\vô.U%2k-¥9£Bx…³qÀ[5\Z\\lo©’:eš=¸»2™—\ZV¡j!ó&ªÃ…JÆƒ\Zxc÷ZztéL(n^¿FWå†íè*‚ô*6vöƒîÚº‘¬×½òR0H‘`]-¯Ré€`ˆÆİ½;zÀÎíµÔA\0 âá½°9nXáqËQñ–bÅÛBçøâécºmhwJ6 ‡ÌÑPWë¿õ×°qüösOà²6åu‡É`åÎ!M¶İ•tp•vö®ûÛæĞGo…—¢p3H/à2Ğ°Gä…‡º5ÉÊtÌx›•ÌtéÜ	ñ»ò²Ã¶Œ·Ç`<ìş{Š6‘êÀÀä&ÓÁ6‚Äyåx¨ıÿBƒ¹ˆ[!,TFÙõnnìÀ\0P\rI(Ï€VKcñÖÕô¼¢BH²ÕK»Ì±€ölWÏRúVñ:¡\níàü>ÛÃ+¸¬ö6gç\\Y;İ\\à­\Z\r.vÁËà‚ŞŒLq«[~RÓ×”yU9†ï¾ög{p1^:LOì6ƒ¬&Él\'H.×­×mÁµÕP•\\G•İu«d=9¶½Êù yôî–®\r	,#~å4FLŒ?˜V˜—L}ùˆ)µ`©.€	àÚ¿c=İ¿sSÌqıÊe.s, Ãû‹mçˆg]ß¶Œ*m6Ç£×Êáİ<Kegwoğš²”…ÁŞ\nÔBK=2Åí2·T¶Ú^Ğ½­àÚ6ñ;ú¡u“…€Ë û»–Òƒ³GÉí*È™MÙ“¢ÅÓ‡Ğ¢©ƒiXßî4ä»®!4f`oZ2kåÍJsÆ¤ËÎÛŞïÅ³\'t»(?><V\'`ÉÄ\0ƒÄsrÃ?<wÜqk—Ì7ç8gÜÀ°ù¦\rïGË²†‹9Îu™#Ïóf‘°£›BÀ…v£“Ô’Áeµ· ½€¶´ªæ`ì’¯ñj!ƒKvh°÷ÿĞŒÎí èHßFb·²•İÜñMë½.,øóçÉËuçÖMš<´Í\ZÙ›æûMìGêJv1¨+ÍÖ“`È×—fïEë\nr]ïùòÅó0ôh×ÜÌÒğÚëâEñF+vıLÄsÌ6hÜ€Î4^Ì±Íóİ«9~/æ¸ae§w÷²â©pËËàBš×‹=ÅÍA.dãXXã;ıMğ†¼ñZ\Z5\\rÊ¿.ƒÇïwÆ/ûÒô´ğóğökë°[$H0;\ZÖ/œñ.¢—oŠ]ÖéºrñåÌK³G÷¶pB?Z<¹¿ lÙãûRÖè¾´oÇfw†»sI0¼u,H[bæó®¢ÙT±s5yë?ìçÇ.ú[¿ĞË§]f#\0ÂÏØ<æûŠÖ¯r•X\0É\Zy~»Å¸8ˆŒË²ÔB2â_Hbpq®c~oq®W//Éœ .UGÖ4¿ldOãwxé²jÈ:¸İáãp÷\n‰ğYc[Õ	L\0;èé…cTqÿ¶-ã=¸ŠV/ -Y´õí(\\Hvm \'»K+xÏG˜U&Ï]šp=Û:‹&woî>¿WôòŞUWğŸ:zvmÈ™#~Ş»u¥ã_8AONí£ç§‹mç‡‚hLcl\nNÀ:2HXl“W\\ +÷IÀ¯ºpñïk|œ9`ü2Pš.’Y5”“:ñÿõC«”\\vÍj¨t³Kdz²%=:¼™nî\\I/Ÿq›Û…]üÅı\"&ïâV‚C\"Ò¼BÁ ¦Ò©œŸMÕN×9B’ «¸{ƒb¹ğnîßOw÷¬¦G%…¦m¥\"¶\'Yåµ+ï·KÊåF0ğ;\07Zğˆ¬&s÷+P²óµÈ-´+ygáõªw4ÃîÊlÚÀ†cN 8¨luj¸QEù6áø¸¹5_ç7÷nN0–	†+İD÷÷­@õòvÁïšqCÍ{+FA˜KŞmn07€ãŞábn»İ¼ÃÂ†ƒw‡Ì“…óâÄ6ÓŞÊQU¿†’nÎk56QÎ#…‰ÀıGäw\";Ã‚Ä]É©ªak§&üuYüÒOomÚ]ì’÷®E™ßVgiD\0.[ï[ñ2%9íŞv[	cƒã%’Rv\n@-Ú•õ“)=I/©m7·hïY¶f^ˆJ(ÀeSŞ/çÂQeµ·fv‡ƒ‹[Èï„+ÏƒÄİWtaD¨İ%¿,±;/’_ú/“:Sa‹*pñË÷.V\r£‘^ñ$xøx\\«GE^•µ¥òO·Ì0%áuÔe~²—Pö‚:y¢ªx&Ö*¡.k¿æ#ğT\0®W…’ªx»U±3›Et†ŠÈNHÀõ°p¢é’G\Z.ŒÇYğP[áœˆ\\\0\0×½•£…ÊÅ@Yò\ZÌoİœ±Õ›Ú+/(ÂNàâ*dk¢¶ì¸¬ù¨rë<\n&µ©DæL\r«júö’ŸC_¾ñ¹–ïVW({×ƒÕãE`™\Z	²Éf<VAª¦#îë^4[€¾Ï¶W¬ê¡„ç³ûãòZjÂÎ93ãÛömCDìÓbo±J˜ìÌíÀ%Ç»dÕõ9Ğ«CÜ´}	a$’ëşÊ±!1¯H¿	ª©5¿6TÄ§„ìÎàNCE¼³y–™wè‡}°8Qã‘‹?½z\nep\rhß\\ô2äÏ\\›×?¤şOV	“ßÒ\\7¦©UC]È/N\rx¹:™Áeçª’\\ã„jˆŸ»~öAui¼aŸ$z‡°xGÇX\"=‘%¬»îüèêÜ¾¯ú4N§²Å£L€%c~PÙûù§?ş:¼`XÈx¡ş:m°²J8¤ıg!ÉÙXOÙ™!«„à¥\0\\=ÍW«†üeï¼‡Hâıâ“Po¡Ó‚=\\3A,ÿ	£rÍl0E¼œâ$Z¼ögºº|ŒT¥hÁucá@.\0–7¼‡ù0z¼¥4æU[ÎêÇÆùYÕ]7O!·²–Á•Õ­yˆf‚÷%ƒKV	ÁK¸TC~qT–Ae¸ãüª‘gp=Z7™î¯ò;,¼ªbYîœÀEã]³á»¸€k­ebÆSõ´øà…¼!\\w—Kê³¡\"Mé\'$‡ª+ì½hç…ï¬<7k™6-¹Œ§KÚ“\n\\v6=…ÖÍˆC6:©„ÚKÎÖ°”­»İÆõ(«]Ã°à¢YÁÅ„ØbªêeğÜÈéûğXÂy!??\ZG†l¿ÜÎjØ\\?Òí¼¡as€aÓÉ ³Àá6\'U¡£•°QY+‹!E­6b4àÚ<y@ÈgdpÉcº>iÛ”‹\'AN§a ¡wyÛz&¸ÜzÆp­\Zëú\0\r*#€¼€ÎH¸Ç´Ş­ XR9Ä-¸à-”3Yìb}<7\0!–yp›mk;K_ÕawnàêÑ¾UXW^9å‰ù%ÙÅ‘ÚƒKNäE˜¸ş\"ƒËé(!Y5¹}Î	x`$7Âç¼Ş3©UD\"ÀU%½D5//s²ÛÉPM­P7O¡\n\\9ß4R^#Ÿ¤©C¢®öà’[­¡ŒÀnÇãÄM\Z÷{Yp‘Óf,z´\0ó“Ü•õB\'˜à‚íåE:\'„ŒwŒÄbUĞ;pAj!ôb½·\\¤K+µÔ8ü®xÌKxD9\n§Å8líÀëE5IóÁşˆ\\²ä=\\;1ù›‡\r°8]Ë¸8A »İ!éoò¦„2³™lıøXKpÉ1/ªÀ»kd»O©Ï§ïE,-°ø°w’Å€±ªƒfònñº³d˜	.¸ãÅæ‘$€áıÚm\ZniO2¸°aBjY«\"ä5Ô1¶•§œpÌ‹óÇTeá\\v0©Í‡1€œUF„G+QÌ‡gù,•j 1#û&A ƒºm\'­BêÏ<Üö3*Í!µ°¾v-ÊY%Ô%İ)eÀ¥*ÿWÁ…¿£Q‰õ\Z\'Rí¬`F0=²ü”h¸vZ0„j ’iqËª¡¼¼‰på2Æõ†b€UÌÇ¸îIğÛ‹3CTgv¡Ÿ56{¨¨T{ÙK¨Sl+%Àuubx@YÅ8àÎZóå—JÆ‰–¢ÉŒ…XgpÅêŞyqfp‰ÿ¢UUè(1\n[?Cr]UB­Á%—¡°K^u85ò­lÜ(šÒİIV\rï¯£å#QQùüdÕ©“Ğ2ä¾–º¤;¥ÔÉ’ÖD^UtŸë»JºÔ‹HUK7paN²jhM9J6yÉÌ°†YäæDÖŒîv¨‡¾ü›Rà²S-œv9;J´ÚoâL\r&?bh~Û…^×†«ŒUÚ«ôºô&LYpq*”œghİakAjÙéç¶v—‹g+Ù¶IåşÜˆÁu%ë;¬{£„K^§9¹•™¨ìh¨üvyŠ¸âĞ—wÁ«sú†µºÆ¢x¶»¶e%á¬ıBL&Ü0…*­ Ê’|ïjáæé&¸ğ~P@ygÙp}ÔVŞI8f¬ëŠ\r¬màŠ¸™ç†V²\\ÏÔ£˜¼{#•‡ıÁçDå¾ETyj‡g€H\0æÿãç²şŸh,/­«­±K™°ÖXsù¼şg‡àŠ)\rJÎ1”íãsïdXœHƒÉÉ Õ‘Il7™Ş¾²µôòÌ.ª<²¦\nl.÷éO¯¤!~>5¬¥ö–Çà1ˆ[Tc]A\"ù ¹eµ]R\\rË5kG(¼t¹•ÏÂUmƒÉ1TÿÆJ,¡ÂAŠ>Z7)$ÉüìÑõTY¾™*o¤ÊÒ¥öG¸öo\"¾Ï¿NàR…Pl;?½Zo–Tˆga­­ÚK\0®8»˜µ¤œÄé5[’\"™à‚]${ø¢õöá]”g~!\0ÊY¸~—Jöl+U0Ä9ÉÇÚ.YçÆn¦ZDÎ5óª\ZZ«d\r®KÓ{˜`ÂÏ2Ávò«‚S.k|Ç\nÖC½?L){ëÄ+ußÚ2{À«Êú‘É€+Æ²«¤R«†aõ?\ZÆ»^=\r\\›ßŸöv¨bÄãÿç\'|c0¨Zr-\0Åà:üİG)coAÛàx¥Ê‹ªZgİÊúS\n\\Hká—hİÍÔêÇ´ˆ½†‰w=Ú>Oœï|aéh*éVŸ.Lî,€p5ïgº”û3›ÙÊ¦ö¦c¾¥C[Ûªøl*ü+K­ëy†ÌúNNéAe“º‹3ƒAw¶d‰çVì^ e|ËN%´Û˜t9l!eÁBz‹×—.{\r½”ã•gøtç|ÁĞ`ì“Ë&*ÍF%Y?	Rı\rt0g$]È,8.\0Îc‹FPYÎÛïÚQYŞX1ó«&Óµõ3èâ™–‹J¨:MÓô ö¯€Ë/»Kî°ªzéX~ñ^s\rıÈ3„4\0ƒHg\n&Ñ¡Å£#fx\':½|‚,3aCÀóü|èø’qtqÍTº¹q–°~rFš¨‹5TÅÿT*¡ÎöVJ€Knªôs9CZ&¯¹†Ñ$¹2˜ üfr+ÃÛ©r\0ß@¶K·hÔI€$ÚÀ1T?«í%K·NO)	..?‘æDP#Y•´æ¦ymÿå$¡Àl~30\0Âª#îÏvÀãeLø‡¥\'ßä\0±‘@Õõ¬\Z»pg\rcİ¼¬3>£Ã)&i.kñ¤Š*Å#ş¬WÕĞKŸv01¤ˆWFdÆ–™íjW´Äc`›ª`$ ôz/u­¹„\049¾©\"İÕÁ”·]CI7€ÂÏ°É¬»˜¬Jzy¹1\n¤Ó³&Úo&6§ „ÃÆ<Oªº,¬5ÖÖºŞºµOKpEÓƒÃk:”“KŞÉy\0FL·ÂKhv ƒúê‡ËKRE\Zà²´	ğórrÉÛÙYP©ÒX^6\')í¥¤Ÿ«Èu:™$\0W„12O\r©‹«•¢a®t\";¨íåµ¤Ÿc[ºvo\nÀåÁ	‚Š—d^•jh·sC]Š<uZX]Râ“h§	·—t2³œÅ°\'#Q\r½dÁs[<]Î/ÀCŒÌ‹cC¥\ZBõ³óF’¤«:)ÀB¬ˆKv›èìP‘l0^TBvdè\\I€Ë…P©êÙ-¯P\ríì­HÀ… 7˜\Z)\\(jŒTz!I#î‡{1¸\0Lv®l|cÀ}İ’dİì®h½„Ü÷$5\\ò©)^¤—µa¨]N`$à’A €ñ!5¬`°’*ë=RâBC\0Ü®T\'pY]ò^¼„œ‘‘\nY¸<ºå½”¢XÊ~‚K¥¦áYú¸	@‘¥î!KµDz­I¿^TB¬CºK­\Z.¹.ÌËqr®¡]Ö‚àJw¼./½	ÙıîR«Æ€Kî$åEzÉåÿN	µ5\\È<ñ./½àkŠÔªQàŠDzÉe(N9v5\\vS9Öå¥¼„¥–Î-¨pÅ(½¼xÙ±á®šD¶‹sÉY*^œê¤si~\0®x¹û’¸âYÁ«Ù9u\\^šĞp\\K÷êá\0\\>Ä½¼dm ¯¡¸â™[Èq(ÀåTŠ‚\rÆ-#ƒ›Ï¤ka\0.EÖ†õ k•ôrÚµQ†·#w`#÷±.«ëƒÆ‡z5vL¼3ã6˜{[g{.†Ô¹Ç`\0®8äºeÌ—çIŠSƒ¿Lì\\Õv­M-“|ßÈ<IÓK¡g,„’\Z§ùßZë­«S:§9àŠÒ5táp_ªrc9æjÕõì‚¬ª¬ß‡—Gbo•,A×WwT9Í)•ŠpùàÜğ’Ô{.w$íÏîØÀ%ÒË©5Y¼¥¼¡NËŞÙƒéúŠq:€+:õàÚ“•éXòˆ®µâ{‰ÑÌÔ.„\r§xÆÀˆË÷pÕ â¼C»ƒó.--˜hßÜ¡¶ŒIG¤tqÁcÃ±ZÚ±w°&ªƒ¸$ï!«òBíJL¸×ª‚¸Vw8ªƒãjïí´C`£áw¢²³Ò¹/F\0®ú\"Zí¯»k&šŒ´wÎÏ¥~Ë­é(€—È¬l0ü>ÌRãJ÷pÅhY;õ23ìœñpl8µs“Éïˆ\0µ]àN;pAò×t;+\0—K_zkö˜H˜zè·ôòÚ¤Óïönv‰ºûçypö¨JIjRF\0®(:FÁn`€XÊTvŞC?m/·Ìˆx=×ÎÖ’ÕA¦_òG…80Ò¹ÙL\0.ƒË²‘=†2Ùyıò:e¢Ç3`ç!dï LpöÈÀªéŒ\0\\€‹v}é¨0Æ²³¿Àè~Ø@Nnğx•¿Ø©ƒ²wP&ÄXHˆø\'\0—çCÎ9Ã\0\0Û3µ?í9(Œ,\ZE\r@ÉT¾l|ÌÌn½§İÜ›[ßWİ·tÁå¼÷Nèe¦6Õä,Œ\0\\Q‚Kv-¯íø.\0Û7kPíŸIUI,™NÄ\00”qXïçF¿¬5°nmš¥¼\'Nµ´Î´clOZßşí	€+\0WÄàb€mlY›–´y›vëiµj¹:o(ÉFåKÇÓƒ¢¹QÙ[ªû¹Ñ£‘©£ÅlŸu8w•Î6WÌ?¯EÚÚª¶™â€+\0WÔàÏlN¹_Ô¦|ƒ±vïI¥³\n¡ƒó‡Š€¯ŠÀÀ=2şİ­³mïãFÇòÇyz@ucãL:a€ßî^Œ\rÃ:GÌóÏû¢:Ø€+\0—\'z±£=ºxŠj.Pé˜Î”×Ü`-ëPÑĞ¯éàœÌ:œı3[2Î– É.NöÍ³]Ùa}ÃLñ§{x!<ã¡!1eÂ½è>³b’ë÷1ëÜ0_Ìtx|×ê\0»®ÊkèÅ‘q/à²Ğêzôòñ¯„ëùã`ª<Ãİc»ÓRc÷Î7vïu½>¥ıSûÑ¡¹ƒM:²`˜h»–ª„ñËóa˜/æùß[31\\·÷®ïîeÅz¾¾qÀO¸ª©òL.Y¯ge›Ã\0v|ÁÏT:­­êğ-1vñe†Û=²³Èâ`*3èÄ²	)E(•çyñ<ñï¾I}èÔ¢áuùK!íåëåÍOàzEÆNkwUœÙÂL×\n›dş:”5¶g¶¡¥Ík	Ú6 …ø=ÓQ„ğ\\>A{Â8.2şÍı>7ç¶®{#1_üşÖ*©òxó,ª¸uEùŞ^”À€«ÊVpº_.Œdö…X6–vIÙü¡´w\\*0¤×2cw_ÛùC*™üø½ ã3ŸZ>Q[Âø.fã_mH)ÌgeÛº!ó¹¼tLuãÔİ¹Tyÿ¦í;ƒŠ€+Zäå#É\0{¸v2]Y6†êÈœŸ¨ğ›ú´üËÚ‚¶j)~/È§É\0G‚n„qñ81Œ{E«:bz4¿ÃßÎæ¥72°^V<s}g5]ze¶V.y½*ŸÜŒ%«‰÷\'	æƒ-V<¼#­4˜³À`ÎÕíêÒ¾1]ÄïA§–Œ¥³+\'iC\rã^kl7h×vâ÷\'s†ÑMK\ZØ¡^¯—÷NàªÉïV$vìg\nÃØÙÏç¤²¬is¯Æ´â«Ú‚ÖuªOûÇv¥£ÊEçVN¦ó«¦$ğ|ŒãÁ¸0>+Æ}l^&\\4LØ–a-¾9L‘^Ï·|€«FÆµö|GÑ^*O\"ƒYô\'õ¢õã®4˜„ŸKf†48W0A¤+%šğÜ“‹†‹qÈcÛØµ!ö=2@uuùX¡ò†ÌËP‡_Ü¾Õ{‚f€+pdD¾+ÃÑaÓıêâ¯†Mvh|7Z÷u]Zm01?g¶¢Ó“_X5YdoÄ›ğœó3iïÏí©°us,\r€×UŒå²±!`Ìa\'¾e;:.\\%}\rvld*al×óëçB*º½jßU0336hK·†tĞ\0ßÙü‘t©pªïtjáqës·õj\"~	{­`œTÂ¾2Ô_/‹@5ÀE;æ}N#\'ô£–?O¤İgî_—ÊÑ¡¢‡ë&ÓÕÜa´·_3Zßö\r*lQÛ¤-]Ğ¾¡mèøÌ~t~ÉhQ[)œ7ˆÊ¦ô¦â_ŠûÉ÷_×¦ø’Nfı 2M¬d?VÄ¯¢°¯T×Ñ+¨qæLZ4ı:¼ q\0®t ó‹ß§5Y­é‡1™Tw`6ıç^C¨î˜bòûú­|‡§“ìå>ê‡~ø”¶µƒÖµ¨e€ ”¶vı€¶÷näJø\\¡âû;Ô@;5­·ğúÜncŠU\r”¯{O*è/Cw„¼÷?|·JlnÓ§ô›]\0® ìŠX°.#GÒ_úç‡IE£7œõ`PŸÍdÜ‡âüÄÎtøÇf´ëÛz´¥UmQæ²RÇ#íîõ1•ø‚NMîN×ò†Ùª{JPmšN§vÓËç¿ùö.º.>êi Ù Q\0l·—¼€+™„`ãeUô‡¶ÒÅÛO|ôÅÑ\râ|-§^ï^\0‡®JnävR‹S¯yÑ»$Ÿ^Şğw£Y[v=êu¦š4\0\\qVñ ³Û©x±P“©%¯ëåÕUgmíÎÄA:D4_hÃTq¼*@Ó E¹ËÉ\"zùì¡¯óÆ†…Ë¯5‚&‚M4ÕTÉİĞÑıÓïz¬§êºŠş¡S>¼?€İ¿F%Õ\'—L\ri°ñAñ\"HMH\'Ü€ÃôL@ ­.‰ËœMÜ)Şo<Öí6›Î’-C\'{	/,î`ê˜K×nı§Ö³Lúoß. {ŸQ<¯Ê_Jì\n2˜ÌïíÎv®F>¾ÉwiÅ×ğ¥Õï¶íúû‹è¾]JÿÔmM\\Á†ÚN`K\Z¸ OGâ|ˆ†ş±Ë\n!™ş®}v˜TÔwQ1Åû‚«<¸\"y\'—@Zªj¼®\'~u}ÏX¬	6ºxI7€m¶d:H2m;aÒñ»äß½Ğu‘U´óäµøìùoR,nt¶ØWO`˜ÛİüÿÚ{qÄïZ¤Û?v^7é–,2#Q6Äv<^ÛM^¤“ÕT@‰º„++Œ?¨I‰gÅûj>qCÌï_P›,SºAóğ›_àƒ=Ÿ eÄT±¸Ê\0…İ:½/*Ñ´Ç(‘œ\nqUU@ùÊÙyÒ÷uPI7¿UIhPh).ìqTô_;Í§‹·%`Ï\n—¸ov•Øxª€òuäÂ-ñÎâ½.vv›_Ò,¶YF<¼~Å¢ ƒÃ»	åDÍ\'m¢d\\19<ªXì¬x€\r6Ûïº¯Õ\n`¾ƒ+V50Y€²R<c_® »qÖ;È ş%T|Õ¸,éÀ\n#ƒoÀ?°×\"xW[pE«\nê(™°##ñ4™—\0™Ó 2şPáê”U¤°lì5x½\rŞlíÀ…@°ìw3<u”•ú-ŞK:\\!®{€àısº¦m(K	`)¥ša«¹Í¯+ßÀÅv@%2 Úd…,\0e%ìÉ¾„Ãã¸å´»Öø%5e!7/¢öW†ßê \0Ï«	`—-ÿ-Uv…Òë•\r©uãÎ}‘\ra¥tôÆKUL„z˜áGÖ…©\ZâÖ\Z´J®T\\¨A‰¼.Ü| )KMvÕ¿|t‡úd­³İâ%iáL`±wÑ‹ıkåtÌà’3/Tq(k”€KµÅ\0SáãíÖF0öÃ«•R“ƒÍ¸Ş¸Ğq¬Pİü›–Á8ƒ+VïaF¬²C5\0Np´yÉ&0}<®Ó—oRÏ¹Ûèw­¦*Ÿ;²°¼ÚsX’OÏ=£î0Ãu¼ÈN÷ëÂøÒX*p!Ff0$ÿ&\\rLö•]®˜u\"©º(~2,ì¦A9Û]ŸùÏ=–V˜o¢³.%tC˜T°3­€¥òÀÁæäÜH8¸d©Å´›Œ¬\Z¦ªİå§÷êŸgûÅx¯¹û¯TË°»ò7ï‹Ø!m­Z¼su\0R¨Tæ‹LÑæføaka`“é˜›òv—\\î“5³â{Ñd·˜µO€v—3Ão€aù/íf¦=¸X“‚¹âTk>#V¡\';Ê\"vSÕîbê4{GB¦jxõımø’è3N<v`ºxİÀ%›3NÁe„›.Ä\0lİï6$Â!%ÕhÑî³‰ó¶›š˜Bzı¯NÓcŠÙ¹,İ<ƒnà’ë\0­¶˜Uz%\\rŸ[G†=7•	}7Ê.ßó¤^ùÁ¬Ó·¦_O‰{PüİÌ¥i\r,+/†ø\n ôèˆ+¸ğ\0ùÖf/^UÃtX¤72W;&÷ú™Ñ\0UtÅÎÃşÜ+«(¥“qıtÅ»ÅecñfÄâÈğªªTÃTvjÈÔ9{_BR…àV™ç_¼Éšu2auI\0–.•#ÎÉ±iRoF,ŒHså€²=/´ c“X¼÷BBrğ>ºÄ×ûqX!]]înZ”ÿ:96\"ÉÚÈˆ¥^+âìv) œêÃû«Ki¥£ÂşBÂoººÜİ²âíø×É±IÎaDà’[¢EæT¯T¡ëWºuN5‘œƒ‹cı6}r¬BbUÑ6‹1<Ät’\\¥¹µuóÒšÍ3¸€ÖtÉ²( Wÿ€‹cÃKPùÿ[íè‰eì*Ö\0\0\0\0IEND®B`‚'),(53,'almacen1','Alma','Zen','2dc4e4a6fbeab8a7f828efa9aec7d7ad','');
-/*!40000 ALTER TABLE `sisusers` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `solicitud_reparacion`
---
-
-DROP TABLE IF EXISTS `solicitud_reparacion`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `solicitud_reparacion` (
-  `id_solicitud` int(100) NOT NULL AUTO_INCREMENT,
-  `numero` int(100) DEFAULT NULL,
-  `id_tipo` int(10) DEFAULT NULL,
-  `nivel` int(10) DEFAULT NULL,
-  `solicitante` varchar(255) COLLATE utf8_spanish_ci NOT NULL,
-  `f_solicitado` datetime NOT NULL,
-  `f_sugerido` date NOT NULL,
-  `hora_sug` time NOT NULL,
-  `id_equipo` int(10) NOT NULL,
-  `correctivo` int(10) DEFAULT NULL,
-  `causa` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `observaciones` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
-  `estado` varchar(2) CHARACTER SET latin1 NOT NULL,
-  `usrId` int(11) NOT NULL,
-  `fecha_conformidad` date NOT NULL,
-  `observ_conformidad` varchar(255) COLLATE utf8_spanish_ci NOT NULL,
-  `foto1` blob,
-  `foto2` blob,
-  `foto3` blob,
-  `foto` varchar(255) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `id_empresa` int(11) NOT NULL,
-  `case_id` int(11) DEFAULT NULL,
-  `urgente` tinyint(1) DEFAULT NULL,
-  PRIMARY KEY (`id_solicitud`),
-  KEY `id_equipo` (`id_equipo`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `solicitud_reparacion`
---
-
-LOCK TABLES `solicitud_reparacion` WRITE;
-/*!40000 ALTER TABLE `solicitud_reparacion` DISABLE KEYS */;
-/*!40000 ALTER TABLE `solicitud_reparacion` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sucursal`
---
-
-DROP TABLE IF EXISTS `sucursal`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sucursal` (
-  `id_sucursal` int(11) NOT NULL AUTO_INCREMENT,
-  `dire` varchar(3000) NOT NULL,
-  `telefono` varchar(3000) NOT NULL,
-  `zonas` varchar(3000) NOT NULL,
-  `id_localidad` int(11) NOT NULL,
-  `descripc` varchar(3000) NOT NULL,
-  `estado` varchar(4) NOT NULL,
-  `id_empresa` int(10) NOT NULL,
-  PRIMARY KEY (`id_sucursal`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sucursal`
---
-
-LOCK TABLES `sucursal` WRITE;
-/*!40000 ALTER TABLE `sucursal` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sucursal` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tareas`
---
-
-DROP TABLE IF EXISTS `tareas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tareas` (
-  `id_tarea` int(11) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `estado` varchar(4) COLLATE utf8_spanish_ci NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  `form_asoc` int(11) DEFAULT NULL,
-  `visible` tinyint(4) NOT NULL,
-  PRIMARY KEY (`id_tarea`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tareas`
---
-
-LOCK TABLES `tareas` WRITE;
-/*!40000 ALTER TABLE `tareas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tareas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_back`
---
-
-DROP TABLE IF EXISTS `tbl_back`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_back` (
-  `backId` int(11) NOT NULL AUTO_INCREMENT,
-  `id_equipo` int(11) NOT NULL,
-  `id_tarea` int(11) DEFAULT NULL,
-  `fecha` datetime DEFAULT NULL,
-  `horash` float DEFAULT NULL,
-  `estado` varchar(5) COLLATE utf8_spanish_ci NOT NULL,
-  `back_duracion` int(11) NOT NULL,
-  `id_unidad` int(11) DEFAULT NULL,
-  `back_canth` int(11) NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  `idcomponenteequipo` int(11) DEFAULT NULL,
-  `back_adjunto` varchar(500) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `sore_id` int(11) DEFAULT NULL,
-  `tarea_opcional` varchar(500) COLLATE utf8_spanish_ci DEFAULT NULL,
-  PRIMARY KEY (`backId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_back`
---
-
-LOCK TABLES `tbl_back` WRITE;
-/*!40000 ALTER TABLE `tbl_back` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tbl_back` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_backlogherramientas`
---
-
-DROP TABLE IF EXISTS `tbl_backlogherramientas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_backlogherramientas` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `backId` int(11) DEFAULT NULL,
-  `herrId` int(11) DEFAULT NULL,
-  `cantidad` double NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_backlogherramientas`
---
-
-LOCK TABLES `tbl_backlogherramientas` WRITE;
-/*!40000 ALTER TABLE `tbl_backlogherramientas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tbl_backlogherramientas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_backloginsumos`
---
-
-DROP TABLE IF EXISTS `tbl_backloginsumos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_backloginsumos` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `backId` int(11) DEFAULT NULL,
-  `artId` int(11) DEFAULT NULL,
-  `cantidad` double NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_backloginsumos`
---
-
-LOCK TABLES `tbl_backloginsumos` WRITE;
-/*!40000 ALTER TABLE `tbl_backloginsumos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tbl_backloginsumos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_detanotapedido`
---
-
-DROP TABLE IF EXISTS `tbl_detanotapedido`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_detanotapedido` (
-  `id_detaNota` int(11) NOT NULL AUTO_INCREMENT,
-  `id_notaPedido` int(11) DEFAULT NULL,
-  `artId` int(11) DEFAULT NULL,
-  `cantidad` int(11) DEFAULT NULL,
-  `provid` int(11) DEFAULT NULL,
-  `fechaEntrega` date DEFAULT NULL,
-  `fechaEntregado` date DEFAULT NULL,
-  `remito` int(11) DEFAULT NULL,
-  `estado` varchar(4) COLLATE utf8_spanish_ci DEFAULT NULL,
-  PRIMARY KEY (`id_detaNota`),
-  KEY `id_notaPedido` (`id_notaPedido`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_detanotapedido`
---
-
-LOCK TABLES `tbl_detanotapedido` WRITE;
-/*!40000 ALTER TABLE `tbl_detanotapedido` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tbl_detanotapedido` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_detavaledescarga`
---
-
-DROP TABLE IF EXISTS `tbl_detavaledescarga`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_detavaledescarga` (
-  `detavaledid` int(11) NOT NULL AUTO_INCREMENT,
-  `valedid` int(11) DEFAULT NULL,
-  `herrId` int(11) DEFAULT NULL,
-  `observa` varchar(255) DEFAULT NULL,
-  `dest` varchar(255) DEFAULT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`detavaledid`),
-  KEY `equipid` (`herrId`) USING BTREE,
-  KEY `valedid` (`valedid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_detavaledescarga`
---
-
-LOCK TABLES `tbl_detavaledescarga` WRITE;
-/*!40000 ALTER TABLE `tbl_detavaledescarga` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tbl_detavaledescarga` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_detavalesalida`
---
-
-DROP TABLE IF EXISTS `tbl_detavalesalida`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_detavalesalida` (
-  `detavid` int(10) NOT NULL AUTO_INCREMENT,
-  `valesid` int(11) DEFAULT NULL,
-  `herrId` int(10) DEFAULT NULL,
-  `observa` text,
-  `dest` varchar(255) DEFAULT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`detavid`),
-  KEY `equiid` (`herrId`) USING BTREE,
-  KEY `valesid` (`valesid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_detavalesalida`
---
-
-LOCK TABLES `tbl_detavalesalida` WRITE;
-/*!40000 ALTER TABLE `tbl_detavalesalida` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tbl_detavalesalida` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_estado`
---
-
-DROP TABLE IF EXISTS `tbl_estado`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_estado` (
-  `estadoid` int(11) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(3000) COLLATE utf8_spanish_ci NOT NULL,
-  `estado` varchar(5) COLLATE utf8_spanish_ci NOT NULL,
-  PRIMARY KEY (`estadoid`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_estado`
---
-
-LOCK TABLES `tbl_estado` WRITE;
-/*!40000 ALTER TABLE `tbl_estado` DISABLE KEYS */;
-INSERT INTO `tbl_estado` VALUES (1,'ACTIVO','AC'),(2,'TRANSITO','TR'),(3,'REPARACION','RE'),(4,'COMODATO','CO'),(5,'CURSO','C'),(6,'INACTIVO','IN'),(7,'SOLICITADO','S'),(8,'TAREA REALIZADA','RE'),(9,'TERMINADO PARCIAL','TE'),(10,'TERMINADO','T'),(11,'ENTREGADO','E'),(12,'PEDIDO','P'),(13,'ASIGNADO','As'),(14,'ANULADO','AN'),(15,'BORRADOR','B'),(16,'CERRADO','CE');
-/*!40000 ALTER TABLE `tbl_estado` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_estanteria`
---
-
-DROP TABLE IF EXISTS `tbl_estanteria`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_estanteria` (
-  `id_estanteria` int(11) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(50) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `fila` varchar(20) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `codigo` varchar(255) COLLATE utf8_spanish_ci NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`id_estanteria`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_estanteria`
---
-
-LOCK TABLES `tbl_estanteria` WRITE;
-/*!40000 ALTER TABLE `tbl_estanteria` DISABLE KEYS */;
-INSERT INTO `tbl_estanteria` VALUES (1,'estanteria 1','1','dd1',6),(2,'estanteria 2','1','dd2',6),(3,'estanteria 3','1','dd3',6),(4,'estanteria 4','1','dd4',6),(5,'estanteria 5','1','d5',6),(6,'EstanterÃ­a de prueba 01','12','ESTANTERIA TEST 01',6),(7,'','6','E1 ',7);
-/*!40000 ALTER TABLE `tbl_estanteria` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_listarea`
---
-
-DROP TABLE IF EXISTS `tbl_listarea`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_listarea` (
-  `id_listarea` int(11) NOT NULL AUTO_INCREMENT,
-  `id_orden` int(11) NOT NULL,
-  `tareadescrip` varchar(5000) COLLATE utf8_spanish_ci NOT NULL,
-  `id_usuario` int(11) DEFAULT NULL,
-  `fecha` date DEFAULT NULL,
-  `estado` varchar(5) COLLATE utf8_spanish_ci NOT NULL,
-  `info_id` int(11) DEFAULT NULL,
-  `id_subtarea` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id_listarea`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_listarea`
---
-
-LOCK TABLES `tbl_listarea` WRITE;
-/*!40000 ALTER TABLE `tbl_listarea` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tbl_listarea` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_lote`
---
-
-DROP TABLE IF EXISTS `tbl_lote`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_lote` (
-  `loteid` int(11) NOT NULL AUTO_INCREMENT,
-  `codigo` varchar(255) DEFAULT NULL,
-  `fecha` date DEFAULT NULL,
-  `cantidad` varchar(255) DEFAULT NULL,
-  `artId` int(11) DEFAULT NULL,
-  `lotestado` char(4) DEFAULT NULL,
-  `depositoid` int(11) DEFAULT NULL,
-  `usrId` int(11) DEFAULT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`loteid`),
-  KEY `depositoid` (`depositoid`),
-  KEY `artId` (`artId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_lote`
---
-
-LOCK TABLES `tbl_lote` WRITE;
-/*!40000 ALTER TABLE `tbl_lote` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tbl_lote` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_notapedido`
---
-
-DROP TABLE IF EXISTS `tbl_notapedido`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_notapedido` (
-  `id_notaPedido` int(11) NOT NULL AUTO_INCREMENT,
-  `fecha` date NOT NULL,
-  `id_ordTrabajo` int(11) NOT NULL,
-  `id_empresa` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id_notaPedido`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_notapedido`
---
-
-LOCK TABLES `tbl_notapedido` WRITE;
-/*!40000 ALTER TABLE `tbl_notapedido` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tbl_notapedido` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_otadjuntos`
---
-
-DROP TABLE IF EXISTS `tbl_otadjuntos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_otadjuntos` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `otId` int(11) NOT NULL,
-  `ot_adjunto` varchar(255) COLLATE utf8_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_otadjuntos`
---
-
-LOCK TABLES `tbl_otadjuntos` WRITE;
-/*!40000 ALTER TABLE `tbl_otadjuntos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tbl_otadjuntos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_otherramientas`
---
-
-DROP TABLE IF EXISTS `tbl_otherramientas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_otherramientas` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `otId` int(11) DEFAULT NULL,
-  `herrId` int(11) DEFAULT NULL,
-  `cantidad` double NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_otherramientas`
---
-
-LOCK TABLES `tbl_otherramientas` WRITE;
-/*!40000 ALTER TABLE `tbl_otherramientas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tbl_otherramientas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_otinsumos`
---
-
-DROP TABLE IF EXISTS `tbl_otinsumos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_otinsumos` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `otId` int(11) DEFAULT NULL,
-  `artId` int(11) DEFAULT NULL,
-  `cantidad` double NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_otinsumos`
---
-
-LOCK TABLES `tbl_otinsumos` WRITE;
-/*!40000 ALTER TABLE `tbl_otinsumos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tbl_otinsumos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_predictivoherramientas`
---
-
-DROP TABLE IF EXISTS `tbl_predictivoherramientas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_predictivoherramientas` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `predId` int(11) DEFAULT NULL,
-  `herrId` int(11) DEFAULT NULL,
-  `cantidad` double NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_predictivoherramientas`
---
-
-LOCK TABLES `tbl_predictivoherramientas` WRITE;
-/*!40000 ALTER TABLE `tbl_predictivoherramientas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tbl_predictivoherramientas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_predictivoinsumos`
---
-
-DROP TABLE IF EXISTS `tbl_predictivoinsumos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_predictivoinsumos` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `predId` int(11) DEFAULT NULL,
-  `artId` int(11) DEFAULT NULL,
-  `cantidad` double NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_predictivoinsumos`
---
-
-LOCK TABLES `tbl_predictivoinsumos` WRITE;
-/*!40000 ALTER TABLE `tbl_predictivoinsumos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tbl_predictivoinsumos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_preventivoherramientas`
---
-
-DROP TABLE IF EXISTS `tbl_preventivoherramientas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_preventivoherramientas` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `prevId` int(11) DEFAULT NULL,
-  `herrId` int(11) DEFAULT NULL,
-  `cantidad` double NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `prevId` (`prevId`) USING BTREE,
-  KEY `tbl_preventivoherramientas_ibfk_2` (`herrId`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_preventivoherramientas`
---
-
-LOCK TABLES `tbl_preventivoherramientas` WRITE;
-/*!40000 ALTER TABLE `tbl_preventivoherramientas` DISABLE KEYS */;
-INSERT INTO `tbl_preventivoherramientas` VALUES (1,1,31,13,6),(2,1,91,33,6),(3,2,37,23,6),(4,2,43,12,6),(5,1,40,4,6),(6,2,43,4,6),(7,1,34,3,6),(8,1,34,100,6),(9,2,86,1,6),(10,1,54,1,6),(11,2,54,1,6),(12,3,54,1,6),(13,4,54,1,6),(14,5,54,1,6);
-/*!40000 ALTER TABLE `tbl_preventivoherramientas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_preventivoinsumos`
---
-
-DROP TABLE IF EXISTS `tbl_preventivoinsumos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_preventivoinsumos` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `prevId` int(11) DEFAULT NULL,
-  `artId` int(11) DEFAULT NULL,
-  `cantidad` double NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `prevId` (`prevId`),
-  KEY `artId` (`artId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_preventivoinsumos`
---
-
-LOCK TABLES `tbl_preventivoinsumos` WRITE;
-/*!40000 ALTER TABLE `tbl_preventivoinsumos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tbl_preventivoinsumos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_tipoordentrabajo`
---
-
-DROP TABLE IF EXISTS `tbl_tipoordentrabajo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_tipoordentrabajo` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tipo_orden` int(11) NOT NULL,
-  `descripcion` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_tipoordentrabajo`
---
-
-LOCK TABLES `tbl_tipoordentrabajo` WRITE;
-/*!40000 ALTER TABLE `tbl_tipoordentrabajo` DISABLE KEYS */;
-INSERT INTO `tbl_tipoordentrabajo` VALUES (1,1,'Orden de Trabajo'),(2,2,'Solicitud de servicio'),(3,3,'Preventivo'),(4,4,'Backlog'),(5,5,'Predictivo'),(6,6,'Correctivo Programado');
-/*!40000 ALTER TABLE `tbl_tipoordentrabajo` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_trazacomponente`
---
-
-DROP TABLE IF EXISTS `tbl_trazacomponente`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_trazacomponente` (
-  `id_trazacomponente` int(11) NOT NULL AUTO_INCREMENT,
-  `idcomponenteequipo` int(11) NOT NULL,
-  `id_estanteria` int(11) DEFAULT NULL,
-  `fila` int(11) DEFAULT NULL,
-  `fecha` datetime DEFAULT NULL,
-  `fecha_Entrega` datetime DEFAULT NULL,
-  `ult_recibe` varchar(50) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `estado` varchar(10) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `observaciones` varchar(500) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `usrId` int(11) DEFAULT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`id_trazacomponente`),
-  KEY `idcomponenteequipo` (`idcomponenteequipo`),
-  KEY `id_estanteria` (`id_estanteria`),
-  KEY `usrId` (`usrId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_trazacomponente`
---
-
-LOCK TABLES `tbl_trazacomponente` WRITE;
-/*!40000 ALTER TABLE `tbl_trazacomponente` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tbl_trazacomponente` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_unidadmedida`
---
-
-DROP TABLE IF EXISTS `tbl_unidadmedida`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_unidadmedida` (
-  `id_unidadmedida` int(11) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(3000) COLLATE utf8_spanish_ci NOT NULL,
-  `estado` varchar(4) COLLATE utf8_spanish_ci NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`id_unidadmedida`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_unidadmedida`
---
-
-LOCK TABLES `tbl_unidadmedida` WRITE;
-/*!40000 ALTER TABLE `tbl_unidadmedida` DISABLE KEYS */;
-INSERT INTO `tbl_unidadmedida` VALUES (1,'Unidad','AN',7),(2,'Litro','AC',7),(3,'Metro','AC',7),(4,'Kg','AC',7),(5,'m2','AC',7),(6,'m3','AC',7),(7,'unidad','AC',6),(8,'unidad de medida 2','AC',6),(9,'Unidad','AC',8),(10,'Metro','AC',8),(11,'Litro','AC',8),(12,'pulgadas','AC',6);
-/*!40000 ALTER TABLE `tbl_unidadmedida` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_valedesacarga`
---
-
-DROP TABLE IF EXISTS `tbl_valedesacarga`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_valedesacarga` (
-  `valedid` int(11) NOT NULL AUTO_INCREMENT,
-  `valedfecha` datetime DEFAULT NULL,
-  `usrId` int(11) DEFAULT NULL,
-  `respons` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish_ci DEFAULT NULL,
-  `dest` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish_ci DEFAULT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`valedid`),
-  KEY `usrId` (`usrId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_valedesacarga`
---
-
-LOCK TABLES `tbl_valedesacarga` WRITE;
-/*!40000 ALTER TABLE `tbl_valedesacarga` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tbl_valedesacarga` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbl_valesalida`
---
-
-DROP TABLE IF EXISTS `tbl_valesalida`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_valesalida` (
-  `valesid` int(11) NOT NULL AUTO_INCREMENT,
-  `fecha` date DEFAULT NULL,
-  `usrId` int(10) DEFAULT NULL,
-  `respons` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish_ci DEFAULT NULL,
-  `dest` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish_ci DEFAULT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`valesid`),
-  KEY `repid` (`usrId`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbl_valesalida`
---
-
-LOCK TABLES `tbl_valesalida` WRITE;
-/*!40000 ALTER TABLE `tbl_valesalida` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tbl_valesalida` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tipocuenta`
---
-
-DROP TABLE IF EXISTS `tipocuenta`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tipocuenta` (
-  `tipocuentaid` int(11) NOT NULL AUTO_INCREMENT,
-  `tipocuentadescrip` varchar(255) DEFAULT NULL,
-  `tipocuentamonto` varchar(50) DEFAULT NULL,
-  `tipocuentausuarios` varchar(50) DEFAULT NULL,
-  `tipocuentaactivos` varchar(50) DEFAULT NULL,
-  `tipocuentaempresas` varchar(50) DEFAULT NULL,
-  `apps` varchar(2) DEFAULT NULL,
-  `modulo_alerta` varchar(2) DEFAULT NULL,
-  PRIMARY KEY (`tipocuentaid`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tipocuenta`
---
-
-LOCK TABLES `tipocuenta` WRITE;
-/*!40000 ALTER TABLE `tipocuenta` DISABLE KEYS */;
-INSERT INTO `tipocuenta` VALUES (1,'GO','0','10','100','1','NO','NO'),(2,'PRO','100','50','1000','3','SI','SI'),(3,'CORPORATE','300','ILIMITADO','ILIMITADO','ILIMITADO','SI','SI');
-/*!40000 ALTER TABLE `tipocuenta` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `unidad_industrial`
---
-
-DROP TABLE IF EXISTS `unidad_industrial`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `unidad_industrial` (
-  `id_unidad` int(11) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(100) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `id_empresa` int(11) NOT NULL,
-  PRIMARY KEY (`id_unidad`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `unidad_industrial`
---
-
-LOCK TABLES `unidad_industrial` WRITE;
-/*!40000 ALTER TABLE `unidad_industrial` DISABLE KEYS */;
-INSERT INTO `unidad_industrial` VALUES (1,'veladero',6),(2,'nueva unidad insdutrial 2',6),(3,'MINA CHINCHILLAS',7),(4,'La Laja',2),(5,'unidad agregada 1',6),(6,'unidad agregada 2',6),(7,'unidad agregada 3',6),(8,'unidad agregada 4',6),(9,'unidad agregada 5',6),(10,'unidadagregada 6',6),(11,'La laja',6),(12,'CSJ-CIENAGUITA',8);
-/*!40000 ALTER TABLE `unidad_industrial` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `unidad_tiempo`
---
-
-DROP TABLE IF EXISTS `unidad_tiempo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `unidad_tiempo` (
-  `id_unidad` int(11) NOT NULL AUTO_INCREMENT,
-  `unidaddescrip` varchar(20) COLLATE utf8_spanish_ci NOT NULL,
-  PRIMARY KEY (`id_unidad`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `unidad_tiempo`
---
-
-LOCK TABLES `unidad_tiempo` WRITE;
-/*!40000 ALTER TABLE `unidad_tiempo` DISABLE KEYS */;
-INSERT INTO `unidad_tiempo` VALUES (1,'minutos'),(2,'horas'),(3,'dias');
-/*!40000 ALTER TABLE `unidad_tiempo` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `usuarioasempresa`
---
-
-DROP TABLE IF EXISTS `usuarioasempresa`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `usuarioasempresa` (
-  `empresaid` int(11) NOT NULL,
-  `usrId` int(11) NOT NULL,
-  `fecha` datetime DEFAULT NULL,
-  `tipo` tinyint(1) NOT NULL,
-  `grpId` int(11) NOT NULL,
-  `estado` varchar(45) NOT NULL,
-  PRIMARY KEY (`empresaid`,`usrId`),
-  KEY `usrId` (`usrId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `usuarioasempresa`
---
-
-LOCK TABLES `usuarioasempresa` WRITE;
-/*!40000 ALTER TABLE `usuarioasempresa` DISABLE KEYS */;
-INSERT INTO `usuarioasempresa` VALUES (6,1,'2018-10-25 00:00:00',1,1,'AC'),(6,2,'2019-04-11 14:27:44',1,1,'AC'),(6,3,'2019-04-11 14:40:04',1,1,'AC'),(6,4,'2019-04-11 14:40:36',1,1,'AC'),(6,11,'2018-10-25 00:00:00',0,1,'AC'),(6,17,'2018-09-18 00:00:00',1,1,'AC'),(6,26,'2018-09-18 00:00:00',0,1,'AC'),(6,31,'2018-11-23 00:00:00',1,1,'AC'),(6,49,'2019-01-17 09:22:31',1,1,'AC'),(6,50,'2019-01-30 11:49:00',1,20,'AC'),(6,51,'2019-04-11 10:25:33',1,1,'AC'),(6,53,'2019-06-03 15:46:27',1,1,'AC'),(7,1,'2018-09-17 00:00:00',0,1,'AC'),(7,9,'2018-09-17 00:00:00',1,1,'AC'),(7,18,'2018-09-21 00:00:00',1,7,'AC'),(7,20,'2018-09-12 00:00:00',1,1,'AC'),(8,1,'2018-09-12 00:00:00',0,1,'AC'),(8,26,'2018-11-09 00:00:00',1,1,'AC'),(8,28,'2018-11-09 00:00:00',1,1,'AC'),(8,29,'2018-11-09 00:00:00',1,1,'AC'),(8,30,'2018-11-09 00:00:00',1,1,'AC'),(8,31,'2018-11-23 00:00:00',1,13,'AC'),(8,36,'2018-11-23 00:00:00',1,13,'AC'),(8,39,'2018-11-23 00:00:00',1,14,'AC'),(8,41,'2018-11-23 00:00:00',1,13,'AC');
-/*!40000 ALTER TABLE `usuarioasempresa` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `utl_tablas`
---
-
-DROP TABLE IF EXISTS `utl_tablas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `utl_tablas` (
-  `tabl_id` int(11) NOT NULL,
-  `tabla` varchar(50) COLLATE utf8_turkish_ci DEFAULT NULL,
-  `valor` varchar(50) COLLATE utf8_turkish_ci DEFAULT NULL,
-  `descripcion` varchar(200) COLLATE utf8_turkish_ci DEFAULT NULL,
-  `fec_alta` datetime DEFAULT CURRENT_TIMESTAMP,
-  `eliminado` tinyint(4) DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_turkish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `utl_tablas`
---
-
-LOCK TABLES `utl_tablas` WRITE;
-/*!40000 ALTER TABLE `utl_tablas` DISABLE KEYS */;
-INSERT INTO `utl_tablas` VALUES (1,'estado','AC','ACTIVO','2019-06-03 14:46:38',0),(0,'unidad',NULL,'unidades','2019-06-19 15:42:37',0),(0,'unidad',NULL,'Metros','2019-06-23 16:24:23',0);
-/*!40000 ALTER TABLE `utl_tablas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Final view structure for view `abmdeposito`
---
-
-/*!50001 DROP TABLE IF EXISTS `abmdeposito`*/;
-/*!50001 DROP VIEW IF EXISTS `abmdeposito`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8 */;
-/*!50001 SET character_set_results     = utf8 */;
-/*!50001 SET collation_connection      = utf8_general_ci */;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `abmdeposito` AS select `alm_depositos`.`depo_id` AS `depositoId`,`alm_depositos`.`descripcion` AS `depositodescrip`,`alm_depositos`.`direccion` AS `direccion`,`alm_depositos`.`GPS` AS `GPS`,`alm_depositos`.`loca_id` AS `id_localidad`,`alm_depositos`.`esta_id` AS `id_provincial`,`alm_depositos`.`pais_id` AS `id_pais`,`alm_depositos`.`empr_id` AS `id_empresa`,if((`alm_depositos`.`eliminado` = 1),'AN','AC') AS `estado` from `alm_depositos` */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `abmproveedores`
---
-
-/*!50001 DROP TABLE IF EXISTS `abmproveedores`*/;
-/*!50001 DROP VIEW IF EXISTS `abmproveedores`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8 */;
-/*!50001 SET character_set_results     = utf8 */;
-/*!50001 SET collation_connection      = utf8_general_ci */;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `abmproveedores` AS select `alm_proveedores`.`prov_id` AS `provid`,`alm_proveedores`.`nombre` AS `provnombre`,`alm_proveedores`.`cuit` AS `provcuit`,`alm_proveedores`.`domicilio` AS `provdomicilio`,`alm_proveedores`.`telefono` AS `provtelefono`,`alm_proveedores`.`email` AS `provmail`,`alm_proveedores`.`empr_id` AS `id_empresa`,`alm_proveedores`.`fec_alta` AS `fec_alta`,if((`alm_proveedores`.`eliminado` = 1),'AN','AC') AS `estado` from `alm_proveedores` */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `articles`
---
-
-/*!50001 DROP TABLE IF EXISTS `articles`*/;
-/*!50001 DROP VIEW IF EXISTS `articles`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8 */;
-/*!50001 SET character_set_results     = utf8 */;
-/*!50001 SET collation_connection      = utf8_general_ci */;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `articles` AS select `alm_articulos`.`arti_id` AS `artId`,`alm_articulos`.`barcode` AS `artBarCode`,`alm_articulos`.`descripcion` AS `artDescription`,`alm_articulos`.`costo` AS `artCoste`,`alm_articulos`.`es_caja` AS `artIsByBox`,`alm_articulos`.`cantidad_caja` AS `artCantbox`,`alm_articulos`.`punto_pedido` AS `punto_pedido`,`alm_articulos`.`estado_id` AS `artEstado`,`alm_articulos`.`unidad_id` AS `unidadmedida`,`alm_articulos`.`empr_id` AS `id_empresa` from `alm_articulos` */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2019-06-24 22:21:03

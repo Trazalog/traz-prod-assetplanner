@@ -55,7 +55,7 @@ class Reporteordenes extends CI_Model
         else{
             return false;
         }
-
+		}		
     function getOTequipos($ideq)
     {
         $this->db->select('orden_trabajo.id_orden, orden_trabajo.descripcion as desot, orden_trabajo.fecha_inicio,orden_trabajo.fecha_entrega, orden_trabajo.fecha_terminada, orden_trabajo.fecha_entregada,
@@ -116,8 +116,8 @@ class Reporteordenes extends CI_Model
         }
     }
 
-}
-    }
+// }
+//     }
 
     function getDatosReporte($parametros)
     {

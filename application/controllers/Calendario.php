@@ -244,12 +244,12 @@ class Calendario extends CI_Controller {
 					//busco la frecuencia de la tarea
 					$diasFrecuencia = $this->getPeriodTarea($tipo,$id_solicitud);	
 
-					// guarda las OT que corresp de acuerdo a la cant que entren en $cantidad_meses
-					$this->setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo,$id_solicitud);
+				
 					
 					// si es preventivo ACTUALIZA NUEVAMENTE LA FECHA BASE_ OK!
 					$estado = 'PL';
-					if($tipo == '3'){	    		
+					if($tipo == '3'){	
+					    		
 						//pongo nueva fecha base en preventivos
 						$this->Calendarios->actualizarFechaBasePreventivos($fecha_limite, $id_solicitud);
 						// cambia estado al preventivo
@@ -262,8 +262,10 @@ class Calendario extends CI_Controller {
 						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);						
 					}	
 
+						// guarda las OT que corresp de acuerdo a la cant que entren en $cantidad_meses
+						$this->setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo,$id_solicitud);
 					// guarda los Insumos y herramientas de Backlog, predict y prenvent segun tipo
-					$this->setHerramInsPorTarea($idOT,$tipo,$id_solicitud);
+					//$this->setHerramInsPorTarea($idOT,$tipo,$id_solicitud);
 				}	     	
 					
 				
@@ -373,6 +375,15 @@ class Calendario extends CI_Controller {
 		while ($fecha_limite >= $fec_programacion ) {
 						 
 			$idOT = $this->Calendarios->guardar_agregar($datos2);		
+
+			dump($idOT, 'idd de ot en setot en serie: ');
+			dump($tipo, 'tipo en setot en serie: ');
+			dump($id_solicitud, 'idd de solici en setot en serie: ');
+			
+			////FIXME:  manotazo de ahogado revisar
+		  $this->setHerramInsPorTarea($idOT, $tipo, $id_solicitud);
+
+
 			// setea estado 'PL' a las OT
 			$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);	
 			// lanza proceso 
@@ -397,9 +408,12 @@ class Calendario extends CI_Controller {
 	
 	// Guarda herramientas e insumos que vienen de Backlog, Prevent y Predictivo
 	function setHerramInsPorTarea($idOT, $tipo, $id_solicitud){
-		
+		dump($idOT, ' id de ot');
+		dump($tipo, ' tipo');
+		dump($id_solicitud, ' esolicitud');
 		switch ($tipo) {
 			case 'predictivo':		// Predictivo
+				dump($tipo, ' entre predictivo');
 				$herra = $this->Calendarios->getPredictivoHerramientas($id_solicitud);				
 				$insumos = $this->Calendarios->getPredictivoInsumos($id_solicitud);			
 				$adjunto = $this->Calendarios->getAdjunto($id_solicitud,$tipo);		

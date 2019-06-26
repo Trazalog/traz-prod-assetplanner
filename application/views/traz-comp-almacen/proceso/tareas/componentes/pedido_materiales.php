@@ -39,7 +39,7 @@
 </table>
 <div class="modal-footer <?php echo (isset($info->pema_id)?'hidden':null)?>">
     <button class="btn" onclick="linkTo('almacen/Notapedido')">Cerrar</button>
-    <button class="btn btn-primary <?php echo(viewOT&&$hecho==false?'hidden':null)?>" style="float:right;"
+    <button class="btn btn-primary <?php echo(viewOT?'hidden':null)?>" style="float:right;"
         onclick="lanzarPedido()">Hecho</button>
 </div>
 <script>
@@ -60,7 +60,7 @@ function del_detalle() {
             },
             url: 'index.php/almacen/Notapedido/eliminarDetalle',
             success: function(data) {
-                $('#eliminar').modal('hide');
+                $('.modal #eliminar').modal('hide');
                 get_detalle();
             },
             error: function(data) {
