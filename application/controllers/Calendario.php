@@ -254,7 +254,7 @@ class Calendario extends CI_Controller {
 					}	
 
 					// guarda las OT de acuerdo a la cant que entren en $cantidad_meses e insumos, herramientas y adjuntos
-					$this->setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo,$id_solicitud);	
+					//$this->setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo,$id_solicitud);	
 				}	     	
 					
 				
@@ -389,12 +389,9 @@ class Calendario extends CI_Controller {
 	
 	// Guarda herramientas e insumos que vienen de Backlog, Prevent y Predictivo
 	function setHerramInsPorTarea($idOT, $tipo, $id_solicitud){
-		dump($idOT, ' id de ot');
-		dump($tipo, ' tipo');
-		dump($id_solicitud, ' esolicitud');
+	
 		switch ($tipo) {
 			case 'predictivo':		// Predictivo
-				dump($tipo, ' entre predictivo');
 				$herra = $this->Calendarios->getPredictivoHerramientas($id_solicitud);				
 				$insumos = $this->Calendarios->getPredictivoInsumos($id_solicitud);			
 				$adjunto = $this->Calendarios->getAdjunto($id_solicitud,$tipo);		
