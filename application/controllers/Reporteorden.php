@@ -20,11 +20,11 @@ class Reporteorden extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	// public function getestado()
-	// {
-	// 	$response = $this->Reporteordenes->getestados();
-	// 	echo json_encode($response);
-	// }
+	public function getestado()
+	{
+		$response = $this->Reporteordenes->getestados();
+		echo json_encode($response);
+	}
 
 	public function getDatosReporte()
 	{
@@ -33,19 +33,19 @@ class Reporteorden extends CI_Controller {
 		echo json_encode($response);
 	}
 
-//}
-	// 	if($ordenesTrabajo)
-	// 	{	
-	// 		$arre = array();
-	// 		foreach ($ordenesTrabajo as $row ) 
-	// 		{   
-	// 			$arre[] = $row;
-	// 		}
-	// 		echo json_encode($arre);
-	// 	}
-	// 	else 
-	// 		echo json_encode(0);
-	// }
+}
+		if($ordenesTrabajo)
+		{	
+			$arre = array();
+			foreach ($ordenesTrabajo as $row ) 
+			{   
+				$arre[] = $row;
+			}
+			echo json_encode($arre);
+		}
+		else 
+			echo json_encode(0);
+	}
 
 	public function getestado()
 	{
@@ -59,9 +59,8 @@ class Reporteorden extends CI_Controller {
 			}
 			echo json_encode($arre);
 		}
-		else{ 
+		else 
 			echo json_encode(0);
-		}
 	}
 
 	public function getOTequipo()
@@ -108,9 +107,8 @@ class Reporteorden extends CI_Controller {
 	           $arre[] = $row;
 	        }
 			echo json_encode($arre);
-		}else{
-			echo json_encode(0);
-		} 
+		}
+		else echo json_encode(0);
 	}
 	
 
@@ -149,12 +147,13 @@ class Reporteorden extends CI_Controller {
 	
 	public function getarticulo(){
 		$response = $this->Reportepedidos->getarticulos();
-    echo json_encode($response);
+      	echo json_encode($response);
 	}
 	
 	public function traerArticulo(){
 		
-		$idart=$_POST['id_art'];		
+		$idart=$_POST['id_art'];
+		
     
 		$articulo = $this->Reportepedidos->traerArticulos($idart);
 		//echo json_encode($Customers);

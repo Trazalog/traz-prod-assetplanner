@@ -41,11 +41,10 @@ class Otrabajos extends CI_Model {
 		// $query = $this->db->get();
 
 		$this->db->select('orden_trabajo.*, tbl_tipoordentrabajo.descripcion AS tipoDescrip, 
-		user1.usrName AS nombre, user1.usrLastName, 
-
-		sisusers.usrName, 
-		sisusers.usrLastName, sucursal.descripc, equipos.codigo, 
-		equipos.id_equipo');
+												user1.usrName AS nombre, user1.usrLastName,
+												sisusers.usrName, 
+												sisusers.usrLastName, sucursal.descripc, equipos.codigo, 
+												equipos.id_equipo');
 		$this->db->from('orden_trabajo');
 		$this->db->join('tbl_tipoordentrabajo', 'tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
 		$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario');

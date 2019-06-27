@@ -172,21 +172,30 @@ class Tarea extends CI_Controller {
 			// Usr Toma tarea en BPM (Vistas tareas comunes)
 			public function tomarTarea(){
 				$userdata = $this->session->userdata('user_data');
-						$usrId = $userdata[0]['usrId'];     // guarda usuario logueado
+						$usrId = $userdata[0]['userBpm'];     // guarda usuario logueado
 				//dump_exit($usrId);
 				$idTarBonita = $this->input->post('idTarBonita');
-				$estado = array (
-					"assigned_id"	=>	$usrId
-				);
-				// trae la cabecera
-				$parametros = $this->Bonitas->conexiones();
-				// Cambio el metodo de la cabecera a "PUT"
-				$parametros["http"]["method"] = "PUT";
-				$parametros["http"]["content"] = json_encode($estado);
-				// Variable tipo resource referencia a un recurso externo.
-				$param = stream_context_create($parametros);
-				$response = $this->Tareas->tomarTarea($idTarBonita,$param);
-				echo json_encode($response);
+
+
+				$this->load->library('BPM');
+				$res = $this->bpm->setUsuario($idTarBonita,$ursId);
+				if($res['status']){
+					echo json_encode(array('response_code'=>200));}
+				else{
+					echo json_encode(array('response_code'=>$res['code']));
+				}
+				// $estado = array (
+				// 	"assigned_id"	=>	$usrId
+				// );
+				// // trae la cabecera
+				// $parametros = $this->Bonitas->conexiones();
+				// // Cambio el metodo de la cabecera a "PUT"
+				// $parametros["http"]["method"] = "PUT";
+				// $parametros["http"]["content"] = json_encode($estado);
+				// // Variable tipo resource referencia a un recurso externo.
+				// $param = stream_context_create($parametros);
+				// $response = $this->Tareas->tomarTarea($idTarBonita,$param);
+				// echo json_encode($response);
 			}
 			// Usr Toma tarea en BPM  
 			public function soltarTarea(){
@@ -266,7 +275,7 @@ class Tarea extends CI_Controller {
 								if($tipo != 'correctivo'){
 									// cambia el estado de la Tarea (Back, Prevent o Predict) a CERRADO
 									$result = $this->Tareas->cambiarEstado($id_solicitud, $estado, $tipo);
-								}else{								
+								}else{
 									// Cambio Inform Servicio  a TERMINADO					
 									$result = $this->Tareas->cambiarEstado($id_SS, 'T', $tipo);
 								}		
@@ -275,7 +284,7 @@ class Tarea extends CI_Controller {
 								$result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT');
 
 								// Cambio Inform Servicio  a TERMINADO					
-								$result = $this->Tareas->cambiarEstado($id_OT, 'CE', 'informe servicios');
+								$result = $this->Tareas->cambiarEstado($id_OT, 'T', 'informe servicios');
 
 								// si guarda en BD	
 								if ($result) {
@@ -334,7 +343,20 @@ class Tarea extends CI_Controller {
 								// Si hay SServicios cambio estado a CERRADO
 								if ($id_SS != NULL) {
 									$result = $this->Tareas->cambiarEstado($id_SS, $estado, 'correctivo');																
-								}								
+								}	
+								// else{	// sino cambio estado de la tarea origen(back, prevent, predict)
+								// 	$result = $this->Tareas->cambiarEstado($id_solicitud, $estado, $tipo);	
+								// }							
+								// // Cierro la OT				
+								// if ($id_SS != 0) {	
+								// 	// Viene de una SServicios, Back, Prev o Predict
+								// 	$result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT');
+								// } else {
+								// 	// Termina las OT que no vienen de Tareas solicitadas
+								// 	$result = $this->Tareas->cambiarEstado($id_OT, 'T', 'OT');
+								// }
+									
+								// $result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT');
 								// si guarda en BD	
 								if ($result) {
 									echo json_encode(['status'=>true, 'msj'=>'OK']);
@@ -564,7 +586,17 @@ class Tarea extends CI_Controller {
 				//dump($response["value"], 'respuesta bonita');
 				return $response["value"];
 			}	
-		
+			// traer id de OT por caseId
+			// function getIdOTPorIdCase($caseId){
+			// 		// trae la cabecera
+			// 		$parametros = $this->Bonitas->conexiones();
+			// 		// Cambio el metodo de la cabecera a "GET"
+			// 		$parametros["http"]["method"] = "GET";				
+			// 		$param = stream_context_create($parametros);
+			// 		$response = $this->Tareas->getIdOTPorIdCase($caseId, $param);
+			// 		//dump($response["value"], 'respuesta bonita');
+			// 		return $response["value"];
+			// }
 			// Trae datos de backlog para editar
 			function getEditarBacklog($id_SS){
 				$result = $this->Tareas->geteditar($id_SS);	
