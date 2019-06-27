@@ -4,11 +4,12 @@ class Test extends CI_Controller {
     function __construct(){
 
       parent::__construct();
+    
       
    }
    function index(){
-      $this->load->library('BPM');
-      echo var_dump($this->bpm->getUsuariosBPM());die;
+     
+     
    }
 }
 ?>

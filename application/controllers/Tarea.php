@@ -266,13 +266,16 @@ class Tarea extends CI_Controller {
 								if($tipo != 'correctivo'){
 									// cambia el estado de la Tarea (Back, Prevent o Predict) a CERRADO
 									$result = $this->Tareas->cambiarEstado($id_solicitud, $estado, $tipo);
-								}				
+								}else{								
+									// Cambio Inform Servicio  a TERMINADO					
+									$result = $this->Tareas->cambiarEstado($id_SS, 'T', $tipo);
+								}		
 																		
 								// Cierro la OT a CERRADO					
 								$result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT');
 
 								// Cambio Inform Servicio  a TERMINADO					
-								$result = $this->Tareas->cambiarEstado($id_OT, 'T', 'informe servicios');
+								$result = $this->Tareas->cambiarEstado($id_OT, 'CE', 'informe servicios');
 
 								// si guarda en BD	
 								if ($result) {
@@ -331,20 +334,7 @@ class Tarea extends CI_Controller {
 								// Si hay SServicios cambio estado a CERRADO
 								if ($id_SS != NULL) {
 									$result = $this->Tareas->cambiarEstado($id_SS, $estado, 'correctivo');																
-								}	
-								// else{	// sino cambio estado de la tarea origen(back, prevent, predict)
-								// 	$result = $this->Tareas->cambiarEstado($id_solicitud, $estado, $tipo);	
-								// }							
-								// // Cierro la OT				
-								// if ($id_SS != 0) {	
-								// 	// Viene de una SServicios, Back, Prev o Predict
-								// 	$result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT');
-								// } else {
-								// 	// Termina las OT que no vienen de Tareas solicitadas
-								// 	$result = $this->Tareas->cambiarEstado($id_OT, 'T', 'OT');
-								// }
-									
-								// $result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT');
+								}								
 								// si guarda en BD	
 								if ($result) {
 									echo json_encode(['status'=>true, 'msj'=>'OK']);
@@ -529,10 +519,11 @@ class Tarea extends CI_Controller {
 							$this->load->view('tareas/scripts/tarea_std');													
 							break;							
 					case 'Ejecutar OT':
+							$this->load->model(CMP_ALM.'/Notapedidos');
+							$data['list'] = $this->Notapedidos->notaPedidos_List($id_OT);
+							$data['permission'] = 'view';
 							$this->load->view('tareas/view_ejecutarOT', $data);
-							$this->load->view('tareas/scripts/tarea_std');
-							$this->load->view('tareas/scripts/abm_forms');
-							$this->load->view('tareas/scripts/validacion_forms');							
+							$this->load->view('tareas/scripts/tarea_std');						
 							break;
 					case 'Esperando cambio estado "a Ejecutar"':
 						$this->load->view('tareas/view_cambio_estado', $data);
@@ -573,17 +564,7 @@ class Tarea extends CI_Controller {
 				//dump($response["value"], 'respuesta bonita');
 				return $response["value"];
 			}	
-			// traer id de OT por caseId
-			// function getIdOTPorIdCase($caseId){
-			// 		// trae la cabecera
-			// 		$parametros = $this->Bonitas->conexiones();
-			// 		// Cambio el metodo de la cabecera a "GET"
-			// 		$parametros["http"]["method"] = "GET";				
-			// 		$param = stream_context_create($parametros);
-			// 		$response = $this->Tareas->getIdOTPorIdCase($caseId, $param);
-			// 		//dump($response["value"], 'respuesta bonita');
-			// 		return $response["value"];
-			// }
+		
 			// Trae datos de backlog para editar
 			function getEditarBacklog($id_SS){
 				$result = $this->Tareas->geteditar($id_SS);	

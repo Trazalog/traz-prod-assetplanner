@@ -257,7 +257,7 @@ class Users extends CI_Model
 			$this->db->join('empresas', 'empresas.id_empresa = usuarioasempresa.empresaid');
 			$this->db->where('sisusers.usrNick', $usr);
 			$this->db->where('sisusers.usrPassword', $pas);
-			$this->db->where('usuarioasempresa.tipo', 1);
+			$this->db->where('usuarioasempresa.tipo', 1); //!HARDCODE
 			$query = $this->db->get();
 			
 			if ($query->num_rows() != 0)
@@ -265,8 +265,7 @@ class Users extends CI_Model
 				$datosSesionUsuario = $query->result_array();
 
 				$datosSesionUsuario[0]['userBpm'] = $this->bpm->getUser($datosSesionUsuario[0]["usrNick"]);		
-				
-				//dump_exit($datosSesionUsuario);
+
 				$this->session->set_userdata('user_data', $datosSesionUsuario);
 	 			return true;
 			} else {

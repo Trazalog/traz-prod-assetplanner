@@ -60,6 +60,7 @@ function del_detalle() {
             },
             url: 'index.php/almacen/Notapedido/eliminarDetalle',
             success: function(data) {
+                $('.modal #eliminar').modal('hide');
                 get_detalle();
             },
             error: function(data) {
@@ -83,7 +84,7 @@ function edit() {
         success: function(data) {
             get_detalle();
             selectRow = null;
-            $('.modal').modal('hide');
+            $('#set_cantidad').modal('hide');
         },
         error: function(data) {
             alert('Error');
@@ -183,8 +184,7 @@ function get_detalle() {
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="btnSave" data-dismiss="modal"
-                    onclick="del_detalle()">Eliminar</button>
+                <button type="button" class="btn btn-primary" onclick="del_detalle()">Eliminar</button>
             </div> <!-- /.modal footer -->
 
         </div> <!-- /.modal-content -->

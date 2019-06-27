@@ -26,7 +26,6 @@
                                 echo '<tr id="'.$id.'" class="'.$id.'" data-json=\''.json_encode($z).'\'>';
                                 echo '<td class="text-center">';
                                 echo '<i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer;margin:5px;" title="Detalle Pedido Materiales"></i>';
-                                echo '<i class="fa fa-battery text-light-blue btn-entregas" style="cursor: pointer; margin:5px;" title="Estado Pedido"></i> ';
                                 echo '</td>';           
                                 echo '<td class="text-center">'.bolita($z['id_notaPedido'],'blue').'</td>';
                                 echo '<td class="text-center '.(!viewOT?"hidden":null).'">'.bolita($z['id_ordTrabajo'],'yellow','Orden de Trabajo N°'.$z['id_ordTrabajo']).'</td>';
@@ -50,6 +49,8 @@ function ver(e) {
     var tr = $(e).closest('tr')
     var id_nota = $(tr).attr('id');
     var json = JSON.parse(JSON.stringify($(tr).data('json')));
+    rellenarCabecera(json);
+    getEntregasPedido(id_nota);
 
     if (id_nota == null) return;
     $.ajax({
@@ -59,7 +60,7 @@ function ver(e) {
         },
         url: 'index.php/almacen/Notapedido/getNotaPedidoId',
         success: function(data) {
-            $('#tabladetalle').DataTable().destroy();
+         //   $('#tabladetalle').DataTable().destroy();
             $('#tabladetalle tbody').html('');
             for (var i = 0; i < data.length; i++) {
                 var tr = "<tr style='color:'>" +
@@ -70,9 +71,9 @@ function ver(e) {
                     "</tr>";
                 $('#tabladetalle tbody').append(tr);
             }
-            DataTable('#tabladetalle');
+            //DataTable('#tabladetalle');
 
-            rellenarCabecera(json);
+            
 
             $('#detalle_pedido').modal('show');
         },
@@ -84,9 +85,13 @@ function ver(e) {
     });
 
 }
+
+function getEntregasPedido(pema) {
+    $('#tab_2').load('<?php echo base_url()?>almacen/new/Entrega_Material/getEntregasPedido');
+}
 //Ver Orden
 function rellenarCabecera(json) {
-    $('#detalle_pedido .pedido').val(json.id_notaPedido );
+    $('#detalle_pedido .pedido').val(json.id_notaPedido);
     $('#detalle_pedido .descrip').val(json.justificacion);
     $('#detalle_pedido .fecha').val(json.fecha);
     $('#detalle_pedido .estado').val(json.estado);
@@ -95,83 +100,85 @@ function rellenarCabecera(json) {
 
 DataTable('#tabladetalle');
 DataTable('#deposito');
-
-$('.btn-entregas').click(function () {
-   $('#modal_detalle_entrega .body').load('<?php echo base_url(CMP_ALM) ?>/new/Entrega_Material');
-   $('#modal_detalle_entrega').modal('show'); 
-});
 </script>
 
 
 <!-- Modal ver nota pedido-->
 <div class="modal fade" id="detalle_pedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
+    <div class="modal-dialog modal-lg" >
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab_1" data-toggle="tab">
+                        <h4><span class="fa fa-search text-light-blue"></span> Detalle Pedido Material</h4>
+                    </a></li>
+                <li><a href="#tab_2" data-toggle="tab">
+                        <h4><span class="fa fa-check text-light-blue"></span>Entrega Asociadas al Pedido</h4>
+                    </a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_1">
+                    <div class="modal-content">
 
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel"><span id="modalAction"
-                        class="fa fa-plus-square text-light-blue"></span> Detalle Pedido Materiales</h4>
-                <br>
+                        <div class="modal-header">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-3 col-lg-3">
+                                    <label for="">Pedido:</label>
+                                    <input class="form-control pedido" type="text" value="???" readonly>
+                                </div>
+                                <div class="col-xs-12 col-sm-3 col-lg-3 <?php echo (!viewOT ? "hidden" : null) ?>">
+                                    <label for="">Orden de Trabajo:</label>
+                                    <input class="form-control orden" type="text" value="???" readonly>
+                                </div>
+                                <div class="col-xs-12 col-sm-3 col-lg-3">
+                                    <label for="">Fecha:</label>
+                                    <input class="form-control fecha" type="text" value="???" readonly>
+                                </div>
+                                <div class="col-xs-12 col-sm-3 col-lg-3">
+                                    <label for="">Estado:</label>
+                                    <input class="form-control estado" type="text" value="???" readonly>
+                                </div><br>
+                                <div class="col-xs-12 col-sm-12 col-lg-12">
+                                    <label for="">Descripcion:</label>
+                                    <input class="form-control descrip" type="text" value="???" readonly>
+                                </div>
+                            </div>
 
-                <div class="row">
-                    <div class="col-xs-12 col-sm-3 col-lg-3">
-                        <label for="">Pedido:</label>
-                        <input class="form-control pedido" type="text" value="???" readonly>
-                    </div>
-                    <div class="col-xs-12 col-sm-3 col-lg-3 <?php echo (!viewOT ? "hidden" : null) ?>">
-                        <label for="">Orden de Trabajo:</label>
-                        <input class="form-control orden" type="text" value="???" readonly>
-                    </div>
-                    <div class="col-xs-12 col-sm-3 col-lg-3">
-                        <label for="">Fecha:</label>
-                        <input class="form-control fecha" type="text" value="???" readonly>
-                    </div>
-                    <div class="col-xs-12 col-sm-3 col-lg-3">
-                        <label for="">Estado:</label>
-                        <input class="form-control estado" type="text" value="???" readonly>
-                    </div><br>
-                    <div class="col-xs-12 col-sm-12 col-lg-12">
-                        <label for="">Descripcion:</label>
-                        <input class="form-control descrip" type="text" value="???" readonly>
-                    </div>
+                        </div> <!-- /.modal-header  -->
+
+                        <div class="modal-body table-responsive" id="modalBodyArticle">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <table id="tabladetalle" class="table table-bordered table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Cod. Artículo</th>
+                                                <th>Descripción</th>
+                                                <th class="text-center">Pedido</th>
+                                                <th class="text-center">Entregado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div> <!-- /.modal-body -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
+                        </div> <!-- /.modal footer -->
+
+                    </div> <!-- /.modal-content -->
                 </div>
+                <!-- /.tab-pane -->
+                <div class="tab-pane" id="tab_2">
 
-            </div> <!-- /.modal-header  -->
-
-            <div class="modal-body table-responsive" id="modalBodyArticle">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <table id="tabladetalle" class="table table-bordered table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Cod. Artículo</th>
-                                    <th>Descripción</th>
-                                    <th class="text-center">Pedido</th>
-                                    <th class="text-center">Entregado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- -->
-                            </tbody>
-                        </table>
-                    </div>
                 </div>
-            </div> <!-- /.modal-body -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
-            </div> <!-- /.modal footer -->
+                <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+        </div>
 
-        </div> <!-- /.modal-content -->
-    </div> <!-- /.modal-dialog modal-lg -->
-</div> <!-- /.modal fade -->
-<!-- / Modal -->
-
-<!-- Modal ver nota pedido-->
-<div class="modal fade" id="modal_detalle_entrega" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-lg body" role="document">
-       
     </div> <!-- /.modal-dialog modal-lg -->
 </div> <!-- /.modal fade -->
 <!-- / Modal -->

@@ -49,7 +49,7 @@ class BPMALM
 		
 		//Datos Usuario
 		$userdata = $this->CI->session->userdata('user_data');
-		$userId= $userdata[0]["userBpm"];		
+		$userId= 102;//$userdata[0]["userBpm"];		
 
 		//Enviar Request
 		$resource = 'API/bpm/humanTask?p=0&c=1000&f=user_id%3D';
@@ -271,7 +271,7 @@ class BPMALM
 
 			$data = array(
 					'username'=>$usrNick,
-					'password'=>'bpm',
+					'password'=> BPM_ADMIN_PASS,
 					'redirect'=>'false'
 					);
 			$url = http_build_query( $data );
@@ -310,7 +310,7 @@ class BPMALM
   function conexiones(){	
 
 		$userdata = //$this->CI->session->userdata('user_data');
-		$usrNick= 'mantenedor1';//$userdata[0]["usrNick"];
+		$usrNick= BPM_ADMIN_USER;
 
 		// Array de parametros (cabecera HTTP)
 		$opciones = array(
@@ -325,7 +325,7 @@ class BPMALM
 
 			$data = array(
 					'username'=>$usrNick,
-					'password'=>'bpm',
+					'password'=> BPM_ADMIN_PASS,
 					'redirect'=>'false'
 					);
 			$url = http_build_query( $data );
