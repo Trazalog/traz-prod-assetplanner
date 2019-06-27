@@ -303,9 +303,9 @@
 					},
 					url: 'index.php/Tarea/tomarTarea',
 					success: function(data) {
-									console.log(data['response_code']);
+									console.log(data['reponse_code']);
 									// toma a tarea exitosamente
-									if(data['response_code'] == 200){
+									if(data['reponse_code'] == 200){
 											habilitar();
 									}
 

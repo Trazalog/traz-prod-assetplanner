@@ -220,10 +220,8 @@ class Calendarios extends CI_Model {
 											FROM solicitud_reparacion
 											INNER JOIN equipos ON equipos.id_equipo = solicitud_reparacion.id_equipo
 											INNER JOIN sector ON sector.id_sector = equipos.id_sector
-											WHERE solicitud_reparacion.id_empresa = $empId
-											AND solicitud_reparacion.estado != 'AN'										
-											AND solicitud_reparacion.estado != 'PL'
-											AND solicitud_reparacion.estado != 'AS'
+											WHERE solicitud_reparacion.id_empresa = $empId											
+											AND solicitud_reparacion.estado = 'S'
 											AND solicitud_reparacion.urgente != 0
 											AND year(solicitud_reparacion.f_solicitado) = $year
 											AND month(solicitud_reparacion.f_solicitado) = $month";
