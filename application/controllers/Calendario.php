@@ -11,6 +11,7 @@ class Calendario extends CI_Controller {
 		$this->load->model('Overviews');
 		$this->load->model('Tareas');
 		$this->load->model('Otrabajos');
+		$this->load->library('BPM');
 	}	
 
 	public function indexot($permission) // Ok
@@ -704,13 +705,23 @@ class Calendario extends CI_Controller {
 				$caseId = $this->Calendarios->getCaseIdporIdBacklog($id_solicitud);				
 			}		
 			// traer de bpm el id de tarea (id)			
-			$parametros = $this->Bonitas->LoggerAdmin();
-			$parametros["http"]["method"] = "GET";
+			// $parametros = $this->Bonitas->LoggerAdmin();
+			// $parametros["http"]["method"] = "GET";
+			// $param = stream_context_create($parametros);
+			// $actividades = $this->Overviews->ObtenerActividades($caseId,$param);			
+			// $infoTarea['taskId'] = json_decode($this->getIdTask($actividades,$tipo),true);
+			// $infoTarea['caseId'] = $caseId;			
+			// return $infoTarea;
+			
+			// traer de bpm el id de tarea (id)		
+			$this->load->library('BPM');
+			$parametros = $this->bpm->LoggerAdmin();
 			$param = stream_context_create($parametros);
-			$actividades = $this->Overviews->ObtenerActividades($caseId,$param);			
+			$actividades = $this->bpm->ObtenerActividades($caseId,$param);		
 			$infoTarea['taskId'] = json_decode($this->getIdTask($actividades,$tipo),true);
 			$infoTarea['caseId'] = $caseId;			
-			return $infoTarea;		
+			return $infoTarea;
+
 		}
 		// devuelve task_id coincidente con la actividad 'Analisis de Solicitud de Servicio'
 		function getIdTask($actividades,$tipo){
@@ -722,7 +733,6 @@ class Calendario extends CI_Controller {
 				$actividad = 'Planificar Backlog';
 			}	
 
-
 			for ($i=0; $i < count($actividades); $i++) { 				
 				if ($actividades[$i]["displayName"] == $actividad) {
 					$id = $actividades[$i]["id"];
@@ -732,9 +742,15 @@ class Calendario extends CI_Controller {
 		}
 
 		function cerrarTarea($idTask){			
-			$parametros = $this->Bonitas->conexiones();				
+			// $parametros = $this->Bonitas->conexiones();				
+			// $parametros["http"]["method"] = "POST";			
+			// $param = stream_context_create($parametros);	
+
+
+			$parametros = $this->bpm->conexiones();				
 			$parametros["http"]["method"] = "POST";			
-			$param = stream_context_create($parametros);	
+			$param = stream_context_create($parametros);
+
 			$response = $this->Tareas->cerrarTarea($idTask,$param);
 			return $response;
 		}
@@ -747,7 +763,7 @@ class Calendario extends CI_Controller {
   			"value" => $idOT
 			);		
 			// trae la cabecera
-			$parametros = $this->Bonitas->conexiones();
+			$parametros = $this->bpm->conexiones();
 			// Cambio el metodo de la cabecera a "PUT"
 			$parametros["http"]["method"] = "PUT";
 			$parametros["http"]["content"] = json_encode($contract);
