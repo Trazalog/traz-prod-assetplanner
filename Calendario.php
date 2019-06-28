@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Calendario extends CI_Controller {
@@ -11,7 +11,6 @@ class Calendario extends CI_Controller {
 		$this->load->model('Overviews');
 		$this->load->model('Tareas');
 		$this->load->model('Otrabajos');
-		$this->load->library('BPM');
 	}	
 
 	public function indexot($permission) // Ok
@@ -148,10 +147,12 @@ class Calendario extends CI_Controller {
 						'nro'           => 1,//por defecto( no se usa)
 						'fecha'         => date('Y-m-d'),				
 						'fecha_program' => $fec_programacion,
+						//'fecha_inicio'  => $fecha_inicio,
 						'descripcion'   => $descripcion,
 						'cliId'         => 1,//por defecto( no se usa)
 						'estado'        =>'PL',	// estado Planificado
 						'id_usuario'    => $usrId,
+						//'id_usuario_a'  => 1,
 						'id_usuario_e'  => 1,
 						'id_sucursal'   => 1,
 						'id_solicitud'  => $id_solicitud,// id prev-correct-back-predict
@@ -214,16 +215,20 @@ class Calendario extends CI_Controller {
 					// genera la Otrabajo devuelve el id de OT
 					$idOT = $this->Calendarios->guardar_agregar($datos2);					
 					// guarda herramientas, insumos y rrhh de las tareas en OT
-					$this->setHerramInsPorTarea($idOT,$tipo,$id_solicitud);					
+					$this->setHerramInsPorTarea($idOT,$tipo,$id_solicitud);
+					//	dump_exit($idOT);						
 					// si es Preventivo o Predictivo lanza proceso nuevo
 					if ( ($tipo == 'preventivo') || ($tipo == 'predictivo') || ( ($caseDeBacklog == 0) && ($tipo != 'correctivo') ) ) {
 					
-							$this->load->library('BPM');						
+							$this->load->library('BPM');
+						
 							$contract = array(
-														"idSolicitudServicio"	=> 0,		
-														"idOT"  => 	$idOT
-													);						
-							$result = $this->bpm->LanzarProceso($contract);														
+									"idSolicitudServicio"	=> 0,		// 0 NULL  FALSE       // "" ''
+									"idOT"  => 	$idOT
+								);
+						
+							$result = $this->bpm->LanzarProceso($contract);	
+													
 							// guarda case id generado el lanzar proceso				
 							$respcaseOT = $this->Calendarios->setCaseidenOT($result['case_id'], $idOT);					
 					}else{
@@ -237,11 +242,14 @@ class Calendario extends CI_Controller {
 					$fecha_limite = strtotime ( '+'.$cant_meses.' month' , strtotime ( $fec_programacion ) );
 					$fecha_limite = date ( 'Y-m-d H:i:s' , $fecha_limite ); /// "2018-06-16 00:00:00"
 					//busco la frecuencia de la tarea
-					$diasFrecuencia = $this->getPeriodTarea($tipo,$id_solicitud);					
+					$diasFrecuencia = $this->getPeriodTarea($tipo,$id_solicitud);	
+
+					// guarda las OT que corresp de acuerdo a la cant que entren en $cantidad_meses
+					$this->setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo,$id_solicitud);
 					
 					// si es preventivo ACTUALIZA NUEVAMENTE LA FECHA BASE_ OK!
 					$estado = 'PL';
-					if($tipo == '3'){						    		
+					if($tipo == '3'){	    		
 						//pongo nueva fecha base en preventivos
 						$this->Calendarios->actualizarFechaBasePreventivos($fecha_limite, $id_solicitud);
 						// cambia estado al preventivo
@@ -254,8 +262,8 @@ class Calendario extends CI_Controller {
 						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);						
 					}	
 
-					// guarda las OT de acuerdo a la cant que entren en $cantidad_meses e insumos, herramientas y adjuntos
-					$this->setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo,$id_solicitud);	
+					// guarda los Insumos y herramientas de Backlog, predict y prenvent segun tipo
+					$this->setHerramInsPorTarea($idOT,$tipo,$id_solicitud);
 				}	     	
 					
 				
@@ -322,7 +330,9 @@ class Calendario extends CI_Controller {
 				$this->db->select('predictivo.cantidad, periodo.descripcion');
 		        $this->db->from('predictivo');        
 						$this->db->where('predictivo.predId', $id_solicitud);
-						$this->db->join('periodo', 'periodo.idperiodo = predictivo.periodo');		     
+						$this->db->join('periodo', 'periodo.idperiodo = predictivo.periodo');
+		        // $query = $this->db->get(); 
+						// $info = $query->row('cantidad');
 						$query = $this->db->get(); 
         		$info = $query->result_array();
 				break;				
@@ -363,9 +373,6 @@ class Calendario extends CI_Controller {
 		while ($fecha_limite >= $fec_programacion ) {
 						 
 			$idOT = $this->Calendarios->guardar_agregar($datos2);		
-
-		  $this->setHerramInsPorTarea($idOT, $tipo, $id_solicitud);
-
 			// setea estado 'PL' a las OT
 			$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);	
 			// lanza proceso 
@@ -390,7 +397,7 @@ class Calendario extends CI_Controller {
 	
 	// Guarda herramientas e insumos que vienen de Backlog, Prevent y Predictivo
 	function setHerramInsPorTarea($idOT, $tipo, $id_solicitud){
-	
+		
 		switch ($tipo) {
 			case 'predictivo':		// Predictivo
 				$herra = $this->Calendarios->getPredictivoHerramientas($id_solicitud);				
@@ -447,6 +454,10 @@ class Calendario extends CI_Controller {
 				break;
 
 			default:
+				
+
+
+
 
 				break;
 		}
@@ -500,6 +511,7 @@ class Calendario extends CI_Controller {
 		
 		$task = $this->ObtenerTaskIDxOT($idOt);
 
+		dump($task, 'taskId');
 		if ($task) {
 			$data['btnVisibilidad'] = true;
 		} else {
@@ -513,7 +525,8 @@ class Calendario extends CI_Controller {
 	 //Obtener TaskID por OtID (Cuando hay procesos generados, sino los genera)
 	 function ObtenerTaskIDxOT($id){ 	
 				
-		$case_id = $this->Otrabajos->getCaseIdOT($id);
+		$case_id = $this->Otrabajos->getCaseIdOT($id);		
+		//dump($case_id, 'caseId en entrada al metodo: ');
 		$this->load->library('BPM');
 		$origenOT = $this->Otrabajos->getDatosOrigenOT($id);	
 		$tipo = $origenOT[0]['tipo'];	
@@ -526,24 +539,30 @@ class Calendario extends CI_Controller {
 		} 
 		// si viene de backlog
 		if ($tipo == 4) {
-
+			//dump($tipo, 'entre por backlog');
 				//busco origen del backlog(tiene sore_id o no para diferenciar el origen item menu o SServicio)			
 				$idSolRep = $this->Otrabajos->getIdSolReparacion($id_solicitud);					
 				
 				if($idSolRep == NULL){	//viene de item menu 
 					
 					$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas');
+					//dump($task_id, 'id task rep null');
 					return $task_id;		
 
 				}else{	// backlog generado desde una SServicios					
 					// con id solicitud (BACKLOG) busco el case desde solicitud de reparacion
-					$case_id = $this->Otrabajos->getCaseIdenSServicios($id);	
+					$case_id = $this->Otrabajos->getCaseIdenSServicios($id);					
+					//dump($case_id, 'case id en ->  NO NULL');
 					$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas');	
+					//dump($task_id, 'task_id por ->  NO NULL');
 					return $task_id;			
 				}
-		}	
-		// Para el resto de las Tareas (Predictivo, Preventivo) devuelve task	
+		}
+		//TODO: ACA AGREGUE
+		// Para el resto de las Tareas (Predictivo, Preventivo)
+		//  devuelve task		
 		$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas');			
+		//dump($task_id, 'resto de las tareas: ');
 		return $task_id;	
 	}
 
@@ -705,23 +724,13 @@ class Calendario extends CI_Controller {
 				$caseId = $this->Calendarios->getCaseIdporIdBacklog($id_solicitud);				
 			}		
 			// traer de bpm el id de tarea (id)			
-			// $parametros = $this->Bonitas->LoggerAdmin();
-			// $parametros["http"]["method"] = "GET";
-			// $param = stream_context_create($parametros);
-			// $actividades = $this->Overviews->ObtenerActividades($caseId,$param);			
-			// $infoTarea['taskId'] = json_decode($this->getIdTask($actividades,$tipo),true);
-			// $infoTarea['caseId'] = $caseId;			
-			// return $infoTarea;
-			
-			// traer de bpm el id de tarea (id)		
-			$this->load->library('BPM');
-			$parametros = $this->bpm->LoggerAdmin();
+			$parametros = $this->Bonitas->LoggerAdmin();
+			$parametros["http"]["method"] = "GET";
 			$param = stream_context_create($parametros);
-			$actividades = $this->bpm->ObtenerActividades($caseId,$param);		
+			$actividades = $this->Overviews->ObtenerActividades($caseId,$param);			
 			$infoTarea['taskId'] = json_decode($this->getIdTask($actividades,$tipo),true);
 			$infoTarea['caseId'] = $caseId;			
-			return $infoTarea;
-
+			return $infoTarea;		
 		}
 		// devuelve task_id coincidente con la actividad 'Analisis de Solicitud de Servicio'
 		function getIdTask($actividades,$tipo){
@@ -733,6 +742,7 @@ class Calendario extends CI_Controller {
 				$actividad = 'Planificar Backlog';
 			}	
 
+
 			for ($i=0; $i < count($actividades); $i++) { 				
 				if ($actividades[$i]["displayName"] == $actividad) {
 					$id = $actividades[$i]["id"];
@@ -742,15 +752,9 @@ class Calendario extends CI_Controller {
 		}
 
 		function cerrarTarea($idTask){			
-			// $parametros = $this->Bonitas->conexiones();				
-			// $parametros["http"]["method"] = "POST";			
-			// $param = stream_context_create($parametros);	
-
-
-			$parametros = $this->bpm->conexiones();				
+			$parametros = $this->Bonitas->conexiones();				
 			$parametros["http"]["method"] = "POST";			
-			$param = stream_context_create($parametros);
-
+			$param = stream_context_create($parametros);	
 			$response = $this->Tareas->cerrarTarea($idTask,$param);
 			return $response;
 		}
@@ -763,7 +767,7 @@ class Calendario extends CI_Controller {
   			"value" => $idOT
 			);		
 			// trae la cabecera
-			$parametros = $this->bpm->conexiones();
+			$parametros = $this->Bonitas->conexiones();
 			// Cambio el metodo de la cabecera a "PUT"
 			$parametros["http"]["method"] = "PUT";
 			$parametros["http"]["content"] = json_encode($contract);

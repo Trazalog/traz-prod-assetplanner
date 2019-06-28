@@ -243,7 +243,6 @@ class BPM
 		return $head;
 	}
 
-  // TODO: SACAR DE ACA Y ACCEDER A TRAVES DE MODELO BONITAS
   /* FUNCIONES DE BPM */
   function LoggerAdmin(){	
 
