@@ -255,7 +255,7 @@ class Calendario extends CI_Controller {
 					}	
 
 					// guarda las OT de acuerdo a la cant que entren en $cantidad_meses e insumos, herramientas y adjuntos
-					//$this->setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo,$id_solicitud);	
+					$this->setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo,$id_solicitud);	
 				}	     	
 					
 				
