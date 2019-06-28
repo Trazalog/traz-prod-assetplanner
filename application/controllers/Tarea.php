@@ -7,9 +7,9 @@ class Tarea extends CI_Controller {
 		function __construct(){
 			parent::__construct();
 			$this->load->model('Tareas');
-			$this->load->model('Bonitas');
 			$this->load->model('Overviews');
 			$this->load->model('Backlogs');
+			$this->load->library('BPM');
 		}
 
 		// llama ABM tareas estandar
@@ -82,33 +82,22 @@ class Tarea extends CI_Controller {
 			public function index($permission = null){
 
 				$this->load->library('BPM');
-				$detect = new Mobile_Detect();    
-				
+				$detect = new Mobile_Detect();    				
 				//Obtener Bandeja de Usuario desde Bonita
 				$response = $this->bpm->getToDoList();
-
 				//dump($response, 'respuesta tareas BPM: ');
 				if(!$response['status']){echo json_encode($response);return;}
-
 				//Completar Tareas con ID Solicitud y ID OT
-				$data_extend = $this->Tareas->CompletarToDoList($response['data']);
-
-				
+				$data_extend = $this->Tareas->CompletarToDoList($response['data']);				
 				$data['list'] = $data_extend;
 				$data['permission'] = $permission;		
 
-				if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {				
-					
+				if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {								
 					$data['device'] = "android";
-
-				}else{
-					
+				}else{					
 					$data['device'] = "pc";				
-
-				}
-			
-				$this->load->view('tareas/list',$data);
-				
+				}			
+				$this->load->view('tareas/list',$data);				
 			}
 			// Verifica si la tarea fue guardada la fecha de inicio
 			public function confInicioTarea(){
@@ -121,7 +110,6 @@ class Tarea extends CI_Controller {
 				} else {
 					echo json_encode(TRUE);
 				}			
-
 			}
 			// marca inicio de Tarea en OT
 			public function inicioTarea(){
@@ -133,8 +121,7 @@ class Tarea extends CI_Controller {
 						//cambia el estado a a OT
 						if ($this->Tareas->cambiarEstado($id_OT, $estado, 'OT')) {
 								// averigua origen de OT
-								$origen = $this->Tareas->getOrigenOt($id_OT);							
-								
+								$origen = $this->Tareas->getOrigenOt($id_OT);	
 								$numtipo = 	$origen[0]['tipo'];
 								$id_solicitud = $origen[0]['id_solicitud'];
 
@@ -172,14 +159,16 @@ class Tarea extends CI_Controller {
 			// Usr Toma tarea en BPM (Vistas tareas comunes)
 			public function tomarTarea(){
 				$userdata = $this->session->userdata('user_data');
-						$usrId = $userdata[0]['usrId'];     // guarda usuario logueado
-				//dump_exit($usrId);
+				$usrId = $userdata[0]['usrId'];     // guarda usuario logueado
+			
+			
+			
 				$idTarBonita = $this->input->post('idTarBonita');
 				$estado = array (
 					"assigned_id"	=>	$usrId
 				);
 				// trae la cabecera
-				$parametros = $this->Bonitas->conexiones();
+				$parametros = $this->bpm->conexiones();
 				// Cambio el metodo de la cabecera a "PUT"
 				$parametros["http"]["method"] = "PUT";
 				$parametros["http"]["content"] = json_encode($estado);
@@ -197,7 +186,7 @@ class Tarea extends CI_Controller {
 					"assigned_id"	=>	""
 				);
 				// trae la cabecera
-				$parametros = $this->Bonitas->conexiones();
+				$parametros = $this->bpm->conexiones();
 				// Cambio el metodo de la cabecera a "PUT"
 				$parametros["http"]["method"] = "PUT";
 				$parametros["http"]["content"] = json_encode($estado);
@@ -215,7 +204,7 @@ class Tarea extends CI_Controller {
 					"esUrgente" => $opcion
 				);
 				// trae la cabecera
-				$parametros = $this->Bonitas->conexiones();
+				$parametros = $this->bpm->conexiones();
 				// Cambio el metodo de la cabecera a "PUT"
 				$parametros["http"]["method"] = "POST";
 				$parametros["http"]["content"] = json_encode($opcionSel);
@@ -357,15 +346,13 @@ class Tarea extends CI_Controller {
 			public function ejecutarOT(){
 				
 				$idTarBonita = $this->input->post('idTarBonita');
-				$id_OT = $this->input->post('id_OT');	
-				dump($id_OT, 'id de OT: ');
+				$id_OT = $this->input->post('id_OT');					
 				//trae la cabecera
-				$parametros = $this->Bonitas->conexiones();
+				$parametros = $this->bpm->conexiones();
 				// Cambio el metodo de la cabecera a "PUT"
 				$parametros["http"]["method"] = "POST";
 				// Variable tipo resource referencia a un recurso externo.
-				$param = stream_context_create($parametros);
-				$this->load->library('BPM');
+				$param = stream_context_create($parametros);				
 				$response = $this->bpm->CerrarTareaBPM($idTarBonita);
 
 				if ( json_decode($response['code']) < 300) {
@@ -390,11 +377,9 @@ class Tarea extends CI_Controller {
 						case '4':
 							$tipo = 'backlog';							
 								// cambia el estado del backlog	
-								$response = $this->Tareas->cambiarEstado($id_solicitud, $estado, $tipo);
-								dump($id_solicitud, 'id solicitud creo q backlog: ');
+								$response = $this->Tareas->cambiarEstado($id_solicitud, $estado, $tipo);								
 								// aca buscar sore_id y cambiar estado a sol de serv
-								$idSservicios = $this->Tareas->getSoreIdporBackId($id_solicitud);
-								dump($idSservicios, 'id SServicios en ejecutar ot:');
+								$idSservicios = $this->Tareas->getSoreIdporBackId($id_solicitud);							
 								if ($idSservicios != NULL) {
 									$response = $this->Tareas->cambiarEstado($idSservicios, $estado, 'correctivo');
 								}		
@@ -403,10 +388,7 @@ class Tarea extends CI_Controller {
 							$tipo = 'predictivo';
 							break;
 					 }	
-					// cambia el estado para tareas que o sean Backlog ni Sol Servicios 
-				 	//$result = $this->Tareas->cambiarEstado($id_solicitud, $estado, $tipo);
-
-					///	
+					
 					if ($response) {
 							$respuesta['status'] = true;
 							$respuesta['msj'] = 'OK';
@@ -556,7 +538,7 @@ class Tarea extends CI_Controller {
 			//
 			function getIdSolServPorIdCase($caseId){
 				// trae la cabecera
-				$parametros = $this->Bonitas->conexiones();
+				$parametros = $this->bpm->conexiones();
 				// Cambio el metodo de la cabecera a "GET"
 				$parametros["http"]["method"] = "GET";				
 				$param = stream_context_create($parametros);
@@ -573,7 +555,7 @@ class Tarea extends CI_Controller {
 			// Trae datos de BPM para notif estandar
 			public function getDatosBPM($idTarBonita){
 				// trae la cabecera
-				$parametros = $this->Bonitas->conexiones();
+				$parametros = $this->bpm->conexiones();
 				// Cambio el metodo de la cabecera a "PUT"
 				$parametros["http"]["method"] = "GET";
 				// Variable tipo resource referencia a un recurso externo.
@@ -586,7 +568,7 @@ class Tarea extends CI_Controller {
 
 				try {
 					$metodo = "GET";
-					$parametros = $this->Bonitas->LoggerAdmin();
+					$parametros = $this->bpm->LoggerAdmin();
 					$param = stream_context_create($parametros);
 					$idTJobs = $this->Tareas->getIdTareaTraJobs($idTarBonita,$param);
 				} catch (Exception $e) {

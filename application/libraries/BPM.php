@@ -8,9 +8,8 @@ class BPM
 
   public function __construct($idCase = null){
 
-    //$this->caseId = $idCase['caseId'];
     $this->CI =& get_instance();
-    $this->CI->load->model('Bonitas');
+    
 	}
 	
 	// Lanza proceso en BPM
@@ -87,8 +86,6 @@ class BPM
 		$param = stream_context_create($parametros);
 		$data['listAct'] = $this->ObtenerActividades($case_id, $param);
 		$data['listArch'] = $this->ObtenerActividadesArchivadas($case_id, $param);
-		// $data['listAct'] = $this->ObtenerActividades($this->caseId, $param);
-		// $data['listArch'] = $this->ObtenerActividadesArchivadas($this->caseId, $param);
 		return $data;
   }
   // Obtiene Actividades desde BPM por id de caso
@@ -138,9 +135,7 @@ class BPM
 	//Guardar Comentarios
   public function GuardarComentario($comentario){
     
-    //$comentario = $this->input->post();
-    // trae la cabecera
-    $parametros = $this->CI->Bonitas->conexiones();
+		$parametros = $this->conexiones();
 
     // Cambio el metodo de la cabecera a "PUT"
     $parametros["http"]["method"] = "POST";
@@ -151,18 +146,42 @@ class BPM
     
     echo json_encode($response);
   }	
-
+	// trae usuarios de BPM
   public function ObtenerUsuarios(){
+
     $parametros = $this->LoggerAdmin();
 		$parametros["http"]["method"] = "GET";		 
-    $param = stream_context_create($parametros);
-    
+    $param = stream_context_create($parametros);    
 		$resource = 'API/identity/user?p=0&c=50';	 	
 	 	$url = BONITA_URL.$resource;
 		$usrs = file_get_contents($url, false, $param);
     return json_decode($usrs,true);
 	}
+	// Devuelve usuarios id de susario por nombre 
+	public function getUser($user){
+
+		$list = $this->ObtenerUsuarios();
+		foreach ($list as $o) {
+			if($o['userName']==$user) 
+			return $o['id'];
+		}
+		return null;
+	}
+	// Con usrId local devuelve usr en BPM
+	public function getInfoSisUserenBPM($usrId){
 	
+		$CI =& get_instance();
+		$CI->load->database();
+		$CI->db->select('sisusers.usrNick');
+		$CI->db->from('sisusers');
+		$CI->db->where('sisusers.usrId', $usrId);
+		$query = $CI->db->get();
+		$usrNick =  $query->row('usrNick');
+
+		$idUsrBPM = $this->getUser(	$usrNick);	
+		return $idUsrBPM;
+	}	
+
 	public function ObtenerTaskidXNombre($case_id,$nombre){
 		$parametros = $this->LoggerAdmin();
 		$parametros["http"]["method"] = "GET";		 
@@ -243,7 +262,7 @@ class BPM
 		return $head;
 	}
 
-  /* FUNCIONES DE BPM */
+
   function LoggerAdmin(){	
 
 
@@ -297,7 +316,7 @@ class BPM
 			
 			return $parametros;	
 	}
-  /* ./ FUNCIONES DE BPM */
+
   function conexiones(){	
 
 		$userdata = $this->CI->session->userdata('user_data');
@@ -356,25 +375,4 @@ class BPM
 			return $parametros;
 	}
 
-	public function getUser($user)
-	{
-		$list = $this->getUsuariosBPM();
-		foreach ($list as $o) {
-			if($o['userName']==$user) return $o['id'];
-		}
-		return null;
-	}
-
-	public function getUsuariosBPM(){
-		 
-		$parametros = $this->LoggerAdmin();
-		$parametros["http"]["method"] = "GET";		 
-		$param = stream_context_create($parametros);
-
-		$resource = 'API/identity/user?p=0&c=50';	 	
-	 	$url = BONITA_URL.$resource;
-		$usrs = file_get_contents($url, false, $param);
-
-		return json_decode($usrs,true);
-	}
 }

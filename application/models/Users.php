@@ -274,4 +274,13 @@ class Users extends CI_Model
 		}
 	}
 
+	public function getInfoSisUser($usrId){
+		$this->db->select('sisusers.usrNick');
+		$this->db->from('sisusers');
+		$this->db->where('sisusers.usrId', $usrId);
+		$query = $this->db->get();
+		$usrNick =  $query->row('usrNick');
+
+		 return $usrNick;
+	}	
 }

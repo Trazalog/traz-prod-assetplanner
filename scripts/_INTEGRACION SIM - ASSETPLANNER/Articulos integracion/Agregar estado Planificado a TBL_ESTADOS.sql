@@ -1,0 +1,1 @@
+INSERT tbl_estado SET descripcion = 'PLANIFICADO', estado = 'PL';

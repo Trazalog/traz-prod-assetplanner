@@ -44,8 +44,9 @@ class Otrabajo extends CI_Controller {
 		$data['list']    = $this->Otrabajos->otrabajos_List($ot);
 		//dump($data['list'], 'listado');
 		$data['permission'] = $permission;
-		$data['list_usuarios'] = $this->bpm->ObtenerUsuarios();					
+		$data['list_usuarios'] = $this->bpm->ObtenerUsuarios();	
 		$data['opciones'] = $this->load->view('otrabajos/tabla_opciones',['permission'=>$permission],true);
+		
 		$this->load->view('otrabajos/list', $data);
 		
   }  
