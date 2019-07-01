@@ -44,8 +44,9 @@ class Otrabajo extends CI_Controller {
 		$data['list']    = $this->Otrabajos->otrabajos_List($ot);
 		//dump($data['list'], 'listado');
 		$data['permission'] = $permission;
-		$data['list_usuarios'] = $this->bpm->ObtenerUsuarios();					
+		$data['list_usuarios'] = $this->bpm->ObtenerUsuarios();	
 		$data['opciones'] = $this->load->view('otrabajos/tabla_opciones',['permission'=>$permission],true);
+		
 		$this->load->view('otrabajos/list', $data);
 		
   }  
@@ -1018,8 +1019,10 @@ class Otrabajo extends CI_Controller {
 		}
 
 		//Cargo Libreria
-		$this->load->library('BPM');	
-		$responce = $this->bpm->setUsuario($task,$usrId);
+		$this->load->library('BPM');		
+	
+		// asigno usuario logueado para finalizar la tarea 'Asignar responsable y recursos'
+		$responce = $this->bpm->setUsuario($task,$userBpm);
 	
 		if(!$responce['status']){echo json_encode($responce);return;}	
 		//Cerrar Tarea Ejectuar OT con ase que viene de pantalla
@@ -1028,14 +1031,16 @@ class Otrabajo extends CI_Controller {
 
 		// buscar task pa asignar la tarea siguiente (ejecutar ot) a un responsable		
 		$nextTask = $this->bpm->ObtenerTaskidXNombre($case_id,'Ejecutar OT');
-	
-		// if($nextTask == 0){
-		// 	echo json_encode(['status'=>false, 'msj'=>'No Existe la actividad requerida']);
-		// 	return;
-		// }
-	
+
+		// sincroniza usuario local con el de BPM, para asignar el usr de BPM
+		$usuarioBPM = $this->bpm->getInfoSisUserenBPM($usrId);
+		log_message('DEBUG', 'OTraabajo/Ejecutar OT');
+		log_message('DEBUG', 'Usr en BPM: '.$userBpm);
+		log_message('DEBUG', 'Usr en LOCAL: '.$usrId);	
+
 		//Asignar Usuario a Tarea para Finanlizar
-		$responce = $this->bpm->setUsuario($nextTask,$usrId);
+		$responce = $this->bpm->setUsuario($nextTask,$usuarioBPM);
+
 		if(!$responce['status']){echo json_encode($responce);return;}
 	
 		//Cambiar Estado de OT ('ASignada') y en solicitud origen en BD		

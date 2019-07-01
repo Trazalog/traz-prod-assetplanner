@@ -7,8 +7,7 @@ class Calendario extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->model('Calendarios');
-		$this->load->model('Bonitas');
-		$this->load->model('Overviews');
+		//$this->load->model('Overviews');
 		$this->load->model('Tareas');
 		$this->load->model('Otrabajos');
 		$this->load->library('BPM');
@@ -218,7 +217,7 @@ class Calendario extends CI_Controller {
 					// si es Preventivo o Predictivo lanza proceso nuevo
 					if ( ($tipo == 'preventivo') || ($tipo == 'predictivo') || ( ($caseDeBacklog == 0) && ($tipo != 'correctivo') ) ) {
 					
-							$this->load->library('BPM');						
+							//$this->load->library('BPM');						
 							$contract = array(
 														"idSolicitudServicio"	=> 0,		
 														"idOT"  => 	$idOT
@@ -357,7 +356,7 @@ class Calendario extends CI_Controller {
 	function setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo, $id_solicitud){	
 
 		//cargo libreria BPM
-		$this->load->library('BPM');
+		//$this->load->library('BPM');
 		$estado = 'PL';
 		
 		while ($fecha_limite >= $fec_programacion ) {
@@ -514,7 +513,7 @@ class Calendario extends CI_Controller {
 	 function ObtenerTaskIDxOT($id){ 	
 				
 		$case_id = $this->Otrabajos->getCaseIdOT($id);
-		$this->load->library('BPM');
+		//$this->load->library('BPM');
 		$origenOT = $this->Otrabajos->getDatosOrigenOT($id);	
 		$tipo = $origenOT[0]['tipo'];	
 		$id_solicitud = $origenOT[0]['id_solicitud'];// id de sol reparacion
@@ -621,14 +620,6 @@ class Calendario extends CI_Controller {
 	}
 
 
-	///////////// Hugo
-
-	// vista calendario
-
-
-
-
-
 
 	public function getCorrectPorId(){
 
@@ -703,18 +694,10 @@ class Calendario extends CI_Controller {
 			if ($tipo == 'backlog') {
 				//$id_solicitud	-> id de backlog				
 				$caseId = $this->Calendarios->getCaseIdporIdBacklog($id_solicitud);				
-			}		
-			// traer de bpm el id de tarea (id)			
-			// $parametros = $this->Bonitas->LoggerAdmin();
-			// $parametros["http"]["method"] = "GET";
-			// $param = stream_context_create($parametros);
-			// $actividades = $this->Overviews->ObtenerActividades($caseId,$param);			
-			// $infoTarea['taskId'] = json_decode($this->getIdTask($actividades,$tipo),true);
-			// $infoTarea['caseId'] = $caseId;			
-			// return $infoTarea;
+			}
 			
 			// traer de bpm el id de tarea (id)		
-			$this->load->library('BPM');
+			//$this->load->library('BPM');
 			$parametros = $this->bpm->LoggerAdmin();
 			$param = stream_context_create($parametros);
 			$actividades = $this->bpm->ObtenerActividades($caseId,$param);		
@@ -742,11 +725,7 @@ class Calendario extends CI_Controller {
 		}
 
 		function cerrarTarea($idTask){			
-			// $parametros = $this->Bonitas->conexiones();				
-			// $parametros["http"]["method"] = "POST";			
-			// $param = stream_context_create($parametros);	
-
-
+			
 			$parametros = $this->bpm->conexiones();				
 			$parametros["http"]["method"] = "POST";			
 			$param = stream_context_create($parametros);
