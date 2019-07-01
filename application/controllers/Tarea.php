@@ -6,8 +6,7 @@ class Tarea extends CI_Controller {
 
 		function __construct(){
 			parent::__construct();
-			$this->load->model('Tareas');
-			$this->load->model('Overviews');
+			$this->load->model('Tareas');		
 			$this->load->model('Backlogs');
 			$this->load->library('BPM');
 		}
@@ -157,15 +156,17 @@ class Tarea extends CI_Controller {
 				}
 			}
 			// Usr Toma tarea en BPM (Vistas tareas comunes)
-			public function tomarTarea(){
+			public function tomarTarea(){				
+
 				$userdata = $this->session->userdata('user_data');
-				$usrId = $userdata[0]['usrId'];     // guarda usuario logueado
-			
-			
+				$userBpm = $userdata[0]['userBpm'];     // guarda usuario logueado en BPM			
+
+				log_message('DEBUG', 'entrada Tarea/tomar tarea');
+				log_message('DEBUG', 'Usr en BPM: '.$userBpm);			
 			
 				$idTarBonita = $this->input->post('idTarBonita');
 				$estado = array (
-					"assigned_id"	=>	$usrId
+					"assigned_id"	=>	$userBpm
 				);
 				// trae la cabecera
 				$parametros = $this->bpm->conexiones();

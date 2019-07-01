@@ -620,14 +620,6 @@ class Calendario extends CI_Controller {
 	}
 
 
-	///////////// Hugo
-
-	// vista calendario
-
-
-
-
-
 
 	public function getCorrectPorId(){
 
