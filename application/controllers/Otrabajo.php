@@ -1022,26 +1022,6 @@ class Otrabajo extends CI_Controller {
 
 	
 		$this->load->library('BPM');		
-	
-		//// buscar task para asignar la tarea 'Planificar Solicitud' para caso de 
-			// SServicio -> Urgente planificada sin tomar Tarea  'Planificar Solicitud'	
-			// Usuario logueado en BPM
-			$userdata = $this->session->userdata('user_data');
-			$userBpm    = $userdata[0]['userBpm'];
-			// log
-				log_message('DEBUG', 'TRAZA | Tarea/EjecutarOT');
-				log_message('DEBUG',  'Usr en BPM: '.$userBpm);
-				log_message('DEBUG',  'caseId: '.$case_id);
-			// busca taskId de 	'Planificar Solicitud'
-			$prevTask = $this->bpm->ObtenerTaskidXNombre($case_id,'Planificar Solicitud');
-				log_message('DEBUG',  'Taskid Planificar Solicitud: '.$prevTask);
-			// Asigno ususario logueado 
-			$responce = $this->bpm->setUsuario($prevTask,$userBpm);
-			if(!$responce['status']){echo json_encode($responce);return;}
-			// Cierro tarea 'Planificar Solicitud'
-			$responce = $this->bpm->CerrarTareaBPM($task);	
-			if(!$responce['status']){echo json_encode($responce);return;}
-
 
 		// asigno usuario logueado para finalizar la tarea 'Asignar responsable y recursos'
 		$responce = $this->bpm->setUsuario($task,$userBpm);
@@ -1057,9 +1037,9 @@ class Otrabajo extends CI_Controller {
 		// sincroniza usuario local con el de BPM, para asignar el usr de BPM
 		$usuarioBPM = $this->bpm->getInfoSisUserenBPM($usrId);
 		// log
-			log_message('DEBUG', 'OTrabajo/Ejecutar OT');
-			log_message('DEBUG', 'Usr asignado (responsable OT) en BPM: '.$userBpm);
-			log_message('DEBUG', 'Usr asignado (responsable OT) en LOCAL: '.$usrId);	
+			log_message('DEBUG', 'TRAZA | OTrabajo/Ejecutar OT');
+			log_message('DEBUG', 'TRAZA | Usr asignado (responsable OT) en BPM: '.$userBpm);
+			log_message('DEBUG', 'TRAZA | Usr asignado (responsable OT) en LOCAL: '.$usrId);	
 
 		//Asignar Usuario a Tarea para Finanlizar
 		$responce = $this->bpm->setUsuario($nextTask,$usuarioBPM);

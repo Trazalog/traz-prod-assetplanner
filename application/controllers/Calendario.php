@@ -181,7 +181,31 @@ class Calendario extends CI_Controller {
 						// guardo el case_id en Otrabajo
 						$this->Calendarios->setCaseidenOT($infoTarea['caseId'], $idOTnueva);									
 						// cambio de estado a PL de SServicio
-						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);						
+						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);	
+						
+						////////////////////////////////////////////////////////////////////////
+
+						//// buscar task para asignar la tarea 'Planificar Solicitud' para caso de 
+							// SServicio Urgente planificada sin tomar Tarea  'Planificar Solicitud'	
+							// Usuario logueado en BPM
+							$userdata = $this->session->userdata('user_data');
+							$userBpm    = $userdata[0]['userBpm'];
+							// log
+								log_message('DEBUG', 'TRAZA | Tarea/EjecutarOT');
+								log_message('DEBUG',  'TRAZA | Usr en BPM: '.$userBpm);
+								log_message('DEBUG',  'TRAZA | caseId: '.$infoTarea['caseId']);
+							// busca taskId de 	'Planificar Solicitud'
+							$prevTask = $this->bpm->ObtenerTaskidXNombre($infoTarea['caseId'],'Planificar Solicitud');
+								log_message('DEBUG',  'TRAZA | Taskid Planificar Solicitud: '.$prevTask);
+							// Asigno ususario logueado 
+							$responce = $this->bpm->setUsuario($prevTask,$userBpm);
+							if(!$responce['status']){echo json_encode($responce);return;}
+							// Cierro tarea 'Planificar Solicitud'
+							$responce = $this->bpm->CerrarTareaBPM($prevTask);	
+							if(!$responce['status']){echo json_encode($responce);return;}
+
+						///////////////////////////////////////////////////////////////////////
+
 					}					
 					// $tipo == '3' -> Preventivo			
 					if($tipo == '3'){	
