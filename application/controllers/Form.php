@@ -40,7 +40,7 @@ class Form extends CI_Controller {
 		//dump_exit($data);
 
 		$userdata = $this->session->userdata('user_data');
-        $usrId = $userdata[0]['usrId'];     // guarda usuario logueado
+    $usrId = $userdata[0]['usrId'];     // guarda usuario logueado
 
 		$id_listarea = array_shift($datos);
 		$response = $this->Forms->deleteFormComp($id_listarea);
