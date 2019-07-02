@@ -27,6 +27,13 @@ class Notapedido extends CI_Controller {
     $this->load->view('notapedido/list',$data);
   }
 
+  /*public function agregarNota($permission){
+    //$data['list'] = $this->Notapedidos->notaPedidos_List();
+    $data['permission'] = $permission;
+    $this->load->view('notapedido/view_',$data);
+    //$this->load->view('notapedido/view_');
+  }*/
+
   public function agregarNota($permission, $idot){
     $data['permission'] = $permission;
     $data['ot']         = $this->Notapedidos->getOTporId($idot);
@@ -58,11 +65,27 @@ class Notapedido extends CI_Controller {
     echo json_encode($response);
   }
 
+  // public function setNotaPedido(){
+  //   $response = $this->Notapedidos->setNotaPedidos($this->input->post());
+  //   echo json_encode($response);
+  // }
+  
+//}
+
+    // // Lanza proceso (retorna case_id)
+		// $result = $this->lanzarProcesoBPM($inspectorid);
+		// $caseId = json_decode($result, true)['caseId'];
+
+  //}
+
  // guardar pedido especial
   public function setPedidoEspecial(){
 
     $pedido = $this->input->post('pedido');
     $justif = $this->input->post('justif');
+
+    //dump($pedido, 'pedido');
+    //dump_exit($justif, 'justif');
 
     // Lanza proceso (retorna case_id)
     $result = $this->lanzarProcesoBPM($inspectorid);
@@ -72,8 +95,7 @@ class Notapedido extends CI_Controller {
 // lanza proceso en BPM (inspección)
   function lanzarProcesoBPM($inspectorid){
 
-    $this->load->library('BPM');
-    $parametros = $this->bpm->conexiones();
+    $parametros = $this->Bonitas->conexiones();
     $parametros["http"]["method"] = "POST";
     $idInspector = array (
       "idInspector"	=>	$inspectorid
@@ -81,10 +103,34 @@ class Notapedido extends CI_Controller {
     $parametros["http"]["content"] = json_encode($idInspector);
     $param = stream_context_create($parametros);
     $result = $this->Inspecciones->lanzarProcesoBPM($param);
-   
+    //dump($result, 'Result:');
     return $result;		
   } 
 
+  // public function getOrdenesCursos(){
+  //   $response = $this->Notapedidos->getOrdenesCursos();
+  //   echo json_encode($response);
+  // }
+
+  // public function getDetalle(){
+  //   $response = $this->Notapedidos->getDetalles($this->input->post());
+  //   echo json_encode($response);
+  // }
+
+  // public function getArticulo (){
+  //   $response = $this->Notapedidos->getArticulos($this->input->post());
+  //   echo json_encode($response);
+  // }
+
+  // public function getProveedor(){
+  //     $response = $this->Notapedidos->getProveedores();
+  //     echo json_encode($response);
+  // }
+
+  // public function getNotaPedidoId(){
+  //   $response = $this->Notapedidos->getNotaPedidoIds($this->input->post());
+  //   echo json_encode($response);
+  // }
 
   public function setNotaPedido(){
     

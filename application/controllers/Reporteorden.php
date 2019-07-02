@@ -20,12 +20,32 @@ class Reporteorden extends CI_Controller {
 		echo json_encode($response);
 	}
 
+	// public function getestado()
+	// {
+	// 	$response = $this->Reporteordenes->getestados();
+	// 	echo json_encode($response);
+	// }
+
 	public function getDatosReporte()
 	{
 		$parametros = $this->input->post('parametros');
 		$response   = $this->Reporteordenes->getDatosReporte($parametros);
 		echo json_encode($response);
 	}
+
+//}
+	// 	if($ordenesTrabajo)
+	// 	{	
+	// 		$arre = array();
+	// 		foreach ($ordenesTrabajo as $row ) 
+	// 		{   
+	// 			$arre[] = $row;
+	// 		}
+	// 		echo json_encode($arre);
+	// 	}
+	// 	else 
+	// 		echo json_encode(0);
+	// }
 
 	public function getestado()
 	{
