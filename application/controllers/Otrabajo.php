@@ -45,6 +45,8 @@ class Otrabajo extends CI_Controller {
 		//dump($data['list'], 'listado');
 		$data['permission'] = $permission;
 		$data['list_usuarios'] = $this->bpm->ObtenerUsuarios();	
+		//log_message('DEBUG', 'listado de usr en BPM: '.json_encode($data['list_usuarios']));
+
 		$data['opciones'] = $this->load->view('otrabajos/tabla_opciones',['permission'=>$permission],true);
 		
 		$this->load->view('otrabajos/list', $data);
@@ -107,7 +109,7 @@ class Otrabajo extends CI_Controller {
 		else echo "nada";
   }
   
-  // TODO: EN ESTA FUNCION AGREGAR LA INICIALIZACION A bpm
+  
   /**
 	 * Agrega nueva OTs.
 	 *
@@ -1018,14 +1020,34 @@ class Otrabajo extends CI_Controller {
 				break;
 		}
 
-		//Cargo Libreria
+	
 		$this->load->library('BPM');		
 	
+		//// buscar task para asignar la tarea 'Planificar Solicitud' para caso de 
+			// SServicio -> Urgente planificada sin tomar Tarea  'Planificar Solicitud'	
+			// Usuario logueado en BPM
+			$userdata = $this->session->userdata('user_data');
+			$userBpm    = $userdata[0]['userBpm'];
+			// log
+				log_message('DEBUG', 'TRAZA | Tarea/EjecutarOT');
+				log_message('DEBUG',  'Usr en BPM: '.$userBpm);
+				log_message('DEBUG',  'caseId: '.$case_id);
+			// busca taskId de 	'Planificar Solicitud'
+			$prevTask = $this->bpm->ObtenerTaskidXNombre($case_id,'Planificar Solicitud');
+				log_message('DEBUG',  'Taskid Planificar Solicitud: '.$prevTask);
+			// Asigno ususario logueado 
+			$responce = $this->bpm->setUsuario($prevTask,$userBpm);
+			if(!$responce['status']){echo json_encode($responce);return;}
+			// Cierro tarea 'Planificar Solicitud'
+			$responce = $this->bpm->CerrarTareaBPM($task);	
+			if(!$responce['status']){echo json_encode($responce);return;}
+
+
 		// asigno usuario logueado para finalizar la tarea 'Asignar responsable y recursos'
 		$responce = $this->bpm->setUsuario($task,$userBpm);
 	
 		if(!$responce['status']){echo json_encode($responce);return;}	
-		//Cerrar Tarea Ejectuar OT con ase que viene de pantalla
+		//Cerrar Tarea Ejectuar OT con case que viene de pantalla
 		$responce = $this->bpm->CerrarTareaBPM($task);	
 		if(!$responce['status']){echo json_encode($responce);return;}
 
@@ -1034,9 +1056,10 @@ class Otrabajo extends CI_Controller {
 
 		// sincroniza usuario local con el de BPM, para asignar el usr de BPM
 		$usuarioBPM = $this->bpm->getInfoSisUserenBPM($usrId);
-		log_message('DEBUG', 'OTraabajo/Ejecutar OT');
-		log_message('DEBUG', 'Usr en BPM: '.$userBpm);
-		log_message('DEBUG', 'Usr en LOCAL: '.$usrId);	
+		// log
+			log_message('DEBUG', 'OTrabajo/Ejecutar OT');
+			log_message('DEBUG', 'Usr asignado (responsable OT) en BPM: '.$userBpm);
+			log_message('DEBUG', 'Usr asignado (responsable OT) en LOCAL: '.$usrId);	
 
 		//Asignar Usuario a Tarea para Finanlizar
 		$responce = $this->bpm->setUsuario($nextTask,$usuarioBPM);

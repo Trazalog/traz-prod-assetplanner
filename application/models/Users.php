@@ -263,7 +263,7 @@ class Users extends CI_Model
 			if ($query->num_rows() != 0)
 			{
 				$datosSesionUsuario = $query->result_array();
-
+				
 				$datosSesionUsuario[0]['userBpm'] = $this->bpm->getUser($datosSesionUsuario[0]["usrNick"]);		
 
 				$this->session->set_userdata('user_data', $datosSesionUsuario);
