@@ -636,7 +636,7 @@ $("#btn_cancGuardado").click(function (e) {
       'url': 'index.php/Preventivo/getHerramientasB',
     })
     .done( (data) => { tmp = data } )
-    .fail( () => alert("Error al traer Herramientas") );
+    // .fail( () => alert("Error al traer Herramientas") );
     return tmp;
   }();
 
@@ -815,7 +815,7 @@ $("#btn_cancGuardado").click(function (e) {
       'url': 'index.php/Preventivo/getinsumo',
     })
     .done( (data) => { tmp = data } )
-    .fail( () => alert("Error al traer Herramientas") );
+    // .fail( () => alert("Error al traer Herramientas") );
     return tmp;
   }();
 
