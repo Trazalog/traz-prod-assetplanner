@@ -814,8 +814,8 @@ $("#btn_cancGuardado").click(function (e) {
       'dataType': 'json',
       'url': 'index.php/Preventivo/getinsumo',
     })
-    .done( (data) => { tmp = data } )
-    .fail( () => alert("Error al traer Herramientas") );
+    .done( (data) => { tmp = data } );
+    //.fail( () => alert("Error al traer Herramientas") );
     return tmp;
   }();
 
