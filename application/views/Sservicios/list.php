@@ -72,11 +72,19 @@
                             echo '<td style="text-align: left">'.$f['ubicacion'].'</td>';
                             echo '<td style="text-align: left">'.$f['causa'].'</td>';
                             /*echo '<td style="text-align: center">'.($f['estado'] == 'C' ? '<small class="label pull-left bg-green">Curso</small>' : '<small class="label pull-left bg-yellow">Solicitado</small>').'</td>';*/
-                            echo '<td style="text-align: center">'.($f['estado'] == 'PL' ? '<small class="label pull-left bg-yellow">Planificada</small>' 
-                            :($f['estado'] == 'AS' ? '<small class="label pull-left bg-warning">Asignada</small>' 
-                            :($f['estado'] == 'C' ? '<small class="label pull-left bg-info">Curso</small>' 
-                            :($f['estado'] == 'T' ? '<small class="label pull-left bg-green">Terminada</small>' 
-                            :($f['estado'] == 'CE' ? '<small class="label pull-left bg-primary">Cerrada</small>':  '<small class="label pull-left bg-red">Solicitado</small>'))
+                            // echo '<td style="text-align: center">'.($f['estado'] == 'PL' ? '<small class="label pull-left bg-yellow">Planificada</small>' 
+                            // :($f['estado'] == 'AS' ? '<small class="label pull-left bg-warning">Asignada</small>' 
+                            // :($f['estado'] == 'C' ? '<small class="label pull-left bg-info">Curso</small>' 
+                            // :($f['estado'] == 'T' ? '<small class="label pull-left bg-green">Terminada</small>' 
+                            // :($f['estado'] == 'CE' ? '<small class="label pull-left bg-primary">Cerrada</small>':  '<small class="label pull-left bg-red">Solicitado</small>'))
+                            // .'</td>';
+
+                            echo '<td style="text-align: center">'.($f['estado'] == 'PL' ? '<small class="label pull-left bg-warning">Planificada</small>' 
+                            :($f['estado'] == 'AS' ? '<small class="label pull-left bg-maroon">Asignada</small>' 
+                            :($f['estado'] == 'C' ? '<small class="label pull-left bg-success">Curso</small>' 
+                            :($f['estado'] == 'T' ? '<small class="label pull-left bg-primary">Terminada</small>' 
+                            :($f['estado'] == 'CFN' ? '<small class="label pull-left bg-black">Conforme</small>' 
+                            :($f['estado'] == 'CE' ? '<small class="label pull-left bg-navy">Cerrada</small>':  '<small class="label pull-left bg-danger">Solicitado</small>'))
                             .'</td>';
                             echo '</tr>';
 

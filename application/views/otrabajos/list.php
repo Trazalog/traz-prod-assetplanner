@@ -87,6 +87,9 @@
                           if ($a['estado'] == 'CE') {
                             echo  '<small class="label pull-left bg-green">Cerrada</small>';
                           }      
+                          if ($a['estado'] == 'CNF') {
+                            echo  '<small class="label pull-left bg-green">Conforme</small>';
+                          } 
 
                         echo '</td>';
                    // }

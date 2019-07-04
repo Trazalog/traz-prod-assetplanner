@@ -217,6 +217,9 @@ class Tarea extends CI_Controller {
 			// terminar tarea verificar Informe Servicios
 			public function verificarInforme(){
 				
+				//log
+					log_message('DEBUG', 'TRAZA | Tarea/verificarInforme()');					
+
 				$id_OT = $this->input->post('id_OT');
 				$id_SS = $this->input->post('id_SS');
 				$idTarBonita = $this->input->post('idTarBonita');
@@ -246,6 +249,11 @@ class Tarea extends CI_Controller {
 				);
 				$this->load->library('BPM');
 				$result = $this->bpm->CerrarTareaBPM($idTarBonita,$opcionSel);
+
+				// log
+					log_message('DEBUG', 'TRAZA | $idTarBonita: '.$idTarBonita);
+					log_message('DEBUG', 'TRAZA | Informe correcto?: '.$opcionSel);
+
 				// si cierra la tarea en BPM
 				if (json_decode($response['code']) < 300){
 
@@ -254,14 +262,14 @@ class Tarea extends CI_Controller {
 							
 								// cambia el estado a lo que no sea SServicios(esta cambia con la conformidad del solicitante)
 								if($tipo != 'correctivo'){
-									// cambia el estado de la Tarea (Back, Prevent o Predict) a CERRADO
+									//cambia el estado de la Tarea (Back, Prevent o Predict) a CERRADO
 									$result = $this->Tareas->cambiarEstado($id_solicitud, $estado, $tipo);
 								}else{								
-									// Cambio Inform Servicio  a TERMINADO					
-									$result = $this->Tareas->cambiarEstado($id_SS, 'T', $tipo);
+									//Cambio Sol Servicio  a TERMINADO					
+									$result = $this->Tareas->cambiarEstado($id_SS, $estado, $tipo);
 								}		
 																		
-								// Cierro la OT a CERRADO					
+								// Cambia  estado de la OT a CERRADO					
 								$result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT');
 
 								// Cambio Inform Servicio  a TERMINADO					
@@ -288,10 +296,20 @@ class Tarea extends CI_Controller {
 			}	
 			// terminar tarea prestar conformidad
 			public function prestarConformidad(){
+
+				//log
+					log_message('DEBUG', 'TRAZA | Tarea/prestarConformidad()');	
+
 				$idTarBonita = $this->input->post('idTarBonita');				
 				$opcion = $this->input->post('opcion');	
 				$id_SS = 	$this->input->post('id_SS');	
-				$id_OT =  $this->input->post('id_OT');			
+				$id_OT =  $this->input->post('id_OT');
+				// log
+					log_message('DEBUG', 'TRAZA | $idTarBonita: '.$idTarBonita);
+					log_message('DEBUG', 'TRAZA | Conforme?: '.$opcion);	
+					log_message('DEBUG', 'TRAZA | $idSServicos: '.$id_SS);
+					log_message('DEBUG', 'TRAZA | $idOT: '.$id_OT);	
+							
 				// averigua origen de OT
 				$origen = $this->Tareas->getOrigenOt($id_OT);
 				$numtipo = 	$origen[0]['tipo'];
@@ -321,10 +339,16 @@ class Tarea extends CI_Controller {
 				if (json_decode($response['code']) < 300){						
 						// La respuesta es conforme con trabajo
 						if($opcion){
+							
 								// Si hay SServicios cambio estado a CERRADO
 								if ($id_SS != NULL) {
 									$result = $this->Tareas->cambiarEstado($id_SS, $estado, 'correctivo');																
-								}								
+								}	
+								// Otrabajo cambio estado a CERRADO
+								if ($id_OT != NULL) {
+									$result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT');																
+								}		
+
 								// si guarda en BD	
 								if ($result) {
 									echo json_encode(['status'=>true, 'msj'=>'OK']);
@@ -370,16 +394,18 @@ class Tarea extends CI_Controller {
 							$tipo = 'OT';
 							break;
 						case '2':
-							$tipo = 'correctivo';							
+							$tipo = 'correctivo';	
+							// cambia el estado del SServicios a 'T'	
+							$response = $this->Tareas->cambiarEstado($id_solicitud, $estado, $tipo);						
 							break;
 						case '3':
 							$tipo = 'preventivo';
 							break;					
 						case '4':
 							$tipo = 'backlog';							
-								// cambia el estado del backlog	
+								// cambia el estado del backlog	a 'T'
 								$response = $this->Tareas->cambiarEstado($id_solicitud, $estado, $tipo);								
-								// aca buscar sore_id y cambiar estado a sol de serv
+								// aca buscar sore_id y cambiar estado a sol de serv a 'T'
 								$idSservicios = $this->Tareas->getSoreIdporBackId($id_solicitud);							
 								if ($idSservicios != NULL) {
 									$response = $this->Tareas->cambiarEstado($idSservicios, $estado, 'correctivo');
