@@ -12,7 +12,7 @@
           ?>
         </div><!-- /.box-header -->
         <div class="box-body">
-          <table id="servicio" class="table table-bordered table-hover">
+          <table id="servicio" class="table table-striped table-hover">
               <thead>
                   <tr>
                       <th width="2%">Acciones</th>
@@ -94,7 +94,8 @@
                               }  
                               if ($f['estado'] == 'CN') {
                                 echo  '<small class="label pull-left bg-green">Conforme</small>';
-                              }                           
+                              }
+                                                  
 
                             echo '</td>';            
                          echo '</tr>'; 
