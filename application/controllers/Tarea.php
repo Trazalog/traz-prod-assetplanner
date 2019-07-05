@@ -298,7 +298,7 @@ class Tarea extends CI_Controller {
 			public function prestarConformidad(){
 
 				//log
-					log_message('DEBUG', 'TRAZA | Tarea/prestarConformidad()');	
+					log_message('DEBUG', 'TRAZA | Tarea/prestarConformidad');	
 
 				$idTarBonita = $this->input->post('idTarBonita');				
 				$opcion = $this->input->post('opcion');	
@@ -340,11 +340,11 @@ class Tarea extends CI_Controller {
 						// La respuesta es conforme con trabajo
 						if($opcion){
 							
-								// Si hay SServicios cambio estado a CERRADO
+								// Si hay SServicios cambio estado a 'Conforme'
 								if ($id_SS != NULL) {
-									$result = $this->Tareas->cambiarEstado($id_SS, $estado, 'correctivo');																
+									$result = $this->Tareas->cambiarEstado($id_SS, $estado, 'correctivo');															
 								}	
-								// Otrabajo cambio estado a CERRADO
+								// Otrabajo cambio estado a 'Conforme'
 								if ($id_OT != NULL) {
 									$result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT');																
 								}		

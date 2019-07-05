@@ -191,7 +191,7 @@ class Calendario extends CI_Controller {
 							$userdata = $this->session->userdata('user_data');
 							$userBpm    = $userdata[0]['userBpm'];
 							// log
-								log_message('DEBUG', 'TRAZA | Tarea/EjecutarOT');
+								log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar');
 								log_message('DEBUG', 'TRAZA | Usr en BPM: '.$userBpm);
 								log_message('DEBUG', 'TRAZA | caseId: '.$infoTarea['caseId']);
 							// busca taskId de 	'Planificar Solicitud'
