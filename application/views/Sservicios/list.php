@@ -46,7 +46,7 @@
                             $id_sol = $f['id_solicitud'];                                    
                             $id_eq = $f['id_equipo'];
 
-                            echo '<tr id="'.$id_sol.'" class="'.$id_eq.'" data-idequipo="'.$id_eq.'" >' ;
+                          echo '<tr id="'.$id_sol.'" class="'.$id_eq.'" data-idequipo="'.$id_eq.'" >' ;
                             echo '<td>';
 
                             if (strpos($permission,'Del') !== false) {
@@ -79,14 +79,32 @@
                             // :($f['estado'] == 'CE' ? '<small class="label pull-left bg-primary">Cerrada</small>':  '<small class="label pull-left bg-red">Solicitado</small>'))
                             // .'</td>';
 
-                            echo '<td style="text-align: center">'.($f['estado'] == 'PL' ? '<small class="label pull-left bg-warning">Planificada</small>' 
-                            :($f['estado'] == 'AS' ? '<small class="label pull-left bg-maroon">Asignada</small>' 
-                            :($f['estado'] == 'C' ? '<small class="label pull-left bg-success">Curso</small>' 
-                            :($f['estado'] == 'T' ? '<small class="label pull-left bg-primary">Terminada</small>' 
-                            :($f['estado'] == 'CFN' ? '<small class="label pull-left bg-black">Conforme</small>' 
-                            :($f['estado'] == 'CE' ? '<small class="label pull-left bg-navy">Cerrada</small>':  '<small class="label pull-left bg-danger">Solicitado</small>'))
-                            .'</td>';
-                            echo '</tr>';
+                            echo '<td>';  
+                        
+                                if ($f['estado'] == 'S') {
+                                  echo  '<small class="label pull-left bg-danger">Solicitada</small>';
+                                }
+                                if($f['estado'] == 'PL'){                           
+                                  echo '<small class="label pull-left bg-warning">Planificada</small>';
+                                }
+                                if($f['estado'] == 'AS'){
+                                  echo '<small class="label pull-left bg-maroon">Asignada</small>';
+                                }
+                                if ($f['estado'] == 'C') {
+                                  echo '<small class="label pull-left bg-success">Curso</small>' ;
+                                }
+                                if ($f['estado'] == 'T') {
+                                  echo  '<small class="label pull-left bg-primary">Terminada</small>';
+                                }
+                                if ($f['estado'] == 'CE') {
+                                  echo  '<small class="label pull-left bg-navy">Cerrada</small>';
+                                }      
+                                if ($f['estado'] == 'CNF') {
+                                  echo  '<small class="label pull-left bg-black">Conforme</small>';
+                                } 
+
+                            echo '</td>';
+                          echo '</tr>';
 
                         } // if ($f['usrId'] == $usrId)
                       } // fin foreach($list as $f)   

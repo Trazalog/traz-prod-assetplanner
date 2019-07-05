@@ -314,7 +314,7 @@ class Tarea extends CI_Controller {
 				$origen = $this->Tareas->getOrigenOt($id_OT);
 				$numtipo = 	$origen[0]['tipo'];
 				$id_solicitud = $origen[0]['id_solicitud'];
-				$estado = 'CNF';
+				$estado = 'CN';
 				switch ($numtipo) {
 					case '2':
 						$tipo = 'correctivo';
