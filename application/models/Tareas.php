@@ -276,10 +276,7 @@ class Tareas extends CI_Model {
 		$fechaFin = date("Y-m-d H:i:s");
 		$estado = 'T';
 		$this->db->where('id_orden', $id_OT);
-		$result = $this->db->update( 'orden_trabajo', array('fecha_terminada'=>$fechaFin, 'estado'=>$estado) );
-		
-		
-		
+		$result = $this->db->update( 'orden_trabajo', array('fecha_terminada'=>$fechaFin, 'estado'=>$estado) );		
 		return $result;
 	}
 
