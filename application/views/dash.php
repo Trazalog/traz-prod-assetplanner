@@ -70,7 +70,6 @@
                                 <li class="user-footer">
                                     <div class="pull-right">
                                         <a href="<?php echo base_url(); #" onClick="cargarView('login', 'logout', '')?>" class="btn btn-default btn-flat">Salir <i class="fa fa-fw fa-sign-out"></i></a>
-                                        <button class="btn btn-success" onclick="procesarCola()">Aceptar</button>
                                     </div>
                                 </li>
                             </ul>
@@ -88,50 +87,6 @@
         </header>
 
 <script>
- if (!indexedDB) {
-      alert("Este browser no soporta IndexedDB, necesita otro para poder utilizar la aplicación.");
-  }
-
-  indexedDB.open('traz-prod-assetplanner-ajax').onupgradeneeded = function (event) {
-    event.target.result.createObjectStore('ajax_requests', {
-      autoIncrement:  true,
-      keyPath: 'id'
-    });
-  };
-  caches.open('traz-prod-assetplanner-cache').then(function(cache) {
-    return cache.addAll([
-                'http://localhost/traz-prod-assetplanner/Tarea/index/'+'<?php echo $permiso?>',
-                'http://localhost/traz-prod-assetplanner/index.php/Tarea/index/'+'<?php echo $permiso?>'
-            ]);
-        });
-        tareas = JSON.parse('<?php echo $tareas?>');
-        tareas = tareas.data;
-        console.log(tareas);
-            caches.open('traz-prod-assetplanner-cache').then(function(cache) {
-                for(i=0;i<tareas.length;i++)
-        {
-         
-     cache.addAll([
-        'http://localhost/traz-prod-assetplanner/index.php/Tarea/detaTarea/'+'<?php echo $permiso?>/'+tareas[i].id
-               
-            ]);
-        }
-        });
-
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw1.js').then(function(){
-        if (!navigator.serviceWorker.controller) {
-       location.reload();
-      }
-    })
-    });
-  }
-  function procesarCola() {
-  if (navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage('processQueue')
-    }
-}
 $(document).on('click', '.btnEmpresa', function () {
     var idNewEmpresa = $(this).data('ui');
     cambiarDeEmpresa(idNewEmpresa);
