@@ -140,13 +140,14 @@ class Tareas extends CI_Model {
 		return $response;
 	}
 	// trae tareas por ID de usuario
-	function getTareas($param){
-		
+	function getTareas($param){		
+
 		$userdata = $this->session->userdata('user_data');
-		$usrId= $userdata[0]["usrId"];		
+		$userBpm = $userdata[0]['userBpm'];     // guarda usuario logueado en BPM		
+
 		//$tareas = file_get_contents(BONITA_URL.'API/bpm/humanTask?p=0&c=10&f=user_id%3D5', false, $param);
 		$resource = 'API/bpm/humanTask?p=0&c=1000&f=user_id%3D';
-		$url = BONITA_URL.$resource.$usrId;
+		$url = BONITA_URL.$resource.$userBpm;
 		$tareas = file_get_contents($url, false, $param);
 		
 		$tar = json_decode($tareas,true);
@@ -275,10 +276,7 @@ class Tareas extends CI_Model {
 		$fechaFin = date("Y-m-d H:i:s");
 		$estado = 'T';
 		$this->db->where('id_orden', $id_OT);
-		$result = $this->db->update( 'orden_trabajo', array('fecha_terminada'=>$fechaFin, 'estado'=>$estado) );
-		
-		
-		
+		$result = $this->db->update( 'orden_trabajo', array('fecha_terminada'=>$fechaFin, 'estado'=>$estado) );		
 		return $result;
 	}
 

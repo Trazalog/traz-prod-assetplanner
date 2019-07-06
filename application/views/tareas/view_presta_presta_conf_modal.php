@@ -212,6 +212,9 @@
             </div>
             <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
               <div class="panel-body">
+
+               <h5 style="font-weight: bold;">Responsable Asignado: <spam style="font-weight: lighter;"><?php echo $nom_responsable; ?></spam></h5>     
+
                <table id="modRecurso" class="table table-bordered table-hover">
                 <thead>
                   <tr>                            
@@ -220,7 +223,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                <?php                  
+                <?php                                 
                    foreach($rrhh as $rh){
                       echo '<tr>';
                       echo '<td>'.$rh['usrLastName'].'</td>';

@@ -76,14 +76,18 @@
                       <input type="text" class="datepicker form-control fecha" id="fechaEntrega" name="fechaEntrega" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>
                     </div> -->
 
-                    <!-- <div class="col-xs-12 col-sm-6">
+                    <div class="col-xs-12 col-sm-6 hidden">
                       <label for="suci">Sucursal</label>
-                      <select  id="suci" name="suci" class="form-control" />
+                      <input type="text"  id="suci" name="suci" value="1">
+
+                      <!-- <select  id="suci" name="suci" class="form-control" /> -->
                     </div>
-                    <div class="col-xs-12 col-sm-6">
+                    <div class="col-xs-12 col-sm-6 hidden">
                       <label for="prov">Proveedor</label>
-                      <select  id="prov" name="prov" class="form-control" />
-                    </div>  -->
+                      <input type="text" id="prov" name="prov" value="1">
+
+                      <!-- <select  id="prov" name="prov" class="form-control" /> -->
+                    </div> 
 
                     <input type="hidden" id="suci" name="suci" value="1">
                     <input type="hidden" id="prov" name="prov" value="1">
@@ -247,14 +251,14 @@
   }); 
   
   // Trae proveedores por empresa logueada
-  // traer_proveedor();      
-  // function traer_proveedor(){
-  //   $('#proveedor').html('');
-  //   $.ajax({
-  //     type: 'POST',
-  //     data: {},
-  //     url: 'index.php/Otrabajo/getproveedor', //index.php/
-  //     success: function(data){
+ // traer_proveedor();      
+  function traer_proveedor(){
+    $('#proveedor').html('');
+    $.ajax({
+      type: 'POST',
+      data: {},
+      url: 'index.php/Otrabajo/getproveedor', //index.php/
+      success: function(data){
             
   //             var opcion  = "<option value='-1'>Seleccione...</option>" ; 
   //               $('#prov').append(opcion); 
@@ -274,29 +278,29 @@
   //     });
   // }
   // llena el select de sucursales - Ok 
-  // traer_sucursal()
-  // function traer_sucursal(){
-  //   $.ajax({
-  //     type: 'POST',
-  //     data: { },
-  //     url: 'index.php/Otrabajo/traer_sucursal',
-  //     success: function(data){
-  //       var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-  //       $('#suci').append(opcion); 
-  //       for(var i=0; i < data.length ; i++) 
-  //       {    
-  //         var nombre = data[i]['descripc'];
-  //         var opcion = "<option value='"+data[i]['id_sucursal']+"'>" +nombre+ "</option>" ;
-  //         $('#suci').append(opcion);        
-  //       }
-  //     },
-  //     error: function(result){
-  //       console.error("Error al traer sucursal. Ver console.table");
-  //       console.table(result);
-  //     },
-  //     dataType: 'json'
-  //   });
-  // } 
+  //traer_sucursal()
+  function traer_sucursal(){
+    $.ajax({
+      type: 'POST',
+      data: { },
+      url: 'index.php/Otrabajo/traer_sucursal',
+      success: function(data){
+        var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+        $('#suci').append(opcion); 
+        for(var i=0; i < data.length ; i++) 
+        {    
+          var nombre = data[i]['descripc'];
+          var opcion = "<option value='"+data[i]['id_sucursal']+"'>" +nombre+ "</option>" ;
+          $('#suci').append(opcion);        
+        }
+      },
+      error: function(result){
+        console.error("Error al traer sucursal. Ver console.table");
+        console.table(result);
+      },
+      dataType: 'json'
+    });
+  } 
 
  
   $("#formOT").submit(function (event){   

@@ -6,8 +6,7 @@ class Sservicio extends CI_Controller
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->model('Sservicios');
-		$this->load->model('Bonitas');
+		$this->load->model('Sservicios');		
 	}
 	// Trae sectores por empresa logueada - Listo
 	public function getSector()

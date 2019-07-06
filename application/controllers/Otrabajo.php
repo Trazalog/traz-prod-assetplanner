@@ -44,8 +44,11 @@ class Otrabajo extends CI_Controller {
 		$data['list']    = $this->Otrabajos->otrabajos_List($ot);
 		//dump($data['list'], 'listado');
 		$data['permission'] = $permission;
-		$data['list_usuarios'] = $this->bpm->ObtenerUsuarios();					
+		$data['list_usuarios'] = $this->bpm->ObtenerUsuarios();	
+		//log_message('DEBUG', 'listado de usr en BPM: '.json_encode($data['list_usuarios']));
+
 		$data['opciones'] = $this->load->view('otrabajos/tabla_opciones',['permission'=>$permission],true);
+		
 		$this->load->view('otrabajos/list', $data);
 		
   }  
@@ -106,7 +109,7 @@ class Otrabajo extends CI_Controller {
 		else echo "nada";
   }
   
-  // TODO: EN ESTA FUNCION AGREGAR LA INICIALIZACION A bpm
+  
   /**
 	 * Agrega nueva OTs.
 	 *
@@ -980,8 +983,11 @@ class Otrabajo extends CI_Controller {
 
 	//Ejecuta Orden de Trabajo en BPM
 	public function EjecutarOT(){
+		//log
+			log_message('DEBUG', 'TRAZA | OTrabajo/Ejecutar OT');
 
-		$mostrar = $this->input->post();
+		$userdata = $this->session->userdata('user_data');
+		$userBpm = $userdata[0]['userBpm']; 
 
 		$task 				= (int)$this->input->post('task');
 		$ot 					= (int)$this->input->post('ot');
@@ -1017,25 +1023,33 @@ class Otrabajo extends CI_Controller {
 				break;
 		}
 
-		//Cargo Libreria
-		$this->load->library('BPM');	
-		$responce = $this->bpm->setUsuario($task,$usrId);
+	
+		$this->load->library('BPM');		
+
+		// asigno usuario logueado para finalizar la tarea 'Asignar responsable y recursos'
+		$responce = $this->bpm->setUsuario($task,$userBpm);
 	
 		if(!$responce['status']){echo json_encode($responce);return;}	
-		//Cerrar Tarea Ejectuar OT con ase que viene de pantalla
+		//Cerrar Tarea Ejectuar OT con case que viene de pantalla
 		$responce = $this->bpm->CerrarTareaBPM($task);	
 		if(!$responce['status']){echo json_encode($responce);return;}
 
 		// buscar task pa asignar la tarea siguiente (ejecutar ot) a un responsable		
 		$nextTask = $this->bpm->ObtenerTaskidXNombre($case_id,'Ejecutar OT');
-	
-		// if($nextTask == 0){
-		// 	echo json_encode(['status'=>false, 'msj'=>'No Existe la actividad requerida']);
-		// 	return;
-		// }
-	
+		// log
+			log_message('DEBUG', 'TRAZA | $case_id: '.$case_id);
+			log_message('DEBUG', 'TRAZA | Ejecutar OT-> $task_id: '.$nextTask);
+
+		// sincroniza usuario local con el de BPM, para asignar el usr de BPM
+		$usuarioBPM = $this->bpm->getInfoSisUserenBPM($usrId);
+		
+		// log	
+			log_message('DEBUG', 'TRAZA | Usr asignado (responsable OT) en BPM: '.$usuarioBPM);
+			log_message('DEBUG', 'TRAZA | Usr asignado (responsable OT) en LOCAL: '.$usrId);
+
 		//Asignar Usuario a Tarea para Finanlizar
-		$responce = $this->bpm->setUsuario($nextTask,$usrId);
+		$responce = $this->bpm->setUsuario($nextTask,$usuarioBPM);
+
 		if(!$responce['status']){echo json_encode($responce);return;}
 	
 		//Cambiar Estado de OT ('ASignada') y en solicitud origen en BD		
@@ -1062,12 +1076,12 @@ class Otrabajo extends CI_Controller {
 						}	
 
 				} else {
-						echo json_encode(['status'=>false, 'msj'=>'Error Cambio Estado en OT']);
+						echo json_encode(['status'=>false, 'msj'=>'Error Cambio Estado en Tarea']);
 						return;
 				}			
 				
 		}else{
-				echo json_encode(['status'=>false, 'msj'=>'Error Base de Datos3']);
+				echo json_encode(['status'=>false, 'msj'=>'Error Cambio Estado en OT']);
 		}		
 	}
 

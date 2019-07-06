@@ -1,0 +1,1 @@
+ALTER TABLE  orden_trabajo MODIFY estado VARCHAR(4) NOT NULL;

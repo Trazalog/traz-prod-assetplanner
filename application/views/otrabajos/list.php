@@ -70,23 +70,26 @@
                         echo '<td>';  
                         
                           if ($a['estado'] == 'S') {
-                            echo  '<small class="label pull-left bg-red">Solicitada</small>';
+                            echo  '<small class="label pull-left bg-danger">Solicitada</small>';
                           }
                           if($a['estado'] == 'PL'){                           
-                            echo '<small class="label pull-left bg-orange">Planificada</small>';
+                            echo '<small class="label pull-left bg-warning">Planificada</small>';
                           }
                           if($a['estado'] == 'AS'){
-                            echo '<small class="label pull-left bg-yellow">Asignada</small>';
+                            echo '<small class="label pull-left bg-maroon">Asignada</small>';
                           }
                           if ($a['estado'] == 'C') {
-                            echo '<small class="label pull-left  bg-blue">Curso</small>' ;
+                            echo '<small class="label pull-left bg-green">Curso</small>' ;
                           }
                           if ($a['estado'] == 'T') {
-                            echo  '<small class="label pull-left bg-navy">Terminada</small>';
+                            echo  '<small class="label pull-left bg-primary">Terminada</small>';
                           }
                           if ($a['estado'] == 'CE') {
-                            echo  '<small class="label pull-left bg-green">Cerrada</small>';
+                            echo  '<small class="label pull-left bg-navy">Cerrada</small>';
                           }      
+                          if ($a['estado'] == 'CN') {
+                            echo  '<small class="label pull-left bg-black">Conforme</small>';
+                          } 
 
                         echo '</td>';
                    // }
@@ -635,8 +638,8 @@ $("#btn_cancGuardado").click(function (e) {
       'dataType': 'json',
       'url': 'index.php/Preventivo/getHerramientasB',
     })
-    .done( (data) => { tmp = data } );
-    //.fail( () => alert("Error al traer Herramientas") );
+    .done( (data) => { tmp = data } )
+    // .fail( () => alert("Error al traer Herramientas") );
     return tmp;
   }();
 
@@ -814,8 +817,8 @@ $("#btn_cancGuardado").click(function (e) {
       'dataType': 'json',
       'url': 'index.php/Preventivo/getinsumo',
     })
-    .done( (data) => { tmp = data } );
-    //.fail( () => alert("Error al traer Herramientas") );
+    .done( (data) => { tmp = data } )
+    // .fail( () => alert("Error al traer Herramientas") );
     return tmp;
   }();
 
