@@ -91,7 +91,7 @@ function ver(e) {
 }
 
 function getEntregasPedido(pema) {
-    $('#tab_2').load('<?php echo base_url()?>almacen/new/Entrega_Material/getEntregasPedido/'+pema);
+    $('#tab_2').load('<?php echo CMP_ALM ?>/new/Entrega_Material/getEntregasPedido/'+pema);
 }
 //Ver Orden
 function rellenarCabecera(json) {
