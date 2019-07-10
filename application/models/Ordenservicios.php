@@ -418,9 +418,8 @@ class Ordenservicios extends CI_Model {
 			}   
     }
 
-    function getOperariosOrden($data){
+    function getOperariosOrden($id_orden){
 			
-			$id_orden = $data['id_orden'];
 			$this->db->select('sisusers.usrName,
 												sisusers.usrLastName');
 			$this->db->from('asignausuario');        

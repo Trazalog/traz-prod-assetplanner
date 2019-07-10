@@ -76,13 +76,17 @@
                       <input type="text" class="datepicker form-control fecha" id="fechaEntrega" name="fechaEntrega" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>
                     </div> -->
 
-                    <div class="col-xs-12 col-sm-6">
+                    <div class="col-xs-12 col-sm-6 hidden">
                       <label for="suci">Sucursal</label>
-                      <select  id="suci" name="suci" class="form-control" />
+                      <input type="text"  id="suci" name="suci" value="1">
+
+                      <!-- <select  id="suci" name="suci" class="form-control" /> -->
                     </div>
-                    <div class="col-xs-12 col-sm-6">
+                    <div class="col-xs-12 col-sm-6 hidden">
                       <label for="prov">Proveedor</label>
-                      <select  id="prov" name="prov" class="form-control" />
+                      <input type="text" id="prov" name="prov" value="1">
+
+                      <!-- <select  id="prov" name="prov" class="form-control" /> -->
                     </div> 
 
                      <div class="col-xs-12 col-sm-6">
@@ -244,7 +248,7 @@
   }); 
   
   // Trae proveedores por empresa logueada
-  traer_proveedor();      
+ // traer_proveedor();      
   function traer_proveedor(){
     $('#proveedor').html('');
     $.ajax({
@@ -271,7 +275,7 @@
       });
   }
   // llena el select de sucursales - Ok 
-  traer_sucursal()
+  //traer_sucursal()
   function traer_sucursal(){
     $.ajax({
       type: 'POST',

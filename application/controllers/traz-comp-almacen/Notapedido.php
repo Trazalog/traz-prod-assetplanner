@@ -133,7 +133,7 @@ class Notapedido extends CI_Controller
             'ortr_id' => $idOT,
             'empr_id' => empresa(),
             'justificacion' => $justificacion,
-            'estado' => 'Creada'
+            'estado'=>'Creada'
         );
 
         $idnota = $this->Notapedidos->setCabeceraNota($cabecera);
@@ -215,12 +215,6 @@ class Notapedido extends CI_Controller
         $id = $this->input->post('id');
         $data['cantidad'] = $this->input->post('cantidad');
         echo $this->Notapedidos->editarDetalle($id, $data);
-    }
-
-    public function eliminarDetalle()
-    {
-        $id = $this->input->post('id');
-        echo $this->Notapedidos->eliminarDetalle($id);
     }
 
     public function crearPedido($ot=null)
