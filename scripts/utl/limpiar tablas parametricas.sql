@@ -1,11 +1,8 @@
 TRUNCATE solicitud_reparacion;
-TRUNCATE abmdeposito;
-TRUNCATE abmproveedores;
 TRUNCATE admcustomers;
 TRUNCATE admstock;
 TRUNCATE admstock;
 TRUNCATE area;
-TRUNCATE articles;
 TRUNCATE asignaherramientas;
 TRUNCATE asignausuario;
 TRUNCATE asp_detaplantillainsumos;
