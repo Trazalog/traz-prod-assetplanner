@@ -89,6 +89,9 @@
                       <!-- <select  id="prov" name="prov" class="form-control" /> -->
                     </div> 
 
+                    <input type="hidden" id="suci" name="suci" value="1">
+                    <input type="hidden" id="prov" name="prov" value="1">
+
                      <div class="col-xs-12 col-sm-6">
                       <label for="fechaInicio">Fecha Programación:</label>
                       <input type="text" class="datepicker form-control fecha" id="fechaInicio" name="fechaInicio" value="<?php echo date_format(date_create(date("Y-m-d H:i:s")), 'd-m-Y H:i:s') ; ?>" size="27"/>
@@ -257,23 +260,23 @@
       url: 'index.php/Otrabajo/getproveedor', //index.php/
       success: function(data){
             
-              var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-                $('#prov').append(opcion); 
-              for(var i=0; i < data.length ; i++) 
-              {    
-                    var nombre = data[i]['provnombre'];
-                    var opcion  = "<option value='"+data[i]['provid']+"'>" +nombre+ "</option>" ; 
+  //             var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+  //               $('#prov').append(opcion); 
+  //             for(var i=0; i < data.length ; i++) 
+  //             {    
+  //                   var nombre = data[i]['provnombre'];
+  //                   var opcion  = "<option value='"+data[i]['provid']+"'>" +nombre+ "</option>" ; 
 
-                  $('#prov').append(opcion);                
-              }
-            },
-      error: function(result){
+  //                 $('#prov').append(opcion);                
+  //             }
+  //           },
+  //     error: function(result){
             
-            console.log(result);
-          },
-          dataType: 'json'
-      });
-  }
+  //           console.log(result);
+  //         },
+  //         dataType: 'json'
+  //     });
+  // }
   // llena el select de sucursales - Ok 
   //traer_sucursal()
   function traer_sucursal(){
@@ -645,8 +648,8 @@ function ordenaArregloDeObjetosPor(propiedad) {
       'dataType': 'json',
       'url': 'index.php/Preventivo/getHerramientasB',
     })
-    .done( (data) => { tmp = data } )
-    .fail( () => alert("Error al traer Herramientas") );
+    .done( (data) => { tmp = data } );
+    //.fail( () => alert("Error al traer Herramientas") );
     return tmp;
   }();
 
@@ -824,8 +827,8 @@ function ordenaArregloDeObjetosPor(propiedad) {
       'dataType': 'json',
       'url': 'index.php/Preventivo/getinsumo',
     })
-    .done( (data) => { tmp = data } )
-    .fail( () => alert("Error al traer Herramientas") );
+    .done( (data) => { tmp = data } );
+    //.fail( () => alert("Error al traer Herramientas") );
     return tmp;
   }();
 
