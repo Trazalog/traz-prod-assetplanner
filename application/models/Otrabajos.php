@@ -20,18 +20,15 @@ class Otrabajos extends CI_Model {
 		$this->db->select('orden_trabajo.*, tbl_tipoordentrabajo.descripcion AS tipoDescrip, 
 												user1.usrName AS nombre, user1.usrLastName,
 												sisusers.usrName, 
-												sisusers.usrLastName, sucursal.descripc, equipos.codigo, 
-												usuarioasempresa.grpId,
+												sisusers.usrLastName, equipos.codigo, 
+												0 as grpId,
 												equipos.id_equipo');
 		$this->db->from('orden_trabajo');
 		$this->db->join('tbl_tipoordentrabajo', 'tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
 		$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario');
 		$this->db->join('sisusers AS user1', 'orden_trabajo.id_usuario_a = user1.usrId', 'left');//usuario asignado?
-		$this->db->join('usuarioasempresa', 'usuarioasempresa.usrId = user1.usrId');
-		$this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal', 'left');
 		$this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
 		$this->db->where('equipos.estado !=','AN');
-		$this->db->where('usuarioasempresa.tipo', 1);//TODO: ACA VER COMO FUNCIONA !!!
 		$this->db->where('orden_trabajo.id_empresa', $empId);
 		$query = $this->db->get();
 
