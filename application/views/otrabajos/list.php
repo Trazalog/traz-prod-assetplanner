@@ -42,7 +42,7 @@
                   $usrId    = $userdata[0]['usrId']; 
                	  foreach($list as $a)
                   {
-                    $gr = $a['grpId'];
+                    //$gr = $a['grpId'];
                     //echo "grupo: ".$gr;
                    // if ($gr=='1') { 
                       //if (($a['estado'] =='As') || ($a['estado'] =='P') || ($a['estado'] =='C') || $a['estado']=='Ej' || ($a['estado'] =='PL')) {

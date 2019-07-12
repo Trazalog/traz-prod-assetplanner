@@ -14,11 +14,11 @@ if (!function_exists('cargarFormulario')) {
 
 
     echo '<div class="modal-footer">
-              <button class="btn btn-primary" onclick="ValidarCampos()">Validar</button>
+              <button class="btn btn-primary" onclick="ValidarObligatorios()">Validar</button>
               <button class="btn btn-success" type="button" onclick="CerrarModal()">Cerrar</button>
             </div>';
 
-     echo'<form enctype="multipart/form-data" id="genericForm'.$id.'" class="form-horizontal" style="padding:0px 15px;" role="form" action="" method="" >';
+     echo'<form enctype="multipart/form-data" id="genericForm'.$id.'" data-id="'.$id.'" class="form-horizontal" style="padding:0px 15px;" role="form" action="" method="" >';
     // echo'<form enctype="multipart/form-data" id="" class="form-horizontal formgenerico" style="padding:0px 15px;" role="form" action="" method="" >';
 //dump($id, 'id de form en helper');
 

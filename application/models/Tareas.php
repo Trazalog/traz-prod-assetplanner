@@ -5,6 +5,7 @@ class Tareas extends CI_Model {
 	function __construct()
 	{
 		parent::__construct();
+		$this->load->modal('Forms');
 	}
 /* TAREAS ASSET ORIGINALES (TAREAS ESTANDAR)*/
 	function Listado_Tareas()

@@ -399,7 +399,6 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 									alert("Error: No se pudo obtener el Formulario");
 							},
 					});
-
 			});
 
     /*  /. Formulario de subareas */
