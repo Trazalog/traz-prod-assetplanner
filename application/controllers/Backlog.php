@@ -7,8 +7,7 @@ class Backlog extends CI_Controller {
         {
 		parent::__construct();
 		$this->load->model('Backlogs');
-		$this->load->model('Tareas');
-		$this->load->model('Bonitas');
+		$this->load->model('Tareas');	
 	}
 
 	public function index($permission){
@@ -141,7 +140,7 @@ class Backlog extends CI_Controller {
 		$result = $this->Backlogs->editar_backlogs($datos,$idBacklog);		
 		
 		// // trae la cabecera
-		$parametros = $this->Bonitas->conexiones();
+		$parametros = $this->bpm->conexiones();
 		// Cambio el metodo de la cabecera a "PUT"
 		$parametros["http"]["method"] = "POST";	
 		// Variable tipo resource referencia a un recurso externo.

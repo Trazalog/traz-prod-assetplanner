@@ -12,7 +12,7 @@
           ?>
         </div><!-- /.box-header -->
         <div class="box-body">
-          <table id="servicio" class="table table-bordered table-hover">
+          <table id="servicio" class="table table-striped table-hover">
               <thead>
                   <tr>
                       <th width="2%">Acciones</th>
@@ -47,18 +47,18 @@
                           echo '<tr id="'.$id_sol.'" class="'.$id_eq.'" data-idequipo="'.$id_eq.'" >' ;
                             echo '<td>';
 
-                            if (strpos($permission,'Del') !== false) {
+                            //if (strpos($permission,'Del') !== false) {
 
                                 //echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar"></i>';
-                            }                                      
+                            //}                                      
 
                             //echo '<i class="fa fa-picture-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imagen" data-imagen ="'.$f['foto'].'" data-toggle="modal" data-target="#foto"></i> '; 
                             
                             echo '<i class="fa fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"></i> '; 
 
-                            if ($f['estado'] !== 'T') { 
+                            //if ($f['estado'] !== 'T') { 
                             //echo '<i class="fa fa-thumbs-up text-light-blue" data-toggle="modal" data-target="#modalConformidad" style="cursor: pointer; margin-left: 15px;" title="Conformidad"></i>';
-                            }   
+                            //}   
                             
                             //echo '<i class="fa fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"></i> ';
 
@@ -74,30 +74,31 @@
 
                             echo '<td>';           
                             
-                            if ($f['estado'] == 'S') {
-                              echo  '<small class="label pull-left bg-red">Solicitada</small>';
-                            }
-                            if($f['estado'] == 'PL'){                           
-                              echo '<small class="label pull-left bg-orange">Planificada</small>';
-                            }
-                            if($f['estado'] == 'AS'){
-                              echo '<small class="label pull-left bg-yellow">Asignada</small>';
-                            }
-                            if ($f['estado'] == 'C') {
-                              echo '<small class="label pull-left  bg-blue">Curso</small>' ;
-                            }
-                            if ($f['estado'] == 'T') {
-                              echo  '<small class="label pull-left bg-navy">Terminada</small>';
-                            }
-                            if ($f['estado'] == 'CE') {
-                              echo  '<small class="label pull-left bg-green">Cerrada</small>';
-                            }  
-                            if ($f['estado'] == 'CN') {
-                              echo  '<small class="label pull-left bg-green">Conforme</small>';
-                            }                           
+                              if ($f['estado'] == 'S') {
+                                echo  '<small class="label pull-left bg-red">Solicitada</small>';
+                              }
+                              if($f['estado'] == 'PL'){                           
+                                echo '<small class="label pull-left bg-orange">Planificada</small>';
+                              }
+                              if($f['estado'] == 'AS'){
+                                echo '<small class="label pull-left bg-yellow">Asignada</small>';
+                              }
+                              if ($f['estado'] == 'C') {
+                                echo '<small class="label pull-left  bg-blue">Curso</small>' ;
+                              }
+                              if ($f['estado'] == 'T') {
+                                echo  '<small class="label pull-left bg-navy">Terminada</small>';
+                              }
+                              if ($f['estado'] == 'CE') {
+                                echo  '<small class="label pull-left bg-green">Cerrada</small>';
+                              }  
+                              if ($f['estado'] == 'CN') {
+                                echo  '<small class="label pull-left bg-green">Conforme</small>';
+                              }
+                                                  
 
                             echo '</td>';            
-                          
+                         echo '</tr>'; 
                         } // if ($f['usrId'] == $usrId)
                       } // fin foreach($list as $f)   
                     } // fin if(count($list) > 0)
@@ -715,21 +716,41 @@ $("#vstsolicita").autocomplete({
   }
 
   // Datatable
-  $(function () {
+  // $(function () {
 
-    $('#servicio').DataTable({
-      "aLengthMenu": [ 10, 25, 50, 100 ],
-      "columnDefs": [ {
+  //   $('#servicio').DataTable({
+  //     "aLengthMenu": [ 10, 25, 50, 100 ],
+  //     "columnDefs": [ {
+  //       "targets": [ 0 ], 
+  //       "searchable": false
+  //     },
+  //     {
+  //       "targets": [ 0 ], 
+  //       "orderable": false
+  //     } ],
+  //     "order": [[1, "asc"]],
+  //   });
+
+  // });
+
+  // Datatables
+  $('#servicio').DataTable({
+    "aLengthMenu": [ 10, 25, 50, 100 ],
+    "columnDefs": [ 
+      {
         "targets": [ 0 ], 
-        "searchable": false
+        "searchable": false,
       },
       {
         "targets": [ 0 ], 
-        "orderable": false
-      } ],
-      "order": [[1, "asc"]],
-    });
-
+        "orderable": false,
+      },
+      { 
+        "targets": [ 1, 8 ],
+        "type": "num",
+      }
+    ],
+    "order": [[1, "desc"]],
   });
 </script>
 

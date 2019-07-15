@@ -1,4 +1,0 @@
- ALTER TABLE contratistas MODIFY COLUMN contramail1 VARCHAR (50) NULL,
-MODIFY COLUMN contracelular2 VARCHAR (50) NULL,
-MODIFY COLUMN contratelefono VARCHAR (50) NULL,
-MODIFY COLUMN contracontacto VARCHAR (100) NULL

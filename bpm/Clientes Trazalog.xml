@@ -63,34 +63,34 @@
       <displayName>SIM</displayName>
       <description>SIM Mantenimento y Limpieza</description>
     </group>
-    <group name="MRS" parentPath="/Clientes Trazalog">
-      <displayName>MRS</displayName>
-      <description>MRS Services</description>
+    <group name="Empreminsa" parentPath="/Clientes Trazalog">
+      <displayName>Empreminsa</displayName>
+      <description>Empreminsa</description>
     </group>
   </groups>
   <memberships>
     <membership>
       <userName>mantenedor1</userName>
       <roleName>Mantenedor</roleName>
-      <groupName>SIM</groupName>
+      <groupName>Empreminsa</groupName>
       <groupParentPath>/Clientes Trazalog</groupParentPath>
     </membership>
     <membership>
       <userName>supervisor1</userName>
       <roleName>Supervisor Taller</roleName>
-      <groupName>SIM</groupName>
+      <groupName>Empreminsa</groupName>
       <groupParentPath>/Clientes Trazalog</groupParentPath>
     </membership>
     <membership>
       <userName>planificador1</userName>
       <roleName>Planificador Mantenimiento</roleName>
-      <groupName>SIM</groupName>
+      <groupName>Empreminsa</groupName>
       <groupParentPath>/Clientes Trazalog</groupParentPath>
     </membership>
     <membership>
       <userName>solicitante1</userName>
       <roleName>Solicitante</roleName>
-      <groupName>SIM</groupName>
+      <groupName>Empreminsa</groupName>
       <groupParentPath>/Clientes Trazalog</groupParentPath>
     </membership>
   </memberships>

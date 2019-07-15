@@ -227,14 +227,14 @@
                                               <div class="panel-body">
                                                 <div class="row">
                                                   <div class="col-xs-12 col-sm-6 col-md-4">
-                                                    <!-- <label for="herramienta">Codigo <strong style="color: #dd4b39">*</strong>:</label>
+                                                     <label for="herramienta">Codigo <strong style="color: #dd4b39">*</strong>:</label>
                                                     <select  id="herramienta"  name="herramienta" class="form-control input-md" value=""></select> 
-                                                    <input type="hidden" id="id_herramienta" name="id_herramienta"> -->
+                                                    <input type="hidden" id="id_herramienta" name="id_herramienta"> 
 
 
-                                                    <label for="herramienta">Codigo <strong style="color: #dd4b39">*</strong>:</label>
+                                                    <!-- <label for="herramienta">Codigo <strong style="color: #dd4b39">*</strong>:</label>
                                                     <input type="text" id="herramienta"  name="" class="form-control" placeholder="Buscar Código..."/>
-                                                    <input type="hidden" id="id_herramienta" name="id_herramienta">
+                                                    <input type="hidden" id="id_herramienta" name="id_herramienta"> -->
 
 
 
@@ -285,13 +285,13 @@
                                               <div class="panel-body">
                                                 <div class="row">
                                                   <div class="col-xs-12 col-sm-6 col-md-4">
-                                                    <!-- <label for="insumo">Codigo:</label>
-                                                    <select  id="insumo"  name="insumo" class="form-control input-md" value=""></select> -->
-                                                    <!-- <input type="hidden" id="id_insumo" name="id_insumo"> -->
+                                                    <label for="insumo">Codigo:</label>
+                                                    <select  id="insumo"  name="insumo" class="form-control input-md" value=""></select> 
+                                                     <input type="hidden" id="id_insumo" name="id_insumo">
 
-                                                    <label for="insumo">Codigo <strong style="color: #dd4b39">*</strong>:</label>
+                                                    <!-- <label for="insumo">Codigo <strong style="color: #dd4b39">*</strong>:</label>
                                                     <input type="text" id="insumo" name="insumo" class="form-control" placeholder="Buscar Código..."/>
-                                                    <input type="hidden" id="id_insumo" name="">
+                                                    <input type="hidden" id="id_insumo" name=""> -->
                                                   </div>
                                                   <div class="col-xs-12 col-sm-6 col-md-4">
                                                     <label for="descript">Descripcion:</label>
@@ -739,8 +739,19 @@
 
 ///////////////         HERRAMIENTAS    INSUMOS    CON BUSCAR /////////////////////
 
+
 ////// HERRAMIENTAS //////
 
+function ordenaArregloDeObjetosPor(propiedad) {  
+    return function(a, b) {  
+      if (a[propiedad] > b[propiedad]) {  
+        return 1;  
+      } else if (a[propiedad] < b[propiedad]) {  
+        return -1;  
+      }  
+      return 0;  
+    }  
+  } 
   //Trae herramientas
   var dataHerramientas = function() {
     var tmp = null;
@@ -750,8 +761,8 @@
       'dataType': 'json',
       'url': 'index.php/Preventivo/getHerramientasB',
     })
-    .done( (data) => { tmp = data } )
-    .fail( () => alert("Error al traer Herramientas") );
+    .done( (data) => { tmp = data } );
+    // .fail( () => alert("Error al traer Herramientas") );
     return tmp;
   }();
 

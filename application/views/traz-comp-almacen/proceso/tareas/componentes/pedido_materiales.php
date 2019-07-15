@@ -68,7 +68,9 @@ function del_detalle() {
             },
             url: 'index.php/almacen/Notapedido/eliminarDetalle',
             success: function(data) {
-                $('.modal #eliminar').modal('hide');
+                //$('.modal #eliminar').modal('hide');
+                $('#eliminar').modal('hide');
+
                 get_detalle();
             },
             error: function(data) {

@@ -264,6 +264,21 @@ $("#operario").autocomplete({
     }
 });
 
+function lanzarPedidoMateriales() {
+    var pema_id = $('#pema_id').val();
+    if(pema_id == null || pema_id==''){
+        alert('No se pudo Realizar el Pedido de Materiales | ID Vacio');
+        return;
+    }
+    $.ajax({
+        type: 'POST',
+        data:{'id':pema_id},
+        url: "<?php echo CMP_ALM ?>/new/Pedido_Material/pedidoNormal",
+        success: function(result) {alert('Hecho'); return;},
+        error: function(result) {alert('No se pudo Realizar el Pedido de Materiales | Falla del Servidor');}
+    });
+}
+
 //cierra la tarea ejecutar OT y asigna la tarea a la OT
 function EjecutarOT() {
 
@@ -317,6 +332,7 @@ function EjecutarOT() {
         success: function(data) {
             WaitingClose();
             // {"status":true,"msj":"OK"}
+            
             if (data.status) {
                 $('#modalInforme').modal('hide');
                 lanzarPedidoMateriales();
@@ -339,21 +355,7 @@ function EjecutarOT() {
 function activaTab(tab) {
     $('.nav-tabs a[href="#' + tab + '"]').tab('show');
 };
-</script>
 
 
-<script>
-function lanzarPedidoMateriales() {
-    var pema_id = $('#pema_id').val();
-    if(pema_id == null || pema_id==''){
-        alert('No se pudo Realizar el Pedido de Materiales | ID Vacio');
-        return;
-    }
-    $.ajax({
-        type: 'POST',
-        url: "<?php echo CMP_ALM ?>/Proceso/pedidoNormal/"+pema_id,
-        success: function(result) {alert('Hecho'); return;},
-        error: function(result) {alert('No se pudo Realizar el Pedido de Materiales | Falla del Servidor');}
-    });
-}
 </script>
+
