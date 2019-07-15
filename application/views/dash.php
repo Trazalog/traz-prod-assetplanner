@@ -88,6 +88,9 @@
         </header>
 
 <script>
+//--Guille WorkBOT--//
+
+base_url= 'http://localhost/traz-prod-assetplanner/';
  if (!indexedDB) {
       alert("Este browser no soporta IndexedDB, necesita otro para poder utilizar la aplicación.");
   }
@@ -100,19 +103,42 @@
   };
   caches.open('traz-prod-assetplanner-cache').then(function(cache) {
     return cache.addAll([
-                'http://localhost/traz-prod-assetplanner/Tarea/index/'+'<?php echo $permiso?>',
-                'http://localhost/traz-prod-assetplanner/index.php/Tarea/index/'+'<?php echo $permiso?>'
+                base_url+'Tarea/index/'+'<?php echo $permiso?>',
+                base_url+'index.php/Tarea/index/'+'<?php echo $permiso?>'
             ]);
         });
+        base_url + 'index.php/Tarea/confInicioTarea',
         tareas = JSON.parse('<?php echo $tareas?>');
         tareas = tareas.data;
         console.log(tareas);
             caches.open('traz-prod-assetplanner-cache').then(function(cache) {
                 for(i=0;i<tareas.length;i++)
         {
-         
+         if(tareas[i].displayName == "Ejecutar OT")
+         {
+           cache.addAll( [base_url + 'index.php/Tarea/confInicioTarea?id_OT='+tareas[i].id_Ot]);
+           for(j=0;j<tareas[i].subtareas.length;j++)
+            {
+                cache.addAll([base_url + 'index.php/Tarea/Obtener_Formulario?infoId='+tareas[i].subtareas[j]]);
+            }
+            for(j=0;j<tareas[i].pedidos.length;j++)
+            {
+                cache.addAll([
+                    base_url + 'index.php/almacen/Notapedido/getNotaPedidoId?id_nota='+tareas[i].pedidos[j].id_notaPedido,
+                    base_url + 'index.php/almacen/new/Entrega_Material/getEntregasPedidoOffline?pema='+tareas[i].pedidos[j].id_notaPedido,
+                    base_url + 'index.php/almacen/new/Pedido_Material/estado?id='+tareas[i].pedidos[j].id_notaPedido,
+                    ]);
+                    for(k=0;k<tareas[i].pedidos[j].entregas.length;k++)
+                    {
+                        cache.addAll([
+                    base_url + 'index.php/almacen/new/Entrega_Material/detalle?id='+tareas[i].pedidos[j].entregas[k].enma_id,
+                    ]);
+                    }
+            }
+            
+         }
      cache.addAll([
-        'http://localhost/traz-prod-assetplanner/index.php/Tarea/detaTarea/'+'<?php echo $permiso?>/'+tareas[i].id
+        base_url + 'index.php/Tarea/detaTarea/'+'<?php echo $permiso?>/'+tareas[i].id
                
             ]);
         }
@@ -132,6 +158,7 @@
       navigator.serviceWorker.controller.postMessage('processQueue')
     }
 }
+//--Fin Guille WorkBOt--//
 $(document).on('click', '.btnEmpresa', function () {
     var idNewEmpresa = $(this).data('ui');
     cambiarDeEmpresa(idNewEmpresa);

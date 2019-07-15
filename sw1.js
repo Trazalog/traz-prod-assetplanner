@@ -1,7 +1,7 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js');
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-strategies.dev.js');
 
-var messageData;
+var messageData = "";
 var base_url = 'http://localhost/traz-prod-assetplanner/';
 const NF = new workbox.strategies.NetworkFirst({
     cacheName: 'traz-prod-assetplanner-cache',
@@ -17,9 +17,8 @@ self.addEventListener('fetch', function(event) {
     if (event.request.clone().method === 'POST') {
         event.respondWith(
             fetch(event.request.clone()).catch(function(error) {
-                if (event.request.clone().url.includes("Tarea")) {
-                    storePostRequest(event.request.clone().url, messageData);
-                }
+
+                storePostRequest(event.request.clone().url, messageData);
             })
         );
     } else {
@@ -59,6 +58,7 @@ self.addEventListener('install', function(event) {
                 base_url + 'index.php/Tarea/',
                 base_url + 'index.php/Dash/',
                 base_url + 'Dash/',
+
                 base_url + 'assets/css/bootstrap.min.css',
                 base_url + 'assets/css/AdminLTE.min.css',
                 base_url + 'assets/css/font-awesome.min.css',
@@ -85,7 +85,7 @@ self.addEventListener('message', function(event) {
     if (event.data === 'processQueue') {
         event.waitUntil(processQueue())
     } else {
-        messageData = event.data
+        messageData = event.data;
     }
 });
 
@@ -126,12 +126,15 @@ function processQueue() {
 
 function storePostRequest(url, payload) {
     indexedDB.open('traz-prod-assetplanner-ajax').onsuccess = function(event) {
-        event.target.result.transaction('ajax_requests', 'readwrite').objectStore('ajax_requests').add({
-            url: url,
-            payload: payload,
-            method: 'POST'
-        }).onsuccess = function(event) {
-            console.log('POST Request added to IndexedDB');
-        };
+        if (payload != "") {
+            event.target.result.transaction('ajax_requests', 'readwrite').objectStore('ajax_requests').add({
+                url: url,
+                payload: payload,
+                method: 'POST'
+            }).onsuccess = function(event) {
+                console.log('POST Request added to IndexedDB');
+                messageData = "";
+            };
+        }
     }
 }

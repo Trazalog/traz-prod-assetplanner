@@ -11,7 +11,10 @@ class dash extends CI_Controller {
 		$this->load->model('Groups');
 		$this->load->model('Customers');
 		$this->load->model('Calendar');
-
+		$this->load->model('Otrabajos');
+		$this->load->model('Tareas');
+		$this->load->model(CMP_ALM.'/Notapedidos');
+		$this->load->model(CMP_ALM.'/new/Entregas_Materiales'); 
 	}
 
 	/**
@@ -69,6 +72,7 @@ class dash extends CI_Controller {
 			//para el dash x defecto segun grupo de usr
 			$data['grpDash']    = $this->Groups->grpDash($userdata[0]['grpId']);
 			//$data['permission'] = $this->items['seguridad'];
+			//Guille inicio datos necesarios Precacheo//
 			$ban = true;
 			$i=0;
 			while($ban && $i< count($this->items) )
@@ -86,7 +90,33 @@ class dash extends CI_Controller {
 				$data['permiso'] = $this->items[$i]['seguridad'];
 			}
 			$this->load->library('BPM');
-			$data['tareas'] = json_encode($this->bpm->getToDoList());
+			$data['tareas'] = $this->bpm->getToDoList();
+			
+			for($i=0;$i<count($data['tareas']['data']); $i++)
+			{
+				if($data['tareas']['data'][$i]['name'] == "Ejecutar OT")
+				{
+			
+					$id = $this->Otrabajos->ObtenerOTporCaseId($data['tareas']['data'][$i]['caseId']);
+					$data['tareas']['data'][$i]['id_Ot'] = $id;
+					$data['tareas']['data'][$i]['pedidos'] = $this->Notapedidos->getNotasxOT($id);
+					//var_dump($data['tareas']['data'][$i]['pedidos'][0]['id_notaPedido']);die;
+					for($j=0;$j<count($data['tareas']['data'][$i]['pedidos']);$j++)
+					{
+						$data['tareas']['data'][$i]['pedidos'][$j]['entregas'] = $this->Entregas_Materiales->getEntregasPedido($data['tareas']['data'][$i]['pedidos'][$j]['id_notaPedido']);
+					}
+					$subtareas = $this->Tareas->getSubtareas($id);
+					$array = [];
+					for($j=0;$j<count($subtareas);$j++)
+					{
+						array_push($array, $subtareas[$j]['info_id']);
+					}
+					$data['tareas']['data'][$i]['subtareas'] = $array;
+				}
+			}
+		
+			$data['tareas'] = json_encode($data['tareas']);
+			//Fin datos necesarios Precacheo
 			$this->load->view('dash', $data);
 			$this->load->view('menu');
 			$this->load->view('content');
