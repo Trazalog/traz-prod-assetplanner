@@ -254,7 +254,7 @@ class Tarea extends CI_Controller {
 					log_message('DEBUG', 'TRAZA | $idTarBonita: '.$idTarBonita);
 					log_message('DEBUG', 'TRAZA | Informe correcto?: '.$opcionSel);
 
-				// si cierra la tarea en BPM
+				// si cierra la tarea en BPM 
 				if (json_decode($response['code']) < 300){
 
 						// La respuesta es Informe de Servicios 'CORRECTO'
