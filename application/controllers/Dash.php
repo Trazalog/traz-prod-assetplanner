@@ -69,7 +69,24 @@ class dash extends CI_Controller {
 			//para el dash x defecto segun grupo de usr
 			$data['grpDash']    = $this->Groups->grpDash($userdata[0]['grpId']);
 			//$data['permission'] = $this->items['seguridad'];
-
+			$ban = true;
+			$i=0;
+			while($ban && $i< count($this->items) )
+			{
+				
+				if($this->items[$i]['name'] == "Mis Tareas")
+				{
+					$ban = false;
+					break;
+				}
+				$i++;
+			}
+			if($i<count($this->items))
+			{
+				$data['permiso'] = $this->items[$i]['seguridad'];
+			}
+			$this->load->library('BPM');
+			$data['tareas'] = json_encode($this->bpm->getToDoList());
 			$this->load->view('dash', $data);
 			$this->load->view('menu');
 			$this->load->view('content');

@@ -1,1 +1,0 @@
-ALTER TABLE alm_entrega_materiales ADD COLUMN dni VARCHAR(45) NULL AFTER solicitante;
