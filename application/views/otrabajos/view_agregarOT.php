@@ -275,7 +275,6 @@
       });
   }
   // llena el select de sucursales - Ok 
-  //traer_sucursal()
   function traer_sucursal(){
     $.ajax({
       type: 'POST',

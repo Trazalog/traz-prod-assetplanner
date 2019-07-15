@@ -36,6 +36,7 @@ $(".fa-paperclip").on('click', function(e) {
         alert('Error InfoId =null');
         return;
     }
+    
     WaitingOpen();
     $.ajax({
         data: {
@@ -48,9 +49,7 @@ $(".fa-paperclip").on('click', function(e) {
             $("#contFormSubtarea").html(result.html);
             $('#modalFormSubtarea').modal('show');
             WaitingClose();
-         //   ValidarObligatorios();
             llenaComp();
-        //    IniciarValidador("form");
         },
         error: function(result) {
             WaitingClose();

@@ -9,7 +9,6 @@ class Otrabajo extends CI_Controller {
 		$this->load->model('Equipos');
 		
 	}
-
 	/**
 	 * Muestra pantalla de listado de Ordenes de Trabajo.
 	 *
