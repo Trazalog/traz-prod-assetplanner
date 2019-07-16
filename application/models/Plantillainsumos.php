@@ -23,7 +23,9 @@ class Plantillainsumos extends CI_Model
 
 		$userdata = $this->session->userdata('user_data');
     $empId = $userdata[0]['id_empresa'];
-	 	$this->db->select('asp_detaplantillainsumos.*,
+		 $this->db->select('asp_detaplantillainsumos.*,
+											 asp_plantillainsumos.descripcion,
+											 asp_plantillainsumos.plant_nombre,
 											articles.artDescription');
 		$this->db->from('asp_detaplantillainsumos');
 		$this->db->join('asp_plantillainsumos', 'asp_plantillainsumos.plant_id = asp_detaplantillainsumos.plant_id');
@@ -69,13 +71,16 @@ class Plantillainsumos extends CI_Model
 		$userdata = $this->session->userdata('user_data');
     $empId = $userdata[0]['id_empresa'];
 	 	$this->db->select('asp_detaplantillainsumos.*,
-											articles.artDescription');
+											articles.artDescription,
+											asp_plantillainsumos.descripcion,
+											 asp_plantillainsumos.plant_nombre');
 		$this->db->from('asp_detaplantillainsumos');
-		$this->db->join('asp_plantillainsumos', 'asp_plantillainsumos.plant_id = asp_detaplantillainsumos.plant_id');
-		$this->db->join('articles', 'articles.artId = asp_detaplantillainsumos.artId');
+		$this->db->join('asp_plantillainsumos', 'asp_plantillainsumos.plant_id = asp_detaplantillainsumos.plant_id', 'left');
+		$this->db->join('articles', 'asp_detaplantillainsumos.artId = articles.artId', 'left');
 		$this->db->where('asp_plantillainsumos.plant_id', $idplantilla);
 		$this->db->where('asp_plantillainsumos.id_empresa', $empId);		
 		$query = $this->db->get();
+		//dump($this->db->last_query());
 		if ($query->num_rows()!=0){
 			return $query->result_array();	
 		}else{

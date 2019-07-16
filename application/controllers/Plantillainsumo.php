@@ -3,8 +3,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Plantillainsumo extends CI_Controller {
-	function __construct()
-        {
+	function __construct(){
 		parent::__construct();
 		$this->load->model('Plantillainsumos');
 	}
@@ -21,6 +20,8 @@ class Plantillainsumo extends CI_Controller {
 	// guarda plantilla nueva
 	public function setPlantilla(){
 		
+		
+
 		$userdata = $this->session->userdata('user_data');
     $empId = $userdata[0]['id_empresa'];
 
