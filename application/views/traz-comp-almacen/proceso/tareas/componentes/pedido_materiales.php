@@ -23,7 +23,15 @@
         </div>
     </div>
     <div class="col-xs-3 col-sm-3 col-md-3" style="margin-top:25px">
-        <button class="btn btn-primary" onclick="guardar_pedido();"><i class="fa fa-check"></i>Agregar</button>
+        
+        <?php
+    if(isset($info->modal))
+    {
+        echo '<button class="btn btn-primary" onclick="guardar_pedido_modal();"><i class="fa fa-check"></i>Agregar Mod</button>';
+    }else{
+        echo '<button class="btn btn-primary" onclick="guardar_pedido();"><i class="fa fa-check"></i>Agregar</button>';
+    }
+        ?>
     </div>
 </div>
 <table id="tabladetalle2" class="table table-bordered table-striped table-hover">
@@ -50,7 +58,7 @@
         ?>
 </div>
 <script>
-var tablaDetalle2 = $('#tabladetalle2').DataTable({});
+var tabladetalle2 = $('#tabladetalle2').DataTable({});
 var selectRow = null;
 
 function del(e) {
@@ -117,13 +125,11 @@ function get_detalle() {
         return;
     }
     $.ajax({
-        type: 'POST',
-        data: {
-            id
-        },
-        url: 'index.php/almacen/Notapedido/getNotaPedidoId',
+        type: 'GET',
+        
+        url: 'index.php/almacen/Notapedido/getNotaPedidoId?id_nota='+id,
         success: function(data) {
-            tablaDetalle2.clear();
+            tabladetalle2.clear();
             
             for (var i = 0; i < data.length; i++) {
                 var tr = "<tr class='celdas' data-id='" + data[i]['depe_id'] + "'data-id='" + data[i]['arti_id'] + "'>" +
@@ -132,13 +138,13 @@ function get_detalle() {
                     "<i class='fa fa-fw fa-times-circle' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
                     "<td class='articulo'>" + data[i]['barcode'] + "</td>" +
                     "<td class='cantidad text-center'>" + data[i]['cantidad'] + "</td></tr>";
-                tablaDetalle2.row.add($(tr)).draw();
+                tabladetalle2.row.add($(tr)).draw();
             }
 
         },
         error: function(result) {
 
-            console.log(result);
+            console.log('fallo');
         },
         dataType: 'json'
     });
@@ -216,7 +222,26 @@ function guardar_pedido() {
 
     }
 }
+function guardar_pedido_modal() {
 
+if (!validarCampos()) {
+    alert('Completar Campos');
+    return;
+}
+    id = selectItem.arti_id;
+    cant = $('#add_cantidad').val();
+    data = {};
+    data={id_arti:id , cantidad:cant};
+    var tr = "<tr class='celdas' data-json='"+JSON.stringify(data) +"'>" +
+                    "<td class='text-light-blue'>" +
+                    "<i class='fa fa-fw fa-pencil' style='cursor: pointer;' title='Editar' onclick='edit_cantidad(this)'></i>" +
+                    "<i class='fa fa-fw fa-times-circle' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
+                    "<td class='articulo'>" + document.getElementById('inputarti').value + "</td>" +
+                    "<td class='cantidad text-center'>" + data.cantidad + "</td></tr>";
+                tabladetalle2.row.add($(tr)).draw();
+           WaitingClose();
+
+}
 function set_pedido() {
 
     var idinsumos = new Array();
@@ -258,15 +283,6 @@ function set_pedido() {
         },
         error: function() {
            
-            data={id_arti: id, cantidad:cant};
-            var tr = "<tr class='celdas' data-json='"+JSON.stringify(data) +"'>" +
-                    "<td class='text-light-blue'>" +
-                    "<i class='fa fa-fw fa-pencil' style='cursor: pointer;' title='Editar' onclick='edit_cantidad(this)'></i>" +
-                    "<i class='fa fa-fw fa-times-circle' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
-                    "<td class='articulo'>" + document.getElementById('inputarti').value + "</td>" +
-                    "<td class='cantidad text-center'>" + data.cantidad + "</td></tr>";
-                tablaDetalle2.row.add($(tr)).draw();
-           WaitingClose();
             
         },
     });
@@ -290,7 +306,7 @@ function lanzarPedido() {
 }
 function lanzarPedidoModal() {
     
-    notaid= document.getElementById('pema_id').value;
+    //notaid= document.getElementById('pema_id').value;
     idOT = document.getElementById('ortr_id').value;
     descripcion = document.getElementById('descripcionOT').value;
     fecha = new Date();
@@ -300,7 +316,7 @@ function lanzarPedidoModal() {
     fecha = dia + '/' + mes + '/' + año;
     document.getElementById('pema_id').value =null;
     modal= '<?php echo $info->modal;?>';
-    data = {id_notaPedido: notaid, fecha: fecha, id_ordTrabajo: idOT, descripcion: descripcion ,justificacion:"",estado:"Solicitado"};
+    data = { fecha: fecha, id_ordTrabajo: idOT, descripcion: descripcion ,justificacion:"",estado:"Solicitado"};
       html="";
       html += "<tr data-json='"+JSON.stringify(data)+"' id='"+data.id_notaPedido+"'>";
       html += '<td class="text-center"> <i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer;margin:5px;" title="Detalle Pedido Materiales"></i> </td>';
@@ -311,10 +327,10 @@ function lanzarPedidoModal() {
       html += '<td class="text-center">'+data.estado+'</td>';
       html += '</tr>';
       tablaDeposito.row.add($(html)).draw();
-      var articulos =[];
+      articulos =[];
       $('#tabladetalle2 tbody').find('tr').each(function(){
         json="";
-        json = $(this).attr('data-json');
+        json = JSON.parse($(this).attr('data-json'));
         articulos.push(json);
       });
       articulos = JSON.stringify(articulos);
