@@ -70,7 +70,6 @@
                                 <li class="user-footer">
                                     <div class="pull-right">
                                         <a href="<?php echo base_url(); #" onClick="cargarView('login', 'logout', '')?>" class="btn btn-default btn-flat">Salir <i class="fa fa-fw fa-sign-out"></i></a>
-                                        <button class="btn btn-success" onclick="procesarCola()">Aceptar</button>
                                     </div>
                                 </li>
                             </ul>
