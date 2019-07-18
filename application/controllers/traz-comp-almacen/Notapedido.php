@@ -245,25 +245,21 @@ class Notapedido extends CI_Controller
        
     }
     public function pedidoOffline()
-    {
-      $idot= $this->input->post('idOT');
-      $articulos= json_decode($this->input->post('articulos'));
-      $cabecera['fecha'] = date('Y-m-d');
-      $cabecera['ortr_id'] = $idot;
-      $cabecera['empr_id'] = empresa();
-      //var_dump($cabecera);
-      $idnota = $this->Notapedidos->setCabeceraNota($cabecera);
-      //var_dump($idnota);
-      for ($i=0; $i<count($articulos); $i++) { 
-        $deta[$i]['pema_id'] = $idnota;
-        $deta[$i]['arti_id'] = $articulos[$i]->id_arti;
-        $deta[$i]['cantidad'] = $articulos[$i]->cantidad;
-        $deta[$i]['fecha_entrega'] = date('Y-m-d');
-      }
-      $data['deta'] = $deta;
-      $data['articulos'] = $articulos;
-      $data['cabecera'] = $cabecera;
-      $this->Notapedidos->setDetaNota($deta);
-      echo json_encode($data);
-    }
-    }
+{
+  $idot= $this->input->post('idOT');
+  $articulos= json_decode($this->input->post('articulos'));
+  $cabecera['fecha'] = date('Y-m-d');
+  $cabecera['ortr_id'] = $idot;
+  $cabecera['empr_id'] = empresa();
+  //var_dump($cabecera);die;
+  $idnota = $this->Notapedidos->setCabeceraNota($cabecera);
+  for ($i=0; $i < count($articulos); $i++) { 
+    $deta[$i]['pema_id'] = $idnota;
+    $deta[$i]['arti_id'] = $articulos[$i]->id_arti;
+    $deta[$i]['cantidad'] = $articulos[$i]->cantidad;
+    $deta[$i]['fecha_entrega'] = date('Y-m-d');
+  }
+  $response = $this->Notapedidos->setDetaNota($deta);
+  echo json_encode($response);
+}
+}

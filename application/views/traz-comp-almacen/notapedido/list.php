@@ -60,7 +60,7 @@
   var tablaDetalle=$('#tabladetalle').DataTable({}); 
   function AbrirModal()
   {
-    tabladetalle2.clear().draw();
+    tablaDetalle2.clear().draw();
     document.getElementById('info').innerHTML="";
     document.getElementById('inputarti').value="";
     document.getElementById('add_cantidad').value="";

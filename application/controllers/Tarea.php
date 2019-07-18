@@ -8,7 +8,6 @@ class Tarea extends CI_Controller {
 			parent::__construct();
 			$this->load->model('Tareas');		
 			$this->load->model('Backlogs');
-			$this->load->model('Otrabajos');
 			$this->load->library('BPM');
 		}
 
