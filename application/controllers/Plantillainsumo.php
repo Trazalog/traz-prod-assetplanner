@@ -18,9 +18,7 @@ class Plantillainsumo extends CI_Controller {
     echo json_encode($response);
 	}
 	// guarda plantilla nueva
-	public function setPlantilla(){
-		
-		
+	public function setPlantilla(){	
 
 		$userdata = $this->session->userdata('user_data');
     $empId = $userdata[0]['id_empresa'];
@@ -35,12 +33,62 @@ class Plantillainsumo extends CI_Controller {
 		$plantCabecera['estado'] = 'AC';
 		$id = $this->Plantillainsumos->setPlantilla($plantCabecera);
 		
-		for ($i=0; $i < count($articulos); $i++) { 
-			$detaplantilla[$i]['artId'] =  $articulos[$i];
-			$detaplantilla[$i]['plant_id'] =  $id;
-		}		
+		if($id){
+
+			for ($i=0; $i < count($articulos); $i++) { 
+				$detaplantilla[$i]['artId'] =  $articulos[$i];
+				$detaplantilla[$i]['plant_id'] =  $id;
+			}
+
+		}else{
+
+			echo json_encode($id);
+			return;
+
+		}
+				
 		$resp = $this->Plantillainsumos->setDetaPantilla($detaplantilla);
 		echo json_encode($resp);
+	}
+	// guarda edicion de plantilla
+	public function setEdicion(){
+
+		$userdata = $this->session->userdata('user_data');
+    $empId = $userdata[0]['id_empresa'];
+
+		$articulos = $this->input->post('articulos');
+		dump($articulos, 'art en controller');
+		$descripcion_plant = $this->input->post('descripcion_plant');
+		$nom_plant = $this->input->post('nom_plant');
+		$idPlantilla =  $this->input->post('idPlantilla');
+		
+		$plantCabecera['descripcion'] = $descripcion_plant;
+		$plantCabecera['plant_nombre'] = $nom_plant;
+		$plantCabecera['id_empresa'] = $empId;
+		$plantCabecera['estado'] = 'AC';
+
+		$response = $this->Plantillainsumos->updatePlantilla($plantCabecera, $idPlantilla);
+		
+		if ($response) {
+			
+			$response = $this->Plantillainsumos->deleteDetaPlantilla($idPlantilla);
+			dump($response, 'respuesta deleteDetaPlantilla pantilla');
+			if ($response) {
+			
+				for ($i=0; $i < count($articulos); $i++) { 
+					$detaplantilla[$i]['artId'] =  $articulos[$i];
+					$detaplantilla[$i]['plant_id'] =  $idPlantilla;
+				}
+
+				$resp = $this->Plantillainsumos->setDetaPantilla($detaplantilla);			
+				echo json_encode($resp);
+				
+			} else {
+				echo json_encode($response);
+				return;
+			}
+			
+		} 		
 	}
 	// devuelve plantilla por Id
 	public function getDetaPlantilla(){
@@ -53,66 +101,12 @@ class Plantillainsumo extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	// public function ObtenerTareas()
-	// {
-	// 	$result = $this->Plantillas->ObtenerTareas();
-	// 	echo json_encode($result);
-	// }
+	public function deletePlantilla(){
+		
+		$response = $this->Plantillainsumos->deletePlantilla($this->input->post('idPlantilla'));
+		echo json_encode($response);
+	}
+	
 
-	// public function agregar_tarea(){
-	  
-	// $data=$this->input->post();
-	
-	
-	// $result = $this->Plantillas->agregar_tareas($data);
-	// echo json_encode($result);
-	   
-  // 	}
-	// public function EliminarTarea(){
-	
-	// $id=$_POST['id_detaplantilla'];	
-	// $result = $this->Plantillas->EliminarTareas($id);
-	// echo json_encode($result);
-	
-	// }
-
-	// 	//NUEVA
-	// public function cargartarea($permission,$idglob)
-	// { 
-	// 	$data['list'] = $this->Plantillas->cargartareas($idglob);
-	// 	$data['id_plantilla'] = $idglob; 
-	// 	$data['permission'] = $permission;    // envia permisos       
-	// 	$this->load->view('plantillas/asignacion',$data); //equipo controlador 
-  //   }
-
-
-	// public function index($permission)
-	// {
-	// 	$data['list'] = $this->Plantillas->plantilla_List();
-	// 	$data['permission'] = $permission;
-	// 	$this->load->view('plantillas/list', $data);
-	// }
-	
-	// public function getplantillas()
-	// {
-	// 	$data['data'] = $this->Plantillas->getplantilla($this->input->post());
-	// 	$response['html'] = $this->load->view('plantillas/view_', $data, true);
-
-	// 	echo json_encode($response);
-	// }
-	
-	// public function setplantillas()
-	// {
-	// 	$data = $this->Plantillas->setplantilla($this->input->post());
-	// 	if($data  == false)
-	// 	{
-	// 		echo json_encode(false);
-	// 	}
-	// 	else
-	// 	{
-	// 		echo json_encode(true);	
-	// 	}
-	// }
-	
 }
 ?>

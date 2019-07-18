@@ -29,7 +29,7 @@
                 //echo '<tr>';                  
                   echo '<td>';
                     if (strpos($permission,'Del') !== false) {
-                      echo '<i href="#" class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar asociación" data-toggle="modal" data-target="#modalaviso"></i>';
+                      echo '<i href="#" class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar asociación" ></i>';
                     }
                     if (strpos($permission,'Edit') !== false) {
                       echo '<i href="#" class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar asociación"></i>';
@@ -81,19 +81,11 @@
             $("#id_codigo").val(ui.item.value);
             $("#descripcion_cod").val(ui.item.descripcion);
     }
-    // change: function (event, ui) {
-    //         if (ui.item == null || ui.item == undefined) {
-    //             $("#id_codigo").val("");
-    //             $("#descripcion").val("");
-    //             alert("Articulo Inexistente");
-    //           // $("#artOrdInsum").attr("disabled", false);
-    //         } else {
-    //           // $("#artOrdInsum").attr("disabled", true);
-    //         }
-    // }
+   
   });
 
   $('#btnAgre').click(function() {
+    $('.fa-plus-square span').remove();
     $('.fa-plus-square').append('<span class="modal-title" style="color:#000;"> Nueva Plantilla</span>'); 
     $('#modalnueva').modal('show');
   });
@@ -103,13 +95,15 @@
     var artCodigo= $('#codigo').val();
     var descripcion = $('#descripcion_cod').val();
     var tabla = $('#tablainsumo');
+    var id_codigo = $("#id_codigo").val();
     //agrego valores a la tabla
     $('#tablainsumo').DataTable().row.add( [
           "<i class ='fa fa-ban elirow text-primary' style='cursor:pointer'></i>",
           artCodigo,
           descripcion
         ]
-      ).draw();
+      ).node().id = id_codigo;
+      $('#tablainsumo').DataTable().draw();
   }
 
   $(document).on("click",".elirow",function() {
@@ -118,12 +112,29 @@
 
   // agregar
   function guardar(){
+   
+    var error = false;
+    if($('#nom_plant').val() == ""){
+      error = true;
+    }
+    if($('#descripcion_plant').val() == ""){
+      error = true;
+    }  
+    if( ! $('#tablainsumo').DataTable().data().any() ) {
+      console.info("tabla insumos (artículos) vacía");
+      error = true;
+    }
+    if (error == true) {
+      alert('Existen campos sin llenar...');
+      return;
+    }   
+
     WaitingOpen('Guardando Plantila');
+
     var articulos = new Array();  
-    var i = 0;
-    var gruppo = $("#tablainsumo tbody tr td.ids");
-    $("#tablainsumo tbody tr td.ids").each(function (index) {  
-      var id = $(this).text();
+    var i = 0; 
+    $("#tablainsumo tbody tr").each(function (index) {  
+      var id = $(this).attr("id");
       articulos[i] = id;    
       i++;    
     });
@@ -140,13 +151,14 @@
         success: function(data){
           
           //agrego valores a la tabla
-          $('#insumoList').DataTable().row.add( [
-            '<i href="#" class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar asociación" data-toggle="modal" data-target="#modalaviso"></i>'+
-            '<i href="#" class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar asociación" data-toggle="modal" data-target="#"></i>',
-            nom_plant,
-            descripcion_plant
-            ]
-          ).draw();
+          // $('#insumoList').DataTable().row.add( [
+          //   '<i href="#" class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar asociación" data-toggle="modal" data-target="#modalaviso"></i>'+
+          //   '<i href="#" class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar asociación" data-toggle="modal" data-target="#"></i>',
+          //   nom_plant,
+          //   descripcion_plant
+          //   ]
+          // ).draw();
+          regresa();
           WaitingClose();
         },
         error: function(result){
@@ -169,12 +181,15 @@
     $('.fa-plus-square span').remove();
     $('.fa-plus-square').append('<span class="modal-title" style="color:#000;"> Editar Plantilla</span>');
     $('.oculta').show();
+    $('#nom_plantEditar').removeAttr( 'disabled' );
+    $('#descripcion_plantEditar').removeAttr( 'disabled' );
     $("#modalEditar").modal('show');
     var idPlantilla = $(this).parent('td').parent('tr').attr('id');
     llenamodal(idPlantilla, 'edit');
   });
 
   function llenamodal(idPlantilla, modo){
+    
     $.ajax({
       data: { idPlantilla: idPlantilla },
       dataType: 'json',
@@ -190,6 +205,8 @@
         
         if(modo == 'edit'){
           
+          $('#idPlantilla').val(idPlantilla);
+
           for(i = 0; i < result.length; i++) {
 
             artId = result[i]['artId'];        
@@ -199,7 +216,9 @@
               artId,
               artDescripcion,
               ]       
-            ).draw();
+            ).node().id = artId;
+            $('#tablainsumoEdit').DataTable().draw();
+            
           }
         }else{
 
@@ -249,34 +268,79 @@
             $("#id_codigoEditar").val(ui.item.value);
             $("#descripcion_codEditar").val(ui.item.descripcion);
     }
-    // change: function (event, ui) {
-    //         if (ui.item == null || ui.item == undefined) {
-    //             $("#id_codigo").val("");
-    //             $("#descripcion").val("");
-    //             alert("Articulo Inexistente");
-    //           // $("#artOrdInsum").attr("disabled", false);
-    //         } else {
-    //           // $("#artOrdInsum").attr("disabled", true);
-    //         }
-    // }
+    
   });
   // Agregar a tabla Edicion plantilla
   function agregarEditar(){
-  
+    
+
     var artCodigo= $('#codigoEditar').val();
     var descripcion = $('#descripcion_codEditar').val();
-    
+    var id_codigo = $("#id_codigoEditar").val();
     //agrego valores a la tabla
     $('#tablainsumoEdit').DataTable().row.add( [
           "<i class ='fa fa-ban elirow text-primary' style='cursor:pointer'></i>",
           artCodigo,
           descripcion
         ]
-      ).draw();
+    ).node().id = id_codigo;
+    $('#tablainsumoEdit').DataTable().draw();
   }
+
   $(document).on("click",".elirowEdit",function() {
       $('#tablainsumoEdit').DataTable().row( $(this).closest('tr') ).remove().draw();
   });
+
+  function guardarEdicion(){
+    
+
+    var error = false;
+    if($('#nom_plantEditar').val() == ""){
+      error = true;
+    }
+    if($('#descripcion_plantEditar').val() == ""){
+      error = true;
+    }  
+    if( ! $('#tablainsumoEdit').DataTable().data().any() ) {
+      console.info("tabla Editar insumos (artículos) vacía");
+      error = true;
+    }
+    if (error == true) {
+      alert('Existen campos vacios...');
+      return;
+    }   
+
+    WaitingOpen('Guardando Plantila');
+
+    var articulos = new Array();  
+    var i = 0; 
+    $("#tablainsumoEdit tbody tr").each(function (index) {  
+      var id = $(this).attr("id");
+      articulos[i] = id;    
+      i++;    
+    });
+    var descripcion_plant = $("#descripcion_plantEditar").val();
+    var nom_plant = $("#nom_plantEditar").val();
+    var idPlantilla = $('#idPlantilla').val();
+    $.ajax({
+        data: {articulos:articulos,
+              descripcion_plant:descripcion_plant,
+              nom_plant:nom_plant,
+              idPlantilla:idPlantilla
+              },
+        dataType: 'json',
+        type: 'POST',
+        url: 'index.php/Plantillainsumo/setEdicion',
+        success: function(data){
+          WaitingClose();
+          regresa();
+        },
+        error: function(result){
+          console.error("problemas al guardar plantilla: " + result);
+          WaitingClose();
+        },
+    });
+  }
 
 /**** / EDICION  */
 
@@ -284,7 +348,6 @@
 /**** VISTA  */
 
   $('.fa-search').click(function() {
-
     $('.fa-plus-square span').remove();
     $('.fa-plus-square').append('<span class="modal-title" style="color:#000;"> Ver Plantilla</span>');  
     $('#nom_plantEditar').attr('disabled', 'disabled');
@@ -299,29 +362,42 @@
 
 /**** ELIMINAR  */
 
-$('.fa-times-circle').click(function() {
-  $("#modalaviso").modal('show');
-   //alert('fooo');
-});
+  $('.fa-times-circle').click(function() {
+    
+    var idPlantilla = $(this).parent('td').parent('tr').attr('id');
+    $('#idPlantElim').val(idPlantilla);
+    $("#modalaviso").modal('show');
+  });
+
+  function eliminar(){
+  
+    var idPlantilla = $('#idPlantElim').val();
+   
+    $.ajax({
+          data: {idPlantilla:idPlantilla},
+          dataType: 'json',
+          type: 'POST',
+          url: 'index.php/Plantillainsumo/deletePlantilla',
+          success: function(data){         
+            regresa();
+          },
+          error: function(result){
+            console.error("problemas al guardar plantilla: " + result);
+            WaitingClose();
+          },
+      });
+  }
 
 
 /**** / ELIMINAR  */
 
 
-// $('#tablainsumo').DataTable( {
-//   "createdRow": function ( row, data, index ) {            
-//     $('td', row).eq(1).addClass('ids');        
-//   }
-// });
-
-
-
-
-
-
-
-
-
+// Recarga pagina
+function regresa(){
+  $('#content').empty();
+  $("#content").load("<?php echo base_url(); ?>index.php/Plantillainsumo/index/<?php echo $permission; ?>");
+  WaitingClose();
+}
 
 $('#insumoList').DataTable({
     "paging": true,
@@ -437,7 +513,7 @@ $('#tablainsumo').DataTable({
 </div>  <!-- /.modal fade -->
 <!-- / Modal -->
 
-<!-- Modal Editar Plantilla -->
+<!-- Modal Editar Plantilla y Ver-->
 <div class="modal" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -453,7 +529,8 @@ $('#tablainsumo').DataTable({
             <br>
             <div class="col-xs-12 col-sm-6">
               <label for="">Nombre Plantilla<strong style="color: #dd4b39">*</strong> :</label>
-              <input type="text" id="nom_plantEditar" class="form-control" placeholder="Ingrese nombre...">  
+              <input type="text" id="nom_plantEditar" class="form-control" placeholder="Ingrese nombre...">
+              <input type="hidden" id="idPlantilla">  
             </div>
             <div class="col-xs-12 col-sm-6">
               <label for="">Descripcion<strong style="color: #dd4b39">*</strong> :</label>
@@ -493,9 +570,9 @@ $('#tablainsumo').DataTable({
 
           </div>
 
-      <div class="modal-footer">
+      <div class="modal-footer oculta">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="guardar()">Guardar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="guardarEdicion()">Guardar</button>
       </div>  <!-- /.modal footer -->
 
        </div>  <!-- /.modal-body -->
@@ -506,7 +583,7 @@ $('#tablainsumo').DataTable({
 <!-- / Modal -->
 
 <!-- Modal Aviso eliminar -->
-<div class="modal" id="modalaviso">
+<div class="modal" id="modalaviso" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -514,7 +591,8 @@ $('#tablainsumo').DataTable({
         <h4 class="modal-title"><span class="fa fa-fw fa-times-circle text-light-blue"></span>Eliminar</h4>
       </div>
       <div class="modal-body">
-        <h4>¿Desea eliminar Asociación?</h4>
+        <input type="hidden" id="idPlantElim">
+        <h4>¿Desea eliminar esta planitilla?</h4>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -523,51 +601,5 @@ $('#tablainsumo').DataTable({
     </div>
   </div>
 </div> 
-<!-- / Modal -->
-
-<!-- Modal Editar asociación -->
- <!-- <div class="modal" id="modalEditar">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title"><span class="fa fa-fw fa-pencil text-light-blue"></span>Editar asociacion</h4>
-      </div>
-      
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-xs-12 col-md-6">
-            <input type="hidden" name="idcomponenteequipo" id="idcomponenteequipo">
-            <label for="codigo">Equipo: </label>
-            <input type="text" name="equipo" id="equipo" class="form-control" disabled>
-          </div>
-          <div class="col-xs-12 col-md-6">
-            <label>Descripción:</label>
-            <textarea class="form-control" id="descrip" name="descrip" cols="18" rows="3" disabled></textarea>
-          </div>
-        </div><hr>
-        <div class="row">
-          <div class="col-xs-12 col-md-6">
-            <label>Componente <strong style="color: #dd4b39">*</strong> :</label>
-            <select id="componente" name="componente" class="form-control"></select>
-          </div>
-          <div class="col-xs-12 col-md-6">
-            <label for="codigo">Código: </label>
-            <input type="text" name="codigo" id="codigo" class="form-control">
-          </div>
-          <div class="col-xs-12 col-md-6">
-            <label for="sistema">Sistema: </label>
-            <select id="sistema" name="sistema" class="form-control"></select>
-          </div>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" onclick="editarAsoc()">Editar</button>
-      </div>
-    </div>
-  </div>
-</div>  -->
 <!-- / Modal -->
 
