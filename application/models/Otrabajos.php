@@ -12,8 +12,9 @@ class Otrabajos extends CI_Model {
 	 *
 	 * @return  Array   Arreglo con Ordenes de Trabajo.
 	 */
-	function otrabajos_List() // Ok
+	function otrabajos_List( $ot=NULL, $tipo ) // Ok
 	{
+	
 		$userdata = $this->session->userdata('user_data');
 		$empId    = $userdata[0]['id_empresa'];
 	
@@ -29,6 +30,12 @@ class Otrabajos extends CI_Model {
 		$this->db->join('sisusers AS user1', 'orden_trabajo.id_usuario_a = user1.usrId', 'left');//usuario asignado?
 		$this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
 		$this->db->where('equipos.estado !=','AN');
+
+		if($tipo == 1){
+			$this->db->where('orden_trabajo.tipo', 1);
+			
+		}
+
 		$this->db->where('orden_trabajo.id_empresa', $empId);
 		$query = $this->db->get();
 
