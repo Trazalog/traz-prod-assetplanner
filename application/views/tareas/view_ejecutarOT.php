@@ -27,7 +27,7 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 															<!-- Nav tabs -->
 															<ul class="nav nav-tabs" role="tablist">
 																	<li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Tareas</a></li>
-																	<li role="presentation"><a href="#info" aria-controls="info" role="tab" data-toggle="tab">Info </a></li>
+																	<li role="presentation"><a href="#info2" aria-controls="info2" role="tab" data-toggle="tab">Info </a></li>
 																	<li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Comentarios</a></li>
 																	<li <?php echo ($device == 'android' ? 'class= "hidden"' : 'class= ""') ?>role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Trazabildad
 																			</a></li>
@@ -118,13 +118,14 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 																<div id="nota_pedido">
 																
 																<?php 
-														    		$this->load->view(CMP_ALM.'/notapedido/list',array('ot'=>$id_OT,'autoLanzar'=>true));
+																	$this->load->view(CMP_ALM.'/notapedido/list');
+																	
 																?>
 																</div>
 															</div>
 															
 															<!-- Info Tarea-->
-															<div role="tabpanel" class="tab-pane" id="info">
+															<div role="tabpanel" class="tab-pane" id="info2">
 																<div class="panel-body">
 
 																	<form>
@@ -234,11 +235,12 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 			$("#iniciarTarea").hide(); 
 			$("#tareaIniciada").hide(); 
 			var id_OT = $('#id_OT').val();
+			url='index.php/Tarea/confInicioTarea?id_OT='+id_OT;
+			console.log(url);
 			//alert(id_OT + 'id de ot');
 			$.ajax({
-						type: 'POST',
-						data: {id_OT: id_OT},
-						url: 'index.php/Tarea/confInicioTarea', 
+						type: 'GET',
+						url: url, 
 						success: function(data){
 							//alert(data);
 											// si la tarea esta iniciada el #estadoTarea de tarea es 1                   
@@ -262,7 +264,7 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 			
 			WaitingOpen('Iniciando Tarea...');
 			var id_OT = $('#id_OT').val();
-			$.ajax({
+			ajax({
 						type: 'POST',
 						data: {id_OT: id_OT},
 						url: 'index.php/Tarea/inicioTarea', 
@@ -386,7 +388,7 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 					$.ajax({
 							data: {infoId: infoId},
 							dataType: 'json',
-							type: 'POST',
+							type: 'GET',
 							url: 'index.php/Tarea/Obtener_Formulario',
 							success: function(result) {
 									$("#contFormSubtarea").html(result.html);
@@ -422,6 +424,16 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 					}
 			}
 		/*  /.	Pantalla pedido de insumos */	
+		//Rearmo ajax para guardar Post en indexedDB//
+		
+		function ajax(options) {
+    if (navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage(options.data)
+    }
+
+    return $.ajax(options);
+  }
+  //Fin redifinicion//
 </script>
 
 

@@ -100,10 +100,11 @@ class Tarea extends CI_Controller {
 			}
 			// Verifica si la tarea fue guardada la fecha de inicio
 			public function confInicioTarea(){
-				$id_OT = $this->input->post('id_OT');
+				$id_OT = $this->input->get('id_OT');
 				//dump($id_OT, 'id_OT: ');
 				$fecha = $this->Tareas->confInicioTareas($id_OT);
 				//dump($fecha, 'fecha: ');
+				
 				if ($fecha == '0000-00-00 00:00:00') {
 					echo json_encode(FALSE);
 				} else {
@@ -464,7 +465,7 @@ class Tarea extends CI_Controller {
 					// }
 					// TODO: AHORA TODAS LAS OT TIENEN UN CASE ASOCIADO		
 					$id_OT = $this->Tareas->getIdOTPorIdCaseEnBD($caseId);
-				
+				    
 				// Si hay Sol Serv trae el id de equpo sino por id de Ot
 					if($id_SS!= null){
 						$id_EQ = $this->Tareas->getIdEquipoPorIdSolServ($id_SS);
@@ -528,11 +529,24 @@ class Tarea extends CI_Controller {
 							$this->load->view('tareas/scripts/tarea_std');													
 							break;							
 					case 'Ejecutar OT':
+							
+							$this->load->model('traz-comp/Componentes');
+							$this->load->model(CMP_ALM.'/new/Pedidos_Materiales');
+							$data['descripcionOT'] = $this->Otrabajos->obtenerOT($id_OT)->descripcion;
+							#COMPONENTE ARTICULOS
+							$data['items'] = $this->Componentes->listaArticulos();
+							$data['lang'] = lang_get('spanish', 'Ejecutar OT');
+							#PEDIDO MATERIALES
+							$info = new StdClass();
+							$info->ortr_id = $id_OT;
+							$info->modal = 'agregar_pedido';
+							$data['info'] = $info;
 							$this->load->model(CMP_ALM.'/Notapedidos');
 							$data['list'] = $this->Notapedidos->notaPedidos_List($id_OT);
-							$data['permission'] = 'view';
+							$this->load->model('traz-comp/Componentes');
 							$this->load->view('tareas/view_ejecutarOT', $data);
-							$this->load->view('tareas/scripts/tarea_std');						
+							$this->load->view('tareas/scripts/tarea_std');	
+							$this->load->view('tareas/scripts/validacion_forms');					
 							break;
 					case 'Esperando cambio estado "a Ejecutar"':
 						$this->load->view('tareas/view_cambio_estado', $data);
@@ -638,7 +652,7 @@ class Tarea extends CI_Controller {
 			// trae datos para dibujar formulario en modal
 			public function Obtener_Formulario(){
 				
-				$infoId = $this->input->post('infoId');
+				$infoId = $this->input->get('infoId');
 				$data['form'] = $this->Tareas->get_form($infoId);				
 				$response['html'] = $this->load->view('tareas/viewFormSubtareas', $data, true);
 				echo json_encode($response);
