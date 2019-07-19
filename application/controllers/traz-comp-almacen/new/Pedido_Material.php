@@ -12,7 +12,7 @@ class Pedido_Material extends CI_Controller {
 
    public function estado()
    {
-       $id = $this->input->post('id');
+       $id = $this->input->get('id');
        echo json_encode($this->Pedidos_Materiales->obtener($id));
    }
 

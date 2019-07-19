@@ -1,1 +1,0 @@
-ALTER TABLE  orden_trabajo MODIFY id_usuario_a INT(11) NULL;

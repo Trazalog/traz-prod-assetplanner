@@ -1,2 +1,0 @@
-ALTER TABLE `orden_trabajo`
-DROP ot_adjunto

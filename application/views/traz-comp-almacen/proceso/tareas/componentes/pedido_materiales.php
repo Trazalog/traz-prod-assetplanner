@@ -26,7 +26,7 @@
         <button class="btn btn-primary" onclick="guardar_pedido();"><i class="fa fa-check"></i>Agregar</button>
     </div>
 </div>
-<table id="tabladetalle" class="table table-bordered table-striped table-hover">
+<table id="tabladetalle2" class="table table-bordered table-striped table-hover">
     <thead>
         <tr>
             <th width="1%">Acciones</th>
@@ -38,10 +38,19 @@
     </tbody>
 </table>
 <div class="modal-footer <?php echo (isset($info->pema_id)?'hidden':null)?>">
-    <button class="btn" onclick="linkTo('almacen/Notapedido')">Cerrar</button>
-    <button class="btn btn-primary <?php echo(viewOT&&$hecho==false?'hidden':null)?>" style="float:right;" onclick="lanzarPedido()">Hecho</button>
+    <?php
+    if(isset($info->modal))
+    {
+        echo '<button class="btn btn-primary" style="float:right;"
+        onclick="lanzarPedidoModal()">Hecho</button>';
+    }else{
+    echo '<button class="btn btn-primary" style="float:right;"
+        onclick="lanzarPedido()">Hecho</button>';
+    }
+        ?>
 </div>
 <script>
+var tablaDetalle2 = $('#tabladetalle2').DataTable({});
 var selectRow = null;
 
 function del(e) {
@@ -101,13 +110,10 @@ function edit_cantidad(e) {
     $('#set_cantidad').modal('show');
 }
 
-get_detalle();
 
 function get_detalle() {
-
     var id = $('#pema_id').val();
     if (id == null || id == '') {
-        DataTable('#tabladetalle');
         return;
     }
     $.ajax({
@@ -117,9 +123,8 @@ function get_detalle() {
         },
         url: 'index.php/almacen/Notapedido/getNotaPedidoId',
         success: function(data) {
-            $('#tabladetalle').DataTable().destroy();
-            $('#tabladetalle').find('tbody').empty();
-
+            tablaDetalle2.clear();
+            
             for (var i = 0; i < data.length; i++) {
                 var tr = "<tr class='celdas' data-id='" + data[i]['depe_id'] + "'data-id='" + data[i]['arti_id'] + "'>" +
                     "<td class='text-light-blue'>" +
@@ -127,10 +132,8 @@ function get_detalle() {
                     "<i class='fa fa-fw fa-times-circle' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
                     "<td class='articulo'>" + data[i]['barcode'] + "</td>" +
                     "<td class='cantidad text-center'>" + data[i]['cantidad'] + "</td></tr>";
-                $('#tabladetalle tbody').append(tr);
+                tablaDetalle2.row.add($(tr)).draw();
             }
-            DataTable('#tabladetalle');
-
 
         },
         error: function(result) {
@@ -195,6 +198,7 @@ function get_detalle() {
 
 
 <script>
+//('#tabladetalle2').dataTable({});
 function guardar_pedido() {
 
     if (!validarCampos()) {
@@ -252,9 +256,18 @@ function set_pedido() {
             get_detalle();
             clear();
         },
-        error: function(result) {
-            WaitingClose();
-            alert("Error en guardado...");
+        error: function() {
+           
+            data={id_arti: id, cantidad:cant};
+            var tr = "<tr class='celdas' data-json='"+JSON.stringify(data) +"'>" +
+                    "<td class='text-light-blue'>" +
+                    "<i class='fa fa-fw fa-pencil' style='cursor: pointer;' title='Editar' onclick='edit_cantidad(this)'></i>" +
+                    "<i class='fa fa-fw fa-times-circle' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
+                    "<td class='articulo'>" + document.getElementById('inputarti').value + "</td>" +
+                    "<td class='cantidad text-center'>" + data.cantidad + "</td></tr>";
+                tablaDetalle2.row.add($(tr)).draw();
+           WaitingClose();
+            
         },
     });
 }
@@ -274,6 +287,54 @@ function lanzarPedido() {
             alert("Error al Lanzar Pedido");
         }
     });
+}
+function lanzarPedidoModal() {
+    
+    notaid= document.getElementById('pema_id').value;
+    idOT = document.getElementById('ortr_id').value;
+    descripcion = document.getElementById('descripcionOT').value;
+    fecha = new Date();
+    mes = fecha.getMonth() + 1;
+    dia = fecha.getDate();
+    año = fecha.getFullYear();
+    fecha = dia + '/' + mes + '/' + año;
+    document.getElementById('pema_id').value =null;
+    modal= '<?php echo $info->modal;?>';
+    data = {id_notaPedido: notaid, fecha: fecha, id_ordTrabajo: idOT, descripcion: descripcion ,justificacion:"",estado:"Solicitado"};
+      html="";
+      html += "<tr data-json='"+JSON.stringify(data)+"' id='"+data.id_notaPedido+"'>";
+      html += '<td class="text-center"> <i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer;margin:5px;" title="Detalle Pedido Materiales"></i> </td>';
+      html += '<td class="text-center">'+data.id_notaPedido+'</td>';
+      html += '<td class="text-center">'+data.id_ordTrabajo+'</td>';
+      html += '<td class="text-center">'+data.fecha+'</td>';
+      html += '<td>'+data.descripcion+' '+data.justificacion+'</td>';
+      html += '<td class="text-center">'+data.estado+'</td>';
+      html += '</tr>';
+      tablaDeposito.row.add($(html)).draw();
+      var articulos =[];
+      $('#tabladetalle2 tbody').find('tr').each(function(){
+        json="";
+        json = $(this).attr('data-json');
+        articulos.push(json);
+      });
+      articulos = JSON.stringify(articulos);
+     
+      ajax({
+        data: {
+            articulos:articulos,
+            idOT:idOT
+        },
+        type: 'POST',
+        //dataType: 'json',
+        url: 'index.php/almacen/Notapedido/pedidoOffline',
+        success: function(result) {
+           console.log('hola');
+        },
+        error: function(result) {
+            console.log('chau');
+        }
+    });
+    $('#'+modal).modal('hide');
 }
 
 function edit_pedido() {
@@ -311,8 +372,9 @@ function edit_pedido() {
             clear();
         },
         error: function(result) {
+            alert('editesrt');
             WaitingClose();
-            alert("Error en guardado...");
+          //  alert("Error en guardado...");
         }
     });
 }
@@ -330,4 +392,14 @@ function clear() {
     $('#inputarti').val(null);
     $('#add_cantidad').val(null);
 }
+//Rearmo ajax para guardar Post en indexedDB//
+		
+function ajax(options) {
+    if (navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage(options.data)
+    }
+
+    return $.ajax(options);
+  }
+  //Fin redifinicion//
 </script>

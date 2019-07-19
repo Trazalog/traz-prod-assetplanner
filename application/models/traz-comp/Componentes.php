@@ -28,15 +28,15 @@ class Componentes extends CI_Model
 		}
 		$data['items'] = $aux;
 		//echo var_dump($data);die;
-		$data['lang'] = json_decode(file_get_contents(base_url('lang.json')), true)['labels']['label'];
+		/*$data['lang'] = json_decode(file_get_contents(base_url('lang.json')), true)['labels']['label'];
 		$lenguaje =  array();
 		 for($i=0;$i<count($data['lang'] );$i++)
 		 {
 			 $aux = array($data['lang'][$i]['id']=> $data['lang'][$i]['texto']);
 			 $lenguaje = array_merge($lenguaje,$aux);
 		 }
-         $data['lang'] =$lenguaje;
+         $data['lang'] =$lenguaje;*/
          
-         return $data;
+         return $data['items'];
     }
 }
