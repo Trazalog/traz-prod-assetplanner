@@ -34,14 +34,14 @@ class Otrabajo extends CI_Controller {
 		$this->load->view('otrabajos/view_agregarOT', $data);
 	}
   /**
-	 * Muestra pantalla de listado de Ordenes de Trabajo.
+	 * Muestra pantalla de listado de Ordenes de Trabajo de distintos origenes.
 	 *
 	 * @param 	String 	$permission 	Permisos de ejecuci�n.
 	 */
 	public function listOrden($permission,$ot=null) // Ok
 	{
 		$this->load->library('BPM',null);
-		$data['list']    = $this->Otrabajos->otrabajos_List($ot);
+		$data['list']    = $this->Otrabajos->otrabajos_List($ot, 2);
 		//dump($data['list'], 'listado');
 		$data['permission'] = $permission;
 		$data['list_usuarios'] = $this->bpm->ObtenerUsuarios();	
@@ -51,7 +51,24 @@ class Otrabajo extends CI_Controller {
 		
 		$this->load->view('otrabajos/list', $data);
 		
-  }  
+	}  
+	 /**
+	 * Muestra pantalla de listado de Ordenes de Trabajo generada poritem de menu.
+	 *
+	 * @param 	String 	$permission 	Permisos de ejecuci�n.
+	 */
+	public function listOTestandar($permission,$ot=null){
+		$this->load->library('BPM',null);
+		$data['list']    = $this->Otrabajos->otrabajos_List($ot, 1);
+		//dump($data['list'], 'listado');
+		$data['permission'] = $permission;
+		$data['list_usuarios'] = $this->bpm->ObtenerUsuarios();	
+		//log_message('DEBUG', 'listado de usr en BPM: '.json_encode($data['list_usuarios']));
+
+		$data['opciones'] = $this->load->view('otrabajos/tabla_opciones',['permission'=>$permission],true);
+		
+		$this->load->view('otrabajos/list', $data);
+	}
   /**
    * Traer proveedores de empresa con estado AC.
    *
