@@ -52,7 +52,15 @@
                         $idsolicitud = $a['id_solicitud'];
                         echo '<tr id="'.$id.'" class="'.$id.' ot-row" data-id_equipo="'.$id_equipo.'" data-causa="'.$causa.'" data-idsolicitud="'.$idsolicitud.'">';
                         echo '<td>';
+                        $ordenservicioId = $a['ordenservicioId'];                       
                         echo $opciones;
+                        if($ordenservicioId != NULL){
+                          // Ver informe de servicios generado
+                          echo '<li role="presentation" id="cargOrden"><a onclick="ver_informe_servicio(this)" style="color:white;" role="menuitem" tabindex="-1" href="#" ><i class="fa fa-file-text text-white" style="color:white; cursor: pointer;margin-left:-1px"></i>Informe de Servicios</a></li>';
+                          echo '</ul><div>';
+                        }else{
+                          echo '</ul><div>';
+                        }
                         echo '</td>';                        
                         echo '<td>'.$a['id_orden'].'</td>';                       
                         $fecha_program = ($a['fecha_program'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_program']), 'd-m-Y');
@@ -1317,8 +1325,8 @@ function guardarpedido(){
 
 
 
-// GENERAR INFORME DE SERVICIOS
-  // Genera Informe de Servicio - Hugo
+// INFORME DE SERVICIOS
+  // Genera Informe de Servicio - Evaluar funcionamoento a futuro no esta andando
   function generar_informe_servicio (o){ 
       
     var id_sol = parseInt($(o).closest('tr').attr('id')); 
@@ -1329,9 +1337,19 @@ function guardarpedido(){
     $("#content").load("<?php echo base_url(); ?>index.php/Ordenservicio/cargarOrden/<?php echo $permission; ?>/"+id_sol+"/"+id_eq+"/"+id_solicitud+"/");
     WaitingClose();
   }
+  // VER INFORME DE SERVICIOS
+  function ver_informe_servicio (o){ 
 
+    var id_OT = $(o).closest('tr').attr('id');  
+    var id_eq  = $(o).closest('tr').attr('data-id_equipo');
+    var id_solicitud  = $(o).closest('tr').attr('data-idsolicitud');
 
-
+    WaitingOpen();
+    $('#modalInforme').modal('show');
+    $('#modalInformeServicios').empty();
+    $("#modalInformeServicios").load("<?php echo base_url(); ?>index.php/Ordenservicio/verInforme/"+id_OT+"/"+id_eq+"/"+id_solicitud+"/");
+    WaitingClose();
+  }
 
 // OT TOTAL, pasa a la partalla de ot terminadas 
   function guardartotal(){
@@ -2294,10 +2312,17 @@ function guardarpedido(){
 <!-- / Modal -->
 
 
-<!--  MODAL ASIGNAR OT Y EJECUTAR   -->
+<!--  MODAL Informe de Servicios   -->
 <div class="modal bs-example-modal-lg" id="modalInforme" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
+        <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" >&times;</span>
+        </button>
+        <h4 class="modal-title" >Informe de Servicios</h4>
+      </div>
+            
             <div class="row">
                 <div class="col-sm-12">
                     <div class="box">

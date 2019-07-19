@@ -39,8 +39,8 @@
     //// GENERA INFORME DE SERVICIOS
     if (strpos($permission,'Del') !== false) {
 
-        echo '<li role="presentation" id="cargOrden"><a onclick="generar_informe_servicio(this)" style="color:white;" role="menuitem" tabindex="-1" href="#" ><i class="fa fa-file-text text-white" style="color:white; cursor: pointer;margin-left:-1px"></i>Informe de Servicios</a></li>';
-   
+       //iba a funcion generar informe de servicios
+        //echo '<li role="presentation" id="cargOrden"><a onclick="generar_informe_servicio(this)" style="color:white;" role="menuitem" tabindex="-1" href="#" ><i class="fa fa-file-text text-white" style="color:white; cursor: pointer;margin-left:-1px"></i>Informe de Servicios</a></li>';
     }   
   
     if (strpos($permission,'Pedidos') !== false) {
@@ -53,6 +53,6 @@
    
     echo '<li role="presentation"><a onclick="imprimir(this)"style="color:white;" role="menuitem" tabindex="-1" href="#"><i class="fa fa-print text-white" style="color:white; cursor: pointer;margin-left:-3px"></i>Imprimir</a></li>';
 
-    echo '</ul><div>';
-?>
+    // echo '</ul><div>';
+
 
