@@ -1,5 +1,5 @@
   <div class="modal-header">    
-    <h4 class="modal-title">Informe de Servicios</h4>
+    <!-- <h4 class="modal-title">Informe de Servicios</h4> -->
   </div>
 
   <form class="form-horizontal" role="form" id="form_order" action="" accept-charset="utf-8">

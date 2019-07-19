@@ -23,12 +23,18 @@ class Otrabajos extends CI_Model {
 												sisusers.usrName, 
 												sisusers.usrLastName, equipos.codigo, 
 												0 as grpId,
-												equipos.id_equipo');
+												equipos.id_equipo,
+												orden_servicio.id_orden AS ordenservicioId');
 		$this->db->from('orden_trabajo');
 		$this->db->join('tbl_tipoordentrabajo', 'tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
 		$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario');
 		$this->db->join('sisusers AS user1', 'orden_trabajo.id_usuario_a = user1.usrId', 'left');//usuario asignado?
 		$this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
+	
+		//LEFT JOIN orden_servicio ON orden_trabajo.id_orden = orden_servicio.id_ot
+
+		$this->db->join('orden_servicio', 'orden_trabajo.id_orden = orden_servicio.id_ot', 'left');
+	
 		$this->db->where('equipos.estado !=','AN');
 
 		if($tipo == 1){
