@@ -1,4 +1,3 @@
-<h1>HOLIS</h1>
 
 <i class="fa fa-paperclip text-light-blue btn-form" style="cursor: pointer; margin-left: 15px;" aria-hidden="true"
     id="1000" data-infoId="6" data-valido="true"></i>

@@ -89,8 +89,14 @@ class dash extends CI_Controller {
 			{
 				$data['permiso'] = $this->items[$i]['seguridad'];
 			}
-			$this->load->library('BPM');
-			$data['tareas'] = $this->bpm->getToDoList();
+			
+			$rsp = $this->bpm->getToDoList();
+		
+			if(!$rsp['status']){
+				return $rsp;
+			}
+		
+			$data['tareas'] = $rsp['data'];
 			
 			for($i=0;$i<count($data['tareas']['data']); $i++)
 			{

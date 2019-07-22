@@ -277,10 +277,15 @@ function lanzarPedido() {
         data: {
             id: $('#pema_id').val()
         },
+        dataType:'json',
         type: 'POST',
-        url: 'index.php/almacen/new/Pedido_Material/pedidoNormal',
+        url: '<?php echo base_url(CMP_ALM) ?>new/Pedido_Material/pedidoNormal',
         success: function(result) {
-            linkTo('almacen/Notapedido');
+            if(result.status){
+                 linkTo('<?php echo CMP_ALM ?>Notapedido');
+            }else{
+                alert(result.msj);
+            }
         },
         error: function(result) {
             WaitingClose();

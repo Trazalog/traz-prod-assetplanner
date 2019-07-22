@@ -138,14 +138,8 @@ class Backlog extends CI_Controller {
 								);
 	
 		$result = $this->Backlogs->editar_backlogs($datos,$idBacklog);		
-		
-		// // trae la cabecera
-		$parametros = $this->bpm->conexiones();
-		// Cambio el metodo de la cabecera a "PUT"
-		$parametros["http"]["method"] = "POST";	
-		// Variable tipo resource referencia a un recurso externo.
-		$param = stream_context_create($parametros);
-		$result = $this->Tareas->cerrarTarea($idTarBonita, $param);
+	
+		$result = $this->bpm->cerrarTarea($idTarBonita);
 
 		echo json_encode($result);
 	}
@@ -183,8 +177,7 @@ class Backlog extends CI_Controller {
 		// SI ES TAREA BPM (BACK POR PROCESO)							
 		if ($tipo == 'editNuevo') {
 				
-				$this->load->library('BPM');
-				$response = $this->bpm->CerrarTareaBPM($idTarBonita);	
+				$response = $this->bpm->cerrarTarea($idTarBonita);	
 				// Si cerro la tarea
 				if ( json_decode($response['code']) < 300) {	
 					

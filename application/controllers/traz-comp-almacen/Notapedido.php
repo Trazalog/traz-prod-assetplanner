@@ -78,9 +78,9 @@ class Notapedido extends CI_Controller
             'pedidoExtraordinario' =>  $pedidoExtra
         ];
 
-        $data = $this->bpmalm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS,$contract);
+        $data =  $this->bpm->lanzarProceso(BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS,$contract);
 
-        $peex['case_id'] = $data['case_id'];
+        $peex['case_id'] = $data['data']['caseId'];
         $peex['fecha'] = date("Y-m-d");
         $peex['detalle'] = $pedidoExtra;    
         $peex['ortr_id'] = $ot; 
@@ -158,16 +158,18 @@ class Notapedido extends CI_Controller
     
     public function pedidoNormal($pemaId)
     {
-        $this->load->library('BPMALM');
-
         //? DEBE EXISTIR LA NOTA DE PEDIDO 
         $contract = [
             'pIdPedidoMaterial' => $pemaId,
         ];
 
-        $data = $this->bpmalm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES,$contract);
+        $rsp = $this->bpm->lanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES,$contract);
 
-        $this->Notapedidos->setCaseId($pemaId, $data['case_id']);
+        if(!$rsp['status']){
+            return json_encode($rsp);
+        }
+
+        $this->Notapedidos->setCaseId($pemaId, $rsp['data']['caseId']);
     }
 
     public function editarPedido()

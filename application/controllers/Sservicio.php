@@ -71,7 +71,6 @@ class Sservicio extends CI_Controller
 		// GUARDA SSERVICIOS y lanza proceso en BPM (inspección)
 		function lanzarProcesoBPM()
 		{
-			$this->load->library('BPM');
 			// inserta registro en  tabla solicitud de reparacion
 			$id_solServicio  = $this->Sservicios->setservicios($this->input->post());
 
@@ -83,7 +82,7 @@ class Sservicio extends CI_Controller
 				);			
 
 				//Lanzar Proceso
-				$responce  = $this->bpm->LanzarProceso($contract);
+				$responce  = $this->bpm->lanzarProceso(BPM_PROCESS_ID, $contract);
 				if(!$responce['status']){echo json_encode($responce); return;}
 
 				//Validar Resultado

@@ -12,7 +12,7 @@
     <script>
 
         var link = '';
-       // linkTo('almacen/Proceso');
+      
         $('.menu .link').on('click',function(){
             link = $(this).data('link');
             linkTo();
