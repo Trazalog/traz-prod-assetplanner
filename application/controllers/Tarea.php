@@ -83,7 +83,10 @@ class Tarea extends CI_Controller {
 				//Obtener Bandeja de Usuario desde Bonita
 				$response = $this->bpm->getToDoList();
 				//dump($response, 'respuesta tareas BPM: ');
-				if(!$response['status']){echo json_encode($response);return;}
+				if(!$response['status']){
+					//$this->load->view('404');
+					return;
+				}
 				//Completar Tareas con ID Solicitud y ID OT
 				$data_extend = $this->Tareas->CompletarToDoList($response['data']);				
 				$data['list'] = $data_extend;

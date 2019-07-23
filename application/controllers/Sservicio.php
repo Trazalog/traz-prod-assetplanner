@@ -83,14 +83,18 @@ class Sservicio extends CI_Controller
 
 				//Lanzar Proceso
 				$responce  = $this->bpm->lanzarProceso(BPM_PROCESS_ID, $contract);
-				if(!$responce['status']){echo json_encode($responce); return;}
+				
+				if(!$responce['status']){
+					echo json_encode($responce); 
+					return;
+				}
 
 				//Validar Resultado
 			
-				if ($responce['case_id']) {
+				if ($responce['data']['caseId']) {
 
 					//update de solic de servicio concaseid
-					if($this->Sservicios->setCaseId($responce['case_id'],$id_solServicio)){
+					if($this->Sservicios->setCaseId($responce['data']['caseId'],$id_solServicio)){
 
 						echo json_encode(['status'=> true, 'msj'=>'OK']);return;
 
