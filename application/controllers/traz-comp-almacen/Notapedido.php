@@ -78,9 +78,9 @@ class Notapedido extends CI_Controller
             'pedidoExtraordinario' =>  $pedidoExtra
         ];
 
-        $data = $this->bpmalm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS,$contract);
+        $data =  $this->bpm->lanzarProceso(BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS,$contract);
 
-        $peex['case_id'] = $data['case_id'];
+        $peex['case_id'] = $data['data']['caseId'];
         $peex['fecha'] = date("Y-m-d");
         $peex['detalle'] = $pedidoExtra;    
         $peex['ortr_id'] = $ot; 
@@ -117,7 +117,7 @@ class Notapedido extends CI_Controller
 
     public function getNotaPedidoId()
     {
-        $response = $this->Notapedidos->getNotaPedidoIds($this->input->post('id'));
+        $response = $this->Notapedidos->getNotaPedidoIds($this->input->get('id_nota'));
         echo json_encode($response);
     }
 
@@ -158,16 +158,18 @@ class Notapedido extends CI_Controller
     
     public function pedidoNormal($pemaId)
     {
-        $this->load->library('BPMALM');
-
         //? DEBE EXISTIR LA NOTA DE PEDIDO 
         $contract = [
             'pIdPedidoMaterial' => $pemaId,
         ];
 
-        $data = $this->bpmalm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES,$contract);
+        $rsp = $this->bpm->lanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES,$contract);
 
-        $this->Notapedidos->setCaseId($pemaId, $data['case_id']);
+        if(!$rsp['status']){
+            return json_encode($rsp);
+        }
+
+        $this->Notapedidos->setCaseId($pemaId, $rsp['data']['caseId']);
     }
 
     public function editarPedido()
@@ -244,4 +246,22 @@ class Notapedido extends CI_Controller
         $this->load->view(CMP_ALM.'/notapedido/generar_pedido', $data);
        
     }
+    public function pedidoOffline()
+{
+  $idot= $this->input->post('idOT');
+  $articulos= json_decode($this->input->post('articulos'));
+  $cabecera['fecha'] = date('Y-m-d');
+  $cabecera['ortr_id'] = $idot;
+  $cabecera['empr_id'] = empresa();
+  //var_dump($cabecera);die;
+  $idnota = $this->Notapedidos->setCabeceraNota($cabecera);
+  for ($i=0; $i < count($articulos); $i++) { 
+    $deta[$i]['pema_id'] = $idnota;
+    $deta[$i]['arti_id'] = $articulos[$i]->id_arti;
+    $deta[$i]['cantidad'] = $articulos[$i]->cantidad;
+    $deta[$i]['fecha_entrega'] = date('Y-m-d');
+  }
+  $response = $this->Notapedidos->setDetaNota($deta);
+  echo json_encode($response);
+}
 }

@@ -9,7 +9,6 @@ class Otrabajo extends CI_Controller {
 		$this->load->model('Equipos');
 		
 	}
-
 	/**
 	 * Muestra pantalla de listado de Ordenes de Trabajo.
 	 *
@@ -40,12 +39,12 @@ class Otrabajo extends CI_Controller {
 	 */
 	public function listOrden($permission,$ot=null) // Ok
 	{
-		$this->load->library('BPM',null);
 		$data['list']    = $this->Otrabajos->otrabajos_List($ot, 2);
-		//dump($data['list'], 'listado');
 		$data['permission'] = $permission;
-		$data['list_usuarios'] = $this->bpm->ObtenerUsuarios();	
-		//log_message('DEBUG', 'listado de usr en BPM: '.json_encode($data['list_usuarios']));
+
+		$rsp = $this->bpm->getUsuarios();
+
+		$data['list_usuarios'] = $rsp['data'];
 
 		$data['opciones'] = $this->load->view('otrabajos/tabla_opciones',['permission'=>$permission],true);
 		
@@ -178,14 +177,20 @@ class Otrabajo extends CI_Controller {
 		// guarda OT y devuelve el id de insercion
 		$ultimoId = $this->Otrabajos->guardar_agregar($datos2);	
 		
-		$this->load->library('BPM');
 		$contract = array(
 				"idSolicitudServicio"	=> 0,		// 0 NULL  FALSE       // "" ''
 				"idOT"  => 	$ultimoId
 		);	
-		$result = $this->bpm->LanzarProceso($contract);						
+
+		$result = $this->bpm->lanzarProceso(BPM_PROCESS_ID, $contract);	
+		
+		if(!$result['status']){
+
+			echo json_encode($result);
+
+		}
 		// guarda case id generado el lanzar proceso				
-		$respcaseOT = $this->Otrabajos->setCaseidenOTNueva($result['case_id'], $ultimoId);
+		$respcaseOT = $this->Otrabajos->setCaseidenOTNueva($result['data']['caseId'], $ultimoId);
 
 		if($ultimoId){
 
@@ -639,20 +644,21 @@ class Otrabajo extends CI_Controller {
 		$task_id = $this->input->post('task_id');
 		$user_id = $this->input->post('usuario');
 
-
-		//CERRAR TAREA EN BONITA  
-		$this->load->library('BPM',0);
-
 		//CERRAR TAREA BPM
-		$result = $this->bpm->CerrarTareaBPM($task_id);
-		if(!$result['status']) {echo $result['msj'];return;}
+		$result = $this->bpm->cerrarTarea($task_id);
+
+		if(!$result['status']) {
+			echo $result['msj'];return;
+		}
 
 		//OBTENER TASK_ID EJECTURAR OT
 		$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Ejecutar OT');
-		if($task_id == 0) {echo ASP_0100; return;}
+
+		if($task_id == 0) {echo 'No existe Tarea Ejecutar OT'; return;}
 
 		//ASIGNO USUARIO A TAREA EJECTURA OT
 		$result = $this->bpm->setUsuario($task_id, $user_id);
+
 		if(!$result['status']) {echo $result['msj'];return;}
 		
 		//GUARDAR DATOS DE OT EN BD MYSQL	
@@ -923,7 +929,6 @@ class Otrabajo extends CI_Controller {
 		//dump($id, 'id de OT:');
 		$case_id = $this->Otrabajos->getCaseIdOT($id);	
 		//dump($case_id, 'caseId en 1: ');
-		$this->load->library('BPM');
 		$origenOT = $this->Otrabajos->getDatosOrigenOT($id);		
 		
 		$tipo = $origenOT[0]['tipo'];	
@@ -948,18 +953,20 @@ class Otrabajo extends CI_Controller {
 				if($idSolRep == NULL){	//viene de item menu 
 					// lanzar proceso
 					$contract = array(
-												"idSolicitudServicio"	=>	0,
-												"idOT"  => 	$id
-											);
-					$responce = $this->bpm->LanzarProceso($contract);
+						"idSolicitudServicio"	=>	0,
+						"idOT"  => 	$id
+					);
+					$responce = $this->bpm->lanzarProceso(BPM_PROCESS_ID, $contract);
 					// guardo el caseid en OTrabajo
 					if($responce['status']){					
-						$case_id = $responce['case_id'];
+						$case_id = $responce['data']['caseId'];
 						$this->Otrabajos->setCaseidenOT($case_id, $id);					
 					}	
+
 					$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar" 2');			
 					//devueve task
 					echo $task_id;
+
 					return;		
 				}else{	// backlog generado desde una SServicios
 					
@@ -985,7 +992,7 @@ class Otrabajo extends CI_Controller {
 			"idSolicitudServicio"	=>	0,
 			"idOT"  => 	$id
 		);
-		$responce = $this->bpm->LanzarProceso($contract);
+		$responce = $this->bpm->lanzarProceso(BPM_PROCESS_ID, $contract);
 		// guardo el caseid en OTrabajo
 		if($responce['status']){					
 			$case_id = $responce['case_id'];
@@ -1038,17 +1045,14 @@ class Otrabajo extends CI_Controller {
 			default:
 				$tipo  = 'correctivo';
 				break;
-		}
-
-	
-		$this->load->library('BPM');		
+		}	
 
 		// asigno usuario logueado para finalizar la tarea 'Asignar responsable y recursos'
 		$responce = $this->bpm->setUsuario($task,$userBpm);
 	
 		if(!$responce['status']){echo json_encode($responce);return;}	
 		//Cerrar Tarea Ejectuar OT con case que viene de pantalla
-		$responce = $this->bpm->CerrarTareaBPM($task);	
+		$responce = $this->bpm->cerrarTarea($task);	
 		if(!$responce['status']){echo json_encode($responce);return;}
 
 		// buscar task pa asignar la tarea siguiente (ejecutar ot) a un responsable		

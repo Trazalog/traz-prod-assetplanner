@@ -92,7 +92,7 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 | Version de Componente de Almacen
 |
 */
-define('CMP_ALM', 'traz-comp-almacen');  
+define('CMP_ALM', 'traz-comp-almacen/');  
 /*
 |--------------------------------------------------------------------------
 | Bonita url
@@ -120,11 +120,11 @@ define('BPM_USER_PASS', 'bpm');
 
 //? PEDIDOS NORMALES
  
-define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '9120979153540387743'); 
+define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '6833268789089291878'); 
 
 //? PEDIDOS EXTRAORDINATIOS
 
-define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '7321139677245257050');
+define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '6013058915384903051');
 
 
 /*
@@ -156,15 +156,22 @@ define ("ID_FORMULARIOS", serialize (array (1,2,3,4,5,6,7,8,9)));
 |
 |
 */
-//Errores 100 <200 de Bonita
-//No se puedo Cerrar Tarea
-define('ASP_0100', 'Error ASP_0100: Comunicarse con el Proveedor de Servicio'); 
-
-//No se pudo Asignar Usuario
-define('ASP_0101', 'Error ASP_0101: Comunicarse con el Proveedor de Servicio'); 
-
-
-//Errores 200 < 300 de MySql
-define('ASP_0200', 'Error ASP_0200: Comunicarse con el Proveedor de Servicio'); 
+// ERRORES DE BONITA
+define('ASP_100', 'Fallo Conexión BPM');
+define('ASP_101', 'Error al Inciar Proceso');
+define('ASP_102', 'Error al Tomar Tarea');
+define('ASP_103', 'Error al Soltar Tarea');
+define('ASP_104', 'Error al Cerrar Tarea');
+define('ASP_105', 'Error al Obtener Vista Global');
+define('ASP_106', 'Error al Obtener Usuarios');
+define('ASP_107', 'Error al Asignar Usuario');
+define('ASP_108', 'Error al Guardar Comentarios');
+define('ASP_109', 'Error de Loggin');
+define('ASP_110', 'Error al Obtener Detalle Tarea');
+define('ASP_111', 'Error al Obtener Bandeja de Tareas');
+define('ASP_112', 'Error al Obtener Comentarios');
+define('ASP_113', 'Usuario No Encontrado');
+define('ASP_114', 'Error al Actualizar Variable');
+define('ASP_115', 'Error al Leer Variable');
 
 define('viewOT', true);

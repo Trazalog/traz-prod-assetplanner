@@ -236,8 +236,6 @@ class Users extends CI_Model
 	function sessionStart_($data = null)
 	{
 
-		$this->load->library('BPM');
-
 		if($data == null)
 		{
 			return false;
@@ -263,8 +261,15 @@ class Users extends CI_Model
 			if ($query->num_rows() != 0)
 			{
 				$datosSesionUsuario = $query->result_array();
-				
-				$datosSesionUsuario[0]['userBpm'] = $this->bpm->getUser($datosSesionUsuario[0]["usrNick"]);		
+
+				$rsp = $this->bpm->getUser($datosSesionUsuario[0]["usrNick"]);
+
+				if(!$rsp['status'])
+				{
+					return false;
+				}
+
+				$datosSesionUsuario[0]['userBpm'] = $rsp['data'];
 
 				$this->session->set_userdata('user_data', $datosSesionUsuario);
 	 			return true;

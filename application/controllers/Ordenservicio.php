@@ -186,8 +186,7 @@ class Ordenservicio extends CI_Controller {
         }
       }
 
-      $this->load->library('BPM');
-      $resp = $this->bpm->CerrarTareaBPM($idTarBonita,$data); 
+      $resp = $this->bpm->cerrarTarea($idTarBonita,$data); 
 
       if ( json_decode($resp['code']) < 300) {  
         // guardo el informe de servicios

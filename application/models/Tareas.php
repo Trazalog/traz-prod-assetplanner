@@ -5,6 +5,7 @@ class Tareas extends CI_Model {
 	function __construct()
 	{
 		parent::__construct();
+		$this->load->model('Forms');
 	}
 /* TAREAS ASSET ORIGINALES (TAREAS ESTANDAR)*/
 	function Listado_Tareas()
@@ -173,26 +174,25 @@ class Tareas extends CI_Model {
 		return $this->db->get('tareas')->result_array()[0];
 	}
 	// Devuelve el id de tareas de trazaj correspond al id_tarea bonita para detatareas
-	function getIdTareaTraJobs($idBonita,$param){
+	// function getIdTareaTraJobs($idBonita,$param){
 
-		$urlResource = 'API/bpm/activityVariable/';
-		$idListEnBPM = '/trazajobsTaskId';
+	// 	$urlResource = 'API/bpm/activityVariable/';
+	// 	$idListEnBPM = '/trazajobsTaskId';
 
-		try {
-			$idTJ = @file_get_contents(BONITA_URL.$urlResource.$idBonita.$idListEnBPM , false, $param);
-			$idTJobs = json_decode($idTJ,true); //sin true no se puede acceder
-			$id_listarea = $idTJobs["value"];
-		} catch (Exception $e) {
-			echo 'Excepción capturada: ',  $e->getMessage(), "\n";
-			$id_listarea = 0;
-		}
+	// 	try {
+	// 		$idTJ = @file_get_contents(BONITA_URL.$urlResource.$idBonita.$idListEnBPM , false, $param);
+	// 		$idTJobs = json_decode($idTJ,true); //sin true no se puede acceder
+	// 		$id_listarea = $idTJobs["value"];
+	// 	} catch (Exception $e) {
+	// 		echo 'Excepción capturada: ',  $e->getMessage(), "\n";
+	// 		$id_listarea = 0;
+	// 	}
 
-		return $id_listarea;
-	}
+	// 	return $id_listarea;
+	// }
 	// Trae los datos de la tarea desde BPM
 	function getDatosBPM($idTarBonita,$param){
 
-		// $response = file_get_contents(BONITA_URL.'API/bpm/humanTask/54', false, $param);	
 		$urlResource = BONITA_URL.'API/bpm/humanTask/';
 		$data = file_get_contents($urlResource.$idTarBonita , false, $param);
 		return $data;
@@ -658,15 +658,7 @@ class Tareas extends CI_Model {
 		}
 
 
-		// traee id de SServicio por caseid
-		function getIdSolServPorIdCase($caseId, $param){
-				// [URL_BONITA]/API/bpm/caseVariable/:caseId/gIdOT
-			$urlResource = BONITA_URL.'API/bpm/caseVariable/';
-			$var = '/gIdSolicitudServicio';
-			$data =json_decode(file_get_contents($urlResource.$caseId.$var , false, $param), true);
-
-			return $data;
-		}
+	
 		// trae id de OT por caseid
 		function getIdOTPorIdCase($caseId, $param){
 			// [URL_BONITA]/API/bpm/caseVariable/:caseId/gIdOT

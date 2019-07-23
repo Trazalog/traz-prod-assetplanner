@@ -7,10 +7,9 @@ class Calendario extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->model('Calendarios');
-		//$this->load->model('Overviews');
 		$this->load->model('Tareas');
 		$this->load->model('Otrabajos');
-		$this->load->library('BPM');
+
 	}	
 
 	public function indexot($permission) // Ok
@@ -258,15 +257,14 @@ class Calendario extends CI_Controller {
 					$this->setHerramInsPorTarea($idOT,$tipo,$id_solicitud);					
 					// si es Preventivo o Predictivo lanza proceso nuevo
 					if ( ($tipo == 'preventivo') || ($tipo == 'predictivo') || ( ($caseDeBacklog == 0) && ($tipo != 'correctivo') ) ) {
-					
-							//$this->load->library('BPM');						
+										
 							$contract = array(
 														"idSolicitudServicio"	=> 0,		
 														"idOT"  => 	$idOT
 													);						
 							$result = $this->bpm->LanzarProceso($contract);														
 							// guarda case id generado el lanzar proceso				
-							$respcaseOT = $this->Calendarios->setCaseidenOT($result['case_id'], $idOT);					
+							$respcaseOT = $this->Calendarios->setCaseidenOT($result['data']['caseId'], $idOT);					
 					}else{
 
 							// guarda caseid ya generado anteriormente
@@ -398,7 +396,6 @@ class Calendario extends CI_Controller {
 	function setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo, $id_solicitud){	
 
 		//cargo libreria BPM
-		//$this->load->library('BPM');
 		$estado = 'PL';
 		
 		while ($fecha_limite >= $fec_programacion ) {
@@ -416,7 +413,7 @@ class Calendario extends CI_Controller {
 			);						
 			$result = $this->bpm->LanzarProceso($contract);								
 			// guarda case id generado el lanzar proceso				
-			$respcaseOT = $this->Calendarios->setCaseidenOT($result['case_id'], $idOT);
+			$respcaseOT = $this->Calendarios->setCaseidenOT($result['data']['caseId'], $idOT);
 			// a la fecha de programacion le sumo la frecuencia en dias	   	
 			$nuev_fecha = strtotime ( '+'.$diasFrecuencia.'day' , strtotime ( $fec_programacion ) ) ;
 			$nuev_fecha = date ( 'Y-m-d H:i:s' , $nuev_fecha );
@@ -555,7 +552,6 @@ class Calendario extends CI_Controller {
 	 function ObtenerTaskIDxOT($id){ 	
 				
 		$case_id = $this->Otrabajos->getCaseIdOT($id);
-		//$this->load->library('BPM');
 		$origenOT = $this->Otrabajos->getDatosOrigenOT($id);	
 		$tipo = $origenOT[0]['tipo'];	
 		$id_solicitud = $origenOT[0]['id_solicitud'];// id de sol reparacion
@@ -739,10 +735,7 @@ class Calendario extends CI_Controller {
 			}
 			
 			// traer de bpm el id de tarea (id)		
-			//$this->load->library('BPM');
-			$parametros = $this->bpm->LoggerAdmin();
-			$param = stream_context_create($parametros);
-			$actividades = $this->bpm->ObtenerActividades($caseId,$param);		
+			$actividades = $this->bpm->ObtenerActividades(BPM_PROCESS_ID, $caseId);		
 			$infoTarea['taskId'] = json_decode($this->getIdTask($actividades,$tipo),true);
 			$infoTarea['caseId'] = $caseId;			
 			return $infoTarea;
@@ -768,29 +761,13 @@ class Calendario extends CI_Controller {
 
 		function cerrarTarea($idTask){			
 			
-			$parametros = $this->bpm->conexiones();				
-			$parametros["http"]["method"] = "POST";			
-			$param = stream_context_create($parametros);
-
-			$response = $this->Tareas->cerrarTarea($idTask,$param);
-			return $response;
+			return $this->bpm->cerrarTarea($idTask);
+	
 		}
 
-		function actualizarIdOTenBPM($caseId, $idOTnueva){
-			
-			$idOT = (integer)$idOTnueva;
-			$contract = array(
-				"type" => "java.lang.Integer",
-  			"value" => $idOT
-			);		
-			// trae la cabecera
-			$parametros = $this->bpm->conexiones();
-			// Cambio el metodo de la cabecera a "PUT"
-			$parametros["http"]["method"] = "PUT";
-			$parametros["http"]["content"] = json_encode($contract);
-			// Variable tipo resource referencia a un recurso externo.
-			$param = stream_context_create($parametros);
-			$response = $this->Tareas->actualizarIdOTenBPM($caseId, $param);
+		function actualizarIdOTenBPM($caseId, $idOTnueva)
+		{
+			$this->bpm->actualizarIdOT($caseId, $idOTnueva);
 		}
 		
 

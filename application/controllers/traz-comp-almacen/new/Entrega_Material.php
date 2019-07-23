@@ -13,7 +13,7 @@ class Entrega_Material extends CI_Controller {
 
    public function detalle()
    {
-      $id = $this->input->post('id');
+      $id = $this->input->get('id');
       echo json_encode($this->Entregas_Materiales->obtenerDetalles($id));
    }
 
@@ -21,6 +21,13 @@ class Entrega_Material extends CI_Controller {
    {
       $data['list'] = $this->Entregas_Materiales->getEntregasPedido($pema);
       $this->load->view(CMP_ALM.'/new/entregas_materiales/list', $data);
+   }
+   public function getEntregasPedidoOffline()
+   {
+      $pema = $this->input->get('pema');
+      $data['list'] = $this->Entregas_Materiales->getEntregasPedido($pema);
+      $this->load->view(CMP_ALM.'/new/entregas_materiales/list', $data);
+      
    }
 }
 ?>

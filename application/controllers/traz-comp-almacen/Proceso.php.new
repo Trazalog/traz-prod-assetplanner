@@ -7,7 +7,6 @@ class Proceso extends CI_Controller
 
         parent::__construct();
 
-         
         $this->load->model(CMP_ALM.'Ordeninsumos');
         $this->load->model(CMP_ALM.'Notapedidos');
         $this->load->model(CMP_ALM.'new/Pedidos_Materiales');
@@ -19,11 +18,13 @@ class Proceso extends CI_Controller
 
         //$this->pedidoExtraordinario();
         $data['device'] = "";
-        $res =  $this->bpm->getToDoList();
-        $data['list'] = $res['data'];
-        $this->load->view(CMP_ALM.'/proceso/tareas/list', $data);
+        $res = $this->bpm->getToDoList();
+        $data['list'] = $this->Notapedidos->agregarInfo($res['data']);
+        $this->load->view(CMP_ALM.'proceso/tareas/list', $data);
 
     }
+
+
 
     public function detalleTarea($task_id)
     {
@@ -37,14 +38,13 @@ class Proceso extends CI_Controller
         //INFORMACION DE TAREA
         $rsp = $this->bpm->getTarea($task_id);
 
-        if (!$rsp['status']) {
+        if(!$rsp['status']){
             $this->load->view('404');
             return;
         }
 
         $tarea = $rsp['data'];
-
-
+        
         //INFORMACION DE TAREA
         $data['idTarBonita'] = $task_id;
         
@@ -63,18 +63,18 @@ class Proceso extends CI_Controller
         }
 
         //LINEA DE TIEMPO
-        $data['timeline'] = $this->bpm->ObtenerLineaTiempo($tarea['processId'], $tarea['rootCaseId']);
+        $data['timeline'] = $this->bpm->ObtenerLineaTiempo($tarea['processId'],$tarea['rootCaseId']);
 
         //COMENTARIOS
         $data_aux = ['case_id' => $tarea['rootCaseId'], 'comentarios' => $this->bpm->ObtenerComentarios($tarea['rootCaseId'])['data']];
-        $data['comentarios'] = $this->load->view(CMP_ALM.'/proceso/tareas/componentes/comentarios', $data_aux, true);
+        $data['comentarios'] = $this->load->view(CMP_ALM.'proceso/tareas/componentes/comentarios', $data_aux, true);
 
         //DESPLEGAR VISTA
         $data['view'] = $this->deplegarVista($tarea);
-        $this->load->view(CMP_ALM.'/proceso/tareas/view_', $data);
+        $this->load->view(CMP_ALM.'proceso/tareas/view_', $data);
     }
 
-     public function tomarTarea($id)
+    public function tomarTarea($id)
     {
         echo json_encode($this->bpm->setUsuario($id, userId()));
     }
@@ -84,7 +84,7 @@ class Proceso extends CI_Controller
         echo json_encode($this->bpm->setUsuario($id, userId()));   
     }
 
-      public function cerrarTarea($task_id)
+    public function cerrarTarea($task_id)
     {
 
         //Obtener Infomracion de Tarea
@@ -127,7 +127,7 @@ class Proceso extends CI_Controller
 
             case 'Entrega pedido pendiente':
            
-                $this->load->model(CMP_ALM.'/Ordeninsumos');
+                $this->load->model(CMP_ALM.'Ordeninsumos');
        
                 $this->Ordeninsumos->insert_entrega_materiales($form);
 
@@ -207,13 +207,13 @@ class Proceso extends CI_Controller
 
                 $data['pema_id'] = $this->Notapedidos->getXCaseId($tarea['rootCaseId'])['pema_id'];
 
-                return $this->load->view(CMP_ALM.'/proceso/tareas/pedido_materiales/view_aprueba_pedido', $data, true);
+                return $this->load->view(CMP_ALM.'proceso/tareas/pedido_materiales/view_aprueba_pedido', $data, true);
 
                 break;
 
             case 'Entrega pedido pendiente':
 
-                $this->load->model('Otrabajos');
+                
                 $proceso = $tarea['processId'];
 
                 $aux = null;
@@ -232,11 +232,17 @@ class Proceso extends CI_Controller
 
                 $data['list_deta_pema'] = $this->Ordeninsumos->get_detalle_entrega($data['pema_id']);
 
-                $ot = $this->Otrabajos->obtenerOT($aux['ortr_id']);
+                if(viewOT){
 
-                $data['estadoOT'] = !($ot->estado == 'T' || $ot->estado=='CA');
+                    $this->load->model('Otrabajos');
 
-                return $this->load->view(CMP_ALM.'/proceso/tareas/pedido_materiales/view_entrega_pedido_pendiente', $data, true);
+                    $ot = $this->Otrabajos->obtenerOT($aux['ortr_id']);
+
+                    $data['estadoOT'] = !($ot->estado == 'T' || $ot->estado=='CA');
+                
+                }
+
+                return $this->load->view(CMP_ALM.'proceso/tareas/pedido_materiales/view_entrega_pedido_pendiente', $data, true);
 
                 break;
 
@@ -263,9 +269,9 @@ class Proceso extends CI_Controller
                 $data = $this->Componentes-> listaArticulos();
 
                 $data['info'] = $obj;
+                $data['pema_id'] = $res['pema_id'];
 
-
-                return $this->load->view(CMP_ALM.'/proceso/tareas/pedido_materiales/view_comunica_rechazo', $data, true);
+                return $this->load->view(CMP_ALM.'proceso/tareas/pedido_materiales/view_comunica_rechazo', $data, true);
 
                 break;
 
@@ -275,7 +281,7 @@ class Proceso extends CI_Controller
 
                 $data = $this->Pedidoextra->getXCaseId($tarea['rootCaseId']);
 
-                return $this->load->view(CMP_ALM.'/proceso/tareas/pedido_extraordinario/view_aprueba_pedido', $data, true);
+                return $this->load->view(CMP_ALM.'proceso/tareas/pedido_extraordinario/view_aprueba_pedido', $data, true);
 
                 break;
 
@@ -283,7 +289,7 @@ class Proceso extends CI_Controller
 
                 $data = $this->Pedidoextra->getXCaseId($tarea['rootCaseId']);
 
-                return $this->load->view(CMP_ALM.'/proceso/tareas/pedido_extraordinario/view_aprueba_compras', $data, true);
+                return $this->load->view(CMP_ALM.'proceso/tareas/pedido_extraordinario/view_aprueba_compras', $data, true);
 
                 break;
 
@@ -291,7 +297,7 @@ class Proceso extends CI_Controller
 
                 $data['motivo'] = $this->Pedidoextra->getXCaseId($tarea['rootCaseId'])['motivo_rechazo'];
 
-                return $this->load->view(CMP_ALM.'/proceso/tareas/pedido_materiales/view_comunica_rechazo', $data, true);
+                return $this->load->view(CMP_ALM.'proceso/tareas/pedido_materiales/view_comunica_rechazo', $data, true);
 
                 break;
 
@@ -307,7 +313,7 @@ class Proceso extends CI_Controller
 
                 $data['peex_id'] = $peex['peex_id'];
 
-                return $this->load->view(CMP_ALM.'/proceso/tareas/pedido_extraordinario/view_generar_pedido_materiales', $data, true);
+                return $this->load->view(CMP_ALM.'proceso/tareas/pedido_extraordinario/view_generar_pedido_materiales', $data, true);
 
                 break;
 
@@ -324,11 +330,11 @@ class Proceso extends CI_Controller
             'pIdPedidoMaterial' => $pemaId,
         ];
 
-        $rsp['data'] = $this->bpm->lanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES,$contract);
+        $data = $this->bpm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES,$contract);
 
-        $this->Notapedidos->setCaseId($pemaId, $rsp['data']['caseId']);
+        $this->Notapedidos->setCaseId($pemaId, $data['case_id']);
 
-        return $this->Pedidos_Materiales->setEstado($pemaId,'Creada');
+        return $this->Pedidos_Materiales->setEstado($pemaId,'Solicitado');
     }
 
     public function pedidoExtraordinario($ot=1)
@@ -340,9 +346,9 @@ class Proceso extends CI_Controller
             'pedidoExtraordinario' =>   $pedidoExtra
         ];
 
-        $data = $this->bpm->lanzarProceso(BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS,$contract);
+        $data = $this->bpm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS,$contract);
 
-        $peex['case_id'] = $data['data']['caseId'];
+        $peex['case_id'] = $data['case_id'];
         $peex['fecha'] = date("Y-m-d");
         $peex['detalle'] = $pedidoExtra;    
         $peex['ortr_id'] = $ot; 
@@ -351,7 +357,7 @@ class Proceso extends CI_Controller
         return $this->Pedidoextra->set($peex);
     }
 
-     public function guardarComentario()
+    public function guardarComentario()
     {
         $data = $this->input->post();
         echo $this->bpm->guardarComentario($data["processInstanceId"], $data["content"]);
