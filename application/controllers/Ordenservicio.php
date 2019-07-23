@@ -43,7 +43,8 @@ class Ordenservicio extends CI_Controller {
           $data['id_responsable'] = $infoOt[0]["descripcion"];
           $data['nom_responsable'] = $infoOt[0]["responsable"];
           $data['idresponsable'] = $infoOt[0]["usrId"];
-          $data['idTarBonita'] = $idTarBonita;        
+          $data['idTarBonita'] = $idTarBonita;  
+          
           $this->load->view('tareas/view_inf_servicio_modal',$data);
      }      
     }  

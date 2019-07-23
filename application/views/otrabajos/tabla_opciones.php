@@ -37,6 +37,7 @@
     }
 
     //// GENERA INFORME DE SERVICIOS
+    
     if (strpos($permission,'Del') !== false) {
 
        //iba a funcion generar informe de servicios

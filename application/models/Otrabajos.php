@@ -898,7 +898,8 @@ class Otrabajos extends CI_Model {
         $this->db->from('orden_trabajo');
         $this->db->where('orden_trabajo.id_empresa', $empresaId);
         $this->db->group_by('orden_trabajo.tipo');
-        $query = $this->db->get();
+				$query = $this->db->get();
+				//dump($this->db->last_query(), 'kpi');
         if($query->num_rows()!=0)
         {
             return $query->result_array();

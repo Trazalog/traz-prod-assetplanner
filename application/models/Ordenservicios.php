@@ -439,21 +439,18 @@ class Ordenservicios extends CI_Model {
 
 		// devuelve insumos pedidos por id de OT
     function getInsumosPorOT($id_ot){        
-			//var_dump($id_ot);
-			
-			$this->db->select('tbl_detanotapedido.cantidad,
-												tbl_notapedido.fecha,
-												orden_trabajo.id_usuario,
-												articles.artDescription as descripcion,
-												articles.artBarCode as codigo,
-												tbl_notapedido.id_notaPedido as nroOT,
-												');
-			$this->db->from('tbl_detanotapedido');
-			$this->db->join('tbl_notapedido', 'tbl_detanotapedido.id_notaPedido = tbl_notapedido.id_notaPedido');
-			$this->db->join('orden_trabajo', 'tbl_notapedido.id_ordTrabajo = orden_trabajo.id_orden');
-			$this->db->join('articles', 'articles.artId = tbl_detanotapedido.artId');
-			//$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario');
-			$this->db->where('tbl_notapedido.id_ordTrabajo', $id_ot);
+
+			$this->db->select('alm_pedidos_materiales.pema_id, 
+												alm_pedidos_materiales.ortr_id , 
+												alm_articulos.barcode, alm_articulos.descripcion, 
+												alm_pedidos_materiales.fecha,
+												alm_pedidos_materiales.estado,
+												alm_deta_pedidos_materiales.cantidad');
+			$this->db->from('alm_pedidos_materiales');
+			$this->db->join('alm_deta_pedidos_materiales', 'alm_pedidos_materiales.pema_id = alm_deta_pedidos_materiales.pema_id');
+			$this->db->join('alm_articulos', 'alm_deta_pedidos_materiales.arti_id = alm_articulos.arti_id');
+		
+			$this->db->where('alm_pedidos_materiales.ortr_id', $id_ot);
 			$query = $this->db->get();
 		
 			if ($query->num_rows()!=0){

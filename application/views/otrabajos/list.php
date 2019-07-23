@@ -1400,9 +1400,9 @@ function guardarpedido(){
   function verEjecutarOT(o){ 
     var id_orden = $(o).closest('tr').attr('id');  
     WaitingOpen();
-    $('#modalInforme').modal('show');
-    $('#modalInformeServicios').empty();
-    $("#modalInformeServicios").load("<?php echo base_url(); ?>index.php/Calendario/verEjecutarOT/"+id_orden+"/");
+    $('#contRespyTareas').empty();     
+    $("#contRespyTareas").load("<?php echo base_url(); ?>index.php/Calendario/verEjecutarOT/"+id_orden+"/");
+    $('#modalRespyTareas').modal('show');   
     WaitingClose();
   }
 // ASIGNAR TAREAS
@@ -2311,6 +2311,34 @@ function guardarpedido(){
 </div><!-- /.modal fade -->
 <!-- / Modal -->
 
+<!--  MODAL asignar Responsable y tareas   -->
+<div class="modal bs-example-modal-lg" id="modalRespyTareas" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" >&times;</span>
+        </button>
+        <h4 class="modal-title" >Asignar Responsable y Tareas</h4>
+      </div>
+            
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="box">
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12" id="contRespyTareas">                               
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
 
 <!--  MODAL Informe de Servicios   -->
 <div class="modal bs-example-modal-lg" id="modalInforme" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
