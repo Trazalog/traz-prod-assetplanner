@@ -652,7 +652,7 @@ class Otrabajo extends CI_Controller {
 		}
 
 		//OBTENER TASK_ID EJECTURAR OT
-		$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Ejecutar OT');
+		$task_id = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Ejecutar OT');
 
 		if($task_id == 0) {echo 'No existe Tarea Ejecutar OT'; return;}
 
@@ -937,7 +937,7 @@ class Otrabajo extends CI_Controller {
 		//dump($id_solicitud, 'id solicitud guardada en OT: ');
 		// si viene de correctivo
 		if ($tipo == 2) {		
-				$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar"');
+				$task_id = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Esperando cambio estado "a Ejecutar"');
 				//dump($task_id, 'tadk id en *');
 				echo $task_id;
 				return;
@@ -963,7 +963,7 @@ class Otrabajo extends CI_Controller {
 						$this->Otrabajos->setCaseidenOT($case_id, $id);					
 					}	
 
-					$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar" 2');			
+					$task_id = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Esperando cambio estado "a Ejecutar" 2');			
 					//devueve task
 					echo $task_id;
 
@@ -975,7 +975,7 @@ class Otrabajo extends CI_Controller {
 					//dump($id, 'id sollicitud');
 					//$case_id = 14001;
 					//dump($case_id, ' id case en controller: ');
-					$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar" 2');
+					$task_id = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Esperando cambio estado "a Ejecutar" 2');
 					// guarda case_id en Otrabajo
 					//dump($task_id, 'task en 2: ');	// BIEN!				
 					
@@ -999,7 +999,7 @@ class Otrabajo extends CI_Controller {
 			$this->Otrabajos->setCaseidenOT($case_id, $id);					
 		}
 		// retorna task id 		
-		$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar" 2');
+		$task_id = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Esperando cambio estado "a Ejecutar" 2');
 		echo $task_id;
 		return;
 
@@ -1056,7 +1056,7 @@ class Otrabajo extends CI_Controller {
 		if(!$responce['status']){echo json_encode($responce);return;}
 
 		// buscar task pa asignar la tarea siguiente (ejecutar ot) a un responsable		
-		$nextTask = $this->bpm->ObtenerTaskidXNombre($case_id,'Ejecutar OT');
+		$nextTask = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Ejecutar OT');
 		// log
 			log_message('DEBUG', 'TRAZA | $case_id: '.$case_id);
 			log_message('DEBUG', 'TRAZA | Ejecutar OT-> $task_id: '.$nextTask);

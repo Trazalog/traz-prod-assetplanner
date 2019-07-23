@@ -204,7 +204,7 @@ class Calendario extends CI_Controller {
 								log_message('DEBUG', 'TRAZA | Usr en BPM: '.$userBpm);
 								log_message('DEBUG', 'TRAZA | caseId: '.$infoTarea['caseId']);
 							// busca taskId de 	'Planificar Solicitud'
-							$prevTask = $this->bpm->ObtenerTaskidXNombre($infoTarea['caseId'],'Planificar Solicitud');
+							$prevTask = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$infoTarea['caseId'],'Planificar Solicitud');
 								log_message('DEBUG',  'TRAZA | Taskid Planificar Solicitud: '.$prevTask);
 							
 							if($prevTask != 0){								
@@ -498,10 +498,10 @@ class Calendario extends CI_Controller {
 	function verEjecutarOT($idOt){
 		
 		$this->load->model('traz-comp/Componentes');
-		$this->load->model(CMP_ALM.'/new/Pedidos_Materiales');
+		$this->load->model(CMP_ALM.'new/Pedidos_Materiales');
 		
 		#COMPONENTE ARTICULOS
-		$data = $this->Componentes-> listaArticulos();
+		$data['items'] = $this->Componentes-> listaArticulos();
 
 		#PEDIDO MATERIALES
 		$info = new StdClass();
@@ -558,7 +558,7 @@ class Calendario extends CI_Controller {
 	
 		// si viene de correctivo
 		if ($tipo == 2) {		
-				$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas Urgente');			
+				$task_id = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Asignar Recursos y Tareas Urgente');			
 				return $task_id;
 		} 
 		// si viene de backlog
@@ -569,18 +569,18 @@ class Calendario extends CI_Controller {
 				
 				if($idSolRep == NULL){	//viene de item menu 
 					
-					$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas');
+					$task_id = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Asignar Recursos y Tareas');
 					return $task_id;		
 
 				}else{	// backlog generado desde una SServicios					
 					// con id solicitud (BACKLOG) busco el case desde solicitud de reparacion
 					$case_id = $this->Otrabajos->getCaseIdenSServicios($id);	
-					$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas');	
+					$task_id = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Asignar Recursos y Tareas');	
 					return $task_id;			
 				}
 		}	
 		// Para el resto de las Tareas (Predictivo, Preventivo) devuelve task	
-		$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas');			
+		$task_id = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Asignar Recursos y Tareas');			
 		return $task_id;	
 	}
 

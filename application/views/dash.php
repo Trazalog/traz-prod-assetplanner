@@ -143,15 +143,15 @@ base_url= 'http://localhost/traz-prod-assetplanner/';
         }
         });
 
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw1.js').then(function(){
-        if (!navigator.serviceWorker.controller) {
-       location.reload();
-      }
-    })
-    });
-  }
+//   if ('serviceWorker' in navigator) {
+//     window.addEventListener('load', () => {
+//       navigator.serviceWorker.register('sw1.js').then(function(){
+//         if (!navigator.serviceWorker.controller) {
+//        location.reload();
+//       }
+//     })
+//     });
+//   }
   function procesarCola() {
   if (navigator.serviceWorker.controller) {
       navigator.serviceWorker.controller.postMessage('processQueue')

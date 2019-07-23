@@ -171,7 +171,7 @@ class Tarea extends CI_Controller {
 
 				$idTarBonita = $this->input->post('idTarBonita');
 				
-				$response = $this->bpm->setUsuario($idTarBonita, null);
+				$response = $this->bpm->setUsuario($idTarBonita, '');
 
 				echo json_encode($response);
 			}		
@@ -421,7 +421,7 @@ class Tarea extends CI_Controller {
 					$data['permission'] = $permission;
 
 				//OBTENER DATOS DE TAREA SELECCIONADA DESDE BONITA
-					$data['TareaBPM'] = json_decode($this->getDatosBPM($idTarBonita),true);	
+					$data['TareaBPM'] = $this->getDatosBPM($idTarBonita);	
 					$data['idTarBonita'] = $idTarBonita;
 					$caseId = $data['TareaBPM']["caseId"];
 			
@@ -468,7 +468,7 @@ class Tarea extends CI_Controller {
 					$case = array('caseId'=>$case_id);
 							
 				// LINEA DE TIEMPO 			
-					$data['timeline'] = $this->bpm->ObtenerLineaTiempo($case_id);			
+					$data['timeline'] = $this->bpm->ObtenerLineaTiempo(BPM_PROCESS_ID, $case_id);			
 				//CARGAR VISTA COMENTARIOS 
 					$data_aux = ['case_id'=>$case_id, 'comentarios'=>$this->bpm->ObtenerComentarios($case_id)['data']];
 					$data['comentarios'] = $this->load->view('tareas/componentes/comentarios',$data_aux,true);
@@ -569,7 +569,7 @@ class Tarea extends CI_Controller {
 			// Trae datos de BPM para notif estandar
 			public function getDatosBPM($idTarBonita){
 			
-				return $this->bpm->getTarea($idTarBonita);
+				return $this->bpm->getTarea($idTarBonita)['data'];
 		
 			}
 			// Trae id de tarea de trazajobs segun id de tarea bonita - NO TOCAR
@@ -597,9 +597,8 @@ class Tarea extends CI_Controller {
 		
 		/* COMENTARIOS */
 			public function GuardarComentario(){
-				$comentario = $this->input->post();
-			
-				$response = $this->bpm->GuardarComentario($comentario);
+				$data = $this->input->post();
+				$response = $this->bpm->GuardarComentario($data["processInstanceId"],$data["content"]);
 				echo json_encode($response);
 			}	
 

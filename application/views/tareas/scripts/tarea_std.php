@@ -303,10 +303,12 @@
 					},
 					url: 'index.php/Tarea/tomarTarea',
 					success: function(data) {
-									console.log(data['reponse_code']);
+					
 									// toma a tarea exitosamente
-									if(data['reponse_code'] == 200){
+									if(data.status){
 											habilitar();
+									}else{
+										alert(data.msj)
 									}
 
 					},
@@ -327,10 +329,12 @@
 					},
 					url: 'index.php/Tarea/soltarTarea',
 					success: function(data) {
-							console.log(data['reponse_code']);
+						
 									// toma a tarea exitosamente
-									if(data['reponse_code'] == 200){
-											deshabilitar();
+									if(data.status){
+										deshabilitar();
+									}else{
+										alert(data.msj)
 									}
 					},
 					error: function(result) {

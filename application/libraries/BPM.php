@@ -51,9 +51,9 @@ class BPM
         return msj(true,'OK', json_decode($rsp['data'],true));
     }
 
-    public function ObtenerTaskidXNombre($caseId, $nombre) //!FALTA TERMINAR
+    public function ObtenerTaskidXNombre($proccesId, $caseId, $nombre) //!FALTA TERMINAR
     {
-        $actividades = $this->ObtenerActividades($caseId, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
+        $actividades = $this->ObtenerActividades($proccesId,$caseId);
 
         if ($actividades == null) {
             return 0;
@@ -67,10 +67,6 @@ class BPM
 
             }
         }
-
-        // foreach ($actividades as $value) {
-        //     if($value->displayName == $nombre)
-        // }
         
         return 0;
     }
@@ -133,6 +129,14 @@ class BPM
         $url = BONITA_URL . 'API/bpm/activity?p=0&c=200&f=processId%3D' . $processId . '&f=rootCaseId%3D' . $caseId . '&d=assigned_id';
 
         $rsp = $this->REST->callAPI('GET', $url, false, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
+
+        if (!$rsp['status']) {
+
+            log_message('DEBUG','#TRAZA | #BPM >> '.ASP_105.' | proccesId: '.$processId.' | caseId: '.$caseId);
+
+            return msj(false, ASP_105);      
+
+        }
 
         $array = json_decode($rsp['data'], true);
 

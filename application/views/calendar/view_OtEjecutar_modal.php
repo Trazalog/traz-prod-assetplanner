@@ -175,7 +175,7 @@
 
                                         <div role="tabpanel" class="tab-pane" id="pedidomateriales">
                                             <?php 
-                                            $this->load->view(CMP_ALM.'/notapedido/generar_pedido');
+                                            $this->load->view(CMP_ALM.'notapedido/generar_pedido');
                                           ?>
                                         </div>
                                         <!--/#responsable -->
@@ -204,9 +204,6 @@
 <!-- </section> -->
 <script>
 DataTable('#tblOrden');
-
-
-
 
 
 validarTarea();
