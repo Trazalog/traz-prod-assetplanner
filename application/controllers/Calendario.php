@@ -502,6 +502,8 @@ class Calendario extends CI_Controller {
 		
 		#COMPONENTE ARTICULOS
 		$data['items'] = $this->Componentes-> listaArticulos();
+		$data['lang'] = lang_get('spanish', 'Ejecutar OT');
+
 
 		#PEDIDO MATERIALES
 		$info = new StdClass();

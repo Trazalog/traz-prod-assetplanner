@@ -241,7 +241,7 @@ class BPM
         $variableName = 'gIdOT';
         $url = BONITA_URL . $resource . $caseId . "/" . $variableName;
 
-        $rsp = $this->rest->callAPI('PUT', $url, $contract, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
+        $rsp = $this->REST->callAPI('PUT', $url, $contract, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
 
         if(!$rsp['status']) {
 
