@@ -1011,7 +1011,7 @@ class Otrabajo extends CI_Controller {
 			log_message('DEBUG', 'TRAZA | OTrabajo/Ejecutar OT');
 
 		$userdata = $this->session->userdata('user_data');
-		$userBpm = $userdata[0]['userBpm']; 
+		$userBpm = $userdata[0]['userBpm']['id']; 
 
 		$task 				= (int)$this->input->post('task');
 		$ot 					= (int)$this->input->post('ot');
@@ -1062,7 +1062,7 @@ class Otrabajo extends CI_Controller {
 			log_message('DEBUG', 'TRAZA | Ejecutar OT-> $task_id: '.$nextTask);
 
 		// sincroniza usuario local con el de BPM, para asignar el usr de BPM
-		$usuarioBPM = $this->bpm->getInfoSisUserenBPM($usrId);
+		$usuarioBPM = $this->bpm->getInfoSisUserenBPM($usrId)['id'];
 		
 		// log	
 			log_message('DEBUG', 'TRAZA | Usr asignado (responsable OT) en BPM: '.$usuarioBPM);
