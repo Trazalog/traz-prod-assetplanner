@@ -494,7 +494,7 @@ function CancCorrec() {
 function setOtCorrectivo() {
 
     var progr_corr = $('#fecha_progr_correct').val();
-    alert(progr_corr);
+  //  alert(progr_corr);
     var hor_corr = $('#hora_progr_correct').val();
 
     $.ajax({

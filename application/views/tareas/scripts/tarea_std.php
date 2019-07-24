@@ -135,8 +135,8 @@
 					console.table(data);
 					//	WaitingClose();
 					// toma a tarea exitosamente
-					if(data['reponse_code'] == 204){
-							$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+					if(data.status){
+						$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
 					}
 				},
 				error: function(data) {

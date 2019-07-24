@@ -264,7 +264,7 @@ $("#operario").autocomplete({
 function lanzarPedidoMateriales() {
     var pema_id = $('#pema_id').val();
     if(pema_id == null || pema_id==''){
-        alert('No se pudo Realizar el Pedido de Materiales | ID Vacio');
+        //alert('No se pudo Realizar el Pedido de Materiales | ID Vacio');
         return;
     }
     $.ajax({
@@ -278,8 +278,12 @@ function lanzarPedidoMateriales() {
 
 //cierra la tarea ejecutar OT y asigna la tarea a la OT
 function EjecutarOT() {
-
-      $('#errorTable').fadeIn('slow');
+    var pema_id = $('#pema_id').val();
+    if((pema_id == null || pema_id=='') && !confirm('No se Realizarán Pedido de Materiales, ¿Desea Continuar?')){
+        return;
+    }
+    
+    $('#errorTable').fadeIn('slow');
 
     var task = $('#task').val();
     var ot = $('#idOt').val();
