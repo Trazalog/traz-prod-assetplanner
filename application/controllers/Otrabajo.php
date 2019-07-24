@@ -16,7 +16,7 @@ class Otrabajo extends CI_Controller {
 	 */
 	public function index($permission) // Ok
 	{
-		$data['list']       = $this->Otrabajos->otrabajos_List();
+		$data['list']       = $this->Otrabajos->otrabajos_List(null,0);
 		$data['kpi'] = $this->Equipos->informe_equipos();
 		$data['permission'] = $permission;
 		$this->load->view('otrabajos/dash', $data);
@@ -1057,22 +1057,33 @@ class Otrabajo extends CI_Controller {
 
 		// buscar task pa asignar la tarea siguiente (ejecutar ot) a un responsable		
 		$nextTask = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Ejecutar OT');
+
+		if($nextTask == 0){
+			echo json_encode(msj(false,'No se pudo Obtener Tarea Siguiente | Ejecutar OT'));return;
+		}
 		// log
-			log_message('DEBUG', 'TRAZA | $case_id: '.$case_id);
-			log_message('DEBUG', 'TRAZA | Ejecutar OT-> $task_id: '.$nextTask);
+		log_message('DEBUG', 'TRAZA | $case_id: '.$case_id);
+		log_message('DEBUG', 'TRAZA | Ejecutar OT-> $task_id: '.$nextTask);
 
 		// sincroniza usuario local con el de BPM, para asignar el usr de BPM
-		$usuarioBPM = $this->bpm->getInfoSisUserenBPM($usrId)['id'];
+		$rsp = $this->bpm->getInfoSisUserenBPM($usrId);
+
+		if(!$rsp['status']){echo json_encode($rsp);return;}
 		
+		$usuarioBPM = $rsp['data']['id'];
+
 		// log	
-			log_message('DEBUG', 'TRAZA | Usr asignado (responsable OT) en BPM: '.$usuarioBPM);
-			log_message('DEBUG', 'TRAZA | Usr asignado (responsable OT) en LOCAL: '.$usrId);
+		log_message('DEBUG', 'TRAZA | Usr asignado (responsable OT) en BPM: '.$usuarioBPM);
+		log_message('DEBUG', 'TRAZA | Usr asignado (responsable OT) en LOCAL: '.$usrId);
 
 		//Asignar Usuario a Tarea para Finanlizar
 		$responce = $this->bpm->setUsuario($nextTask,$usuarioBPM);
 
-		if(!$responce['status']){echo json_encode($responce);return;}
-	
+		if(!$responce['status']){
+			echo json_encode($responce);
+			return;
+		}
+		
 		//Cambiar Estado de OT ('ASignada') y en solicitud origen en BD		
 		if($this->Otrabajos->cambiarEstado($ot, $estado, 'OT')){
 				
