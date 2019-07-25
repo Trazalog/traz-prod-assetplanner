@@ -363,6 +363,66 @@ $("#checkboxEquipoID").autocomplete({
 
 graficarMantenimiento();
 /* grafico KPI Mantenimiento usando charjs 2.5 */
+// function graficarMantenimiento() {
+  //   WaitingOpen("Obteniendo datos de Mantenimiento...");
+  //     var areaChartCanvas = document.getElementById("graficoMantenimiento");
+
+  //     var myChart = new Chart(areaChartCanvas, {
+  //         type: 'doughnut',
+  //         data: {
+  //             // programado: [preventivo, predictivo y backlog], correctivo
+  //             labels: ["Correctivo", "Preventivo", "Predictivo", "backlog"],
+  //             datasets: [{
+  //                 data: [ <?php //echo $cantTipoOT[0]['CantidadTipoOT']?>,
+  //                         <?php //echo $cantTipoOT[1]['CantidadTipoOT']?>,
+  //                         <?php //echo $cantTipoOT[2]['CantidadTipoOT']?>,
+  //                         <?php //echo $cantTipoOT[3]['CantidadTipoOT']?>],
+  //                 backgroundColor: [
+  //                 "#dd1100",
+  //                 "#006612",
+  //                 "#009933",
+  //                 "#00CC00"
+  //                 ],
+  //                 hoverBackgroundColor: [
+  //                 "#ee2211",
+  //                 "#117723",
+  //                 "#11aa44",
+  //                 "#11dd11"
+  //                 ]
+  //             }]
+  //         },
+  //         options: {
+  //             cutoutPercentage: 40,
+  //             legend: {
+  //               position: 'bottom',
+  //             },
+  //             animation: {
+  //               animateScale: true,
+  //               animateRotate: true
+  //             },
+  //             tooltips: {
+  //               callbacks: {
+  //                 label: function(tooltipItem, data) {
+  //                   //get the concerned dataset
+  //                   var dataset = data.datasets[tooltipItem.datasetIndex];
+  //                   //calculate the total of this data set
+  //                   var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+  //                     return previousValue + currentValue;
+  //                   });
+  //                   //get the current items value
+  //                   var currentValue = dataset.data[tooltipItem.index];
+  //                   //calculate the precentage based on the total and current item, also this does a rough rounding to give a whole number
+  //                   var precentage = Math.floor(((currentValue/total) * 100)+0.5);
+
+  //                   return currentValue + " (" + precentage + "%)";
+  //                 }
+  //               }
+  //             }
+  //         }
+  //     });
+  //   WaitingClose();
+  // }
+
 function graficarMantenimiento() {
   WaitingOpen("Obteniendo datos de Mantenimiento...");
     var areaChartCanvas = document.getElementById("graficoMantenimiento");
@@ -371,19 +431,22 @@ function graficarMantenimiento() {
         type: 'doughnut',
         data: {
             // programado: [preventivo, predictivo y backlog], correctivo
-            labels: ["Correctivo", "Preventivo", "Predictivo", "backlog"],
+            labels: ["OTrabajo", "Correctivo", "Preventivo", "Backlog", "Predictivo"],
             datasets: [{
                 data: [ <?php echo $cantTipoOT[0]['CantidadTipoOT']?>,
                         <?php echo $cantTipoOT[1]['CantidadTipoOT']?>,
                         <?php echo $cantTipoOT[2]['CantidadTipoOT']?>,
+                        <?php echo $cantTipoOT[3]['CantidadTipoOT']?>,
                         <?php echo $cantTipoOT[3]['CantidadTipoOT']?>],
                 backgroundColor: [
+                "#fad61d",
                 "#dd1100",
                 "#006612",
                 "#009933",
                 "#00CC00"
                 ],
                 hoverBackgroundColor: [
+                "#f3fa1d",  
                 "#ee2211",
                 "#117723",
                 "#11aa44",

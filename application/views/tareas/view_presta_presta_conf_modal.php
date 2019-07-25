@@ -188,10 +188,10 @@
                 <?php                  
                    foreach($insumos as $ins){
                       echo '<tr>';
-                      echo '<td>'.$ins['nroOT'].'</td>';
+                      echo '<td>'.$ins['pema_id'].'</td>';
                       echo '<td>'.$ins['fecha'].'</td>';
                       //echo '<td>'.$ins['fechahorainicio'].'</td>';
-                      echo '<td>'.$ins['codigo'].'</td>';
+                      echo '<td>'.$ins['barcode'].'</td>';
                       echo '<td>'.$ins['descripcion'].'</td>';
                       echo '<td>'.$ins['cantidad'].'</td>';
                       echo '</tr>';
