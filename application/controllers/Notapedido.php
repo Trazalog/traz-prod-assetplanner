@@ -70,20 +70,19 @@ class Notapedido extends CI_Controller {
 
   }
 // lanza proceso en BPM (inspección)
-  function lanzarProcesoBPM($inspectorid){
+  // function lanzarProcesoBPM($inspectorid){
 
-    $this->load->library('BPM');
-    $parametros = $this->bpm->conexiones();
-    $parametros["http"]["method"] = "POST";
-    $idInspector = array (
-      "idInspector"	=>	$inspectorid
-    );	
-    $parametros["http"]["content"] = json_encode($idInspector);
-    $param = stream_context_create($parametros);
-    $result = $this->Inspecciones->lanzarProcesoBPM($param);
+  //   $parametros = $this->bpm->conexiones();
+  //   $parametros["http"]["method"] = "POST";
+  //   $idInspector = array (
+  //     "idInspector"	=>	$inspectorid
+  //   );	
+  //   $parametros["http"]["content"] = json_encode($idInspector);
+  //   $param = stream_context_create($parametros);
+  //   $result = $this->Inspecciones->lanzarProcesoBPM($param);
    
-    return $result;		
-  } 
+  //   return $result;		
+  // } 
 
 
   public function setNotaPedido(){

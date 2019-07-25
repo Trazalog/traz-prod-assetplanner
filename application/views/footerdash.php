@@ -12,7 +12,7 @@
     <script>
 
         var link = '';
-       // linkTo('almacen/Proceso');
+      
         $('.menu .link').on('click',function(){
             link = $(this).data('link');
             linkTo();
@@ -38,5 +38,6 @@
         }
         //Esto dispara un evento para que se cargue el Dash en forma automatica cuando ingreso.
         cargarView('<?php echo $grpDash; ?>', 'index', 'View');
+
 
     </script>

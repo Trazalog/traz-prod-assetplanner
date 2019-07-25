@@ -1428,6 +1428,13 @@ class Otrabajos extends CI_Model {
 			$this->db->where('orden_trabajo.id_orden', $ot);
 			return $this->db->get('orden_trabajo')->first_row();	
 		} 
+		// Obtener OT dado un CaseID
+		function ObtenerOTporCaseId($case_id)
+		{
+			$this->db->where('orden_trabajo.case_id', $case_id);
+			$query = $this->db->get('orden_trabajo');
+			return $query->row('id_orden');
+		}
 
 		
 
