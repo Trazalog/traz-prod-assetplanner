@@ -47,12 +47,10 @@ $('#hecho').prop('disabled', true);
 cargarPedidos();
 
 function cargarPedidos() {
+    var id = $('#pemaId').val();
     $.ajax({
         type: 'POST',
-        data: {
-            id: $('#pemaId').val()
-        },
-        url: 'index.php/almacen/Notapedido/getNotaPedidoId',
+        url: 'index.php/almacen/Notapedido/getNotaPedidoId?id_nota=' + id,
         success: function(data) {
 
             $('tr.celdas').remove();
