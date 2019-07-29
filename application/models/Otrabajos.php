@@ -170,6 +170,7 @@ class Otrabajos extends CI_Model {
 
 
 	function getDescTareaSTD($id_tar){
+		
 		$this->db->select('tareas.descripcion');
 		$this->db->from('tareas');
 		$this->db->where('tareas.id_tarea', $id_tar);
@@ -192,6 +193,32 @@ class Otrabajos extends CI_Model {
 			$id_insert = $this->db->insert_id(); 
 			return $id_insert;
 	}
+
+	/**
+	 * guarda responsable en modalejecutar ot al ser 
+	 * seleccionado en tabla Orden_trabajo
+	 * 
+	 */
+	function updateResponsables($id_orden, $id_responsable){
+		$this->db->set('orden_trabajo.id_usuario_a', $id_responsable);
+		$this->db->where('orden_trabajo.id_orden', $id_orden);
+		$response = $this->db->update('orden_trabajo');
+		return $response;
+	}
+	/**
+	 * guarda responsable en modalejecutar ot al ser 
+	 * seleccionado en tabla Orden_trabajo
+	 * 
+	 */
+	function updateTarea($id_orden, $idTarea, $tarea){
+		
+	
+		$this->db->where('orden_trabajo.id_orden', $id_orden);
+		$response = $this->db->update('orden_trabajo', array('id_tarea'=>$idTarea,
+		'descripcion'=>$tarea));
+		return $response;
+	}
+
 
 	/**
 	 * Guarda Case id en OT

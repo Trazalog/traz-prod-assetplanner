@@ -141,53 +141,53 @@ $('#fechaEntrega,#fechaInicio, #fecha_inicio1, #fecha_inicio, #fecha_entrega1, #
   locale: 'es',
 }); 
 // llena select de proveedores - Ok
-traer_prov();
-function traer_prov(){
-  $.ajax({
-    type: 'POST',
-    data: {},
-    url: 'index.php/Otrabajo/getproveedor',
-    success: function(data){
-      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-      $('#prov').append(opcion); 
-      for(var i=0; i < data.length ; i++) 
-      {    
-        var nombre = data[i]['provnombre'];
-        var opcion = "<option value='"+data[i]['provid']+"'>" +nombre+ "</option>" ; 
-        $('#prov').append(opcion);                
-      }
-    },
-    error: function(result){
-      console.error("Error al traer proveedor. Ver console.table")
-      console.table(result);
-    },
-    dataType: 'json'
-  });
-}
+  // traer_prov();
+  // function traer_prov(){
+  //   $.ajax({
+  //     type: 'POST',
+  //     data: {},
+  //     url: 'index.php/Otrabajo/getproveedor',
+  //     success: function(data){
+  //       var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+  //       $('#prov').append(opcion); 
+  //       for(var i=0; i < data.length ; i++) 
+  //       {    
+  //         var nombre = data[i]['provnombre'];
+  //         var opcion = "<option value='"+data[i]['provid']+"'>" +nombre+ "</option>" ; 
+  //         $('#prov').append(opcion);                
+  //       }
+  //     },
+  //     error: function(result){
+  //       console.error("Error al traer proveedor. Ver console.table")
+  //       console.table(result);
+  //     },
+  //     dataType: 'json'
+  //   });
+  // }
 // llena el select de sucursales - Ok 
-traer_sucursal()
-function traer_sucursal(){
-  $.ajax({
-    type: 'POST',
-    data: { },
-    url: 'index.php/Otrabajo/traer_sucursal',
-    success: function(data){
-      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-      $('#suci').append(opcion); 
-      for(var i=0; i < data.length ; i++) 
-      {    
-        var nombre = data[i]['descripc'];
-        var opcion = "<option value='"+data[i]['id_sucursal']+"'>" +nombre+ "</option>" ;
-        $('#suci').append(opcion);        
-      }
-    },
-    error: function(result){
-      console.error("Error al traer sucursal. Ver console.table");
-      console.table(result);
-    },
-    dataType: 'json'
-  });
-} 
+  // traer_sucursal()
+  // function traer_sucursal(){
+  //   $.ajax({
+  //     type: 'POST',
+  //     data: { },
+  //     url: 'index.php/Otrabajo/traer_sucursal',
+  //     success: function(data){
+  //       var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+  //       $('#suci').append(opcion); 
+  //       for(var i=0; i < data.length ; i++) 
+  //       {    
+  //         var nombre = data[i]['descripc'];
+  //         var opcion = "<option value='"+data[i]['id_sucursal']+"'>" +nombre+ "</option>" ;
+  //         $('#suci').append(opcion);        
+  //       }
+  //     },
+  //     error: function(result){
+  //       console.error("Error al traer sucursal. Ver console.table");
+  //       console.table(result);
+  //     },
+  //     dataType: 'json'
+  //   });
+  // } 
 // llena el select de equipos - Ok 
 traer_equipo()
 function traer_equipo(){
@@ -335,11 +335,11 @@ $("#btn_cancGuardado").click(function (e) {
           'fecha_inicio'  : resp[0]['fecha_inicio'],    //
           'fecha_terminada' : resp[0]['fecha_terminada'],   //
           'idusuario'     : resp[0]['id_usuario'],      //
-          'tareadescrip'  : resp[0]['tareadescrip'],     //
-          'id_sucu'       : resp[0]['id_sucursal'],     //
-          'sucursal'      : resp[0]['descripc'],        //
-          'id_proveedor'  : resp[0]['provid'],          //
-          'nombreprov'    : resp[0]['provnombre']//,      
+          'tareadescrip'  : resp[0]['tareadescrip']//,     //
+          //'id_sucu'       : resp[0]['id_sucursal'],     //
+          //'sucursal'      : resp[0]['descripc']//,        //
+          //'id_proveedor'  : resp[0]['provid'],          //
+          //'nombreprov'    : resp[0]['provnombre']//,      
         }
         
         var herram = data['herramientas'];             
@@ -374,8 +374,8 @@ $("#btn_cancGuardado").click(function (e) {
     $('#fechaProgramacion').val(datos['fecha_program']); 
     $('#fechaInicio').val(datos['fecha_inicio']); 
     $('#fechaTerminada').val(datos['fecha_terminada']);  
-    $("#suci").val(datos['id_sucu']);
-    $("#prov").val(datos['id_proveedor']); 
+    //$("#suci").val(datos['id_sucu']);
+    //$("#prov").val(datos['id_proveedor']); 
 
     $('#tablaherramienta tbody tr').remove();
     for (var i = 0; i < herram.length; i++) {
@@ -2484,12 +2484,14 @@ function guardarpedido(){
                 </div>
 
                 <div class="col-xs-12 col-sm-6">
-                  <label for="suci">Sucursal</label>
-                  <select  id="suci" name="suci" class="form-control" />
+                  <!-- <label for="suci">Sucursal</label>
+                  <select  id="suci" name="suci" class="form-control" /> -->
+                  <input type="hidden" id="suci" value="1" name="suci"/>
                 </div>
                 <div class="col-xs-12 col-sm-6">
-                  <label for="prov">Proveedor</label>
-                  <select  id="prov" name="prov" class="form-control" />
+                  <!-- <label for="prov">Proveedor</label>
+                  <select  id="prov" name="prov" class="form-control" /> -->
+                  <input type="hidden" id="prov" value="1" name="prov"/>
                 </div>            
               </div>
             </div>

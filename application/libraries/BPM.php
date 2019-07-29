@@ -257,10 +257,11 @@ class BPM
 
     function getCaseVariable($caseId, $var)
     {
-        $url = BONITA_URL . 'API/bpm/caseVariable/';
-
+        
         $var = '/' . $var;
 
+        $url = BONITA_URL . 'API/bpm/caseVariable/'.$caseId.$var;
+        
         $rsp = $this->REST->callAPI('GET', $url, null, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
 
         if (!$rsp['status']) {

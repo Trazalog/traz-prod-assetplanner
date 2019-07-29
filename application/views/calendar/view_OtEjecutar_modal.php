@@ -102,9 +102,8 @@
                                                     <label for="operario">Apellido y Nombre <strong
                                                             style="color: #dd4b39">*</strong> :</label>
                                                     <input type="text" class=" form-control operario" id="operario"
-                                                        name="operario" value="" placeholder="Buscar...">
-                                                    <input type="hidden" class=" form-control operario" id="id_operario"
-                                                        name="id_operario" value="">
+                                                        name="operario" value=" <?php echo $detaOT[0]['usrLastName'].', '.$detaOT[0]['usrName'] ?>" placeholder="Buscar...">
+                                                    <input type="hidden" class=" form-control operario" id="id_operario" name="id_operario" value="<?php echo $detaOT[0]['usrId'] ?>">
                                                 </div>
                                             </div><!-- /.row -->
                                         </div>
@@ -207,14 +206,55 @@ DataTable('#tblOrden');
 
 
 validarTarea();
-
 function validarTarea() {
     $('#tareaest').change(function() {
-        $('#tareaOpcional').val('');
+        $('#tareaOpcional').val('');			
     });
     $('#tareaOpcional').click(function() {
-        $('#tareaest').val(-1);
+        $('#tareaest').val(-1);				
     });
+}
+// Captura evento de cierre de modal
+$("#modalInforme").on("hidden.bs.modal", function (e) {
+	e.preventDefault();
+  e.stopImmediatePropagation();	
+
+	var idOt = $('#idOt').val();
+	guardarTarea(idOt);
+
+	var respons = $('#id_operario').val();	
+	if(respons != ""){			
+		guardarResponsable(idOt,respons);
+	}
+});
+// Actualiza tarea al cerrar el modal
+function guardarTarea(idOt){
+
+	var idTarea = "";
+	var tarea	= "";
+	if ($('#tareaest').val() != '-1') {
+		idTarea = $('#tareaest').val();
+		tarea = $('#tareaest option:selected').html();
+	} else {
+		idTarea = 0;
+		tarea = $('#tareaOpcional').val();
+	}
+
+	$.ajax({
+	
+        type: 'POST',
+        data: { idTarea: idTarea,
+								tarea: tarea,
+								idOt:idOt},
+        url: 'index.php/Otrabajo/updateTarea',
+        success: function(data) {
+           
+        },
+        error: function(data) {
+  
+        },
+        dataType: 'json'
+  });
 }
 
 // Trae Operarios
@@ -260,6 +300,24 @@ $("#operario").autocomplete({
         }
     }
 });
+// guarda responsable asignado cuando se selecciona uno nuevo
+function guardarResponsable(idOt,respons){
+
+	$.ajax({
+        type: 'POST',
+        data: { id_usuario_a: respons,
+								idOt: idOt},
+        url: 'index.php/Otrabajo/updateResponsable',
+        success: function(data) {
+           //alert('success');
+        },
+        error: function(data) {
+  
+        },
+        dataType: 'json'
+    });
+}
+
 
 function lanzarPedidoMateriales() {
     var pema_id = $('#pema_id').val();
