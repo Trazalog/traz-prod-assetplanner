@@ -388,7 +388,7 @@ class BPM
         if(!$rsp['status']){
 
             log_message('DEBUG','#TRAZA | #BPM >> '.ASP_109);
-
+						validaSesionBPM();
             return false;
 
         }
