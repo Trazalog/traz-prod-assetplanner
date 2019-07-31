@@ -4,8 +4,30 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Tarea extends CI_Controller {
 
+
+
 		function __construct(){
 			parent::__construct();
+
+			
+			//if(empty($this->session->userdata("userName"))) { 
+				//redirect(base_url(),'refresh'); }
+			
+			
+			// if(empty($this->session->userdata("userName"))) { 
+			// 	redirect(base_url('views/login.php'));
+			// }
+
+
+			//redirect( base_url() );
+			
+			// $proyecto = 'http://localhost/traz-prod-assetplanner/';
+			// header("Location: $proyecto");
+			// $userdata = $this->session->userdata('user_data');
+      // $userName = $userdata[0]['userName'];     // guarda usuario logueado   
+			// var_dump($userName, 'datos: ');
+			// if(empty($this->session->userdata("userName"))) { 
+			// 	redirect(base_url(),'refresh'); }
 			$this->load->model('Tareas');		
 			$this->load->model('Backlogs');
 			$this->load->model('Otrabajos');
@@ -79,26 +101,29 @@ class Tarea extends CI_Controller {
 		/*	./ FUNCIONES BPM */
 			// Bandea de entrada
 			public function index($permission = null){
+				///$this->load->helper('control_sesion');
+				// if	(validaSesion()){
 
-				$detect = new Mobile_Detect();    				
-				//Obtener Bandeja de Usuario desde Bonita
-				$response = $this->bpm->getToDoList();
-				//dump($response, 'respuesta tareas BPM: ');
-				if(!$response['status']){
-					//$this->load->view('404');
-					return;
-				}
-				//Completar Tareas con ID Solicitud y ID OT
-				$data_extend = $this->Tareas->CompletarToDoList($response['data']);				
-				$data['list'] = $data_extend;
-				$data['permission'] = $permission;		
+						$detect = new Mobile_Detect();    				
+						//Obtener Bandeja de Usuario desde Bonita
+						$response = $this->bpm->getToDoList();
+						//dump($response, 'respuesta tareas BPM: ');
+						if(!$response['status']){
+							//$this->load->view('404');
+							return;
+						}
+						//Completar Tareas con ID Solicitud y ID OT
+						$data_extend = $this->Tareas->CompletarToDoList($response['data']);				
+						$data['list'] = $data_extend;
+						$data['permission'] = $permission;		
 
-				if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {								
-					$data['device'] = "android";
-				}else{					
-					$data['device'] = "pc";				
-				}			
-				$this->load->view('tareas/list',$data);				
+						if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {								
+							$data['device'] = "android";
+						}else{					
+							$data['device'] = "pc";				
+						}			
+						$this->load->view('tareas/list',$data);	
+				//}			
 			}
 			// Verifica si la tarea fue guardada la fecha de inicio
 			public function confInicioTarea(){

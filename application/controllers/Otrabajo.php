@@ -4,10 +4,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Otrabajo extends CI_Controller {
 
 	function __construct(){
+	
+		
 		parent::__construct();
+		
 		$this->load->model('Otrabajos');
 		$this->load->model('Equipos');
-		
+		//validaSesion();
 	}
 	/**
 	 * Muestra pantalla de listado de Ordenes de Trabajo.
@@ -42,7 +45,7 @@ class Otrabajo extends CI_Controller {
 		$data['list']    = $this->Otrabajos->otrabajos_List($ot, 2);
 		$data['permission'] = $permission;
 
-		$rsp = $this->bpm->getUsuarios();
+		$rsp = $this->bpm->getUsuariosBPM();
 
 		$data['list_usuarios'] = $rsp['data'];
 
@@ -51,7 +54,7 @@ class Otrabajo extends CI_Controller {
 		$this->load->view('otrabajos/list', $data);
 		
 	}  
-	 /**
+	/**
 	 * Muestra pantalla de listado de Ordenes de Trabajo generada poritem de menu.
 	 *
 	 * @param 	String 	$permission 	Permisos de ejecuci�n.
@@ -289,8 +292,34 @@ class Otrabajo extends CI_Controller {
 		
 		return $nomImagen;
   }
-  
-  	/**
+	/**
+	 * Actualiza responsable en tabla Orden_trabajo
+	 *  al ser seleccionado
+	 *  en modalejecutar ot 
+	 */
+	public function updateResponsable(){
+
+		$id_responsable = $this->input->post('id_usuario_a');
+		$id_orden = $this->input->post('idOt');
+		$response = $this->Otrabajos->updateResponsables($id_orden, $id_responsable);
+		echo json_encode($response);
+	}
+	/**
+	 * Actualiza en tabla Orden_trabajo al ser 
+	 * seleccionado tarea en modal ejecutar ot 
+	 * 
+	 */
+	public function updateTarea(){
+		
+		$idTarea = $this->input->post('idTarea');
+		$tarea = $this->input->post('tarea');
+		$idOt = $this->input->post('idOt');
+		$response = $this->Otrabajos->updateTarea($idOt, $idTarea, $tarea);
+		echo json_encode($response);
+	}
+
+
+  /**
   	 * Trae datos para editar
   	 *
   	 */
@@ -1150,11 +1179,24 @@ class Otrabajo extends CI_Controller {
 	//devuelve valores de todos los datos de la OT para mostrar en modal.
 	public function getOrigenOt()
 	{
-		$idot     = $_POST['idot'];
-		$response = $this->Otrabajos->getOrigenOt($idot);
-    echo json_encode($response[0]);
+		
+				// $idot     = $_POST['idot'];
+				// $response = $this->Otrabajos->getOrigenOt($idot);
+				// echo json_encode($response[0]);
+		
+
+			if ( $this->session->userdata() ) {
+				$idot     = $_POST['idot'];
+				$response = $this->Otrabajos->getOrigenOt($idot);
+				echo json_encode($response[0]);
+			} else {
+				$this->load->view('equipo/recarga');
+			}
+			
+
+
+
 	}
-	
 
 	//devuelve valores de todos los datos de la OT para mostrar en modal.
 	public function getViewDataOt()
