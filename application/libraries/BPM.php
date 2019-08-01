@@ -272,7 +272,7 @@ class BPM
 
         }
 
-        return msj(true, 'OK', $rsp['body']['value']);
+        return msj(true, 'OK', json_decode($rsp['data'])->value);
     }
 
     function getActivityVariable($taskId, $var){
@@ -289,7 +289,7 @@ class BPM
 
         }
 
-        return msj(true, 'OK',$rsp['body']['value']);
+        return msj(true, 'OK', json_decode($rsp['data'])->value);
 
     }
 

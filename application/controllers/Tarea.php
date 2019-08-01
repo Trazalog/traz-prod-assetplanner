@@ -453,6 +453,8 @@ class Tarea extends CI_Controller {
 			
 				// Trae id de OT y de Sol Serv por CaseId			
 					$id_SS = $this->getIdSolServPorIdCase($caseId);	
+					log_message('DEBUG','#TRAZA | #TAREA >> detatarea id_SS: '.$id_SS);
+					log_message('DEBUG','#TRAZA | #TAREA >> detatarea tarea BPM: '.json_encode($data['TareaBPM']));
 					//dump($id_SS, 'id SolServicios en detatarea: ');
 				// si la tarea se origino en una SServicio
 					// if ($id_SS == 0) {
