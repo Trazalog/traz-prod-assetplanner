@@ -104,7 +104,7 @@ class Calendario extends CI_Controller {
 		// log
 			log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar');	
 		$data     = $this->input->post();
-			log_message('DEBUG', 'TRAZA | Data: '.json_decode($data));
+			//log_message('DEBUG', 'TRAZA | Data: '.json_decode($data));
 
 		$userdata = $this->session->userdata('user_data');
 		$usrId    = $userdata[0]['usrId'];
