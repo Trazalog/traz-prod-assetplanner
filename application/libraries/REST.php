@@ -4,6 +4,8 @@ class REST
 {
     public function callAPI($method, $url, $data, $token = false)
     {
+        log_message('DEBUG', '#TRAZA | #REST | #CURL | #URL >> ' . $url);
+        
         $curl = curl_init();
 
         switch ($method) {
@@ -11,6 +13,7 @@ class REST
                 curl_setopt($curl, CURLOPT_POST, true);
                 if ($data) {
                     curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+                    log_message('DEBUG', '#TRAZA | #REST | #CURL | #PAYLOAD >> ' . json_encode($data));
                 }
 
                 break;
@@ -18,6 +21,7 @@ class REST
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
                 if ($data) {
                     curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+                    log_message('DEBUG', '#TRAZA | #REST | #CURL | #PAYLOAD >> ' . json_encode($data));
                 }
 
                 break;
@@ -64,14 +68,18 @@ class REST
         $body = substr($result, $header_size);
 
         curl_close($curl);
+        
+        
+        log_message('DEBUG', '#TRAZA | #REST | #CURL | #HEADER SALIDA >> ' . $headerSent);
+       
 
         if ($response_code >= 300) {
 
-            log_message('DEBUG', '#TRAZA | #REST | #CURL | #HTTP_CODE >> ' . $response_code);
+            log_message('ERROR', '#TRAZA | #REST | #CURL | #HTTP_CODE >> ' . $response_code);
 
-            log_message('DEBUG', '#TRAZA | #REST | #CURL | #HEADER >> ' . $headers);
+            log_message('ERROR', '#TRAZA | #REST | #CURL | #HEADER >> ' . $headers);
 
-            log_message('DEBUG', '#TRAZA | #REST | #CURL | #BODY >> ' . json_encode($body));
+            log_message('ERROR', '#TRAZA | #REST | #CURL | #BODY >> ' . json_encode($body));
 
         } 
 

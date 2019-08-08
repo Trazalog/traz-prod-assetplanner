@@ -102,9 +102,10 @@ define('CMP_ALM', 'traz-comp-almacen/');
 |
 */
 
-define('BONITA_URL', 'http://localhost:8080/bonita/');  
-define('BPM_ADMIN_USER', 'mantenedor1');
-define('BPM_ADMIN_PASS', 'bpm');
+define('BONITA_URL', 'http://www.trazalog.com.ar:8080/bonita/');  
+
+define('BPM_ADMIN_USER', 'admin');
+define('BPM_ADMIN_PASS', '123traza');
 define('BPM_USER_PASS', 'bpm');
 
 
@@ -136,7 +137,7 @@ define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '7321139677245257050');
 |
 */
  
-define('BPM_PROCESS_ID', '5101302672793474013'); // localhost -
+define('BPM_PROCESS_ID', '4793042246709748124'); // localhost -
 
 /*
 |--------------------------------------------------------------------------
