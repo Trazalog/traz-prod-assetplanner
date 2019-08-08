@@ -93,6 +93,14 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 |
 */
 define('CMP_ALM', 'traz-comp-almacen/');  
+
+define('SIM', 'traz-comp-sim/');  
+define('SIM_FORMS', array(
+
+    'eval_ope' => 10000,
+
+    'eval_zona' => 9000
+));
 /*
 |--------------------------------------------------------------------------
 | Bonita url

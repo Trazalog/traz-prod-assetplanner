@@ -1,7 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 if(!function_exists('formato_fecha')){
-    function formato_fecha_hora($fecha){
+    function fecha_hora($fecha){
         if(strlen($fecha)==0) return '';
         $aux = explode(" ",$fecha);
         if(sizeOf($aux)==2){

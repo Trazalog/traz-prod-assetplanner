@@ -43,9 +43,6 @@ function llenaComp() {
             alert("Error: No se pudo obtener el Formulario");
         },
     });
-
-	
-    
 }
 
 //Trae valor de las imagenes
