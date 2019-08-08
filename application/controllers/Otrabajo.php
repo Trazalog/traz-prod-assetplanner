@@ -4,10 +4,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Otrabajo extends CI_Controller {
 
 	function __construct(){
+	
+		
 		parent::__construct();
+		
 		$this->load->model('Otrabajos');
 		$this->load->model('Equipos');
-		
+		//validaSesion();
 	}
 	/**
 	 * Muestra pantalla de listado de Ordenes de Trabajo.
@@ -16,7 +19,7 @@ class Otrabajo extends CI_Controller {
 	 */
 	public function index($permission) // Ok
 	{
-		$data['list']       = $this->Otrabajos->otrabajos_List();
+		$data['list']       = $this->Otrabajos->otrabajos_List(null,0);
 		$data['kpi'] = $this->Equipos->informe_equipos();
 		$data['permission'] = $permission;
 		$this->load->view('otrabajos/dash', $data);
@@ -33,17 +36,16 @@ class Otrabajo extends CI_Controller {
 		$this->load->view('otrabajos/view_agregarOT', $data);
 	}
   /**
-	 * Muestra pantalla de listado de Ordenes de Trabajo.
+	 * Muestra pantalla de listado de Ordenes de Trabajo de distintos origenes.
 	 *
 	 * @param 	String 	$permission 	Permisos de ejecuci�n.
 	 */
 	public function listOrden($permission,$ot=null) // Ok
 	{
-		$data['list']    = $this->Otrabajos->otrabajos_List($ot);
-
+		$data['list']    = $this->Otrabajos->otrabajos_List($ot, 2);
 		$data['permission'] = $permission;
 
-		$rsp = $this->bpm->getUsuarios();
+		$rsp = $this->bpm->getUsuariosBPM();
 
 		$data['list_usuarios'] = $rsp['data'];
 
@@ -51,7 +53,24 @@ class Otrabajo extends CI_Controller {
 		
 		$this->load->view('otrabajos/list', $data);
 		
-  }  
+	}  
+	/**
+	 * Muestra pantalla de listado de Ordenes de Trabajo generada poritem de menu.
+	 *
+	 * @param 	String 	$permission 	Permisos de ejecuci�n.
+	 */
+	public function listOTestandar($permission,$ot=null){
+		$this->load->library('BPM',null);
+		$data['list']    = $this->Otrabajos->otrabajos_List($ot, 1);
+		//dump($data['list'], 'listado');
+		$data['permission'] = $permission;
+		$data['list_usuarios'] = $this->bpm->ObtenerUsuarios();	
+		//log_message('DEBUG', 'listado de usr en BPM: '.json_encode($data['list_usuarios']));
+
+		$data['opciones'] = $this->load->view('otrabajos/tabla_opciones',['permission'=>$permission],true);
+		
+		$this->load->view('otrabajos/list', $data);
+	}
   /**
    * Traer proveedores de empresa con estado AC.
    *
@@ -273,8 +292,34 @@ class Otrabajo extends CI_Controller {
 		
 		return $nomImagen;
   }
-  
-  	/**
+	/**
+	 * Actualiza responsable en tabla Orden_trabajo
+	 *  al ser seleccionado
+	 *  en modalejecutar ot 
+	 */
+	public function updateResponsable(){
+
+		$id_responsable = $this->input->post('id_usuario_a');
+		$id_orden = $this->input->post('idOt');
+		$response = $this->Otrabajos->updateResponsables($id_orden, $id_responsable);
+		echo json_encode($response);
+	}
+	/**
+	 * Actualiza en tabla Orden_trabajo al ser 
+	 * seleccionado tarea en modal ejecutar ot 
+	 * 
+	 */
+	public function updateTarea(){
+		
+		$idTarea = $this->input->post('idTarea');
+		$tarea = $this->input->post('tarea');
+		$idOt = $this->input->post('idOt');
+		$response = $this->Otrabajos->updateTarea($idOt, $idTarea, $tarea);
+		echo json_encode($response);
+	}
+
+
+  /**
   	 * Trae datos para editar
   	 *
   	 */
@@ -636,7 +681,7 @@ class Otrabajo extends CI_Controller {
 		}
 
 		//OBTENER TASK_ID EJECTURAR OT
-		$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Ejecutar OT');
+		$task_id = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Ejecutar OT');
 
 		if($task_id == 0) {echo 'No existe Tarea Ejecutar OT'; return;}
 
@@ -921,7 +966,7 @@ class Otrabajo extends CI_Controller {
 		//dump($id_solicitud, 'id solicitud guardada en OT: ');
 		// si viene de correctivo
 		if ($tipo == 2) {		
-				$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar"');
+				$task_id = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Esperando cambio estado "a Ejecutar"');
 				//dump($task_id, 'tadk id en *');
 				echo $task_id;
 				return;
@@ -947,7 +992,7 @@ class Otrabajo extends CI_Controller {
 						$this->Otrabajos->setCaseidenOT($case_id, $id);					
 					}	
 
-					$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar" 2');			
+					$task_id = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Esperando cambio estado "a Ejecutar" 2');			
 					//devueve task
 					echo $task_id;
 
@@ -959,7 +1004,7 @@ class Otrabajo extends CI_Controller {
 					//dump($id, 'id sollicitud');
 					//$case_id = 14001;
 					//dump($case_id, ' id case en controller: ');
-					$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar" 2');
+					$task_id = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Esperando cambio estado "a Ejecutar" 2');
 					// guarda case_id en Otrabajo
 					//dump($task_id, 'task en 2: ');	// BIEN!				
 					
@@ -983,7 +1028,7 @@ class Otrabajo extends CI_Controller {
 			$this->Otrabajos->setCaseidenOT($case_id, $id);					
 		}
 		// retorna task id 		
-		$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Esperando cambio estado "a Ejecutar" 2');
+		$task_id = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Esperando cambio estado "a Ejecutar" 2');
 		echo $task_id;
 		return;
 
@@ -995,7 +1040,7 @@ class Otrabajo extends CI_Controller {
 			log_message('DEBUG', 'TRAZA | OTrabajo/Ejecutar OT');
 
 		$userdata = $this->session->userdata('user_data');
-		$userBpm = $userdata[0]['userBpm']; 
+		$userBpm = $userdata[0]['userBpm']['id']; 
 
 		$task 				= (int)$this->input->post('task');
 		$ot 					= (int)$this->input->post('ot');
@@ -1040,23 +1085,34 @@ class Otrabajo extends CI_Controller {
 		if(!$responce['status']){echo json_encode($responce);return;}
 
 		// buscar task pa asignar la tarea siguiente (ejecutar ot) a un responsable		
-		$nextTask = $this->bpm->ObtenerTaskidXNombre($case_id,'Ejecutar OT');
+		$nextTask = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Ejecutar OT');
+
+		if($nextTask == 0){
+			echo json_encode(msj(false,'No se pudo Obtener Tarea Siguiente | Ejecutar OT'));return;
+		}
 		// log
-			log_message('DEBUG', 'TRAZA | $case_id: '.$case_id);
-			log_message('DEBUG', 'TRAZA | Ejecutar OT-> $task_id: '.$nextTask);
+		log_message('DEBUG', 'TRAZA | $case_id: '.$case_id);
+		log_message('DEBUG', 'TRAZA | Ejecutar OT-> $task_id: '.$nextTask);
 
 		// sincroniza usuario local con el de BPM, para asignar el usr de BPM
-		$usuarioBPM = $this->bpm->getInfoSisUserenBPM($usrId);
+		$rsp = $this->bpm->getInfoSisUserenBPM($usrId);
+
+		if(!$rsp['status']){echo json_encode($rsp);return;}
 		
+		$usuarioBPM = $rsp['data']['id'];
+
 		// log	
-			log_message('DEBUG', 'TRAZA | Usr asignado (responsable OT) en BPM: '.$usuarioBPM);
-			log_message('DEBUG', 'TRAZA | Usr asignado (responsable OT) en LOCAL: '.$usrId);
+		log_message('DEBUG', 'TRAZA | Usr asignado (responsable OT) en BPM: '.$usuarioBPM);
+		log_message('DEBUG', 'TRAZA | Usr asignado (responsable OT) en LOCAL: '.$usrId);
 
 		//Asignar Usuario a Tarea para Finanlizar
 		$responce = $this->bpm->setUsuario($nextTask,$usuarioBPM);
 
-		if(!$responce['status']){echo json_encode($responce);return;}
-	
+		if(!$responce['status']){
+			echo json_encode($responce);
+			return;
+		}
+		
 		//Cambiar Estado de OT ('ASignada') y en solicitud origen en BD		
 		if($this->Otrabajos->cambiarEstado($ot, $estado, 'OT')){
 				
@@ -1123,11 +1179,24 @@ class Otrabajo extends CI_Controller {
 	//devuelve valores de todos los datos de la OT para mostrar en modal.
 	public function getOrigenOt()
 	{
-		$idot     = $_POST['idot'];
-		$response = $this->Otrabajos->getOrigenOt($idot);
-    echo json_encode($response[0]);
+		
+				// $idot     = $_POST['idot'];
+				// $response = $this->Otrabajos->getOrigenOt($idot);
+				// echo json_encode($response[0]);
+		
+
+			if ( $this->session->userdata() ) {
+				$idot     = $_POST['idot'];
+				$response = $this->Otrabajos->getOrigenOt($idot);
+				echo json_encode($response[0]);
+			} else {
+				$this->load->view('equipo/recarga');
+			}
+			
+
+
+
 	}
-	
 
 	//devuelve valores de todos los datos de la OT para mostrar en modal.
 	public function getViewDataOt()

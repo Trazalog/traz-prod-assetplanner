@@ -488,10 +488,15 @@ class Calendarios extends CI_Model {
 													orden_trabajo.fecha_program,
 													equipos.codigo,
 													equipos.descripcion AS descripcionEquipo,
-													tbl_tipoordentrabajo.descripcion AS descrpcionSolicitud');
+													tbl_tipoordentrabajo.descripcion AS descrpcionSolicitud,
+													sisusers.usrId,
+													sisusers.usrLastName,
+													sisusers.usrName, 
+													');
 				$this->db->from('orden_trabajo');			
 				$this->db->join('equipos', 'orden_trabajo.id_equipo = equipos.id_equipo');
-				$this->db->join('tbl_tipoordentrabajo', 'tbl_tipoordentrabajo.id = orden_trabajo.tipo');			
+				$this->db->join('tbl_tipoordentrabajo', 'tbl_tipoordentrabajo.id = orden_trabajo.tipo');	
+				$this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId');		
 				$this->db->where('orden_trabajo.id_orden', $idOt);
 				$query = $this->db->get();
 				if($query->num_rows()!=0)

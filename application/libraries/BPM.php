@@ -9,7 +9,7 @@ class BPM
 
         $this->REST =& get_instance()->rest;
 
-	}
+		}
     
     public function getTodoList()
     {
@@ -51,9 +51,9 @@ class BPM
         return msj(true,'OK', json_decode($rsp['data'],true));
     }
 
-    public function ObtenerTaskidXNombre($caseId, $nombre) //!FALTA TERMINAR
+    public function ObtenerTaskidXNombre($proccesId, $caseId, $nombre) //!FALTA TERMINAR
     {
-        $actividades = $this->ObtenerActividades($caseId, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
+        $actividades = $this->ObtenerActividades($proccesId,$caseId);
 
         if ($actividades == null) {
             return 0;
@@ -67,10 +67,6 @@ class BPM
 
             }
         }
-
-        // foreach ($actividades as $value) {
-        //     if($value->displayName == $nombre)
-        // }
         
         return 0;
     }
@@ -133,6 +129,14 @@ class BPM
         $url = BONITA_URL . 'API/bpm/activity?p=0&c=200&f=processId%3D' . $processId . '&f=rootCaseId%3D' . $caseId . '&d=assigned_id';
 
         $rsp = $this->REST->callAPI('GET', $url, false, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
+
+        if (!$rsp['status']) {
+
+            log_message('DEBUG','#TRAZA | #BPM >> '.ASP_105.' | proccesId: '.$processId.' | caseId: '.$caseId);
+
+            return msj(false, ASP_105);      
+
+        }
 
         $array = json_decode($rsp['data'], true);
 
@@ -237,7 +241,7 @@ class BPM
         $variableName = 'gIdOT';
         $url = BONITA_URL . $resource . $caseId . "/" . $variableName;
 
-        $rsp = $this->rest->callAPI('PUT', $url, $contract, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
+        $rsp = $this->REST->callAPI('PUT', $url, $contract, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
 
         if(!$rsp['status']) {
 
@@ -253,10 +257,11 @@ class BPM
 
     function getCaseVariable($caseId, $var)
     {
-        $url = BONITA_URL . 'API/bpm/caseVariable/';
-
+        
         $var = '/' . $var;
 
+        $url = BONITA_URL . 'API/bpm/caseVariable/'.$caseId.$var;
+        
         $rsp = $this->REST->callAPI('GET', $url, null, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
 
         if (!$rsp['status']) {
@@ -267,7 +272,7 @@ class BPM
 
         }
 
-        return msj(true, 'OK', $rsp['body']['value']);
+        return msj(true, 'OK', json_decode($rsp['data'])->value);
     }
 
     function getActivityVariable($taskId, $var){
@@ -284,7 +289,7 @@ class BPM
 
         }
 
-        return msj(true, 'OK',$rsp['body']['value']);
+        return msj(true, 'OK', json_decode($rsp['data'])->value);
 
     }
 
@@ -368,44 +373,44 @@ class BPM
 		return $idUsrBPM;
 	}	
 
-    public function loggin($user, $pass)
-    {
-        $data = array(
-            'username' => $user,
-            'password' => $pass,
-            'redirect' => 'false',
-        );
+	public function loggin($user, $pass)
+	{
+			$data = array(
+					'username' => $user,
+					'password' => $pass,
+					'redirect' => 'false',
+			);
 
-        $url = BONITA_URL . 'loginservice';
+			$url = BONITA_URL . 'loginservice';
 
-        $rsp = $this->REST->callAPI('GET', $url, $data, false);
+			$rsp = $this->REST->callAPI('GET', $url, $data, false);
 
-        if(!$rsp['status']){
+			if(!$rsp['status']){
 
-            log_message('DEBUG','#TRAZA | #BPM >> '.ASP_109);
+					log_message('DEBUG','#TRAZA | #BPM >> '.ASP_109);
+					validaSesionBPM();
+					return false;
 
-            return false;
+			}
 
-        }
+			return $this->crearHeader($rsp['header']);
+	}
 
-        return $this->crearHeader($rsp['header']);
-    }
+	public function crearHeader($headers)
+	{
+			$headers = explode("\r\n", $headers);
 
-    public function crearHeader($headers)
-    {
-        $headers = explode("\r\n", $headers);
+			// extrae cookies para que sea dinamico el cambio
+			$idsesion = explode(';', explode('JSESSIONID=', $headers[2])[1])[0];
+			$bonita_tenant = explode('bonita.tenant=', $headers[1])[1];
+			$apiToken = explode(';', explode('X-Bonita-API-Token=', $headers[3])[1])[0];
 
-        // extrae cookies para que sea dinamico el cambio
-        $idsesion = explode(';', explode('JSESSIONID=', $headers[2])[1])[0];
-        $bonita_tenant = explode('bonita.tenant=', $headers[1])[1];
-        $apiToken = explode(';', explode('X-Bonita-API-Token=', $headers[3])[1])[0];
+			$parametros = array(
+					"X-Bonita-API-Token: " . $apiToken,
+					"Cookie: JSESSIONID=" . $idsesion . ";X-Bonita-API-Token=" . $apiToken . ";bonita.tenant=" . $bonita_tenant,
+					"Content-Type: application/json",
+			);
 
-        $parametros = array(
-            "X-Bonita-API-Token: " . $apiToken,
-            "Cookie: JSESSIONID=" . $idsesion . ";X-Bonita-API-Token=" . $apiToken . ";bonita.tenant=" . $bonita_tenant,
-            "Content-Type: application/json",
-        );
-
-        return $parametros;
-    }
+			return $parametros;
+	}
 }

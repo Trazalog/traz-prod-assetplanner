@@ -12,8 +12,9 @@ class Otrabajos extends CI_Model {
 	 *
 	 * @return  Array   Arreglo con Ordenes de Trabajo.
 	 */
-	function otrabajos_List() // Ok
+	function otrabajos_List( $ot=NULL, $tipo ) // Ok
 	{
+	
 		$userdata = $this->session->userdata('user_data');
 		$empId    = $userdata[0]['id_empresa'];
 	
@@ -22,13 +23,25 @@ class Otrabajos extends CI_Model {
 												sisusers.usrName, 
 												sisusers.usrLastName, equipos.codigo, 
 												0 as grpId,
-												equipos.id_equipo');
+												equipos.id_equipo,
+												orden_servicio.id_orden AS ordenservicioId');
 		$this->db->from('orden_trabajo');
 		$this->db->join('tbl_tipoordentrabajo', 'tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
 		$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario');
 		$this->db->join('sisusers AS user1', 'orden_trabajo.id_usuario_a = user1.usrId', 'left');//usuario asignado?
 		$this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
+	
+		//LEFT JOIN orden_servicio ON orden_trabajo.id_orden = orden_servicio.id_ot
+
+		$this->db->join('orden_servicio', 'orden_trabajo.id_orden = orden_servicio.id_ot', 'left');
+	
 		$this->db->where('equipos.estado !=','AN');
+
+		if($tipo == 1){
+			$this->db->where('orden_trabajo.tipo', 1);
+			
+		}
+
 		$this->db->where('orden_trabajo.id_empresa', $empId);
 		$query = $this->db->get();
 
@@ -157,6 +170,7 @@ class Otrabajos extends CI_Model {
 
 
 	function getDescTareaSTD($id_tar){
+		
 		$this->db->select('tareas.descripcion');
 		$this->db->from('tareas');
 		$this->db->where('tareas.id_tarea', $id_tar);
@@ -179,6 +193,32 @@ class Otrabajos extends CI_Model {
 			$id_insert = $this->db->insert_id(); 
 			return $id_insert;
 	}
+
+	/**
+	 * guarda responsable en modalejecutar ot al ser 
+	 * seleccionado en tabla Orden_trabajo
+	 * 
+	 */
+	function updateResponsables($id_orden, $id_responsable){
+		$this->db->set('orden_trabajo.id_usuario_a', $id_responsable);
+		$this->db->where('orden_trabajo.id_orden', $id_orden);
+		$response = $this->db->update('orden_trabajo');
+		return $response;
+	}
+	/**
+	 * guarda responsable en modalejecutar ot al ser 
+	 * seleccionado en tabla Orden_trabajo
+	 * 
+	 */
+	function updateTarea($id_orden, $idTarea, $tarea){
+		
+	
+		$this->db->where('orden_trabajo.id_orden', $id_orden);
+		$response = $this->db->update('orden_trabajo', array('id_tarea'=>$idTarea,
+		'descripcion'=>$tarea));
+		return $response;
+	}
+
 
 	/**
 	 * Guarda Case id en OT
@@ -885,7 +925,8 @@ class Otrabajos extends CI_Model {
         $this->db->from('orden_trabajo');
         $this->db->where('orden_trabajo.id_empresa', $empresaId);
         $this->db->group_by('orden_trabajo.tipo');
-        $query = $this->db->get();
+				$query = $this->db->get();
+				//dump($this->db->last_query(), 'kpi');
         if($query->num_rows()!=0)
         {
             return $query->result_array();

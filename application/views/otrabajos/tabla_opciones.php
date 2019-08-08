@@ -13,7 +13,7 @@
 
     if (strpos($permission,'Pedidos') !== false) { 
 
-        echo '<li role="presentation"><a onclick="nota_pedido(this)" style="color:white;" role="menuitem" tabindex="-1" href="#"><i class="fa fa-cart-plus text-white" style="color:white; cursor: pointer;margin-left:-3px"></i>Agregar Nota de Pedido</a></li>';
+        //echo '<li role="presentation"><a onclick="nota_pedido(this)" style="color:white;" role="menuitem" tabindex="-1" href="#"><i class="fa fa-cart-plus text-white" style="color:white; cursor: pointer;margin-left:-3px"></i>Agregar Nota de Pedido</a></li>';
    
     }
 
@@ -32,20 +32,21 @@
 
     if (strpos($permission,'Del') !== false) {
 
-			echo '<li role="presentation"><a style="color:white;" role="menuitem" tabindex="-1" href="#" data-toggle="modal" data-target="#modalaviso"><i class="fa fa-times-circle text-white" style="color:white; cursor: pointer;"></i>Eliminar</a></li>';
+			//echo '<li role="presentation"><a style="color:white;" role="menuitem" tabindex="-1" href="#" data-toggle="modal" data-target="#modalaviso"><i class="fa fa-times-circle text-white" style="color:white; cursor: pointer;"></i>Eliminar</a></li>';
    
     }
 
     //// GENERA INFORME DE SERVICIOS
+    
     if (strpos($permission,'Del') !== false) {
 
-        echo '<li role="presentation" id="cargOrden"><a onclick="generar_informe_servicio(this)" style="color:white;" role="menuitem" tabindex="-1" href="#" ><i class="fa fa-file-text text-white" style="color:white; cursor: pointer;margin-left:-1px"></i>Informe de Servicios</a></li>';
-   
+       //iba a funcion generar informe de servicios
+        //echo '<li role="presentation" id="cargOrden"><a onclick="generar_informe_servicio(this)" style="color:white;" role="menuitem" tabindex="-1" href="#" ><i class="fa fa-file-text text-white" style="color:white; cursor: pointer;margin-left:-1px"></i>Informe de Servicios</a></li>';
     }   
   
     if (strpos($permission,'Pedidos') !== false) {
 
-        echo '<li role="presentation"><a onclick="mostrar_pedido(this)"style="color:white;" role="menuitem" tabindex="-1" href="#" data-toggle="modal" data-target="#modallista"><i class="fa fa-truck text-white" style="color:white; cursor: pointer;margin-left:-3px"></i>Mostrar Pedido</a></li>';    
+        echo '<li role="presentation"><a onclick="mostrar_pedido(this)"style="color:white;" role="menuitem" tabindex="-1" href="#" data-toggle="modal" data-target="#modallista"><i class="fa fa-truck text-white" style="color:white; cursor: pointer;margin-left:-3px"></i>Pedido de Materiales</a></li>';    
     }
 
 
@@ -53,6 +54,6 @@
    
     echo '<li role="presentation"><a onclick="imprimir(this)"style="color:white;" role="menuitem" tabindex="-1" href="#"><i class="fa fa-print text-white" style="color:white; cursor: pointer;margin-left:-3px"></i>Imprimir</a></li>';
 
-    echo '</ul><div>';
-?>
+    // echo '</ul><div>';
+
 

@@ -213,7 +213,7 @@ class Preventivos extends CI_Model
 			$this->db->where('articles.id_empresa', $empId);
 			$this->db->where('articles.artEstado !=', 'AN');
 			$this->db->order_by('label', 'ASC');
-			$query = $this->db->get();
+			$query = $this->db->get();		
 		if($query->num_rows()>0){
 			return $query->result();
 		}

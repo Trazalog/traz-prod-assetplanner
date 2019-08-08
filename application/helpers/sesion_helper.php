@@ -6,7 +6,7 @@ if(!function_exists('userId')){
     {
         $ci =& get_instance();			
         $userdata  = $ci->session->userdata('user_data');
-		return  $userdata[0]['userBpm']['id'];
+		return  $userdata[0]['userBpm'];
     }
 }
 

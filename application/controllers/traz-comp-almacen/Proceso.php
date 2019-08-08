@@ -260,7 +260,12 @@ class Proceso extends CI_Controller
                 $obj->motivo = $res['motivo_rechazo'];
 
                 $this->load->model('traz-comp/Componentes');
-                $data = $this->Componentes-> listaArticulos();
+                
+                
+                #COMPONENTE ARTICULOS
+                $data['items'] = $this->Componentes->listaArticulos();
+                $data['lang'] = lang_get('spanish', 'Ejecutar OT');
+
 
                 $data['info'] = $obj;
 

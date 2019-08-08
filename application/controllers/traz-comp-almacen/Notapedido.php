@@ -14,6 +14,11 @@ class Notapedido extends CI_Controller
 
     public function index()
     {
+        $this->load->model('traz-comp/Componentes');
+          #COMPONENTE ARTICULOS
+        $data['items'] = $this->Componentes->listaArticulos();
+        $data['lang'] = lang_get('spanish', 'Ejecutar OT');
+
         $data['list'] = $this->Notapedidos->notaPedidos_List();
         $data['permission'] = $this->permission;
         $this->load->view(CMP_ALM.'/notapedido/list', $data);
@@ -117,7 +122,8 @@ class Notapedido extends CI_Controller
 
     public function getNotaPedidoId()
     {
-        $response = $this->Notapedidos->getNotaPedidoIds($this->input->get('id_nota'));
+        $pema_id = $this->input->get('id_nota');
+        $response = $this->Notapedidos->getNotaPedidoIds($pema_id);
         echo json_encode($response);
     }
 
@@ -222,7 +228,12 @@ class Notapedido extends CI_Controller
     public function crearPedido($ot=null)
     {   
         $this->load->model('traz-comp/Componentes');
-        $data = $this->Componentes-> listaArticulos();
+       
+        #COMPONENTE ARTICULOS
+        $data['items'] = $this->Componentes->listaArticulos();
+        $data['lang'] = lang_get('spanish', 'Ejecutar OT');
+
+
         if($ot) {
             $info = new stdClass();
             $info->ortr_id = $ot;
@@ -236,7 +247,11 @@ class Notapedido extends CI_Controller
     public function crearPedido2($ot=null)
     {   
         $this->load->model('traz-comp/Componentes');
-        $data = $this->Componentes-> listaArticulos();
+        
+        #COMPONENTE ARTICULOS
+        $data['items'] = $this->Componentes->listaArticulos();
+        $data['lang'] = lang_get('spanish', 'Ejecutar OT');
+
         if($ot) {
             $info = new stdClass();
             $info->ortr_id = $ot;

@@ -4,10 +4,33 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Tarea extends CI_Controller {
 
+
+
 		function __construct(){
 			parent::__construct();
+
+			
+			//if(empty($this->session->userdata("userName"))) { 
+				//redirect(base_url(),'refresh'); }
+			
+			
+			// if(empty($this->session->userdata("userName"))) { 
+			// 	redirect(base_url('views/login.php'));
+			// }
+
+
+			//redirect( base_url() );
+			
+			// $proyecto = 'http://localhost/traz-prod-assetplanner/';
+			// header("Location: $proyecto");
+			// $userdata = $this->session->userdata('user_data');
+      // $userName = $userdata[0]['userName'];     // guarda usuario logueado   
+			// var_dump($userName, 'datos: ');
+			// if(empty($this->session->userdata("userName"))) { 
+			// 	redirect(base_url(),'refresh'); }
 			$this->load->model('Tareas');		
 			$this->load->model('Backlogs');
+			$this->load->model('Otrabajos');
 		}
 
 		// llama ABM tareas estandar
@@ -78,23 +101,29 @@ class Tarea extends CI_Controller {
 		/*	./ FUNCIONES BPM */
 			// Bandea de entrada
 			public function index($permission = null){
+				///$this->load->helper('control_sesion');
+				// if	(validaSesion()){
 
-				$detect = new Mobile_Detect();    				
-				//Obtener Bandeja de Usuario desde Bonita
-				$response = $this->bpm->getToDoList();
-				//dump($response, 'respuesta tareas BPM: ');
-				if(!$response['status']){echo json_encode($response);return;}
-				//Completar Tareas con ID Solicitud y ID OT
-				$data_extend = $this->Tareas->CompletarToDoList($response['data']);				
-				$data['list'] = $data_extend;
-				$data['permission'] = $permission;		
+						$detect = new Mobile_Detect();    				
+						//Obtener Bandeja de Usuario desde Bonita
+						$response = $this->bpm->getToDoList();
+						//dump($response, 'respuesta tareas BPM: ');
+						if(!$response['status']){
+							//$this->load->view('404');
+							return;
+						}
+						//Completar Tareas con ID Solicitud y ID OT
+						$data_extend = $this->Tareas->CompletarToDoList($response['data']);				
+						$data['list'] = $data_extend;
+						$data['permission'] = $permission;		
 
-				if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {								
-					$data['device'] = "android";
-				}else{					
-					$data['device'] = "pc";				
-				}			
-				$this->load->view('tareas/list',$data);				
+						if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {								
+							$data['device'] = "android";
+						}else{					
+							$data['device'] = "pc";				
+						}			
+						$this->load->view('tareas/list',$data);	
+				//}			
 			}
 			// Verifica si la tarea fue guardada la fecha de inicio
 			public function confInicioTarea(){
@@ -168,7 +197,7 @@ class Tarea extends CI_Controller {
 
 				$idTarBonita = $this->input->post('idTarBonita');
 				
-				$response = $this->bpm->setUsuario($idTarBonita, null);
+				$response = $this->bpm->setUsuario($idTarBonita, '');
 
 				echo json_encode($response);
 			}		
@@ -294,7 +323,10 @@ class Tarea extends CI_Controller {
 						$tipo = 'preventivo';
 						break;					
 					case '4':
-						$tipo = 'backlog';
+						$tipo = 'backlog';					
+						// cambia el estado del backlog	a 'CN'
+						$response = $this->Tareas->cambiarEstado($id_solicitud, $estado, $tipo);								
+							
 						break;				
 					default:
 						$tipo = 'predictivo';
@@ -415,12 +447,14 @@ class Tarea extends CI_Controller {
 					$data['permission'] = $permission;
 
 				//OBTENER DATOS DE TAREA SELECCIONADA DESDE BONITA
-					$data['TareaBPM'] = json_decode($this->getDatosBPM($idTarBonita),true);	
+					$data['TareaBPM'] = $this->getDatosBPM($idTarBonita);	
 					$data['idTarBonita'] = $idTarBonita;
 					$caseId = $data['TareaBPM']["caseId"];
 			
 				// Trae id de OT y de Sol Serv por CaseId			
 					$id_SS = $this->getIdSolServPorIdCase($caseId);	
+					log_message('DEBUG','#TRAZA | #TAREA >> detatarea id_SS: '.$id_SS);
+					log_message('DEBUG','#TRAZA | #TAREA >> detatarea tarea BPM: '.json_encode($data['TareaBPM']));
 					//dump($id_SS, 'id SolServicios en detatarea: ');
 				// si la tarea se origino en una SServicio
 					// if ($id_SS == 0) {
@@ -462,7 +496,7 @@ class Tarea extends CI_Controller {
 					$case = array('caseId'=>$case_id);
 							
 				// LINEA DE TIEMPO 			
-					$data['timeline'] = $this->bpm->ObtenerLineaTiempo($case_id);			
+					$data['timeline'] = $this->bpm->ObtenerLineaTiempo(BPM_PROCESS_ID, $case_id);			
 				//CARGAR VISTA COMENTARIOS 
 					$data_aux = ['case_id'=>$case_id, 'comentarios'=>$this->bpm->ObtenerComentarios($case_id)['data']];
 					$data['comentarios'] = $this->load->view('tareas/componentes/comentarios',$data_aux,true);
@@ -563,7 +597,7 @@ class Tarea extends CI_Controller {
 			// Trae datos de BPM para notif estandar
 			public function getDatosBPM($idTarBonita){
 			
-				return $this->bpm->getTarea($idTarBonita);
+				return $this->bpm->getTarea($idTarBonita)['data'];
 		
 			}
 			// Trae id de tarea de trazajobs segun id de tarea bonita - NO TOCAR
@@ -591,9 +625,8 @@ class Tarea extends CI_Controller {
 		
 		/* COMENTARIOS */
 			public function GuardarComentario(){
-				$comentario = $this->input->post();
-			
-				$response = $this->bpm->GuardarComentario($comentario);
+				$data = $this->input->post();
+				$response = $this->bpm->GuardarComentario($data["processInstanceId"],$data["content"]);
 				echo json_encode($response);
 			}	
 

@@ -53,6 +53,8 @@
 var tablaDetalle2 = $('#tabladetalle2').DataTable({});
 var selectRow = null;
 
+get_detalle();
+
 function del(e) {
     selectRow = $(e).closest('tr');
     $('#eliminar').modal('show');
@@ -118,10 +120,7 @@ function get_detalle() {
     }
     $.ajax({
         type: 'POST',
-        data: {
-            id
-        },
-        url: 'index.php/almacen/Notapedido/getNotaPedidoId',
+        url: 'index.php/almacen/Notapedido/getNotaPedidoId?id_nota='+id,
         success: function(data) {
             tablaDetalle2.clear();
             

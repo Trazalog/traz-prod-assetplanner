@@ -81,27 +81,28 @@
 
                             echo '<td>';  
                         
-                                if ($f['estado'] == 'S') {
-                                  echo  '<small class="label pull-left bg-danger">Solicitada</small>';
-                                }
-                                if($f['estado'] == 'PL'){                           
-                                  echo '<small class="label pull-left bg-warning">Planificada</small>';
-                                }
-                                if($f['estado'] == 'AS'){
-                                  echo '<small class="label pull-left bg-maroon">Asignada</small>';
-                                }
-                                if ($f['estado'] == 'C') {
-                                  echo '<small class="label pull-left bg-success">Curso</small>' ;
-                                }
-                                if ($f['estado'] == 'T') {
-                                  echo  '<small class="label pull-left bg-primary">Terminada</small>';
-                                }
-                                if ($f['estado'] == 'CE') {
-                                  echo  '<small class="label pull-left bg-navy">Cerrada</small>';
-                                }      
-                                if ($f['estado'] == 'CNF') {
-                                  echo  '<small class="label pull-left bg-black">Conforme</small>';
-                                } 
+                                // if ($f['estado'] == 'S') {
+                                //   echo  '<small class="label pull-left bg-danger">Solicitada</small>';
+                                // }
+                                // if($f['estado'] == 'PL'){                           
+                                //   echo '<small class="label pull-left bg-warning">Planificada</small>';
+                                // }
+                                // if($f['estado'] == 'AS'){
+                                //   echo '<small class="label pull-left bg-maroon">Asignada</small>';
+                                // }
+                                // if ($f['estado'] == 'C') {
+                                //   echo '<small class="label pull-left bg-success">Curso</small>' ;
+                                // }
+                                // if ($f['estado'] == 'T') {
+                                //   echo  '<small class="label pull-left bg-primary">Terminada</small>';
+                                // }
+                                // if ($f['estado'] == 'CE') {
+                                //   echo  '<small class="label pull-left bg-navy">Cerrada</small>';
+                                // }      
+                                // if ($f['estado'] == 'CNF') {
+                                //   echo  '<small class="label pull-left bg-black">Conforme</small>';
+                                // } 
+                                
 
                             echo '</td>';
                           echo '</tr>';

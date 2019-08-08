@@ -269,8 +269,8 @@ class Users extends CI_Model
 					return false;
 				}
 
-				$datosSesionUsuario[0]['userBpm'] = $rsp['data'];
-
+				$datosSesionUsuario[0]['userBpm'] = $rsp['data']['id'];
+	
 				$this->session->set_userdata('user_data', $datosSesionUsuario);
 	 			return true;
 			} else {

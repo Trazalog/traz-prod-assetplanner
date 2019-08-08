@@ -178,8 +178,9 @@ class Backlog extends CI_Controller {
 		if ($tipo == 'editNuevo') {
 				
 				$response = $this->bpm->cerrarTarea($idTarBonita);	
+				log_message('DEBUG','#BACKLOG >> editar_backlog info: '.json_encode($responce));
 				// Si cerro la tarea
-				if ( json_decode($response['code']) < 300) {	
+				if ($response['status']) {	
 					
 						// al editar cambia a estado 'S' (solicitado)
 						$datos = array('id_tarea' => $tarea,

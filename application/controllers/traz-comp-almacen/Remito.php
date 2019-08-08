@@ -24,7 +24,11 @@ class Remito extends CI_Controller {
     public function cargarlista() // Ok
     { 
 		$this->load->model('traz-comp/Componentes');
-		$data = $this->Componentes-> listaArticulos();
+		
+		#COMPONENTE ARTICULOS
+		$data['items'] = $this->Componentes->listaArticulos();
+		$data['lang'] = lang_get('spanish', 'Ejecutar OT');
+
 		$data['permission'] = $this->permission;
         $this->load->view(CMP_ALM.'/remito/view_',$data);
 	}

@@ -52,7 +52,15 @@
                         $idsolicitud = $a['id_solicitud'];
                         echo '<tr id="'.$id.'" class="'.$id.' ot-row" data-id_equipo="'.$id_equipo.'" data-causa="'.$causa.'" data-idsolicitud="'.$idsolicitud.'">';
                         echo '<td>';
+                        $ordenservicioId = $a['ordenservicioId'];                       
                         echo $opciones;
+                        if($ordenservicioId != NULL){
+                          // Ver informe de servicios generado
+                          echo '<li role="presentation" id="cargOrden"><a onclick="ver_informe_servicio(this)" style="color:white;" role="menuitem" tabindex="-1" href="#" ><i class="fa fa-file-text text-white" style="color:white; cursor: pointer;margin-left:-1px"></i>Informe de Servicios</a></li>';
+                          echo '</ul><div>';
+                        }else{
+                          echo '</ul><div>';
+                        }
                         echo '</td>';                        
                         echo '<td>'.$a['id_orden'].'</td>';                       
                         $fecha_program = ($a['fecha_program'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_program']), 'd-m-Y');
@@ -70,26 +78,33 @@
                         echo '<td>';  
                         
                           if ($a['estado'] == 'S') {
-                            echo  '<small class="label pull-left bg-danger">Solicitada</small>';
-                          }
-                          if($a['estado'] == 'PL'){                           
-                            echo '<small class="label pull-left bg-warning">Planificada</small>';
-                          }
-                          if($a['estado'] == 'AS'){
-                            echo '<small class="label pull-left bg-maroon">Asignada</small>';
-                          }
-                          if ($a['estado'] == 'C') {
-                            echo '<small class="label pull-left bg-green">Curso</small>' ;
-                          }
-                          if ($a['estado'] == 'T') {
-                            echo  '<small class="label pull-left bg-primary">Terminada</small>';
-                          }
-                          if ($a['estado'] == 'CE') {
-                            echo  '<small class="label pull-left bg-navy">Cerrada</small>';
-                          }      
-                          if ($a['estado'] == 'CN') {
-                            echo  '<small class="label pull-left bg-black">Conforme</small>';
-                          } 
+                            // echo  '<small class="label pull-left bg-red">Solicitada</small>';
+                             echo bolita('Solicitada', 'red');
+                           }
+                           if($a['estado'] == 'PL'){                           
+                             //echo '<small class="label pull-left bg-orange">Planificada</small>';
+                             echo bolita('Planificada', 'yellow');
+                           }
+                           if($a['estado'] == 'AS'){
+                             // echo '<small class="label pull-left bg-yellow">Asignada</small>';
+                             echo bolita('Asignada', 'purple');
+                           }
+                           if ($a['estado'] == 'C') {
+                             //echo '<small class="label pull-left bg-blue">Curso</small>' ;
+                             echo bolita('Curso', 'green');
+                           }
+                           if ($a['estado'] == 'T') {
+                             //echo  '<small class="label pull-left bg-navy">Terminada</small>';
+                             echo bolita('Terminada', 'blue');
+                           }
+                           if ($a['estado'] == 'CE') {
+                             //echo  '<small class="label pull-left bg-green">Cerrada</small>';
+                             echo bolita('Cerrada', 'default');
+                           }  
+                           if ($a['estado'] == 'CN') {
+                             //echo  '<small class="label pull-left bg-black">Conforme</small>';
+                             echo bolita('Conforme', 'black');
+                           }
 
                         echo '</td>';
                    // }
@@ -126,53 +141,53 @@ $('#fechaEntrega,#fechaInicio, #fecha_inicio1, #fecha_inicio, #fecha_entrega1, #
   locale: 'es',
 }); 
 // llena select de proveedores - Ok
-traer_prov();
-function traer_prov(){
-  $.ajax({
-    type: 'POST',
-    data: {},
-    url: 'index.php/Otrabajo/getproveedor',
-    success: function(data){
-      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-      $('#prov').append(opcion); 
-      for(var i=0; i < data.length ; i++) 
-      {    
-        var nombre = data[i]['provnombre'];
-        var opcion = "<option value='"+data[i]['provid']+"'>" +nombre+ "</option>" ; 
-        $('#prov').append(opcion);                
-      }
-    },
-    error: function(result){
-      console.error("Error al traer proveedor. Ver console.table")
-      console.table(result);
-    },
-    dataType: 'json'
-  });
-}
+  // traer_prov();
+  // function traer_prov(){
+  //   $.ajax({
+  //     type: 'POST',
+  //     data: {},
+  //     url: 'index.php/Otrabajo/getproveedor',
+  //     success: function(data){
+  //       var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+  //       $('#prov').append(opcion); 
+  //       for(var i=0; i < data.length ; i++) 
+  //       {    
+  //         var nombre = data[i]['provnombre'];
+  //         var opcion = "<option value='"+data[i]['provid']+"'>" +nombre+ "</option>" ; 
+  //         $('#prov').append(opcion);                
+  //       }
+  //     },
+  //     error: function(result){
+  //       console.error("Error al traer proveedor. Ver console.table")
+  //       console.table(result);
+  //     },
+  //     dataType: 'json'
+  //   });
+  // }
 // llena el select de sucursales - Ok 
-traer_sucursal()
-function traer_sucursal(){
-  $.ajax({
-    type: 'POST',
-    data: { },
-    url: 'index.php/Otrabajo/traer_sucursal',
-    success: function(data){
-      var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-      $('#suci').append(opcion); 
-      for(var i=0; i < data.length ; i++) 
-      {    
-        var nombre = data[i]['descripc'];
-        var opcion = "<option value='"+data[i]['id_sucursal']+"'>" +nombre+ "</option>" ;
-        $('#suci').append(opcion);        
-      }
-    },
-    error: function(result){
-      console.error("Error al traer sucursal. Ver console.table");
-      console.table(result);
-    },
-    dataType: 'json'
-  });
-} 
+  // traer_sucursal()
+  // function traer_sucursal(){
+  //   $.ajax({
+  //     type: 'POST',
+  //     data: { },
+  //     url: 'index.php/Otrabajo/traer_sucursal',
+  //     success: function(data){
+  //       var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+  //       $('#suci').append(opcion); 
+  //       for(var i=0; i < data.length ; i++) 
+  //       {    
+  //         var nombre = data[i]['descripc'];
+  //         var opcion = "<option value='"+data[i]['id_sucursal']+"'>" +nombre+ "</option>" ;
+  //         $('#suci').append(opcion);        
+  //       }
+  //     },
+  //     error: function(result){
+  //       console.error("Error al traer sucursal. Ver console.table");
+  //       console.table(result);
+  //     },
+  //     dataType: 'json'
+  //   });
+  // } 
 // llena el select de equipos - Ok 
 traer_equipo()
 function traer_equipo(){
@@ -320,11 +335,11 @@ $("#btn_cancGuardado").click(function (e) {
           'fecha_inicio'  : resp[0]['fecha_inicio'],    //
           'fecha_terminada' : resp[0]['fecha_terminada'],   //
           'idusuario'     : resp[0]['id_usuario'],      //
-          'tareadescrip'  : resp[0]['tareadescrip'],     //
-          'id_sucu'       : resp[0]['id_sucursal'],     //
-          'sucursal'      : resp[0]['descripc'],        //
-          'id_proveedor'  : resp[0]['provid'],          //
-          'nombreprov'    : resp[0]['provnombre']//,      
+          'tareadescrip'  : resp[0]['tareadescrip']//,     //
+          //'id_sucu'       : resp[0]['id_sucursal'],     //
+          //'sucursal'      : resp[0]['descripc']//,        //
+          //'id_proveedor'  : resp[0]['provid'],          //
+          //'nombreprov'    : resp[0]['provnombre']//,      
         }
         
         var herram = data['herramientas'];             
@@ -359,8 +374,8 @@ $("#btn_cancGuardado").click(function (e) {
     $('#fechaProgramacion').val(datos['fecha_program']); 
     $('#fechaInicio').val(datos['fecha_inicio']); 
     $('#fechaTerminada').val(datos['fecha_terminada']);  
-    $("#suci").val(datos['id_sucu']);
-    $("#prov").val(datos['id_proveedor']); 
+    //$("#suci").val(datos['id_sucu']);
+    //$("#prov").val(datos['id_proveedor']); 
 
     $('#tablaherramienta tbody tr').remove();
     for (var i = 0; i < herram.length; i++) {
@@ -1310,8 +1325,8 @@ function guardarpedido(){
 
 
 
-// GENERAR INFORME DE SERVICIOS
-  // Genera Informe de Servicio - Hugo
+// INFORME DE SERVICIOS
+  // Genera Informe de Servicio - Evaluar funcionamoento a futuro no esta andando
   function generar_informe_servicio (o){ 
       
     var id_sol = parseInt($(o).closest('tr').attr('id')); 
@@ -1322,9 +1337,19 @@ function guardarpedido(){
     $("#content").load("<?php echo base_url(); ?>index.php/Ordenservicio/cargarOrden/<?php echo $permission; ?>/"+id_sol+"/"+id_eq+"/"+id_solicitud+"/");
     WaitingClose();
   }
+  // VER INFORME DE SERVICIOS
+  function ver_informe_servicio (o){ 
 
+    var id_OT = $(o).closest('tr').attr('id');  
+    var id_eq  = $(o).closest('tr').attr('data-id_equipo');
+    var id_solicitud  = $(o).closest('tr').attr('data-idsolicitud');
 
-
+    WaitingOpen();
+    $('#modalInforme').modal('show');
+    $('#modalInformeServicios').empty();
+    $("#modalInformeServicios").load("<?php echo base_url(); ?>index.php/Ordenservicio/verInforme/"+id_OT+"/"+id_eq+"/"+id_solicitud+"/");
+    WaitingClose();
+  }
 
 // OT TOTAL, pasa a la partalla de ot terminadas 
   function guardartotal(){
@@ -1375,9 +1400,9 @@ function guardarpedido(){
   function verEjecutarOT(o){ 
     var id_orden = $(o).closest('tr').attr('id');  
     WaitingOpen();
-    $('#modalInforme').modal('show');
-    $('#modalInformeServicios').empty();
-    $("#modalInformeServicios").load("<?php echo base_url(); ?>index.php/Calendario/verEjecutarOT/"+id_orden+"/");
+    $('#contRespyTareas').empty();     
+    $("#contRespyTareas").load("<?php echo base_url(); ?>index.php/Calendario/verEjecutarOT/"+id_orden+"/");
+    $('#modalRespyTareas').modal('show');   
     WaitingClose();
   }
 // ASIGNAR TAREAS
@@ -2286,11 +2311,46 @@ function guardarpedido(){
 </div><!-- /.modal fade -->
 <!-- / Modal -->
 
+<!--  MODAL asignar Responsable y tareas   -->
+<div class="modal bs-example-modal-lg" id="modalRespyTareas" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" >&times;</span>
+        </button>
+        <h4 class="modal-title" >Asignar Responsable y Tareas</h4>
+      </div>
+            
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="box">
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12" id="contRespyTareas">                               
 
-<!--  MODAL ASIGNAR OT Y EJECUTAR   -->
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+
+<!--  MODAL Informe de Servicios   -->
 <div class="modal bs-example-modal-lg" id="modalInforme" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
+        <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" >&times;</span>
+        </button>
+        <h4 class="modal-title" >Informe de Servicios</h4>
+      </div>
+            
             <div class="row">
                 <div class="col-sm-12">
                     <div class="box">
@@ -2424,12 +2484,14 @@ function guardarpedido(){
                 </div>
 
                 <div class="col-xs-12 col-sm-6">
-                  <label for="suci">Sucursal</label>
-                  <select  id="suci" name="suci" class="form-control" />
+                  <!-- <label for="suci">Sucursal</label>
+                  <select  id="suci" name="suci" class="form-control" /> -->
+                  <input type="hidden" id="suci" value="1" name="suci"/>
                 </div>
                 <div class="col-xs-12 col-sm-6">
-                  <label for="prov">Proveedor</label>
-                  <select  id="prov" name="prov" class="form-control" />
+                  <!-- <label for="prov">Proveedor</label>
+                  <select  id="prov" name="prov" class="form-control" /> -->
+                  <input type="hidden" id="prov" value="1" name="prov"/>
                 </div>            
               </div>
             </div>

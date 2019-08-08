@@ -72,7 +72,11 @@ function ver(e) {
     var json = JSON.parse(JSON.stringify($(tr).data('json')));
     rellenarCabecera(json);
     getEntregasPedidoOffline(id_nota);
-    if (id_nota == null) return;
+    if (id_nota == null) {
+        alert('PEMA_ID: '+id_nota);
+        return;
+    }
+ 
     $.ajax({
         type: 'GET',
         url: 'index.php/almacen/Notapedido/getNotaPedidoId?id_nota='+id_nota,

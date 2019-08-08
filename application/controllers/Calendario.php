@@ -103,7 +103,7 @@ class Calendario extends CI_Controller {
 		// log
 			log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar');	
 		$data     = $this->input->post();
-			log_message('DEBUG', 'TRAZA | Data: '.json_decode($data));
+			log_message('DEBUG', 'TRAZA | Data: '.json_encode($data));
 
 		$userdata = $this->session->userdata('user_data');
 		$usrId    = $userdata[0]['usrId'];
@@ -183,7 +183,7 @@ class Calendario extends CI_Controller {
 						//log
 							log_message('DEBUG', 'TRAZA | Tipo solicitud en 2: '.$tipo);
 							log_message('DEBUG', 'TRAZA | $taskId: '.$infoTarea['taskId']);
-						if($respCerrar == 204 ){
+						if($respCerrar['status']){
 							$resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);
 						}
 						// guardo el case_id en Otrabajo
@@ -204,7 +204,7 @@ class Calendario extends CI_Controller {
 								log_message('DEBUG', 'TRAZA | Usr en BPM: '.$userBpm);
 								log_message('DEBUG', 'TRAZA | caseId: '.$infoTarea['caseId']);
 							// busca taskId de 	'Planificar Solicitud'
-							$prevTask = $this->bpm->ObtenerTaskidXNombre($infoTarea['caseId'],'Planificar Solicitud');
+							$prevTask = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$infoTarea['caseId'],'Planificar Solicitud');
 								log_message('DEBUG',  'TRAZA | Taskid Planificar Solicitud: '.$prevTask);
 							
 							if($prevTask != 0){								
@@ -230,21 +230,26 @@ class Calendario extends CI_Controller {
 					// $tipo == '4' -> Backlog			
 					if($tipo == '4'){	
 						//log
-							log_message('DEBUG', 'TRAZA | Tipo solicitud en 4: '.$tipo);
+						log_message('DEBUG', 'TRAZA | Tipo solicitud en 4: '.$tipo);
 						// actualizo estado del backlog
 						$tipo = 'backlog';
 						//Actualizar Tablas >> Backlog ||Solicitud
 						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);			
 						$infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);	
-						$respCerrar = $this->cerrarTarea($infoTarea['taskId']);							
-						$resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);	
-						// averiguo case para saber si es autogenerado por BPM o no
-						$caseDeBacklog = $infoTarea['caseId'];
-						$idSServicio = $this->Calendarios->getIdSServicioporCaseId($caseDeBacklog);	
-						// Si el backlog viene de una SServicios la actualializa a Planificada
-						if ($idSServicio != NULL) {
-							$this->Calendarios->cambiarEstado($idSServicio, 'PL', 'correctivo');	
-						}					
+
+						//? Si trae task se orgino de una SS
+						if($infoTarea){
+							$respCerrar = $this->cerrarTarea($infoTarea['taskId']);							
+							$resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);	
+							// averiguo case para saber si es autogenerado por BPM o no
+							$caseDeBacklog = $infoTarea['caseId'];
+							$idSServicio = $this->Calendarios->getIdSServicioporCaseId($caseDeBacklog);	
+							// Si el backlog viene de una SServicios la actualializa a Planificada
+							if ($idSServicio != NULL) {
+								$this->Calendarios->cambiarEstado($idSServicio, 'PL', 'correctivo');	
+							}	
+						}
+
 					}
 					// $tipo == '5' -> Predictivo			
 					if($tipo == '5'){	
@@ -262,7 +267,7 @@ class Calendario extends CI_Controller {
 														"idSolicitudServicio"	=> 0,		
 														"idOT"  => 	$idOT
 													);						
-							$result = $this->bpm->LanzarProceso($contract);														
+							$result = $this->bpm->lanzarProceso(BPM_PROCESS_ID, $contract);														
 							// guarda case id generado el lanzar proceso				
 							$respcaseOT = $this->Calendarios->setCaseidenOT($result['data']['caseId'], $idOT);					
 					}else{
@@ -498,10 +503,12 @@ class Calendario extends CI_Controller {
 	function verEjecutarOT($idOt){
 		
 		$this->load->model('traz-comp/Componentes');
-		$this->load->model(CMP_ALM.'/new/Pedidos_Materiales');
+		$this->load->model(CMP_ALM.'new/Pedidos_Materiales');
 		
 		#COMPONENTE ARTICULOS
-		$data = $this->Componentes-> listaArticulos();
+		$data['items'] = $this->Componentes-> listaArticulos();
+		$data['lang'] = lang_get('spanish', 'Ejecutar OT');
+
 
 		#PEDIDO MATERIALES
 		$info = new StdClass();
@@ -558,7 +565,7 @@ class Calendario extends CI_Controller {
 	
 		// si viene de correctivo
 		if ($tipo == 2) {		
-				$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas Urgente');			
+				$task_id = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Asignar Recursos y Tareas Urgente');			
 				return $task_id;
 		} 
 		// si viene de backlog
@@ -569,18 +576,18 @@ class Calendario extends CI_Controller {
 				
 				if($idSolRep == NULL){	//viene de item menu 
 					
-					$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas');
+					$task_id = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Asignar Recursos y Tareas');
 					return $task_id;		
 
 				}else{	// backlog generado desde una SServicios					
 					// con id solicitud (BACKLOG) busco el case desde solicitud de reparacion
 					$case_id = $this->Otrabajos->getCaseIdenSServicios($id);	
-					$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas');	
+					$task_id = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Asignar Recursos y Tareas');	
 					return $task_id;			
 				}
 		}	
 		// Para el resto de las Tareas (Predictivo, Preventivo) devuelve task	
-		$task_id = $this->bpm->ObtenerTaskidXNombre($case_id,'Asignar Recursos y Tareas');			
+		$task_id = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Asignar Recursos y Tareas');			
 		return $task_id;	
 	}
 
