@@ -203,19 +203,26 @@ class BPM
 		$parametros["http"]["method"] = "PUT";
 		$contract = array (
 			"assigned_id"	=>	$user_id
-		);				
+		);	
+		
+		log_message('DEBUG', 'TRAZA | Contract: '.$contract);
 
 		$parametros["http"]["content"] = json_encode($contract);
-		$param = stream_context_create($parametros);
-
+		$param = stream_context_create($parametros);		
 
 		$resource = 'API/bpm/humanTask/';
 		$url = BONITA_URL.$resource.$tarea_id;
+
+		log_message('DEBUG', 'TRAZA | URL del Servicio: '.$url);
 
 		$body = @file_get_contents($url, false, $param);
 		$response = $this->parseHeaders($http_response_header);
 
 		$code = $response['response_code'];
+
+		log_message('DEBUG', 'TRAZA | Code Respuesta: '.$code);
+		log_message('DEBUG', 'TRAZA | Body de Respuesta: '.json_decode($body));
+
 		if($code<300){
 			return ['status'=>true, 'msj'=>'OK', 'code'=>$code];
 		}else {

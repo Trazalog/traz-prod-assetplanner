@@ -143,8 +143,8 @@ class Calendarios extends CI_Model {
                     WHERE tbl_back.id_empresa = $empId
                     AND year(tbl_back.fecha) = $year 
                     AND month(tbl_back.fecha) = $month 
-                    AND tbl_back.estado = 'C'
-										OR tbl_back.estado = 'S' ";
+                    AND (tbl_back.estado = 'C' OR tbl_back.estado = 'S')
+										 ";
 										// AND tbl_back.estado != 'OT'
 										// AND tbl_back.estado != 'PL'";
         $query= $this->db->query($sql);

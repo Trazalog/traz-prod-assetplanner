@@ -101,6 +101,9 @@ class Calendario extends CI_Controller {
 	// Guarda la OT simple o redirije para guardar varias
 	public function guardar_agregar()
 	{
+		$userdata = $this->session->userdata('user_data');
+		$userBpm    = $userdata[0]['userBpm'];
+
 		// log
 			log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar');	
 		$data     = $this->input->post();
@@ -197,8 +200,7 @@ class Calendario extends CI_Controller {
 						//// buscar task para asignar la tarea 'Planificar Solicitud' para caso de 
 							// SServicio Urgente planificada sin tomar Tarea  'Planificar Solicitud'	
 							// Usuario logueado en BPM
-							$userdata = $this->session->userdata('user_data');
-							$userBpm    = $userdata[0]['userBpm'];
+							
 							// log
 								
 								log_message('DEBUG', 'TRAZA | Evento Tipo: '.$event_tipo);
@@ -233,7 +235,37 @@ class Calendario extends CI_Controller {
 						//log
 							log_message('DEBUG', 'TRAZA | Tipo solicitud en 4: '.$tipo);
 						// actualizo estado del backlog
-						$tipo = 'backlog';
+							$tipo = 'backlog';
+						
+						//////////////////////////////////////////////////////////
+							//// buscar task para asignar la tarea 'Planificar Solicitud' para caso de 
+							// SServicio NO Urgente planificada sin tomar Tarea  'Planificar Solicitud'	
+							// Usuario logueado en BPM
+							// busca taskId de 	'Planificar Solicitud'
+							//$infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);
+							$infoTarea['caseId'] = $this->getInfoTareEnBack($id_solicitud);
+							//log
+								log_message('DEBUG',  'TRAZA | ID Solicitud: '.$id_solicitud);						
+								log_message('DEBUG',  'TRAZA | Case_id desde infotarea/idsolicitud: '.$infoTarea['caseId']);	
+							
+							// si backlog es generado en SServicios tiene case id de SolServicio
+							if ($infoTarea['caseId'] != 0) {
+								$prevTask = $this->bpm->ObtenerTaskidXNombre($infoTarea['caseId'],'Planificar Backlog');
+								log_message('DEBUG',  'TRAZA | Taskid en Planificar Backlog: '.$prevTask);
+							
+								if($prevTask != 0){								
+										// Asigno ususario logueado 
+										$responce = $this->bpm->setUsuario($prevTask,$userBpm);
+										if(!$responce['status']){echo json_encode($responce);return;}
+										// Cierro tarea 'Planificar Solicitud'
+										$responce = $this->bpm->CerrarTareaBPM($prevTask);	
+										if(!$responce['status']){echo json_encode($responce);return;}
+								}
+							}					
+
+						//////////////////////////////////////////////////////////
+						
+						
 						//Actualizar Tablas >> Backlog ||Solicitud
 						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);			
 						$infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);	
@@ -303,7 +335,32 @@ class Calendario extends CI_Controller {
 		}
 	  return true;
 	    
-  }
+	}
+		
+	function getInfoTareEnBack($id_solicitud){
+		
+		$this->db->select('sore_id');
+		$this->db->from('tbl_back');
+		$this->db->where('backId', $id_solicitud);		
+		$query = $this->db->get();
+		$row = $query->row();
+		$sore_id = $row->sore_id;
+		
+		 if ($sore_id != NULL) {
+			$this->db->select('case_id');
+			$this->db->from('solicitud_reparacion');
+			$this->db->where('id_solicitud', $sore_id);
+			$resp = $this->db->get();
+			$row2 = $resp->row();
+			$case_id = $row2->case_id;	
+			return $case_id;
+		} else {
+			return 0;
+		}	
+	}
+
+
+
 
 	function getDurTarea($tipo,$id_solicitud)
 	{
