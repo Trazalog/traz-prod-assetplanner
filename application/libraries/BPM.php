@@ -406,9 +406,12 @@ class BPM
 			$apiToken = explode(';', explode('X-Bonita-API-Token=', $headers[3])[1])[0];
 
 			$parametros = array(
-					"X-Bonita-API-Token: " . $apiToken,
-					"Cookie: JSESSIONID=" . $idsesion . ";X-Bonita-API-Token=" . $apiToken . ";bonita.tenant=" . $bonita_tenant,
-					"Content-Type: application/json",
+					// "X-Bonita-API-Token: " . $apiToken,
+					// "Cookie: JSESSIONID=" . $idsesion . ";X-Bonita-API-Token=" . $apiToken . ";bonita.tenant=" . $bonita_tenant,
+                    // "Content-Type: application/json;"
+                    "Cookie: bonita_tenant=".$bonita_tenant .";JSESSIONID=".$idsesion.";X-Bonita-API-Token=".$apiToken,
+                    "X-Bonita-API-Token: ".$apiToken,
+					"Content-Type: application/json"
 			);
 
 			return $parametros;
