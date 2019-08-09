@@ -79,6 +79,11 @@ $('#info').bootstrapValidator({
 });
 
 
+function index() {
+    $('.form-acciones').remove();
+}
+
+
 $('.date').datepicker({});
 
 //abrirFormulario($('.form'));
@@ -106,6 +111,7 @@ function abrirFormulario(e) {
         url: 'index.php/Tarea/Obtener_Formulario',
         success: function(result) {
             $("#form-container").html(result.html);
+            index();
             llenaComp();
             WaitingClose();
         },

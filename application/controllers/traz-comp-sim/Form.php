@@ -46,4 +46,9 @@ class Form extends CI_Controller
 
         echo json_encode($rsp);
     }
+
+    public function eliminarForm($id)
+    {
+        echo $this->Forms->eliminar($id);
+    }
 }

@@ -3,7 +3,7 @@
 <div class="content">
     <div class="box box-primary">
         <div class="box-header">
-            <button class="btn btn-primary" onclick="back()"><i class="fa fa-reply"></i> Volver</button><br><br>
+            <button class="btn btn-primary" onclick="volver()"><i class="fa fa-reply"></i> Volver</button><br><br>
             <form>
                 <div class="row">
                     <div class="col-md-4">
@@ -146,5 +146,13 @@ function guardarRegistro() {
             console.log(rsp.msj);
         }
     });
+}
+
+function volver() {
+    $.ajax({
+        type: 'POST',
+        url: 'index.php/<?php echo SIM ?>Form/eliminarForm/<?php echo $infoId ?>'
+    });
+    back();
 }
 </script>

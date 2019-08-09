@@ -12,7 +12,7 @@ class Forms extends CI_Model
     public function crear($id)
     {
 
-        $empId = 6; //$userdata[0]['id_empresa'];
+        $empId = 6; //!HARDCODE
 
         $i = 1;
 
@@ -22,24 +22,21 @@ class Forms extends CI_Model
 
         $plantilla = $this->obtenerPlantilla($id);
 
-        foreach ($plantilla as $item)
-        {
+        foreach ($plantilla as $item) {
             $item['INFO_ID'] = $newInfoId;
             $item['ID_EMPRESA'] = $empId;
             $array[$i] = $item;
             $i++;
         }
 
-        if($this->db->insert_batch('frm_formularios_completados', $array))
-        {
+        if ($this->db->insert_batch('frm_formularios_completados', $array)) {
             return $newInfoId;
 
-        }else{
+        } else {
 
             return false;
 
         }
-
 
     }
 
@@ -83,16 +80,15 @@ class Forms extends CI_Model
         }
     }
 
-    	
-	public function obtenerNuevoId()
-	{
-		$this->db->select_max('INFO_ID');
+    public function obtenerNuevoId()
+    {
+        $this->db->select_max('INFO_ID');
 
-		$id = $this->db->get('frm_formularios_completados')->result()[0]->INFO_ID;
+        $id = $this->db->get('frm_formularios_completados')->result()[0]->INFO_ID;
 
-		return $id + 1;
+        return $id + 1;
     }
-    
+
     public function obtenerForms()
     {
         return $this->db->get('sim_form_evaluacion_desempeño')->result();
@@ -101,6 +97,16 @@ class Forms extends CI_Model
     public function guardarFormEval($data)
     {
         return $this->db->insert('sim_form_evaluacion_desempeño', $data);
+    }
+
+    public function eliminar($infoId)
+    {
+        $this->db->where('info_id', $infoId);
+        $this->db->delete('sim_form_evaluacion_desempeño');
+
+        $this->db->where('INFO_ID', $infoId);
+        return $this->db->delete('frm_formularios_completados');
+
     }
 
 }
