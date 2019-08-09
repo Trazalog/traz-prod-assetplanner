@@ -9,7 +9,7 @@ class BPM
 
         $this->REST =& get_instance()->rest;
 
-	}
+		}
     
     public function getTodoList()
     {
@@ -373,44 +373,47 @@ class BPM
 		return $idUsrBPM;
 	}	
 
-    public function loggin($user, $pass)
-    {
-        $data = array(
-            'username' => $user,
-            'password' => $pass,
-            'redirect' => 'false',
-        );
+	public function loggin($user, $pass)
+	{
+			$data = array(
+					'username' => $user,
+					'password' => $pass,
+					'redirect' => 'false',
+			);
 
-        $url = BONITA_URL . 'loginservice';
+			$url = BONITA_URL . 'loginservice';
 
-        $rsp = $this->REST->callAPI('GET', $url, $data, false);
+			$rsp = $this->REST->callAPI('GET', $url, $data, false);
 
-        if(!$rsp['status']){
+			if(!$rsp['status']){
 
-            log_message('DEBUG','#TRAZA | #BPM >> '.ASP_109);
-						validaSesionBPM();
-            return false;
+					log_message('DEBUG','#TRAZA | #BPM >> '.ASP_109);
+					validaSesionBPM();
+					return false;
 
-        }
+			}
 
-        return $this->crearHeader($rsp['header']);
-    }
+			return $this->crearHeader($rsp['header']);
+	}
 
-    public function crearHeader($headers)
-    {
-        $headers = explode("\r\n", $headers);
+	public function crearHeader($headers)
+	{
+			$headers = explode("\r\n", $headers);
 
-        // extrae cookies para que sea dinamico el cambio
-        $idsesion = explode(';', explode('JSESSIONID=', $headers[2])[1])[0];
-        $bonita_tenant = explode('bonita.tenant=', $headers[1])[1];
-        $apiToken = explode(';', explode('X-Bonita-API-Token=', $headers[3])[1])[0];
+			// extrae cookies para que sea dinamico el cambio
+			$idsesion = explode(';', explode('JSESSIONID=', $headers[2])[1])[0];
+			$bonita_tenant = explode('bonita.tenant=', $headers[1])[1];
+			$apiToken = explode(';', explode('X-Bonita-API-Token=', $headers[3])[1])[0];
 
-        $parametros = array(
-            "X-Bonita-API-Token: " . $apiToken,
-            "Cookie: JSESSIONID=" . $idsesion . ";X-Bonita-API-Token=" . $apiToken . ";bonita.tenant=" . $bonita_tenant,
-            "Content-Type: application/json",
-        );
+			$parametros = array(
+					// "X-Bonita-API-Token: " . $apiToken,
+					// "Cookie: JSESSIONID=" . $idsesion . ";X-Bonita-API-Token=" . $apiToken . ";bonita.tenant=" . $bonita_tenant,
+                    // "Content-Type: application/json;"
+                    "Cookie: bonita_tenant=".$bonita_tenant .";JSESSIONID=".$idsesion.";X-Bonita-API-Token=".$apiToken,
+                    "X-Bonita-API-Token: ".$apiToken,
+					"Content-Type: application/json"
+			);
 
-        return $parametros;
-    }
+			return $parametros;
+	}
 }
