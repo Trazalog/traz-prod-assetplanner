@@ -400,7 +400,7 @@ function graficarMantenimiento() {
            echo "],datasets: [{
                 data: [";
                 foreach ($kpiot as $key => $o) {
-                  echo "\"$o->cantidad\",";
+                  echo $o->cantidad.",";
                 }
            echo "]" 
             ?>,
