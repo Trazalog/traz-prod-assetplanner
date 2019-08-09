@@ -1,11 +1,11 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php defined('BASEPATH') or exit('No direct script access allowed');
 
 class REST
 {
-    public function callAPI($method, $url, $data, $token = false)
+    public function callAPI($method, $url, $data = null, $token = false)
     {
         log_message('DEBUG', '#TRAZA | #REST | #CURL | #URL >> ' . $url);
-        
+
         $curl = curl_init();
 
         switch ($method) {
@@ -14,6 +14,8 @@ class REST
                 if ($data) {
                     curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
                     log_message('DEBUG', '#TRAZA | #REST | #CURL | #PAYLOAD >> ' . json_encode($data));
+                }else{
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, null);
                 }
 
                 break;
@@ -45,7 +47,7 @@ class REST
         //A given cURL operation should only take
         //30 seconds max.
         curl_setopt($curl, CURLOPT_TIMEOUT, 30);
-        
+
         if ($token) {
 
             curl_setopt($curl, CURLOPT_HTTPHEADER, $token);
@@ -55,9 +57,9 @@ class REST
         // EXECUTE:
         $result = curl_exec($curl);
 
-        $headerSent = curl_getinfo($curl, CURLINFO_HEADER_OUT ); 
+        $headerSent = curl_getinfo($curl, CURLINFO_HEADER_OUT);
 
-        if (!$result)  { log_message('DEBUG', '#TRAZA | #REST | #CURL >> Fallo Conexión'); return ['status' => false, 'header' => false, 'data' => false, 'code'=> '404']; }
+        if (!$result) {log_message('DEBUG', '#TRAZA | #REST | #CURL >> Fallo Conexión');return ['status' => false, 'header' => false, 'data' => false, 'code' => '404'];}
 
         $response_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
@@ -68,10 +70,8 @@ class REST
         $body = substr($result, $header_size);
 
         curl_close($curl);
-        
-        
+
         log_message('DEBUG', '#TRAZA | #REST | #CURL | #HEADER SALIDA >> ' . $headerSent);
-       
 
         if ($response_code >= 300) {
 
@@ -81,10 +81,10 @@ class REST
 
             log_message('ERROR', '#TRAZA | #REST | #CURL | #BODY >> ' . json_encode($body));
 
-        } 
+        }
 
-        return ['status' => ($response_code<300), 'header' => $headers, 'data' => $body, 'code'=> $response_code];
-        
+        return ['status' => ($response_code < 300), 'header' => $headers, 'data' => $body, 'code' => $response_code];
+
     }
 
 }
