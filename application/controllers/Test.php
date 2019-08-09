@@ -9,7 +9,7 @@ class Test extends CI_Controller
      
 
     }
-    public function close($id, $user = 'admin', $pass= '123traza');
+    public function close($id, $user = 'admin', $pass= '123traza')
     {
 
         // $this->load->view('test');
