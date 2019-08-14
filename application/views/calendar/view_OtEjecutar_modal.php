@@ -394,10 +394,12 @@ function EjecutarOT() {
             
             if (data.status) {
                 $('#modalInforme').modal('hide');
+                    $('.modal-backdrop').hide();
                 lanzarPedidoMateriales();
                 regresa1();
             } else {
                 $('#modalInforme').modal('hide');
+                 
                 alert('Falla | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
             }
         },
