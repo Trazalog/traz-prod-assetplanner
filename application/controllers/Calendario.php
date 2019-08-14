@@ -416,7 +416,7 @@ class Calendario extends CI_Controller {
 				"idSolicitudServicio"	=>	0,
 				"idOT"  => 	$idOT
 			);						
-			$result = $this->bpm->LanzarProceso($contract);								
+			$result = $this->bpm->LanzarProceso(BPM_PROCESS_ID, $contract);								
 			// guarda case id generado el lanzar proceso				
 			$respcaseOT = $this->Calendarios->setCaseidenOT($result['data']['caseId'], $idOT);
 			// a la fecha de programacion le sumo la frecuencia en dias	   	
