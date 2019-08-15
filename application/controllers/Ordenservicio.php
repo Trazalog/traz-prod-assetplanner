@@ -43,7 +43,8 @@ class Ordenservicio extends CI_Controller {
           $data['id_responsable'] = $infoOt[0]["descripcion"];
           $data['nom_responsable'] = $infoOt[0]["responsable"];
           $data['idresponsable'] = $infoOt[0]["usrId"];
-          $data['idTarBonita'] = $idTarBonita;        
+          $data['idTarBonita'] = $idTarBonita;  
+          
           $this->load->view('tareas/view_inf_servicio_modal',$data);
      }      
     }  
@@ -186,8 +187,7 @@ class Ordenservicio extends CI_Controller {
         }
       }
 
-      $this->load->library('BPM');
-      $resp = $this->bpm->CerrarTareaBPM($idTarBonita,$data); 
+      $resp = $this->bpm->cerrarTarea($idTarBonita,$data); 
 
       if ( json_decode($resp['code']) < 300) {  
         // guardo el informe de servicios

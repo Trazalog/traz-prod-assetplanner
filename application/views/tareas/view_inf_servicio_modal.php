@@ -327,7 +327,7 @@
                   <tr>
                     <th>Nº O.Insumo</th>
                     <th>Fecha</th>
-                    <th>Solicitante</th>
+                    <!-- <th>Solicitante</th> -->
                     <th>Código</th>
                     <th>Descripción</th>
                     <th>Cantidad</th>
@@ -408,17 +408,17 @@
     
             for(i = 0; i < data.length; i++) {
               
-              var otNro = data[i]['nroOT'];
+              var otNro = data[i]['pema_id'];
               var fecha = data[i]['fecha'];
-              var solicitante = data[i]['nombre'] + ' '+ data[i]['apellido'];
-              var codigo = data[i]['codigo'];
+             // var solicitante = data[i]['nombre'] + ' '+ data[i]['apellido'];
+              var codigo = data[i]['barcode'];
               var descripcion = data[i]['descripcion'];
               var cantidad = data[i]['cantidad'];
               //agrego valores a la tabla
               $('#tablalistinsumos').DataTable().row.add( [            
                 otNro,
                 fecha,
-                solicitante,
+                //solicitante,
                 codigo,
                 descripcion, 
                 cantidad             

@@ -138,14 +138,8 @@ class Backlog extends CI_Controller {
 								);
 	
 		$result = $this->Backlogs->editar_backlogs($datos,$idBacklog);		
-		
-		// // trae la cabecera
-		$parametros = $this->bpm->conexiones();
-		// Cambio el metodo de la cabecera a "PUT"
-		$parametros["http"]["method"] = "POST";	
-		// Variable tipo resource referencia a un recurso externo.
-		$param = stream_context_create($parametros);
-		$result = $this->Tareas->cerrarTarea($idTarBonita, $param);
+	
+		$result = $this->bpm->cerrarTarea($idTarBonita);
 
 		echo json_encode($result);
 	}
@@ -153,6 +147,9 @@ class Backlog extends CI_Controller {
 /* Fin Funciones para BPM */
 
 	public function editar_backlog(){
+
+		log_message('DEBUG', '#BACKLOG >> editar_backlog POST: ' . json_encode($this->input->post()));
+
 
 		$userdata = $this->session->userdata('user_data');
 		$empId = $userdata[0]['id_empresa'];
@@ -183,10 +180,13 @@ class Backlog extends CI_Controller {
 		// SI ES TAREA BPM (BACK POR PROCESO)							
 		if ($tipo == 'editNuevo') {
 				
-				$this->load->library('BPM');
-				$response = $this->bpm->CerrarTareaBPM($idTarBonita);	
+				$response = $this->bpm->cerrarTarea($idTarBonita);	
+
+				log_message('DEBUG', '#BACKLOG >> editar_backlog >> editNuevo rsp: ' . json_encode($response));
+
+				
 				// Si cerro la tarea
-				if ( json_decode($response['code']) < 300) {	
+				if ($response['status']) {	
 					
 						// al editar cambia a estado 'S' (solicitado)
 						$datos = array('id_tarea' => $tarea,
@@ -222,6 +222,8 @@ class Backlog extends CI_Controller {
 												'tarea_opcional'=>$tareaOpcional									
 												);	
 				$result = $this->Backlogs->editar_backlogs($datos,$id_back);	
+			
+				log_message('DEBUG', '#BACKLOG >> editar_backlog >> editNuevo ELSE datos: ' . json_encode($datos). 'res:'. json_encode($result));
 
 		}							
 		

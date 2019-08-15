@@ -25,7 +25,6 @@ class login extends CI_Controller {
 		
 		$data = $this->Users->sessionStart_($this->input->post());
 
-
 		if($data  == false)
 		{
 			echo json_encode(0);

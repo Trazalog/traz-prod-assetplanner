@@ -1092,9 +1092,12 @@ function recargarTabla(){
 
 
 
+
  /// llena modal historial de lecturas
 function llenarModal(data){
 
+   $('#tblhistorial').DataTable().clear().draw();
+  if(data.length == 0) return;
   $('#id_Equipo_modal').val(data[0]['id_equipo']);
 
   console.table(data);
