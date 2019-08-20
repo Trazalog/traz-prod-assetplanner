@@ -928,8 +928,8 @@ class Otrabajos extends CI_Model {
 		$this->db->where('A.id_empresa', $empresaId);
 		$this->db->where('B.descripcion!=','Solicitud de servicio');
 		$this->db->group_by('A.tipo');
-		$this->db->order_by('B.descripcion');
-		
+		$this->db->order_by('A.tipo');
+
 		$query = $this->db->get();
 		$res = $query->result();
         if($query->num_rows()!=0)

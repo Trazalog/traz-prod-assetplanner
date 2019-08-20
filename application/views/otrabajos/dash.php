@@ -312,8 +312,8 @@ function graficarMantenimiento() {
            echo "]" 
             ?>,
                     backgroundColor: [
-                        "#00CC00",
                         "#dd1100",
+                        "#00CC00",
                         "#006612",
                         "#009933",
                         "#fad61d"
