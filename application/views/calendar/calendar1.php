@@ -466,7 +466,7 @@ $(".fa-print").click(function(e) {
 
 							console.log('correctivos: ');
 							console.log(data);
-							tarea = 1; // id_tarea (por defecto 1, no se sabe la tarea a realizar)
+							tarea = 0; // id_tarea (por defecto 1, no se sabe la tarea a realizar)
 							fecha_solicit = data[0]['f_solicitado'];
 							desc_causa = data[0]['causa'];
 							id_sol = data[0]['id_solicitud'];
