@@ -166,6 +166,12 @@ if (!function_exists('cantTipoOrdenTrabajo')) {
             // 3 = predictivo
             // 4 = backlog
         // Output
+
+        foreach ($output as $key => $value) {
+            if($value->descripcion == 'Orden de Trabajo'){
+                $output[$key]->descripcion = 'Correctivo Urgente';
+            }
+        }
         if ($echo == TRUE) {
             echo $output;
         }

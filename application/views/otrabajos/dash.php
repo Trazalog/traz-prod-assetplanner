@@ -96,15 +96,7 @@
 <?php
   $kpiot = cantTipoOrdenTrabajo();
 
-  // $cantTipoOT[0]['CantidadTipoOT'] = correctivo;
-  // $cantTipoOT[2]['CantidadTipoOT'] = preventivo;
-  // $cantTipoOT[3]['CantidadTipoOT'] = predictivo;
-  // $cantTipoOT[4]['CantidadTipoOT'] = backlog;
-  /* En DB tabla orden_trabajo, en el campi tipo */
-  // 1 = correctivo
-  // 2 = preventivo
-  // 3 = predictivo
-  // 4 = backlog
+
 
   $equipoOperativo = sacarEquiposOperativos();
 ?>
@@ -122,91 +114,6 @@
 </style>
 
 <script>
-/*var locale = {
-  "format": "DD/MM/YYYY",
-  "separator": " - ",
-  "applyLabel": "Ok",
-  "cancelLabel": "Cancelar",
-  "fromLabel": "Desde",
-  "toLabel": "Hasta",
-  "customRangeLabel": "Custom",
-  "daysOfWeek": [
-    "Do",
-    "Lu",
-    "Ma",
-    "Mi",
-    "Ju",
-    "Vi",
-    "Sa"
-  ],
-  "monthNames": [
-    "Enero",
-    "Febrero",
-    "Marzo",
-    "Abril",
-    "Mayo",
-    "Junio",
-    "Julio",
-    "Agusto",
-    "Septiembre",
-    "Octubre",
-    "Noviembre",
-    "Diciembre"
-  ],
-  "firstDay": 1
-};
-var ranges = {
-  "Hoy": [
-    "17-11-2017T14:57:40.858Z",
-    "17-11-2017T14:57:40.858Z"
-  ],
-  "Ayer": [
-    "16-11-2017T14:57:40.858Z",
-    "16-11-2017T14:57:40.858Z"
-  ],
-  "Últimos 7 días": [
-    "11-11-2017T14:57:40.858Z",
-    "17-11-2017T14:57:40.858Z"
-  ],
-  "Últimos 30 días": [
-    "19-10-2017T14:57:40.858Z",
-    "17-11-2017T14:57:40.858Z"
-  ],
-  "Este mes": [
-    "01-11-2017T03:00:00.000Z",
-    "01-12-2017T02:59:59.999Z"
-  ],
-  "Mes anterior": [
-    "01-10-2017T03:00:00.000Z",
-    "01-11-2017T02:59:59.999Z"
-  ]
-};
-var dateToday = Date.now();
-var date7days = moment().subtract(7,'d').format('DD/MM/YYYY');
-
-$('#daterange-disponibilidad').daterangepicker({
-  "locale": locale,
-    "ranges": ranges,
-    "startDate": date7days,
-    "endDate": dateToday
-}, function(start, end, label) {
-  console.log("New date range selected: ' + start.format('DD/MM/YYYY') + ' to ' + end.format('DD/MM/YYYY') + ' (predefined range: ' + label + ')");
-  alert("rango de fechas: "+ start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'))
-});
-
-var dateToday = Date.now();
-var date7days = moment().subtract(7,'d').format('DD/MM/YYYY');
-
-$('#daterange-mantenimiento').daterangepicker({
-  "locale": locale,
-    "ranges": ranges,
-    "startDate": date7days,
-    "endDate": dateToday
-}, function(start, end, label) {
-  console.log("New date range selected: ' + start.format('DD/MM/YYYY') + ' to ' + end.format('DD/MM/YYYY') + ' (predefined range: ' + label + ')");
-  alert("rango de fechas: "+ start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'))
-});
-*/
 
 
 
@@ -405,23 +312,23 @@ function graficarMantenimiento() {
            echo "]" 
             ?>,
                     backgroundColor: [
-                        "#fad61d",
+                        "#00CC00",
                         "#dd1100",
                         "#006612",
                         "#009933",
-                        "#00CC00"
-                    ],
-                    hoverBackgroundColor: [
-                        "#f3fa1d",
-                        "#ee2211",
-                        "#117723",
-                        "#11aa44",
-                        "#11dd11"
+                        "#fad61d"
                     ]
+                    // hoverBackgroundColor: [
+                    //     "#f3fa1d",
+                    //     "#ee2211",
+                    //     "#117723",
+                    //     "#11aa44",
+                    //     "#11dd11"
+                    // ]
                 }]
         },
         options: {
-            cutoutPercentage: 40,
+         //   cutoutPercentage: 40,
             legend: {
                 position: 'bottom',
             },

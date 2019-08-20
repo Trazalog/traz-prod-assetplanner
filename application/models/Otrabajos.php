@@ -925,8 +925,11 @@ class Otrabajos extends CI_Model {
         $this->db->select('B.descripcion, count(*) as cantidad');
 		$this->db->from('orden_trabajo as A');
 		$this->db->join('tbl_tipoordentrabajo as B','A.tipo = B.tipo_orden');
-        $this->db->where('A.id_empresa', $empresaId);
-        $this->db->group_by('A.tipo');
+		$this->db->where('A.id_empresa', $empresaId);
+		$this->db->where('B.descripcion!=','Solicitud de servicio');
+		$this->db->group_by('A.tipo');
+		$this->db->order_by('B.descripcion');
+		
 		$query = $this->db->get();
 		$res = $query->result();
         if($query->num_rows()!=0)
