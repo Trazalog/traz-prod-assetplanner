@@ -418,6 +418,8 @@ $("#btn_cancGuardado").click(function (e) {
     
     //var nro           = $('#nroedit').val();
     var fecha_inicio  = $('#fechaInicio').val();
+    
+    var fechaProgramacion = $('#fechaProgramacion').val();
     var fecha_entrega = $('#fechaEntrega').val();
     var id_sucu       = $('#suci').val();
     var id_prov     = $('#prov').val();
@@ -435,7 +437,7 @@ $("#btn_cancGuardado").click(function (e) {
 
     var parametros = {
       //'nro'           : nro,                                          
-      'fecha_program'  : fecha_inicio,
+      'fecha_program'  : fechaProgramacion,
       'fecha_entrega' : fecha_entrega,   
       'id_tarea'      : id_tarea,  
       'descripcion'   : descripcion,    
@@ -2284,6 +2286,14 @@ function guardarpedido(){
     "aLengthMenu": [ 10, 25, 50, 100 ],
     "order": [[0, "asc"]],
   });
+
+  /* input con horas minutos y segundos */
+  $("#fechaProgramacion").datetimepicker({
+    format: 'YYYY-MM-DD h:mm:ss',
+    locale: 'es',
+  });
+
+
 </script>
 
 
