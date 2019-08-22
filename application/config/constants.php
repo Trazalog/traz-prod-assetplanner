@@ -93,6 +93,11 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 |
 */
 define('CMP_ALM', 'traz-comp-almacen/');  
+
+define('files', 'files/');
+
+define('FRM', 'traz-comp-form/');
+
 /*
 |--------------------------------------------------------------------------
 | Bonita url

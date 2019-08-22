@@ -98,8 +98,9 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 																												echo '<td>' . $subt['subtareadescrip'] . '</td>';
 																											}
 																											echo '<td>' . $subt['duracion_prog'] . '</td>';
+																											
 																											if ($subt['subtareadescrip'] != null) {
-																												echo '<td><i class="fa fa-paperclip text-light-blue btn-form" style="cursor: pointer; margin-left: 15px;" aria-hidden="true" id="' . $subt["id_listarea"] . '" data-infoId="' . $subt["info_id"] . '" data-valido="true"></i></td>';
+																												echo '<td class="btn-form" data-info="' . $subt["info_id"] . '"><i class="fa fa-paperclip text-light-blue " style="cursor: pointer; margin-left: 15px;" aria-hidden="true" id="' . $subt["id_listarea"] . '" ></i></td>';
 																											}
 
 																											echo '</tr>';
@@ -229,6 +230,7 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 </section><!-- /.content -->
 
 <script>
+ $('#frm-modal').show();  
 		// valida el estado de la OT y muestra llave segun corressponda 		
 		validaInicio();
 		function validaInicio() { 			
@@ -287,37 +289,24 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 			});
 		});																			
 
-   
-    function validarFormularios() {
-        console.log('Validando Formularios...');
-        ban = true;
+ 
 
-        $('.btn-form').each(function(i) {
-            ban = ban && $(this).data('valido');
-        });
+    // /* verifica estado de subrtareas para cerrar OT */
+    // function validarSubtareas() {
 
-        if (ban) alert('Valido');
-        else alert('Invalido');
-
-        return ban;
-    }
-
-    /* verifica estado de subrtareas para cerrar OT */
-    function validarSubtareas() {
-
-			if (validarFormularios() && validarEstSubTareas()) {
-					var iniciarTarea = $('#estadoTarea').val();
-					// valida que la tarea haya sido iniciallizada con anterioridad para poder terminarla
-					if (iniciarTarea == 1) {
-						ejecutarOT();
-					} else {
-						alert('Para Terminar Tarea, esta debe estar inicializada con anterioridad desde el boton Iniciar Tarea');
-					}
+	// 		if (validarFormularios() && validarEstSubTareas()) {
+	// 				var iniciarTarea = $('#estadoTarea').val();
+	// 				// valida que la tarea haya sido iniciallizada con anterioridad para poder terminarla
+	// 				if (iniciarTarea == 1) {
+	// 					ejecutarOT();
+	// 				} else {
+	// 					alert('Para Terminar Tarea, esta debe estar inicializada con anterioridad desde el boton Iniciar Tarea');
+	// 				}
 					
-			} else {
-					alert("Por favor cierre las Tareas que faltan antes de Terminar");
-			}
-    }
+	// 		} else {
+	// 				alert("Por favor cierre las Tareas que faltan antes de Terminar");
+	// 		}
+    // }
 
     /* camba el estado de las subtareas en BD (tblListareas) */
     $('.check').change(function() {
@@ -373,37 +362,7 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 				return true;
 			}					
     }
-    /* /. camba el estado de las subtareas en BD (tblListareas) */
-
-    /* Formulario de subareas */
-
-			// levanta cada formulario por id 
-			$(".fa-paperclip").on('click', function(e) {
-					e.preventDefault();
-					e.stopImmediatePropagation();
-					infoId = $(this).attr("data-infoId");
-			
-					if(infoId == null || infoId == 0) {alert('Error InfoId =null');return;}
-					WaitingOpen();
-					$.ajax({
-							data: {infoId: infoId},
-							dataType: 'json',
-							type: 'GET',
-							url: 'index.php/Tarea/Obtener_Formulario',
-							success: function(result) {
-									$("#contFormSubtarea").html(result.html);
-									$('#modalFormSubtarea').modal('show');
-									WaitingClose();
-									ValidarObligatorios();
-							},
-							error: function(result) {
-									WaitingClose();
-									alert("Error: No se pudo obtener el Formulario");
-							},
-					});
-			});
-
-    /*  /. Formulario de subareas */
+  
 
   
 
@@ -438,23 +397,11 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 
 
 
+<?php
+	$modal = new StdClass();
+	$modal->id = 'frm-modal';
+	$modal->titulo = 'Formulario Tarea';
+	$modal->body = '<div id="frm-field"></div>';
 
-<div class="modal fade bs-example-modal-lg" id="modalFormSubtarea" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="box">
-                        <div class="box-body">
-                            <div class="row">
-                                <div class="col-sm-12 col-md-12" id="contFormSubtarea">
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> 
+	echo modal($modal);
+?>
