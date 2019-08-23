@@ -230,7 +230,7 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 </section><!-- /.content -->
 
 <script>
- $('#frm-modal').show();  
+ 
 		// valida el estado de la OT y muestra llave segun corressponda 		
 		validaInicio();
 		function validaInicio() { 			

@@ -16,7 +16,7 @@ class Form extends CI_Controller
         echo json_encode($data);
     }
 
-    public function guardar($form_id, $info_id = false)
+    public function guardar($info_id = false)
     {
         $data = $this->input->post();
 
@@ -38,7 +38,7 @@ class Form extends CI_Controller
 
         if ($info_id) {
 
-            $res = $this->Forms->actualizar($form_id, $info_id, $data);
+            $res = $this->Forms->actualizar($info_id, $data);
 
         } else {
 

@@ -10,7 +10,7 @@ class Forms extends CI_Model
         parent::__construct();
     }
 
-    public function guardar($form_id, $data)
+    public function guardar($form_id, $data = false)
     {
         $items = $this->obtenerPlantilla($form_id);
 
@@ -22,31 +22,25 @@ class Forms extends CI_Model
 
         foreach ($items as $key => $o) {
 
+            $o->info_id = $newInfo;
+
             if ($o->name) {
-
-                $o->valor = $data[$o->name];
-                $o->info_id = $newInfo;
+                $o->valor = $data?$data[$o->name]:null;
                 array_push($array, $o);
-
             }else{
-                
-                $o->info_id = $newInfo;
                 array_push($aux, $o);
             }
         }
 
-        $this->db->insert_batch('frm_instancias_formularios', $array);
         $this->db->insert_batch('frm_instancias_formularios', $aux);
-
-        return;
+        return $this->db->insert_batch('frm_instancias_formularios', $array);
     }
 
-    public function actualizar($form_id, $info_id, $data)
+    public function actualizar($info_id, $data)
     {
 
         foreach ($data as $key => $o) {
 
-            $this->db->where('form_id', $form_id);
             $this->db->where('info_id', $info_id);
             $this->db->where('name', $key);
             $this->db->set('valor', $o);
@@ -71,7 +65,7 @@ class Forms extends CI_Model
         $aux = new StdClass();
         $aux->info_id = $info_id;
         $aux->nombre = $res->row()->nombre;
-        $aux->id = $res->form_id;
+        $aux->id = $info_id;
         $aux->items = $res->result();
 
         foreach ($aux->items as $key => $o) {

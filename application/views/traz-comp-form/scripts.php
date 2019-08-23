@@ -11,7 +11,7 @@ function initForm() {
             },
             fields: {
                 select: {
-                    selector: '#' + $(this).attr('id') + ' select',
+                    selector: '.frm-select',
                     validators: {
                         callback: {
                             message: 'Seleccionar Opción',
@@ -106,7 +106,7 @@ function initForm() {
         });
         var json = JSON.stringify(object);
 
-        if (!navigator.onLine) sessionStorage.setItem(form, json);
+        if (!navigator.onLine) sessionStorage.setItem(form, $('#form').parent().html);
 
         else {
 
@@ -125,7 +125,7 @@ function initForm() {
             cache: false,
             contentType: false,
             processData: false,
-            url: 'index.php/<?php echo FRM ?>Form/guardar/' + form + '/' + info,
+            url: 'index.php/<?php echo FRM ?>Form/guardar/' + info,
             data: formData,
             success: function(rsp) {
                 alert('Hecho');
@@ -152,8 +152,8 @@ $('.btn-form').click(function() {
         url: 'index.php/<?php echo FRM ?>Form/obtener/' + info,
         success: function(rsp) {
             $('#frm-field').html(rsp.html);
-            $('#frm-modal').show();  
-           // initForm();
+            $('#frm-modal').modal('show');  
+            initForm();
         },
         error: function(rsp) {
             alert('Error: ' + rsp.msj);

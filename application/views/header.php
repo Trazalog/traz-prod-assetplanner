@@ -79,6 +79,12 @@
     <!-- Bootstrap Validator -->
     <link rel="stylesheet" href="<?php echo base_url();?>assets/plugin/bootstrapvalidator/bootstrapValidator.min.css">
 
+    <!-- iCheck for checkboxes and radio inputs -->
+    <link rel="stylesheet" href="<?php base_url();?>assets/plugin/iCheck/all.css">
+
+    <!-- iCheck 1.0.1 -->
+    <script src="<?php base_url();?>assets/plugin/iCheck/icheck.min.js"></script>
+
     <!-- SlimScroll -->
     <script src="<?php  echo base_url();?>assets/plugin/slimScroll/jquery.slimscroll.min.js"></script>
 

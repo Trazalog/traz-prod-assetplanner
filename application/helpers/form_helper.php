@@ -4,7 +4,7 @@ if (!function_exists('form')) {
     function form($data)
     {
 
-        $html = "<form id='$data->id' data-info='".(isset($data->info_id)?$data->info_id:null)."'>";
+        $html = "<form id='frm-$data->id' data-info='".(isset($data->info_id)?$data->info_id:null)."'>";
 
         foreach ($data->items as $key => $e) {
 
@@ -74,7 +74,7 @@ if (!function_exists('form')) {
         return
             "<div class='form-group'>
             <label for=''>$e->label" . ($e->requerido ? "<strong class='text-danger'> *</strong>" : null) . ":</label>
-            <select class='form-control' name='$e->name'>$val</select>
+            <select class='form-control frm-select' name='$e->name'>$val</select>
         </div>";
     }
 
