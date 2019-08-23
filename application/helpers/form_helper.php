@@ -1,7 +1,7 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 
 if (!function_exists('form')) {
-    function form($data)
+    function form($data, $modal = false)
     {
 
         $html = "<form id='frm-$data->id' data-info='".(isset($data->info_id)?$data->info_id:null)."'>";
@@ -52,7 +52,7 @@ if (!function_exists('form')) {
             }
         }
 
-        return $html . '<button class="btn btn-primary pull-right save-form">Guardar</button></form>';
+        return $html . '<button class="btn btn-primary pull-right frm-save '.($modal?'hidden':null).'" onclick="frmGuardar(this)">Guardar</button></form>';
     }
 
     function input($e)
@@ -94,7 +94,7 @@ if (!function_exists('form')) {
         foreach ($e->values as $key => $o) {
             $html .= "<div class='checkbox'>
                                 <label>
-                                    <input type='checkbox' name='$e->name[]' class='flat-red' value='$o->value' " . ($key == 0 && $e->requerido ? req() : null) . ((isset($e->valor) && strpos("_".$e->valor,$o->value)>0?' checked':null)).">
+                                    <input type='checkbox' name='$e->name[]' class='flat-red i-check' value='$o->value' " . ($key == 0 && $e->requerido ? null : null) . ((isset($e->valor) && strpos("_".$e->valor,$o->value)>0?' checked':null)).">
                                     $o->label
                                 </label>
                             </div>";
@@ -111,7 +111,7 @@ if (!function_exists('form')) {
         foreach ($e->values as $key => $o) {
             $html .= "<div class='radio'>
                         <label>
-                            <input type='radio' name='$e->name' class='flat-red' value='$o->value' ".($key == 0 && $e->requerido ? req() : null)." ".((isset($e->valor) && $e->valor== $o->value)?'checked':null).">
+                            <input type='radio' name='$e->name' class='flat-red i-check' value='$o->value' ".($key == 0 && $e->requerido ? null : null)." ".((isset($e->valor) && $e->valor== $o->value)?'checked':null).">
                             $o->label
                         </label>
                     </div>";

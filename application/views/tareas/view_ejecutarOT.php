@@ -230,6 +230,8 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 </section><!-- /.content -->
 
 <script>
+		
+
  
 		// valida el estado de la OT y muestra llave segun corressponda 		
 		validaInicio();
@@ -393,15 +395,9 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
     return $.ajax(options);
   }
   //Fin redifinicion//
+
+
 </script>
 
 
 
-<?php
-	$modal = new StdClass();
-	$modal->id = 'frm-modal';
-	$modal->titulo = 'Formulario Tarea';
-	$modal->body = '<div id="frm-field"></div>';
-
-	echo modal($modal);
-?>

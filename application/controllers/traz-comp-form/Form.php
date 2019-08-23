@@ -9,9 +9,23 @@ class Form extends CI_Controller
         $this->load->model(FRM.'Forms');
     }
 
-    public function obtener($info)
+    public function obtener($info, $modal = false)
     {
-        $data['html'] = form($this->Forms->obtener($info));
+
+        $html = form($this->Forms->obtener($info), $modal);
+
+        if($modal)
+        {
+            $modal = new StdClass();
+            $modal->id = "frm-modal-$info";
+            $modal->titulo = 'Formulario Tarea';
+            $modal->body = $html;
+            $modal->accion = 'Guardar';
+
+            $html = modal($modal);
+        }
+
+        $data['html'] = $html;
         
         echo json_encode($data);
     }
