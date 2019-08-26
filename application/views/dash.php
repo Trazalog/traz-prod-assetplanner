@@ -116,10 +116,10 @@ base_url= 'http://localhost/traz-prod-assetplanner/';
          if(tareas[i].displayName == "Ejecutar OT")
          {
            cache.addAll( [base_url + 'index.php/Tarea/confInicioTarea?id_OT='+tareas[i].id_Ot]);
-           for(j=0;j<tareas[i].subtareas.length;j++)
-            {
-                cache.addAll([base_url + 'index.php/Tarea/Obtener_Formulario?infoId='+tareas[i].subtareas[j]]);
-            }
+        //    for(j=0;j<tareas[i].subtareas.length;j++)
+        //     {
+        //         cache.addAll([base_url + 'index.php/Tarea/Obtener_Formulario?infoId='+tareas[i].subtareas[j]]);
+        //     }
             for(j=0;j<tareas[i].pedidos.length;j++)
             {
                 cache.addAll([

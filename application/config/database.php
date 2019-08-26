@@ -75,7 +75,7 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'holis',
+	'hostname' => 'atom',
 	'username' => 'glados',
 	'password' => 'glados',
 	//'database' => 'planner_assetcloud',
