@@ -33,14 +33,13 @@ class Form extends CI_Controller
     public function guardar($info_id = false)
     {
         $data = $this->input->post();
-
         foreach ($data as $key => $o) {
 
             $rsp = strpos($key, 'file');
 
             if ($rsp > 0) {
                 $nom = str_replace("-file-", "", $key);
-                $data[$nom] = $this->uploadFile($nom);
+                $data[$nom] = $this->uploadFile($nom,$data[$key]);
                 unset($data[$key]);
             }
 
@@ -63,7 +62,32 @@ class Form extends CI_Controller
         echo json_encode(true);
     }
 
-    public function uploadFile($nom)
+    public function guardarJson($info_id = false){
+        
+        $data = json_decode($this->input->post('json'));
+
+        foreach ($data as $key => $o) {
+
+            if (is_array($o)) {
+                $data[$key]  = implode('-', $o);
+            } 
+
+        }
+
+        if ($info_id) {
+
+            $res = $this->Forms->actualizar($info_id, $data);
+
+        } else {
+
+            $res = $this->Forms->guardar($form_id, $data);
+
+        }
+
+        echo json_encode(true);
+    }
+
+    public function uploadFile($nom, $url)
     {
         $conf = [
             'upload_path' => './files/',
@@ -79,11 +103,12 @@ class Form extends CI_Controller
 
             return false;
 
+        }else{
+            
+            log_message('DEBUG', 'Archivo Subido con Exito ' . $nom);
+
+            return $this->upload->data()['file_name'];
         }
-
-        log_message('DEBUG', 'Archivo Subido con Exito ' . $nom);
-
-        return $this->upload->data()['file_name'];
 
     }
 }
