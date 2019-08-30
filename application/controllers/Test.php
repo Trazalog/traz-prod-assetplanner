@@ -6,16 +6,43 @@ class Test extends CI_Controller
     {
 
         parent::__construct();
-     
 
     }
-    public function close($id, $user = 'admin', $pass= '123traza')
+
+    public function index()
+    {
+        echo (new DateTime())->format('Y-m-d H:i:s');die;
+        $array = array(
+            0 => array(
+                0 => "How was the Food?",
+                1 => 3,
+                2 => 4,
+            ),
+            1 => array(
+                0 => "How was the first party of the semester?",
+                1 => 2,
+                2 => 4,
+                3 => 0,
+            ),
+        );
+
+        header("Content-Disposition: attachment; filename=\"demo.xls\"");
+        header("Content-Type: application/vnd.ms-excel;");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        $out = fopen("php://output", 'w');
+        foreach ($array as $data) {
+            fputcsv($out, $data, "\t");
+        }
+        fclose($out);
+    }
+    
+    public function close($id, $user = 'admin', $pass = '123traza')
     {
 
         // $this->load->view('test');
         // $this->load->view('tareas/scripts/abm_forms');
         // $this->load->view('tareas/scripts/validacion_forms');
-      
 
         $method = '/execution';
 
