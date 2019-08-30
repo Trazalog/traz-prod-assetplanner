@@ -840,4 +840,15 @@ class  Equipo extends CI_Controller {
 
 		echo json_encode($response);
 	}
+
+	function asignarMeta(){
+
+		$data = $this->input->post();
+		if(!$this->Equipos->asignarMeta($data)){
+			echo json_encode(['msj'=>'Error al asinar Meta']);
+		}else{
+			echo json_encode(['msj'=>'OK']);
+		}
+	}
+
 }

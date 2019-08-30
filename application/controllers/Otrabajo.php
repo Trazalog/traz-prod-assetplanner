@@ -22,6 +22,7 @@ class Otrabajo extends CI_Controller {
 		$data['list']       = $this->Otrabajos->otrabajos_List(null,0);
 		$data['kpi'] = $this->Equipos->informe_equipos();
 		$data['permission'] = $permission;
+
 		$this->load->view('otrabajos/dash', $data);
 	}  
 	/**

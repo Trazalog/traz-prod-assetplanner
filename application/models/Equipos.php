@@ -15,6 +15,7 @@ class Equipos extends CI_Model {
         equipos.codigo,
         equipos.descripcion AS deeq,
         equipos.estado AS estadoEquipo,
+        equipos.meta_disponibilidad as meta_disp,
         unidad_industrial.id_unidad,
         unidad_industrial.descripcion AS deun,
         area.id_area,
@@ -981,7 +982,7 @@ class Equipos extends CI_Model {
 
         $disponibilidad = array();
 
-        $this->db->select('equipos.id_equipo');
+        $this->db->select('equipos.id_equipo, meta_disponibilidad as meta_dsp');
         $this->db->from('historial_lecturas');
         $this->db->join('equipos', 'equipos.id_equipo = historial_lecturas.id_equipo');
         $this->db->join('grupo', 'grupo.id_grupo=equipos.id_grupo');
@@ -994,6 +995,8 @@ class Equipos extends CI_Model {
         $this->db->join('admcustomers', 'admcustomers.cliId=equipos.id_customer');
         $this->db->where('equipos.estado !=', 'AN');
         $this->db->where('equipos.id_empresa', $empId);
+
+        
         
         if($idEquipo != 'all')
         {
@@ -1003,15 +1006,17 @@ class Equipos extends CI_Model {
         $this->db->order_by('equipos.id_equipo', 'ASC');
         $this->db->group_by('equipos.id_equipo');
 
+        //$aux = $this->db->get_compiled_select();
         $query   = $this->db->get();
         $equipos = $query->result_array();
 
-        $nroEquipos = sizeof($equipos);
+        $nroEquipos = sizeof($equipos) == 0?1:sizeof($equipos);
         //dump($equipos, 'equipos');
-
+        $metaPromedio = 0;
         //para cada equipo con lecturas calculo la disponibilidad
         for ($k=0; $k < sizeof($equipos); $k++) 
         { 
+            $metaPromedio = $metaPromedio + $equipos[$k]["meta_dsp"];
             //para cada mes
             for ($mes=1; $mes<=12; $mes++)
             {
@@ -1178,6 +1183,9 @@ class Equipos extends CI_Model {
             $mesAnio[$i] = $value;
             $i++;
         }
+        
+
+        $disponibilidad['promedioMetas'] = $metaPromedio/$nroEquipos;
         $disponibilidad["porcentajeHorasOperativas"] = $disp;
         $disponibilidad["tiempo"] = $mesAnio;
         //dump_exit($disponibilidad);
@@ -1249,6 +1257,9 @@ class Equipos extends CI_Model {
         $this->db->where('fecha >=', $fechaInicio);
         $this->db->where('fecha <=', $fechaFin);
         $this->db->order_by("fecha", "asc");
+
+//        $aux = $this->db->get_compiled_select();
+
         $query = $this->db->get();
         $historialLecturas = $query->result_array();
         //dump($historialLecturas, 'Historial de lecturas del mes');
@@ -1439,7 +1450,7 @@ class Equipos extends CI_Model {
     {
         $id_equipo    = $parametros['id_equipo'];
         $lectura      = $parametros['lectura'];
-        $fecha        = $parametros['fecha'];
+        $fecha        = $parametros['fecha']=="0000-00-00 00:00:00"?(new DateTime())->format('Y-m-d H:i:s'):$parametros['fecha'];
         $userdata = $this->session->userdata('user_data');
         $usrId        = $userdata[0]['usrId'];
         $observacion  = $parametros['observacion'];
@@ -1510,6 +1521,12 @@ class Equipos extends CI_Model {
         $data['eqReparacion'] = $this->db->get('equipos')->row()->result;
 
         return $data;
+    }
+
+    function asignarMeta($data){
+        $this->db->set('meta_disponibilidad', $data['meta']);
+        $this->db->where('id_equipo', $data['eq']);
+        return $this->db->update('equipos');
     }
     
 }
