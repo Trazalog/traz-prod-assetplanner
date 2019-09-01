@@ -462,11 +462,16 @@ class Equipos extends CI_Model {
         return $query;
     }
 
-    function update_estado($data, $idequipo)
+    function update_estado($idequipo)
     {
+        $this->db->select('estado');
+        $this->db->order_by('fecha', 'asc');
         $this->db->where('id_equipo', $idequipo);
-        $query = $this->db->update("equipos", $data);
-        return $query;
+        $ultimoEstado = $this->db->get('historial_lecturas')->last_row()->estado;
+        
+        $this->db->where('id_equipo', $idequipo);
+        $this->db->set('estado', $ultimoEstado);
+        return $this->db->update("equipos");
     }
 
     function update_e($estado, $idequi){

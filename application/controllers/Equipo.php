@@ -590,8 +590,7 @@ class  Equipo extends CI_Controller {
 	public function cambio_estado()
 	{
 		$idequipo = $_POST['idequipo'];
-		$datos    = array('estado'=>"AC");
-		$result   = $this->Equipos->update_estado($datos, $idequipo);
+		$result   = $this->Equipos->update_estado($idequipo);
 		print_r($result);
 	}
 
