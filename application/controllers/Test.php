@@ -16,16 +16,35 @@ class Test extends CI_Controller
 
     public function dsp($eq)
     {
-        $array = array();
+        $tiempo = array();
+        $dsp = array();
         $fecha_actual = date("Y-m-d");
+
+        $data = $this->Kpis->getEquipos($eq == 'all'?false:$eq);
+        $cant = sizeof($data);
+
+        if($cant == 0) echo json_encode(false);
+
         for ($i = 0; $i < 12; $i++) {
             $fi = date("Y-m-d 00:00:00", strtotime($fecha_actual . "- $i month"));
-            $ff = date("Y-m-d 00:00:00", strtotime($fi . "+ 1 month"));
-            $rango = explode(' ', $fi)[0] . ' - ' . explode(' ', $ff)[0];
-            $array[$rango] = $this->calcularDisponibilidad($eq, $fi, $ff) . ' %';
-        }
 
-        echo var_dump($array);
+            //Ajustar Rango de Fecha con Respecto a la primera vez que se activo el Equipo
+            $ff = date("Y-m-d 23:59:59", strtotime($fi . "+ 1 month - 1 second"));
+
+            $fi = $this->Kpis->estadoEquipo($eq, $fi);
+
+            array_unshift($tiempo,date("m-Y", strtotime($fi)));
+            
+            $acum = 0;
+            foreach ($data as $o) {
+                $acum += $this->calcularDisponibilidad($o->id_equipo, $fi, $ff);
+            }
+
+            $dsp[$fi .' - '.$ff] = number_format($acum/$cant,2);
+
+        }
+        echo var_dump($dsp);
+
     }
 
     public function kpiDisponibilidad()
