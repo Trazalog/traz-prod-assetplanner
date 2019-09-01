@@ -66,7 +66,7 @@
                     echo '<i class="fa fa-history text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Historial de Lecturas" data-toggle="modal" data-target="#modalhistlect"></i>';
                   }
 
-                  echo '<i class="fa fa-bar-chart text-light-blue asignar_meta" style="cursor: pointer; margin-left: 15px;" title="Asignar Meta"></i>';
+                  echo '<button class="btn-link" onclick="asignar_meta(this)"><i class="fa fa-bar-chart text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar Meta"></i></button>';
 
                   echo '</td>';
                  # '<input type="hidden" id="id_equipo" name="id_equipo">';
@@ -2794,15 +2794,15 @@ $('#tablaempresa').DataTable({
 
 <script>
 var equipo = null;
-$('.asignar_meta').click(function(){
+function asignar_meta(e){
 
-  equipo = $(this).closest('tr')[0];
+  equipo = $(e).closest('tr')[0];
 
   $('#asignar_meta input').val(equipo.dataset.meta);
 
 
   $('#asignar_meta').modal('show');
-});
+};
 
 $('#asignar_meta .btn-accion').click(function() {
     var meta = $('#asignar_meta input').val();
