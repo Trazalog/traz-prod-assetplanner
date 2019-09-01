@@ -39,8 +39,14 @@ class Test extends CI_Controller
         $data = $this->Kpis->getEquipos($eq == 'all'?false:$eq);
         $cant = sizeof($data);
 
+        if($cant == 0) echo json_encode(false);
+
         for ($i = 0; $i < 12; $i++) {
             $fi = date("Y-m-d 00:00:00", strtotime($fecha_actual . "- $i month"));
+
+            //Ajustar Rango de Fecha con Respecto a la primera vez que se activo el Equipo
+            $fi = $this->Kpis->estadoEquipo($eq, $fi);
+
             $ff = date("Y-m-d 00:00:00", strtotime($fi . "+ 1 month"));
             array_unshift($tiempo,date("m-Y", strtotime($fi)));
             

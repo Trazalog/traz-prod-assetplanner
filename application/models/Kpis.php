@@ -44,4 +44,21 @@ class Kpis extends CI_Model
 
         return $this->db->get()->result();
     }
+
+    public function estadoEquipo($eq, $fecha)
+    {
+        $this->db->select_min('fecha');
+        $this->db->where('id_equipo', $eq);
+        $this->db->where("month(fecha) = month('$fecha')");
+        $fechaAlta = $this->db->get('historial_lecturas')->row()->fecha;
+
+        if(!$fechaAlta) return $fecha;
+
+        else{
+            $f1 = strtotime($fechaAlta);
+            $f2 = strtotime($fecha);
+
+            return $f1>$f2?$fechaAlta:$fecha;
+        }
+    }
 }
