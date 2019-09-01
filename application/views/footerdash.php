@@ -37,5 +37,6 @@ function collapse(e) {
 
 }
 //Esto dispara un evento para que se cargue el Dash en forma automatica cuando ingreso.
-cargarView('<?php echo $grpDash; ?>', 'index', 'View');
+//cargarView('<?php #echo $grpDash; ?>', 'index', 'View');
+linkTo('Test');
         </script>
