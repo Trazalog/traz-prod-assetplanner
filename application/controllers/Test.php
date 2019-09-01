@@ -6,93 +6,124 @@ class Test extends CI_Controller
     {
 
         parent::__construct();
-
+        $this->load->model('Kpis');
     }
 
     public function index()
     {
-        echo (new DateTime())->format('Y-m-d H:i:s');die;
-        $array = array(
-            0 => array(
-                0 => "How was the Food?",
-                1 => 3,
-                2 => 4,
-            ),
-            1 => array(
-                0 => "How was the first party of the semester?",
-                1 => 2,
-                2 => 4,
-                3 => 0,
-            ),
-        );
-
-        header("Content-Disposition: attachment; filename=\"demo.xls\"");
-        header("Content-Type: application/vnd.ms-excel;");
-        header("Pragma: no-cache");
-        header("Expires: 0");
-        $out = fopen("php://output", 'w');
-        foreach ($array as $data) {
-            fputcsv($out, $data, "\t");
-        }
-        fclose($out);
-    }
-    
-    public function close($id, $user = 'admin', $pass = '123traza')
-    {
-
-        // $this->load->view('test');
-        // $this->load->view('tareas/scripts/abm_forms');
-        // $this->load->view('tareas/scripts/validacion_forms');
-
-        $method = '/execution';
-
-        $resource = 'API/bpm/userTask/';
-
-        $url = 'http://trazalog.com.ar:8080/bonita/' . $resource . $id . $method;
-
-        $rsp = $this->rest->callAPI('POST', $url, null, $this->loggin($user, $pass));
-
-        if (!$rsp['status']) {
-
-            log_message('DEBUG', '#TRAZA | #BPM >> ' . ASP_104);
-
-            return msj(false, ASP_104);
-
-        }
-
-        return msj(true, 'OK');
-
+        $this->load->view('kpis/disponibilidad');
     }
 
-    public function loggin($user, $pass)
+    public function dsp($eq)
     {
-        $data = array(
-            'username' => $user,
-            'password' => $pass,
-            'redirect' => 'false',
-        );
+        $array = array();
+        $fecha_actual = date("Y-m-d");
+        for ($i = 0; $i < 12; $i++) {
+            $fi = date("Y-m-d 00:00:00", strtotime($fecha_actual . "- $i month"));
+            $ff = date("Y-m-d 00:00:00", strtotime($fi . "+ 1 month"));
+            $rango = explode(' ', $fi)[0] . ' - ' . explode(' ', $ff)[0];
+            $array[$rango] = $this->calcularDisponibilidad($eq, $fi, $ff) . ' %';
+        }
 
-        $url = 'http://trazalog.com.ar:8080/bonita/' . 'loginservice';
+        echo var_dump($array);
+    }
 
-        $rsp = $this->rest->callAPI('GET', $url, $data, false);
+    public function kpiDisponibilidad()
+    {
+        $tiempo = array();
+        $dsp = array();
+        $fecha_actual = date("Y-m-d");
 
-        if (!$rsp['status']) {
+        $eq = $this->input->post('idEquipo');
 
-            log_message('DEBUG', '#TRAZA | #BPM >> ' . ASP_109);
-            //validaSesionBPM();
-            return false;
+        $data = $this->Kpis->getEquipos($eq == 'all'?false:$eq);
+        $cant = sizeof($data);
+
+        for ($i = 0; $i < 12; $i++) {
+            $fi = date("Y-m-d 00:00:00", strtotime($fecha_actual . "- $i month"));
+            $ff = date("Y-m-d 00:00:00", strtotime($fi . "+ 1 month"));
+            array_unshift($tiempo,date("m-Y", strtotime($fi)));
+            
+            $acum = 0;
+            foreach ($data as $o) {
+                $acum += $this->calcularDisponibilidad($o->id_equipo, $fi, $ff);
+            }
+
+            array_unshift($dsp, number_format($acum/$cant,2));
+        }
+
+        $acum = 0;
+        foreach ($data as $o) {
+            if($o->meta_dsp){
+                $acum += $o->meta_dsp;
+            }else{
+                $cant--;
+            }
+        }
+
+        $data['promedioMetas'] = number_format($acum/$cant,2);
+        $data['tiempo'] = $tiempo;
+        $data['porcentajeHorasOperativas'] = $dsp;
+        echo json_encode($data);
+    }
+
+    public function calcularDisponibilidad($eq, $fi, $ff)
+    {
+        $disp = 0;
+        $tc = $this->calcularMinutos($fi, $ff);
+
+        // Historial de Lecturas
+        $data = $this->Kpis->getHistorialLecturas($eq, $fi, $ff);
+
+        if (sizeof($data) == 0) {
+            return 0;
+        }
+
+        if ($data[0]->estado == 'RE') {
+            $disp += $this->calcularMinutos($fi, $data[0]->fecha);
+            unset($data[0]);
+        }
+
+        $fechaActivo = null;
+
+        foreach ($data as $key => $o) {
+
+            if ($o->estado == 'AC') {
+                $fechaActivo = $o->fecha;
+            }
+
+            if ($o->estado == 'RE') {
+                $disp += $this->calcularMinutos($fechaActivo, $o->fecha);
+                $fechaActivo = null;
+            }
 
         }
 
-        return $this->bpm->crearHeader($rsp['header']);
+        if ($fechaActivo) {
+            $disp += $this->calcularMinutos($fechaActivo, $ff);
+        }
+
+        $disp = number_format(($disp * 100) / $tc, 2);
+
+        return $disp;
     }
 
-    public function setForm()
+    public function calcularMinutos($fi, $ff)
     {
-        $this->load->model('Forms');
+        $fecha1 = new DateTime($fi); //fecha inicial
+        $fecha2 = new DateTime($ff); //fecha de cierre
 
-        $this->Forms->setFormInicial(1000, 1, 777);
+        $intervalo = $fecha1->diff($fecha2);
 
-        echo 'Formulario Inciado';
+        #echo $intervalo->format('%Y años %m meses %d days %H horas %i minutos %s segundos'); //00 años 0 meses 0 días 08 horas 0 minutos 0 segundos
+
+        $anos = (int) $intervalo->format('%Y');
+        $meses = $anos * 12; //Anos a Meses
+        $dias = (($meses + (int) $intervalo->format('%m')) * 30) + ($anos * 5); //Meses a Dias
+        $horas = ($dias + (int) $intervalo->format('%d')) * 24; // Dias a Horas
+        $minutos = ($horas + (int) $intervalo->format('%H')) * 60; // Horas a Minutos
+        $totalMin = $minutos + (int) $intervalo->format('%i'); // Acumulo Minutos
+
+        return $totalMin;
     }
 }

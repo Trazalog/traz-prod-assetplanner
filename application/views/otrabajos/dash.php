@@ -130,7 +130,7 @@ function getDisponibilidad(idEquipo) {
             },
             dataType: 'json',
             type: 'POST',
-            url: 'index.php/Otrabajo/getDisponibilidad',
+            url: 'index.php/Test/kpiDisponibilidad',
         })
         .done((data) => {
             graficarParametro(data);
@@ -193,7 +193,7 @@ function graficarParametro(disponibilidad) {
         }
     };
     Chart.pluginService.register(horizonalLinePlugin);
-    var porcentajeHorasOperativas = [100].concat(disponibilidad["porcentajeHorasOperativas"]);
+    var porcentajeHorasOperativas = [disponibilidad['promedioMetas']].concat(disponibilidad["porcentajeHorasOperativas"]);
     var tiempo = ["meta"].concat(disponibilidad["tiempo"]);
 
     var colors = ["#00A65A"];
