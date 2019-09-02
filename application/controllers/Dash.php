@@ -164,7 +164,7 @@ class dash extends CI_Controller {
 			$n = 0;
 			$permissions = "";
 	
-			if($fn) return $this->items;
+			if(!$fn) continue;
 
 			for($i=0; $i<sizeof($fn); $i++) {
 				$permissions .= $fn[$i]['actDescription']."-";
