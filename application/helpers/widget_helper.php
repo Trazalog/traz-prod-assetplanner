@@ -167,11 +167,24 @@ if (!function_exists('cantTipoOrdenTrabajo')) {
             // 4 = backlog
         // Output
 
+        $aux = new StdClass();
+        $aux->cantidad = 0;
+        $aux->descripcion = "Correctivo Urgente";
+
         foreach ($output as $key => $value) {
             if($value->descripcion == 'Orden de Trabajo'){
-                $output[$key]->descripcion = 'Correctivo Urgente';
+                $aux->cantidad =  $aux->cantidad + $value->cantidad;
+                unset($output[$key]);
+            }
+
+            if($value->descripcion == "Solicitud de servicio"){
+                $aux->cantidad =  $aux->cantidad + $value->cantidad;
+                unset($output[$key]);
             }
         }
+
+        array_unshift($output, $aux);
+
         if ($echo == TRUE) {
             echo $output;
         }

@@ -23,13 +23,13 @@
                   echo "</pre>";
                   */
                   ?>
-                            <h3>
+                            <h4>
                                 <center>Disponibilidad [%]</center>
-                            </h3>
+                            </h4>
 
                             <div data-disponibilidad="">
                                 <div class="row">
-                                    <div class="col-md-6 col-xs-12">
+                                    <div class="col-md-5 col-xs-12">
                                         <div class="radio">
                                             <label>
                                                 <input type="radio" name="radioDisponibilidad"
@@ -37,6 +37,8 @@
                                                 Todos los equipos.
                                             </label>
                                         </div>
+                                    </div>
+                                     <div class="col-md-7 col-xs-12">
                                         <div class="radio">
                                             <label>
                                                 <input type="radio" name="radioDisponibilidad"
@@ -45,8 +47,7 @@
                                                     name="checkboxEquipoID" placeholder="Ingrese código de equipo"
                                                     value="">
                                             </label>
-                                        </div>
-                                    </div>
+                                        </div></div>
                                 </div>
                             </div>
 
@@ -61,9 +62,9 @@
                         </div>
 
                         <div class="col-md-3 col-xs-12 daterange">
-                            <h3>
+                            <h4>
                                 <center>Mantenimiento [%]</center>
-                            </h3>
+                            </h4>
                             <div class="form-inline">
                                 <!--<label>Rango de fechas: </label>
                   <input type="text" id="daterange-mantenimiento" class="form-control">
@@ -75,9 +76,9 @@
                         </div>
 
                         <div class="col-md-3 col-xs-12 daterange">
-                            <h3>
+                            <h4>
                                 <center>Equipos Operativos [%]</center>
-                            </h3>
+                            </h4>
                             <div class="graph-container-2" style="width:100%; max-width: 250px; margin:0 auto 20px;">
                                 <canvas id="graficoEquiposOperativos"></canvas>
                             </div>
@@ -122,20 +123,20 @@ var idEquipo = 'all';
 getDisponibilidad(idEquipo);
 
 function getDisponibilidad(idEquipo) {
-    WaitingOpen("Obteniendo datos de disponibilidad...");
+    //WaitingOpen("Obteniendo datos de disponibilidad...");
     $.ajax({
             data: {
                 idEquipo: idEquipo
             },
             dataType: 'json',
             type: 'POST',
-            url: 'index.php/Otrabajo/getDisponibilidad',
+            url: 'index.php/Test/kpiDisponibilidad',
         })
         .done((data) => {
             graficarParametro(data);
         })
         .fail(() => alert("Error al traer datos de Disponibilidad."))
-        .always(() => WaitingClose());
+       
 }
 
 /* grafico KPI de Disponibilidad*/
@@ -192,17 +193,22 @@ function graficarParametro(disponibilidad) {
         }
     };
     Chart.pluginService.register(horizonalLinePlugin);
-    var porcentajeHorasOperativas = [80].concat(disponibilidad["porcentajeHorasOperativas"]);
+    var porcentajeHorasOperativas = [disponibilidad['promedioMetas']].concat(disponibilidad["porcentajeHorasOperativas"]);
     var tiempo = ["meta"].concat(disponibilidad["tiempo"]);
+
+    var colors = ["#00A65A"];
+    for (let i = 1; i < tiempo.length; i++) colors.push('#81B5D4');
+        
+    
 
     var data = {
         labels: tiempo,
         //['Meta', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
         datasets: [{
-            backgroundColor: ["#009900"],
+            backgroundColor: colors,
             data: porcentajeHorasOperativas,
             //data:[80, 66, 70, 71, 75, 81, 77, 78, 77, 82, 81, 78, 80],
-            fill: false,
+           // fill: false,
             label: ['Meta'],
             lineTension: 0.2,
             pointRadius: 2,
@@ -212,14 +218,16 @@ function graficarParametro(disponibilidad) {
     };
 
     var miGrafico = new Chart(ctx, {
+        
         type: 'bar',
         data: data,
         options: {
             "horizontalLine": [{
-                "y": 80,
-                "style": "#009900",
+                "y": disponibilidad['promedioMetas'],
+                "style": "#00A65A",
                 "text": "meta"
             }],
+            
             responsive: true,
             maintainAspectRatio: true,
             scales: {
@@ -291,7 +299,7 @@ graficarMantenimiento();
 
 
 function graficarMantenimiento() {
-    WaitingOpen("Obteniendo datos de Mantenimiento...");
+ //   WaitingOpen("Obteniendo datos de Mantenimiento...");
     var areaChartCanvas = document.getElementById("graficoMantenimiento");
 
     var myChart = new Chart(areaChartCanvas, {
@@ -356,7 +364,7 @@ function graficarMantenimiento() {
             }
         }
 });
-WaitingClose();
+//WaitingClose();
 }
 
 
@@ -364,7 +372,7 @@ WaitingClose();
 graficarEquiposOperativos();
 /* grafico KPI Equipos Operativos */
 function graficarEquiposOperativos() {
-    WaitingOpen("Obteniendo datos de Equipos Operativos...");
+   // WaitingOpen("Obteniendo datos de Equipos Operativos...");
     var areaChartCanvas = document.getElementById("graficoEquiposOperativos");
 
     var myChart = new Chart(areaChartCanvas, {
@@ -416,6 +424,6 @@ function graficarEquiposOperativos() {
             }
         }
     });
-    WaitingClose();
+   // WaitingClose();
 }
 </script>
