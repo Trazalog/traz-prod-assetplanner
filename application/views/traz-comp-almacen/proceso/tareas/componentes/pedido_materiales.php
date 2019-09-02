@@ -322,8 +322,11 @@ function lanzarPedidoModal() {
         articulos.push(json);
       });
       articulos = JSON.stringify(articulos);
+
+      console.log(articulos);
+      
      
-      ajax({
+      $.ajax({
         data: {
             articulos:articulos,
             idOT:idOT

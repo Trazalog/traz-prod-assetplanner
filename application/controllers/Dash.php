@@ -159,17 +159,13 @@ class dash extends CI_Controller {
 		$this->items = $items;
 		//dump_exit($this->items);
 		foreach ($this->items as &$value) {
-			/*echo '<pre>';
-			print_r($value);
-			echo '</pre>';*/
+		
 			$fn = $this->Groups->mnuPermisos($value['id'], $value['grpId']);
 			$n = 0;
 			$permissions = "";
-			//con foreach da error
-			/*foreach ($fn as $item) {
-				$permissions .= $item['actDescription']."-";
-				$n++;
-			}*/
+	
+			if($fn) return $this->items;
+
 			for($i=0; $i<sizeof($fn); $i++) {
 				$permissions .= $fn[$i]['actDescription']."-";
 			}
