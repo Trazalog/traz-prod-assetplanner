@@ -29,7 +29,7 @@ class Test extends CI_Controller
             $fi = date("Y-m-d 00:00:00", strtotime($fecha_actual . "- $i month"));
 
             //Ajustar Rango de Fecha con Respecto a la primera vez que se activo el Equipo
-            $ff = date("Y-m-d 23:59:59", strtotime($fi . "+ 1 month - 1 second"));
+            $ff = ($i==0 ?  date("Y-m-d H:i:00") : date("Y-m-d 23:59:59", strtotime($fi . "+ 1 month - 1 second")));
 
             $fi = $this->Kpis->estadoEquipo($eq, $fi);
 
@@ -63,7 +63,7 @@ class Test extends CI_Controller
         for ($i = 0; $i < 12; $i++) {
             $fi = date("Y-m-d 00:00:00", strtotime($fecha_actual . "- $i month"));
 
-            $ff = date("Y-m-d 23:59:59", strtotime($fi . "+ 1 month - 1 second"));
+            $ff = ($i==0 ?  date("Y-m-d H:i:00") : date("Y-m-d 23:59:59", strtotime($fi . "+ 1 month - 1 second")));
 
             //Ajustar Rango de Fecha con Respecto a la primera vez que se activo el Equipo
             $fi = $this->Kpis->estadoEquipo($eq, $fi);
