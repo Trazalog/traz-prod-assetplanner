@@ -26,7 +26,7 @@ class Test extends CI_Controller
         if($cant == 0) echo json_encode(false);
 
         for ($i = 0; $i < 12; $i++) {
-            $fi = date("Y-m-d 00:00:00", strtotime($fecha_actual . "- $i month"));
+            $fi = date("Y-m-01 00:00:00", strtotime($fecha_actual . "- $i month"));
 
             //Ajustar Rango de Fecha con Respecto a la primera vez que se activo el Equipo
             $ff = ($i==0 ?  date("Y-m-d H:i:00") : date("Y-m-d 23:59:59", strtotime($fi . "+ 1 month - 1 second")));
@@ -43,7 +43,8 @@ class Test extends CI_Controller
             $dsp[$fi .' - '.$ff] = number_format($acum/$cant,2);
 
         }
-        echo var_dump($dsp);
+        print("<pre>".print_r($dsp,true)."</pre>");
+
 
     }
 
@@ -58,10 +59,16 @@ class Test extends CI_Controller
         $data = $this->Kpis->getEquipos($eq == 'all'?false:$eq);
         $cant = sizeof($data);
 
-        if($cant == 0) echo json_encode(false);
+        if($cant == 0) {
+            $data['promedioMetas'] = 0;
+            $data['tiempo'] = [];
+            $data['porcentajeHorasOperativas'] = [];
+            echo json_encode($data); 
+            return;
+        }
 
         for ($i = 0; $i < 12; $i++) {
-            $fi = date("Y-m-d 00:00:00", strtotime($fecha_actual . "- $i month"));
+            $fi = date("Y-m-01 00:00:00", strtotime($fecha_actual . "- $i month"));
 
             $ff = ($i==0 ?  date("Y-m-d H:i:00") : date("Y-m-d 23:59:59", strtotime($fi . "+ 1 month - 1 second")));
 
