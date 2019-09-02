@@ -35,7 +35,9 @@ class Kpis extends CI_Model
         // $this->db->join('area', 'area.id_area=equipos.id_area');
         // $this->db->join('proceso', 'proceso.id_proceso=equipos.id_proceso');
         // $this->db->join('admcustomers', 'admcustomers.cliId=equipos.id_customer');
-        $this->db->where('equipos.estado !=', 'AN');
+        $this->db->where("(estado = 'AC' or estado ='RE')");
+     
+        #$this->db->where('equipos.estado !=', 'AN');
         $this->db->where('equipos.id_empresa', $empId);
 
         if($id) $this->db->where('equipos.id_equipo', $id);
