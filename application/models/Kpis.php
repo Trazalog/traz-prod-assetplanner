@@ -9,10 +9,10 @@ class Kpis extends CI_Model
         parent:: __construct();
     }
 
-    public function getHistorialLecturas($id, $fi, $ff)
+    public function getHistorialLecturas($id, $fi = false, $ff =false)
     {
-        $this->db->where('fecha >=', $fi);
-        $this->db->where('fecha <=', $ff);
+        if($fi)$this->db->where('fecha >=', $fi);
+        if($ff)$this->db->where('fecha <=', $ff);
         $this->db->where('id_equipo', $id);
         $this->db->order_by('fecha', 'asc');
         return $this->db->get('historial_lecturas')->result();

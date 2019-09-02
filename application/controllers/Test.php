@@ -64,7 +64,7 @@ class Test extends CI_Controller
             $fi = date("Y-m-d 00:00:00", strtotime($fecha_actual . "- $i month"));
 
             $ff = date("Y-m-d 23:59:59", strtotime($fi . "+ 1 month - 1 second"));
-            
+
             //Ajustar Rango de Fecha con Respecto a la primera vez que se activo el Equipo
             $fi = $this->Kpis->estadoEquipo($eq, $fi);
 
@@ -102,7 +102,9 @@ class Test extends CI_Controller
         $data = $this->Kpis->getHistorialLecturas($eq, $fi, $ff);
 
         if (sizeof($data) == 0) {
-            return 0;
+            $his = $this->Kpis->getHistorialLecturas($eq, false, $fi);
+            if(end($his)->estado == 'AC') return 100;
+            else return 0;
         }
 
         if ($data[0]->estado == 'RE') {
