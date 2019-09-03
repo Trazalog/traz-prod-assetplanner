@@ -1,6 +1,6 @@
 <script>
 //Script para Vista Standar  
-evaluarEstado();
+if(navigator.onLine) evaluarEstado();
 
 function evaluarEstado() {
     var asig = $('#asignado').val();
@@ -13,6 +13,8 @@ function evaluarEstado() {
 }
 
 function habilitar() {
+    console.log('Habilitar');
+    
     // habilito btn y textarea       
     $("#btonsoltr").show();
     $("#hecho").show();
@@ -33,6 +35,8 @@ function habilitar() {
 }
 
 function deshabilitar() {
+    console.log('Deshabiltar');
+    
     $('.oculto').hide();
     // habilito btn tomar
     $("#btontomar").show();
@@ -323,8 +327,7 @@ function guardarComentario() {
 // Toma tarea en BPM
 function tomarTarea() {
     var idTarBonita = $('#idTarBonita').val();
-    //alert(idTarBonita);
-    $.ajax({
+    var post = {
         type: 'POST',
         data: {
             idTarBonita: idTarBonita
@@ -344,13 +347,23 @@ function tomarTarea() {
             console.log(result);
         },
         dataType: 'json'
-    });
+    };
+
+    if(navigator.onLine) $.ajax(post);
+    else{
+        ajax(post);
+        var task = $('#task').val() + '_tomar';
+        var id = 'tomar';
+        var value = true;
+        habilitar();
+        guardarEstado(task, value, id);
+
+    }
 }
 // Soltar tarea en BPM
 function soltarTarea() {
     var idTarBonita = $('#idTarBonita').val();
-    //alert(idTarBonita);
-    $.ajax({
+    var post = {
         type: 'POST',
         data: {
             idTarBonita: idTarBonita
@@ -369,6 +382,16 @@ function soltarTarea() {
             console.log(result);
         },
         dataType: 'json'
-    });
+    };
+
+    if(navigator.onLine) $.ajax(post);
+    else{
+        ajax(post);
+        var task = $('#task').val() + '_tomar';
+        var id = 'tomar';
+        var value = false;
+        deshabilitar();
+        guardarEstado(task, value, id);
+    }
 }
 </script>

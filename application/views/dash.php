@@ -128,7 +128,7 @@
         caches.open('traz-prod-assetplanner-cache').then(function(cache) {
             for (i = 0; i < tareas.length; i++) {
                  if (tareas[i].displayName == "Ejecutar OT") {
-                 //   cache.addAll([base_url + 'index.php/Tarea/confInicioTarea?id_OT=' + tareas[i].id_Ot]);
+                    cache.addAll([base_url + 'index.php/Tarea/confInicioTarea?id_OT=' + tareas[i].id_Ot]);
                     for (j = 0; j < tareas[i].subtareas.length; j++) {
                     
                         cache.addAll([base_url + 'index.php/<?php echo FRM ?>Form/obtener/' + tareas[i].subtareas[j] + '/true']);

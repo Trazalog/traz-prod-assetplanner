@@ -262,14 +262,13 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 <script>
 // valida el estado de la OT y muestra llave segun corressponda 		
 validaInicio();
-
 function validaInicio() {
     $("#iniciarTarea").hide();
     $("#tareaIniciada").hide();
+
     var id_OT = $('#id_OT').val();
     url = 'index.php/Tarea/confInicioTarea?id_OT=' + id_OT;
-    console.log(url);
-    //alert(id_OT + 'id de ot');
+ 
     $.ajax({
         type: 'GET',
         url: url,
@@ -282,6 +281,19 @@ function validaInicio() {
             } else {
                 $("#iniciarTarea").show();
                 $("#estadoTarea").val(0);
+            }
+
+            if(!navigator.onLine){
+                aux = JSON.parse(sessionStorage.getItem(task + '_inicio_tarea'));
+                if (aux != null) {
+                    if(aux.inicio){
+                        $("#tareaIniciada").show();
+                        $("#estadoTarea").val(1);
+                    }else{
+                        $("#iniciarTarea").show();
+                        $("#estadoTarea").val(0);
+                    }
+                }
             }
         },
         error: function(data) {
@@ -412,18 +424,17 @@ function ajax(options) {
 </script>
 
 <script>
-if (!navigator.onLine) index();
+ if (!navigator.onLine) index();
 else {
-    if (navigator.serviceWorker.controller) {
-        navigator.serviceWorker.controller.postMessage('processQueue');
         borrarCache();
-    }
 }
 
 function borrarCache() {
     sessionStorage.removeItem($('#task').val() + '_checks');
     sessionStorage.removeItem($('#task').val() + '_comentarios');
     sessionStorage.removeItem($('#task').val() + '_frm');
+    sessionStorage.removeItem($('#task').val() + '_tomar');
+    sessionStorage.removeItem($('#task').val() + '_inicio_tarea');
     console.log('Offline | Datos Eliminados');
 
 }
@@ -448,22 +459,32 @@ function index() {
             $('#listaComentarios').prepend(e);
         });
     }
+
+    //Boton Tomar
+    aux = JSON.parse(sessionStorage.getItem(task + '_tomar'));
+    if (aux != null) {
+        if(aux.tomar) habilitar();
+        else deshabilitar();
+    }else{
+        evaluarEstado();
+    }
 }
 
 
 $('.check').click(function() {
+    if(navigator.onLine) return;
     var task = $('#task').val() + '_checks';
     var id = '#' + this.id;
     var value = this.checked;
 
-    guardarEstado(task, id, value);
-
+    guardarEstado(task, value, id);
 });
 
-function guardarEstado(item, value, id = false) {
+function guardarEstado(item, value, id = null) {
+    
     var aux = sessionStorage.getItem(item);
 
-    if (id) {
+    if (id != null) {
         aux = (aux == null ? {} : JSON.parse(aux));
         aux[id] = value;
     } else {
