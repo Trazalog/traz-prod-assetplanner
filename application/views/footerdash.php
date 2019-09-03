@@ -38,4 +38,14 @@ function collapse(e) {
 }
 //Esto dispara un evento para que se cargue el Dash en forma automatica cuando ingreso.
 cargarView('<?php echo $grpDash; ?>', 'index', 'View');
-        </script>
+
+
+//Listener de Envento cuando el Navegador vuelta a estar ONLINE 
+//Procesa la cola de POSTS
+window.addEventListener('online', function(e) { 
+    if (navigator.serviceWorker.controller) {
+        console.log('Sincronizar Cambios...');
+        navigator.serviceWorker.controller.postMessage('processQueue');
+    }
+ });
+</script>

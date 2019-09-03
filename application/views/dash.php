@@ -133,23 +133,23 @@
                     
                         cache.addAll([base_url + 'index.php/<?php echo FRM ?>Form/obtener/' + tareas[i].subtareas[j] + '/true']);
                     }
-                    // for (j = 0; j < tareas[i].pedidos.length; j++) {
-                    //     cache.addAll([
-                    //         base_url + 'index.php/almacen/Notapedido/getNotaPedidoId?id_nota=' + tareas[
-                    //             i].pedidos[j].id_notaPedido,
-                    //         base_url +
-                    //         'index.php/almacen/new/Entrega_Material/getEntregasPedidoOffline?pema=' +
-                    //         tareas[i].pedidos[j].id_notaPedido,
-                    //         base_url + 'index.php/almacen/new/Pedido_Material/estado?id=' + tareas[i]
-                    //         .pedidos[j].id_notaPedido,
-                    //     ]);
-                    //     for (k = 0; k < tareas[i].pedidos[j].entregas.length; k++) {
-                    //         cache.addAll([
-                    //             base_url + 'index.php/almacen/new/Entrega_Material/detalle?id=' +
-                    //             tareas[i].pedidos[j].entregas[k].enma_id,
-                    //         ]);
-                    //     }
-                    // }
+                    for (j = 0; j < tareas[i].pedidos.length; j++) {
+                        cache.addAll([
+                            base_url + 'index.php/almacen/Notapedido/getNotaPedidoId?id_nota=' + tareas[
+                                i].pedidos[j].id_notaPedido,
+                            base_url +
+                            'index.php/almacen/new/Entrega_Material/getEntregasPedidoOffline?pema=' +
+                            tareas[i].pedidos[j].id_notaPedido,
+                            base_url + 'index.php/almacen/new/Pedido_Material/estado?id=' + tareas[i]
+                            .pedidos[j].id_notaPedido,
+                        ]);
+                        for (k = 0; k < tareas[i].pedidos[j].entregas.length; k++) {
+                            cache.addAll([
+                                base_url + 'index.php/almacen/new/Entrega_Material/detalle?id=' +
+                                tareas[i].pedidos[j].entregas[k].enma_id,
+                            ]);
+                        }
+                    }
 
                  }
                 cache.addAll([

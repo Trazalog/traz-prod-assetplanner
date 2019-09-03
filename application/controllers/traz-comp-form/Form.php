@@ -64,12 +64,19 @@ class Form extends CI_Controller
 
     public function guardarJson($info_id = false){
         
-        $data = json_decode($this->input->post('json'));
+        $data = json_decode($this->input->post('json'), true);
 
         foreach ($data as $key => $o) {
 
             if (is_array($o)) {
-                $data[$key]  = implode('-', $o);
+                if(strpos($key, '[]'))
+                {
+                    unset($data[$key]);
+                    $data[str_replace($key, '[]')] = implode('-', $o);
+                }else{
+                   $data[$key] = implode('-', $o);
+                }
+
             } 
 
         }

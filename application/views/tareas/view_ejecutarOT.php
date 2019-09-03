@@ -305,7 +305,6 @@ function validaInicio() {
 
 // Cambia el estado de Orden servicio y de solicitud de servicio
 $("#iniciarTarea").click(function() {
-
     WaitingOpen('Iniciando Tarea...');
     var id_OT = $('#id_OT').val();
     ajax({
@@ -331,6 +330,14 @@ $("#iniciarTarea").click(function() {
         },
         dataType: 'json'
     });
+
+    //if(!navigator)
+    //OFFLINE
+    var task = $('#task').val() + '_inicio_tarea';
+    var id = 'inicio';
+    var value = true;
+
+    guardarEstado(task, value, id);
 });
 
 
@@ -421,12 +428,11 @@ function ajax(options) {
     return $.ajax(options);
 }
 //Fin redifinicion//
-</script>
 
-<script>
- if (!navigator.onLine) index();
-else {
-        borrarCache();
+if (!navigator . onLine) {
+    index();
+} else {
+    borrarCache();
 }
 
 function borrarCache() {
@@ -472,7 +478,7 @@ function index() {
 
 
 $('.check').click(function() {
-    if(navigator.onLine) return;
+    //if(navigator.onLine) return;
     var task = $('#task').val() + '_checks';
     var id = '#' + this.id;
     var value = this.checked;
@@ -494,6 +500,8 @@ function guardarEstado(item, value, id = null) {
     console.log(JSON.stringify(aux));
     sessionStorage.setItem(item, JSON.stringify(aux));
 }
+
+
 
 
 </script>

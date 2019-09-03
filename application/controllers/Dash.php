@@ -100,23 +100,25 @@ class dash extends CI_Controller {
 			
 			for($i=0;$i<count($data['tareas']); $i++)
 			{
-				if($data['tareas'][$i]['name'] == "Ejecutar OT")
+				if($data['tareas'][$i]['name'] == "Ejecutar OT") //Solo Cashear Tareas De Ejecutar OT
 				{
-			
-					$id = $this->Otrabajos->ObtenerOTporCaseId($data['tareas']['data'][$i]['caseId']);
+					$caseId = $data['tareas'][$i]['caseId'];
+					$id = $this->Otrabajos->ObtenerOTporCaseId($caseId);
 					$data['tareas'][$i]['id_Ot'] = $id;
 					$data['tareas'][$i]['pedidos'] = $this->Notapedidos->getNotasxOT($id);
-					//var_dump($data['tareas'][$i]['pedidos'][0]['id_notaPedido']);die;
+					
 					for($j=0;$j<count($data['tareas'][$i]['pedidos']);$j++)
 					{
 						$data['tareas'][$i]['pedidos'][$j]['entregas'] = $this->Entregas_Materiales->getEntregasPedido($data['tareas'][$i]['pedidos'][$j]['id_notaPedido']);
 					}
+
+					//Obtener Formularios de Subtareas
 					$subtareas = $this->Tareas->getSubtareas($id);
-					$array = [1,2,3];
-					// for($j=0;$j<count($subtareas);$j++)
-					// {
-					// 	array_push($array, $subtareas[$j]['info_id']);
-					// }
+					$array = [];
+					for($j=0;$j<count($subtareas);$j++)
+					{
+						array_push($array, $subtareas[$j]['info_id']);
+					}
 					$data['tareas'][$i]['subtareas'] = $array;
 				}
 			}
