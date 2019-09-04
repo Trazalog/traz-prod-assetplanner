@@ -39,7 +39,7 @@
                       foreach($list as $f){
 
                           // usuario logueado o grupo administrador
-                        if (($f['usrId'] == $usrId) || ($grupoId == 1)) {
+                    //    if (($f['usrId'] == $usrId) || ($grupoId == 1)) {
                            
                             $id_sol = $f['id_solicitud'];                                    
                             $id_eq = $f['id_equipo'];
@@ -106,7 +106,7 @@
 
                             echo '</td>';            
                          echo '</tr>'; 
-                        } // if ($f['usrId'] == $usrId)
+                      //  } // if ($f['usrId'] == $usrId)
                       } // fin foreach($list as $f)   
                     } // fin if(count($list) > 0)
 
