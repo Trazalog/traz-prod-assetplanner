@@ -39,7 +39,7 @@ class Form extends CI_Controller
 
             if ($rsp > 0) {
                 $nom = str_replace("-file-", "", $key);
-                $data[$nom] = $this->uploadFile($nom,$data[$key]);
+                $data[$nom] = $this->uploadFile($key);
                 unset($data[$key]);
             }
 
@@ -68,17 +68,16 @@ class Form extends CI_Controller
 
         foreach ($data as $key => $o) {
 
-            if (is_array($o)) {
-                if(strpos($key, '[]'))
-                {
-                    unset($data[$key]);
-                    $data[str_replace($key, '[]')] = implode('-', $o);
+            if(strpos($key, '[]')) {
+                $nkey = str_replace('[]', "", $key);
+                if(is_array($o)){
+                    $data[$nkey] = implode('-', $o);
                 }else{
-                   $data[$key] = implode('-', $o);
+                    $data[$nkey] = $o;
                 }
-
-            } 
-
+                unset($data[$key]);
+            }
+            
         }
 
         if ($info_id) {
@@ -94,7 +93,7 @@ class Form extends CI_Controller
         echo json_encode(true);
     }
 
-    public function uploadFile($nom, $url)
+    public function uploadFile($nom)
     {
         $conf = [
             'upload_path' => './files/',
@@ -106,7 +105,7 @@ class Form extends CI_Controller
 
         if (!$this->upload->do_upload($nom)) {
 
-            log_message('DEBUG', 'Error al Subir el Archivo ' . $nom);
+            log_message('ERROR', 'Error al Subir el Archivo ' . $nom);
 
             return false;
 

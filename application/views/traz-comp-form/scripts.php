@@ -71,6 +71,8 @@ function initForm() {
 
 
 function frmGuardar(e) {
+    
+    WaitingOpen();
 
     var form = $(e).closest('form').attr('id');
     var info = $(e).closest('form').data('info');
@@ -79,26 +81,29 @@ function frmGuardar(e) {
 
     var bv = $('#' + form).data('bootstrapValidator');
 
-    //if (!bv.isValid()) return;
-
     var formData = new FormData($('#' + form)[0]);
 
-    console.log('#'+form);
-    
-    for (var pair of formData.entries()) {
-        console.log(pair[0] + ', ' + pair[1]);
-    }
-
-    var checkbox = $('#' + form).find("input[type=checkbox]");
-
+    //Preparo Informacion Checkboxs
+    var checkbox = $('#' + form).find("input[type=checkbox]")
     $.each(checkbox, function(key, val) {
         if (!formData.has($(val).attr('name'))) {
             formData.append($(val).attr('name'), '');
         }
     });
 
+    //Preparo Informacion Files
+    var files = $('#' + form + ' input[type="file"]');
+    files.each(function() {
+        if(navigator.onLine){
+            if (this.value != null && this.value != '') formData.append(this.name, this.value);
+        }else{
+            formData.delete(this.name);
+        }
+    });
+
 
     if (!navigator.onLine) {
+        WaitingClose();
 
         console.log('Offline | Formulario Guardado...');
 
@@ -125,14 +130,6 @@ function frmGuardar(e) {
 
     } else {
 
-        var files = $('#' + form + ' input[type="file"]');
-
-        files.each(function() {
-            if (this.value != null && this.value != '') formData.append('-file-' + this.name, this
-                .value);
-        });
-
-
         $.ajax({
             type: 'POST',
             dataType: 'JSON',
@@ -150,6 +147,9 @@ function frmGuardar(e) {
 
                 alert('Error al Guardar Formulario');
 
+            },
+            complete: function(){
+                WaitingClose();
             }
         });
 
@@ -163,7 +163,7 @@ $('.btn-form').click(function() {
 });
 
 function obtenerForm(info, show = true) {
-
+    WaitingOpen();
     $.ajax({
         type: 'GET',
         dataType: 'JSON',
@@ -172,6 +172,7 @@ function obtenerForm(info, show = true) {
             if (modal) {
                 $('#frm-modal-' + info).remove();
                 $('#frm-list').append(rsp.html);
+             
                 if (!navigator.onLine) {
                     console.log('Offiline | Sin Conexión...');
 
@@ -207,8 +208,13 @@ function obtenerForm(info, show = true) {
                                     //Radio
                                     if (input.getAttribute('type') == 'radio' && input.value ==
                                         form[key]) {
-                                        alert(input.value);
                                         input.checked = true;
+                                        return;
+                                    }
+                                    console.log(input.tagName);
+                                    if(input.tagName == 'TEXTAREA'){
+                                        alert('colis');
+                                        $(id + ' [name="' + key + '"]').html(form[key]);
                                         return;
                                     }
 
@@ -233,6 +239,9 @@ function obtenerForm(info, show = true) {
 
             console.log('Error al Obtener Formulario');
 
+        },
+        complete: function(){
+            WaitingClose();
         }
     });
 }
@@ -258,7 +267,16 @@ function formToJson(formData) {
 
     return JSON.stringify(object);
 }
+
+function showFD(formData){
+    for (var pair of formData.entries()) {
+        console.log(pair[0] + ', ' + pair[1]);
+    }
+}
+
+
 </script>
 
 
 <div id="frm-list"></div>
+

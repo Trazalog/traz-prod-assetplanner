@@ -2,8 +2,7 @@
 
 if (!function_exists('form')) {
     function form($data, $modal = false)
-    {
-
+    {   
         $html = "<form id='frm-$data->id' data-info='".(isset($data->info_id)?$data->info_id:null)."'>";
 
         foreach ($data->items as $key => $e) {
@@ -136,7 +135,7 @@ if (!function_exists('form')) {
         return
             "<div class='form-group'>
                   <label>$e->label" . ($e->requerido ? "<strong class='text-danger'> *</strong>" : null) . ":</label>
-                  <input id='$e->name' type='file' name='$e->name' ".($e->requerido ? req() : null)
+                  <input id='$e->name' type='file' name='-file-$e->name' ".($e->requerido ? req() : null)
                   .">
                   <p class='help-block show-file'><a $file class='help-button col-sm-4 download' title='Descargar' download><i
                     class='fa fa-download'></i> Ver Adjunto</a></p>

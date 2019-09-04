@@ -472,7 +472,7 @@ function index() {
         if(aux.tomar) habilitar();
         else deshabilitar();
     }else{
-        evaluarEstado();
+       // evaluarEstado();
     }
 }
 
@@ -500,8 +500,4 @@ function guardarEstado(item, value, id = null) {
     console.log(JSON.stringify(aux));
     sessionStorage.setItem(item, JSON.stringify(aux));
 }
-
-
-
-
 </script>
