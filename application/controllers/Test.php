@@ -6,8 +6,10 @@ class Test extends CI_Controller
     {
 
         parent::__construct();
+       
         $this->load->model('Kpis');
     }
+
 
     public function index()
     {
@@ -161,4 +163,5 @@ class Test extends CI_Controller
 
         return $totalMin;
     }
+
 }

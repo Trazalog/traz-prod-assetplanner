@@ -20,13 +20,13 @@
                 </a>
                 <p class="empresa" style="color:#fff !important"><?php echo $descEmpresas; ?></p>
                 <style>
-                    .empresa {
-                        margin:0;
-                        float: left;
-                        padding-left: 5px;
-                        font-size: 20px;
-                        line-height: 50px;
-                    }
+                .empresa {
+                    margin: 0;
+                    float: left;
+                    padding-left: 5px;
+                    font-size: 20px;
+                    line-height: 50px;
+                }
                 </style>
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
@@ -50,26 +50,38 @@
                                 </li>
                                 <li class="user-body">
                                     <?php foreach($empresas as $e){ ?>
-                                        <a href="#" class="btnEmpresa" data-ui="<?php echo $e['id_empresa'] ?>" >
-                                            <?php
+                                    <a href="#" class="btnEmpresa" data-ui="<?php echo $e['id_empresa'] ?>">
+                                        <?php
                                             if($e['tipo']==1)
                                                 echo '<i class="fa fa-check"></i>';
                                             else
                                                 echo '<i class="notFA"></i>';
                                             ?>
-                                            <?php echo $e['descripcion'] ?>
-                                        </a>
+                                        <?php echo $e['descripcion'] ?>
+                                    </a>
                                     <?php } ?>
                                 </li>
                                 <style>
-                                    .notFA { margin-left: 27px; }
-                                    .navbar-nav > .user-menu > .dropdown-menu > .user-body { padding: 15px 0; }
-                                    .navbar-nav > .user-menu > .dropdown-menu > .user-footer { padding: 10px 20px; }
+                                .notFA {
+                                    margin-left: 27px;
+                                }
+
+                                .navbar-nav>.user-menu>.dropdown-menu>.user-body {
+                                    padding: 15px 0;
+                                }
+
+                                .navbar-nav>.user-menu>.dropdown-menu>.user-footer {
+                                    padding: 10px 20px;
+                                }
                                 </style>
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
                                     <div class="pull-right">
-                                        <a href="<?php echo base_url(); #" onClick="cargarView('login', 'logout', '')?>" class="btn btn-default btn-flat">Salir <i class="fa fa-fw fa-sign-out"></i></a>
+                                        <a href="<?php echo base_url(); #" onClick="cargarView('login', 'logout', '')?>"
+                                            class="btn btn-default btn-flat">Salir <i
+                                                class="fa fa-fw fa-sign-out"></i></a>
+
+                                        <!-- <button class="btn btn-success" onclick="procesarCola()">Sincronizar</button> -->
                                     </div>
                                 </li>
                             </ul>
@@ -86,99 +98,106 @@
             </nav>
         </header>
 
-<script>
-//--Guille WorkBOT--//
+        <script>
+        //--Guille WorkBOT--//
 
-base_url= 'http://localhost/traz-prod-assetplanner/';
- if (!indexedDB) {
-      alert("Este browser no soporta IndexedDB, necesita otro para poder utilizar la aplicación.");
-  }
+        base_url = 'http://localhost/traz-prod-assetplanner/';
+        if (!indexedDB) {
+            alert("Este browser no soporta IndexedDB, necesita otro para poder utilizar la aplicación.");
+        }
 
-  indexedDB.open('traz-prod-assetplanner-ajax').onupgradeneeded = function (event) {
-    event.target.result.createObjectStore('ajax_requests', {
-      autoIncrement:  true,
-      keyPath: 'id'
-    });
-  };
-  caches.open('traz-prod-assetplanner-cache').then(function(cache) {
-    return cache.addAll([
-                base_url+'Tarea/index/'+'<?php echo $permiso?>',
-                base_url+'index.php/Tarea/index/'+'<?php echo $permiso?>'
+        indexedDB.open('traz-prod-assetplanner-ajax').onupgradeneeded = function(event) {
+            event.target.result.createObjectStore('ajax_requests', {
+                autoIncrement: true,
+                keyPath: 'id'
+            });
+        };
+        caches.open('traz-prod-assetplanner-cache').then(function(cache) {
+            return cache.addAll([
+                base_url + 'Tarea/index/' + '<?php echo $permiso?>',
+                base_url + 'index.php/Tarea/index/' + '<?php echo $permiso?>'
             ]);
         });
         base_url + 'index.php/Tarea/confInicioTarea',
-        tareas = JSON.parse('<?php echo $tareas?>');
-        tareas = tareas.data;
+            tareas = JSON.parse('<?php echo $tareas?>');
+        
+
+        console.log('Tareas:');
+        
         console.log(tareas);
-            caches.open('traz-prod-assetplanner-cache').then(function(cache) {
-                for(i=0;i<tareas.length;i++)
-        {
-         if(tareas[i].displayName == "Ejecutar OT")
-         {
-           cache.addAll( [base_url + 'index.php/Tarea/confInicioTarea?id_OT='+tareas[i].id_Ot]);
-           for(j=0;j<tareas[i].subtareas.length;j++)
-            {
-                cache.addAll([base_url + 'index.php/Tarea/Obtener_Formulario?infoId='+tareas[i].subtareas[j]]);
-            }
-            for(j=0;j<tareas[i].pedidos.length;j++)
-            {
-                cache.addAll([
-                    base_url + 'index.php/almacen/Notapedido/getNotaPedidoId?id_nota='+tareas[i].pedidos[j].id_notaPedido,
-                    base_url + 'index.php/almacen/new/Entrega_Material/getEntregasPedidoOffline?pema='+tareas[i].pedidos[j].id_notaPedido,
-                    base_url + 'index.php/almacen/new/Pedido_Material/estado?id='+tareas[i].pedidos[j].id_notaPedido,
-                    ]);
-                    for(k=0;k<tareas[i].pedidos[j].entregas.length;k++)
-                    {
-                        cache.addAll([
-                    base_url + 'index.php/almacen/new/Entrega_Material/detalle?id='+tareas[i].pedidos[j].entregas[k].enma_id,
-                    ]);
+        caches.open('traz-prod-assetplanner-cache').then(function(cache) {
+            for (i = 0; i < tareas.length; i++) {
+                 if (tareas[i].displayName == "Ejecutar OT") {
+                    cache.addAll([base_url + 'index.php/Tarea/confInicioTarea?id_OT=' + tareas[i].id_Ot]);
+                    for (j = 0; j < tareas[i].subtareas.length; j++) {
+                    
+                        cache.addAll([base_url + 'index.php/<?php echo FRM ?>Form/obtener/' + tareas[i].subtareas[j] + '/true']);
                     }
+                    for (j = 0; j < tareas[i].pedidos.length; j++) {
+                        cache.addAll([
+                            base_url + 'index.php/almacen/Notapedido/getNotaPedidoId?id_nota=' + tareas[
+                                i].pedidos[j].id_notaPedido,
+                            base_url +
+                            'index.php/almacen/new/Entrega_Material/getEntregasPedidoOffline?pema=' +
+                            tareas[i].pedidos[j].id_notaPedido,
+                            base_url + 'index.php/almacen/new/Pedido_Material/estado?id=' + tareas[i]
+                            .pedidos[j].id_notaPedido,
+                        ]);
+                        for (k = 0; k < tareas[i].pedidos[j].entregas.length; k++) {
+                            cache.addAll([
+                                base_url + 'index.php/almacen/new/Entrega_Material/detalle?id=' +
+                                tareas[i].pedidos[j].entregas[k].enma_id,
+                            ]);
+                        }
+                    }
+
+                 }
+                cache.addAll([
+                    base_url + 'index.php/Tarea/detaTarea/' + '<?php echo $permiso?>/' + tareas[i].id
+
+                ]);
             }
-            
-         }
-     cache.addAll([
-        base_url + 'index.php/Tarea/detaTarea/'+'<?php echo $permiso?>/'+tareas[i].id
-               
-            ]);
-        }
         });
 
-//   if ('serviceWorker' in navigator) {
-//     window.addEventListener('load', () => {
-//       navigator.serviceWorker.register('sw1.js').then(function(){
-//         if (!navigator.serviceWorker.controller) {
-//        location.reload();
-//       }
-//     })
-//     });
-//   }
-  function procesarCola() {
-  if (navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage('processQueue')
-    }
-}
-//--Fin Guille WorkBOt--//
-$(document).on('click', '.btnEmpresa', function () {
-    var idNewEmpresa = $(this).data('ui');
-    cambiarDeEmpresa(idNewEmpresa);
-});
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw1.js').then(function() {
+                    if (!navigator.serviceWorker.controller) {
+                        location.reload();
+                    }
+                })
+            });
+        }
 
-function cambiarDeEmpresa(idNewEmpresa) {
-    console.info("id de empresa nueva: "+idNewEmpresa);
+        function procesarCola() {
+            if (navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage('processQueue')
+            }
+        }
+        //--Fin Guille WorkBOt--//
+        $(document).on('click', '.btnEmpresa', function() {
+            var idNewEmpresa = $(this).data('ui');
+            cambiarDeEmpresa(idNewEmpresa);
+        });
 
-    $.ajax({
-        data: { idNewEmpresa:idNewEmpresa },
-        dataType: 'json',
-        type: 'POST',
-        url: 'index.php/Dash/cambiarDeEmpresa',
-        success: function(result){
-            //console.table(result);
-            window.location.href = 'dash';
-        },
-        error: function(result){
-            console.error("Error al cambiar de empresa");
-            console.table(result);
-        },
-    });
-}
-</script>
+        function cambiarDeEmpresa(idNewEmpresa) {
+            console.info("id de empresa nueva: " + idNewEmpresa);
+
+            $.ajax({
+                data: {
+                    idNewEmpresa: idNewEmpresa
+                },
+                dataType: 'json',
+                type: 'POST',
+                url: 'index.php/Dash/cambiarDeEmpresa',
+                success: function(result) {
+                    //console.table(result);
+                    window.location.href = 'dash';
+                },
+                error: function(result) {
+                    console.error("Error al cambiar de empresa");
+                    console.table(result);
+                },
+            });
+        }
+        </script>

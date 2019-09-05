@@ -49,6 +49,7 @@ class Notapedidos extends CI_Model
     public function setCaseId($id, $case)
     {
         $this->db->set('case_id', $case);
+        $this->db->set('estado', $case?'Solicitado':'Reintentar');
         $this->db->where('pema_id', $id);
         $this->db->update('alm_pedidos_materiales');
     }

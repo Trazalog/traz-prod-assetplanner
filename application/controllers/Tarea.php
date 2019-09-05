@@ -8,26 +8,7 @@ class Tarea extends CI_Controller {
 
 		function __construct(){
 			parent::__construct();
-
 			
-			//if(empty($this->session->userdata("userName"))) { 
-				//redirect(base_url(),'refresh'); }
-			
-			
-			// if(empty($this->session->userdata("userName"))) { 
-			// 	redirect(base_url('views/login.php'));
-			// }
-
-
-			//redirect( base_url() );
-			
-			// $proyecto = 'http://localhost/traz-prod-assetplanner/';
-			// header("Location: $proyecto");
-			// $userdata = $this->session->userdata('user_data');
-      // $userName = $userdata[0]['userName'];     // guarda usuario logueado   
-			// var_dump($userName, 'datos: ');
-			// if(empty($this->session->userdata("userName"))) { 
-			// 	redirect(base_url(),'refresh'); }
 			$this->load->model('Tareas');		
 			$this->load->model('Backlogs');
 			$this->load->model('Otrabajos');
@@ -532,6 +513,7 @@ class Tarea extends CI_Controller {
 							
 							$this->load->model('traz-comp/Componentes');
 							$this->load->model(CMP_ALM.'/new/Pedidos_Materiales');
+							
 							$data['descripcionOT'] = $this->Otrabajos->obtenerOT($id_OT)->descripcion;
 							#COMPONENTE ARTICULOS
 							$data['items'] = $this->Componentes->listaArticulos();
@@ -546,7 +528,8 @@ class Tarea extends CI_Controller {
 							$this->load->model('traz-comp/Componentes');
 							$this->load->view('tareas/view_ejecutarOT', $data);
 							$this->load->view('tareas/scripts/tarea_std');	
-							$this->load->view('tareas/scripts/validacion_forms');					
+							$this->load->view(FRM.'scripts');	
+									
 							break;
 					case 'Esperando cambio estado "a Ejecutar"':
 						$this->load->view('tareas/view_cambio_estado', $data);

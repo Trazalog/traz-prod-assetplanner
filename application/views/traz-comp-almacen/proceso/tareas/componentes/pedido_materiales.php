@@ -120,12 +120,14 @@ function get_detalle() {
     }
     $.ajax({
         type: 'POST',
-        url: 'index.php/almacen/Notapedido/getNotaPedidoId?id_nota='+id,
+        url: 'index.php/almacen/Notapedido/getNotaPedidoId?id_nota=' + id,
         success: function(data) {
             tablaDetalle2.clear();
-            
+
             for (var i = 0; i < data.length; i++) {
-                var tr = "<tr class='celdas' data-id='" + data[i]['depe_id'] + "'data-id='" + data[i]['arti_id'] + "'>" +
+                var tr = "<tr class='celdas' data-id='" + data[i]['depe_id'] + "'data-id='" + data[i][
+                        'arti_id'
+                    ] + "' data-json='" + JSON.stringify(data) + "'>" +
                     "<td class='text-light-blue'>" +
                     "<i class='fa fa-fw fa-pencil' style='cursor: pointer;' title='Editar' onclick='edit_cantidad(this)'></i>" +
                     "<i class='fa fa-fw fa-times-circle' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
@@ -256,17 +258,20 @@ function set_pedido() {
             clear();
         },
         error: function() {
-           
-            data={id_arti: id, cantidad:cant};
-            var tr = "<tr class='celdas' data-json='"+JSON.stringify(data) +"'>" +
-                    "<td class='text-light-blue'>" +
-                    "<i class='fa fa-fw fa-pencil' style='cursor: pointer;' title='Editar' onclick='edit_cantidad(this)'></i>" +
-                    "<i class='fa fa-fw fa-times-circle' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
-                    "<td class='articulo'>" + document.getElementById('inputarti').value + "</td>" +
-                    "<td class='cantidad text-center'>" + data.cantidad + "</td></tr>";
-                tablaDetalle2.row.add($(tr)).draw();
-           WaitingClose();
-            
+
+            data = {
+                arti_id: id,
+                cantidad: cant
+            };
+            var tr = "<tr class='celdas' data-json='[" + JSON.stringify(data) + "]'>" +
+                "<td class='text-light-blue'>" +
+                "<i class='fa fa-fw fa-pencil' style='cursor: pointer;' title='Editar' onclick='edit_cantidad(this)'></i>" +
+                "<i class='fa fa-fw fa-times-circle' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
+                "<td class='articulo'>" + document.getElementById('inputarti').value + "</td>" +
+                "<td class='cantidad text-center'>" + data.cantidad + "</td></tr>";
+            tablaDetalle2.row.add($(tr)).draw();
+            WaitingClose();
+
         },
     });
 }
@@ -276,13 +281,13 @@ function lanzarPedido() {
         data: {
             id: $('#pema_id').val()
         },
-        dataType:'json',
+        dataType: 'json',
         type: 'POST',
         url: '<?php echo base_url(CMP_ALM) ?>new/Pedido_Material/pedidoNormal',
         success: function(result) {
-            if(result.status){
-                 linkTo('<?php echo CMP_ALM ?>Notapedido');
-            }else{
+            if (result.status) {
+                linkTo('<?php echo CMP_ALM ?>Notapedido');
+            } else {
                 alert(result.msj);
             }
         },
@@ -292,56 +297,90 @@ function lanzarPedido() {
         }
     });
 }
+
 function lanzarPedidoModal() {
-    
-    notaid= document.getElementById('pema_id').value;
+
+    console.log('ALM | Pedido Materiales...');
+
+    notaid = document.getElementById('pema_id').value;
     idOT = document.getElementById('ortr_id').value;
     descripcion = document.getElementById('descripcionOT').value;
+
     fecha = new Date();
     mes = fecha.getMonth() + 1;
     dia = fecha.getDate();
     año = fecha.getFullYear();
     fecha = dia + '/' + mes + '/' + año;
-    document.getElementById('pema_id').value =null;
-    modal= '<?php echo $info->modal;?>';
-    data = {id_notaPedido: notaid, fecha: fecha, id_ordTrabajo: idOT, descripcion: descripcion ,justificacion:"",estado:"Solicitado"};
-      html="";
-      html += "<tr data-json='"+JSON.stringify(data)+"' id='"+data.id_notaPedido+"'>";
-      html += '<td class="text-center"> <i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer;margin:5px;" title="Detalle Pedido Materiales"></i> </td>';
-      html += '<td class="text-center">'+data.id_notaPedido+'</td>';
-      html += '<td class="text-center">'+data.id_ordTrabajo+'</td>';
-      html += '<td class="text-center">'+data.fecha+'</td>';
-      html += '<td>'+data.descripcion+' '+data.justificacion+'</td>';
-      html += '<td class="text-center">'+data.estado+'</td>';
-      html += '</tr>';
-      tablaDeposito.row.add($(html)).draw();
-      var articulos =[];
-      $('#tabladetalle2 tbody').find('tr').each(function(){
-        json="";
-        json = $(this).attr('data-json');
-        articulos.push(json);
-      });
-      articulos = JSON.stringify(articulos);
+    document.getElementById('pema_id').value = null;
+    modal = '<?php echo $info->modal;?>';
+    data = {
+        id_notaPedido: notaid,
+        fecha: fecha,
+        id_ordTrabajo: idOT,
+        descripcion: descripcion,
+        justificacion: "",
+        estado: " Esperando Conexión.."
+    };
+    html = "";
+    html += "<tr data-json='" + JSON.stringify(data) + "' id='" + data.id_notaPedido + "'>";
+    html +=
+        '<td class="text-center"> <i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer;margin:5px;" title="Detalle Pedido Materiales"></i> </td>';
+    html += '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-blue estado">' + data
+        .id_notaPedido + '</span></td>';
+    html += '<td class="text-center"><span data-toggle="tooltip" class="badge bg-yellow estado">' + data.id_ordTrabajo +
+        '</span></td>';
+    html += '<td class="text-center">' + data.fecha + '</td>';
+    html += '<td>' + data.descripcion + ' ' + data.justificacion + '</td>';
+    html += '<td class="text-center ped-estado">' + data.estado + '</td>';
+    html += '</tr>';
 
-      console.log(articulos);
-      
-     
-      $.ajax({
-        data: {
-            articulos:articulos,
-            idOT:idOT
-        },
-        type: 'POST',
-        //dataType: 'json',
-        url: 'index.php/almacen/Notapedido/pedidoOffline',
-        success: function(result) {
-           console.log('hola');
-        },
-        error: function(result) {
-            console.log('chau');
-        }
+    tablaDeposito.row.add($(html)).draw();
+
+    //Guardar Estado en Sesion
+    guardarEstado($('#task').val() + '_pedidos', html);
+
+    var articulos = [];
+    $('#tabladetalle2 tbody').find('tr').each(function() {
+        json = "";
+        json = JSON.parse($(this).attr('data-json'));
+        articulos.push(json[0]);
     });
-    $('#'+modal).modal('hide');
+    articulos = JSON.stringify(articulos);
+    console.log(articulos);
+
+    if (navigator.onLine) {
+        $.ajax({
+            type: 'POST',
+            url: 'index.php/almacen/Notapedido/pedidoNormal/' + notaid,
+            success: function() {
+                $('#' + notaid).find('.ped-estado').html(
+                    '<span data-toggle="tooltip" title="" class="badge bg-orange estado">Solicitado</span>'
+                    );
+                alert('Hecho');
+            },
+            error: function() {
+                alert('Error');
+            }
+        });
+    } else {
+        ajax({
+            data: {
+                articulos: articulos,
+                idOT: idOT
+            },
+            type: 'POST',
+            url: 'index.php/almacen/Notapedido/pedidoOffline',
+            success: function(result) {
+                console.log('OFFLINE | Pedido Material Enviado');
+
+            },
+            error: function(result) {
+                alert('Error');
+            }
+        });
+    }
+
+    $('#' + modal).modal('hide');
 }
 
 function edit_pedido() {
@@ -381,7 +420,7 @@ function edit_pedido() {
         error: function(result) {
             alert('editesrt');
             WaitingClose();
-          //  alert("Error en guardado...");
+            //  alert("Error en guardado...");
         }
     });
 }
@@ -400,13 +439,13 @@ function clear() {
     $('#add_cantidad').val(null);
 }
 //Rearmo ajax para guardar Post en indexedDB//
-		
+
 function ajax(options) {
     if (navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage(options.data)
+        navigator.serviceWorker.controller.postMessage(options.data)
     }
 
     return $.ajax(options);
-  }
-  //Fin redifinicion//
+}
+//Fin redifinicion//
 </script>
