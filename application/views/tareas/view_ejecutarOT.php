@@ -285,13 +285,15 @@ function validaInicio() {
             }
 
             if (!navigator.onLine) {
-                aux = JSON.parse(sessionStorage.getItem(task + '_inicio_tarea'));
+                aux = JSON.parse(sessionStorage.getItem($('#task').val() + '_inicio_tarea'));
                 if (aux != null) {
                     if (aux.inicio) {
                         $("#tareaIniciada").show();
+                        $("#iniciarTarea").hide();
                         $("#estadoTarea").val(1);
                     } else {
                         $("#iniciarTarea").show();
+                        $("#tareaIniciada").hide();
                         $("#estadoTarea").val(0);
                     }
                 }
@@ -306,18 +308,26 @@ function validaInicio() {
 
 // /* verifica estado de subrtareas para cerrar OT */
 function validarSubtareas() {
-    if (frmValidar() && validarEstSubTareas()) {
-        var iniciarTarea = $('#estadoTarea').val();
-        // valida que la tarea haya sido iniciallizada con anterioridad para poder terminarla
-        if (iniciarTarea == 1) {
-            ejecutarOT();
-        } else {
-            alert('Para Terminar Tarea, esta debe estar inicializada con anterioridad desde el boton Iniciar Tarea');
-        }
 
-    } else {
+    if (!validarEstSubTareas()) {
         alert("Por favor cierre las Tareas que faltan antes de Terminar");
+        return;
     }
+
+    if (!frmValidar()) {
+        alert('Los Formularios deben estar Validados');
+        return;
+    }
+
+    alert('Holis');return;
+    var iniciarTarea = $('#estadoTarea').val();
+    // valida que la tarea haya sido iniciallizada con anterioridad para poder terminarla
+    if (iniciarTarea == 1) {
+        ejecutarOT();
+    } else {
+        alert('Para Terminar Tarea, esta debe estar inicializada con anterioridad desde el boton Iniciar Tarea');
+    }
+
 }
 
 
@@ -349,13 +359,19 @@ $("#iniciarTarea").click(function() {
         dataType: 'json'
     });
 
-    //if(!navigator)
+
     //OFFLINE
     var task = $('#task').val() + '_inicio_tarea';
     var id = 'inicio';
     var value = true;
-
     guardarEstado(task, value, id);
+
+    if (!navigator.onLine) {
+        $("#iniciarTarea").hide();
+        $("#tareaIniciada").show();
+        // guarda el estado de la tarea (inicializado)
+        $("#estadoTarea").val(1);
+    }
 });
 
 
@@ -370,6 +386,15 @@ $('.check').change(function() {
         var estado = 'C';
         cambiarEstadoSubtask(estado, idListarea);
     }
+
+    var task = $('#task').val() + '_checks';
+    var id = '#' + this.id;
+    var value = this.checked;
+
+    guardarEstado(task, value, id);
+
+    validarEstSubTareas();
+
 });
 
 /* cambia estado de subtareas a T o a C en BD */
@@ -394,44 +419,37 @@ function cambiarEstadoSubtask(estado, idListarea) {
     });
 }
 // devueve bool si estan todas las subt tildadas
+validarEstSubTareas();
+
 function validarEstSubTareas() {
-    var tabla = $('#subtask tbody tr');
-    // si hay subtareas en la tabla 
-    if (Object.keys(tabla).length === 0) {
-        var band = '';
-        // recorre validadno que esten los checkbox tildados
-        $.each(tabla, function(index) {
-            var check = $(this).find('input.check');
-            if (check.prop('checked')) {
-                band = true;
-            } else {
-                band = false;
-                return band;
-            }
-        });
-        return band;
-    } else { // sino hay tareas retorna true
-        return true;
-    }
+
+    var ban = true;
+    $('#subtask .check').each(function() {
+        ban = ban && this.checked;
+    });
+
+    $('#hecho').attr('disabled', !ban);
+
+    return ban;
 }
 
-function cargarNotasOffline() {
-    console.log("Cargando Pedidos Offline...");
-    $('.ped_pendientes').remove();
-    var data = sessionStorage.getItem('list_pedidos_' + $('#ot').val());
-    if (data == null) {
-        console.log("sin nota pedidos");
-        return;
-    }
-    data = JSON.parse(data);
-    for (var i = 0; i < data.length; i++) {
-        var aux = JSON.stringify(data[i]).replace(/'/g, "\\'");
-        $('#deposito tbody').append(
-            "<tr class='ped_pendientes' data-offline='true' data-detalle='" + aux + "' id='ped_" + i +
-            "'><td><i class='fa fa-fw fa-search text-light-blue' style='cursor: pointer; margin-left: 15px;' title='Ver Nota Pedido' onclick='VerDetalles(this)'</i></td><td># ? </td><td>Esperando Conexión...</td></tr>"
-        );
-    }
-}
+// function cargarNotasOffline() {
+//     console.log("Cargando Pedidos Offline...");
+//     $('.ped_pendientes').remove();
+//     var data = sessionStorage.getItem('list_pedidos_' + $('#ot').val());
+//     if (data == null) {
+//         console.log("sin nota pedidos");
+//         return;
+//     }
+//     data = JSON.parse(data);
+//     for (var i = 0; i < data.length; i++) {
+//         var aux = JSON.stringify(data[i]).replace(/'/g, "\\'");
+//         $('#deposito tbody').append(
+//             "<tr class='ped_pendientes' data-offline='true' data-detalle='" + aux + "' id='ped_" + i +
+//             "'><td><i class='fa fa-fw fa-search text-light-blue' style='cursor: pointer; margin-left: 15px;' title='Ver Nota Pedido' onclick='VerDetalles(this)'</i></td><td># ? </td><td>Esperando Conexión...</td></tr>"
+//         );
+//     }
+// }
 /*  /.	Pantalla pedido de insumos */
 //Rearmo ajax para guardar Post en indexedDB//
 
@@ -453,9 +471,10 @@ if (!navigator.onLine) {
 function borrarCache() {
     sessionStorage.removeItem($('#task').val() + '_checks');
     sessionStorage.removeItem($('#task').val() + '_comentarios');
-    sessionStorage.removeItem($('#task').val() + '_frm');
-    sessionStorage.removeItem($('#task').val() + '_tomar');
-    sessionStorage.removeItem($('#task').val() + '_inicio_tarea');
+    sessionStorage.removeItem($('#task').val() + '_pedidos');
+    //sessionStorage.removeItem($('#task').val() + '_frm');
+    //sessionStorage.removeItem($('#task').val() + '_tomar');
+    //sessionStorage.removeItem($('#task').val() + '_inicio_tarea');
     console.log('Offline | Datos Eliminados');
 
 }
@@ -472,6 +491,7 @@ function index() {
             $(key).attr('checked', (aux[key]));
         });
     }
+    validarEstSubTareas();
 
     //Comentarios
     aux = JSON.parse(sessionStorage.getItem(task + '_comentarios'));
@@ -489,17 +509,17 @@ function index() {
     } else {
         evaluarEstado();
     }
+
+    //Pedidos
+    aux = JSON.parse(sessionStorage.getItem(task + '_pedidos'));
+    if (aux != null) {
+        aux.forEach(function(e) {
+            tablaDeposito.row.add($(e)).draw();
+        });
+    }
+
+
 }
-
-
-$('.check').click(function() {
-    //if(navigator.onLine) return;
-    var task = $('#task').val() + '_checks';
-    var id = '#' + this.id;
-    var value = this.checked;
-
-    guardarEstado(task, value, id);
-});
 
 function guardarEstado(item, value, id = null) {
 
@@ -515,4 +535,5 @@ function guardarEstado(item, value, id = null) {
     console.log(JSON.stringify(aux));
     sessionStorage.setItem(item, JSON.stringify(aux));
 }
+
 </script>

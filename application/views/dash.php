@@ -81,7 +81,7 @@
                                             class="btn btn-default btn-flat">Salir <i
                                                 class="fa fa-fw fa-sign-out"></i></a>
 
-                                        <button class="btn btn-success" onclick="procesarCola()">Sincronizar</button>
+                                        <!-- <button class="btn btn-success" onclick="procesarCola()">Sincronizar</button> -->
                                     </div>
                                 </li>
                             </ul>

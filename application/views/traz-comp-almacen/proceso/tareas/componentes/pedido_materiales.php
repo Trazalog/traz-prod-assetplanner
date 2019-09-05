@@ -325,16 +325,20 @@ function lanzarPedidoModal() {
     html += "<tr data-json='" + JSON.stringify(data) + "' id='" + data.id_notaPedido + "'>";
     html +=
         '<td class="text-center"> <i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer;margin:5px;" title="Detalle Pedido Materiales"></i> </td>';
-    html += '<td class="text-center">' + data.id_notaPedido + '</td>';
-    html += '<td class="text-center">' + data.id_ordTrabajo + '</td>';
+    html += '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-blue estado">' + data
+        .id_notaPedido + '</span></td>';
+    html += '<td class="text-center"><span data-toggle="tooltip" class="badge bg-yellow estado">' + data.id_ordTrabajo +
+        '</span></td>';
     html += '<td class="text-center">' + data.fecha + '</td>';
     html += '<td>' + data.descripcion + ' ' + data.justificacion + '</td>';
-    html += '<td class="text-center">' + data.estado + '</td>';
+    html += '<td class="text-center ped-estado">' + data.estado + '</td>';
     html += '</tr>';
 
     tablaDeposito.row.add($(html)).draw();
 
-    guardarEstado($('#task').val(), html);
+    //Guardar Estado en Sesion
+    guardarEstado($('#task').val() + '_pedidos', html);
+
     var articulos = [];
     $('#tabladetalle2 tbody').find('tr').each(function() {
         json = "";
@@ -349,6 +353,9 @@ function lanzarPedidoModal() {
             type: 'POST',
             url: 'index.php/almacen/Notapedido/pedidoNormal/' + notaid,
             success: function() {
+                $('#' + notaid).find('.ped-estado').html(
+                    '<span data-toggle="tooltip" title="" class="badge bg-orange estado">Solicitado</span>'
+                    );
                 alert('Hecho');
             },
             error: function() {
@@ -365,6 +372,7 @@ function lanzarPedidoModal() {
             url: 'index.php/almacen/Notapedido/pedidoOffline',
             success: function(result) {
                 console.log('OFFLINE | Pedido Material Enviado');
+
             },
             error: function(result) {
                 alert('Error');

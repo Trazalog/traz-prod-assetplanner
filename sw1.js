@@ -71,6 +71,7 @@ self.addEventListener('install', function(event) {
                 base_url + 'assets/js/app.min.js',
                 base_url + 'assets/js/demo.js',
                 base_url + 'assets/js/propios.js',
+                base_url + 'assets/props/forms.js',
 
                 base_url + 'assets/js/jquery-ui.min.js',
                 base_url + 'assets/plugin/chartjs/Chart.min.js',

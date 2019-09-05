@@ -277,6 +277,7 @@ class Notapedido extends CI_Controller
             $deta[$i]['fecha_entrega'] = date('Y-m-d');
         }
         $response = $this->Notapedidos->setDetaNota($deta);
+        $this->pedidoNormal($idnota);
         echo json_encode($response);
     }
 }

@@ -1,16 +1,23 @@
 
 function frmValidar(id = false) {
     if (!id) {
-        var ban  = true;
-        $('#frm-list form').each(function () {
-           ban = ban && (this.dataset.valido == 'true');
+        var btnForms = $('.btn-form').length;
+        if (btnForms == 0) return true; //No hay forms
+
+        var forms = $('#frm-list form');
+        if (forms.length < btnForms) return false; //No se abrieron todos los Forms
+
+        //Todos los Forms se abrieron y se verifica si todos fueron validados
+        var ban = true;
+        forms.each(function () {
+            ban = ban && (this.dataset.valido == 'true');
         });
 
-        if(!ban) console.log('FRM | Formularios No Válidos');
-        
+        if (!ban) console.log('FRM | Formularios No Válidos');
+
         return ban;
-    }else{
-        return $('#'+id).data('valido') == 'true';
+    } else {
+        return $('#' + id).data('valido') == 'true';
     }
 }
 
@@ -94,7 +101,7 @@ function frmGuardar(e) {
 
     var bv = $('#' + form).data('bootstrapValidator');
 
-    $('#'+form).attr('data-valido', (bv.isValid()?'true':'false'));
+    $('#' + form).attr('data-valido', (bv.isValid() ? 'true' : 'false'));
 
     var formData = new FormData($('#' + form)[0]);
 
@@ -116,22 +123,21 @@ function frmGuardar(e) {
         }
     });
 
+    var json = formToJson(formData);
+
+    guardarEstado($('#task').val() + '_frm', json, '#' + form);
 
     if (!navigator.onLine) {
         WaitingClose();
 
         console.log('Offline | Formulario Guardado...');
 
-        var json = formToJson(formData);
-
-        guardarEstado($('#task').val() + '_frm', json, '#' + form);
-
         $('#' + form).closest('.modal').modal('hide');
 
         ajax({
             type: 'POST',
             dataType: 'JSON',
-            url: 'index.php/'+frmUrl+'Form/guardarJson/' + info,
+            url: 'index.php/' + frmUrl + 'Form/guardarJson/' + info,
             data: {
                 json
             },
@@ -151,7 +157,7 @@ function frmGuardar(e) {
             cache: false,
             contentType: false,
             processData: false,
-            url: 'index.php/'+frmUrl+'Form/guardar/' + info,
+            url: 'index.php/' + frmUrl + 'Form/guardar/' + info,
             data: formData,
             success: function (rsp) {
 
@@ -174,7 +180,7 @@ function frmGuardar(e) {
 $('.btn-form').click(function () {
 
     if (isModalOpen()) return;
-    
+
     obtenerForm(this.dataset.info);
 
 });
@@ -184,7 +190,7 @@ function obtenerForm(info, show = true) {
     $.ajax({
         type: 'GET',
         dataType: 'JSON',
-        url: 'index.php/'+frmUrl+'Form/obtener/' + info + '/' + modal,
+        url: 'index.php/' + frmUrl + 'Form/obtener/' + info + '/' + modal,
         success: function (rsp) {
             if (modal) {
                 $('#frm-modal-' + info).remove();

@@ -1,6 +1,6 @@
 <script>
 //Script para Vista Standar  
-if(navigator.onLine) evaluarEstado();
+if (navigator.onLine) evaluarEstado();
 
 function evaluarEstado() {
     var asig = $('#asignado').val();
@@ -14,7 +14,7 @@ function evaluarEstado() {
 
 function habilitar() {
     console.log('Habilitar');
-    
+
     // habilito btn y textarea       
     $("#btonsoltr").show();
     $("#hecho").show();
@@ -36,7 +36,7 @@ function habilitar() {
 
 function deshabilitar() {
     console.log('Deshabiltar');
-    
+
     $('.oculto').hide();
     // habilito btn tomar
     $("#btontomar").show();
@@ -237,9 +237,17 @@ function prestarConformidad() {
 function ejecutarOT() {
 
     WaitingOpen('Cerrando Tarea');
+
     var idTarBonita = $('#idTarBonita').val();
     var id_OT = $('#id_OT').val();
-    $.ajax({
+
+    guardarEstado("tareas_cerradas", true, idTarBonita);
+
+    if (!navigator.onLine) {
+        WaitingOpen('Cerrando Tarea');
+    }
+
+    ajax({
         type: 'POST',
         data: {
             idTarBonita: idTarBonita,
@@ -249,8 +257,6 @@ function ejecutarOT() {
         success: function(data) {
             console.table(data);
             WaitingClose();
-            // toma a tarea exitosamente
-            sessionStorage.setItem("tareas_cerradas", idTarBonita + "-");
 
             if (data['status']) {
                 $("#content").load(
@@ -299,7 +305,8 @@ function guardarComentario() {
     var nombUsr = $('#usrName').val();
     var apellUsr = $('#usrLastName').val();
 
-    var html ='<hr/><li><h4>' + nombUsr + ' ' + apellUsr +'<small style="float: right">Hace un momento</small></h4><p>' + comentario + '</p></li>';
+    var html = '<hr/><li><h4>' + nombUsr + ' ' + apellUsr +
+        '<small style="float: right">Hace un momento</small></h4><p>' + comentario + '</p></li>';
     ajax({
         type: 'POST',
         data: {
@@ -315,12 +322,12 @@ function guardarComentario() {
         error: function(result) {
             console.log("Error");
 
-			if(!navigator.onLine){
+            if (!navigator.onLine) {
                 console.log('Navegador Offline');
-                var task = $('#task').val()+ '_comentarios';
-                guardarEstado(task,html);
+                var task = $('#task').val() + '_comentarios';
+                guardarEstado(task, html);
             }
-			
+
         }
     });
 }
@@ -349,16 +356,18 @@ function tomarTarea() {
         dataType: 'json'
     };
 
-    if(navigator.onLine) $.ajax(post);
-    else{
+    if (navigator.onLine) $.ajax(post);
+    else {
         ajax(post);
-        var task = $('#task').val() + '_tomar';
-        var id = 'tomar';
-        var value = true;
         habilitar();
-        guardarEstado(task, value, id);
-
     }
+
+
+    //Guardar Estado en Sesion
+    var task = $('#task').val() + '_tomar';
+    var id = 'tomar';
+    var value = true;
+    guardarEstado(task, value, id);
 }
 // Soltar tarea en BPM
 function soltarTarea() {
@@ -384,14 +393,16 @@ function soltarTarea() {
         dataType: 'json'
     };
 
-    if(navigator.onLine) $.ajax(post);
-    else{
+    if (navigator.onLine) $.ajax(post);
+    else {
         ajax(post);
-        var task = $('#task').val() + '_tomar';
-        var id = 'tomar';
-        var value = false;
         deshabilitar();
-        guardarEstado(task, value, id);
     }
+
+    //Guardar Estado en Sesion
+    var task = $('#task').val() + '_tomar';
+    var id = 'tomar';
+    var value = false;
+    guardarEstado(task, value, id);
 }
 </script>
