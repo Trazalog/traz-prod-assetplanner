@@ -318,12 +318,12 @@ function lanzarPedidoModal() {
       var articulos =[];
       $('#tabladetalle2 tbody').find('tr').each(function(){
         json="";
-        json = $(this).attr('data-json');
+        json = $(this).attr('data-j(  )son');
         articulos.push(json);
       });
       articulos = JSON.stringify(articulos);
      
-      ajax({
+      $.ajax({
         data: {
             articulos:articulos,
             idOT:idOT
