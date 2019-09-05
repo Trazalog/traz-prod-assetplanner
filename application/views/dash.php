@@ -101,7 +101,7 @@
         <script>
         //--Guille WorkBOT--//
 
-        base_url = 'http://localhost/traz-prod-assetplanner/';
+        base_url = <?php echo base_url() ?>;
         if (!indexedDB) {
             alert("Este browser no soporta IndexedDB, necesita otro para poder utilizar la aplicación.");
         }
