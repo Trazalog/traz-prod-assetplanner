@@ -513,6 +513,7 @@ class Tarea extends CI_Controller {
 							
 							$this->load->model('traz-comp/Componentes');
 							$this->load->model(CMP_ALM.'/new/Pedidos_Materiales');
+							
 							$data['descripcionOT'] = $this->Otrabajos->obtenerOT($id_OT)->descripcion;
 							#COMPONENTE ARTICULOS
 							$data['items'] = $this->Componentes->listaArticulos();

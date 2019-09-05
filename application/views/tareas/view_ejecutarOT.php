@@ -262,13 +262,14 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 <script>
 // valida el estado de la OT y muestra llave segun corressponda 		
 validaInicio();
+
 function validaInicio() {
     $("#iniciarTarea").hide();
     $("#tareaIniciada").hide();
 
     var id_OT = $('#id_OT').val();
     url = 'index.php/Tarea/confInicioTarea?id_OT=' + id_OT;
- 
+
     $.ajax({
         type: 'GET',
         url: url,
@@ -283,13 +284,13 @@ function validaInicio() {
                 $("#estadoTarea").val(0);
             }
 
-            if(!navigator.onLine){
+            if (!navigator.onLine) {
                 aux = JSON.parse(sessionStorage.getItem(task + '_inicio_tarea'));
                 if (aux != null) {
-                    if(aux.inicio){
+                    if (aux.inicio) {
                         $("#tareaIniciada").show();
                         $("#estadoTarea").val(1);
-                    }else{
+                    } else {
                         $("#iniciarTarea").show();
                         $("#estadoTarea").val(0);
                     }
@@ -302,6 +303,23 @@ function validaInicio() {
         dataType: 'json'
     });
 }
+
+// /* verifica estado de subrtareas para cerrar OT */
+function validarSubtareas() {
+    if (frmValidar() && validarEstSubTareas()) {
+        var iniciarTarea = $('#estadoTarea').val();
+        // valida que la tarea haya sido iniciallizada con anterioridad para poder terminarla
+        if (iniciarTarea == 1) {
+            ejecutarOT();
+        } else {
+            alert('Para Terminar Tarea, esta debe estar inicializada con anterioridad desde el boton Iniciar Tarea');
+        }
+
+    } else {
+        alert("Por favor cierre las Tareas que faltan antes de Terminar");
+    }
+}
+
 
 // Cambia el estado de Orden servicio y de solicitud de servicio
 $("#iniciarTarea").click(function() {
@@ -397,9 +415,6 @@ function validarEstSubTareas() {
     }
 }
 
-
-
-
 function cargarNotasOffline() {
     console.log("Cargando Pedidos Offline...");
     $('.ped_pendientes').remove();
@@ -429,7 +444,7 @@ function ajax(options) {
 }
 //Fin redifinicion//
 
-if (!navigator . onLine) {
+if (!navigator.onLine) {
     index();
 } else {
     borrarCache();
@@ -469,10 +484,10 @@ function index() {
     //Boton Tomar
     aux = JSON.parse(sessionStorage.getItem(task + '_tomar'));
     if (aux != null) {
-        if(aux.tomar) habilitar();
+        if (aux.tomar) habilitar();
         else deshabilitar();
-    }else{
-       // evaluarEstado();
+    } else {
+        evaluarEstado();
     }
 }
 
@@ -487,7 +502,7 @@ $('.check').click(function() {
 });
 
 function guardarEstado(item, value, id = null) {
-    
+
     var aux = sessionStorage.getItem(item);
 
     if (id != null) {

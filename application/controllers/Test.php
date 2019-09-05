@@ -6,13 +6,25 @@ class Test extends CI_Controller
     {
 
         parent::__construct();
-        $this->load->model(FRM.'Forms');
+        $this->load->model(FRM . 'Forms');
 
     }
-    
+
+    public function lp($pemaId)
+    {
+        $contract = [
+            'pIdPedidoMaterial' => $pemaId,
+        ];
+
+        $rsp = $this->bpm->lanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES, $contract);
+
+        echo json_encode($rsp);
+
+    }
+
     public function form($id)
     {
-       echo $this->Forms->guardar($id);
+        echo $this->Forms->guardar($id);
     }
-    
+
 }

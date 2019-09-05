@@ -3,7 +3,7 @@
 if (!function_exists('form')) {
     function form($data, $modal = false)
     {   
-        $html = "<form id='frm-$data->id' data-info='".(isset($data->info_id)?$data->info_id:null)."'>";
+        $html = "<form id='frm-$data->id' data-info='".(isset($data->info_id)?$data->info_id:null)."' data-valido='false'>";
 
         foreach ($data->items as $key => $e) {
 
