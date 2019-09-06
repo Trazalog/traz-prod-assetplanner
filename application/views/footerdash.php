@@ -6,25 +6,25 @@
             los derechos reservados.
         </footer>
 
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('sw1.js').then(function() {
+                        console.log('Service Worker Registrado');
+                        if (!navigator.serviceWorker.controller) {
+                            location.reload();
+
+                        }
+                    })
+                });
+            }
+        </script>
+
         </body>
 
         <!--Arma Tablas -->
         <script src="<?php echo base_url('lib/tabla.js'); ?>"></script>
         <script>
-        
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw1.js').then(function() {
-            console.log('Service Worker Registrado');
-            if (!navigator.serviceWorker.controller) {
-                location.reload();
-
-            }
-        })
-    });
-}
-
-
 var link = '';
 
 $('.menu .link').on('click', function() {
