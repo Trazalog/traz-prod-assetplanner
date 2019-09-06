@@ -4,6 +4,8 @@ if(!function_exists('lang_get')){
 
     function lang_get($leng, $page)
     {
+
+        return false;
         /*if($leng == 'spanish')
         {
             $resource = 'languageesp'; 

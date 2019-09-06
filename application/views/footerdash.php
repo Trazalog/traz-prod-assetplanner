@@ -11,6 +11,20 @@
         <!--Arma Tablas -->
         <script src="<?php echo base_url('lib/tabla.js'); ?>"></script>
         <script>
+        
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw1.js').then(function() {
+            console.log('Service Worker Registrado');
+            if (!navigator.serviceWorker.controller) {
+                location.reload();
+
+            }
+        })
+    });
+}
+
+
 var link = '';
 
 $('.menu .link').on('click', function() {
@@ -42,10 +56,10 @@ cargarView('<?php echo $grpDash; ?>', 'index', 'View');
 
 //Listener de Envento cuando el Navegador vuelta a estar ONLINE 
 //Procesa la cola de POSTS
-window.addEventListener('online', function(e) { 
+window.addEventListener('online', function(e) {
     if (navigator.serviceWorker.controller) {
         console.log('Sincronizar Cambios...');
         navigator.serviceWorker.controller.postMessage('processQueue');
     }
- });
-</script>
+});
+        </script>
