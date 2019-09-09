@@ -4,13 +4,11 @@ importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox
 var messageData = "";
 var base_url = 'https://www.trazalog.com.ar/test_v2/traz-prod-assetplanner/';
 const NF = new workbox.strategies.NetworkFirst({
-    cacheName: 'traz-prod-assetplanner-cache',
+    cacheName: 'traz-prod-assetplanner-cache'
 });
+
 workbox.precaching.precacheAndRoute([
-    { url: '/index.php', revision: 'abc123' },
-
-
-
+    { url: '/index.php', revision: 'abc123' }
 ]);
 
 self.addEventListener('fetch', function(event) {
