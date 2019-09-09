@@ -22,7 +22,7 @@ self.addEventListener('fetch', function(event) {
     } else {
         event.respondWith(
             NF.handle(event).then((response) => {
-                fetch(event.request).then(function(response) {
+                fetch(event.request).then(function(response1) {
                     let responseClone = response.clone();
                     caches.open('traz-prod-assetplanner-cache').then(function(cache) {
                         cache.put(event.request, responseClone);
@@ -57,22 +57,22 @@ self.addEventListener('install', function(event) {
                 base_url + 'index.php/Dash/',
                 base_url + 'Dash/',
 
-                base_url + 'assets/css/bootstrap.min.css',
-                base_url + 'assets/css/AdminLTE.min.css',
-                base_url + 'assets/css/font-awesome.min.css',
-                base_url + 'assets/css/propios.css',
-                base_url + 'assets/plugin/datatables/dataTables.bootstrap.css',
-                base_url + 'assets/plugin/datatables/dataTables.bootstrap.min.js',
-                base_url + 'assets/plugin/datatables/jquery.dataTables.min.js',
+                // base_url + 'assets/css/bootstrap.min.css',
+                // base_url + 'assets/css/AdminLTE.min.css',
+                // base_url + 'assets/css/font-awesome.min.css',
+                // base_url + 'assets/css/propios.css',
+                // base_url + 'assets/plugin/datatables/dataTables.bootstrap.css',
+                // base_url + 'assets/plugin/datatables/dataTables.bootstrap.min.js',
+                // base_url + 'assets/plugin/datatables/jquery.dataTables.min.js',
 
 
-                base_url + 'assets/js/app.min.js',
-                base_url + 'assets/js/demo.js',
-                base_url + 'assets/js/propios.js',
-                base_url + 'assets/props/forms.js',
+                // base_url + 'assets/js/app.min.js',
+                // base_url + 'assets/js/demo.js',
+                // base_url + 'assets/js/propios.js',
+                // base_url + 'assets/props/forms.js',
 
-                base_url + 'assets/js/jquery-ui.min.js',
-                base_url + 'assets/plugin/chartjs/Chart.min.js',
+                // base_url + 'assets/js/jquery-ui.min.js',
+                // base_url + 'assets/plugin/chartjs/Chart.min.js',
 
             ]);
         })
