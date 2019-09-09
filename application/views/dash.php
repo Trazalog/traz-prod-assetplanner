@@ -101,7 +101,7 @@
         <script>
         //--Guille WorkBOT--//
 
-        base_url = 'http://localhost/traz-prod-assetplanner/';
+        base_url = "<?php echo base_url() ?>";
         if (!indexedDB) {
             alert("Este browser no soporta IndexedDB, necesita otro para poder utilizar la aplicación.");
         }
@@ -120,18 +120,22 @@
         });
         base_url + 'index.php/Tarea/confInicioTarea',
             tareas = JSON.parse('<?php echo $tareas?>');
-        
+
 
         console.log('Tareas:');
-        
+
         console.log(tareas);
         caches.open('traz-prod-assetplanner-cache').then(function(cache) {
             for (i = 0; i < tareas.length; i++) {
-                 if (tareas[i].displayName == "Ejecutar OT") {
+                if (tareas[i].displayName == "Ejecutar OT") {
+                    console.log('Ejecutar OT: ' + tareas[i].id);
+                    
                     cache.addAll([base_url + 'index.php/Tarea/confInicioTarea?id_OT=' + tareas[i].id_Ot]);
                     for (j = 0; j < tareas[i].subtareas.length; j++) {
-                    
-                        cache.addAll([base_url + 'index.php/<?php echo FRM ?>Form/obtener/' + tareas[i].subtareas[j] + '/true']);
+
+                        cache.addAll([base_url + 'index.php/<?php echo FRM ?>Form/obtener/' + tareas[i]
+                            .subtareas[j] + '/true'
+                        ]);
                     }
                     for (j = 0; j < tareas[i].pedidos.length; j++) {
                         cache.addAll([
@@ -151,7 +155,7 @@
                         }
                     }
 
-                 }
+                }
                 cache.addAll([
                     base_url + 'index.php/Tarea/detaTarea/' + '<?php echo $permiso?>/' + tareas[i].id
 
@@ -162,6 +166,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw1.js').then(function() {
+                    console.log('Service Worker Registrado');
                     if (!navigator.serviceWorker.controller) {
                         location.reload();
                     }
@@ -169,11 +174,13 @@
             });
         }
 
+
         function procesarCola() {
             if (navigator.serviceWorker.controller) {
                 navigator.serviceWorker.controller.postMessage('processQueue')
             }
         }
+
         //--Fin Guille WorkBOt--//
         $(document).on('click', '.btnEmpresa', function() {
             var idNewEmpresa = $(this).data('ui');

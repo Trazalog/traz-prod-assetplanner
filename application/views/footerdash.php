@@ -42,10 +42,10 @@ cargarView('<?php echo $grpDash; ?>', 'index', 'View');
 
 //Listener de Envento cuando el Navegador vuelta a estar ONLINE 
 //Procesa la cola de POSTS
-window.addEventListener('online', function(e) { 
+window.addEventListener('online', function(e) {
     if (navigator.serviceWorker.controller) {
         console.log('Sincronizar Cambios...');
         navigator.serviceWorker.controller.postMessage('processQueue');
     }
- });
-</script>
+});
+        </script>

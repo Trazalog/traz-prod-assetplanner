@@ -1,38 +1,35 @@
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js');
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-strategies.dev.js');
-
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js'); workbox.loadModule('workbox-strategies');
 var messageData = "";
-var base_url = 'http://localhost/traz-prod-assetplanner/';
+var base_url = 'https://www.trazalog.com.ar/traz-prod-assetplanner/';
 const NF = new workbox.strategies.NetworkFirst({
-    cacheName: 'traz-prod-assetplanner-cache',
+    cacheName: 'traz-prod-assetplanner-cache'
 });
+
 workbox.precaching.precacheAndRoute([
-    { url: '/index.php', revision: 'abc123' },
-
-
-
+    { url: 'https://www.trazalog.com.ar/traz-prod-assetplanner/index.php', revision: 'abc123' }
 ]);
 
-self.addEventListener('fetch', function(event) {
+self.addEventListener('fetch', function (event) {
     if (event.request.clone().method === 'POST') {
         event.respondWith(
-            fetch(event.request.clone()).catch(function(error) {
+            fetch(event.request.clone()).catch(function (error) {
 
                 storePostRequest(event.request.clone().url, messageData);
+                return new Responce();
             })
         );
     } else {
         event.respondWith(
             NF.handle(event).then((response) => {
-                fetch(event.request).then(function(response) {
+                fetch(event.request).then(function (response1) {
                     let responseClone = response.clone();
-                    caches.open('traz-prod-assetplanner-cache').then(function(cache) {
+                    caches.open('traz-prod-assetplanner-cache').then(function (cache) {
                         cache.put(event.request, responseClone);
                     });
 
                     return response || caches.match(event.request);
-                }).catch(function() {
-                    return caches.match(event.request).then(function(response) {
+                }).catch(function () {
+                    return caches.match(event.request).then(function (response) {
                         if (response) {
                             console.log('GET Reply from Cache for URL:', event.request.clone().url);
                             return response;
@@ -50,39 +47,39 @@ self.addEventListener('fetch', function(event) {
     }
 });
 
-self.addEventListener('install', function(event) {
-    event.waitUntil(
-        caches.open('traz-prod-assetplanner-cache').then(function(cache) {
-            return cache.addAll([
-                base_url + 'Tarea/',
-                base_url + 'index.php/Tarea/',
-                base_url + 'index.php/Dash/',
-                base_url + 'Dash/',
+// self.addEventListener('install', function(event) {
+//     event.waitUntil(
+//         caches.open('traz-prod-assetplanner-cache').then(function(cache) {
+//             return cache.addAll([
+//                 base_url + 'Tarea/',
+//                 base_url + 'index.php/Tarea/',
+//                 base_url + 'index.php/Dash/',
+//                 base_url + 'Dash/',
 
-                base_url + 'assets/css/bootstrap.min.css',
-                base_url + 'assets/css/AdminLTE.min.css',
-                base_url + 'assets/css/font-awesome.min.css',
-                base_url + 'assets/css/propios.css',
-                base_url + 'assets/plugin/datatables/dataTables.bootstrap.css',
-                base_url + 'assets/plugin/datatables/dataTables.bootstrap.min.js',
-                base_url + 'assets/plugin/datatables/jquery.dataTables.min.js',
-
-
-                base_url + 'assets/js/app.min.js',
-                base_url + 'assets/js/demo.js',
-                base_url + 'assets/js/propios.js',
-                base_url + 'assets/props/forms.js',
-
-                base_url + 'assets/js/jquery-ui.min.js',
-                base_url + 'assets/plugin/chartjs/Chart.min.js',
-
-            ]);
-        })
-    );
-});
+//                 base_url + 'assets/css/bootstrap.min.css',
+//                 base_url + 'assets/css/AdminLTE.min.css',
+//                 base_url + 'assets/css/font-awesome.min.css',
+//                 base_url + 'assets/css/propios.css',
+//                 base_url + 'assets/plugin/datatables/dataTables.bootstrap.css',
+//                 base_url + 'assets/plugin/datatables/dataTables.bootstrap.min.js',
+//                 base_url + 'assets/plugin/datatables/jquery.dataTables.min.js',
 
 
-self.addEventListener('message', function(event) {
+//                 base_url + 'assets/js/app.min.js',
+//                 base_url + 'assets/js/demo.js',
+//                 base_url + 'assets/js/propios.js',
+//                 base_url + 'assets/props/forms.js',
+
+//                 base_url + 'assets/js/jquery-ui.min.js',
+//                 base_url + 'assets/plugin/chartjs/Chart.min.js',
+
+//             ]);
+//         })
+//     );
+//});
+
+
+self.addEventListener('message', function (event) {
     if (event.data === 'processQueue') {
         event.waitUntil(processQueue())
     } else {
@@ -91,9 +88,9 @@ self.addEventListener('message', function(event) {
 });
 
 function processQueue() {
-    indexedDB.open('traz-prod-assetplanner-ajax').onsuccess = function(event) {
+    indexedDB.open('traz-prod-assetplanner-ajax').onsuccess = function (event) {
         var savedRequests = []
-        event.target.result.transaction('ajax_requests', 'readonly').objectStore('ajax_requests').openCursor().onsuccess = async function(openCursorEvent) {
+        event.target.result.transaction('ajax_requests', 'readonly').objectStore('ajax_requests').openCursor().onsuccess = async function (openCursorEvent) {
             var cursor = openCursorEvent.target.result
 
             if (cursor) {
@@ -113,9 +110,9 @@ function processQueue() {
                         headers: headers,
                         method: method,
                         body: payload
-                    }).then(function(response) {
+                    }).then(function (response) {
                         event.target.result.transaction('ajax_requests', 'readwrite').objectStore('ajax_requests', 'readwrite').delete(savedRequest.id);
-                    }).catch(function(error) {
+                    }).catch(function (error) {
                         console.error('Send to Server failed:', error);
                         throw error;
                     })
@@ -126,13 +123,13 @@ function processQueue() {
 }
 
 function storePostRequest(url, payload) {
-    indexedDB.open('traz-prod-assetplanner-ajax').onsuccess = function(event) {
+    indexedDB.open('traz-prod-assetplanner-ajax').onsuccess = function (event) {
         if (payload != "") {
             event.target.result.transaction('ajax_requests', 'readwrite').objectStore('ajax_requests').add({
                 url: url,
                 payload: payload,
                 method: 'POST'
-            }).onsuccess = function(event) {
+            }).onsuccess = function (event) {
                 console.log('POST Request added to IndexedDB');
                 messageData = "";
             };
