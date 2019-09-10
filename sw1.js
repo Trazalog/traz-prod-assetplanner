@@ -1,12 +1,12 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js'); workbox.loadModule('workbox-strategies');
 var messageData = "";
-var base_url = 'https://www.trazalog.com.ar/traz-prod-assetplanner/';
+var base_url = 'http://localhost/traz-prod-assetplanner/';
 const NF = new workbox.strategies.NetworkFirst({
     cacheName: 'traz-prod-assetplanner-cache'
 });
 
 workbox.precaching.precacheAndRoute([
-    { url: 'https://www.trazalog.com.ar/traz-prod-assetplanner/index.php', revision: 'abc123' }
+    { url: 'http://localhost/traz-prod-assetplanner/index.php', revision: 'abc123' }
 ]);
 
 self.addEventListener('fetch', function (event) {

@@ -1470,6 +1470,12 @@ class Otrabajos extends CI_Model {
 			return $query->row('id_orden');
 		}
 
-		
+		function guardarPosicion($ot, $lat, $lon){
+			$this->db->where('id_orden', $ot);
+			$this->db->set('latitud', $lat);
+			$this->db->set('longitud', $lon);
+			return $this->db->update('orden_trabajo');
+		}
 
+	
 }	
