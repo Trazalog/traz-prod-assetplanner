@@ -6,10 +6,12 @@
             los derechos reservados.
         </footer>
 
+        <input id="gps-acc" type="text" class="hidden" value="<?php echo GPS_ACC ?>">
         </body>
 
         <!--Arma Tablas -->
         <script src="<?php echo base_url('lib/tabla.js'); ?>"></script>
+        <script src="<?php echo base_url('assets/props/gps.js')?>"></script>
         <script>
 var link = '';
 

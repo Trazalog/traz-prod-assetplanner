@@ -180,4 +180,7 @@ define('ASP_113', 'Usuario No Encontrado');
 define('ASP_114', 'Error al Actualizar Variable');
 define('ASP_115', 'Error al Leer Variable');
 
+
+//Settings
 define('viewOT', true);
+define('GPS_ACC', 50);
