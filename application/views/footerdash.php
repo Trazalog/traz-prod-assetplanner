@@ -12,7 +12,6 @@
         <!--Arma Tablas -->
         <script src="<?php echo base_url('lib/tabla.js'); ?>"></script>
         <script src="<?php echo base_url('assets/props/gps.js')?>"></script>
-        <script src="<?php echo base_url('assets/props/notificacion_estandar.js') ?>"></script>
         <script>
 var link = '';
 
@@ -103,4 +102,7 @@ function conexion(){
 }
        </script>
 
-       <?php $this->load->view(FRM . 'scripts'); ?>
+       <?php 
+            $this->load->view(FRM . 'scripts');
+            $this->load->view('tareas/scripts/tarea_std');
+       ?>
