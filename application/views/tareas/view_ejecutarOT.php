@@ -262,6 +262,7 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 <script>
 // valida el estado de la OT y muestra llave segun corressponda 		
 validaInicio();
+detectarForm();
 
 function validaInicio() {
     $("#iniciarTarea").hide();
@@ -284,7 +285,7 @@ function validaInicio() {
                 $("#estadoTarea").val(0);
             }
 
-            if (!navigator.onLine) {
+            if (!conexion()) {
                 aux = JSON.parse(sessionStorage.getItem($('#task').val() + '_inicio_tarea'));
                 if (aux != null) {
                     if (aux.inicio) {
@@ -319,7 +320,6 @@ function validarSubtareas() {
         return;
     }
 
-    alert('Holis');return;
     var iniciarTarea = $('#estadoTarea').val();
     // valida que la tarea haya sido iniciallizada con anterioridad para poder terminarla
     if (iniciarTarea == 1) {
@@ -366,7 +366,7 @@ $("#iniciarTarea").click(function() {
     var value = true;
     guardarEstado(task, value, id);
 
-    if (!navigator.onLine) {
+    if (!conexion()) {
         $("#iniciarTarea").hide();
         $("#tareaIniciada").show();
         // guarda el estado de la tarea (inicializado)
@@ -433,26 +433,6 @@ function validarEstSubTareas() {
     return ban;
 }
 
-// function cargarNotasOffline() {
-//     console.log("Cargando Pedidos Offline...");
-//     $('.ped_pendientes').remove();
-//     var data = sessionStorage.getItem('list_pedidos_' + $('#ot').val());
-//     if (data == null) {
-//         console.log("sin nota pedidos");
-//         return;
-//     }
-//     data = JSON.parse(data);
-//     for (var i = 0; i < data.length; i++) {
-//         var aux = JSON.stringify(data[i]).replace(/'/g, "\\'");
-//         $('#deposito tbody').append(
-//             "<tr class='ped_pendientes' data-offline='true' data-detalle='" + aux + "' id='ped_" + i +
-//             "'><td><i class='fa fa-fw fa-search text-light-blue' style='cursor: pointer; margin-left: 15px;' title='Ver Nota Pedido' onclick='VerDetalles(this)'</i></td><td># ? </td><td>Esperando Conexión...</td></tr>"
-//         );
-//     }
-// }
-/*  /.	Pantalla pedido de insumos */
-//Rearmo ajax para guardar Post en indexedDB//
-
 function ajax(options) {
     if (navigator.serviceWorker.controller) {
         navigator.serviceWorker.controller.postMessage(options.data)
@@ -462,9 +442,10 @@ function ajax(options) {
 }
 //Fin redifinicion//
 
-if (!navigator.onLine) {
+if (!conexion()) {
     index();
 } else {
+    evaluarEstado();
     borrarCache();
 }
 

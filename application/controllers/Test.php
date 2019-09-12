@@ -10,8 +10,12 @@ class Test extends CI_Controller
         $this->load->model('Kpis');
     }
 
-
     public function index()
+    {
+        return true;
+    }
+
+    public function index1()
     {
         $this->load->view('kpis/disponibilidad');
     }

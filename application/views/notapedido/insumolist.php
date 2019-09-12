@@ -171,7 +171,7 @@
     }
     WaitingOpen("Guardando pedido...");
     //SI NO HAY CONEXION LO GUARDA EN SESSION STORAGE
-    if(!navigator.onLine){
+    if(!conexion()){
       console.log("Sin Conexión");
       var aux = sessionStorage.getItem('list_pedidos_'+idOT);
       if(aux==null)aux=[];else aux = JSON.parse(aux);

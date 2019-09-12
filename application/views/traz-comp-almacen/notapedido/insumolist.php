@@ -179,7 +179,7 @@ $('.cant_insumos').prop('disabled',true);
         }
         WaitingOpen("Guardando pedido...");
 
-        if(!navigator.onLine){//SI NO HAY CONEXION LO GUARDA EN SESSION STORAGE
+        if(!conexion()){//SI NO HAY CONEXION LO GUARDA EN SESSION STORAGE
           console.log("Sin Conexión");
           var aux = sessionStorage.getItem('list_pedidos_'+idOT);
           if(aux==null)aux=[];else aux = JSON.parse(aux);

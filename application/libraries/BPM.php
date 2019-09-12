@@ -101,9 +101,9 @@ class BPM
 
         $rsp = $this->REST->callAPI('POST', $url, $contract, $this->loggin(userNick(), userPass()));
 
-        if (!$rsp['status']) {
+        if (!$rsp['status']) { 
 
-            log_message('DEBUG','#TRAZA | #BPM >> '.ASP_101);
+            log_message('DEBUG','#TRAZA | #BPM >> lanzarProceso  >>'.ASP_101);
 
             return msj(false, ASP_101);      
 

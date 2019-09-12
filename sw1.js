@@ -15,7 +15,7 @@ self.addEventListener('fetch', function (event) {
             fetch(event.request.clone()).catch(function (error) {
 
                 storePostRequest(event.request.clone().url, messageData);
-                return new Responce();
+              
             })
         );
     } else {

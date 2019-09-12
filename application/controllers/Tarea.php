@@ -527,8 +527,8 @@ class Tarea extends CI_Controller {
 							$data['list'] = $this->Notapedidos->notaPedidos_List($id_OT);
 							$this->load->model('traz-comp/Componentes');
 							$this->load->view('tareas/view_ejecutarOT', $data);
-							$this->load->view('tareas/scripts/tarea_std');	
-							$this->load->view(FRM.'scripts');	
+							//$this->load->view('tareas/scripts/tarea_std');	
+						
 									
 							break;
 					case 'Esperando cambio estado "a Ejecutar"':
