@@ -57,7 +57,7 @@ function initForm() {
     });
 
     $('.datepicker').datepicker({
-        dateFormat: 'DD-MM-YYYY'
+        dateFormat: 'dd/mm/yy'
     });
 
     $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
@@ -116,7 +116,7 @@ function frmGuardar(e) {
     //Preparo Informacion Files
     var files = $('#' + form + ' input[type="file"]');
     files.each(function () {
-        if (navigator.onLine) {
+        if (conexion()) {
             if (this.value != null && this.value != '') formData.append(this.name, this.value);
         } else {
             formData.delete(this.name);
@@ -127,7 +127,7 @@ function frmGuardar(e) {
 
     guardarEstado($('#task').val() + '_frm', json, '#' + form);
 
-    if (!navigator.onLine) {
+    if (!conexion()) {
         WaitingClose();
 
         console.log('Offline | Formulario Guardado...');
@@ -176,15 +176,15 @@ function frmGuardar(e) {
 
     }
 }
+function detectarForm() {
+    $('.btn-form').click(function () {
 
-$('.btn-form').click(function () {
+        if (isModalOpen()) return;
 
-    if (isModalOpen()) return;
+        obtenerForm(this.dataset.info);
 
-    obtenerForm(this.dataset.info);
-
-});
-
+    });
+}
 function obtenerForm(info, show = true) {
     WaitingOpen();
     $.ajax({
@@ -196,7 +196,7 @@ function obtenerForm(info, show = true) {
                 $('#frm-modal-' + info).remove();
                 $('#frm-list').append(rsp.html);
 
-                if (!navigator.onLine) {
+                if (!conexion()) {
                     console.log('Offiline | Sin Conexión...');
 
                     var task = $('#task').val();
@@ -225,24 +225,23 @@ function obtenerForm(info, show = true) {
 
                                     var input = $(id + ' [name="' + key + '"]')[0];
 
-                                    //Ignorar Tipos Files
-                                    if (input.getAttribute('type') == 'file') return;
-
                                     //Radio
-                                    if (input.getAttribute('type') == 'radio' && input.value ==
-                                        form[key]) {
-                                        input.checked = true;
-                                        return;
-                                    }
-                                    console.log(input.tagName);
+                                    // if (input.getAttribute('type') == 'radio' && input.value ==
+                                    //     form[key]) {
+                                    //     input.checked = true;
+                                    //     return;
+                                    // }
+
                                     if (input.tagName == 'TEXTAREA') {
-                                        alert('colis');
+                                       
                                         $(id + ' [name="' + key + '"]').html(form[key]);
-                                        return;
+                                    
+                                    }else{
+                                        
+                                        if (input.getAttribute('type') != 'file') $(id + ' [name="' + key + '"]').val(form[key]);
                                     }
 
                                     //Default
-                                    $(id + ' [name="' + key + '"]').val(form[key]);
 
                                 }
 

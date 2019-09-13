@@ -354,7 +354,7 @@ function EjecutarOT() {
 
     var xlat = null;
     var xlon = null;
-    if (window.mobileAndTabletcheck()) {
+    if (!window.mobileAndTabletcheck()) {
         if (obtenerPosicion()) {
             console.log('LAT: ' + lat + ' - LON: ' + lon + ' - ACC: ' + ac);
             xlat = lat;

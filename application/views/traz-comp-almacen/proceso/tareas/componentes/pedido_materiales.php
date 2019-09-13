@@ -348,7 +348,7 @@ function lanzarPedidoModal() {
     articulos = JSON.stringify(articulos);
     console.log(articulos);
 
-    if (navigator.onLine) {
+    if (conexion()) {
         $.ajax({
             type: 'POST',
             url: 'index.php/almacen/Notapedido/pedidoNormal/' + notaid,
@@ -359,7 +359,7 @@ function lanzarPedidoModal() {
                 alert('Hecho');
             },
             error: function() {
-                alert('Error');
+                console.log('ALM | Error Pedido Materiales');
             }
         });
     } else {
@@ -375,7 +375,7 @@ function lanzarPedidoModal() {
 
             },
             error: function(result) {
-                alert('Error');
+                console.log('ALM | Error Pedido Materiales');
             }
         });
     }

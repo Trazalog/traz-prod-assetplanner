@@ -98,6 +98,7 @@ define('files', 'files/');
 
 define('FRM', 'traz-comp-form/');
 
+
 /*
 |--------------------------------------------------------------------------
 | Bonita url
@@ -182,5 +183,10 @@ define('ASP_115', 'Error al Leer Variable');
 
 
 //Settings
+
+# >> OT
 define('viewOT', true);
+
+# >> GPS
 define('GPS_ACC', 50);
+define('GPS_CHECK_MOBILE', false);

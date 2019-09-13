@@ -166,7 +166,7 @@ function recargar() {
     WaitingClose();
 }
 
-if (!navigator.onLine) offline();
+if (!conexion()) offline();
 else {
     sessionStorage.removeItem('tareas_cerradas');
 }
