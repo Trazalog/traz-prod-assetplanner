@@ -77,7 +77,8 @@ Offline.options = {
         xhr: {
             url: '/index.php/Test'
         }
-    }
+    },
+    requests: false
 };
 
 //OFFLINE SETTING

@@ -6,7 +6,7 @@ const NF = new workbox.strategies.NetworkFirst({
 });
 
 workbox.precaching.precacheAndRoute([
-    { url: 'http://localhost/traz-prod-assetplanner/index.php', revision: 'abc123' }
+    { url: base_url + 'index.php', revision: 'abc123' }
 ]);
 
 self.addEventListener('fetch', function (event) {
@@ -19,6 +19,9 @@ self.addEventListener('fetch', function (event) {
             })
         );
     } else {
+        
+        if (event.request.url == 'http://localhost/index.php/Test') return false;
+        
         event.respondWith(
             NF.handle(event).then((response) => {
                 fetch(event.request).then(function (response1) {
@@ -26,7 +29,7 @@ self.addEventListener('fetch', function (event) {
                     caches.open('traz-prod-assetplanner-cache').then(function (cache) {
                         cache.put(event.request, responseClone);
                     });
-
+                    
                     return response || caches.match(event.request);
                 }).catch(function () {
                     return caches.match(event.request).then(function (response) {
@@ -34,7 +37,7 @@ self.addEventListener('fetch', function (event) {
                             console.log('GET Reply from Cache for URL:', event.request.clone().url);
                             return response;
                         }
-
+                        
                         return new Response('', {
                             headers: { 'Content-Type': 'text/html' }
                         });
