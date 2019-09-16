@@ -334,6 +334,7 @@ function validarSubtareas() {
 // Cambia el estado de Orden servicio y de solicitud de servicio
 $("#iniciarTarea").click(function() {
     WaitingOpen('Iniciando Tarea...');
+
     var id_OT = $('#id_OT').val();
     ajax({
         type: 'POST',
@@ -354,7 +355,11 @@ $("#iniciarTarea").click(function() {
         },
         error: function(data) {
             WaitingClose();
-            alert('NO iniciada' + data);
+            if (!conexion()) {
+                alert('Tarea Iniciada | Esperando Conexión...');
+            } else {
+                alert('No se pudo Iniciar Tarea');
+            }
         },
         dataType: 'json'
     });
@@ -516,5 +521,4 @@ function guardarEstado(item, value, id = null) {
     console.log(JSON.stringify(aux));
     sessionStorage.setItem(item, JSON.stringify(aux));
 }
-
 </script>
