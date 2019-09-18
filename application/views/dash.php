@@ -164,16 +164,16 @@
             }
         });
 
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw1.js').then(function() {
-                    console.log('Service Worker Registrado');
-                    if (!navigator.serviceWorker.controller) {
-                        location.reload();
-                    }
-                })
-            });
-        }
+        // if ('serviceWorker' in navigator) {
+        //     window.addEventListener('load', () => {
+        //         navigator.serviceWorker.register('sw1.js').then(function() {
+        //             console.log('Service Worker Registrado');
+        //             if (!navigator.serviceWorker.controller) {
+        //                 location.reload();
+        //             }
+        //         })
+        //     });
+        // }
 
 
         function procesarCola() {

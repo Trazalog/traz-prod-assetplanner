@@ -98,6 +98,15 @@ define('files', 'files/');
 
 define('FRM', 'traz-comp-form/');
 
+define('SIM', 'traz-comp-sim/');  
+
+define('SIM_FORMS', array(
+
+    'eval_ope' => 3,
+
+    'eval_zona' =>2
+));
+
 
 /*
 |--------------------------------------------------------------------------
@@ -108,7 +117,7 @@ define('FRM', 'traz-comp-form/');
 |
 */
 
-define('BONITA_URL', 'http://atom:8080/bonita/');  
+define('BONITA_URL', 'http://localhost:8080/bonita/');  
 
 define('BPM_ADMIN_USER', 'mantenedor1');
 define('BPM_ADMIN_PASS', 'bpm');

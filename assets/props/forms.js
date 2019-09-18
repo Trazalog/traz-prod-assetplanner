@@ -83,19 +83,20 @@ function initForm() {
             });
         }
     });
-
-
-
 }
 
 
 
 function frmGuardar(e) {
-
+    console.log('FRM | Guardando...');
+    
     WaitingOpen();
 
     var form = $(e).closest('form').attr('id');
     var info = $(e).closest('form').data('info');
+    
+    var nuevo = (info == '');
+    if (nuevo) info = $(e).closest('form').data('form');
 
     $('#' + form).bootstrapValidator('validate');
 
@@ -157,11 +158,13 @@ function frmGuardar(e) {
             cache: false,
             contentType: false,
             processData: false,
-            url: 'index.php/' + frmUrl + 'Form/guardar/' + info,
+            url: 'index.php/' + frmUrl + 'Form/guardar/' + info +(nuevo?'/true':''),
             data: formData,
             success: function (rsp) {
 
                 $('#' + form).closest('.modal').modal('hide');
+                
+                if(exist('dgf'))dgf();
 
             },
             error: function (rsp) {
@@ -176,15 +179,51 @@ function frmGuardar(e) {
 
     }
 }
+
 function detectarForm() {
-    $('.btn-form').click(function () {
+    $('.frm-open').click(function () {
 
         if (isModalOpen()) return;
 
         obtenerForm(this.dataset.info);
 
     });
+
+    $('.frm-new').click(function(){
+        nuevoForm(this.dataset.form);
+    });
 }
+
+function nuevoForm(form, show = true) {
+    WaitingOpen();
+    $.ajax({
+        type: 'GET',
+        dataType: 'JSON',
+        url: 'index.php/' + frmUrl + 'Form/obtenerNuevo/' + form + '/' + modal,
+        success: function (rsp) {
+            if (modal) {
+                $('#frm-list').append(rsp.html);
+
+                if (show) $('#frm-modal-').modal('show');
+                $('#frm-modal- .btn-accion').click(function () {
+                    $(this).closest('.modal').find('.frm-save').click();
+                });
+            }
+
+            initForm();
+        },
+        error: function (rsp) {
+
+            console.log('Error al Obtener Formulario');
+
+        },
+        complete: function () {
+            WaitingClose();
+        }
+    });
+}
+
+
 function obtenerForm(info, show = true) {
     WaitingOpen();
     $.ajax({
@@ -268,6 +307,35 @@ function obtenerForm(info, show = true) {
     });
 }
 
+function nuevoForm(form, show = true){
+    WaitingOpen();
+    $.ajax({
+        type: 'GET',
+        dataType: 'JSON',
+        url: 'index.php/' + frmUrl + 'Form/obtenerNuevo/' + form + '/' + modal,
+        success: function (rsp) {
+            if (modal) {
+                $('#frm-list').append(rsp.html);
+
+                if (show) $('#frm-modal-').modal('show');
+                $('#frm-modal- .btn-accion').click(function () {
+                    $(this).closest('.modal').find('.frm-save').click();
+                });
+            }
+
+            initForm();
+        },
+        error: function (rsp) {
+
+            console.log('Error al Obtener Formulario');
+
+        },
+        complete: function () {
+            WaitingClose();
+        }
+    });
+}
+
 function formToJson(formData) {
 
     var object = {};
@@ -288,6 +356,11 @@ function formToJson(formData) {
     });
 
     return JSON.stringify(object);
+}
+
+function exist(nombre) {
+    var fn = window[nombre];
+    return typeof fn === 'function';
 }
 
 function showFD(formData) {
