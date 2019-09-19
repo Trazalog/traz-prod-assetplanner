@@ -199,3 +199,6 @@ define('viewOT', true);
 # >> GPS
 define('GPS_ACC', 50);
 define('GPS_CHECK_MOBILE', false);
+
+# >>SW
+define('SW', false);
