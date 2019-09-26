@@ -16,7 +16,17 @@ if(!function_exists('formato_fecha')){
         $date = explode("-",$fecha);
         $date = $date[2].'/'.$date[1].'/'.$date[0];
         return $date;
-        
+    }
+
+    function reformat($fecha)
+    {
+       if (strlen($fecha) == 0) {
+            return '';
+        }
+
+        $date = explode("-", $fecha);
+        $date = $date[2] . '-' . $date[1] . '-' . $date[0];
+        return $date;
     }
 
     function resta_fechas($a,$b){

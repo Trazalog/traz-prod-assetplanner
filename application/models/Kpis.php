@@ -27,7 +27,7 @@ class Kpis extends CI_Model
     public function getEquipos($id = false)
     {
 
-        $empId = 6;#empresa();
+        $empId = empresa();
 
         $this->db->select('equipos.id_equipo, meta_disponibilidad as meta_dsp');
         $this->db->from('equipos');
@@ -44,7 +44,7 @@ class Kpis extends CI_Model
         return $this->db->get()->result();
     }
 
-    public function estadoEquipoAlta($eq, $fecha)
+    public function estadoEquipoAlta($eq, $fecha, $checkMes = false)
     {
         $his = $this->getHistorialLecturas($eq);
 
@@ -56,11 +56,11 @@ class Kpis extends CI_Model
 
         $f1 = strtotime($fechaAlta);
         $f2 = strtotime($fecha);
-
-        return (date('m', $f1) == date('m', $f2) && $f1 > $f2) ? $fechaAlta : $fecha;
+        if($checkMes && (date('m', $f1) != date('m', $f2))) return $fecha; 
+        return ( $f1 > $f2) ? $fechaAlta : $fecha;
     }
 
-    public function estadoEquipoBaja($eq, $fecha)
+    public function estadoEquipoBaja($eq, $fecha, $checkMes = false)
     {
         $his = $this->getHistorialLecturas($eq);
 
@@ -72,7 +72,7 @@ class Kpis extends CI_Model
 
         $f1 = strtotime($fechaBaja);
         $f2 = strtotime($fecha);
-
-        return (date('m', $f1) == date('m', $f2) && $f1 < $f2) ? $fechaBaja : $fecha;
+        if($checkMes && (date('m', $f1) != date('m', $f2))) return $fecha; 
+        return ( $f1 < $f2) ? $fechaBaja : $fecha;
     }
 }
