@@ -318,7 +318,7 @@ function lanzarPedidoModal() {
       var articulos =[];
       $('#tabladetalle2 tbody').find('tr').each(function(){
         json="";
-        json = $(this).attr('data-j(  )son');
+        json = $(this).attr('data-json');
         articulos.push(json);
       });
       articulos = JSON.stringify(articulos);
