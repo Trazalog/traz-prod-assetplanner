@@ -6,10 +6,19 @@ class Test extends CI_Controller
     {
 
         parent::__construct();
+
         $this->load->model('Kpis');
+        $this->load->model('Equipos');
     }
 
     public function index()
+    {
+        $data['list'] = $this->Equipos->equipos_List();
+
+        $this->load->view('test', $data);
+    }
+
+    public function index1()
     {
         $this->load->view('kpis/disponibilidad');
     }
@@ -20,81 +29,109 @@ class Test extends CI_Controller
         $dsp = array();
         $fecha_actual = date("Y-m-d");
 
-        $data = $this->Kpis->getEquipos($eq == 'all'?false:$eq);
+        $data = $this->Kpis->getEquipos($eq == 'all' ? false : $eq);
         $cant = sizeof($data);
 
-        if($cant == 0) echo json_encode(false);
+        if ($cant == 0) {
+            echo json_encode(false);
+        }
 
         for ($i = 0; $i < 12; $i++) {
             $fi = date("Y-m-01 00:00:00", strtotime($fecha_actual . "- $i month"));
 
             //Ajustar Rango de Fecha con Respecto a la primera vez que se activo el Equipo
-            $ff = ($i==0 ?  date("Y-m-d H:i:00") : date("Y-m-d 23:59:59", strtotime($fi . "+ 1 month - 1 second")));
+            $ff = ($i == 0 ? date("Y-m-d H:i:00") : date("Y-m-d 23:59:59", strtotime($fi . "+ 1 month - 1 second")));
 
-            $fi = $this->Kpis->estadoEquipo($eq, $fi);
+            array_unshift($tiempo, date("m-Y", strtotime($fi)));
 
-            array_unshift($tiempo,date("m-Y", strtotime($fi)));
-            
             $acum = 0;
             foreach ($data as $o) {
+                $fi = $this->Kpis->estadoEquipoAlta($o->id_equipo, $fi, true);
+                #Ajustar Rango de Fecha con Respecto a la fecha que se dio de baja al Equipo
+                $ff = $this->Kpis->estadoEquipoBaja($o->id_equipo, $ff, true);
                 $acum += $this->calcularDisponibilidad($o->id_equipo, $fi, $ff);
             }
 
-            $dsp[$fi .' - '.$ff] = number_format($acum/$cant,2);
+            $dsp[$fi . ' - ' . $ff] = number_format($acum / $cant, 2);
 
         }
-        print("<pre>".print_r($dsp,true)."</pre>");
-
+        print("<pre>" . print_r($dsp, true) . "</pre>");
 
     }
 
-    public function kpiDisponibilidad()
+    public function kpiDisponibilidad($equipo = false)
     {
         $tiempo = array();
         $dsp = array();
         $fecha_actual = date("Y-m-d");
 
-        $eq = $this->input->post('idEquipo');
+        $eq = ($equipo ? $equipo : $this->input->post('idEquipo'));
 
-        $data = $this->Kpis->getEquipos($eq == 'all'?false:$eq);
+        $data = $this->Kpis->getEquipos($eq == 'all' ? false : $eq);
+        #var_dump($data);
         $cant = sizeof($data);
 
-        if($cant == 0) {
+        #echo "Cantidad Equipos: $cant <hr>";
+
+        if ($cant == 0) {
             $data['promedioMetas'] = 0;
             $data['tiempo'] = [];
             $data['porcentajeHorasOperativas'] = [];
-            echo json_encode($data); 
+            echo json_encode($data);
             return;
         }
 
         for ($i = 0; $i < 12; $i++) {
+            #Calular Fecha Inicio del Mes
             $fi = date("Y-m-01 00:00:00", strtotime($fecha_actual . "- $i month"));
 
-            $ff = ($i==0 ?  date("Y-m-d H:i:00") : date("Y-m-d 23:59:59", strtotime($fi . "+ 1 month - 1 second")));
+            #Calcular Fecha Fin del Mes
+            $ff = ($i == 0 ? date("Y-m-d H:i:00") : date("Y-m-d 23:59:59", strtotime($fi . "+ 1 month - 1 second")));
 
-            //Ajustar Rango de Fecha con Respecto a la primera vez que se activo el Equipo
-            
-            array_unshift($tiempo,date("m-Y", strtotime($fi)));
-            
+            #Guardar Labels para Gráfico MES/AÑO
+            array_unshift($tiempo, date("m-Y", strtotime($fi)));
+
             $acum = 0;
+            $cantIgnorar = 0;
+
             foreach ($data as $o) {
-                $fi = $this->Kpis->estadoEquipo($o->id_equipo, $fi);
-                $acum += $this->calcularDisponibilidad($o->id_equipo, $fi, $ff);
+                #Ajustar Rango de Fecha con Respecto a la primera vez que se activo el Equipo
+                $fi = $this->Kpis->estadoEquipoAlta($o->id_equipo, $fi, true);
+
+                #Ajustar Rango de Fecha con Respecto a la fecha que se dio de baja al Equipo
+                $ff = $this->Kpis->estadoEquipoBaja($o->id_equipo, $ff, true);
+
+                #Acumular Disponibilidad del Equipo entre FI y FF
+                $res = $this->calcularDisponibilidad($o->id_equipo, $fi, $ff);
+
+                if ($res) {
+                    $acum += $res;
+                } else {
+                    $cantIgnorar++;
+                }
+
             }
 
-            array_unshift($dsp, number_format($acum/$cant,2));
+            array_unshift($dsp, number_format($acum / ($cant == $cantIgnorar ? 1 : ($cant - $cantIgnorar)), 2));
         }
 
+        # Calcular Promedio Metas
         $acum = 0;
+        $cantMetas = 0;
         foreach ($data as $o) {
-            if($o->meta_dsp){
+            if ($o->meta_dsp) {
                 $acum += $o->meta_dsp;
-            }else{
-                $cant--;
+                $cantMetas++;
             }
         }
 
-        $data['promedioMetas'] = number_format($acum/$cant,2);
+        $promedioMetas = ($cantMetas == 0 ? 0 : number_format($acum / ($cantMetas), 2));
+
+        // echo "Acum Metas: $acum <hr>";
+        // echo "Cantidad: $cantMetas <hr>";
+        // echo "Promedio Metas: $promedioMetas <hr>";
+
+        $data['promedioMetas'] = $promedioMetas;
         $data['tiempo'] = $tiempo;
         $data['porcentajeHorasOperativas'] = $dsp;
         echo json_encode($data);
@@ -105,13 +142,27 @@ class Test extends CI_Controller
         $disp = 0;
         $tc = $this->calcularMinutos($fi, $ff);
 
-        // Historial de Lecturas
+        #Obtener Historial de Lecturas
         $data = $this->Kpis->getHistorialLecturas($eq, $fi, $ff);
 
+        #No Registra Historial de Lecturas en el Rango FI y FF
         if (sizeof($data) == 0) {
+
+            #Busco Ultimo Estado antes de FI
             $his = $this->Kpis->getHistorialLecturas($eq, false, $fi);
-            if(end($his)->estado == 'AC') return 100;
-            else return 0;
+
+            #Si no hay Registros antes de FI no registrar DSP
+            if (!$his) {
+                return false;
+            }
+
+            # Si hay registro returno DSP seguno estado antes de FI
+            if (end($his)->estado == 'AC') {
+                return 100;
+            } else {
+                return 0;
+            }
+
         }
 
         if ($data[0]->estado == 'RE') {
@@ -122,6 +173,12 @@ class Test extends CI_Controller
         $fechaActivo = null;
 
         foreach ($data as $key => $o) {
+
+            // Ignora los Registros con campo OBS == true, representan los mantenimientos que no cambiaron el estado del equipo
+
+            if ($o->obs == 1) {
+                continue;
+            }
 
             if ($o->estado == 'AC') {
                 $fechaActivo = $o->fecha;
@@ -143,6 +200,31 @@ class Test extends CI_Controller
         return $disp;
     }
 
+    public function dspRangoFecha($eq = 'all')
+    {
+        $fi = reformat($this->input->get('fi')).' 00:00:00';
+        $ff = reformat($this->input->get('ff')).' 00:00:00';
+
+        $data = $this->Kpis->getEquipos($eq == 'all' ? false : $eq);
+
+        foreach ($data as $key=>$o) {
+            #Ajustar Rango de Fecha con Respecto a la primera vez que se activo el Equipo
+            $fi1 = $this->Kpis->estadoEquipoAlta($o->id_equipo, $fi);
+
+            #Ajustar Rango de Fecha con Respecto a la fecha que se dio de baja al Equipo
+            $ff2 = $this->Kpis->estadoEquipoBaja($o->id_equipo, $ff);
+
+            #Acumular Disponibilidad del Equipo entre FI y FF
+            $res = $this->calcularDisponibilidad($o->id_equipo, $fi1, $ff2);
+
+            $data[$key]->fi = $fi1;
+            $data[$key]->ff = $ff2;
+            $data[$key]->dsp = $res;
+        }
+
+        echo json_encode($data);
+    }
+
     public function calcularMinutos($fi, $ff)
     {
         $fecha1 = new DateTime($fi); //fecha inicial
@@ -161,4 +243,5 @@ class Test extends CI_Controller
 
         return $totalMin;
     }
+
 }

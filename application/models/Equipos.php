@@ -457,8 +457,20 @@ class Equipos extends CI_Model {
 
         $this->db->where('id_equipo', $idequipo);
         $this->db->where('id_empresa', $empId);
-
         $query = $this->db->update("equipos",$data);
+
+        if($query){
+            $userdata = $this->session->userdata('user_data');
+            $data = array(
+                'id_equipo' => $idequipo,
+                'lectura' => 0,
+                'usrId' => $userdata[0]['usrId'],
+                'fecha' => date('Y-m-d H:i:s'),
+                'estado' => 'IN'
+            );
+            $this->db->insert('historial_lecturas', $data);
+        }
+
         return $query;
     }
 
@@ -789,6 +801,9 @@ class Equipos extends CI_Model {
 
     /// Guarda lectura Hugo
     function setLecturas($data){
+        
+         $this->db->where('id_equipo', $data["id_equipo"]);
+         $estadoActual = $this->db->get('equipos')->row('estado');
 
     	 $this->db->trans_start();
              $id_equipo   = $data["id_equipo"];
@@ -808,7 +823,8 @@ class Equipos extends CI_Model {
                  'observacion'  => $observacion,
                  'operario_nom' => $operario,
                  'turno'        => $turno,
-                 'estado'       => $estado
+                 'estado'       => $estado,
+                 'obs' => ($estadoActual == $estado)
                  );
 	     		//guarda la lectura
             //dump_exit($datos);

@@ -51,14 +51,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-inline">
-                                <!--<label>Rango de fechas: </label>
-                  <input type="text" id="daterange-disponibilidad" class="form-control">
-                  <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>-->
-                            </div>
-                            <div id="graph-container">
-
-                            </div>
+                           <?php $this->load->view('kpis/disponibilidad'); ?>
                         </div>
 
                         <div class="col-md-3 col-xs-12 daterange">
