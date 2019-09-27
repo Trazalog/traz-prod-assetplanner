@@ -2,7 +2,7 @@
 <section class="content">
     <div class="row">
         <div class="col-xs-12">
-            <div class="box">
+            <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">KPIs</h3>
                     <!--<div class="box-tools pull-right">
@@ -123,7 +123,7 @@ function getDisponibilidad(idEquipo) {
             },
             dataType: 'json',
             type: 'POST',
-            url: 'index.php/Test/kpiDisponibilidad',
+            url: 'index.php/Kpi/kpiDisponibilidad',
         })
         .done((data) => {
             graficarParametro(data);

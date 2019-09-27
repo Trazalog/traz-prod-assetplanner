@@ -30,7 +30,7 @@ function getDisponibilidad(idEquipo) {
             },
             dataType: 'json',
             type: 'POST',
-            url: 'index.php/Test/kpiDisponibilidad',
+            url: 'index.php/Kpi/kpiDisponibilidad',
         })
         .done((data) => {
             graficarParametro(data);
