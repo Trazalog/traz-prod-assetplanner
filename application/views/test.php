@@ -39,7 +39,7 @@
                                 <th>Sector</th>
                                 <th>Criticidad</th>
                                 <th>Estado</th>
-                                <th>Dsp %</th>
+                                <th>% Disponibilidad</th>
                             </tr>
                         </thead>
                         <tbody>
