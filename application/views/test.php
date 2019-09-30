@@ -114,6 +114,6 @@ function initTable(e) {
         buttons: ['excel']
     });
 
-    //$('.buttons-excel').removeClass('btn-default').addClass('btn-danger').html('Exportar Excel');
+    $('.buttons-excel').removeClass('btn-default').addClass('btn-primary').html('Exportar Excel');
 }
 </script>

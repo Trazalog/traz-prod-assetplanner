@@ -93,6 +93,7 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 |
 */
 define('CMP_ALM', 'traz-comp-almacen/');  
+define('ALM', 'traz-comp-almacen/');  
 /*
 |--------------------------------------------------------------------------
 | Bonita url
@@ -121,7 +122,7 @@ define('BPM_USER_PASS', 'bpm');
 
 //? PEDIDOS NORMALES
  
-define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '9120979153540387743'); 
+define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '6833268789089291878'); 
 
 //? PEDIDOS EXTRAORDINATIOS
 

@@ -293,7 +293,23 @@ function lanzarPedido() {
     });
 }
 function lanzarPedidoModal() {
-    
+
+   var id = $('#pema_id').val();
+   $.ajax({
+           type:'POST',
+           dataType:'JSON',
+           url:'index.php/<?php echo ALM ?>new/Pedido_Material/pedidoNormal',
+           data:{ id },
+           success:function(rsp){
+               alert('Hecho');
+           },
+           error: function(rsp){  
+               alert('Error: '+ rsp.msj);
+               console.log(rsp.msj);
+           }
+       });
+
+
     notaid= document.getElementById('pema_id').value;
     idOT = document.getElementById('ortr_id').value;
     descripcion = document.getElementById('descripcionOT').value;
@@ -308,11 +324,11 @@ function lanzarPedidoModal() {
       html="";
       html += "<tr data-json='"+JSON.stringify(data)+"' id='"+data.id_notaPedido+"'>";
       html += '<td class="text-center"> <i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer;margin:5px;" title="Detalle Pedido Materiales"></i> </td>';
-      html += '<td class="text-center">'+data.id_notaPedido+'</td>';
-      html += '<td class="text-center">'+data.id_ordTrabajo+'</td>';
+      html += '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-blue">'+data.id_notaPedido+'</span></td>';
+      html += '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-yellow">'+data.id_ordTrabajo+'</span></td>';
       html += '<td class="text-center">'+data.fecha+'</td>';
       html += '<td>'+data.descripcion+' '+data.justificacion+'</td>';
-      html += '<td class="text-center">'+data.estado+'</td>';
+      html += '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-orange estado">Solicitado</span></td>';
       html += '</tr>';
       tablaDeposito.row.add($(html)).draw();
       var articulos =[];
@@ -321,6 +337,9 @@ function lanzarPedidoModal() {
         json = $(this).attr('data-json');
         articulos.push(json);
       });
+
+    $('#'+modal).modal('hide');
+      return;
       articulos = JSON.stringify(articulos);
      
       $.ajax({
@@ -338,7 +357,6 @@ function lanzarPedidoModal() {
             console.log('chau');
         }
     });
-    $('#'+modal).modal('hide');
 }
 
 function edit_pedido() {
