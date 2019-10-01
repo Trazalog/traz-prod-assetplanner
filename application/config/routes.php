@@ -53,6 +53,6 @@ $route['default_controller'] = 'login';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-$route['almacen/(:any)/(:any)/(:any)'] = CMP_ALM.'/$1/$2/$3';
-$route['almacen/(:any)/(:any)'] = CMP_ALM.'/$1/$2';
-$route['almacen/(:any)'] = CMP_ALM.'/$1';
+$route['almacen/(:any)/(:any)/(:any)'] = ALM.'/$1/$2/$3';
+$route['almacen/(:any)/(:any)'] = ALM.'/$1/$2';
+$route['almacen/(:any)'] = ALM.'/$1';

@@ -177,7 +177,7 @@
 
                                         <div role="tabpanel" class="tab-pane" id="pedidomateriales">
                                             <?php 
-                                            $this->load->view(CMP_ALM.'notapedido/generar_pedido');
+                                            $this->load->view(ALM.'notapedido/generar_pedido');
                                           ?>
                                         </div>
                                         <!--/#responsable -->
@@ -338,7 +338,7 @@ function lanzarPedidoMateriales() {
         data: {
             'id': pema_id
         },
-        url: "<?php echo CMP_ALM ?>/new/Pedido_Material/pedidoNormal",
+        url: "<?php echo ALM ?>/new/Pedido_Material/pedidoNormal",
         success: function(result) {
             alert('Hecho');
             return;

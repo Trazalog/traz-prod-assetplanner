@@ -129,7 +129,7 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
                                             <div id="nota_pedido">
 
                                                 <?php 
-																	$this->load->view(CMP_ALM.'/notapedido/list');
+																	$this->load->view(ALM.'/notapedido/list');
 																	
 																?>
                                             </div>

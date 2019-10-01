@@ -18,7 +18,7 @@ class UnidadMedida extends CI_Controller {
     {
         parent::__construct();
         //$this->load->model('UnidadMedidas');
-        $this->load->model(CMP_ALM.'/Lovs');
+        $this->load->model(ALM.'/Lovs');
     }
 
     /**

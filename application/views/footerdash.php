@@ -75,7 +75,7 @@ window.mobileAndTabletcheck = function() {
 Offline.options = {
     checks: {
         xhr: {
-            url: '/index.php/Test'
+            url: '<?php echo base_url() ?>index.php/Test'
         }
     },
     requests: false
@@ -96,14 +96,20 @@ var run = function() {
     if (Offline.state === 'up')
         Offline.check();
 }
-setInterval(run, 5000);
+setInterval(run, 20000);
 
 function conexion(){
     return $('#conexion').attr('data-state') == 'true';
 }
-       </script>
 
-       <?php 
-            $this->load->view(FRM . 'scripts');
-            $this->load->view('tareas/scripts/tarea_std');
-       ?>
+function guardarEstado(){
+    return;
+}
+
+
+</script>
+
+<?php 
+    $this->load->view(FRM . 'scripts');
+    $this->load->view('tareas/scripts/tarea_std');
+?>

@@ -1,6 +1,6 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js'); workbox.loadModule('workbox-strategies');
 var messageData = "";
-var base_url = 'https://192.168.0.105/traz-prod-assetplanner/';
+var base_url = 'http://localhost/traz-prod-assetplanner/';
 const NF = new workbox.strategies.NetworkFirst({
     cacheName: 'traz-prod-assetplanner-cache'
 });
@@ -20,7 +20,7 @@ self.addEventListener('fetch', function (event) {
         );
     } else {
         
-        if (event.request.url == 'http://192.168.0.105/index.php/Test') return false;
+        if (event.request.url == 'http://localhost/traz-prod-assetplanner/index.php/Test') return false;
         
         event.respondWith(
             NF.handle(event).then((response) => {
