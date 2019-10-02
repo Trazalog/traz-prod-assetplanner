@@ -101,6 +101,7 @@
 
         <script>
         //--Guille WorkBOT--//
+           <?php if(SW){?>
 
         base_url = "<?php echo base_url() ?>";
         if (!indexedDB) {
@@ -164,7 +165,7 @@
             }
         });
 
-        <?php if(SW){?>
+     
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw1.js').then(function() {

@@ -39,8 +39,8 @@ function collapse(e) {
 
 }
 //Esto dispara un evento para que se cargue el Dash en forma automatica cuando ingreso.
-cargarView('<?php echo $grpDash; ?>', 'index', 'View');
-
+//cargarView('<?php echo $grpDash; ?>', 'index', 'View');
+linkTo('Test');
 
 //Listener de Envento cuando el Navegador vuelta a estar ONLINE 
 //Procesa la cola de POSTS

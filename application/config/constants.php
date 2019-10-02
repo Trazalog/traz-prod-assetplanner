@@ -201,4 +201,4 @@ define('GPS_ACC', 50);
 define('GPS_CHECK_MOBILE', false);
 
 # >>SW
-define('SW', true);
+define('SW', false);
