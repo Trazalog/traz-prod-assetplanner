@@ -24,7 +24,6 @@ function frmValidar(id = false) {
 function initForm() {
 
     $('form').each(function () {
-
         $(this).bootstrapValidator({
             feedbackIcons: {
                 valid: 'glyphicon glyphicon-ok',
@@ -48,8 +47,6 @@ function initForm() {
                         }
                     }
                 }
-
-
             }
         }).on('success.form.bv', function (e) {
             e.preventDefault();
