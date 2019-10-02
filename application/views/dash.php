@@ -7,7 +7,7 @@
                 <!-- mini logo for sidebar mini 50x50 pixels -->
                 <span class="logo-mini">A<b></b>P</span>
                 <!-- logo for regular state and mobile devices -->
-                <span class="logo-lg"><b>Asset</b> PLANNER  <i id="conexion" class="fa fa-circle text-green" data-state></i></span>
+                <span class="logo-lg"><b>Asset</b> PLANNER  <i id="conexion" class="fa fa-circle text-green" data-state="true"></i></span>
                
             </a>
             <!-- Header Navbar: style can be found in header.less -->
@@ -101,6 +101,7 @@
 
         <script>
         //--Guille WorkBOT--//
+           <?php if(SW){?>
 
         base_url = "<?php echo base_url() ?>";
         if (!indexedDB) {
@@ -138,22 +139,22 @@
                             .subtareas[j] + '/true'
                         ]);
                     }
+
+                    console.log('Cantidad Pedidos: '+tareas[i].pedidos.length);
+                    
                     for (j = 0; j < tareas[i].pedidos.length; j++) {
+
                         cache.addAll([
-                            base_url + 'index.php/almacen/Notapedido/getNotaPedidoId?id_nota=' + tareas[
-                                i].pedidos[j].id_notaPedido,
-                            base_url +
-                            'index.php/almacen/new/Entrega_Material/getEntregasPedidoOffline?pema=' +
-                            tareas[i].pedidos[j].id_notaPedido,
-                            base_url + 'index.php/almacen/new/Pedido_Material/estado?id=' + tareas[i]
-                            .pedidos[j].id_notaPedido,
+                            base_url + 'index.php/almacen/Notapedido/getNotaPedidoId?id_nota=' + tareas[i].pedidos[j].pema_id,
+                            base_url +'index.php/almacen/new/Entrega_Material/getEntregasPedidoOffline?pema=' + tareas[i].pedidos[j].pema_id,
+                            base_url + 'index.php/almacen/new/Pedido_Material/estado?id=' + tareas[i].pedidos[j].pema_id,    
                         ]);
-                        for (k = 0; k < tareas[i].pedidos[j].entregas.length; k++) {
-                            cache.addAll([
-                                base_url + 'index.php/almacen/new/Entrega_Material/detalle?id=' +
-                                tareas[i].pedidos[j].entregas[k].enma_id,
-                            ]);
-                        }
+                        // for (k = 0; k < tareas[i].pedidos[j].entregas.length; k++) {
+                        //     cache.addAll([
+                        //         base_url + 'index.php/almacen/new/Entrega_Material/detalle?id=' +
+                        //         tareas[i].pedidos[j].entregas[k].enma_id,
+                        //     ]);
+                        // }
                     }
 
                 }
@@ -164,16 +165,18 @@
             }
         });
 
-        // if ('serviceWorker' in navigator) {
-        //     window.addEventListener('load', () => {
-        //         navigator.serviceWorker.register('sw1.js').then(function() {
-        //             console.log('Service Worker Registrado');
-        //             if (!navigator.serviceWorker.controller) {
-        //                 location.reload();
-        //             }
-        //         })
-        //     });
-        // }
+     
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw1.js').then(function() {
+                    console.log('Service Worker Registrado');
+                    if (!navigator.serviceWorker.controller) {
+                        location.reload();
+                    }
+                })
+            });
+        }
+       <?php }?>
 
 
         function procesarCola() {

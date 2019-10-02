@@ -512,7 +512,7 @@ class Tarea extends CI_Controller {
 					case 'Ejecutar OT':
 							
 							$this->load->model('traz-comp/Componentes');
-							$this->load->model(CMP_ALM.'/new/Pedidos_Materiales');
+							$this->load->model(ALM.'/new/Pedidos_Materiales');
 							
 							$data['descripcionOT'] = $this->Otrabajos->obtenerOT($id_OT)->descripcion;
 							#COMPONENTE ARTICULOS
@@ -523,7 +523,7 @@ class Tarea extends CI_Controller {
 							$info->ortr_id = $id_OT;
 							$info->modal = 'agregar_pedido';
 							$data['info'] = $info;
-							$this->load->model(CMP_ALM.'/Notapedidos');
+							$this->load->model(ALM.'/Notapedidos');
 							$data['list'] = $this->Notapedidos->notaPedidos_List($id_OT);
 							$this->load->model('traz-comp/Componentes');
 							$this->load->view('tareas/view_ejecutarOT', $data);

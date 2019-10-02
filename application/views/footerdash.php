@@ -39,8 +39,8 @@ function collapse(e) {
 
 }
 //Esto dispara un evento para que se cargue el Dash en forma automatica cuando ingreso.
-cargarView('<?php echo $grpDash; ?>', 'index', 'View');
-
+//cargarView('<?php echo $grpDash; ?>', 'index', 'View');
+linkTo('Test');
 
 //Listener de Envento cuando el Navegador vuelta a estar ONLINE 
 //Procesa la cola de POSTS
@@ -75,7 +75,7 @@ window.mobileAndTabletcheck = function() {
 Offline.options = {
     checks: {
         xhr: {
-            url: '/index.php/Test'
+            url: '<?php echo base_url() ?>index.php/Test'
         }
     },
     requests: false
@@ -96,14 +96,20 @@ var run = function() {
     if (Offline.state === 'up')
         Offline.check();
 }
-setInterval(run, 5000);
+setInterval(run, 20000);
 
 function conexion(){
     return $('#conexion').attr('data-state') == 'true';
 }
-       </script>
 
-       <?php 
-            $this->load->view(FRM . 'scripts');
-            $this->load->view('tareas/scripts/tarea_std');
-       ?>
+function guardarEstado(){
+    return;
+}
+
+
+</script>
+
+<?php 
+    $this->load->view(FRM . 'scripts');
+    $this->load->view('tareas/scripts/tarea_std');
+?>

@@ -57,15 +57,16 @@
 </section><!-- /.content -->
 
 <script>
-  var tablaDetalle=$('#tabladetalle').DataTable({}); 
-  function AbrirModal()
-  {
+var tablaDetalle = $('#tabladetalle').DataTable({});
+
+function AbrirModal() {
     tablaDetalle2.clear().draw();
-    document.getElementById('info').innerHTML="";
-    document.getElementById('inputarti').value="";
-    document.getElementById('add_cantidad').value="";
+    document.getElementById('info').innerHTML = "";
+    document.getElementById('inputarti').value = "";
+    document.getElementById('add_cantidad').value = "";
     $('#agregar_pedido').modal('show');
-  }
+}
+
 function ver(e) {
     var tr = $(e).closest('tr')
     var id_nota = $(tr).attr('id');
@@ -73,15 +74,15 @@ function ver(e) {
     rellenarCabecera(json);
     getEntregasPedidoOffline(id_nota);
     if (id_nota == null) {
-        alert('PEMA_ID: '+id_nota);
+        alert('PEMA_ID: ' + id_nota);
         return;
     }
- 
+
     $.ajax({
         type: 'GET',
-        url: 'index.php/almacen/Notapedido/getNotaPedidoId?id_nota='+id_nota,
+        url: 'index.php/almacen/Notapedido/getNotaPedidoId?id_nota=' + id_nota,
         success: function(data) {
-          
+
             tablaDetalle.clear().draw();
             for (var i = 0; i < data.length; i++) {
                 var tr = "<tr style='color:'>" +
@@ -90,7 +91,7 @@ function ver(e) {
                     "<td class='text-center' width='15%'><b>" + data[i]['cantidad'] + "</b></td>" +
                     "<td class='text-center' width='15%'><b>" + data[i]['entregado'] + "</b></td>" +
                     "</tr>";
-                    tablaDetalle.row.add($(tr)).draw();
+                tablaDetalle.row.add($(tr)).draw();
             }
             //DataTable('#tabladetalle');
             $('#detalle_pedido').modal('show');
@@ -103,18 +104,18 @@ function ver(e) {
     });
 
 }
-function ConsultarEntrega(e)
-{
+
+function ConsultarEntrega(e) {
     var tr = $(e).closest('tr');
     var id = $(tr).data('id');
     var json = JSON.parse(JSON.stringify($(tr).data('json')));
     rellenarCabecera(json);
     $.ajax({
         type: 'GET',
-        url: 'index.php/almacen/new/Entrega_Material/detalle?id='+id,
+        url: 'index.php/almacen/new/Entrega_Material/detalle?id=' + id,
         success: function(result) {
             var tabla = $('#modal_detalle_entrega table');
-    
+
             $(tabla).find('tbody').html('');
             result.forEach(e => {
                 $(tabla).append(
@@ -127,9 +128,9 @@ function ConsultarEntrega(e)
                     '</tr>'
                 );
             });
-         
+
             $('#modal_detalle_entrega').modal('show');
-           
+
         },
         error: function(result) {
             alert('Error');
@@ -137,14 +138,14 @@ function ConsultarEntrega(e)
         dataType: 'json'
     });
 }
-function EstadoPedido(e)
- {
+
+function EstadoPedido(e) {
 
     var id = $(e).closest('tr').data('pema');
     if (id == '' || id == null) return;
     $.ajax({
         type: 'GET',
-        url: 'index.php/almacen/new/Pedido_Material/estado?id='+id,
+        url: 'index.php/almacen/new/Pedido_Material/estado?id=' + id,
         success: function(result) {
             var tabla = $('#tablapedido');
             $(tabla).DataTable().destroy();
@@ -156,9 +157,10 @@ function EstadoPedido(e)
                     '<td class="text-center"><b>' + e.cantidad + '</b></td>' +
                     '<td class="text-center"><b>' + (e.cantidad - e.resto) +
                     '</b></td>' +
-                    '<td class="text-center"><i class="fa '+
-                    (e.resto == 0?'fa-battery-full':(e.resto < e.cantidad?'fa-battery-2':(e.resto == e.cantidad?'fa-battery-0':'')))+
-                    '"></i></td>'+
+                    '<td class="text-center"><i class="fa ' +
+                    (e.resto == 0 ? 'fa-battery-full' : (e.resto < e.cantidad ? 'fa-battery-2' :
+                        (e.resto == e.cantidad ? 'fa-battery-0' : ''))) +
+                    '"></i></td>' +
                     '</tr>'
                 );
             });
@@ -171,15 +173,16 @@ function EstadoPedido(e)
         dataType: 'json'
     });
     DataTable('#tablapedido');
- }
+}
+
 function getEntregasPedidoOffline(pema) {
     $.ajax({
         type: 'GET',
-        url: 'index.php/almacen/new/Entrega_Material/getEntregasPedidoOffline?pema='+pema,
+        url: 'index.php/almacen/new/Entrega_Material/getEntregasPedidoOffline?pema=' + pema,
         success: function(data) {
-         
-          document.getElementById('tab_2').innerHTML =data;
-          DataTable('#entregas');
+
+            document.getElementById('tab_2').innerHTML = data;
+            DataTable('#entregas');
         }
     });
 }
@@ -198,23 +201,23 @@ var tablaDeposito = $('#deposito').DataTable({});
 
 <!-- Modal Agregar -->
 <div class="modal fade" id="agregar_pedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-lg" >
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
             </div> <!-- /.modal-header  -->
-             <div class="modal-body table-responsive" id="modalBodyArticle">
+            <div class="modal-body table-responsive" id="modalBodyArticle">
                 <?php 
                 
-                $this->load->view(CMP_ALM.'/notapedido/generar_pedido');?>
+                $this->load->view(ALM.'/notapedido/generar_pedido');?>
             </div> <!-- /.modal-body -->
-                        
-                    </div> <!-- /.modal-content -->
-                </div>
-    </div> <!-- /.modal-dialog modal-lg -->
+
+        </div> <!-- /.modal-content -->
+    </div>
+</div> <!-- /.modal-dialog modal-lg -->
 <!-- Fin Modal Agregar -->
 <!-- Modal ver nota pedido-->
 <div class="modal fade" id="detalle_pedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-lg" >
+    <div class="modal-dialog modal-lg">
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#tab_1" data-toggle="tab">

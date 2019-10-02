@@ -91,8 +91,8 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 |
 | Version de Componente de Almacen
 |
-*/
-define('CMP_ALM', 'traz-comp-almacen/');  
+*/ 
+define('ALM', 'traz-comp-almacen/');  
 
 define('files', 'files/');
 
@@ -199,3 +199,6 @@ define('viewOT', true);
 # >> GPS
 define('GPS_ACC', 50);
 define('GPS_CHECK_MOBILE', false);
+
+# >>SW
+define('SW', false);

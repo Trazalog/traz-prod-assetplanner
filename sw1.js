@@ -20,7 +20,7 @@ self.addEventListener('fetch', function (event) {
         );
     } else {
         
-        if (event.request.url == 'http://localhost/index.php/Test') return false;
+        if (event.request.url == 'http://localhost/traz-prod-assetplanner/index.php/Test') return false;
         
         event.respondWith(
             NF.handle(event).then((response) => {

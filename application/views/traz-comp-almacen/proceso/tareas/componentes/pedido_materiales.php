@@ -1,19 +1,19 @@
-<input id="pema_id" type="number" class="hidden" value="<?php echo (isset($info->pema_id)?$info->pema_id:null)?>">
-<input id="ortr_id" type="number" class="hidden" value="<?php echo (isset($info->ortr_id)?$info->ortr_id:null)?>">
+<input id="pema_id" type="number" class="hidden" value="<?php echo (isset($info->pema_id) ? $info->pema_id : null) ?>">
+<input id="ortr_id" type="number" class="hidden" value="<?php echo (isset($info->ortr_id) ? $info->ortr_id : null) ?>">
 
 <div class="row">
     <div
-        class="<?php echo (isset($info->pema_id)?'hidden':null)?>  col-xs-12 col-sm-12 col-md-12 <?php echo(viewOT?'hidden':null)?>">
+        class="<?php echo (isset($info->pema_id) ? 'hidden' : null) ?>  col-xs-12 col-sm-12 col-md-12 <?php echo (viewOT ? 'hidden' : null) ?>">
         <div class="form-group">
             <label>Justificacíon:</label>
-            <textarea id="just" type="text" class="form-control <?php echo (isset($info->pema_id)?'hidden':null)?>"
+            <textarea id="just" type="text" class="form-control <?php echo (isset($info->pema_id) ? 'hidden' : null) ?>"
                 placeholder="Ingrese Justificación..."></textarea>
         </div>
     </div>
     <div class="col-xs-6 col-sm-6 col-md-6">
         <div class="form-group">
             <label>Seleccionar Artículo:</label>
-            <?php $this->load->view(CMP_ALM.'/articulo/componente'); ?>
+            <?php $this->load->view(ALM . '/articulo/componente');?>
         </div>
     </div>
     <div class="col-xs-3 col-sm-3 col-md-3">
@@ -37,17 +37,16 @@
     <tbody>
     </tbody>
 </table>
-<div class="modal-footer <?php echo (isset($info->pema_id)?'hidden':null)?>">
+<div class="modal-footer <?php echo (isset($info->pema_id) ? 'hidden' : null) ?>">
     <?php
-    if(isset($info->modal))
-    {
-        echo '<button class="btn btn-primary" style="float:right;"
+if (isset($info->modal)) {
+    echo '<button class="btn btn-primary" style="float:right;"
         onclick="lanzarPedidoModal()">Hecho</button>';
-    }else{
+} else {
     echo '<button class="btn btn-primary" style="float:right;"
         onclick="lanzarPedido()">Hecho</button>';
-    }
-        ?>
+}
+?>
 </div>
 <script>
 var tablaDetalle2 = $('#tabladetalle2').DataTable({});
@@ -258,12 +257,19 @@ function set_pedido() {
             clear();
         },
         error: function() {
-
             data = {
                 arti_id: id,
                 cantidad: cant
             };
-            var tr = "<tr class='celdas' data-json='[" + JSON.stringify(data) + "]'>" +
+
+            detalle = {
+                arti_id: id,
+                cantidad: cant,
+                detalle: selectItem
+            };
+
+            var tr = "<tr class='celdas detalle-pedido' data-json='[" + JSON.stringify(data) +
+                "]' data-articulo='" + JSON.stringify(detalle) + "'>" +
                 "<td class='text-light-blue'>" +
                 "<i class='fa fa-fw fa-pencil' style='cursor: pointer;' title='Editar' onclick='edit_cantidad(this)'></i>" +
                 "<i class='fa fa-fw fa-times-circle' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
@@ -283,10 +289,10 @@ function lanzarPedido() {
         },
         dataType: 'json',
         type: 'POST',
-        url: '<?php echo base_url(CMP_ALM) ?>new/Pedido_Material/pedidoNormal',
+        url: '<?php echo base_url(ALM) ?>new/Pedido_Material/pedidoNormal',
         success: function(result) {
             if (result.status) {
-                linkTo('<?php echo CMP_ALM ?>Notapedido');
+                linkTo('<?php echo ALM ?>Notapedido');
             } else {
                 alert(result.msj);
             }
@@ -312,7 +318,7 @@ function lanzarPedidoModal() {
     año = fecha.getFullYear();
     fecha = dia + '/' + mes + '/' + año;
     document.getElementById('pema_id').value = null;
-    modal = '<?php echo $info->modal;?>';
+    modal = '<?php echo $info->modal; ?>';
     data = {
         id_notaPedido: notaid,
         fecha: fecha,
@@ -321,10 +327,27 @@ function lanzarPedidoModal() {
         justificacion: "",
         estado: " Esperando Conexión.."
     };
+
+    //Detalle Articulos
+    var articulos = [];
+    var deta_articulos = [];
+    $('#tabladetalle2 tbody').find('tr').each(function() {
+        json = "";
+        json = JSON.parse($(this).attr('data-json'));
+        articulos.push(json[0]);
+
+        json = $(this).attr('data-articulo');
+        deta_articulos.push(JSON.parse(json));
+    });
+    articulos = JSON.stringify(articulos);
+    deta_articulos = JSON.stringify(deta_articulos);
+
+
     html = "";
-    html += "<tr data-json='" + JSON.stringify(data) + "' id='" + data.id_notaPedido + "'>";
+    html += "<tr data-json='" + JSON.stringify(data) + "' id='" + data.id_notaPedido + "' data-detalle='" +
+        deta_articulos + "'>";
     html +=
-        '<td class="text-center"> <i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer;margin:5px;" title="Detalle Pedido Materiales"></i> </td>';
+        '<td class="text-center"> <i onclick="verDetalleOffiline(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer;margin:5px;" title="Detalle Pedido Materiales"></i> </td>';
     html += '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-blue estado">' + data
         .id_notaPedido + '</span></td>';
     html += '<td class="text-center"><span data-toggle="tooltip" class="badge bg-yellow estado">' + data.id_ordTrabajo +
@@ -339,14 +362,6 @@ function lanzarPedidoModal() {
     //Guardar Estado en Sesion
     guardarEstado($('#task').val() + '_pedidos', html);
 
-    var articulos = [];
-    $('#tabladetalle2 tbody').find('tr').each(function() {
-        json = "";
-        json = JSON.parse($(this).attr('data-json'));
-        articulos.push(json[0]);
-    });
-    articulos = JSON.stringify(articulos);
-    console.log(articulos);
 
     if (conexion()) {
         $.ajax({
@@ -355,7 +370,7 @@ function lanzarPedidoModal() {
             success: function() {
                 $('#' + notaid).find('.ped-estado').html(
                     '<span data-toggle="tooltip" title="" class="badge bg-orange estado">Solicitado</span>'
-                    );
+                );
                 alert('Hecho');
             },
             error: function() {
@@ -448,4 +463,53 @@ function ajax(options) {
     return $.ajax(options);
 }
 //Fin redifinicion//
+
+function verDetalleOffiline(e) {
+    console.log('OFFLINE | Detalle Pedido');
+    var fecha = fechaActual();
+    var aux = {
+        id_notaPedido: "-",
+        justificacion: "-",
+        fecha,
+        estado: "Esperando Conexión",
+        id_ordTrabajo: $('#ot').val()
+    }
+    rellenarCabecera(aux);
+
+    json = $(e).closest('tr').attr('data-detalle');
+
+    json = JSON.parse(json);
+
+    tablaDetalle.clear().draw();
+
+    json.forEach(function(e) {
+        console.log(e);
+
+        var tr = "<tr>" +
+            "<td>" + e.detalle.barcode + "</td>" +
+            "<td>" + e.detalle.descripcion + "</td>" +
+            "<td class='text-center' width='15%'><b>" + e.cantidad + "</b></td>" +
+            "<td class='text-center' width='15%'><b>0</b></td>" +
+            "</tr>";
+        tablaDetalle.row.add($(tr)).draw();
+    });
+    //DataTable('#tabladetalle');
+    $('#detalle_pedido').modal('show');
+
+}
+
+
+function fechaActual() {
+    var date = new Date();
+
+    var day = date.getDate();
+    var month = date.getMonth() + 1;
+    var year = date.getFullYear();
+
+    if (month < 10) {
+        return day + "-0" + month + "-" + year;
+    } else {
+        return day + "-" + month + "-" + year;
+    }
+}
 </script>

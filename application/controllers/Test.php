@@ -12,6 +12,24 @@ class Test extends CI_Controller
 
     public function index()
     {
+         $this->load->model('traz-comp/Componentes');
+       
+        #COMPONENTE ARTICULOS
+        $data['items'] = $this->Componentes->listaArticulos();
+        $data['lang'] = lang_get('spanish', 'Ejecutar OT');
+
+
+        if($ot) {
+            $info = new stdClass();
+            $info->ortr_id = $ot;
+            $data['info'] = $info;
+        }
+        $data['hecho'] = false;
+        $this->load->view(ALM.'/notapedido/generar_pedido', $data);
+    }
+
+    public function index2()
+    {
         return true;
     }
 

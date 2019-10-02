@@ -102,12 +102,6 @@ if (!function_exists('info_orden')) {
         }
     }
 
-    function empresa(){
-
-        $ci =& get_instance();			
-        $userdata  = $ci->session->userdata('user_data');
-		return  $userdata[0]['id_empresa'];
-    }
     function usuario_bpm(){
 
         $ci =& get_instance();			

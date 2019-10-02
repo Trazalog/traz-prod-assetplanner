@@ -13,8 +13,8 @@ class dash extends CI_Controller {
 		$this->load->model('Calendar');
 		$this->load->model('Otrabajos');
 		$this->load->model('Tareas');
-		$this->load->model(CMP_ALM.'/Notapedidos');
-		$this->load->model(CMP_ALM.'/new/Entregas_Materiales'); 
+		$this->load->model(ALM.'Pedidos');
+		$this->load->model(ALM.'/new/Entregas_Materiales'); 
 	}
 
 	/**
@@ -105,12 +105,14 @@ class dash extends CI_Controller {
 					$caseId = $data['tareas'][$i]['caseId'];
 					$id = $this->Otrabajos->ObtenerOTporCaseId($caseId);
 					$data['tareas'][$i]['id_Ot'] = $id;
-					$data['tareas'][$i]['pedidos'] = $this->Notapedidos->getNotasxOT($id);
+
+					$pedidos = $this->Pedidos->xOT($id);
+					$data['tareas'][$i]['pedidos'] = $pedidos;
 					
-					for($j=0;$j<count($data['tareas'][$i]['pedidos']);$j++)
-					{
-						$data['tareas'][$i]['pedidos'][$j]['entregas'] = $this->Entregas_Materiales->getEntregasPedido($data['tareas'][$i]['pedidos'][$j]['id_notaPedido']);
-					}
+					// for($j=0;$j<count($data['tareas'][$i]['pedidos']);$j++)
+					// {
+					// 	$data['tareas'][$i]['pedidos'][$j]['entregas'] = $this->Entregas_Materiales->getEntregasPedido($data['tareas'][$i]['pedidos'][$j]['id_notaPedido']);
+					// }
 
 					//Obtener Formularios de Subtareas
 					$subtareas = $this->Tareas->getSubtareas($id);

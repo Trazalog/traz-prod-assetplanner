@@ -560,7 +560,7 @@ class Calendario extends CI_Controller {
 	function verEjecutarOT($idOt){
 		
 		$this->load->model('traz-comp/Componentes');
-		$this->load->model(CMP_ALM.'new/Pedidos_Materiales');
+		$this->load->model(ALM.'new/Pedidos_Materiales');
 		
 		#COMPONENTE ARTICULOS
 		$data['items'] = $this->Componentes-> listaArticulos();
