@@ -292,7 +292,39 @@ function lanzarPedido() {
         url: '<?php echo base_url(ALM) ?>new/Pedido_Material/pedidoNormal',
         success: function(result) {
             if (result.status) {
-                linkTo('<?php echo ALM ?>Notapedido');
+
+                data = {
+                    id_notaPedido: $('#pema_id').val(),
+                    fecha: fechaActual(),
+                    id_ordTrabajo: $('#ot').val(),
+                    descripcion: $('#info-tarea').val(),
+                    justificacion: "",
+                    estado: "Solicitado"
+                };
+
+
+                html = "";
+                html += "<tr data-json='" + JSON.stringify(data) + "' id='" + data.id_notaPedido +
+                    "'>";
+                html +=
+                    '<td class="text-center"> <i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer;margin:5px;" title="Detalle Pedido Materiales"></i> </td>';
+                html +=
+                    '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-blue estado">' +
+                    data
+                    .id_notaPedido + '</span></td>';
+                html +=
+                    '<td class="text-center"><span data-toggle="tooltip" class="badge bg-yellow estado">' +
+                    data.id_ordTrabajo +
+                    '</span></td>';
+                html += '<td class="text-center">' + data.fecha + '</td>';
+                html += '<td>' + data.descripcion + ' ' + data.justificacion + '</td>';
+                html += '<td class="text-center ped-estado"><span data-toggle="tooltip" title="" class="badge bg-orange estado">Solicitado</span></td>';
+                html += '</tr>';
+
+                tablaDeposito.row.add($(html)).draw();
+
+                $('.modal').modal('hide');
+
             } else {
                 alert(result.msj);
             }
@@ -305,6 +337,12 @@ function lanzarPedido() {
 }
 
 function lanzarPedidoModal() {
+
+
+    if (conexion()) {
+        lanzarPedido();
+        return;
+    }
 
     console.log('ALM | Pedido Materiales...');
 

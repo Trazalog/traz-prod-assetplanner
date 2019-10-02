@@ -133,8 +133,7 @@ $('tbody tr').click(function() {
 
     WaitingOpen();
     if (!$(this).attr('tags').includes('#pedidoMaterial')) {
-        $(".content").load("<?php echo base_url(); ?>index.php/Tarea/detaTarea/<?php echo $permission; ?>/" +
-            id);
+        linkTo("Tarea/detaTarea/<?php echo $permission; ?>/" + id);
     } else {
         linkTo('almacen/Proceso/detalleTarea/' + id);
     }
@@ -147,7 +146,7 @@ $('tbody tr').click(function() {
 function verTarea(idTarBonita) {
 
     WaitingOpen();
-    $(".content").load("<?php echo base_url(); ?>index.php/Tarea/detaTarea/<?php echo $permission; ?>/" + idTarBonita);
+    linkTo("Tarea/detaTarea/<?php echo $permission; ?>/" + idTarBonita);
     WaitingClose();
 
 }

@@ -22,10 +22,9 @@ $('.menu .link').on('click', function() {
 
 function linkTo(uri = '') {
     if (link == '' && uri == '') return;
-    $('#content').empty();
-    $('#content').load('<?php base_url()?>' + (uri == '' ? link : uri));
     link = (uri == '' ? link : uri);
-
+    $('#content').empty();
+    $('#content').load('<?php echo base_url()?>' + link);
 }
 
 function collapse(e) {

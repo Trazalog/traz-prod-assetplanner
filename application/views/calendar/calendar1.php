@@ -160,7 +160,7 @@ $('#calendar').fullCalendar({
                         //start:to,
                         start: from,
                         end: to,
-                        title: $(this).attr('descripcion'),
+                        title:  $(this).attr('id_orden') + ' | ' +$(this).attr('codigo') +' | '+ $(this).attr('descripcion'),
                         codigo: $(this).attr('nro'),
                         equipo: $(this).attr('codigo'),
                         id_orden: $(this).attr('id_orden'),
