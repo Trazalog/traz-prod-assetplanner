@@ -100,7 +100,7 @@
           <input type="hidden" name="id-comp" class="id-comp" id="id-comp" value="" disabled>
           <div class="row">
             <div class="col-xs-12 col-sm-6">
-              <label for="lectura_inicio">Horómetro inicio <strong style="color: #dd4b39">*</strong> :</label>
+              <label for="lectura_inicio">Horómetro inicio:</label>
               <input type="number" class="form-control Horómetro_inicio" name="lectura_inicio" id="lectura_inicio" step="any" lang="en-150" placeholder="">
             </div>
             <div class="col-xs-12 col-sm-6">
@@ -108,7 +108,7 @@
               <input type="text" class="form-control fecha_inicio" id="fecha_inicio" value="" placeholder="">
             </div>
             <div class="col-xs-12 col-sm-6">
-              <label for="lectura_fin">Horómetro fin <strong style="color: #dd4b39">*</strong> :</label>
+              <label for="lectura_fin">Horómetro fin:</label>
               <input type="number" class="form-control lectura_fin" name="lectura_fin" id="lectura_fin" step="any" lang="en-150" placeholder="">
             </div>
             <div class="col-xs-12 col-sm-6">
@@ -669,12 +669,12 @@
       var hayError3 = false;
 
       // validacion Lecturas Realizadas
-      if ($('#lectura_inicio').val() == '') {
-        hayError3 = true;       
-      }
-      if ($('#lectura_fin').val() == '') {
-        hayError3 = true;        
-      }
+      // if ($('#lectura_inicio').val() == '') {
+      //   hayError3 = true;       
+      // }
+      // if ($('#lectura_fin').val() == '') {
+      //   hayError3 = true;        
+      // }
       if ($('#fecha_inicio').val() == '') {
         hayError3 = true;      
       }
