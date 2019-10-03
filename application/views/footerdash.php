@@ -40,3 +40,27 @@ function collapse(e) {
 cargarView('<?php echo $grpDash; ?>', 'index', 'View');
 //linkTo('Test/index1');
         </script>
+
+
+
+        <script>
+function estado(e) {
+    switch (e) {
+        case 'AC':
+            return '<span data-toggle="tooltip" title="" class="badge bg-green estado">Activo</span>';
+            break;
+        case 'RE':
+            return '<span data-toggle="tooltip" title="" class="badge bg-yellow estado">Reparación</span>';
+            break;
+        case 'AL':
+            return '<span data-toggle="tooltip" title="" class="badge bg-blue estado">Alta</span>';
+            break;
+        case 'IN':
+            return '<span data-toggle="tooltip" title="" class="badge bg-red estado">Inhabilitado</span>';
+            break;
+        default:
+            return '<span data-toggle="tooltip" title="" class="badge bg-gray estado">S/E</span>';
+            break;
+    }
+}
+        </script>

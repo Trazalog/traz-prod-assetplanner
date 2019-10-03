@@ -99,7 +99,7 @@ class Kpi extends CI_Controller
                 $fi = $this->Kpis->estadoEquipoAlta($o->id_equipo, $fi, true);
 
                 #Ajustar Rango de Fecha con Respecto a la fecha que se dio de baja al Equipo
-                $ff = $this->Kpis->estadoEquipoBaja($o->id_equipo, $ff, true);
+                #$ff = $this->Kpis->estadoEquipoBaja($o->id_equipo, $ff, true);
 
                 #Acumular Disponibilidad del Equipo entre FI y FF
                 $res = $this->calcularDisponibilidad($o->id_equipo, $fi, $ff);

@@ -76,13 +76,7 @@
                   echo '<td>'.$a['depro'].'</td>';
                   echo '<td>'.$a['desec'].'</td>';
                   echo '<td>'.$a['decri'].'</td>';
-                  echo '<td>';
-                    if($a['estadoEquipo'] == 'AC' ) echo '<small class="label pull-left bg-green">Activo</small>' ;
-                    if($a['estadoEquipo'] == 'IN' ) echo '<small class="label pull-left bg-yellow">Inhabilitado</small>';
-                    if($a['estadoEquipo'] == 'RE' ) echo '<small class="label pull-left bg-orange">Reparación</small>' ;
-                    if($a['estadoEquipo'] == 'AL' ) echo '<small class="label pull-left bg-blue">Alta</small>' ;
-                    //: '<small class="label pull-left bg-teal">Alta</small>'))).'</td>';
-                  echo '</tr>';
+                  echo '<td>'.estado($a['estadoEquipo']).'</tr>';
                 }
               ?>
                         </tbody>
@@ -180,34 +174,8 @@ function habilitarEquipo(idequipo) {
         type: 'POST',
         url: 'index.php/Equipo/estado_alta',
         success: function(data) {
-            console.table(data[0]['estado']);
-            console.table(data);
-            if (data[0]['estado'] == 'AL') {
-                var id_equipo = idequipo;
-                var lectura = data[0]['ultima_lectura'];
-                var fecha = data[0]['fecha_ultimalectura'];
-                var observacion = 'Lectura al cargar equipo';
-                var operario = '-';
-                var turno = 'alta';
-                var estado = 'AC';
-                parametros = {
-                    'id_equipo': id_equipo,
-                    'lectura': lectura,
-                    'fecha': fecha,
-                    'observacion': observacion,
-                    'operario': operario,
-                    'turno': turno,
-                    'estado': estado,
-                }
-                console.log(parametros + 'parametros: ');
-                alta_historial_lectura(parametros);
-                cambiar_estado(id_equipo);
-            } else if (data[0]['estado'] != 'AN') {
-                cambiar_estado(idequipo);
-            } else {
-                //alert("Error al habilitar el equipo");
-                console.info("Error al cambiar el estado del equipo...")
-            }
+            WaitingClose();
+            linkTo();
         },
         error: function(result) {
             console.log(result);
@@ -601,45 +569,10 @@ $(".fa-hourglass-half").click(function(e) {
     $('#maquina').val($nom_equipo);
     //console.log("nom_equipo: "+$nom_equipo);
 
-    var $estado = $(this).parents("tr").find("td").eq(7).find("small").html();
+    var $estado = $(this).closest('tr').find(".estado").html();
     console.log("estado: " + $estado);
 
-    /*if($estado == "Alta") {
-      $.ajax({
-        async: true,
-        data: {idequipo: $id_equipo},
-        dataType: 'json',
-        type: 'POST',
-        url: 'index.php/Equipo/estado_alta', 
-        success: function(data){
-          console.table(data[0]['estado']);
-          if (data[0]['estado'] == 'AL') {
-            var id_equipo   = $id_equipo;
-            var lectura     = data[0]['ultima_lectura'];
-            var fecha       = data[0]['fecha_ultimalectura'];
-            var observacion = 'Lectura al cargar equipo';
-            var operario    = '-';
-            var turno       = 'alta';
-            var estado      = 'AC';
-            parametros = {
-              'id_equipo'   : id_equipo,
-              'lectura'     : lectura,
-              'fecha'       : fecha,
-              'observacion' : observacion,
-              'operario'    : operario,
-              'turno'       : turno,
-              'estado'      : estado,
-            }
-            alta_historial_lectura(parametros);
-            cambiar_estado(id_equipo);
-          }
-        },
-        error: function(result){
-          console.log(result);
-        }
-      });
-    } */
-
+   
     $.ajax({
         data: {
             idequipo: $id_equipo
@@ -1147,9 +1080,10 @@ function llenarModal(data) {
                 data[i]['id_lectura'] + '"></i>',
                 data[i]['lectura'],
                 data[i]['fecha'],
-                data[i]['operario'],
+                data[i]['operario_nom'],
                 data[i]['turno'],
-                data[i]['observacion']
+                data[i]['observacion'],
+                estado(data[i]['estado'])
             ]).draw();
         }
     } else {
@@ -2416,6 +2350,7 @@ $('#tablaempresa').DataTable({
                             <th>Operario</th>
                             <th>Turno</th>
                             <th>Observación</th>
+                            <th>Estado</th>
                         </tr>
                     </thead>
                     <tbody>

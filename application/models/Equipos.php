@@ -1,17 +1,21 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
-class Equipos extends CI_Model {
+class Equipos extends CI_Model
+{
 
-    function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
 
-	function equipos_List()
-  {
-		$userdata = $this->session->userdata('user_data');
-    $empId = $userdata[0]['id_empresa'];     // guarda usuario logueado
+    public function equipos_List()
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId = $userdata[0]['id_empresa']; // guarda usuario logueado
 
-    $this->db->select('equipos.id_equipo,
+        $this->db->select('equipos.id_equipo,
         equipos.codigo,
         equipos.descripcion AS deeq,
         equipos.estado AS estadoEquipo,
@@ -28,239 +32,221 @@ class Equipos extends CI_Model {
         criticidad.descripcion AS decri,
         proceso.id_proceso,
         proceso.descripcion AS depro');
-    $this->db->from('equipos');
-    $this->db->join('sector', 'sector.id_sector=equipos.id_sector');
-    $this->db->join('empresas', 'empresas.id_empresa=equipos.id_empresa');
-    $this->db->join('unidad_industrial', 'unidad_industrial.id_unidad=equipos.id_unidad');
-    $this->db->join('criticidad', 'criticidad.id_criti=equipos.id_criticidad');
-    $this->db->join('area', 'area.id_area=equipos.id_area');
-    $this->db->join('proceso', 'proceso.id_proceso=equipos.id_proceso');
-    $this->db->where('equipos.estado !=', 'AN');
-    $this->db->where('equipos.id_empresa', $empId);
-    $this->db->order_by('equipos.id_equipo', 'ASC');
-    $query = $this->db->get();
+        $this->db->from('equipos');
+        $this->db->join('sector', 'sector.id_sector=equipos.id_sector');
+        $this->db->join('empresas', 'empresas.id_empresa=equipos.id_empresa');
+        $this->db->join('unidad_industrial', 'unidad_industrial.id_unidad=equipos.id_unidad');
+        $this->db->join('criticidad', 'criticidad.id_criti=equipos.id_criticidad');
+        $this->db->join('area', 'area.id_area=equipos.id_area');
+        $this->db->join('proceso', 'proceso.id_proceso=equipos.id_proceso');
+        $this->db->where('equipos.estado !=', 'AN');
+        $this->db->where('equipos.id_empresa', $empId);
+        $this->db->order_by('equipos.id_equipo', 'ASC');
+        $query = $this->db->get();
 
-	  if ($query->num_rows()!=0)
-		{
-			$equipos = $query->result_array();
-      foreach ($equipos as &$valor) 
-      {
-        if( ($valor['estadoEquipo'] == 'AC') || ($valor['estadoEquipo'] == 'RE'))
-        {
-            $idEquipo = $valor['id_equipo'];
-            $this->db->select('*');
-            $this->db->from('historial_lecturas');
-            $this->db->where('id_equipo', $valor['id_equipo']);
-            $this->db->order_by('fecha', 'DESC');
-            $this->db->limit(1);
-            
-            $query2 = $this->db->get();
-            $estado = $query2->result_array();
-            $valor['estado'] = $estado[0]['estado'];
+        if ($query->num_rows() != 0) {
+            $equipos = $query->result_array();
+            foreach ($equipos as &$valor) {
+                if (($valor['estadoEquipo'] == 'AC') || ($valor['estadoEquipo'] == 'RE')) {
+                    $idEquipo = $valor['id_equipo'];
+                    $this->db->select('*');
+                    $this->db->from('historial_lecturas');
+                    $this->db->where('id_equipo', $valor['id_equipo']);
+                    $this->db->order_by('fecha', 'DESC');
+                    $this->db->limit(1);
+
+                    $query2 = $this->db->get();
+                    $estado = $query2->result_array();
+                    $valor['estado'] = $estado[0]['estado'];
+                } else {
+                    $valor['estado'] = $valor['estadoEquipo'];
+                }
+            }
+            return $equipos;
+        } else {
+            return [];
         }
-        else {
-            $valor['estado'] = $valor['estadoEquipo'];   
+    }
+
+    // Da de baja equipos (AN)
+    public function baja_equipos($data, $idequipo)
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId = $userdata[0]['id_empresa']; // empresa logueado
+        $this->db->where('equipos.id_empresa', $empId);
+        $this->db->where('id_equipo', $idequipo);
+        $query = $this->db->update('equipos', $data);
+
+        return $query;
+    }
+
+    public function getareas()
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empresaId = $userdata[0]['id_empresa'];
+        $query = $this->db->get_where('area', array('id_empresa' => $empresaId, 'estado' => 'AC'));
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return false;
         }
-      }
-      return $equipos;
-		}
-		else
-		{
-			return [];
-		}
-	}
+    }
 
-	// Da de baja equipos (AN)
-	function baja_equipos($data, $idequipo)
-	{
-			$userdata = $this->session->userdata('user_data');
-			$empId    = $userdata[0]['id_empresa'];     // empresa logueado
-			$this->db->where('equipos.id_empresa', $empId);
-			$this->db->where('id_equipo', $idequipo);
-			$query = $this->db->update('equipos',$data);
+    public function getequipofichas($id)
+    {
 
-			return $query;
-	}
+        $this->db->select('ficha_equipo.*');
+        $this->db->from('ficha_equipo');
+        $this->db->join('equipos', 'equipos.id_equipo = ficha_equipo.id_equipo');
+        $this->db->where('equipos.id_equipo', $id);
+        $query = $this->db->get();
 
-	function getareas()
-	{
-			$userdata  = $this->session->userdata('user_data');
-			$empresaId = $userdata[0]['id_empresa'];
-			$query     = $this->db->get_where('area',array('id_empresa' => $empresaId, 'estado' => 'AC'));
-			if($query->num_rows()>0){
-					return $query->result();
-			}
-			else{
-					return false;
-					}
-	}
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return false;
+        }
+    }
 
-	function getequipofichas($id){
+    public function getsector()
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empresaId = $userdata[0]['id_empresa'];
+        $query = $this->db->get_where('sector', array('id_empresa' => $empresaId));
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return false;
+        }
+    }
 
-		$this->db->select('ficha_equipo.*');
-    	$this->db->from('ficha_equipo');
-    	$this->db->join('equipos', 'equipos.id_equipo = ficha_equipo.id_equipo');
-    	$this->db->where('equipos.id_equipo', $id);
-    	$query= $this->db->get();
+    // Trae criticidad y llena el select - Listo
+    public function getcriti()
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId = $userdata[0]['id_empresa'];
 
-		if($query->num_rows()>0){
-		    return $query->result();
-		}
-		else{
-		    return false;
-		    }
-	}
-
-
-	function getsector()
-	{
-			$userdata  = $this->session->userdata('user_data');
-			$empresaId = $userdata[0]['id_empresa'];
-		$query     = $this->db->get_where('sector',array('id_empresa' => $empresaId));
-		if($query->num_rows()>0){
-				return $query->result();
-		}
-		else{
-		    return false;
-		    }
-	}
-
-	// Trae criticidad y llena el select - Listo
-	function getcriti()
-  {
-		$userdata = $this->session->userdata('user_data');
-    $empId = $userdata[0]['id_empresa'];
-
-    $this->db->select('criticidad.*');
-    $this->db->from('criticidad');
-		$this->db->where('criticidad.id_empresa', $empId);
+        $this->db->select('criticidad.*');
+        $this->db->from('criticidad');
+        $this->db->where('criticidad.id_empresa', $empId);
         $this->db->where('criticidad.estado', 'AC');
-		$query= $this->db->get();
-		if($query->num_rows()>0){
-		    return $query->result();
-		}
-		else{
-		    return false;
-		}
-	}
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return false;
+        }
+    }
 
+    // Trae grupo por empresa y llena el select - Listo
+    public function getgrupos()
+    {
 
+        $userdata = $this->session->userdata('user_data');
+        $empId = $userdata[0]['id_empresa'];
 
-	// Trae grupo por empresa y llena el select - Listo
-	function getgrupos()
-	{
+        $this->db->select('grupo.*');
+        $this->db->from('grupo');
+        $this->db->where('grupo.id_empresa', $empId);
+        $this->db->where('grupo.estado', 'AC');
+        $query = $this->db->get();
 
-			$userdata = $this->session->userdata('user_data');
-			$empId = $userdata[0]['id_empresa'];
-
-			$this->db->select('grupo.*');
-			$this->db->from('grupo');
-		$this->db->where('grupo.id_empresa', $empId);
-				$this->db->where('grupo.estado', 'AC');
-		$query = $this->db->get();
-
-			if($query->num_rows()>0){
-					return $query->result();
-			}
-			else{
-					return false;
-			}
-	}
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return false;
+        }
+    }
 
     // Trae proceso y llena el select - Listo
-	function getprocesos()
-	{
+    public function getprocesos()
+    {
 
-			$userdata = $this->session->userdata('user_data');
-			$empId = $userdata[0]['id_empresa'];
+        $userdata = $this->session->userdata('user_data');
+        $empId = $userdata[0]['id_empresa'];
 
-			$this->db->select('proceso.*');
-			$this->db->from('proceso');
-			$this->db->where('proceso.id_empresa', $empId);
-					$this->db->where('proceso.estado', 'AC');
-			$query = $this->db->get();
+        $this->db->select('proceso.*');
+        $this->db->from('proceso');
+        $this->db->where('proceso.id_empresa', $empId);
+        $this->db->where('proceso.estado', 'AC');
+        $query = $this->db->get();
 
-			if($query->num_rows()>0){
-					return $query->result();
-			}
-			else{
-					return false;
-			}
-	}
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return false;
+        }
+    }
 
     // Trae empresa logueada (Listo)
-	function getempresa()
-  {
+    public function getempresa()
+    {
 
-		$userdata = $this->session->userdata('user_data');
+        $userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];
-		$this->db->select('empresas.id_empresa,
+        $this->db->select('empresas.id_empresa,
 							empresas.descripcion');
-    	$this->db->from('empresas');
-		$this->db->where('empresas.id_empresa', $empId);
-    	$query= $this->db->get();
-    	if($query->num_rows()>0){
-		    return $query->result();
-		}
-		else{
-		    return false;
-		}
-	}
+        $this->db->from('empresas');
+        $this->db->where('empresas.id_empresa', $empId);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return false;
+        }
+    }
 
+    // function getgrupo(){
 
-	// function getgrupo(){
+    //     $query= $this->db->get_where('grupo');
+    //     if($query->num_rows()>0){
+    //         return $query->result();
+    //     }
+    //     else{
+    //         return false;
+    //     }
 
-		// 	$query= $this->db->get_where('grupo');
-		// 	if($query->num_rows()>0){
-		// 	    return $query->result();
-		// 	}
-		// 	else{
-		// 	    return false;
-		// 	}
+    // }
 
-	// }
+    // Trae etapa/sector y llena el select - Listo
+    public function getetapas()
+    {
 
-
-
-	// Trae etapa/sector y llena el select - Listo
-  	function getetapas(){
-
-  		$userdata = $this->session->userdata('user_data');
+        $userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];
 
         $this->db->select('sector.*');
         $this->db->from('sector');
-		$this->db->where('sector.id_empresa', $empId);
+        $this->db->where('sector.id_empresa', $empId);
         $this->db->where('sector.estado', 'AC');
-		$query = $this->db->get();
-        if($query->num_rows()>0){
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
             return $query->result();
-        }
-        else{
+        } else {
             return false;
         }
     }
 
     // Trae contratistas segun empresa logueada - Listo
-	function getcontra()
+    public function getcontra()
     {
         $userdata = $this->session->userdata('user_data');
-        $empId    = $userdata[0]['id_empresa'];
+        $empId = $userdata[0]['id_empresa'];
 
         $this->db->select('contratistas.*');
         $this->db->from('contratistas');
-		$this->db->where('contratistas.id_empresa', $empId);
-		$query = $this->db->get();
-		if($query->num_rows()>0){
-		    return $query->result();
-		}
-		else{
-		    return false;
-		}
+        $this->db->where('contratistas.id_empresa', $empId);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return false;
+        }
 
-	}
-	// Trae todas las marcas y llena el select - Listo
-	function getmarcas(){
+    }
+    // Trae todas las marcas y llena el select - Listo
+    public function getmarcas()
+    {
         $userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];
 
@@ -269,16 +255,16 @@ class Equipos extends CI_Model {
         $this->db->where('marcasequipos.id_empresa', $empId);
         $this->db->where('marcasequipos.estado', 'AC');
         $query = $this->db->get();
-        if($query->num_rows()>0){
+        if ($query->num_rows() > 0) {
             return $query->result();
-        }
-        else{
+        } else {
             return false;
-            }
+        }
 
     }
     // Trae todas las marcas y llena el select - Listo
-    function getclientes(){
+    public function getclientes()
+    {
         $userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];
 
@@ -287,186 +273,195 @@ class Equipos extends CI_Model {
         $this->db->where('admcustomers.estado !=', 'AN');
         $this->db->where('admcustomers.id_empresa', $empId);
         $query = $this->db->get();
-        if($query->num_rows()>0){
+        if ($query->num_rows() > 0) {
             return $query->result();
-        }
-        else{
+        } else {
             return false;
-            }
+        }
 
     }
 
     // Trae unidades industriales - Listo
-	function getunidads(){
+    public function getunidads()
+    {
 
-		$userdata = $this->session->userdata('user_data');
+        $userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];
 
         $this->db->select('unidad_industrial.*');
         $this->db->from('unidad_industrial');
-		$this->db->where('unidad_industrial.id_empresa', $empId);
-		$query = $this->db->get();
+        $this->db->where('unidad_industrial.id_empresa', $empId);
+        $query = $this->db->get();
 
-		if($query->num_rows()>0){
-		    return $query->result();
-		}
-		else{
-		    return false;
-		}
-	}
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return false;
+        }
+    }
 
-	// Agrega unidad industrial y devuelve id de insercion - Listo
-	function agregar_unidades($data){
+    // Agrega unidad industrial y devuelve id de insercion - Listo
+    public function agregar_unidades($data)
+    {
 
-		$userdata = $this->session->userdata('user_data');
+        $userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];
-		$data['id_empresa'] = $empId;
+        $data['id_empresa'] = $empId;
 
-		$this->db->insert('unidad_industrial',$data);
-		$query = $this->db->insert_id();
-		return $query;
-	}
+        $this->db->insert('unidad_industrial', $data);
+        $query = $this->db->insert_id();
+        return $query;
+    }
 
-	// Agrega las areas nuevas - Listo
-	function agregar_area($data){
+    // Agrega las areas nuevas - Listo
+    public function agregar_area($data)
+    {
 
-		$userdata = $this->session->userdata('user_data');
+        $userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];
         $data['id_empresa'] = $empId;
         $data['estado'] = 'AC';
-		$this->db->insert("area",$data);
-		$query = $this->db->insert_id();
-    	return $query;
-	}
+        $this->db->insert("area", $data);
+        $query = $this->db->insert_id();
+        return $query;
+    }
 
-	// Agrega las procesos nuevos - Listo
-	function agregar_proceso($data){
+    // Agrega las procesos nuevos - Listo
+    public function agregar_proceso($data)
+    {
 
-		$userdata = $this->session->userdata('user_data');
+        $userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];
         $data['id_empresa'] = $empId;
         $data['estado'] = 'AC';
-		$this->db->insert("proceso",$data);
-		$query = $this->db->insert_id();
-    	return $query;
-	}
+        $this->db->insert("proceso", $data);
+        $query = $this->db->insert_id();
+        return $query;
+    }
 
-	// Agrega sector/etapa nuevos - Listo
-	function agregar_etapa($data){
+    // Agrega sector/etapa nuevos - Listo
+    public function agregar_etapa($data)
+    {
 
-		$userdata = $this->session->userdata('user_data');
+        $userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];
         $data['id_empresa'] = $empId;
         $data['estado'] = 'AC';
-		$this->db->insert("sector",$data);
-		$query = $this->db->insert_id();
-    	return $query;
-	}
+        $this->db->insert("sector", $data);
+        $query = $this->db->insert_id();
+        return $query;
+    }
 
-	// Agrega criticidad nueva - Listo
-   	function agregar_criti($data){
+    // Agrega criticidad nueva - Listo
+    public function agregar_criti($data)
+    {
 
-   		$userdata = $this->session->userdata('user_data');
+        $userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];
         $data['id_empresa'] = $empId;
         $data['estado'] = 'AC';
-        $query = $this->db->insert("criticidad",$data);
-    	return $query;
+        $query = $this->db->insert("criticidad", $data);
+        return $query;
     }
 
     // Agrega las grupos nuevos - Listo
-    function agregar_grupos($data){
-    	$userdata = $this->session->userdata('user_data');
+    public function agregar_grupos($data)
+    {
+        $userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];
         $data['id_empresa'] = $empId;
         $data['estado'] = 'AC';
-        $query = $this->db->insert("grupo",$data);
-    	return $query;
-    }
-
-    function agregar_marcas($data){
-        $userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa'];
-        $data['id_empresa'] = $empId;
-        $query = $this->db->insert("marcasequipos",$data);
+        $query = $this->db->insert("grupo", $data);
         return $query;
     }
 
-    function agregar_clientes($data){
+    public function agregar_marcas($data)
+    {
         $userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];
         $data['id_empresa'] = $empId;
-        $query = $this->db->insert("admcustomers",$data);
+        $query = $this->db->insert("marcasequipos", $data);
         return $query;
     }
 
-    function agregar_sector($data){
+    public function agregar_clientes($data)
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empId = $userdata[0]['id_empresa'];
+        $data['id_empresa'] = $empId;
+        $query = $this->db->insert("admcustomers", $data);
+        return $query;
+    }
 
-        $query = $this->db->insert("sector",$data);
-    	return $query;
-   	}
+    public function agregar_sector($data)
+    {
 
-    function agregar_componente($data){
+        $query = $this->db->insert("sector", $data);
+        return $query;
+    }
 
-        $query = $this->db->insert("componentes",$data);
-    	return $query;
+    public function agregar_componente($data)
+    {
+
+        $query = $this->db->insert("componentes", $data);
+        return $query;
 
     }
 
-    function agregar_seguros($data){
+    public function agregar_seguros($data)
+    {
 
-        $query = $this->db->insert("seguro",$data);
-    	return $query;
+        $query = $this->db->insert("seguro", $data);
+        return $query;
 
     }
 
     // Agrega equipo nuevo - Listo
-    function insert_equipo($data)
+    public function insert_equipo($data)
     {
-        $userdata           = $this->session->userdata('user_data');
-        $empId              = $userdata[0]['id_empresa'];
+        $userdata = $this->session->userdata('user_data');
+        $empId = $userdata[0]['id_empresa'];
         $data['id_empresa'] = $empId;
-        $query              = $this->db->insert("equipos",$data);
+        $query = $this->db->insert("equipos", $data);
         return $query;
     }
 
     // Agrega info adicional de equipo nuevo - Listo
-    function insert_equipinfo($data)
+    public function insert_equipinfo($data)
     {
-        $userdata           = $this->session->userdata('user_data');
-        $empId              = $userdata[0]['id_empresa'];
+        $userdata = $this->session->userdata('user_data');
+        $empId = $userdata[0]['id_empresa'];
         $data['id_empresa'] = $empId;
-        $query = $this->db->insert("informacionequipo",$data);
+        $query = $this->db->insert("informacionequipo", $data);
         return $query;
     }
 
+    public function update_equipo2($estado, $idequi)
+    {
 
-
-    function update_equipo2($estado, $idequi){
-
-       $this->db->where('id_equipo', $idequi);
-        $query = $this->db->update("equipos",$estado);
+        $this->db->where('id_equipo', $idequi);
+        $query = $this->db->update("equipos", $estado);
         return $query;
     }
 
     // Cambia estado del equipo a inhabilitado desde la lista
-    function update_cambio($data, $idequipo)
+    public function update_cambio($data, $idequipo)
     {
-		$userdata = $this->session->userdata('user_data');
+        $userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];
 
         $this->db->where('id_equipo', $idequipo);
         $this->db->where('id_empresa', $empId);
-        $query = $this->db->update("equipos",$data);
+        $query = $this->db->update("equipos", $data);
 
-        if($query){
+        if ($query) {
             $userdata = $this->session->userdata('user_data');
             $data = array(
                 'id_equipo' => $idequipo,
                 'lectura' => 0,
                 'usrId' => $userdata[0]['usrId'],
                 'fecha' => date('Y-m-d H:i:s'),
-                'estado' => 'IN'
+                'estado' => 'IN',
             );
             $this->db->insert('historial_lecturas', $data);
         }
@@ -474,32 +469,34 @@ class Equipos extends CI_Model {
         return $query;
     }
 
-    function update_estado($idequipo)
+    public function update_estado($idequipo)
     {
         $this->db->select('estado');
         $this->db->order_by('fecha', 'asc');
         $this->db->where('id_equipo', $idequipo);
         $ultimoEstado = $this->db->get('historial_lecturas')->last_row()->estado;
-        
+
         $this->db->where('id_equipo', $idequipo);
         $this->db->set('estado', $ultimoEstado);
         return $this->db->update("equipos");
     }
 
-    function update_e($estado, $idequi){
+    public function update_e($estado, $idequi)
+    {
 
         $this->db->where('id_equipo', $idequi);
-        $query = $this->db->update("equipos",$estado);
+        $query = $this->db->update("equipos", $estado);
         return $query;
     }
 
     // Devuelve datos para editar equipos - Listo
-	function getpencil($id){
+    public function getpencil($id)
+    {
 
-		$userdata = $this->session->userdata('user_data');
+        $userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];
 
-		$this->db->select('equipos.*,
+        $this->db->select('equipos.*,
 	    					empresas.descripcion AS deemp,
 	    					empresas.id_empresa,
 	    					sector.id_sector,
@@ -509,29 +506,28 @@ class Equipos extends CI_Model {
 	    					criticidad.id_criti,
 	    					criticidad.descripcion AS decriti,
 	    					');
-    	$this->db->from('equipos');
-    	$this->db->join('empresas', 'empresas.id_empresa = equipos.id_empresa');
-    	$this->db->join('sector', 'sector.id_sector = equipos.id_sector');
-    	$this->db->join('criticidad', 'criticidad.id_criti = equipos.id_criticidad');
-    	$this->db->join('grupo', 'grupo.id_grupo = equipos.id_grupo');
-    	//$this->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');
-    	$this->db->where('equipos.id_equipo', $id);
+        $this->db->from('equipos');
+        $this->db->join('empresas', 'empresas.id_empresa = equipos.id_empresa');
+        $this->db->join('sector', 'sector.id_sector = equipos.id_sector');
+        $this->db->join('criticidad', 'criticidad.id_criti = equipos.id_criticidad');
+        $this->db->join('grupo', 'grupo.id_grupo = equipos.id_grupo');
+        //$this->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');
+        $this->db->where('equipos.id_equipo', $id);
         $this->db->where('equipos.id_empresa', $empId);
 
-	    $query= $this->db->get();
+        $query = $this->db->get();
 
-	    if( $query->num_rows() > 0)
-	    {
-	      return $query->result_array();
-	    }
-	    else {
-	      return 0;
-	    }
-	}
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        } else {
+            return 0;
+        }
+    }
 
-	function getdatosfichas($id){
+    public function getdatosfichas($id)
+    {
 
-	    $this->db->select('equipos.id_equipo,
+        $this->db->select('equipos.id_equipo,
 	    					equipos.descripcion,
 	    					equipos.fecha_ingreso,
 	    					equipos.fecha_garantia,
@@ -543,118 +539,105 @@ class Equipos extends CI_Model {
 	    					equipos.ultima_lectura,
 	    					sector.id_sector,
 	    					sector.descripcion AS desect');
-    	$this->db->from('equipos');
-    	$this->db->join('sector', 'sector.id_sector = equipos.id_sector');
-    	$this->db->where('equipos.id_equipo', $id);
-    	$query= $this->db->get();
+        $this->db->from('equipos');
+        $this->db->join('sector', 'sector.id_sector = equipos.id_sector');
+        $this->db->where('equipos.id_equipo', $id);
+        $query = $this->db->get();
 
-	    if( $query->num_rows() > 0)
-	    {
-	      return $query->result_array();
-	    }
-	    else {
-	      return 0;
-	    }
-	}
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        } else {
+            return 0;
+        }
+    }
 
-	//aparentemente no se usa
-	function contratista($id)
-	{
-	    $this->db->select('equipos.*');
-    	$this->db->from('equipos');
-    	$this->db->where('equipos.id_equipo', $id);
-    	$query= $this->db->get();
+    //aparentemente no se usa
+    public function contratista($id)
+    {
+        $this->db->select('equipos.*');
+        $this->db->from('equipos');
+        $this->db->where('equipos.id_equipo', $id);
+        $query = $this->db->get();
 
-	    if( $query->num_rows() > 0)
-	    {
-	      return $query->result_array();
-	    }
-	    else {
-	      return 0;
-	    }
-	}
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        } else {
+            return 0;
+        }
+    }
 
+    public function getcodigo($data = null)
+    {
 
-	function getcodigo($data = null){
+        $query = $this->db->get_where('equipos');
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return false;
+        }
+    }
 
-		$query= $this->db->get_where('equipos');
-		if($query->num_rows()>0){
-		    return $query->result();
-		}
-		else{
-		    return false;
-		    }
-	}
+    public function Buscar($a)
+    {
 
-	function Buscar($a){
-
-		$sql="SELECT id_equipo
+        $sql = "SELECT id_equipo
 	    	  FROM equipos
 	    	 WHERE codigo=$a
 	    	  ";
 
-	    $query= $this->db->query($sql);
+        $query = $this->db->query($sql);
 
-	    foreach ($query->result_array() as $row)
-						{
+        foreach ($query->result_array() as $row) {
 
-						        $data = $row['id_equipo'];
+            $data = $row['id_equipo'];
 
+            return $data;
+        }
+    }
 
-						       return $data;
-						}
-	}
-
-	// Guarda la equipo editado
-	public function update_editar($data, $id)
+    // Guarda la equipo editado
+    public function update_editar($data, $id)
     {
         $this->db->where('id_equipo', $id);
-        $query = $this->db->update("equipos",$data);
+        $query = $this->db->update("equipos", $data);
         return $query;
     }
 
-    function getco($data = null)
+    public function getco($data = null)
     {
-		if($data == null)
-		{
-			return false;
-		}
-		else
-		{
-			$ide = $data['id_equipo'];
-			$query= $this->db->get_where('equipos',array('id_equipo'=>$ide));
-			if($query->num_rows()>0){
+        if ($data == null) {
+            return false;
+        } else {
+            $ide = $data['id_equipo'];
+            $query = $this->db->get_where('equipos', array('id_equipo' => $ide));
+            if ($query->num_rows() > 0) {
                 return $query->result();
-            }
-            else{
+            } else {
                 return false;
             }
-		}
-	}
+        }
+    }
 
-	function getinfo($data = null){
+    public function getinfo($data = null)
+    {
 
-		if($data == null)
-		{
-			return false;
-		}
-		else
-		{
+        if ($data == null) {
+            return false;
+        } else {
 
-			$ide1 = $data['idequipo'];
+            $ide1 = $data['idequipo'];
 
-			$query= $this->db->get_where('equipos',array('id_equipo'=>$ide1));
-			if($query->num_rows()>0){
+            $query = $this->db->get_where('equipos', array('id_equipo' => $ide1));
+            if ($query->num_rows() > 0) {
                 return $query->result();
-            }
-            else{
+            } else {
                 return false;
             }
 
-		}
-	}
-	//Guarda contratista asignado a equipo por empresa
-	public function insert_contratista($data)
+        }
+    }
+    //Guarda contratista asignado a equipo por empresa
+    public function insert_contratista($data)
     {
         $query = $this->db->insert("contratistaquipo", $data);
         return $query;
@@ -669,37 +652,37 @@ class Equipos extends CI_Model {
 
     public function insert_componentes($data)
     {
-        $query = $this->db->insert("componentes",$data);
-         return 1;
+        $query = $this->db->insert("componentes", $data);
+        return 1;
 
     }
 
-
-	public function insert_componenteequip($data)
+    public function insert_componenteequip($data)
     {
-        $query = $this->db->insert("componenteequipo",$data);
+        $query = $this->db->insert("componenteequipo", $data);
         //$query= $this->db->query($sql);
-         return 1;
+        return 1;
 
     }
 
-	public function agregar_ficha($data)
+    public function agregar_ficha($data)
     {
-        $query = $this->db->insert("ficha_equipo",$data);
-         return 1;
+        $query = $this->db->insert("ficha_equipo", $data);
+        return 1;
 
     }
 
     public function update_ficha($data, $id)
     {
         $this->db->where('id_equipo', $id);
-        $query = $this->db->update("ficha_equipo",$data);
+        $query = $this->db->update("ficha_equipo", $data);
         return $query;
     }
 
-    function getsolImps($id){
+    public function getsolImps($id)
+    {
 
-     	$sql="SELECT equipos.ubicacion, equipos.marca, equipos.codigo, equipos.estado, equipos.id_sector, ficha_equipo.marca AS marcaeq, ficha_equipo.modelo, ficha_equipo.numero_motor, ficha_equipo.numero_serie, ficha_equipo.fecha_ingreso as fechain, ficha_equipo.dominio, ficha_equipo.fabricacion, ficha_equipo.peso, ficha_equipo.bateria, ficha_equipo.hora_lectura, sector.descripcion AS sector
+        $sql = "SELECT equipos.ubicacion, equipos.marca, equipos.codigo, equipos.estado, equipos.id_sector, ficha_equipo.marca AS marcaeq, ficha_equipo.modelo, ficha_equipo.numero_motor, ficha_equipo.numero_serie, ficha_equipo.fecha_ingreso as fechain, ficha_equipo.dominio, ficha_equipo.fabricacion, ficha_equipo.peso, ficha_equipo.bateria, ficha_equipo.hora_lectura, sector.descripcion AS sector
      		FROM equipos
      		JOIN ficha_equipo ON ficha_equipo.id_equipo=equipos.id_equipo
      		JOIN sector ON  sector.id_sector=equipos.id_sector
@@ -709,8 +692,8 @@ class Equipos extends CI_Model {
                   WHERE equipos.id_equipo=$id
               ";
 
-        $query= $this->db->query($sql);
-        foreach ($query->result_array() as $row){
+        $query = $this->db->query($sql);
+        foreach ($query->result_array() as $row) {
 
             $data['codigo'] = $row['codigo'];
             $data['estado'] = $row['estado'];
@@ -724,19 +707,19 @@ class Equipos extends CI_Model {
             $data['dominio'] = $row['dominio'];
             $data['fabricacion'] = $row['fabricacion'];
             $data['peso'] = $row['peso'];
-          	$data['bateria'] = $row['bateria'];
-          	$data['hora_lectura'] = $row['hora_lectura'];
-          	$data['sector'] = $row['sector'];
+            $data['bateria'] = $row['bateria'];
+            $data['hora_lectura'] = $row['hora_lectura'];
+            $data['sector'] = $row['sector'];
 
-           return $data;
+            return $data;
         }
 
     }
 
+    public function getequiposseguro($id)
+    {
 
-    function getequiposseguro($id){
-
-     	$sql="SELECT *
+        $sql = "SELECT *
      		FROM seguro
      		JOIN equipos ON equipos.id_equipo=seguro.id_equipo
 
@@ -745,8 +728,8 @@ class Equipos extends CI_Model {
                   WHERE equipos.id_equipo=$id
               ";
 
-        $query= $this->db->query($sql);
-        foreach ($query->result_array() as $row){
+        $query = $this->db->query($sql);
+        foreach ($query->result_array() as $row) {
 
             $data['asegurado'] = $row['asegurado'];
             $data['ref'] = $row['ref'];
@@ -755,16 +738,15 @@ class Equipos extends CI_Model {
             $data['fecha_vigencia'] = $row['fecha_vigencia'];
             $data['cobertura'] = $row['cobertura'];
 
-
-           return $data;
+            return $data;
         }
 
     }
 
+    public function getequiposorden($id)
+    {
 
-    function getequiposorden($id){
-
-     	$sql="SELECT orden_servicio.fecha, orden_servicio.id_contratista, orden_servicio.id_equipo, orden_servicio.id_solicitudreparacion, orden_servicio.estado, solicitud_reparacion.causa, contratistas.nombre
+        $sql = "SELECT orden_servicio.fecha, orden_servicio.id_contratista, orden_servicio.id_equipo, orden_servicio.id_solicitudreparacion, orden_servicio.estado, solicitud_reparacion.causa, contratistas.nombre
      		FROM orden_servicio
      		JOIN solicitud_reparacion ON solicitud_reparacion.id_solicitud=orden_servicio.id_solicitudreparacion
      		JOIN equipos ON equipos.id_equipo= orden_servicio.id_equipo
@@ -775,160 +757,143 @@ class Equipos extends CI_Model {
         /*$query= $this->db->query($sql);
         foreach ($query->result_array() as $row){
 
-            $data['fecha'] = $row['fecha'];
-            $data['causa'] = $row['causa'];
-            $data['nombre'] = $row['nombre'];
-            $data['estado'] = $row['estado'];
-
-
+        $data['fecha'] = $row['fecha'];
+        $data['causa'] = $row['causa'];
+        $data['nombre'] = $row['nombre'];
+        $data['estado'] = $row['estado'];
 
         }
 
         return $data; */
 
-        $query= $this->db->query($sql);
+        $query = $this->db->query($sql);
 
-        if( $query->num_rows() > 0)
-        {
-          return $query->result_array();
-        }
-        else {
-          return 0;
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        } else {
+            return 0;
         }
 
     }
-
 
     /// Guarda lectura Hugo
-    function setLecturas($data){
-        
-         $this->db->where('id_equipo', $data["id_equipo"]);
-         $estadoActual = $this->db->get('equipos')->row('estado');
+    public function setLecturas($data)
+    {
 
-    	 $this->db->trans_start();
-             $id_equipo   = $data["id_equipo"];
-             $lectura     = $data["lectura"];
-             $observacion = $data["observacion"];
-             $operario    = $data['operario'];
-             $turno       = $data['turno'];
-             $estado      = $data['estado'];
-             $userdata    = $this->session->userdata('user_data');
-             $usrId       = $userdata[0]['usrId'];
+        $this->db->where('id_equipo', $data["id_equipo"]);
+        $estadoActual = $this->db->get('equipos')->row('estado');
 
-	     	$datos = array(
-                 'id_equipo'    => $id_equipo,
-                 'lectura'      => $lectura,
-                 'fecha'        => date('Y-m-d H:i:s'),
-                 'usrId'        => $usrId,
-                 'observacion'  => $observacion,
-                 'operario_nom' => $operario,
-                 'turno'        => $turno,
-                 'estado'       => $estado,
-                 'obs' => ($estadoActual == $estado)
-                 );
-	     		//guarda la lectura
-            //dump_exit($datos);
-	     	$this->db->where('id_equipo', $id_equipo);
-	     	$this->db->insert('historial_lecturas', $datos);
+        $this->db->trans_start();
+        $id_equipo = $data["id_equipo"];
+        $lectura = $data["lectura"];
+        $observacion = $data["observacion"];
+        $operario = $data['operario'];
+        $turno = $data['turno'];
+        $estado = $data['estado'];
+        $userdata = $this->session->userdata('user_data');
+        $usrId = $userdata[0]['usrId'];
 
-	     		// actualiza el estado en equipos (R reparacion y O a AC)
-	     	if ($estado == "RE") {
-	     		$estado_eq = array('estado'=>"RE");;
-	     	}
-	     	if ($estado == "AC") {
-	     		$estado_eq = array('estado'=>"AC");;
-	     	}
-	     	$this->db->where('equipos.id_equipo',$id_equipo);
-	     	$this->db->update('equipos',$estado_eq);
+        $datos = array(
+            'id_equipo' => $id_equipo,
+            'lectura' => $lectura,
+            'fecha' => date('Y-m-d H:i:s'),
+            'usrId' => $usrId,
+            'observacion' => $observacion,
+            'operario_nom' => $operario,
+            'turno' => $turno,
+            'estado' => $estado,
+            'obs' => ($estadoActual == $estado),
+        );
+        //guarda la lectura
+        //dump_exit($datos);
+        $this->db->where('id_equipo', $id_equipo);
+        $this->db->insert('historial_lecturas', $datos);
 
-    	 $this->db->trans_complete();
+        // actualiza el estado en equipos (R reparacion y O a AC)
+        if ($estado == "RE") {
+            $estado_eq = array('estado' => "RE");
+        }
+        if ($estado == "AC") {
+            $estado_eq = array('estado' => "AC");
+        }
+        $this->db->where('equipos.id_equipo', $id_equipo);
+        $this->db->update('equipos', $estado_eq);
 
-    	 if ($this->db->trans_status() === FALSE)
-    	 {
-    	     return false;
-    	 }
-    	 else{
-    	     return true;
-    	 }
-		}
+        $this->db->trans_complete();
 
-		// Guarda edicion de lectura
-		function setLecturaEdit($data){
-
-			$idLectura = $data["id_lectura"];
-			$lectura = $data["lectura"];			
-			$this->db->where('id_lectura', $idLectura);
-      $query = $this->db->update("historial_lecturas",array('lectura' =>$lectura));
-      return $query;  
-		}
-
-    /// Trae lecturas de equipo por id de equipo
-    function getHistoriaLecturas($data){
-    	$id = $data['idequipo'];
-    	$userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa'];     // guarda empresa logueadda
-
-        $this->db->select('historial_lecturas.id_lectura,
-                        historial_lecturas.id_equipo,
-												historial_lecturas.lectura,
-												historial_lecturas.fecha,
-												historial_lecturas.observacion,
-												historial_lecturas.operario_nom AS operario,
-												historial_lecturas.turno');
-    	$this->db->from('historial_lecturas');
-    	$this->db->join('equipos', 'equipos.id_equipo = historial_lecturas.id_equipo');
-    	$this->db->where('historial_lecturas.id_equipo', $id);
-		$this->db->where('equipos.id_empresa', $empId);
-
-    	$query= $this->db->get();
-
-		if ($query->num_rows()!=0)
-		{
-			return $query->result_array();
-		}
-		else
-		{
-			return [];
-		}
+        if ($this->db->trans_status() === false) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
-    function getEqPorIds($data){
+    // Guarda edicion de lectura
+    public function setLecturaEdit($data)
+    {
 
-    	$id = $data['idequipo'];
+        $idLectura = $data["id_lectura"];
+        $lectura = $data["lectura"];
+        $this->db->where('id_lectura', $idLectura);
+        $query = $this->db->update("historial_lecturas", array('lectura' => $lectura));
+        return $query;
+    }
 
-		$this->db->select('equipos.id_equipo,
+    /// Trae lecturas de equipo por id de equipo
+    public function getHistoriaLecturas($data)
+    {
+        $id = $data['idequipo'];
+        $userdata = $this->session->userdata('user_data');
+        $empId = $userdata[0]['id_empresa']; // guarda empresa logueadda
+
+        $this->db->select('historial_lecturas.*');
+        $this->db->from('historial_lecturas');
+        $this->db->join('equipos', 'equipos.id_equipo = historial_lecturas.id_equipo');
+        $this->db->where('historial_lecturas.id_equipo', $id);
+        $this->db->where('equipos.id_empresa', $empId);
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() != 0) {
+            return $query->result_array();
+        } else {
+            return [];
+        }
+    }
+
+    public function getEqPorIds($data)
+    {
+
+        $id = $data['idequipo'];
+
+        $this->db->select('equipos.id_equipo,
 							equipos.codigo,
 							historial_lecturas.lectura,
 							historial_lecturas.fecha,
 							historial_lecturas.estado');
-		$this->db->from('historial_lecturas');
-		$this->db->join('equipos', 'equipos.id_equipo = historial_lecturas.id_equipo');
-		$this->db->where('historial_lecturas.id_equipo',$id);
-		$this->db->order_by('id_lectura','DESC');
-		$this->db->limit(1);
+        $this->db->from('historial_lecturas');
+        $this->db->join('equipos', 'equipos.id_equipo = historial_lecturas.id_equipo');
+        $this->db->where('historial_lecturas.id_equipo', $id);
+        $this->db->order_by('id_lectura', 'DESC');
+        $this->db->limit(1);
 
-		$query= $this->db->get();
+        $query = $this->db->get();
 
-        if ($query->num_rows()>0)
-        {
+        if ($query->num_rows() > 0) {
             return $query->result_array();
-        }
-        else
-        {
+        } else {
             return array();
         }
     }
-
-
 
     /**
      * Devuleva la cantidad de equipos operativos.
      *
      * @return Void|Array     Cantidad de equipos operativos (estado activo o reparacion).
      */
-    function kpiSacarEquiposOperativos()
+    public function kpiSacarEquiposOperativos()
     {
-        $userdata  = $this->session->userdata('user_data');
+        $userdata = $this->session->userdata('user_data');
         $empresaId = $userdata[0]['id_empresa'];
         $sql = "SELECT equipos.id_equipo, equipos.estado
         FROM equipos
@@ -939,38 +904,34 @@ class Equipos extends CI_Model {
         JOIN area ON area.id_area=equipos.id_area
         JOIN proceso ON proceso.id_proceso=equipos.id_proceso
         WHERE equipos.estado != 'AN'
-        AND equipos.id_empresa = '".$empresaId."'
+        AND equipos.id_empresa = '" . $empresaId . "'
         ";
         //GROUP BY equipos.estado
         /*$sql = "SELECT COUNT(equipos.estado) AS cantEstadoActivo, equipos.estado
-            FROM equipos
-            WHERE equipos.id_empresa = '".$empresaId."'
-            AND (equipos.estado = 'AC' OR equipos.estado = 'RE')
-            GROUP BY equipos.estado
-            ";*/
+        FROM equipos
+        WHERE equipos.id_empresa = '".$empresaId."'
+        AND (equipos.estado = 'AC' OR equipos.estado = 'RE')
+        GROUP BY equipos.estado
+        ";*/
         $query = $this->db->query($sql);
 
-        if ($query->num_rows()!=0)
-        {
+        if ($query->num_rows() != 0) {
             $equipos = $query->result_array();
-            foreach ($equipos as &$valor) 
-            {
-                if( ($valor['estado'] == 'AC') || ($valor['estado'] == 'RE') )
-                {
+            foreach ($equipos as &$valor) {
+                if (($valor['estado'] == 'AC') || ($valor['estado'] == 'RE')) {
                     $idEquipo = $valor['id_equipo'];
                     $this->db->select('estado');
                     $this->db->from('historial_lecturas');
                     $this->db->where('id_equipo', $idEquipo);
                     $this->db->order_by('id_equipo', 'DESC');
                     $this->db->limit(1);
-                    
+
                     $query2 = $this->db->get();
                     $estado = $query2->result_array();
                     $valor['estado'] = $estado[0]['estado'];
                     $valor['cantEstadoActivo'] = 0;
-                }
-                else {
-                    $valor['estado'] = $valor['estado'];   
+                } else {
+                    $valor['estado'] = $valor['estado'];
                     $valor['cantEstadoActivo'] = 0;
                 }
             }
@@ -979,16 +940,6 @@ class Equipos extends CI_Model {
 
     }
 
-
-
-
-
-
-
-
-
-
-
     /**
      * Calcula la disponibilidad de los ultimos 12meses de los equipos.
      *
@@ -996,10 +947,10 @@ class Equipos extends CI_Model {
      *
      * @return  Array|Void  Disponibilidad de equipos x mes de los ultimos 12meses.
      */
-    function kpiCalcularDisponibilidad($idEquipo, $fechaInicio=false, $fechaFin=false )
+    public function kpiCalcularDisponibilidad($idEquipo, $fechaInicio = false, $fechaFin = false)
     {
         $userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa'];     // guarda usuario logueado
+        $empId = $userdata[0]['id_empresa']; // guarda usuario logueado
 
         $disponibilidad = array();
 
@@ -1017,10 +968,7 @@ class Equipos extends CI_Model {
         $this->db->where('equipos.estado !=', 'AN');
         $this->db->where('equipos.id_empresa', $empId);
 
-        
-        
-        if($idEquipo != 'all')
-        {
+        if ($idEquipo != 'all') {
             $this->db->where('equipos.id_equipo', $idEquipo);
         }
 
@@ -1028,128 +976,110 @@ class Equipos extends CI_Model {
         $this->db->group_by('equipos.id_equipo');
 
         //$aux = $this->db->get_compiled_select();
-        $query   = $this->db->get();
+        $query = $this->db->get();
         $equipos = $query->result_array();
 
-        $nroEquipos = sizeof($equipos) == 0?1:sizeof($equipos);
+        $nroEquipos = sizeof($equipos) == 0 ? 1 : sizeof($equipos);
         //dump($equipos, 'equipos');
         $metaPromedio = 0;
         //para cada equipo con lecturas calculo la disponibilidad
-        for ($k=0; $k < sizeof($equipos); $k++) 
-        { 
+        for ($k = 0; $k < sizeof($equipos); $k++) {
             $metaPromedio = $metaPromedio + $equipos[$k]["meta_dsp"];
             //para cada mes
-            for ($mes=1; $mes<=12; $mes++)
-            {
-                $mes2 = date('m')-11 + $mes-1;
-                $fecha  = date('Y-m', mktime(0, 0, 0, $mes2 , 1, date('Y')));
+            for ($mes = 1; $mes <= 12; $mes++) {
+                $mes2 = date('m') - 11 + $mes - 1;
+                $fecha = date('Y-m', mktime(0, 0, 0, $mes2, 1, date('Y')));
                 $inicio = date_create($fecha);
 
                 $inicio->modify('first day of this month');
-                $fin                  = date_create($fecha);
+                $fin = date_create($fecha);
                 $fin->modify('last day of this month');
-                $fechasInicio[$mes-1] = $inicio->format('Y-m-d 00:00:00');
-                $fechasFin[$mes-1]    = $fin->format('Y-m-d 23:59:59');
+                $fechasInicio[$mes - 1] = $inicio->format('Y-m-d 00:00:00');
+                $fechasFin[$mes - 1] = $fin->format('Y-m-d 23:59:59');
                 //dump($fechasInicio[$mes-1]);
                 //dump($fechasFin[$mes-1]);
                 //dump( $equipos[$k]["id_equipo"], 'id-equipo');
 
-                //traigo historial de lecturas entre las fechas inicio y fin de mes        
-                $historialLecturasMes[$k] = $this->getHistorialLecturasMes($equipos[$k]["id_equipo"], $fechasInicio[$mes-1], $fechasFin[$mes-1]);
+                //traigo historial de lecturas entre las fechas inicio y fin de mes
+                $historialLecturasMes[$k] = $this->getHistorialLecturasMes($equipos[$k]["id_equipo"], $fechasInicio[$mes - 1], $fechasFin[$mes - 1]);
                 //dump($historialLecturasMes, 'historial del mes '.$mes.' - equipo '.$equipos[$k]["id_equipo"]);
-                $estadoaux            = $historialLecturasMes[$k][0]['estado'];
+                $estadoaux = $historialLecturasMes[$k][0]['estado'];
                 //$arrayIntervalos = array();
-                $arrayIntervalos[$k][$mes-1][0]   = $historialLecturasMes[$k][0];
+                $arrayIntervalos[$k][$mes - 1][0] = $historialLecturasMes[$k][0];
 
                 //obtengo arreglo con los intervalos entre cambios de estado
-                $i              = 1;
+                $i = 1;
                 $nroLecturasMes = sizeof($historialLecturasMes[$k]);
-                for($j=0; $j<$nroLecturasMes; $j++)
-                {
-                    if($historialLecturasMes[$k][$j]['estado'] != $estadoaux)
-                    {
-                        $arrayIntervalos[$k][$mes-1][$i] = $historialLecturasMes[$k][$j];
+                for ($j = 0; $j < $nroLecturasMes; $j++) {
+                    if ($historialLecturasMes[$k][$j]['estado'] != $estadoaux) {
+                        $arrayIntervalos[$k][$mes - 1][$i] = $historialLecturasMes[$k][$j];
                         $i++;
                         $estadoaux = $historialLecturasMes[$k][$j]['estado'];
                     }
                 }
                 //revisar siguiente linea
-                $arrayIntervalos[$k][$mes-1][$i] = $historialLecturasMes[$k][$nroLecturasMes-1];
+                $arrayIntervalos[$k][$mes - 1][$i] = $historialLecturasMes[$k][$nroLecturasMes - 1];
             }
             //dump($arrayIntervalos[$k], 'arrayIntervalos'.$mes.' - equipo'.$equipos[$k]["id_equipo"]);
-            
 
             //Cambio la fecha de finalizacion del intervalo del mes actual
-            $finDeMes       = new DateTime(date('Y-m'));
-            $finDeMes->modify('last day of this month')->setTime(23,59,59);
+            $finDeMes = new DateTime(date('Y-m'));
+            $finDeMes->modify('last day of this month')->setTime(23, 59, 59);
             $finDeMesString = $finDeMes->format('Y-m-d H:i:s');
-            $ultimaFecha    = date( 'Y-m-d H:i:s' );
+            $ultimaFecha = date('Y-m-d H:i:s');
             //dump($finDeMesString);
             //dump($arrayIntervalos[$k][11][$nroLecturasMes-1]['fecha']);
             //dump($ultimaFecha);
             $sizeIntervalos = sizeof($arrayIntervalos[$k][11]);
             //dump($sizeIntervalos, 'tamaño intervalos');
-            $arrayIntervalos[$k][11][$sizeIntervalos-1]['fecha'] = $ultimaFecha;
+            $arrayIntervalos[$k][11][$sizeIntervalos - 1]['fecha'] = $ultimaFecha;
             //dump($arrayIntervalos[$k], 'arrayIntervalos '.$mes.' - equipo'.$equipos[$k]["id_equipo"]);
 
-
             //calculo tiempo operativo y disponibilidad
-            for ($mes=1; $mes<=12; $mes++)
-            {
-                $tiempoOperativo[$k][$mes-1] = 0;
-                $nroLecturasMes          = sizeof($arrayIntervalos[$k][$mes-1]);
+            for ($mes = 1; $mes <= 12; $mes++) {
+                $tiempoOperativo[$k][$mes - 1] = 0;
+                $nroLecturasMes = sizeof($arrayIntervalos[$k][$mes - 1]);
 
-                for($j=0; $j<$nroLecturasMes; $j++)
-                {
-                    if($arrayIntervalos[$k][$mes-1][$j]['estado'] == 'AC')
-                    {
-                        if((isset($arrayIntervalos[$k][$mes-1][$j-1])) AND ($arrayIntervalos[$k][$mes-1][$j-1]['estado'] == 'AC'))
-                        {
-                            $fin             = $arrayIntervalos[$k][$mes-1][$j]['fecha'];
-                            $tiempoOperativo[$k][$mes-1] = $tiempoOperativo[$k][$mes-1] + (int)$this->diferencia($inicio, $fin);
-                            $inicio          = $arrayIntervalos[$k][$mes-1][$j]['fecha'];
+                for ($j = 0; $j < $nroLecturasMes; $j++) {
+                    if ($arrayIntervalos[$k][$mes - 1][$j]['estado'] == 'AC') {
+                        if ((isset($arrayIntervalos[$k][$mes - 1][$j - 1])) and ($arrayIntervalos[$k][$mes - 1][$j - 1]['estado'] == 'AC')) {
+                            $fin = $arrayIntervalos[$k][$mes - 1][$j]['fecha'];
+                            $tiempoOperativo[$k][$mes - 1] = $tiempoOperativo[$k][$mes - 1] + (int) $this->diferencia($inicio, $fin);
+                            $inicio = $arrayIntervalos[$k][$mes - 1][$j]['fecha'];
+                        } else {
+                            $inicio = $arrayIntervalos[$k][$mes - 1][$j]['fecha'];
                         }
-                        else
-                        {
-                            $inicio = $arrayIntervalos[$k][$mes-1][$j]['fecha'];
-                        }
-                    }
-                    else
-                    {
-                        if((isset($arrayIntervalos[$k][$mes-1][$j-1])) AND ($arrayIntervalos[$k][$mes-1][$j-1]['estado'] == 'AC'))
-                        {
-                            $fin = $arrayIntervalos[$k][$mes-1][$j]['fecha'];
-                            $tiempoOperativo[$k][$mes-1] = $tiempoOperativo[$k][$mes-1] + (int)$this->diferencia($inicio, $fin);
+                    } else {
+                        if ((isset($arrayIntervalos[$k][$mes - 1][$j - 1])) and ($arrayIntervalos[$k][$mes - 1][$j - 1]['estado'] == 'AC')) {
+                            $fin = $arrayIntervalos[$k][$mes - 1][$j]['fecha'];
+                            $tiempoOperativo[$k][$mes - 1] = $tiempoOperativo[$k][$mes - 1] + (int) $this->diferencia($inicio, $fin);
                         }
                     }
                 }
 
-
-                // Tiempo operativo en meses futuros = 0 
+                // Tiempo operativo en meses futuros = 0
                 // (para perdiodos de tiempo parametrizados)
                 /*$diferenciaFecha = strtotime($finDeMesString) < strtotime($arrayIntervalos[$k][$mes-1][$nroLecturasMes-1]['fecha']);
                 if( ($nroLecturasMes == '2') AND ($diferenciaFecha) )
                 {
-                    $tiempoOperativo[$k][$mes-1] = 0;
+                $tiempoOperativo[$k][$mes-1] = 0;
                 }*/
 
-
                 //saco la fecha inicio y fecha fin de mes
-                $mesActualInt = date('m')-11 + $mes-1;//date( 'Y-'.$mes );
-                $mesActual  = date('Y-m', mktime(0, 0, 0, $mesActualInt , 1, date('Y')));
+                $mesActualInt = date('m') - 11 + $mes - 1; //date( 'Y-'.$mes );
+                $mesActual = date('Y-m', mktime(0, 0, 0, $mesActualInt, 1, date('Y')));
 
-                $fechaInicio = new DateTime( date('Y-m', mktime(0, 0, 0, $mesActualInt , 1, date('Y'))) );
+                $fechaInicio = new DateTime(date('Y-m', mktime(0, 0, 0, $mesActualInt, 1, date('Y'))));
                 $fechaInicioString = $fechaInicio->format('Y-m-d H:i:s');
 
-                $fechaFin = new DateTime(date('Y-m', mktime(0, 0, 0, $mesActualInt , 1, date('Y'))) );
-                $fechaFin->modify('last day of this month')->setTime(23,59,59);
-                $fechaFinString    = $fechaFin->format('Y-m-d H:i:s');
+                $fechaFin = new DateTime(date('Y-m', mktime(0, 0, 0, $mesActualInt, 1, date('Y'))));
+                $fechaFin->modify('last day of this month')->setTime(23, 59, 59);
+                $fechaFinString = $fechaFin->format('Y-m-d H:i:s');
 
-
-                $cantSegundosPorMes      = $this->diferencia($fechaInicioString, $fechaFinString);
+                $cantSegundosPorMes = $this->diferencia($fechaInicioString, $fechaFinString);
                 //dump($cantSegundosPorMes);
-                $disponibilidadMes[$k][$mes] = number_format($tiempoOperativo[$k][$mes-1] * 100 / $cantSegundosPorMes, 2, '.', '');
-                $yearMonth[$mes]         = $mesActual;
+                $disponibilidadMes[$k][$mes] = number_format($tiempoOperativo[$k][$mes - 1] * 100 / $cantSegundosPorMes, 2, '.', '');
+                $yearMonth[$mes] = $mesActual;
 
                 //dump($disponibilidadMes[$k]);
             }
@@ -1157,9 +1087,8 @@ class Equipos extends CI_Model {
             //calculo disponibilidad de mes actual
             //dump($arrayIntervalos[$k][11][0]['fecha']);
             //dump($arrayIntervalos[$k][11][$nroLecturasMes-1]['fecha']);
-            if( $ultimaFecha == $arrayIntervalos[$k][11][$nroLecturasMes-1]['fecha'] )
-            {
-                $cantSegundosPorMes      = $this->diferencia($arrayIntervalos[$k][11][0]['fecha'], $arrayIntervalos[$k][11][$nroLecturasMes-1]['fecha']);
+            if ($ultimaFecha == $arrayIntervalos[$k][11][$nroLecturasMes - 1]['fecha']) {
+                $cantSegundosPorMes = $this->diferencia($arrayIntervalos[$k][11][0]['fecha'], $arrayIntervalos[$k][11][$nroLecturasMes - 1]['fecha']);
                 $disponibilidadMes[$k][12] = number_format($tiempoOperativo[$k][11] * 100 / $cantSegundosPorMes, 2, '.', '');
             }
             //dump($cantSegundosPorMes);
@@ -1167,46 +1096,36 @@ class Equipos extends CI_Model {
 
         }
 
-        //disponibilidad de todos los equipos        
+        //disponibilidad de todos los equipos
         $dispon = array();
-        foreach ($disponibilidadMes as $x=>$disponiEquipos) 
-        {
-            foreach ($disponiEquipos as $id=>$value) 
-            {
-                if( array_key_exists( $id, $dispon ) )
-                {
+        foreach ($disponibilidadMes as $x => $disponiEquipos) {
+            foreach ($disponiEquipos as $id => $value) {
+                if (array_key_exists($id, $dispon)) {
                     $dispon[$id] += $value;
                     //$dispon[$id] = $dispon[$id] / 2;
-                } 
-                else 
-                {
+                } else {
                     $dispon[$id] = $value;
                 }
             }
         }
-        for ($x=1; $x <= 12; $x++) { 
+        for ($x = 1; $x <= 12; $x++) {
             $dispon[$x] = $dispon[$x] / $nroEquipos;
         }
         //dump($dispon, 'TO');
 
-
-
         //preparo info para mandar
         $i = 0;
-        foreach ($dispon as $value)
-        {
+        foreach ($dispon as $value) {
             $disp[$i] = $value;
             $i++;
         }
         $i = 0;
-        foreach ($yearMonth as $value)
-        {
+        foreach ($yearMonth as $value) {
             $mesAnio[$i] = $value;
             $i++;
         }
-        
 
-        $disponibilidad['promedioMetas'] = $metaPromedio/$nroEquipos;
+        $disponibilidad['promedioMetas'] = $metaPromedio / $nroEquipos;
         $disponibilidad["porcentajeHorasOperativas"] = $disp;
         $disponibilidad["tiempo"] = $mesAnio;
         //dump_exit($disponibilidad);
@@ -1220,7 +1139,8 @@ class Equipos extends CI_Model {
      *
      * @return  String  Estado del último historial de lectura antes de la fecha inicial.
      */
-    function getEstadoAnterior($fechaInicio, $idEquipo) // Ok
+    public function getEstadoAnterior($fechaInicio, $idEquipo) // Ok
+
     {
         $this->db->select('estado');
         $this->db->from('historial_lecturas');
@@ -1241,35 +1161,37 @@ class Equipos extends CI_Model {
      *
      * @return  Datetime    Diferencia de fechas.
      */
-    function diferencia($fecha_inicio, $fecha_fin, $formato="s") // Ok
+    public function diferencia($fecha_inicio, $fecha_fin, $formato = "s") // Ok
+
     {
         $datetime1 = new DateTime($fecha_inicio);
         $datetime2 = new DateTime($fecha_fin);
         $diferencia = $datetime1->diff($datetime2, false);
-        switch( $formato ){
+        switch ($formato) {
             case "y": //años
-                $total = $diferencia->y + $diferencia->m / 12 + $diferencia->d / 365.25; break;
+                $total = $diferencia->y + $diferencia->m / 12 + $diferencia->d / 365.25;
+                break;
             case "m": //meses
-                $total= $diferencia->y * 12 + $diferencia->m + $diferencia->d/30 + $diferencia->h / 24;
+                $total = $diferencia->y * 12 + $diferencia->m + $diferencia->d / 30 + $diferencia->h / 24;
                 break;
             case "d": //dias
-                $total = $diferencia->y * 365.25 + $diferencia->m * 30 + $diferencia->d + $diferencia->h/24 + $diferencia->i / 60;
+                $total = $diferencia->y * 365.25 + $diferencia->m * 30 + $diferencia->d + $diferencia->h / 24 + $diferencia->i / 60;
                 break;
             case "h": //horas
-                $total = ($diferencia->y * 365.25 + $diferencia->m * 30 + $diferencia->d) * 24 + $diferencia->h + $diferencia->i/60;
+                $total = ($diferencia->y * 365.25 + $diferencia->m * 30 + $diferencia->d) * 24 + $diferencia->h + $diferencia->i / 60;
                 break;
             case "i": //minutos
-                $total = (($diferencia->y * 365.25 + $diferencia->m * 30 + $diferencia->d) * 24 + $diferencia->h) * 60 + $diferencia->i + $diferencia->s/60;
+                $total = (($diferencia->y * 365.25 + $diferencia->m * 30 + $diferencia->d) * 24 + $diferencia->h) * 60 + $diferencia->i + $diferencia->s / 60;
                 break;
             case "s": //segundos
-                $total = ((($diferencia->y * 365.25 + $diferencia->m * 30 + $diferencia->d) * 24 + $diferencia->h) * 60 + $diferencia->i)*60 + $diferencia->s;
+                $total = ((($diferencia->y * 365.25 + $diferencia->m * 30 + $diferencia->d) * 24 + $diferencia->h) * 60 + $diferencia->i) * 60 + $diferencia->s;
                 break;
         }
         //dump_exit($total);
         return $total;
     }
 
-    function getHistorialLecturasMes($idEquipo, $fechaInicio, $fechaFin)
+    public function getHistorialLecturasMes($idEquipo, $fechaInicio, $fechaFin)
     {
         //saco las lecturas del mes
         $this->db->select('id_lectura, id_equipo, lectura, fecha, estado');
@@ -1289,39 +1211,29 @@ class Equipos extends CI_Model {
         $estadoInicial = $this->getEstadoAnterior($fechaInicio, $idEquipo);
         //dump($estadoInicial, 'Estado inicial');
         $lecturaInicio[0] = array(
-            'id_lectura' => '0', 
-            'id_equipo'  => '0', 
-            'lectura'    => '0', 
-            'fecha'      => $fechaInicio, 
-            'estado'     => $estadoInicial
+            'id_lectura' => '0',
+            'id_equipo' => '0',
+            'lectura' => '0',
+            'fecha' => $fechaInicio,
+            'estado' => $estadoInicial,
         );
-        $historialLecturas = array_merge( $lecturaInicio, $historialLecturas);
+        $historialLecturas = array_merge($lecturaInicio, $historialLecturas);
 
         //agrego lectura al final del mes a las 23:59
         $ultimaLectura = end($historialLecturas);
         $ultimoEstado = $ultimaLectura['estado'];
         //dump($ultimoEstado, 'Último estado');
         $lecturaFin[0] = array(
-            'id_lectura' => '0', 
-            'id_equipo'  => '0', 
-            'lectura'    => '0', 
-            'fecha'      => $fechaFin, 
-            'estado'     => $ultimoEstado
+            'id_lectura' => '0',
+            'id_equipo' => '0',
+            'lectura' => '0',
+            'fecha' => $fechaFin,
+            'estado' => $ultimoEstado,
         );
-        $historialLecturas = array_merge( $historialLecturas, $lecturaFin);
+        $historialLecturas = array_merge($historialLecturas, $lecturaFin);
         //dump($historialLecturas, 'Historial de lecturas del mes');
         return $historialLecturas;
     }
-
-
-
-
-
-
-
-
-
-
 
     /**
      * Trae info de equipo a editar
@@ -1330,10 +1242,10 @@ class Equipos extends CI_Model {
      *
      * @return  Array  Información del equipo.
      */
-    function getEquipoId($idEquipo)
+    public function getEquipoId($idEquipo)
     {
         $userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa'];     // guarda usuario logueado
+        $empId = $userdata[0]['id_empresa']; // guarda usuario logueado
 
         $this->db->select('equipos.id_equipo,
                     equipos.descripcion AS deeq,
@@ -1361,7 +1273,7 @@ class Equipos extends CI_Model {
                     proceso.descripcion AS depro,
                     marcasequipos.marcaid,
                     marcasequipos.marcadescrip'
-                );
+        );
         $this->db->from('equipos');
         $this->db->join('sector', 'sector.id_sector=equipos.id_sector');
         $this->db->join('empresas', 'empresas.id_empresa=equipos.id_empresa');
@@ -1378,8 +1290,7 @@ class Equipos extends CI_Model {
         $this->db->where('equipos.id_equipo', $idEquipo);
 
         $query = $this->db->get();
-        if ($query->num_rows()!=0)
-        {
+        if ($query->num_rows() != 0) {
             $datosEquipo = $query->result_array();
 
             //traer cliente
@@ -1389,16 +1300,14 @@ class Equipos extends CI_Model {
             $this->db->where('equipos.id_empresa', $empId);
             $this->db->where('equipos.id_equipo', $idEquipo);
             $query = $this->db->get();
-            if ($query->num_rows()!=0)
-            {
+            if ($query->num_rows() != 0) {
                 $datosEquipoCustomer = $query->result_array();
-                $datosEquipo[0]["cliId"]          = $datosEquipoCustomer[0]["cliId"];
+                $datosEquipo[0]["cliId"] = $datosEquipoCustomer[0]["cliId"];
                 $datosEquipo[0]["cliRazonSocial"] = $datosEquipoCustomer[0]["cliRazonSocial"];
             } else {
-                $datosEquipo[0]["cliId"]          = null;
+                $datosEquipo[0]["cliId"] = null;
                 $datosEquipo[0]["cliRazonSocial"] = null;
             }
-
 
             //traer grupo
             $this->db->select('grupo.id_grupo, grupo.descripcion AS degr');
@@ -1407,26 +1316,22 @@ class Equipos extends CI_Model {
             $this->db->where('equipos.id_empresa', $empId);
             $this->db->where('equipos.id_equipo', $idEquipo);
             $query = $this->db->get();
-            if ($query->num_rows()!=0)
-            {
+            if ($query->num_rows() != 0) {
                 $datosEquipoCustomer = $query->result_array();
                 $datosEquipo[0]["id_grupo"] = $datosEquipoCustomer[0]["id_grupo"];
-                $datosEquipo[0]["degr"]     = $datosEquipoCustomer[0]["degr"];
+                $datosEquipo[0]["degr"] = $datosEquipoCustomer[0]["degr"];
             } else {
                 $datosEquipo[0]["id_grupo"] = null;
-                $datosEquipo[0]["degr"]     = null;
+                $datosEquipo[0]["degr"] = null;
             }
 
             return $datosEquipo;
-        }
-        else
-        {
+        } else {
             return [];
         }
     }
 
-
-    function getContratistasEquipo($idEquipo)
+    public function getContratistasEquipo($idEquipo)
     {
         $this->db->select('
             contratistaquipo.id_contratistaquipo, contratistaquipo.id_equipo, contratistaquipo.id_contratista,
@@ -1439,63 +1344,36 @@ class Equipos extends CI_Model {
         $this->db->where('contratistaquipo.id_equipo', $idEquipo);
         $query = $this->db->get();
 
-        if ($query->num_rows()>0)
-        {
+        if ($query->num_rows() > 0) {
             return $query->result_array();
-        }
-        else
-        {
+        } else {
             return array();
         }
     }
 
-
-    function estado_alta($idEquipo)
+    public function estado_alta($idEquipo)
     {
-        $this->db->select('equipos.id_equipo, equipos.estado, equipos.ultima_lectura, equipos.fecha_ultimalectura');
-        $this->db->from('equipos');
-        $this->db->where('equipos.id_equipo', $idEquipo);
-        $query = $this->db->get();
+        $this->db->where('id_equipo', $idEquipo);
+        $this->db->set('estado', 'AC');
+        $res = $this->db->update('equipos');
 
-        if ($query->num_rows()>0)
-        {
-            return $query->result_array();
-        }
-        else
-        {
-            return array();
-        }
-    }
+        if(!$res) return false;
 
-    function alta_historial_lectura($parametros)
-    {
-        $id_equipo    = $parametros['id_equipo'];
-        $lectura      = $parametros['lectura'];
-        $fecha        = $parametros['fecha']=="0000-00-00 00:00:00"?(new DateTime())->format('Y-m-d H:i:s'):$parametros['fecha'];
         $userdata = $this->session->userdata('user_data');
-        $usrId        = $userdata[0]['usrId'];
-        $observacion  = $parametros['observacion'];
-        $operario     = $parametros['operario'];
-        $turno        = $parametros['turno'];
-        $estado       = $parametros['estado'];
-
         $datos = array(
-            'id_equipo'    => $id_equipo,
-            'lectura'      => $lectura,
-            'fecha'        => $fecha,
-            'usrId'        => $usrId,
-            'observacion'  => $observacion,
-            'operario_nom' => $operario,
-            'turno'        => $turno,
-            'estado'       => $estado,
-				);
-				// dump($datos, 'datos en alta historial: ');
-        // dump_exit($datos);
-        $this->db->insert('historial_lecturas',$datos);
-        $query = $this->db->insert_id();
-        return $query;
-    }
+            'id_equipo' => $idEquipo,
+            'lectura' => 0,
+            'fecha' => (new DateTime())->format('Y-m-d H:i:s'),
+            'usrId' => $userdata[0]['usrId'],
+            'observacion' => 'Lectura alta de equipo',
+            'operario_nom' => '-',
+            'turno' => 'Alta',
+            'estado' => 'AC',
+        );
 
+        $this->db->insert('historial_lecturas', $datos);
+        return $this->db->insert_id();
+    }
 
     /**
      * Equipos:updateAdjuntoEquipo();
@@ -1504,7 +1382,7 @@ class Equipos extends CI_Model {
      * @param  Int      $ultimoId   Id del equipo al que se le va a adjuntar archivo
      * @return String               Nombre del archivo adjuntado
      */
-    public function updateAdjuntoEquipo($adjunto,$ultimoId)
+    public function updateAdjuntoEquipo($adjunto, $ultimoId)
     {
         $this->db->where('id_equipo', $ultimoId);
         $query = $this->db->update("equipos", $adjunto);
@@ -1520,7 +1398,7 @@ class Equipos extends CI_Model {
      */
     public function eliminarAdjunto($idEquipo)
     {
-        $data  = array( 'adjunto' => '' );
+        $data = array('adjunto' => '');
         $this->db->where('id_equipo', $idEquipo);
         $query = $this->db->update("equipos", $data);
         return $query;
@@ -1529,7 +1407,7 @@ class Equipos extends CI_Model {
     public function informe_equipos()
     {
         $userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa']; 
+        $empId = $userdata[0]['id_empresa'];
 
         $this->db->select('count(*) as result');
         $this->db->where('estado', 'AC');
@@ -1544,10 +1422,11 @@ class Equipos extends CI_Model {
         return $data;
     }
 
-    function asignarMeta($data){
+    public function asignarMeta($data)
+    {
         $this->db->set('meta_disponibilidad', $data['meta']);
         $this->db->where('id_equipo', $data['eq']);
         return $this->db->update('equipos');
     }
-    
+
 }
