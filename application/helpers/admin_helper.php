@@ -5,7 +5,7 @@ if (!function_exists('modal')) {
     {
         return
             "<div class='modal fade' id='$e->id'>
-       <div class='modal-dialog'>
+       <div class='modal-dialog modal-$e->tam'>
          <div class='modal-content'>
            <div class='modal-header'>
              <button type='button' class='close' data-dismiss='modal' aria-label='Close'>

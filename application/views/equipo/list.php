@@ -2722,8 +2722,9 @@ $('#tablaempresa').DataTable({
  $modal->id = 'asignar_meta';
  $modal->titulo = 'Equipos | Asignar Meta';
  $modal->icono = 'fa fa-bar-chart';
- $modal->body = "<div class='form-group'><label>Meta:</label><input class='form-control' type='number' min='1' max='100' step='1' ></div>";
+ $modal->body = "<div class='form-group'><label>Meta:</label><input class='form-control' type='number' min='1' max='100' step='1'><a href='#' class='flt-clear pull-right text-red'><small><i class='fa fa-times'></i> Borrar Meta</small></a></div>";
  $modal->accion = 'Guardar';
+ $modal->tam ='sm';
  echo modal($modal);
 ?>
 

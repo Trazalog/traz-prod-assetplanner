@@ -6,6 +6,12 @@
             los derechos reservados.
         </footer>
 
+
+        <?php
+            $this->load->view('panelDerecho');
+        ?>
+
+
         </body>
 
         <!--Arma Tablas -->
@@ -36,10 +42,9 @@ function collapse(e) {
     }
 
 }
-//Esto dispara un evento para que se cargue el Dash en forma automatica cuando ingreso.
-cargarView('<?php echo $grpDash; ?>', 'index', 'View');
-//linkTo('Test/index1');
-        </script>
+
+linkTo('<?php echo $grpDash; ?>/index/View');
+</script>
 
 
 

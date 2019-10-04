@@ -11,4 +11,13 @@ class Test extends CI_Controller
     {
         return true;
     }
+
+    public function filtro()
+    {
+       $this->load->model('Calendarios');
+      
+        $res = $this->Calendarios->opcionesFiltro();
+        $data['filtro'] = $res;
+        $this->load->view('test1',$data);
+    }
 }
