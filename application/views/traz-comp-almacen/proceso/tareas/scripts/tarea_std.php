@@ -188,7 +188,7 @@ function decidirUrgencia() {
             //	WaitingClose();
             // toma a tarea exitosamente
             if (data['reponse_code'] == 204) {
-                //$("#content").load("<?php #echo base_url(); ?>index.php/Tarea/index/<?php #echo $permission; ?>");
+               linkTo('Tarea');
             }
         },
         error: function(data) {

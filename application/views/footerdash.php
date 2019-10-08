@@ -38,8 +38,9 @@ function collapse(e) {
 
 }
 //Esto dispara un evento para que se cargue el Dash en forma automatica cuando ingreso.
-//cargarView('<?php echo $grpDash; ?>', 'index', 'View');
-linkTo('Test');
+ cargarView('<?php echo $grpDash; ?>', 'index', 'View');
+//linkTo('Test/test');
+
 
 //Listener de Envento cuando el Navegador vuelta a estar ONLINE 
 //Procesa la cola de POSTS
@@ -67,6 +68,7 @@ window.mobileAndTabletcheck = function() {
 </script>
 
 
+
  <script src="<?php echo base_url() ?>assets/props/offline.js"></script>
 
 
@@ -74,7 +76,7 @@ window.mobileAndTabletcheck = function() {
 Offline.options = {
     checks: {
         xhr: {
-            url: '<?php echo base_url() ?>index.php/Test'
+            url: '<?php echo base_url() ?>index.php/Test/conexion'
         }
     },
     requests: false

@@ -7,8 +7,9 @@
                 <!-- mini logo for sidebar mini 50x50 pixels -->
                 <span class="logo-mini">A<b></b>P</span>
                 <!-- logo for regular state and mobile devices -->
-                <span class="logo-lg"><b>Asset</b> PLANNER  <i id="conexion" class="fa fa-circle text-green" data-state="true"></i></span>
-               
+                <span class="logo-lg"><b>Asset</b> PLANNER <i id="conexion" class="fa fa-circle text-green"
+                        data-state="true"></i></span>
+
             </a>
             <!-- Header Navbar: style can be found in header.less -->
             <nav class="navbar navbar-static-top" role="navigation">
@@ -99,93 +100,17 @@
             </nav>
         </header>
 
+        <?php $this->load->view('sw') ?>
+
+
         <script>
-        //--Guille WorkBOT--//
-           <?php if(SW){?>
-
-        base_url = "<?php echo base_url() ?>";
-        if (!indexedDB) {
-            alert("Este browser no soporta IndexedDB, necesita otro para poder utilizar la aplicación.");
-        }
-
-        indexedDB.open('traz-prod-assetplanner-ajax').onupgradeneeded = function(event) {
-            event.target.result.createObjectStore('ajax_requests', {
-                autoIncrement: true,
-                keyPath: 'id'
-            });
-        };
-        caches.open('traz-prod-assetplanner-cache').then(function(cache) {
-            return cache.addAll([
-                base_url + 'Tarea/index/' + '<?php echo $permiso?>',
-                base_url + 'index.php/Tarea/index/' + '<?php echo $permiso?>'
-            ]);
-        });
-        base_url + 'index.php/Tarea/confInicioTarea',
-            tareas = JSON.parse('<?php echo $tareas?>');
-
-
-        console.log('Tareas:');
-
-        console.log(tareas);
-        caches.open('traz-prod-assetplanner-cache').then(function(cache) {
-            for (i = 0; i < tareas.length; i++) {
-                if (tareas[i].displayName == "Ejecutar OT") {
-                    console.log('Ejecutar OT: ' + tareas[i].id);
-                    
-                    cache.addAll([base_url + 'index.php/Tarea/confInicioTarea?id_OT=' + tareas[i].id_Ot]);
-                    for (j = 0; j < tareas[i].subtareas.length; j++) {
-
-                        cache.addAll([base_url + 'index.php/<?php echo FRM ?>Form/obtener/' + tareas[i]
-                            .subtareas[j] + '/true'
-                        ]);
-                    }
-
-                    console.log('Cantidad Pedidos: '+tareas[i].pedidos.length);
-                    
-                    for (j = 0; j < tareas[i].pedidos.length; j++) {
-
-                        cache.addAll([
-                            base_url + 'index.php/almacen/Notapedido/getNotaPedidoId?id_nota=' + tareas[i].pedidos[j].pema_id,
-                            base_url +'index.php/almacen/new/Entrega_Material/getEntregasPedidoOffline?pema=' + tareas[i].pedidos[j].pema_id,
-                            base_url + 'index.php/almacen/new/Pedido_Material/estado?id=' + tareas[i].pedidos[j].pema_id,    
-                        ]);
-                        // for (k = 0; k < tareas[i].pedidos[j].entregas.length; k++) {
-                        //     cache.addAll([
-                        //         base_url + 'index.php/almacen/new/Entrega_Material/detalle?id=' +
-                        //         tareas[i].pedidos[j].entregas[k].enma_id,
-                        //     ]);
-                        // }
-                    }
-
-                }
-                cache.addAll([
-                    base_url + 'index.php/Tarea/detaTarea/' + '<?php echo $permiso?>/' + tareas[i].id
-
-                ]);
-            }
-        });
-
-     
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw1.js').then(function() {
-                    console.log('Service Worker Registrado');
-                    if (!navigator.serviceWorker.controller) {
-                        location.reload();
-                    }
-                })
-            });
-        }
-       <?php }?>
-
-
         function procesarCola() {
             if (navigator.serviceWorker.controller) {
                 navigator.serviceWorker.controller.postMessage('processQueue')
             }
         }
 
-        //--Fin Guille WorkBOt--//
+       
         $(document).on('click', '.btnEmpresa', function() {
             var idNewEmpresa = $(this).data('ui');
             cambiarDeEmpresa(idNewEmpresa);
