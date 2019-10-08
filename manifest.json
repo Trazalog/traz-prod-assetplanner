@@ -2,7 +2,7 @@
     "name": "assetPLANNER",
     "short_name": "asset",
     "display": "standalone",
-    "start_url": "https://192.168.0.105/traz-prod-assetplanner/index.php",
+    "start_url": "https://www.trazalog.com.ar/test_v2/traz-prod-assetplanner/index.php/dash",
     "theme_color": "#673ab6",
     "background_color": "#111111",
     "icons": [
