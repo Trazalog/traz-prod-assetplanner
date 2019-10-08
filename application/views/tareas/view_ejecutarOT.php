@@ -110,7 +110,7 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 																											echo '<td>' . $subt['duracion_prog'] . '</td>';
 																											
 																											if ($subt['subtareadescrip'] != null) {
-																												echo '<td class="btn-form" data-info="' . $subt["info_id"] . '"><i class="fa fa-paperclip text-light-blue " style="cursor: pointer; margin-left: 15px;" aria-hidden="true" id="' . $subt["id_listarea"] . '" ></i></td>';
+																												echo '<td class="frm-open" data-info="' . $subt["info_id"] . '"><i class="fa fa-paperclip text-light-blue " style="cursor: pointer; margin-left: 15px;" aria-hidden="true" id="' . $subt["id_listarea"] . '" ></i></td>';
 																											}
 
 																											echo '</tr>';

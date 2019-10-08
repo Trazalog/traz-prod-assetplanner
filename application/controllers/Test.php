@@ -6,26 +6,25 @@ class Test extends CI_Controller
     {
 
         parent::__construct();
-       
+
         $this->load->model('Kpis');
     }
 
     public function index()
     {
-         $this->load->model('traz-comp/Componentes');
-       
+        $this->load->model('traz-comp/Componentes');
+
         #COMPONENTE ARTICULOS
         $data['items'] = $this->Componentes->listaArticulos();
         $data['lang'] = lang_get('spanish', 'Ejecutar OT');
 
-
-        if($ot) {
+        if ($ot) {
             $info = new stdClass();
             $info->ortr_id = $ot;
             $data['info'] = $info;
         }
         $data['hecho'] = false;
-        $this->load->view(ALM.'/notapedido/generar_pedido', $data);
+        $this->load->view(ALM . '/notapedido/generar_pedido', $data);
     }
 
     public function index2()
@@ -44,31 +43,31 @@ class Test extends CI_Controller
         $dsp = array();
         $fecha_actual = date("Y-m-d");
 
-        $data = $this->Kpis->getEquipos($eq == 'all'?false:$eq);
+        $data = $this->Kpis->getEquipos($eq == 'all' ? false : $eq);
         $cant = sizeof($data);
 
-        if($cant == 0) echo json_encode(false);
+        if ($cant == 0) {
+            echo json_encode(false);
+        }
 
         for ($i = 0; $i < 12; $i++) {
             $fi = date("Y-m-01 00:00:00", strtotime($fecha_actual . "- $i month"));
 
             //Ajustar Rango de Fecha con Respecto a la primera vez que se activo el Equipo
-            $ff = ($i==0 ?  date("Y-m-d H:i:00") : date("Y-m-d 23:59:59", strtotime($fi . "+ 1 month - 1 second")));
+            $ff = ($i == 0 ? date("Y-m-d H:i:00") : date("Y-m-d 23:59:59", strtotime($fi . "+ 1 month - 1 second")));
 
-            
-            array_unshift($tiempo,date("m-Y", strtotime($fi)));
-            
+            array_unshift($tiempo, date("m-Y", strtotime($fi)));
+
             $acum = 0;
             foreach ($data as $o) {
                 $fi = $this->Kpis->estadoEquipo($o->id_equipo, $fi);
                 $acum += $this->calcularDisponibilidad($o->id_equipo, $fi, $ff);
             }
 
-            $dsp[$fi .' - '.$ff] = number_format($acum/$cant,2);
+            $dsp[$fi . ' - ' . $ff] = number_format($acum / $cant, 2);
 
         }
-        print("<pre>".print_r($dsp,true)."</pre>");
-
+        print("<pre>" . print_r($dsp, true) . "</pre>");
 
     }
 
@@ -80,45 +79,45 @@ class Test extends CI_Controller
 
         $eq = $this->input->post('idEquipo');
 
-        $data = $this->Kpis->getEquipos($eq == 'all'?false:$eq);
+        $data = $this->Kpis->getEquipos($eq == 'all' ? false : $eq);
         $cant = sizeof($data);
 
-        if($cant == 0) {
+        if ($cant == 0) {
             $data['promedioMetas'] = 0;
             $data['tiempo'] = [];
             $data['porcentajeHorasOperativas'] = [];
-            echo json_encode($data); 
+            echo json_encode($data);
             return;
         }
 
         for ($i = 0; $i < 12; $i++) {
             $fi = date("Y-m-01 00:00:00", strtotime($fecha_actual . "- $i month"));
 
-            $ff = ($i==0 ?  date("Y-m-d H:i:00") : date("Y-m-d 23:59:59", strtotime($fi . "+ 1 month - 1 second")));
+            $ff = ($i == 0 ? date("Y-m-d H:i:00") : date("Y-m-d 23:59:59", strtotime($fi . "+ 1 month - 1 second")));
 
             //Ajustar Rango de Fecha con Respecto a la primera vez que se activo el Equipo
-            
-            array_unshift($tiempo,date("m-Y", strtotime($fi)));
-            
+
+            array_unshift($tiempo, date("m-Y", strtotime($fi)));
+
             $acum = 0;
             foreach ($data as $o) {
                 $fi = $this->Kpis->estadoEquipo($o->id_equipo, $fi);
                 $acum += $this->calcularDisponibilidad($o->id_equipo, $fi, $ff);
             }
 
-            array_unshift($dsp, number_format($acum/$cant,2));
+            array_unshift($dsp, number_format($acum / $cant, 2));
         }
 
         $acum = 0;
         foreach ($data as $o) {
-            if($o->meta_dsp){
+            if ($o->meta_dsp) {
                 $acum += $o->meta_dsp;
-            }else{
+            } else {
                 $cant--;
             }
         }
 
-        $data['promedioMetas'] = number_format($acum/$cant,2);
+        $data['promedioMetas'] = number_format($acum / $cant, 2);
         $data['tiempo'] = $tiempo;
         $data['porcentajeHorasOperativas'] = $dsp;
         echo json_encode($data);
@@ -134,8 +133,12 @@ class Test extends CI_Controller
 
         if (sizeof($data) == 0) {
             $his = $this->Kpis->getHistorialLecturas($eq, false, $fi);
-            if(end($his)->estado == 'AC') return 100;
-            else return 0;
+            if (end($his)->estado == 'AC') {
+                return 100;
+            } else {
+                return 0;
+            }
+
         }
 
         if ($data[0]->estado == 'RE') {
@@ -184,6 +187,29 @@ class Test extends CI_Controller
         $totalMin = $minutos + (int) $intervalo->format('%i'); // Acumulo Minutos
 
         return $totalMin;
+    }
+
+    public function conexion()
+    {
+        return true;
+    }
+
+    public function test()
+    {
+        $this->load->view('test1');
+    }
+
+    public function A()
+    {
+        echo 'A';
+    }
+    public function B()
+    {
+        echo 'B';
+    }
+    public function C()
+    {
+        echo 'C';
     }
 
 }

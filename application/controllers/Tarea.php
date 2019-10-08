@@ -84,7 +84,6 @@ class Tarea extends CI_Controller {
 			public function index($permission = null){
 				///$this->load->helper('control_sesion');
 				// if	(validaSesion()){
-
 						$detect = new Mobile_Detect();    				
 						//Obtener Bandeja de Usuario desde Bonita
 						$response = $this->bpm->getToDoList();
