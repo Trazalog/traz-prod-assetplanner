@@ -215,7 +215,7 @@ class Calendario extends CI_Controller {
 									$responce = $this->bpm->setUsuario($prevTask,$userBpm);
 									if(!$responce['status']){echo json_encode($responce);return;}
 									// Cierro tarea 'Planificar Solicitud'
-									$responce = $this->bpm->CerrarTareaBPM($prevTask);	
+									$responce = $this->bpm->cerrarTarea($prevTask);	
 									if(!$responce['status']){echo json_encode($responce);return;}
 							}
 							
@@ -258,7 +258,7 @@ class Calendario extends CI_Controller {
 										$responce = $this->bpm->setUsuario($prevTask,$userBpm);
 										if(!$responce['status']){echo json_encode($responce);return;}
 										// Cierro tarea 'Planificar Solicitud'
-										$responce = $this->bpm->CerrarTareaBPM($prevTask);	
+										$responce = $this->bpm->cerrarTarea($prevTask);	
 										if(!$responce['status']){echo json_encode($responce);return;}
 								}
 							}					
