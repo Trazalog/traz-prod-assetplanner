@@ -328,8 +328,9 @@ class BPM
 
             if ($o['userName'] == $user) {
 
-                return msj(true,'OK', $o);
-
+							log_message('DEBUG','#TRAZA | #BPM (Usr en BPM)>> '.json_encode($o['userName']));						
+							log_message('DEBUG','#TRAZA | #BPM (Usr en Sistema)>> '.$user);
+              return msj(true,'OK', $o);
             }
 
         }
