@@ -120,11 +120,10 @@
 function ver_informe_servicio (id_ot,id_eq){ 
   
   WaitingOpen();
-  $('#modalInforme').modal('show');
   $('#modalInformeServicios').empty();
-  // $("#modalInformeServicios").load("<?php echo base_url(); ?>index.php/Ordenservicio/verInforme/"+id_ot+"/"+id_eq+"/"+id_solicitud+"/");
   $("#modalInformeServicios").load("<?php echo base_url(); ?>index.php/Ordenservicio/verInforme/"+id_ot+"/"+id_eq+"/");
   WaitingClose();
+  $('#modalInforme').modal('show');
 }
 
 
@@ -147,7 +146,7 @@ $(".fa-sticky-note-o").click(function () {
  
   var id_ot = $(this).parents("tr").find("td").eq(2).html();
   var id_eq  = $(this).parents("tr").find("td").eq(6).html();	
-  ver_informe_servicio (id_ot,id_eq);
+  ver_informe_servicio(id_ot,id_eq);
 
 });
 
