@@ -69,3 +69,8 @@ function estado(e) {
     }
 }
         </script>
+
+        <?php
+$this->load->view(FRM . 'scripts');
+
+?>
