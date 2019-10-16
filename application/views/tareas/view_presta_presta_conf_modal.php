@@ -12,12 +12,12 @@
         <input class="form-control numSolic form_equipos" name="numSolic" id="numSolic" value="<?php echo $id_ot;?>" disabled/>
       </div>
       <div class="col-xs-12 col-sm-6">
-        <label for="causa">Descripción de la Tarea</label>
-        <input type="text" name="causa" class="form-control causa form_equipos" id="causa" value="<?php echo $causa;?>" disabled>
-      </div>
-      <div class="col-xs-12 col-sm-6">
         <label for="fecha">Fecha</label>
         <input type="text" name="fecha" class="form-control fecha" id="fechaOrden" disabled>
+      </div>
+      <div class="col-xs-12 col-sm-12">
+        <label for="causa">Descripción de la Tarea</label>
+        <textarea type="text" name="causa" class="form-control causa form_equipos" id="causa" disabled><?php echo $causa;?></textarea>
       </div>
       <input type="hidden" name="id_ordenservicio" class="id_ordenservicio" id="id_ordenservicio" value="<?php echo $id_solicitudServicio;?>">
       <input type="hidden" name="id_ot" class="id_ot" id="id_ot" value="<?php echo $id_ot;?>">
@@ -110,7 +110,7 @@
               </h4>
             </div>
             <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-              <div class="panel-body">
+              <div class="panel-body table-responsive">
                 <table id="modTarea" class="table table-bordered table-hover">
                   <thead>
                     <tr>                            
