@@ -301,6 +301,9 @@ class BPM
             "assigned_id" => $user,
         );
 
+        log_message('DEBUG','#TRAZA | #BPM (Usr en setUsuario)>> '.$user);
+	    log_message('DEBUG','#TRAZA | #BPM (task en setUsuario)>> '.$task);
+
         $resource = 'API/bpm/humanTask/';
 
         $url = BONITA_URL . $resource . $task;
