@@ -7,7 +7,7 @@
 
     <title>asset PLANNER</title>
 
-    <!-- <link rel="manifest" href="manifest.json" /> -->
+    <link rel="manifest" href="./manifest.json" />
 
     <link rel="shortcut icon" href="<?php echo base_url();?>assets/img/favicon.png" type="image/x-icon">
     <!-- Bootstrap 3.3.7 -->
