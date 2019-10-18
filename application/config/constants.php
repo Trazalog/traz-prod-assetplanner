@@ -102,9 +102,9 @@ define('SIM', 'traz-comp-sim/');
 
 define('SIM_FORMS', array(
 
-    'eval_ope' => 3,
+    'eval_ope' => 2,
 
-    'eval_zona' =>2
+    'eval_zona' =>3
 ));
 
 
