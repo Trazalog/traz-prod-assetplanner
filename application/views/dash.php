@@ -79,22 +79,12 @@
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
                                     <div class="pull-right">
-                                        <a href="<?php echo base_url(); #" onClick="cargarView('login', 'logout', '')?>"
-                                            class="btn btn-default btn-flat">Salir <i
+                                        <a href="#" onclick="logout()" class="btn btn-default btn-flat">Salir <i
                                                 class="fa fa-fw fa-sign-out"></i></a>
-
-                                        <!-- <button class="btn btn-success" onclick="procesarCola()">Sincronizar</button> -->
                                     </div>
                                 </li>
                             </ul>
                         </li>
-                        <!-- Control Sidebar Toggle Button -->
-                        <!--
-                        <li>
-                        <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
-                        </li>
-                        -->
-
                     </ul>
                 </div>
             </nav>
@@ -104,6 +94,15 @@
 
 
         <script>
+
+        function logout() {
+            if(conexion())
+            location.href = '<?php echo base_url() ?>';
+            else{
+                alert("Sin Conexion");
+            }
+        }
+
         function procesarCola() {
             if (navigator.serviceWorker.controller) {
                 navigator.serviceWorker.controller.postMessage('processQueue')
