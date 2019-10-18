@@ -1477,5 +1477,11 @@ class Otrabajos extends CI_Model {
 			return $this->db->update('orden_trabajo');
 		}
 
+		public function eliminar($id)
+		{
+			$this->db->where('id_orden', $id);
+			return $this->db->delete('orden_trabajo');
+		}
+
 	
 }	

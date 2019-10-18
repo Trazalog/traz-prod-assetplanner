@@ -189,7 +189,7 @@ class Otrabajo extends CI_Controller {
 		$result = $this->bpm->lanzarProceso(BPM_PROCESS_ID, $contract);	
 		
 		if(!$result['status']){
-
+			$this->Otrabajos->eliminar($ultimoId);
 			echo json_encode($result);
 
 		}
