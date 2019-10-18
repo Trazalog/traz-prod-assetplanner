@@ -6,6 +6,7 @@ class Form extends CI_Controller
     {
 
         parent::__construct();
+        
         $this->load->model(FRM . 'Forms');
     }
 
@@ -16,6 +17,7 @@ class Form extends CI_Controller
         $data['list'] = $this->Forms->listado();
 
         $this->load->view(SIM . 'form-calidad', $data);
+
         $this->load->view(FRM . 'scripts');
     }
 

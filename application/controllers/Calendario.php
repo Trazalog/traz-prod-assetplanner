@@ -112,6 +112,9 @@ class Calendario extends CI_Controller {
 		$usrId    = $userdata[0]['usrId'];
 		$empId    = $userdata[0]['id_empresa'];
 		
+		# Bandera que si esta en TRUE Aborta la creacion de la OT
+		$error = false;
+
 	    if($_POST){
 				
 				if( isset($_POST['event_tipo']) ){
@@ -188,6 +191,10 @@ class Calendario extends CI_Controller {
 							log_message('DEBUG', 'TRAZA | $taskId: '.$infoTarea['taskId']);
 						if($respCerrar['status']){
 							$resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);
+						}else{
+							log_message('DEBUG','#Calendario >> guardar_agregar | Cerrar SS: '.json_encode($respCerrar));
+							$error = true;
+							$estado = 'S';
 						}
 						// guardo el case_id en Otrabajo
 						$this->Calendarios->setCaseidenOT($infoTarea['caseId'], $idOTnueva);									
@@ -288,6 +295,8 @@ class Calendario extends CI_Controller {
 						$tipo = 'predictivo';
 						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);						
 					}					
+
+					if($error) return false;
 					// genera la Otrabajo devuelve el id de OT
 					$idOT = $this->Calendarios->guardar_agregar($datos2);					
 					// guarda herramientas, insumos y rrhh de las tareas en OT
@@ -299,7 +308,12 @@ class Calendario extends CI_Controller {
 														"idSolicitudServicio"	=> 0,		
 														"idOT"  => 	$idOT
 													);						
-							$result = $this->bpm->lanzarProceso(BPM_PROCESS_ID, $contract);														
+							$result = $this->bpm->lanzarProceso(BPM_PROCESS_ID, $contract);		
+							
+							if(!$result['status']){
+								$this->Otrabajos->eliminar($idOT);
+								return false;
+							}
 							// guarda case id generado el lanzar proceso				
 							$respcaseOT = $this->Calendarios->setCaseidenOT($result['data']['caseId'], $idOT);					
 					}else{
@@ -473,7 +487,7 @@ class Calendario extends CI_Controller {
 				"idSolicitudServicio"	=>	0,
 				"idOT"  => 	$idOT
 			);						
-			$result = $this->bpm->LanzarProceso(BPM_PROCESS_ID, $contract);								
+			$result = $this->bpm->lanzarProceso(BPM_PROCESS_ID, $contract);								
 			// guarda case id generado el lanzar proceso				
 			$respcaseOT = $this->Calendarios->setCaseidenOT($result['data']['caseId'], $idOT);
 			// a la fecha de programacion le sumo la frecuencia en dias	   	

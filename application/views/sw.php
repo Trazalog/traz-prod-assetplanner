@@ -18,10 +18,11 @@ if (SW) {
         console.log('Service Worker is not supported in this browser.');
     }
 
-    <?php }?>
+    <?php
+} ?>
 
 //Precacheo
-base_url = "<?php echo base_url() ?>index.php/";
+base_url = "<?php echo base_url() ?>";
 if (!indexedDB) {
     alert("Este browser no soporta IndexedDB, necesita otro para poder utilizar la aplicación.");
 }
@@ -33,7 +34,7 @@ indexedDB.open('traz-prod-assetplanner-ajax').onupgradeneeded = function(event) 
     });
 }
 
-var tareas = JSON.parse('<?php echo $tareas?>');
+var tareas = JSON.parse('<?php echo $tareas ?>');
 console.log(tareas);
 
 var cache_urls = [];
@@ -44,24 +45,35 @@ tareas.forEach(e => {
     if (e.displayName == 'Ejecutar OT') {
         cache_urls.push(
             base_url + 'Tarea/detaTarea/Add-Edit-Del-View-/' + e.id,
-            base_url + 'Tarea/confInicioTarea?id_OT=' + e.id_Ot
+            base_url + 'index.php/Tarea/confInicioTarea?id_OT=' + e.id_Ot
         );
 
-        e.subtareas.forEach(s => {
-            cache_urls.push(base_url + '<?php echo FRM ?>Form/obtener/' + s + '/true')
-        });
-
-        e.pedidos.forEach(p => {
-            cache_urls.push(
-                base_url + 'almacen/Notapedido/getNotaPedidoId?id_nota=' + p.pema_id,
-                base_url + 'almacen/new/Entrega_Material/getEntregasPedidoOffline?pema=' + p.pema_id,
-                base_url + 'almacen/new/Pedido_Material/estado?id=' + p.pema_id,
-            );
-
-            e.pedidos.entregas.forEach(en => {
-                cache_urls.push(base_url + 'almacen/new/Entrega_Material/detalle?id=' +en.enma_id);
+        if (e.subtareas) {
+            e.subtareas.forEach(s => {
+                cache_urls.push(base_url + 'index.php/<?php echo FRM ?>Form/obtener/' + s + '/true')
             });
-        });
+        }
+
+
+        console.log(e.pedidos);
+        if (e.pedidos) {
+            e.pedidos.forEach(p => {
+                cache_urls.push(
+                    base_url + 'index.php/almacen/Notapedido/getNotaPedidoId?id_nota=' + p.pema_id,
+                    base_url + 'index.php/almacen/new/Entrega_Material/getEntregasPedidoOffline?pema=' + p
+                    .pema_id,
+                    base_url + 'almacen/new/Pedido_Material/estado?id=' + p.pema_id,
+                );
+
+                if (e.pedidos.entregas) {
+                    e.pedidos.entregas.forEach(en => {
+                        cache_urls.push(base_url + 'almacen/new/Entrega_Material/detalle?id=' +
+                            en
+                            .enma_id);
+                    });
+                }
+            });
+        }
     }
 });
 

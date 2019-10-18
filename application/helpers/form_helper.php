@@ -11,8 +11,14 @@ if (!function_exists('form')) {
 
             switch ($e->tipo) {
 
-                case 'titulo':
-                    $html .= "<h$e->tam>$e->label</h$e->tam>";
+                case 'titulo1':
+                    $html .= "<h1>$e->label</h1>";
+                    break;
+                case 'titulo2':
+                    $html .= "<h2>$e->label</h2>";
+                    break;
+                case 'titulo3':
+                    $html .= "<h3>$e->label</h3>";
                     break;
 
                 case 'comentario':
