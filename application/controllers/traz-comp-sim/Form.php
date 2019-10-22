@@ -11,7 +11,7 @@ class Form extends CI_Controller
 
     public function formCalidad()
     {
-        $data['formId'] = SIM_FORMS['eval_ope'];
+        $data['formId'] = SIM_FORM_EVAL_OPE;
 
         $data['list'] = $this->Forms->listado();
 
@@ -21,7 +21,7 @@ class Form extends CI_Controller
 
     public function newFormCalidad()
     {
-        $data['formId'] = SIM_FORMS['eval_ope'];
+        $data['formId'] = SIM_FORM_EVAL_OPE;
 
         $data['infoId'] = $this->Forms->crear($data['formId']);
 

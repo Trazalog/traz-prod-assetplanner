@@ -42,7 +42,7 @@ class Forms extends CI_Model
     {
 
         foreach ($data as $key => $o) {
-
+            if(!$key) continue;
             $this->db->where('info_id', $info_id);
             $this->db->where('name', $key);
             $this->db->set('valor', $o);

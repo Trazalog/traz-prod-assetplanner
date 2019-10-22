@@ -170,6 +170,7 @@ class dash extends CI_Controller {
 				$permissions .= $item['actDescription']."-";
 				$n++;
 			}*/
+			if(!$fn) continue;
 			for($i=0; $i<sizeof($fn); $i++) {
 				$permissions .= $fn[$i]['actDescription']."-";
 			}
