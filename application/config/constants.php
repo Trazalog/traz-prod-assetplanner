@@ -92,12 +92,8 @@ define('FRM', 'traz-comp-form/');
 #Componente SIM
 define('SIM', 'traz-comp-sim/');  
 
-define('SIM_FORMS', array(
-
-    'eval_ope' => 2,
-
-    'eval_zona' =>3
-));
+define('SIM_FORM_EVAL_OPE',3);
+define('SIM_FORM_EVAL_ZONA',2);
 
 /*
 |--------------------------------------------------------------------------
@@ -108,7 +104,7 @@ define('SIM_FORMS', array(
 |
 */
 define('CMP_ALM', 'traz-comp-almacen/');  
-define('ALM', 'traz-comp-almacen/');  
+
 /*
 |--------------------------------------------------------------------------
 | Bonita url

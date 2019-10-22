@@ -2,7 +2,7 @@
     <div class="box box-primary">
         <div class="box-body">
 
-            <button class="btn btn-primary frm-new" data-form="<?php echo SIM_FORMS['eval_zona']?>">
+            <button class="btn btn-primary frm-new" data-form="<?php echo SIM_FORM_EVAL_OPE ?>">
                             <i class="fa fa-plus"></i> Nuevo Formulario</button><br><br><br>
 
             <table class="table" id="lista-forms">
