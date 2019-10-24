@@ -13,18 +13,20 @@
         <script src="<?php echo base_url('lib/tabla.js'); ?>"></script>
         <script src="<?php echo base_url('assets/props/gps.js')?>"></script>
         <script>
+var base_url = '<?php echo base_url()?>';
 var link = '';
 
-$('.menu .link').on('click', function() {
-    link = $(this).data('link');
-    linkTo();
-});
+// $('.menu .link').on('click', function() {
+//     link = $(this).data('link');
+//    alert(link);
+//    // $('#content').load(link);
+// });
 
 function linkTo(uri = '') {
     if (link == '' && uri == '') return;
     link = (uri == '' ? link : uri);
     $('#content').empty();
-    $('#content').load('<?php echo base_url()?>' + link);
+    $('#content').load( (link.includes(base_url)?'':base_url) + link);
 }
 
 function collapse(e) {
