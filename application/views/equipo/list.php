@@ -88,6 +88,7 @@
 </section><!-- /.content -->
 
 
+
 <script>
 $('#modalhistlect').on('shown.bs.modal', function(e) {
     // recalcula el ancho de las columnas
@@ -153,6 +154,8 @@ $(".fa-toggle-on").click(function(e) {
         dataType: 'json'
     });
 });
+
+
 
 // Cambiar a estado - Chequeado
 $(".fa-toggle-off").click(function(e) {
@@ -987,9 +990,11 @@ function click_co(id_equipo) {
         },
         url: 'index.php/Equipo/getco',
         success: function(data) {
+            //aca trae la marca erronea
+            console.table(data);
             var fechai = data[0]['fecha_ingreso'];
             var fechag = data[0]['fecha_garantia'];
-            var mar = data[0]['marca'];
+            var mar = data[0]['marcadescrip'];
             var ubica = data[0]['ubicacion'];
             var descrip = data[0]['descripcion'];
             var codigoe = data[0]['codigo'];

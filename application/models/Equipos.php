@@ -609,7 +609,11 @@ class Equipos extends CI_Model
             return false;
         } else {
             $ide = $data['id_equipo'];
-            $query = $this->db->get_where('equipos', array('id_equipo' => $ide));
+            $this->db->select('*');
+            $this->db->from('equipos A');
+            $this->db->join('marcasequipos B', 'A.marca = B.marcaid');
+            $this->db->where('id_equipo', $ide);
+            $query = $this->db->get();
             if ($query->num_rows() > 0) {
                 return $query->result();
             } else {

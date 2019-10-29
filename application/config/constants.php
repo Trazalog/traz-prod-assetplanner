@@ -114,7 +114,7 @@ define('CMP_ALM', 'traz-comp-almacen/');
 |
 */
 
-define('BONITA_URL', 'http://atom:8080/bonita/');  
+define('BONITA_URL', 'http://192.168.0.102:8080/bonita/');  
 
 define('BPM_ADMIN_USER', 'mantenedor1');
 define('BPM_ADMIN_PASS', 'bpm');
