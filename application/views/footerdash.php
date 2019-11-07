@@ -21,12 +21,17 @@ var link = '';
 //    alert(link);
 //    // $('#content').load(link);
 // });
-
+var linkAnt = null;
 function linkTo(uri = '') {
     if (link == '' && uri == '') return;
+    linkAnt = link;
     link = (uri == '' ? link : uri);
     $('#content').empty();
     $('#content').load( (link.includes(base_url)?'':base_url) + link);
+}
+
+function back() {
+    linkTo(linkAnt);
 }
 
 function collapse(e) {
