@@ -53,7 +53,7 @@ $(".sidebar .sidebar-menu a").click(function(event) {
         if( typeof permission === "undefined" ) {
             permission = '';
         }
-        //cargarView(controller, action, permission);
+        cargarView(controller, action, permission);
     }
 
     console.log( "controlador: "+controller);
