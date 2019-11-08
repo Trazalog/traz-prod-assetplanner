@@ -1016,9 +1016,6 @@ $(document).ready(function(event) {
               data: {data:parametros },
               url: 'index.php/Equipo/guardar_equipo',  //index.php/
               success: function(data){
-
-                      /*var permisos = '<?php// echo $permission; ?>';
-                      cargarView('Equipo', 'index', permisos );*/
                      cargarVista();
                     },
               error: function(result){

@@ -15,7 +15,7 @@ class Notapedido extends CI_Controller
     public function index()
     {
         $this->load->model('traz-comp/Componentes');
-          #COMPONENTE ARTICULOS
+        #COMPONENTE ARTICULOS
         $data['items'] = $this->Componentes->listaArticulos();
         $data['lang'] = lang_get('spanish', 'Ejecutar OT');
 
@@ -66,10 +66,10 @@ class Notapedido extends CI_Controller
     public function setPedidoEspecial()
     {
 
-        $pedido = $this->input->post('pedido').'&'.$this->input->post('justif');
+        $pedido = $this->input->post('pedido') . '&' . $this->input->post('justif');
         $ot = $this->input->post('ot');
 
-        echo $this->pedidoExtraordinario($ot,$pedido);
+        echo $this->pedidoExtraordinario($ot, $pedido);
 
     }
 
@@ -80,21 +80,20 @@ class Notapedido extends CI_Controller
         $this->load->model(ALM.'/Pedidoextra');
 
         $contract = [
-            'pedidoExtraordinario' =>  $pedidoExtra
+            'pedidoExtraordinario' => $pedidoExtra,
         ];
 
-        $data =  $this->bpm->lanzarProceso(BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS,$contract);
+        $data = $this->bpm->lanzarProceso(BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS, $contract);
 
         $peex['case_id'] = $data['data']['caseId'];
         $peex['fecha'] = date("Y-m-d");
-        $peex['detalle'] = $pedidoExtra;    
-        $peex['ortr_id'] = $ot; 
+        $peex['detalle'] = $pedidoExtra;
+        $peex['ortr_id'] = $ot;
         $peex['empr_id'] = 1; //!HARDCODE
 
         return $this->Pedidoextra->set($peex);
 
     }
-  
 
     public function getOrdenesCursos()
     {
@@ -139,7 +138,7 @@ class Notapedido extends CI_Controller
             'ortr_id' => $idOT,
             'empr_id' => empresa(),
             'justificacion' => $justificacion,
-            'estado'=>'Creada'
+            'estado' => 'Creada',
         );
 
         $idnota = $this->Notapedidos->setCabeceraNota($cabecera);
@@ -149,6 +148,9 @@ class Notapedido extends CI_Controller
     
         if($peex_id){$this->load->model(ALM.'/Pedidoextra'); $this->Pedidoextra->setPemaId($peex_id, $idnota);}
 
+        if ($peex_id) {$this->load->model(CMP_ALM . '/Pedidoextra');
+            $this->Pedidoextra->setPemaId($peex_id, $idnota);}
+
         for ($i = 0; $i < count($ids); $i++) {
             $deta[$i]['pema_id'] = $idnota;
             $deta[$i]['arti_id'] = $ids[$i];
@@ -157,21 +159,20 @@ class Notapedido extends CI_Controller
         }
 
         $response = $this->Notapedidos->setDetaNota($deta);
-        
-        echo json_encode(['pema_id'=>$idnota]);
+
+        echo json_encode(['pema_id' => $idnota]);
     }
 
-    
     public function pedidoNormal($pemaId)
     {
-        //? DEBE EXISTIR LA NOTA DE PEDIDO 
+        //? DEBE EXISTIR LA NOTA DE PEDIDO
         $contract = [
             'pIdPedidoMaterial' => $pemaId,
         ];
 
-        $rsp = $this->bpm->lanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES,$contract);
+        $rsp = $this->bpm->lanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES, $contract);
 
-        if(!$rsp['status']){
+        if (!$rsp['status']) {
             return json_encode($rsp);
         }
 
@@ -207,7 +208,7 @@ class Notapedido extends CI_Controller
         echo json_encode($response);
     }
 
-    public function getTablaDetalle($pema=null)
+    public function getTablaDetalle($pema = null)
     {
         $this->load->model(ALM.'/Ordeninsumos');
 
@@ -225,16 +226,15 @@ class Notapedido extends CI_Controller
         echo $this->Notapedidos->editarDetalle($id, $data);
     }
 
-    public function crearPedido($ot=null)
-    {   
+    public function crearPedido($ot = null)
+    {
         $this->load->model('traz-comp/Componentes');
-       
+
         #COMPONENTE ARTICULOS
         $data['items'] = $this->Componentes->listaArticulos();
         $data['lang'] = lang_get('spanish', 'Ejecutar OT');
 
-
-        if($ot) {
+        if ($ot) {
             $info = new stdClass();
             $info->ortr_id = $ot;
             $data['info'] = $info;
@@ -244,15 +244,15 @@ class Notapedido extends CI_Controller
        
     }
 
-    public function crearPedido2($ot=null)
-    {   
+    public function crearPedido2($ot = null)
+    {
         $this->load->model('traz-comp/Componentes');
-        
+
         #COMPONENTE ARTICULOS
         $data['items'] = $this->Componentes->listaArticulos();
         $data['lang'] = lang_get('spanish', 'Ejecutar OT');
 
-        if($ot) {
+        if ($ot) {
             $info = new stdClass();
             $info->ortr_id = $ot;
             $data['info'] = $info;

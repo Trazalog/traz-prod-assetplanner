@@ -13,8 +13,9 @@ class Calendario extends CI_Controller {
 	}	
 
 	public function indexot($permission) // Ok
-	{
+	{	
 		$data['permission'] = $permission."Correctivo-Preventivos-Backlog-Predictivo-";
+
 		$this->load->view('calendar/calendar1', $data);
 	}
 
@@ -848,6 +849,12 @@ class Calendario extends CI_Controller {
 			$this->bpm->actualizarIdOT($caseId, $idOTnueva);
 		}
 		
+
+		public function panelFiltro()
+		{
+			$data['filtro'] = $this->Calendarios->opcionesFiltro();
+			$this->load->view('calendar/filtro', $data);
+		}
 
 	/*	./ INTEGRACION CON BPM */
 	}

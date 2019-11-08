@@ -267,6 +267,33 @@ detectarForm();
 function validaInicio() {
     $("#iniciarTarea").hide();
     $("#tareaIniciada").hide();
+		// Cambia el estado de Orden servicio y de solicitud de servicio
+		$("#iniciarTarea").click(function () {  
+			
+			WaitingOpen('Iniciando Tarea...');
+			var id_OT = $('#id_OT').val();
+			$.ajax({
+						type: 'POST',
+						data: {id_OT: id_OT},
+						url: 'index.php/Tarea/inicioTarea', 
+						success: function(data){   
+										WaitingClose();                
+										if (data) {
+											$("#iniciarTarea").hide();
+											$("#tareaIniciada").show();	
+											// guarda el estado de la tarea (inicializado)
+											$("#estadoTarea").val(1);									
+										} else {
+											alert('Error al iniciar a Tarea...');
+										}									
+									},            
+						error: function(data){
+							WaitingClose();
+							alert('NO iniciada' + data);
+								},
+						dataType: 'json'
+			});
+		});																			
 
     var id_OT = $('#id_OT').val();
     url = 'index.php/Tarea/confInicioTarea?id_OT=' + id_OT;

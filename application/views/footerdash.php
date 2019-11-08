@@ -6,6 +6,12 @@
             los derechos reservados.
         </footer>
 
+
+        <?php
+            $this->load->view('panelDerecho');
+        ?>
+
+
         <input id="gps-acc" type="text" class="hidden" value="<?php echo GPS_ACC ?>">
         </body>
 
@@ -44,9 +50,6 @@ function collapse(e) {
     }
 
 }
-//Esto dispara un evento para que se cargue el Dash en forma automatica cuando ingreso.
- cargarView('<?php echo $grpDash; ?>', 'index', 'View');
-//linkTo('Test/test');
 
 
 //Listener de Envento cuando el Navegador vuelta a estar ONLINE 
