@@ -56,7 +56,12 @@ if (!function_exists('formato_fecha')) {
 
     }
 
-    function resta_fechas($a, $b)
+    
+  }
+
+}
+
+function resta_fechas($a, $b)
     {
         $fecha1 = new DateTime($a);
         $fecha2 = new DateTime($b);
@@ -70,5 +75,3 @@ if (!function_exists('formato_fecha')) {
             return $result;
         }
     }
-  }
-}
