@@ -2,7 +2,7 @@
 <section class="content">
     <div class="row">
         <div class="col-xs-12">
-            <div class="box">
+            <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">KPIs</h3>
                     <!--<div class="box-tools pull-right">
@@ -51,14 +51,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-inline">
-                                <!--<label>Rango de fechas: </label>
-                  <input type="text" id="daterange-disponibilidad" class="form-control">
-                  <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>-->
-                            </div>
-                            <div id="graph-container">
-
-                            </div>
+                           <?php $this->load->view('kpis/disponibilidad'); ?>
                         </div>
 
                         <div class="col-md-3 col-xs-12 daterange">
@@ -130,7 +123,7 @@ function getDisponibilidad(idEquipo) {
             },
             dataType: 'json',
             type: 'POST',
-            url: 'index.php/Test/kpiDisponibilidad',
+            url: 'index.php/Kpi/kpiDisponibilidad',
         })
         .done((data) => {
             graficarParametro(data);
