@@ -70,4 +70,5 @@ if (!function_exists('formato_fecha')) {
             return $result;
         }
     }
+  }
 }

@@ -57,7 +57,6 @@ function deshabilitar() {
 $('#cerrar').click(function cargarVista() {
     WaitingOpen();
     $('#content').empty();
-    //	$("#content").load("<?php# echo base_url(); ?>index.php/Tarea/index/");
     WaitingClose();
 });
 
