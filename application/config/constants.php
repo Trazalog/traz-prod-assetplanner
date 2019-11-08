@@ -119,7 +119,7 @@ define('SIM_FORMS', array(
 ));
 
 
-*/
+
 define('CMP_ALM', 'traz-comp-almacen/');  
 
 /*
