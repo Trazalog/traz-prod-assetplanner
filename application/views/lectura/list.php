@@ -40,10 +40,10 @@
                     echo '<tr id="'.$id.'">';
                     echo '<td>';
                     if (strpos($permission,'Edit') !== false) {
-                      echo '<i class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;></i>';
+                      echo '<i class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;"></i>';
                     }
                     if (strpos($permission,'Del') !== false) {
-                      echo '<i class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;></i>';
+                      echo '<i class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;""></i>';
                     }
                     
                    

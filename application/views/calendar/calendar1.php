@@ -1,7 +1,5 @@
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
-<script>
-console.log($('#permission').val())
-</script>
+
 <section class="content">
     <style>
     input.prevent {
@@ -21,11 +19,14 @@ console.log($('#permission').val())
             <div class="box-body">
                 <div class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left:10px;"
                     title="Imprimir"></div>
+                <button class="btn btn-link" title="Filtrar OT" onclick="openPanel()">
+					<i class="fa fa-fw fa-filter text-light-blue"></i>
+				</button>
                 <div id="calendar"></div>
             </div><!-- /.box-body -->
         </div><!-- /. box -->
-    </div><!-- /.col -->
-
+	</div><!-- /.col -->
+	
     <div id="tablas">
 
     </div>
@@ -34,6 +35,9 @@ console.log($('#permission').val())
 </section><!-- /.content -->
 
 <script>
+
+$('#panel-derecho-body').load('<?php echo base_url() ?>index.php/Calendario/panelFiltro');
+
 // Trae tablas con tareas al costado del Calendar
 function getTablas(month_, year_) {
     var mes = parseInt(month_) + 1;
@@ -166,11 +170,18 @@ $('#calendar').fullCalendar({
                         id_orden: $(this).attr('id_orden'),
                         allDay: false,
                         backgroundColor: Color,
+
+                        //Datos Filtro
+                        area: $(this).attr('area'),
+                        grupo: $(this).attr('grupo'),
+                        sector: $(this).attr('sector'),
+                        origen: $(this).attr('origen')
                     });
 
                 });
                 callback(events);
                 WaitingClose();
+                //filtro();
             },
             error: function(doc) {
                 WaitingClose();
@@ -243,6 +254,14 @@ $('#calendar').fullCalendar({
                 //alert("Cambio exitoso");
             }
         }
+    },
+
+    eventRender: function eventRender(event, element, view) {
+		return ($('#flt-equipos').val() == '' || (['all', event.equipo].indexOf($('#flt-equipos').val()) >= 0)) && 
+			   ($('#flt-areas').val() == '' || (['all', event.area].indexOf($('#flt-areas').val()) >= 0)) &&
+           	   ($('#flt-grupos').val() == '' || (['all', event.grupo].indexOf($('#flt-grupos').val()) >= 0)) &&
+               ($('#flt-sectores').val() == '' || (['all', event.sector].indexOf($('#flt-sectores').val()) >= 0)) &&
+               ($('#flt-origenes').val() == '' || (['all', event.origen].indexOf($('#flt-origenes').val()) >= 0));
     }
 });
 
@@ -304,574 +323,574 @@ $(".fa-print").click(function(e) {
 });
 
 //  Datatables listas
-	$('#correctivo').DataTable({
-			"paging": true,
-			"lengthChange": true,
-			"searching": true,
-			"ordering": true,
-			"info": true,
-			"autoWidth": true,
-			"language": {
-					"lengthMenu": "Ver _MENU_ filas por página",
-					"zeroRecords": "No hay registros",
-					"info": "Mostrando página _PAGE_ de _PAGES_",
-					"infoEmpty": "No hay registros disponibles",
-					"infoFiltered": "(filtrando de un total de _MAX_ registros)",
-					"sSearch": "Buscar:  ",
-					"oPaginate": {
-							"sNext": "Sig.",
-							"sPrevious": "Ant."
-					}
-			}
-	});
+$('#correctivo').DataTable({
+    "paging": true,
+    "lengthChange": true,
+    "searching": true,
+    "ordering": true,
+    "info": true,
+    "autoWidth": true,
+    "language": {
+        "lengthMenu": "Ver _MENU_ filas por página",
+        "zeroRecords": "No hay registros",
+        "info": "Mostrando página _PAGE_ de _PAGES_",
+        "infoEmpty": "No hay registros disponibles",
+        "infoFiltered": "(filtrando de un total de _MAX_ registros)",
+        "sSearch": "Buscar:  ",
+        "oPaginate": {
+            "sNext": "Sig.",
+            "sPrevious": "Ant."
+        }
+    }
+});
 
-	$('#preventivo').DataTable({
-			"paging": true,
-			"lengthChange": true,
-			"searching": true,
-			"ordering": true,
-			"info": true,
-			"autoWidth": true,
-			"language": {
-					"lengthMenu": "Ver _MENU_ filas por página",
-					"zeroRecords": "No hay registros",
-					"info": "Mostrando página _PAGE_ de _PAGES_",
-					"infoEmpty": "No hay registros disponibles",
-					"infoFiltered": "(filtrando de un total de _MAX_ registros)",
-					"sSearch": "Buscar:  ",
-					"oPaginate": {
-							"sNext": "Sig.",
-							"sPrevious": "Ant."
-					}
-			}
-	});
+$('#preventivo').DataTable({
+    "paging": true,
+    "lengthChange": true,
+    "searching": true,
+    "ordering": true,
+    "info": true,
+    "autoWidth": true,
+    "language": {
+        "lengthMenu": "Ver _MENU_ filas por página",
+        "zeroRecords": "No hay registros",
+        "info": "Mostrando página _PAGE_ de _PAGES_",
+        "infoEmpty": "No hay registros disponibles",
+        "infoFiltered": "(filtrando de un total de _MAX_ registros)",
+        "sSearch": "Buscar:  ",
+        "oPaginate": {
+            "sNext": "Sig.",
+            "sPrevious": "Ant."
+        }
+    }
+});
 
-	$('#preventhoras').DataTable({
-			"paging": true,
-			"lengthChange": true,
-			"searching": true,
-			"ordering": true,
-			"info": true,
-			"autoWidth": true,
-			"language": {
-					"lengthMenu": "Ver _MENU_ filas por página",
-					"zeroRecords": "No hay registros",
-					"info": "Mostrando página _PAGE_ de _PAGES_",
-					"infoEmpty": "No hay registros disponibles",
-					"infoFiltered": "(filtrando de un total de _MAX_ registros)",
-					"sSearch": "Buscar:  ",
-					"oPaginate": {
-							"sNext": "Sig.",
-							"sPrevious": "Ant."
-					}
-			}
-	});
+$('#preventhoras').DataTable({
+    "paging": true,
+    "lengthChange": true,
+    "searching": true,
+    "ordering": true,
+    "info": true,
+    "autoWidth": true,
+    "language": {
+        "lengthMenu": "Ver _MENU_ filas por página",
+        "zeroRecords": "No hay registros",
+        "info": "Mostrando página _PAGE_ de _PAGES_",
+        "infoEmpty": "No hay registros disponibles",
+        "infoFiltered": "(filtrando de un total de _MAX_ registros)",
+        "sSearch": "Buscar:  ",
+        "oPaginate": {
+            "sNext": "Sig.",
+            "sPrevious": "Ant."
+        }
+    }
+});
 
-	$('#backlog').DataTable({
-			"paging": true,
-			"lengthChange": true,
-			"searching": true,
-			"ordering": true,
-			"info": true,
-			"autoWidth": true,
-			"language": {
-					"lengthMenu": "Ver _MENU_ filas por página",
-					"zeroRecords": "No hay registros",
-					"info": "Mostrando página _PAGE_ de _PAGES_",
-					"infoEmpty": "No hay registros disponibles",
-					"infoFiltered": "(filtrando de un total de _MAX_ registros)",
-					"sSearch": "Buscar:  ",
-					"oPaginate": {
-							"sNext": "Sig.",
-							"sPrevious": "Ant."
-					}
-			}
-	});
+$('#backlog').DataTable({
+    "paging": true,
+    "lengthChange": true,
+    "searching": true,
+    "ordering": true,
+    "info": true,
+    "autoWidth": true,
+    "language": {
+        "lengthMenu": "Ver _MENU_ filas por página",
+        "zeroRecords": "No hay registros",
+        "info": "Mostrando página _PAGE_ de _PAGES_",
+        "infoEmpty": "No hay registros disponibles",
+        "infoFiltered": "(filtrando de un total de _MAX_ registros)",
+        "sSearch": "Buscar:  ",
+        "oPaginate": {
+            "sNext": "Sig.",
+            "sPrevious": "Ant."
+        }
+    }
+});
 
-	$('#predictivo').DataTable({
-			"paging": true,
-			"lengthChange": true,
-			"searching": true,
-			"ordering": true,
-			"info": true,
-			"autoWidth": true,
-			"language": {
-					"lengthMenu": "Ver _MENU_ filas por página",
-					"zeroRecords": "No hay registros",
-					"info": "Mostrando página _PAGE_ de _PAGES_",
-					"infoEmpty": "No hay registros disponibles",
-					"infoFiltered": "(filtrando de un total de _MAX_ registros)",
-					"sSearch": "Buscar:  ",
-					"oPaginate": {
-							"sNext": "Sig.",
-							"sPrevious": "Ant."
-					}
-			}
-	});
+$('#predictivo').DataTable({
+    "paging": true,
+    "lengthChange": true,
+    "searching": true,
+    "ordering": true,
+    "info": true,
+    "autoWidth": true,
+    "language": {
+        "lengthMenu": "Ver _MENU_ filas por página",
+        "zeroRecords": "No hay registros",
+        "info": "Mostrando página _PAGE_ de _PAGES_",
+        "infoEmpty": "No hay registros disponibles",
+        "infoFiltered": "(filtrando de un total de _MAX_ registros)",
+        "sSearch": "Buscar:  ",
+        "oPaginate": {
+            "sNext": "Sig.",
+            "sPrevious": "Ant."
+        }
+    }
+});
 
 ///// Datepicker para modales
-	$("#fecha_progr_pred").datepicker({
-			Format: 'dd/mm/yy',
-			startDate: '-3d'
-			//firstDay: 1
-	}).datepicker("setDate", new Date());
+$("#fecha_progr_pred").datepicker({
+    Format: 'dd/mm/yy',
+    startDate: '-3d'
+    //firstDay: 1
+}).datepicker("setDate", new Date());
 
-	$("#fecha_progr_correct").datepicker({
-			Format: 'dd/mm/yy',
-			startDate: '-3d'
-			//firstDay: 1
-	}).datepicker("setDate", new Date());
+$("#fecha_progr_correct").datepicker({
+    Format: 'dd/mm/yy',
+    startDate: '-3d'
+    //firstDay: 1
+}).datepicker("setDate", new Date());
 
-	$("#fecha_progr_prevent").datepicker({
-			Format: 'dd/mm/yy',
-			startDate: '-3d'
-			//firstDay: 1
-	}).datepicker("setDate", new Date());
+$("#fecha_progr_prevent").datepicker({
+    Format: 'dd/mm/yy',
+    startDate: '-3d'
+    //firstDay: 1
+}).datepicker("setDate", new Date());
 
-	$("#fecha_progr_back").datepicker({
-			Format: 'dd/mm/yy',
-			startDate: '-3d'
-			//firstDay: 1
-	}).datepicker("setDate", new Date());
+$("#fecha_progr_back").datepicker({
+    Format: 'dd/mm/yy',
+    startDate: '-3d'
+    //firstDay: 1
+}).datepicker("setDate", new Date());
 
-	$("#fecha_progr_prevent_horas").datepicker({
-			Format: 'dd/mm/yy',
-			startDate: '-3d'
-			//firstDay: 1
-	}).datepicker("setDate", new Date());
+$("#fecha_progr_prevent_horas").datepicker({
+    Format: 'dd/mm/yy',
+    startDate: '-3d'
+    //firstDay: 1
+}).datepicker("setDate", new Date());
 
 
 //////////  CORRECTIVO (Listoooo)
-	var tarea = "";
-	var fecha_solicit = "";
-	var id_sol = "";
-	var id_eq = "";
-	var desc_causa = "";
+var tarea = "";
+var fecha_solicit = "";
+var id_sol = "";
+var id_eq = "";
+var desc_causa = "";
 
-	// Genera Orden de Trabajo y la guarda automaticamente
-	$('.fa-stop-circle').click(function() {
-
-
-	});
-
-	function fill_Correc(dato) {
-			//alert(dato);
-			$.ajax({
-					type: 'POST',
-					data: {
-							id: dato
-					},
-					url: 'index.php/Calendario/getCorrectPorId',
-					success: function(data) {
-
-							console.log('correctivos: ');
-							console.log(data);
-							tarea = 0; // id_tarea (por defecto 1, no se sabe la tarea a realizar)
-							fecha_solicit = data[0]['f_solicitado'];
-							desc_causa = data[0]['causa'];
-							id_sol = data[0]['id_solicitud'];
-							id_eq = data[0]['id_equipo'];
-					},
-					error: function(data) {
-
-							console.log(data);
-					},
-					dataType: 'json'
-			});
-	}
+// Genera Orden de Trabajo y la guarda automaticamente
+$('.fa-stop-circle').click(function() {
 
 
-	// Limpia variables
-	function CancCorrec() {
-			tarea = "";
-			fecha_solicit = "";
-			id_sol = "";
-			id_eq = "";
-			desc_causa = "";
-	}
+});
 
-	// Guarda OT desde Correctivo (Solicitud de Servicio)
-	function setOtCorrectivo() {
+function fill_Correc(dato) {
+    //alert(dato);
+    $.ajax({
+        type: 'POST',
+        data: {
+            id: dato
+        },
+        url: 'index.php/Calendario/getCorrectPorId',
+        success: function(data) {
 
-			var progr_corr = $('#fecha_progr_correct').val();
-		//  alert(progr_corr);
-			var hor_corr = $('#hora_progr_correct').val();
+            console.log('correctivos: ');
+            console.log(data);
+            tarea = 0; // id_tarea (por defecto 1, no se sabe la tarea a realizar)
+            fecha_solicit = data[0]['f_solicitado'];
+            desc_causa = data[0]['causa'];
+            id_sol = data[0]['id_solicitud'];
+            id_eq = data[0]['id_equipo'];
+        },
+        error: function(data) {
 
-			$.ajax({
-					type: 'POST',
-					data: {
-							event_tipo: 1, // evento unico
-							id_sol: id_sol,
-							id_tarea: tarea,
-							fecha_progr: progr_corr,
-							hora_progr: hor_corr,
-							fecha_inicio: fecha_solicit,
-							descripcion: desc_causa,
-							tipo: 2, // correctivo
-							ide: id_eq,
-							mes: mes,
-							cant_meses: 0 // cantidad de meses a repetir esta OT
-					},
-					url: 'index.php/Calendario/guardar_agregar',
-					success: function(data) {
+            console.log(data);
+        },
+        dataType: 'json'
+    });
+}
 
-							setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
-					},
-					error: function(result) {
 
-							console.log(result);
-					}
-			});
-	}
+// Limpia variables
+function CancCorrec() {
+    tarea = "";
+    fecha_solicit = "";
+    id_sol = "";
+    id_eq = "";
+    desc_causa = "";
+}
+
+// Guarda OT desde Correctivo (Solicitud de Servicio)
+function setOtCorrectivo() {
+
+    var progr_corr = $('#fecha_progr_correct').val();
+    //  alert(progr_corr);
+    var hor_corr = $('#hora_progr_correct').val();
+
+    $.ajax({
+        type: 'POST',
+        data: {
+            event_tipo: 1, // evento unico
+            id_sol: id_sol,
+            id_tarea: tarea,
+            fecha_progr: progr_corr,
+            hora_progr: hor_corr,
+            fecha_inicio: fecha_solicit,
+            descripcion: desc_causa,
+            tipo: 2, // correctivo
+            ide: id_eq,
+            mes: mes,
+            cant_meses: 0 // cantidad de meses a repetir esta OT
+        },
+        url: 'index.php/Calendario/guardar_agregar',
+        success: function(data) {
+
+            setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
+        },
+        error: function(result) {
+
+            console.log(result);
+        }
+    });
+}
 //////////  / CORRECTIVO (Listoooo)
 
 //////////  PREVENTIVO (Listoooo)
-	var id_tar = "";
-	var fec_sol_prev = "";
-	var id_prev = "";
-	var id_equ = "";
-	var desc_tarea = "";
+var id_tar = "";
+var fec_sol_prev = "";
+var id_prev = "";
+var id_equ = "";
+var desc_tarea = "";
 
-	function fill_Prevent(dato) {
-			$.ajax({
-					data: {
-							id: dato
-					},
-					dataType: 'json',
-					type: 'POST',
-					url: 'index.php/Calendario/getPrevPorId',
-					success: function(data) {
-							id_tar = data[0]['id_tarea'];
-							fec_sol_prev = data[0]['ultimo'];
-							id_prev = data[0]['prevId'];
-							id_equ = data[0]['id_equipo'];
-							desc_tarea = data[0]['descripcion'];
-					},
-					error: function(data) {
-							console.error("Error al trear preventivos por Id");
-							console.table(data);
-					},
-			});
-	}
+function fill_Prevent(dato) {
+    $.ajax({
+        data: {
+            id: dato
+        },
+        dataType: 'json',
+        type: 'POST',
+        url: 'index.php/Calendario/getPrevPorId',
+        success: function(data) {
+            id_tar = data[0]['id_tarea'];
+            fec_sol_prev = data[0]['ultimo'];
+            id_prev = data[0]['prevId'];
+            id_equ = data[0]['id_equipo'];
+            desc_tarea = data[0]['descripcion'];
+        },
+        error: function(data) {
+            console.error("Error al trear preventivos por Id");
+            console.table(data);
+        },
+    });
+}
 
-	function setOtPreventivo() {
-			var progr_corr = $('#fecha_progr_prevent').val();
-			var hora_prog_prevent = $('#hora_prog_prevent').val();
-			var event_Preventivo = $('#event_Preventivo').val();
-			var cant_meses_prev = $('#cant_meses_prev').val();
+function setOtPreventivo() {
+    var progr_corr = $('#fecha_progr_prevent').val();
+    var hora_prog_prevent = $('#hora_prog_prevent').val();
+    var event_Preventivo = $('#event_Preventivo').val();
+    var cant_meses_prev = $('#cant_meses_prev').val();
 
-			$.ajax({
-					type: 'POST',
-					data: {
-							id_sol: id_prev,
-							id_tarea: id_tar,
-							fecha_progr: progr_corr,
-							hora_progr: hora_prog_prevent,
-							fecha_inicio: fec_sol_prev,
-							descripcion: desc_tarea,
-							tipo: 3, // preventivo
-							ide: id_equ,
-							event_tipo: event_Preventivo,
-							cant_meses: cant_meses_prev
-					},
-					url: 'index.php/Calendario/guardar_agregar',
-					success: function(data) {
-							setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
-					},
-					error: function(result) {
-							console.log(result);
-					}
-			});
-	}
+    $.ajax({
+        type: 'POST',
+        data: {
+            id_sol: id_prev,
+            id_tarea: id_tar,
+            fecha_progr: progr_corr,
+            hora_progr: hora_prog_prevent,
+            fecha_inicio: fec_sol_prev,
+            descripcion: desc_tarea,
+            tipo: 3, // preventivo
+            ide: id_equ,
+            event_tipo: event_Preventivo,
+            cant_meses: cant_meses_prev
+        },
+        url: 'index.php/Calendario/guardar_agregar',
+        success: function(data) {
+            setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
+        },
+        error: function(result) {
+            console.log(result);
+        }
+    });
+}
 
-	function CancPrevent() {
-			id_tar = "";
-			fec_sol_prev = "";
-			id_prev = "";
-			id_equ = "";
-			desc_tarea = "";
-	}
+function CancPrevent() {
+    id_tar = "";
+    fec_sol_prev = "";
+    id_prev = "";
+    id_equ = "";
+    desc_tarea = "";
+}
 
-	//habilita/deshabilita el campo cantidad
-	$('#event_Preventivo').change(function() {
-			if ($(this).val() == 0) {
-					$('#cant_meses_prev').attr('disabled', true);
-			} else {
-					$('#cant_meses_prev').attr('disabled', false);
-			}
-	});
+//habilita/deshabilita el campo cantidad
+$('#event_Preventivo').change(function() {
+    if ($(this).val() == 0) {
+        $('#cant_meses_prev').attr('disabled', true);
+    } else {
+        $('#cant_meses_prev').attr('disabled', false);
+    }
+});
 //////////  / PREVENTIVO 
 
 //////////  PREVENTIVO POR HORAS CAMBIAR VARIABLE IDP UREGNTTE
-	var id_tarhs = "";
-	var fec_sol_prevhs = "";
-	var id_prevhs = "";
-	var id_equhs = "";
-	var desc_tareahs = "";
-	var proximo_servicio = "";
-	var ultima_lectura = "";
+var id_tarhs = "";
+var fec_sol_prevhs = "";
+var id_prevhs = "";
+var id_equhs = "";
+var desc_tareahs = "";
+var proximo_servicio = "";
+var ultima_lectura = "";
 
-	//$('.fa-history').click(function(){
-	$(document).on("click", ".fa-history", function() {
-			id_tarhs = $(this).parents("tr").find("td").eq(1).html();
-			id_equhs = $(this).parents("tr").find("td").eq(2).html();
-			id_prevhs = $(this).parents("tr").find("td").eq(3).html();
-			desc_tareahs = $(this).parents("tr").find("td").eq(5).html();
-			fec_sol_prevhs = $(this).parents("tr").find("td").eq(6).html();
-			proximo_servicio = $(this).parents("tr").find("td").eq(9).html();
-			ultima_lectura = $(this).parents("tr").find("td").eq(10).html();
-	});
+//$('.fa-history').click(function(){
+$(document).on("click", ".fa-history", function() {
+    id_tarhs = $(this).parents("tr").find("td").eq(1).html();
+    id_equhs = $(this).parents("tr").find("td").eq(2).html();
+    id_prevhs = $(this).parents("tr").find("td").eq(3).html();
+    desc_tareahs = $(this).parents("tr").find("td").eq(5).html();
+    fec_sol_prevhs = $(this).parents("tr").find("td").eq(6).html();
+    proximo_servicio = $(this).parents("tr").find("td").eq(9).html();
+    ultima_lectura = $(this).parents("tr").find("td").eq(10).html();
+});
 
-	function setOtPrevHoras() {
-			var progr_corr_hs = $('#fecha_progr_prevent_horas').val();
-			var hora_progr_prevH = $('#hora_progr_prevH').val();
-			console.info(fec_sol_prevhs);
-			console.info(ultima_lectura);
+function setOtPrevHoras() {
+    var progr_corr_hs = $('#fecha_progr_prevent_horas').val();
+    var hora_progr_prevH = $('#hora_progr_prevH').val();
+    console.info(fec_sol_prevhs);
+    console.info(ultima_lectura);
 
-			$.ajax({
-					type: 'POST', //parametros:parametros
-					data: {
-							id_sol: id_prevhs,
-							id_tarea: id_tarhs,
-							fecha_progr: progr_corr_hs,
-							hora_progr: hora_progr_prevH,
-							fecha_inicio: fec_sol_prevhs,
-							descripcion: desc_tareahs,
-							idp: id_sol,
-							tipo: 3, // preventivo
-							ide: id_equhs,
-							lectura_programada: proximo_servicio,
-							lectura_ejecutada: ultima_lectura
-					},
-					url: 'index.php/Calendario/guardar_agregar',
-					success: function(data) {
-							setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
-					},
-					error: function(result) {
-							console.log(result);
-					}
-			});
-	}
+    $.ajax({
+        type: 'POST', //parametros:parametros
+        data: {
+            id_sol: id_prevhs,
+            id_tarea: id_tarhs,
+            fecha_progr: progr_corr_hs,
+            hora_progr: hora_progr_prevH,
+            fecha_inicio: fec_sol_prevhs,
+            descripcion: desc_tareahs,
+            idp: id_sol,
+            tipo: 3, // preventivo
+            ide: id_equhs,
+            lectura_programada: proximo_servicio,
+            lectura_ejecutada: ultima_lectura
+        },
+        url: 'index.php/Calendario/guardar_agregar',
+        success: function(data) {
+            setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
+        },
+        error: function(result) {
+            console.log(result);
+        }
+    });
+}
 
-	function CancPrevHoras() {
-			id_tarhs = "";
-			fec_sol_prevhs = "";
-			id_prevhs = "";
-			id_equhs = "";
-			desc_tareahs = "";
-	}
+function CancPrevHoras() {
+    id_tarhs = "";
+    fec_sol_prevhs = "";
+    id_prevhs = "";
+    id_equhs = "";
+    desc_tareahs = "";
+}
 //////////  / PREVENTIVO POR HORAS 
 
 //////////  BACKLOG (Listoooo)
-	var id_de_tar = "";
-	var fec_sol_back = "";
-	var desc_tarea_back = "";
-	var id_back = "";
-	var id_equi = "";
-	var duracion = "";
+var id_de_tar = "";
+var fec_sol_back = "";
+var desc_tarea_back = "";
+var id_back = "";
+var id_equi = "";
+var duracion = "";
 
-	function fill_Backlog(dato) {
-			console.log('Rellenar Backlog...');
-			$.ajax({
-					type: 'POST',
-					data: {
-							id: dato
-					},
-					url: 'index.php/Calendario/getBackPorId',
-					success: function(data) {
+function fill_Backlog(dato) {
+    console.log('Rellenar Backlog...');
+    $.ajax({
+        type: 'POST',
+        data: {
+            id: dato
+        },
+        url: 'index.php/Calendario/getBackPorId',
+        success: function(data) {
 
-							id_de_tar = data[0]['id_tarea'];
-							fec_sol_back = data[0]['fecha'];
-							id_back = data[0]['backId'];
-							id_equi = data[0]['id_equipo'];
-							//tarea = data[0]['descripcion'];
-							id_sol = data[0]['sore_id'];
-							duracion = data[0]['back_duracion'];
-							// si tiene tarea estandar grava eso sino la tarea custom
-							if (id_de_tar <= 0) {
-									desc_tarea_back = data[0]['tarea_opcional'];
-							} else {
-									desc_tarea_back = data[0]['tareadesc'];
-							}
-					},
-					error: function(data) {
+            id_de_tar = data[0]['id_tarea'];
+            fec_sol_back = data[0]['fecha'];
+            id_back = data[0]['backId'];
+            id_equi = data[0]['id_equipo'];
+            //tarea = data[0]['descripcion'];
+            id_sol = data[0]['sore_id'];
+            duracion = data[0]['back_duracion'];
+            // si tiene tarea estandar grava eso sino la tarea custom
+            if (id_de_tar <= 0) {
+                desc_tarea_back = data[0]['tarea_opcional'];
+            } else {
+                desc_tarea_back = data[0]['tareadesc'];
+            }
+        },
+        error: function(data) {
 
-							console.log(data);
-					},
-					dataType: 'json'
-			});
-	}
+            console.log(data);
+        },
+        dataType: 'json'
+    });
+}
 
-	function setOtBacklog() {
-			var progr_back = $('#fecha_progr_back').val();
-			var hora_progr_back = $('#hora_progr_back').val();
+function setOtBacklog() {
+    var progr_back = $('#fecha_progr_back').val();
+    var hora_progr_back = $('#hora_progr_back').val();
 
-			$.ajax({
-					type: 'POST',
-					data: {
-							event_tipo: 1, // evento unico
-							id_sol: id_back,
-							id_tarea: id_de_tar,
-							fecha_progr: progr_back,
-							hora_progr: hora_progr_back,
-							fecha_inicio: fec_sol_back,
-							descripcion: desc_tarea_back,
-							tipo: 4, // backlog
-							ide: id_equi,
-							duracion: duracion
-					},
-					url: 'index.php/Calendario/guardar_agregar',
-					success: function(data) {
-							setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
-					},
-					error: function(result) {
-							console.log(result);
-					}
-			});
-	}
+    $.ajax({
+        type: 'POST',
+        data: {
+            event_tipo: 1, // evento unico
+            id_sol: id_back,
+            id_tarea: id_de_tar,
+            fecha_progr: progr_back,
+            hora_progr: hora_progr_back,
+            fecha_inicio: fec_sol_back,
+            descripcion: desc_tarea_back,
+            tipo: 4, // backlog
+            ide: id_equi,
+            duracion: duracion
+        },
+        url: 'index.php/Calendario/guardar_agregar',
+        success: function(data) {
+            setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
+        },
+        error: function(result) {
+            console.log(result);
+        }
+    });
+}
 
-	function CancBacklog() {
-			id_de_tar = "";
-			fec_sol_back = "";
-			desc_tarea_back = "";
-			id_back = "";
-			id_equi = "";
-	}
+function CancBacklog() {
+    id_de_tar = "";
+    fec_sol_back = "";
+    desc_tarea_back = "";
+    id_back = "";
+    id_equi = "";
+}
 //////////  / BACKLOG ()
 
 //////////  PREDICTIVO ()
 
-	// Variables globales para llenar al enviar
-	var tarea_descrip = ""; //id tarea
-	var idp = ""; // id predictivo
-	var ide = ""; // id equipo
-	var fecha_inicio = "";
-	var descripTarea = "";
+// Variables globales para llenar al enviar
+var tarea_descrip = ""; //id tarea
+var idp = ""; // id predictivo
+var ide = ""; // id equipo
+var fecha_inicio = "";
+var descripTarea = "";
 
-	function fill_Predictivo(dato) {
-			$.ajax({
-					type: 'POST', //parametros:parametros
-					data: {
-							id: dato
-					},
-					url: 'index.php/Calendario/getPredictPorId',
-					success: function(data) {
+function fill_Predictivo(dato) {
+    $.ajax({
+        type: 'POST', //parametros:parametros
+        data: {
+            id: dato
+        },
+        url: 'index.php/Calendario/getPredictPorId',
+        success: function(data) {
 
-							tarea_descrip = data[0]['tarea_descrip']; // id de tarea
-							fecha_inicio = data[0]['fecha'];
-							idp = data[0]['predId'];
-							ide = data[0]['id_equipo'];
-							descripTarea = data[0]['descripcion'];
-					},
-					error: function(data) {
+            tarea_descrip = data[0]['tarea_descrip']; // id de tarea
+            fecha_inicio = data[0]['fecha'];
+            idp = data[0]['predId'];
+            ide = data[0]['id_equipo'];
+            descripTarea = data[0]['descripcion'];
+        },
+        error: function(data) {
 
-							console.log(data);
-					},
-					dataType: 'json'
-			});
-	}
+            console.log(data);
+        },
+        dataType: 'json'
+    });
+}
 
-	// Limpia variables
-	function CancPred() {
-			tarea_descrip = ""; //id tarea
-			idp = ""; // id predictivo
-			ide = ""; // id equipo
-			fecha_inicio = "";
-	}
+// Limpia variables
+function CancPred() {
+    tarea_descrip = ""; //id tarea
+    idp = ""; // id predictivo
+    ide = ""; // id equipo
+    fecha_inicio = "";
+}
 
-	////Guarda OT desde Predictivo
-	function setOtPredictivo() {
+////Guarda OT desde Predictivo
+function setOtPredictivo() {
 
-			var progr_pred = $('#fecha_progr_pred').val();
-			var hora_pred = $('#hora_progr_pred').val();
-			var event_Predic = $('#event_Predictivo').val();
-			var cant_meses_predic = $('#cant_meses_predic').val();
+    var progr_pred = $('#fecha_progr_pred').val();
+    var hora_pred = $('#hora_progr_pred').val();
+    var event_Predic = $('#event_Predictivo').val();
+    var cant_meses_predic = $('#cant_meses_predic').val();
 
 
-			$.ajax({
-					type: 'POST', //parametros:parametros
-					data: {
-							id_sol: idp,
-							id_tarea: tarea_descrip,
-							fecha_progr: progr_pred,
-							hora_progr: hora_pred,
-							fecha_inicio: fecha_inicio,
-							descripcion: descripTarea,
-							tipo: 5, //predictivo
-							ide: ide,
-							event_tipo: event_Predic,
-							cant_meses: cant_meses_predic
-					},
-					url: 'index.php/Calendario/guardar_agregar', //index.php/
-					success: function(data) {
+    $.ajax({
+        type: 'POST', //parametros:parametros
+        data: {
+            id_sol: idp,
+            id_tarea: tarea_descrip,
+            fecha_progr: progr_pred,
+            hora_progr: hora_pred,
+            fecha_inicio: fecha_inicio,
+            descripcion: descripTarea,
+            tipo: 5, //predictivo
+            ide: ide,
+            event_tipo: event_Predic,
+            cant_meses: cant_meses_predic
+        },
+        url: 'index.php/Calendario/guardar_agregar', //index.php/
+        success: function(data) {
 
-							setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
-					},
-					error: function(result) {
+            setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
+        },
+        error: function(result) {
 
-							console.log(result);
-					}
-			});
-	}
+            console.log(result);
+        }
+    });
+}
 
-	//habilita/deshabilita el campo cantidad
-	$('#event_Predictivo').change(function() {
+//habilita/deshabilita el campo cantidad
+$('#event_Predictivo').change(function() {
 
-			if ($(this).val() == 0) {
+    if ($(this).val() == 0) {
 
-					$('#cant_meses_predic').attr('disabled', true);
-			} else {
-					$('#cant_meses_predic').attr('disabled', false);
-			}
-	});
+        $('#cant_meses_predic').attr('disabled', true);
+    } else {
+        $('#cant_meses_predic').attr('disabled', false);
+    }
+});
 //////////  / PREDICTIVO ()
 
 //////////  ACTUALIZA DIA Y HORA
 
-	function updateDia(id_OT, nuevoDia) {
+function updateDia(id_OT, nuevoDia) {
 
-			var resultado = $.ajax({
-					type: 'POST', //parametros:parametros
-					data: {
-							id: id_OT,
-							prog: nuevoDia
-					},
-					url: 'index.php/Calendario/updateDiaProg',
-					success: function(data) {
+    var resultado = $.ajax({
+        type: 'POST', //parametros:parametros
+        data: {
+            id: id_OT,
+            prog: nuevoDia
+        },
+        url: 'index.php/Calendario/updateDiaProg',
+        success: function(data) {
 
-							console.log(data);
-					},
-					error: function(data) {
+            console.log(data);
+        },
+        error: function(data) {
 
-							console.log(data);
-					},
-					dataType: 'json'
-			});
-			return resultado;
-	}
+            console.log(data);
+        },
+        dataType: 'json'
+    });
+    return resultado;
+}
 
-	function updateHora(id_OT, duracion) {
+function updateHora(id_OT, duracion) {
 
-			var resultad = $.ajax({
-					type: 'POST',
-					data: {
-							id: id_OT,
-							duracion: duracion
-					}, // duracion adicional
-					url: 'index.php/Calendario/updateDuracion',
-					success: function(data) {
-							//alert('sucess');
-							console.log(data);
-					},
-					error: function(data) {
+    var resultad = $.ajax({
+        type: 'POST',
+        data: {
+            id: id_OT,
+            duracion: duracion
+        }, // duracion adicional
+        url: 'index.php/Calendario/updateDuracion',
+        success: function(data) {
+            //alert('sucess');
+            console.log(data);
+        },
+        error: function(data) {
 
-							console.log(data);
-					},
-					dataType: 'json'
-			});
+            console.log(data);
+        },
+        dataType: 'json'
+    });
 
-			return resultad;
-	}
+    return resultad;
+}
 //////////  / ACTUALIZA DIA Y HORA
 </script>
 <!-- Guardado de datos y validaciones -->
@@ -1083,3 +1102,7 @@ $(".fa-print").click(function(e) {
         </div>
     </div>
 </div>
+
+<?php
+	$this->load->view('calendar/filtro');
+?>

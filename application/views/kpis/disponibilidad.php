@@ -1,61 +1,7 @@
-<input type="hidden" id="permission" value="<?php echo $permission;?>">
-<section class="content">
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">KPIs</h3>
 
-                </div><!-- /.box-header -->
+<div id="graph-container">
 
-                <div class="box-body">
-                    <div class="row">
-                        <div class="col-md-12 col-xs-12">
-
-                            <h4>
-                                <center>Disponibilidad [%]</center>
-                            </h4>
-
-                            <div data-disponibilidad="">
-                                <div class="row">
-                                    <div class="col-md-5 col-xs-12">
-                                        <div class="radio">
-                                            <label>
-                                                <input type="radio" name="radioDisponibilidad"
-                                                    id="radioDisponibilidadAll" value="all" checked>
-                                                Todos los equipos.
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-7 col-xs-12">
-                                        <div class="radio">
-                                            <label>
-                                                <input type="radio" name="radioDisponibilidad"
-                                                    id="radioDisponibilidadEquipo" value="">
-                                                <input type="text" class="form-control" id="checkboxEquipoID"
-                                                    name="checkboxEquipoID" placeholder="Ingrese código de equipo"
-                                                    value="">
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-inline">
-
-                            </div>
-                            <div id="graph-container">
-
-                            </div>
-                        </div>
-
-                    </div><!-- /.row -->
-                </div>
-
-            </div><!-- /.box -->
-        </div><!-- /.col -->
-    </div><!-- /.row -->
-</section><!-- /.content -->
+</div>
 
 
 <style type="text/css">
@@ -72,6 +18,7 @@
 
 <script>
 /* obtengo datos de disponibilidad */
+
 var idEquipo = 'all';
 getDisponibilidad(idEquipo);
 
@@ -83,7 +30,7 @@ function getDisponibilidad(idEquipo) {
             },
             dataType: 'json',
             type: 'POST',
-            url: 'index.php/Test/kpiDisponibilidad',
+            url: 'index.php/Kpi/kpiDisponibilidad',
         })
         .done((data) => {
             graficarParametro(data);
@@ -96,7 +43,7 @@ function getDisponibilidad(idEquipo) {
 function graficarParametro(disponibilidad) {
     //elimino grafico anterior si existe
     $('#miGrafico').remove();
-    $('#graph-container').append('<canvas id="miGrafico" style="width: 100%; margin:0 auto"></canvas>');
+    $('#graph-container').append('<canvas id="miGrafico"></canvas>');
 
     var ctx = document.getElementById("miGrafico");
     //var ctx = canvas.getContext("2d");
@@ -146,9 +93,8 @@ function graficarParametro(disponibilidad) {
         }
     };
     Chart.pluginService.register(horizonalLinePlugin);
-    var porcentajeHorasOperativas = [disponibilidad['promedioMetas']].concat(disponibilidad[
-        "porcentajeHorasOperativas"]);
-    var tiempo = ["meta"].concat(disponibilidad["tiempo"]);
+    var porcentajeHorasOperativas = [disponibilidad.promedioMetas].concat(disponibilidad.porcentajeHorasOperativas);
+    var tiempo = ["meta"].concat(disponibilidad.tiempo);
 
     var colors = ["#00A65A"];
     for (let i = 1; i < tiempo.length; i++) colors.push('#81B5D4');
@@ -172,7 +118,7 @@ function graficarParametro(disponibilidad) {
         data: data,
         options: {
             "horizontalLine": [{
-                "y": disponibilidad['promedioMetas'],
+                "y": disponibilidad.promedioMetas,
                 "style": "#00A65A",
                 "text": "meta"
             }],

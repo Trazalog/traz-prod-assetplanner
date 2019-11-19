@@ -6,6 +6,12 @@
             los derechos reservados.
         </footer>
 
+
+        <?php
+            $this->load->view('panelDerecho');
+        ?>
+
+
         <input id="gps-acc" type="text" class="hidden" value="<?php echo GPS_ACC ?>">
         </body>
 
@@ -13,18 +19,25 @@
         <script src="<?php echo base_url('lib/tabla.js'); ?>"></script>
         <script src="<?php echo base_url('assets/props/gps.js')?>"></script>
         <script>
+var base_url = '<?php echo base_url()?>';
 var link = '';
 
-$('.menu .link').on('click', function() {
-    link = $(this).data('link');
-    linkTo();
-});
-
+// $('.menu .link').on('click', function() {
+//     link = $(this).data('link');
+//    alert(link);
+//    // $('#content').load(link);
+// });
+var linkAnt = null;
 function linkTo(uri = '') {
     if (link == '' && uri == '') return;
+    linkAnt = link;
     link = (uri == '' ? link : uri);
     $('#content').empty();
-    $('#content').load('<?php echo base_url()?>' + link);
+    $('#content').load( (link.includes(base_url)?'':base_url) + link);
+}
+
+function back() {
+    linkTo(linkAnt);
 }
 
 function collapse(e) {
@@ -37,9 +50,6 @@ function collapse(e) {
     }
 
 }
-//Esto dispara un evento para que se cargue el Dash en forma automatica cuando ingreso.
- cargarView('<?php echo $grpDash; ?>', 'index', 'View');
-//linkTo('Test/test');
 
 
 //Listener de Envento cuando el Navegador vuelta a estar ONLINE 

@@ -166,9 +166,14 @@ class Tarea extends CI_Controller {
 			// Usr Toma tarea en BPM (Vistas tareas comunes)
 			public function tomarTarea(){								
 
-				$idTarBonita = $this->input->post('idTarBonita');
-			
+				$idTarBonita = $this->input->post('idTarBonita');			
 				$response = $this->bpm->setUsuario($idTarBonita, userId());
+
+				$userdata = $this->session->userdata('user_data');             
+				
+				log_message('DEBUG','#TRAZA | #Tarea/tomarTarea(usrNick)>> '.$userdata[0]['usrNick']);
+				log_message('DEBUG','#TRAZA | #Tarea/tomarTarea(userBpm)>> '.$userdata[0]['userBpm']);
+				log_message('DEBUG','#TRAZA | #Tarea/tomarTarea(idTarBonita)>> '.$idTarBonita);
 
 				echo json_encode($response);
 			}

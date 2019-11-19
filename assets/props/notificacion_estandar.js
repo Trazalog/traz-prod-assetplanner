@@ -147,8 +147,7 @@ function decidirUrgencia() {
             //	WaitingClose();
             // toma a tarea exitosamente
             if (data.status) {
-                $("#content").load(
-                    "<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+                back()
             }
         },
         error: function (data) {
