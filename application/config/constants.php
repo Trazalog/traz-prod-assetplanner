@@ -130,7 +130,7 @@ define('CMP_ALM', 'traz-comp-almacen/');
 
 define('BONITA_URL', 'http://localhost:8080/bonita/');  
 
-define('BPM_ADMIN_USER', 'mantenedor1');
+define('BPM_ADMIN_USER', 'supervisor1');
 define('BPM_ADMIN_PASS', 'bpm');
 define('BPM_USER_PASS', 'bpm');
 
@@ -163,7 +163,7 @@ define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '7321139677245257050');
 |
 */
  
-define('BPM_PROCESS_ID', '7503443566840192735'); // localhost -
+define('BPM_PROCESS_ID', '4859077159833071020'); // localhost -
 
 /*
 |--------------------------------------------------------------------------

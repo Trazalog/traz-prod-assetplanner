@@ -57,8 +57,9 @@ function deshabilitar() {
 // Volver al atras
 $('#cerrar').click(function cargarVista() {
     WaitingOpen();
+    console.log("click en boton cerrar");
     $('#content').empty();
-    $("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+    $("#content").load(base_url + "index.php/Tarea/index/add-edit-del-view");
     WaitingClose();
 });
 
@@ -180,8 +181,7 @@ function verificarInforme() {
             console.table(data);
 
             if (data['status']) {
-                $("#content").load(
-                    "<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+                $("#content").load(base_url + "index.php/Tarea/index/add-edit-del-view");
             } else {
                 alert(data['status']);
             }
@@ -216,8 +216,7 @@ function prestarConformidad() {
             WaitingClose();
 
             if (data['status']) {
-                $("#content").load(
-                    "<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+                $("#content").load(base_url + "index.php/Tarea/index/add-edit-del-view");
             } else {
                 alert(data['status']);
             }
@@ -227,7 +226,7 @@ function prestarConformidad() {
             WaitingClose();
             alert(data['msj']);
             //	alert("Noo");
-            $("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+            $("#content").load(base_url + "index.php/Tarea/index/add-edit-del-view");
         },
         dataType: 'json'
     });
@@ -236,7 +235,7 @@ function prestarConformidad() {
 function ejecutarOT() {
 
     WaitingOpen('Cerrando Tarea');
-
+    
     var idTarBonita = $('#idTarBonita').val();
     var id_OT = $('#id_OT').val();
 
@@ -256,10 +255,9 @@ function ejecutarOT() {
         success: function (data) {
             console.table(data);
             WaitingClose();
-
+            console.log(data['status']);
             if (data['status']) {
-                $("#content").load(
-                    "<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+                $("#content").load(base_url + "index.php/Tarea/index/add-edit-del-view");
             } else {
                 alert(data['code']);
             }
@@ -269,7 +267,7 @@ function ejecutarOT() {
             WaitingClose();
             alert(data['msj']);
             //	alert("Noo");
-            $("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+            $("#content").load(base_url + "index.php/Tarea/index/add-edit-del-view");
         },
         dataType: 'json'
     });
