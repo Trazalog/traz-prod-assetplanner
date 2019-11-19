@@ -546,4 +546,6 @@ function guardarEstado(item, value, id = null) {
     console.log(JSON.stringify(aux));
     sessionStorage.setItem(item, JSON.stringify(aux));
 }
+
+
 </script>

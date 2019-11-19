@@ -6,9 +6,7 @@
 
         <!-- Sidebar Menu -->
          <?php
-        $this->multi_menu->inject_item('<li><a href="#" onClick="cargarView(\''.$grpDash.'\', \'index\', \'View\')" data-permission="View-"><i class="fa fa-dashboard"></i><span>Escritorio</span></a></li>', 'first');
-        echo $this->multi_menu->inject_item('<li><a href="#" onClick="linkTo(\''.SIM.'Form/formCalidad\')" data-permission="View-"><i class="fa fa-edit"></i><span>Formulario de Calidad</span></a></li>')
-                              ->render();
+        echo$this->multi_menu->inject_item('<li><a href="#" onClick="cargarView(\''.$grpDash.'\', \'index\', \'View\')" data-permission="View-"><i class="fa fa-dashboard"></i><span>Escritorio</span></a></li>', 'first')->render();
         ?>
         <!-- /.sidebar-menu -->
 

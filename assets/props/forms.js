@@ -289,6 +289,10 @@ function obtenerForm(info, show = true) {
                 $('#frm-modal-' + info + ' .btn-accion').click(function () {
                     $(this).closest('.modal').find('.frm-save').click();
                 });
+                $('#frm-modal-' + info).on("hidden.bs.modal", function() {
+                    WaitingOpen();
+                    $(this).find('.frm-save').click();
+                });
             }
 
             initForm();

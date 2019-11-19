@@ -22,12 +22,15 @@
 var base_url = '<?php echo base_url()?>';
 var link = '';
 
-$('.menu .link').on('click', function() {
-    link = $(this).data('link');
- 
-    $('#content').load(link);
-});
+// $('.menu .link').on('click', function() {
+//     link = $(this).data('link');
+//    alert(link);
+//    // $('#content').load(link);
+// });
 
+$('#dash').click();
+
+var linkAnt = null;
 function linkTo(uri = '') {
     if (link == '' && uri == '') return;
     linkAnt = link;

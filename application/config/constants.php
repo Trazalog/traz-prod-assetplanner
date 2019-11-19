@@ -107,9 +107,6 @@ define('ALM', 'traz-comp-almacen/');
 
 define('files', 'files/');
 
-define('FRM', 'traz-comp-form/');
-
-define('SIM', 'traz-comp-sim/');  
 
 define('SIM_FORMS', array(
 
