@@ -10,7 +10,7 @@ class Otrabajo extends CI_Controller {
 		
 		$this->load->model('Otrabajos');
 		$this->load->model('Equipos');
-		//validaSesion();
+			//validaSesion();
 	}
 	/**
 	 * Muestra pantalla de listado de Ordenes de Trabajo.
@@ -1038,7 +1038,7 @@ class Otrabajo extends CI_Controller {
 	//Ejecuta Orden de Trabajo en BPM
 	public function EjecutarOT(){
 		//log
-			log_message('DEBUG', 'TRAZA | OTrabajo/Ejecutar OT');
+		log_message('DEBUG', '#TRAZA | OTrabajo/Ejecutar OT');
 
 		$userdata = $this->session->userdata('user_data');
 		$userBpm = $userdata[0]['userBpm']['id']; 
@@ -1060,7 +1060,10 @@ class Otrabajo extends CI_Controller {
 
 		// tarea estandar
 		if ($id_tarea != -1) {
-			$descripcion = $this->input->post('tareastdDesc');;
+			$descripcion = $this->input->post('tareastdDesc');
+			#FLEIVA
+			$this->load->model('Tareas');
+		    $this->Tareas->instanciarSubtareas($id_tarea, $ot);
 		} else {
 			$descripcion = $this->input->post('tareaOpcional');;
 		}				
@@ -1119,6 +1122,8 @@ class Otrabajo extends CI_Controller {
 			return;
 		}
 		
+		
+
 		//Cambiar Estado de OT ('ASignada') y en solicitud origen en BD		
 		if($this->Otrabajos->cambiarEstado($ot, $estado, 'OT')){
 				

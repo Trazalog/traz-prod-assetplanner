@@ -5,7 +5,7 @@ class Tareas extends CI_Model {
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->model('Forms');
+		$this->load->model(FRM.'Forms');
 	}
 /* TAREAS ASSET ORIGINALES (TAREAS ESTANDAR)*/
 	function Listado_Tareas()
@@ -831,4 +831,28 @@ class Tareas extends CI_Model {
 	/* 	./ TAREAS BPM */	
 
 /* ./ INTEGRACION CON BPM */
+
+	function instanciarSubtareas($idTarea, $ot){
+		$this->db->select('tareadescrip, id_subtarea, form_asoc as idForm');
+		$this->db->where('id_tarea', $idTarea);
+		$res = $this->db->get('asp_subtareas')->result();
+
+		if(!$res) return FALSE;
+
+		foreach ($res as $key => $o) {
+		
+			$infoId = $this->Forms->guardar($o->idForm);
+			if(!$infoId) continue;
+
+			$o->info_id = $infoId;
+			$o->id_orden = $ot;
+			$o->fecha = date('Y-m-d');
+			$o->estado = 'AC';
+
+			unset($o->idForm);
+			$this->db->insert('tbl_listarea', $o);
+		}
+
+		return true;	
+	}
 }
