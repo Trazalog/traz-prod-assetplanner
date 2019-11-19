@@ -243,7 +243,7 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
                         </div>
                         <div class="modal-footer">
                             <button type="button" id="cerrar" class="btn btn-primary"
-                                onclick="cargarVista()">Cerrar</button>
+                                >Cerrar</button>
                             <button type="button" class="btn btn-success" id="hecho"
                                 onclick="validarSubtareas()">Terminar Tarea</button>
                         </div> <!-- /.modal footer -->
