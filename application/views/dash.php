@@ -3,7 +3,7 @@
 
         <header class="main-header">
             <!-- Logo -->
-            <a href="#" onClick="cargarView('<?php echo $grpDash; ?>', 'index', 'View')" class="logo">
+            <a id="dash" href="#" onClick="cargarView('<?php echo $grpDash; ?>', 'index', 'View')" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
                 <span class="logo-mini">A<b></b>P</span>
                 <!-- logo for regular state and mobile devices -->

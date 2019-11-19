@@ -9,7 +9,17 @@ class Test extends CI_Controller
         $this->load->model('Kpis');
     }
 
-    public function index()
+    public function index(){
+        
+        $this->load->model('Tareas');
+
+        $this->Tareas->instanciarSubtareas(233, 7);
+
+        echo 'Hecho';
+
+    }
+
+    public function index4()
     {
         $this->load->model('traz-comp/Componentes');
 

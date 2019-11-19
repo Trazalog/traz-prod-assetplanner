@@ -16,7 +16,7 @@
                 </div><!-- /.box-header -->
                 <div class="box-body">
                     <div class="datagrid">
-                        <table id="sector" class="table table-hover table-striped">
+                        <table id="bandeja" class="table table-hover table-striped">
                             <thead>
                                 <tr>
 
@@ -108,6 +108,8 @@
 </div>
 
 <script>
+
+DataTable('#bandeja');
 var idfin = "";
 var id_tarea = "";
 var nomTarea = "";

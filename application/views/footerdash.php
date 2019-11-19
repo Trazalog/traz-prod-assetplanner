@@ -27,6 +27,9 @@ var link = '';
 //    alert(link);
 //    // $('#content').load(link);
 // });
+
+$('#dash').click();
+
 var linkAnt = null;
 function linkTo(uri = '') {
     if (link == '' && uri == '') return;
