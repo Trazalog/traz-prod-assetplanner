@@ -151,7 +151,7 @@
                         <div class="modal-footer">
                           <!-- <button type="button" class="btn btn-success" id="hecho" data-toggle="modal" data-target="#modalInforme" onclick="generar_informe_servicio()">Inf. Servicio</button> -->
                           <button type="button" class="btn btn-success" id="hecho" onclick="generar_informe_servicio()">Inf. Servicio</button>
-                          <button type="button" id="cerrar" class="btn btn-primary" onclick="cargarVista()">Cerrar</button>                            
+                          <button type="button" id="cerrar" class="btn btn-primary">Cerrar</button>                            
                         </div> <!-- /.modal footer -->
                     </div>
 
