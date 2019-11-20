@@ -38,6 +38,7 @@ class Proceso extends CI_Controller
         $rsp = $this->bpm->getTarea($task_id);
 
         if (!$rsp['status']) {
+            log_message('DEBUG',"#Tarea/detalleTarea | $task_id: $task_id |".json_encode($rsp));
             $this->load->view('404');
             return;
         }
