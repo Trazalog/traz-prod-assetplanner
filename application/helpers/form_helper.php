@@ -4,7 +4,7 @@ if (!function_exists('form')) {
     function form($data, $modal = false)
     {   
         $html = "<form id='frm-$data->id' data-form='$data->form_id' data-info='".(isset($data->info_id)?$data->info_id:null)."' data-valido='false'>";
-
+        $html.= "<fieldset>";
         if(!$data->items) return 'Formulario No encontrado.';
 
         foreach ($data->items as $key => $e) {
@@ -59,7 +59,7 @@ if (!function_exists('form')) {
             }
         }
 
-        return $html . '<button class="btn btn-primary pull-right frm-save '.($modal?'hidden':null).'" onclick="frmGuardar(this)">Guardar</button></form>';
+        return $html . '<button class="btn btn-primary pull-right frm-save '.($modal?'hidden':null).'" onclick="frmGuardar(this)">Guardar</button></form></fieldset>';
     }
 
     function input($e)

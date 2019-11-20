@@ -1,9 +1,9 @@
 <div class="content">
     <div class="box box-primary">
         <div class="box-body">
-
-            <button class="btn btn-primary frm-new" data-form="<?php echo SIM_FORMS['eval_zona']?>">
-                <i class="fa fa-plus"></i> Nuevo Formulario</button><br><br><br>
+<!-- 
+            <button class="btn btn-primary frm-new" data-form="<?php #echo SIM_FORMS['eval_zona']?>">
+                <i class="fa fa-plus"></i> Nuevo Formulario</button><br><br><br> -->
 
             <table class="table" id="lista-forms">
                 <thead>
@@ -18,7 +18,7 @@
                             echo '<tr>';
                             echo "<td> $o->nombre </td>";
                             echo "<td>".fecha_hora($o->fecha)."</td>";
-                            echo "<td class='text-center'><a class='frm-open' href='#' data-info='$o->info_id'><i class='fa fa-paperclip'></i></a></td>";
+                            echo "<td class='text-center'><a class='frm-open' data-readonly='true' href='#' data-info='$o->info_id'><i class='fa fa-paperclip'></i></a></td>";
                             echo '</tr>';
                            
                         }
