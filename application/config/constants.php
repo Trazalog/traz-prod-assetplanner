@@ -89,11 +89,11 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 define('FRM', 'traz-comp-form/');
 
 
-#Componente SIM
-define('SIM', 'traz-comp-sim/');  
+    #Componente SIM
+    define('SIM', 'traz-comp-sim/');  
 
-define('SIM_FORM_EVAL_OPE',3);
-define('SIM_FORM_EVAL_ZONA',2);
+    define('SIM_FORM_EVAL_OPE',3);
+    define('SIM_FORM_EVAL_ZONA',2);
 
 /*
 |--------------------------------------------------------------------------
