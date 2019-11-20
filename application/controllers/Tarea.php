@@ -8,26 +8,7 @@ class Tarea extends CI_Controller {
 
 		function __construct(){
 			parent::__construct();
-
 			
-			//if(empty($this->session->userdata("userName"))) { 
-				//redirect(base_url(),'refresh'); }
-			
-			
-			// if(empty($this->session->userdata("userName"))) { 
-			// 	redirect(base_url('views/login.php'));
-			// }
-
-
-			//redirect( base_url() );
-			
-			// $proyecto = 'http://localhost/traz-prod-assetplanner/';
-			// header("Location: $proyecto");
-			// $userdata = $this->session->userdata('user_data');
-      // $userName = $userdata[0]['userName'];     // guarda usuario logueado   
-			// var_dump($userName, 'datos: ');
-			// if(empty($this->session->userdata("userName"))) { 
-			// 	redirect(base_url(),'refresh'); }
 			$this->load->model('Tareas');		
 			$this->load->model('Backlogs');
 			$this->load->model('Otrabajos');
@@ -103,7 +84,6 @@ class Tarea extends CI_Controller {
 			public function index($permission = null){
 				///$this->load->helper('control_sesion');
 				// if	(validaSesion()){
-
 						$detect = new Mobile_Detect();    				
 						//Obtener Bandeja de Usuario desde Bonita
 						$response = $this->bpm->getToDoList();
@@ -536,7 +516,8 @@ class Tarea extends CI_Controller {
 					case 'Ejecutar OT':
 							
 							$this->load->model('traz-comp/Componentes');
-							$this->load->model(CMP_ALM.'/new/Pedidos_Materiales');
+							$this->load->model(ALM.'/new/Pedidos_Materiales');
+							
 							$data['descripcionOT'] = $this->Otrabajos->obtenerOT($id_OT)->descripcion;
 							#COMPONENTE ARTICULOS
 							$data['items'] = $this->Componentes->listaArticulos();
@@ -546,12 +527,13 @@ class Tarea extends CI_Controller {
 							$info->ortr_id = $id_OT;
 							$info->modal = 'agregar_pedido';
 							$data['info'] = $info;
-							$this->load->model(CMP_ALM.'/Notapedidos');
+							$this->load->model(ALM.'/Notapedidos');
 							$data['list'] = $this->Notapedidos->notaPedidos_List($id_OT);
 							$this->load->model('traz-comp/Componentes');
 							$this->load->view('tareas/view_ejecutarOT', $data);
-							$this->load->view('tareas/scripts/tarea_std');	
-							$this->load->view('tareas/scripts/validacion_forms');					
+							//$this->load->view('tareas/scripts/tarea_std');	
+						
+									
 							break;
 					case 'Esperando cambio estado "a Ejecutar"':
 						$this->load->view('tareas/view_cambio_estado', $data);

@@ -1,0 +1,1 @@
+DROP TABLE `frm_valores_validos`, `frm_valores`, `frm_tipos_dato`, `frm_instancias_formulario`, `frm_grupos`, `frm_formularios_completados`, `frm_formularios`, `frm_categorias`;

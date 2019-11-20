@@ -7,6 +7,8 @@
 
     <title>asset PLANNER</title>
 
+    <link rel="manifest" href="./manifest.json" />
+
     <link rel="shortcut icon" href="<?php echo base_url();?>assets/img/favicon.png" type="image/x-icon">
     <!-- Bootstrap 3.3.7 -->
     <link rel="stylesheet" href="<?php echo base_url();?>assets/css/bootstrap.min.css">
@@ -77,7 +79,13 @@
     <!-- Jasny Bootstrap -->
     <link rel="stylesheet" href="<?php echo base_url();?>assets/plugin/jasny-bootstrap/css/jasny-bootstrap.min.css">
     <!-- Bootstrap Validator -->
-    <link rel="stylesheet" href="<?php echo base_url();?>assets/plugin/bootstrapvalidator/bootstrapValidator.min.css">
+    <!-- <link rel="stylesheet" href="<?php #echo base_url();?>assets/plugin/bootstrapvalidator/bootstrapValidator.min.css"> -->
+
+    <!-- iCheck for checkboxes and radio inputs -->
+    <link rel="stylesheet" href="<?php base_url();?>assets/plugin/iCheck/all.css">
+
+    <!-- iCheck 1.0.1 -->
+    <script src="<?php base_url();?>assets/plugin/iCheck/icheck.min.js"></script>
 
     <!-- SlimScroll -->
     <script src="<?php  echo base_url();?>assets/plugin/slimScroll/jquery.slimscroll.min.js"></script>
@@ -92,9 +100,12 @@
     <!-- Jasny Bootstrap -->
     <script src="<?php echo base_url();?>assets/plugin/jasny-bootstrap/js/jasny-bootstrap.min.js"></script>
     <!-- Bootstrap Validator -->
-    <script src="<?php echo base_url();?>assets/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+    <!-- <script src="<?php #echo base_url();?>assets/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script> -->
     
     <script src="<?php echo base_url();?>assets/js/jquery.PrintArea.js"></script>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.2/css/bootstrapValidator.min.css"/>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.2/js/bootstrapValidator.min.js"></script>
 </head>
 
 

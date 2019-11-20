@@ -89,11 +89,11 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 define('FRM', 'traz-comp-form/');
 
 
-#Componente SIM
-define('SIM', 'traz-comp-sim/');  
+    #Componente SIM
+    define('SIM', 'traz-comp-sim/');  
 
-define('SIM_FORM_EVAL_OPE',3);
-define('SIM_FORM_EVAL_ZONA',2);
+    define('SIM_FORM_EVAL_OPE',3);
+    define('SIM_FORM_EVAL_ZONA',2);
 
 /*
 |--------------------------------------------------------------------------
@@ -102,7 +102,21 @@ define('SIM_FORM_EVAL_ZONA',2);
 |
 | Version de Componente de Almacen
 |
-*/
+*/ 
+define('ALM', 'traz-comp-almacen/');  
+
+define('files', 'files/');
+
+
+define('SIM_FORMS', array(
+
+    'eval_ope' => 2,
+
+    'eval_zona' =>3
+));
+
+
+
 define('CMP_ALM', 'traz-comp-almacen/');  
 
 /*
@@ -114,9 +128,9 @@ define('CMP_ALM', 'traz-comp-almacen/');
 |
 */
 
-define('BONITA_URL', 'http://192.168.0.105:8080/bonita/');  
+define('BONITA_URL', 'http://localhost:8080/bonita/');  
 
-define('BPM_ADMIN_USER', 'mantenedor1');
+define('BPM_ADMIN_USER', 'supervisor1');
 define('BPM_ADMIN_PASS', 'bpm');
 define('BPM_USER_PASS', 'bpm');
 
@@ -149,7 +163,7 @@ define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '7321139677245257050');
 |
 */
  
-define('BPM_PROCESS_ID', '7503443566840192735'); // localhost -
+define('BPM_PROCESS_ID', '4859077159833071020'); // localhost -
 
 /*
 |--------------------------------------------------------------------------
@@ -187,4 +201,16 @@ define('ASP_113', 'Usuario No Encontrado');
 define('ASP_114', 'Error al Actualizar Variable');
 define('ASP_115', 'Error al Leer Variable');
 
+
+//Settings
+
+# >> OT
 define('viewOT', true);
+
+# >> GPS
+define('GPS_ACC', 50);
+define('GPS_CHECK_MOBILE', false);
+
+# >>SW
+define('SW', false);
+#define('SW', false);

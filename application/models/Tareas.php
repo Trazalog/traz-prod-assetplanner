@@ -5,7 +5,7 @@ class Tareas extends CI_Model {
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->model('Forms');
+		$this->load->model(FRM.'Forms');
 	}
 /* TAREAS ASSET ORIGINALES (TAREAS ESTANDAR)*/
 	function Listado_Tareas()
@@ -101,7 +101,7 @@ class Tareas extends CI_Model {
 		}
 	}
 	// devuelve subtareas por 
-	function getSubtareas($idTareaSTD){
+	function getSubtareas($ot){
 		$this->db->select( 'tbl_listarea.*,
 												asp_subtareas.tareadescrip AS subtareadescrip,
 												asp_subtareas.id_subtarea,
@@ -109,7 +109,7 @@ class Tareas extends CI_Model {
 												asp_subtareas.form_asoc');		
 		$this->db->from('tbl_listarea');
 		$this->db->join('asp_subtareas', 'asp_subtareas.id_subtarea = tbl_listarea.id_subtarea','left');
-		$this->db->where('tbl_listarea.id_orden',$idTareaSTD);
+		$this->db->where('tbl_listarea.id_orden',$ot);
 		$query = $this->db->get();
 		if ($query->num_rows()!=0){
 			return $query->result_array();	
@@ -831,4 +831,28 @@ class Tareas extends CI_Model {
 	/* 	./ TAREAS BPM */	
 
 /* ./ INTEGRACION CON BPM */
+
+	function instanciarSubtareas($idTarea, $ot){
+		$this->db->select('tareadescrip, id_subtarea, form_asoc as idForm');
+		$this->db->where('id_tarea', $idTarea);
+		$res = $this->db->get('asp_subtareas')->result();
+
+		if(!$res) return FALSE;
+
+		foreach ($res as $key => $o) {
+		
+			$infoId = $this->Forms->guardar($o->idForm);
+			if(!$infoId) continue;
+
+			$o->info_id = $infoId;
+			$o->id_orden = $ot;
+			$o->fecha = date('Y-m-d');
+			$o->estado = 'AC';
+
+			unset($o->idForm);
+			$this->db->insert('tbl_listarea', $o);
+		}
+
+		return true;	
+	}
 }

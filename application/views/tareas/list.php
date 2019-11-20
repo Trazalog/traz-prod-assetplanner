@@ -4,33 +4,33 @@
 
 <section class="content">
 
-  <div class="row">
-    <div class="col-xs-12">
-      <div class="box box-primary">
-        <div class="box-header">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header">
 
-       
-          <h1 class="box-title">Mis Tareas</h1>
-      
 
-        </div><!-- /.box-header -->
-        <div class="box-body">
-        <div class="datagrid">
-          <table id="sector" class="table table-hover table-striped">
-            <thead>
-              <tr>
-          
-                <?php  
+                    <h1 class="box-title">Mis Tareas</h1>
+
+
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="datagrid">
+                        <table id="bandeja" class="table table-hover table-striped">
+                            <thead>
+                                <tr>
+
+                                    <?php  
 
                   echo '<th width="7%"'.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Estado</td>';
 
                   echo '<th>Tarea</th>';
 
-                  echo '<th>Descripción</th>';
+                  echo '<th class="'.($device == 'android'?'hidden':null).'">Descripción</th>';
 
-                  echo '<th width="7%"'.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Id S.S</td>';    
-                  echo '<th width="7%"'.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Id OT</td>';          
-                  echo '<th width="10%"'.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Id Pedido</td>';          
+                  echo '<th width="7%">Id S.S</td>';    
+                  echo '<th width="7%">Id OT</td>';          
+                  echo '<th width="10%">Id Pedido</td>';          
                                   
 
                   echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Fecha Asignación</td>';                 
@@ -42,11 +42,11 @@
                                   
                  
               
-              ?>  
-              </tr>
-            </thead>
-            <tbody>
-              <?php                
+              ?>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php                
                 foreach($list as $f){
                   
                   $id=$f["id"];
@@ -64,13 +64,13 @@
 
                     echo '<td class="celda nomTarea" style="text-align: left">'.$f['displayName'].'</td>';  
                      
-                    echo '<td class="celda tareaDesc" style="text-align: left">'.substr($f['displayDescription'],0,500).'</td>';                
+                    echo '<td class="celda tareaDesc '.($device == 'android' ? 'hidden':null).'" style="text-align: left">'.substr($f['displayDescription'],0,500).'</td>';                
                       
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea text-center"').'>'.bolita($f['ss'],'blue').'</td>';   
+                    echo '<td class= "celda nomTarea text-center">'.bolita($f['ss'],'blue').'</td>';   
                     
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea text-center"').'>'.bolita($f['ot'],'orange').'</td>';                  
+                    echo '<td class= "celda nomTarea text-center">'.bolita($f['ot'],'orange').'</td>';                  
                   
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea text-center"').'>'.bolita($f['pema_id'],'green').'</td>';                  
+                    echo '<td class= "celda nomTarea text-center">'.bolita($f['pema_id'],'green').'</td>';                  
                     
                     echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.formato_fecha_hora($f['assigned_date']).'</td>'; 
 
@@ -81,107 +81,106 @@
                 }
               ?>
 
-            </tbody>
-          </table>
-          </div>
-        </div><!-- /.box-body -->
-      </div><!-- /.box -->
-    </div><!-- /.col -->
-  </div><!-- /.row -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div><!-- /.col -->
+    </div><!-- /.row -->
 </section><!-- /.content -->
 
 <div class="modal fade" id="finalizar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="glyphicon glyphicon-check btncolor " style="color: #6aa61b" > </span> Finalización </h4>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel"><span id="modalAction"
+                        class="glyphicon glyphicon-check btncolor " style="color: #6aa61b"> </span> Finalización </h4>
+            </div>
+            <center>
+                <div>Debe completar el formulario asociado a esta tarea para terminarla</div>
+            </center>
+
         </div>
-        <center>
-        <div>Debe completar el formulario asociado a esta tarea para terminarla</div>
-        </center>
-        
     </div>
-  </div>
 </div>
 
 <script>
 
-  var idfin="";
-  var id_tarea = "";
-  var nomTarea = "";
-  var tareaDesc = "";
-  var fechaCreacion = "";
+DataTable('#bandeja');
+var idfin = "";
+var id_tarea = "";
+var nomTarea = "";
+var tareaDesc = "";
+var fechaCreacion = "";
 
-  actualizar_terminadas();
-  function actualizar_terminadas(){
+actualizar_terminadas();
+
+function actualizar_terminadas() {
     var aux = sessionStorage.getItem("tareas_cerradas");
-    if(aux==null || aux.length==0) return;
+    if (aux == null || aux.length == 0) return;
     var aux = aux.split("-");
-    for(var i=0 ;i<aux.length-1;i++){
-      $("#"+aux[i]).remove();
+    for (var i = 0; i < aux.length - 1; i++) {
+        $("#" + aux[i]).remove();
     }
-  }
+}
 
- 
+
 
 //Tomo valor de la celda y carga detalle de la tarea
-  $('tbody tr').click( function () {
+$('tbody tr').click(function() {
     var id = $(this).attr('id');
-   
+
     WaitingOpen();
-    if(!$(this).attr('tags').includes('#pedidoMaterial')){
-      $(".content").load("<?php echo base_url(); ?>index.php/Tarea/detaTarea/<?php echo $permission; ?>/" + id);
-    }else{
-      linkTo('almacen/Proceso/detalleTarea/'+id);
+    if (!$(this).attr('tags').includes('#pedidoMaterial')) {
+        linkTo("Tarea/detaTarea/<?php echo $permission; ?>/" + id);
+    } else {
+        linkTo('almacen/Proceso/detalleTarea/' + id);
     }
     WaitingClose();
-    
-  });
+
+});
 
 
-  // Carga para cargar notif estandar
-  function verTarea(idTarBonita){
+// Carga para cargar notif estandar
+function verTarea(idTarBonita) {
 
     WaitingOpen();
-    $(".content").load("<?php echo base_url(); ?>index.php/Tarea/detaTarea/<?php echo $permission; ?>/" + idTarBonita);
+    linkTo("Tarea/detaTarea/<?php echo $permission; ?>/" + idTarBonita);
     WaitingClose();
-    
-  }
+
+}
 
 /////////// TERMINAR TAREA   ///////
 
-  // boton terminar tarea
-  $('.btnFin').click( function () {   
-    var idTarBonita = $(this).parents('tr').find('td').eq(8).html();   
-  });
+// boton terminar tarea
+$('.btnFin').click(function() {
+    var idTarBonita = $(this).parents('tr').find('td').eq(8).html();
+});
 
-  // Recargar vista
-  function recargar(){
+// Recargar vista
+function recargar() {
     WaitingOpen();
     $(".content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>/");
     WaitingClose();
-  }
+}
 
+if (!conexion()) offline();
+else {
+    sessionStorage.removeItem('tareas_cerradas');
+}
 
+function offline() {
+    console.log('Pagina Offline | Cargando Contenido...');
+
+    //Checks Subtareas
+    var aux = JSON.parse(sessionStorage.getItem('tareas_cerradas'));
+    if (aux != null) {
+        Object.keys(aux).forEach(function(key) {
+            $('#' + key).remove();
+        });
+    }
+}
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -6,22 +6,24 @@ class Form extends CI_Controller
     {
 
         parent::__construct();
+        
         $this->load->model(FRM . 'Forms');
     }
 
     public function formCalidad()
     {
-        $data['formId'] = SIM_FORM_EVAL_OPE;
+        $data['formId'] = SIM_FORMS['eval_ope'];
 
         $data['list'] = $this->Forms->listado();
 
         $this->load->view(SIM . 'form-calidad', $data);
+
         $this->load->view(FRM . 'scripts');
     }
 
     public function newFormCalidad()
     {
-        $data['formId'] = SIM_FORM_EVAL_OPE;
+        $data['formId'] = SIM_FORMS['eval_ope'];
 
         $data['infoId'] = $this->Forms->crear($data['formId']);
 

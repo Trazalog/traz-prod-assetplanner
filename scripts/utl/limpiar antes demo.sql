@@ -1,0 +1,12 @@
+TRUNCATE solicitud_reparacion;
+TRUNCATE orden_trabajo;
+TRUNCATE alm_deta_entrega_materiales;
+TRUNCATE alm_deta_pedidos_materiales;
+TRUNCATE alm_deta_recepcion_materiales;
+TRUNCATE alm_entrega_materiales;
+TRUNCATE alm_lotes;
+TRUNCATE alm_pedidos_extraordinario;
+TRUNCATE alm_pedidos_materiales;
+TRUNCATE alm_proveedores_articulos;
+TRUNCATE alm_recepcion_materiales;
+TRUNCATE orden_servicio;

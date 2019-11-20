@@ -35,7 +35,7 @@ class Form extends CI_Controller
         $html = form($this->Forms->obtenerPlantilla($form), $modal);
 
         if ($modal) {
-            $modal = new StdClass();
+            $modal = new StdClass();    
             $modal->id = "frm-modal-$info";
             $modal->titulo = 'Formulario Tarea';
             $modal->body = $html;
@@ -71,9 +71,9 @@ class Form extends CI_Controller
         if ($new) {
 
             $res = $this->Forms->guardar($info_id, $data);
-
+            
         } else {
-
+            
             $res = $this->Forms->actualizar($info_id, $data);
 
         }

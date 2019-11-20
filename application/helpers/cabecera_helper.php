@@ -223,7 +223,7 @@ if(!function_exists('cargarCabecera')){
 							</div>							
 							<div class="col-xs-12 col-sm-4">
 								<label style="margin-top: 7px;">Tarea: </label>
-								<input type="text" class="form-control"  value="'.$resultOT['tareaDescrip'].'" disabled/>
+								<input id="info-tarea" type="text" class="form-control"  value="'.$resultOT['tareaDescrip'].'" disabled/>
 							</div>							
 							<div class="col-xs-12 col-sm-4">
 								<label style="margin-top: 7px;">Estado: </label>';								

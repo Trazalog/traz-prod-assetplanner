@@ -7,10 +7,6 @@ var modal = true;
 function isModalOpen() {
     return $('.modal.in').length > 0;
 }
-
-function conexion() {
-    return true;
-}
 </script>
 
 

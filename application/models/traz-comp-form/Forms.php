@@ -34,8 +34,10 @@ class Forms extends CI_Model
             }
         }
 
-        $this->db->insert_batch('frm_instancias_formularios', $aux);
-        return $this->db->insert_batch('frm_instancias_formularios', $array);
+        if(!$this->db->insert_batch('frm_instancias_formularios', $aux)) return FALSE;
+        if(!$this->db->insert_batch('frm_instancias_formularios', $array)) return FALSE;
+
+        return $newInfo;
     }
 
     public function actualizar($info_id, $data)

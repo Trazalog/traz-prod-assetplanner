@@ -177,7 +177,7 @@
 
                                         <div role="tabpanel" class="tab-pane" id="pedidomateriales">
                                             <?php 
-                                            $this->load->view(CMP_ALM.'notapedido/generar_pedido');
+                                            $this->load->view(ALM.'notapedido/generar_pedido');
                                           ?>
                                         </div>
                                         <!--/#responsable -->
@@ -338,7 +338,7 @@ function lanzarPedidoMateriales() {
         data: {
             'id': pema_id
         },
-        url: "<?php echo CMP_ALM ?>/new/Pedido_Material/pedidoNormal",
+        url: "<?php echo ALM ?>/new/Pedido_Material/pedidoNormal",
         success: function(result) {
             alert('Hecho');
             return;
@@ -351,6 +351,23 @@ function lanzarPedidoMateriales() {
 
 //cierra la tarea ejecutar OT y asigna la tarea a la OT
 function EjecutarOT() {
+
+    var xlat = null;
+    var xlon = null;
+    if (!window.mobileAndTabletcheck()) {
+        if (obtenerPosicion()) {
+            console.log('LAT: ' + lat + ' - LON: ' + lon + ' - ACC: ' + ac);
+            xlat = lat;
+            xlon = lon;
+        }
+        else {
+            alert('GPS | No se pudo Obtener Ubicación, Por favor Activar el GPS del Dispositivo.');
+            return;
+        }
+    } else {
+        console.log('GPS | No Mobile');
+    }
+
     var pema_id = $('#pema_id').val();
     if ((pema_id == null || pema_id == '') && !confirm('No se Realizarán Pedido de Materiales, ¿Desea Continuar?')) {
         return;
@@ -400,7 +417,9 @@ function EjecutarOT() {
             tipo: tipo,
             tareaOpcional: tareaOpcional,
             tareastd: tareastd,
-            tareastdDesc: tareastdDesc
+            tareastdDesc: tareastdDesc,
+            latitud: xlat,
+            longitud: xlon
         },
         url: 'index.php/Otrabajo/EjecutarOT',
         success: function(data) {
