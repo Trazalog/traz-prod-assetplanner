@@ -29,7 +29,7 @@ if (!function_exists('formato_fecha')) {
         }
     }
 
-    function fecha($fecha)
+    /*function fecha($fecha)
     {
         if (strlen($fecha) == 0) {
             return '';
@@ -46,6 +46,7 @@ if (!function_exists('formato_fecha')) {
             return $date;
         }
     }
+    }*/
     
 
     function fecha($fecha){
@@ -57,7 +58,7 @@ if (!function_exists('formato_fecha')) {
     }
 
     
-  }
+  //}
 
 }
 

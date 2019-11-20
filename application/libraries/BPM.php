@@ -103,7 +103,7 @@ class BPM
 
         if (!$rsp['status']) { 
 
-            log_message('DEBUG','#TRAZA | #BPM >> lanzarProceso  >>'.ASP_101);
+            log_message('DEBUG','#TRAZA | #BPM >> lanzarProceso  >>'.ASP_101. 'User: '.userNick() . ' Pass: '.userPass());
 
             return msj(false, ASP_101);      
 
