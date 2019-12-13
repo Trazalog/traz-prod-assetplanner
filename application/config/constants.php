@@ -174,14 +174,23 @@ define('BPM_PROCESS_ID', '4859077159833071020'); // localhost -
 |
 */
 
-define('REST', 'http://pc-pc:8280/services/ProduccionDataService/');
-define('RESTPT','http://pc-pc:8280/services/produccionTest/');
-define('REST_TDS', 'http://pc-pc:8280/services/TrazabilidadDataService/');
-define('REST0', 'http://pc-pc:8280/services/ALMDataService/');
+// define('REST', 'http://pc-pc:8280/services/ProduccionDataService/');
+// define('RESTPT','http://pc-pc:8280/services/produccionTest/');
+// define('REST_TDS', 'http://pc-pc:8280/services/TrazabilidadDataService/');
+// define('REST0', 'http://pc-pc:8280/services/ALMDataService/');
 
-define('REST2', 'http://pc-pc:8280/services/ProduccionDataService');
-define('REST3', 'http://pc-pc:8280/services/produccionTest');
-define('REST4', 'http://pc-pc:8280/services/TrazabilidadDataService');
+// define('REST2', 'http://pc-pc:8280/services/ProduccionDataService');
+// define('REST3', 'http://pc-pc:8280/services/produccionTest');
+// define('REST4', 'http://pc-pc:8280/services/TrazabilidadDataService');
+
+define('REST', 'http://http://dev-trazalog.com.ar:8280/services/ProduccionDataService/');
+define('RESTPT','http://http://dev-trazalog.com.ar:8280/services/produccionTest/');
+define('REST_TDS', 'http://http://dev-trazalog.com.ar:8280/services/TrazabilidadDataService/');
+define('REST0', 'http://http://dev-trazalog.com.ar:8280/services/ALMDataService/');
+
+define('REST2', 'http://http://dev-trazalog.com.ar:8280/services/ProduccionDataService');
+define('REST3', 'http://http://dev-trazalog.com.ar:8280/services/produccionTest');
+define('REST4', 'http://http://dev-trazalog.com.ar:8280/services/TrazabilidadDataService');
 
 /*
 |--------------------------------------------------------------------------
