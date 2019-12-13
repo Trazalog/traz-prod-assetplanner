@@ -41,6 +41,9 @@
         <script src="<?php echo base_url();?>assets/js/html5shiv.min.js"></script>
         <script src="<?php echo base_url();?>assets/js/respond.min.js"></script>
     <![endif]-->
+    <!-- Select 2 -->
+    <link href="<?php echo base_url();?>assets/plugin/select2/select2.min.css" rel="stylesheet"/>
+
     <!-- jQuery 2.1.4 -->
     <script src="<?php echo base_url();?>assets/js/jquery-2.1.4.min.js"></script>
     <!-- Bootstrap 3.3.7 -->
@@ -83,6 +86,7 @@
 
     <!-- iCheck for checkboxes and radio inputs -->
     <link rel="stylesheet" href="<?php base_url();?>assets/plugin/iCheck/all.css">
+
 
     <!-- iCheck 1.0.1 -->
     <script src="<?php base_url();?>assets/plugin/iCheck/icheck.min.js"></script>

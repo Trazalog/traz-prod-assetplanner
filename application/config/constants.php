@@ -174,6 +174,15 @@ define('BPM_PROCESS_ID', '4859077159833071020'); // localhost -
 |
 */
 
+define('REST', 'http://pc-pc:8280/services/ProduccionDataService/');
+define('RESTPT','http://pc-pc:8280/services/produccionTest/');
+define('REST_TDS', 'http://pc-pc:8280/services/TrazabilidadDataService/');
+define('REST0', 'http://pc-pc:8280/services/ALMDataService/');
+
+define('REST2', 'http://pc-pc:8280/services/ProduccionDataService');
+define('REST3', 'http://pc-pc:8280/services/produccionTest');
+define('REST4', 'http://pc-pc:8280/services/TrazabilidadDataService');
+
 /*
 |--------------------------------------------------------------------------
 | ERRORES
