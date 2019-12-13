@@ -8,7 +8,6 @@
         <div>
             <div class="text-right">
                 <button type="button" class="btn btn-primary" id="btnsave" onclick="guardar()">Guardar</button>
-                <button type="button" class="btn btn-default" id="btnclose" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
