@@ -80,6 +80,8 @@ window.mobileAndTabletcheck = function() {
 
 </script>
 
+<!-- Select 2 -->
+<script src="<?php echo base_url();?>assets/plugin/select2/select2.min.js">
 
 
  <script src="<?php echo base_url() ?>assets/props/offline.js"></script>

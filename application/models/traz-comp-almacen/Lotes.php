@@ -154,5 +154,13 @@ class Lotes extends CI_Model {
 		$this->db->where('empr_id', empresa());
 		return $this->db->get('alm_lotes')->num_rows()>0?1:0;
 	}
-	
+	public function listarPorArticulos($idarticulo,$iddeposito){
+
+        log_message('DEBUG', '#MODEL > listarPorArticulos | ID_ARTICULO: ' .$idarticulo);
+        $resource = 'deposito/'.$iddeposito.'/articulo/'.$idarticulo.'/lote/list'; 	
+        $url = REST0.$resource;
+		$array = $this->rest->callAPI("GET",$url); 
+		$resp =  json_decode($array['data']);		
+		return $resp;	                
+    }
 }
