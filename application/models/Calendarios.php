@@ -100,7 +100,7 @@ class Calendarios extends CI_Model {
             from preventivo 
             join equipos ON preventivo.id_equipo = equipos.id_equipo 
             join tareas ON preventivo.id_tarea = tareas.id_tarea 
-            WHERE preventivo.id_empresa = $empId AND preventivo.estadoprev = 'C' AND ((preventivo.perido = '5') OR (preventivo.perido = '6'))";//horas o ciclos
+            WHERE preventivo.id_empresa = $empId AND preventivo.estadoprev = 'C' AND ((preventivo.perido = '5') OR (preventivo.perido = '6')) AND (equipos.ultima_lectura >= (preventivo.lectura_base + preventivo.critico1))";//horas o ciclos
             //AND month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $mes 
             //AND year(orden_trabajo.fecha_program) = $year
             //";

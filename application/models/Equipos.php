@@ -805,8 +805,8 @@ class Equipos extends CI_Model
             'observacion' => $observacion,
             'operario_nom' => $operario,
             'turno' => $turno,
-            'estado' => $estado,
-            'obs' => ($estadoActual == $estado),
+            'estado' => $estado
+            // 'obs' => ($estadoActual == $estado),
         );
         //guarda la lectura
         //dump_exit($datos);

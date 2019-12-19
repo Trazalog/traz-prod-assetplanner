@@ -1073,7 +1073,7 @@ function llenarModal(data) {
     if (data.length == 0) return;
     $('#id_Equipo_modal').val(data[0]['id_equipo']);
 
-    console.table(data);
+    // console.table(data);
     if (Array.isArray(data) && data.length) {
         console.log("El equipo SI tiene historial de lecturas");
         $("#codEquipo").text(data[0]['codigo']);
@@ -1088,7 +1088,8 @@ function llenarModal(data) {
                 data[i]['operario_nom'],
                 data[i]['turno'],
                 data[i]['observacion'],
-                estado(data[i]['estado'])
+                // estado()
+                data[i]['estado']
             ]).draw();
         }
     } else {

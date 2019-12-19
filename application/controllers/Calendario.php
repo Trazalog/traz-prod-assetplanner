@@ -39,7 +39,7 @@ class Calendario extends CI_Controller {
 		$permission   = $this->input->post('permission');
 		$data['mes']  = $mes;
 		$data['year'] = $year;
-		$preventivosHoras  = $this->Calendarios->getPreventivosHoras($mes, $year);
+		$data['list0']  = $this->Calendarios->getPreventivosHoras($mes, $year);
 		$data['list1'] = $this->Calendarios->getpredlist($mes, $year); 	// listo
 		$data['list2'] = $this->Calendarios->getbacklog($mes, $year);		// listo
 		$data['list3'] = $this->Calendarios->getPreventivos($mes, $year);  // listo 
