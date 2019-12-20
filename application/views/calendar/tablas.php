@@ -219,16 +219,20 @@
                   //dump_exit($list0);
                   foreach( $list0 as $p ) 
                   {
-    
-                    if( $p['tipoAlerta'] == 'A' ) { $classAlerta = 'bg-yellow color-palette'; }
-                    if( $p['tipoAlerta'] == 'R' ) { $classAlerta = 'bg-red-active color-palette'; }
+                    // if( $p['ultima_lectura'] < ($p['lectura_base'] + $p['cantidad']) ) { $classAlerta = 'bg-yellow color-palette'; }
+                    // if( $p['ultima_lectura'] >= ($p['lectura_base'] + $p['cantidad']) ) { $classAlerta = 'bg-red-active color-palette'; }
                     
                     echo "<tr class='<?php echo $classAlerta ?>'>";
                       // 0
                       echo "<td>";
-                       // if (strpos($permission,'Del') !== false) {
-                            echo '<i class="fa fa-history" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-preventivoH"></i>';
-                       // }
+                      if( $p['ultima_lectura'] < ($p['lectura_base'] + $p['cantidad']) ) {
+                        echo '<i class="fa fa-info-circle" style="color: #FFD700; cursor: pointer; margin-left: 15px; font-size: 1.1em;" title="Alerta: se esta por llegar al nivel critico"></i>';
+                        echo '<i class="fa fa-square" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px; font-size: 1.1em;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-preventivoH"></i>';
+                      }
+                      if( $p['ultima_lectura'] >= ($p['lectura_base'] + $p['cantidad']) ) {
+                        echo '<i class="fa fa-exclamation-triangle" style="color: #FF0000; cursor: pointer; margin-left: 15px; font-size: 1.1em;" title="Alerta: se supero el nivel critico"></i>';
+                        echo '<i class="fa fa-square" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px; font-size: 1.1em;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-preventivoH"></i>';
+                      }        
                       echo "</td>";
                       // 1  //id de preventivo
                       echo "<td class='hidden'>".$p['prevId']."</td>";
