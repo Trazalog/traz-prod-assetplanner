@@ -130,11 +130,11 @@ function actualizar_terminadas() {
 
 
 //Tomo valor de la celda y carga detalle de la tarea
-function detalleTarea(id) {
-    var id = $(this).attr('id');
+function detalleTarea(e) {
+    var id = $(e).attr('id');
 
     WaitingOpen();
-    if (!$(this).attr('tags').includes('#pedidoMaterial')) {
+    if (!$(e).attr('tags').includes('#pedidoMaterial')) {
         linkTo("Tarea/detaTarea/<?php echo $permission; ?>/" + id);
     } else {
         linkTo('almacen/Proceso/detalleTarea/' + id);
