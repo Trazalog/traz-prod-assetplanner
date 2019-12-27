@@ -45,7 +45,7 @@
 
 
 <script>
-checkTabla("tabla_articulos", "modalarticulos", `<?php echo json_encode($items);?>`, "Add");
+//checkTabla("tabla_articulos", "modalarticulos", `<?php #echo json_encode($items);?>`, "Add");
 
 function checkTabla(idtabla, idrecipiente, json, acciones) {
     lenguaje = <?php echo json_encode($lang) ?> ;
