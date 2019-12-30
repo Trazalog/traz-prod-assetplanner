@@ -19,7 +19,7 @@
     <div class="col-xs-3 col-sm-3 col-md-3">
         <div class="form-group">
             <label>Cantidad:</label>
-            <input id="add_cantidad" type="number" min="0" step="1" class="form-control" placeholder="Cantidad">
+            <input id="add_cantidad" type="number" min="0" class="form-control" placeholder="Cantidad">
         </div>
     </div>
     <div class="col-xs-3 col-sm-3 col-md-3" style="margin-top:25px">
@@ -371,7 +371,7 @@ function lanzarPedidoModal() {
     var deta_articulos = [];
     $('#tabladetalle2 tbody').find('tr').each(function() {
         json = "";
-        json = JSON.parse($(this).attr('data-json'));
+        json = JSON.tr  ($(this).attr('data-json'));
         articulos.push(json[0]);
 
         json = $(this).attr('data-articulo');
