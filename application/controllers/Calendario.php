@@ -174,7 +174,7 @@ class Calendario extends CI_Controller {
 					);
 					
 				// si el evento es unico lo guarda
-				if ($event_tipo == '1'){					
+				if ($event_tipo == '1'){				
 
 					//log
 						log_message('DEBUG', 'TRAZA | Evento tipo: '.$event_tipo);
@@ -233,7 +233,7 @@ class Calendario extends CI_Controller {
 					// $tipo == '3' -> Preventivo			
 					if($tipo == '3'){	
 						//log
-							log_message('DEBUG', 'TRAZA | Tipo solicitud en 3: '.$tipo);
+						log_message('DEBUG', 'TRAZA | Tipo solicitud en 3: '.$tipo);
 						$tipo = 'preventivo';
 						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);						
 					}        
@@ -295,7 +295,11 @@ class Calendario extends CI_Controller {
 					if($tipo == '5'){	
 						$tipo = 'predictivo';
 						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);						
-					}					
+					}	
+					if($tipo == ''){	
+						$tipo = 'predictivo';
+						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);						
+					}				
 
 					if($error) return false;
 					// genera la Otrabajo devuelve el id de OT

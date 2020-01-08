@@ -89,6 +89,8 @@ class dash extends CI_Controller {
 			{
 				$data['permiso'] = $this->items[$i]['seguridad'];
 			}
+
+			if(SW) {
 			
 			$rsp = $this->bpm->getToDoList();
 		
@@ -126,6 +128,8 @@ class dash extends CI_Controller {
 			}
 		
 			$data['tareas'] = json_encode($data['tareas']);
+
+			}
 			//Fin datos necesarios Precacheo
 			$this->load->view('dash', $data);
 			$this->load->view('menu');
