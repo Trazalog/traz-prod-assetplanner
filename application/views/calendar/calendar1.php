@@ -632,9 +632,9 @@ var ultima_lectura = "";
 
 //$('.fa-history').click(function(){
 $(document).on("click", ".fa-history", function() {
-    id_tarhs = $(this).parents("tr").find("td").eq(1).html();
+    id_prevhs = $(this).parents("tr").find("td").eq(1).html();
     id_equhs = $(this).parents("tr").find("td").eq(2).html();
-    id_prevhs = $(this).parents("tr").find("td").eq(3).html();
+    id_tarhs = $(this).parents("tr").find("td").eq(3).html();
     desc_tareahs = $(this).parents("tr").find("td").eq(5).html();
     fec_sol_prevhs = $(this).parents("tr").find("td").eq(6).html();
     proximo_servicio = $(this).parents("tr").find("td").eq(9).html();
@@ -659,7 +659,8 @@ function setOtPrevHoras() {
             idp: id_sol,
             tipo: 3, // preventivo
             ide: id_equhs,
-            lectura_programada: proximo_servicio,
+            //lectura_programada: proximo_servicio,
+            event_tipo:1,
             lectura_ejecutada: ultima_lectura
         },
         url: 'index.php/Calendario/guardar_agregar',

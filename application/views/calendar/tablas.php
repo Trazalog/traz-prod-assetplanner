@@ -208,8 +208,8 @@
                         <!-- <th style="text-align: center">Horas H.</th> -->
                         <th style="text-align: center">Periodo</th>
                         <th style="text-align: center">Frec.</th>
-                        <th class="hidden">Próximo Servicio</th>
-                        <th class="hidden">Última Lectura</th>
+                        <th class='hidden'>Próximo Servicio</th>
+                        <th class='hidden'>Última Lectura</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -227,11 +227,11 @@
                       echo "<td>";
                       if( $p['ultima_lectura'] < ($p['lectura_base'] + $p['cantidad']) ) {
                         echo '<i class="fa fa-info-circle" style="color: #FFD700; cursor: pointer; margin-left: 15px; font-size: 1.1em;" title="Alerta: se esta por llegar al nivel critico"></i>';
-                        echo '<i class="fa fa-square" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px; font-size: 1.1em;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-preventivoH"></i>';
+                        echo '<i class="fa fa-history" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px; font-size: 1.1em;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-preventivoH"></i>';
                       }
                       if( $p['ultima_lectura'] >= ($p['lectura_base'] + $p['cantidad']) ) {
                         echo '<i class="fa fa-exclamation-triangle" style="color: #FF0000; cursor: pointer; margin-left: 15px; font-size: 1.1em;" title="Alerta: se supero el nivel critico"></i>';
-                        echo '<i class="fa fa-square" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px; font-size: 1.1em;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-preventivoH"></i>';
+                        echo '<i class="fa fa-history" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px; font-size: 1.1em;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-preventivoH"></i>';
                       }        
                       echo "</td>";
                       // 1  //id de preventivo
@@ -264,12 +264,12 @@
                           break;
                       }
                       echo "<td style='text-align: center'>".$periodo."</td>";
-                      // 9  //frecuencia
+                      // 8  //frecuencia
                       echo "<td style='text-align: center'>".$p['cantidad']."</td>";
-                      // 10  //proximo Servicio
+                      // 9  //proximo Servicio
                       echo "<td class='hidden'>".$p['proximoServicio']."</td>";
-                      // 11  //ultima Lectura
-                      echo "<td class='hidden'>".$p['ultimaLectura']."</td>";
+                      // 10  //ultima Lectura
+                      echo "<td class='hidden'>".$p['ultima_lectura']."</td>";
                     echo "</tr>";
                   }
                 }
