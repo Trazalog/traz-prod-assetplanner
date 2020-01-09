@@ -807,6 +807,7 @@ class Calendario extends CI_Controller {
 			if ($tipo == 'correctivo') {
 				//$id_solicitud	-> id sol de servicios
 				$caseId = $this->Calendarios->getCaseIdporIdSolServicios($id_solicitud);
+				log_message('DEBUG', 'TRAZA | getCaseIdporIdSolServicios() | caseId: '.$caseId);	
 			}
 			if ($tipo == 'backlog') {
 				//$id_solicitud	-> id de backlog				
@@ -814,9 +815,11 @@ class Calendario extends CI_Controller {
 			}
 			
 			// traer de bpm el id de tarea (id)		
-			$actividades = $this->bpm->ObtenerActividades(BPM_PROCESS_ID, $caseId);		
+			$actividades = $this->bpm->ObtenerActividades(BPM_PROCESS_ID, $caseId);	
+			log_message('DEBUG', 'TRAZA | getInfoTareaporIdSolicitud() | Tareas: '.$actividades);	
 			$infoTarea['taskId'] = json_decode($this->getIdTask($actividades,$tipo),true);
-			$infoTarea['caseId'] = $caseId;			
+			$infoTarea['caseId'] = $caseId;	
+			log_message('DEBUG', 'TRAZA | getInfoTareaporIdSolicitud() | InfoTareas: '.$infoTarea);		
 			return $infoTarea;
 
 		}
