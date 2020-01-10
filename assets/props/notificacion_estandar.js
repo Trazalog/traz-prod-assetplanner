@@ -244,8 +244,7 @@ function ejecutarOT() {
     if (!conexion()) {
         WaitingOpen('Cerrando Tarea');
     }
-
-    ajax({
+    var post = {
         type: 'POST',
         data: {
             idTarBonita: idTarBonita,
@@ -270,7 +269,10 @@ function ejecutarOT() {
             $("#content").load(base_url + "index.php/Tarea/index/add-edit-del-view");
         },
         dataType: 'json'
-    });
+    }
+
+    if(SW) ajax(post);
+    else $.ajax(post);
 }
 
 
