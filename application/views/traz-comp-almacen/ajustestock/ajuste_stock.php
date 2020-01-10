@@ -1,5 +1,7 @@
+<div class="col-md-12">
+<br>
 <form autocomplete="off" method="POST" id="formTotal">
-    <?php 
+    <?php
         $this->load->view(ALM.'ajustestock/componentes/cabecera');
     ?>
 
@@ -23,6 +25,7 @@
         $this->load->view('traz-comp-form/scripts.php');
     ?>
 </form>
+</div>
 
 <script>
 obtenerArticulos();
@@ -138,8 +141,14 @@ function guardar(){
                 return;
             }else{
                 rsp = JSON.parse(rsp);
-                //console.log(rsp);
-                guardaAjusteDetalle(rsp,formobj);
+                rsp = rsp.GeneratedKeys.Entry[0].ID;
+                if(rsp != null || rsp != ""){
+                    guardaAjusteDetalle(rsp,formobj);
+                }
+                else{
+                    alert("error");
+                    return;
+                }
             }
         },
         error: function(rsp) {
@@ -151,7 +160,8 @@ function guardar(){
 }
 
 function guardaAjusteDetalle($rsp, $formobj){
-    $formobj['ajus_id'] = $rsp.respuesta.ajus_id;
+    //console.log($rsp);
+    $formobj['ajus_id'] = $rsp;
     $formobj['tipo_ent_sal'] = $("#tipoajuste>option:selected").attr("data");
     // console.log($formobj);
     $.ajax({

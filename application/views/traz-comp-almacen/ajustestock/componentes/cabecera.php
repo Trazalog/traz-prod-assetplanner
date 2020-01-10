@@ -53,6 +53,7 @@ $.ajax({
             return;
         }
         result = result.data;
+        // console.log(result);
         var option_ajuste = '<option value="" disabled selected>-Seleccione opcion-</option>';
         for (let index = 0; index < result.length; index++) {
             option_ajuste += '<option value="' + result[index].nombre + '" data="' + result[index].tipo + '">' + result[index].nombre +
