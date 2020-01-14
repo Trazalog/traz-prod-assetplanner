@@ -186,7 +186,7 @@ define('BPM_PROCESS_ID', '4859077159833071020'); // localhost -
 define('REST', 'http://dev-trazalog.com.ar:8280/services/ProduccionDataService/');
 define('RESTPT','http://dev-trazalog.com.ar:8280/services/produccionTest/');
 define('REST_TDS', 'http://dev-trazalog.com.ar:8280/services/TrazabilidadDataService/');
-define('REST0', 'http://dev-trazalog.com.ar:8280/services/ALMDataService/');
+define('REST0', 'http://www.dev-trazalog.com.ar:8280/services/ALMDataServiceAsset/');
 
 define('REST2', 'http://dev-trazalog.com.ar:8280/services/ProduccionDataService');
 define('REST3', 'http://dev-trazalog.com.ar:8280/services/produccionTest');
