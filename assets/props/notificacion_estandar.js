@@ -162,6 +162,7 @@ function decidirUrgencia() {
 // cierra tarea Verificar Informe
 function verificarInforme() {
     WaitingOpen();
+    var id_eq  = $('#id_EQ').val();
     var opcion = $('input[name="opcion"]:checked').val();
     var id_OT = $('#id_OT').val();
     var id_SS = $('#id_SS').val();
@@ -173,7 +174,8 @@ function verificarInforme() {
             opcion: opcion,
             idTarBonita: idTarBonita,
             id_OT: id_OT,
-            id_SS: id_SS
+            id_SS: id_SS,
+            id_eq: id_eq
         },
         url: 'index.php/Tarea/verificarInforme',
         success: function (data) {

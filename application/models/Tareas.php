@@ -140,6 +140,27 @@ class Tareas extends CI_Model {
 		$response = $this->parseHeaders( $http_response_header );
 		return $response;
 	}
+
+	// genera una entrada en el historial de lectura con la ultima lectura generada en el informe de servicio
+    function setUltimaLecturaIS($data){
+            $id_equipo = $data["id_equipo"];
+            $lectura = $data["lectura"];
+            $fecha = $data["fecha"];
+            $usrid = $data["usrId"];
+            $observacion = $data["observacion"];
+            $operario_nom = $data["operario_nom"];
+            $turno = $data["turno"];
+            $estado = $data["estado"];
+
+            $sql = "INSERT INTO historial_lecturas(id_equipo,lectura,fecha,usrId,observacion,operario_nom,turno,estado)
+            VALUES('" . $id_equipo . "','" . $lectura . "','" . $fecha . "','" . $usrid . "','" . $observacion . "','" . $operario_nom . "','" . $turno . "','" . $estado . "')
+            ";
+    
+            $query = $this->db->query($sql);
+
+            return $query;
+	}
+	
 	// trae tareas por ID de usuario
 	function getTareas($param){		
 

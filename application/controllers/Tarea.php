@@ -12,6 +12,7 @@ class Tarea extends CI_Controller {
 			$this->load->model('Tareas');		
 			$this->load->model('Backlogs');
 			$this->load->model('Otrabajos');
+			$this->load->model('Ordenservicios');
 		}
 
 		// llama ABM tareas estandar
@@ -199,12 +200,13 @@ class Tarea extends CI_Controller {
 
 				echo json_encode($result);
 			}
+
 			// terminar tarea verificar Informe Servicios
 			public function verificarInforme(){
 				
 				//log
 					log_message('DEBUG', 'TRAZA | Tarea/verificarInforme()');					
-
+				$id_eq = $this->input->post('id_eq');
 				$id_OT = $this->input->post('id_OT');
 				$id_SS = $this->input->post('id_SS');
 				$idTarBonita = $this->input->post('idTarBonita');
@@ -240,7 +242,7 @@ class Tarea extends CI_Controller {
 					log_message('DEBUG', 'TRAZA | Informe correcto?: '.$opcionSel);
 
 				// si cierra la tarea en BPM
-				if ($response['status']){
+				if ($result['status']){
 
 						// La respuesta es Informe de Servicios 'CORRECTO'
 						if($opcion){
@@ -262,8 +264,32 @@ class Tarea extends CI_Controller {
 
 								// si guarda en BD	
 								if ($result) {
-									echo json_encode(['status'=>true, 'msj'=>'OK']);
-									return;
+									
+									$data["id_equipo"] = $id_eq;
+									$infoOt = $this->Ordenservicios->getorden($id_OT);
+									// si la tareas es opcional
+									if (($infoOt[0] ["id_tarea"] < 0) || ($infoOt[0] ["id_tarea"] == NULL)) {
+									  $causa = $infoOt[0]["descripcion"];
+									} else {
+									  $causa = $infoOt[0]["tareadescrip"];
+									}             
+									$data["observacion"] = 'Descripcion: '.$causa.' | OT: '.$id_OT;
+									$data["estado"] = $this->Ordenservicios->getEquipos($id_eq)["estado"];
+									$data["lectura"] = $this->Ordenservicios->getLecturasOrden($id_OT)[0]["horometrofin"];
+									$data["fecha"] = $this->Ordenservicios->getLecturasOrden($id_OT)[0]["fechahorafin"];
+									$data["operario_nom"] = $infoOt[0]["responsable"];
+									$data["turno"] = "-";
+									$data["usrId"] = $infoOt[0]["usrId"];
+
+									$result = $this->Tareas->setUltimaLecturaIS($data);
+
+									if($result){
+										echo json_encode(['status'=>true, 'msj'=>'OK']);
+										return;
+									}else{
+										echo json_encode(['status'=>false, 'msj'=> 'Error en Cambio Estado OT']);
+										return;
+									}
 								}else{								
 									echo json_encode(['status'=>false, 'msj'=> 'Error en Cambio Estado OT']);
 									return;
@@ -278,7 +304,7 @@ class Tarea extends CI_Controller {
 					echo json_encode(['status'=>true, 'msj'=>'OK', 'code'=>$code]);
 				}	
 
-			}	
+			}
 			// terminar tarea prestar conformidad
 			public function prestarConformidad(){
 
