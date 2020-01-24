@@ -817,12 +817,25 @@ class Tareas extends CI_Model {
 							$this->db->join('orden_trabajo as B','B.id_solicitud = A.id_solicitud','left');
 							$res = $this->db->get()->first_row();
 							
-							$data[$key]['ss'] = '';
-							$data[$key]['ot'] = $res->ot;
-							if($res->desc != null){
+							if (!$res) {
+
+								$this->db->select('id_orden as \'ot\', descripcion as \'desc\'');
+								$this->db->from('orden_trabajo as A');
+								$this->db->where('A.case_id',$value['caseId']);
+								$res = $this->db->get()->first_row();
+
+								$data[$key]['ss'] = '';
+								$data[$key]['ot'] = $res->ot;
 								$data[$key]['displayDescription'] = $res->desc;
-							}else{
-								$data[$key]['displayDescription'] = $res->causa;
+							}else {
+								$data[$key]['ss'] = $res->ss;
+								$data[$key]['ot'] = $res->ot;
+								
+								if($res->desc != null){
+									$data[$key]['displayDescription'] = $res->desc;
+								}else{
+									$data[$key]['displayDescription'] = $res->causa;
+								}
 							}
 					} else {
 						$data[$key]['ss'] = $res->ss;
