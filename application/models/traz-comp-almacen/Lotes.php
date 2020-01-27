@@ -8,7 +8,8 @@ class Lotes extends CI_Model {
 	
 	function getList() // Ok
 	{
-		$this->db->select('alm_lotes.*, alm_articulos.descripcion as artDescription, alm_articulos.barcode as artBarCode,alm_lotes.cantidad,alm_depositos.descripcion as depositodescrip,C.valor as lotestado');
+		$this->db->select('alm_lotes.*, alm_articulos.descripcion as artDescription, alm_articulos.barcode as artBarCode');
+		$this->db->select('alm_lotes.cantidad,alm_depositos.descripcion as depositodescrip,"AC" as lotestado');
 		$this->db->from('alm_lotes');
 		$this->db->join('alm_articulos', 'alm_lotes.arti_id = alm_articulos.arti_id');
 		$this->db->join('alm_depositos', ' alm_lotes.depo_id = alm_depositos.depo_id');

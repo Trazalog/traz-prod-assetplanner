@@ -89,11 +89,11 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 define('FRM', 'traz-comp-form/');
 
 
-#Componente SIM
-define('SIM', 'traz-comp-sim/');  
+    #Componente SIM
+    define('SIM', 'traz-comp-sim/');  
 
-define('SIM_FORM_EVAL_OPE',3);
-define('SIM_FORM_EVAL_ZONA',2);
+    define('SIM_FORM_EVAL_OPE',3);
+    define('SIM_FORM_EVAL_ZONA',2);
 
 /*
 |--------------------------------------------------------------------------
@@ -174,14 +174,23 @@ define('BPM_PROCESS_ID', '4859077159833071020'); // localhost -
 |
 */
 
-define('REST', 'http://www.dev-trazalog.com.ar:8280/services/ALMDataServiceAsset/');
-define('RESTPT','http://pc-pc:8280/services/produccionTest/');
-define('REST_TDS', 'http://pc-pc:8280/services/TrazabilidadDataService/');
+// define('REST', 'http://pc-pc:8280/services/ProduccionDataService/');
+// define('RESTPT','http://pc-pc:8280/services/produccionTest/');
+// define('REST_TDS', 'http://pc-pc:8280/services/TrazabilidadDataService/');
+// define('REST0', 'http://pc-pc:8280/services/ALMDataService/');
+
+// define('REST2', 'http://pc-pc:8280/services/ProduccionDataService');
+// define('REST3', 'http://pc-pc:8280/services/produccionTest');
+// define('REST4', 'http://pc-pc:8280/services/TrazabilidadDataService');
+
+define('REST', 'http://dev-trazalog.com.ar:8280/services/ProduccionDataService/');
+define('RESTPT','http://dev-trazalog.com.ar:8280/services/produccionTest/');
+define('REST_TDS', 'http://dev-trazalog.com.ar:8280/services/TrazabilidadDataService/');
 define('REST0', 'http://www.dev-trazalog.com.ar:8280/services/ALMDataServiceAsset/');
 
-define('REST2', 'http://www.dev-trazalog.com.ar:8280/services/ALMDataServiceAsset');
-define('REST3', 'http://pc-pc:8280/services/produccionTest');
-define('REST4', 'http://pc-pc:8280/services/TrazabilidadDataService');
+define('REST2', 'http://dev-trazalog.com.ar:8280/services/ProduccionDataService');
+define('REST3', 'http://dev-trazalog.com.ar:8280/services/produccionTest');
+define('REST4', 'http://dev-trazalog.com.ar:8280/services/TrazabilidadDataService');
 
 /*
 |--------------------------------------------------------------------------

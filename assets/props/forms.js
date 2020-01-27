@@ -182,7 +182,7 @@ function detectarForm() {
 
         if (isModalOpen()) return;
 
-        obtenerForm(this.dataset.info);
+        obtenerForm(this.dataset.info, true, this.dataset.readonly == 'true');
 
     });
 
@@ -221,7 +221,7 @@ function nuevoForm(form, show = true) {
 }
 
 
-function obtenerForm(info, show = true) {
+function obtenerForm(info, show = true, readonly = false) {
     WaitingOpen();
     $.ajax({
         type: 'GET',
@@ -289,7 +289,11 @@ function obtenerForm(info, show = true) {
                 $('#frm-modal-' + info + ' .btn-accion').click(function () {
                     $(this).closest('.modal').find('.frm-save').click();
                 });
-                $('#frm-modal-' + info).on("hidden.bs.modal", function() {
+             
+            }
+
+            if(readonly) $('#frm-modal-' + info).find('fieldset').attr('disabled', true);else{
+                $('#frm-modal-' + info).on("hidden.bs.modal", function () {
                     WaitingOpen();
                     $(this).find('.frm-save').click();
                 });
