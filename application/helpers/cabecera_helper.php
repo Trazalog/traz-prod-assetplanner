@@ -65,7 +65,7 @@ if(!function_exists('cargarCabecera')){
 			echo '        
 						<div id="collapseDivCli" class="box box-default collapsed-box box-solid">
 							<div class="box-header with-border">
-								<h3 id="tituloInfo" class="box-title">Equipo: '.$result['descripcionEquipo'].' / Mas Detalles</h3>
+								<h3 id="tituloInfo" class="box-title">Equipo: '.$result['codigo'].' - '.$result['descripcionEquipo'].' / Mas Detalles</h3>
 								<div class="box-tools pull-right">
 								<button id="infoCliente" type="button" class="btn btn-box-tool" data-widget="collapse" onclick="mostrarCliente()">
 										<i class="fa fa-plus"></i>
