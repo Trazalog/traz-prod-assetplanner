@@ -96,6 +96,15 @@
             </div>
           </div>
 
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="alert alert-danger alert-dismissable" id="errorLecturas2" style="display: none">
+                <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                Por favor ingrese un valor de lectura correcto.
+              </div>
+            </div>
+          </div>
+
           
           <input type="hidden" name="id-comp" class="id-comp" id="id-comp" value="" disabled>
           <div class="row">
@@ -110,6 +119,7 @@
             <div class="col-xs-12 col-sm-6">
               <label for="lectura_fin">Horómetro fin:</label>
               <input type="number" class="form-control lectura_fin" name="lectura_fin" id="lectura_fin" step="any" lang="en-150" placeholder="">
+              <span>Ingrese valor mayor a: </span><span id="spanNuevaLectura"></span>
             </div>
             <div class="col-xs-12 col-sm-6">
               <label for="fecha_fin">Fecha fin <strong style="color: #dd4b39">*</strong> :</label>
@@ -387,6 +397,29 @@
         $("#fecha_garantia").val(data.fecha_garantia);                 
         $("#grupo").val(data.grupo_desc);
       }
+    });
+
+    //obtener ultima lectura del equipo segun id_eq
+    $.ajax({
+        data: {
+            idequipo: id_eq
+        },
+        dataType: 'json',
+        type: 'POST',
+        url: 'index.php/Equipo/getEqPorId',
+        success: function(data) {
+            console.table(data);
+            //console.log(data[0].lectura);
+            if((data[0].lectura == '')||(data[0].lectura == null)){
+              $("#spanNuevaLectura").text(0);
+              $('#lectura_fin').val(0);
+            }else{
+              $("#spanNuevaLectura").text(data[0].lectura);
+            }
+        },
+        error: function(result) {
+            console.log(result);
+        },
     });
 
   // Trae insumos
@@ -675,18 +708,29 @@
       // if ($('#lectura_fin').val() == '') {
       //   hayError3 = true;        
       // }
+      if ($("#spanNuevaLectura").text() != 0) {
+        if($('#lectura_fin').val() < $("#spanNuevaLectura").text()){
+             hayError3 = "lectura";
+         }
+      }
       if ($('#fecha_inicio').val() == '') {
         hayError3 = true;      
       }
       if ($('#fecha_fin').val() == '') {
         hayError3 = true;       
-      }  
+      }
       // vallidacion tareas
       if( ! $('#tablalistareas').DataTable().data().any() ) {
         console.info("tabla tarea vacia");
         hayError2 = true;
       }
 
+      // Error Lecturas Realizadas
+      if(hayError3 == 'lectura'){
+        $('#errorLecturas2').fadeIn('slow');
+        activaTab('lecturaTab');
+        return;
+      }
       // Error Lecturas Realizadas
       if(hayError3 == true){
         $('#errorLecturas').fadeIn('slow');
