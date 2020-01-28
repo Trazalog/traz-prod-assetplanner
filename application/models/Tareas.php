@@ -794,7 +794,7 @@ class Tareas extends CI_Model {
 				$this->db->select('A.id_solicitud as \'ss\', id_orden as \'ot\', descripcion as \'desc\', causa');
 				$this->db->where('A.case_id',$value['caseId']);
 				$this->db->from('solicitud_reparacion as A');
-				$this->db->join('orden_trabajo as B','A.id_solicitud = B.id_solicitud','left');
+				$this->db->join('orden_trabajo as B','A.case_id = B.case_id','left');
 				$res = $this->db->get()->first_row();
 				
 				if (!$res) {

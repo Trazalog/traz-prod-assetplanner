@@ -143,6 +143,15 @@ function decidirUrgencia() {
         },
         url: 'index.php/Tarea/decidirUrgencia',
         success: function (data) {
+            console.table(data);
+        },
+        error: function (data) {
+            WaitingClose();
+            //alert("Noo");
+            console.log(data);
+        },
+        dataType: 'json',
+        complete: function(data){
             WaitingClose();
             console.table(data);
             //	WaitingClose();
@@ -150,13 +159,7 @@ function decidirUrgencia() {
             if (data.status) {
                 back()
             }
-        },
-        error: function (data) {
-            WaitingClose();
-            //alert("Noo");
-            console.log(data);
-        },
-        dataType: 'json'
+        }
     });
 }
 // cierra tarea Verificar Informe

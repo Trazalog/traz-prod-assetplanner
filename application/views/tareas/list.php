@@ -109,7 +109,6 @@
 
 <script>
 
-DataTable('#bandeja');
 var idfin = "";
 var id_tarea = "";
 var nomTarea = "";
@@ -183,4 +182,5 @@ function offline() {
         });
     }
 }
+DataTable('#bandeja');
 </script>
