@@ -75,9 +75,9 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'root',
-	'password' => '',
+	'hostname' => '192.168.0.101',//192.168.0.100 (fleiva), 192.168.0.118 (fguardia)
+	'username' => 'glados',//glados (fleiva), asset (fguardia)
+	'password' => 'glados',//glados (fleiva), 123 (fguardia)
 	'database' => 'planner_assetcloud_integracion',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
@@ -93,4 +93,5 @@ $db['default'] = array(
 	'stricton' => FALSE,
 	'failover' => array(),
 	'save_queries' => TRUE
+	// 'port' => '3306'
 );

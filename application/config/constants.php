@@ -128,7 +128,9 @@ define('CMP_ALM', 'traz-comp-almacen/');
 |
 */
 
-define('BONITA_URL', 'http://localhost:8080/bonita/');  
+// define('BONITA_URL', 'http://localhost:8080/bonita/');
+// define('BONITA_URL', 'http://192.168.0.118:8080/bonita/');//(fguardia)
+define('BONITA_URL', 'http://192.168.0.101:8080/bonita/');//(fleiva)
 
 define('BPM_ADMIN_USER', 'supervisor1');
 define('BPM_ADMIN_PASS', 'bpm');
