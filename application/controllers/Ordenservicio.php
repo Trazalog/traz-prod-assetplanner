@@ -50,7 +50,7 @@ class Ordenservicio extends CI_Controller {
     }  
 
 
-    public function verInforme($id_ot = null, $id_eq = null, $id_solicitud = null, $idTarBonita)   // Ok
+    public function verInforme($id_ot = null, $id_eq = null, $id_solicitud = null, $idTarBonita = null)   // Ok
     {           
       $data['id_ot']      = $id_ot;            // id de OT. 
       $data['id_eq']      = $id_eq;             // id de equipo   

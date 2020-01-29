@@ -82,7 +82,8 @@
                       <th>Horómetro inicio</th>
                       <th>Horómetro fin</th>
                       <th>Fecha inicio</th>
-                      <th>Fecha fin</th>                            
+                      <th>Fecha fin</th>
+                      <th>Duracion total</th>                           
                     </tr>
                   </thead>
                   <tbody>
@@ -93,6 +94,13 @@
                       echo '<td>'.$lect['horometrofin'].'</td>';
                       echo '<td>'.$lect['fechahorainicio'].'</td>';
                       echo '<td>'.$lect['fechahorafin'].'</td>';
+                      $then = new DateTime($lect['fechahorainicio']);
+
+                      $now = new DateTime($lect['fechahorafin']);
+ 
+                      $sinceThen = $then->diff($now);
+
+                      echo '<td>Horas: '.$sinceThen->h.' / Minutos: '.$sinceThen->i.' / Segundos: '.$sinceThen->s.'</td>';
                       echo '</tr>';
                     }     
                   ?>
