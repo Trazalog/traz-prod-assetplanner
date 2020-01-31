@@ -194,7 +194,7 @@
 
             <div class="modal-footer">
                 <?php if($btnVisibilidad){
-              echo '<button type="button" class="btn btn-success" id="ejecutar_ot" onclick="EjecutarOT()">Ejecutar OT</button>';
+              echo '<button type="button" class="btn btn-success" id="ejecutar_ot" onclick="EjecutarOT()">Asignar OT</button>';
             }
             ?>
 
