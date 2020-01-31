@@ -82,8 +82,7 @@
                       <th>Horómetro inicio</th>
                       <th>Horómetro fin</th>
                       <th>Fecha inicio</th>
-                      <th>Fecha fin</th>
-                      <th>Duracion total</th>                           
+                      <th>Fecha fin</th>                        
                     </tr>
                   </thead>
                   <tbody>
@@ -94,13 +93,6 @@
                       echo '<td>'.$lect['horometrofin'].'</td>';
                       echo '<td>'.$lect['fechahorainicio'].'</td>';
                       echo '<td>'.$lect['fechahorafin'].'</td>';
-                      $then = new DateTime($lect['fechahorainicio']);
-
-                      $now = new DateTime($lect['fechahorafin']);
- 
-                      $sinceThen = $then->diff($now);
-
-                      echo '<td>Horas: '.$sinceThen->h.' / Minutos: '.$sinceThen->i.' / Segundos: '.$sinceThen->s.'</td>';
                       echo '</tr>';
                     }     
                   ?>
@@ -119,10 +111,36 @@
             </div>
             <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
               <div class="panel-body">
+              <table id="modLectura" class="table table-bordered table-hover">
+                  <thead>
+                    <tr>                            
+                      <th>Fecha inicio tarea</th>
+                      <th>Fecha fin tarea</th>
+                      <th>Duracion total</th>                           
+                    </tr>
+                  </thead>
+                  <tbody>
+                  <?php                  
+                   foreach($lecturasOT as $lect){
+                      echo '<tr>';
+                      echo '<td>'.$lect['fecha_inicio'].'</td>';
+                      echo '<td>'.$lect['fecha_terminada'].'</td>';
+                      $then = new DateTime($lect['fecha_inicio']);
+
+                      $now = new DateTime($lect['fecha_terminada']);
+ 
+                      $sinceThen = $then->diff($now);
+
+                      echo '<td>Horas: '.$sinceThen->h.' / Minutos: '.$sinceThen->i.' / Segundos: '.$sinceThen->s.'</td>';
+                      echo '</tr>';
+                    }     
+                  ?>
+                  </tbody>
+                </table>
                 <table id="modTarea" class="table table-bordered table-hover">
                   <thead>
                     <tr>                            
-                      <th>Tareas</th>
+                      <th>Listado de tareas</th>
                     </tr>
                   </thead>
                   <tbody>

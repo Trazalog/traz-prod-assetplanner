@@ -71,6 +71,7 @@ class Ordenservicio extends CI_Controller {
       $equi['id_equipo']= $id_eq; // duplicado para reutilizar la funcion   
       $data['equipos'] = $this->Ordenservicios->getEquipos($id_eq); 
       $data['lecturas'] = $this->Ordenservicios->getLecturasOrden($id_ot);
+      $data['lecturasOT'] = $this->Otrabajos->getLecturasOrden($id_ot);
       $data['tareas'] = $this->Ordenservicios->getTareasOrden($id_ot);
       $data['herramientas'] = $this->Ordenservicios->getHerramOrdenes($id_ot);
       $data['insumos'] = $this->Ordenservicios->getInsumosPorOT($id_ot);
