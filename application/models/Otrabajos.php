@@ -1265,6 +1265,23 @@ class Otrabajos extends CI_Model {
 				}
 	  }
 
+	  function getLecturasOrden($id_ot) //
+	  {		
+			  $this->db->select('orden_trabajo.fecha_inicio,
+								 orden_trabajo.fecha_terminada');
+			  $this->db->from('orden_trabajo');
+			  $this->db->where('orden_trabajo.id_orden', $id_ot);
+			  $query = $this->db->get();
+			  if ($query->num_rows()!=0)
+			  {
+					  return $query->result_array();
+			  }
+			  else
+			  {   
+					  return false;
+			  }   
+	  }
+
 		function getViewDataComponenteEquipoBacklog($idComponenteEquipo)
 		{
 			$this->db->select('componenteequipo.codigo AS codigoComponente, 
