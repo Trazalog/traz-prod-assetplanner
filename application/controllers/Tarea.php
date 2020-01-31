@@ -210,7 +210,8 @@ class Tarea extends CI_Controller {
 				$id_OT = $this->input->post('id_OT');
 				$id_SS = $this->input->post('id_SS');
 				$idTarBonita = $this->input->post('idTarBonita');
-				$opcion = $this->input->post('opcion');	
+				$opcion = $this->input->post('opcion');
+				$justificacion = $this->input->post('justificacion');
 				// averigua origen de OT
 				$origen = $this->Tareas->getOrigenOt($id_OT);
 				$numtipo = 	$origen[0]['tipo'];
@@ -245,7 +246,7 @@ class Tarea extends CI_Controller {
 				if ($result['status']){
 
 						// La respuesta es Informe de Servicios 'CORRECTO'
-						if($opcion){
+						if($opcion == "true"){
 							
 								// cambia el estado a lo que no sea SServicios(esta cambia con la conformidad del solicitante)
 								if($tipo != 'correctivo'){
@@ -296,7 +297,12 @@ class Tarea extends CI_Controller {
 								}
 						
 						}else{	// no conforme con trabajo	NO CAMBIA ESTADOS
-								echo $response;
+								$result = $this->Tareas->setJustificacionOT($id_OT,$justificacion);
+								if(!$result){
+									echo json_encode(['status'=>false, 'msj'=>'error en setear la justificacion']);
+									return;
+								}
+								echo json_encode(['status'=>true, 'msj'=>'se rechazo el informe de servicio']);
 								return;
 						}	
 
@@ -476,7 +482,15 @@ class Tarea extends CI_Controller {
 					// }
 					// TODO: AHORA TODAS LAS OT TIENEN UN CASE ASOCIADO		
 					$id_OT = $this->Tareas->getIdOTPorIdCaseEnBD($caseId);
-				    
+					
+					//para ver si se va a editar el informe de servicio y en ese caso, mostrar la justificacion de rechazo
+					$idOServ = $this->Ordenservicios->getOServicioPorIdOT($id_OT);
+					if($idOServ != NULL){
+						$data['idOServ'] = true;
+						$data['justificacion'] = $this->Tareas->getJustifiacionOT($caseId);
+					}else{
+						$data['idOServ'] = false;
+					}
 				// Si hay Sol Serv trae el id de equpo sino por id de Ot
 					if($id_SS!= null){
 						$id_EQ = $this->Tareas->getIdEquipoPorIdSolServ($id_SS);

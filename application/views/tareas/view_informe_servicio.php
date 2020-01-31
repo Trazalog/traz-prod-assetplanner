@@ -106,7 +106,7 @@
                                                             </div>
                                                         </div><br> <br> <br> <br> <br>
 
-
+                                                        
                                                         <div class="form-group">
                                                             <div class="col-sm-12 col-md-12">
                                                                 <!-- Modal formulario tarea -->
@@ -116,12 +116,19 @@
                                                             </div>
                                                         </div>
 
-                                                </form>
-																							
+                                                </form>								
                                             </div>
+
                                         </div>
-                                      
-                                        <br>
+                                        <?php if ($idOServ){
+
+                                            echo '<div class="form-group">';
+                                            echo    '<div class="col-sm-12 col-md-12">';
+                                            echo        '<label for="justificacion">Justificacion de rechazo</label>';
+                                            echo        '<textarea class="form-control" id="justificacion" rows="3" disabled>'.$justificacion.'</textarea>';
+                                            echo    '</div>';
+                                            echo '</div><br> <br>	<br> <br> <br>';
+                                        } ?>
 
                                         <div id="nota_pedido"></div>
                                     </div>
