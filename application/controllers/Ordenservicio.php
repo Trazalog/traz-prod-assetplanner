@@ -78,7 +78,7 @@ class Ordenservicio extends CI_Controller {
       $this->load->view('tareas/view_presta_presta_conf_modal',$data);
     } 
 
-    public function editarInforme($id_ot = null, $id_eq = null, $id_solicitud = null, $idTarBonita)   // Ok
+    public function editarInforme($id_ot = null, $id_eq = null, $id_solicitud = null, $idTarBonita = null)   // Ok
     {           
       $data['id_ot']      = $id_ot;            // id de OT. 
       $data['id_eq']      = $id_eq;             // id de equipo   

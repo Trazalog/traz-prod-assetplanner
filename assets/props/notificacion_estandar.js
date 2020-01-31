@@ -170,7 +170,10 @@ function verificarInforme() {
     var id_OT = $('#id_OT').val();
     var id_SS = $('#id_SS').val();
     var idTarBonita = $('#idTarBonita').val();
-
+    var justificacion = ""; 
+    if(opcion){
+        var justificacion = $('#justificacion').val();
+    }
     $.ajax({
         type: 'POST',
         data: {
@@ -178,7 +181,8 @@ function verificarInforme() {
             idTarBonita: idTarBonita,
             id_OT: id_OT,
             id_SS: id_SS,
-            id_eq: id_eq
+            id_eq: id_eq,
+            justificacion: justificacion
         },
         url: 'index.php/Tarea/verificarInforme',
         success: function (data) {

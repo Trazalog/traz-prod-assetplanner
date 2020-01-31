@@ -665,6 +665,27 @@ class Tareas extends CI_Model {
 
 		}
 
+		function getJustifiacionOT($caseId){
+			$this->db->select('orden_trabajo.justificacion');
+			$this->db->from('orden_trabajo');
+			$this->db->where('orden_trabajo.case_id',$caseId);
+			$query= $this->db->get();
+			if( $query->num_rows() > 0){
+				return $query->row('justificacion');	
+			} 
+			else {
+				return 0;
+			}
+		}
+
+		function setJustificacionOT($idOrden, $justificacion){
+
+			$this->db->set('justificacion', $justificacion);
+			$this->db->where('id_orden', $idOrden);
+			$query = $this->db->update('orden_trabajo');
+			return $query;
+		}
+
 		function getIdOTPorIdCaseEnBD($caseId){
 			$this->db->select('orden_trabajo.id_orden');
 			$this->db->from('orden_trabajo');
