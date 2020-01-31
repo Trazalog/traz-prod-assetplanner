@@ -82,8 +82,8 @@ function calcularDsp() {
     var ff = $('#ff').val();
 
     if (fi == '' || ff == '') return;
-
-    $.ajax({
+    else{
+        $.ajax({
         type: 'GET',
         dataType: 'JSON',
         url: 'index.php/Kpi/dspRangoFecha?fi=' + fi + '&ff=' + ff,
@@ -96,10 +96,11 @@ function calcularDsp() {
 
         },
         error: function(rsp) {
-            alert('Error: ' + rsp.msj);
+            // alert('Error: ' + rsp.msj);
             console.log(rsp.msj);
         }
     });
+    }
 }
 
 initTable($('#tbl-equipos'));
