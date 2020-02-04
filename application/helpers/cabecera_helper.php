@@ -58,6 +58,10 @@ if(!function_exists('cargarCabecera')){
 				$queryOT = $ci->db->get();			
 				if($queryOT->num_rows() > 0){
 						$resultOT = $queryOT->row_array();
+						// var_dump($resultOT);
+						if($resultOT['tareaDescrip'] == null){
+							$resultOT['tareaDescrip'] = $resultOT['otDescrip'];
+						}
 				}
 			}		
 

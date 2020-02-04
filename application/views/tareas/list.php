@@ -30,14 +30,13 @@
 
                   echo '<th width="7%">Id S.S</td>';    
                   echo '<th width="7%">Id OT</td>';          
-                  echo '<th width="10%">Id Pedido</td>';          
-                                  
+                  echo '<th width="10%">Id Pedido</td>';                                                                                               
 
-                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Fecha Asignación</td>';                 
-                                  
+                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Equipo</td>'; 
 
-                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Fecha Vto.</td>'; 
+                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Sector</td>'; 
 
+                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Asignado<br>/Fecha Asignación</td>';
                   // echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Prioridad</td>';
                                   
                  
@@ -48,7 +47,7 @@
                             <tbody>
                                 <?php                
                 foreach($list as $f){
-                  
+                //   var_dump($list);
                   $id=$f["id"];
                   $asig = $f['assigned_id'];
 
@@ -71,10 +70,12 @@
                     echo '<td class= "celda nomTarea text-center">'.bolita($f['ot'],'orange').'</td>';                  
                   
                     echo '<td class= "celda nomTarea text-center">'.bolita($f['pema_id'],'green').'</td>';                  
-                    
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.formato_fecha_hora($f['assigned_date']).'</td>'; 
 
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.formato_fecha_hora($f['dueDate']).'</td>';
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea  tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$f['equipoDesc'].'</td>';
+
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea  tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$f['sectorDesc'].'</td>';
+
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.formato_fecha_hora($f['assigned_date']).'</td>'; 
                 
                     echo '</tr>';
 

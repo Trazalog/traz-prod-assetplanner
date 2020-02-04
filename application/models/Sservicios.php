@@ -63,7 +63,7 @@ class Sservicios extends CI_Model
 					$i++;
 				}		
 						return $data2;
-				}	    
+			}	    
 		}			
 		// Trae sectores por empresa logueada - Listo
 		function getSectores(){
