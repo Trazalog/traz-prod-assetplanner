@@ -53,6 +53,24 @@ class Sservicio extends CI_Controller
 	}
 	/* FUNCIONES ORIGINALES DE ASSET	*/
 
+	// Codifica nombre de imagen para no repetir en servidor
+	// formato "12_6_2018-05-21-15-26-24" idpreventivo_idempresa_fecha(a�o-mes-dia-hora-min-seg)
+	function codifNombre($ultimoId,$empId){
+
+		$guion = '_';
+		$guion_medio = '-';
+		$hora = date('Y-m-d H:i:s');// hora actual del sistema	
+		$delimiter = array(" ",",",".","'","\"","|","\\","/",";",":");
+		$replace = str_replace($delimiter, $delimiter[0], $hora);
+		$explode = explode($delimiter[0], $replace);
+		
+		$strigHora = $explode[0].$guion_medio.$explode[1].$guion_medio.$explode[2].$guion_medio.$explode[3];
+		
+		$nomImagen = $ultimoId.$guion.$empId.$guion.$strigHora;
+		
+		return $nomImagen;
+  }
+
 	/* INTEGRACION CON BPM */
 
 		public function index($permission)
@@ -71,6 +89,8 @@ class Sservicio extends CI_Controller
 		// GUARDA SSERVICIOS y lanza proceso en BPM (inspección)
 		function lanzarProcesoBPM()
 		{
+			$userdata = $this->session->userdata('user_data');
+			$empId    = $userdata[0]['id_empresa'];
 			// inserta registro en  tabla solicitud de reparacion
 			$id_solServicio  = $this->Sservicios->setservicios($this->input->post());
 
@@ -85,6 +105,7 @@ class Sservicio extends CI_Controller
 				$responce  = $this->bpm->lanzarProceso(BPM_PROCESS_ID, $contract);
 				
 				if(!$responce['status']){
+					$this->Sservicios->eliminar($id_solServicio);
 					echo json_encode($responce); 
 					return;
 				}
@@ -92,7 +113,24 @@ class Sservicio extends CI_Controller
 				//Validar Resultado
 			
 				if ($responce['data']['caseId']) {
-
+					////////// Subir imagen o pdf 
+					$nomcodif = $this->codifNombre($id_solServicio, $empId); // codificacion de nomb  		
+					$config = [
+						"upload_path" => "./assets/filesSS",
+						'allowed_types' => "png|jpg|pdf|xlsx",
+						'file_name'=> $nomcodif
+					];
+					$this->load->library("upload",$config);
+					if ($this->upload->do_upload('inputPDF')) {
+						$urlfile = "assets/filesSS/";
+						$data = array("upload_data" => $this->upload->data());
+						$extens = $data['upload_data']['file_ext'];//guardo extesnsion de archivo
+						$nomcodif = $urlfile.$nomcodif.$extens;
+						$adjunto = array('sol_adjunto' => $nomcodif);
+						$result['respNomImagen'] = $this->Sservicios->setAdjunto($adjunto,$id_solServicio);
+					}else{
+						$result['respImagen'] = false;
+					}	
 					//update de solic de servicio concaseid
 					if($this->Sservicios->setCaseId($responce['data']['caseId'],$id_solServicio)){
 

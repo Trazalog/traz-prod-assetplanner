@@ -21,7 +21,7 @@
         </div><!-- /.box-header -->
 
         <div class="box-body">
-          <form id="formPreventivo" role="form" action="<?php base_url();?>Preventivo/guardar_preventivo" method="POST" >
+          <form id="formSS" role="form" method="POST" >
             <div class="panel panel-default">
               <div class="panel-heading">
                 <h3 class="panel-title"><div class="fa fa-cogs"></div> Datos del Equipo</h3>
@@ -34,7 +34,7 @@
                       <input type="text" class="hidden idSector" id="idSector" name="idSector">
                   </div>
                   <div class="col-xs-12 col-sm-6">Equipos <strong style="color: #dd4b39">*</strong>
-                    <select  id="equipo" name="id_equipo" class="form-control id_equipo">
+                    <select  id="equipo" name="equipo" class="form-control equipo">
                         <option value="-1" placeholder="Seleccione..."></option>
                     </select>
                   </div>
@@ -68,14 +68,14 @@
             <div class="row">
               <div class="col-md-4">
                 <!-- <label for="btnsubirarch">Subir archivo</label><br> -->
-                <input type="file" id="btnsubirarch" class="btn btn-primary"></input>
+                <input type="file" id="inputPDF" name="inputPDF" class="btn btn-primary input-md"></input>
               </div>
               <div class="col-md-6">
                 <button type="button" id="btnsacarfoto" class="btn btn-primary"><i class="fa fa-camera" aria-hidden="true"></i> Sacar foto</button>
               </div>
             </div><br>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="button" id="btnSave" class="btn btn-primary">Guardar</button>
             </div> 
             </div><!-- /.nav-tabs-custom -->
           </div>
@@ -193,6 +193,52 @@ $('#listado').click( function cargarVista(){
     $('#content').empty();
     $("#content").load("<?php echo base_url(); ?>index.php/Sservicio/index/<?php echo $permission; ?>");
     WaitingClose();
+});
+
+// Guardado de datos y validaciones
+$("#btnSave").click(function(){
+
+WaitingOpen('Generando Solcitud');
+var hayError = false;
+
+if($('#equipId').val() == '')
+{
+  hayError = true;
+}
+if(hayError == true){
+  $('#error').fadeIn('slow');
+  return;
+}
+
+$('#error').fadeOut('slow');
+$('#modalservicio').modal('hide');
+var formData = new FormData($("#formSS")[0]);
+var permisos = $('#permission').val();
+
+  $.ajax({
+        type: 'POST',
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        url: 'index.php/Sservicio/lanzarProcesoBPM',
+        success: function(data){
+                WaitingClose();
+                console.log(data);
+                if (data.status == true){
+                  //alert("Solicitud generada exitosamente");
+                 
+                  cargarView('Sservicio', 'index', permisos) ;           
+                } else{             
+                    alert("Falla: "+data.msj);
+                }                   
+              },
+        error: function(data){
+                WaitingClose();
+                alert("Error: "+data.msj);         
+            },
+        dataType: 'json'
+    });
 });
 
 $('#ultimo').datetimepicker({
