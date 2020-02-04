@@ -135,7 +135,12 @@ class Sservicio extends CI_Controller
 		}
 	}
 
-	
+	public function nuevaSS($permission) // Ok
+	{
+		// $data['list']       = $this->Otrabajos->otrabajos_List();
+		$data['permission'] = $permission;
+		$this->load->view('Sservicios/view_', $data);
+	}
 	
 	// Guarda solicitud de Servicio - Listo
 	public function setservicios(){
