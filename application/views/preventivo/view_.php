@@ -231,6 +231,35 @@
 
 <script>
 
+// Trae equipos llena select - Chequeado
+traer_equipo();
+function traer_equipo(){
+  $('#equipo').html('');
+    $.ajax({
+      type: 'POST',
+      data: { },
+      url: 'index.php/Backlog/getequipo', //index.php/
+      success: function(data){
+             
+               var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+                $('#equipo').append(opcion); 
+              for(var i=0; i < data.length ; i++) 
+              {    
+                    var nombre = data[i]['codigo'];
+                    var opcion  = "<option value='"+data[i]['id_equipo']+"'>" +nombre+ "</option>" ; 
+
+                  $('#equipo').append(opcion); 
+                                 
+              }
+            },
+      error: function(result){
+            
+            console.log(result);
+          },
+          dataType: 'json'
+      });
+}
+
 // Trae Sectores y autocompleta el campo
 var dataF = function () {
     var tmp = null;

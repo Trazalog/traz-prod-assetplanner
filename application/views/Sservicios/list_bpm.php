@@ -120,6 +120,15 @@
 
 </section><!-- /.content -->
 
+<script>
+  // Agregar SS Nueva
+  $('#btnAdd').click( function cargarVista(){
+    WaitingOpen();
+    $('#content').empty();
+    $("#content").load("<?php echo base_url(); ?>index.php/Sservicio/nuevaSS/<?php echo $permission; ?>");
+    WaitingClose();
+  });
+</script>
 
 <!-- carga solicitudes inactivas -->
 <script>
@@ -546,28 +555,28 @@
     });
   }
   // trae tareas estandar para llenar select
-  getTareasStandar();
-  function getTareasStandar(){
-    $.ajax({      
-      'async': true,
-      'type': "POST",
-      'global': false,
-      'dataType': 'json',
-      'url': "Sservicio/getTareasStandar",
-      'success': function (data) {
+  // getTareasStandar();
+  // function getTareasStandar(){
+  //   $.ajax({      
+  //     'async': true,
+  //     'type': "POST",
+  //     'global': false,
+  //     'dataType': 'json',
+  //     'url': "Sservicio/getTareasStandar",
+  //     'success': function (data) {
         
-        console.table(data);        
-        var $select = $("#tareaSelec");
-        for (var i = 0; data.length; i++) {
-          $select.append($('<option />', { value: data[i]['id_tarea'], text: data[i]['descripcion'] }));
-        }
-      },
-      'error' : function(data){
-        console.log('Error en Traer tareas...');
-        console.table(data);
-      },
-    });
-  }
+  //       console.table(data);        
+  //       var $select = $("#tareaSelec");
+  //       for (var i = 0; data.length; i++) {
+  //         $select.append($('<option />', { value: data[i]['id_tarea'], text: data[i]['descripcion'] }));
+  //       }
+  //     },
+  //     'error' : function(data){
+  //       console.log('Error en Traer tareas...');
+  //       console.table(data);
+  //     },
+  //   });
+  // }
 
 // Trae Operarios
 var dataO = function () {
