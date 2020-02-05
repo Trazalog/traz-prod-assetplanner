@@ -22,7 +22,6 @@
                       <th>Equipo</th>
                       <th>Sector</th>
                       <th>Grupo</th>
-                      <th>Ubicacion</th>
                       <th>Causa</th>
                       <th>Estado</th>
                   </tr>
@@ -68,8 +67,7 @@
                             echo '<td style="text-align: left">'.$f['solicitante'].'</td>';
                             echo '<td style="text-align: left">'.$f['equipo'].'</td>';
                             echo '<td style="text-align: left">'.$f['sector'].'</td>';
-                            echo '<td style="text-align: left">'.$f['grupo'].'</td>';
-                            echo '<td style="text-align: left">'.$f['ubicacion'].'</td>';
+                            echo '<td style="text-align: left">'.$f['grupo'].'</td>';  
                             echo '<td style="text-align: left">'.$f['causa'].'</td>';
 
                             echo '<td>';           

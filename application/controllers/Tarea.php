@@ -94,7 +94,8 @@ class Tarea extends CI_Controller {
 							return;
 						}
 						//Completar Tareas con ID Solicitud y ID OT
-						$data_extend = $this->Tareas->CompletarToDoList($response['data']);				
+						$data_extend = $this->Tareas->CompletarToDoList($response['data']);
+						// var_dump($data_extend);				
 						$data['list'] = $data_extend;
 						$data['permission'] = $permission;		
 
