@@ -36,7 +36,7 @@
                     if(count($list) > 0) {
 
                       foreach($list as $f){
-
+                        // var_dump($list);
                           // usuario logueado o grupo administrador
                     //    if (($f['usrId'] == $usrId) || ($grupoId == 1)) {
                            
@@ -53,7 +53,8 @@
 
                             //echo '<i class="fa fa-picture-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imagen" data-imagen ="'.$f['foto'].'" data-toggle="modal" data-target="#foto"></i> '; 
                             
-                            echo '<i class="fa fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"></i> '; 
+                            // echo '<i class="fa fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"></i> '; 
+                            echo '<a onclick="mostrarOT(this)" href="#"><i class="fa fa-search text-white" style="cursor: pointer;margin-left:-3px"></i>   Ver</a>';
 
                             //if ($f['estado'] !== 'T') { 
                             //echo '<i class="fa fa-thumbs-up text-light-blue" data-toggle="modal" data-target="#modalConformidad" style="cursor: pointer; margin-left: 15px;" title="Conformidad"></i>';
@@ -118,7 +119,300 @@
 
 </section><!-- /.content -->
 
+<!-- Modal Ver Orden de Trabajo Solicitud de Servicio-->
+<div class="modal" id="verOtSolServicio" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Solicitud de servicio</h4>
+      </div>
+      <div class="modal-body">
+        
+        <div class="panel-group" id="accordionSolServicio" role="tablist" aria-multiselectable="true">
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingOneSolServicio">
+              <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordionSolServicio" href="#collapseOtSolServicio" aria-expanded="true" aria-controls="collapseOtSolServicio">
+                  Datos
+                </a>
+              </h4>
+            </div>
+            <div id="collapseOtSolServicio" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOneSolServicio">
+              <div class="panel-body">
+
+                <div class="row">
+                  <!-- <div class="col-xs-12 col-sm-6">
+                    <label for="vIdOtSolServicio">Nº de SS:</label>
+                    <input type="text" class="form-control " name="vIdOtSolServicio" id="vIdOtSolServicio" disabled>
+                  </div> -->
+                 
+                  <div class="col-xs-12 col-sm-6">
+                    <label for="vDescripFallaSolServicio">Sector:</label>
+                    <input type="text" class="form-control vDescripFallaSolServicio" id="vDescripFallaSolServicio" disabled>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6 col-md-6">
+                    <label for="vFechaProgramSolServicio">Equipo:</label>
+                    <input type="text" class="form-control " name="vFechaProgramSolServicio" id="vFechaProgramSolServicio" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-6">
+                    <label for="vFechaCreacionSolServicio">Area:</label>
+                    <input type="text" class="form-control " name="vFechaCreacionSolServicio" id="vFechaCreacionSolServicio" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-6">
+                    <label for="vFechaTerminaSolServ">Proceso:</label>
+                    <input type="text" class="form-control " name="vFechaTerminaSolServ" id="vFechaTerminaSolServ" disabled>
+                  </div>
+                  <div class="col-xs-12">
+                    <label for="vDescripcionEquipoSolServicio">Descripción:</label>
+                    <Textarea class="form-control " name="vDescripcionEquipoSolServicio" id="vDescripcionEquipoSolServicio" disabled></Textarea>
+                  </div>
+                  
+                  <div class="col-xs-12">
+                    <label for="vDescripcionEquipoSolServicio">Falla:</label>
+                    <Textarea class="form-control " name="vDescripcionEquipoSolServicio" id="vDescripcionEquipoSolServicio" disabled></Textarea>
+                  </div>  
+                </div>
+
+              </div>
+            </div>
+          </div> 
+          <br>
+          <div class="panel-group" id="panelAdj" role="tablist" aria-multiselectable="true">
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingOneSolServicio">
+              <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#panelAdj" href="#collapseadj" aria-expanded="false" aria-controls="collapseadj">
+                  Adjunto
+                </a>
+              </h4>
+            </div>
+            <div id="collapseadj" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOneSolServicio">
+              <div class="panel-body">
+
+                <div class="row">
+                                 <div class="col-xs-12">
+                                  <table class="table table-bordered" id="tbladjSolicitud"> 
+                                    <thead>
+                                      <tr>                                       
+                                        <th>Archivo/s</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      
+                                    </tbody>
+                                  </table>
+                                </div>
+                </div>
+
+              </div>
+            </div>
+          </div> 
+
+          <!-- vista herramientas -->
+          <div class="panel panel-default" hidden>
+            <div class="panel-heading" role="tab" id="headingThreePred">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionBack" href="#collapseTareaSolicitudInsHerr" aria-expanded="false" aria-controls="collapseTareaSolicitudInsHerr">
+                  Herramientas - Tareas - Insumos
+                </a>
+              </h4>
+            </div>
+            <div id="collapseTareaSolicitudInsHerr" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThreePred">
+              <div class="panel-body">
+                
+                  <div class="row">
+                      <div class="col-xs-12">
+                        <div class="nav-tabs-custom">
+                          <!--tabs -->
+                          <ul class="nav nav-tabs" role="tablist">                
+                            <li role="presentation" class="active"><a href="#herrSolicitu" aria-controls="profile" role="tab" data-toggle="tab">Herramientas</a></li>
+                            <li role="presentation"><a href="#insumSolicitu" aria-controls="messages" role="tab" data-toggle="tab">Insumos</a></li>
+                            <li role="presentation"><a href="#TabAdjuntoSolicitud" aria-controls="messages" role="tab" data-toggle="tab">Adjunto</a></li>                        
+                          </ul>
+                          <!-- /tabs -->
+        
+                          <!-- Tab panes -->
+                          <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="herrSolicitu">
+                              
+                              <div class="row">
+                                <div class="col-xs-12">
+                                  <br>
+                                  <table class="table table-bordered" id="tblherrsolicitud"> 
+                                    <thead>
+                                      <tr>             
+                                        <th>Código</th>
+                                        <th>Marca</th>
+                                        <th>Descripcion</th>
+                                        <th>Cantidad</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                  </table>  
+                                </div>
+                              </div><!-- /.row -->
+                            </div> <!-- /.tabpanel #herramin--> 
+        
+                            <div role="tabpanel" class="tab-pane" id="insumSolicitu">
+                            
+                              <div class="row">
+                              
+                              </div><!-- /.row -->
+                              <div class="row">
+                                <div class="col-xs-12">
+                                  <table class="table table-bordered" id="tblinsSolicitud"> 
+                                    <thead>
+                                      <tr>    
+                                        <th>Código</th>
+                                        <th>Descripcion</th>
+                                        <th>Cantidad</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                  </table>  
+                                </div>
+                              </div><!-- /.row -->
+                            </div><!--/#insum -->
+        
+                            <div role="tabpanel" class="tab-pane" id="TabAdjuntoSolicitud">
+                              <div class="row" >  
+                              
+                                <div class="col-xs-12">
+                                  <table class="table table-bordered" id="tbladjSolicitud"> 
+                                    <thead>
+                                      <tr>                                       
+                                        <th>Archivo/s</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      
+                                    </tbody>
+                                  </table>
+                                </div>
+                  
+                              </div>
+                            </div><!--cierre de TabAdjunto--> 
+                            
+                          </div>  <!-- tab-content -->
+                          
+                        </div><!-- /.nav-tabs-custom -->
+                      </div>
+                    </div>
+              </div>
+            </div>
+          </div>
+          <!--  ./vista herramientas -->
+
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <script>
+
+  // VER OT 
+  function mostrarOT(o){
+
+    let idSS = $(o).closest('tr').attr('id');
+    //console.log(idSS); 
+    
+    WaitingOpen('Obteniendo datos de OT...');
+    // datos = getDataOtSolServicio(idSS, "Solicitud de Servicio");
+    // fillModalViewSolServicio(datos);
+    $.ajax({
+        async: false,
+        data: { idSS: idSS },
+        dataType: 'json',
+        method: 'POST',
+        url: 'index.php/Sservicio/getSS',
+      })
+      .done( (data) => {
+        // console.table(data);
+        console.log(data.SS[0].causa);
+      })
+      .fail( () => alert( "Error al traer los datos de la OT." ) )
+      .always( () => WaitingClose() );
+    $('#verOtSolServicio').modal('show');
+    WaitingClose();
+  }
+
+  // Trae datos de Solicitud de Servicios con origen Backlog
+  function getDataOtSolServicio(idOt, idSolServicio, origen) {
+      WaitingOpen('Cargando datos...');
+      var datos = null;
+      $.ajax({
+        async: false,
+        data: { idOt:idOt, idSolServicio:idSolServicio },
+        dataType: 'json',
+        method: 'POST',
+        url: 'index.php/Otrabajo/getViewDataSolServicio',
+      })
+      .done( (data) => {
+        console.table(data);
+        datos = {
+          //Panel datos de OT
+          'id_ot'          : data['solicitud'][0]['id_orden'],
+          'nro'            : data['solicitud'][0]['nro'],
+          'descripcion_ot' : data['solicitud'][0]['descripcionFalla'],
+          'grupo'          : data['solicitud'][0]['grupodescrip'],
+          'fecha_program'  : data['solicitud'][0]['fecha_program'],
+          'fecha_inicio'   : data['solicitud'][0]['fecha_inicio'],
+          'fecha_terminada'  : data['solicitud'][0]['fecha_terminada'], 
+          'estado'         : data['solicitud'][0]['estado'],
+          'sucursal'       : data['solicitud'][0]['descripc'],
+          'nombreprov'     : data['solicitud'][0]['provnombre'],
+          'origen'         : origen,          
+          'asignado'       : data['solicitud'][0]['usrLastName']+' '+data['solicitud'][0]['usrLastName'],
+          'estado'         : data['solicitud'][0]['estado'],
+          //Panel datos de equipos
+          'codigo'         : data['solicitud'][0]['codigo'],
+          'marca'          : data['solicitud'][0]['marca'],
+          'ubicacion'      : data['solicitud'][0]['ubicacion'],
+          'descripcion_eq' : data['solicitud'][0]['descripcionEquipo'],
+          'comp_equipo'    : data['solicitud'][0]['compEquipo'],
+          'solServicio'   : data['solicitud'][0]['solServicio']
+        };
+        
+        
+        var herram = data['herramientas'];
+        var insum = data['insumos'];
+        var adjunto = data['adjunto'];
+         
+
+        $('#tblherrsolicitud tbody tr').remove();
+        for (var i = 0; i < herram.length; i++) {
+          var tr = "<tr id='"+herram[i]['herrId']+"'>"+          
+          "<td>"+herram[i]['herrcodigo']+"</td>"+
+          "<td>"+herram[i]['herrmarca']+"</td>"+
+          "<td>"+herram[i]['herrdescrip']+"</td>"+
+          "<td>"+herram[i]['cantidad']+"</td>"+                   
+          "</tr>";
+          $('#tblherrsolicitud tbody').append(tr);
+        }
+        $('#tblinsSolicitud tbody tr').remove();
+        for (var i = 0; i < insum.length; i++){                                             
+          var tr = "<tr id='"+insum[i]['artId']+"'>"+
+         
+          "<td>"+insum[i]['artBarCode']+"</td>"+
+          "<td>"+insum[i]['artDescription']+"</td>"+
+          "<td>"+insum[i]['cantidad']+"</td>"+                   
+          "</tr>";
+          $('#tblinsSolicitud tbody').append(tr);
+        }   
+        recargaTablaAdjuntoSolic(adjunto);  
+      })
+      .fail( () => alert( "Error al traer los datos de la OT." ) )
+      .always( () => WaitingClose() );
+      return datos;
+    }
+
   // Agregar SS Nueva
   $('#btnAdd').click( function cargarVista(){
     WaitingOpen();

@@ -36,6 +36,15 @@ class Sservicios extends CI_Model
 				return false;
 			}
 		}	
+
+		function getEquipoSector($idequipo){
+			$this->db->select('A.descripcion as equipo,B.descripcion as sector, A.id_area as area, A.id_proceso as proceso');
+			$this->db->from('equipos as A');
+			$this->db->join('sector as B', 'B.id_sector=A.id_sector');
+			$this->db->where('A.id_equipo', $idequipo);
+			$query = $this->db->get()->result();
+			return $query;
+		}
 		// Elimina solicitud - Listo
 		function elimSolicitudes($id){
 			$estado = array(
@@ -64,7 +73,16 @@ class Sservicios extends CI_Model
 				}		
 						return $data2;
 			}	    
-		}			
+		}	
+
+		function getSSs($idSS){
+			$this->db->select('solicitud_reparacion.*');
+			$this->db->from('solicitud_reparacion');    	
+			$this->db->where('solicitud_reparacion.id_solicitud', $idSS);
+
+			$query = $this->db->get()->result();
+			return $query;
+		}		
 		// Trae sectores por empresa logueada - Listo
 		function getSectores(){
 			$userdata = $this->session->userdata('user_data');

@@ -1420,6 +1420,7 @@ function guardarpedido(){
   };
 // VER OT 
   function mostrarOT(o){
+    console.log(o);
     let idot = $(o).closest('tr').attr('id'); 
     //console.log("id Orden de trabajo: "+idot);
     
