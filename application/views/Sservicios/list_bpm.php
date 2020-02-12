@@ -148,30 +148,30 @@
                   </div> -->
                  
                   <div class="col-xs-12 col-sm-6">
-                    <label for="vDescripFallaSolServicio">Sector:</label>
-                    <input type="text" class="form-control vDescripFallaSolServicio" id="vDescripFallaSolServicio" disabled>
+                    <label for="vSector">Sector:</label>
+                    <input type="text" class="form-control vSector" id="vSector" disabled>
                   </div>
 
                   <div class="col-xs-12 col-sm-6 col-md-6">
-                    <label for="vFechaProgramSolServicio">Equipo:</label>
-                    <input type="text" class="form-control " name="vFechaProgramSolServicio" id="vFechaProgramSolServicio" disabled>
+                    <label for="vEquipo">Equipo:</label>
+                    <input type="text" class="form-control " name="vEquipo" id="vEquipo" disabled>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-6">
-                    <label for="vFechaCreacionSolServicio">Area:</label>
-                    <input type="text" class="form-control " name="vFechaCreacionSolServicio" id="vFechaCreacionSolServicio" disabled>
+                    <label for="vArea">Area:</label>
+                    <input type="text" class="form-control " name="vArea" id="vArea" disabled>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-6">
-                    <label for="vFechaTerminaSolServ">Proceso:</label>
-                    <input type="text" class="form-control " name="vFechaTerminaSolServ" id="vFechaTerminaSolServ" disabled>
+                    <label for="vProceso">Proceso:</label>
+                    <input type="text" class="form-control " name="vProceso" id="vProceso" disabled>
                   </div>
                   <div class="col-xs-12">
-                    <label for="vDescripcionEquipoSolServicio">Descripción:</label>
-                    <Textarea class="form-control " name="vDescripcionEquipoSolServicio" id="vDescripcionEquipoSolServicio" disabled></Textarea>
+                    <label for="vDescripcion">Descripción:</label>
+                    <Textarea class="form-control " name="vDescripcion" id="vDescripcion" disabled></Textarea>
                   </div>
                   
                   <div class="col-xs-12">
-                    <label for="vDescripcionEquipoSolServicio">Falla:</label>
-                    <Textarea class="form-control " name="vDescripcionEquipoSolServicio" id="vDescripcionEquipoSolServicio" disabled></Textarea>
+                    <label for="vFalla">Falla:</label>
+                    <Textarea class="form-control " name="vFalla" id="vFalla" disabled></Textarea>
                   </div>  
                 </div>
 
@@ -200,7 +200,11 @@
                                       </tr>
                                     </thead>
                                     <tbody>
-                                      
+                                    <tr>                                     
+                                      <td>
+                                        <a id="adjunto" href="" target="_blank"></a> 
+                                      </td>
+                                    </tr>
                                     </tbody>
                                   </table>
                                 </div>
@@ -335,7 +339,19 @@
       })
       .done( (data) => {
         // console.table(data);
-        console.log(data.SS[0].causa);
+        console.log(data);
+        $("#vArea").val(data.AR);
+        $("#vProceso").val(data.PR);
+        $("#vEquipo").val(data.EQ_SEC[0].equipo);
+        $("#vSector").val(data.EQ_SEC[0].sector);
+        $("#vFalla").val(data.SS[0].causa);
+        $("#vDescripcion").val(data.EQ_SEC[0].descripcion);
+        if((data.SS[0].sol_adjunto != "")||(data.SS[0].sol_adjunto != null)){
+          $("#adjunto").text("Archivo adjunto");
+          $("#adjunto").attr("href", data.SS[0].sol_adjunto);
+
+        }
+        
       })
       .fail( () => alert( "Error al traer los datos de la OT." ) )
       .always( () => WaitingClose() );

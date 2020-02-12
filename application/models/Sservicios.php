@@ -38,7 +38,7 @@ class Sservicios extends CI_Model
 		}	
 
 		function getEquipoSector($idequipo){
-			$this->db->select('A.descripcion as equipo,B.descripcion as sector, A.id_area as area, A.id_proceso as proceso');
+			$this->db->select('A.codigo as equipo,A.descripcion as descripcion,B.descripcion as sector, A.id_area as area, A.id_proceso as proceso');
 			$this->db->from('equipos as A');
 			$this->db->join('sector as B', 'B.id_sector=A.id_sector');
 			$this->db->where('A.id_equipo', $idequipo);
