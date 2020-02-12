@@ -4,68 +4,221 @@ class Test extends CI_Controller
 {
     public function __construct()
     {
-
         parent::__construct();
-     
+
+        $this->load->model('Kpis');
+    }
+
+    public function index(){
+        
+        $this->load->model('Tareas');
+
+        $this->Tareas->instanciarSubtareas(233, 7);
+
+        echo 'Hecho';
 
     }
-    public function close($id, $user = 'admin', $pass= '123traza')
+
+    public function index4()
     {
+        $this->load->model('traz-comp/Componentes');
 
-        // $this->load->view('test');
-        // $this->load->view('tareas/scripts/abm_forms');
-        // $this->load->view('tareas/scripts/validacion_forms');
-      
+        #COMPONENTE ARTICULOS
+        $data['items'] = $this->Componentes->listaArticulos();
+        $data['lang'] = lang_get('spanish', 'Ejecutar OT');
 
-        $method = '/execution';
+        if ($ot) {
+            $info = new stdClass();
+            $info->ortr_id = $ot;
+            $data['info'] = $info;
+        }
+        $data['hecho'] = false;
+        $this->load->view(ALM . '/notapedido/generar_pedido', $data);
+    }
 
-        $resource = 'API/bpm/userTask/';
+    public function index2()
+    {
+        return true;
+    }
 
-        $url = 'http://trazalog.com.ar:8080/bonita/' . $resource . $id . $method;
+    public function index1()
+    {
+        $this->load->view('kpis/disponibilidad');
+    }
 
-        $rsp = $this->rest->callAPI('POST', $url, null, $this->loggin($user, $pass));
+    public function filtro()
+    {
+        $tiempo = array();
+        $dsp = array();
+        $fecha_actual = date("Y-m-d");
 
-        if (!$rsp['status']) {
+        $data = $this->Kpis->getEquipos($eq == 'all' ? false : $eq);
+        $cant = sizeof($data);
 
-            log_message('DEBUG', '#TRAZA | #BPM >> ' . ASP_104);
+        if ($cant == 0) {
+            echo json_encode(false);
+        }
 
-            return msj(false, ASP_104);
+        for ($i = 0; $i < 12; $i++) {
+            $fi = date("Y-m-01 00:00:00", strtotime($fecha_actual . "- $i month"));
+
+            //Ajustar Rango de Fecha con Respecto a la primera vez que se activo el Equipo
+            $ff = ($i == 0 ? date("Y-m-d H:i:00") : date("Y-m-d 23:59:59", strtotime($fi . "+ 1 month - 1 second")));
+
+            array_unshift($tiempo, date("m-Y", strtotime($fi)));
+
+            $acum = 0;
+            foreach ($data as $o) {
+                $fi = $this->Kpis->estadoEquipo($o->id_equipo, $fi);
+                $acum += $this->calcularDisponibilidad($o->id_equipo, $fi, $ff);
+            }
+
+            $dsp[$fi . ' - ' . $ff] = number_format($acum / $cant, 2);
+
+        }
+        print("<pre>" . print_r($dsp, true) . "</pre>");
+
+    }
+
+    public function kpiDisponibilidad()
+    {
+        $tiempo = array();
+        $dsp = array();
+        $fecha_actual = date("Y-m-d");
+
+        $eq = $this->input->post('idEquipo');
+
+        $data = $this->Kpis->getEquipos($eq == 'all' ? false : $eq);
+        $cant = sizeof($data);
+
+        if ($cant == 0) {
+            $data['promedioMetas'] = 0;
+            $data['tiempo'] = [];
+            $data['porcentajeHorasOperativas'] = [];
+            echo json_encode($data);
+            return;
+        }
+
+        for ($i = 0; $i < 12; $i++) {
+            $fi = date("Y-m-01 00:00:00", strtotime($fecha_actual . "- $i month"));
+
+            $ff = ($i == 0 ? date("Y-m-d H:i:00") : date("Y-m-d 23:59:59", strtotime($fi . "+ 1 month - 1 second")));
+
+            //Ajustar Rango de Fecha con Respecto a la primera vez que se activo el Equipo
+
+            array_unshift($tiempo, date("m-Y", strtotime($fi)));
+
+            $acum = 0;
+            foreach ($data as $o) {
+                $fi = $this->Kpis->estadoEquipo($o->id_equipo, $fi);
+                $acum += $this->calcularDisponibilidad($o->id_equipo, $fi, $ff);
+            }
+
+            array_unshift($dsp, number_format($acum / $cant, 2));
+        }
+
+        $acum = 0;
+        foreach ($data as $o) {
+            if ($o->meta_dsp) {
+                $acum += $o->meta_dsp;
+            } else {
+                $cant--;
+            }
+        }
+
+        $data['promedioMetas'] = number_format($acum / $cant, 2);
+        $data['tiempo'] = $tiempo;
+        $data['porcentajeHorasOperativas'] = $dsp;
+        echo json_encode($data);
+    }
+
+    public function calcularDisponibilidad($eq, $fi, $ff)
+    {
+        $disp = 0;
+        $tc = $this->calcularMinutos($fi, $ff);
+
+        // Historial de Lecturas
+        $data = $this->Kpis->getHistorialLecturas($eq, $fi, $ff);
+
+        if (sizeof($data) == 0) {
+            $his = $this->Kpis->getHistorialLecturas($eq, false, $fi);
+            if (end($his)->estado == 'AC') {
+                return 100;
+            } else {
+                return 0;
+            }
 
         }
 
-        return msj(true, 'OK');
+        if ($data[0]->estado == 'RE') {
+            $disp += $this->calcularMinutos($fi, $data[0]->fecha);
+            unset($data[0]);
+        }
 
-    }
+        $fechaActivo = null;
 
-    public function loggin($user, $pass)
-    {
-        $data = array(
-            'username' => $user,
-            'password' => $pass,
-            'redirect' => 'false',
-        );
+        foreach ($data as $key => $o) {
 
-        $url = 'http://trazalog.com.ar:8080/bonita/' . 'loginservice';
+            if ($o->estado == 'AC') {
+                $fechaActivo = $o->fecha;
+            }
 
-        $rsp = $this->rest->callAPI('GET', $url, $data, false);
-
-        if (!$rsp['status']) {
-
-            log_message('DEBUG', '#TRAZA | #BPM >> ' . ASP_109);
-            //validaSesionBPM();
-            return false;
+            if ($o->estado == 'RE') {
+                $disp += $this->calcularMinutos($fechaActivo, $o->fecha);
+                $fechaActivo = null;
+            }
 
         }
 
-        return $this->bpm->crearHeader($rsp['header']);
+        if ($fechaActivo) {
+            $disp += $this->calcularMinutos($fechaActivo, $ff);
+        }
+
+        $disp = number_format(($disp * 100) / $tc, 2);
+
+        return $disp;
     }
 
-    public function setForm()
+    public function calcularMinutos($fi, $ff)
     {
-        $this->load->model('Forms');
+        $fecha1 = new DateTime($fi); //fecha inicial
+        $fecha2 = new DateTime($ff); //fecha de cierre
 
-        $this->Forms->setFormInicial(1000, 1, 777);
+        $intervalo = $fecha1->diff($fecha2);
 
-        echo 'Formulario Inciado';
+        #echo $intervalo->format('%Y años %m meses %d days %H horas %i minutos %s segundos'); //00 años 0 meses 0 días 08 horas 0 minutos 0 segundos
+
+        $anos = (int) $intervalo->format('%Y');
+        $meses = $anos * 12; //Anos a Meses
+        $dias = (($meses + (int) $intervalo->format('%m')) * 30) + ($anos * 5); //Meses a Dias
+        $horas = ($dias + (int) $intervalo->format('%d')) * 24; // Dias a Horas
+        $minutos = ($horas + (int) $intervalo->format('%H')) * 60; // Horas a Minutos
+        $totalMin = $minutos + (int) $intervalo->format('%i'); // Acumulo Minutos
+
+        return $totalMin;
     }
+
+    public function conexion()
+    {
+        return true;
+    }
+
+    public function test()
+    {
+        $this->load->view('test1');
+    }
+
+    public function A()
+    {
+        echo 'A';
+    }
+    public function B()
+    {
+        echo 'B';
+    }
+    public function C()
+    {
+        echo 'C';
+    }
+
 }

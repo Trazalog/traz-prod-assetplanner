@@ -106,7 +106,7 @@
                                                             </div>
                                                         </div><br> <br> <br> <br> <br>
 
-
+                                                        
                                                         <div class="form-group">
                                                             <div class="col-sm-12 col-md-12">
                                                                 <!-- Modal formulario tarea -->
@@ -116,12 +116,19 @@
                                                             </div>
                                                         </div>
 
-                                                </form>
-																							
+                                                </form>								
                                             </div>
+
                                         </div>
-                                      
-                                        <br>
+                                        <?php if ($idOServ){
+
+                                            echo '<div class="form-group">';
+                                            echo    '<div class="col-sm-12 col-md-12">';
+                                            echo        '<label for="justificacion">Justificacion de rechazo</label>';
+                                            echo        '<textarea class="form-control" id="justificacion" rows="3" disabled>'.$justificacion.'</textarea>';
+                                            echo    '</div>';
+                                            echo '</div><br> <br>	<br> <br> <br>';
+                                        } ?>
 
                                         <div id="nota_pedido"></div>
                                     </div>
@@ -151,7 +158,7 @@
                         <div class="modal-footer">
                           <!-- <button type="button" class="btn btn-success" id="hecho" data-toggle="modal" data-target="#modalInforme" onclick="generar_informe_servicio()">Inf. Servicio</button> -->
                           <button type="button" class="btn btn-success" id="hecho" onclick="generar_informe_servicio()">Inf. Servicio</button>
-                          <button type="button" id="cerrar" class="btn btn-primary" onclick="cargarVista()">Cerrar</button>                            
+                          <button type="button" class="btn btn-primary" id="cerrar">Cerrar</button>                            
                         </div> <!-- /.modal footer -->
                     </div>
 
@@ -165,7 +172,7 @@
     </div><!-- /.row -->
 </section><!-- /.content -->
 
-<script>  
+<script>
   
   function generar_informe_servicio (o){ 
 

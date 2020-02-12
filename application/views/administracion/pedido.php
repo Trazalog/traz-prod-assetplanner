@@ -196,15 +196,6 @@ function regresa(){
   console.log(no);
   $("#content").load("<?php echo base_url(); ?>index.php/Administracion/cargartarea/<?php echo $permission; ?>/"+no+"");
 }     
-
-// function regresa1(){
-//     $('#content').empty();
-//     $('#modalOT').empty();
-//     $('#modalAsig').empty();
-//     $("#content").load("<?php //echo base_url(); ?>index.php/Administracion/cargartarea/<?php// echo $permission; ?>");
-//     WaitingClose();
-//     WaitingClose();
-// }
 </script>
 
 

@@ -102,8 +102,11 @@
                                                     <label for="operario">Apellido y Nombre <strong
                                                             style="color: #dd4b39">*</strong> :</label>
                                                     <input type="text" class=" form-control operario" id="operario"
-                                                        name="operario" value=" <?php echo $detaOT[0]['usrLastName'].', '.$detaOT[0]['usrName'] ?>" placeholder="Buscar...">
-                                                    <input type="hidden" class=" form-control operario" id="id_operario" name="id_operario" value="<?php echo $detaOT[0]['usrId'] ?>">
+                                                        name="operario"
+                                                        value=" <?php echo ($detaOT[0]['usrLastName']!=null?$detaOT[0]['usrLastName'].', '.$detaOT[0]['usrName']:null) ?>"
+                                                        placeholder="Buscar...">
+                                                    <input type="hidden" class=" form-control operario" id="id_operario"
+                                                        name="id_operario" value="<?php echo $detaOT[0]['usrId'] ?>">
                                                 </div>
                                             </div><!-- /.row -->
                                         </div>
@@ -174,7 +177,7 @@
 
                                         <div role="tabpanel" class="tab-pane" id="pedidomateriales">
                                             <?php 
-                                            $this->load->view(CMP_ALM.'notapedido/generar_pedido');
+                                            $this->load->view(ALM.'notapedido/generar_pedido');
                                           ?>
                                         </div>
                                         <!--/#responsable -->
@@ -191,7 +194,7 @@
 
             <div class="modal-footer">
                 <?php if($btnVisibilidad){
-              echo '<button type="button" class="btn btn-success" id="ejecutar_ot" onclick="EjecutarOT()">Ejecutar OT</button>';
+              echo '<button type="button" class="btn btn-success" id="ejecutar_ot" onclick="EjecutarOT()">Asignar OT</button>';
             }
             ?>
 
@@ -206,55 +209,58 @@ DataTable('#tblOrden');
 
 
 validarTarea();
+
 function validarTarea() {
     $('#tareaest').change(function() {
-        $('#tareaOpcional').val('');			
+        $('#tareaOpcional').val('');
     });
     $('#tareaOpcional').click(function() {
-        $('#tareaest').val(-1);				
+        $('#tareaest').val(-1);
     });
 }
 // Captura evento de cierre de modal
-$("#modalInforme").on("hidden.bs.modal", function (e) {
-	e.preventDefault();
-  e.stopImmediatePropagation();	
+$("#modalInforme").on("hidden.bs.modal", function(e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
 
-	var idOt = $('#idOt').val();
-	guardarTarea(idOt);
+    var idOt = $('#idOt').val();
+    guardarTarea(idOt);
 
-	var respons = $('#id_operario').val();	
-	if(respons != ""){			
-		guardarResponsable(idOt,respons);
-	}
+    var respons = $('#id_operario').val();
+    if (respons != "") {
+        guardarResponsable(idOt, respons);
+    }
 });
 // Actualiza tarea al cerrar el modal
-function guardarTarea(idOt){
+function guardarTarea(idOt) {
 
-	var idTarea = "";
-	var tarea	= "";
-	if ($('#tareaest').val() != '-1') {
-		idTarea = $('#tareaest').val();
-		tarea = $('#tareaest option:selected').html();
-	} else {
-		idTarea = 0;
-		tarea = $('#tareaOpcional').val();
-	}
+    var idTarea = "";
+    var tarea = "";
+    if ($('#tareaest').val() != '-1') {
+        idTarea = $('#tareaest').val();
+        tarea = $('#tareaest option:selected').html();
+    } else {
+        idTarea = 0;
+        tarea = $('#tareaOpcional').val();
+    }
 
-	$.ajax({
-	
+    $.ajax({
+
         type: 'POST',
-        data: { idTarea: idTarea,
-								tarea: tarea,
-								idOt:idOt},
+        data: {
+            idTarea: idTarea,
+            tarea: tarea,
+            idOt: idOt
+        },
         url: 'index.php/Otrabajo/updateTarea',
         success: function(data) {
-           
+
         },
         error: function(data) {
-  
+
         },
         dataType: 'json'
-  });
+    });
 }
 
 // Trae Operarios
@@ -301,18 +307,20 @@ $("#operario").autocomplete({
     }
 });
 // guarda responsable asignado cuando se selecciona uno nuevo
-function guardarResponsable(idOt,respons){
+function guardarResponsable(idOt, respons) {
 
-	$.ajax({
+    $.ajax({
         type: 'POST',
-        data: { id_usuario_a: respons,
-								idOt: idOt},
+        data: {
+            id_usuario_a: respons,
+            idOt: idOt
+        },
         url: 'index.php/Otrabajo/updateResponsable',
         success: function(data) {
-           //alert('success');
+            //alert('success');
         },
         error: function(data) {
-  
+
         },
         dataType: 'json'
     });
@@ -321,26 +329,50 @@ function guardarResponsable(idOt,respons){
 
 function lanzarPedidoMateriales() {
     var pema_id = $('#pema_id').val();
-    if(pema_id == null || pema_id==''){
+    if (pema_id == null || pema_id == '') {
         //alert('No se pudo Realizar el Pedido de Materiales | ID Vacio');
         return;
     }
     $.ajax({
         type: 'POST',
-        data:{'id':pema_id},
-        url: "<?php echo CMP_ALM ?>/new/Pedido_Material/pedidoNormal",
-        success: function(result) {alert('Hecho'); return;},
-        error: function(result) {alert('No se pudo Realizar el Pedido de Materiales | Falla del Servidor');}
+        data: {
+            'id': pema_id
+        },
+        url: "<?php echo ALM ?>/new/Pedido_Material/pedidoNormal",
+        success: function(result) {
+            alert('Hecho');
+            return;
+        },
+        error: function(result) {
+            alert('No se pudo Realizar el Pedido de Materiales | Falla del Servidor');
+        }
     });
 }
 
 //cierra la tarea ejecutar OT y asigna la tarea a la OT
 function EjecutarOT() {
+
+    var xlat = null;
+    var xlon = null;
+    if (!window.mobileAndTabletcheck()) {
+        if (obtenerPosicion()) {
+            console.log('LAT: ' + lat + ' - LON: ' + lon + ' - ACC: ' + ac);
+            xlat = lat;
+            xlon = lon;
+        }
+        else {
+            alert('GPS | No se pudo Obtener Ubicación, Por favor Activar el GPS del Dispositivo.');
+            return;
+        }
+    } else {
+        console.log('GPS | No Mobile');
+    }
+
     var pema_id = $('#pema_id').val();
-    if((pema_id == null || pema_id=='') && !confirm('No se Realizarán Pedido de Materiales, ¿Desea Continuar?')){
+    if ((pema_id == null || pema_id == '') && !confirm('No se Realizarán Pedido de Materiales, ¿Desea Continuar?')) {
         return;
     }
-    
+
     $('#errorTable').fadeIn('slow');
 
     var task = $('#task').val();
@@ -385,19 +417,23 @@ function EjecutarOT() {
             tipo: tipo,
             tareaOpcional: tareaOpcional,
             tareastd: tareastd,
-            tareastdDesc: tareastdDesc
+            tareastdDesc: tareastdDesc,
+            latitud: xlat,
+            longitud: xlon
         },
         url: 'index.php/Otrabajo/EjecutarOT',
         success: function(data) {
             WaitingClose();
             // {"status":true,"msj":"OK"}
-            
+
             if (data.status) {
                 $('#modalInforme').modal('hide');
+                $('.modal-backdrop').hide();
                 lanzarPedidoMateriales();
                 regresa1();
             } else {
                 $('#modalInforme').modal('hide');
+
                 alert('Falla | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
             }
         },
@@ -414,7 +450,4 @@ function EjecutarOT() {
 function activaTab(tab) {
     $('.nav-tabs a[href="#' + tab + '"]').tab('show');
 };
-
-
 </script>
-

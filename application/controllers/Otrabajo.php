@@ -10,7 +10,7 @@ class Otrabajo extends CI_Controller {
 		
 		$this->load->model('Otrabajos');
 		$this->load->model('Equipos');
-		//validaSesion();
+			//validaSesion();
 	}
 	/**
 	 * Muestra pantalla de listado de Ordenes de Trabajo.
@@ -22,6 +22,7 @@ class Otrabajo extends CI_Controller {
 		$data['list']       = $this->Otrabajos->otrabajos_List(null,0);
 		$data['kpi'] = $this->Equipos->informe_equipos();
 		$data['permission'] = $permission;
+
 		$this->load->view('otrabajos/dash', $data);
 	}  
 	/**
@@ -188,7 +189,7 @@ class Otrabajo extends CI_Controller {
 		$result = $this->bpm->lanzarProceso(BPM_PROCESS_ID, $contract);	
 		
 		if(!$result['status']){
-
+			$this->Otrabajos->eliminar($ultimoId);
 			echo json_encode($result);
 
 		}
@@ -1037,7 +1038,7 @@ class Otrabajo extends CI_Controller {
 	//Ejecuta Orden de Trabajo en BPM
 	public function EjecutarOT(){
 		//log
-			log_message('DEBUG', 'TRAZA | OTrabajo/Ejecutar OT');
+		log_message('DEBUG', '#TRAZA | OTrabajo/Ejecutar OT');
 
 		$userdata = $this->session->userdata('user_data');
 		$userBpm = $userdata[0]['userBpm']['id']; 
@@ -1052,9 +1053,17 @@ class Otrabajo extends CI_Controller {
 		
 		$case_id = $this->Otrabajos->getCaseIdOT($ot);
 
+		//Guardo Posicion donde Se Ejecuto OT desde un MOVIL
+		$lat = $this->input->post('latitud');
+		$lon = $this->input->post('longitud');
+		$this->Otrabajos->guardarPosicion($ot , $lat, $lon);
+
 		// tarea estandar
 		if ($id_tarea != -1) {
-			$descripcion = $this->input->post('tareastdDesc');;
+			$descripcion = $this->input->post('tareastdDesc');
+			#FLEIVA
+			$this->load->model('Tareas');
+		    $this->Tareas->instanciarSubtareas($id_tarea, $ot);
 		} else {
 			$descripcion = $this->input->post('tareaOpcional');;
 		}				
@@ -1113,6 +1122,8 @@ class Otrabajo extends CI_Controller {
 			return;
 		}
 		
+		
+
 		//Cambiar Estado de OT ('ASignada') y en solicitud origen en BD		
 		if($this->Otrabajos->cambiarEstado($ot, $estado, 'OT')){
 				

@@ -12,7 +12,7 @@
           <h3 class="box-title">Orden de trabajo</h3>
           <?php
           if (strpos($permission,'Add') !== false) {
-            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"  data-toggle="modal" data-target="#modalagregar" id="btnAdd">Agregar</button>'; 
+            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="btnAdd">Agregar</button>'; 
           }
           ?>
         </div><!-- /.box-header -->
@@ -418,6 +418,8 @@ $("#btn_cancGuardado").click(function (e) {
     
     //var nro           = $('#nroedit').val();
     var fecha_inicio  = $('#fechaInicio').val();
+    
+    var fechaProgramacion = $('#fechaProgramacion').val();
     var fecha_entrega = $('#fechaEntrega').val();
     var id_sucu       = $('#suci').val();
     var id_prov     = $('#prov').val();
@@ -435,7 +437,7 @@ $("#btn_cancGuardado").click(function (e) {
 
     var parametros = {
       //'nro'           : nro,                                          
-      'fecha_program'  : fecha_inicio,
+      'fecha_program'  : fechaProgramacion,
       'fecha_entrega' : fecha_entrega,   
       'id_tarea'      : id_tarea,  
       'descripcion'   : descripcion,    
@@ -1347,7 +1349,7 @@ function guardarpedido(){
     WaitingOpen();
     $('#modalInforme').modal('show');
     $('#modalInformeServicios').empty();
-    $("#modalInformeServicios").load("<?php echo base_url(); ?>index.php/Ordenservicio/verInforme/"+id_OT+"/"+id_eq+"/"+id_solicitud+"/");
+    $("#modalInformeServicios").load("<?php echo base_url(); ?>P+"/"+id_solicitud+"/"");
     WaitingClose();
   }
 
@@ -1379,7 +1381,7 @@ function guardarpedido(){
    
     WaitingOpen();
     $('#content').empty();
-    $("#content").load("<?php echo base_url(); ?>index.php/<?php echo CMP_ALM ?>/new/Pedido_Material/getPedidos/"+idorde);
+    $("#content").load("<?php echo base_url(); ?>index.php/<?php echo ALM ?>/new/Pedido_Material/getPedidos/"+idorde);
     WaitingClose(); 
   };
 
@@ -1418,6 +1420,7 @@ function guardarpedido(){
   };
 // VER OT 
   function mostrarOT(o){
+    console.log(o);
     let idot = $(o).closest('tr').attr('id'); 
     //console.log("id Orden de trabajo: "+idot);
     
@@ -2284,6 +2287,14 @@ function guardarpedido(){
     "aLengthMenu": [ 10, 25, 50, 100 ],
     "order": [[0, "asc"]],
   });
+
+  /* input con horas minutos y segundos */
+  $("#fechaProgramacion").datetimepicker({
+    format: 'YYYY-MM-DD h:mm:ss',
+    locale: 'es',
+  });
+
+
 </script>
 
 

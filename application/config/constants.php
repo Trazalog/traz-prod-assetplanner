@@ -84,6 +84,17 @@ defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
+
+#Componente Formularios
+define('FRM', 'traz-comp-form/');
+
+
+    #Componente SIM
+    define('SIM', 'traz-comp-sim/');  
+
+    define('SIM_FORM_EVAL_OPE',3);
+    define('SIM_FORM_EVAL_ZONA',2);
+
 /*
 |--------------------------------------------------------------------------
 | Almacen
@@ -91,8 +102,23 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 |
 | Version de Componente de Almacen
 |
-*/
+*/ 
+define('ALM', 'traz-comp-almacen/');  
+
+define('files', 'files/');
+
+
+define('SIM_FORMS', array(
+
+    'eval_ope' => 2,
+
+    'eval_zona' =>3
+));
+
+
+
 define('CMP_ALM', 'traz-comp-almacen/');  
+
 /*
 |--------------------------------------------------------------------------
 | Bonita url
@@ -102,10 +128,10 @@ define('CMP_ALM', 'traz-comp-almacen/');
 |
 */
 
-define('BONITA_URL', 'http://www.trazalog.com.ar:8080/bonita/');  
+define('BONITA_URL', 'http://localhost:8080/bonita/');  
 
-define('BPM_ADMIN_USER', 'admin');
-define('BPM_ADMIN_PASS', '123traza');
+define('BPM_ADMIN_USER', 'supervisor1');
+define('BPM_ADMIN_PASS', 'bpm');
 define('BPM_USER_PASS', 'bpm');
 
 
@@ -121,7 +147,7 @@ define('BPM_USER_PASS', 'bpm');
 
 //? PEDIDOS NORMALES
  
-define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '9120979153540387743'); 
+define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '6833268789089291878'); 
 
 //? PEDIDOS EXTRAORDINATIOS
 
@@ -137,7 +163,7 @@ define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '7321139677245257050');
 |
 */
  
-define('BPM_PROCESS_ID', '4793042246709748124'); // localhost -
+define('BPM_PROCESS_ID', '4859077159833071020'); // localhost -
 
 /*
 |--------------------------------------------------------------------------
@@ -147,7 +173,25 @@ define('BPM_PROCESS_ID', '4793042246709748124'); // localhost -
 | Listado de Formularios de Diagnostico
 |
 */
-define ("ID_FORMULARIOS", serialize (array (1,2,3,4,5,6,7,8,9)));
+
+// define('REST', 'http://pc-pc:8280/services/ProduccionDataService/');
+// define('RESTPT','http://pc-pc:8280/services/produccionTest/');
+// define('REST_TDS', 'http://pc-pc:8280/services/TrazabilidadDataService/');
+// define('REST0', 'http://pc-pc:8280/services/ALMDataService/');
+
+// define('REST2', 'http://pc-pc:8280/services/ProduccionDataService');
+// define('REST3', 'http://pc-pc:8280/services/produccionTest');
+// define('REST4', 'http://pc-pc:8280/services/TrazabilidadDataService');
+
+define('REST', 'http://dev-trazalog.com.ar:8280/services/ProduccionDataService/');
+define('RESTPT','http://dev-trazalog.com.ar:8280/services/produccionTest/');
+define('REST_TDS', 'http://dev-trazalog.com.ar:8280/services/TrazabilidadDataService/');
+define('REST0', 'http://www.dev-trazalog.com.ar:8280/services/ALMDataServiceAsset/');
+
+define('REST2', 'http://dev-trazalog.com.ar:8280/services/ProduccionDataService');
+define('REST3', 'http://dev-trazalog.com.ar:8280/services/produccionTest');
+define('REST4', 'http://dev-trazalog.com.ar:8280/services/TrazabilidadDataService');
+
 /*
 |--------------------------------------------------------------------------
 | ERRORES
@@ -175,4 +219,16 @@ define('ASP_113', 'Usuario No Encontrado');
 define('ASP_114', 'Error al Actualizar Variable');
 define('ASP_115', 'Error al Leer Variable');
 
+
+//Settings
+
+# >> OT
 define('viewOT', true);
+
+# >> GPS
+define('GPS_ACC', 50);
+define('GPS_CHECK_MOBILE', false);
+
+# >>SW
+define('SW', false);
+#define('SW', false);

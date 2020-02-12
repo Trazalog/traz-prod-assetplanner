@@ -56,7 +56,7 @@ if (!function_exists('info_orden')) {
                         
                         <div class="col-xs-12 col-sm-4">
                             <label style="margin-top: 7px;">Tarea: </label>
-                            <input type="text" class="form-control"  value="'.$resultOT['tareaDescrip'].'" disabled/>
+                            <input id="info-tarea" type="text" class="form-control"  value="'.$resultOT['tareaDescrip'].'" disabled/>
                         </div>
                         
                         <div class="col-xs-12 col-sm-4">
@@ -102,12 +102,6 @@ if (!function_exists('info_orden')) {
         }
     }
 
-    function empresa(){
-
-        $ci =& get_instance();			
-        $userdata  = $ci->session->userdata('user_data');
-		return  $userdata[0]['id_empresa'];
-    }
     function usuario_bpm(){
 
         $ci =& get_instance();			

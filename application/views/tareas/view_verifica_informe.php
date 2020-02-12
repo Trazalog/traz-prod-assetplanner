@@ -146,8 +146,15 @@
 														</label>
 														<label class="radio-inline" for="radios-1">
 															<input type="radio" name="opcion" id="radios-1"
-																value="false" checked="checked"> No
+																value="false"> No
 														</label>
+													</div>
+													</br></br>
+													<div class="form-group" id="justgroup" hidden>
+															<div class="col-sm-12 col-md-12">
+																<label for="justificacion">Justificacion</label>
+																<textarea class="form-control" id="justificacion" rows="3" name="justificacion"></textarea>
+															</div>
 													</div>
 												</center>
 											</div>
@@ -392,7 +399,12 @@
 	}
 
 
-
+	$("#radios-1").click(function() {
+  		$("#justgroup").show();
+	});
+	$("#radios-0").click(function() {
+  		$("#justgroup").hide();
+	});
 //	Scripts para acordeon del modal
 	//cierro todos los collapse
 	$('#modalOrder').on('shown.bs.modal', function () {

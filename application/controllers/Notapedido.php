@@ -11,26 +11,26 @@ class Notapedido extends CI_Controller {
   public function index($permission){
     $data['list'] = $this->Notapedidos->notaPedidos_List();
     $data['permission'] = $permission;
-    $this->load->view('notapedido/list',$data);
-    //$this->load->view('notapedido/view_');
+    $this->load->view(ALM.'notapedido/list',$data);
+    //$this->load->view(ALM.'notapedido/view_');
   }
 
   public function getNotasxOT($permission, $idot){
     $data['permission'] = $permission;
     $data['list']       = $this->Notapedidos->getNotasxOT($idot);
-    $this->load->view('notapedido/listOt', $data);
+    $this->load->view(ALM.'notapedido/listOt', $data);
   }
 
   public function ObtenerNotasPedidosxOT($permission,$idot){
     $data['permission'] = $permission;
     $data['list']  = $this->Notapedidos->getNotasxOT($idot);
-    $this->load->view('notapedido/list',$data);
+    $this->load->view(ALM.'notapedido/list',$data);
   }
 
   public function agregarNota($permission, $idot){
     $data['permission'] = $permission;
     $data['ot']         = $this->Notapedidos->getOTporId($idot);
-    $this->load->view('notapedido/view_', $data);
+    $this->load->view(ALM.'notapedido/view_', $data);
   }
 
   public function getOrdenesCursos(){
@@ -116,7 +116,7 @@ class Notapedido extends CI_Controller {
     $data['permission'] = $permission;    
     $data['plantilla']  = $this->Notapedidos->getPlantillaPorCliente($idcliente);
     $data['ot'] = $ot;
-    $this->load->view('notapedido/insumolist',$data);
+    $this->load->view(ALM.'notapedido/insumolist',$data);
     
   }
   

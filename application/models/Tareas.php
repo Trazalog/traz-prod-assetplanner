@@ -5,7 +5,7 @@ class Tareas extends CI_Model {
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->model('Forms');
+		$this->load->model(FRM.'Forms');
 	}
 /* TAREAS ASSET ORIGINALES (TAREAS ESTANDAR)*/
 	function Listado_Tareas()
@@ -101,7 +101,7 @@ class Tareas extends CI_Model {
 		}
 	}
 	// devuelve subtareas por 
-	function getSubtareas($idTareaSTD){
+	function getSubtareas($ot){
 		$this->db->select( 'tbl_listarea.*,
 												asp_subtareas.tareadescrip AS subtareadescrip,
 												asp_subtareas.id_subtarea,
@@ -109,7 +109,7 @@ class Tareas extends CI_Model {
 												asp_subtareas.form_asoc');		
 		$this->db->from('tbl_listarea');
 		$this->db->join('asp_subtareas', 'asp_subtareas.id_subtarea = tbl_listarea.id_subtarea','left');
-		$this->db->where('tbl_listarea.id_orden',$idTareaSTD);
+		$this->db->where('tbl_listarea.id_orden',$ot);
 		$query = $this->db->get();
 		if ($query->num_rows()!=0){
 			return $query->result_array();	
@@ -140,6 +140,27 @@ class Tareas extends CI_Model {
 		$response = $this->parseHeaders( $http_response_header );
 		return $response;
 	}
+
+	// genera una entrada en el historial de lectura con la ultima lectura generada en el informe de servicio
+    function setUltimaLecturaIS($data){
+            $id_equipo = $data["id_equipo"];
+            $lectura = $data["lectura"];
+            $fecha = $data["fecha"];
+            $usrid = $data["usrId"];
+            $observacion = $data["observacion"];
+            $operario_nom = $data["operario_nom"];
+            $turno = $data["turno"];
+            $estado = $data["estado"];
+
+            $sql = "INSERT INTO historial_lecturas(id_equipo,lectura,fecha,usrId,observacion,operario_nom,turno,estado)
+            VALUES('" . $id_equipo . "','" . $lectura . "','" . $fecha . "','" . $usrid . "','" . $observacion . "','" . $operario_nom . "','" . $turno . "','" . $estado . "')
+            ";
+    
+            $query = $this->db->query($sql);
+
+            return $query;
+	}
+	
 	// trae tareas por ID de usuario
 	function getTareas($param){		
 
@@ -644,6 +665,27 @@ class Tareas extends CI_Model {
 
 		}
 
+		function getJustifiacionOT($caseId){
+			$this->db->select('orden_trabajo.justificacion');
+			$this->db->from('orden_trabajo');
+			$this->db->where('orden_trabajo.case_id',$caseId);
+			$query= $this->db->get();
+			if( $query->num_rows() > 0){
+				return $query->row('justificacion');	
+			} 
+			else {
+				return 0;
+			}
+		}
+
+		function setJustificacionOT($idOrden, $justificacion){
+
+			$this->db->set('justificacion', $justificacion);
+			$this->db->where('id_orden', $idOrden);
+			$query = $this->db->update('orden_trabajo');
+			return $query;
+		}
+
 		function getIdOTPorIdCaseEnBD($caseId){
 			$this->db->select('orden_trabajo.id_orden');
 			$this->db->from('orden_trabajo');
@@ -770,19 +812,23 @@ class Tareas extends CI_Model {
 					continue;
 				}
 				
-				$this->db->select('A.id_solicitud as \'ss\', id_orden as \'ot\'');
-				$this->db->where('A.case_id',$value['caseId']);
-				$this->db->from('solicitud_reparacion as A');
-				$this->db->join('orden_trabajo as B','A.id_solicitud = B.id_solicitud','left');
+				$this->db->select('A.id_solicitud as \'ss\', id_orden as \'ot\', B.descripcion as \'desc\', causa, X.descripcion as \'desceq\', Z.descripcion as \'descsec\'');
 				
+				$this->db->from('solicitud_reparacion as A');
+				$this->db->join('orden_trabajo as B','A.case_id = B.case_id','left');
+				$this->db->join('equipos as X','X.id_equipo = A.id_equipo','left');
+				$this->db->join('sector as Z','Z.id_sector = X.id_sector','left');
+				$this->db->where('A.case_id',$value['caseId']);
 				$res = $this->db->get()->first_row();
 				
 				if (!$res) {
 						
-					$this->db->select('A.id_solicitud as \'ss\', id_orden as \'ot\'');
+					$this->db->select('A.id_solicitud as \'ss\', id_orden as \'ot\', B.descripcion as \'desc\', causa, X.descripcion as \'desceq\', Z.descripcion as \'descsec\'');
 					$this->db->from('solicitud_reparacion as A');
 					$this->db->from('orden_trabajo as B');
 					$this->db->from('tbl_back as C');
+					$this->db->join('equipos as X','X.id_equipo = A.id_equipo','left');
+					$this->db->join('sector as Z','Z.id_sector = X.id_sector','left');
 					$this->db->where('A.case_id',$value['caseId']);
 					$this->db->where('C.backId', 'B.id_solicitud','left');
 					$this->db->where('C.sore_id', 'A.id_solicitud','left');
@@ -791,26 +837,91 @@ class Tareas extends CI_Model {
 				
 					if (!$res) {
 
-
-							$this->db->select('id_orden as \'ot\'');
+							$this->db->select('id_orden as \'ot\', B.descripcion as \'desc\', causa, X.descripcion as \'desceq\', Z.descripcion as \'descsec\'');
 							$this->db->where('A.case_id',$value['caseId']);
-							$this->db->from('orden_trabajo as A');
+							$this->db->from('solicitud_reparacion as A');
+							$this->db->join('orden_trabajo as B','B.id_solicitud = A.id_solicitud','left');
+							$this->db->join('equipos as X','X.id_equipo = A.id_equipo','left');
+							$this->db->join('sector as Z','Z.id_sector = X.id_sector','left');
 							$res = $this->db->get()->first_row();
-							$data[$key]['ss'] = '';
-							$data[$key]['ot'] = $res->ot;
+							
+							if (!$res) {
+
+								$this->db->select('id_orden as \'ot\', A.descripcion as \'desc\', X.descripcion as \'desceq\', Z.descripcion as \'descsec\'');
+								$this->db->from('orden_trabajo as A');
+								$this->db->join('equipos as X','X.id_equipo = A.id_equipo','left');
+								$this->db->join('sector as Z','Z.id_sector = X.id_sector','left');
+								$this->db->where('A.case_id',$value['caseId']);
+								$res = $this->db->get()->first_row();
+
+								$data[$key]['ss'] = '';
+								$data[$key]['ot'] = $res->ot;
+								$data[$key]['displayDescription'] = $res->desc;
+								$data[$key]['equipoDesc'] = $res->desceq;
+								$data[$key]['sectorDesc'] = $res->descsec;
+							}else {
+								$data[$key]['ss'] = $res->ss;
+								$data[$key]['ot'] = $res->ot;
+								$data[$key]['equipoDesc'] = $res->desceq;
+								$data[$key]['sectorDesc'] = $res->descsec;
+								if($res->desc != null){
+									$data[$key]['displayDescription'] = $res->desc;
+								}else{
+									$data[$key]['displayDescription'] = $res->causa;
+								}
+							}
 					} else {
 						$data[$key]['ss'] = $res->ss;
 						$data[$key]['ot'] = $res->ot;
+						$data[$key]['equipoDesc'] = $res->desceq;
+						$data[$key]['sectorDesc'] = $res->descsec;
+						if($res->desc != null){
+							$data[$key]['displayDescription'] = $res->desc;
+						}else{
+							$data[$key]['displayDescription'] = $res->causa;
+						}
 					}
 				} else{
 					$data[$key]['ss'] = $res->ss;
 					$data[$key]['ot'] = $res->ot;
+					$data[$key]['equipoDesc'] = $res->desceq;
+					$data[$key]['sectorDesc'] = $res->descsec;
+					if($res->desc != null){
+						$data[$key]['displayDescription'] = $res->desc;
+					}else{
+						$data[$key]['displayDescription'] = $res->causa;
+					}
 				}	
-					
+				
 			}
+			
 			return $data;
 		}
 	/* 	./ TAREAS BPM */	
 
 /* ./ INTEGRACION CON BPM */
+
+	function instanciarSubtareas($idTarea, $ot){
+		$this->db->select('tareadescrip, id_subtarea, form_asoc as idForm');
+		$this->db->where('id_tarea', $idTarea);
+		$res = $this->db->get('asp_subtareas')->result();
+
+		if(!$res) return FALSE;
+
+		foreach ($res as $key => $o) {
+		
+			$infoId = $this->Forms->guardar($o->idForm);
+			if(!$infoId) continue;
+
+			$o->info_id = $infoId;
+			$o->id_orden = $ot;
+			$o->fecha = date('Y-m-d');
+			$o->estado = 'AC';
+
+			unset($o->idForm);
+			$this->db->insert('tbl_listarea', $o);
+		}
+
+		return true;	
+	}
 }

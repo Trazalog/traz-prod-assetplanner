@@ -590,8 +590,7 @@ class  Equipo extends CI_Controller {
 	public function cambio_estado()
 	{
 		$idequipo = $_POST['idequipo'];
-		$datos    = array('estado'=>"AC");
-		$result   = $this->Equipos->update_estado($datos, $idequipo);
+		$result   = $this->Equipos->update_estado($idequipo);
 		print_r($result);
 	}
 
@@ -763,8 +762,8 @@ class  Equipo extends CI_Controller {
   		echo json_encode($result);
 		}
 		
-		public function setLecturaEdit(){
-			$result = $this->Equipos->setLecturaEdit($this->input->post());
+	public function setLecturaObservacionEdit(){
+		$result = $this->Equipos->setLecturaObservacionEdit($this->input->post());
   		echo json_encode($result);
 		}
 
@@ -840,4 +839,15 @@ class  Equipo extends CI_Controller {
 
 		echo json_encode($response);
 	}
+
+	function asignarMeta(){
+
+		$data = $this->input->post();
+		if(!$this->Equipos->asignarMeta($data)){
+			echo json_encode(['msj'=>'Error al asinar Meta']);
+		}else{
+			echo json_encode(['msj'=>'OK']);
+		}
+	}
+
 }

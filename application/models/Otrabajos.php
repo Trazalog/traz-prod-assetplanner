@@ -920,16 +920,23 @@ class Otrabajos extends CI_Model {
     function kpiCantTipoOrdenTrabajo()
     {
         $userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-        $this->db->select('count(orden_trabajo.tipo) as CantidadTipoOT');
-        $this->db->from('orden_trabajo');
-        $this->db->where('orden_trabajo.id_empresa', $empresaId);
-        $this->db->group_by('orden_trabajo.tipo');
-				$query = $this->db->get();
-				//dump($this->db->last_query(), 'kpi');
+		$empresaId = $userdata[0]['id_empresa'];
+		
+        $this->db->select('B.descripcion, count(*) as cantidad');
+		$this->db->from('orden_trabajo as A');
+		$this->db->join('tbl_tipoordentrabajo as B','A.tipo = B.tipo_orden');
+		$this->db->where('A.id_empresa', $empresaId);
+		//$this->db->where('B.descripcion!=','Solicitud de servicio');
+		$this->db->where('estado', 'T');
+		$this->db->or_where('estado', 'CN');
+		$this->db->group_by('A.tipo');
+		$this->db->order_by('A.tipo');
+
+		$query = $this->db->get();
+		$res = $query->result();
         if($query->num_rows()!=0)
         {
-            return $query->result_array();
+            return $res;
         }
         else
         {
@@ -1258,6 +1265,23 @@ class Otrabajos extends CI_Model {
 				}
 	  }
 
+	  function getLecturasOrden($id_ot) //
+	  {		
+			  $this->db->select('orden_trabajo.fecha_inicio,
+								 orden_trabajo.fecha_terminada');
+			  $this->db->from('orden_trabajo');
+			  $this->db->where('orden_trabajo.id_orden', $id_ot);
+			  $query = $this->db->get();
+			  if ($query->num_rows()!=0)
+			  {
+					  return $query->result_array();
+			  }
+			  else
+			  {   
+					  return false;
+			  }   
+	  }
+
 		function getViewDataComponenteEquipoBacklog($idComponenteEquipo)
 		{
 			$this->db->select('componenteequipo.codigo AS codigoComponente, 
@@ -1463,6 +1487,18 @@ class Otrabajos extends CI_Model {
 			return $query->row('id_orden');
 		}
 
-		
+		function guardarPosicion($ot, $lat, $lon){
+			$this->db->where('id_orden', $ot);
+			$this->db->set('latitud', $lat);
+			$this->db->set('longitud', $lon);
+			return $this->db->update('orden_trabajo');
+		}
 
+		public function eliminar($id)
+		{
+			$this->db->where('id_orden', $id);
+			return $this->db->delete('orden_trabajo');
+		}
+
+	
 }	

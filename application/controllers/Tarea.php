@@ -8,29 +8,11 @@ class Tarea extends CI_Controller {
 
 		function __construct(){
 			parent::__construct();
-
 			
-			//if(empty($this->session->userdata("userName"))) { 
-				//redirect(base_url(),'refresh'); }
-			
-			
-			// if(empty($this->session->userdata("userName"))) { 
-			// 	redirect(base_url('views/login.php'));
-			// }
-
-
-			//redirect( base_url() );
-			
-			// $proyecto = 'http://localhost/traz-prod-assetplanner/';
-			// header("Location: $proyecto");
-			// $userdata = $this->session->userdata('user_data');
-      // $userName = $userdata[0]['userName'];     // guarda usuario logueado   
-			// var_dump($userName, 'datos: ');
-			// if(empty($this->session->userdata("userName"))) { 
-			// 	redirect(base_url(),'refresh'); }
 			$this->load->model('Tareas');		
 			$this->load->model('Backlogs');
 			$this->load->model('Otrabajos');
+			$this->load->model('Ordenservicios');
 		}
 
 		// llama ABM tareas estandar
@@ -103,7 +85,6 @@ class Tarea extends CI_Controller {
 			public function index($permission = null){
 				///$this->load->helper('control_sesion');
 				// if	(validaSesion()){
-
 						$detect = new Mobile_Detect();    				
 						//Obtener Bandeja de Usuario desde Bonita
 						$response = $this->bpm->getToDoList();
@@ -113,7 +94,8 @@ class Tarea extends CI_Controller {
 							return;
 						}
 						//Completar Tareas con ID Solicitud y ID OT
-						$data_extend = $this->Tareas->CompletarToDoList($response['data']);				
+						$data_extend = $this->Tareas->CompletarToDoList($response['data']);
+						// var_dump($data_extend);				
 						$data['list'] = $data_extend;
 						$data['permission'] = $permission;		
 
@@ -186,9 +168,14 @@ class Tarea extends CI_Controller {
 			// Usr Toma tarea en BPM (Vistas tareas comunes)
 			public function tomarTarea(){								
 
-				$idTarBonita = $this->input->post('idTarBonita');
-			
+				$idTarBonita = $this->input->post('idTarBonita');			
 				$response = $this->bpm->setUsuario($idTarBonita, userId());
+
+				$userdata = $this->session->userdata('user_data');             
+				
+				log_message('DEBUG','#TRAZA | #Tarea/tomarTarea(usrNick)>> '.$userdata[0]['usrNick']);
+				log_message('DEBUG','#TRAZA | #Tarea/tomarTarea(userBpm)>> '.$userdata[0]['userBpm']);
+				log_message('DEBUG','#TRAZA | #Tarea/tomarTarea(idTarBonita)>> '.$idTarBonita);
 
 				echo json_encode($response);
 			}
@@ -214,16 +201,18 @@ class Tarea extends CI_Controller {
 
 				echo json_encode($result);
 			}
+
 			// terminar tarea verificar Informe Servicios
 			public function verificarInforme(){
 				
 				//log
 					log_message('DEBUG', 'TRAZA | Tarea/verificarInforme()');					
-
+				$id_eq = $this->input->post('id_eq');
 				$id_OT = $this->input->post('id_OT');
 				$id_SS = $this->input->post('id_SS');
 				$idTarBonita = $this->input->post('idTarBonita');
-				$opcion = $this->input->post('opcion');	
+				$opcion = $this->input->post('opcion');
+				$justificacion = $this->input->post('justificacion');
 				// averigua origen de OT
 				$origen = $this->Tareas->getOrigenOt($id_OT);
 				$numtipo = 	$origen[0]['tipo'];
@@ -255,10 +244,10 @@ class Tarea extends CI_Controller {
 					log_message('DEBUG', 'TRAZA | Informe correcto?: '.$opcionSel);
 
 				// si cierra la tarea en BPM
-				if ($response['status']){
+				if ($result['status']){
 
 						// La respuesta es Informe de Servicios 'CORRECTO'
-						if($opcion){
+						if($opcion == "true"){
 							
 								// cambia el estado a lo que no sea SServicios(esta cambia con la conformidad del solicitante)
 								if($tipo != 'correctivo'){
@@ -277,15 +266,44 @@ class Tarea extends CI_Controller {
 
 								// si guarda en BD	
 								if ($result) {
-									echo json_encode(['status'=>true, 'msj'=>'OK']);
-									return;
+									
+									$data["id_equipo"] = $id_eq;
+									$infoOt = $this->Ordenservicios->getorden($id_OT);
+									// si la tareas es opcional
+									if (($infoOt[0] ["id_tarea"] < 0) || ($infoOt[0] ["id_tarea"] == NULL)) {
+									  $causa = $infoOt[0]["descripcion"];
+									} else {
+									  $causa = $infoOt[0]["tareadescrip"];
+									}             
+									$data["observacion"] = 'Descripcion: '.$causa.' | OT: '.$id_OT;
+									$data["estado"] = $this->Ordenservicios->getEquipos($id_eq)["estado"];
+									$data["lectura"] = $this->Ordenservicios->getLecturasOrden($id_OT)[0]["horometrofin"];
+									$data["fecha"] = $this->Ordenservicios->getLecturasOrden($id_OT)[0]["fechahorafin"];
+									$data["operario_nom"] = $infoOt[0]["responsable"];
+									$data["turno"] = "-";
+									$data["usrId"] = $infoOt[0]["usrId"];
+
+									$result = $this->Tareas->setUltimaLecturaIS($data);
+
+									if($result){
+										echo json_encode(['status'=>true, 'msj'=>'OK']);
+										return;
+									}else{
+										echo json_encode(['status'=>false, 'msj'=> 'Error en Cambio Estado OT']);
+										return;
+									}
 								}else{								
 									echo json_encode(['status'=>false, 'msj'=> 'Error en Cambio Estado OT']);
 									return;
 								}
 						
 						}else{	// no conforme con trabajo	NO CAMBIA ESTADOS
-								echo $response;
+								$result = $this->Tareas->setJustificacionOT($id_OT,$justificacion);
+								if(!$result){
+									echo json_encode(['status'=>false, 'msj'=>'error en setear la justificacion']);
+									return;
+								}
+								echo json_encode(['status'=>true, 'msj'=>'se rechazo el informe de servicio']);
 								return;
 						}	
 
@@ -293,7 +311,7 @@ class Tarea extends CI_Controller {
 					echo json_encode(['status'=>true, 'msj'=>'OK', 'code'=>$code]);
 				}	
 
-			}	
+			}
 			// terminar tarea prestar conformidad
 			public function prestarConformidad(){
 
@@ -465,7 +483,15 @@ class Tarea extends CI_Controller {
 					// }
 					// TODO: AHORA TODAS LAS OT TIENEN UN CASE ASOCIADO		
 					$id_OT = $this->Tareas->getIdOTPorIdCaseEnBD($caseId);
-				    
+					
+					//para ver si se va a editar el informe de servicio y en ese caso, mostrar la justificacion de rechazo
+					$idOServ = $this->Ordenservicios->getOServicioPorIdOT($id_OT);
+					if($idOServ != NULL){
+						$data['idOServ'] = true;
+						$data['justificacion'] = $this->Tareas->getJustifiacionOT($caseId);
+					}else{
+						$data['idOServ'] = false;
+					}
 				// Si hay Sol Serv trae el id de equpo sino por id de Ot
 					if($id_SS!= null){
 						$id_EQ = $this->Tareas->getIdEquipoPorIdSolServ($id_SS);
@@ -531,7 +557,8 @@ class Tarea extends CI_Controller {
 					case 'Ejecutar OT':
 							
 							$this->load->model('traz-comp/Componentes');
-							$this->load->model(CMP_ALM.'/new/Pedidos_Materiales');
+							$this->load->model(ALM.'/new/Pedidos_Materiales');
+							
 							$data['descripcionOT'] = $this->Otrabajos->obtenerOT($id_OT)->descripcion;
 							#COMPONENTE ARTICULOS
 							$data['items'] = $this->Componentes->listaArticulos();
@@ -541,12 +568,13 @@ class Tarea extends CI_Controller {
 							$info->ortr_id = $id_OT;
 							$info->modal = 'agregar_pedido';
 							$data['info'] = $info;
-							$this->load->model(CMP_ALM.'/Notapedidos');
+							$this->load->model(ALM.'/Notapedidos');
 							$data['list'] = $this->Notapedidos->notaPedidos_List($id_OT);
 							$this->load->model('traz-comp/Componentes');
 							$this->load->view('tareas/view_ejecutarOT', $data);
-							$this->load->view('tareas/scripts/tarea_std');	
-							$this->load->view('tareas/scripts/validacion_forms');					
+							//$this->load->view('tareas/scripts/tarea_std');	
+						
+									
 							break;
 					case 'Esperando cambio estado "a Ejecutar"':
 						$this->load->view('tareas/view_cambio_estado', $data);

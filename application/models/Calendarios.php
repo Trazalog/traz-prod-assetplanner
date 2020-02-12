@@ -20,21 +20,23 @@ class Calendarios extends CI_Model {
         //dump_exit($data);
         $month = $data['month'] + 1 ; 
         $year  = $data['year'] ;
-        $sql= "SELECT orden_trabajo.id_orden,
-            orden_trabajo.nro,
-            orden_trabajo.fecha_program,
-            orden_trabajo.tipo,
-            orden_trabajo.descripcion,
-            orden_trabajo.duracion,
-            equipos.codigo 
-            from orden_trabajo
-            INNER JOIN equipos ON equipos.id_equipo = orden_trabajo.id_equipo
-            WHERE orden_trabajo.id_empresa = $empId
-            AND orden_trabajo.estado != 'T'
-            AND month(orden_trabajo.fecha_program) = $month
-            AND year(orden_trabajo.fecha_program) = $year";
-        $query= $this->db->query($sql);
-        
+ 
+        $this->db->select('OT.id_orden,OT.nro,OT.fecha_program,OT.tipo,OT.descripcion,OT.duracion');
+        $this->db->select('EQ.codigo');
+        $this->db->select('A.descripcion as area');
+        $this->db->select('G.descripcion as grupo');
+        $this->db->select('S.descripcion as sector');
+        $this->db->select('TO.descripcion as origen');
+        $this->db->from('orden_trabajo OT');
+        $this->db->join('equipos EQ', 'EQ.id_equipo = OT.id_equipo', 'left');
+        $this->db->join('area A', 'A.id_area = EQ.id_area', 'left');
+        $this->db->join('grupo G', 'G.id_grupo = EQ.id_grupo', 'left');
+        $this->db->join('sector S', 'S.id_sector = EQ.id_sector', 'left');
+        $this->db->join('tbl_tipoordentrabajo TO', 'TO.tipo_orden = OT.tipo', 'left');
+        $this->db->where('OT.id_empresa', $empId);
+        $this->db->where('OT.estado!=','T');
+        $this->db->where("month(OT.fecha_program) = $month AND year(OT.fecha_program) = $year");
+        $query = $this->db->get();
         if ($query->num_rows()!=0)
         {
             return $query->result_array();  
@@ -43,6 +45,35 @@ class Calendarios extends CI_Model {
         {
             return false;
         }
+    }
+
+    public function opcionesFiltro()
+    {   
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
+
+        $res =  new StdClass();
+
+        $this->db->select('EQ.codigo as descripcion');
+        $this->db->where('id_empresa', $empId);
+        $res->equipos = $this->db->get('equipos EQ')->result();
+        
+        $this->db->select('A.descripcion');
+        $this->db->where('id_empresa', $empId);
+        $res->areas = $this->db->get('area A')->result();
+
+        $this->db->select('G.descripcion');
+        $this->db->where('id_empresa', $empId);
+         $res->grupos = $this->db->get('grupo G')->result();
+
+        $this->db->select('S.descripcion');
+        $this->db->where('id_empresa', $empId);
+        $res->sectores = $this->db->get('sector S')->result();
+        
+        $this->db->select('TO.descripcion');
+        $res->origenes = $this->db->get('tbl_tipoordentrabajo TO')->result();
+
+        return $res;
     }
 
     // Preventivos por Hora para la Tabla
@@ -69,7 +100,7 @@ class Calendarios extends CI_Model {
             from preventivo 
             join equipos ON preventivo.id_equipo = equipos.id_equipo 
             join tareas ON preventivo.id_tarea = tareas.id_tarea 
-            WHERE preventivo.id_empresa = $empId AND preventivo.estadoprev = 'C' AND ((preventivo.perido = '5') OR (preventivo.perido = '6'))";//horas o ciclos
+            WHERE preventivo.id_empresa = $empId AND preventivo.estadoprev = 'C' AND ((preventivo.perido = '5') OR (preventivo.perido = '6')) AND (equipos.ultima_lectura >= (preventivo.lectura_base + preventivo.critico1))";//horas o ciclos
             //AND month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $mes 
             //AND year(orden_trabajo.fecha_program) = $year
             //";
@@ -143,9 +174,10 @@ class Calendarios extends CI_Model {
                     WHERE tbl_back.id_empresa = $empId
                     AND year(tbl_back.fecha) = $year 
                     AND month(tbl_back.fecha) = $month 
-                    AND tbl_back.estado != 'AN' 
-										AND tbl_back.estado != 'OT'
-										AND tbl_back.estado != 'PL'";
+                    AND (tbl_back.estado = 'C' OR tbl_back.estado = 'S')
+										 ";
+										// AND tbl_back.estado != 'OT'
+										// AND tbl_back.estado != 'PL'";
         $query= $this->db->query($sql);
         if ($query->num_rows()!=0)
         {
@@ -496,7 +528,7 @@ class Calendarios extends CI_Model {
 				$this->db->from('orden_trabajo');			
 				$this->db->join('equipos', 'orden_trabajo.id_equipo = equipos.id_equipo');
 				$this->db->join('tbl_tipoordentrabajo', 'tbl_tipoordentrabajo.id = orden_trabajo.tipo');	
-				$this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId');		
+				$this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId','left');		
 				$this->db->where('orden_trabajo.id_orden', $idOt);
 				$query = $this->db->get();
 				if($query->num_rows()!=0)

@@ -57,7 +57,6 @@ function deshabilitar() {
 $('#cerrar').click(function cargarVista() {
     WaitingOpen();
     $('#content').empty();
-    //	$("#content").load("<?php# echo base_url(); ?>index.php/Tarea/index/");
     WaitingClose();
 });
 
@@ -87,86 +86,6 @@ $('.btncolor').click(function(e) {
     });
 });
 
-// function terminarTarea(){
-// 	var ban = true;
-// 	$('.getFormularioTarea').each(function( index ) {
-// 	if($( this ).attr('data-open')=="true"){
-// 			console.log( index + ": " + $( this ).attr('data-validado'));
-// 			ban = ban && ($( this ).attr('data-validado') == "true");
-// 	}
-// 	});
-// 	if(ban==false){alert("Para concluir esta actividad primero debe Validar el Formulario");return;}
-// 	WaitingOpen('Cerrando Tarea');
-// 	var idTarBonita = $('#idTarBonita').val();
-// 	//alert(idTarBonita);
-// 	$.ajax({
-// 			type: 'POST',
-// 			data: {
-// 					'idTarBonita': idTarBonita,
-// 			},
-// 			url: 'index.php/Tarea/terminarTarea',
-// 			success: function(data) {
-// 								WaitingClose();
-// 							// toma a tarea exitosamente
-// 							if(data['reponse_code'] == 204){
-// 									$("#content").load("<?php #echo base_url(); ?>index.php/Tarea/index/<?php #echo $permission; ?>");
-// 							}
-// 			},
-// 			error: function(data) {
-// 					//alert("Noo");
-// 					console.log(data);
-// 			},
-// 			dataType: 'json'
-// 	}); 
-// }      
-
-// function terminarTarea(){
-
-// 	var formOt = [];
-// 	var i = 0;
-// 	$('.getFormularioTarea').each(function( index ) {
-// 		var data = {};
-// 		var idForm = $( this ).attr('data-formid');
-// 		console.log('id form: '+idForm);
-// 		var idOT = $('#ot').val();
-// 		data.idForm = idForm;
-// 		data.idOT = 22;
-
-// 		formOt.push(data);
-// 	});
-
-
-
-// 	 //if ( validarCamposObligatorios(formOt) ) {
-// 			$.ajax({
-// 				type: 'POST',
-// 				data: {formIdOt:formOt},
-// 				url: 'index.php/Tarea/terminarTareaStandarenBPM',
-// 				success: function(data) {
-// 									WaitingClose();
-// 								// toma a tarea exitosamente
-// 								// if(data['reponse_code'] == 204){
-// 								// 		$("#content").load("<?php #echo base_url(); ?>index.php/Tarea/index/<?php #echo $permission; ?>");
-// 								// }
-// 				},
-// 				error: function(data) {
-// 						//alert("Noo");
-// 						console.log(data);
-// 				},
-// 				dataType: 'json'
-// 			}); 
-// 	 //} else {
-// 	//	alert('Existen Formularios incompletos, por favor rellenelos para completar la tarea.');
-// 	 //}
-
-
-// 	//console.table(formOt);
-// 	//if(ban==false){alert("Para concluir esta actividad primero debe Validar el Formulario");return;}
-// 	//WaitingOpen('Cerrando Tarea');
-// 	// var idTarBonita = $('#idTarBonita').val();
-// 	// //alert(idTarBonita);
-// 	// 
-// }  
 
 // cerrar tarea Analisis de urgencia
 function decidirUrgencia() {
@@ -188,7 +107,7 @@ function decidirUrgencia() {
             //	WaitingClose();
             // toma a tarea exitosamente
             if (data['reponse_code'] == 204) {
-                //$("#content").load("<?php #echo base_url(); ?>index.php/Tarea/index/<?php #echo $permission; ?>");
+               linkTo('Tarea');
             }
         },
         error: function(data) {
@@ -263,7 +182,7 @@ function guardarComentario() {
             'processInstanceId': id,
             'content': comentario
         },
-        url: '<?php echo base_url(CMP_ALM) ?>Proceso/guardarComentario',
+        url: '<?php echo base_url(ALM) ?>Proceso/guardarComentario',
         success: function(result) {
             console.log("Submit");
             var lista = $('#listaComentarios');
@@ -282,7 +201,7 @@ function tomarTarea() {
     var idTarBonita = $('#idTarBonita').val();
     $.ajax({
         type: 'POST',
-        url: '<?php echo base_url(CMP_ALM) ?>Proceso/tomarTarea/' + idTarBonita,
+        url: '<?php echo base_url(ALM) ?>Proceso/tomarTarea/' + idTarBonita,
         success: function(data) {
 
             if (data['status']) {
@@ -303,7 +222,7 @@ function soltarTarea() {
     var idTarBonita = $('#idTarBonita').val();
     $.ajax({
         type: 'POST',
-        url: '<?php echo base_url(CMP_ALM) ?>Proceso/soltarTarea/' + idTarBonita,
+        url: '<?php echo base_url(ALM) ?>Proceso/soltarTarea/' + idTarBonita,
         success: function(data) {
 
             // toma a tarea exitosamente

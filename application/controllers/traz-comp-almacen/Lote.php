@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Lote extends CI_Controller {
 
-	private $path = CMP_ALM.'/';
+	private $path = ALM.'/';
 
 	function __construct()
   {
@@ -51,4 +51,11 @@ class Lote extends CI_Controller {
 		$arti = $this->input->post('arti');
 		echo $this->Lotes->verificarExistencia($arti, $lote, $depo);
 	}
+	public function listarPorArticulo(){
+
+        $idarticulo = $this->input->get("arti_id");
+        $iddeposito = $this->input->get("depo_id");
+        $datos = $this->Lotes->listarPorArticulos($idarticulo,$iddeposito)->lotes->lote;
+        echo json_encode($datos);
+    }
 }

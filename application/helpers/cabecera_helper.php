@@ -58,6 +58,10 @@ if(!function_exists('cargarCabecera')){
 				$queryOT = $ci->db->get();			
 				if($queryOT->num_rows() > 0){
 						$resultOT = $queryOT->row_array();
+						// var_dump($resultOT);
+						if($resultOT['tareaDescrip'] == null){
+							$resultOT['tareaDescrip'] = $resultOT['otDescrip'];
+						}
 				}
 			}		
 
@@ -65,7 +69,7 @@ if(!function_exists('cargarCabecera')){
 			echo '        
 						<div id="collapseDivCli" class="box box-default collapsed-box box-solid">
 							<div class="box-header with-border">
-								<h3 id="tituloInfo" class="box-title">Equipo: '.$result['descripcionEquipo'].' / Mas Detalles</h3>
+								<h3 id="tituloInfo" class="box-title">Equipo: '.$result['codigo'].' - '.$result['descripcionEquipo'].' / Mas Detalles</h3>
 								<div class="box-tools pull-right">
 								<button id="infoCliente" type="button" class="btn btn-box-tool" data-widget="collapse" onclick="mostrarCliente()">
 										<i class="fa fa-plus"></i>
@@ -223,7 +227,7 @@ if(!function_exists('cargarCabecera')){
 							</div>							
 							<div class="col-xs-12 col-sm-4">
 								<label style="margin-top: 7px;">Tarea: </label>
-								<input type="text" class="form-control"  value="'.$resultOT['tareaDescrip'].'" disabled/>
+								<input id="info-tarea" type="text" class="form-control"  value="'.$resultOT['tareaDescrip'].'" disabled/>
 							</div>							
 							<div class="col-xs-12 col-sm-4">
 								<label style="margin-top: 7px;">Estado: </label>';								
