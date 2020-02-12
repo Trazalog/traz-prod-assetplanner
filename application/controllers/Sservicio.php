@@ -6,7 +6,22 @@ class Sservicio extends CI_Controller
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->model('Sservicios');		
+		$this->load->model('Sservicios');
+		$this->load->model('areas');
+		$this->load->model('procesos');
+	}
+	public function getSS(){
+		$data["SS"] = $this->Sservicios->getSSs($_POST['idSS']);
+		$id_equipo = $data["SS"][0]->id_equipo;
+		$data["EQ_SEC"] = $this->Sservicios->getEquipoSector($id_equipo);
+		$id_area = $data["EQ_SEC"][0]->area;
+		$id_proceso = $data["EQ_SEC"][0]->proceso;
+		$area = $this->areas->Obtener_areas($id_area);
+		$data["AR"] = $area[0]["descripcion"];
+		$proceso = $this->procesos->Obtener_procesos($id_proceso);
+		$data["PR"] = $proceso[0]["descripcion"];
+
+		echo json_encode($data);
 	}
 	// Trae sectores por empresa logueada - Listo
 	public function getSector()
