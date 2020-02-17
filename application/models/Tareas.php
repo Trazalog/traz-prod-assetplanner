@@ -793,8 +793,6 @@ class Tareas extends CI_Model {
 		}
 		// Agrega datos desde BPM y BD local
 		function CompletarToDoList($data){
-			
-			
 
 			foreach ($data as $key => $value) {
 
@@ -812,7 +810,7 @@ class Tareas extends CI_Model {
 					continue;
 				}
 				
-				$this->db->select('A.id_solicitud as \'ss\', id_orden as \'ot\', B.descripcion as \'desc\', causa, X.descripcion as \'desceq\', Z.descripcion as \'descsec\'');
+				$this->db->select('A.id_solicitud as \'ss\', id_orden as \'ot\', B.descripcion as \'desc\', causa, X.codigo as \'desceq\', Z.descripcion as \'descsec\'');
 				
 				$this->db->from('solicitud_reparacion as A');
 				$this->db->join('orden_trabajo as B','A.case_id = B.case_id','left');
@@ -823,7 +821,7 @@ class Tareas extends CI_Model {
 				
 				if (!$res) {
 						
-					$this->db->select('A.id_solicitud as \'ss\', id_orden as \'ot\', B.descripcion as \'desc\', causa, X.descripcion as \'desceq\', Z.descripcion as \'descsec\'');
+					$this->db->select('A.id_solicitud as \'ss\', id_orden as \'ot\', B.descripcion as \'desc\', causa, X.codigo as \'desceq\', Z.descripcion as \'descsec\'');
 					$this->db->from('solicitud_reparacion as A');
 					$this->db->from('orden_trabajo as B');
 					$this->db->from('tbl_back as C');
@@ -837,7 +835,7 @@ class Tareas extends CI_Model {
 				
 					if (!$res) {
 
-							$this->db->select('id_orden as \'ot\', B.descripcion as \'desc\', causa, X.descripcion as \'desceq\', Z.descripcion as \'descsec\'');
+							$this->db->select('id_orden as \'ot\', B.descripcion as \'desc\', causa, X.codigo as \'desceq\', Z.descripcion as \'descsec\'');
 							$this->db->where('A.case_id',$value['caseId']);
 							$this->db->from('solicitud_reparacion as A');
 							$this->db->join('orden_trabajo as B','B.id_solicitud = A.id_solicitud','left');
@@ -847,7 +845,7 @@ class Tareas extends CI_Model {
 							
 							if (!$res) {
 
-								$this->db->select('id_orden as \'ot\', A.descripcion as \'desc\', X.descripcion as \'desceq\', Z.descripcion as \'descsec\'');
+								$this->db->select('id_orden as \'ot\', A.descripcion as \'desc\', X.codigo as \'desceq\', Z.descripcion as \'descsec\'');
 								$this->db->from('orden_trabajo as A');
 								$this->db->join('equipos as X','X.id_equipo = A.id_equipo','left');
 								$this->db->join('sector as Z','Z.id_sector = X.id_sector','left');
@@ -892,6 +890,23 @@ class Tareas extends CI_Model {
 						$data[$key]['displayDescription'] = $res->causa;
 					}
 				}	
+				
+				// si hay un usr asignado en bpm
+				if( isset($data[$key]['assigned_id'])){
+					
+					$sql = 'select (concat(usrName,", ", usrLastName) ) as usr_asig_nomb
+					from sisusers SU
+					join orden_trabajo OT on OT.id_usuario_a = SU.usrId
+					where OT.id_orden = '.$data[$key]["ot"];
+					
+					$query = $this->db->query($sql);
+					$row = $query->row();	
+				
+					$data[$key]['usr_asignado'] = $row->usr_asig_nomb;
+				}else{
+					$data[$key]['usr_asignado'] = " ";
+				}
+
 				
 			}
 			
