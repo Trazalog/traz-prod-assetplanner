@@ -75,7 +75,11 @@
 
                     echo '<td '.($device == 'android' ? 'class= "celda nomTarea  tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$f['sectorDesc'].'</td>';
 
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.formato_fecha_hora($f['assigned_date']).'</td>'; 
+										echo '<td '.($device == 'android' ? 'class= "celda nomTarea tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">
+										'.$f['usr_asignado'].'
+										<br>
+										'.formato_fecha_hora($f['assigned_date']).'										
+										</td>'; 
                 
                     echo '</tr>';
 
