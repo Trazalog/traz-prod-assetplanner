@@ -890,22 +890,28 @@ class Tareas extends CI_Model {
 						$data[$key]['displayDescription'] = $res->causa;
 					}
 				}	
-				
-				// si hay un usr asignado en bpm
-				if( isset($data[$key]['assigned_id'])){
-					
-					$sql = 'select (concat(usrName,", ", usrLastName) ) as usr_asig_nomb
-					from sisusers SU
-					join orden_trabajo OT on OT.id_usuario_a = SU.usrId
-					where OT.id_orden = '.$data[$key]["ot"];
-					
-					$query = $this->db->query($sql);
-					$row = $query->row();	
-				
-					$data[$key]['usr_asignado'] = $row->usr_asig_nomb;
-				}else{
+				// si existe OT
+				if (isset($data[$key]["ot"])) {
+						// si hay un usr asignado en bpm
+						if( isset($data[$key]['assigned_id'])){
+							
+								$sql = 'select (concat(usrName,", ", usrLastName) ) as usr_asig_nomb
+								from sisusers SU
+								join orden_trabajo OT on OT.id_usuario_a = SU.usrId
+								where OT.id_orden = '.$data[$key]["ot"];
+								
+								$query = $this->db->query($sql);
+								$row = $query->row();	
+							
+								$data[$key]['usr_asignado'] = $row->usr_asig_nomb;
+						}else{
+								$data[$key]['usr_asignado'] = " ";
+						}
+				} else {
 					$data[$key]['usr_asignado'] = " ";
 				}
+				
+				
 
 				
 			}
