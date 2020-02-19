@@ -374,3 +374,7 @@ function showFD(formData) {
     }
 }
 
+function formToObject(formData) {
+    return JSON.parse(formToJson(formData));
+}
+

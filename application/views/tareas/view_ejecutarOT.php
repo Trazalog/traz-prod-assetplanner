@@ -242,8 +242,8 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" id="cerrar" class="btn btn-primary">Cerrar</button>
-                            <button type="button" class="btn btn-success" id="hecho"onclick="validarSubtareas()">Terminar Tarea</button>
+                          <button type="button" class="btn btn-success" id="hecho" onclick="validarSubtareas()">Terminar Tarea</button>
+                          <button type="button" class="btn btn-primary" id="cerrar">Cerrar</button>                            
                         </div> <!-- /.modal footer -->
                     </div>
                 </div>
@@ -261,6 +261,15 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 // valida el estado de la OT y muestra llave segun corressponda 		
 validaInicio();
 detectarForm();
+
+// Volver al atras
+$('#cerrar').click(function cargarVista() {
+    WaitingOpen();
+    console.log("click en boton cerrar");
+    $('#content').empty();
+    $("#content").load(base_url + "index.php/Tarea/index/add-edit-del-view");
+    WaitingClose();
+});
 
 function validaInicio() {
     $("#iniciarTarea").hide();

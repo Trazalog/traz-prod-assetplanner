@@ -762,8 +762,8 @@ class  Equipo extends CI_Controller {
   		echo json_encode($result);
 		}
 		
-		public function setLecturaEdit(){
-			$result = $this->Equipos->setLecturaEdit($this->input->post());
+	public function setLecturaObservacionEdit(){
+		$result = $this->Equipos->setLecturaObservacionEdit($this->input->post());
   		echo json_encode($result);
 		}
 

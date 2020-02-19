@@ -61,7 +61,7 @@
                   }
                   if (strpos($permission,'Lectura') !== false) {
                     if( $a['estado'] == 'AC' OR $a['estado'] == 'RE' ) {
-                      echo '<i class="fa fa-hourglass-half text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Mantenimiento Autónomo" data-toggle="modal" data-target="#modalectura"></i>';
+                      echo '<i class="fa fa-hourglass-half text-light-blue nuevaLectura" style="cursor: pointer; margin-left: 15px;" title="Mantenimiento Autónomo"></i>';
                     }
                     echo '<i class="fa fa-history text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Historial de Lecturas" data-toggle="modal" data-target="#modalhistlect"></i>';
                   }
@@ -563,7 +563,10 @@ $(".fa-print").click(function(e) {
 // Modal ingreso lectura
 $(".fa-hourglass-half").click(function(e) {
     $(".clear").val(""); //llimpia los inputs del modal lectura
-
+    $("#spanNuevaLectura").text("");
+    $('#errorLectura').fadeOut(0);
+    $('#errorLectura2').fadeOut(0);
+    $("#modalectura").modal('show');
     var $id_equipo = $(this).parent('td').parent('tr').attr('id');
     $('#id_maquina').val($id_equipo);
     console.log("id_equipo: " + $id_equipo);
@@ -585,6 +588,8 @@ $(".fa-hourglass-half").click(function(e) {
         url: 'index.php/Equipo/getEqPorId',
         success: function(data) {
             console.table(data);
+            //console.log(data[0].lectura);
+            $("#spanNuevaLectura").text(data[0].lectura);
             estBoton($estado); //agrega boton de estados
         },
         error: function(result) {
@@ -1072,8 +1077,8 @@ function llenarModal(data) {
     $('#tblhistorial').DataTable().clear().draw();
     if (data.length == 0) return;
     $('#id_Equipo_modal').val(data[0]['id_equipo']);
-
-    console.table(data);
+    localStorage.setItem('id_equipo', data[0]['id_equipo']);
+    // console.table(data);
     if (Array.isArray(data) && data.length) {
         console.log("El equipo SI tiene historial de lecturas");
         $("#codEquipo").text(data[0]['codigo']);
@@ -1088,7 +1093,8 @@ function llenarModal(data) {
                 data[i]['operario_nom'],
                 data[i]['turno'],
                 data[i]['observacion'],
-                estado(data[i]['estado'])
+                // estado()
+                data[i]['estado']
             ]).draw();
         }
     } else {
@@ -1103,38 +1109,61 @@ $(document).on("click", ".editLectura", function(e) {
 
     e.preventDefault();
     e.stopImmediatePropagation();
-    $("#modalEditarLectura").modal('show');
+    $("#modalEditLecturaObservacion").modal('show');
     var idLectura = $(this).data("idlectura");
     var lectura = $(this).parents("tr").find("td").eq(1).html();
+    var observacion = $(this).parents("tr").find("td").eq(5).html();
+    // console.log(observacion);
     $('#idLecturaEdit').val(idLectura);
     $('#lecturaEdit').val(lectura);
+    $('#observacionEdit').val(observacion);
+    $('#errorEditLectura').fadeOut(0);
+    $('#errorEditObservacion').fadeOut(0);
+    $('#errorEditLectura2').fadeOut(0);
 });
 
-function guardarEditLectura() {
+function guardarEdit() {
     $('#errorEditLectura').fadeOut('fast');
+    $('#errorEditObservacion').fadeOut('fast');
+    $('#errorEditLectura2').fadeOut('fast');
+    
     console.log('estoy guardando');
     var id_lectura = $('#idLecturaEdit').val();
     var lectura = $('#lecturaEdit').val();
+    var observacion = $('#observacionEdit').val();
+    var id_equipo = localStorage.getItem('id_equipo');
 
-    if ((id_lectura == "") || (lectura == "")) {
-        $('#errorEditLectura').fadeIn('slow');
+    if ((id_lectura == "") || (lectura == "") || (observacion =="")){
+        if(lectura == ""){
+            $('#errorEditLectura').fadeIn('slow');
+        }
+        if(observacion == ""){
+            $('#errorEditObservacion').fadeIn('slow')
+        }
         return;
     } else {
-        $("#modalEditarLectura").modal('hide');
+        
         $.ajax({
             type: "POST",
-            url: "index.php/Equipo/setLecturaEdit",
+            url: "index.php/Equipo/setLecturaObservacionEdit",
             data: {
+                id_equipo,
                 lectura,
+                observacion,
                 id_lectura
             },
             success: function(data) {
-                console.log("Guardado con exito...");
-                $("#modalEditarLectura").modal('hide');
-                recargarTabla();
+                console.log(data);
+                if(!data){
+                    $('#errorEditLectura2').fadeIn('slow');
+                }else{
+                    console.log("Guardado con exito...");
+                    $("#modalEditLecturaObservacion").modal('hide');
+                    recargarTabla();
+                }
             },
             error: function(result) {
-                $("#modalEditarLectura").modal('hide');
+                $("#modalEditLecturaObservacion").modal('hide');
                 alert('Ocurrió un error en la Edición...');
                 console.log(result);
             },
@@ -1147,14 +1176,15 @@ function guardarEditLectura() {
 }
 
 
-
-
-
 // Chequea los campos llenos - Chequeado
 function validarCampos() {
     var hayError = "";
     if ($('#lectura').val() == "") {
         hayError = true;
+    }else{
+         if($('#lectura').val() <= $("#spanNuevaLectura").text()){
+             hayError = "lectura";
+         }
     }
     if ($('#operario').val() == "") {
         hayError = true;
@@ -1165,6 +1195,7 @@ function validarCampos() {
     if ($('#observacion').val() == "") {
         hayError = true;
     }
+
     return hayError;
 }
 
@@ -1174,7 +1205,11 @@ function guardarlectura() {
     hayError = validarCampos();
     if (hayError == true) {
         $('#errorLectura').fadeIn('slow');
-    } else {
+        $('#errorLectura2').fadeOut('fast');
+    }else if(hayError == "lectura"){
+        $('#errorLectura2').fadeIn('slow');
+        $('#errorLectura').fadeOut('fast');
+    }else {
 
         var lectura = $("#formlectura").serializeArray();
         console.table(lectura);
@@ -2289,6 +2324,10 @@ $('#tablaempresa').DataTable({
                     <h4><i class="icon fa fa-ban"></i> ALERTA!</h4>
                     Complete todos los datos obligatorios.
                 </div>
+                <div class="alert alert-danger alert-dismissable" id="errorLectura2" style="display: none">
+                    <h4><i class="icon fa fa-ban"></i> ALERTA!</h4>
+                    Valor de lectura incorrecto.
+                </div>
                 <form id="formlectura">
 
                     <div class="form-group">
@@ -2305,6 +2344,7 @@ $('#tablaempresa').DataTable({
                     <div class="form-group">
                         <label for="">Lectura <strong style="color: #dd4b39">*</strong>:</label>
                         <input type="text" id="lectura" name="lectura" class="form-control clear">
+                        <span>Ingrese valor mayor a: </span><span id="spanNuevaLectura"></span>
                     </div>
                     <div class="form-group">
                         <label for="">Operario <strong style="color: #dd4b39">*</strong>:</label>
@@ -2374,7 +2414,7 @@ $('#tablaempresa').DataTable({
 <!-- / Modal Historial de Lecturas -->
 
 <!-- Modal Edicion de Lecturas -->
-<div class="modal" id="modalEditarLectura">
+<div class="modal" id="modalEditLecturaObservacion">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -2386,13 +2426,30 @@ $('#tablaempresa').DataTable({
                         <h4><i class="icon fa fa-ban"></i> Error!</h4>
                         Por favor ingrese una nueva lectura antes de guardar...
                     </div>
+                    <div class="alert alert-danger alert-dismissable" id="errorEditLectura2" style="display: none">
+                        <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                        Ingrese un valor de lectura correcto...
+                    </div>
+                    <div class="alert alert-danger alert-dismissable" id="errorEditObservacion" style="display: none">
+                        <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                        Por favor ingrese una nueva observacion antes de guardar...
+                    </div>
                     <form class="form-horizontal">
-                        <div class="form-group">
+                        <div class="form-group col-sm-12">
                             <label for="lecturaEdit" class="col-sm-2 control-label">Nueva Lectura</label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="lecturaEdit"
                                     placeholder="Ingrese nueva lectura...">
                                 <input type="hidden" class="form-control" id="idLecturaEdit">
+                                <span>*ingrese un valor de lectura entre el anterior y el siguente valor (si existen)</span>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <label for="observacionEdit" class="col-sm-2 control-label">Nueva observacion</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="observacionEdit"
+                                    placeholder="Ingrese nueva observacion...">
+                                <input type="hidden" class="form-control" id="idObservacionEdit">
                             </div>
                         </div>
                     </form>
@@ -2400,7 +2457,7 @@ $('#tablaempresa').DataTable({
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary btnAgregarEditar"
-                        onclick="guardarEditLectura()">Guardar</button>
+                        onclick="guardarEdit()">Guardar</button>
                 </div>
             </form>
         </div>

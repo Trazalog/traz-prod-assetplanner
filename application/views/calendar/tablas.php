@@ -9,33 +9,33 @@
 ?>
 <!-- CORRECTIVO -->
 <div class="col-md-6">
-  <div class="box collapsed-box">
+    <div class="box collapsed-box">
 
-    <div class="box-header">
-      <h3 class="box-title">Solicitud de Servicios (<?php echo $mostrarFecha ?>)</h3>
-      <div class="box-tools pull-right">
-        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="">
-          <i class="fa fa-plus"></i></button>
-        </div>
-      </div><!-- /.box-header -->
+        <div class="box-header">
+            <h3 class="box-title">Solicitud de Servicios (<?php echo $mostrarFecha ?>)</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="">
+                    <i class="fa fa-plus"></i></button>
+            </div>
+        </div><!-- /.box-header -->
 
-      <div class="box-body">
-        <table id="correctivo" class="table table-bordered table-hover">
-          <thead>
-            <tr>
-              <th style="text-align: center" class="hidden">Id Equipo</th>
-              <th style="text-align: center" class="hidden">Id predictivo</th>
-              <th style="text-align: center">OT</th>
-              <th style="text-align: center">ID Solic.</th>           
-              <th style="text-align: center">Codigo</th>
-              <th style="text-align: center">Causa</th>
-              <!-- <th style="text-align: center">sector</th> -->
-              <!--<th style="text-align: center">Tipo</th>-->
-              <th style="text-align: center">F.Solicitado</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php
+        <div class="box-body">
+            <table id="correctivo" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th style="text-align: center" class="hidden">Id Equipo</th>
+                        <th style="text-align: center" class="hidden">Id predictivo</th>
+                        <th style="text-align: center">OT</th>
+                        <th style="text-align: center">ID Solic.</th>
+                        <th style="text-align: center">Codigo</th>
+                        <th style="text-align: center">Causa</th>
+                        <!-- <th style="text-align: center">sector</th> -->
+                        <!--<th style="text-align: center">Tipo</th>-->
+                        <th style="text-align: center">F.Solicitado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
             //dump_exit($list4);
             if( $list4!=false && count($list4) > 0) 
             {
@@ -70,13 +70,13 @@
               }
             }
             ?>
-          </tbody>
-        </table>
-      </div><!-- /.box-body -->
+                </tbody>
+            </table>
+        </div><!-- /.box-body -->
 
     </div><!-- /.box collapsed-box-->
-  </div><!-- /.col-md-6 -->
-  <?php
+</div><!-- /.col-md-6 -->
+<?php
 }
 ?>
 
@@ -85,38 +85,64 @@
 ?>
 <!-- PREVENTIVO -->
 <div class="col-md-6">
-  <div class="box collapsed-box">
+    <div class="box collapsed-box">
 
-    <div class="box-header">
-      <h3 class="box-title">Preventivo (<?php echo $mostrarFecha ?>)</h3>
-      <div class="box-tools pull-right">
-        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="">
-          <i class="fa fa-plus"></i></button>
-        </div>
-      </div><!-- /.box-header -->
+        <div class="box-header">
+            <h3 class="box-title">Preventivo (<?php echo $mostrarFecha ?>)</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="">
+                    <i class="fa fa-plus"></i></button>
+            </div>
+        </div><!-- /.box-header -->
 
-      <div class="box-body">
-        <table id="preventivo" class="table table-bordered table-hover">
-          <thead>
-            <tr>
-              <th style="text-align: center" class="hidden">Id Preventivo</th>
-              <th style="text-align: center" class="hidden">Id Equipo</th>
-              <th style="text-align: center" class="hidden">Id tarea</th>
-              <th style="text-align: center">OT</th>
-              <th style="text-align: center">Equipo</th>
-              <th style="text-align: center">Tarea</th>
-              <th style="text-align: center">Fecha</th>
-              <!-- <th style="text-align: center">Horas H.</th> -->
-              <th style="text-align: center">Periodo</th>
-              <th style="text-align: center">Frec.</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php
+        <div class="box-body">
+            <table id="preventivo" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th style="text-align: center" class="hidden">Id Preventivo</th>
+                        <th style="text-align: center" class="hidden">Id Equipo</th>
+                        <th style="text-align: center" class="hidden">Id tarea</th>
+                        <th style="text-align: center">OT</th>
+                        <th style="text-align: center">Equipo</th>
+                        <th style="text-align: center">Tarea</th>
+                        <th style="text-align: center">Fecha</th>
+                        <!-- <th style="text-align: center">Horas H.</th> -->
+                        <th style="text-align: center">Periodo</th>
+                        <th style="text-align: center">Frec.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
             if($list3!=false && count($list3) > 0) 
             {
               foreach( $list3 as $p ) 
               {
+                switch ($p['perido']) {
+                  case '1':
+                          $periodo = 'Diario';
+                    break;
+                  case '2':
+                          $periodo = 'Mensual';
+                    break;
+                  case '3':
+                          $periodo = 'Semestral';
+                    break;
+                  case '4':
+                          $periodo = 'Anual';
+                    break;
+                  case '5':
+                          $periodo = 'horas';
+                  break;
+                  case '6':
+                          $periodo = 'ciclos';
+                  break;
+                  default:
+                          $periodo = 'Diario';
+                    break;
+                }
+
+                if($p['perido'] != '5' && $p['perido'] != '6'){
+
                 //echo "<tr>";
                 echo '<tr id="'.$p['prevId'].'" >';
                 // 0
@@ -140,132 +166,120 @@
                 // 7  //horas hombre
                 //echo "<td style='text-align: center'>".$p['horash']."</td>";
                 // 8  //periodo
-                switch ($p['perido']) {
-                  case '1':
-                          $periodo = 'Diario';
-                    break;
-                  case '2':
-                          $periodo = 'Mensual';
-                    break;
-                  case '3':
-                          $periodo = 'Semestral';
-                    break;
-                  case '4':
-                          $periodo = 'Anual';
-                    break;
-                  
-                  default:
-                          $periodo = 'Diario';
-                    break;
-                }
                 echo "<td style='text-align: center'>".$periodo."</td>";               
                 // 9  //frecuencia
                 echo "<td style='text-align: center'>".$p['cantidad']."</td>";
-              echo "</tr>";
+                echo "</tr>";
+
+                }
             }
           }
           ?>
-        </tbody>
-      </table>
-    </div><!-- /.box-body -->
+                </tbody>
+            </table>
+        </div><!-- /.box-body -->
 
-  </div><!-- /.box collapsed-box-->
+    </div><!-- /.box collapsed-box-->
 </div><!-- /.col -->
 
 <!-- PREVENTIVO P/HORAS-->
 <div class="col-md-6">
-  <div class="box collapsed-box">
+    <div class="box collapsed-box">
 
-    <div class="box-header">
-      <h3 class="box-title">Preventivo por ciclos/horas (<?php echo $mostrarFecha ?>)</h3>
-      <div class="box-tools pull-right">
-        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="">
-          <i class="fa fa-plus"></i></button>
-        </div>
-      </div><!-- /.box-header -->
+        <div class="box-header">
+            <h3 class="box-title">Preventivo por ciclos/horas (<?php echo $mostrarFecha ?>)</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="">
+                    <i class="fa fa-plus"></i></button>
+            </div>
+        </div><!-- /.box-header -->
 
-      <div class="box-body">
-        <table id="preventivo_horas" class="table table-bordered table-hover">
-          <thead>
-            <tr>
-              <th class="hidden">Id Preventivo</th>
-              <th class="hidden">Id Equipo</th>
-              <th class="hidden">Id tarea</th>
-              <th style="text-align: center">OT</th>
-              <th style="text-align: center">Equipo</th>
-              <th style="text-align: center">Tarea</th>
-              <th style="text-align: center">Fecha</th>
-              <!-- <th style="text-align: center">Horas H.</th> -->
-              <th style="text-align: center">Periodo</th>
-              <th style="text-align: center">Frec.</th>
-              <th class="hidden">Próximo Servicio</th>
-              <th class="hidden">Última Lectura</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php
-            if( $list!=false && count($list) > 0) 
-            {
-              //dump_exit($list);
-              foreach( $list as $p ) 
-              {
-
-                if( $p['tipoAlerta'] == 'A' ) { $classAlerta = 'bg-yellow color-palette'; }
-                if( $p['tipoAlerta'] == 'R' ) { $classAlerta = 'bg-red-active color-palette'; }
-                
-                echo "<tr class='<?php echo $classAlerta ?>'>";
-                  // 0
-                  echo "<td>";
-                   // if (strpos($permission,'Del') !== false) {
-                        echo '<i class="fa fa-history" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-preventivoH"></i>';
-                   // }
-                  echo "</td>";
-                  // 1  //id de preventivo
-                  echo "<td class='hidden'>".$p['prevId']."</td>";
-                  // 2  //id de equipo
-                  echo "<td class='hidden'>".$p['id_equipo']."</td>";
-                  // 3  //id de tarea
-                  echo "<td class='hidden'>".$p['id_tarea']."</td>";
-                  // 4  //codigo equipo
-                  echo "<td style='text-align: center'>".$p['codigo']."</td>";
-                  // 5  //descrip prevent
-                  echo "<td style='text-align: center'>".$p['descripcion']."</td>";
-                  // 6  //prox prevent
-                  echo "<td style='text-align: center'>".$p['prox']."</td>";
-                  // 7  //horas hombre
-                  //echo "<td style='text-align: center'>".$p['horash']."</td>";
-                  // 8  //periodo
-                  switch ($p['perido']) {
-                    case '5':
-                            $periodo = 'Horas';
-                      break;
-                    case '6':
-                            $periodo = 'Ciclos';
-                      break;
-                    case '7':
-                            $periodo = 'Km';
-                      break; 
-                    default:
-                            $periodo = 'Horas';
-                      break;
+        <div class="box-body">
+            <table id="preventivo_horas" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th class="hidden">Id Preventivo</th>
+                        <th class="hidden">Id Equipo</th>
+                        <th class="hidden">Id tarea</th>
+                        <th style="text-align: center">OT</th>
+                        <th style="text-align: center">Equipo</th>
+                        <th style="text-align: center">Tarea</th>
+                        <th style="text-align: center">Fecha</th>
+                        <!-- <th style="text-align: center">Horas H.</th> -->
+                        <th style="text-align: center">Periodo</th>
+                        <th style="text-align: center">Frec.</th>
+                        <th class='hidden'>Próximo Servicio</th>
+                        <th class='hidden'>Última Lectura</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                if( $list0!=false && count($list0) > 0) 
+                {
+                  //dump_exit($list0);
+                  foreach( $list0 as $p ) 
+                  {
+                    // if( $p['ultima_lectura'] < ($p['lectura_base'] + $p['cantidad']) ) { $classAlerta = 'bg-yellow color-palette'; }
+                    // if( $p['ultima_lectura'] >= ($p['lectura_base'] + $p['cantidad']) ) { $classAlerta = 'bg-red-active color-palette'; }
+                    
+                    echo "<tr class='<?php echo $classAlerta ?>'>";
+                      // 0
+                      echo "<td>";
+                      if( $p['ultima_lectura'] < ($p['lectura_base'] + $p['cantidad']) ) {
+                        echo '<i class="fa fa-info-circle" style="color: #FFD700; cursor: pointer; margin-left: 15px; font-size: 1.1em;" title="Alerta: se esta por llegar al nivel critico"></i>';
+                        echo '<i class="fa fa-history" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px; font-size: 1.1em;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-preventivoH"></i>';
+                      }
+                      if( $p['ultima_lectura'] >= ($p['lectura_base'] + $p['cantidad']) ) {
+                        echo '<i class="fa fa-exclamation-triangle" style="color: #FF0000; cursor: pointer; margin-left: 15px; font-size: 1.1em;" title="Alerta: se supero el nivel critico"></i>';
+                        echo '<i class="fa fa-history" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px; font-size: 1.1em;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-preventivoH"></i>';
+                      }        
+                      echo "</td>";
+                      // 1  //id de preventivo
+                      echo "<td class='hidden'>".$p['prevId']."</td>";
+                      // 2  //id de equipo
+                      echo "<td class='hidden'>".$p['id_equipo']."</td>";
+                      // 3  //id de tarea
+                      echo "<td class='hidden'>".$p['id_tarea']."</td>";
+                      // 4  //codigo equipo
+                      echo "<td style='text-align: center'>".$p['codigo']."</td>";
+                      // 5  //descrip prevent
+                      echo "<td style='text-align: center'>".$p['descripcion']."</td>";
+                      // 6  //prox prevent
+                      echo "<td style='text-align: center'>".$p['prox']."</td>";
+                      // 7  //horas hombre
+                      //echo "<td style='text-align: center'>".$p['horash']."</td>";
+                      // 8  //periodo
+                      switch ($p['perido']) {
+                        case '5':
+                                $periodo = 'Horas';
+                          break;
+                        case '6':
+                                $periodo = 'Ciclos';
+                          break;
+                        case '7':
+                                $periodo = 'Km';
+                          break; 
+                        default:
+                                $periodo = 'Horas';
+                          break;
+                      }
+                      echo "<td style='text-align: center'>".$periodo."</td>";
+                      // 8  //frecuencia
+                      echo "<td style='text-align: center'>".$p['cantidad']."</td>";
+                      // 9  //proximo Servicio
+                      echo "<td class='hidden'>".$p['proximoServicio']."</td>";
+                      // 10  //ultima Lectura
+                      echo "<td class='hidden'>".$p['ultima_lectura']."</td>";
+                    echo "</tr>";
                   }
-                  echo "<td style='text-align: center'>".$periodo."</td>";
-                  // 9  //frecuencia
-                  echo "<td style='text-align: center'>".$p['cantidad']."</td>";
-                  // 10  //proximo Servicio
-                  echo "<td class='hidden'>".$p['proximoServicio']."</td>";
-                  // 11  //ultima Lectura
-                  echo "<td class='hidden'>".$p['ultimaLectura']."</td>";
-                echo "</tr>";
-              }
-            }
-            ?>
-          </tbody>
-        </table>
-      </div><!-- /.box-body -->
+                }
+                ?>
+              </tbody>
+            </table>
+        </div><!-- /.box-body -->
 
     </div><!-- /.box collapsed-box-->
-  </div><!-- /.col --> 
+</div><!-- /.col -->
 <?php
 } // cierre de if preventivos
 ?>
@@ -276,33 +290,33 @@
 
 <!-- TAREAS BACKLOG -->
 <div class="col-md-6">
-  <div class="box collapsed-box">
+    <div class="box collapsed-box">
 
-    <div class="box-header">
-      <h3 class="box-title">Backlog (<?php echo $mostrarFecha ?>)</h3>
-      <div class="box-tools pull-right">
-        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="">
-          <i class="fa fa-plus"></i></button>
-        </div>
-      </div><!-- /.box-header -->
+        <div class="box-header">
+            <h3 class="box-title">Backlog (<?php echo $mostrarFecha ?>)</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="">
+                    <i class="fa fa-plus"></i></button>
+            </div>
+        </div><!-- /.box-header -->
 
-      <div class="box-body">
-        <table id="backlog" class="table table-bordered table-hover">
-          <thead>
-            <tr>
-              <th style="text-align: center" class="hidden">Id Equipo</th>
-              <th style="text-align: center" class="hidden">Id Backlog</th>    
-              <th style="text-align: center">OT</th>
-              <th style="text-align: center">ID Solic.</th>
-              <th style="text-align: center">Codigo</th>
-              <th style="text-align: center">Causa</th>
-              <th style="text-align: center">Fecha</th>
-              <th style="text-align: center" class="hidden">Id tarea</th>
-              <th style="text-align: center" class="hidden">Duracion</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php
+        <div class="box-body">
+            <table id="backlog" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th style="text-align: center" class="hidden">Id Equipo</th>
+                        <th style="text-align: center" class="hidden">Id Backlog</th>
+                        <th style="text-align: center">OT</th>
+                        <th style="text-align: center">ID Solic.</th>
+                        <th style="text-align: center">Codigo</th>
+                        <th style="text-align: center">Causa</th>
+                        <th style="text-align: center">Fecha</th>
+                        <th style="text-align: center" class="hidden">Id tarea</th>
+                        <th style="text-align: center" class="hidden">Duracion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
             //dump_exit($list2);
             if( $list2!=false && count($list2) > 0) 
             {
@@ -341,15 +355,15 @@
               }
             }
             ?>
-          </tbody>
-        </table>
-      </div><!-- /.box-body -->
+                </tbody>
+            </table>
+        </div><!-- /.box-body -->
 
     </div><!-- /.box collapsed-box-->
-  </div>
-  <?php
+</div>
+<?php
 }
-?> 
+?>
 
 <?php     
   if (strpos($permission,'Predictivo') !== false){
@@ -357,33 +371,33 @@
 
 <!-- TAREAS PREDICTIVO -->
 <div class="col-md-6">
-  <div class="box collapsed-box">
+    <div class="box collapsed-box">
 
-    <div class="box-header">
-      <h3 class="box-title">Predictivo (<?php echo $mostrarFecha ?>)</h3>
-      <div class="box-tools pull-right">
-        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="">
-          <i class="fa fa-plus"></i></button>
-        </div>
-      </div><!-- /.box-header -->
+        <div class="box-header">
+            <h3 class="box-title">Predictivo (<?php echo $mostrarFecha ?>)</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="">
+                    <i class="fa fa-plus"></i></button>
+            </div>
+        </div><!-- /.box-header -->
 
-      <div class="box-body">
-        <table id="predictivo" class="table table-bordered table-hover">
-          <thead>
-            <tr>
-              <th style="text-align: center" class="hidden">Id tarea</th>
-              <th style="text-align: center" class="hidden">Id Equipo</th>
-              <th style="text-align: center" class="hidden">Id predictivo</th>
-              <th style="text-align: center">OT</th>
-              <th style="text-align: center">Código</th>
-              <th style="text-align: center">Descrip</th>
-              <th style="text-align: center">Fecha</th>
-              <th style="text-align: center">Período</th>
-              <th style="text-align: center">Frec.</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php
+        <div class="box-body">
+            <table id="predictivo" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th style="text-align: center" class="hidden">Id tarea</th>
+                        <th style="text-align: center" class="hidden">Id Equipo</th>
+                        <th style="text-align: center" class="hidden">Id predictivo</th>
+                        <th style="text-align: center">OT</th>
+                        <th style="text-align: center">Código</th>
+                        <th style="text-align: center">Descrip</th>
+                        <th style="text-align: center">Fecha</th>
+                        <th style="text-align: center">Período</th>
+                        <th style="text-align: center">Frec.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
             //dump_exit($list1);
             if($list1!=false && count($list1) > 0) 
             {
@@ -416,13 +430,13 @@
               }
             }
             ?>
-          </tbody>
-        </table>
+                </tbody>
+            </table>
 
-      </div><!-- /.box-body -->
+        </div><!-- /.box-body -->
 
     </div><!-- /.box collapsed-box-->
-  </div>
-  <?php
+</div>
+<?php
 }
-?> 
+?>

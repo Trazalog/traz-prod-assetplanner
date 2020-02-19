@@ -36,6 +36,15 @@ class Sservicios extends CI_Model
 				return false;
 			}
 		}	
+
+		function getEquipoSector($idequipo){
+			$this->db->select('A.codigo as equipo,A.descripcion as descripcion,B.descripcion as sector, A.id_area as area, A.id_proceso as proceso');
+			$this->db->from('equipos as A');
+			$this->db->join('sector as B', 'B.id_sector=A.id_sector');
+			$this->db->where('A.id_equipo', $idequipo);
+			$query = $this->db->get()->result();
+			return $query;
+		}
 		// Elimina solicitud - Listo
 		function elimSolicitudes($id){
 			$estado = array(
@@ -63,8 +72,17 @@ class Sservicios extends CI_Model
 					$i++;
 				}		
 						return $data2;
-				}	    
-		}			
+			}	    
+		}	
+
+		function getSSs($idSS){
+			$this->db->select('solicitud_reparacion.*');
+			$this->db->from('solicitud_reparacion');    	
+			$this->db->where('solicitud_reparacion.id_solicitud', $idSS);
+
+			$query = $this->db->get()->result();
+			return $query;
+		}		
 		// Trae sectores por empresa logueada - Listo
 		function getSectores(){
 			$userdata = $this->session->userdata('user_data');
@@ -149,26 +167,20 @@ class Sservicios extends CI_Model
 			}
 			else
 			{			
-				$equipId  = $data['equip'];//
-				$solicita = $data['solici'];//
-				$dia      = $data['fecha'];//
-				$dia      = explode('-', $dia);
-				$hora     = $data['hora'];//
-				$min      = $data['min'];//
-				$falla    = $data['falla'];//
+				$equipId  = $this->input->post('equipo');//
+				$falla    = $this->input->post('falla');//
 				$userdata = $this->session->userdata('user_data');
 				$empId    = $userdata[0]['id_empresa'];
 
 				$userdata = $this->session->userdata('user_data');
 				$usrId    = $userdata[0]['usrId'];     // guarda usuario logueado
+				$usrName  = $userdata[0]['usrName'];
 				$insert   = array(
 					'f_solicitado' => date('Y-m-d H:i:s'), 
-					'f_sugerido'   => $dia[2].'-'.$dia[1].'-'.$dia[0],
-					'hora_sug'     => $hora.':'.$min,
 					'id_equipo'    => $equipId,
 					'estado'       => 'S',	// graba estado Solicitado, cambia a 'C' en Ord Serv
 					'usrId'        => $usrId,
-					'solicitante'  => $solicita,
+					'solicitante'  => $usrName,
 					'causa'        => $falla,
 					'foto'         => 'assets/files/orders/sinImagen.jpg',
 					'id_empresa'   => $empId
@@ -182,7 +194,19 @@ class Sservicios extends CI_Model
 		}	
 	/* 	./ FUNCIONES ORIGINALES DE ASSET	*/
 
-	
+			// guarda adjunto en Edicion y en SS nueva
+			function setAdjunto($adjunto,$ultimoId){	
+				$this->db->where('id_solicitud', $ultimoId);
+				$query = $this->db->update("solicitud_reparacion",$adjunto);
+				return $query;
+			}
+
+			public function eliminar($id)
+			{
+				$this->db->where('id_solicitud', $id);
+				return $this->db->delete('solicitud_reparacion');
+			}
+
 /* INTEGRACION CON BPM */
 	// trae tareas STD para llenar select por empresa logueada
 		function getTareasStandar(){

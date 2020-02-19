@@ -805,8 +805,8 @@ class Equipos extends CI_Model
             'observacion' => $observacion,
             'operario_nom' => $operario,
             'turno' => $turno,
-            'estado' => $estado,
-            'obs' => ($estadoActual == $estado),
+            'estado' => $estado
+            // 'obs' => ($estadoActual == $estado),
         );
         //guarda la lectura
         //dump_exit($datos);
@@ -832,15 +832,109 @@ class Equipos extends CI_Model
         }
     }
 
-    // Guarda edicion de lectura
-    public function setLecturaEdit($data)
-    {
+    function anteriorHistorialLectura($idLectura = false, $id_equipo = false){
 
+        if($idLectura && id_equipo){
+            
+    
+            return $lect;
+        }else return false;
+    }
+
+    public function posteriorHistorialLectura($idLectura, $id_equipo){
+        
+
+        return $lect;
+    }
+
+    // Guarda edicion de lectura si el valor a cambiar es mayor a una lectura anterior y menor a una lectura posterior
+    public function setLecturaObservacionEdit($data)
+    {
         $idLectura = $data["id_lectura"];
         $lectura = $data["lectura"];
-        $this->db->where('id_lectura', $idLectura);
-        $query = $this->db->update("historial_lecturas", array('lectura' => $lectura));
-        return $query;
+        $observacion = $data["observacion"];
+        $id_equipo = $data["id_equipo"];
+        $bandAnt = false;//bandera de elemento anterior
+        $bandPos = false;//bandera de elemento posterior
+
+        //verifico si se encuentra un valor de lectura anterior al que quiero editar
+        $sql = "SELECT max(historial_lecturas.id_lectura) as idLectura
+            FROM historial_lecturas
+            WHERE historial_lecturas.id_lectura < '" . $idLectura . "'
+            AND historial_lecturas.id_equipo = '" . $id_equipo . "'
+            ";
+    
+            $idLect = $this->db->query($sql);
+            $idLect = $idLect->result()[0]->idLectura;
+            if ($idLect != null) {
+
+                $bandAnt = true;
+
+                $sql = "SELECT historial_lecturas.lectura
+                FROM historial_lecturas
+                WHERE historial_lecturas.id_lectura = '" . $idLect . "'
+                ";
+        
+                $anterior = $this->db->query($sql)->result()[0]->lectura;
+            } else {
+                $bandAnt = false;
+            }
+
+        //verifico si se encuentra un valor de lectura posterior al que quiero editar
+        $sql = "SELECT min(historial_lecturas.id_lectura) as idLectura
+        FROM historial_lecturas
+        WHERE historial_lecturas.id_lectura > '" . $idLectura . "'
+        AND historial_lecturas.id_equipo = '" . $id_equipo . "'
+        ";
+
+        $idLect = $this->db->query($sql);
+        $idLect = $idLect->result()[0]->idLectura;
+        if ($idLect != null){
+
+            $sql = "SELECT historial_lecturas.lectura
+            FROM historial_lecturas
+            WHERE historial_lecturas.id_lectura = '" . $idLect . "'
+            ";
+    
+            $posterior = $this->db->query($sql)->result()[0]->lectura;
+
+            $bandPos = true;
+        } else {
+            $bandPos = false;
+        }
+
+        //segun se encuentre un valor de lectura anterior y posterior se verifica que el nuevo valor de lectura se encuentre entre el valor anterior y el posterior si existen
+        if($bandAnt && $bandPos){
+            if(($lectura < $posterior) && ($lectura > $anterior)){
+                $this->db->where('historial_lecturas.id_lectura', $idLectura);
+                $query = $this->db->update("historial_lecturas", array('lectura' => $lectura, 'observacion' => $observacion));
+                return $query;
+            }else{
+                return false;
+            }
+        }else if(!$bandAnt && !$bandPos){
+            $this->db->where('historial_lecturas.id_lectura', $idLectura);
+            $query = $this->db->update("historial_lecturas", array('lectura' => $lectura, 'observacion' => $observacion));
+            return $query;
+        }else if(!$bandAnt && $bandPos){
+            if($lectura < $posterior){
+                $this->db->where('historial_lecturas.id_lectura', $idLectura);
+                $query = $this->db->update("historial_lecturas", array('lectura' => $lectura, 'observacion' => $observacion));
+                return $query;
+            }else{
+                return false;
+            }
+        }else{
+            if($lectura > $anterior){
+                $this->db->where('historial_lecturas.id_lectura', $idLectura);
+                $query = $this->db->update("historial_lecturas", array('lectura' => $lectura, 'observacion' => $observacion));
+                return $query;
+            }else{
+                return false;
+            }
+        }
+        // $this->db->where('historial_lecturas.id_lectura', $idLectura);
+        // $query = $this->db->update("historial_lecturas", array('lectura' => $lectura, 'observacion' => $observacion));
     }
 
     /// Trae lecturas de equipo por id de equipo

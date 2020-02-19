@@ -341,7 +341,7 @@ class BPM
 
     public function getUsuariosBPM()
     {
-        $resource = 'API/identity/user?p=0&c=50';
+        $resource = 'API/identity/user?p=0&c=10000';
 
         $url = BONITA_URL . $resource;
 
