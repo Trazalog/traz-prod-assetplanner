@@ -21,6 +21,7 @@ if (SW) {
     <?php
 } ?>
 
+var SW = <?php echo (SW?'true':'false')?>;
 //Precacheo
 base_url = "<?php echo base_url() ?>";
 if (!indexedDB) {
