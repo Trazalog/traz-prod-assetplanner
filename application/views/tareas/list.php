@@ -51,7 +51,7 @@
                   $id=$f["id"];
                   $asig = $f['assigned_id'];
 
-                  echo '<tr id="'.$id.'" class="'.$id.'" style="cursor: pointer;" tags="'.tagProceso($f['processId']).'">';                   
+                  echo '<tr id="'.$id.'" class="'.$id.'" style="cursor: pointer;" tags="'.tagProceso($f['processId']).'" onclick="detalleTarea(this)">';                   
 
                   if ( $asig != "")  {
                     echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea text-center"').'><i class="fa fa-user" style="color: #5c99bc ; cursor: pointer;"" title="Asignado" data-toggle="modal" data-target="#modalSale"></i></td>';
@@ -134,18 +134,18 @@ function actualizar_terminadas() {
 
 
 //Tomo valor de la celda y carga detalle de la tarea
-$('tbody tr').click(function() {
-    var id = $(this).attr('id');
+function detalleTarea(e) {
+    var id = $(e).attr('id');
 
     WaitingOpen();
-    if (!$(this).attr('tags').includes('#pedidoMaterial')) {
+    if (!$(e).attr('tags').includes('#pedidoMaterial')) {
         linkTo("Tarea/detaTarea/<?php echo $permission; ?>/" + id);
     } else {
         linkTo('almacen/Proceso/detalleTarea/' + id);
     }
     WaitingClose();
 
-});
+};
 
 
 // Carga para cargar notif estandar
