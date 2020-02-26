@@ -78,64 +78,9 @@ class Calendario extends CI_Controller
         } else {
             echo json_encode($data);
         }
-    }
+    }}
 
-    public function getTablas() // Ok
-
-    {
-        $mes = $this->input->post('mes');
-        $year = $this->input->post('year');
-        $permission = $this->input->post('permission');
-        $data['mes'] = $mes;
-        $data['year'] = $year;
-        $preventivosHoras = $this->Calendarios->getPreventivosHoras($mes, $year);
-        $data['list1'] = $this->Calendarios->getpredlist($mes, $year); // listo
-        $data['list2'] = $this->Calendarios->getbacklog($mes, $year); // listo
-        $data['list3'] = $this->Calendarios->getPreventivos($mes, $year); // listo
-        $data['list4'] = $this->Calendarios->getsservicio($mes, $year); // listo
-        $data['permission'] = $permission;
-
-        //para cada preventivo
-        if ($preventivosHoras) {
-            $j = 0;
-            for ($i = 0; $i < sizeof($preventivosHoras); $i++) {
-                $estaAlertado = false;
-                //sacar tipo alerta
-                //proximo servicio = lectura base + frecuencia
-                $proximoServicio = $preventivosHoras[$i]['lectura_base'] + $preventivosHoras[$i]['cantidad'];
-                $proximaAlerta = $preventivosHoras[$i]['lectura_base'] + $preventivosHoras[$i]['critico1'];
-                $lecturaAutonomo = $preventivosHoras[$i]['ultima_lectura'];
-                //si alerta amarilla pone en array y agrega dato amarillo
-                if ($lecturaAutonomo >= $proximaAlerta) {
-                    $tipoAlerta = 'A';
-                    $estaAlertado = true;
-                }
-                //si alerta es roja pone en array y agrega rojo
-                if ($lecturaAutonomo >= $proximoServicio) {
-                    $tipoAlerta = 'R';
-                    $estaAlertado = true;
-                }
-                //si esta alertado guardo
-                if ($estaAlertado) {
-                    $preventivosHorasVisible[$j] = $preventivosHoras[$i];
-                    //agrego tipo alerta, proximo servicio y ultima lectura
-                    $preventivosHorasVisible[$j]['tipoAlerta'] = $tipoAlerta;
-                    $preventivosHorasVisible[$j]['proximoServicio'] = $proximoServicio;
-                    $preventivosHorasVisible[$j]['ultimaLectura'] = $preventivosHoras[$i]['ultima_lectura'];
-                    $j++;
-                } else {
-                    $preventivosHorasVisible = false;
-                }
-            }
-        } else {
-            $preventivosHorasVisible = false;
-        }
-
-        $data['list'] = $preventivosHorasVisible;
-
-        $response['html'] = $this->load->view('calendar/tablas', $data);
-        echo json_encode($response);
-    }
+ 
 
     // Devuelve info de Preventivo por Id para llenar en OT
     public function getPrevPorId() //
@@ -426,10 +371,10 @@ class Calendario extends CI_Controller
                 $this->setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo, $id_solicitud);
             }
 
+            return true;
         }
-        return true;
 
-    }
+    
 
     public function getInfoTareEnBack($id_solicitud)
     {

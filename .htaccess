@@ -3,9 +3,9 @@ RewriteEngine On
 RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ test_v1/traz-prod-assetplanner/index.php/$1 [L]
+RewriteRule ^(.*)$ traz-prod-assetplanner/index.php/$1 [L]
 </IfModule>
 
 <IfModule !mod_rewrite.c>
-ErrorDocument 404 test_v1/traz-prod-assetplanner/index.php
+ErrorDocument 404 traz-prod-assetplanner/index.php
 </IfModule>
