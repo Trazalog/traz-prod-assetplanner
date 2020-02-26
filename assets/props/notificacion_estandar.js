@@ -143,6 +143,15 @@ function decidirUrgencia() {
         },
         url: 'index.php/Tarea/decidirUrgencia',
         success: function (data) {
+            console.table(data);
+        },
+        error: function (data) {
+            WaitingClose();
+            //alert("Noo");
+            console.log(data);
+        },
+        dataType: 'json',
+        complete: function(data){
             WaitingClose();
             console.table(data);
             //	WaitingClose();
@@ -150,30 +159,30 @@ function decidirUrgencia() {
             if (data.status) {
                 back()
             }
-        },
-        error: function (data) {
-            WaitingClose();
-            //alert("Noo");
-            console.log(data);
-        },
-        dataType: 'json'
+        }
     });
 }
 // cierra tarea Verificar Informe
 function verificarInforme() {
     WaitingOpen();
+    var id_eq  = $('#id_EQ').val();
     var opcion = $('input[name="opcion"]:checked').val();
     var id_OT = $('#id_OT').val();
     var id_SS = $('#id_SS').val();
     var idTarBonita = $('#idTarBonita').val();
-
+    var justificacion = ""; 
+    if(opcion){
+        var justificacion = $('#justificacion').val();
+    }
     $.ajax({
         type: 'POST',
         data: {
             opcion: opcion,
             idTarBonita: idTarBonita,
             id_OT: id_OT,
-            id_SS: id_SS
+            id_SS: id_SS,
+            id_eq: id_eq,
+            justificacion: justificacion
         },
         url: 'index.php/Tarea/verificarInforme',
         success: function (data) {
@@ -244,8 +253,7 @@ function ejecutarOT() {
     if (!conexion()) {
         WaitingOpen('Cerrando Tarea');
     }
-
-    ajax({
+    var post = {
         type: 'POST',
         data: {
             idTarBonita: idTarBonita,
@@ -270,7 +278,10 @@ function ejecutarOT() {
             $("#content").load(base_url + "index.php/Tarea/index/add-edit-del-view");
         },
         dataType: 'json'
-    });
+    }
+
+    if(SW) ajax(post);
+    else $.ajax(post);
 }
 
 

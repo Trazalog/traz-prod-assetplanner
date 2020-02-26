@@ -50,7 +50,7 @@ class Ordenservicio extends CI_Controller {
     }  
 
 
-    public function verInforme($id_ot = null, $id_eq = null, $id_solicitud = null, $idTarBonita)   // Ok
+    public function verInforme($id_ot = null, $id_eq = null, $id_solicitud = null, $idTarBonita = null)   // Ok
     {           
       $data['id_ot']      = $id_ot;            // id de OT. 
       $data['id_eq']      = $id_eq;             // id de equipo   
@@ -71,6 +71,7 @@ class Ordenservicio extends CI_Controller {
       $equi['id_equipo']= $id_eq; // duplicado para reutilizar la funcion   
       $data['equipos'] = $this->Ordenservicios->getEquipos($id_eq); 
       $data['lecturas'] = $this->Ordenservicios->getLecturasOrden($id_ot);
+      $data['lecturasOT'] = $this->Otrabajos->getLecturasOrden($id_ot);
       $data['tareas'] = $this->Ordenservicios->getTareasOrden($id_ot);
       $data['herramientas'] = $this->Ordenservicios->getHerramOrdenes($id_ot);
       $data['insumos'] = $this->Ordenservicios->getInsumosPorOT($id_ot);
@@ -78,7 +79,7 @@ class Ordenservicio extends CI_Controller {
       $this->load->view('tareas/view_presta_presta_conf_modal',$data);
     } 
 
-    public function editarInforme($id_ot = null, $id_eq = null, $id_solicitud = null, $idTarBonita)   // Ok
+    public function editarInforme($id_ot = null, $id_eq = null, $id_solicitud = null, $idTarBonita = null)   // Ok
     {           
       $data['id_ot']      = $id_ot;            // id de OT. 
       $data['id_eq']      = $id_eq;             // id de equipo   

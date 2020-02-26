@@ -20,7 +20,7 @@
         <div class="datagrid">
           <table id="sector" class="table table-hover table-striped">
             <thead>
-              <tr>
+            
           
                 <?php  
 
@@ -46,7 +46,7 @@
                  
               
               ?>  
-              </tr>
+             
             </thead>
             <tbody>
               <?php                
@@ -57,7 +57,7 @@
                   $id=$f["id"];
                   $asig = $f['assigned_id'];
 
-                  echo '<tr id="'.$id.'" class="'.$id.'" style="cursor: pointer;">';                   
+                  echo '<tr id="'.$id.'" class="'.$id.'" style="cursor: pointer;" onclick="detalleTarea('.$id.')">';                   
 
                   if ( $asig != "")  {
                     echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea"').' style="text-align: left"><i class="fa fa-user" style="color: #5c99bc ; cursor: pointer;"" title="Asignado" data-toggle="modal" data-target="#modalSale"></i></td>';
@@ -116,10 +116,9 @@
 
  
 //Tomo valor de la celda y carga detalle de la tarea
-  $('tbody tr').click( function () {
-    var id = $(this).attr('id');
+  function detalleTarea(id) {
     linkTo("almacen/Proceso/detalleTarea/" + id);  
-  });
+  }
 
   $('#ferchu').DataTable();
 </script>
