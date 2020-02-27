@@ -53,17 +53,9 @@ class Preventivo extends CI_Controller {
 	// Trae datos de equipo por ID para nuevo preventivo - Listo
 	public function getEquipoNuevoPrevent(){
 		
-		$cantidad = $this->Preventivos->getEquipoNuevoPrevent($this->input->post());
-		if($cantidad)
-		{	
-			$arre=array();
-	        foreach ($cantidad as $row ) 
-	        {   
-	           $arre[]=$row;
-	        }
-			echo json_encode($arre);
-		}
-		else echo "nada";
+		$res = $this->Preventivos->getEquipoNuevoPrevent($this->input->post());
+
+		echo json_encode($res);
 	}
 
 	// Trae tareas por empresa logueada - Listo

@@ -35,10 +35,10 @@
                         </thead>
                         <tbody>
                             <?php
-           
+
                 foreach($list as $a)
                 {
-                  $id = $a['id_equipo'];                  
+                  $id = $a['id_equipo'];
                   echo '<tr id="'.$id.'" data-equipo="'.$id.'" data-meta="'.$a['meta_disp'].'">';
                   echo '<td>';
                   if (strpos($permission,'Del') !== false) {
@@ -144,7 +144,7 @@ $(".fa-toggle-on").click(function(e) {
         url: 'index.php/Equipo/cambio_equipo',
         success: function(data) {
             console.log(data);
-            //alert("Se cambio el estado del equipo a INACTIVO");   
+            //alert("Se cambio el estado del equipo a INACTIVO");
             WaitingClose();
             regresa();
         },
@@ -417,7 +417,7 @@ $(".fa-print").click(function(e) {
                 '<br>' +
                 '<br>' +
 
-                //aca va la tabla 
+                //aca va la tabla
 
                 '<div class="row">' +
                 '<div class="col-xs-10 col-xs-offset-1 text-center">' +
@@ -578,7 +578,7 @@ $(".fa-hourglass-half").click(function(e) {
     var $estado = $(this).closest('tr').find(".estado").html();
     console.log("estado: " + $estado);
 
-   
+
     $.ajax({
         data: {
             idequipo: $id_equipo
@@ -776,8 +776,8 @@ function traer_grupo() {
         url: 'index.php/Equipo/getgrupo', //index.php/
         success: function(data) {
 
-            //var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-            //$('#grupo').append(opcion); 
+            //var opcion  = "<option value='-1'>Seleccione...</option>" ;
+            //$('#grupo').append(opcion);
             for (var i = 0; i < data.length; i++) {
 
                 var nombre = data[i]['descripcion'];
@@ -840,7 +840,7 @@ function traer_marca() {
         url: 'index.php/Equipo/getmarca', //index.php/
         success: function(data) {
 
-            //var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+            //var opcion  = "<option value='-1'>Seleccione...</option>" ;
             $('#marca1').append(opcion);
             for (var i = 0; i < data.length; i++) {
                 var nombre = data[i]['marcadescrip'];
@@ -1126,7 +1126,7 @@ function guardarEdit() {
     $('#errorEditLectura').fadeOut('fast');
     $('#errorEditObservacion').fadeOut('fast');
     $('#errorEditLectura2').fadeOut('fast');
-    
+
     console.log('estoy guardando');
     var id_lectura = $('#idLecturaEdit').val();
     var lectura = $('#lecturaEdit').val();
@@ -1142,7 +1142,7 @@ function guardarEdit() {
         }
         return;
     } else {
-        
+
         $.ajax({
             type: "POST",
             url: "index.php/Equipo/setLecturaObservacionEdit",
@@ -1277,7 +1277,7 @@ $(".fa-times-circle").click(function(e) {
 
 // Traigo datos del equipo
 $(".editEquipo").click(function() {
-    //WaitingOpen(); 
+    //WaitingOpen();
     var idEquipo = $(this).parent('td').parent('tr').attr('id');
     //$('#id_equipo').val(idEquipo);
     console.info('id de equipo a editar: ' + idEquipo);
@@ -1557,7 +1557,7 @@ function guardararea() {
                 console.log(datos);
                 //alert(data);
                 if (data >
-                    0) { //Agrego la descripcion dinamicamte en el select con id componente             
+                    0) { //Agrego la descripcion dinamicamte en el select con id componente
 
                     var texto = '<option value="' + data + '">' + parametros.descripcion + '</option>';
                     console.log(texto);
@@ -1601,7 +1601,7 @@ function guardarproceso() {
                 console.log(datos);
                 //alert(data);
                 if (data >
-                    0) { //Agrego la descripcion dinamicamte en el select con id componente              
+                    0) { //Agrego la descripcion dinamicamte en el select con id componente
 
                     var texto = '<option value="' + data + '">' + parametros.descripcion + '</option>';
                     console.log(texto);
@@ -1864,7 +1864,7 @@ function eliminarAdjunto() {
             url: 'index.php/Equipo/eliminarAdjunto',
         })
         .done(function(data) {
-            //console.table(data); 
+            //console.table(data);
             let prevAdjunto = '';
             llenar_adjunto(prevAdjunto);
         })
@@ -1931,6 +1931,8 @@ $('#modaleditar').on('hidden.bs.modal', function(e) {
 
 // Datatable - Chequeado
 $('#sales').DataTable({
+    <?php echo (!DT_SIZE_ROWS ? '"paging": false,' : null) ?>
+
     "aLengthMenu": [10, 25, 50, 100],
     "columnDefs": [{
             "targets": [0],

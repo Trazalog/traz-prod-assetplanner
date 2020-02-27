@@ -24,19 +24,24 @@
 
                   echo '<th width="7%"'.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Estado</td>';
 
+                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Asignado<br>/Fecha Asignación</td>';
+
+                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Equipo</td>'; 
+
+                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Sector</td>'; 
+                 
                   echo '<th>Tarea</th>';
 
                   echo '<th class="'.($device == 'android'?'hidden':null).'">Descripción</th>';
 
                   echo '<th width="7%">Id S.S</td>';    
+                 
                   echo '<th width="7%">Id OT</td>';          
+                 
                   echo '<th width="10%">Id Pedido</td>';                                                                                               
 
-                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Equipo</td>'; 
 
-                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Sector</td>'; 
 
-                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Asignado<br>/Fecha Asignación</td>';
                   // echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Prioridad</td>';
                                   
                  
@@ -61,26 +66,28 @@
                   
                     echo '</td>';
 
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">
+                    '.$f['usr_asignado'].'
+                    <br>
+                    '.formato_fecha_hora($f['assigned_date']).'										
+                    </td>'; 
+
+                    
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea  tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$f['equipoDesc'].'</td>';
+                    
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea  tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$f['sectorDesc'].'</td>';
+                    
                     echo '<td class="celda nomTarea" style="text-align: left">'.$f['displayName'].'</td>';  
                      
                     echo '<td class="celda tareaDesc '.($device == 'android' ? 'hidden':null).'" style="text-align: left">'.substr($f['displayDescription'],0,500).'</td>';                
                       
+
                     echo '<td class= "celda nomTarea text-center">'.bolita($f['ss'],'blue').'</td>';   
                     
                     echo '<td class= "celda nomTarea text-center">'.bolita($f['ot'],'orange').'</td>';                  
                   
                     echo '<td class= "celda nomTarea text-center">'.bolita($f['pema_id'],'green').'</td>';                  
-
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea  tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$f['equipoDesc'].'</td>';
-
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea  tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$f['sectorDesc'].'</td>';
-
-										echo '<td '.($device == 'android' ? 'class= "celda nomTarea tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">
-										'.$f['usr_asignado'].'
-										<br>
-										'.formato_fecha_hora($f['assigned_date']).'										
-										</td>'; 
-                
+                    
                     echo '</tr>';
 
                 }
@@ -187,5 +194,5 @@ function offline() {
         });
     }
 }
-DataTable('#bandeja');
+DataTable('#bandeja',true, false);
 </script>
