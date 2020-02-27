@@ -375,11 +375,11 @@ $('#equipo').change(function(){
     url: 'index.php/Preventivo/getEquipoNuevoPrevent', 
   })
   .done( (data) => {
-    var fecha_ingreso = data[0]['fecha_ingreso']; 
-    var marca         = data[0]['marca']; 
-    var ubicacion     = data[0]['ubicacion']; 
-    var criterio1     = data[0]['criterio1']; 
-    var descripcion   = data[0]['descripcion']; 
+    var fecha_ingreso = data['fecha_ingreso']; 
+    var marca         = data['marcadescrip']; 
+    var ubicacion     = data['ubicacion']; 
+    var criterio1     = data['criterio1']; 
+    var descripcion   = data['descripcion']; 
     $('#fecha_ingreso').val(fecha_ingreso);       
     $('#marca').val(marca);   
     $('#descripcion').val(descripcion);       
