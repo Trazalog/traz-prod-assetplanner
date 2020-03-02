@@ -21,55 +21,7 @@ class Calendario extends CI_Controller
         $this->load->view('calendar/calendar1', $data);
     }
 
-	public function getTablas() // Ok
-	{	
-		$mes          = $this->input->post('mes');
-		$year         = $this->input->post('year');
-		$permission   = $this->input->post('permission');
-		$data['mes']  = $mes;
-		$data['year'] = $year;
-		$data['list0']  = $this->Calendarios->getPreventivosHoras($mes, $year);
-		$data['list1'] = $this->Calendarios->getpredlist($mes, $year); 	// listo
-		$data['list2'] = $this->Calendarios->getbacklog($mes, $year);		// listo
-		$data['list3'] = $this->Calendarios->getPreventivos($mes, $year);  // listo 
-		$data['list4'] = $this->Calendarios->getsservicio($mes, $year);	// listo
-		$data['permission'] = $permission;
-	
-		//para cada preventivo
-		if($preventivosHoras) {
-			$j = 0;
-			for ($i=0; $i<sizeof($preventivosHoras) ; $i++) { 
-				$estaAlertado = false;
-				//sacar tipo alerta
-				//proximo servicio = lectura base + frecuencia
-				$proximoServicio = $preventivosHoras[$i]['lectura_base'] + $preventivosHoras[$i]['cantidad'];
-				$proximaAlerta = $preventivosHoras[$i]['lectura_base'] + $preventivosHoras[$i]['critico1'];
-				$lecturaAutonomo = $preventivosHoras[$i]['ultima_lectura'];
-				//si alerta amarilla pone en array y agrega dato amarillo
-				if($lecturaAutonomo >= $proximaAlerta) {
-					$tipoAlerta = 'A';
-					$estaAlertado = true;
-				}
-				//si alerta es roja pone en array y agrega rojo
-				if($lecturaAutonomo >= $proximoServicio) {
-					$tipoAlerta = 'R';
-					$estaAlertado = true;
-				}				
-				//si esta alertado guardo
-				if($estaAlertado) {
-					$preventivosHorasVisible[$j] = $preventivosHoras[$i];
-					//agrego tipo alerta, proximo servicio y ultima lectura
-					$preventivosHorasVisible[$j]['tipoAlerta'] = $tipoAlerta;
-					$preventivosHorasVisible[$j]['proximoServicio'] = $proximoServicio;
-					$preventivosHorasVisible[$j]['ultimaLectura'] = $preventivosHoras[$i]['ultima_lectura'];
-					$j++;
-				} else {
-					$preventivosHorasVisible = false;
-				}
-			}
-		} else {
-			$preventivosHorasVisible = false;
-		}
+    public function getcalendarot() // Ok
 
     {
         $data = $this->Calendarios->getot($this->input->post());
@@ -78,9 +30,64 @@ class Calendario extends CI_Controller
         } else {
             echo json_encode($data);
         }
-    }}
+    }
 
- 
+    public function getTablas() // Ok
+
+    {
+        $mes = $this->input->post('mes');
+        $year = $this->input->post('year');
+        $permission = $this->input->post('permission');
+        $data['mes'] = $mes;
+        $data['year'] = $year;
+        $preventivosHoras = $this->Calendarios->getPreventivosHoras($mes, $year);
+        $data['list1'] = $this->Calendarios->getpredlist($mes, $year); // listo
+        $data['list2'] = $this->Calendarios->getbacklog($mes, $year); // listo
+        $data['list3'] = $this->Calendarios->getPreventivos($mes, $year); // listo
+        $data['list4'] = $this->Calendarios->getsservicio($mes, $year); // listo
+        $data['permission'] = $permission;
+
+        //para cada preventivo
+        if ($preventivosHoras) {
+            $j = 0;
+            for ($i = 0; $i < sizeof($preventivosHoras); $i++) {
+                $estaAlertado = false;
+                //sacar tipo alerta
+                //proximo servicio = lectura base + frecuencia
+                $proximoServicio = $preventivosHoras[$i]['lectura_base'] + $preventivosHoras[$i]['cantidad'];
+                $proximaAlerta = $preventivosHoras[$i]['lectura_base'] + $preventivosHoras[$i]['critico1'];
+                $lecturaAutonomo = $preventivosHoras[$i]['ultima_lectura'];
+                //si alerta amarilla pone en array y agrega dato amarillo
+                if ($lecturaAutonomo >= $proximaAlerta) {
+                    $tipoAlerta = 'A';
+                    $estaAlertado = true;
+                }
+                //si alerta es roja pone en array y agrega rojo
+                if ($lecturaAutonomo >= $proximoServicio) {
+                    $tipoAlerta = 'R';
+                    $estaAlertado = true;
+                }
+                //si esta alertado guardo
+                if ($estaAlertado) {
+                    $preventivosHorasVisible[$j] = $preventivosHoras[$i];
+                    //agrego tipo alerta, proximo servicio y ultima lectura
+                    $preventivosHorasVisible[$j]['tipoAlerta'] = $tipoAlerta;
+                    $preventivosHorasVisible[$j]['proximoServicio'] = $proximoServicio;
+                    $preventivosHorasVisible[$j]['ultimaLectura'] = $preventivosHoras[$i]['ultima_lectura'];
+                    $j++;
+                } else {
+                    $preventivosHorasVisible = false;
+                }
+            }
+        } else {
+            $preventivosHorasVisible = false;
+        }
+
+        $data['list'] = $preventivosHorasVisible;
+
+        $response['html'] = $this->load->view('calendar/tablas', $data);
+        echo json_encode($response);
+    }
 
     // Devuelve info de Preventivo por Id para llenar en OT
     public function getPrevPorId() //
@@ -102,29 +109,9 @@ class Calendario extends CI_Controller
         $data = $this->input->post();
         //log_message('DEBUG', 'TRAZA | Data: '.json_decode($data));
 
-				$datos2 = array(
-						'id_tarea'      => $id_tarea,// id de tarea a realizar(tabla tareas)
-						'nro'           => 1,//por defecto( no se usa)
-						'fecha'         => date('Y-m-d'),				
-						'fecha_program' => $fec_programacion,
-						'descripcion'   => $descripcion,
-						'cliId'         => 1,//por defecto( no se usa)
-						'estado'        =>'PL',	// estado Planificado
-						'id_usuario'    => $usrId,
-						'id_usuario_e'  => 1,
-						'id_sucursal'   => 1,
-						'id_solicitud'  => $id_solicitud,// id prev-correct-back-predict
-						'tipo'          => $tipo,// tipo solicitud (prev-correct-back-predict )
-						'id_equipo'     => $equipo,
-						'duracion'      => $duracion,
-						'id_tareapadre' => $id_solicitud,//solic que genera la 1º OT y las repetitivas
-						'id_empresa'    => $empId,
-						'lectura_programada' => $lectura_programada,
-						'lectura_ejecutada'  => $lectura_ejecutada,
-					);
-					
-				// si el evento es unico lo guarda
-				if ($event_tipo == '1'){				
+        $userdata = $this->session->userdata('user_data');
+        $usrId = $userdata[0]['usrId'];
+        $empId = $userdata[0]['id_empresa'];
 
         # Bandera que si esta en TRUE Aborta la creacion de la OT
         $error = false;
@@ -165,46 +152,26 @@ class Calendario extends CI_Controller
                 $duracion = 60;
             }
 
-					}					
-					// $tipo == '3' -> Preventivo			
-					if($tipo == '3'){	
-						//log
-						log_message('DEBUG', 'TRAZA | Tipo solicitud en 3: '.$tipo);
-						$tipo = 'preventivo';
-						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);						
-					}        
-					// $tipo == '4' -> Backlog			
-					if($tipo == '4'){	
-						//log
-						log_message('DEBUG', 'TRAZA | Tipo solicitud en 4: '.$tipo);
-						// actualizo estado del backlog
-							$tipo = 'backlog';
-						
-						//////////////////////////////////////////////////////////
-							//// buscar task para asignar la tarea 'Planificar Solicitud' para caso de 
-							// SServicio NO Urgente planificada sin tomar Tarea  'Planificar Solicitud'	
-							// Usuario logueado en BPM
-							// busca taskId de 	'Planificar Solicitud'
-							//$infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);
-							$infoTarea['caseId'] = $this->getInfoTareEnBack($id_solicitud);
-							//log
-								log_message('DEBUG',  'TRAZA | ID Solicitud: '.$id_solicitud);						
-								log_message('DEBUG',  'TRAZA | Case_id desde infotarea/idsolicitud: '.$infoTarea['caseId']);	
-							
-							// si backlog es generado en SServicios tiene case id de SolServicio
-							if ($infoTarea['caseId'] != 0) {
-								$prevTask = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID ,$infoTarea['caseId'],'Planificar Backlog');
-								log_message('DEBUG',  'TRAZA | Taskid en Planificar Backlog: '.$prevTask);
-							
-								if($prevTask != 0){								
-										// Asigno ususario logueado 
-										$responce = $this->bpm->setUsuario($prevTask,$userBpm);
-										if(!$responce['status']){echo json_encode($responce);return;}
-										// Cierro tarea 'Planificar Solicitud'
-										$responce = $this->bpm->cerrarTarea($prevTask);	
-										if(!$responce['status']){echo json_encode($responce);return;}
-								}
-							}					
+            $datos2 = array(
+                'id_tarea' => $id_tarea, // id de tarea a realizar(tabla tareas)
+                'nro' => 1, //por defecto( no se usa)
+                'fecha' => date('Y-m-d'),
+                'fecha_program' => $fec_programacion,
+                'descripcion' => $descripcion,
+                'cliId' => 1, //por defecto( no se usa)
+                'estado' => 'PL', // estado Planificado
+                'id_usuario' => $usrId,
+                'id_usuario_e' => 1,
+                'id_sucursal' => 1,
+                'id_solicitud' => $id_solicitud, // id prev-correct-back-predict
+                'tipo' => $tipo, // tipo solicitud (prev-correct-back-predict )
+                'id_equipo' => $equipo,
+                'duracion' => $duracion,
+                'id_tareapadre' => $id_solicitud, //solic que genera la 1º OT y las repetitivas
+                'id_empresa' => $empId,
+                'lectura_programada' => $lectura_programada,
+                'lectura_ejecutada' => $lectura_ejecutada,
+            );
 
             // si el evento es unico lo guarda
             if ($event_tipo == '1') {
@@ -212,16 +179,28 @@ class Calendario extends CI_Controller
                 //log
                 log_message('DEBUG', 'TRAZA | Evento tipo: ' . $event_tipo);
 
-					}
-					// $tipo == '5' -> Predictivo			
-					if($tipo == '5'){	
-						$tipo = 'predictivo';
-						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);						
-					}	
-					if($tipo == ''){	
-						$tipo = 'predictivo';
-						$this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);						
-					}				
+                /// Interaccion con BPM ///
+                $estado = 'PL';
+                // $tipo == '2' -> S.Servicios
+                if ($tipo == '2') {
+                    // si es correctivo u S.Servicio
+                    $tipo = 'correctivo';
+                    $infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);
+                    $respCerrar = $this->cerrarTarea($infoTarea['taskId']);
+                    //log
+                    log_message('DEBUG', 'TRAZA | Tipo solicitud en 2: ' . $tipo);
+                    log_message('DEBUG', 'TRAZA | $taskId: ' . $infoTarea['taskId']);
+                    if ($respCerrar['status']) {
+                        $resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);
+                    } else {
+                        log_message('DEBUG', '#Calendario >> guardar_agregar | Cerrar SS: ' . json_encode($respCerrar));
+                        $error = true;
+                        $estado = 'S';
+                    }
+                    // guardo el case_id en Otrabajo
+                    $this->Calendarios->setCaseidenOT($infoTarea['caseId'], $idOTnueva);
+                    // cambio de estado a PL de SServicio
+                    $this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);
 
                     ////////////////////////////////////////////////////////////////////////
 
@@ -371,10 +350,10 @@ class Calendario extends CI_Controller
                 $this->setOTenSerie($fecha_limite, $fec_programacion, $diasFrecuencia, $datos2, $tipo, $id_solicitud);
             }
 
-            return true;
         }
+        return true;
 
-    
+    }
 
     public function getInfoTareEnBack($id_solicitud)
     {
