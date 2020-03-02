@@ -103,7 +103,7 @@ class Preventivos extends CI_Model
         $this->db->from('equipos');    	
         $this->db->join('marcasequipos','marca = marcaid', 'left');
     	$this->db->where('equipos.id_equipo', $id_equipo);    	
-    	$this->db->where('equipos.id_empresa', $empId);    	
+//    	$this->db->where('equipos.id_empresa', $empId);    	
     	$query= $this->db->get();		
 
 		if($query->num_rows()>0){
