@@ -29,9 +29,14 @@
 
               <div class="panel-body">
                 <div class="row">
-                  <div class="col-xs-12 col-sm-4">Equipos <strong style="color: #dd4b39">*</strong>
-                    <select  id="equipo" name="id_equipo" class="form-control" />
-                    <!-- <input type="hidden" id="id_equipo" name="id_equipo">-->
+                  <div class="col-xs-12 col-sm-6">Sector <strong style="color: #dd4b39">*</strong>
+                      <input type="text" class="form-control buscSector" placeholder="Buscar Sector..." id="buscSector" name="buscSector">
+                      <input type="text" class="hidden idSector" id="idSector" name="idSector">
+                  </div>
+                  <div class="col-xs-12 col-sm-6">Equipos <strong style="color: #dd4b39">*</strong>
+                    <select  id="equipo" name="id_equipo" class="form-control id_equipo">
+                        <option value="-1" placeholder="Seleccione..."></option>
+                    </select>
                   </div>
                 </div><!-- /.row -->
                 <div class="row">
@@ -225,6 +230,108 @@
 </section>
 
 <script>
+
+// Trae equipos llena select - Chequeado
+traer_equipo();
+function traer_equipo(){
+  $('#equipo').html('');
+    $.ajax({
+      type: 'POST',
+      data: { },
+      url: 'index.php/Backlog/getequipo', //index.php/
+      success: function(data){
+             
+               var opcion  = "<option value='-1'>Seleccione...</option>" ; 
+                $('#equipo').append(opcion); 
+              for(var i=0; i < data.length ; i++) 
+              {    
+                    var nombre = data[i]['codigo'];
+                    var opcion  = "<option value='"+data[i]['id_equipo']+"'>" +nombre+ "</option>" ; 
+
+                  $('#equipo').append(opcion); 
+                                 
+              }
+            },
+      error: function(result){
+            
+            console.log(result);
+          },
+          dataType: 'json'
+      });
+}
+
+// Trae Sectores y autocompleta el campo
+var dataF = function () {
+    var tmp = null;
+    $.ajax({
+      'async': false,
+      'type': "POST",
+      'global': false,
+      'dataType': 'json',
+      'url': "Sservicio/getSector",
+      'success': function (data) {
+        tmp = data;
+      }
+    });
+    return tmp;
+  }();
+  $(".buscSector").autocomplete({
+    source: dataF,
+    delay: 100,
+    minLength: 1,
+    focus: function(event, ui) {
+      // prevent autocomplete from updating the textbox
+      event.preventDefault();
+      // manually update the textbox
+      $(this).val(ui.item.label);
+    },
+    select: function(event, ui) {
+      // prevent autocomplete from updating the textbox
+      event.preventDefault();
+      // manually update the textbox and hidden field
+      $(this).val(ui.item.label);
+      $("#idSector").val(ui.item.value);
+      $("#equipo").html('<option value="-1" disabled selected>Seleccione opcion</option>');
+      // guardo el id de sector
+      var idSect =  $("#idSector").val();
+      getEquiSector(idSect);
+      //console.log("id sector en autocompletar: ");
+      //console.log(ui.item.value);
+    },
+  }); 
+  //  llena select de equipos segun sector
+  function getEquiSector(idSect){
+    var id =  idSect;
+    $("#fecha_ingreso").val("");
+    $("#marca").val("");
+    $("#ubicacion").val("");
+    $("#descripcion").val("");
+    $("#componente").html("<option value='-1'>Seleccione..</option>");
+    console.log("id de sector para traer equipos: "+id);
+    $.ajax({
+      'data' : {id_sector : id },
+      'async': true,
+      'type': "POST",
+      'global': false,
+      'dataType': 'json',
+      'url': "Sservicio/getEquipSector",
+      'success': function (data) {
+        console.log("Entro por getEquiSector ok");
+        console.table(data);//[0]['id_equipo']);
+        // Asigna opciones al select Equipo en modal
+        //console.log("length: "+data.length);
+        var $select = $("#equipo");
+        for (var i = 0; data.length; i++) {
+          $select.append($('<option />', { value: data[i]['id_equipo'], text: data[i]['descripcion'] }));
+        }
+      },
+      'error' : function(data){
+        console.log('Error en getEquiSector');
+        console.table(data);
+      },
+    });
+  }
+
 // Volver al listado
 $('#listado').click( function cargarVista(){
     WaitingOpen();
@@ -238,25 +345,25 @@ $('#ultimo').datetimepicker({
   locale: 'es',
 });
 
-// Trae equipos
-WaitingOpen("Cargando Equipos...");
-$.ajax({
-  data: { },
-  dataType: 'json',
-  url: 'index.php/Predictivo/getEquipo', 
-  type: 'POST',
-})
-.done( (data) => {
-  let opcion  = "<option value='-1'>Seleccione...</option>" ;
-  $('#equipo').append(opcion);
-  for(let i=0; i < data.length ; i++){
-    let nombre = data[i]['codigo'];
-    let opcion  = "<option value='"+data[i]['id_equipo']+"'>" +nombre+ "</option>";
-    $('#equipo').append(opcion);
-  }
-})
-.fail( () => alert("Error al traer Equipos.") )
-.always( () => WaitingClose() );
+// // Trae equipos
+// WaitingOpen("Cargando Equipos...");
+// $.ajax({
+//   data: { },
+//   dataType: 'json',
+//   url: 'index.php/Predictivo/getEquipo', 
+//   type: 'POST',
+// })
+// .done( (data) => {
+//   let opcion  = "<option value='-1'>Seleccione...</option>" ;
+//   $('#equipo').append(opcion);
+//   for(let i=0; i < data.length ; i++){
+//     let nombre = data[i]['codigo'];
+//     let opcion  = "<option value='"+data[i]['id_equipo']+"'>" +nombre+ "</option>";
+//     $('#equipo').append(opcion);
+//   }
+// })
+// .fail( () => alert("Error al traer Equipos.") )
+// .always( () => WaitingClose() );
 // Con equipo seleccionado llama funcion para traer sus componentes
 $('#equipo').change(function(){
   WaitingOpen("Cargando datos de Equipo...");
@@ -268,11 +375,11 @@ $('#equipo').change(function(){
     url: 'index.php/Preventivo/getEquipoNuevoPrevent', 
   })
   .done( (data) => {
-    var fecha_ingreso = data[0]['fecha_ingreso']; 
-    var marca         = data[0]['marca']; 
-    var ubicacion     = data[0]['ubicacion']; 
-    var criterio1     = data[0]['criterio1']; 
-    var descripcion   = data[0]['descripcion']; 
+    var fecha_ingreso = data['fecha_ingreso']; 
+    var marca         = data['marcadescrip']; 
+    var ubicacion     = data['ubicacion']; 
+    var criterio1     = data['criterio1']; 
+    var descripcion   = data['descripcion']; 
     $('#fecha_ingreso').val(fecha_ingreso);       
     $('#marca').val(marca);   
     $('#descripcion').val(descripcion);       

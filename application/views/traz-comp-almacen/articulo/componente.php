@@ -4,7 +4,7 @@
     <datalist id="articulos">
         <?php foreach($items as $o)
            {
-             echo  "<option value='".$o->codigo."' data-json='".$o->json."'>".$o->descripcion." | Stock: ".$o->stock."</option>";
+             echo  "<option value='".$o->codigo."' data-json='".$o->json."'>".$o->descripcion." | Stock: ".round($o->stock, 2)."</option>";
              unset($o->json);
             }
             ?>
@@ -45,7 +45,7 @@
 
 
 <script>
-checkTabla("tabla_articulos", "modalarticulos", `<?php echo json_encode($items);?>`, "Add");
+//checkTabla("tabla_articulos", "modalarticulos", `<?php #echo json_encode($items);?>`, "Add");
 
 function checkTabla(idtabla, idrecipiente, json, acciones) {
     lenguaje = <?php echo json_encode($lang) ?> ;

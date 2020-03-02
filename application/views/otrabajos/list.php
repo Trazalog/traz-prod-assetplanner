@@ -12,7 +12,7 @@
           <h3 class="box-title">Orden de trabajo</h3>
           <?php
           if (strpos($permission,'Add') !== false) {
-            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"  data-toggle="modal" data-target="#modalagregar" id="btnAdd">Agregar</button>'; 
+            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="btnAdd">Agregar</button>'; 
           }
           ?>
         </div><!-- /.box-header -->
@@ -1349,7 +1349,7 @@ function guardarpedido(){
     WaitingOpen();
     $('#modalInforme').modal('show');
     $('#modalInformeServicios').empty();
-    $("#modalInformeServicios").load("<?php echo base_url(); ?>index.php/Ordenservicio/verInforme/"+id_OT+"/"+id_eq+"/"+id_solicitud+"/");
+    $("#modalInformeServicios").load("<?php echo base_url(); ?>P+"/"+id_solicitud+"/"");
     WaitingClose();
   }
 
@@ -1420,6 +1420,7 @@ function guardarpedido(){
   };
 // VER OT 
   function mostrarOT(o){
+    console.log(o);
     let idot = $(o).closest('tr').attr('id'); 
     //console.log("id Orden de trabajo: "+idot);
     
@@ -2241,6 +2242,8 @@ function guardarpedido(){
 
 // DATATABLE
   $('#otrabajo').DataTable({
+    <?php echo (!DT_SIZE_ROWS ? '"paging": false,' : null) ?>
+
     "aLengthMenu": [ 10, 25, 50, 100 ],
     "columnDefs": [ 
       {

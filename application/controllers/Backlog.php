@@ -36,17 +36,8 @@ class Backlog extends CI_Controller {
 	// Trae info de equipo por id
 	public function getInfoEquipo(){
 			
-		$cantidad = $this->Backlogs->getInfoEquipos($this->input->post());
-		if($cantidad)
-		{	
-			$arre=array();
-	        foreach ($cantidad as $row ) 
-	        {   
-	           $arre[]=$row;
-	        }
-			echo json_encode($arre);
-		}
-		else echo "nada";
+		$res = $this->Backlogs->getInfoEquipos($this->input->post());
+		 echo json_encode($res);
 	}
 
 	// Trae tareas por empresa logueada - Listo

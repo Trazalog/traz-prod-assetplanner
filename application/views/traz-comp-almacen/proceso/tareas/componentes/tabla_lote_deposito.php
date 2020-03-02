@@ -99,16 +99,17 @@ function guardar_entrega() {
         var num = $(e).find('.cantidad').val();
 
         if (!isNaN(num) && num != 0) {
-            aux.cantidad = Math.trunc(num);
+            aux.cantidad = Math.round(num * 100) / 100;
             array.push(aux);
-            sum += parseInt(num);
+            sum += parseFloat(num);
         }
 
     });
 
     $(select_row).find('.extraer').html(sum);
+
     //Calcular Restante
-    $(select_row).attr('resto', parseInt($(select_row).find('.pedido').html()) - (parseInt($(select_row).find(
+    $(select_row).attr('resto', parseFloat($(select_row).find('.pedido').html()) - (parseFloat($(select_row).find(
         '.entregado').html()) + sum));
 
     $(select_row).attr('data-json', JSON.stringify(array));
@@ -135,9 +136,9 @@ function actualizar_entregas() {
 
 function verificar_cantidad() {
 
-    var disponible = parseInt($(select_row).find('.disponible').html());
-    var pedido = parseInt($(select_row).find('.pedido').html());
-    var entregado = parseInt($(select_row).find('.entregado').html());
+    var disponible = parseFloat($(select_row).find('.disponible').html());
+    var pedido = parseFloat($(select_row).find('.pedido').html());
+    var entregado = parseFloat($(select_row).find('.entregado').html());
     entregado = isNaN(entregado) ? 0 : entregado;
 
     var acum = 0;
@@ -146,9 +147,9 @@ function verificar_cantidad() {
 
     $('#lotes_depositos tr').each(function(i, e) {
 
-        var cant_lote = parseInt($(e).find('.cant_lote').html());
+        var cant_lote = parseFloat($(e).find('.cant_lote').html());
 
-        var cant_extraer = parseInt($(e).find('.cantidad').val());
+        var cant_extraer = parseFloat($(e).find('.cantidad').val());
 
         if (cant_extraer > cant_lote) {
             excede = true;

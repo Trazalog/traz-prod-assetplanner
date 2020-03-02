@@ -28,9 +28,16 @@
 
                             <div class="panel-body">
                                 <div class="row">
+                                    <div class="col-xs-12 col-sm-6">
+                                        <label for="idSector">Sector <strong style="color: #dd4b39">*</strong></label>
+                                        <input type="text" class="form-control buscSector" placeholder="Buscar Sector..." id="buscSector" name="buscSector">
+                                        <input type="text" class="hidden idSector" id="idSector" name="idSector">
+                                    </div>
+                                </div>
+                                <div class="row">
                                     <div class="col-xs-12 col-sm-6 com-md-4">
                                         <label for="equipo">Equipos <strong style="color: #dd4b39">*</strong></label>
-                                        <select id="equipo" name="equipo" class="form-control"></select>
+                                        <select id="equipo" name="equipo" class="form-control equipo"></select>
                                     </div>
                                     <div class="col-xs-12 col-sm-6 com-md-4">
                                         <label for="fecha_ingreso">Fecha:</label>
@@ -259,6 +266,79 @@
 </section>
 
 <script>
+
+// Trae Sectores y autocompleta el campo
+var dataF = function () {
+    var tmp = null;
+    $.ajax({
+      'async': false,
+      'type': "POST",
+      'global': false,
+      'dataType': 'json',
+      'url': "Sservicio/getSector",
+      'success': function (data) {
+        tmp = data;
+      }
+    });
+    return tmp;
+  }();  
+  $(".buscSector").autocomplete({
+    source: dataF,
+    delay: 100,
+    minLength: 1,
+    focus: function(event, ui) {
+      // prevent autocomplete from updating the textbox
+      event.preventDefault();
+      // manually update the textbox
+      $(this).val(ui.item.label);
+    },
+    select: function(event, ui) {
+      // prevent autocomplete from updating the textbox
+      event.preventDefault();
+      // manually update the textbox and hidden field
+      $(this).val(ui.item.label);
+      $("#idSector").val(ui.item.value);
+      $("#equipo").html('<option value="-1" disabled selected>Seleccione opcion</option>');
+      // guardo el id de sector
+      var idSect =  $("#idSector").val();
+      getEquiSector(idSect);
+      //console.log("id sector en autocompletar: ");
+      //console.log(ui.item.value);
+    },
+  }); 
+  //  llena select de equipos segun sector
+  function getEquiSector(idSect){
+    var id =  idSect;
+    $("#fecha_ingreso").val("");
+    $("#marca").val("");
+    $("#ubicacion").val("");
+    $("#descripcion").val("");
+    $("#componente").html("<option value='-1'>Seleccione..</option>");
+    console.log("id de sector para traer equipos: "+id);
+    $.ajax({
+      'data' : {id_sector : id },
+      'async': true,
+      'type': "POST",
+      'global': false,
+      'dataType': 'json',
+      'url': "Sservicio/getEquipSector",
+      'success': function (data) {
+        console.log("Entro por getEquiSector ok");
+        console.table(data);//[0]['id_equipo']);
+        // Asigna opciones al select Equipo en modal
+        //console.log("length: "+data.length);
+        var $select = $("#equipo");
+        for (var i = 0; data.length; i++) {
+          $select.append($('<option />', { value: data[i]['id_equipo'], text: data[i]['descripcion'] }));
+        }
+      },
+      'error' : function(data){
+        console.log('Error en getEquiSector');
+        console.table(data);
+      },
+    });
+  }
+
 // Nuevos //
 
 //va listado de OTs

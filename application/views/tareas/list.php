@@ -24,19 +24,23 @@
 
                   echo '<th width="7%"'.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Estado</td>';
 
+                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Asignado<br>/Fecha Asignación</td>';
+
+                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Equipo</td>'; 
+
+                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Sector</td>'; 
+                 
                   echo '<th>Tarea</th>';
 
                   echo '<th class="'.($device == 'android'?'hidden':null).'">Descripción</th>';
 
                   echo '<th width="7%">Id S.S</td>';    
+                 
                   echo '<th width="7%">Id OT</td>';          
-                  echo '<th width="10%">Id Pedido</td>';          
-                                  
+                 
+                  echo '<th width="10%">Id Pedido</td>';                                                                                               
 
-                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Fecha Asignación</td>';                 
-                                  
 
-                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Fecha Vto.</td>'; 
 
                   // echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Prioridad</td>';
                                   
@@ -48,11 +52,11 @@
                             <tbody>
                                 <?php                
                 foreach($list as $f){
-                  
+                //   var_dump($list);
                   $id=$f["id"];
                   $asig = $f['assigned_id'];
 
-                  echo '<tr id="'.$id.'" class="'.$id.'" style="cursor: pointer;" tags="'.tagProceso($f['processId']).'">';                   
+                  echo '<tr id="'.$id.'" class="'.$id.'" style="cursor: pointer;" tags="'.tagProceso($f['processId']).'" onclick="detalleTarea(this)">';                   
 
                   if ( $asig != "")  {
                     echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea text-center"').'><i class="fa fa-user" style="color: #5c99bc ; cursor: pointer;"" title="Asignado" data-toggle="modal" data-target="#modalSale"></i></td>';
@@ -62,20 +66,28 @@
                   
                     echo '</td>';
 
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">
+                    '.$f['usr_asignado'].'
+                    <br>
+                    '.formato_fecha_hora($f['assigned_date']).'										
+                    </td>'; 
+
+                    
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea  tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$f['equipoDesc'].'</td>';
+                    
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea  tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$f['sectorDesc'].'</td>';
+                    
                     echo '<td class="celda nomTarea" style="text-align: left">'.$f['displayName'].'</td>';  
                      
                     echo '<td class="celda tareaDesc '.($device == 'android' ? 'hidden':null).'" style="text-align: left">'.substr($f['displayDescription'],0,500).'</td>';                
                       
+
                     echo '<td class= "celda nomTarea text-center">'.bolita($f['ss'],'blue').'</td>';   
                     
                     echo '<td class= "celda nomTarea text-center">'.bolita($f['ot'],'orange').'</td>';                  
                   
                     echo '<td class= "celda nomTarea text-center">'.bolita($f['pema_id'],'green').'</td>';                  
                     
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.formato_fecha_hora($f['assigned_date']).'</td>'; 
-
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.formato_fecha_hora($f['dueDate']).'</td>';
-                
                     echo '</tr>';
 
                 }
@@ -109,7 +121,6 @@
 
 <script>
 
-DataTable('#bandeja');
 var idfin = "";
 var id_tarea = "";
 var nomTarea = "";
@@ -130,18 +141,18 @@ function actualizar_terminadas() {
 
 
 //Tomo valor de la celda y carga detalle de la tarea
-$('tbody tr').click(function() {
-    var id = $(this).attr('id');
+function detalleTarea(e) {
+    var id = $(e).attr('id');
 
     WaitingOpen();
-    if (!$(this).attr('tags').includes('#pedidoMaterial')) {
+    if (!$(e).attr('tags').includes('#pedidoMaterial')) {
         linkTo("Tarea/detaTarea/<?php echo $permission; ?>/" + id);
     } else {
         linkTo('almacen/Proceso/detalleTarea/' + id);
     }
     WaitingClose();
 
-});
+};
 
 
 // Carga para cargar notif estandar
@@ -183,4 +194,5 @@ function offline() {
         });
     }
 }
+DataTable('#bandeja',true, false);
 </script>

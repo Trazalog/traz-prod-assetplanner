@@ -128,13 +128,15 @@ define('CMP_ALM', 'traz-comp-almacen/');
 |
 */
 
+define('BONITA_URL', 'http://35.243.231.36:8080/bonita/');  
 // define('BONITA_URL', 'http://localhost:8080/bonita/');
 // define('BONITA_URL', 'http://192.168.0.118:8080/bonita/');//(fguardia)
 define('BONITA_URL', 'http://192.168.0.101:8080/bonita/');//(fleiva)
 
-define('BPM_ADMIN_USER', 'supervisor1');
-define('BPM_ADMIN_PASS', 'bpm');
-define('BPM_USER_PASS', 'bpm');
+define('BPM_ADMIN_USER', 'admin');
+define('BPM_ADMIN_PASS', '123traza');
+define('BPM_USER_PASS', '123');
+
 
 
 /*
@@ -149,7 +151,7 @@ define('BPM_USER_PASS', 'bpm');
 
 //? PEDIDOS NORMALES
  
-define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '6833268789089291878'); 
+define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '8803232493891311406'); 
 
 //? PEDIDOS EXTRAORDINATIOS
 
@@ -165,7 +167,7 @@ define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '7321139677245257050');
 |
 */
  
-define('BPM_PROCESS_ID', '4859077159833071020'); // localhost -
+define('BPM_PROCESS_ID', '7503443566840192735'); // localhost -
 
 /*
 |--------------------------------------------------------------------------
@@ -175,15 +177,6 @@ define('BPM_PROCESS_ID', '4859077159833071020'); // localhost -
 | Listado de Formularios de Diagnostico
 |
 */
-
-// define('REST', 'http://pc-pc:8280/services/ProduccionDataService/');
-// define('RESTPT','http://pc-pc:8280/services/produccionTest/');
-// define('REST_TDS', 'http://pc-pc:8280/services/TrazabilidadDataService/');
-// define('REST0', 'http://pc-pc:8280/services/ALMDataService/');
-
-// define('REST2', 'http://pc-pc:8280/services/ProduccionDataService');
-// define('REST3', 'http://pc-pc:8280/services/produccionTest');
-// define('REST4', 'http://pc-pc:8280/services/TrazabilidadDataService');
 
 define('REST', 'http://dev-trazalog.com.ar:8280/services/ProduccionDataService/');
 define('RESTPT','http://dev-trazalog.com.ar:8280/services/produccionTest/');
@@ -234,3 +227,5 @@ define('GPS_CHECK_MOBILE', false);
 # >>SW
 define('SW', false);
 #define('SW', false);
+
+define('DT_SIZE_ROWS', false);
