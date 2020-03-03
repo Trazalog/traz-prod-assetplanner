@@ -276,6 +276,9 @@ $('#equipo').change(function(){
     url: 'index.php/Preventivo/getEquipoNuevoPrevent', 
   })
   .done( (data) => {
+    console.log(data);
+
+    if(!data) return;
     
     var fecha_ingreso = data['fecha_ingreso']; 
     var marca         = data['marca']; 
@@ -294,24 +297,29 @@ $('#equipo').change(function(){
 });
 
 function getArea($id_area){
+  console.log('ID_AREA: ' + $id_area);
   $.ajax({
     type: 'POST',
     data: { id_area: $id_area},
     dataType: 'json',
     url: 'index.php/Area/Obtener_area'
   }).done( (data) => {
+ 
     $("#area").val(data[0].descripcion);
   })
   .fail( () => alert("Error al traer Area.") )
   .always( () => WaitingClose() );
 }
 function getProceso($id_proceso){
+  console.log('ID_PROCESO: '+ $id_proceso);
+  
   $.ajax({
     type: 'POST',
     data: { id_proceso: $id_proceso},
     dataType: 'json',
     url: 'index.php/Proceso/Obtener_proceso', 
   }).done( (data) => {
+    
     $("#proceso").val(data[0].descripcion);
   })
   .fail( () => alert("Error al traer Proceso.") )
