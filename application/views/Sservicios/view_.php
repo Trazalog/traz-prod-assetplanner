@@ -276,13 +276,17 @@ $('#equipo').change(function(){
     url: 'index.php/Preventivo/getEquipoNuevoPrevent', 
   })
   .done( (data) => {
-    var fecha_ingreso = data[0]['fecha_ingreso']; 
-    var marca         = data[0]['marca']; 
-    var ubicacion     = data[0]['ubicacion']; 
-    var criterio1     = data[0]['criterio1']; 
-    var descripcion   = data[0]['descripcion']; 
-    var id_area = data[0]['id_area']; 
-    var id_proceso = data[0]['id_proceso'];
+    console.log(data);
+
+    if(!data) return;
+    
+    var fecha_ingreso = data['fecha_ingreso']; 
+    var marca         = data['marca']; 
+    var ubicacion     = data['ubicacion']; 
+    var criterio1     = data['criterio1']; 
+    var descripcion   = data['descripcion']; 
+    var id_area = data['id_area']; 
+    var id_proceso = data['id_proceso'];
 
     getArea(id_area);
     getProceso(id_proceso);
@@ -293,24 +297,29 @@ $('#equipo').change(function(){
 });
 
 function getArea($id_area){
+  console.log('ID_AREA: ' + $id_area);
   $.ajax({
     type: 'POST',
     data: { id_area: $id_area},
     dataType: 'json',
     url: 'index.php/Area/Obtener_area'
   }).done( (data) => {
+ 
     $("#area").val(data[0].descripcion);
   })
   .fail( () => alert("Error al traer Area.") )
   .always( () => WaitingClose() );
 }
 function getProceso($id_proceso){
+  console.log('ID_PROCESO: '+ $id_proceso);
+  
   $.ajax({
     type: 'POST',
     data: { id_proceso: $id_proceso},
     dataType: 'json',
     url: 'index.php/Proceso/Obtener_proceso', 
   }).done( (data) => {
+    
     $("#proceso").val(data[0].descripcion);
   })
   .fail( () => alert("Error al traer Proceso.") )

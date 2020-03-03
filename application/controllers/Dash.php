@@ -94,7 +94,7 @@ class dash extends CI_Controller {
 			
 			$rsp = $this->bpm->getToDoList();
 		
-			if(!$rsp['status']){
+				if(!$rsp['status']){
 				return $rsp;
 			}
 		
@@ -131,13 +131,14 @@ class dash extends CI_Controller {
 
 			}
 			//Fin datos necesarios Precacheo
+			}
 			$this->load->view('dash', $data);
 			$this->load->view('menu');
 			$this->load->view('content');
 			$this->load->view('footerdash');
 			$this->load->view('footer');
-		}
 	}
+	
 
 	/**
 	 *

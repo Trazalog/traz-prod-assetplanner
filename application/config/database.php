@@ -77,6 +77,7 @@ $db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
 	'username' => 'root',
+	#'password' => '!Password00',
 	'password' => '',
 	'database' => 'planner_assetcloud_integracion',
 	'dbdriver' => 'mysqli',

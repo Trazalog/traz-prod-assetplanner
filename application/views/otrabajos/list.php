@@ -2242,6 +2242,8 @@ function guardarpedido(){
 
 // DATATABLE
   $('#otrabajo').DataTable({
+    <?php echo (!DT_SIZE_ROWS ? '"paging": false,' : null) ?>
+
     "aLengthMenu": [ 10, 25, 50, 100 ],
     "columnDefs": [ 
       {

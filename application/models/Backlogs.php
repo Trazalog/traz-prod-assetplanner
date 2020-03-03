@@ -98,10 +98,14 @@ class Backlogs extends CI_Model
 		else
 		{			
 			$id_equipo = $data['id_equipo'];
-			//Datos del usuario
-			$query= $this->db->get_where('equipos',array('id_equipo'=>$id_equipo));
+			//Datos del 
+			$this->db->select('E.*, M.*');
+			$this->db->from('equipos E');
+			$this->db->join('marcasequipos M', 'E.marca = M.marcaid', 'left');
+			$this->db->where('id_equipo',$id_equipo);
+			$query = $this->db->get();
 			if($query->num_rows()>0){
-					return $query->result();
+				return $query->result()[0];
 			}
 			else{
 					return false;

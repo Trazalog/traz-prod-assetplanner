@@ -373,7 +373,8 @@ $(document).ready(function(event) {
   });
 
   $('#sales').DataTable({
-                "paging": true,
+              <?php echo (!DT_SIZE_ROWS ? '"paging": false,' : null) ?>
+
                 "lengthChange": true,
                 "searching": true,
                 "ordering": true,
