@@ -188,9 +188,8 @@ class Calendarios extends CI_Model {
             return false;
         }
     }
-
-    // Trae preventivos
-    function getPreventivos($month, $year) // Ok
+    
+      function getPreventivos($month, $year) // Ok
     {   
         $userdata = $this->session->userdata('user_data');
         $empId    = $userdata[0]['id_empresa'];
@@ -228,6 +227,9 @@ class Calendarios extends CI_Model {
             return false;
         }       
     }
+  
+
+
 
     // Correctivos para la Tabla por id de empresa logueada
     function getsservicio($month, $year) // Ok
