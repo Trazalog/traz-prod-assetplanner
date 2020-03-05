@@ -186,6 +186,8 @@ class Calendario extends CI_Controller
                     // si es correctivo u S.Servicio
                     $tipo = 'correctivo';
                     $infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);
+                    log_message('DEBUG','#Calendario/guardar_agregar | infoTarea: '.json_encode($infoTarea));
+
                     $respCerrar = $this->cerrarTarea($infoTarea['taskId']);
                     //log
                     log_message('DEBUG', 'TRAZA | Tipo solicitud en 2: ' . $tipo);

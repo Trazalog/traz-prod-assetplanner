@@ -75,11 +75,11 @@ $query_builder = true;
 
 $db['default'] = array(
     'dsn' => '',
-    'hostname' => '192.168.0.118',
-    'username' => 'externo',
+    'hostname' => 'localhost',
+    'username' => 'root',
     #'password' => '!Password00',
     'password' => '',
-    'database' => 'planner_assetcloud_integracion',
+    'database' => 'asset_fguardia',
     'dbdriver' => 'mysqli',
     'dbprefix' => '',
     'pconnect' => false,

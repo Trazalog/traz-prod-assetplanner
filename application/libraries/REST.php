@@ -78,9 +78,9 @@ class REST
 
             curl_close($curl);
             
-            if ($response_code >= 300) {
-                
-                log_message('ERROR', '#TRAZA | #REST | #CURL | #HTTP_ERROR_CODE >> ' . $response_code);
+            log_message('ERROR', '#TRAZA | #REST | #CURL | #HTTP_RESPONCE_CODE >> ' . $response_code);
+
+            if ($response_code >= 300) {    
 
                 log_message('DEBUG', '#TRAZA | #REST | #CURL | #HEADER SALIDA >> ' . $headerSent);
 
