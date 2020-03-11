@@ -30,6 +30,8 @@ class Equipos extends CI_Model
         sector.descripcion AS desec,
         criticidad.id_criti,
         criticidad.descripcion AS decri,
+        admcustomers.cliId,
+        admcustomers.cliRazonSocial AS clie,
         proceso.id_proceso,
         proceso.descripcion AS depro');
         $this->db->from('equipos');
@@ -39,6 +41,7 @@ class Equipos extends CI_Model
         $this->db->join('criticidad', 'criticidad.id_criti=equipos.id_criticidad');
         $this->db->join('area', 'area.id_area=equipos.id_area');
         $this->db->join('proceso', 'proceso.id_proceso=equipos.id_proceso');
+        $this->db->join('admcustomers', 'admcustomers.cliId=equipos.id_customer');
         $this->db->where('equipos.estado !=', 'AN');
         $this->db->where('equipos.id_empresa', $empId);
         $this->db->order_by('equipos.id_equipo', 'ASC');
