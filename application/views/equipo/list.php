@@ -30,7 +30,9 @@
                                 <th>Proceso</th>
                                 <th>Sector</th>
                                 <th>Criticidad</th>
+                                <th>Cliente</th>
                                 <th>Estado</th>
+                                
                             </tr>
                         </thead>
                         <tbody>
@@ -76,6 +78,7 @@
                   echo '<td>'.$a['depro'].'</td>';
                   echo '<td>'.$a['desec'].'</td>';
                   echo '<td>'.$a['decri'].'</td>';
+                  echo '<td>'.$a['clie'].'</td>';
                   echo '<td>'.estado($a['estadoEquipo']).'</tr>';
                 }
               ?>
