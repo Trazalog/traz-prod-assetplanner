@@ -113,7 +113,7 @@ class Calendario extends CI_Controller
         $usrId = $userdata[0]['usrId'];
         $empId = $userdata[0]['id_empresa'];
 
-        # Bandera que si esta en TRUE Aborta la creacion de la OT
+        # Bandera que si esta en TRUE Aborta la creacion de la OTget
         $error = false;
 
         if ($_POST) {
