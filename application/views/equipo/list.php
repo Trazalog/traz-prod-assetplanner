@@ -1182,7 +1182,8 @@ function validarCampos() {
     if ($('#lectura').val() == "") {
         hayError = true;
     }else{
-         if($('#lectura').val() <= $("#spanNuevaLectura").text()){
+         
+         if(parseInt($('#lectura').val()) <= parseInt($("#spanNuevaLectura").text())){
              hayError = "lectura";
          }
     }

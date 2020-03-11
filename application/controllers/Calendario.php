@@ -40,7 +40,7 @@ class Calendario extends CI_Controller
         $permission = $this->input->post('permission');
         $data['mes'] = $mes;
         $data['year'] = $year;
-        $preventivosHoras = $this->Calendarios->getPreventivosHoras($mes, $year);
+        $data['list0'] = $this->Calendarios->getPreventivosHoras($mes, $year);
         $data['list1'] = $this->Calendarios->getpredlist($mes, $year); // listo
         $data['list2'] = $this->Calendarios->getbacklog($mes, $year); // listo
         $data['list3'] = $this->Calendarios->getPreventivos($mes, $year); // listo
@@ -186,7 +186,7 @@ class Calendario extends CI_Controller
                     // si es correctivo u S.Servicio
                     $tipo = 'correctivo';
                     $infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);
-                    log_message('DEBUG','TRAZA | Calendario/guardar_agregar | infoTarea: '.json_encode($infoTarea));
+                    log_message('DEBUG','#Calendario/guardar_agregar | infoTarea: '.json_encode($infoTarea));
 
                     $respCerrar = $this->cerrarTarea($infoTarea['taskId']);
                     //log
@@ -293,6 +293,10 @@ class Calendario extends CI_Controller
                 }
                 // $tipo == '5' -> Predictivo
                 if ($tipo == '5') {
+                    $tipo = 'predictivo';
+                    $this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);
+                }
+                if ($tipo == '') {
                     $tipo = 'predictivo';
                     $this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);
                 }
@@ -788,7 +792,6 @@ class Calendario extends CI_Controller
         if ($tipo == 'correctivo') {
             //$id_solicitud    -> id sol de servicios
             $caseId = $this->Calendarios->getCaseIdporIdSolServicios($id_solicitud);
-            log_message('DEBUG', 'TRAZA | getCaseIdporIdSolServicios() | caseId: ' . $caseId);
         }
         if ($tipo == 'backlog') {
             //$id_solicitud    -> id de backlog
@@ -797,10 +800,8 @@ class Calendario extends CI_Controller
 
         // traer de bpm el id de tarea (id)
         $actividades = $this->bpm->ObtenerActividades(BPM_PROCESS_ID, $caseId);
-        log_message('DEBUG', 'TRAZA | getInfoTareaporIdSolicitud() | Tareas: ' . $actividades);
         $infoTarea['taskId'] = json_decode($this->getIdTask($actividades, $tipo), true);
         $infoTarea['caseId'] = $caseId;
-        log_message('DEBUG', 'TRAZA | getInfoTareaporIdSolicitud() | InfoTareas: ' . $infoTarea);
         return $infoTarea;
 
     }
