@@ -30,6 +30,7 @@
                 <th>Origen</th>
                 <th>Id Solicitud</th>
                 <th>Asignado</th>
+                <th>Cliente</th>
                 <th>Estado</th>
               </tr>
             </thead>
@@ -74,7 +75,7 @@
                         echo '<td>'.$a['tipoDescrip'].'</td>';
                         echo '<td>'.$a['id_solicitud'].'</td>';
                         echo '<td>'.$a['nombre'].'</td>';                        
-                      
+                        echo '<td>'.$a['nomCli'].'</td>';
                         echo '<td>';  
                         
                           if ($a['estado'] == 'S') {
