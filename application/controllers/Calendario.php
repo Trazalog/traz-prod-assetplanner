@@ -113,7 +113,7 @@ class Calendario extends CI_Controller
         $usrId = $userdata[0]['usrId'];
         $empId = $userdata[0]['id_empresa'];
 
-        # Bandera que si esta en TRUE Aborta la creacion de la OT
+        # Bandera que si esta en TRUE Aborta la creacion de la OTget
         $error = false;
 
         if ($_POST) {
@@ -177,7 +177,7 @@ class Calendario extends CI_Controller
             if ($event_tipo == '1') {
 
                 //log
-                log_message('DEBUG', 'TRAZA | Evento tipo: ' . $event_tipo);
+                log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar | Evento tipo: ' . $event_tipo);
 
                 /// Interaccion con BPM ///
                 $estado = 'PL';
@@ -190,12 +190,12 @@ class Calendario extends CI_Controller
 
                     $respCerrar = $this->cerrarTarea($infoTarea['taskId']);
                     //log
-                    log_message('DEBUG', 'TRAZA | Tipo solicitud en 2: ' . $tipo);
-                    log_message('DEBUG', 'TRAZA | $taskId: ' . $infoTarea['taskId']);
+                    log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar | Tipo solicitud en 2: ' . $tipo);
+                    log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar | $taskId: ' . $infoTarea['taskId']);
                     if ($respCerrar['status']) {
                         $resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);
                     } else {
-                        log_message('DEBUG', '#Calendario >> guardar_agregar | Cerrar SS: ' . json_encode($respCerrar));
+                        log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar | Cerrar SS: ' . json_encode($respCerrar));
                         $error = true;
                         $estado = 'S';
                     }
@@ -212,12 +212,12 @@ class Calendario extends CI_Controller
 
                     // log
 
-                    log_message('DEBUG', 'TRAZA | Evento Tipo: ' . $event_tipo);
-                    log_message('DEBUG', 'TRAZA | Usr en BPM: ' . $userBpm);
-                    log_message('DEBUG', 'TRAZA | caseId: ' . $infoTarea['caseId']);
+                    log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar | Evento Tipo: ' . $event_tipo);
+                    log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar | Usr en BPM: ' . $userBpm);
+                    log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar | caseId: ' . $infoTarea['caseId']);
                     // busca taskId de     'Planificar Solicitud'
                     $prevTask = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID, $infoTarea['caseId'], 'Planificar Solicitud');
-                    log_message('DEBUG', 'TRAZA | Taskid Planificar Solicitud: ' . $prevTask);
+                    log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar | Taskid Planificar Solicitud: ' . $prevTask);
 
                     if ($prevTask != 0) {
                         // Asigno ususario logueado
@@ -234,14 +234,14 @@ class Calendario extends CI_Controller
                 // $tipo == '3' -> Preventivo
                 if ($tipo == '3') {
                     //log
-                    log_message('DEBUG', 'TRAZA | Tipo solicitud en 3: ' . $tipo);
+                    log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar |  Tipo solicitud en 3: ' . $tipo);
                     $tipo = 'preventivo';
                     $this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);
                 }
                 // $tipo == '4' -> Backlog
                 if ($tipo == '4') {
                     //log
-                    log_message('DEBUG', 'TRAZA | Tipo solicitud en 4: ' . $tipo);
+                    log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar |  Tipo solicitud en 4: ' . $tipo);
                     // actualizo estado del backlog
                     $tipo = 'backlog';
 
@@ -253,13 +253,13 @@ class Calendario extends CI_Controller
                     //$infoTarea = $this->getInfoTareaporIdSolicitud($id_solicitud, $tipo);
                     $infoTarea['caseId'] = $this->getInfoTareEnBack($id_solicitud);
                     //log
-                    log_message('DEBUG', 'TRAZA | ID Solicitud: ' . $id_solicitud);
-                    log_message('DEBUG', 'TRAZA | Case_id desde infotarea/idsolicitud: ' . $infoTarea['caseId']);
+                    log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar |  ID Solicitud: ' . $id_solicitud);
+                    log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar |  Case_id desde infotarea/idsolicitud: ' . $infoTarea['caseId']);
 
                     // si backlog es generado en SServicios tiene case id de SolServicio
                     if ($infoTarea['caseId'] != 0) {
                         $prevTask = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID, $infoTarea['caseId'], 'Planificar Backlog');
-                        log_message('DEBUG', 'TRAZA | Taskid en Planificar Backlog: ' . $prevTask);
+                        log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar | Taskid en Planificar Backlog: ' . $prevTask);
 
                         if ($prevTask != 0) {
                             // Asigno ususario logueado
