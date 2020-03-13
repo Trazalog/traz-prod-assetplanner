@@ -77,7 +77,8 @@ class Calendarios extends CI_Model {
     }
 
     // Preventivos por Hora para la Tabla
-    function getPreventivosHoras($mes, $year)
+    function 
+    getPreventivosHoras($mes, $year)
     {
         $userdata = $this->session->userdata('user_data');
         $empId    = $userdata[0]['id_empresa'];
@@ -96,11 +97,13 @@ class Calendarios extends CI_Model {
             equipos.id_equipo,
             equipos.ultima_lectura, 
             tareas.descripcion,
+            periodo.descripcion as desc_periodo,
             DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY) AS prox 
             from preventivo 
             join equipos ON preventivo.id_equipo = equipos.id_equipo 
             join tareas ON preventivo.id_tarea = tareas.id_tarea 
-            WHERE preventivo.id_empresa = $empId AND preventivo.estadoprev = 'C' AND ((preventivo.perido = '5') OR (preventivo.perido = '6')) AND (equipos.ultima_lectura >= (preventivo.lectura_base + preventivo.critico1))";//horas o ciclos
+            join periodo ON preventivo.perido = periodo.idperiodo
+            WHERE preventivo.id_empresa = $empId AND preventivo.estadoprev = 'C' AND ((periodo.descripcion = 'Ciclos') OR (periodo.descripcion = 'Horas') OR (periodo.descripcion = 'Kilómetros')) AND (equipos.ultima_lectura >= (preventivo.lectura_base + preventivo.critico1))";//horas o ciclos
             //AND month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $mes 
             //AND year(orden_trabajo.fecha_program) = $year
             //";
@@ -194,10 +197,12 @@ class Calendarios extends CI_Model {
         $userdata = $this->session->userdata('user_data');
         $empId    = $userdata[0]['id_empresa'];
         $sql  = "select preventivo.prevId, preventivo.id_tarea, preventivo.perido, preventivo.cantidad, preventivo.ultimo, preventivo.id_equipo, equipos.codigo, equipos.id_equipo, tareas.descripcion, 
-            DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY) AS prox 
+            DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY) AS prox ,
+            periodo.descripcion as desc_periodo
             from preventivo join equipos ON preventivo.id_equipo = equipos.id_equipo 
             join tareas ON preventivo.id_tarea = tareas.id_tarea 
-            where (preventivo.estadoprev = 'C') AND 
+            join periodo ON preventivo.perido = periodo.idperiodo
+            where (preventivo.estadoprev = 'C') AND ((periodo.descripcion != 'Ciclos') AND (periodo.descripcion != 'Horas') AND (periodo.descripcion != 'Kilómetros')) AND 
             (month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $month or month(preventivo.ultimo) = $month)";  
         // $sql = "SELECT preventivo.prevId, 
         //     preventivo.id_tarea, 
