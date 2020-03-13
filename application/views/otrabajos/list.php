@@ -336,7 +336,8 @@ $("#btn_cancGuardado").click(function (e) {
           'fecha_inicio'  : resp[0]['fecha_inicio'],    //
           'fecha_terminada' : resp[0]['fecha_terminada'],   //
           'idusuario'     : resp[0]['id_usuario'],      //
-          'tareadescrip'  : resp[0]['tareadescrip']//,     //
+          'tareadescrip'  : resp[0]['tareadescrip'],//,     //
+          'nomCli'        : resp[0]['nomCli']
           //'id_sucu'       : resp[0]['id_sucursal'],     //
           //'sucursal'      : resp[0]['descripc']//,        //
           //'id_proveedor'  : resp[0]['provid'],          //
@@ -375,6 +376,7 @@ $("#btn_cancGuardado").click(function (e) {
     $('#fechaProgramacion').val(datos['fecha_program']); 
     $('#fechaInicio').val(datos['fecha_inicio']); 
     $('#fechaTerminada').val(datos['fecha_terminada']);  
+    $('#NombreCliente').val(datos['nomCli']);
     //$("#suci").val(datos['id_sucu']);
     //$("#prov").val(datos['id_proveedor']); 
 
@@ -1544,6 +1546,7 @@ function guardarpedido(){
           'marca'          : data['otrabajo'][0]['marca'],
           'ubicacion'      : data['otrabajo'][0]['ubicacion'],
           'descripcion_eq' : data['otrabajo'][0]['descripcionEquipo'],
+          'nomCli'         : data['otrabajo'][0]['nomCli'],
           'comp_equipo'    : data['otrabajo'][0]['compEquipo'],
           //'adjunto'        : adjunto
         };
@@ -1605,6 +1608,7 @@ function guardarpedido(){
       $('#vEstado').val(estadoOtrab);
       //llenar datos de equipo
       $('#vCodigoEquipo').val(datos['codigo']);
+      $('#vCliente').val(datos['nomCli']);
       $('#vMarcaEquipo').val(datos['marca']);
       $('#vUbicacionEquipo').val(datos['ubicacion']);
       $('#vDescripcionEquipo').val(datos['descripcion_eq']);           
@@ -2443,6 +2447,14 @@ function guardarpedido(){
                   <input type="text" id="equipo_descrip"  name="equipo_descrip" class="form-control input-md" disabled />
                   <input type="hidden" id="equipo"  name="equipo" class="form-control input-md" disabled />
                 </div>
+                <div class="col-xs-12 col-sm-3 com-md-3">                
+                  
+                  <input type="hidden" id="id_ot"  name="id_ot" class="form-control input-md" disabled />
+                  
+                  <label for="cliente">Cliente:</label>
+                  <input type="text" id="NombreCliente"  name="NombreCliente" class="form-control input-md" disabled />
+                  <input type="hidden" id="cliente"  name="cliente" class="form-control input-md" disabled />
+                </div>
                 <div class="col-xs-12 col-sm-3 com-md-3">
                   <label for="fecha_ingreso">Fecha:</label>
                   <input type="text" id="fecha_ingreso"  name="fecha_ingreso" class="form-control input-md" disabled />
@@ -3027,6 +3039,10 @@ function guardarpedido(){
                   <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="vCodigoEquipo">Equipo:</label>
                     <input type="text" class="form-control " name="vCodigoEquipo" id="vCodigoEquipo" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="vCliente">Cliente:</label>
+                    <input type="text" class="form-control " name="vCliente" id="vCliente" disabled>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="vMarcaEquipo">Marca:</label>

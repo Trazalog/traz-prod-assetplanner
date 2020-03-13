@@ -40,6 +40,11 @@
                                         <select id="equipo" name="equipo" class="form-control equipo"></select>
                                     </div>
                                     <div class="col-xs-12 col-sm-6 com-md-4">
+                                        <label for="cliente">Cliente:</label>
+                                        <input type="text" id="nomCliente" name="cliente" class="form-control input-md"
+                                            disabled />
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 com-md-4">
                                         <label for="fecha_ingreso">Fecha:</label>
                                         <input type="text" id="fecha_ingreso" name="fecha_ingreso"
                                             class="form-control input-md" disabled />
@@ -547,10 +552,12 @@ $('#equipo').change(function() {
             var ubicacion = data[0]['ubicacion'];
             var criterio1 = data[0]['criterio1'];
             var descripcion = data[0]['descripcion'];
+            var nomCliente = data[0]['nomCli'];
             $('#fecha_ingreso').val(fecha_ingreso);
             $('#marca').val(marca);
             $('#descripcion').val(descripcion);
             $('#ubicacion').val(ubicacion);
+            $('#nomCliente').val(nomCliente);
         },
         error: function(result) {
 
