@@ -1783,6 +1783,7 @@ function guardarpedido(){
           'marca'          : data['preventivo'][0]['marca'],
           'ubicacion'      : data['preventivo'][0]['ubicacion'],
           'descripcion_eq' : data['preventivo'][0]['descripcionEquipo'],
+          'nomCli'         : data['preventivo'][0]['nomCli'],
           'tarea' : data['preventivo'][0]['tarea'],
         };
 
@@ -1838,6 +1839,7 @@ function guardarpedido(){
       $('#vEstadoPrev').val(estadoPrevent);
       //llenar datos de equipo
       $('#vCodigoEquipoPrev').val(datos['codigo']);
+      $('#NombreClientePrev').val(datos['nomCli']);
       $('#vMarcaEquipoPrev').val(datos['marca']);
       $('#vUbicacionEquipoPrev').val(datos['ubicacion']);
       $('#vDescripcionEquipoPrev').val(datos['descripcion_eq']);
@@ -3242,6 +3244,8 @@ function guardarpedido(){
               </div>
             </div>
           </div>
+
+          
           <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingTwoSolServicio">
               <h4 class="panel-title">
@@ -3512,6 +3516,10 @@ function guardarpedido(){
                   <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="vCodigoEquipoPrev">Equipo:</label>
                     <input type="text" class="form-control " name="vCodigoEquipoPrev" id="vCodigoEquipoPrev" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="ClientePrev">Cliente:</label>
+                    <input type="text" class="form-control " name="ClientePrev" id="NombreClientePrev" disabled>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="vMarcaEquipoPrev">Marca:</label>
