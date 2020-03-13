@@ -1666,6 +1666,7 @@ function guardarpedido(){
           'ubicacion'      : data['solicitud'][0]['ubicacion'],
           'descripcion_eq' : data['solicitud'][0]['descripcionEquipo'],
           'comp_equipo'    : data['solicitud'][0]['compEquipo'],
+          'nomCli'         : data['solicitud'][0]['nomCli'],
           'solServicio'   : data['solicitud'][0]['solServicio']
         };
         
@@ -1725,6 +1726,7 @@ function guardarpedido(){
       $('#vEstadoSolServicio').val(estadoSol);
       //llenar datos de equipo
       $('#vCodigoEquipoSolServicio').val(datos['codigo']);
+      $('#NombreClienteServicio').val(datos['nomCli']);
       $('#vMarcaEquipoSolServicio').val(datos['marca']);
       $('#vUbicacionEquipoSolServicio').val(datos['ubicacion']);
       $('#vDescripcionEquipoSolServicio').val(datos['descripcion_eq']);
@@ -3261,6 +3263,10 @@ function guardarpedido(){
                   <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="vCodigoEquipoSolServicio">Equipo:</label>
                     <input type="text" class="form-control " name="vCodigoEquipoSolServicio" id="vCodigoEquipoSolServicio" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label for="nomClienteServicio">Cliente:</label>
+                    <input type="text" class="form-control " name="nomClienteServicio" id="NombreClienteServicio" disabled>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-4">
                     <label for="vMarcaEquipoSolServicio">Marca:</label>
