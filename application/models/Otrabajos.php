@@ -1067,11 +1067,13 @@ class Otrabajos extends CI_Model {
 													solicitud_reparacion.solicitante, 
 													solicitud_reparacion.f_sugerido AS fechaSugerida, 
 													solicitud_reparacion.hora_sug AS horarioSugerido, 
+													admcustomers.cliRazonSocial AS nomCli,
 													solicitud_reparacion.causa AS falla');
 				$this->db->from('solicitud_reparacion');
 				$this->db->where('solicitud_reparacion.id_solicitud', $id_solicitud);
 				$this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo');
 				$this->db->join('sector', 'equipos.id_sector = sector.id_sector');
+				$this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
 			
 				$query = $this->db->get();
 				if($query->num_rows()!=0)
