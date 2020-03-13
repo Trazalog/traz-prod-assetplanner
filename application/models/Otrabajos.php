@@ -156,11 +156,12 @@ class Otrabajos extends CI_Model {
 		$userdata = $this->session->userdata('user_data');
     $empId = $userdata[0]['id_empresa']; 
 			
-		$this->db->select('equipos.*, marcasequipos.marcadescrip');
+		$this->db->select('equipos.*, marcasequipos.marcadescrip, admcustomers.cliRazonSocial AS nomCli');
 		$this->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');
+		$this->db->join('admcustomers', 'admcustomers.cliId = equipos.id_customer' );
 		$this->db->from('equipos');    	
 		$this->db->where('equipos.id_empresa', $empId);
-		$this->db->where('equipos.id_equipo', $id);      	
+		$this->db->where('equipos.id_equipo', $id);	 	
 		$query= $this->db->get();   
 	
 		if ($query->num_rows()!=0)
@@ -260,6 +261,7 @@ class Otrabajos extends CI_Model {
 												orden_trabajo.id_usuario_a,
 												orden_trabajo.id_usuario,
 												orden_trabajo.id_sucursal,
+												admcustomers.cliRazonSocial AS nomCli,
 												sucursal.descripc,											
 												abmproveedores.provnombre,
 												abmproveedores.provid,
@@ -276,6 +278,7 @@ class Otrabajos extends CI_Model {
 			$this->db->join('marcasequipos', 'equipos.marca = marcasequipos.marcaid');
 			//$this->db->join('sisusers', 'sisusers.usrId=orden_trabajo.id_usuario');
 			$this->db->join('abmproveedores', 'abmproveedores.provid=orden_trabajo.id_proveedor', 'left');
+			$this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
 			$this->db->where('orden_trabajo.id_orden', $id);
 			$query = $this->db->get();
 			
@@ -1097,6 +1100,7 @@ class Otrabajos extends CI_Model {
 												sisusers.usrName, sisusers.usrLastName, 
 												orden_trabajo.tipo, 
 												orden_trabajo.id_solicitud,
+												admcustomers.cliRazonSocial AS nomCli,
 												sucursal.id_sucursal, 
 												sucursal.descripc,
 												equipos.codigo, 
@@ -1109,7 +1113,8 @@ class Otrabajos extends CI_Model {
         $this->db->join('sucursal', 'orden_trabajo.id_sucursal = sucursal.id_sucursal', 'left');
         $this->db->join('abmproveedores', 'orden_trabajo.id_proveedor = abmproveedores.provid', 'left');
         $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
-        $this->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');
+		$this->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');
+		$this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
         $this->db->where('orden_trabajo.id_orden', $idOt);
 				$query = $this->db->get();
         if($query->num_rows()!=0)
