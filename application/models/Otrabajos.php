@@ -1029,22 +1029,22 @@ class Otrabajos extends CI_Model {
 				orden_trabajo.nro, orden_trabajo.descripcion AS descripcionFalla, 
 				orden_trabajo.fecha_inicio,orden_trabajo.fecha_program, orden_trabajo.fecha_terminada, orden_trabajo.estado, 
 				sisusers.usrName, sisusers.usrLastName, 
-    		orden_trabajo.tipo, orden_trabajo.id_solicitud,
+			orden_trabajo.tipo, orden_trabajo.id_solicitud,
+			admcustomers.cliRazonSocial AS nomCli,
     		sucursal.id_sucursal, sucursal.descripc,
     		abmproveedores.provid, abmproveedores.provnombre,
 				equipos.codigo, equipos.fecha_ingreso, equipos.ubicacion, equipos.descripcion AS descripcionEquipo,
 				marcasequipos.marcadescrip AS marca,
-				admcustomers.cliRazonSocial AS nomCli,
 				grupo.descripcion AS grupodescrip, grupo.id_grupo');
         $this->db->from('orden_trabajo');
         $this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId', 'left');
         $this->db->join('sucursal', ' orden_trabajo.id_sucursal = sucursal.id_sucursal ', 'left');
         $this->db->join('abmproveedores', 'orden_trabajo.id_proveedor = abmproveedores.provid', 'left');
 				$this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
+				$this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
 				$this->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');
 				$this->db->join('grupo', 'grupo.id_grupo = equipos.id_grupo');
-				$this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
-        $this->db->where('orden_trabajo.id_orden', $idOt);
+		 $this->db->where('orden_trabajo.id_orden', $idOt);
 
 				$query = $this->db->get();
 
@@ -1072,10 +1072,8 @@ class Otrabajos extends CI_Model {
 													admcustomers.cliRazonSocial AS nomCli,
 													solicitud_reparacion.causa AS falla');
 				$this->db->from('solicitud_reparacion');
-				
 				$this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo');
 				$this->db->join('sector', 'equipos.id_sector = sector.id_sector');
-				
 				$this->db->where('solicitud_reparacion.id_solicitud', $id_solicitud);
 
 				$query = $this->db->get();
