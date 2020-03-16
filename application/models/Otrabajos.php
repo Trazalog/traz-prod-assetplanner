@@ -1023,16 +1023,16 @@ class Otrabajos extends CI_Model {
     }
 
     //devuelve valores de todos los datos de la OT para mostrar en modal.
-    function getViewDataSolServicio($idOt, $idSolicitud)
+    function getViewDataSolServicio($idOt, $idSolicitud=null)
     {
 			$this->db->select('orden_trabajo.id_orden, 
 				orden_trabajo.nro, orden_trabajo.descripcion AS descripcionFalla, 
 				orden_trabajo.fecha_inicio,orden_trabajo.fecha_program, orden_trabajo.fecha_terminada, orden_trabajo.estado, 
 				sisusers.usrName, sisusers.usrLastName, 
-			orden_trabajo.tipo, orden_trabajo.id_solicitud,
-			admcustomers.cliRazonSocial AS nomCli,
-    		sucursal.id_sucursal, sucursal.descripc,
-    		abmproveedores.provid, abmproveedores.provnombre,
+				orden_trabajo.tipo, orden_trabajo.id_solicitud,
+				admcustomers.cliRazonSocial AS nomCli,
+    			sucursal.id_sucursal, sucursal.descripc,
+    			abmproveedores.provid, abmproveedores.provnombre,
 				equipos.codigo, equipos.fecha_ingreso, equipos.ubicacion, equipos.descripcion AS descripcionEquipo,
 				marcasequipos.marcadescrip AS marca,
 				admcustomers.cliRazonSocial AS nomCli,
@@ -1041,11 +1041,11 @@ class Otrabajos extends CI_Model {
         $this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId', 'left');
         $this->db->join('sucursal', ' orden_trabajo.id_sucursal = sucursal.id_sucursal ', 'left');
         $this->db->join('abmproveedores', 'orden_trabajo.id_proveedor = abmproveedores.provid', 'left');
-				$this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
-				$this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
-				$this->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');
-				$this->db->join('grupo', 'grupo.id_grupo = equipos.id_grupo');
-		 $this->db->where('orden_trabajo.id_orden', $idOt);
+		$this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
+		$this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
+		$this->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');
+		$this->db->join('grupo', 'grupo.id_grupo = equipos.id_grupo');
+		$this->db->where('orden_trabajo.id_orden', $idOt);
 
 				$query = $this->db->get();
 
