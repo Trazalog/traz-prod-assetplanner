@@ -1035,6 +1035,7 @@ class Otrabajos extends CI_Model {
     		abmproveedores.provid, abmproveedores.provnombre,
 				equipos.codigo, equipos.fecha_ingreso, equipos.ubicacion, equipos.descripcion AS descripcionEquipo,
 				marcasequipos.marcadescrip AS marca,
+				admcustomers.cliRazonSocial AS nomCli,
 				grupo.descripcion AS grupodescrip, grupo.id_grupo');
         $this->db->from('orden_trabajo');
         $this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId', 'left');
