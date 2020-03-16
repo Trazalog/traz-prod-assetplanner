@@ -1029,9 +1029,9 @@ class Otrabajos extends CI_Model {
 				orden_trabajo.nro, orden_trabajo.descripcion AS descripcionFalla, 
 				orden_trabajo.fecha_inicio,orden_trabajo.fecha_program, orden_trabajo.fecha_terminada, orden_trabajo.estado, 
 				sisusers.usrName, sisusers.usrLastName, 
-				orden_trabajo.tipo, orden_trabajo.id_solicitud,
+				orden_trabajo.tipo, orden_trabajo.id_solicitud,				
+				sucursal.id_sucursal, sucursal.descripc,
 				admcustomers.cliRazonSocial AS nomCli,
-    			sucursal.id_sucursal, sucursal.descripc,
     			abmproveedores.provid, abmproveedores.provnombre,
 				equipos.codigo, equipos.fecha_ingreso, equipos.ubicacion, equipos.descripcion AS descripcionEquipo,
 				marcasequipos.marcadescrip AS marca,
@@ -1068,8 +1068,7 @@ class Otrabajos extends CI_Model {
 				$this->db->select('sector.descripcion AS sector, 			
 													solicitud_reparacion.solicitante, 
 													solicitud_reparacion.f_sugerido AS fechaSugerida, 
-													solicitud_reparacion.hora_sug AS horarioSugerido, 
-													admcustomers.cliRazonSocial AS nomCli,
+													solicitud_reparacion.hora_sug AS horarioSugerido, 										
 													solicitud_reparacion.causa AS falla');
 				$this->db->from('solicitud_reparacion');
 				$this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo');
