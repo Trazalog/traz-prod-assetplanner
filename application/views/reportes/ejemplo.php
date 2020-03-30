@@ -1,0 +1,494 @@
+<input type="hidden" id="permission" value="<?php echo $permission;?>">
+<section class="content"> 
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+        <h4><i class="icon fa fa-ban"></i> Error!</h4>
+        Revise que todos los campos esten completos
+      </div>
+    </div>
+  </div><!--Fin msj error  -->
+
+  <div class="row"><!--Inicio decontenedor con filtos  -->
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-header">
+          <h3 class="box-title">Reporte Almacen</h3>
+        </div><!-- /.box-header -->
+
+        <div class="box-body"> 
+          <div class="row">
+            <div class="col-xs-12 col-sm-6">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" class="check" id="selCliente"><strong>cliente</strong>
+                </label>
+              </div>
+              <input type="text" class="form-control buscCliente" placeholder="Buscar Cliente..." id="buscCliente">
+              <input type="text" class="hidden idCliente" id="idCliente">
+            </div><!--Fin cliente  -->
+
+            <div class="col-xs-12 col-sm-6">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" class="check" id="selEquipo"><strong>Equipo</strong>
+                </label>
+              </div>
+              <select class="form-control" id="equipSelec" placeholder="Seleccione tipo...">
+                <option value=""></option>						  			  
+              </select>						    	
+            </div><!--Fin Equipo  -->
+
+            <div class="col-xs-12 col-sm-6">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" class="check" id="selTipo"><strong>Tipo de almacen</strong>
+                </label>
+              </div>
+              <select class="form-control" id="TipoSelec" placeholder="Seleccione tipo...">
+                <option value="1">Herramientas</option>	
+                <option value="2">Insumos</option>			  			  
+              </select>						    	
+            </div><!--Fin Tipo de almacen  -->
+
+            <div class="col-xs-12 col-sm-6">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" class="check" id="selArticulo" ><strong>Articulo</strong>
+                </label>
+              </div>
+              <select class="form-control" id="ArticuloSelec" placeholder="Seleccione Articulo..." >
+                <option value=""></option>						  			  
+              </select>						    	
+            </div><!--Fin Articulo  -->
+
+            <div class="col-xs-12 col-sm-6">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" class="check" id="selSupervisor"><strong>supervisor</strong>
+                </label>
+              </div>
+              <select class="form-control" id="SupervisorSelec" placeholder="Seleccione supervisor...">
+                <option value=""></option>						  			  
+              </select>						    	
+            </div><!--Fin Supervisor -->
+
+           
+          </div>
+
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" class="check" id="selFecha"> <strong>Fecha</strong>
+                </label>
+              </div>
+            </div><!--Fin select fecha  -->
+            <div class="col-xs-12 col-sm-6">
+              <label for="desde">Desde</label>
+              <input type="text" class="form-control fecha check" id="desde" placeholder="">
+            </div>  <!--Fin fecha desde  -->
+            <div class="col-xs-12 col-sm-6">
+              <label for="hasta">Hasta</label>
+              <input type="text" class="form-control fecha check" id="hasta" placeholder="">
+            </div> <!--Fin fecha hasta  -->
+          </div><!--Fin parte de fechas  -->
+
+          <br>
+
+          <button class="btn btn-primary pull-right" id="consulta" onclick="javascript:consReporte()">Consultar</button>
+
+        </div><!-- /.box-body fin contenedor con filtros -->
+
+        <div class="box-footer"> <!--Inicio contenedor de resultados style="display:none;" hace que este contenedor este oculto y colo apaerzca cuando se muestra la consulta  -->
+          <div id="tablaReportes" data-tableName="Test Table 2" style="display: none;">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">Consulta</h3>
+              </div>
+
+              <div class="panel-body">    
+                <table id="sales" class="table table-bordered table-hover">
+                  <thead>
+                    <tr>                
+                      <th>Id de Orden</th>
+                      <th>Equipo</th>
+                      <!-- <th>Supervisor</th> -->
+                      <th>herramientas</th>
+                      <th>Cantidad de herramientas</th>
+                      <!-- <th>insumos</th> -->
+                      <!-- <th>Cantidad de Insumos</th> -->
+                      <th>Tipo Orden de trabajo</th>
+                      <th>Decripcion</th>
+                     
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- -->
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+        </div><!-- /.box-footer Fin contenedor resultado de consultas -->
+      </div><!-- /.box -->
+    </div><!--Fin calse que cintiene los dos sectores filtros y resultado  -->
+  </div><!--Fin contnedor de filtros y tabla resultado  -->
+</section>
+
+<!-- comienzo script -->
+<script>// Habilitar y deshabilitar cliente y equipo, articulo, supervisor tipo de almacen, fecha-->
+$(".fecha").datepicker();
+
+// Datatables -->
+$('#sales').DataTable({
+  "aLengthMenu": [ 10, 25, 50, 100 ],
+  "order": [[0, "asc"]],
+});
+
+$(function() {
+  enabDisabCliente();
+  $("#selCliente").click(enabDisabCliente);
+  enabDisabEquipo();
+  $("#selEquipo").click(enabDisabEquipo);
+  enabDisabArticulo();
+  $("#selArticulo").click(enabDisabArticulo);
+  enabDisabSupervisor();
+  $("#selSupervisor").click(enabDisabSupervisor);
+  enabDisabTipo();
+  $("#selTipo").click(enabDisabTipo);
+  enabDisabFecha();
+  $("#selFecha").click(enabDisabFecha);
+});
+
+function enabDisabCliente() {
+  if (this.checked) {
+    $("input.buscCliente").removeAttr("disabled");
+  } else {
+    $("input.buscCliente").attr("disabled", true);
+    $("input.buscCliente").val('');
+  }
+}
+
+function enabDisabEquipo() {
+  if (this.checked) {
+    $("select#equipSelec").removeAttr("disabled");
+  } else {
+    $("select#equipSelec").attr("disabled", true);
+    $("select#equipSelec").val('');
+  }
+}
+
+function enabDisabArticulo() {
+  if (this.checked) {
+    $("select#ArticuloSelec").removeAttr("disabled");
+  } else {
+    $("select#ArticuloSelec").attr("disabled", true);
+    $("select#ArticuloSelec").val('');
+  }
+}
+
+function enabDisabSupervisor() {
+  if (this.checked) {
+    $("select#SupervisorSelec").removeAttr("disabled");
+  } else {
+    $("select#SupervisorSelec").attr("disabled", true);
+    $("select#SupervisorSelec").val('');
+  }
+}
+
+function enabDisabTipo() {
+  if (this.checked) {
+    $("select#TipoSelec").removeAttr("disabled");
+  } else {
+    $("select#TipoSelec").attr("disabled", true);
+    $("select#TipoSelec").val('');
+  }
+}
+
+function enabDisabFecha() {
+  if (this.checked) {
+    $("input.fecha").removeAttr("disabled");
+  } else {
+    $("input.fecha").attr("disabled", true);
+    $("input.fecha").val('');
+  }
+}
+</script>
+
+<!-- Trae clientes y equipos p/ cliente seleccionado -->
+<script>
+
+$(function() {
+  // trae clientes para el input text
+  var dataF = function() {
+    var tmp = null;
+    $.ajax({
+      'async': false,
+      'type': "POST",
+      'global': false,
+      'dataType': 'json',
+      'url': "Reporte/getCliente",
+      'success': function(data) {
+        tmp = data;
+      }
+    });
+    return tmp;
+  }();
+  $(".buscCliente").autocomplete({
+    source: dataF,
+    delay: 100,
+    minLength: 1,
+    focus: function(event, ui) {
+      // prevent autocomplete from updating the textbox
+      event.preventDefault();
+      // manually update the textbox
+      $(this).val(ui.item.label);
+    },
+    select: function(event, ui) {
+      // prevent autocomplete from updating the textbox
+      event.preventDefault();
+      // manually update the textbox and hidden field
+      $(this).val(ui.item.label);
+      $("#idCliente").val(ui.item.value); // ui.item.value es cliId del cliente que se elige
+      $id_cli= ui.item.value;
+      //alert($id_cli);
+      
+      getEquipos($id_cli);
+
+    },
+  });
+  
+ 
+
+});
+
+
+
+//Trae euqipos en funcion del cliente que se elgio
+function getEquipos($id_cli){
+  //alert($id_cli);
+ $.ajax({
+     'data':{id_cli: $id_cli },
+    'async': true,
+    'dataType': 'json',
+    'global': false,
+    'type': "POST",
+    'url': "Reporte/getEquipo",
+    'success': function (data) {
+      console.table(data);
+     
+      
+      var $select = $("#equipSelec");
+      for (var i = 0; i < data.length; i++) {
+        $select.append( $('<option />',{ value:data[i]['id_equipo'], text:data[i]['descripcion'], title:data[i]['codigo'] }) );
+      }
+     },
+    'error' : function (data){
+      console.log('Error al traer equipos');
+      //alert('error');
+    }
+  });
+}
+
+</script>
+
+
+<!-- Trear articulos en funcion de tipo de almacen -->
+<script>
+$("#selArticulo").click(function (e) { 
+  //e.preventDefault();
+  $tipo = document.getElementById("TipoSelec").value; // para obetener el valor de tipo de almacen que se selecciono
+  // alert($tipo);
+   //por defecto si no se selecciono nada muestra en articulos los de la tabla herramientad, si no 1=herramientas y 2 = articulos
+  $.ajax({
+    'async': true,
+    'data': {tipo:$tipo },
+    'dataType': 'json',
+    'global': false,
+    'type': "POST",
+    'url': "reporte/getArticulo",
+    'success': function (data) {
+      console.table(data);
+      var $select = $("#ArticuloSelec");
+      if($tipo=='1'){
+        for (var i = 0; i < data.length; i++) {
+        $select.append( $('<option />',{ value:data[i]['herrId'], text:data[i]['herrdescrip'], title:data[i]['herrcodigo'] }) );
+             }
+      }else{
+        if($tipo == '2'){
+          for (var i = 0; i < data.length; i++) {
+        $select.append( $('<option />',{ value:data[i]['artId'], text:data[i]['artDescription'], title:data[i]['artBarCode'] }) );
+            }
+        }else{
+          for (var i = 0; i < data.length; i++) {
+        $select.append( $('<option />',{ value:data[i]['herrId'], text:data[i]['herrdescrip'], title:data[i]['herrcodigo'] }) );
+             }
+        }
+      }
+    },
+    'error' : function (data){
+      console.log('Error al traer equipos');
+      //alert('error');
+    }
+  });
+});
+
+$("#selSupervisor").click(function (e) { 
+  $.ajax({
+    'async': true,
+    'dataType': 'json',
+    'global': false,
+    'type': "POST",
+    'url': "Reporte/getSupervisor",
+    'success': function (data) {
+      console.table(data);
+     
+      
+      var $select = $("#SupervisorSelec");
+      for (var i = 0; i < data.length; i++) {
+        $select.append( $('<option />',{ value:data[i]['usrId'], text:data[i]['usrName'], title:data[i]['usrNick'] }) );
+      }
+     },
+    'error' : function (data){
+      console.log('Error al traer equipos');
+      //alert('error');
+    }
+  });
+
+
+});
+
+</script>
+
+
+<script>
+
+// limpio datos a consultar
+function limpCombo(){
+  $('.check').attr('checked',false);
+
+  $("input.buscCliente").attr("disabled", true);
+  $("input.buscCliente").val('');
+  $("#idCliente").val('');
+
+  $("select#selEquipo").attr("disabled", true);
+  $("select#equipSelec").val('');
+
+  $("select#selTipo").attr("disabled", true);
+  $("select#TipoSelec").val('');
+
+  $("select#selArticulo").attr("disabled", true);
+  $("select#ArticuloSelec").val('');
+  
+  $("select#selSupervisor").attr("disabled", true);
+  $("select#SupervisorSelec").val('');
+
+  $("input.fecha").attr("disabled", true);
+  $("input.fecha").val('');
+}
+
+  function consReporte(){
+
+    var id_cliente  = $('#idCliente').val();
+    var id_equipo   = $('#equipSelec').val();
+    var tipo_alm    = $('#TipoSelec').val();
+    var id_articulo = $('#ArticuloSelec').val();
+    var id_supervisor = $('#SupervisorSelec').val();
+    var desde     = $('#desde').val(); 
+    var a         = $('#hasta').val();
+    // alert(desde);
+    // alert(a);
+    // alert(id_articulo);
+    // alert(tipo_alm);
+    // alert(id_supervisor);
+
+    //console.log(id_cliente);
+    WaitingOpen('Cargando Solicitud de Servicios...'); //aparace el logo de cargando va a estar presente el tiempo que tarde en volver la respuesta en el ajax
+    //Comienzo de AJAX
+    $.ajax({
+      data:{
+            id_cliente: id_cliente,
+            id_equipo: id_equipo,
+            tipo_alm: tipo_alm,
+            id_articulo: id_articulo,
+            id_supervisor: id_supervisor,
+            desde: desde,
+            a: a
+           },
+      type: 'POST',             
+      dataType: 'json',
+      url: 'index.php/Reporte/consultaConFiltros', 
+      success: function(result){
+        console.table(result[0]);
+        limpCombo();
+        $("#tablaReportes").css("display", "block");
+        if(result !==0){
+
+           if((tipo_alm==1) || (tipo_alm==null)) {
+
+                    for(var i=0; i <= result.length-1; i++){
+                      $('#sales').DataTable().row.add( [
+                        result[i]['id_orden'],
+                        //result[i]['f_solicitado'],
+                        result[i]['codigo'],
+                        result[i]['herrcodigo'],
+                        result[i]['cantidad'],
+                        result[i]['desc'],
+                        result[i]['descripcion']
+                        //result[i]['estado']
+                        //result[i]['observaciones'],
+                        
+                      ] ).draw();
+                    }
+           }else{
+
+                    for(var i=0; i <= result.length-1; i++){
+                      $('#sales').DataTable().row.add( [
+                        result[i]['id_orden'],
+                        //result[i]['f_solicitado'],
+                        result[i]['codigo'],
+                        result[i]['artDescription'],
+                        result[i]['cantidad'],
+                        result[i]['desc'],
+                        result[i]['descripcion']
+                        //result[i]['estado']
+                        //result[i]['observaciones'],
+                        
+                      ] ).draw();
+                    }
+                 }
+          
+           
+          }
+          else{
+            alert("Este equipo no se puede filtrar, POR FAVOR SELCCIONO OTRO");
+          }
+          WaitingClose();
+        // dato={
+        //         'orden':result[0]['id_orden'],
+        //       };
+        // $('#res').val(dato['orden']);
+        // WaitingClose();
+      
+      },
+      error: function(result){
+        limpCombo();
+        WaitingClose();                                              
+        console.error("Error al traer solicitud de servicio");
+      }
+    });
+  }
+  // <th>Id de Orden</th>
+                      // <th>Equipo</th>
+                      // <th>Supervisor</th>-
+                      // <th>herramientas</th>
+                      // <th>Cantidad de herramientas</th>
+                      // <th>insumos</th>-
+                      // <th>Cantidad de Insumos</th>-
+                      // <th>Tipo Orden de trabajo</th>
+                      // <th>Decripcion</th>
+                      // <th>Estado</th>
+
+</script>
