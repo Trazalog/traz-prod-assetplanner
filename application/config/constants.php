@@ -148,7 +148,7 @@ define('BPM_USER_PASS', 'bpm');
 
 //? PEDIDOS NORMALES
  
-define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '8803232493891311406'); 
+define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '6390775105938615683'); 
 
 //? PEDIDOS EXTRAORDINATIOS
 
@@ -165,7 +165,8 @@ define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '7321139677245257050');
 */
  
 define('BPM_PROCESS_ID', '9070110405395579127'); // localhost -
-
+// 9070110405395579127
+// 8632300242114417126
 /*
 |--------------------------------------------------------------------------
 | Id de Formularios de Diagnostico
