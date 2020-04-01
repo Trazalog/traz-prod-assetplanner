@@ -16,9 +16,11 @@ if(!function_exists('cargarCabecera')){
 												equipos.codigo,
 												equipos.ubicacion,
 												equipos.estado,
+												admcustomers.cliRazonSocial AS cliente,
 												marcasequipos.marcadescrip AS marca,');	
 				$ci->db->from('equipos');	
-				$ci->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');		
+				$ci->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');	
+				$ci->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');	
 				$ci->db->where('equipos.id_equipo', $id_EQ);
 				$query = $ci->db->get();			
 				if($query->num_rows() > 0){
@@ -51,9 +53,12 @@ if(!function_exists('cargarCabecera')){
 												orden_trabajo.fecha_program AS fecha,
 												orden_trabajo.id_orden,
 												orden_trabajo.duracion,
+												admcustomers.cliRazonSocial AS cliente,
 												orden_trabajo.estado');	
 				$ci->db->from('orden_trabajo');		
-				$ci->db->join('tareas', 'tareas.id_tarea = orden_trabajo.id_tarea','left');			
+				$ci->db->join('tareas', 'tareas.id_tarea = orden_trabajo.id_tarea','left');		
+				$ci->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
+				$ci->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');	
 				$ci->db->where('orden_trabajo.id_orden', $id_OT);
 				$queryOT = $ci->db->get();			
 				if($queryOT->num_rows() > 0){
@@ -92,6 +97,12 @@ if(!function_exists('cargarCabecera')){
 												<input type="text" id="codigo" class="form-control" value="'.$result['codigo'].'" disabled/>
 										</div>
 									</div>
+									<div class="col-xs-12 col-sm-4">
+										<div class="form-group">
+												<label style="margin-top: 7px;">Cliente: </label>
+												<input type="text" id="cliente" class="form-control" value="'.$result['cliente'].'" disabled/>
+										</div>
+									</div>	
 									<div class="col-xs-12 col-sm-4">
 										<label style="margin-top: 7px;">Ubicación: </label>
 										<input type="text" class="form-control"  value="'.$result['ubicacion'].'" disabled/>
@@ -215,6 +226,12 @@ if(!function_exists('cargarCabecera')){
 										<input type="text"  class="form-control" value="'.$resultOT['otDescrip'].'" disabled/>
 								</div>						
 							</div>
+							<div class="col-xs-12 col-sm-4">
+								<div class="form-group">
+										 <label style="margin-top: 7px;">Cliente: </label>
+										 <input type="text" class="form-control" value="'.$resultOT['cliente'].'" disabled/>
+								</div>
+							</div>	
 							<div class="col-xs-12 col-sm-4">
 								<div class="form-group">
 										<label style="margin-top: 7px;">Fecha Programación: </label>
