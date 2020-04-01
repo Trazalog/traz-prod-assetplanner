@@ -46,8 +46,9 @@
                 </label>
               </div>
               <select class="form-control" id="TipoSelec" placeholder="Seleccione tipo...">
-                <option value="1">Herramientas</option>	
-                <option value="2">Insumos</option>			  			  
+                <option value="" disabled>Por defecto 'Insumos'</option>
+                <option value="1">Insumos</option>	
+                <option value="2">Herramientas</option>			  			  
               </select>						    	
             </div><!--Fin Tipo de almacen  -->
 
@@ -137,9 +138,10 @@
   </div><!--Fin contnedor de filtros y tabla resultado  -->
 </section>
 
+
 <!-- comienzo script -->
 <script>// Habilitar y deshabilitar cliente y equipo, articulo, supervisor tipo de almacen, fecha-->
-$(".fecha").datepicker();
+
 
 // Datatables -->
 $('#sales').DataTable({
@@ -255,7 +257,7 @@ $(function() {
       $id_cli= ui.item.value;
       //alert($id_cli);
       
-      getEquipos($id_cli);
+      //getEquipos($id_cli);
 
     },
   });
@@ -267,10 +269,42 @@ $(function() {
 
 
 //Trae euqipos en funcion del cliente que se elgio
-function getEquipos($id_cli){
-  //alert($id_cli);
+// function getEquipos($id_cli){
+//   $.ajax({
+//      'data':{id_cli: $id_cli },
+//     'async': true,
+//     'dataType': 'json',
+//     'global': false,
+//     'type': "POST",
+//     'url': "Reporte/getEquipo",
+//     'success': function (data) {
+//       console.table(data);
+     
+      
+//       var $select = $("#equipSelec");
+//       for (var i = 0; i < data.length; i++) {
+//         $select.append( $('<option />',{ value:data[i]['id_equipo'], text:data[i]['descripcion'], title:data[i]['codigo'] }) );
+//       }
+//      },
+//     'error' : function (data){
+//       console.log('Error al traer equipos');
+//       //alert('error');
+//     }
+//   });
+
+// }
+
+$("#selEquipo").click(function(e){
+  $cliente = $('#idCliente').val(); //recupero el valor (id) del cliente seleccionado 
+  if($cliente == ''){ 
+    $cli = 'sin cliente';  //em el caso de que no se sellecciono ningun cliente colo sin cliente, entonces la consulata me arrojara todos los equipos
+  }else{
+    $cli = $cliente; //caso contrario me devolvera solos los equipos de un determinado clinte con su id determinado
+  }
+   
+  alert($cliente);
  $.ajax({
-     'data':{id_cli: $id_cli },
+     'data':{id_cli : $cli },
     'async': true,
     'dataType': 'json',
     'global': false,
@@ -289,11 +323,28 @@ function getEquipos($id_cli){
       console.log('Error al traer equipos');
       //alert('error');
     }
-  });
-}
+    
+});
+});
+
 
 </script>
-
+<script>
+ $("#selFecha").click(function(e){
+              $(".fecha").datepicker();
+         $.datepicker.setDefaults($.datepicker.regional["es"]);
+         $("#desde").datepicker({
+             dateFormat: 'dd/mm/yy',
+             firstDay: 1
+         }).datepicker("setDate", new Date());
+         $("#hasta").datepicker({
+             dateFormat: 'dd/mm/yy',
+             firstDay: 1
+         }).datepicker("setDate", new Date());
+         $.datepicker.setDefaults($.datepicker.regional["es"]);
+   
+    });
+</script>
 
 <!-- Trear articulos en funcion de tipo de almacen -->
 <script>
@@ -314,16 +365,17 @@ $("#selArticulo").click(function (e) {
       var $select = $("#ArticuloSelec");
       if($tipo=='1'){
         for (var i = 0; i < data.length; i++) {
-        $select.append( $('<option />',{ value:data[i]['herrId'], text:data[i]['herrdescrip'], title:data[i]['herrcodigo'] }) );
+        
+         $select.append( $('<option />',{ value:data[i]['artId'], text:data[i]['artDescription'], title:data[i]['artBarCode'] }) );
              }
       }else{
         if($tipo == '2'){
           for (var i = 0; i < data.length; i++) {
-        $select.append( $('<option />',{ value:data[i]['artId'], text:data[i]['artDescription'], title:data[i]['artBarCode'] }) );
+          $select.append( $('<option />',{ value:data[i]['herrId'], text:data[i]['herrdescrip'], title:data[i]['herrcodigo'] }) );
             }
         }else{
           for (var i = 0; i < data.length; i++) {
-        $select.append( $('<option />',{ value:data[i]['herrId'], text:data[i]['herrdescrip'], title:data[i]['herrcodigo'] }) );
+            $select.append( $('<option />',{ value:data[i]['artId'], text:data[i]['artDescription'], title:data[i]['artBarCode'] }) );
              }
         }
       }
@@ -400,7 +452,17 @@ function limpCombo(){
     var a         = $('#hasta').val();
     // alert(desde);
     // alert(a);
-    // alert(id_articulo);
+    //  alert(id_cliente);
+     if(id_cliente == '' && id_equipo == '' && id_articulo == '' && id_supervisor == '' && tipo_alm == null)
+     {
+      
+         if(desde == '' & a == ''){
+             alert("Los campos estan vacions");
+             ejemplo.reload();
+              }
+            
+
+     }
     // alert(tipo_alm);
     // alert(id_supervisor);
 
@@ -430,10 +492,11 @@ function limpCombo(){
 
                     for(var i=0; i <= result.length-1; i++){
                       $('#sales').DataTable().row.add( [
+                        
                         result[i]['id_orden'],
                         //result[i]['f_solicitado'],
                         result[i]['codigo'],
-                        result[i]['herrcodigo'],
+                        result[i]['artDescription'],
                         result[i]['cantidad'],
                         result[i]['desc'],
                         result[i]['descripcion']
@@ -446,10 +509,11 @@ function limpCombo(){
 
                     for(var i=0; i <= result.length-1; i++){
                       $('#sales').DataTable().row.add( [
+                       
                         result[i]['id_orden'],
                         //result[i]['f_solicitado'],
                         result[i]['codigo'],
-                        result[i]['artDescription'],
+                        result[i]['herrcodigo'],
                         result[i]['cantidad'],
                         result[i]['desc'],
                         result[i]['descripcion']
@@ -463,7 +527,7 @@ function limpCombo(){
            
           }
           else{
-            alert("Este equipo no se puede filtrar, POR FAVOR SELCCIONO OTRO");
+            alert("NO SE HALLARON RESULTADOS, POR FAVOR SELCCIONE OTRO");
           }
           WaitingClose();
         // dato={

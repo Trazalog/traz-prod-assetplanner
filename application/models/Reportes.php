@@ -74,99 +74,82 @@ class Reportes extends CI_Model {
             $datHasta = $data['a'];
             $datHasta = explode('-', $datHasta);
             $hasta    = $datHasta[2].'-'.$datHasta[1].'-'.$datHasta[0];
-		}
+        }
+        
+       
         
         //FECHA VAN EN TODDOS// 
-        if($id_cli && $id_eq != ""){  //Si los campos habilitados son cliente y equipo
+        if($id_eq !== ""){  //Si solo se quiere saber para un equipo en especifico y no se selecciono cliente
             
 
-            if(($tipo == 1) || ($tipo == null)){ //para herramientas
-                $this->db->select('orden_trabajo.id_orden,
+            if(($tipo == 1) || ($tipo == null)){ //para insumos
+               
+                    
+                        $this->db->select('orden_trabajo.id_orden,
+                                equipos.codigo,
+                                articles.artDescription,
+                                tbl_otinsumos.cantidad,
+                                tbl_tipoordentrabajo.descripcion AS desc,
+                                orden_trabajo.descripcion,
+                                orden_trabajo.estado');
+                                        $this->db->from('orden_trabajo');
+                                        $this->db->join('tbl_otinsumos','orden_trabajo.id_orden = tbl_otinsumos.otId');//id del insumo que se uso
+                                        $this->db->join('articles', 'articles.artId = tbl_otinsumos.artId');//obtengo el o los insumos
+                                        $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
+                                        $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
+                                        $this->db->where('orden_trabajo.id_equipo', $id_eq );
+                                        if ($data['desde'] || $data['hasta'] !== null) {
+                                        $this->db->where('orden_trabajo.fecha_program >=', $desde);
+                                        $this->db->where('orden_trabajo.fecha_program <=', $hasta);
+                                        }
+                                        if($id_art !== ''){
+                                        $this->db->where('tbl_otinsumos.otId', $id_art);
+                                        }
+                                        if($id_sup != null)
+                                        {
+                                        $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                                        }
+
+                                        $query = $this->db->get();
+                }else{ //para herramientas
+                   
+                        $this->db->select('orden_trabajo.id_orden,
                                 equipos.codigo,
                                 herramientas.herrcodigo,
                                 tbl_otherramientas.cantidad,
                                 tbl_tipoordentrabajo.descripcion AS desc,
                                 orden_trabajo.descripcion,
                                 orden_trabajo.estado');
-                    $this->db->from('orden_trabajo');
-                    $this->db->join('tbl_otherramientas','orden_trabajo.id_orden = tbl_otherramientas.otId');//herrameintas que se uso
-                    $this->db->join('herramientas', 'herramientas.herrId = tbl_otherramientas.HerrId');//nombre de las herramientas
-                    $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
-                    $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
-                    if ($data['desde'] || $data['hasta'] !== null) {
-                        $this->db->where('orden_trabajo.fecha_program >=', $desde);
-                        $this->db->where('orden_trabajo.fecha_program <=', $hasta);
-                    }
-                    if($id_art !== ''){
-                        $this->db->where('tbl_otherramientas.herrId', $id_art);
-                    }
-                    $this->db->where('orden_trabajo.id_equipo', $id_eq );// elegimos la ot del equipo que se desea
-                   
-                    // $this->db->where('orden_trabajo.estaddo','T');
-                    // $this->db->where('orden_trabajo.estaddo','RE');
-                    // $this->db->where('orden_trabajo.estaddo','E');
-                    $query = $this->db->get();
-                }else{ //para insumos
-                    $this->db->select('orden_trabajo.id_orden,
-                                         equipos.codigo,
-                                         articles.artDescription,
-                                         tbl_otinsumos.cantidad,
-                                         tbl_tipoordentrabajo.descripcion AS desc,
-                                         orden_trabajo.descripcion,
-                                         orden_trabajo.estado');
-                    $this->db->from('orden_trabajo');
-                    $this->db->join('tbl_otinsumos','orden_trabajo.id_orden = tbl_otinsumos.otId');//id del insumo que se uso
-                    $this->db->join('articles', 'articles.artId = tbl_otinsumos.artId');//obtengo el o los insumos
-                    $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
-                    $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
-                    $this->db->where('orden_trabajo.id_equipo', $id_eq );
-                    if ($data['desde'] || $data['hasta'] !== null) {
-                        $this->db->where('orden_trabajo.fecha_program >=', $desde);
-                        $this->db->where('orden_trabajo.fecha_program <=', $hasta);
-                    }
-                    if($id_art !== ''){
-                        $this->db->where('tbl_otinsumos.otId', $id_art);
-                    }
-                   
-                    $query = $this->db->get();
-
+                                        $this->db->from('orden_trabajo');
+                                        $this->db->join('tbl_otherramientas','orden_trabajo.id_orden = tbl_otherramientas.otId');//herrameintas que se uso
+                                        $this->db->join('herramientas', 'herramientas.herrId = tbl_otherramientas.HerrId');//nombre de las herramientas
+                                        $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
+                                        $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
+                                        if ($data['desde'] || $data['hasta'] !== null) {
+                                            $this->db->where('orden_trabajo.fecha_program >=', $desde);
+                                            $this->db->where('orden_trabajo.fecha_program <=', $hasta);
+                                        }
+                                        if($id_art !== ''){
+                                            $this->db->where('tbl_otherramientas.herrId', $id_art);
+                                        }
+                                        $this->db->where('orden_trabajo.id_equipo', $id_eq );// elegimos la ot del equipo que se desea
+                                        if($id_sup != null)
+                                        {
+                                        $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                                        }
+                                        // $this->db->where('orden_trabajo.estaddo','T');
+                                        // $this->db->where('orden_trabajo.estaddo','RE');
+                                        // $this->db->where('orden_trabajo.estaddo','E');
+                                        $query = $this->db->get();
 
                 }//fin para insumos
               
                
 
             }else{//si solo se desea saber los insumos o herramientas de un cliente en especifico es decir abarcaria todos sus equipos
-                if(($tipo == 1) || ($tipo == null)){  //para herramientas
-                    $this->db->select('equipos.codigo,
-                    orden_trabajo.id_orden,
-                    herramientas.herrcodigo,
-                    tbl_otherramientas.cantidad,
-                    tbl_tipoordentrabajo.descripcion AS desc,
-                    orden_trabajo.descripcion,
-                    orden_trabajo.estado');
-                    $this->db->from('equipos');
-                    $this->db->join('orden_trabajo','orden_trabajo.id_equipo = equipos.id_equipo');
-                    $this->db->join('tbl_otherramientas','orden_trabajo.id_orden = tbl_otherramientas.otId');//herrameintas que se uso
-                    $this->db->join('herramientas', 'herramientas.herrId = tbl_otherramientas.HerrId');//nombre de las herramientas
-                    $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
-                    $this->db->where('equipos.id_customer', $id_cli );
-                    // if($id_art !== '' ){
-                    //     $this->db->where('tbl_otherramientas.herrId', $id_art);
-                    // }
-                    if ($data['desde'] || $data['hasta'] !== null) {
-                        $this->db->where('orden_trabajo.fecha_program >=', $desde);
-                        $this->db->where('orden_trabajo.fecha_program <=', $hasta);
-                        // if($id_art !== ''){
-                        // $this->db->where('tbl_otherramientas.herrId', $id_art);
-                        // }
-                     }
-                     $query = $this->db->get();
-                    //else{
-                    //     if($id_art !== ''){
-                    //         $this->db->where('tbl_otherramientas.herrId', $id_art);
-                    //         }
-                    }else{ //para insumos
-                        $this->db->select('orden_trabajo.id_orden,
+                if(($tipo == 1) || ($tipo == null)){  //para insumos
+                    
+                    $this->db->select('orden_trabajo.id_orden,
                             equipos.codigo,
                             articles.artDescription,
                             tbl_otinsumos.cantidad,
@@ -184,98 +167,107 @@ class Reportes extends CI_Model {
                                 $this->db->where('orden_trabajo.fecha_program >=', $desde);
                                 $this->db->where('orden_trabajo.fecha_program <=', $hasta);
                                 }
-                                // if($id_art !== ''){
-                                // $this->db->where('tbl_otinsumos.otId', $id_art);
-                                // }
+                                if($id_art !== ''){
+                                $this->db->where('tbl_otinsumos.otId', $id_art);
+                                }
+                                if($id_sup != null)
+                                {
+                                $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                                }
 
                                 $query = $this->db->get();
-
-
-
-
-
-                                // $this->db->select('equipos.codigo,
-                                // orden_trabajo.id_orden,
-                                // articles.artDescription,
-                                // tbl_otinsumos.cantidad,
-                                // tbl_tipoordentrabajo.descripcion AS desc,
-                                // orden_trabajo.descripcion,
-                                // orden_trabajo.estado');
-                                // $this->db->from('equipos');
-                                // $this->db->join('orden_trabajo','orden_trabajo.id_equipo = equipos.id_equipo');
-                                // $this->db->join('tbl_otinsumos','orden_trabajo.id_orden = tbl_otinsumos.otId');//herrameintas que se uso
-                                // $this->db->join('articles', 'articles.artId = tbl_otinsumos.artId');//nombre de las herramientas
-                                // $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
-                                // $this->db->where('equipos.id_customer', $id_cli );
-                                // if ($data['desde'] || $data['hasta'] !== null){
-                                //     $this->db->where('orden_trabajo.fecha_program >=', $desde);
-                                //     $this->db->where('orden_trabajo.fecha_program <=', $hasta);
-                                //     if($id_art !== ''){
-                                //         $this->db->where('tbl_otinsumos.otId', $id_art);
-                                //     }
+                    }else{ //para Herramientas
+                        
+                    $this->db->select('equipos.codigo,
+                            orden_trabajo.id_orden,
+                            herramientas.herrcodigo,
+                            tbl_otherramientas.cantidad,
+                            tbl_tipoordentrabajo.descripcion AS desc,
+                            orden_trabajo.descripcion,
+                            orden_trabajo.estado');
+                                $this->db->from('equipos');
+                                $this->db->join('orden_trabajo','orden_trabajo.id_equipo = equipos.id_equipo');
+                                $this->db->join('tbl_otherramientas','orden_trabajo.id_orden = tbl_otherramientas.otId');//herrameintas que se uso
+                                $this->db->join('herramientas', 'herramientas.herrId = tbl_otherramientas.HerrId');//nombre de las herramientas
+                                $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
+                                $this->db->where('equipos.id_customer', $id_cli );
+                                // if($id_art !== '' ){
+                                //     $this->db->where('tbl_otherramientas.herrId', $id_art);
                                 // }
-                                // else{
-                                //     if($id_art !== ''){
-                                //     $this->db->where('tbl_otinsumos.otId', $id_art);
-                                //          }
-                                //      }
-                                
-                                // $query = $this->db->get();
+                                if ($data['desde'] || $data['hasta'] !== null) {
+                                    $this->db->where('orden_trabajo.fecha_program >=', $desde);
+                                    $this->db->where('orden_trabajo.fecha_program <=', $hasta);
+                                    // if($id_art !== ''){
+                                    // $this->db->where('tbl_otherramientas.herrId', $id_art);
+                                    // }
+                                }             
+                                //else{
+                                        if($id_art !== ''){
+                                        $this->db->where('tbl_otherramientas.herrId', $id_art);
+                                        }
+                                        if($id_sup != null)
+                                        {
+                                        $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                                        }
+                                        $query = $this->db->get();
+
                  }
 
             }
+
+          //Si viene cli art eq
+          
+          
          //SI SOLO SE SELECCIONO UN ARTICULO EN ESCPECIFICO   
         if(($id_eq == null) && ($id_cli == null)){
         if($id_art != ''){
-            if(($tipo == 1) || ($tipo == null)){//HERRAMINETAS
-                                                $this->db->select('tbl_otherramientas.cantidad,
-                                                                    orden_trabajo.id_orden,
-                                                                    orden_trabajo.descripcion,
-                                                                    orden_trabajo.estado,
-                                                                    herramientas.herrcodigo,
-                                                                    tbl_tipoordentrabajo.descripcion AS desc,
-                                                                    equipos.codigo'
+            if(($tipo == 1) || ($tipo == null)){//INSUMOS
+                                                
+                                                                
+                                                        $this->db->select('tbl_otinsumos.cantidad,
+                                                                orden_trabajo.id_orden,
+                                                                orden_trabajo.descripcion,
+                                                                orden_trabajo.estado,
+                                                                articles.artDescription,
+                                                                tbl_tipoordentrabajo.descripcion AS desc,
+                                                                equipos.codigo');
+                                                                    $this->db->from('tbl_otinsumos');
+                                                                    $this->db->join('orden_trabajo','orden_trabajo.id_orden = tbl_otinsumos.otId');
+                                                                    $this->db->join('articles','articles.artId = tbl_otinsumos.artId');
+                                                                    $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
+                                                                    $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
+                                                                    $this->db->join('sisusers','orden_trabajo.id_usuario = sisusers.usrId');
+                                                                    $this->db->where('tbl_otinsumos.artId',$id_art);
+                                                                    if($id_sup != ''){
+                                                                    $this->db->where('sisusers.usrId', $id_sup);    
+                                                                    }
+                                                                    if ($data['desde'] || $data['hasta'] !== null) {
+                                                                        $this->db->where('orden_trabajo.fecha_program >=', $desde);
+                                                                        $this->db->where('orden_trabajo.fecha_program <=', $hasta);
+                                                                    }
+                                                                    $query = $this->db->get();
+                                                                    
 
-                                                                                    );
-                                                                $this->db->from('tbl_otherramientas');
-                                                                $this->db->join('orden_trabajo','orden_trabajo.id_orden = tbl_otherramientas.otId');
-                                                                $this->db->join('herramientas','herramientas.herrId = tbl_otherramientas.herrId');
-                                                                $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
-                                                                $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
-                                                                $this->db->where('tbl_otherramientas.herrId',$id_art);
-                                                                if ($data['desde'] || $data['hasta'] !== null) {
-                                                                    $this->db->where('orden_trabajo.fecha_program >=', $desde);
-                                                                    $this->db->where('orden_trabajo.fecha_program <=', $hasta);
-                                                                }
-                                                                $query = $this->db->get();
-                                                               
-
-            }else{//INSUMOS
-                $this->db->select('tbl_otinsumos.cantidad,
-                                                                    orden_trabajo.id_orden,
-                                                                    orden_trabajo.descripcion,
-                                                                    orden_trabajo.estado,
-                                                                    articles.artDescription,
-                                                                    tbl_tipoordentrabajo.descripcion AS desc,
-                                                                    equipos.codigo'
-
-                                                                                    );
-                                                                $this->db->from('tbl_otinsumos');
-                                                                $this->db->join('orden_trabajo','orden_trabajo.id_orden = tbl_otinsumos.otId');
-                                                                $this->db->join('articles','articles.artId = tbl_otinsumos.artId');
-                                                                $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
-                                                                $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
-                                                                $this->db->join('sisusers','orden_trabajo.id_usuario = sisusers.usrId');
-                                                                $this->db->where('tbl_otinsumos.artId',$id_art);
-                                                                if($id_sup != ''){
-                                                                $this->db->where('sisusers.usrId', $id_sup);    
-                                                                }
-                                                                if ($data['desde'] || $data['hasta'] !== null) {
-                                                                    $this->db->where('orden_trabajo.fecha_program >=', $desde);
-                                                                    $this->db->where('orden_trabajo.fecha_program <=', $hasta);
-                                                                }
-                                                                $query = $this->db->get();
-
+            }else{//HERRAMIENTAS
+               
+                                                        $this->db->select('tbl_otherramientas.cantidad,
+                                                                orden_trabajo.id_orden,
+                                                                orden_trabajo.descripcion,
+                                                                orden_trabajo.estado,
+                                                                herramientas.herrcodigo,
+                                                                tbl_tipoordentrabajo.descripcion AS desc,
+                                                                equipos.codigo');
+                                                                    $this->db->from('tbl_otherramientas');
+                                                                    $this->db->join('orden_trabajo','orden_trabajo.id_orden = tbl_otherramientas.otId');
+                                                                    $this->db->join('herramientas','herramientas.herrId = tbl_otherramientas.herrId');
+                                                                    $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
+                                                                    $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
+                                                                    $this->db->where('tbl_otherramientas.herrId',$id_art);
+                                                                    if ($data['desde'] || $data['hasta'] !== null) {
+                                                                        $this->db->where('orden_trabajo.fecha_program >=', $desde);
+                                                                        $this->db->where('orden_trabajo.fecha_program <=', $hasta);
+                                                                    }
+                                                                    $query = $this->db->get();
 
              }
           }
@@ -283,7 +275,33 @@ class Reportes extends CI_Model {
        }
        //si solo se selecciono el supervisor y el tipo de articulo(si no se selecciono por defecto se toma como herramientas)
         if(($id_eq == null) && ($id_cli == null) && ($id_art == null) ){
-            if(($tipo == 1) || ($tipo == null)){//herramientas
+            if(($tipo == 1) || ($tipo == null)){//Insumos
+               
+                $this->db->select('orden_trabajo.id_orden,
+                           articles.artDescription,
+                           tbl_otinsumos.cantidad, 
+                           tbl_tipoordentrabajo.descripcion AS desc,
+                           orden_trabajo.descripcion,
+                           orden_trabajo.estado,
+                           equipos.codigo'
+                              );
+                              $this->db->from('orden_trabajo');
+                              $this->db->join('tbl_otinsumos','orden_trabajo.id_orden = tbl_otinsumos.otId');//herrameintas que se uso
+                              $this->db->join('articles', 'articles.artId = tbl_otinsumos.artId');//nombre de las herramientas
+                              $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
+                              $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
+                              if($id_sup != null)
+                                   {
+                                   $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                                   }
+                              if ($data['desde'] || $data['hasta'] !== null) {
+                               $this->db->where('orden_trabajo.fecha_program >=', $desde);
+                               $this->db->where('orden_trabajo.fecha_program <=', $hasta);
+                           }
+                              $query = $this->db->get();
+            
+            }else{//Herramientas
+
                 $this->db->select('orden_trabajo.id_orden,
                      herramientas.herrcodigo,
                      tbl_otherramientas.cantidad, 
@@ -297,40 +315,188 @@ class Reportes extends CI_Model {
                         $this->db->join('herramientas', 'herramientas.herrId = tbl_otherramientas.HerrId');//nombre de las herramientas
                         $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
                         $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
+                        if($id_sup != null)
+                        {
                         $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                        }
                         if ($data['desde'] || $data['hasta'] !== null) {
                             $this->db->where('orden_trabajo.fecha_program >=', $desde);
                             $this->db->where('orden_trabajo.fecha_program <=', $hasta);
                         }
                            $query = $this->db->get();
-            
-            }else{//insumos
-
-                $this->db->select('orden_trabajo.id_orden,
-                articles.artDescription,
-                tbl_otinsumos.cantidad, 
-                tbl_tipoordentrabajo.descripcion AS desc,
-                orden_trabajo.descripcion,
-                orden_trabajo.estado,
-                equipos.codigo'
-                   );
-                   $this->db->from('orden_trabajo');
-                   $this->db->join('tbl_otinsumos','orden_trabajo.id_orden = tbl_otinsumos.otId');//herrameintas que se uso
-                   $this->db->join('articles', 'articles.artId = tbl_otinsumos.artId');//nombre de las herramientas
-                   $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
-                   $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
-                   $this->db->where('orden_trabajo.id_usuario', $id_sup);
-                   if ($data['desde'] || $data['hasta'] !== null) {
-                    $this->db->where('orden_trabajo.fecha_program >=', $desde);
-                    $this->db->where('orden_trabajo.fecha_program <=', $hasta);
-                }
-                   $query = $this->db->get();
 
             }
         }
         //si se selecciono unicamente el cliente y un articulo especifico
         if(($id_eq == null) && ($id_cli != null) && ($id_art!=null)){
-            if(($tipo == 1) || ($tipo == null)){
+            if(($tipo == 1) || ($tipo == null)){              
+                        
+                                                                $this->db->select('tbl_otinsumos.cantidad,
+                                                                orden_trabajo.id_orden,
+                                                                orden_trabajo.descripcion,
+                                                                orden_trabajo.estado,
+                                                                articles.artDescription,
+                                                                tbl_tipoordentrabajo.descripcion AS desc,
+                                                                equipos.codigo'                 
+                                                                );
+                                                                $this->db->from('tbl_otinsumos');
+                                                                                $this->db->join('orden_trabajo','orden_trabajo.id_orden = tbl_otinsumos.otId');
+                                                                                $this->db->join('articles','articles.artId = tbl_otinsumos.artId');
+                                                                                $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
+                                                                                $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
+                                                                                $this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
+                                                                                $this->db->where('tbl_otinsumos.artId',$id_art);
+                                                                                $this->db->where('admcustomers.cliId',$id_cli);
+                                                                                if ($data['desde'] || $data['hasta'] !== null) {
+                                                                                $this->db->where('orden_trabajo.fecha_program >=', $desde);
+                                                                                $this->db->where('orden_trabajo.fecha_program <=', $hasta);
+                                                                                }
+                                                                                $query = $this->db->get();
+                                                                                if($id_sup != null)
+                                                                                {
+                                                                                $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                                                                                }
+
+
+            }else{
+               
+                                                                $this->db->select('tbl_otherramientas.cantidad,
+                                                                orden_trabajo.id_orden,
+                                                                orden_trabajo.descripcion,
+                                                                orden_trabajo.estado,
+                                                                herramientas.herrcodigo,
+                                                                tbl_tipoordentrabajo.descripcion AS desc,
+                                                                equipos.codigo'
+                                                                    
+
+                                                                );
+                                                                                $this->db->from('tbl_otherramientas');
+                                                                                $this->db->join('orden_trabajo','orden_trabajo.id_orden = tbl_otherramientas.otId');
+                                                                                $this->db->join('herramientas','herramientas.herrId = tbl_otherramientas.herrId');
+                                                                                $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
+                                                                                $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
+                                                                                $this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
+                                                                                $this->db->where('tbl_otherramientas.herrId',$id_art);
+                                                                                $this->db->where('admcustomers.cliId',$id_cli);
+                                                                                if ($data['desde'] || $data['hasta'] !== null) {
+                                                                                    $this->db->where('orden_trabajo.fecha_program >=', $desde);
+                                                                                    $this->db->where('orden_trabajo.fecha_program <=', $hasta);
+                                                                                }
+                                                                                if($id_sup != null)
+                                                                                {
+                                                                                $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                                                                                }
+                                                                                $query = $this->db->get();
+
+
+            }
+
+
+
+
+        }
+        else{ //si se selecciono cliente, equipo y articulo
+            if((($id_eq != null) && ($id_cli != null) && ($id_art!=null))){
+
+                if(($tipo == 1) || ($tipo == null)){              
+                        
+                    $this->db->select('tbl_otinsumos.cantidad,
+                    orden_trabajo.id_orden,
+                    orden_trabajo.descripcion,
+                    orden_trabajo.estado,
+                    articles.artDescription,
+                    tbl_tipoordentrabajo.descripcion AS desc,
+                    equipos.codigo'                 
+                    );
+                    $this->db->from('tbl_otinsumos');
+                                    $this->db->join('orden_trabajo','orden_trabajo.id_orden = tbl_otinsumos.otId');
+                                    $this->db->join('articles','articles.artId = tbl_otinsumos.artId');
+                                    $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
+                                    $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
+                                    $this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
+                                    $this->db->where('tbl_otinsumos.artId',$id_art);
+                                    $this->db->where('admcustomers.cliId',$id_cli);
+                                    $this->db->where('equipos.id_equipo',$id_eq);
+                                    if ($data['desde'] || $data['hasta'] !== null) {
+                                    $this->db->where('orden_trabajo.fecha_program >=', $desde);
+                                    $this->db->where('orden_trabajo.fecha_program <=', $hasta);
+                                    }
+                                    if($id_sup != null)
+                                        {
+                                        $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                                        }
+                                    $query = $this->db->get();
+
+
+                }else{
+
+                    $this->db->select('tbl_otherramientas.cantidad,
+                    orden_trabajo.id_orden,
+                    orden_trabajo.descripcion,
+                    orden_trabajo.estado,
+                    herramientas.herrcodigo,
+                    tbl_tipoordentrabajo.descripcion AS desc,
+                    equipos.codigo'
+                        
+
+                    );
+                                    $this->db->from('tbl_otherramientas');
+                                    $this->db->join('orden_trabajo','orden_trabajo.id_orden = tbl_otherramientas.otId');
+                                    $this->db->join('herramientas','herramientas.herrId = tbl_otherramientas.herrId');
+                                    $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
+                                    $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
+                                    $this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
+                                    $this->db->where('tbl_otherramientas.herrId',$id_art);
+                                    $this->db->where('admcustomers.cliId',$id_cli);
+                                    $this->db->where('equipos.id_equipo',$id_eq);
+                                    if ($data['desde'] || $data['hasta'] !== null) {
+                                        $this->db->where('orden_trabajo.fecha_program >=', $desde);
+                                        $this->db->where('orden_trabajo.fecha_program <=', $hasta);
+                                    }
+                                    if($id_sup != null)
+                                        {
+                                        $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                                        }
+                                    $query = $this->db->get();
+
+
+                }
+            }
+        }
+
+        if(($id_eq != null) && ($id_art!=null) && ($id_cli == null)){
+
+            if(($tipo == 1) || ($tipo == null)){              
+                        
+                $this->db->select('tbl_otinsumos.cantidad,
+                orden_trabajo.id_orden,
+                orden_trabajo.descripcion,
+                orden_trabajo.estado,
+                articles.artDescription,
+                tbl_tipoordentrabajo.descripcion AS desc,
+                equipos.codigo'                 
+                );
+                $this->db->from('tbl_otinsumos');
+                                $this->db->join('orden_trabajo','orden_trabajo.id_orden = tbl_otinsumos.otId');
+                                $this->db->join('articles','articles.artId = tbl_otinsumos.artId');
+                                $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
+                                $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
+                                $this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
+                                $this->db->where('tbl_otinsumos.artId',$id_art);                               
+                                $this->db->where('equipos.id_equipo',$id_eq);
+                                if ($data['desde'] || $data['hasta'] !== null) {
+                                $this->db->where('orden_trabajo.fecha_program >=', $desde);
+                                $this->db->where('orden_trabajo.fecha_program <=', $hasta);
+                                }
+                                if($id_sup != null)
+                                        {
+                                        $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                                        }
+                                $query = $this->db->get();
+
+
+            }else{
+
                 $this->db->select('tbl_otherramientas.cantidad,
                 orden_trabajo.id_orden,
                 orden_trabajo.descripcion,
@@ -341,44 +507,23 @@ class Reportes extends CI_Model {
                     
 
                 );
-                $this->db->from('tbl_otherramientas');
-                                                                $this->db->join('orden_trabajo','orden_trabajo.id_orden = tbl_otherramientas.otId');
-                                                                $this->db->join('herramientas','herramientas.herrId = tbl_otherramientas.herrId');
-                                                                $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
-                                                                $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
-                                                                $this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
-                                                                $this->db->where('tbl_otherramientas.herrId',$id_art);
-                                                                $this->db->where('admcustomers.cliId',$id_cli);
-                                                                if ($data['desde'] || $data['hasta'] !== null) {
-                                                                    $this->db->where('orden_trabajo.fecha_program >=', $desde);
-                                                                    $this->db->where('orden_trabajo.fecha_program <=', $hasta);
-                                                                }
-                                                                $query = $this->db->get();
-
-
-            }else{
-                $this->db->select('tbl_otinsumos.cantidad,
-                orden_trabajo.id_orden,
-                orden_trabajo.descripcion,
-                orden_trabajo.estado,
-                articles.artDescription,
-                tbl_tipoordentrabajo.descripcion AS desc,
-                equipos.codigo'                 
-                );
-                $this->db->from('tbl_otinsumos');
-                                                                $this->db->join('orden_trabajo','orden_trabajo.id_orden = tbl_otinsumos.otId');
-                                                                $this->db->join('articles','articles.artId = tbl_otinsumos.artId');
-                                                                $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
-                                                                $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
-                                                                $this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
-                                                                $this->db->where('tbl_otinsumos.artId',$id_art);
-                                                                $this->db->where('admcustomers.cliId',$id_cli);
-                                                                if ($data['desde'] || $data['hasta'] !== null) {
-                                                                    $this->db->where('orden_trabajo.fecha_program >=', $desde);
-                                                                    $this->db->where('orden_trabajo.fecha_program <=', $hasta);
-                                                                }
-                                                                $query = $this->db->get();
-
+                                $this->db->from('tbl_otherramientas');
+                                $this->db->join('orden_trabajo','orden_trabajo.id_orden = tbl_otherramientas.otId');
+                                $this->db->join('herramientas','herramientas.herrId = tbl_otherramientas.herrId');
+                                $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
+                                $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
+                                $this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
+                                $this->db->where('tbl_otherramientas.herrId',$id_art);
+                                $this->db->where('equipos.id_equipo',$id_eq);
+                                if ($data['desde'] || $data['hasta'] !== null) {
+                                    $this->db->where('orden_trabajo.fecha_program >=', $desde);
+                                    $this->db->where('orden_trabajo.fecha_program <=', $hasta);
+                                }
+                                if($id_sup != null)
+                                        {
+                                        $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                                        }
+                                $query = $this->db->get();
 
 
             }
@@ -387,6 +532,7 @@ class Reportes extends CI_Model {
 
 
         }
+        
 
 
         // $id_eq = $data['id_equipo'];
@@ -464,12 +610,14 @@ class Reportes extends CI_Model {
         //$empId = $userdata[0]['id_empresa'];     // guarda usuario logueado
         $id_cliente = $data['id_cli'];
 
+       
 		$this->db->select('equipos.id_equipo,
 					equipos.codigo,
 					equipos.descripcion');
     	$this->db->from('equipos');
         $this->db->where('equipos.estado !=', 'AN');
-        $this->db->where('equipos.id_customer', $id_cliente);
+        if($id_cliente != 'sin cliente' )
+        {$this->db->where('equipos.id_customer', $id_cliente);}
     	//$this->db->where('equipos.id_empresa', $empId);
     	$this->db->order_by('equipos.id_equipo', 'ASC');
     	$query = $this->db->get();
@@ -489,13 +637,54 @@ class Reportes extends CI_Model {
        $tipo = $data['tipo'];
         if($tipo == 1){
       
-                        $this->db->select('herramientas.herrId,
-                        herramientas.herrcodigo,
-                        herramientas.herrdescrip'
+                $this->db->select('articles.artId,
+                articles.artBarCode,
+                articles.artDescription'
+                            );
+                    $this->db->from('articles');
+                    $this->db->order_by('articles.artId', 'ASC');
+                
+                    $query = $this->db->get();
+
+                    if ($query->num_rows()!=0)
+                    {
+                    return $query->result_array();
+                    }
+                    else
+                    {
+                    return [];
+                    }
+        }
+        if($tipo == 2){
+
+                $this->db->select('herramientas.herrId,
+                herramientas.herrcodigo,
+                herramientas.herrdescrip'
+                );
+                    $this->db->from('herramientas');
+                    $this->db->order_by('herramientas.herrId', 'ASC');
+                
+                    $query = $this->db->get();
+
+                    if ($query->num_rows()!=0)
+                    {
+                    return $query->result_array();
+                    }
+                    else
+                    {
+                    return [];
+                    }
+
+
+        }
+        if($tipo == null){
+            $this->db->select('articles.artId,
+            articles.artBarCode,
+            articles.artDescription'
                         );
-                $this->db->from('herramientas');
-                $this->db->order_by('herramientas.herrId', 'ASC');
-               
+                $this->db->from('articles');
+                $this->db->order_by('articles.artId', 'ASC');
+            
                 $query = $this->db->get();
 
                 if ($query->num_rows()!=0)
@@ -506,47 +695,6 @@ class Reportes extends CI_Model {
                 {
                 return [];
                 }
-        }
-        if($tipo == 2){
-
-                    $this->db->select('articles.artId,
-                    articles.artBarCode,
-                    articles.artDescription'
-                                );
-                        $this->db->from('articles');
-                        $this->db->order_by('articles.artId', 'ASC');
-                    
-                        $query = $this->db->get();
-
-                        if ($query->num_rows()!=0)
-                        {
-                        return $query->result_array();
-                        }
-                        else
-                        {
-                        return [];
-                        }
-
-
-        }
-        if($tipo == null){
-                    $this->db->select('herramientas.herrId,
-                                herramientas.herrcodigo,
-                                herramientas.herrdescrip'
-                                );
-                        $this->db->from('herramientas');
-                        $this->db->order_by('herramientas.herrId', 'ASC');
-                    
-                        $query = $this->db->get();
-
-                        if ($query->num_rows()!=0)
-                        {
-                        return $query->result_array();
-                        }
-                        else
-                        {
-                        return [];
-                        }
         }
        
     }
