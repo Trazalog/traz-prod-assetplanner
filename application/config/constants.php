@@ -128,7 +128,7 @@ define('CMP_ALM', 'traz-comp-almacen/');
 |
 */
 
-define('BONITA_URL', 'http://localhost:8080/bonita/');  
+define('BONITA_URL', 'http://dev-trazalog.com.ar:8080/bonita/');  
 
 define('BPM_ADMIN_USER', 'supervisor1');
 define('BPM_ADMIN_PASS', 'bpm');
@@ -148,7 +148,7 @@ define('BPM_USER_PASS', 'bpm');
 
 //? PEDIDOS NORMALES
  
-define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '6390775105938615683'); 
+define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '8803232493891311406'); 
 
 //? PEDIDOS EXTRAORDINATIOS
 
@@ -164,9 +164,8 @@ define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '7321139677245257050');
 |
 */
  
-define('BPM_PROCESS_ID', '9070110405395579127'); // localhost -
-// 9070110405395579127
-// 8632300242114417126
+define('BPM_PROCESS_ID', '7503443566840192735'); // localhost -
+
 /*
 |--------------------------------------------------------------------------
 | Id de Formularios de Diagnostico

@@ -71,27 +71,25 @@ defined('BASEPATH') or exit('No direct script access allowed');
 | the query builder class.
  */
 $active_group = 'default';
-$query_builder = true;
-
+$query_builder = TRUE;
 $db['default'] = array(
-    'dsn' => '',
+    'dsn'   => '',
     'hostname' => 'localhost',
     'username' => 'root',
-    #'password' => '!Password00',
     'password' => '',
-    'database' => 'assetplanner',
-    'dbdriver' => 'mysqli',
+    'database' => 'planner_assetcloud_integracion',
+    'dbdriver' => 'mysqli', 
     'dbprefix' => '',
-    'pconnect' => false,
-    'db_debug' => true,
-    'cache_on' => false,
+    'pconnect' => FALSE,
+    'db_debug' => (ENVIRONMENT !== 'production'),
+    'cache_on' => FALSE,
     'cachedir' => '',
     'char_set' => 'utf8',
     'dbcollat' => 'utf8_general_ci',
     'swap_pre' => '',
-    'encrypt' => false,
-    'compress' => false,
-    'stricton' => false,
+    'encrypt' => FALSE,
+    'compress' => FALSE,
+    'stricton' => FALSE,
     'failover' => array(),
-    'save_queries' => true,
+    'save_queries' => TRUE
 );
