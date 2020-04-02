@@ -87,8 +87,10 @@ class Reportes extends CI_Model {
                     
                         $this->db->select('orden_trabajo.id_orden,
                                 equipos.codigo,
-                                articles.artDescription,
+                                articles.artDescription,                               
+                                articles.artBarCode,  
                                 tbl_otinsumos.cantidad,
+                                tbl_otinsumos.id,
                                 tbl_tipoordentrabajo.descripcion AS desc,
                                 orden_trabajo.descripcion,
                                 orden_trabajo.estado');
@@ -116,7 +118,9 @@ class Reportes extends CI_Model {
                         $this->db->select('orden_trabajo.id_orden,
                                 equipos.codigo,
                                 herramientas.herrcodigo,
+                                herramientas.herrId,                
                                 tbl_otherramientas.cantidad,
+                                tbl_otherramientas.id,
                                 tbl_tipoordentrabajo.descripcion AS desc,
                                 orden_trabajo.descripcion,
                                 orden_trabajo.estado');
@@ -151,8 +155,10 @@ class Reportes extends CI_Model {
                     
                     $this->db->select('orden_trabajo.id_orden,
                             equipos.codigo,
-                            articles.artDescription,
-                            tbl_otinsumos.cantidad,
+                            articles.artDescription,                           
+                            articles.artBarCode,
+                            tbl_otinsumos.cantidad,                            
+                            tbl_otinsumos.id,
                             tbl_tipoordentrabajo.descripcion AS desc,
                             orden_trabajo.descripcion,
                             orden_trabajo.estado');
@@ -181,7 +187,9 @@ class Reportes extends CI_Model {
                     $this->db->select('equipos.codigo,
                             orden_trabajo.id_orden,
                             herramientas.herrcodigo,
+                            herramientas.herrId,
                             tbl_otherramientas.cantidad,
+                            tbl_otherramientas.id,                          
                             tbl_tipoordentrabajo.descripcion AS desc,
                             orden_trabajo.descripcion,
                             orden_trabajo.estado');
@@ -224,11 +232,13 @@ class Reportes extends CI_Model {
             if(($tipo == 1) || ($tipo == null)){//INSUMOS
                                                 
                                                                 
-                                                        $this->db->select('tbl_otinsumos.cantidad,
+                                                        $this->db->select('tbl_otinsumos.cantidad,                                                        
+                                                                tbl_otinsumos.id,
                                                                 orden_trabajo.id_orden,
                                                                 orden_trabajo.descripcion,
                                                                 orden_trabajo.estado,
                                                                 articles.artDescription,
+                                                                articles.artBarCode,
                                                                 tbl_tipoordentrabajo.descripcion AS desc,
                                                                 equipos.codigo');
                                                                     $this->db->from('tbl_otinsumos');
@@ -251,10 +261,12 @@ class Reportes extends CI_Model {
             }else{//HERRAMIENTAS
                
                                                         $this->db->select('tbl_otherramientas.cantidad,
+                                                                 tbl_otherramientas.id,                                                       
                                                                 orden_trabajo.id_orden,
                                                                 orden_trabajo.descripcion,
                                                                 orden_trabajo.estado,
                                                                 herramientas.herrcodigo,
+                                                                herramientas.herrId,                
                                                                 tbl_tipoordentrabajo.descripcion AS desc,
                                                                 equipos.codigo');
                                                                     $this->db->from('tbl_otherramientas');
@@ -278,8 +290,10 @@ class Reportes extends CI_Model {
             if(($tipo == 1) || ($tipo == null)){//Insumos
                
                 $this->db->select('orden_trabajo.id_orden,
-                           articles.artDescription,
-                           tbl_otinsumos.cantidad, 
+                           articles.artDescription,                           
+                           articles.artBarCode,
+                           tbl_otinsumos.cantidad,                            
+                           tbl_otinsumos.id,
                            tbl_tipoordentrabajo.descripcion AS desc,
                            orden_trabajo.descripcion,
                            orden_trabajo.estado,
@@ -304,7 +318,9 @@ class Reportes extends CI_Model {
 
                 $this->db->select('orden_trabajo.id_orden,
                      herramientas.herrcodigo,
+                     herramientas.herrId,               
                      tbl_otherramientas.cantidad, 
+                     tbl_otherramientas.id,                                
                      tbl_tipoordentrabajo.descripcion AS desc,
                      orden_trabajo.descripcion,
                      orden_trabajo.estado,
@@ -332,10 +348,12 @@ class Reportes extends CI_Model {
             if(($tipo == 1) || ($tipo == null)){              
                         
                                                                 $this->db->select('tbl_otinsumos.cantidad,
+                                                                tbl_otinsumos.id,
                                                                 orden_trabajo.id_orden,
                                                                 orden_trabajo.descripcion,
                                                                 orden_trabajo.estado,
-                                                                articles.artDescription,
+                                                                articles.artDescription,                                                               
+                                                                articles.artBarCode,
                                                                 tbl_tipoordentrabajo.descripcion AS desc,
                                                                 equipos.codigo'                 
                                                                 );
@@ -361,10 +379,12 @@ class Reportes extends CI_Model {
             }else{
                
                                                                 $this->db->select('tbl_otherramientas.cantidad,
+                                                                tbl_otherramientas.id,                               
                                                                 orden_trabajo.id_orden,
                                                                 orden_trabajo.descripcion,
                                                                 orden_trabajo.estado,
                                                                 herramientas.herrcodigo,
+                                                                herramientas.herrId,                
                                                                 tbl_tipoordentrabajo.descripcion AS desc,
                                                                 equipos.codigo'
                                                                     
@@ -401,10 +421,12 @@ class Reportes extends CI_Model {
                 if(($tipo == 1) || ($tipo == null)){              
                         
                     $this->db->select('tbl_otinsumos.cantidad,
+                    tbl_otinsumos.id,
                     orden_trabajo.id_orden,
                     orden_trabajo.descripcion,
                     orden_trabajo.estado,
-                    articles.artDescription,
+                    articles.artDescription,                    
+                    articles.artBarCode,
                     tbl_tipoordentrabajo.descripcion AS desc,
                     equipos.codigo'                 
                     );
@@ -431,10 +453,12 @@ class Reportes extends CI_Model {
                 }else{
 
                     $this->db->select('tbl_otherramientas.cantidad,
+                    tbl_otherramientas.id,
                     orden_trabajo.id_orden,
                     orden_trabajo.descripcion,
                     orden_trabajo.estado,
                     herramientas.herrcodigo,
+                    herramientas.herrId,                
                     tbl_tipoordentrabajo.descripcion AS desc,
                     equipos.codigo'
                         
@@ -469,10 +493,12 @@ class Reportes extends CI_Model {
             if(($tipo == 1) || ($tipo == null)){              
                         
                 $this->db->select('tbl_otinsumos.cantidad,
+                tbl_otinsumos.id,
                 orden_trabajo.id_orden,
                 orden_trabajo.descripcion,
                 orden_trabajo.estado,
                 articles.artDescription,
+                articles.artBarCode,
                 tbl_tipoordentrabajo.descripcion AS desc,
                 equipos.codigo'                 
                 );
@@ -498,10 +524,12 @@ class Reportes extends CI_Model {
             }else{
 
                 $this->db->select('tbl_otherramientas.cantidad,
+                tbl_otherramientas.id,
                 orden_trabajo.id_orden,
                 orden_trabajo.descripcion,
                 orden_trabajo.estado,
                 herramientas.herrcodigo,
+                herramientas.herrId,
                 tbl_tipoordentrabajo.descripcion AS desc,
                 equipos.codigo'
                     

@@ -13,7 +13,7 @@
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">Reporte Almacen</h3>
+          <h3 class="box-title">Reporte de Consumo</h3>
         </div><!-- /.box-header -->
 
         <div class="box-body"> 
@@ -21,7 +21,7 @@
             <div class="col-xs-12 col-sm-6">
               <div class="checkbox">
                 <label>
-                  <input type="checkbox" class="check" id="selCliente"><strong>cliente</strong>
+                  <input type="checkbox" class="check" id="selCliente"><strong>Cliente</strong>
                 </label>
               </div>
               <input type="text" class="form-control buscCliente" placeholder="Buscar Cliente..." id="buscCliente">
@@ -34,18 +34,19 @@
                   <input type="checkbox" class="check" id="selEquipo"><strong>Equipo</strong>
                 </label>
               </div>
-              <select class="form-control" id="equipSelec" placeholder="Seleccione tipo...">
-                <option value=""></option>						  			  
+              <select class="form-control" id="equipSelec">
+                <option value="">Selecciona Tipo...</option>
+                <option value=""  ></option>						  			  
               </select>						    	
             </div><!--Fin Equipo  -->
 
-            <div class="col-xs-12 col-sm-6">
+            <div class="col-xs-12 col-sm-6" style="display: none;">
               <div class="checkbox">
                 <label>
                   <input type="checkbox" class="check" id="selTipo"><strong>Tipo de almacen</strong>
                 </label>
               </div>
-              <select class="form-control" id="TipoSelec" placeholder="Seleccione tipo...">
+              <select class="form-control" id="TipoSelec" placeholder="Seleccione tipo..." >
                 <option value="" disabled>Por defecto 'Insumos'</option>
                 <option value="1">Insumos</option>	
                 <option value="2">Herramientas</option>			  			  
@@ -59,6 +60,7 @@
                 </label>
               </div>
               <select class="form-control" id="ArticuloSelec" placeholder="Seleccione Articulo..." >
+                <option value="">Selecciona Articulo...</option>
                 <option value=""></option>						  			  
               </select>						    	
             </div><!--Fin Articulo  -->
@@ -66,10 +68,11 @@
             <div class="col-xs-12 col-sm-6">
               <div class="checkbox">
                 <label>
-                  <input type="checkbox" class="check" id="selSupervisor"><strong>supervisor</strong>
+                  <input type="checkbox" class="check" id="selSupervisor"><strong>Supervisor</strong>
                 </label>
               </div>
               <select class="form-control" id="SupervisorSelec" placeholder="Seleccione supervisor...">
+                <option value="">Selecciona Supervisor...</option>
                 <option value=""></option>						  			  
               </select>						    	
             </div><!--Fin Supervisor -->
@@ -87,17 +90,17 @@
             </div><!--Fin select fecha  -->
             <div class="col-xs-12 col-sm-6">
               <label for="desde">Desde</label>
-              <input type="text" class="form-control fecha check" id="desde" placeholder="">
+              <input type="text" class="form-control fecha check" id="desde" placeholder="Selecciona Fecha...">
             </div>  <!--Fin fecha desde  -->
             <div class="col-xs-12 col-sm-6">
               <label for="hasta">Hasta</label>
-              <input type="text" class="form-control fecha check" id="hasta" placeholder="">
+              <input type="text" class="form-control fecha check" id="hasta" placeholder="Selecciona Fecha...">
             </div> <!--Fin fecha hasta  -->
           </div><!--Fin parte de fechas  -->
 
           <br>
-
-          <button class="btn btn-primary pull-right" id="consulta" onclick="javascript:consReporte()">Consultar</button>
+          
+          <button  class="btn btn-primary pull-right" id="consulta" onclick="javascript:consReporte()">Consultar</button>
 
         </div><!-- /.box-body fin contenedor con filtros -->
 
@@ -106,21 +109,25 @@
             <div class="panel panel-default">
               <div class="panel-heading">
                 <h3 class="panel-title">Consulta</h3>
+                
               </div>
+              
+              <div><button style="margin:1rem;" class="btn btn-primary" onclick="javascript:exportTableToExcel('sales', 'reporte-consumo')"><i class="fa fa-download"></i> Excel</button></div>
+              
 
-              <div class="panel-body">    
+              <div class="panel-body">   
+               
                 <table id="sales" class="table table-bordered table-hover">
                   <thead>
                     <tr>                
-                      <th>Id de Orden</th>
-                      <th>Equipo</th>
-                      <!-- <th>Supervisor</th> -->
-                      <th>herramientas</th>
-                      <th>Cantidad de herramientas</th>
-                      <!-- <th>insumos</th> -->
-                      <!-- <th>Cantidad de Insumos</th> -->
-                      <th>Tipo Orden de trabajo</th>
-                      <th>Decripcion</th>
+                     
+
+                      <th>CÓDIGO ART</th>
+                      <th>DESCRIPCIÓN</th>   
+                      <th>NRO. PEDIDO</th>                 
+                      <th>OT</th>
+                      <th>DESCRIPCIÓN</th>
+                      <th>CANTIDAD</th>
                      
                     </tr>
                   </thead>
@@ -128,6 +135,7 @@
                     <!-- -->
                   </tbody>
                 </table>
+               
               </div>
 
             </div>
@@ -302,7 +310,7 @@ $("#selEquipo").click(function(e){
     $cli = $cliente; //caso contrario me devolvera solos los equipos de un determinado clinte con su id determinado
   }
    
-  alert($cliente);
+  //alert($cliente);
  $.ajax({
      'data':{id_cli : $cli },
     'async': true,
@@ -416,6 +424,45 @@ $("#selSupervisor").click(function (e) {
 
 
 <script>
+//EXPORTAR TABLA A EXCEL
+function exportTableToExcel(tableID, filename = ''){
+  
+    var downloadLink;
+    var dataType = 'application/vnd.ms-excel';
+    var tableSelect = document.getElementById(tableID);
+    var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+    
+    // Specify file name
+    filename = filename?filename+'.xls':'excel_data.xls';
+    
+    // Create download link element
+    downloadLink = document.createElement("a");
+    
+    document.body.appendChild(downloadLink);
+    
+    if(navigator.msSaveOrOpenBlob){
+        var blob = new Blob(['ufeff', tableHTML], {
+            type: dataType
+        });
+        navigator.msSaveOrOpenBlob( blob, filename);
+    }else{
+        // Create a link to the file
+        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+    
+        // Setting the file name
+        downloadLink.download = filename;
+        
+        //triggering the function
+        downloadLink.click();
+    }
+}
+
+
+
+
+</script>
+
+<script>
 
 // limpio datos a consultar
 function limpCombo(){
@@ -457,7 +504,7 @@ function limpCombo(){
      {
       
          if(desde == '' & a == ''){
-             alert("Los campos estan vacions");
+             alert("Los campos estan vacios");
              ejemplo.reload();
               }
             
@@ -493,15 +540,15 @@ function limpCombo(){
                     for(var i=0; i <= result.length-1; i++){
                       $('#sales').DataTable().row.add( [
                         
-                        result[i]['id_orden'],
-                        //result[i]['f_solicitado'],
-                        result[i]['codigo'],
+                        result[i]['artBarCode'],
                         result[i]['artDescription'],
+                        result[i]['id'],
+                        result[i]['id_orden'],
+                        result[i]['descripcion'],
                         result[i]['cantidad'],
-                        result[i]['desc'],
-                        result[i]['descripcion']
-                        //result[i]['estado']
-                        //result[i]['observaciones'],
+                        
+                        
+                       
                         
                       ] ).draw();
                     }
@@ -509,16 +556,14 @@ function limpCombo(){
 
                     for(var i=0; i <= result.length-1; i++){
                       $('#sales').DataTable().row.add( [
-                       
-                        result[i]['id_orden'],
-                        //result[i]['f_solicitado'],
-                        result[i]['codigo'],
+                        result[i]['herrId'],
                         result[i]['herrcodigo'],
+                        result[i]['id'],
+                        result[i]['id_orden'],
+                        result[i]['descripcion'],
                         result[i]['cantidad'],
-                        result[i]['desc'],
-                        result[i]['descripcion']
-                        //result[i]['estado']
-                        //result[i]['observaciones'],
+                        
+                        
                         
                       ] ).draw();
                     }
@@ -544,15 +589,10 @@ function limpCombo(){
       }
     });
   }
-  // <th>Id de Orden</th>
-                      // <th>Equipo</th>
-                      // <th>Supervisor</th>-
-                      // <th>herramientas</th>
-                      // <th>Cantidad de herramientas</th>
-                      // <th>insumos</th>-
-                      // <th>Cantidad de Insumos</th>-
-                      // <th>Tipo Orden de trabajo</th>
-                      // <th>Decripcion</th>
-                      // <th>Estado</th>
-
+  //                     <th>codigo art</th>
+  //                     <th>descripción</th>
+  //                     <th>nro pedido</th>
+  //                     <th>OT</th>
+  //                     <th>descripción</th>
+  //                     <th>cantidad</th>
 </script>
