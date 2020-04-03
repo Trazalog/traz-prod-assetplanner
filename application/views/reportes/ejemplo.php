@@ -497,7 +497,11 @@ function limpCombo(){
     var id_supervisor = $('#SupervisorSelec').val();
     var desde     = $('#desde').val(); 
     var a         = $('#hasta').val();
-    // alert(desde);
+     //VACIAR TBLA
+    //  if($('#'))
+    //     var resultados = document.getElementById('sales');
+    //         resultados.innerHTML = '';
+     
     // alert(a);
     //  alert(id_cliente);
      if(id_cliente == '' && id_equipo == '' && id_articulo == '' && id_supervisor == '' && tipo_alm == null)
@@ -510,6 +514,14 @@ function limpCombo(){
             
 
      }
+     //vaciar tabla 
+    //  var yea=document.getElementById("sales").rows.length;
+    //  alert(yea);
+    //     for(var i=0; i <= yea.length-1; i++){
+                      
+                   // }
+       // myTable.row( this ).delete();
+
     // alert(tipo_alm);
     // alert(id_supervisor);
 
@@ -532,11 +544,14 @@ function limpCombo(){
       success: function(result){
         console.table(result[0]);
         limpCombo();
+        //hace vicible la tabla 
         $("#tablaReportes").css("display", "block");
+        //Limpia la tabla, no es recomendable usar cuando esta activado serverside
+        $('#sales').DataTable().clear().draw();
         if(result !==0){
 
            if((tipo_alm==1) || (tipo_alm==null)) {
-
+                    //pinta en la tabla  resultado que devolvio el ajax
                     for(var i=0; i <= result.length-1; i++){
                       $('#sales').DataTable().row.add( [
                         
@@ -575,6 +590,7 @@ function limpCombo(){
             alert("NO SE HALLARON RESULTADOS, POR FAVOR SELCCIONE OTRO");
           }
           WaitingClose();
+         
         // dato={
         //         'orden':result[0]['id_orden'],
         //       };
