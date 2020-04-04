@@ -2,10 +2,10 @@
     <div class="box box-primary">
         <div class="box-header">
             <h3 class="box-title">Pedido Materiales</h3>
-            <!--?php
+            <?php
             if(!viewOT)
             {
-            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
+                echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
                 onclick="linkTo(\'almacen/Notapedido/crearPedido\')">Agregar</button>';
             }else{
                 echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
@@ -15,7 +15,7 @@
             {
                 echo '<input type="hidden" value="'.$descripcionOT.'" id="descripcionOT">';
             }
-                ?-->
+                ?>
         </div><!-- /.box-header -->
         <div class="box-body" id="deposito_contenedor">
             <table id="deposito" class="table table-bordered table-striped table-hover">
