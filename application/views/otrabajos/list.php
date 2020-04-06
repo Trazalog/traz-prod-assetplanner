@@ -1383,8 +1383,8 @@ function guardarpedido(){
     console.log("ID de orden de trabajo para mostrar pedido es: "+idorde);  
    
     WaitingOpen();
-    $('#content').empty();
-    $("#content").load("<?php echo base_url(); ?>index.php/<?php echo ALM ?>/new/Pedido_Material/getPedidos/"+idorde);
+    $('#box-body').empty();
+    $("#box-body").load("<?php echo base_url(); ?>index.php/<?php echo ALM ?>/new/Pedido_Material/getPedidos/"+idorde);
     WaitingClose(); 
   };
 
