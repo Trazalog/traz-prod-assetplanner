@@ -30,6 +30,7 @@
                     </label>
                   </div>
                   <select class="form-control" id="equipSelec" placeholder="Seleccione tipo...">
+                    <option value="">Selecciona Equipo...</option>
                     <option value=""></option>                      
                   </select>                   
                 </div>
@@ -40,6 +41,7 @@
                     </label>
                   </div>
                   <select class="form-control" id="estSelec" placeholder="Seleccione tipo..." >
+                    <option value="">Selecciona Estado...</option>
                     <option value=""></option>
                   </select>                   
                 </div>
@@ -54,11 +56,11 @@
                 </div>
                 <div class="col-xs-12 col-sm-6">
                   <label for="desde">Desde</label>
-                  <input type="text" class="form-control fecha check" id="desde" placeholder="">
+                  <input type="text" class="form-control fecha check" id="desde" placeholder="Selecciona Fecha">
                 </div>  
                 <div class="col-xs-12 col-sm-6">
                   <label for="hasta">Hasta</label>
-                  <input type="text" class="form-control fecha check" id="hasta" placeholder="">
+                  <input type="text" class="form-control fecha check" id="hasta" placeholder="Selecciona Fecha">
                 </div>
               </div>
 
@@ -113,10 +115,10 @@ $("#panelReporteOT").css("display", "none");
 
 
 // cargo plugin DateTimePicker
-$('#desde, #hasta').datetimepicker({
-  format: 'YYYY-MM-DD', 
-  locale: 'es',
-});
+// $('#desde, #hasta').datetimepicker({
+//   format: 'YYYY-MM-DD', 
+//   locale: 'es',
+// });
 
 
 
@@ -149,12 +151,17 @@ function enabDisabEstado() {
 
 function enabDisabFecha() {
   if (this.checked) {
+    
     opcionFecha = 1;
     $("input.fecha").removeAttr("disabled");
+    
   } else {
     opcionFecha = 0;
     $("input.fecha").attr("disabled", true);
+  
     $("input.fecha").val('');
+   
+    
   }
 }
 
@@ -208,6 +215,7 @@ function traeEstados(){
 }
 traeEstados().then(
   function resolve(data){
+    
     var $select = $("#estSelec");
     for (var i = 0; i < data.length; i++) {
       if( data[i]['estado'] != 'AN') //Si viene estado anulado lo ignora
@@ -342,4 +350,20 @@ var table = $('#tablaReporteOT').DataTable({
   ],
   "order": [[0, "asc"]],
 });
+</script>
+<script>
+ $("#selFecha").click(function(e){
+              $(".fecha").datepicker();
+         $.datepicker.setDefaults($.datepicker.regional["es"]);
+         $("#desde").datepicker({
+             dateFormat: 'dd/mm/yy',
+             firstDay: 1
+         }).datepicker("setDate", new Date());
+         $("#hasta").datepicker({
+             dateFormat: 'dd/mm/yy',
+             firstDay: 1
+         }).datepicker("setDate", new Date());
+         $.datepicker.setDefaults($.datepicker.regional["es"]);
+   
+    });
 </script>

@@ -35,7 +35,7 @@
                 </label>
               </div>
               <select class="form-control" id="equipSelec">
-                <option value="">Selecciona Tipo...</option>
+                <option value="">Selecciona Equipo...</option>
                 <option value=""  ></option>						  			  
               </select>						    	
             </div><!--Fin Equipo  -->
@@ -324,7 +324,7 @@ $("#selEquipo").click(function(e){
       
       var $select = $("#equipSelec");
       for (var i = 0; i < data.length; i++) {
-        $select.append( $('<option />',{ value:data[i]['id_equipo'], text:data[i]['descripcion'], title:data[i]['codigo'] }) );
+        $select.append( $('<option />',{ value:data[i]['id_equipo'], text:data[i]['codigo']+' - '+data[i]['descripcion'], title:data[i]['codigo'] }) );
       }
      },
     'error' : function (data){
