@@ -5,7 +5,7 @@
             <?php
             if(!viewOT)
             {
-            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
+                echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
                 onclick="linkTo(\'almacen/Notapedido/crearPedido\')">Agregar</button>';
             }else{
                 echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
