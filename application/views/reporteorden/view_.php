@@ -109,18 +109,18 @@
 </section>
 
 <script>
-$(".fecha").datepicker();
+
 
 // Oculto el panel resultados
 $("#panelReporteOT").css("display", "none");
 
 
 
-// cargo plugin DateTimePicker
-// $('#desde, #hasta').datetimepicker({
-//   format: 'YYYY-MM-DD', 
-//   locale: 'es',
-// });
+//cargo plugin DateTimePicker
+$('#desde, #hasta').datetimepicker({
+  format: 'YYYY-MM-DD', 
+  locale: 'es',
+});
 
 
 
