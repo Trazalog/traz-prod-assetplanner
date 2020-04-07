@@ -398,9 +398,10 @@ $("#formOT").submit(function(event) {
     // }
 
     if (hayError == true) {
-        WaitingClose();
+        
         $('#error').fadeIn('slow');
         $('#btn_guardar').prop("disabled", false);
+        WaitingClose();
         return;
     } else {
         $('#error').fadeOut('slow');
