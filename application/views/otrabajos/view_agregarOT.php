@@ -30,14 +30,14 @@
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-6">
                                         <label for="idSector">Sector <strong style="color: #dd4b39">*</strong></label>
-                                        <input type="text" class="form-control buscSector" placeholder="Buscar Sector..." id="buscSector" name="buscSector">
-                                        <input type="text" class="hidden idSector" id="idSector" name="idSector">
+                                        <input type="text" class="form-control buscSector" placeholder="Buscar Sector..." id="buscSector" name="buscSector" >
+                                        <input type="text" class="hidden idSector" id="idSector" name="idSector" >
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-6 com-md-4">
                                         <label for="equipo">Equipos <strong style="color: #dd4b39">*</strong></label>
-                                        <select id="equipo" name="equipo" class="form-control equipo"></select>
+                                        <select id="equipo" name="equipo" class="form-control equipo" ></select>
                                     </div>
                                     <div class="col-xs-12 col-sm-6 com-md-4">
                                         <label for="cliente">Cliente:</label>
@@ -52,7 +52,7 @@
                                     <div class="col-xs-12 col-sm-6 com-md-4">
                                         <label for="marca">Marca:</label>
                                         <input type="text" id="marca" name="marca" class="form-control input-md"
-                                            disabled />
+                                            disabled required/>
                                     </div>
                                     <div class="col-xs-12 col-sm-6 com-md-4">
                                         <label for="ubicacion">Ubicacion:</label>
@@ -79,8 +79,8 @@
                                         <label for="tarea">Tarea Estandar<strong
                                                 style="color: #dd4b39">*</strong>:</label>
                                         <input type="text" id="tarea" name="tarea" class="form-control"
-                                            placeholder="Buscar Tarea...">
-                                        <input type="hidden" id="id_tarea" name="id_tarea">
+                                            placeholder="Buscar Tarea..." >
+                                        <input type="hidden" id="id_tarea" name="id_tarea" required>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
                                         <label for="tarea_manual">Tarea Personalizada<strong
@@ -398,6 +398,7 @@ $("#formOT").submit(function(event) {
     // }
 
     if (hayError == true) {
+        WaitingClose();
         $('#error').fadeIn('slow');
         $('#btn_guardar').prop("disabled", false);
         return;
