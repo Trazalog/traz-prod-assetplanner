@@ -123,14 +123,7 @@ class Reporteordenes extends CI_Model
     {
         $userdata  = $this->session->userdata('user_data');
         $empresaId = $userdata[0]['id_empresa'];
-        if (($parametros['desde'] !== "") || ($parametros['hasta'] !== "")) {
-            $datDesde = $parametros['desde'];
-            $datDesde = explode('-', $datDesde);
-            $desde    = $datDesde[2].'-'.$datDesde[1].'-'.$datDesde[0];
-            $datHasta = $parametros['hasta'];
-            $datHasta = explode('-', $datHasta);
-            $hasta    = $datHasta[2].'-'.$datHasta[1].'-'.$datHasta[0];
-        }
+        
 
         $this->db->select('orden_trabajo.id_orden,
             orden_trabajo.descripcion as descripcionOT, 
@@ -164,8 +157,8 @@ class Reporteordenes extends CI_Model
 
         if( $parametros['opcionFecha'] == 1 )
         {
-            $this->db->where('orden_trabajo.fecha >=', $desde);
-            $this->db->where('orden_trabajo.fecha <=', $hasta);
+            $this->db->where('orden_trabajo.fecha >=', $parametros['desde']);
+            $this->db->where('orden_trabajo.fecha <=', $parametros['hasta']);
         }
 
         $query = $this->db->get();
