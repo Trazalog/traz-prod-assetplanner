@@ -1,0 +1,1 @@
+insert into tbl_estado values(17, 'PLANIFICADO, 'PL');
