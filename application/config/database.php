@@ -78,7 +78,7 @@ $db['default'] = array(
     'username' => 'root',
     'password' => '',
     'database' => 'planner_assetcloud_integracion',
-    'dbdriver' => 'mysqli', 
+    'dbdriver' => 'mysqli',
     'dbprefix' => '',
     'pconnect' => FALSE,
     'db_debug' => (ENVIRONMENT !== 'production'),
