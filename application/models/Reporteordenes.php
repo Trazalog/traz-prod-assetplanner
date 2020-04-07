@@ -123,10 +123,18 @@ class Reporteordenes extends CI_Model
     {
         $userdata  = $this->session->userdata('user_data');
         $empresaId = $userdata[0]['id_empresa'];
+        if (($parametros['desde'] !== "") || ($parametros['hasta'] !== "")) {
+            $datDesde = $parametros['desde'];
+            $datDesde = explode('-', $datDesde);
+            $desde    = $datDesde[2].'-'.$datDesde[1].'-'.$datDesde[0];
+            $datHasta = $parametros['hasta'];
+            $datHasta = explode('-', $datHasta);
+            $hasta    = $datHasta[2].'-'.$datHasta[1].'-'.$datHasta[0];
+        }
 
         $this->db->select('orden_trabajo.id_orden,
             orden_trabajo.descripcion as descripcionOT, 
-            tareas.descripcion AS descripcioTarea,
+            tareas.descripcion as desc,
             equipos.codigo AS codigoEquipo,
             equipos.descripcion AS descripcionEquipo,
             orden_trabajo.fecha,
@@ -137,10 +145,11 @@ class Reporteordenes extends CI_Model
             tbl_estado.descripcion AS estado
         ');
         $this->db->from('orden_trabajo');
-        $this->db->join('tareas', 'tareas.id_tarea = orden_trabajo.id_tarea');
+        $this->db->join('tareas', 'tareas.id_tarea = orden_trabajo.id_tarea', 'left');
         $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
         $this->db->join('tbl_tipoordentrabajo', 'tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
         $this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
+        
         $this->db->where('orden_trabajo.id_empresa', $empresaId);
 
         if( $parametros['opcionEquipo'] == 1 )
@@ -155,8 +164,8 @@ class Reporteordenes extends CI_Model
 
         if( $parametros['opcionFecha'] == 1 )
         {
-            $this->db->where('orden_trabajo.fecha >=', $parametros['desde']);
-            $this->db->where('orden_trabajo.fecha <=', $parametros['hasta']);
+            $this->db->where('orden_trabajo.fecha >=', $desde);
+            $this->db->where('orden_trabajo.fecha <=', $hasta);
         }
 
         $query = $this->db->get();
