@@ -109,6 +109,8 @@
 </section>
 
 <script>
+$(".fecha").datepicker();
+
 // Oculto el panel resultados
 $("#panelReporteOT").css("display", "none");
 
@@ -250,10 +252,12 @@ function validaDatos(){
 function llenarTabla(data){
   $('#tablaReporteOT').DataTable().clear().draw();
   for (var i = 0; i < data.length; i++) {
-    $('#tablaReporteOT').DataTable().row.add( [
+
+    if(data[i].desc == null){
+      $('#tablaReporteOT').DataTable().row.add( [
         data[i].id_orden,
+        data[i].descripcionOT,       
         data[i].descripcionOT,
-        data[i].descripcioTarea,
         data[i].codigoEquipo +' - '+ data[i].descripcionEquipo,
         data[i].fecha,
         data[i].fecha_program,
@@ -261,8 +265,27 @@ function llenarTabla(data){
         data[i].fecha_entregada,
         data[i].origenOT,
         data[i].estado,
+       
       ]
     ).draw();
+
+    }else{
+      $('#tablaReporteOT').DataTable().row.add( [
+        data[i].id_orden,
+        data[i].descripcionOT,       
+        data[i].desc,
+        data[i].codigoEquipo +' - '+ data[i].descripcionEquipo,
+        data[i].fecha,
+        data[i].fecha_program,
+        data[i].fecha_terminada,
+        data[i].fecha_entregada,
+        data[i].origenOT,
+        data[i].estado,
+       
+      ]
+    ).draw();
+    }
+    
   }
 }
 
@@ -272,6 +295,7 @@ function traeDatosReporte(){
   let estado   = $('#estSelec').val();
   let desde    = $('#desde').val();
   let hasta    = $('#hasta').val();
+  
   let parametros = {
     'opcionEquipo' : opcionEquipo,
     'opcionEstado' : opcionEstado,
@@ -289,7 +313,9 @@ function traeDatosReporte(){
     type: 'POST',             
     url: 'index.php/Reporteorden/getDatosReporte',
   })
-  .done( (data) => { llenarTabla(data) })
+  .done( (data) => { 
+    console.table(data);
+    llenarTabla(data) })
   .fail( () => alert("Error al traer el reporte.") )
   .always( () => WaitingClose() );
 }
@@ -351,19 +377,4 @@ var table = $('#tablaReporteOT').DataTable({
   "order": [[0, "asc"]],
 });
 </script>
-<script>
- $("#selFecha").click(function(e){
-              $(".fecha").datepicker();
-         $.datepicker.setDefaults($.datepicker.regional["es"]);
-         $("#desde").datepicker({
-             dateFormat: 'dd/mm/yy',
-             firstDay: 1
-         }).datepicker("setDate", new Date());
-         $("#hasta").datepicker({
-             dateFormat: 'dd/mm/yy',
-             firstDay: 1
-         }).datepicker("setDate", new Date());
-         $.datepicker.setDefaults($.datepicker.regional["es"]);
-   
-    });
-</script>
+
