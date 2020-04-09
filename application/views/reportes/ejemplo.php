@@ -589,7 +589,7 @@ function limpCombo(){
                         
                         result[i]['artBarCode'],
                         result[i]['artDescription'],
-                        result[i]['id'],
+                        result[i]['pema_id'],
                         result[i]['id_orden'],
                         result[i]['descripcion'],
                         result[i]['cantidad'],
@@ -605,7 +605,7 @@ function limpCombo(){
                       $('#sales').DataTable().row.add( [
                         result[i]['herrId'],
                         result[i]['herrcodigo'],
-                        result[i]['id'],
+                        result[i]['pema_id'],
                         result[i]['id_orden'],
                         result[i]['descripcion'],
                         result[i]['cantidad'],
