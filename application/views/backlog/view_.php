@@ -537,6 +537,7 @@ $("#formBacklog").submit(function (event){
   
   if ((equipo < 0)||(tarea < 0)|| (duracion == "")||(unidad < 0)||(oper == "")) {
       $('#error').fadeIn('slow');
+      WaitingClose();
   }
   else{
     $('#error').fadeOut('slow');
