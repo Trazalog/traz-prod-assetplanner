@@ -36,7 +36,7 @@
               </div>
               <select class="form-control" id="equipSelec">
                 <option value="">Selecciona Equipo...</option>
-                <option value=""  ></option>						  			  
+                <option id="opt" value=""  ></option>						  			  
               </select>						    	
             </div><!--Fin Equipo  -->
 
@@ -156,6 +156,11 @@ $('#sales').DataTable({
   "aLengthMenu": [ 10, 25, 50, 100 ],
   "order": [[0, "asc"]],
 });
+//variables para controlar que se carguen solo una vez los equipos y los articulos en los select
+var opEquipo1 = 1;
+var opArticulo = 1;
+var opsup = 1;
+
 
 $(function() {
   enabDisabCliente();
@@ -175,19 +180,26 @@ $(function() {
 function enabDisabCliente() {
   if (this.checked) {
     $("input.buscCliente").removeAttr("disabled");
+   
   } else {
     $("input.buscCliente").attr("disabled", true);
     $("input.buscCliente").val('');
+    
   }
 }
 
 function enabDisabEquipo() {
-  if (this.checked) {
+  if (this.checked) {    
     $("select#equipSelec").removeAttr("disabled");
-  } else {
+  } else {  
     $("select#equipSelec").attr("disabled", true);
     $("select#equipSelec").val('');
+   
+    
+   
+    
   }
+  
 }
 
 function enabDisabArticulo() {
@@ -225,10 +237,11 @@ function enabDisabFecha() {
     $("input.fecha").val('');
   }
 }
-</script>
 
-<!-- Trae clientes y equipos p/ cliente seleccionado -->
-<script>
+
+
+// <!-- Trae clientes y equipos p/ cliente seleccionado -->
+
 
 $(function() {
   // trae clientes para el input text
@@ -319,13 +332,25 @@ $("#selEquipo").click(function(e){
     'type': "POST",
     'url': "Reporte/getEquipo",
     'success': function (data) {
-      console.table(data);
-     
-      
-      var $select = $("#equipSelec");
-      for (var i = 0; i < data.length; i++) {
+      console.table(data);      
+       $select = $("#equipSelec"); 
+      //console.table($select);
+
+      //if que controla que se ingrese solo una vex a cargar los elementos al select     
+      if(opEquipo1 == 1){
+       
+        for (var i = 0; i < data.length; i++) {
         $select.append( $('<option />',{ value:data[i]['id_equipo'], text:data[i]['codigo']+' - '+data[i]['descripcion'], title:data[i]['codigo'] }) );
       }
+      
+      opEquipo1 = 0;//sete la variable para que no vuelva a ingresar a caragar los equipis nevamente y asi evitar que salgan repetidos
+      }
+     
+   
+      
+    
+     
+      
      },
     'error' : function (data){
       console.log('Error al traer equipos');
@@ -371,12 +396,13 @@ $("#selArticulo").click(function (e) {
     'success': function (data) {
       console.table(data);
       var $select = $("#ArticuloSelec");
-      if($tipo=='1'){
+      if(opArticulo == 1){
+        if($tipo=='1'){
         for (var i = 0; i < data.length; i++) {
         
          $select.append( $('<option />',{ value:data[i]['artId'], text:data[i]['artDescription'], title:data[i]['artBarCode'] }) );
              }
-      }else{
+      }else{ // no iria en caso de que se agregue herramientas se coloca 2 opcion
         if($tipo == '2'){
           for (var i = 0; i < data.length; i++) {
           $select.append( $('<option />',{ value:data[i]['herrId'], text:data[i]['herrdescrip'], title:data[i]['herrcodigo'] }) );
@@ -387,6 +413,9 @@ $("#selArticulo").click(function (e) {
              }
         }
       }
+       opArticulo = 0;
+      }
+     
     },
     'error' : function (data){
       console.log('Error al traer equipos');
@@ -407,9 +436,12 @@ $("#selSupervisor").click(function (e) {
      
       
       var $select = $("#SupervisorSelec");
+      if(opsup == 1){
       for (var i = 0; i < data.length; i++) {
         $select.append( $('<option />',{ value:data[i]['usrId'], text:data[i]['usrName'], title:data[i]['usrNick'] }) );
       }
+      opsup =0;
+    }
      },
     'error' : function (data){
       console.log('Error al traer equipos');
