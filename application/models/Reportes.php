@@ -86,26 +86,25 @@ class Reportes extends CI_Model {
                
                     
                         $this->db->select('orden_trabajo.id_orden,
-                                equipos.codigo,
+                                alm_deta_entrega_materiales.cantidad,
+                                alm_entrega_materiales.pema_id, 
                                 articles.artDescription,                               
-                                articles.artBarCode,  
-                                tbl_otinsumos.cantidad,
-                                tbl_otinsumos.id,
-                                tbl_tipoordentrabajo.descripcion AS desc,
-                                orden_trabajo.descripcion,
-                                orden_trabajo.estado');
+                                articles.artBarCode,                                                           
+                                orden_trabajo.descripcion'
+                                );
                                         $this->db->from('orden_trabajo');
-                                        $this->db->join('tbl_otinsumos','orden_trabajo.id_orden = tbl_otinsumos.otId');//id del insumo que se uso
-                                        $this->db->join('articles', 'articles.artId = tbl_otinsumos.artId');//obtengo el o los insumos
+                                        $this->db->join('alm_pedidos_materiales','alm_pedidos_materiales.ortr_id = orden_trabajo.id_orden');//id del insumo que se uso                                        
                                         $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
-                                        $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
+                                        $this->db->join('alm_entrega_materiales',' alm_entrega_materiales.pema_id = alm_pedidos_materiales.pema_id ');
+                                        $this->db->join('alm_deta_entrega_materiales', 'alm_deta_entrega_materiales.enma_id = alm_entrega_materiales.enma_id ');
+                                        $this->db->join('articles', 'articles.artId = alm_deta_entrega_materiales.arti_id');//obtengo el o los insumos
                                         $this->db->where('orden_trabajo.id_equipo', $id_eq );
                                         if ($data['desde'] || $data['hasta'] !== null) {
-                                        $this->db->where('orden_trabajo.fecha_program >=', $desde);
-                                        $this->db->where('orden_trabajo.fecha_program <=', $hasta);
+                                            $this->db->where('alm_entrega_materiales.fecha >=', $desde);
+                                            $this->db->where('alm_entrega_materiales.fecha <=', $hasta);
                                         }
                                         if($id_art !== ''){
-                                        $this->db->where('tbl_otinsumos.otId', $id_art);
+                                        $this->db->where('alm_deta_entrega_materiales.arti_id', $id_art);
                                         }
                                         if($id_sup != null)
                                         {
@@ -113,7 +112,7 @@ class Reportes extends CI_Model {
                                         }
 
                                         $query = $this->db->get();
-                }else{ //para herramientas
+                }else{ //para herramientas no va borrar este else
                    
                         $this->db->select('orden_trabajo.id_orden,
                                 equipos.codigo,
@@ -146,7 +145,7 @@ class Reportes extends CI_Model {
                                         // $this->db->where('orden_trabajo.estaddo','E');
                                         $query = $this->db->get();
 
-                }//fin para insumos
+                }//fin herr
               
                
 
@@ -154,27 +153,25 @@ class Reportes extends CI_Model {
                 if(($tipo == 1) || ($tipo == null)){  //para insumos
                     
                     $this->db->select('orden_trabajo.id_orden,
-                            equipos.codigo,
-                            articles.artDescription,                           
-                            articles.artBarCode,
-                            tbl_otinsumos.cantidad,                            
-                            tbl_otinsumos.id,
-                            tbl_tipoordentrabajo.descripcion AS desc,
-                            orden_trabajo.descripcion,
-                            orden_trabajo.estado');
-                                $this->db->from('orden_trabajo');
-                                $this->db->join('tbl_otinsumos','orden_trabajo.id_orden = tbl_otinsumos.otId');//id del insumo que se uso
-                                $this->db->join('articles', 'articles.artId = tbl_otinsumos.artId');//obtengo el o los insumos
-                                $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
-                                $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
-                                $this->db->join('admcustomers','equipos.id_customer = admcustomers.cliId');
+                    alm_deta_entrega_materiales.cantidad,
+                    alm_entrega_materiales.pema_id, 
+                    articles.artDescription,                               
+                    articles.artBarCode,                                                           
+                    orden_trabajo.descripcion');
+                                $this->db->from('admcustomers');                   
+                                $this->db->join('equipos','equipos.id_customer = admcustomers.cliId');
+                                $this->db->join('orden_trabajo','equipos.id_equipo = orden_trabajo.id_equipo');                                                              
+                                $this->db->join('alm_pedidos_materiales','alm_pedidos_materiales.ortr_id = orden_trabajo.id_orden');
+                                $this->db->join('alm_entrega_materiales',' alm_entrega_materiales.pema_id = alm_pedidos_materiales.pema_id ');
+                                $this->db->join('alm_deta_entrega_materiales', 'alm_deta_entrega_materiales.enma_id = alm_entrega_materiales.enma_id ');
+                                $this->db->join('articles', 'articles.artId = alm_deta_entrega_materiales.arti_id');
                                 $this->db->where('admcustomers.cliId', $id_cli );
                                 if ($data['desde'] || $data['hasta'] !== null) {
-                                $this->db->where('orden_trabajo.fecha_program >=', $desde);
-                                $this->db->where('orden_trabajo.fecha_program <=', $hasta);
+                                    $this->db->where('alm_entrega_materiales.fecha >=', $desde);
+                                    $this->db->where('alm_entrega_materiales.fecha <=', $hasta);
                                 }
                                 if($id_art !== ''){
-                                $this->db->where('tbl_otinsumos.otId', $id_art);
+                                $this->db->where('alm_deta_entrega_materiales.arti_id', $id_art);
                                 }
                                 if($id_sup != null)
                                 {
@@ -182,7 +179,7 @@ class Reportes extends CI_Model {
                                 }
 
                                 $query = $this->db->get();
-                    }else{ //para Herramientas
+                    }else{ //para Herramientas no va este else
                         
                     $this->db->select('equipos.codigo,
                             orden_trabajo.id_orden,
@@ -232,33 +229,30 @@ class Reportes extends CI_Model {
             if(($tipo == 1) || ($tipo == null)){//INSUMOS
                                                 
                                                                 
-                                                        $this->db->select('tbl_otinsumos.cantidad,                                                        
-                                                                tbl_otinsumos.id,
-                                                                orden_trabajo.id_orden,
-                                                                orden_trabajo.descripcion,
-                                                                orden_trabajo.estado,
-                                                                articles.artDescription,
-                                                                articles.artBarCode,
-                                                                tbl_tipoordentrabajo.descripcion AS desc,
-                                                                equipos.codigo');
-                                                                    $this->db->from('tbl_otinsumos');
-                                                                    $this->db->join('orden_trabajo','orden_trabajo.id_orden = tbl_otinsumos.otId');
-                                                                    $this->db->join('articles','articles.artId = tbl_otinsumos.artId');
-                                                                    $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
+                                                        $this->db->select('orden_trabajo.id_orden,
+                                                        alm_deta_entrega_materiales.cantidad,
+                                                        alm_entrega_materiales.pema_id, 
+                                                        articles.artDescription,                               
+                                                        articles.artBarCode,                                                           
+                                                        orden_trabajo.descripcion');
+                                                                    $this->db->from('orden_trabajo');
+                                                                    $this->db->join('alm_pedidos_materiales','alm_pedidos_materiales.ortr_id = orden_trabajo.id_orden');//id del insumo que se uso                                        
                                                                     $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
-                                                                    $this->db->join('sisusers','orden_trabajo.id_usuario = sisusers.usrId');
-                                                                    $this->db->where('tbl_otinsumos.artId',$id_art);
+                                                                    $this->db->join('alm_entrega_materiales',' alm_entrega_materiales.pema_id = alm_pedidos_materiales.pema_id ');
+                                                                    $this->db->join('alm_deta_entrega_materiales', 'alm_deta_entrega_materiales.enma_id = alm_entrega_materiales.enma_id ');
+                                                                    $this->db->join('articles', 'articles.artId = alm_deta_entrega_materiales.arti_id');//obtengo el o los insumos
+                                                                    $this->db->where('alm_deta_entrega_materiales.arti_id',$id_art);
                                                                     if($id_sup != ''){
                                                                     $this->db->where('sisusers.usrId', $id_sup);    
                                                                     }
                                                                     if ($data['desde'] || $data['hasta'] !== null) {
-                                                                        $this->db->where('orden_trabajo.fecha_program >=', $desde);
-                                                                        $this->db->where('orden_trabajo.fecha_program <=', $hasta);
+                                                                        $this->db->where('alm_entrega_materiales.fecha >=', $desde);
+                                                                        $this->db->where('alm_entrega_materiales.fecha <=', $hasta);
                                                                     }
                                                                     $query = $this->db->get();
                                                                     
 
-            }else{//HERRAMIENTAS
+            }else{//HERRAMIENTAS no este else borrar
                
                                                         $this->db->select('tbl_otherramientas.cantidad,
                                                                  tbl_otherramientas.id,                                                       
@@ -290,31 +284,29 @@ class Reportes extends CI_Model {
             if(($tipo == 1) || ($tipo == null)){//Insumos
                
                 $this->db->select('orden_trabajo.id_orden,
-                           articles.artDescription,                           
-                           articles.artBarCode,
-                           tbl_otinsumos.cantidad,                            
-                           tbl_otinsumos.id,
-                           tbl_tipoordentrabajo.descripcion AS desc,
-                           orden_trabajo.descripcion,
-                           orden_trabajo.estado,
-                           equipos.codigo'
+                alm_deta_entrega_materiales.cantidad,
+                alm_entrega_materiales.pema_id, 
+                articles.artDescription,                               
+                articles.artBarCode,                                                           
+                orden_trabajo.descripcion'
                               );
                               $this->db->from('orden_trabajo');
-                              $this->db->join('tbl_otinsumos','orden_trabajo.id_orden = tbl_otinsumos.otId');//herrameintas que se uso
-                              $this->db->join('articles', 'articles.artId = tbl_otinsumos.artId');//nombre de las herramientas
+                              $this->db->join('alm_pedidos_materiales','alm_pedidos_materiales.ortr_id = orden_trabajo.id_orden');//id del insumo que se uso                                        
                               $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
-                              $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
+                              $this->db->join('alm_entrega_materiales',' alm_entrega_materiales.pema_id = alm_pedidos_materiales.pema_id ');
+                              $this->db->join('alm_deta_entrega_materiales', 'alm_deta_entrega_materiales.enma_id = alm_entrega_materiales.enma_id ');
+                              $this->db->join('articles', 'articles.artId = alm_deta_entrega_materiales.arti_id');//obtengo el o los insumos
                               if($id_sup != null)
                                    {
                                    $this->db->where('orden_trabajo.id_usuario', $id_sup);
                                    }
                               if ($data['desde'] || $data['hasta'] !== null) {
-                               $this->db->where('orden_trabajo.fecha_program >=', $desde);
-                               $this->db->where('orden_trabajo.fecha_program <=', $hasta);
+                                $this->db->where('alm_entrega_materiales.fecha >=', $desde);
+                                $this->db->where('alm_entrega_materiales.fecha <=', $hasta);
                            }
                               $query = $this->db->get();
             
-            }else{//Herramientas
+            }else{//Herramientas este else no va borrar
 
                 $this->db->select('orden_trabajo.id_orden,
                      herramientas.herrcodigo,
@@ -347,27 +339,25 @@ class Reportes extends CI_Model {
         if(($id_eq == null) && ($id_cli != null) && ($id_art!=null)){
             if(($tipo == 1) || ($tipo == null)){              
                         
-                                                                $this->db->select('tbl_otinsumos.cantidad,
-                                                                tbl_otinsumos.id,
-                                                                orden_trabajo.id_orden,
-                                                                orden_trabajo.descripcion,
-                                                                orden_trabajo.estado,
-                                                                articles.artDescription,                                                               
-                                                                articles.artBarCode,
-                                                                tbl_tipoordentrabajo.descripcion AS desc,
-                                                                equipos.codigo'                 
+                                                                $this->db->select('orden_trabajo.id_orden,
+                                                                alm_deta_entrega_materiales.cantidad,
+                                                                alm_entrega_materiales.pema_id, 
+                                                                articles.artDescription,                               
+                                                                articles.artBarCode,                                                           
+                                                                orden_trabajo.descripcion'             
                                                                 );
-                                                                $this->db->from('tbl_otinsumos');
-                                                                                $this->db->join('orden_trabajo','orden_trabajo.id_orden = tbl_otinsumos.otId');
-                                                                                $this->db->join('articles','articles.artId = tbl_otinsumos.artId');
-                                                                                $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
-                                                                                $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
-                                                                                $this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
-                                                                                $this->db->where('tbl_otinsumos.artId',$id_art);
-                                                                                $this->db->where('admcustomers.cliId',$id_cli);
+                                                                $this->db->from('admcustomers');
+                                                                $this->db->join('equipos','equipos.id_customer = admcustomers.cliId'); 
+                                                                $this->db->join('orden_trabajo','equipos.id_equipo = orden_trabajo.id_equipo');                                                                                                                             
+                                                                $this->db->join('alm_pedidos_materiales','alm_pedidos_materiales.ortr_id = orden_trabajo.id_orden');
+                                                                $this->db->join('alm_entrega_materiales',' alm_entrega_materiales.pema_id = alm_pedidos_materiales.pema_id ');
+                                                                $this->db->join('alm_deta_entrega_materiales', 'alm_deta_entrega_materiales.enma_id = alm_entrega_materiales.enma_id ');
+                                                                $this->db->join('articles', 'articles.artId = alm_deta_entrega_materiales.arti_id');
+                                                                $this->db->where('admcustomers.cliId', $id_cli ); 
+                                                                $this->db->where('alm_deta_entrega_materiales.arti_id',$id_art);
                                                                                 if ($data['desde'] || $data['hasta'] !== null) {
-                                                                                $this->db->where('orden_trabajo.fecha_program >=', $desde);
-                                                                                $this->db->where('orden_trabajo.fecha_program <=', $hasta);
+                                                                                $this->db->where('alm_entrega_materiales.fecha >=', $desde);
+                                                                                $this->db->where('alm_entrega_materiales.fecha <=', $hasta);
                                                                                 }
                                                                                 $query = $this->db->get();
                                                                                 if($id_sup != null)
@@ -376,7 +366,7 @@ class Reportes extends CI_Model {
                                                                                 }
 
 
-            }else{
+            }else{// no va borrar
                
                                                                 $this->db->select('tbl_otherramientas.cantidad,
                                                                 tbl_otherramientas.id,                               
@@ -420,28 +410,26 @@ class Reportes extends CI_Model {
 
                 if(($tipo == 1) || ($tipo == null)){              
                         
-                    $this->db->select('tbl_otinsumos.cantidad,
-                    tbl_otinsumos.id,
-                    orden_trabajo.id_orden,
-                    orden_trabajo.descripcion,
-                    orden_trabajo.estado,
-                    articles.artDescription,                    
-                    articles.artBarCode,
-                    tbl_tipoordentrabajo.descripcion AS desc,
-                    equipos.codigo'                 
+                    $this->db->select('orden_trabajo.id_orden,
+                    alm_deta_entrega_materiales.cantidad,
+                    alm_entrega_materiales.pema_id, 
+                    articles.artDescription,                               
+                    articles.artBarCode,                                                           
+                    orden_trabajo.descripcion'                
                     );
-                    $this->db->from('tbl_otinsumos');
-                                    $this->db->join('orden_trabajo','orden_trabajo.id_orden = tbl_otinsumos.otId');
-                                    $this->db->join('articles','articles.artId = tbl_otinsumos.artId');
-                                    $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
-                                    $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
-                                    $this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
-                                    $this->db->where('tbl_otinsumos.artId',$id_art);
-                                    $this->db->where('admcustomers.cliId',$id_cli);
-                                    $this->db->where('equipos.id_equipo',$id_eq);
+                    $this->db->from('orden_trabajo');
+                    $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
+                    $this->db->join('admcustomers','equipos.id_customer = admcustomers.cliId');                   
+                    $this->db->join('alm_pedidos_materiales','alm_pedidos_materiales.ortr_id = orden_trabajo.id_orden');
+                    $this->db->join('alm_entrega_materiales',' alm_entrega_materiales.pema_id = alm_pedidos_materiales.pema_id ');
+                    $this->db->join('alm_deta_entrega_materiales', 'alm_deta_entrega_materiales.enma_id = alm_entrega_materiales.enma_id ');
+                    $this->db->join('articles', 'articles.artId = alm_deta_entrega_materiales.arti_id');                                 
+                    $this->db->where('admcustomers.cliId', $id_cli ); 
+                    $this->db->where('alm_deta_entrega_materiales.arti_id',$id_art);
+                    $this->db->where('equipos.id_equipo',$id_eq);
                                     if ($data['desde'] || $data['hasta'] !== null) {
-                                    $this->db->where('orden_trabajo.fecha_program >=', $desde);
-                                    $this->db->where('orden_trabajo.fecha_program <=', $hasta);
+                                        $this->db->where('alm_entrega_materiales.fecha >=', $desde);
+                                        $this->db->where('alm_entrega_materiales.fecha <=', $hasta);
                                     }
                                     if($id_sup != null)
                                         {
@@ -450,7 +438,7 @@ class Reportes extends CI_Model {
                                     $query = $this->db->get();
 
 
-                }else{
+                }else{ //no va borrar este else
 
                     $this->db->select('tbl_otherramientas.cantidad,
                     tbl_otherramientas.id,
@@ -492,27 +480,24 @@ class Reportes extends CI_Model {
 
             if(($tipo == 1) || ($tipo == null)){              
                         
-                $this->db->select('tbl_otinsumos.cantidad,
-                tbl_otinsumos.id,
-                orden_trabajo.id_orden,
-                orden_trabajo.descripcion,
-                orden_trabajo.estado,
-                articles.artDescription,
-                articles.artBarCode,
-                tbl_tipoordentrabajo.descripcion AS desc,
-                equipos.codigo'                 
+                $this->db->select('orden_trabajo.id_orden,
+                alm_deta_entrega_materiales.cantidad,
+                alm_entrega_materiales.pema_id, 
+                articles.artDescription,                               
+                articles.artBarCode,                                                           
+                orden_trabajo.descripcion'            
                 );
-                $this->db->from('tbl_otinsumos');
-                                $this->db->join('orden_trabajo','orden_trabajo.id_orden = tbl_otinsumos.otId');
-                                $this->db->join('articles','articles.artId = tbl_otinsumos.artId');
-                                $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
-                                $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
-                                $this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
-                                $this->db->where('tbl_otinsumos.artId',$id_art);                               
-                                $this->db->where('equipos.id_equipo',$id_eq);
+                $this->db->from('orden_trabajo');
+                    $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');                                      
+                    $this->db->join('alm_pedidos_materiales','alm_pedidos_materiales.ortr_id = orden_trabajo.id_orden');
+                    $this->db->join('alm_entrega_materiales',' alm_entrega_materiales.pema_id = alm_pedidos_materiales.pema_id ');
+                    $this->db->join('alm_deta_entrega_materiales', 'alm_deta_entrega_materiales.enma_id = alm_entrega_materiales.enma_id ');
+                    $this->db->join('articles', 'articles.artId = alm_deta_entrega_materiales.arti_id');                                
+                    $this->db->where('alm_deta_entrega_materiales.arti_id',$id_art);
+                    $this->db->where('equipos.id_equipo',$id_eq);
                                 if ($data['desde'] || $data['hasta'] !== null) {
-                                $this->db->where('orden_trabajo.fecha_program >=', $desde);
-                                $this->db->where('orden_trabajo.fecha_program <=', $hasta);
+                                    $this->db->where('alm_entrega_materiales.fecha >=', $desde);
+                                    $this->db->where('alm_entrega_materiales.fecha <=', $hasta);
                                 }
                                 if($id_sup != null)
                                         {
@@ -521,7 +506,7 @@ class Reportes extends CI_Model {
                                 $query = $this->db->get();
 
 
-            }else{
+            }else{ // no va borrar
 
                 $this->db->select('tbl_otherramientas.cantidad,
                 tbl_otherramientas.id,
