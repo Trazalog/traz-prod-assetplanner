@@ -59,10 +59,12 @@
                   <input type="checkbox" class="check" id="selArticulo" ><strong>Articulo</strong>
                 </label>
               </div>
-              <select class="form-control" id="ArticuloSelec" placeholder="Seleccione Articulo..." >
+              <input type="text" class="form-control buscArt" placeholder="Buscar articulo..." id="buscArt">
+              <input type="text" class="hidden idArt" id="idArt">
+              <!-- <select class="form-control" id="ArticuloSelec" placeholder="Seleccione Articulo..." >
                 <option value="">Selecciona Articulo...</option>
                 <option value=""></option>						  			  
-              </select>						    	
+              </select>						    	 -->
             </div><!--Fin Articulo  -->
 
             <div class="col-xs-12 col-sm-6">
@@ -204,10 +206,10 @@ function enabDisabEquipo() {
 
 function enabDisabArticulo() {
   if (this.checked) {
-    $("select#ArticuloSelec").removeAttr("disabled");
+    $("input.buscArt").removeAttr("disabled");
   } else {
-    $("select#ArticuloSelec").attr("disabled", true);
-    $("select#ArticuloSelec").val('');
+    $("input.buscArt").attr("disabled", true);
+    $("input.buscArt").val('');
   }
 }
 
@@ -287,34 +289,6 @@ $(function() {
 
 });
 
-
-
-//Trae euqipos en funcion del cliente que se elgio
-// function getEquipos($id_cli){
-//   $.ajax({
-//      'data':{id_cli: $id_cli },
-//     'async': true,
-//     'dataType': 'json',
-//     'global': false,
-//     'type': "POST",
-//     'url': "Reporte/getEquipo",
-//     'success': function (data) {
-//       console.table(data);
-     
-      
-//       var $select = $("#equipSelec");
-//       for (var i = 0; i < data.length; i++) {
-//         $select.append( $('<option />',{ value:data[i]['id_equipo'], text:data[i]['descripcion'], title:data[i]['codigo'] }) );
-//       }
-//      },
-//     'error' : function (data){
-//       console.log('Error al traer equipos');
-//       //alert('error');
-//     }
-//   });
-
-// }
-
 $("#selEquipo").click(function(e){
   $cliente = $('#idCliente').val(); //recupero el valor (id) del cliente seleccionado 
   if($cliente == ''){ 
@@ -381,47 +355,84 @@ $("#selEquipo").click(function(e){
 
 <!-- Trear articulos en funcion de tipo de almacen -->
 <script>
-$("#selArticulo").click(function (e) { 
+$(function (e) { 
   //e.preventDefault();
   $tipo = document.getElementById("TipoSelec").value; // para obetener el valor de tipo de almacen que se selecciono
   // alert($tipo);
    //por defecto si no se selecciono nada muestra en articulos los de la tabla herramientad, si no 1=herramientas y 2 = articulos
-  $.ajax({
-    'async': true,
-    'data': {tipo:$tipo },
-    'dataType': 'json',
-    'global': false,
-    'type': "POST",
-    'url': "reporte/getArticulo",
-    'success': function (data) {
-      console.table(data);
-      var $select = $("#ArticuloSelec");
-      if(opArticulo == 1){
-        if($tipo=='1'){
-        for (var i = 0; i < data.length; i++) {
-        
-         $select.append( $('<option />',{ value:data[i]['artId'], text:data[i]['artDescription'], title:data[i]['artBarCode'] }) );
-             }
-      }else{ // no iria en caso de que se agregue herramientas se coloca 2 opcion
-        if($tipo == '2'){
-          for (var i = 0; i < data.length; i++) {
-          $select.append( $('<option />',{ value:data[i]['herrId'], text:data[i]['herrdescrip'], title:data[i]['herrcodigo'] }) );
-            }
-        }else{
-          for (var i = 0; i < data.length; i++) {
-            $select.append( $('<option />',{ value:data[i]['artId'], text:data[i]['artDescription'], title:data[i]['artBarCode'] }) );
-             }
-        }
+  //_________________________________________________________
+  var dataF = function() {
+    var tmp = null;
+    $.ajax({
+      'async': false,
+      'type': "POST",
+      'global': false,
+      'dataType': 'json',
+      'url': "reporte/getArticulo",
+      'success': function(data) {
+        tmp = data;
       }
-       opArticulo = 0;
-      }
-     
+    });
+   
+    return tmp;
+  }();
+  $(".buscArt").autocomplete({
+    source: dataF,
+    delay: 100,
+    minLength: 1,
+    focus: function(event, ui) {
+      // prevent autocomplete from updating the textbox
+      event.preventDefault();
+      // manually update the textbox
+      $(this).val(ui.item.labelcod + " - " + ui.item.label);
     },
-    'error' : function (data){
-      console.log('Error al traer equipos');
-      //alert('error');
-    }
+    select: function(event, ui) {
+      // prevent autocomplete from updating the textbox
+      event.preventDefault();
+      // manually update the textbox and hidden field
+      $(this).val(ui.item.labelcod + " - " + ui.item.label);
+      $("#idArt").val(ui.item.value);
+    },
   });
+
+
+  //_________________________________________________________
+  // $.ajax({
+  //   'async': true,
+  //   'data': {tipo:$tipo },
+  //   'dataType': 'json',
+  //   'global': false,
+  //   'type': "POST",
+  //   'url': "reporte/getArticulo",
+  //   'success': function (data) {
+  //     console.table(data);
+  //     var $select = $("#ArticuloSelec");
+  //     if(opArticulo == 1){
+  //       if($tipo=='1'){
+  //       for (var i = 0; i < data.length; i++) {
+        
+  //        $select.append( $('<option />',{ value:data[i]['artId'], text:data[i]['artDescription'], title:data[i]['artBarCode'] }) );
+  //            }
+  //     }else{ // no iria en caso de que se agregue herramientas se coloca 2 opcion
+  //       if($tipo == '2'){
+  //         for (var i = 0; i < data.length; i++) {
+  //         $select.append( $('<option />',{ value:data[i]['herrId'], text:data[i]['herrdescrip'], title:data[i]['herrcodigo'] }) );
+  //           }
+  //       }else{
+  //         for (var i = 0; i < data.length; i++) {
+  //           $select.append( $('<option />',{ value:data[i]['artId'], text:data[i]['artDescription'], title:data[i]['artBarCode'] }) );
+  //            }
+  //       }
+  //     }
+  //      opArticulo = 0;
+  //     }
+     
+  //   },
+  //   'error' : function (data){
+  //     console.log('Error al traer equipos');
+  //     //alert('error');
+  //   }
+  // });
 });
 
 $("#selSupervisor").click(function (e) { 
@@ -510,8 +521,9 @@ function limpCombo(){
   $("select#selTipo").attr("disabled", true);
   $("select#TipoSelec").val('');
 
-  $("select#selArticulo").attr("disabled", true);
-  $("select#ArticuloSelec").val('');
+  $("input.buscArt").attr("disabled", true);
+  $("input.buscArt").val('');
+  $("#idArt").val('');
   
   $("select#selSupervisor").attr("disabled", true);
   $("select#SupervisorSelec").val('');
@@ -525,7 +537,7 @@ function limpCombo(){
     var id_cliente  = $('#idCliente').val();
     var id_equipo   = $('#equipSelec').val();
     var tipo_alm    = $('#TipoSelec').val();
-    var id_articulo = $('#ArticuloSelec').val();
+    var id_articulo = $('#idArt').val();
     var id_supervisor = $('#SupervisorSelec').val();
     var desde     = $('#desde').val(); 
     var a         = $('#hasta').val();
