@@ -645,70 +645,43 @@ class Reportes extends CI_Model {
 		}
     }
 
-    function getArticulos($data=null){
+    function getArticulos(){
        $userdata = $this->session->userdata('user_data');
-       $tipo = $data['tipo'];
-        if($tipo == 1){
       
-                $this->db->select('articles.artId,
-                articles.artBarCode,
+        
+      
+                $this->db->select('articles.artId, 
+                articles.artBarCode,               
                 articles.artDescription'
                             );
                     $this->db->from('articles');
                     $this->db->order_by('articles.artId', 'ASC');
                 
                     $query = $this->db->get();
+                    //_________________________________
+                    $i     = 0;
+					foreach ($query->result() as $row)
+					{
+                        $articulos[$i]['label'] = $row->artDescription; 
+                        $articulos[$i]['labelcod'] = $row ->artBarCode;                       
+							$articulos[$i]['value'] = $row->artId;
+							$i++;
+					}
+					return $articulos;
 
-                    if ($query->num_rows()!=0)
-                    {
-                    return $query->result_array();
-                    }
-                    else
-                    {
-                    return [];
-                    }
-        }
-        if($tipo == 2){
+                    //________________________________        
+                    // if ($query->num_rows()!=0)
+                    // {
+                    // return $query->result_array();
+                    // }
+                    // else
+                    // {
+                    // return [];
+                    // }
+       
+      
 
-                $this->db->select('herramientas.herrId,
-                herramientas.herrcodigo,
-                herramientas.herrdescrip'
-                );
-                    $this->db->from('herramientas');
-                    $this->db->order_by('herramientas.herrId', 'ASC');
-                
-                    $query = $this->db->get();
-
-                    if ($query->num_rows()!=0)
-                    {
-                    return $query->result_array();
-                    }
-                    else
-                    {
-                    return [];
-                    }
-
-
-        }
-        if($tipo == null){
-            $this->db->select('articles.artId,
-            articles.artBarCode,
-            articles.artDescription'
-                        );
-                $this->db->from('articles');
-                $this->db->order_by('articles.artId', 'ASC');
-            
-                $query = $this->db->get();
-
-                if ($query->num_rows()!=0)
-                {
-                return $query->result_array();
-                }
-                else
-                {
-                return [];
-                }
-        }
+         
        
     }
 
