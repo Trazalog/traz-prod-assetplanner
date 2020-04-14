@@ -371,12 +371,13 @@ $("#selArticulo").click(function (e) {
     'success': function (data) {
       console.table(data);
       var $select = $("#ArticuloSelec");
-      if($tipo=='1'){
+      if(opArticulo == 1){
+        if($tipo=='1'){
         for (var i = 0; i < data.length; i++) {
         
          $select.append( $('<option />',{ value:data[i]['artId'], text:data[i]['artDescription'], title:data[i]['artBarCode'] }) );
              }
-      }else{
+      }else{ // no iria en caso de que se agregue herramientas se coloca 2 opcion
         if($tipo == '2'){
           for (var i = 0; i < data.length; i++) {
           $select.append( $('<option />',{ value:data[i]['herrId'], text:data[i]['herrdescrip'], title:data[i]['herrcodigo'] }) );
@@ -387,6 +388,9 @@ $("#selArticulo").click(function (e) {
              }
         }
       }
+       opArticulo = 0;
+      }
+     
     },
     'error' : function (data){
       console.log('Error al traer equipos');
