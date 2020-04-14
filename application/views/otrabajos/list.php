@@ -1383,9 +1383,13 @@ function guardarpedido(){
     console.log("ID de orden de trabajo para mostrar pedido es: "+idorde);  
    
     WaitingOpen();
-    $('#box-body').empty();
-    $("#box-body").load("<?php echo base_url(); ?>index.php/<?php echo ALM ?>/new/Pedido_Material/getPedidos/"+idorde);
-    WaitingClose(); 
+    $('#box-header').empty();
+    WaitingClose();
+    $('#box-header > btn').remove("<?php echo base_url(); ?>index.php/<?php echo ALM ?>/new/Pedido_Material/getPedidos/"+idorde);
+
+    $('#content').empty();
+    $('#content').load("<?php echo base_url(); ?>index.php/<?php echo ALM ?>/new/Pedido_Material/getPedidos/"+idorde);
+
   };
 
 // AGREGAR NOTA DE PEDIDO

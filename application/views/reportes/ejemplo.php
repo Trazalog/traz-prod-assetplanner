@@ -36,7 +36,7 @@
               </div>
               <select class="form-control" id="equipSelec">
                 <option value="">Selecciona Equipo...</option>
-                <option value=""  ></option>						  			  
+                <option id="opt" value=""  ></option>						  			  
               </select>						    	
             </div><!--Fin Equipo  -->
 
@@ -59,10 +59,12 @@
                   <input type="checkbox" class="check" id="selArticulo" ><strong>Articulo</strong>
                 </label>
               </div>
-              <select class="form-control" id="ArticuloSelec" placeholder="Seleccione Articulo..." >
+              <input type="text" class="form-control buscArt" placeholder="Buscar articulo..." id="buscArt">
+              <input type="text" class="hidden idArt" id="idArt">
+              <!-- <select class="form-control" id="ArticuloSelec" placeholder="Seleccione Articulo..." >
                 <option value="">Selecciona Articulo...</option>
                 <option value=""></option>						  			  
-              </select>						    	
+              </select>						    	 -->
             </div><!--Fin Articulo  -->
 
             <div class="col-xs-12 col-sm-6">
@@ -156,6 +158,11 @@ $('#sales').DataTable({
   "aLengthMenu": [ 10, 25, 50, 100 ],
   "order": [[0, "asc"]],
 });
+//variables para controlar que se carguen solo una vez los equipos y los articulos en los select
+var opEquipo1 = 1;
+var opArticulo = 1;
+var opsup = 1;
+
 
 $(function() {
   enabDisabCliente();
@@ -175,27 +182,34 @@ $(function() {
 function enabDisabCliente() {
   if (this.checked) {
     $("input.buscCliente").removeAttr("disabled");
+   
   } else {
     $("input.buscCliente").attr("disabled", true);
     $("input.buscCliente").val('');
+    
   }
 }
 
 function enabDisabEquipo() {
-  if (this.checked) {
+  if (this.checked) {    
     $("select#equipSelec").removeAttr("disabled");
-  } else {
+  } else {  
     $("select#equipSelec").attr("disabled", true);
     $("select#equipSelec").val('');
+   
+    
+   
+    
   }
+  
 }
 
 function enabDisabArticulo() {
   if (this.checked) {
-    $("select#ArticuloSelec").removeAttr("disabled");
+    $("input.buscArt").removeAttr("disabled");
   } else {
-    $("select#ArticuloSelec").attr("disabled", true);
-    $("select#ArticuloSelec").val('');
+    $("input.buscArt").attr("disabled", true);
+    $("input.buscArt").val('');
   }
 }
 
@@ -225,10 +239,11 @@ function enabDisabFecha() {
     $("input.fecha").val('');
   }
 }
-</script>
 
-<!-- Trae clientes y equipos p/ cliente seleccionado -->
-<script>
+
+
+// <!-- Trae clientes y equipos p/ cliente seleccionado -->
+
 
 $(function() {
   // trae clientes para el input text
@@ -274,34 +289,6 @@ $(function() {
 
 });
 
-
-
-//Trae euqipos en funcion del cliente que se elgio
-// function getEquipos($id_cli){
-//   $.ajax({
-//      'data':{id_cli: $id_cli },
-//     'async': true,
-//     'dataType': 'json',
-//     'global': false,
-//     'type': "POST",
-//     'url': "Reporte/getEquipo",
-//     'success': function (data) {
-//       console.table(data);
-     
-      
-//       var $select = $("#equipSelec");
-//       for (var i = 0; i < data.length; i++) {
-//         $select.append( $('<option />',{ value:data[i]['id_equipo'], text:data[i]['descripcion'], title:data[i]['codigo'] }) );
-//       }
-//      },
-//     'error' : function (data){
-//       console.log('Error al traer equipos');
-//       //alert('error');
-//     }
-//   });
-
-// }
-
 $("#selEquipo").click(function(e){
   $cliente = $('#idCliente').val(); //recupero el valor (id) del cliente seleccionado 
   if($cliente == ''){ 
@@ -319,13 +306,25 @@ $("#selEquipo").click(function(e){
     'type': "POST",
     'url': "Reporte/getEquipo",
     'success': function (data) {
-      console.table(data);
-     
-      
-      var $select = $("#equipSelec");
-      for (var i = 0; i < data.length; i++) {
+      console.table(data);      
+       $select = $("#equipSelec"); 
+      //console.table($select);
+
+      //if que controla que se ingrese solo una vex a cargar los elementos al select     
+      if(opEquipo1 == 1){
+       
+        for (var i = 0; i < data.length; i++) {
         $select.append( $('<option />',{ value:data[i]['id_equipo'], text:data[i]['codigo']+' - '+data[i]['descripcion'], title:data[i]['codigo'] }) );
       }
+      
+      opEquipo1 = 0;//sete la variable para que no vuelva a ingresar a caragar los equipis nevamente y asi evitar que salgan repetidos
+      }
+     
+   
+      
+    
+     
+      
      },
     'error' : function (data){
       console.log('Error al traer equipos');
@@ -356,7 +355,7 @@ $("#selEquipo").click(function(e){
 
 <!-- Trear articulos en funcion de tipo de almacen -->
 <script>
-$("#selArticulo").click(function (e) { 
+$(function (e) { 
   //e.preventDefault();
   $tipo = document.getElementById("TipoSelec").value; // para obetener el valor de tipo de almacen que se selecciono
   // alert($tipo);
@@ -392,11 +391,53 @@ $("#selArticulo").click(function (e) {
       }
      
     },
-    'error' : function (data){
-      console.log('Error al traer equipos');
-      //alert('error');
-    }
+    select: function(event, ui) {
+      // prevent autocomplete from updating the textbox
+      event.preventDefault();
+      // manually update the textbox and hidden field
+      $(this).val(ui.item.labelcod + " - " + ui.item.label);
+      $("#idArt").val(ui.item.value);
+    },
   });
+
+
+  //_________________________________________________________
+  // $.ajax({
+  //   'async': true,
+  //   'data': {tipo:$tipo },
+  //   'dataType': 'json',
+  //   'global': false,
+  //   'type': "POST",
+  //   'url': "reporte/getArticulo",
+  //   'success': function (data) {
+  //     console.table(data);
+  //     var $select = $("#ArticuloSelec");
+  //     if(opArticulo == 1){
+  //       if($tipo=='1'){
+  //       for (var i = 0; i < data.length; i++) {
+        
+  //        $select.append( $('<option />',{ value:data[i]['artId'], text:data[i]['artDescription'], title:data[i]['artBarCode'] }) );
+  //            }
+  //     }else{ // no iria en caso de que se agregue herramientas se coloca 2 opcion
+  //       if($tipo == '2'){
+  //         for (var i = 0; i < data.length; i++) {
+  //         $select.append( $('<option />',{ value:data[i]['herrId'], text:data[i]['herrdescrip'], title:data[i]['herrcodigo'] }) );
+  //           }
+  //       }else{
+  //         for (var i = 0; i < data.length; i++) {
+  //           $select.append( $('<option />',{ value:data[i]['artId'], text:data[i]['artDescription'], title:data[i]['artBarCode'] }) );
+  //            }
+  //       }
+  //     }
+  //      opArticulo = 0;
+  //     }
+     
+  //   },
+  //   'error' : function (data){
+  //     console.log('Error al traer equipos');
+  //     //alert('error');
+  //   }
+  // });
 });
 
 $("#selSupervisor").click(function (e) { 
@@ -411,9 +452,12 @@ $("#selSupervisor").click(function (e) {
      
       
       var $select = $("#SupervisorSelec");
+      if(opsup == 1){
       for (var i = 0; i < data.length; i++) {
         $select.append( $('<option />',{ value:data[i]['usrId'], text:data[i]['usrName'], title:data[i]['usrNick'] }) );
       }
+      opsup =0;
+    }
      },
     'error' : function (data){
       console.log('Error al traer equipos');
@@ -482,8 +526,9 @@ function limpCombo(){
   $("select#selTipo").attr("disabled", true);
   $("select#TipoSelec").val('');
 
-  $("select#selArticulo").attr("disabled", true);
-  $("select#ArticuloSelec").val('');
+  $("input.buscArt").attr("disabled", true);
+  $("input.buscArt").val('');
+  $("#idArt").val('');
   
   $("select#selSupervisor").attr("disabled", true);
   $("select#SupervisorSelec").val('');
@@ -497,7 +542,7 @@ function limpCombo(){
     var id_cliente  = $('#idCliente').val();
     var id_equipo   = $('#equipSelec').val();
     var tipo_alm    = $('#TipoSelec').val();
-    var id_articulo = $('#ArticuloSelec').val();
+    var id_articulo = $('#idArt').val();
     var id_supervisor = $('#SupervisorSelec').val();
     var desde     = $('#desde').val(); 
     var a         = $('#hasta').val();
@@ -561,7 +606,7 @@ function limpCombo(){
                         
                         result[i]['artBarCode'],
                         result[i]['artDescription'],
-                        result[i]['id'],
+                        result[i]['pema_id'],
                         result[i]['id_orden'],
                         result[i]['descripcion'],
                         result[i]['cantidad'],
@@ -577,7 +622,7 @@ function limpCombo(){
                       $('#sales').DataTable().row.add( [
                         result[i]['herrId'],
                         result[i]['herrcodigo'],
-                        result[i]['id'],
+                        result[i]['pema_id'],
                         result[i]['id_orden'],
                         result[i]['descripcion'],
                         result[i]['cantidad'],
