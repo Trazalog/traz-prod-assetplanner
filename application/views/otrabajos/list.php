@@ -1385,7 +1385,7 @@ function guardarpedido(){
     WaitingOpen();
     $('#box-header').empty();
     WaitingClose();
-    $('#box-header').remove("<?php echo base_url(); ?>index.php/<?php echo ALM ?>/new/Pedido_Material/getPedidos/"+idorde);
+    $('#box-header > btn').remove("<?php echo base_url(); ?>index.php/<?php echo ALM ?>/new/Pedido_Material/getPedidos/"+idorde);
 
     $('#content').empty();
     $('#content').load("<?php echo base_url(); ?>index.php/<?php echo ALM ?>/new/Pedido_Material/getPedidos/"+idorde);
