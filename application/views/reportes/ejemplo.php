@@ -360,31 +360,36 @@ $(function (e) {
   $tipo = document.getElementById("TipoSelec").value; // para obetener el valor de tipo de almacen que se selecciono
   // alert($tipo);
    //por defecto si no se selecciono nada muestra en articulos los de la tabla herramientad, si no 1=herramientas y 2 = articulos
-  //_________________________________________________________
-  var dataF = function() {
-    var tmp = null;
-    $.ajax({
-      'async': false,
-      'type': "POST",
-      'global': false,
-      'dataType': 'json',
-      'url': "reporte/getArticulo",
-      'success': function(data) {
-        tmp = data;
+  $.ajax({
+    'async': true,
+    'data': {tipo:$tipo },
+    'dataType': 'json',
+    'global': false,
+    'type': "POST",
+    'url': "reporte/getArticulo",
+    'success': function (data) {
+      console.table(data);
+      var $select = $("#ArticuloSelec");
+      if(opArticulo == 1){
+        if($tipo=='1'){
+        for (var i = 0; i < data.length; i++) {
+        
+         $select.append( $('<option />',{ value:data[i]['artId'], text:data[i]['artDescription'], title:data[i]['artBarCode'] }) );
+             }
+      }else{ // no iria en caso de que se agregue herramientas se coloca 2 opcion
+        if($tipo == '2'){
+          for (var i = 0; i < data.length; i++) {
+          $select.append( $('<option />',{ value:data[i]['herrId'], text:data[i]['herrdescrip'], title:data[i]['herrcodigo'] }) );
+            }
+        }else{
+          for (var i = 0; i < data.length; i++) {
+            $select.append( $('<option />',{ value:data[i]['artId'], text:data[i]['artDescription'], title:data[i]['artBarCode'] }) );
+             }
+        }
       }
-    });
-   
-    return tmp;
-  }();
-  $(".buscArt").autocomplete({
-    source: dataF,
-    delay: 100,
-    minLength: 1,
-    focus: function(event, ui) {
-      // prevent autocomplete from updating the textbox
-      event.preventDefault();
-      // manually update the textbox
-      $(this).val(ui.item.labelcod + " - " + ui.item.label);
+       opArticulo = 0;
+      }
+     
     },
     select: function(event, ui) {
       // prevent autocomplete from updating the textbox
