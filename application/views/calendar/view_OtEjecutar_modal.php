@@ -427,19 +427,19 @@ function EjecutarOT() {
             // {"status":true,"msj":"OK"}
 
             if (data.status) {
-                $('#modalInforme').modal('hide');
+                $('#modalRespyTareas').modal('hide');
                 $('.modal-backdrop').hide();
                 lanzarPedidoMateriales();
                 regresa1();
             } else {
-                $('#modalInforme').modal('hide');
+                $('#modalRespyTareas').modal('hide');
 
                 alert('Falla | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
             }
         },
         error: function(data) {
             WaitingClose();
-            $('#modalInforme').modal('hide');
+            $('#modalRespyTareas').modal('hide');
             alert('Error | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
         },
         dataType: 'json'
