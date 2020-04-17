@@ -49,7 +49,7 @@ if (isset($info->modal)) {
 ?>
 </div>
 <script>
-var tablaDetalle2 = $('#tabladetalle2').DataTable({});
+// var tablaDetalle2 = $('#tabladetalle2').DataTable({});
 var selectRow = null;
 
 get_detalle();
@@ -65,11 +65,11 @@ function del_detalle() {
         $.ajax({
             type: 'POST',
             data: {
-                id: $(selectRow).data('id')
+                id: $(selectRow).attr('data-id')
             },
             url: 'index.php/almacen/Notapedido/eliminarDetalle',
             success: function(data) {
-                //$('.modal #eliminar').modal('hide');
+
                 $('#eliminar').modal('hide');
 
                 get_detalle();
@@ -117,14 +117,24 @@ function get_detalle() {
     if (id == null || id == '') {
         return;
     }
+   // $(tabla).DataTable().destroy();
+    console.log("ALM | Detalle Pedido N° "+id);
+    
     $.ajax({
         type: 'POST',
         url: 'index.php/almacen/Notapedido/getNotaPedidoId?id_nota=' + id,
         success: function(data) {
-            tablaDetalle2.clear();
+            
+            if(data.length == 0){
+                console.log('Sin Detalle de Pedidos');
+                return;
+            }
+            
+            console.log(data);
 
+            var html = '';
             for (var i = 0; i < data.length; i++) {
-                var tr = "<tr class='celdas' data-id='" + data[i]['depe_id'] + "'data-id='" + data[i][
+                html  += "<tr class='celdas' data-id='" + data[i]['depe_id'] + "'data-id='" + data[i][
                         'arti_id'
                     ] + "' data-json='" + JSON.stringify(data) + "'>" +
                     "<td class='text-light-blue'>" +
@@ -132,12 +142,12 @@ function get_detalle() {
                     "<i class='fa fa-fw fa-times-circle' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
                     "<td class='articulo'>" + data[i]['barcode'] + "</td>" +
                     "<td class='cantidad text-center'>" + data[i]['cantidad'] + "</td></tr>";
-                tablaDetalle2.row.add($(tr)).draw();
-            }
-
+                }
+           $('#tabladetalle2 tbody').html(html);
+           //DataTable('#tabladetalle2');
         },
         error: function(result) {
-
+            alert('Error');
             console.log(result);
         },
         dataType: 'json'
