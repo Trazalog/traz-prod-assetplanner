@@ -226,6 +226,12 @@ class Notapedido extends CI_Controller
         echo $this->Notapedidos->editarDetalle($id, $data);
     }
 
+    public function eliminarDetalle()
+    {
+        $id = $this->input->post('id');
+        echo $this->Notapedidos->eliminarDetalle($id);
+    }
+
     public function crearPedido($ot = null)
     {
         $this->load->model('traz-comp/Componentes');
