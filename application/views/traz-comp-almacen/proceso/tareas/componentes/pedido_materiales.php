@@ -127,6 +127,7 @@ function get_detalle() {
             
             if(data.length == 0){
                 console.log('Sin Detalle de Pedidos');
+                $('#tabladetalle2 tbody').empty();
                 return;
             }
             
@@ -293,6 +294,7 @@ function set_pedido() {
 }
 
 function lanzarPedido() {
+    WaitingOpen();
     $.ajax({
         data: {
             id: $('#pema_id').val()
@@ -302,7 +304,7 @@ function lanzarPedido() {
         url: '<?php echo base_url(ALM) ?>new/Pedido_Material/pedidoNormal',
         success: function(result) {
             if (result.status) {
-
+                $('#tabladetalle2 tbody').empty();
                 data = {
                     id_notaPedido: $('#pema_id').val(),
                     fecha: fechaActual(),
@@ -342,7 +344,10 @@ function lanzarPedido() {
         error: function(result) {
             WaitingClose();
             alert("Error al Lanzar Pedido");
-        }
+        },
+        complete: function(){
+            WaitingClose();
+        }      
     });
 }
 
@@ -412,6 +417,7 @@ function lanzarPedidoModal() {
 
 
     if (conexion()) {
+        WaitingOpen();
         $.ajax({
             type: 'POST',
             url: 'index.php/almacen/Notapedido/pedidoNormal/' + notaid,
@@ -419,13 +425,18 @@ function lanzarPedidoModal() {
                 $('#' + notaid).find('.ped-estado').html(
                     '<span data-toggle="tooltip" title="" class="badge bg-orange estado">Solicitado</span>'
                 );
+                $('#tabladetalle2 tbody').empty();
                 alert('Hecho');
             },
             error: function() {
                 console.log('ALM | Error Pedido Materiales');
+            },
+            complete:function(){
+                WaitingClose();
             }
         });
     } else {
+         $('#tabladetalle2 tbody').empty();
         ajax({
             data: {
                 articulos: articulos,
