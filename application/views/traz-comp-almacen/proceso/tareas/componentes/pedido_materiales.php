@@ -353,6 +353,10 @@ function lanzarPedido() {
 
 function lanzarPedidoModal() {
 
+    if($('#tabladetalle2 tbody tr').length == 0){
+        $('#agregar_pedido').modal('hide');
+        return;
+    }
 
     if (conexion()) {
         lanzarPedido();
