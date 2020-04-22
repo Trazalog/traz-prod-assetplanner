@@ -3,13 +3,13 @@
 if(!function_exists('cargarCabecera')){
     // id de pedido es el petr_id de la tabla trj_pedido_trabajo se obtiene con el bpm_id de esa tabla
     function cargarCabecera($id_OT = 0, $id_SS = 0, $id_EQ = null){
-			// equipo
+		// equipo
+			$ci =& get_instance();			
+			//load databse library
+			$ci->load->database();			
 			if($id_EQ != null){
 				
 				//get main CodeIgniter object
-				$ci =& get_instance();			
-				//load databse library
-				$ci->load->database();			
 				//get data from database		
 				$ci->db->select('equipos.descripcion AS descripcionEquipo,
 												equipos.fecha_ingreso,												
@@ -71,6 +71,7 @@ if(!function_exists('cargarCabecera')){
 			}		
 
 			// Info Equipo 
+			if($id_EQ != null)
 			echo '        
 						<div id="collapseDivCli" class="box box-default collapsed-box box-solid">
 							<div class="box-header with-border">
@@ -203,7 +204,7 @@ if(!function_exists('cargarCabecera')){
 				echo '        
 				<div id="collapseDivCli" class="box box-default collapsed-box box-solid info-ot">
 					<div class="box-header with-border">
-						<h3 id="tituloInfo" class="box-title">Orden de Trabajo: '.$resultOT['id_orden'].' / Mas Detalles</h3>
+						<h3 id="tituloInfo" class="box-title">Orden de Trabajo N°: '.$resultOT['id_orden'].' / Mas Detalles</h3>
 						<div class="box-tools pull-right">
 						<button id="infoCliente" type="button" class="btn btn-box-tool" data-widget="collapse" onclick="mostrarCliente()">
 								<i class="fa fa-plus"></i>
