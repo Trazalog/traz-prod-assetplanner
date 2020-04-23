@@ -423,24 +423,22 @@ function EjecutarOT() {
         },
         url: 'index.php/Otrabajo/EjecutarOT',
         success: function(data) {
-            WaitingClose();
-            // {"status":true,"msj":"OK"}
-
             if (data.status) {
-                $('#modalRespyTareas').modal('hide');
+                $('#modalInforme').modal('hide');
                 $('.modal-backdrop').hide();
                 lanzarPedidoMateriales();
-                regresa1();
+                linkTo();
+                //regresa1();
             } else {
-                $('#modalRespyTareas').modal('hide');
-
                 alert('Falla | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
             }
         },
         error: function(data) {
-            WaitingClose();
-            $('#modalRespyTareas').modal('hide');
+            
             alert('Error | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
+        },
+        complete: function(){
+            WaitingClose();
         },
         dataType: 'json'
     });

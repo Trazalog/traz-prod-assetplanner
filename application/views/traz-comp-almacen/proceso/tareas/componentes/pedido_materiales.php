@@ -170,9 +170,8 @@ function get_detalle() {
                 <input id="cantidad" class="form-control text-center" type="number" placeholder="Cantidad">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary btn-accion" data-dismiss="modal"
-                    onclick="edit()">Guardar</button>
+                <button type="button" class="btn btn-default pull-left" onclick="$(this).closest('.modal').modal('hide')">Cerrar</button>
+                <button type="button" class="btn btn-primary btn-accion" onclick="edit()">Guardar</button>
             </div>
         </div>
         <!-- /.modal-content -->
@@ -198,7 +197,7 @@ function get_detalle() {
             </div> <!-- /.modal-body -->
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-default" onclick="$(this).closest('.modal').modal('hide')">Cancelar</button>
                 <button type="button" class="btn btn-primary" onclick="del_detalle()">Eliminar</button>
             </div> <!-- /.modal footer -->
 
