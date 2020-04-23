@@ -1,0 +1,3 @@
+ALTER TABLE alm_deta_pedidos_materiales MODIFY COLUMN cantidad FLOAT NULL;
+ALTER TABLE alm_deta_pedidos_materiales MODIFY COLUMN resto FLOAT NULL;
+ALTER TABLE alm_deta_entrega_materiales MODIFY COLUMN cantidad float NOT NULL;

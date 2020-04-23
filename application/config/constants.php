@@ -175,14 +175,14 @@ define('BPM_PROCESS_ID', '7503443566840192735'); // localhost -
 |
 */
 
-define('REST', 'http://dev-trazalog.com.ar:8280/services/ProduccionDataService/');
-define('RESTPT','http://dev-trazalog.com.ar:8280/services/produccionTest/');
-define('REST_TDS', 'http://dev-trazalog.com.ar:8280/services/TrazabilidadDataService/');
-define('REST0', 'http://www.dev-trazalog.com.ar:8280/services/ALMDataServiceAsset/');
+define('REST', 'https://34.66.255.127:8280/services/ProduccionDataService/');
+define('RESTPT','https://34.66.255.127:8280/services/produccionTest/');
+define('REST_TDS', 'https://34.66.255.127:8280/services/TrazabilidadDataService/');
+define('REST0', 'httphttps://34.66.255.127:8280/services/ALMDataServiceAsset/');
 
-define('REST2', 'http://dev-trazalog.com.ar:8280/services/ProduccionDataService');
-define('REST3', 'http://dev-trazalog.com.ar:8280/services/produccionTest');
-define('REST4', 'http://dev-trazalog.com.ar:8280/services/TrazabilidadDataService');
+define('REST2', 'https://34.66.255.127:8280/services/ProduccionDataService');
+define('REST3', 'https://34.66.255.127:8280/services/produccionTest');
+define('REST4', 'https://34.66.255.127:8280/services/TrazabilidadDataService');
 
 /*
 |--------------------------------------------------------------------------

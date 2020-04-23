@@ -67,6 +67,25 @@ function AbrirModal() {
     $('#agregar_pedido').modal('show');
 }
 
+$('#agregar_pedido').on('hidden.bs.modal', function() {
+    var id = $('#pema_id').val();
+    if (!id) return;
+    $.ajax({
+        type: 'POST',
+        url: 'index.php/almacen/Notapedido/eliminar',
+        data: {
+            id
+        },
+        success: function(res) {
+            console.log('ALM | Pedido Descartado');
+        },
+        error: function() {
+            console.log('ALM | Error Pedido Descartado');
+            alert('Error');
+        }
+    });
+})
+
 function ver(e) {
     var tr = $(e).closest('tr')
     var id_nota = $(tr).attr('id');
