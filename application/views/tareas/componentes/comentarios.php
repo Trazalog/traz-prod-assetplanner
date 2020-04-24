@@ -32,6 +32,13 @@
 
 
 <script>
+function ajax(options) {
+    if (navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage(options.data)
+    }
+
+    return $.ajax(options);
+}
 //Funcion COMENTARIOS
 function guardarComentario() {
     console.log("Guardar Comentarios...");
