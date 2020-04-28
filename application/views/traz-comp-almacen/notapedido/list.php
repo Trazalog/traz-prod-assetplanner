@@ -67,7 +67,7 @@ function AbrirModal() {
     $('#agregar_pedido').modal('show');
 }
 
-$('#agregar_pedido').on('hidden.bs.modal', function() {
+function descartarPedido() {
     var id = $('#pema_id').val();
     if (!id) return;
     $.ajax({
@@ -78,13 +78,15 @@ $('#agregar_pedido').on('hidden.bs.modal', function() {
         },
         success: function(res) {
             console.log('ALM | Pedido Descartado');
+            $('#tabladetalle2 tbody').empty();
+            $('#pema_id').val('');
         },
         error: function() {
             console.log('ALM | Error Pedido Descartado');
             alert('Error');
         }
     });
-})
+}
 
 function ver(e) {
     var tr = $(e).closest('tr')

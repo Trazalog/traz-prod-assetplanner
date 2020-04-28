@@ -38,6 +38,7 @@
     </tbody>
 </table>
 <div class="modal-footer <?php echo (isset($info->pema_id) ? 'hidden' : null) ?>">
+<button class="btn btn-default" data-dismiss="modal" onclick="if(exist('descartarPedido'))descartarPedido()">Cerrar</button>
     <?php
 if (isset($info->modal)) {
     echo '<button class="btn btn-primary" style="float:right;"
