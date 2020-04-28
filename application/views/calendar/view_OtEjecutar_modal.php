@@ -351,7 +351,6 @@ function lanzarPedidoMateriales() {
 
 //cierra la tarea ejecutar OT y asigna la tarea a la OT
 function EjecutarOT() {
-
     var xlat = null;
     var xlon = null;
     if (!window.mobileAndTabletcheck()) {
@@ -425,7 +424,6 @@ function EjecutarOT() {
         success: function(data) {
             if (data.status) {
                 $('#modalInforme').modal('hide');
-                $('.modal-backdrop').hide();
                 lanzarPedidoMateriales();
                 linkTo();
                 //regresa1();
