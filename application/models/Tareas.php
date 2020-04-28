@@ -832,13 +832,13 @@ class Tareas extends CI_Model
                 $data[$key]['pema_id'] = $res->pema_id;
                 $data[$key]['ot'] = $res->ortr_id;
 
-                $this->db->select('A.id_solicitud as \'ss\', id_orden as \'ot\', B.descripcion as \'desc\', causa, X.codigo as \'desceq\', P.cliRazonSocial as \'nomCli\', Z.descripcion as \'descsec\'');
-                $this->db->from('solicitud_reparacion as A');
-                $this->db->join('orden_trabajo as B', 'A.case_id = B.case_id', 'left');
+                $this->db->select('B.id_solicitud as "ss", id_orden as "ot", A.descripcion as "desc", causa, X.codigo as "desceq", P.cliRazonSocial as "nomCli", Z.descripcion as "descsec"');
+                $this->db->from('orden_trabajo  as A');
+                $this->db->join('solicitud_reparacion as B', 'A.case_id = B.case_id', 'left');
                 $this->db->join('equipos as X', 'X.id_equipo = A.id_equipo', 'left');
                 $this->db->join('admcustomers as P', 'P.cliId = X.id_customer');
                 $this->db->join('sector as Z', 'Z.id_sector = X.id_sector', 'left');
-                $this->db->where('B.id_orden', $res->ortr_id);
+                $this->db->where('A.id_orden', $res->ortr_id);
                 $res = $this->db->get()->first_row();
 
                 $data[$key]['displayDescription'] = $res->desc;
