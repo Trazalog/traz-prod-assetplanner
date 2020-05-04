@@ -5,7 +5,7 @@
             <?php
             if(!viewOT)
             {
-            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
+                echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
                 onclick="linkTo(\'almacen/Notapedido/crearPedido\')">Agregar</button>';
             }else{
                 echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
@@ -15,7 +15,7 @@
             {
                 echo '<input type="hidden" value="'.$descripcionOT.'" id="descripcionOT">';
             }
-                ?>
+            ?>
         </div><!-- /.box-header -->
         <div class="box-body" id="deposito_contenedor">
             <table id="deposito" class="table table-bordered table-striped table-hover">
@@ -60,11 +60,32 @@
 var tablaDetalle = $('#tabladetalle').DataTable({});
 
 function AbrirModal() {
-    tablaDetalle2.clear().draw();
+    //tablaDetalle2.clear().draw();
     document.getElementById('info').innerHTML = "";
     document.getElementById('inputarti').value = "";
     document.getElementById('add_cantidad').value = "";
     $('#agregar_pedido').modal('show');
+}
+
+function descartarPedido() {
+    var id = $('#pema_id').val();
+    if (!id) return;
+    $.ajax({
+        type: 'POST',
+        url: 'index.php/almacen/Notapedido/eliminar',
+        data: {
+            id
+        },
+        success: function(res) {
+            console.log('ALM | Pedido Descartado');
+            $('#tabladetalle2 tbody').empty();
+            $('#pema_id').val('');
+        },
+        error: function() {
+            console.log('ALM | Error Pedido Descartado');
+            alert('Error');
+        }
+    });
 }
 
 function ver(e) {

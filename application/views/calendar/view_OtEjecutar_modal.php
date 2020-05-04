@@ -351,7 +351,6 @@ function lanzarPedidoMateriales() {
 
 //cierra la tarea ejecutar OT y asigna la tarea a la OT
 function EjecutarOT() {
-
     var xlat = null;
     var xlon = null;
     if (!window.mobileAndTabletcheck()) {
@@ -423,24 +422,21 @@ function EjecutarOT() {
         },
         url: 'index.php/Otrabajo/EjecutarOT',
         success: function(data) {
-            WaitingClose();
-            // {"status":true,"msj":"OK"}
-
             if (data.status) {
                 $('#modalInforme').modal('hide');
-                $('.modal-backdrop').hide();
                 lanzarPedidoMateriales();
-                regresa1();
+                linkTo();
+                //regresa1();
             } else {
-                $('#modalInforme').modal('hide');
-
                 alert('Falla | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
             }
         },
         error: function(data) {
-            WaitingClose();
-            $('#modalInforme').modal('hide');
+            
             alert('Error | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
+        },
+        complete: function(){
+            WaitingClose();
         },
         dataType: 'json'
     });

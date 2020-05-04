@@ -128,7 +128,7 @@ define('CMP_ALM', 'traz-comp-almacen/');
 |
 */
 
-define('BONITA_URL', 'http://localhost:8080/bonita/');  
+define('BONITA_URL', 'http://192.168.0.15:8080/bonita/'); 
 
 define('BPM_ADMIN_USER', 'supervisor1');
 define('BPM_ADMIN_PASS', 'bpm');
@@ -148,7 +148,7 @@ define('BPM_USER_PASS', 'bpm');
 
 //? PEDIDOS NORMALES
  
-define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '6390775105938615683'); 
+define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '6833268789089291878'); 
 
 //? PEDIDOS EXTRAORDINATIOS
 
@@ -164,9 +164,8 @@ define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '7321139677245257050');
 |
 */
  
-define('BPM_PROCESS_ID', '9070110405395579127'); // localhost -
-// 9070110405395579127
-// 8632300242114417126
+define('BPM_PROCESS_ID', '7503443566840192735'); // localhost -
+
 /*
 |--------------------------------------------------------------------------
 | Id de Formularios de Diagnostico
@@ -176,14 +175,14 @@ define('BPM_PROCESS_ID', '9070110405395579127'); // localhost -
 |
 */
 
-define('REST', 'http://dev-trazalog.com.ar:8280/services/ProduccionDataService/');
-define('RESTPT','http://dev-trazalog.com.ar:8280/services/produccionTest/');
-define('REST_TDS', 'http://dev-trazalog.com.ar:8280/services/TrazabilidadDataService/');
-define('REST0', 'http://www.dev-trazalog.com.ar:8280/services/ALMDataServiceAsset/');
+define('REST', 'https://34.66.255.127:8280/services/ProduccionDataService/');
+define('RESTPT','https://34.66.255.127:8280/services/produccionTest/');
+define('REST_TDS', 'https://34.66.255.127:8280/services/TrazabilidadDataService/');
+define('REST0', 'httphttps://34.66.255.127:8280/services/ALMDataServiceAsset/');
 
-define('REST2', 'http://dev-trazalog.com.ar:8280/services/ProduccionDataService');
-define('REST3', 'http://dev-trazalog.com.ar:8280/services/produccionTest');
-define('REST4', 'http://dev-trazalog.com.ar:8280/services/TrazabilidadDataService');
+define('REST2', 'https://34.66.255.127:8280/services/ProduccionDataService');
+define('REST3', 'https://34.66.255.127:8280/services/produccionTest');
+define('REST4', 'https://34.66.255.127:8280/services/TrazabilidadDataService');
 
 /*
 |--------------------------------------------------------------------------

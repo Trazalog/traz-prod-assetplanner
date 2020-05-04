@@ -927,8 +927,7 @@ class Otrabajos extends CI_Model {
      */
     function kpiCantTipoOrdenTrabajo()
     {
-        $userdata  = $this->session->userdata('user_data');
-		$empresaId = $userdata[0]['id_empresa'];
+		$empresaId = empresa();
 		
         $this->db->select('B.descripcion, count(*) as cantidad');
 		$this->db->from('orden_trabajo as A');

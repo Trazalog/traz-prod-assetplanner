@@ -90,8 +90,6 @@
 <?php
   $kpiot = cantTipoOrdenTrabajo();
 
-
-
   $equipoOperativo = sacarEquiposOperativos();
 ?>
 

@@ -898,7 +898,7 @@ function updateHora(id_OT, duracion) {
 
 
 <!--  MODAL VER OT Y EJECUTAR   -->
-<div class="modal fade bs-example-modal-lg" id="modalInforme" tabindex="-1" role="dialog"
+<div class="modal bs-example-modal-lg" id="modalInforme" tabindex="-1" role="dialog"
     aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">

@@ -175,7 +175,7 @@ class Ordeninsumos extends CI_Model
     public function get_detalle_entrega($pema)
     {
         // FILTRAR ARTICULOS PEDIDO MATERIALES
-        $this->db->select('ART.arti_id, ART.barcode, ART.descripcion, PEMA.cantidad as cant_pedida, sum(LOTE.cantidad) as cantidad_stock');
+        $this->db->select('ART.arti_id, ART.barcode, ART.descripcion, PEMA.cantidad as cant_pedida, ROUND(sum(LOTE.cantidad),2) as cantidad_stock');
         $this->db->from('alm_deta_pedidos_materiales PEMA');
         $this->db->join('alm_articulos ART', 'ART.arti_id = PEMA.arti_id');
         $this->db->join('alm_lotes LOTE','LOTE.arti_id = ART.arti_id', 'left');
@@ -185,7 +185,7 @@ class Ordeninsumos extends CI_Model
         $A = '(' . $this->db->get_compiled_select() . ') A';
 
         // SUMAR ENTREGAS
-        $this->db->select('B.arti_id, sum(cantidad) as cant_entregada');
+        $this->db->select('B.arti_id, ROUND(sum(cantidad),2) as cant_entregada');
         $this->db->from('alm_entrega_materiales A');
         $this->db->join('alm_deta_entrega_materiales B', 'B.enma_id = A.enma_id');
         $this->db->where('A.pema_id', $pema);

@@ -191,8 +191,6 @@ if (!function_exists('sacarEquiposOperativos')) {
      */
     function sacarEquiposOperativos($echo = false)
     {
-
-        return;
         // Get a reference to the controller object
         $CI = get_instance();
         // You may need to load the model if it hasn't been pre-loaded
