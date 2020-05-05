@@ -432,12 +432,12 @@ $("#selSupervisor").click(function (e) {
 <script>
 //EXPORTAR TABLA A EXCEL
 function exportTableToExcel(tableID, filename = ''){
-  
     var downloadLink;
     var dataType = 'application/vnd.ms-excel';
     var tableSelect = document.getElementById(tableID);
+    console.table(tableSelect.outerText.replace(/ /g, "")); 
     var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
-    
+
     // Specify file name
     filename = filename?filename+'.xls':'excel_data.xls';
     
@@ -453,8 +453,21 @@ function exportTableToExcel(tableID, filename = ''){
         navigator.msSaveOrOpenBlob( blob, filename);
     }else{
         // Create a link to the file
-        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
-    
+        // console.table(tableHTML);
+        // console.table(tableHTML[0]);
+        // console.table(tableHTML.length);
+        // console.table(tableHTML[tableHTML.length-1]);
+        var tablaHTML = "";
+        // console.table(tablaHTML);
+        var cabezera = "<table><thead><tr><td>CodigoArt</td><td>Descripcion</td><td>Nro.Pedido</td><td>OT</td><td>Descripcion</td><td>Cantidad</td></tr></thead>";
+        //aca extraigo el solo el tbody y cabezera tendra el thead luego los concateno
+        for(var i=2912; i<tableHTML.length; i++){
+            tablaHTML = tablaHTML+tableHTML[i];
+        }
+        // console.table(cabezera);
+        // console.table(tablaHTML);
+        downloadLink.href = 'data:' + dataType + ', ' +cabezera+tablaHTML;
+        console.table( downloadLink.href);
         // Setting the file name
         downloadLink.download = filename;
         
