@@ -108,7 +108,7 @@ class Reportes extends CI_Model {
                                         }
                                         if($id_sup != null)
                                         {
-                                        $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                                        $this->db->where('orden_trabajo.id_usuario_a', $id_sup);
                                         }
 
                                         $query = $this->db->get();
@@ -138,7 +138,7 @@ class Reportes extends CI_Model {
                                         $this->db->where('orden_trabajo.id_equipo', $id_eq );// elegimos la ot del equipo que se desea
                                         if($id_sup != null)
                                         {
-                                        $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                                        $this->db->where('orden_trabajo.id_usuario_a', $id_sup);
                                         }
                                         // $this->db->where('orden_trabajo.estaddo','T');
                                         // $this->db->where('orden_trabajo.estaddo','RE');
@@ -175,7 +175,7 @@ class Reportes extends CI_Model {
                                 }
                                 if($id_sup != null)
                                 {
-                                $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                                $this->db->where('orden_trabajo.id_usuario_a', $id_sup);
                                 }
 
                                 $query = $this->db->get();
@@ -212,7 +212,7 @@ class Reportes extends CI_Model {
                                         }
                                         if($id_sup != null)
                                         {
-                                        $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                                        $this->db->where('orden_trabajo.id_usuario_a', $id_sup);
                                         }
                                         $query = $this->db->get();
 
@@ -298,7 +298,7 @@ class Reportes extends CI_Model {
                               $this->db->join('articles', 'articles.artId = alm_deta_entrega_materiales.arti_id');//obtengo el o los insumos
                               if($id_sup != null)
                                    {
-                                   $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                                   $this->db->where('orden_trabajo.id_usuario_a', $id_sup);
                                    }
                               if ($data['desde'] || $data['hasta'] !== null) {
                                 $this->db->where('alm_entrega_materiales.fecha >=', $desde);
@@ -325,7 +325,7 @@ class Reportes extends CI_Model {
                         $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
                         if($id_sup != null)
                         {
-                        $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                        $this->db->where('orden_trabajo.id_usuario_a', $id_sup);
                         }
                         if ($data['desde'] || $data['hasta'] !== null) {
                             $this->db->where('orden_trabajo.fecha_program >=', $desde);
@@ -362,7 +362,7 @@ class Reportes extends CI_Model {
                                                                                 $query = $this->db->get();
                                                                                 if($id_sup != null)
                                                                                 {
-                                                                                $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                                                                                $this->db->where('orden_trabajo.id_usuario_a', $id_sup);
                                                                                 }
 
 
@@ -394,7 +394,7 @@ class Reportes extends CI_Model {
                                                                                 }
                                                                                 if($id_sup != null)
                                                                                 {
-                                                                                $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                                                                                $this->db->where('orden_trabajo.id_usuario_a', $id_sup);
                                                                                 }
                                                                                 $query = $this->db->get();
 
@@ -433,7 +433,7 @@ class Reportes extends CI_Model {
                                     }
                                     if($id_sup != null)
                                         {
-                                        $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                                        $this->db->where('orden_trabajo.id_usuario_a', $id_sup);
                                         }
                                     $query = $this->db->get();
 
@@ -467,7 +467,7 @@ class Reportes extends CI_Model {
                                     }
                                     if($id_sup != null)
                                         {
-                                        $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                                        $this->db->where('orden_trabajo.id_usuario_a', $id_sup);
                                         }
                                     $query = $this->db->get();
 
@@ -501,7 +501,7 @@ class Reportes extends CI_Model {
                                 }
                                 if($id_sup != null)
                                         {
-                                        $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                                        $this->db->where('orden_trabajo.id_usuario_a', $id_sup);
                                         }
                                 $query = $this->db->get();
 
@@ -534,7 +534,7 @@ class Reportes extends CI_Model {
                                 }
                                 if($id_sup != null)
                                         {
-                                        $this->db->where('orden_trabajo.id_usuario', $id_sup);
+                                        $this->db->where('orden_trabajo.id_usuario_a', $id_sup);
                                         }
                                 $query = $this->db->get();
 
@@ -687,13 +687,15 @@ class Reportes extends CI_Model {
 
     function getSupervisors(){
         $userdata = $this->session->userdata('user_data');
-        $userId = $userdata[0]['usrId'];
+        //$userId = $userdata[0]['usrId'];
         $this->db->select('sisusers.usrId,
                                 sisusers.usrNick,
                                 sisusers.usrName'
                                 );
                         $this->db->from('sisusers');
-                        $this->db->where('sisusers.usrId',$userId);
+                        $this->db->join('usuarioasempresa','usuarioasempresa.usrId = sisusers.usrId');
+                        $this->db->join('sisgroups','sisgroups.grpId = usuarioasempresa.grpId');
+                        $this->db->where('sisgroups.grpName','Mantenedor');
                         $this->db->order_by('sisusers.usrId', 'ASC');
                     
                         $query = $this->db->get();
@@ -709,3 +711,4 @@ class Reportes extends CI_Model {
     }
 
 }
+

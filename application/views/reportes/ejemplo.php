@@ -70,11 +70,11 @@
             <div class="col-xs-12 col-sm-6">
               <div class="checkbox">
                 <label>
-                  <input type="checkbox" class="check" id="selSupervisor"><strong>Supervisor</strong>
+                  <input type="checkbox" class="check" id="selSupervisor"><strong>Responsable Asignado</strong>
                 </label>
               </div>
-              <select class="form-control" id="SupervisorSelec" placeholder="Seleccione supervisor...">
-                <option value="">Selecciona Supervisor...</option>
+              <select class="form-control" id="SupervisorSelec" placeholder="Seleccione Responsable...">
+                <option value="">Selecciona Responsable...</option>
                 <option value=""></option>						  			  
               </select>						    	
             </div><!--Fin Supervisor -->
