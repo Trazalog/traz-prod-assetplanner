@@ -425,7 +425,7 @@ function EjecutarOT() {
             if (data.status) {
                 $('#modalInforme').modal('hide');
                 lanzarPedidoMateriales();
-                 linkTo('Otrabajo/listOrden');
+                 linkTo('Otrabajo/listOrden/Add-Edit-Del-View');
                 //regresa1();
                 
                
