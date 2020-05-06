@@ -340,7 +340,7 @@ function lanzarPedidoMateriales() {
         },
         url: "<?php echo ALM ?>/new/Pedido_Material/pedidoNormal",
         success: function(result) {
-            alert('Hecho');
+            alert('Hecho2');
             return;
         },
         error: function(result) {
