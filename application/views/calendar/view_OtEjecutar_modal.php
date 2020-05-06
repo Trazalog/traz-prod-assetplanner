@@ -348,6 +348,22 @@ function lanzarPedidoMateriales() {
         }
     });
 }
+function regresa1(){
+    $.ajax({
+        type: 'POST',
+        data: {
+          
+        },
+        url: 'index.php/Otrabajo/listOrden',
+        success: function(data) {
+          
+        },
+        error: function(data) {
+            
+            ;
+        },
+    });
+}
 
 //cierra la tarea ejecutar OT y asigna la tarea a la OT
 function EjecutarOT() {
@@ -425,9 +441,10 @@ function EjecutarOT() {
             if (data.status) {
                 $('#modalInforme').modal('hide');
                 lanzarPedidoMateriales();
-                linkTo();
-                return;
-                //regresa1();
+                // linkTo();
+                regresa1();
+                
+               
             } else {
                 alert('Falla | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
             }
