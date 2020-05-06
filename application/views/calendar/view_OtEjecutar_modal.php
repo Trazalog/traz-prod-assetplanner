@@ -426,6 +426,7 @@ function EjecutarOT() {
                 $('#modalInforme').modal('hide');
                 lanzarPedidoMateriales();
                 linkTo();
+                return;
                 //regresa1();
             } else {
                 alert('Falla | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);

@@ -1517,7 +1517,8 @@ function verEjecutarOT(o) {
     $('#contRespyTareas').empty();
     $("#contRespyTareas").load("<?php echo base_url(); ?>index.php/Calendario/verEjecutarOT/" + id_orden + "/");
     $('#modalRespyTareas').modal('show');
-    WaitingClose();
+    
+    WaitingClose();  
 }
 // ASIGNAR TAREAS
 // Lleva a la pantalla Asignar Tareas - Ok (no revisé la asignación!!!)
