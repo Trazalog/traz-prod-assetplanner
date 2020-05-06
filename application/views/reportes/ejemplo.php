@@ -75,7 +75,7 @@
               </div>
               <select class="form-control" id="SupervisorSelec" placeholder="Seleccione Responsable...">
                 <option value="">Selecciona Responsable...</option>
-                <option value=""></option>						  			  
+                						  			  
               </select>						    	
             </div><!--Fin Supervisor -->
 
@@ -411,9 +411,13 @@ $("#selSupervisor").click(function (e) {
       
       var $select = $("#SupervisorSelec");
       if(opsup == 1){
+        //console.table($select[0].length);
       for (var i = 0; i < data.length; i++) {
+      
         $select.append( $('<option />',{ value:data[i]['usrId'], text:data[i]['usrName'], title:data[i]['usrNick'] }) );
+        
       }
+      //console.table($select[0].length);
       opsup =0;
     }
      },

@@ -693,10 +693,10 @@ class Reportes extends CI_Model {
                                 sisusers.usrName'
                                 );
                         $this->db->from('sisusers');
-                        $this->db->join('usuarioasempresa','usuarioasempresa.usrId = sisusers.usrId');
-                        $this->db->join('sisgroups','sisgroups.grpId = usuarioasempresa.grpId');
-                        $this->db->where('sisgroups.grpName','Mantenedor');
+                        $this->db->join('orden_trabajo','orden_trabajo.id_usuario_a = sisusers.usrId');
                         $this->db->order_by('sisusers.usrId', 'ASC');
+                        $this->db->distinct (); 
+
                     
                         $query = $this->db->get();
 
