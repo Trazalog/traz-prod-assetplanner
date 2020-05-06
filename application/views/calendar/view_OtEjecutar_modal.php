@@ -348,22 +348,6 @@ function lanzarPedidoMateriales() {
         }
     });
 }
-function regresa1(){
-    $.ajax({
-        type: 'POST',
-        data: {
-          
-        },
-        url: 'index.php/Otrabajo/listOrden',
-        success: function(data) {
-          
-        },
-        error: function(data) {
-            
-            ;
-        },
-    });
-}
 
 //cierra la tarea ejecutar OT y asigna la tarea a la OT
 function EjecutarOT() {
@@ -441,8 +425,8 @@ function EjecutarOT() {
             if (data.status) {
                 $('#modalInforme').modal('hide');
                 lanzarPedidoMateriales();
-                // linkTo();
-                regresa1();
+                 linkTo('Otrabajo/listOrden');
+                //regresa1();
                 
                
             } else {
