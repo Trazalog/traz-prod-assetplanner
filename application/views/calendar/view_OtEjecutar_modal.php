@@ -1,4 +1,4 @@
-<!-- <section class="content"> -->
+<section class="content"> 
 <div class="row">
 
     <div class="col-xs-12">
@@ -203,7 +203,7 @@
         </div>
     </div>
 </div>
-<!-- </section> -->
+</section>
 <script>
 DataTable('#tblOrden');
 
@@ -340,7 +340,7 @@ function lanzarPedidoMateriales() {
         },
         url: "<?php echo ALM ?>/new/Pedido_Material/pedidoNormal",
         success: function(result) {
-            alert('Hecho2');
+            alert('Hecho');
             return;
         },
         error: function(result) {
@@ -424,8 +424,11 @@ function EjecutarOT() {
         success: function(data) {
             if (data.status) {
                 $('#modalInforme').modal('hide');
+                $("#modalRespyTareas").modal('hide');
                 lanzarPedidoMateriales();
-                 linkTo('Otrabajo/listOrden/Add-Edit-Del-View');
+                linkTo();
+                //$("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/listOrden/<?php echo $permission; ?>");
+                // WaitingClose();               
                 //regresa1();
                 
                
