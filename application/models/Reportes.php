@@ -58,6 +58,7 @@ class Reportes extends CI_Model {
     function getConsulta($data){
 
         $userdata  = $this->session->userdata('user_data');
+        $empresaId = $userdata[0]['id_empresa'];
         $id_eq = $data['id_equipo'];
         $id_cli = $data['id_cliente'];
         $tipo = $data['tipo_alm'];
@@ -99,6 +100,7 @@ class Reportes extends CI_Model {
                                         $this->db->join('alm_deta_entrega_materiales', 'alm_deta_entrega_materiales.enma_id = alm_entrega_materiales.enma_id ');
                                         $this->db->join('articles', 'articles.artId = alm_deta_entrega_materiales.arti_id');//obtengo el o los insumos
                                         $this->db->where('orden_trabajo.id_equipo', $id_eq );
+                                        $this->db->where('orden_trabajo.id_empresa', $empresaId);
                                         if ($data['desde'] || $data['hasta'] !== null) {
                                             $this->db->where('alm_entrega_materiales.fecha >=', $desde);
                                             $this->db->where('alm_entrega_materiales.fecha <=', $hasta);
@@ -128,6 +130,7 @@ class Reportes extends CI_Model {
                                         $this->db->join('herramientas', 'herramientas.herrId = tbl_otherramientas.HerrId');//nombre de las herramientas
                                         $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
                                         $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
+                                        $this->db->where('orden_trabajo.id_empresa', $empresaId);
                                         if ($data['desde'] || $data['hasta'] !== null) {
                                             $this->db->where('orden_trabajo.fecha_program >=', $desde);
                                             $this->db->where('orden_trabajo.fecha_program <=', $hasta);
@@ -166,6 +169,7 @@ class Reportes extends CI_Model {
                                 $this->db->join('alm_deta_entrega_materiales', 'alm_deta_entrega_materiales.enma_id = alm_entrega_materiales.enma_id ');
                                 $this->db->join('articles', 'articles.artId = alm_deta_entrega_materiales.arti_id');
                                 $this->db->where('admcustomers.cliId', $id_cli );
+                                $this->db->where('orden_trabajo.id_empresa', $empresaId);
                                 if ($data['desde'] || $data['hasta'] !== null) {
                                     $this->db->where('alm_entrega_materiales.fecha >=', $desde);
                                     $this->db->where('alm_entrega_materiales.fecha <=', $hasta);
@@ -196,6 +200,7 @@ class Reportes extends CI_Model {
                                 $this->db->join('herramientas', 'herramientas.herrId = tbl_otherramientas.HerrId');//nombre de las herramientas
                                 $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
                                 $this->db->where('equipos.id_customer', $id_cli );
+                                $this->db->where('orden_trabajo.id_empresa', $empresaId);
                                 // if($id_art !== '' ){
                                 //     $this->db->where('tbl_otherramientas.herrId', $id_art);
                                 // }
@@ -242,6 +247,7 @@ class Reportes extends CI_Model {
                                                                     $this->db->join('alm_deta_entrega_materiales', 'alm_deta_entrega_materiales.enma_id = alm_entrega_materiales.enma_id ');
                                                                     $this->db->join('articles', 'articles.artId = alm_deta_entrega_materiales.arti_id');//obtengo el o los insumos
                                                                     $this->db->where('alm_deta_entrega_materiales.arti_id',$id_art);
+                                                                    $this->db->where('orden_trabajo.id_empresa', $empresaId);
                                                                     if($id_sup != ''){
                                                                     $this->db->where('sisusers.usrId', $id_sup);    
                                                                     }
@@ -269,6 +275,7 @@ class Reportes extends CI_Model {
                                                                     $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
                                                                     $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
                                                                     $this->db->where('tbl_otherramientas.herrId',$id_art);
+                                                                    $this->db->where('orden_trabajo.id_empresa', $empresaId);
                                                                     if ($data['desde'] || $data['hasta'] !== null) {
                                                                         $this->db->where('orden_trabajo.fecha_program >=', $desde);
                                                                         $this->db->where('orden_trabajo.fecha_program <=', $hasta);
@@ -296,6 +303,7 @@ class Reportes extends CI_Model {
                               $this->db->join('alm_entrega_materiales',' alm_entrega_materiales.pema_id = alm_pedidos_materiales.pema_id ');
                               $this->db->join('alm_deta_entrega_materiales', 'alm_deta_entrega_materiales.enma_id = alm_entrega_materiales.enma_id ');
                               $this->db->join('articles', 'articles.artId = alm_deta_entrega_materiales.arti_id');//obtengo el o los insumos
+                              $this->db->where('orden_trabajo.id_empresa', $empresaId);
                               if($id_sup != null)
                                    {
                                    $this->db->where('orden_trabajo.id_usuario_a', $id_sup);
@@ -323,6 +331,7 @@ class Reportes extends CI_Model {
                         $this->db->join('herramientas', 'herramientas.herrId = tbl_otherramientas.HerrId');//nombre de las herramientas
                         $this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
                         $this->db->join('tbl_tipoordentrabajo','tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
+                        $this->db->where('orden_trabajo.id_empresa', $empresaId);
                         if($id_sup != null)
                         {
                         $this->db->where('orden_trabajo.id_usuario_a', $id_sup);
@@ -355,6 +364,7 @@ class Reportes extends CI_Model {
                                                                 $this->db->join('articles', 'articles.artId = alm_deta_entrega_materiales.arti_id');
                                                                 $this->db->where('admcustomers.cliId', $id_cli ); 
                                                                 $this->db->where('alm_deta_entrega_materiales.arti_id',$id_art);
+                                                                $this->db->where('orden_trabajo.id_empresa', $empresaId);
                                                                                 if ($data['desde'] || $data['hasta'] !== null) {
                                                                                 $this->db->where('alm_entrega_materiales.fecha >=', $desde);
                                                                                 $this->db->where('alm_entrega_materiales.fecha <=', $hasta);
@@ -388,6 +398,7 @@ class Reportes extends CI_Model {
                                                                                 $this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
                                                                                 $this->db->where('tbl_otherramientas.herrId',$id_art);
                                                                                 $this->db->where('admcustomers.cliId',$id_cli);
+                                                                                $this->db->where('orden_trabajo.id_empresa', $empresaId);
                                                                                 if ($data['desde'] || $data['hasta'] !== null) {
                                                                                     $this->db->where('orden_trabajo.fecha_program >=', $desde);
                                                                                     $this->db->where('orden_trabajo.fecha_program <=', $hasta);
@@ -427,6 +438,7 @@ class Reportes extends CI_Model {
                     $this->db->where('admcustomers.cliId', $id_cli ); 
                     $this->db->where('alm_deta_entrega_materiales.arti_id',$id_art);
                     $this->db->where('equipos.id_equipo',$id_eq);
+                    $this->db->where('orden_trabajo.id_empresa', $empresaId);
                                     if ($data['desde'] || $data['hasta'] !== null) {
                                         $this->db->where('alm_entrega_materiales.fecha >=', $desde);
                                         $this->db->where('alm_entrega_materiales.fecha <=', $hasta);
@@ -461,6 +473,7 @@ class Reportes extends CI_Model {
                                     $this->db->where('tbl_otherramientas.herrId',$id_art);
                                     $this->db->where('admcustomers.cliId',$id_cli);
                                     $this->db->where('equipos.id_equipo',$id_eq);
+                                    $this->db->where('orden_trabajo.id_empresa', $empresaId);
                                     if ($data['desde'] || $data['hasta'] !== null) {
                                         $this->db->where('orden_trabajo.fecha_program >=', $desde);
                                         $this->db->where('orden_trabajo.fecha_program <=', $hasta);
@@ -495,6 +508,7 @@ class Reportes extends CI_Model {
                     $this->db->join('articles', 'articles.artId = alm_deta_entrega_materiales.arti_id');                                
                     $this->db->where('alm_deta_entrega_materiales.arti_id',$id_art);
                     $this->db->where('equipos.id_equipo',$id_eq);
+                    $this->db->where('orden_trabajo.id_empresa', $empresaId);
                                 if ($data['desde'] || $data['hasta'] !== null) {
                                     $this->db->where('alm_entrega_materiales.fecha >=', $desde);
                                     $this->db->where('alm_entrega_materiales.fecha <=', $hasta);
@@ -528,6 +542,7 @@ class Reportes extends CI_Model {
                                 $this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
                                 $this->db->where('tbl_otherramientas.herrId',$id_art);
                                 $this->db->where('equipos.id_equipo',$id_eq);
+                                $this->db->where('orden_trabajo.id_empresa', $empresaId);
                                 if ($data['desde'] || $data['hasta'] !== null) {
                                     $this->db->where('orden_trabajo.fecha_program >=', $desde);
                                     $this->db->where('orden_trabajo.fecha_program <=', $hasta);
@@ -602,9 +617,11 @@ class Reportes extends CI_Model {
 
     function getClientes(){
         $userdata = $this->session->userdata('user_data');
+        $empresaId = $userdata[0]['id_empresa'];
        // $empId    = $userdata[0]['id_empresa']; 
         $this->db->select('admcustomers.cliId, admcustomers.cliRazonSocial');
-				$this->db->from('admcustomers');    	
+                $this->db->from('admcustomers');    
+                $this->db->where('admcustomers.id_empresa', $empresaId);	
 				//$this->db->where('admcustomers.id_empresa', $empId); //esto es si queremos buscar solamente los clientes de la empresa con la que se esta logueada que en este caso es empresa 6
 				$this->db->where('admcustomers.estado !=', 'AN');
 			$query = $this->db->get();
@@ -620,6 +637,7 @@ class Reportes extends CI_Model {
     }
     function getEquipos($data){
         $userdata = $this->session->userdata('user_data');
+        $empresaId = $userdata[0]['id_empresa'];
         //$empId = $userdata[0]['id_empresa'];     // guarda usuario logueado
         $id_cliente = $data['id_cli'];
 
@@ -631,7 +649,7 @@ class Reportes extends CI_Model {
         $this->db->where('equipos.estado !=', 'AN');
         if($id_cliente != 'sin cliente' )
         {$this->db->where('equipos.id_customer', $id_cliente);}
-    	//$this->db->where('equipos.id_empresa', $empId);
+        $this->db->where('equipos.id_empresa', $empresaId);
     	$this->db->order_by('equipos.id_equipo', 'ASC');
     	$query = $this->db->get();
 
@@ -647,6 +665,7 @@ class Reportes extends CI_Model {
 
     function getArticulos(){
        $userdata = $this->session->userdata('user_data');
+       $empresaId = $userdata[0]['id_empresa'];
       
         
       
@@ -655,8 +674,9 @@ class Reportes extends CI_Model {
                 articles.artDescription'
                             );
                     $this->db->from('articles');
+                    $this->db->where('articles.id_empresa', $empresaId);
                     $this->db->order_by('articles.artId', 'ASC');
-                
+                    
                     $query = $this->db->get();
                     //_________________________________
                     $i     = 0;
