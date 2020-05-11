@@ -1,5 +1,8 @@
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
-<?php if(viewOT)info_header('Orden de Trabajo N°'.$ot,info_orden($ot)); ?>
+<section class="content">
+<?php if(viewOT){
+    	echo cargarCabecera($ot,null, null); 
+}?>
 
 <div class="row">
     <div class="col-xs-12">
@@ -161,7 +164,7 @@
 </div><!-- /.col -->
 </div><!-- /.row -->
 
-<?php $this->load->view(ALM.'/proceso/tareas/scripts/tarea_std'); ?>
+<?php $this->load->view(ALM.'/proceso/tareas/scripts/tarea_std'); ?></section>
 <script>
 $('.fecha').datepicker({
     autoclose: true

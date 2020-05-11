@@ -114,7 +114,7 @@
 
         $('#entregas tr').each(function() {
             const row = $(this).data('json');
-            completa = completa && (parseInt($(this).find('.pedido').html()) == (parseInt($(this).find('.entregado').html()) + parseInt($(this).find('.extraer').html()=='-'?0:$(this).find('.extraer').html())));
+            completa = completa && (parseFloat($(this).find('.pedido').html()) == (parseFloat($(this).find('.entregado').html()) + parseFloat($(this).find('.extraer').html()=='-'?0:$(this).find('.extraer').html())));
 
             if(row == null) return;
             row.forEach(element => {
@@ -125,7 +125,7 @@
         });
 
         if(detalles == null || detalles.length == 0) {alert('No se Registraron Entregas');return;}
-
+        WaitingOpen();
         $.ajax({
             type: 'POST',
             data: {completa, info_entrega: get_info_entrega(), detalles, cantidades, pema_id},
@@ -137,6 +137,9 @@
             },
             error: function (data) {
                 alert("Error");
+            },
+            complete:function(){
+                WaitingClose();
             }
         });
     }

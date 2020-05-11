@@ -72,14 +72,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
  */
 $active_group = 'default';
 $query_builder = true;
-
 $db['default'] = array(
-    'dsn' => '',
+    'dsn'   => '',
     'hostname' => 'localhost',
     'username' => 'root',
-    #'password' => '!Password00',
     'password' => '',
-    'database' => 'asset_fguardia',
+    'database' => 'assetplanner',
     'dbdriver' => 'mysqli',
     'dbprefix' => '',
     'pconnect' => false,

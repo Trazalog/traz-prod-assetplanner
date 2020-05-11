@@ -66,7 +66,8 @@ foreach ($list as $a) {
 function LoadArt(id_, action) {
     idArt = id_;
     acArt = action;
-
+    //esconde el cartel de error si en el articulo anterior no completo los datos
+    $('#error').hide();
     WaitingOpen('Cargando Artículo');
     $.ajax({
         type: 'POST',
@@ -99,6 +100,49 @@ $('#btnSave').click(function() {
     }
 
     var hayError = false;
+
+    if($('#artBarCode').val() == '' || $('#artDescription').val() == '' || ($('#artIsByBox').prop('checked') & $('#artCantBox').val()=='') || $('#unidmed').val() == '-1')
+    {
+        hayError = true;
+        $('#error').fadeIn('slow');
+        if(!validarCodigosExistentes($('#artBarCode').val())){
+            alert('Articulo Repetido');
+            return;
+        }
+        return;
+    }
+    else
+    {
+        WaitingOpen('Guardando cambios');
+                    $.ajax({
+                        type: 'POST',
+                        data: {
+                            id: idArt,
+                            act: acArt,
+                            code: $('#artBarCode').val(),
+                            name: $('#artDescription').val(),
+                            status: $('#artEstado').val(),
+                            box: $('#artIsByBox').prop('checked'),
+                            boxCant: $('#artCantBox').val(),
+                            unidmed: $('#unidmed').val(),
+                            puntped: $('#puntped').val(),
+                            es_loteado: $('#new_articulo #es_loteado').prop('checked') ? 1 : 0
+                        },
+                        url: 'index.php/almacen/Articulo/setArticle',
+                        success: function(result) {
+                            console.log("estoy Guardando");
+                            WaitingClose();
+                            $('.modal').modal('hide');
+                            linkTo();
+                        },
+                        error: function(result) {
+                            WaitingClose();
+                            alert("error");
+                        },
+                    dataType: 'json'
+            });
+    }
+    /*
     if ($('#artBarCode').val() == '') {
         hayError = true;
     }
@@ -145,7 +189,7 @@ $('#btnSave').click(function() {
             alert("error");
         },
         dataType: 'json'
-    });
+    });*/
 });
 
 DataTable('#articles');
@@ -410,6 +454,14 @@ $('#artIsByBox').click(function() {
                         aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Artículo</h4>
             </div>
+            <!--MODIFICACION NUEVA-->
+            <div class="col-xs-12">
+                <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+                    <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                    Revise que todos los campos obligatorios esten seleccionados
+                </div>
+            </div>
+            <!---->
 
             <div class="modal-body" id="modalBodyArticle">
             </div>

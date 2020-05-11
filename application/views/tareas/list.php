@@ -16,7 +16,8 @@
                 </div><!-- /.box-header -->
                 <div class="box-body">
                     <div class="datagrid">
-                        <table id="bandeja" class="table table-hover table-striped">
+                        
+                    <table id="bandeja" class="table table-hover table-striped">
                             <thead>
                                 <tr>
 
@@ -28,7 +29,9 @@
 
                   echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Equipo</td>'; 
 
-                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Sector</td>'; 
+                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').'  >Sector</td>'; 
+
+                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Cliente</td>'; 
                  
                   echo '<th>Tarea</th>';
 
@@ -76,6 +79,8 @@
                     echo '<td '.($device == 'android' ? 'class= "celda nomTarea  tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$f['equipoDesc'].'</td>';
                     
                     echo '<td '.($device == 'android' ? 'class= "celda nomTarea  tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$f['sectorDesc'].'</td>';
+
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea  tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$f['nomCli'].'</td>';
                     
                     echo '<td class="celda nomTarea" style="text-align: left">'.$f['displayName'].'</td>';  
                      
@@ -163,6 +168,7 @@ function verTarea(idTarBonita) {
     WaitingClose();
 
 }
+
 
 /////////// TERMINAR TAREA   ///////
 

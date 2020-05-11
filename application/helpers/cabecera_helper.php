@@ -3,22 +3,24 @@
 if(!function_exists('cargarCabecera')){
     // id de pedido es el petr_id de la tabla trj_pedido_trabajo se obtiene con el bpm_id de esa tabla
     function cargarCabecera($id_OT = 0, $id_SS = 0, $id_EQ = null){
-			// equipo
+		// equipo
+			$ci =& get_instance();			
+			//load databse library
+			$ci->load->database();			
 			if($id_EQ != null){
 				
 				//get main CodeIgniter object
-				$ci =& get_instance();			
-				//load databse library
-				$ci->load->database();			
 				//get data from database		
 				$ci->db->select('equipos.descripcion AS descripcionEquipo,
 												equipos.fecha_ingreso,												
 												equipos.codigo,
 												equipos.ubicacion,
 												equipos.estado,
+												admcustomers.cliRazonSocial AS cliente,
 												marcasequipos.marcadescrip AS marca,');	
 				$ci->db->from('equipos');	
-				$ci->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');		
+				$ci->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');	
+				$ci->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');	
 				$ci->db->where('equipos.id_equipo', $id_EQ);
 				$query = $ci->db->get();			
 				if($query->num_rows() > 0){
@@ -51,9 +53,12 @@ if(!function_exists('cargarCabecera')){
 												orden_trabajo.fecha_program AS fecha,
 												orden_trabajo.id_orden,
 												orden_trabajo.duracion,
+												admcustomers.cliRazonSocial AS cliente,
 												orden_trabajo.estado');	
 				$ci->db->from('orden_trabajo');		
-				$ci->db->join('tareas', 'tareas.id_tarea = orden_trabajo.id_tarea','left');			
+				$ci->db->join('tareas', 'tareas.id_tarea = orden_trabajo.id_tarea','left');		
+				$ci->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
+				$ci->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');	
 				$ci->db->where('orden_trabajo.id_orden', $id_OT);
 				$queryOT = $ci->db->get();			
 				if($queryOT->num_rows() > 0){
@@ -66,6 +71,7 @@ if(!function_exists('cargarCabecera')){
 			}		
 
 			// Info Equipo 
+			if($id_EQ != null)
 			echo '        
 						<div id="collapseDivCli" class="box box-default collapsed-box box-solid">
 							<div class="box-header with-border">
@@ -92,6 +98,12 @@ if(!function_exists('cargarCabecera')){
 												<input type="text" id="codigo" class="form-control" value="'.$result['codigo'].'" disabled/>
 										</div>
 									</div>
+									<div class="col-xs-12 col-sm-4">
+										<div class="form-group">
+												<label style="margin-top: 7px;">Cliente: </label>
+												<input type="text" id="cliente" class="form-control" value="'.$result['cliente'].'" disabled/>
+										</div>
+									</div>	
 									<div class="col-xs-12 col-sm-4">
 										<label style="margin-top: 7px;">Ubicación: </label>
 										<input type="text" class="form-control"  value="'.$result['ubicacion'].'" disabled/>
@@ -192,7 +204,7 @@ if(!function_exists('cargarCabecera')){
 				echo '        
 				<div id="collapseDivCli" class="box box-default collapsed-box box-solid info-ot">
 					<div class="box-header with-border">
-						<h3 id="tituloInfo" class="box-title">Orden de Trabajo: '.$resultOT['id_orden'].' / Mas Detalles</h3>
+						<h3 id="tituloInfo" class="box-title">Orden de Trabajo N°: '.$resultOT['id_orden'].' / Mas Detalles</h3>
 						<div class="box-tools pull-right">
 						<button id="infoCliente" type="button" class="btn btn-box-tool" data-widget="collapse" onclick="mostrarCliente()">
 								<i class="fa fa-plus"></i>
@@ -215,6 +227,12 @@ if(!function_exists('cargarCabecera')){
 										<input type="text"  class="form-control" value="'.$resultOT['otDescrip'].'" disabled/>
 								</div>						
 							</div>
+							<div class="col-xs-12 col-sm-4">
+								<div class="form-group">
+										 <label style="margin-top: 7px;">Cliente: </label>
+										 <input type="text" class="form-control" value="'.$resultOT['cliente'].'" disabled/>
+								</div>
+							</div>	
 							<div class="col-xs-12 col-sm-4">
 								<div class="form-group">
 										<label style="margin-top: 7px;">Fecha Programación: </label>

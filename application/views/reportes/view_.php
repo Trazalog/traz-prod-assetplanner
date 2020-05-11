@@ -182,6 +182,7 @@ $(function() {
       $("#idSector").val(ui.item.value);
     },
   });
+  
 
   // trae equipo para llenar el select
   $.ajax({

@@ -30,14 +30,19 @@
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-6">
                                         <label for="idSector">Sector <strong style="color: #dd4b39">*</strong></label>
-                                        <input type="text" class="form-control buscSector" placeholder="Buscar Sector..." id="buscSector" name="buscSector">
-                                        <input type="text" class="hidden idSector" id="idSector" name="idSector">
+                                        <input type="text" class="form-control buscSector" placeholder="Buscar Sector..." id="buscSector" name="buscSector" >
+                                        <input type="text" class="hidden idSector" id="idSector" name="idSector" >
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-6 com-md-4">
                                         <label for="equipo">Equipos <strong style="color: #dd4b39">*</strong></label>
-                                        <select id="equipo" name="equipo" class="form-control equipo"></select>
+                                        <select id="equipo" name="equipo" class="form-control equipo" ></select>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 com-md-4">
+                                        <label for="cliente">Cliente:</label>
+                                        <input type="text" id="nomCliente" name="cliente" class="form-control input-md"
+                                            disabled />
                                     </div>
                                     <div class="col-xs-12 col-sm-6 com-md-4">
                                         <label for="fecha_ingreso">Fecha:</label>
@@ -47,7 +52,7 @@
                                     <div class="col-xs-12 col-sm-6 com-md-4">
                                         <label for="marca">Marca:</label>
                                         <input type="text" id="marca" name="marca" class="form-control input-md"
-                                            disabled />
+                                            disabled required/>
                                     </div>
                                     <div class="col-xs-12 col-sm-6 com-md-4">
                                         <label for="ubicacion">Ubicacion:</label>
@@ -74,8 +79,8 @@
                                         <label for="tarea">Tarea Estandar<strong
                                                 style="color: #dd4b39">*</strong>:</label>
                                         <input type="text" id="tarea" name="tarea" class="form-control"
-                                            placeholder="Buscar Tarea...">
-                                        <input type="hidden" id="id_tarea" name="id_tarea">
+                                            placeholder="Buscar Tarea..." >
+                                        <input type="hidden" id="id_tarea" name="id_tarea" required>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
                                         <label for="tarea_manual">Tarea Personalizada<strong
@@ -393,8 +398,10 @@ $("#formOT").submit(function(event) {
     // }
 
     if (hayError == true) {
+        
         $('#error').fadeIn('slow');
         $('#btn_guardar').prop("disabled", false);
+        WaitingClose();
         return;
     } else {
         $('#error').fadeOut('slow');
@@ -547,10 +554,12 @@ $('#equipo').change(function() {
             var ubicacion = data[0]['ubicacion'];
             var criterio1 = data[0]['criterio1'];
             var descripcion = data[0]['descripcion'];
+            var nomCliente = data[0]['nomCli'];
             $('#fecha_ingreso').val(fecha_ingreso);
             $('#marca').val(marca);
             $('#descripcion').val(descripcion);
             $('#ubicacion').val(ubicacion);
+            $('#nomCliente').val(nomCliente);
         },
         error: function(result) {
 
@@ -1024,4 +1033,15 @@ function limpiar() {
     $("#cantidad").val("");
 
 }
+</script>
+
+<!--desactiva keypress-->
+<script type="text/javascript">
+$(document).ready(function() {
+    $("form").keypress(function(e) {
+        if (e.which == 13) {
+            return false;
+        }
+    });
+});
 </script>

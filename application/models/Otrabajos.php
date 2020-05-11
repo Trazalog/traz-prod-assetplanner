@@ -24,12 +24,14 @@ class Otrabajos extends CI_Model {
 												sisusers.usrLastName, equipos.codigo, 
 												0 as grpId,
 												equipos.id_equipo,
+												admcustomers.cliRazonSocial AS nomCli,
 												orden_servicio.id_orden AS ordenservicioId');
 		$this->db->from('orden_trabajo');
 		$this->db->join('tbl_tipoordentrabajo', 'tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
 		$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario');
 		$this->db->join('sisusers AS user1', 'orden_trabajo.id_usuario_a = user1.usrId', 'left');//usuario asignado?
 		$this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
+		$this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
 	
 		//LEFT JOIN orden_servicio ON orden_trabajo.id_orden = orden_servicio.id_ot
 
@@ -44,6 +46,9 @@ class Otrabajos extends CI_Model {
 
 		$this->db->where('orden_trabajo.id_empresa', $empId);
 		$query = $this->db->get();
+
+
+
 
 		if ($query->num_rows()!=0)
 		{
@@ -151,11 +156,12 @@ class Otrabajos extends CI_Model {
 		$userdata = $this->session->userdata('user_data');
     $empId = $userdata[0]['id_empresa']; 
 			
-		$this->db->select('equipos.*, marcasequipos.marcadescrip');
+		$this->db->select('equipos.*, marcasequipos.marcadescrip, admcustomers.cliRazonSocial AS nomCli');
 		$this->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');
+		$this->db->join('admcustomers', 'admcustomers.cliId = equipos.id_customer' );
 		$this->db->from('equipos');    	
 		$this->db->where('equipos.id_empresa', $empId);
-		$this->db->where('equipos.id_equipo', $id);      	
+		$this->db->where('equipos.id_equipo', $id);	 	
 		$query= $this->db->get();   
 	
 		if ($query->num_rows()!=0)
@@ -255,6 +261,7 @@ class Otrabajos extends CI_Model {
 												orden_trabajo.id_usuario_a,
 												orden_trabajo.id_usuario,
 												orden_trabajo.id_sucursal,
+												admcustomers.cliRazonSocial AS nomCli,
 												sucursal.descripc,											
 												abmproveedores.provnombre,
 												abmproveedores.provid,
@@ -271,6 +278,7 @@ class Otrabajos extends CI_Model {
 			$this->db->join('marcasequipos', 'equipos.marca = marcasequipos.marcaid');
 			//$this->db->join('sisusers', 'sisusers.usrId=orden_trabajo.id_usuario');
 			$this->db->join('abmproveedores', 'abmproveedores.provid=orden_trabajo.id_proveedor', 'left');
+			$this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
 			$this->db->where('orden_trabajo.id_orden', $id);
 			$query = $this->db->get();
 			
@@ -919,8 +927,7 @@ class Otrabajos extends CI_Model {
      */
     function kpiCantTipoOrdenTrabajo()
     {
-        $userdata  = $this->session->userdata('user_data');
-		$empresaId = $userdata[0]['id_empresa'];
+		$empresaId = empresa();
 		
         $this->db->select('B.descripcion, count(*) as cantidad');
 		$this->db->from('orden_trabajo as A');
@@ -1015,15 +1022,16 @@ class Otrabajos extends CI_Model {
     }
 
     //devuelve valores de todos los datos de la OT para mostrar en modal.
-    function getViewDataSolServicio($idOt, $idSolicitud)
+    function getViewDataSolServicio($idOt, $idSolicitud=null)
     {
 			$this->db->select('orden_trabajo.id_orden, 
 				orden_trabajo.nro, orden_trabajo.descripcion AS descripcionFalla, 
 				orden_trabajo.fecha_inicio,orden_trabajo.fecha_program, orden_trabajo.fecha_terminada, orden_trabajo.estado, 
 				sisusers.usrName, sisusers.usrLastName, 
-    		orden_trabajo.tipo, orden_trabajo.id_solicitud,
-    		sucursal.id_sucursal, sucursal.descripc,
-    		abmproveedores.provid, abmproveedores.provnombre,
+				orden_trabajo.tipo, orden_trabajo.id_solicitud,				
+				sucursal.id_sucursal, sucursal.descripc,
+				admcustomers.cliRazonSocial AS nomCli,
+    			abmproveedores.provid, abmproveedores.provnombre,
 				equipos.codigo, equipos.fecha_ingreso, equipos.ubicacion, equipos.descripcion AS descripcionEquipo,
 				marcasequipos.marcadescrip AS marca,
 				grupo.descripcion AS grupodescrip, grupo.id_grupo');
@@ -1031,10 +1039,11 @@ class Otrabajos extends CI_Model {
         $this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId', 'left');
         $this->db->join('sucursal', ' orden_trabajo.id_sucursal = sucursal.id_sucursal ', 'left');
         $this->db->join('abmproveedores', 'orden_trabajo.id_proveedor = abmproveedores.provid', 'left');
-				$this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
-				$this->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');
-				$this->db->join('grupo', 'grupo.id_grupo = equipos.id_grupo');
-        $this->db->where('orden_trabajo.id_orden', $idOt);
+		$this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
+		$this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
+		$this->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');
+		$this->db->join('grupo', 'grupo.id_grupo = equipos.id_grupo');
+		$this->db->where('orden_trabajo.id_orden', $idOt);
 
 				$query = $this->db->get();
 
@@ -1058,13 +1067,13 @@ class Otrabajos extends CI_Model {
 				$this->db->select('sector.descripcion AS sector, 			
 													solicitud_reparacion.solicitante, 
 													solicitud_reparacion.f_sugerido AS fechaSugerida, 
-													solicitud_reparacion.hora_sug AS horarioSugerido, 
+													solicitud_reparacion.hora_sug AS horarioSugerido, 										
 													solicitud_reparacion.causa AS falla');
 				$this->db->from('solicitud_reparacion');
-				$this->db->where('solicitud_reparacion.id_solicitud', $id_solicitud);
 				$this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo');
 				$this->db->join('sector', 'equipos.id_sector = sector.id_sector');
-			
+				$this->db->where('solicitud_reparacion.id_solicitud', $id_solicitud);
+
 				$query = $this->db->get();
 				if($query->num_rows()!=0)
 				{
@@ -1092,6 +1101,7 @@ class Otrabajos extends CI_Model {
 												sisusers.usrName, sisusers.usrLastName, 
 												orden_trabajo.tipo, 
 												orden_trabajo.id_solicitud,
+												admcustomers.cliRazonSocial AS nomCli,
 												sucursal.id_sucursal, 
 												sucursal.descripc,
 												equipos.codigo, 
@@ -1104,7 +1114,8 @@ class Otrabajos extends CI_Model {
         $this->db->join('sucursal', 'orden_trabajo.id_sucursal = sucursal.id_sucursal', 'left');
         $this->db->join('abmproveedores', 'orden_trabajo.id_proveedor = abmproveedores.provid', 'left');
         $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
-        $this->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');
+		$this->db->join('marcasequipos', 'marcasequipos.marcaid = equipos.marca');
+		$this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
         $this->db->where('orden_trabajo.id_orden', $idOt);
 				$query = $this->db->get();
         if($query->num_rows()!=0)

@@ -482,6 +482,7 @@ function autoCompletarComponentes(){
     if(hayError == false){
       $('#error').fadeOut('slow');
     }
+    WaitingClose();
   }
 
 

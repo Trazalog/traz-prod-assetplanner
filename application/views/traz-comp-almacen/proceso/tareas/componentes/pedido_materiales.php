@@ -38,6 +38,7 @@
     </tbody>
 </table>
 <div class="modal-footer <?php echo (isset($info->pema_id) ? 'hidden' : null) ?>">
+<button class="btn btn-default" data-dismiss="modal" onclick="if(exist('descartarPedido'))descartarPedido()">Cerrar</button>
     <?php
 if (isset($info->modal)) {
     echo '<button class="btn btn-primary" style="float:right;"
@@ -49,7 +50,7 @@ if (isset($info->modal)) {
 ?>
 </div>
 <script>
-var tablaDetalle2 = $('#tabladetalle2').DataTable({});
+// var tablaDetalle2 = $('#tabladetalle2').DataTable({});
 var selectRow = null;
 
 get_detalle();
@@ -65,11 +66,11 @@ function del_detalle() {
         $.ajax({
             type: 'POST',
             data: {
-                id: $(selectRow).data('id')
+                id: $(selectRow).attr('data-id')
             },
             url: 'index.php/almacen/Notapedido/eliminarDetalle',
             success: function(data) {
-                //$('.modal #eliminar').modal('hide');
+
                 $('#eliminar').modal('hide');
 
                 get_detalle();
@@ -117,14 +118,25 @@ function get_detalle() {
     if (id == null || id == '') {
         return;
     }
+   // $(tabla).DataTable().destroy();
+    console.log("ALM | Detalle Pedido N° "+id);
+    
     $.ajax({
         type: 'POST',
         url: 'index.php/almacen/Notapedido/getNotaPedidoId?id_nota=' + id,
         success: function(data) {
-            tablaDetalle2.clear();
+            
+            if(data.length == 0){
+                console.log('Sin Detalle de Pedidos');
+                $('#tabladetalle2 tbody').empty();
+                return;
+            }
+            
+            console.log(data);
 
+            var html = '';
             for (var i = 0; i < data.length; i++) {
-                var tr = "<tr class='celdas' data-id='" + data[i]['depe_id'] + "'data-id='" + data[i][
+                html  += "<tr class='celdas' data-id='" + data[i]['depe_id'] + "'data-id='" + data[i][
                         'arti_id'
                     ] + "' data-json='" + JSON.stringify(data) + "'>" +
                     "<td class='text-light-blue'>" +
@@ -132,12 +144,12 @@ function get_detalle() {
                     "<i class='fa fa-fw fa-times-circle' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
                     "<td class='articulo'>" + data[i]['barcode'] + "</td>" +
                     "<td class='cantidad text-center'>" + data[i]['cantidad'] + "</td></tr>";
-                tablaDetalle2.row.add($(tr)).draw();
-            }
-
+                }
+           $('#tabladetalle2 tbody').html(html);
+           //DataTable('#tabladetalle2');
         },
         error: function(result) {
-
+            alert('Error');
             console.log(result);
         },
         dataType: 'json'
@@ -159,9 +171,8 @@ function get_detalle() {
                 <input id="cantidad" class="form-control text-center" type="number" placeholder="Cantidad">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary btn-accion" data-dismiss="modal"
-                    onclick="edit()">Guardar</button>
+                <button type="button" class="btn btn-default pull-left" onclick="$(this).closest('.modal').modal('hide')">Cerrar</button>
+                <button type="button" class="btn btn-primary btn-accion" onclick="edit()">Guardar</button>
             </div>
         </div>
         <!-- /.modal-content -->
@@ -187,7 +198,7 @@ function get_detalle() {
             </div> <!-- /.modal-body -->
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-default" onclick="$(this).closest('.modal').modal('hide')">Cancelar</button>
                 <button type="button" class="btn btn-primary" onclick="del_detalle()">Eliminar</button>
             </div> <!-- /.modal footer -->
 
@@ -283,6 +294,7 @@ function set_pedido() {
 }
 
 function lanzarPedido() {
+    WaitingOpen();
     $.ajax({
         data: {
             id: $('#pema_id').val()
@@ -292,7 +304,7 @@ function lanzarPedido() {
         url: '<?php echo base_url(ALM) ?>new/Pedido_Material/pedidoNormal',
         success: function(result) {
             if (result.status) {
-
+                $('#tabladetalle2 tbody').empty();
                 data = {
                     id_notaPedido: $('#pema_id').val(),
                     fecha: fechaActual(),
@@ -332,12 +344,19 @@ function lanzarPedido() {
         error: function(result) {
             WaitingClose();
             alert("Error al Lanzar Pedido");
-        }
+        },
+        complete: function(){
+            WaitingClose();
+        }      
     });
 }
 
 function lanzarPedidoModal() {
 
+    if($('#tabladetalle2 tbody tr').length == 0){
+        $('#agregar_pedido').modal('hide');
+        return;
+    }
 
     if (conexion()) {
         lanzarPedido();
@@ -402,6 +421,7 @@ function lanzarPedidoModal() {
 
 
     if (conexion()) {
+        WaitingOpen();
         $.ajax({
             type: 'POST',
             url: 'index.php/almacen/Notapedido/pedidoNormal/' + notaid,
@@ -409,13 +429,18 @@ function lanzarPedidoModal() {
                 $('#' + notaid).find('.ped-estado').html(
                     '<span data-toggle="tooltip" title="" class="badge bg-orange estado">Solicitado</span>'
                 );
+                $('#tabladetalle2 tbody').empty();
                 alert('Hecho');
             },
             error: function() {
                 console.log('ALM | Error Pedido Materiales');
+            },
+            complete:function(){
+                WaitingClose();
             }
         });
     } else {
+         $('#tabladetalle2 tbody').empty();
         ajax({
             data: {
                 articulos: articulos,

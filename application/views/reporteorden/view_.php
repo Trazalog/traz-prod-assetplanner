@@ -30,6 +30,7 @@
                     </label>
                   </div>
                   <select class="form-control" id="equipSelec" placeholder="Seleccione tipo...">
+                    <option value="">Selecciona Equipo...</option>
                     <option value=""></option>                      
                   </select>                   
                 </div>
@@ -40,6 +41,7 @@
                     </label>
                   </div>
                   <select class="form-control" id="estSelec" placeholder="Seleccione tipo..." >
+                    <option value="">Selecciona Estado...</option>
                     <option value=""></option>
                   </select>                   
                 </div>
@@ -54,11 +56,11 @@
                 </div>
                 <div class="col-xs-12 col-sm-6">
                   <label for="desde">Desde</label>
-                  <input type="text" class="form-control fecha check" id="desde" placeholder="">
+                  <input type="text" class="form-control fecha check" id="desde" placeholder="Selecciona Fecha">
                 </div>  
                 <div class="col-xs-12 col-sm-6">
                   <label for="hasta">Hasta</label>
-                  <input type="text" class="form-control fecha check" id="hasta" placeholder="">
+                  <input type="text" class="form-control fecha check" id="hasta" placeholder="Selecciona Fecha">
                 </div>
               </div>
 
@@ -107,12 +109,14 @@
 </section>
 
 <script>
+
+
 // Oculto el panel resultados
 $("#panelReporteOT").css("display", "none");
 
 
 
-// cargo plugin DateTimePicker
+//cargo plugin DateTimePicker
 $('#desde, #hasta').datetimepicker({
   format: 'YYYY-MM-DD', 
   locale: 'es',
@@ -149,12 +153,17 @@ function enabDisabEstado() {
 
 function enabDisabFecha() {
   if (this.checked) {
+    
     opcionFecha = 1;
     $("input.fecha").removeAttr("disabled");
+    
   } else {
     opcionFecha = 0;
     $("input.fecha").attr("disabled", true);
+  
     $("input.fecha").val('');
+   
+    
   }
 }
 
@@ -208,6 +217,7 @@ function traeEstados(){
 }
 traeEstados().then(
   function resolve(data){
+    
     var $select = $("#estSelec");
     for (var i = 0; i < data.length; i++) {
       if( data[i]['estado'] != 'AN') //Si viene estado anulado lo ignora
@@ -242,10 +252,12 @@ function validaDatos(){
 function llenarTabla(data){
   $('#tablaReporteOT').DataTable().clear().draw();
   for (var i = 0; i < data.length; i++) {
-    $('#tablaReporteOT').DataTable().row.add( [
+
+    if(data[i].desc == null){
+      $('#tablaReporteOT').DataTable().row.add( [
         data[i].id_orden,
+        data[i].descripcionOT,       
         data[i].descripcionOT,
-        data[i].descripcioTarea,
         data[i].codigoEquipo +' - '+ data[i].descripcionEquipo,
         data[i].fecha,
         data[i].fecha_program,
@@ -253,8 +265,27 @@ function llenarTabla(data){
         data[i].fecha_entregada,
         data[i].origenOT,
         data[i].estado,
+       
       ]
     ).draw();
+
+    }else{
+      $('#tablaReporteOT').DataTable().row.add( [
+        data[i].id_orden,
+        data[i].descripcionOT,       
+        data[i].desc,
+        data[i].codigoEquipo +' - '+ data[i].descripcionEquipo,
+        data[i].fecha,
+        data[i].fecha_program,
+        data[i].fecha_terminada,
+        data[i].fecha_entregada,
+        data[i].origenOT,
+        data[i].estado,
+       
+      ]
+    ).draw();
+    }
+    
   }
 }
 
@@ -264,6 +295,7 @@ function traeDatosReporte(){
   let estado   = $('#estSelec').val();
   let desde    = $('#desde').val();
   let hasta    = $('#hasta').val();
+  
   let parametros = {
     'opcionEquipo' : opcionEquipo,
     'opcionEstado' : opcionEstado,
@@ -281,7 +313,9 @@ function traeDatosReporte(){
     type: 'POST',             
     url: 'index.php/Reporteorden/getDatosReporte',
   })
-  .done( (data) => { llenarTabla(data) })
+  .done( (data) => { 
+    console.table(data);
+    llenarTabla(data) })
   .fail( () => alert("Error al traer el reporte.") )
   .always( () => WaitingClose() );
 }
@@ -343,3 +377,4 @@ var table = $('#tablaReporteOT').DataTable({
   "order": [[0, "asc"]],
 });
 </script>
+
