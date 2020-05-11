@@ -617,9 +617,11 @@ class Reportes extends CI_Model {
 
     function getClientes(){
         $userdata = $this->session->userdata('user_data');
+        $empresaId = $userdata[0]['id_empresa'];
        // $empId    = $userdata[0]['id_empresa']; 
         $this->db->select('admcustomers.cliId, admcustomers.cliRazonSocial');
-				$this->db->from('admcustomers');    	
+                $this->db->from('admcustomers');    
+                $this->db->where('admcustomers.id_empresa', $empresaId);	
 				//$this->db->where('admcustomers.id_empresa', $empId); //esto es si queremos buscar solamente los clientes de la empresa con la que se esta logueada que en este caso es empresa 6
 				$this->db->where('admcustomers.estado !=', 'AN');
 			$query = $this->db->get();
@@ -635,6 +637,7 @@ class Reportes extends CI_Model {
     }
     function getEquipos($data){
         $userdata = $this->session->userdata('user_data');
+        $empresaId = $userdata[0]['id_empresa'];
         //$empId = $userdata[0]['id_empresa'];     // guarda usuario logueado
         $id_cliente = $data['id_cli'];
 
@@ -646,7 +649,7 @@ class Reportes extends CI_Model {
         $this->db->where('equipos.estado !=', 'AN');
         if($id_cliente != 'sin cliente' )
         {$this->db->where('equipos.id_customer', $id_cliente);}
-    	//$this->db->where('equipos.id_empresa', $empId);
+        $this->db->where('equipos.id_empresa', $empresaId);
     	$this->db->order_by('equipos.id_equipo', 'ASC');
     	$query = $this->db->get();
 
