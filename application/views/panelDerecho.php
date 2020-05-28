@@ -1,16 +1,16 @@
   <!-- Control Sidebar -->
-  <aside id="panel-derecho" class="control-sidebar control-sidebar-dark">
+  <aside id="panel-derecho" class="control-sidebar control-sidebar-dark"style="background-color:#3c8dbc">
       <!-- Create the tabs -->
       <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-          <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-cogs"></i> Panel de
+          <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"style="background-color:#3c8dbc"><i class="fa fa-cogs"></i> Panel de
                   Opciones</a></li>
           <!-- <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li> -->
       </ul>
       <!-- Tab panes -->
       <div class="tab-content">
           <!-- Home tab content -->
-          <div class="tab-pane active" id="control-sidebar-home-tab">
-              <h3 class="control-sidebar-heading">Aplicar Filtro:</h3>
+          <div class="tab-pane active" id="control-sidebar-home-tab" >
+              <h3 class="control-sidebar-heading "  style="margin-top:0px">Aplicar Filtro:</h3>
               <div id="panel-derecho-body"></div>
           </div>
           <!-- /.tab-pane -->
@@ -18,7 +18,7 @@
   </aside>
   <!-- /.control-sidebar -->
   <!-- Add the sidebar's backgr -->
-  <div class="control-sidebar-bg"></div>
+  <div class="control-sidebar-bg" style="background-color:#3c8dbc" ></div>
 
 
   <script>

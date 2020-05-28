@@ -61,16 +61,13 @@ class Opciones_Filtros extends CI_Model
         log_message('DEBUG', '#TRAZA| #OPCIONES_FILTROS.PHP|#OPCIONES_FILTROS|#FILTROSPRODUCCION| #PRODUCTOS: >>' . $res->producto . '#ETAPAS: >>' . $res->etapa);
         return $res;
     }
-
-    public function filtrosProdResponsable($valores)
+    /*
+    public function filtroTiempoRespuesta($valores)
     {
-        $res =  new StdClass();
-        $res->responsable = $valores['responsables'];
-        $res->producto = $valores['productos'];
-        // $res->unidad = $valores['unidades_medida'];
-        $res->etapa = $valores['etapas'];
-
-        log_message('DEBUG', '#TRAZA| #OPCIONES_FILTROS.PHP|#OPCIONES_FILTROS|#FILTROSPRODRESPONSABLE| #REPONSABLES: >>' . $res->responsable . '#PRODUCTOS: >>' . $res->producto . '#ETAPAS: >>' . $res->etapa);
+        $res =new StdClass();
+        $res->sector = $valores['sectores'];
+        $res->equipo = $valores['equipos'];
         return $res;
     }
+    */
 }

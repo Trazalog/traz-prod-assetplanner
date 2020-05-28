@@ -1,5 +1,6 @@
   <!-- Control Sidebar -->
-  <aside id="panel-derecho" class="control-sidebar control-sidebar-dark">
+  <!-- <aside id="panel-derecho" class="control-sidebar control-sidebar-dark"> -->
+  <aside id="panel-derecho-tiempo-respuesta" class="control-sidebar control-sidebar-dark">
       <!-- Create the tabs -->
       <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
           <li class="active">
@@ -18,7 +19,8 @@
           <!-- Home tab content -->
           <div class="tab-pane active" id="control-sidebar-home-tab">
               <h3 class="control-sidebar-heading">Aplicar Filtro:</h3>
-              <div id="panel-derecho-body"></div>
+              <!-- <div id="panel-derecho-body"></div> -->
+              <div id="panel-derecho-tiempo-respuesta-body"></div>
           </div>
           <!-- /.tab-pane -->
       </div>
@@ -36,11 +38,12 @@
       //           $('.control-sidebar').addClass('control-sidebar-open');
       //       }
       //   }
+      
       $('#panelFiltro').click(function() {
-          $('#panel-derecho').addClass('control-sidebar-open');
+          $('#panel-derecho-tiempo-respuesta').addClass('control-sidebar-open');
       });
       $('#closePanel').click(function() {
-          $('#panel-derecho').removeClass('control-sidebar-open');
+          $('#panel-derecho-tiempo-respuesta').removeClass('control-sidebar-open');
       });
 
     //   $(document).click(function(e) {

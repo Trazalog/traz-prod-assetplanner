@@ -74,4 +74,9 @@ class Reporte extends CI_Controller {
 		$response = $this->Reportes->getSupervisors($this->input->post()); //no se escribe nada en el pasaje de parametros post(nada)
 		echo json_encode($response);
 	}
+
+	public function tiempo()
+	{
+		echo "Holis Mundo";
+	}
 }

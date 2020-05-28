@@ -128,7 +128,7 @@ define('CMP_ALM', 'traz-comp-almacen/');
 |
 */
 
-define('BONITA_URL', 'http://dev-trazalog.com.ar:8080/bonita/'); 
+define('BONITA_URL', 'http://localhost:8080/bonita/'); 
 
 define('BPM_ADMIN_USER', 'supervisor1');
 define('BPM_ADMIN_PASS', 'bpm');
@@ -164,7 +164,7 @@ define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '7321139677245257050');
 |
 */
  
-define('BPM_PROCESS_ID', '7503443566840192735'); // localhost -
+define('BPM_PROCESS_ID', '9199215354855822173'); // localhost -
 
 /*
 |--------------------------------------------------------------------------
@@ -175,14 +175,28 @@ define('BPM_PROCESS_ID', '7503443566840192735'); // localhost -
 |
 */
 
-define('REST', 'http://dev-trazalog.com.ar:8280/services/ProduccionDataService/');
-define('RESTPT','http://dev-trazalog.com.ar:8280/services/produccionTest/');
-define('REST_TDS', 'http://dev-trazalog.com.ar:8280/services/TrazabilidadDataService/');
-define('REST0', 'http://www.dev-trazalog.com.ar:8280/services/ALMDataServiceAsset/');
+define('REST', 'http://10.128.0.3//services/ProduccionDataService/');
+define('RESTPT','http://10.128.0.3//services/produccionTest/');
+define('REST_TDS', 'http://10.128.0.3//services/TrazabilidadDataService/');
+define('REST0', 'http://10.128.0.3//services/ALMDataServiceAsset/');
 
-define('REST2', 'http://dev-trazalog.com.ar:8280/services/ProduccionDataService');
-define('REST3', 'http://dev-trazalog.com.ar:8280/services/produccionTest');
-define('REST4', 'http://dev-trazalog.com.ar:8280/services/TrazabilidadDataService');
+define('REST2', 'http://10.128.0.3//services/ProduccionDataService');
+define('REST3', 'http://10.128.0.3//services/produccionTest');
+define('REST4', 'http://10.128.0.3//services/TrazabilidadDataService');
+
+/*
+|--------------------------------------------------------------------------
+| REPORTES
+|--------------------------------------------------------------------------
+|
+| Tiempo de Respuesta
+|
+|
+*/
+
+define('RTR','http://localhost:8088');
+
+
 
 /*
 |--------------------------------------------------------------------------
