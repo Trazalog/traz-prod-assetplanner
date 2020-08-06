@@ -76,7 +76,7 @@ class Articulos extends CI_Model
 	function getUnidadesMedidas()
 	{
 		$this->db->select('A.tabl_id as id_unidadmedida,A.descripcion');
-		$this->db->where('tabla','unidad');
+	    $this->db->where('tabla','unidad');
 		$query  = $this->db->get('utl_tablas A');
 		if($query->num_rows()>0)
 		{
