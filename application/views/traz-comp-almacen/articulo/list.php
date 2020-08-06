@@ -34,7 +34,7 @@ foreach ($list as $a) {
     echo '<i class="fa fa-search" style="cursor: pointer;margin: 3px;" title="Ver Detalles" onclick="ver_detalles(this);"></i>';
     
     if (strpos($permission, 'Edit') !== false) {
-        echo '<i class="fa fa-fw fa-pencil " style="cursor: pointer; margin: 3px;" title="Editar" data-toggle="modal" data-target="#modaleditar"></i>';
+        echo '<i class="fa fa-fw fa-pencil" style="cursor: pointer; margin: 3px;" title="Editar" onclick="EditarArticulos(this);" data-toggle="modal" data-target="#modaleditar"></i>';
     }
     if (strpos($permission, 'Del') !== false) {
         echo '<i class="fa fa-fw fa-times-circle" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="seleccionar(this)"></i>';
@@ -208,9 +208,9 @@ function validarCodigosExistentes(newCodigo){
 
 <script>
 // Trae datos para llenar el modal Editar
-$(".fa-pencil").click(function(e) { // Ok
-    var idartic = $(this).parent('td').parent('tr').attr('id');
-
+function EditarArticulos(e) { // Ok
+    // var idartic = $(this).parent('td').parent('tr').attr('id');
+    var idartic = $(e).closest('tr').attr('id');
     ida = idartic;
     $('#artBarCode').val('');
     $('#artDescription').val('');
@@ -246,7 +246,7 @@ $(".fa-pencil").click(function(e) { // Ok
             console.table(result);
         },
     });
-});
+}
 
 // Llena campos del modal Editar
 function completarEdit(datos) { // Ok

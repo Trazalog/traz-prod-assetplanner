@@ -29,5 +29,20 @@ class Entrega_Material extends CI_Controller {
       $this->load->view(ALM.'/new/entregas_materiales/list', $data);
       
    }
+   public function detallPrint()
+   {
+      $id = $this->input->get('id');
+      $data['materiales'] = $this->Entregas_Materiales->obtenerDetallesPrint($id);
+
+      // $this->load->view(ALM.'new/entregas_materiales/printEntregaMat', $data);
+      // echo json_encode($this->Entregas_Materiales->obtenerDetallesPrint($id));
+       echo json_encode($data);
+   }
+   public function PrintEntrega()
+   {
+      $data = $this->input->post('datos');
+      $this->load->view(ALM.'/new/entregas_materiales/printEntregaMat', $data);
+      
+   }
 }
 ?>
