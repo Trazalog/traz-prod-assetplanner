@@ -13,7 +13,7 @@
         Comprobante: <?php echo $materiales[0]['comprobante']; ?><br>
         Id de Pedido de Materiales: <?php echo $materiales[0]['pema_id']; ?><br>
         Fecha de Alta: <?php echo $materiales[0]['fec_alta']; ?><br>
-
+		Estado: <?php echo $materiales[0]['estado']; ?><br>
 		 <!--__________________TABLA___________________________-->
 		 <table id="tabla_entrega" class="table table-bordered table-striped">
 		<thead class="thead-dark" bgcolor="#eeeeee">
@@ -38,6 +38,25 @@
 <!--__________________FIN TABLA___________________________-->
         
     </div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div class="firma">
+<label for="">_______________________</label>
+<p>Firma</p>
+
+<label for="">_______________________</label>
+<p>DNI</p>
+
+<label for="">_______________________</label>
+<p>Aclaracion</p>
+
+
+
 </div>
 <script>
     DataTable($('#tabla_entrega'))
