@@ -22,7 +22,7 @@
                     foreach ($list as $o) {
                         echo '<tr data-id='.$o['enma_id'].' data-pema="'.$o['pema_id'].'" data-json=\''.json_encode($o).'\'>'; 
                         echo '<td>';
-                        echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin:2px" title="Imprimir"></i> ';
+                        echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin:2px" onclick="ImprimirEntrega(this)" title="Imprimir"></i> ';
                         echo '<i class="fa fa-fw fa-search text-light-blue btn-buscar" style="cursor: pointer; margin:2px" onclick="ConsultarEntrega(this)"title="Consultar"></i> ';
                         echo '<i class="fa fa-fw  fa-battery text-light-blue btn-estado" style="cursor: pointer; margin:2px"onclick="EstadoPedido(this)" title="Estado Pedido"></i> ';
                         echo '</td>';
@@ -77,6 +77,59 @@ function ConsultarEntrega(e)
         },
         dataType: 'json'
     });
+}
+
+function ImprimirEntrega(e){
+    var tr = $(e).closest('tr');
+    var id = $(tr).data('id');
+    
+    $.ajax({
+        type: 'GET',
+        url: 'index.php/almacen/new/Entrega_Material/detallPrint?id='+id,
+        success: function($result) {
+            var res = JSON.parse($result);
+            ImprimirEntregaMateriales(res);
+           
+           
+        },
+        complete: function($result) {
+         
+            
+        },
+        error: function(result) {
+            alert('Error');
+        },
+       
+    });
+    
+}
+function ImprimirEntregaMateriales($data)
+{    
+     $.ajax({
+        type: 'POST',
+        data: {
+            datos: $data
+        },
+        dataType: 'text',
+        url: 'index.php/almacen/new/Entrega_Material/PrintEntrega',
+        success: function(data) {
+          
+            texto = data;
+            var win = window.open('', 'Imprimir', 'height=700,width=900');
+            win.document.write('<html><head><title></title>');
+            win.document.write('</head><body onload="window.print();">');
+            win.document.write(texto);
+            win.document.write('</body></html>');
+            win.document.close(); // necessary for IE >= 10
+            win.focus(); // necessary for IE >= 10
+            
+        },
+        error: function(result) {
+            console.log(result);
+            console.log("error en la vista imprimir");
+        },
+    });
+           
 }
 
 function rellenarCabecera(json) {
