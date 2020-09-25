@@ -175,14 +175,14 @@ define('BPM_PROCESS_ID', '9070110405395579127'); // localhost -
 |
 */
 
-define('REST', 'https://34.66.255.127:8280/services/ProduccionDataService/');
-define('RESTPT','https://34.66.255.127:8280/services/produccionTest/');
-define('REST_TDS', 'https://34.66.255.127:8280/services/TrazabilidadDataService/');
-define('REST0', 'httphttps://34.66.255.127:8280/services/ALMDataServiceAsset/');
+define('REST', 'http://10.142.0.7:8280/services/ProduccionDataService/');
+define('RESTPT','http://10.142.0.7:8280/services/produccionTest/');
+define('REST_TDS', 'http://10.142.0.7:8280/services/TrazabilidadDataService/');
+define('REST0', 'http://10.142.0.7:8280/services/ALMDataServiceAsset/');
 
-define('REST2', 'https://34.66.255.127:8280/services/ProduccionDataService');
-define('REST3', 'https://34.66.255.127:8280/services/produccionTest');
-define('REST4', 'https://34.66.255.127:8280/services/TrazabilidadDataService');
+define('REST2', 'http://10.142.0.7:8280/services/ProduccionDataService');
+define('REST3', 'http://10.142.0.7:8280/services/produccionTest');
+define('REST4', 'http://10.142.0.7:8280/services/TrazabilidadDataService');
 
 /*
 |--------------------------------------------------------------------------
