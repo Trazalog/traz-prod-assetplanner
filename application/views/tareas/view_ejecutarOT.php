@@ -473,7 +473,7 @@ function validarEstSubTareas() {
 }
 
 function ajax(options) {
-    if (navigator.serviceWorker.controller) {
+    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
         navigator.serviceWorker.controller.postMessage(options.data)
     }
 

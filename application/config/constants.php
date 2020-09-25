@@ -148,7 +148,7 @@ define('BPM_USER_PASS', 'bpm');
 
 //? PEDIDOS NORMALES
  
-define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '8803232493891311406'); 
+define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '6833268789089291878'); 
 
 //? PEDIDOS EXTRAORDINATIOS
 
@@ -164,7 +164,7 @@ define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '7321139677245257050');
 |
 */
  
-define('BPM_PROCESS_ID', '9199215354855822173'); // localhost -
+define('BPM_PROCESS_ID', '9070110405395579127'); // localhost -
 
 /*
 |--------------------------------------------------------------------------
@@ -175,14 +175,14 @@ define('BPM_PROCESS_ID', '9199215354855822173'); // localhost -
 |
 */
 
-define('REST', 'http://10.128.0.3//services/ProduccionDataService/');
-define('RESTPT','http://10.128.0.3//services/produccionTest/');
-define('REST_TDS', 'http://10.128.0.3//services/TrazabilidadDataService/');
-define('REST0', 'http://10.128.0.3//services/ALMDataServiceAsset/');
+define('REST', 'https://34.66.255.127:8280/services/ProduccionDataService/');
+define('RESTPT','https://34.66.255.127:8280/services/produccionTest/');
+define('REST_TDS', 'https://34.66.255.127:8280/services/TrazabilidadDataService/');
+define('REST0', 'httphttps://34.66.255.127:8280/services/ALMDataServiceAsset/');
 
-define('REST2', 'http://10.128.0.3//services/ProduccionDataService');
-define('REST3', 'http://10.128.0.3//services/produccionTest');
-define('REST4', 'http://10.128.0.3//services/TrazabilidadDataService');
+define('REST2', 'https://34.66.255.127:8280/services/ProduccionDataService');
+define('REST3', 'https://34.66.255.127:8280/services/produccionTest');
+define('REST4', 'https://34.66.255.127:8280/services/TrazabilidadDataService');
 
 /*
 |--------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-<!-- <section class="content"> -->
+<section class="content"> 
 <div class="row">
 
     <div class="col-xs-12">
@@ -203,7 +203,7 @@
         </div>
     </div>
 </div>
-<!-- </section> -->
+</section>
 <script>
 DataTable('#tblOrden');
 
@@ -351,7 +351,6 @@ function lanzarPedidoMateriales() {
 
 //cierra la tarea ejecutar OT y asigna la tarea a la OT
 function EjecutarOT() {
-
     var xlat = null;
     var xlon = null;
     if (!window.mobileAndTabletcheck()) {
@@ -423,24 +422,26 @@ function EjecutarOT() {
         },
         url: 'index.php/Otrabajo/EjecutarOT',
         success: function(data) {
-            WaitingClose();
-            // {"status":true,"msj":"OK"}
-
             if (data.status) {
-                $('#modalRespyTareas').modal('hide');
-                $('.modal-backdrop').hide();
+                $('#modalInforme').modal('hide');
+                $("#modalRespyTareas").modal('hide');
                 lanzarPedidoMateriales();
-                regresa1();
+                linkTo();
+                //$("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/listOrden/<?php echo $permission; ?>");
+                // WaitingClose();               
+                //regresa1();
+                
+               
             } else {
-                $('#modalRespyTareas').modal('hide');
-
                 alert('Falla | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
             }
         },
         error: function(data) {
-            WaitingClose();
-            $('#modalRespyTareas').modal('hide');
+            
             alert('Error | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
+        },
+        complete: function(){
+            WaitingClose();
         },
         dataType: 'json'
     });

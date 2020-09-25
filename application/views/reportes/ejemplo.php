@@ -70,12 +70,12 @@
             <div class="col-xs-12 col-sm-6">
               <div class="checkbox">
                 <label>
-                  <input type="checkbox" class="check" id="selSupervisor"><strong>Supervisor</strong>
+                  <input type="checkbox" class="check" id="selSupervisor"><strong>Responsable Asignado</strong>
                 </label>
               </div>
-              <select class="form-control" id="SupervisorSelec" placeholder="Seleccione supervisor...">
-                <option value="">Selecciona Supervisor...</option>
-                <option value=""></option>						  			  
+              <select class="form-control" id="SupervisorSelec" placeholder="Seleccione Responsable...">
+                <option value="">Selecciona Responsable...</option>
+                						  			  
               </select>						    	
             </div><!--Fin Supervisor -->
 
@@ -120,17 +120,14 @@
               <div class="panel-body">   
                
                 <table id="sales" class="table table-bordered table-hover">
-                  <thead>
-                    <tr>                
-                     
-
+                  <thead >
+                    <tr>          
                       <th>CÓDIGO ART</th>
                       <th>DESCRIPCIÓN</th>   
                       <th>NRO. PEDIDO</th>                 
                       <th>OT</th>
                       <th>DESCRIPCIÓN</th>
-                      <th>CANTIDAD</th>
-                     
+                      <th>CANTIDAD</th>                     
                     </tr>
                   </thead>
                   <tbody>
@@ -355,89 +352,50 @@ $("#selEquipo").click(function(e){
 
 <!-- Trear articulos en funcion de tipo de almacen -->
 <script>
-$(function (e) { 
+$(function (e) {
+  //FUNCION PARA EL CAMPO DE BUSQUEDA ARTICULOS 
   //e.preventDefault();
   $tipo = document.getElementById("TipoSelec").value; // para obetener el valor de tipo de almacen que se selecciono
-  // alert($tipo);
-   //por defecto si no se selecciono nada muestra en articulos los de la tabla herramientad, si no 1=herramientas y 2 = articulos
-  $.ajax({
-    'async': true,
-    'data': {tipo:$tipo },
-    'dataType': 'json',
-    'global': false,
-    'type': "POST",
-    'url': "reporte/getArticulo",
-    'success': function (data) {
-      console.table(data);
-      var $select = $("#ArticuloSelec");
-      if(opArticulo == 1){
-        if($tipo=='1'){
-        for (var i = 0; i < data.length; i++) {
-        
-         $select.append( $('<option />',{ value:data[i]['artId'], text:data[i]['artDescription'], title:data[i]['artBarCode'] }) );
-             }
-      }else{ // no iria en caso de que se agregue herramientas se coloca 2 opcion
-        if($tipo == '2'){
-          for (var i = 0; i < data.length; i++) {
-          $select.append( $('<option />',{ value:data[i]['herrId'], text:data[i]['herrdescrip'], title:data[i]['herrcodigo'] }) );
-            }
-        }else{
-          for (var i = 0; i < data.length; i++) {
-            $select.append( $('<option />',{ value:data[i]['artId'], text:data[i]['artDescription'], title:data[i]['artBarCode'] }) );
-             }
-        }
+      
+    var dataF = function() {
+    var tmp = null;
+    $.ajax({
+      'async': false,
+      'data': {tipo:$tipo },
+      'dataType': 'json',
+      'global': false,
+      'type': "POST",     
+      'url': "Reporte/getArticulo",
+      'success': function(data) {
+        tmp = data;
+        console.table("debug");
+        console.table(data);
       }
-       opArticulo = 0;
-      }
-     
+    });
+    return tmp;
+  }();
+  $(".buscArt").autocomplete({
+    source: dataF,
+    delay: 100,
+    minLength: 1,
+    focus: function(event, ui) {
+      // prevent autocomplete from updating the textbox
+      event.preventDefault();
+      // manually update the textbox
+      $(this).val(ui.item.label);
     },
     select: function(event, ui) {
       // prevent autocomplete from updating the textbox
       event.preventDefault();
       // manually update the textbox and hidden field
-      $(this).val(ui.item.labelcod + " - " + ui.item.label);
-      $("#idArt").val(ui.item.value);
+      $(this).val(ui.item.label);
+      $("#idArt").val(ui.item.value); // ui.item.value es IdArt del articulo que se elige
+      $id_art= ui.item.value;
+      
+
     },
   });
 
-
-  //_________________________________________________________
-  // $.ajax({
-  //   'async': true,
-  //   'data': {tipo:$tipo },
-  //   'dataType': 'json',
-  //   'global': false,
-  //   'type': "POST",
-  //   'url': "reporte/getArticulo",
-  //   'success': function (data) {
-  //     console.table(data);
-  //     var $select = $("#ArticuloSelec");
-  //     if(opArticulo == 1){
-  //       if($tipo=='1'){
-  //       for (var i = 0; i < data.length; i++) {
-        
-  //        $select.append( $('<option />',{ value:data[i]['artId'], text:data[i]['artDescription'], title:data[i]['artBarCode'] }) );
-  //            }
-  //     }else{ // no iria en caso de que se agregue herramientas se coloca 2 opcion
-  //       if($tipo == '2'){
-  //         for (var i = 0; i < data.length; i++) {
-  //         $select.append( $('<option />',{ value:data[i]['herrId'], text:data[i]['herrdescrip'], title:data[i]['herrcodigo'] }) );
-  //           }
-  //       }else{
-  //         for (var i = 0; i < data.length; i++) {
-  //           $select.append( $('<option />',{ value:data[i]['artId'], text:data[i]['artDescription'], title:data[i]['artBarCode'] }) );
-  //            }
-  //       }
-  //     }
-  //      opArticulo = 0;
-  //     }
-     
-  //   },
-  //   'error' : function (data){
-  //     console.log('Error al traer equipos');
-  //     //alert('error');
-  //   }
-  // });
 });
 
 $("#selSupervisor").click(function (e) { 
@@ -453,9 +411,13 @@ $("#selSupervisor").click(function (e) {
       
       var $select = $("#SupervisorSelec");
       if(opsup == 1){
+        //console.table($select[0].length);
       for (var i = 0; i < data.length; i++) {
+      
         $select.append( $('<option />',{ value:data[i]['usrId'], text:data[i]['usrName'], title:data[i]['usrNick'] }) );
+        
       }
+      //console.table($select[0].length);
       opsup =0;
     }
      },
@@ -474,12 +436,12 @@ $("#selSupervisor").click(function (e) {
 <script>
 //EXPORTAR TABLA A EXCEL
 function exportTableToExcel(tableID, filename = ''){
-  
     var downloadLink;
     var dataType = 'application/vnd.ms-excel';
     var tableSelect = document.getElementById(tableID);
+    console.table(tableSelect.outerText.replace(/ /g, "")); 
     var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
-    
+
     // Specify file name
     filename = filename?filename+'.xls':'excel_data.xls';
     
@@ -495,8 +457,21 @@ function exportTableToExcel(tableID, filename = ''){
         navigator.msSaveOrOpenBlob( blob, filename);
     }else{
         // Create a link to the file
-        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
-    
+        // console.table(tableHTML);
+        // console.table(tableHTML[0]);
+        // console.table(tableHTML.length);
+        // console.table(tableHTML[tableHTML.length-1]);
+        var tablaHTML = "";
+        // console.table(tablaHTML);
+        var cabezera = "<table><thead><tr><td>CodigoArt</td><td>Descripcion</td><td>Nro.Pedido</td><td>OT</td><td>Descripcion</td><td>Cantidad</td></tr></thead>";
+        //aca extraigo el solo el tbody y cabezera tendra el thead luego los concateno
+        for(var i=2912; i<tableHTML.length; i++){
+            tablaHTML = tablaHTML+tableHTML[i];
+        }
+        // console.table(cabezera);
+        // console.table(tablaHTML);
+        downloadLink.href = 'data:' + dataType + ', ' +cabezera+tablaHTML;
+        console.table( downloadLink.href);
         // Setting the file name
         downloadLink.download = filename;
         
