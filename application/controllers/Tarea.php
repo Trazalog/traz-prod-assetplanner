@@ -659,7 +659,7 @@ class Tarea extends CI_Controller {
 
 			public function ObtenerComentariosBPM($case_id){
 			
-				$data['comentarios'] = $this->bpm->ObtenerComentarios()['data'];
+				$data['comentarios'] = $this->bpm->ObtenerComentarios($case_id)['data'];
 				$data['case_id'] = $case_id;
 				$this->load->view('tareas/componentes/comentarios',$data);
 			}
