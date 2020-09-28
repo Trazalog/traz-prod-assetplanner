@@ -1,0 +1,113 @@
+<data enableBatchRequests="true" enableBoxcarring="true" name="asp/ALMDataService" serviceNamespace="Modulo ALM, dataservice" transports="http https local">
+   <config enableOData="false" id="ToolsDataSource">
+      <property name="carbon_datasource_name">AssetPlannerDataSource</property>
+   </config>
+   <query id="extraerCantidadLote" useConfig="ToolsDataSource">
+      <sql>update alm_lotes&#xd;set cantidad = cantidad - :cantidad &#xd;where codigo = :batch_id &#xd;and empr_id = :empr_id</sql>
+      <param name="cantidad" sqlType="STRING"/>
+      <param name="empr_id" sqlType="STRING"/>
+      <param name="batch_id" sqlType="STRING"/>
+   </query>
+   <query id="getDepositosPorEstablecimiento" useConfig="ToolsDataSource">
+      <sql>select descripcion,direccion,gps,depo_id&#xd;from alm_depositos&#xd;where esta_id = :esta_id</sql>
+      <result outputType="json">{"depositos": {&#xd;   "deposito":[&#xd;       {&#xd;        "descripcion":"$descripcion"&#xd;        ,"direccion":"$direccion"&#xd;        ,"gps":"$gps"&#xd;        ,"depo_id":"$depo_id"&#xd;       }&#xd;     ]&#xd;}&#xd;}</result>
+      <param name="esta_id" sqlType="STRING"/>
+   </query>
+   <query id="crearLote" useConfig="ToolsDataSource">
+      <sql>insert&#xd;	into&#xd;	lotes (prov_id,&#xd;	arti_id,&#xd;	depo_id,&#xd;	codigo,&#xd;	fec_vencimiento,&#xd;	cantidad,&#xd;	empr_id,&#xd;	user_id,&#xd;	estado)&#xd;values(:prov_id ,&#xd;:arti_id ,&#xd;:depo_id ,&#xd;:codigo,&#xd;to_date(:fec_ven, 'YYYY-MM-DD'),&#xd;:cantidad ,&#xd;:empr_id ,&#xd;:user_id ,&#xd;:estado)</sql>
+      <param name="prov_id" sqlType="STRING"/>
+      <param name="arti_id" sqlType="STRING"/>
+      <param name="depo_id" sqlType="STRING"/>
+      <param name="codigo" sqlType="STRING"/>
+      <param name="fec_ven" sqlType="STRING"/>
+   </query>
+   <query id="getTiposAjustes" useConfig="ToolsDataSource">
+      <sql>select split_part(valor,':',1) nombre&#xd;      ,split_part(valor,':',2) tipo&#xd;      ,tabl_id id &#xd;      from utl_tablas&#xd;       where tabla = 'tipos_ajuste_stock'</sql>
+      <result outputType="json">{&#xd; "tiposAjuste": {&#xd; "tipoAjuste": [&#xd; {&#xd; "nombre": "$nombre",&#xd; "tipo": "$tipo"&#xd; }&#xd; ]&#xd; }&#xd;}</result>
+   </query>
+   <query id="crearAjuste" useConfig="ToolsDataSource">
+      <sql>INSERT INTO ajustes&#xd;( tipo_ajuste&#xd;, justificacion&#xd;, usuario_app&#xd;, empr_id)&#xd;VALUES&#xd;( :tipo_ajuste&#xd;, :justificacion&#xd;, :usuario_app&#xd;, :empr_id )</sql>
+      <param name="tipo_ajuste" sqlType="STRING"/>
+      <param name="justificacion" sqlType="STRING"/>
+      <param name="usuario_app" sqlType="STRING"/>
+      <param name="empr_id" sqlType="STRING"/>
+   </query>
+   <query id="crearDetalleAjuste" useConfig="ToolsDataSource">
+      <sql>CALL ajuste_detalle_ingresar(&#xd; :ajus_id &#xd;,:lote_id &#xd;,:cantidad );</sql>
+      <param name="ajus_id" sqlType="STRING"/>
+      <param name="lote_id" sqlType="STRING"/>
+      <param name="cantidad" sqlType="STRING"/>
+   </query>
+   <query id="getLotePorArticuloYDeposito" useConfig="ToolsDataSource">
+      <sql>select codigo, lote_id&#xd;from alm_lotes &#xd;where arti_id = :arti_id  AND&#xd;depo_id = :depo_id</sql>
+      <result outputType="json">{&#xd; "lotes": {&#xd; "lote": [&#xd; {&#xd; "codigo": "$codigo",&#xd; "lote_id": "$lote_id"&#xd; }&#xd; ]&#xd; }&#xd;}</result>
+      <param name="arti_id" sqlType="STRING"/>
+      <param name="depo_id" sqlType="STRING"/>
+   </query>
+   <query id="getEstablecimientosXEmpresa" useConfig="ToolsDataSource">
+      <sql>SELECT *&#xd; FROM&#xd;establecimientos&#xd;where eliminado = false&#xd;and empr_id = :empr_id</sql>
+      <result outputType="json">{&#xd; "establecimientos": {&#xd; "establecimiento": [&#xd; {&#xd; "esta_id": "$esta_id",&#xd; "nombre": "$nombre",&#xd; "calle": "$calle",&#xd; "altura": "$altura",&#xd; "localidad": "$localidad",&#xd; "estado": "$estado",&#xd; "pais": "$pais"&#xd; }&#xd; ]&#xd; }&#xd;}</result>
+      <param name="empr_id" sqlType="STRING"/>
+   </query>
+   <query id="getArticulos" useConfig="ToolsDataSource">
+      <sql>SELECT A.*, coalesce(sum(cantidad), 0) as stock&#xd;FROM alm_articulos A&#xd;LEFT JOIN  alm_lotes C ON C.arti_id = A.arti_id&#xd;WHERE A.empr_id = cast(:empr_id as integer)&#xd;AND not A.eliminado&#xd;GROUP BY A.arti_id</sql>
+      <result outputType="json">{&#xd;    "articulos": {&#xd;        "articulo": [&#xd;            {&#xd;                "arti_id": "$arti_id",&#xd;                "barcode": "$barcode",&#xd;                "titulo": "$descripcion",&#xd;                "descripcion": "$descripcion",&#xd;                "costo": "$costo",&#xd;                "cantidad_caja": "$cantidad_caja",&#xd;                "punto_pedido": "$punto_pedido",&#xd;                "estado": "$estado",&#xd;                "unidad_medida": "$unidad_medida",&#xd;                "es_loteado": "$es_loteado",&#xd;                "stock": "$stock"&#xd;            }&#xd;        ]&#xd;    }&#xd;}</result>
+      <param name="empr_id" sqlType="STRING"/>
+   </query>
+   <resource method="POST" path="/lote/extraer">
+      <call-query href="extraerCantidadLote">
+         <with-param name="cantidad" query-param="cantidad"/>
+         <with-param name="empr_id" query-param="empr_id"/>
+         <with-param name="batch_id" query-param="batch_id"/>
+      </call-query>
+   </resource>
+   <resource method="POST" path="/lote/crear">
+      <call-query href="crearLote">
+         <with-param name="prov_id" query-param="prov_id"/>
+         <with-param name="arti_id" query-param="arti_id"/>
+         <with-param name="depo_id" query-param="depo_id"/>
+         <with-param name="codigo" query-param="codigo"/>
+         <with-param name="fec_ven" query-param="fec_ven"/>
+      </call-query>
+   </resource>
+   <resource method="GET" path="/stock/ajuste/tipo/list">
+      <call-query href="getTiposAjustes"/>
+   </resource>
+   <resource method="GET" path="/establecimiento/{esta_id}/deposito/list">
+      <call-query href="getDepositosPorEstablecimiento">
+         <with-param name="esta_id" query-param="esta_id"/>
+      </call-query>
+   </resource>
+   <resource method="POST" path="/stock/ajuste">
+      <call-query href="crearAjuste">
+         <with-param name="tipo_ajuste" query-param="tipo_ajuste"/>
+         <with-param name="justificacion" query-param="justificacion"/>
+         <with-param name="usuario_app" query-param="usuario_app"/>
+         <with-param name="empr_id" query-param="empr_id"/>
+      </call-query>
+   </resource>
+   <resource method="POST" path="/stock/ajuste/detalle">
+      <call-query href="crearDetalleAjuste">
+         <with-param name="ajus_id" query-param="ajus_id"/>
+         <with-param name="lote_id" query-param="lote_id"/>
+         <with-param name="cantidad" query-param="cantidad"/>
+      </call-query>
+   </resource>
+   <resource method="GET" path="deposito/{depo_id}/articulo/{arti_id}/lote/list">
+      <call-query href="getLotePorArticuloYDeposito">
+         <with-param name="arti_id" query-param="arti_id"/>
+         <with-param name="depo_id" query-param="depo_id"/>
+      </call-query>
+   </resource>
+   <resource method="GET" path="/establecimientos/empresa/{empr_id}">
+      <call-query href="getEstablecimientosXEmpresa">
+         <with-param name="empr_id" query-param="empr_id"/>
+      </call-query>
+   </resource>
+   <resource method="GET" path="/articulos/empresa/{empr_id}">
+      <call-query href="getArticulos">
+         <with-param name="empr_id" query-param="empr_id"/>
+      </call-query>
+   </resource>
+</data>
+
