@@ -10,8 +10,9 @@ class Establecimientos extends CI_Model
     public function listar()
     {
 				log_message('DEBUG', 'Establecimientos/listar (id etapa)-> '.$etapa);
-				$resource = '/establecimiento';
-        $url = REST2.$resource;
+				// $resource = '/establecimiento';
+        // $url = REST2.$resource;
+        $url = AJST.'/establecimientos/empresa/{empr_id}';
 				$array = $this->rest->callAPI("GET",$url); 
 				$resp =  json_decode($array['data']);		
 				return $resp;	
