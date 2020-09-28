@@ -49,7 +49,7 @@ function guardarComentario() {
 
     var html = '<hr /><li><h4>' + nombUsr + ' ' + apellUsr +
         '<small style="float: right">Hace un momento</small></h4><p>' + comentario + '</p></li>';
-    ajax({
+    $.ajax({
         type: 'POST',
         data: {
             'processInstanceId': id,
