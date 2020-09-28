@@ -653,13 +653,21 @@ class Tarea extends CI_Controller {
 		/* COMENTARIOS */
 			public function GuardarComentario(){
 				$data = $this->input->post();
+				log_message('INFO','#TRAZA|Tarea|GuardarComentario() >> ');
+    			log_message('DEBUG','#Tarea/GuardarComentario: '.json_encode($data));
 				$response = $this->bpm->GuardarComentario($data["processInstanceId"],$data["content"]);
+				log_message('DEBUG','#Tarea/GuardarComentario: '.json_encode($response));
 				echo json_encode($response);
 			}	
 
 			public function ObtenerComentariosBPM($case_id){
 			
-				$data['comentarios'] = $this->bpm->ObtenerComentarios($case_id)['data'];
+				log_message('INFO','#TRAZA|Tarea|ObtenerComentariosBPM() >> ');
+    			log_message('DEBUG','#Tarea/ObtenerComentariosBPM: '.json_encode($case_id));
+				$auxx = $this->bpm->ObtenerComentarios($case_id);
+				log_message('DEBUG','#Tarea/ObtenerComentariosBPM: '.json_encode($auxx));
+				$aux =json_decode($auxx["data"]);
+				$data['comentarios'] = $aux;
 				$data['case_id'] = $case_id;
 				$this->load->view('tareas/componentes/comentarios',$data);
 			}
