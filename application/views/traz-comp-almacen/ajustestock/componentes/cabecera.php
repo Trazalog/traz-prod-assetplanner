@@ -33,6 +33,7 @@
                     <label>Tipo de ajuste:</label>
                     <select class="form-control" id="tipoajuste" name="tipoajuste"
                         required>
+                        <!-- si no me equivoco le falta asignar el atributo data-->
                         <option value="" disabled selected>-Seleccione opcion-</option>
                     </select>
                 </div>
