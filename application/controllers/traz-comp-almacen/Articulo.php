@@ -133,7 +133,7 @@ class Articulo extends CI_Controller {
 		$empr_id = empresa();
 		// $url =  REST . 'articulos';
 		$url = AJST.'/services/asp/ALMDataService/articulos/empresa/'.$empr_id;
-		$data = $this->rest->callApi('GET',$url);
+		$data = $this->rest->callAPI('GET',$url);
 		if($data['status']) $data['data'] = json_decode($data['data'])->materias->materia;
 		echo json_encode($data);
 	}

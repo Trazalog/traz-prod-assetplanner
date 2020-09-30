@@ -11,8 +11,8 @@ class Tipoajustes extends CI_Model
     {
         // $resource = 'stock/ajuste/tipo/list';	
         // $url = REST0.$resource;
-        $url = '/services/asp/ALMDataService/stock/ajuste/tipo/list';
-        $rsp = $this->rest->callapi("GET", $url);
+        $url = AJST.'/services/asp/ALMDataService/stock/ajuste/tipo/list';
+        $rsp = $this->rest->callAPI("GET", $url);
         if(!$rsp["status"]) return $rsp;
         
         $rsp["data"] = json_decode($rsp["data"])->tiposAjuste->tipoAjuste;

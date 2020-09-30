@@ -37,7 +37,6 @@ function obtenerArticulos() {
         url: 'index.php/<?php echo ALM ?>Articulo/obtener',
         success: function(rsp) {
             // console.log(rsp);
-
             if (!rsp.status) {
                 alert('No hay Articulos Disponibles');
                 return;
