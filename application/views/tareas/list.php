@@ -16,7 +16,7 @@
                 </div><!-- /.box-header -->
                 <div class="box-body">
                     <div class="datagrid">
-                        
+                    
                     <table id="bandeja" class="table table-hover table-striped">
                             <thead>
                                 <tr>
@@ -26,6 +26,8 @@
                   echo '<th width="7%"'.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Estado</td>';
 
                   echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Asignado<br>/Fecha Asignación</td>';
+
+                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Hora Asignación</td>';
 
                   echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Equipo</td>'; 
 
@@ -58,6 +60,8 @@
                 //   var_dump($list);
                   $id=$f["id"];
                   $asig = $f['assigned_id'];
+                  $fechaasig = substr($f['assigned_date'], 0, 10);
+                  $horaasig = substr($f['assigned_date'],10);
 
                   if (strpos($permission,'Add') !== false) {
                     echo '<tr id="'.$id.'" class="'.$id.'" style="cursor: pointer;" tags="'.tagProceso($f['processId']).'" onclick="detalleTarea(this)">';
@@ -77,9 +81,12 @@
                     echo '<td '.($device == 'android' ? 'class= "celda nomTarea tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">
                     '.$f['usr_asignado'].'
                     <br>
-                    '.formato_fecha_hora($f['assigned_date']).'										
+                    '.$fechaasig.'										
                     </td>'; 
 
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">
+                    '.$horaasig.'										
+                    </td>'; 
                     
                     echo '<td '.($device == 'android' ? 'class= "celda nomTarea  tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$f['equipoDesc'].'</td>';
                     
