@@ -15,8 +15,11 @@ class Remito extends CI_Controller {
 
     public function index() // Ok
     {
-		 
-      	$data['permission'] = $this->permission;
+		if($_GET)
+		{
+			$permiso = $_GET["permisos"];
+		}
+      	$data['permission'] = $permiso;
       	$data['list'] = $this->Remitos->getRemitosList();
 		$this->load->view(ALM.'/remito/list',$data);
     }

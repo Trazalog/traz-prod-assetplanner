@@ -26,7 +26,12 @@ echo $this->multi_menu->inject_item('<li><a href="#" onClick="linkTo(\'' . SIM .
 $(".sidebar .sidebar-menu a").click(function(event) {
     event.preventDefault();
     var permission  = $(this).data("permission");
-    if($(this).attr("href").includes('almacen')) {linkTo($(this).attr("href"));return;}
+    var aux = $(this).attr("href");
+    if($(this).attr("href").includes('almacen')) {
+        // linkTo($(this).attr("href"));return;
+        var ref=aux+"?permisos="+permission;
+        linkTo(ref);return;
+        }
    
     var url         = $(this).attr("href").split("/");
     var base        = '<?php echo base_url() ?>'.split('/');
@@ -66,9 +71,9 @@ $(".sidebar .sidebar-menu a").click(function(event) {
 /**
  * Llama a la vista, mandando controlador, metodo y permisos
  */
-function cargarView(controller, action, actions) {
+function cargarView(controller, action, permission) {
     WaitingOpen();
-    linkTo(controller+"/"+action+"/"+actions);
+    linkTo(controller+"/"+action+"/"+permission);
     WaitingClose();
 }
 </script>

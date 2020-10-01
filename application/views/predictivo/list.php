@@ -4,8 +4,12 @@
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">Predictivo</h3>          
-            <button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"  id="btnAgre" >Agregar</button> 
+          <h3 class="box-title">Predictivo</h3>  
+          <?php
+                 if (strpos($permission,'Add') !== false) {
+                  echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"  id="btnAgre" >Agregar</button>';     
+                }
+          ?>            
         </div><!-- /.box-header -->
         <div class="box-body">
           <table id="sales" class="table table-bordered table-hover">
