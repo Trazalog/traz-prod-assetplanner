@@ -6,9 +6,9 @@
         <div class="box-header">
           <h3 class="box-title">Administración de Pedidos</h3>
           <?php
-          /*if (strpos($permission,'Add') !== false) {
+          if (strpos($permission,'Add') !== false) {
             echo '<button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;"  data-toggle="modal" data-target="#modalagregar" id="btnAdd">Agregar</button>'; 
-          }*/
+          }
           ?>
         </div><!-- /.box-header -->
         <div class="box-body">
