@@ -276,12 +276,27 @@ function validaInicio() {
     $("#tareaIniciada").hide();
 		// Cambia el estado de Orden servicio y de solicitud de servicio
 		$("#iniciarTarea").click(function () {  
-			
+			debugger;
 			WaitingOpen('Iniciando Tarea...');
-			var id_OT = $('#id_OT').val();
+            var id_OT = $('#id_OT').val();
+            var xlat = null;
+            var xlon = null;
+            if (!window.mobileAndTabletcheck()) {
+                if (obtenerPosicion()) {
+                console.log('LAT: ' + lat + ' - LON: ' + lon + ' - ACC: ' + ac);
+                xlat = lat;
+                xlon = lon;
+                }
+                else {
+                    alert('GPS | No se pudo Obtener Ubicación, Por favor Activar el GPS del Dispositivo.');
+                    return;
+                }
+            }else{
+                console.log('GPS | No Mobile');
+            }
 			$.ajax({
 						type: 'POST',
-						data: {id_OT: id_OT},
+						data: {id_OT: id_OT, lat:xlat, lon:xlon},
 						url: 'index.php/Tarea/inicioTarea', 
 						success: function(data){   
 										WaitingClose();                

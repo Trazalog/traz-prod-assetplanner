@@ -80,7 +80,7 @@ class Tarea extends CI_Controller {
 		
 		/*	./ FUNCIONES BPM */
 			// Bandea de entrada
-			public function index($permission = null){
+			public function index($permission){
 				///$this->load->helper('control_sesion');
 				// if	(validaSesion()){
 						$detect = new Mobile_Detect();    				
@@ -123,9 +123,12 @@ class Tarea extends CI_Controller {
 			public function inicioTarea(){
 				
 				$id_OT = $this->input->post('id_OT');
+				$lati = $this->input->post('lat');
+				$long = $this->input->post('lon')
 				$estado = 'C';
 				// graba fecha de inicio en OT
 				if ($this->Tareas->inicioTareas($id_OT)) {
+						$res = $this->Tareas->actualizarLatLng($lati,$long,$id_OT);
 						//cambia el estado a a OT
 						if ($this->Tareas->cambiarEstado($id_OT, $estado, 'OT')) {
 								// averigua origen de OT
