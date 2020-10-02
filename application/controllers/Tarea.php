@@ -80,12 +80,16 @@ class Tarea extends CI_Controller {
 		
 		/*	./ FUNCIONES BPM */
 			// Bandea de entrada
-			public function index($permission = "Add-Edit-Del-View"){
+			public function index(){
 				///$this->load->helper('control_sesion');
 				// if	(validaSesion()){
 						$detect = new Mobile_Detect();    				
 						//Obtener Bandeja de Usuario desde Bonita
 						$response = $this->bpm->getToDoList();
+						if($_GET)
+						{
+							$permiso = $_GET["permisos"];
+						}
 						//dump($response, 'respuesta tareas BPM: ');
 						if(!$response['status']){
 							//$this->load->view('404');
@@ -96,7 +100,7 @@ class Tarea extends CI_Controller {
 						// var_dump($data_extend);
 
 						$data['list'] = $data_extend;
-						$data['permission'] = $permission;		
+						$data['permission'] = $permiso;		
 
 						if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {								
 							$data['device'] = "android";
