@@ -21,7 +21,6 @@ var ac = false;
 var accMax =  parseInt($('#gps-acc').val());
 
 function success(pos) {
-    debugger;
     var crd = pos.coords;
     if ((crd.accuracy != null) || (cdr.acurrary < accMax)) {
         lat = crd.latitude;
