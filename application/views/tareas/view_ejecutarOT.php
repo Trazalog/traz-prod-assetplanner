@@ -287,13 +287,13 @@ $("#iniciarTarea").click(function () {
                 else {
                     alert('GPS | No se pudo Obtener Ubicación, Por favor Activar el GPS del Dispositivo o verifica que el sitio sea seguro (https)');
                     // return;
+                    xlat = "-00000";
+                    xlon = "-00000";
                 }
             }else{
                 console.log('GPS | No Mobile');
             }
             //borrar esto es solo de prueba por que el gps solo anda en sitios seguros
-            xlat = "-31.5349";
-            xlon = "-68.5371";
             console.table("latitud y long antes de llamar a ajax");
             console.table(xlat);
             console.table(xlon);
