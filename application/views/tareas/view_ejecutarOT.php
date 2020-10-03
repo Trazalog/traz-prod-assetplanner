@@ -290,7 +290,7 @@ function validaInicio() {
                 }
                 else {
                     alert('GPS | No se pudo Obtener Ubicación, Por favor Activar el GPS del Dispositivo.');
-                    return;
+                    // return;
                 }
             }else{
                 console.log('GPS | No Mobile');
