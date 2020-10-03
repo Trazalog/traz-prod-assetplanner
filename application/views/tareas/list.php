@@ -11,6 +11,7 @@
 
 
                     <h1 class="box-title">Mis Tareas</h1>
+                    <button id="pruebagps">gps</button>
 
 
                 </div><!-- /.box-header -->
@@ -187,6 +188,28 @@ function verTarea(idTarBonita) {
 // boton terminar tarea
 $('.btnFin').click(function() {
     var idTarBonita = $(this).parents('tr').find('td').eq(8).html();
+});
+$("#pruebagps").click(function(e){
+    debugger;
+    var xlat = null;
+    var xlon = null;
+            // if (!window.mobileAndTabletcheck()) {
+            if(true){
+                if (obtenerPosicion()) {
+                console.log('LAT: ' + lat + ' - LON: ' + lon + ' - ACC: ' + ac);
+                xlat = lat;
+                xlon = lon;
+                }
+                else {
+                    alert('GPS | No se pudo Obtener Ubicación, Por favor Activar el GPS del Dispositivo.');
+                    return;
+                }
+            }else{
+                console.log('GPS | No Mobile');
+            }
+            console.table("latitud y long antes de llamar a ajax");
+            console.table(xlat);
+            console.table(xlon);
 });
 
 // Recargar vista
