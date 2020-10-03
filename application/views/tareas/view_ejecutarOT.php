@@ -281,7 +281,8 @@ function validaInicio() {
             var id_OT = $('#id_OT').val();
             var xlat = null;
             var xlon = null;
-            if (!window.mobileAndTabletcheck()) {
+            // if (!window.mobileAndTabletcheck()) {
+            if(true){
                 if (obtenerPosicion()) {
                 console.log('LAT: ' + lat + ' - LON: ' + lon + ' - ACC: ' + ac);
                 xlat = lat;
@@ -294,6 +295,9 @@ function validaInicio() {
             }else{
                 console.log('GPS | No Mobile');
             }
+            console.table("latitud y long antes de llamar a ajax");
+            console.table(xlat);
+            console.table(xlon);
 			$.ajax({
 						type: 'POST',
 						data: {id_OT: id_OT, lat:xlat, lon:xlon},
@@ -302,11 +306,13 @@ function validaInicio() {
 										WaitingClose();                
 										if (data) {
 											$("#iniciarTarea").hide();
-											$("#tareaIniciada").show();	
+                                            $("#tareaIniciada").show();	
+                                            console.table(data);
 											// guarda el estado de la tarea (inicializado)
 											$("#estadoTarea").val(1);									
 										} else {
-											alert('Error al iniciar a Tarea...');
+                                            alert('Error al iniciar a Tarea...');
+                                            console.table(data);
 										}									
 									},            
 						error: function(data){
