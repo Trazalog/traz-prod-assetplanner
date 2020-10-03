@@ -80,16 +80,13 @@ class Tarea extends CI_Controller {
 		
 		/*	./ FUNCIONES BPM */
 			// Bandea de entrada
-			public function index(){
+			public function index($permission){
 				///$this->load->helper('control_sesion');
 				// if	(validaSesion()){
 						$detect = new Mobile_Detect();    				
 						//Obtener Bandeja de Usuario desde Bonita
 						$response = $this->bpm->getToDoList();
-						if($_GET)
-						{
-							$permiso = $_GET["permisos"];
-						}
+					
 						//dump($response, 'respuesta tareas BPM: ');
 						if(!$response['status']){
 							//$this->load->view('404');
@@ -100,7 +97,7 @@ class Tarea extends CI_Controller {
 						// var_dump($data_extend);
 
 						$data['list'] = $data_extend;
-						$data['permission'] = $permiso;		
+						$data['permission'] = $permission;		
 
 						if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {								
 							$data['device'] = "android";
@@ -128,11 +125,15 @@ class Tarea extends CI_Controller {
 				
 				$id_OT = $this->input->post('id_OT');
 				$lati = $this->input->post('lat');
-				$long = $this->input->post('lon')
+				$long = $this->input->post('lon');
 				$estado = 'C';
+				log_message('DEBUG','#Tarea/inicioTarea lat: '.json_encode($lati));
+				log_message('DEBUG','#Tarea/inicioTarea long: '.json_encode($long));
+				log_message('DEBUG','#Tarea/inicioTarea idOT: '.json_encode($id_OT));
 				// graba fecha de inicio en OT
 				if ($this->Tareas->inicioTareas($id_OT)) {
 						$res = $this->Tareas->actualizarLatLng($lati,$long,$id_OT);
+						log_message('DEBUG','#Tarea/inicioTarea: '.json_encode($res));
 						//cambia el estado a a OT
 						if ($this->Tareas->cambiarEstado($id_OT, $estado, 'OT')) {
 								// averigua origen de OT

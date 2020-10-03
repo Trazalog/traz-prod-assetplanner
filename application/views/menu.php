@@ -32,11 +32,7 @@ $(".sidebar .sidebar-menu a").click(function(event) {
         var ref=aux+"?permisos="+permission;
         linkTo(ref);return;
         }
-    if($(this).attr("href").includes('Tarea')) {
-        // linkTo($(this).attr("href"));return;
-        var ref=aux+"/index?permisos="+permission;
-        linkTo(ref);return;
-        }
+  
    
     var url         = $(this).attr("href").split("/");
     var base        = '<?php echo base_url() ?>'.split('/');
