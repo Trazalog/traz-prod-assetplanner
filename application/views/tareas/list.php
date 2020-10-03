@@ -189,6 +189,7 @@ function verTarea(idTarBonita) {
 $('.btnFin').click(function() {
     var idTarBonita = $(this).parents('tr').find('td').eq(8).html();
 });
+//PROBANDO TRAER COORDENADAS GPS
 $("#pruebagps").click(function(e){
     debugger;
     var xlat = null;
@@ -211,6 +212,7 @@ $("#pruebagps").click(function(e){
             console.table(xlat);
             console.table(xlon);
 });
+//FIN PREUBA TRAER CORDENADAS GPS
 
 // Recargar vista
 function recargar() {

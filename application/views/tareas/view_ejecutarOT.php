@@ -271,11 +271,7 @@ $('#cerrar').click(function cargarVista() {
     WaitingClose();
 });
 
-function validaInicio() {
-    $("#iniciarTarea").hide();
-    $("#tareaIniciada").hide();
-		// Cambia el estado de Orden servicio y de solicitud de servicio
-		$("#iniciarTarea").click(function () {  
+$("#iniciarTarea").click(function () {  
 			debugger;
 			WaitingOpen('Iniciando Tarea...');
             var id_OT = $('#id_OT').val();
@@ -289,7 +285,7 @@ function validaInicio() {
                 xlon = lon;
                 }
                 else {
-                    alert('GPS | No se pudo Obtener Ubicación, Por favor Activar el GPS del Dispositivo.');
+                    alert('GPS | No se pudo Obtener Ubicación, Por favor Activar el GPS del Dispositivo o verifica que el sitio sea seguro (https)');
                     // return;
                 }
             }else{
@@ -324,7 +320,13 @@ function validaInicio() {
 								},
 						dataType: 'json'
 			});
-		});																			
+		});	
+
+function validaInicio() {
+    $("#iniciarTarea").hide();
+    $("#tareaIniciada").hide();
+		// Cambia el estado de Orden servicio y de solicitud de servicio
+																				
 
     var id_OT = $('#id_OT').val();
     url = 'index.php/Tarea/confInicioTarea?id_OT=' + id_OT;
