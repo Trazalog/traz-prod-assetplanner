@@ -11,7 +11,7 @@
 
 
                     <h1 class="box-title">Mis Tareas</h1>
-                    <button id="pruebagps">gps</button>
+                    <!-- <button id="pruebagps">gps</button> -->
 
 
                 </div><!-- /.box-header -->

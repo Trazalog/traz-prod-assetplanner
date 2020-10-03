@@ -295,6 +295,9 @@ function validaInicio() {
             }else{
                 console.log('GPS | No Mobile');
             }
+            //borrar esto es solo de prueba por que el gps solo anda en sitios seguros
+            xlat = "-31.5349";
+            xlon = "-68.5371";
             console.table("latitud y long antes de llamar a ajax");
             console.table(xlat);
             console.table(xlon);
