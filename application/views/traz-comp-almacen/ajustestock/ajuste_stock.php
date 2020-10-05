@@ -41,9 +41,12 @@ function obtenerArticulos() {
                 alert('No hay Articulos Disponibles');
                 return;
             }
+            console.log(rsp);
             rsp.data.forEach(function(e, i) {
+                console.log(e);
                 $('.articulos').append(
-                    `<option value="${e.id}" data="${e.unidad_medida}">${e.barcode} | ${e.titulo}</option>`
+                    // `<option value="${e.id}" data="${e.unidad_medida}">${e.barcode} | ${e.titulo}</option>`
+                    `<option value="${e.arti_id}" data="${e.unidad_medida}">${e.barcode} | ${e.titulo}</option>`
                 );
             });
         },
