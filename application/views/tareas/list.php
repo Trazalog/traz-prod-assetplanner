@@ -64,11 +64,11 @@
                   $fechaasig = substr($f['assigned_date'], 0, 10);
                   $horaasig = substr($f['assigned_date'],10);
 
-                   if (strpos($permission,'Add') !== false) {
+                //    if (strpos($permission,'Add') !== false) {
                     echo '<tr id="'.$id.'" class="'.$id.'" style="cursor: pointer;" tags="'.tagProceso($f['processId']).'" onclick="detalleTarea(this)">';
-                   }else{
-                     echo '<tr id="'.$id.'" class="'.$id.'" style="cursor: pointer;" tags="'.tagProceso($f['processId']).'">';
-                   }
+                //    }else{
+                    //  echo '<tr id="'.$id.'" class="'.$id.'" style="cursor: pointer;" tags="'.tagProceso($f['processId']).'">';
+                //    }
                    
 
                   if ( $asig != "")  {
