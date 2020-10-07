@@ -116,7 +116,7 @@ ul.dropdown-menu {
                           echo '</ul><div>';
                         }
                         echo '</td>';                        
-                        echo '<td>'.$a['id_orden'].'</td>';                       
+                        echo '<td>'.floatval($a['id_orden']).'</td>';                       
                         $fecha_program = ($a['fecha_program'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_program']), 'd-m-Y');
                         echo '<td>'.$fecha_program.'</td>';
                         $fecha_inicio = ($a['fecha_inicio'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_inicio']), 'd-m-Y');
