@@ -206,7 +206,7 @@ class BPM
         return msj(true,'OK', json_decode($rsp['data'],true));
     }
 
-    public function guardarComentario($caseId, $comentario)
+    public function guardarComentario($caseId, $comentario, $usrnick)
     {
         $data = array(
             'processInstanceId'=> $caseId, 
@@ -214,8 +214,6 @@ class BPM
         );
 
         $url = BONITA_URL .  'API/bpm/comment';
-        $userdata = $this->session->userdata('user_data');
-        $usrnick = $userdata[0]['usrNick'];
         $rsp = $this->REST->callAPI('POST', $url, $data, $this->loggin($usrnick, BPM_ADMIN_PASS));
 
         if(!$rsp['status']){
