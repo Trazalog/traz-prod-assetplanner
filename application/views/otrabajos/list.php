@@ -117,11 +117,11 @@ ul.dropdown-menu {
                         }
                         echo '</td>';                        
                         echo '<td>'.floatval($a['id_orden']).'</td>';                       
-                        $fecha_program = ($a['fecha_program'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_program']), 'd-m-Y');
+                        $fecha_program = ($a['fecha_program'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_program']), 'Y-m-d');
                         echo '<td>'.$fecha_program.'</td>';
-                        $fecha_inicio = ($a['fecha_inicio'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_inicio']), 'd-m-Y');
+                        $fecha_inicio = ($a['fecha_inicio'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_inicio']), 'Y-m-d');
                         echo '<td>'.$fecha_inicio.'</td>';
-                        $fecha_terminada = ($a['fecha_terminada'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_terminada']), 'd-m-Y');
+                        $fecha_terminada = ($a['fecha_terminada'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_terminada']), 'Y-m-d');
                         echo '<td>'.$fecha_terminada.'</td>';
                         echo '<td>'.$a['descripcion'].'</td>';
                         echo '<td>'.$a['codigo'].' </td>';

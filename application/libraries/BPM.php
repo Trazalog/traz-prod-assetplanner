@@ -214,8 +214,9 @@ class BPM
         );
 
         $url = BONITA_URL .  'API/bpm/comment';
-
-        $rsp = $this->REST->callAPI('POST', $url, $data, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
+        $userdata = $this->session->userdata('user_data');
+        $usrnick = $userdata[0]['usrNick'];
+        $rsp = $this->REST->callAPI('POST', $url, $data, $this->loggin($usrnick, BPM_ADMIN_PASS));
 
         if(!$rsp['status']){
             
