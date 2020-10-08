@@ -663,9 +663,7 @@ class Tarea extends CI_Controller {
 				$data = $this->input->post();
 				log_message('INFO','#TRAZA|Tarea|GuardarComentario() >> ');
 				log_message('DEBUG','#Tarea/GuardarComentario: '.json_encode($data));
-				$userdata = $this->session->userdata('user_data');
-        		$usrnick = $userdata[0]['usrNick'];
-				$response = $this->bpm->GuardarComentario($data["processInstanceId"],$data["content"],$usrnick);
+				$response = $this->bpm->GuardarComentario($data["processInstanceId"],$data["content"]);
 				log_message('DEBUG','#Tarea/GuardarComentario: '.json_encode($response));
 				echo json_encode($response);
 			}	
