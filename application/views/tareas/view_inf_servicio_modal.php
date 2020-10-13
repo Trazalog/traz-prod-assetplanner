@@ -700,7 +700,7 @@
       var hayError = false;
       var hayError2 = false;
       var hayError3 = false;
-
+      var hayError4 = false;
       // validacion Lecturas Realizadas
       // if ($('#lectura_inicio').val() == '') {
       //   hayError3 = true;       
@@ -708,9 +708,19 @@
       // if ($('#lectura_fin').val() == '') {
       //   hayError3 = true;        
       // }
+      // if ($("#spanNuevaLectura").text() != 0) {
+      //   if($('#lectura_fin').val() < $("#spanNuevaLectura").text()){
+      //        hayError3 = "lectura";
+      //    }
+      // }
       if ($("#spanNuevaLectura").text() != 0) {
-        if($('#lectura_fin').val() < $("#spanNuevaLectura").text()){
+        if($('#lectura_fin').val() <= $("#spanNuevaLectura").text()){
              hayError3 = "lectura";
+         }
+      }
+      if ($("#spanNuevaLectura").text() != 0) {
+        if($('#lectura_inicio').val() < $("#spanNuevaLectura").text()){
+             hayError4 = "lectura";
          }
       }
       if ($('#fecha_inicio').val() == '') {
@@ -727,6 +737,11 @@
 
       // Error Lecturas Realizadas
       if(hayError3 == 'lectura'){
+        $('#errorLecturas2').fadeIn('slow');
+        activaTab('lecturaTab');
+        return;
+      }
+      if(hayError4 == 'lectura'){
         $('#errorLecturas2').fadeIn('slow');
         activaTab('lecturaTab');
         return;
