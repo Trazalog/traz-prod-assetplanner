@@ -158,11 +158,9 @@ class Lotes extends CI_Model {
 	public function listarPorArticulos($idarticulo,$iddeposito){
 
         // log_message('DEBUG', '#MODEL > listarPorArticulos | ID_ARTICULO: ' .$idarticulo);
-        // $resource = 'deposito/'.$iddeposito.'/articulo/'.$idarticulo.'/lote/list'; 	
-		// $url = REST0.$resource;
 		$url = AJST.'/services/asp/ALMDataService/deposito/'.$iddeposito.'/articulo/'.$idarticulo.'/lote/list';
 		$array = $this->rest->callAPI("GET",$url);
-		$resp =  json_decode($array['data']);		
-		return $resp;	                
+		$resp =  json_decode($array['data']);
+		return $resp;
     }
 }

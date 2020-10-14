@@ -9,7 +9,7 @@ class Establecimientos extends CI_Model
     }
     public function listar()
     {
-				log_message('DEBUG', 'Establecimientos/listar (id etapa)-> '.$etapa);
+				// log_message('DEBUG', 'Establecimientos/listar (id etapa)-> '.$etapa);
 				// $resource = '/establecimiento';
         // $url = REST2.$resource;
         $empr_id = empresa();

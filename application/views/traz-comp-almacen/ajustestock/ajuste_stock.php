@@ -22,7 +22,7 @@
         $this->load->view(ALM.'ajustestock/componentes/justificacion');
     ?>
     <?php 
-        $this->load->view('traz-comp-form/scripts.php');
+        // $this->load->view('traz-comp-form/scripts.php');
     ?>
 </form>
 </div>
@@ -34,18 +34,15 @@ function obtenerArticulos() {
     $.ajax({
         type: 'GET',
         dataType: 'JSON',
-        url: 'index.php/<?php echo ALM ?>Articulo/obtener',
+        url: 'traz-comp-almacen/Articulo/obtener',
         success: function(rsp) {
-            // console.log(rsp);
-            if (!rsp.status) {
-                alert('No hay Articulos Disponibles');
-                return;
-            }
+            // if (!rsp.status) {
+            //     alert('No hay Articulos Disponibles');
+            //     return;
+            // }
             console.log(rsp);
-            rsp.data.forEach(function(e, i) {
-                console.log(e);
+            rsp.articulos.articulo.forEach(function(e) {
                 $('.articulos').append(
-                    // `<option value="${e.id}" data="${e.unidad_medida}">${e.barcode} | ${e.titulo}</option>`
                     `<option value="${e.arti_id}" data="${e.unidad_medida}">${e.barcode} | ${e.titulo}</option>`
                 );
             });
@@ -67,15 +64,15 @@ $("#articulosal").on('change', function() {
 });
 
 $("#articulosal").on('change', function() {
-    $idarticulo = $("#articulosal>option:selected").val();
-    $iddeposito = $("#deposito>option:selected").val();
+    var idarticulo = $("#articulosal>option:selected").val();
+    var iddeposito = $("#deposito>option:selected").val();
     // codigo referido a la muestra de lotes por articulos
     $.ajax({
         type: 'GET',
         dataType: 'json',
-        url: '<?php echo ALM ?>Lote/listarPorArticulo?arti_id=' + $idarticulo + '&depo_id=' +
-            $iddeposito,
+        url: '<?php echo ALM ?>Lote/listarPorArticulo?arti_id=' + idarticulo + '&depo_id=' + iddeposito,
         success: function(result) {
+            console.log("success del ajax");
             if (result == null) {
                 var option_lote = '<option value="" disabled selected>Sin lotes</option>';
                 // $('#deposito').html(option_depo);
@@ -83,9 +80,7 @@ $("#articulosal").on('change', function() {
             } else {
                 var option_lote = '<option value="" disabled selected>-Seleccione opcion-</option>';
                 for (let index = 0; index < result.length; index++) {
-                    option_lote += '<option value="' + result[index].lote_id + '">' + result[index]
-                        .codigo +
-                        '</option>';
+                    option_lote += '<option value="' + result[index].lote_id + '">' + result[index].codigo +'</option>';
                 }
             }
             $('#lotesal').html(option_lote);
@@ -97,14 +92,13 @@ $("#articulosal").on('change', function() {
 });
 
 $("#articuloent").on('change', function() {
-    $idarticulo = $("#articuloent>option:selected").val();
-    $iddeposito = $("#deposito>option:selected").val();
+    var idarticulo = $("#articuloent>option:selected").val();
+    var iddeposito = $("#deposito>option:selected").val();
     // codigo referido a la muestra de lotes por articulos
     $.ajax({
         type: 'GET',
         dataType: 'json',
-        url: '<?php echo ALM ?>Lote/listarPorArticulo?arti_id=' + $idarticulo + '&depo_id=' +
-            $iddeposito,
+        url: '<?php echo ALM ?>Lote/listarPorArticulo?arti_id=' + idarticulo + '&depo_id=' + iddeposito,
         success: function(result) {
             if (result == null) {
                 var option_lote = '<option value="" disabled selected>Sin lotes</option>';
@@ -130,7 +124,6 @@ function guardar(){
     //esta funcion guarda el ajuste y espera un id_ajuste para luego llamar a otra funcion con este id que va a ser la encargada de guardar los datos especificos del lote (dependiendo si es entrada o salida) 
     var formdata = new FormData($("#formTotal")[0]);
     var formobj = formToObject(formdata);
-    // console.log(formobj);
     $.ajax({
         type: 'POST',
         data: {
@@ -138,6 +131,7 @@ function guardar(){
         },
         url: '<?php echo ALM ?>Ajustestock/guardarAjuste',
         success: function(rsp) {
+            console.log(rsp);
             if(!rsp){
                 alert("error");
                 return;
