@@ -2,19 +2,19 @@
     <div class="col-md-12">
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title">Salida de deposito</h3>
+                <h3 class="box-title">Recepción de deposito</h3>
             </div>
             <div class="box-body">
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <label>Nro. Comprobante</label>
+                            <label>Remito enviado</label>
                             <input type="number" class="form-control">
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <label>Fecha</label>
+                            <label>Fecha actual</label>
                             <div class="input-group date">
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
@@ -23,27 +23,26 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <label>Establecimiento destino</label>
-                        <?php 
-                        echo "<select class='form-control'>";
-                        echo "<option selected disabled> Default </option>";
-                        foreach($establecimiento as $esta){
-                            echo "<option id='$esta.id'>$esta.nombre</option>";
-                        }
-                        echo "</select>";
-                        ?>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Fecha envío</label>
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" id="datepicker">
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-3">
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Establecimiento origen</label>
+                        <input id="conductor" class="form-control">
+                    </div>
+                    <div class="col-md-4">
                         <label>Deposito</label>
-                        <?php 
-                        echo "<select class='form-control'>";
-                        echo "<option selected disabled> Default </option>";
-                        foreach($depositos as $depo){
-                            echo "<option id='$depo.id'>$depo.nombre</option>";
-                        }
-                        echo "</select>";
-                        ?>
+                        <input id="conductor" class="form-control">
                     </div>
                 </div>
             </div>
@@ -55,7 +54,7 @@
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-4">
-                        <label>Conductor</label>
+                        <label>Patente</label>
                         <input id="conductor" class="form-control">
                     </div>
                     <div class="col-md-4">
@@ -75,16 +74,16 @@
                 <h3 class="box-title">Productos a cargar</h3>
             </div>
             <div class="box-header">
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col-md-4">
                         <label>Deposito origen</label>
                         <?php 
-                        echo "<select class='form-control'>";
-                        echo "<option selected disabled> Default </option>";
-                        foreach($deposito as $depo){
-                            echo "<option id='$depo.id'>$depo.nombre</option>";
-                        }
-                        echo "</select>";
+                        // echo "<select class='form-control'>";
+                        // echo "<option selected disabled> Default </option>";
+                        // foreach($deposito as $depo){
+                        //     echo "<option id='$depo.id'>$depo.nombre</option>";
+                        // }
+                        // echo "</select>";
                         ?>
                     </div>
                     <div class="col-md-4">
@@ -95,26 +94,27 @@
                         <label>Cantidad</label>
                         <input type="number" id="cant_id" class="form-control">
                     </div>
-                </div>
-                <br>
+                </div> -->
+                <!-- <br>
                 <div class="row">
                     <div class="col-md-3" style="float:right">
                         <button class="btn btn-primary " style="float:right;" onclick="agregarProducto()"><i
                                 class="fa fa-check"></i>Agregar</button>
                     </div>
-                </div>
+                </div> -->
                 <div class="row">
                     <div class="col-md-12">
-                        <br><br>
+                        <!-- <br><br> -->
                         <table class="egt" id="myTable">
                             <thead>
                                 <tr>
-                                    <td>Deposito origen</td>
-                                    <td>Lote</td>
                                     <td>Código</td>
+                                    <td>Lote</td>
                                     <td>Artículo</td>
-                                    <td>Cantidad</td>
-                                    <td>UM</td>
+                                    <td>Cantidad enviada</td>
+                                    <td>Cantidad recepción</td>
+                                    <td>Deposito descargar</td>
+                                    <td>Estado</td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -125,6 +125,7 @@
                                     <td>Celda 4</td>
                                     <td>Celda 5</td>
                                     <td>Celda 6</td>
+                                    <td>Celda 7</td>
                                 </tr>
                                 <tr>
                                     <td>Celda 1</td>
@@ -133,6 +134,7 @@
                                     <td>Celda 4</td>
                                     <td>Celda 5</td>
                                     <td>Celda 6</td>
+                                    <td>Celda 7</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -174,4 +176,6 @@ $('#datepicker').datepicker({
 });
 
 $('#myTable').DataTable("");
+
+
 </script>
