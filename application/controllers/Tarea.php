@@ -80,12 +80,13 @@ class Tarea extends CI_Controller {
 		
 		/*	./ FUNCIONES BPM */
 			// Bandea de entrada
-			public function index($permission = null){
+			public function index($permission){
 				///$this->load->helper('control_sesion');
 				// if	(validaSesion()){
 						$detect = new Mobile_Detect();    				
 						//Obtener Bandeja de Usuario desde Bonita
 						$response = $this->bpm->getToDoList();
+					
 						//dump($response, 'respuesta tareas BPM: ');
 						if(!$response['status']){
 							//$this->load->view('404');
@@ -123,9 +124,16 @@ class Tarea extends CI_Controller {
 			public function inicioTarea(){
 				
 				$id_OT = $this->input->post('id_OT');
+				$lati = $this->input->post('lat');
+				$long = $this->input->post('lon');
 				$estado = 'C';
+				log_message('DEBUG','#Tarea/inicioTarea lat: '.json_encode($lati));
+				log_message('DEBUG','#Tarea/inicioTarea long: '.json_encode($long));
+				log_message('DEBUG','#Tarea/inicioTarea idOT: '.json_encode($id_OT));
 				// graba fecha de inicio en OT
 				if ($this->Tareas->inicioTareas($id_OT)) {
+						$res = $this->Tareas->actualizarLatLng($lati,$long,$id_OT);
+						log_message('DEBUG','#Tarea/inicioTarea: '.json_encode($res));
 						//cambia el estado a a OT
 						if ($this->Tareas->cambiarEstado($id_OT, $estado, 'OT')) {
 								// averigua origen de OT
@@ -653,13 +661,21 @@ class Tarea extends CI_Controller {
 		/* COMENTARIOS */
 			public function GuardarComentario(){
 				$data = $this->input->post();
+				log_message('INFO','#TRAZA|Tarea|GuardarComentario() >> ');
+				log_message('DEBUG','#Tarea/GuardarComentario: '.json_encode($data));
 				$response = $this->bpm->GuardarComentario($data["processInstanceId"],$data["content"]);
+				log_message('DEBUG','#Tarea/GuardarComentario: '.json_encode($response));
 				echo json_encode($response);
 			}	
 
 			public function ObtenerComentariosBPM($case_id){
 			
-				$data['comentarios'] = $this->bpm->ObtenerComentarios()['data'];
+				log_message('INFO','#TRAZA|Tarea|ObtenerComentariosBPM() >> ');
+    			log_message('DEBUG','#Tarea/ObtenerComentariosBPM: '.json_encode($case_id));
+				$auxx = $this->bpm->ObtenerComentarios($case_id);
+				log_message('DEBUG','#Tarea/ObtenerComentariosBPM: '.json_encode($auxx));
+				$aux =json_decode($auxx["data"]);
+				$data['comentarios'] = $aux;
 				$data['case_id'] = $case_id;
 				$this->load->view('tareas/componentes/comentarios',$data);
 			}

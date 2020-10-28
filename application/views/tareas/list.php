@@ -11,12 +11,13 @@
 
 
                     <h1 class="box-title">Mis Tareas</h1>
+                    <!-- <button id="pruebagps">gps</button> -->
 
 
                 </div><!-- /.box-header -->
                 <div class="box-body">
                     <div class="datagrid">
-                        
+                    
                     <table id="bandeja" class="table table-hover table-striped">
                             <thead>
                                 <tr>
@@ -25,7 +26,11 @@
 
                   echo '<th width="7%"'.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Estado</td>';
 
-                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Asignado<br>/Fecha Asignación</td>';
+                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Asignado</td>';
+
+                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Fecha Asignación</td>';
+
+                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Hora Asignación</td>';
 
                   echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Equipo</td>'; 
 
@@ -58,8 +63,15 @@
                 //   var_dump($list);
                   $id=$f["id"];
                   $asig = $f['assigned_id'];
+                  $fechaasig = substr($f['assigned_date'], 0, 10);
+                  $horaasig = substr($f['assigned_date'],10);
 
-                  echo '<tr id="'.$id.'" class="'.$id.'" style="cursor: pointer;" tags="'.tagProceso($f['processId']).'" onclick="detalleTarea(this)">';                   
+                //    if (strpos($permission,'Add') !== false) {
+                    echo '<tr id="'.$id.'" class="'.$id.'" style="cursor: pointer;" tags="'.tagProceso($f['processId']).'" onclick="detalleTarea(this)">';
+                //    }else{
+                    //  echo '<tr id="'.$id.'" class="'.$id.'" style="cursor: pointer;" tags="'.tagProceso($f['processId']).'">';
+                //    }
+                   
 
                   if ( $asig != "")  {
                     echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea text-center"').'><i class="fa fa-user" style="color: #5c99bc ; cursor: pointer;"" title="Asignado" data-toggle="modal" data-target="#modalSale"></i></td>';
@@ -69,12 +81,13 @@
                   
                     echo '</td>';
 
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">
-                    '.$f['usr_asignado'].'
-                    <br>
-                    '.formato_fecha_hora($f['assigned_date']).'										
-                    </td>'; 
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$f['usr_asignado'].'</td>'; 
 
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$fechaasig.'</td>'; 
+
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">
+                    '.$horaasig.'										
+                    </td>'; 
                     
                     echo '<td '.($device == 'android' ? 'class= "celda nomTarea  tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$f['equipoDesc'].'</td>';
                     
@@ -176,6 +189,30 @@ function verTarea(idTarBonita) {
 $('.btnFin').click(function() {
     var idTarBonita = $(this).parents('tr').find('td').eq(8).html();
 });
+//PROBANDO TRAER COORDENADAS GPS
+$("#pruebagps").click(function(e){
+    debugger;
+    var xlat = null;
+    var xlon = null;
+            // if (!window.mobileAndTabletcheck()) {
+            if(true){
+                if (obtenerPosicion()) {
+                console.log('LAT: ' + lat + ' - LON: ' + lon + ' - ACC: ' + ac);
+                xlat = lat;
+                xlon = lon;
+                }
+                else {
+                    alert('GPS | No se pudo Obtener Ubicación, Por favor Activar el GPS del Dispositivo.');
+                    return;
+                }
+            }else{
+                console.log('GPS | No Mobile');
+            }
+            console.table("latitud y long antes de llamar a ajax");
+            console.table(xlat);
+            console.table(xlon);
+});
+//FIN PREUBA TRAER CORDENADAS GPS
 
 // Recargar vista
 function recargar() {

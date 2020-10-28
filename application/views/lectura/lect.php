@@ -41,7 +41,11 @@
             </div><br>
             <div class="row">
               <div class="col-xs-12">
-                <button type="button" class="btn btn-primary" id="add"><i class="fa fa-check"></i>Agregar</button>      
+              <?php
+                 if (strpos($permission,'Add') !== false) {
+                  echo '<button type="button" class="btn btn-primary" id="add"><i class="fa fa-check"></i>Agregar</button>';     
+                }
+              ?>
               </div>
             </div>
 

@@ -271,27 +271,47 @@ $('#cerrar').click(function cargarVista() {
     WaitingClose();
 });
 
-function validaInicio() {
-    $("#iniciarTarea").hide();
-    $("#tareaIniciada").hide();
-		// Cambia el estado de Orden servicio y de solicitud de servicio
-		$("#iniciarTarea").click(function () {  
-			
+$("#iniciarTarea").click(function () {  
+			debugger;
 			WaitingOpen('Iniciando Tarea...');
-			var id_OT = $('#id_OT').val();
+            var id_OT = $('#id_OT').val();
+            var xlat = null;
+            var xlon = null;
+            // if (!window.mobileAndTabletcheck()) {
+            if(true){
+                if (obtenerPosicion()) {
+                console.log('LAT: ' + lat + ' - LON: ' + lon + ' - ACC: ' + ac);
+                xlat = lat;
+                xlon = lon;
+                }
+                else {
+                    alert('GPS | No se pudo Obtener Ubicación, Por favor Activar el GPS del Dispositivo o verifica que el sitio sea seguro (https)');
+                    // return;
+                    xlat = "-00000";
+                    xlon = "-00000";
+                }
+            }else{
+                console.log('GPS | No Mobile');
+            }
+            //borrar esto es solo de prueba por que el gps solo anda en sitios seguros
+            console.table("latitud y long antes de llamar a ajax");
+            console.table(xlat);
+            console.table(xlon);
 			$.ajax({
 						type: 'POST',
-						data: {id_OT: id_OT},
+						data: {id_OT: id_OT, lat:xlat, lon:xlon},
 						url: 'index.php/Tarea/inicioTarea', 
 						success: function(data){   
 										WaitingClose();                
 										if (data) {
 											$("#iniciarTarea").hide();
-											$("#tareaIniciada").show();	
+                                            $("#tareaIniciada").show();	
+                                            console.table(data);
 											// guarda el estado de la tarea (inicializado)
 											$("#estadoTarea").val(1);									
 										} else {
-											alert('Error al iniciar a Tarea...');
+                                            alert('Error al iniciar a Tarea...');
+                                            console.table(data);
 										}									
 									},            
 						error: function(data){
@@ -300,7 +320,13 @@ function validaInicio() {
 								},
 						dataType: 'json'
 			});
-		});																			
+		});	
+
+function validaInicio() {
+    $("#iniciarTarea").hide();
+    $("#tareaIniciada").hide();
+		// Cambia el estado de Orden servicio y de solicitud de servicio
+																				
 
     var id_OT = $('#id_OT').val();
     url = 'index.php/Tarea/confInicioTarea?id_OT=' + id_OT;

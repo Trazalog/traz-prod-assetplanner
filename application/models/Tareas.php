@@ -310,6 +310,14 @@ class Tareas extends CI_Model
         return $result;
     }
 
+    //actualiza latitud y longitud de la OT
+    public function actualizarLatLng($lati, $long, $id_OT)
+    {
+        $this->db->where('id_orden', $id_OT);
+        $result = $this->db->update('orden_trabajo', array('latitud' => $lati, 'longitud' => $long));
+        return $result;
+    }
+
     // marca fin de Tarea en OT
     public function finTareas($id_OT)
     {

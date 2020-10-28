@@ -1088,11 +1088,15 @@ function llenarModal(data) {
         //borro los datos de la tabla
         $('#tblhistorial').DataTable().clear().draw();
         for (var i = 0; i < data.length; i++) {
+            var fecha =  data[i]['fecha'].substr(0,10);
+            var hora =   data[i]['fecha'].substr(10,17);
+            var lectura = parseFloat(data[i]['lectura']);
             $('#tblhistorial').DataTable().row.add([
                 '<i class="fa fa-fw fa-pencil text-light-blue editLectura" style="cursor: pointer; margin-left: 15px;" title="Editar lectura" data-idLectura="' +
                 data[i]['id_lectura'] + '"></i>',
-                data[i]['lectura'],
-                data[i]['fecha'],
+                lectura,
+                fecha,
+                hora,
                 data[i]['operario_nom'],
                 data[i]['turno'],
                 data[i]['observacion'],
@@ -2398,6 +2402,7 @@ $('#tablaempresa').DataTable({
                             <th>Edición</th>
                             <th>Lectura</th>
                             <th>Fecha</th>
+                            <th>Hora</th>
                             <th>Operario</th>
                             <th>Turno</th>
                             <th>Observación</th>

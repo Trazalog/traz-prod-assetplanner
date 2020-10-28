@@ -16,11 +16,15 @@ class Notapedido extends CI_Controller
     {
         $this->load->model('traz-comp/Componentes');
         #COMPONENTE ARTICULOS
+        if($_GET)
+		{
+			$permiso = $_GET["permisos"];
+		}
         $data['items'] = $this->Componentes->listaArticulos();
         $data['lang'] = lang_get('spanish', 'Ejecutar OT');
 
         $data['list'] = $this->Notapedidos->notaPedidos_List();
-        $data['permission'] = $this->permission;
+        $data['permission'] = $permiso;
         $this->load->view(ALM . '/notapedido/list', $data);
     }
 

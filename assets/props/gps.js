@@ -1,5 +1,6 @@
 navigator.geolocation.getCurrentPosition(success, error, options);
 function obtenerPosicion() {
+    debugger;
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(success, error, options);
         return (lat && lon);

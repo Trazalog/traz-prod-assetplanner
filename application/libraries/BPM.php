@@ -214,8 +214,8 @@ class BPM
         );
 
         $url = BONITA_URL .  'API/bpm/comment';
-
-        $rsp = $this->REST->callAPI('POST', $url, $data, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
+       # $rsp = $this->REST->callAPI('POST', $url, $data, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
+        $rsp = $this->REST->callAPI('POST', $url, $data, $this->loggin(userNick(), BPM_USER_PASS));
 
         if(!$rsp['status']){
             
@@ -388,7 +388,7 @@ class BPM
 			if(!$rsp['status']){
 
 					log_message('DEBUG','#TRAZA | #BPM >> '.ASP_109);
-					validaSesionBPM();
+					#validaSesionBPM();
 					return false;
 
 			}
