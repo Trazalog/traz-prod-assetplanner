@@ -11,7 +11,6 @@ class Ajustestock extends CI_Controller
     public function index()
     {
         $data['establecimientos'] = $this->Establecimientos->listar()->establecimientos->establecimiento;
-        
         $this->load->view(ALM.'ajustestock/ajuste_stock',$data);
     }
 

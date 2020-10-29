@@ -52,10 +52,10 @@ class Lote extends CI_Controller {
 		echo $this->Lotes->verificarExistencia($arti, $lote, $depo);
 	}
 	public function listarPorArticulo(){
-
+		
         $idarticulo = $this->input->get("arti_id");
-        $iddeposito = $this->input->get("depo_id");
-        $datos = $this->Lotes->listarPorArticulos($idarticulo,$iddeposito)->lotes->lote;
+		$iddeposito = $this->input->get("depo_id");
+		$datos = $this->Lotes->listarPorArticulos($idarticulo,$iddeposito)->lotes->lote;
         echo json_encode($datos);
     }
 }
