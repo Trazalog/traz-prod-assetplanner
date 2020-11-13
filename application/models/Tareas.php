@@ -1018,4 +1018,11 @@ class Tareas extends CI_Model
 
         return true;
     }
+    public function CambiarEstadoPedidoMat($id)
+    {
+        $this->db->set('estado', 'Entregado');
+        $this->db->where('case_id', $id);
+        $query = $this->db->update('alm_pedidos_materiales');
+        return $query;
+    }
 }

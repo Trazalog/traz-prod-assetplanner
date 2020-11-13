@@ -776,7 +776,26 @@ class Tarea extends CI_Controller {
 
 
 	/*  ./ INTEGRACION CON BPM */
-	
+	public function CerrarTarea()
+	{
+		$id = $this->input->post('IdtarBonita');
+		$case_id= $this->input->post('caseid');
+		$contract = array(
+			"entregaCompleta" => "true"
+		);
+		$result = $this->bpm->cerrarTarea($id, $contract);
+		if ($result['status']){
+			$resp = $this->Tareas->CambiarEstadoPedidoMat($case_id);
+			if($resp){
+				echo "ok";
+			}else{
+				echo "error";
+			}
+			
+		}else{
+			echo json_encode(['status'=>false, 'msj'=> 'Error al cerrar Tarea']);
+		}
+	}
 
 	
 } 
