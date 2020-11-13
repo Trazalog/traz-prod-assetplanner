@@ -191,7 +191,7 @@
         url: 'index.php/Tarea/CerrarTarea',
         success: function(result) {
 		  debugger;
-		  if(result=="ok")
+		  if(result==" ok")
 		  {
 			$("#modalaviso").modal("hide");
 			alert("Tarea Cerrada Exitosamente");
