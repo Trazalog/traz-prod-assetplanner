@@ -51,7 +51,7 @@
                                 </div>
                             </div>
 
-                           <?php $this->load->view('kpis/disponibilidad'); ?>
+                           <?php //$this->load->view('kpis/disponibilidad'); ?>
                         </div>
 
                         <div class="col-md-3 col-xs-12 daterange">
@@ -88,9 +88,9 @@
 
 
 <?php
-  $kpiot = cantTipoOrdenTrabajo();
+  //$kpiot = cantTipoOrdenTrabajo();
 
-  $equipoOperativo = sacarEquiposOperativos();
+  //$equipoOperativo = sacarEquiposOperativos();
 ?>
 
 <style type="text/css">
@@ -111,7 +111,7 @@
 
 /* obtengo datos de disponibilidad */
 var idEquipo = 'all';
-getDisponibilidad(idEquipo);
+//getDisponibilidad(idEquipo);
 
 function getDisponibilidad(idEquipo) {
     //WaitingOpen("Obteniendo datos de disponibilidad...");
@@ -248,45 +248,45 @@ $('#checkboxEquipoID').focusin(function() {
     //console.log('Equipos');
     $(this).prev().prop("checked", true);
 });
-$('#radioDisponibilidadAll').focusin(function() {
-    //console.log('Todos');
-    getDisponibilidad('all');
-});
+// $('#radioDisponibilidadAll').focusin(function() {
+//     //console.log('Todos');
+//     getDisponibilidad('all');
+// });
 
 // autocomplete para codigo
-var dataEquipos = function() {
-    var tmp = null;
-    $.ajax({
-        'async': false,
-        'type': "POST",
-        'global': false,
-        'dataType': 'json',
-        'url': "index.php/Otrabajo/getEquipoDisponibilidad",
-        'success': function(data) {
-            tmp = data;
-        }
-    });
-    return tmp;
-}();
-$("#checkboxEquipoID").autocomplete({
-    source: dataEquipos,
-    delay: 500,
-    minLength: 1,
-    focus: function(event, ui) {
-        event.preventDefault();
-        $(this).val(ui.item.label);
-    },
-    select: function(event, ui) {
-        event.preventDefault();
-        $(this).val(ui.item.label); //value
+// var dataEquipos = function() {
+//     var tmp = null;
+//     $.ajax({
+//         'async': false,
+//         'type': "POST",
+//         'global': false,
+//         'dataType': 'json',
+//         'url': "index.php/Otrabajo/getEquipoDisponibilidad",
+//         'success': function(data) {
+//             tmp = data;
+//         }
+//     });
+//     return tmp;
+// }();
+// $("#checkboxEquipoID").autocomplete({
+//     source: dataEquipos,
+//     delay: 500,
+//     minLength: 1,
+//     focus: function(event, ui) {
+//         event.preventDefault();
+//         $(this).val(ui.item.label);
+//     },
+//     select: function(event, ui) {
+//         event.preventDefault();
+//         $(this).val(ui.item.label); //value
 
-        getDisponibilidad(ui.item.value);
-    },
-});
+//         getDisponibilidad(ui.item.value);
+//     },
+// });
 
 
 
-graficarMantenimiento();
+//graficarMantenimiento();
 
 
 function graficarMantenimiento() {
@@ -324,7 +324,7 @@ function graficarMantenimiento() {
                     //     "#11aa44",
                     //     "#11dd11"
                     // ]
-                }]
+                //}]
         },
         options: {
          //   cutoutPercentage: 40,
@@ -360,7 +360,7 @@ function graficarMantenimiento() {
 
 
 
-graficarEquiposOperativos();
+//graficarEquiposOperativos();
 /* grafico KPI Equipos Operativos */
 function graficarEquiposOperativos() {
    // WaitingOpen("Obteniendo datos de Equipos Operativos...");

@@ -73,12 +73,20 @@ function AbrirModal() {
     $('#agregar_pedido').modal('show');
 }
 
+// si cierra modal sin lanzar proceso, borra la nota de pedido de materiales
+$('#agregar_pedido').on('hidden.bs.modal', function (e) {
+  //alert('cerro modal');
+	descartarPedido();
+})
+
+
 function descartarPedido() {
+
     var id = $('#pema_id').val();
     if (!id) return;
-    $.ajax({
+		$.ajax({
         type: 'POST',
-        url: 'index.php/almacen/Notapedido/eliminar',
+				url: 'index.php/<?php echo CMP_ALM ?>Notapedido/eliminar',
         data: {
             id
         },

@@ -129,7 +129,7 @@ function ImprimirEntregaMateriales($data)
             console.log("error en la vista imprimir");
         },
     });
-           
+
 }
 
 function rellenarCabecera(json) {
