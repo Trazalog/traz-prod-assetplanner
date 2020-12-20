@@ -202,7 +202,7 @@ function seleccionesta(opcion){
     $.ajax({
             type: 'POST',
             data: {id_esta},
-            url: 'index.php/<?php echo ALM?>MovimientoDepo/traerDepositos',
+            url: 'index.php/<?php echo ALM?>MovimientoDepoSal/traerDepositos',
             success: function(data) {
                 var resp = JSON.parse(data);
                 console.table(resp);
