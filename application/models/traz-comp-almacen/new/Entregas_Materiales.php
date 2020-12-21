@@ -59,17 +59,18 @@ class Entregas_Materiales extends CI_Model
 
     public function obtenerDetallesPrint($id)
     {
-        $this->db->select('T.enma_id, T.dni, T.solicitante, T.destino, T.comprobante, T.fec_alta, T.pema_id, A.cantidad, B.descripcion, C.estado');
+        $this->db->select('T.enma_id, T.dni, T.solicitante, T.destino, T.comprobante, T.fec_alta, T.pema_id, A.cantidad, B.descripcion, C.estado, DE.cantidad as cantEntregada');
         $this->db->from('alm_entrega_materiales T');
         $this->db->join('alm_deta_pedidos_materiales A','A.pema_id=T.pema_id');
         $this->db->join('alm_pedidos_materiales C','C.pema_id=T.pema_id');
-        $this->db->join('alm_articulos B','B.arti_id=A.arti_id');
+				$this->db->join('alm_deta_entrega_materiales DE','DE.enma_id=T.enma_id');
+				$this->db->join('alm_articulos B','B.arti_id=A.arti_id');
         $this->db->order_by('T.fecha','desc');
         $this->db->where('T.enma_id', $id);
         $query = $this->db->get();
         if($query->num_rows()!=0)
         {
-            $datos = $query->result_array();
+						$datos = $query->result_array();
             return $datos;
         }
         else
