@@ -133,6 +133,7 @@ class dash extends CI_Controller {
 			//Fin datos necesarios Precacheo
 			}
 			$this->load->view('dash', $data);
+			// $this->load->view('recepcionDeposito', $data);
 			$this->load->view('menu');
 			$this->load->view('content');
 			$this->load->view('footerdash');

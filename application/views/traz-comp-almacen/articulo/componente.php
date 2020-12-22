@@ -9,6 +9,7 @@
             }
             ?>
     </datalist>
+    <input type="text" id="idArt" style="display:none;">
     <span class="input-group-btn">
         <button class='btn btn-primary' data-toggle="modal" data-target="#modal_articulos">
             <i class="glyphicon glyphicon-search"></i></button>
@@ -81,6 +82,7 @@ function getItem(item) {
     var option = $('#articulos').find("[value='" + item.value + "']");
     var json = JSON.stringify($(option).data('json'));
     selectItem = JSON.parse(json);
+    $("#idArt").val(selectItem.arti_id);
     $('label#info').html($(option).html());
     if (existFunction('eventSelect')) eventSelect();
 }

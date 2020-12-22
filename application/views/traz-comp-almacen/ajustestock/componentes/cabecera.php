@@ -33,6 +33,7 @@
                     <label>Tipo de ajuste:</label>
                     <select class="form-control" id="tipoajuste" name="tipoajuste"
                         required>
+                        <!-- si no me equivoco le falta asignar el atributo data-->
                         <option value="" disabled selected>-Seleccione opcion-</option>
                     </select>
                 </div>
@@ -56,8 +57,7 @@ $.ajax({
         // console.log(result);
         var option_ajuste = '<option value="" disabled selected>-Seleccione opcion-</option>';
         for (let index = 0; index < result.length; index++) {
-            option_ajuste += '<option value="' + result[index].nombre + '" data="' + result[index].tipo + '">' + result[index].nombre +
-                '</option>';
+            option_ajuste += '<option value="' + result[index].nombre + '" data="' + result[index].tipo + '">' + result[index].nombre + '</option>';
         }
         $('#tipoajuste').html(option_ajuste);
     },

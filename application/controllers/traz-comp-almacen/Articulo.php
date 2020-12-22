@@ -134,10 +134,15 @@ class Articulo extends CI_Controller {
 	}
 
 	public function obtener(){
-		$url =  REST . 'articulos';
-		$data = $this->rest->callApi('GET',$url);
-		if($data['status']) $data['data'] = json_decode($data['data'])->materias->materia;
-		echo json_encode($data);
+		$empr_id = empresa();
+		// $url = 'http://localhost:8008/services/asp/ALMDataService/articulos/empresa';
+		$url = AJST.'/services/asp/ALMDataService/articulos/empresa/'.$empr_id;
+		$data = $this->rest->callAPI("GET",$url);
+		$rsp = $data['data'];
+		// $rsp = json_decode($rsp);
+		// $rsp = $rsp->articulos->articulo;
+		// if($data['status']) $data['data'] = json_decode($data['data'])->articulos->articulo;
+		echo $rsp;
 	}
 
 }

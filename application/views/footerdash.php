@@ -6,7 +6,6 @@
             los derechos reservados.
         </footer>
 
-
         <?php
             $this->load->view('panelDerecho');
         ?>
