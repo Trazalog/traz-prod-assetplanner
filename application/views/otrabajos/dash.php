@@ -21,6 +21,8 @@
                                 </div>
                                 <input type="date" class="form-control pull-right" value="<?php echo date('Y-m-d');?>" id="fecha" placeholder="Seleccione Fecha">
                             </div>
+
+                           <?php //$this->load->view('kpis/disponibilidad'); ?>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -139,39 +141,25 @@
                             </tbody>
                         </table>
 
-                    </div>
-                </div>
-                <br><br>
-                <div class="row">
-                    <div class="col-md-9">
-                        <div class="form-group">
-                            <label>Observaciones</label>
-                            <input type="text" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Productos recepcionados</label>
-                            <br>
-                            <label style=" font-size: xx-large; margin-left: 7rem;" id="total">0</label>
-                            <input type="number" id="totalCont" style="display:none;">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-1" style="float:right">
-                        <button class="btn btn-primary " style="float:right;" onclick="guardar()"><i
-                                class="fa fa-check"></i>Guardar</button>
-                    </div>
-                    <div class="col-md-1" style="float:right">
-                        <button class="btn btn-primary " style="float:right;" onclick="imprimir()"><i
-                                class="fa fa-clone"></i>Imprimir</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
+<?php
+  //$kpiot = cantTipoOrdenTrabajo();
+
+  //$equipoOperativo = sacarEquiposOperativos();
+?>
+
+<style type="text/css">
+.daterange {
+    position: relative;
+}
+
+.daterange i {
+    position: relative;
+    right: 24px;
+    cursor: pointer;
+}
+</style>
+
 <script>
  $(document).ready(function() {
                $("#totalCont").val(0);
@@ -195,10 +183,14 @@ $(document).on("click",".fa-minus",function() {
            
 });
 
-function seleccionesta(opcion){
-    // alert("dentro");
-    var id_esta = $("#esta_dest_id").val();
-    console.table(id_esta);
+
+
+/* obtengo datos de disponibilidad */
+var idEquipo = 'all';
+//getDisponibilidad(idEquipo);
+
+function getDisponibilidad(idEquipo) {
+    //WaitingOpen("Obteniendo datos de disponibilidad...");
     $.ajax({
             type: 'POST',
             data: {id_esta},
@@ -220,21 +212,114 @@ function seleccionesta(opcion){
         });
 }
 
-function agregarProducto()
-{
-   
-    var aux = 0;
-    if($("#depo_origen_id").val()!=null)
-    {
-        if($("#inputarti").val()!="")
-        {
-            if($("#cant_id").val()!="")
-            {
-                if($("#id_un").val()!=null)
-                {
-                    aux = 1;
+$('#checkboxEquipoID').focusin(function() {
+    //console.log('Equipos');
+    $(this).prev().prop("checked", true);
+});
+// $('#radioDisponibilidadAll').focusin(function() {
+//     //console.log('Todos');
+//     getDisponibilidad('all');
+// });
+
+// autocomplete para codigo
+// var dataEquipos = function() {
+//     var tmp = null;
+//     $.ajax({
+//         'async': false,
+//         'type': "POST",
+//         'global': false,
+//         'dataType': 'json',
+//         'url': "index.php/Otrabajo/getEquipoDisponibilidad",
+//         'success': function(data) {
+//             tmp = data;
+//         }
+//     });
+//     return tmp;
+// }();
+// $("#checkboxEquipoID").autocomplete({
+//     source: dataEquipos,
+//     delay: 500,
+//     minLength: 1,
+//     focus: function(event, ui) {
+//         event.preventDefault();
+//         $(this).val(ui.item.label);
+//     },
+//     select: function(event, ui) {
+//         event.preventDefault();
+//         $(this).val(ui.item.label); //value
+
+//         getDisponibilidad(ui.item.value);
+//     },
+// });
+
+
+
+//graficarMantenimiento();
+
+
+function graficarMantenimiento() {
+ //   WaitingOpen("Obteniendo datos de Mantenimiento...");
+    var areaChartCanvas = document.getElementById("graficoMantenimiento");
+
+    var myChart = new Chart(areaChartCanvas, {
+                type: 'doughnut',
+                data: {
+                    <?php
+            echo "labels: [";
+
+            foreach ($kpiot as $key => $o) {
+              echo "\"$o->descripcion\",";
+            }
+           
+           echo "],datasets: [{
+                data: [";
+                foreach ($kpiot as $key => $o) {
+                  echo $o->cantidad.",";
                 }
-                
+           echo "]" 
+            ?>,
+                    backgroundColor: [
+                        "#dd1100",
+                        "#00CC00",
+                        "#006612",
+                        "#009933",
+                        "#fad61d"
+                    ]
+                    // hoverBackgroundColor: [
+                    //     "#f3fa1d",
+                    //     "#ee2211",
+                    //     "#117723",
+                    //     "#11aa44",
+                    //     "#11dd11"
+                    // ]
+                //}]
+        },
+        options: {
+         //   cutoutPercentage: 40,
+            legend: {
+                position: 'bottom',
+            },
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            },
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        //get the concerned dataset
+                        var dataset = data.datasets[tooltipItem.datasetIndex];
+                        //calculate the total of this data set
+                        var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+                            return previousValue + currentValue;
+                        });
+                        //get the current items value
+                        var currentValue = dataset.data[tooltipItem.index];
+                        //calculate the precentage based on the total and current item, also this does a rough rounding to give a whole number
+                        var precentage = Math.floor(((currentValue / total) * 100) + 0.5);
+
+                        return currentValue + " (" + precentage + "%)";
+                    }
+                }
             }
         }
     }
@@ -281,6 +366,11 @@ function agregarProducto()
         $("#total").text(contaux);
         $("#totalCont").val(contaux);
 
+//graficarEquiposOperativos();
+/* grafico KPI Equipos Operativos */
+function graficarEquiposOperativos() {
+   // WaitingOpen("Obteniendo datos de Equipos Operativos...");
+    var areaChartCanvas = document.getElementById("graficoEquiposOperativos");
 
     }else{
         alert("ATENCION!!! HAY CAMPOS DE PRODUCTOS A CARGAR VACIOS");

@@ -28,7 +28,8 @@
 					{					
 						echo "<tr>";
 						echo    '<td>'.$fila['descripcion'].'</td>';
-						echo    '<td>'.$fila['cantidad'].'</td>';                      
+						// echo    '<td>'.$fila['cantidad'].'</td>';
+						echo    '<td>'.$fila['cantEntregada'].'</td>';
 						echo "</tr>";
 					}
 				}
