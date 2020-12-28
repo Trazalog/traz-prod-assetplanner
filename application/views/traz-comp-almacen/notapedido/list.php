@@ -75,10 +75,8 @@ function AbrirModal() {
 
 // si cierra modal sin lanzar proceso, borra la nota de pedido de materiales
 $('#agregar_pedido').on('hidden.bs.modal', function (e) {
-  //alert('cerro modal');
 	descartarPedido();
 })
-
 
 function descartarPedido() {
 

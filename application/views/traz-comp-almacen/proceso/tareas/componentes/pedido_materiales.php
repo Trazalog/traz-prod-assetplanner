@@ -303,17 +303,32 @@ function lanzarPedido() {
         type: 'POST',
         url: '<?php echo base_url(ALM) ?>new/Pedido_Material/pedidoNormal',
         success: function(result) {
+
             if (result.status) {
-                $('#tabladetalle2 tbody').empty();
+								$('#tabladetalle2 tbody').empty();
+
+								var idOT = $('#ot').val();
+								if ( idOT == undefined ) {
+									idOT = 0;
+								} else {
+									idOT = $('#ot').val();
+								}
+
+								var desc = $('#info-tarea').val();
+								if ( desc == undefined ) {
+									desc = '';
+								} else {
+									desc = $('#info-tarea').val();
+								}
+
                 data = {
                     id_notaPedido: $('#pema_id').val(),
                     fecha: fechaActual(),
-                    id_ordTrabajo: $('#ot').val(),
-                    descripcion: $('#info-tarea').val(),
+                    id_ordTrabajo: idOT,
+                    descripcion: desc,
                     justificacion: "",
                     estado: "Solicitado"
                 };
-
 
                 html = "";
                 html += "<tr data-json='" + JSON.stringify(data) + "' id='" + data.id_notaPedido +
@@ -337,12 +352,16 @@ function lanzarPedido() {
 
                 $('.modal').modal('hide');
 
+								//proceso lanzado con exito borra pema_id
+								$('#pema_id').val('');
+
             } else {
                 alert(result.msj);
             }
         },
         error: function(result) {
-            WaitingClose();
+
+						WaitingClose();
             alert("Error al Lanzar Pedido");
         },
         complete: function(){

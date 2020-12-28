@@ -103,7 +103,7 @@ define('FRM', 'traz-comp-form/');
 | Version de Componente de Almacen
 |
 */ 
-define('ALM', 'traz-comp-almacen/');  
+define('ALM', 'traz-comp-almacen/');
 
 define('files', 'files/');
 
@@ -117,7 +117,7 @@ define('SIM_FORMS', array(
 
 
 
-define('CMP_ALM', 'traz-comp-almacen/');  
+define('CMP_ALM', 'traz-comp-almacen/');
 
 /*
 |--------------------------------------------------------------------------
@@ -132,7 +132,7 @@ define('BONITA_URL', 'http://10.142.0.3:8080/bonita/');
 
 define('BPM_ADMIN_USER', 'supervisor1');
 define('BPM_ADMIN_PASS', 'bpm');
-define('BPM_USER_PASS', 'bpm');
+define('BPM_USER_PASS', '123');
 
 
 
@@ -147,12 +147,12 @@ define('BPM_USER_PASS', 'bpm');
 
 
 //? PEDIDOS NORMALES
- 
-define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '6390775105938615683'); 
+
+define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '8803232493891311406');
 
 //? PEDIDOS EXTRAORDINATIOS
 
-define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '7956929959697108675');
+define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '6866538875650512673');
 
 
 /*

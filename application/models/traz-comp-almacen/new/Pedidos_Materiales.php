@@ -37,14 +37,16 @@ class Pedidos_Materiales extends CI_Model
         ];
 
         $rsp = $this->bpm->lanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES, $contract);
+				log_message('DEBUG','#TRAZA|TRAZ-COMP-ALMACEN|NEW|PEDIDOS_MATERIALES|pedidoNormal($pemaId)-> $rsp >> '.json_encode($rsp));
 
-        if (!$rsp['status']) {
+				if (!$rsp['status']) {
 					log_message('ERROR','#TRAZA|TRAZ-COMP-ALMACEN|PEDIDOS_MATERIALES|pedidoNormal($pemaId) >> ERROR: NO LANZO PROCESO PEDIDO MATERIAL NORMAL');
 					$this->eliminar($pemaId);
           return $rsp;
         }
 
-        $this->setCaseId($pemaId, $rsp['data']['caseId']);
+				$this->setCaseId($pemaId, $rsp['data']['caseId']);
+				log_message('DEBUG','#TRAZA|TRAZ-COMP-ALMACEN|NEW|PEDIDOS_MATERIALES|pedidoNormal($pemaId)-> $rsp["data"]["caseId"] >> '.json_encode($rsp['data']['caseId']));
 
         $this->setEstado($pemaId, 'Solicitado');
 
