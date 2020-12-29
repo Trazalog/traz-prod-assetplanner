@@ -77,10 +77,10 @@ class Tarea extends CI_Controller {
 	/* ./ TAREAS ASSET ORIGINALES */
 	
 	/* INTEGRACION CON BPM */
-		
+
 		/*	./ FUNCIONES BPM */
 			// Bandea de entrada
-			public function index($permission){
+			public function index($permission = null){
 				///$this->load->helper('control_sesion');
 				// if	(validaSesion()){
 						$detect = new Mobile_Detect();    				
@@ -462,7 +462,7 @@ class Tarea extends CI_Controller {
 			// trae datos para llenar notificaion estandar y formulario asociado
 			public function detaTarea($permission,$idTarBonita){
 
-				// detecta dispositivo				
+				// detecta dispositivo
 					$detect = new Mobile_Detect();
 					if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {				
 						$data['device'] = "android";
@@ -476,7 +476,7 @@ class Tarea extends CI_Controller {
 					$data['idTarBonita'] = $idTarBonita;
 					$caseId = $data['TareaBPM']["caseId"];
 			
-				// Trae id de OT y de Sol Serv por CaseId			
+				// Trae id de OT y de Sol Serv por CaseId
 					$id_SS = $this->getIdSolServPorIdCase($caseId);	
 					log_message('DEBUG','#TRAZA | #TAREA >> detatarea id_SS: '.$id_SS);
 					log_message('DEBUG','#TRAZA | #TAREA >> detatarea tarea BPM: '.json_encode($data['TareaBPM']));
@@ -511,7 +511,7 @@ class Tarea extends CI_Controller {
 					$data['id_SS'] = $id_SS;
 					$data['id_EQ'] = $id_EQ;
 					
-				
+
 				/* Bloque subtareas estandar */	
 					if($id_OT != 0){
 						/* funcion nueva de asset */										
@@ -521,13 +521,13 @@ class Tarea extends CI_Controller {
 							if(!empty($this->Tareas->getSubtareas($id_OT))){
 								$data['subtareas'] = $this->Tareas->getSubtareas($id_OT);
 							}						
-						//} 					
+						//}
 					}	
 
 				//LIBRERIA BPM
 					$case_id = $data['TareaBPM']["caseId"];
 					$case = array('caseId'=>$case_id);
-							
+
 				// LINEA DE TIEMPO 			
 					$data['timeline'] = $this->bpm->ObtenerLineaTiempo(BPM_PROCESS_ID, $case_id);			
 				//CARGAR VISTA COMENTARIOS 
@@ -607,10 +607,10 @@ class Tarea extends CI_Controller {
 							
 					default:
 							$this->load->view('tareas/view_', $data);					
-							$this->load->view('tareas/scripts/tarea_std');	
+							$this->load->view('tareas/scripts/tarea_std');
 							break;
 				}
-			}	
+			}
 			//
 			function getIdSolServPorIdCase($caseId){
 			

@@ -6,14 +6,14 @@
 <div class="row">
     <div class="col-xs-12">
         <h3>Datos de Materiales de Entrega</h3>
-        Id de Entrega de Materiales: <?php echo $materiales[0]['enma_id']; ?><br>
+        Nº de Entrega de Materiales: <?php echo $materiales[0]['enma_id']; ?><br>
         Solicitante: <?php echo $materiales[0]['solicitante']; ?><br>
         DNI: <?php echo $materiales[0]['dni']; ?><br>
         Destino: <?php echo $materiales[0]['destino']; ?><br>
         Comprobante: <?php echo $materiales[0]['comprobante']; ?><br>
-        Id de Pedido de Materiales: <?php echo $materiales[0]['pema_id']; ?><br>
+        Nº de Pedido de Materiales: <?php echo $materiales[0]['pema_id']; ?><br>
         Fecha de Alta: <?php echo $materiales[0]['fec_alta']; ?><br>
-		Estado: <?php echo $materiales[0]['estado']; ?><br>
+				Estado: <?php echo $materiales[0]['estado']; ?><br>
 		 <!--__________________TABLA___________________________-->
 		 <table id="tabla_entrega" class="table table-bordered table-striped">
 		<thead class="thead-dark" bgcolor="#eeeeee">
