@@ -156,9 +156,13 @@
 
             <div class="modal-footer">
             <?php echo (isset($estadoOT) && $estadoOT==false?'<h4 class="text-danger text-center">La Orden de Trabajo Asociada al Pedido de Materiales ha sido Cerrada</h4><h5 class="text-center">No se podran realizar mas Entregas</h5>':null) ?>  
-              <button type="button" id="cerrar" class="btn btn-primary" onclick="linkTo('Tarea');">Cerrar</button>
-                <button type="button" class="btn btn-success" id="hecho" onclick="cerrarTarea()" <?php echo (isset($estadoOT) && $estadoOT==false?'disabled':null) ?> >Hecho</button>
-                <button type="button" class="btn btn-primary" id="btncerrarTarea" style="display:none;" onclick="BtnCerrarTarea()">Cerrar Tarea</button>
+
+						<button type="button" class="btn btn-warning" id="btncerrarTarea" style="display:none;" onclick="BtnCerrarTarea()">Finalizar Pedido</button>
+
+						<button type="button" id="cerrar" class="btn btn-primary" onclick="linkTo('Tarea');">Cerrar</button>
+
+						<button type="button" class="btn btn-success" id="hecho" onclick="cerrarTarea()" <?php echo (isset($estadoOT) && $estadoOT==false?'disabled':null) ?> >Hecho</button>
+
             </div> <!-- /.modal footer -->
 
         </div><!-- /.box body -->
@@ -272,6 +276,7 @@
 			<div class="modal-body">
 				<center>
 				<h4><p>¿ DESEA CERRAR LA TAREA ?</p></h4>
+				<h4><p>Si continua no podra seguir entregando materiales para el mismo.</p></h4>
 				</center>
 			</div>
 			<div class="modal-footer">
