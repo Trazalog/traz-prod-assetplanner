@@ -34,7 +34,7 @@
 													echo "<button class='btn btn-block btn-success' id='btontomar' style='width: 100px; margin-top: 10px ;display: inline-block;' onclick='tomarTarea()'>Tomar tarea</button>";
 													
 													echo "<button class='btn btn-block btn-danger grupNoasignado' id='btonsoltr' style='width: 100px; margin-top: 10px; display: inline-block;' onclick='soltarTarea()'>Soltar tarea</button>";											
-													echo "</br>"; 
+													echo "</br>";
 													echo "</br>"; 			
 												?>
 
@@ -168,51 +168,72 @@
 
 <?php $this->load->view(ALM.'/proceso/tareas/scripts/tarea_std'); ?></section>
 <script>
-    $(document).ready(function(event){
+  $(document).ready(function(event){
 		if($("#tarea").val()=="Entrega pedido pendiente")
 		{
 			$("#btncerrarTarea").removeAttr("style");
 		}
 	});
-$('.fecha').datepicker({
-    autoclose: true
-}).on('change', function(e) {
-    // $('#genericForm').bootstrapValidator('revalidateField',$(this).attr('name'));
-    console.log('Validando Campo...' + $(this).attr('name'));
-    $('#genericForm').data('bootstrapValidator').resetField($(this), false);
-    $('#genericForm').data('bootstrapValidator').validateField($(this));
-});
-function BtnCerrarTarea()
-  {
-	  $("#modalaviso").modal("show");
-  }
-  function CerrarTarea()
-  {
-	var caseid = $("#caseid").val();
-	var taskid = $("#idTarBonita").val();
-	$.ajax({
-        type: 'POST',
-        data: {
-			'IdtarBonita': taskid,
-			'caseid':caseid
-        },
-        url: 'index.php/Tarea/CerrarTarea',
-        success: function(result) {
-		  debugger;
-		  if(result=="ok")
-		  {
-			$("#modalaviso").modal("hide");
-			alert("Tarea Cerrada Exitosamente");
-		  }else{
-			$("#modalaviso").modal("hide");
-			alert("Error al cerrar Tarea");
-		  }
-        },
-        error: function(result) {
-			debugger;
-        }
-    });
-  }
+	$('.fecha').datepicker({
+			autoclose: true
+	}).on('change', function(e) {
+			// $('#genericForm').bootstrapValidator('revalidateField',$(this).attr('name'));
+			console.log('Validando Campo...' + $(this).attr('name'));
+			$('#genericForm').data('bootstrapValidator').resetField($(this), false);
+			$('#genericForm').data('bootstrapValidator').validateField($(this));
+	});
+	function BtnCerrarTarea()
+	{
+		$("#modalaviso").modal("show");
+	}
+	function CerrarTarea(tipo)
+	{
+		if (tipo != "parcial") {
+			var tipo = null;
+		}
+
+		var caseid = $("#caseid").val();
+		var taskid = $("#idTarBonita").val();
+		$.ajax({
+					type: 'POST',
+					data: {
+				'IdtarBonita': taskid,
+				'caseid':caseid,
+				'tipo': tipo
+					},
+					dataType: "json",
+					url: 'index.php/Tarea/CerrarTarea',
+
+
+					success: function(result) {
+						debugger;
+
+						if (result.status) {
+							$("#modalaviso").modal("hide");
+							alert(result.msj);
+							$("#content").load(base_url + "index.php/Tarea/index/add-edit-del-view");
+						} else {
+							$("#modalaviso").modal("hide");
+							alert(result.msj);
+						}
+
+
+						// if(result=="ok")
+						// {
+						// 	$("#modalaviso").modal("hide");
+						// 	alert("Tarea Cerrada Exitosamente");
+						// }else{
+						// 	$("#modalaviso").modal("hide");
+						// 	alert("Error al cerrar Tarea");
+						// }
+					},
+					error: function(result) {
+						debugger;
+						$("#modalaviso").modal("hide");
+						alert(result.msj);
+					}
+			});
+	}
 </script>
 
 
@@ -237,7 +258,7 @@ function BtnCerrarTarea()
     </div>
 </div>
 <!---///////--- MODAL AVISO ---///////--->
-<div class="modal fade" id="modalaviso">		
+<div class="modal fade" id="modalaviso">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header bg-blue">
@@ -255,7 +276,7 @@ function BtnCerrarTarea()
 			</div>
 			<div class="modal-footer">
 				<center>
-				<button type="button" class="btn btn-primary" onclick="CerrarTarea()">SI</button>
+				<button type="button" class="btn btn-primary" onclick="CerrarTarea('parcial')">SI</button>
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">NO</button>
 				</center>
 			</div>

@@ -780,16 +780,19 @@ class Tarea extends CI_Controller {
 	{
 		$id = $this->input->post('IdtarBonita');
 		$case_id= $this->input->post('caseid');
+		$tipo= $this->input->post('tipo');
+
 		$contract = array(
 			"entregaCompleta" => "true"
 		);
 		$result = $this->bpm->cerrarTarea($id, $contract);
 		if ($result['status']){
-			$resp = $this->Tareas->CambiarEstadoPedidoMat($case_id);
+
+			$resp = $this->Tareas->CambiarEstadoPedidoMat($case_id, $tipo);
 			if($resp){
-				echo "ok";
+				echo json_encode(['status'=>true, 'msj'=> 'Tarea cerrada y cambio de Estado con Exito...!']);
 			}else{
-				echo "error";
+				echo json_encode(['status'=>false, 'msj'=> 'Tarea cerrada, cambio de Estado ha fallado...!']);
 			}
 			
 		}else{

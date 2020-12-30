@@ -16,7 +16,7 @@
                                 <tr>
                                     <th>Cod. Artículo</th>
                                     <th class="text-center">Cant. Pedida</th>
-                                    <th class="text-center">Cant. Pedida</th>
+                                    <th class="text-center">Cant. Entregada</th>
                                     <th class="text-center">Estado</th>
                                 </tr>
                             </thead>

@@ -126,7 +126,7 @@ class dash extends CI_Controller {
 					$data['tareas'][$i]['subtareas'] = $array;
 				}
 			}
-		
+
 			$data['tareas'] = json_encode($data['tareas']);
 
 			}
