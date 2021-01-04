@@ -4,7 +4,7 @@
             <h3 class="box-title">Pedido Materiales</h3>
             <?php
              
-             if (strpos($permission,'Add') !== false) {
+             //if (strpos($permission,'Add') !== false) {
                 if(!viewOT)
                 {
                 echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
@@ -14,7 +14,7 @@
                 onclick="AbrirModal()">Agregar</button>';
                 }
                
-            }
+            //}
              
             
             if(isset($descripcionOT))
