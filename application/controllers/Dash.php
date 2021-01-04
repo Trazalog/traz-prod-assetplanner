@@ -126,13 +126,14 @@ class dash extends CI_Controller {
 					$data['tareas'][$i]['subtareas'] = $array;
 				}
 			}
-		
+
 			$data['tareas'] = json_encode($data['tareas']);
 
 			}
 			//Fin datos necesarios Precacheo
 			}
 			$this->load->view('dash', $data);
+			// $this->load->view('recepcionDeposito', $data);
 			$this->load->view('menu');
 			$this->load->view('content');
 			$this->load->view('footerdash');

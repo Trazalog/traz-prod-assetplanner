@@ -4,7 +4,7 @@ class Entrega_Material extends CI_Controller {
     function __construct(){
 
       parent::__construct();
-      $this->load->model(ALM.'/new/Entregas_Materiales'); 
+      $this->load->model(ALM.'/new/Entregas_Materiales');
    }
    function index(){
       $data['list'] = $this->Entregas_Materiales->listado();

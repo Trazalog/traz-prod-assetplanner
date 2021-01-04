@@ -4,7 +4,7 @@
             <h3 class="box-title">Pedido Materiales</h3>
             <?php
              
-             if (strpos($permission,'Add') !== false) {
+             //if (strpos($permission,'Add') !== false) {
                 if(!viewOT)
                 {
                 echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
@@ -14,7 +14,7 @@
                 onclick="AbrirModal()">Agregar</button>';
                 }
                
-            }
+            //}
              
             
             if(isset($descripcionOT))
@@ -73,12 +73,18 @@ function AbrirModal() {
     $('#agregar_pedido').modal('show');
 }
 
+// si cierra modal sin lanzar proceso, borra la nota de pedido de materiales
+$('#agregar_pedido').on('hidden.bs.modal', function (e) {
+	descartarPedido();
+})
+
 function descartarPedido() {
+
     var id = $('#pema_id').val();
     if (!id) return;
-    $.ajax({
+		$.ajax({
         type: 'POST',
-        url: 'index.php/almacen/Notapedido/eliminar',
+				url: 'index.php/<?php echo CMP_ALM ?>Notapedido/eliminar',
         data: {
             id
         },

@@ -18,9 +18,10 @@ class Ajustestocks extends CI_Model {
          );
 
         log_message('DEBUG', 'Ajustestocks/guardarAjuste (datos)-> '.json_encode($data));
-        $resource = 'stock/ajuste';
-        $url = REST0.$resource;
-        $array = $this->rest->callAPI("POST", $url, $data); 
+      //   $resource = 'stock/ajuste';
+      //   $url = REST0.$resource;
+      $url = AJST.'/services/asp/ALMDataService/stock/ajuste';
+        $array = $this->rest->callAPI("POST", $url, $data);
         return json_decode($array['data']);
    }
    function guardarDetalleAjustes($data)
@@ -60,8 +61,9 @@ class Ajustestocks extends CI_Model {
       }
 
       log_message('DEBUG', 'Ajustestocks/guardarDetalleAjustes (datos)-> '.json_encode($data));
-      $resource = 'stock/ajuste/detalle_batch_req';
-      $url = REST0.$resource;
+      // $resource = 'stock/ajuste/detalle_batch_req';
+      // $url = REST0.$resource;
+      $url = AJST.'/services/asp/ALMDataService/stock/ajuste/detalle';
       $array = $this->rest->callAPI("POST", $url, $dato); 
       return json_decode($array['status']);
    }

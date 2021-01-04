@@ -12,7 +12,7 @@
             
               <button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" id="btnAgre" title="Agregar">Agregar </button>
 
-            <? }
+            <?php }
           ?>
         </div><!-- /.box-header -->
         <div class="box-body">
@@ -325,14 +325,14 @@ function guardar()
 
 
                 <div class="col-xs-8">Equipos:
-                   <select id="equipo" name="equipo" class="form-control"  />
+                   <select id="equipo" name="equipo" class="form-control"  >
                    <input type="hidden" id="id_equipo" name="id_equipo">
                 </div>
                 <div class="col-xs-3"><label></label> 
                     <button type="button" class="btn btn-success" id="add"><i class="fa fa-check"></i>Agregar</button>
                 </div>
                 <div class="col-xs-8">valor:
-                   <select id="valor" name="valor" class="form-control"  />
+                   <select id="valor" name="valor" class="form-control"  >
                    <input type="hidden" id="id_equipo" name="id_equipo">
                 </div>
                 

@@ -59,17 +59,36 @@ class Entregas_Materiales extends CI_Model
 
     public function obtenerDetallesPrint($id)
     {
-        $this->db->select('T.enma_id, T.dni, T.solicitante, T.destino, T.comprobante, T.fec_alta, T.pema_id, A.cantidad, B.descripcion, C.estado');
-        $this->db->from('alm_entrega_materiales T');
-        $this->db->join('alm_deta_pedidos_materiales A','A.pema_id=T.pema_id');
-        $this->db->join('alm_pedidos_materiales C','C.pema_id=T.pema_id');
-        $this->db->join('alm_articulos B','B.arti_id=A.arti_id');
-        $this->db->order_by('T.fecha','desc');
-        $this->db->where('T.enma_id', $id);
+        // $this->db->select('T.enma_id, T.dni, T.solicitante, T.destino, T.comprobante, T.fec_alta, T.pema_id, A.cantidad, B.descripcion, C.estado, DE.cantidad as cantEntregada');
+        // $this->db->from('alm_entrega_materiales T');
+        // $this->db->join('alm_deta_pedidos_materiales A','A.pema_id=T.pema_id');
+        // $this->db->join('alm_pedidos_materiales C','C.pema_id=T.pema_id');
+		// 		$this->db->join('alm_deta_entrega_materiales DE','DE.enma_id=T.enma_id');
+		// 		$this->db->join('alm_articulos B','B.arti_id=A.arti_id');
+        // $this->db->order_by('T.fecha','desc');
+        // $this->db->where('T.enma_id', $id);
+
+        $this->db->select('EM.enma_id
+													,EM.dni
+													,EM.solicitante
+													,EM.destino
+													,EM.comprobante
+													,EM.fec_alta
+													,EM.pema_id
+													,DEM.cantidad as cantEntregada
+													,AR.descripcion
+													,PM.estado');
+        $this->db->from('alm_entrega_materiales EM');
+        $this->db->join('alm_deta_entrega_materiales DEM','EM.enma_id = DEM.enma_id');
+				$this->db->join('alm_articulos AR','DEM.arti_id = AR.arti_id');
+				$this->db->join('alm_pedidos_materiales PM','PM.pema_id = EM.pema_id');
+        $this->db->order_by('EM.fecha','desc');
+        $this->db->where('EM.enma_id', $id);
         $query = $this->db->get();
+        $lastquery = $this->db->last_query();
         if($query->num_rows()!=0)
         {
-            $datos = $query->result_array();
+						$datos = $query->result_array();
             return $datos;
         }
         else

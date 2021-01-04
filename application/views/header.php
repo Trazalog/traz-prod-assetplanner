@@ -78,7 +78,7 @@
     <!-- fullcalendar -->
     <link rel="stylesheet" href="<?php  echo base_url();?>assets/plugin/fullcalendar/fullcalendar.min.css">
     <link rel="stylesheet" href="<?php  echo base_url();?>assets/plugin/fullcalendar/fullcalendar.print.css" media="print">
-
+    
     <!-- Jasny Bootstrap -->
     <link rel="stylesheet" href="<?php echo base_url();?>assets/plugin/jasny-bootstrap/css/jasny-bootstrap.min.css">
     <!-- Bootstrap Validator -->
@@ -189,3 +189,5 @@
     return datepicker.regional['es'];
 }));
 </script>
+
+
