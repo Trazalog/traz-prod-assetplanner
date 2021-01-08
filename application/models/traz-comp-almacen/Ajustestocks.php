@@ -8,63 +8,70 @@ class Ajustestocks extends CI_Model {
 
    function guardarAjustes($data)
    {
-        $data = array(
-         'ajuste' => array(
-            'empr_id' => strval(empresa()),
-            'usuario_app' => userNick(),
-            'justificacion' => $data['justificacion'],
-            'tipo_ajuste' => $data['tipoajuste']
-           )
-         );
+			$data = array(
+					'ajuste' => array(
+					'empr_id' => strval(empresa()),
+					'usuario_app' => userNick(),
+					'justificacion' => $data['justificacion'],
+					'tipo_ajuste' => $data['tipoajuste']
+					)
+				);
 
         log_message('DEBUG', 'Ajustestocks/guardarAjuste (datos)-> '.json_encode($data));
       //   $resource = 'stock/ajuste';
       //   $url = REST0.$resource;
       $url = AJST.'/services/asp/ALMDataService/stock/ajuste';
-        $array = $this->rest->callAPI("POST", $url, $data);
-        return json_decode($array['data']);
+			$array = $this->rest->callAPI("POST", $url, $data);
+			return json_decode($array['data']);
    }
    function guardarDetalleAjustes($data)
    {
-      $data = $data;
+      //$data = $data;
       if($data['tipo_ent_sal'] == "ENTRADA"){
          $dato = array(
-            'ajuste_detalles' => array(
-               'ajuste_detalle' => array(
-                  'ajus_id' => $data['ajus_id'],
-                  'lote_id' => $data['loteent'],
-                  'cantidad' => $data['cantidadent']
-               )
+               	'_post_stock_ajuste_detalle' => array(
+                'ajus_id' => $data['ajus_id'],
+                'lote_id' => $data['loteent'],
+                'cantidad' => $data['cantidadent']
               )
          );
       }else if(($data['tipo_ent_sal'] == "SALIDA")){
          $dato = array(
-            'ajuste_detalles' => array(
-               'ajuste_detalle' => array(
-                  'ajus_id' => $data['ajus_id'],
-                  'lote_id' => $data['lotesal'],
-                  'cantidad' => strval(intval($data['cantidadsal']) * -1)
+               	'_post_stock_ajuste_detalle' => array(
+                'ajus_id' => $data['ajus_id'],
+                'lote_id' => $data['lotesal'],
+                'cantidad' => strval(intval($data['cantidadsal']) * -1)
                )
-              )
          );
-      }else if(($data['tipo_ent_sal'] == "E/S")){
-         $dato['ajuste_detalles']['ajuste_detalle'][] = array(
-            'ajus_id' => $data['ajus_id'],
-            'lote_id' => $data['loteent'],
-            'cantidad' => $data['cantidadent']
-         );
-         $dato['ajuste_detalles']['ajuste_detalle'][] = array(
-            'ajus_id' => $data['ajus_id'],
-            'lote_id' => $data['lotesal'],
-            'cantidad' => strval(intval($data['cantidadsal']) * -1)
-         );
+      }else if(($data['tipo_ent_sal'] == "E/S")){//FIXME:HACER BATCH REQUEST
+
+				$entrada = array(
+								'ajus_id' => $data['ajus_id'],
+								'lote_id' => $data['loteent'],
+								'cantidad' => $data['cantidadent']
+				 );
+				$post['_post_stock_ajuste_detalle_batch_req']['_post_stock_ajuste_detalle'][] = (object) $entrada;
+
+				$salida  = array(
+							'ajus_id' => $data['ajus_id'],
+							'lote_id' => $data['lotesal'],
+							'cantidad' => strval(intval($data['cantidadsal']) * -1)
+				);
+				$post['_post_stock_ajuste_detalle_batch_req']['_post_stock_ajuste_detalle'][] = (object) $salida;
+
+				log_message('DEBUG', 'Ajustestocks/guardarDetalleAjustes (batch_req)-> '.json_encode($post));
+
+				$url = AJST.'/services/asp/ALMDataService/_post_stock_ajuste_detalle_batch_req';
+				$array = $this->rest->callAPI("POST", $url, $post);
+				return json_decode($array['status']);
+
       }
 
       log_message('DEBUG', 'Ajustestocks/guardarDetalleAjustes (datos)-> '.json_encode($data));
       // $resource = 'stock/ajuste/detalle_batch_req';
       // $url = REST0.$resource;
       $url = AJST.'/services/asp/ALMDataService/stock/ajuste/detalle';
-      $array = $this->rest->callAPI("POST", $url, $dato); 
+      $array = $this->rest->callAPI("POST", $url, $dato);
       return json_decode($array['status']);
    }
 }

@@ -7,13 +7,13 @@
 
     <div class="row">
         <div class="col-md-6">
-            <?php 
-                $this->load->view(ALM.'ajustestock/componentes/entrada');
-            ?>
-        </div>
-        <div class="col-md-6">
             <?php
             $this->load->view(ALM.'ajustestock/componentes/salida');
+            ?>
+        </div>
+				<div class="col-md-6">
+            <?php
+                $this->load->view(ALM.'ajustestock/componentes/entrada');
             ?>
         </div>
     </div>
@@ -122,7 +122,9 @@ $("#articuloent").on('change', function() {
 
 function guardar(){
     //esta funcion guarda el ajuste y espera un id_ajuste para luego llamar a otra funcion con este id que va a ser la encargada de guardar los datos especificos del lote (dependiendo si es entrada o salida) 
-    var formdata = new FormData($("#formTotal")[0]);
+		WaitingOpen('Guardando Ajuste Stock...');
+debugger;
+		var formdata = new FormData($("#formTotal")[0]);
     var formobj = formToObject(formdata);
     $.ajax({
         type: 'POST',
@@ -133,6 +135,7 @@ function guardar(){
         success: function(rsp) {
             console.log(rsp);
             if(!rsp){
+								WaitingClose();
                 alert("error");
                 return;
             }else{
@@ -142,12 +145,14 @@ function guardar(){
                     guardaAjusteDetalle(rsp,formobj);
                 }
                 else{
+										WaitingClose();
                     alert("error");
                     return;
                 }
             }
         },
         error: function(rsp) {
+						WaitingClose();
             alert('Error: ' + rsp.msj);
             console.log(rsp.msj);
         },
@@ -168,18 +173,21 @@ function guardaAjusteDetalle($rsp, $formobj){
         url: '<?php echo ALM ?>Ajustestock/guardarDetalleAjuste',
         success: function(rsp) {
             if(!rsp){
-                alert("error");
+								WaitingClose();
+                alert("error guardadno detalle...");
                 return;
             }else{
+								WaitingClose();
                 alert("Accion realizada con exito");
                 setTimeout("linkTo()",1700);
             }
         },
         error: function(rsp) {
+						WaitingClose();
             alert('Error: ' + rsp.msj);
             console.log(rsp.msj);
         },
-        complete: function() {}
+        complete: function() {WaitingClose();}
     });
 }
 </script>

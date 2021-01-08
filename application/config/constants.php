@@ -115,9 +115,10 @@ define('SIM_FORMS', array(
     'eval_zona' =>3
 ));
 
-
-
 define('CMP_ALM', 'traz-comp-almacen/');
+
+define('AJST', 'http://10.142.0.7:8280');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -128,7 +129,7 @@ define('CMP_ALM', 'traz-comp-almacen/');
 |
 */
 
-define('BONITA_URL', 'http://10.142.0.3:8080/bonita/');
+define('BONITA_URL', 'http://10.142.0.7:8080/bonita/');
 
 define('BPM_ADMIN_USER', 'supervisor1');
 define('BPM_ADMIN_PASS', 'bpm');
@@ -184,7 +185,7 @@ define('REST2', 'http://10.142.0.7:8280/services/ProduccionDataService');
 define('REST3', 'http://10.142.0.7:8280/services/produccionTest');
 define('REST4', 'http://10.142.0.7:8280/services/TrazabilidadDataService');
 
-define('AJST', 'http://10.142.0.7:8280');
+
 
 /*
 |--------------------------------------------------------------------------
