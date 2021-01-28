@@ -99,12 +99,12 @@ function ImprimirEntrega(e){
         error: function(result) {
             alert('Error');
         },
-       
+
     });
     
 }
 function ImprimirEntregaMateriales($data)
-{    
+{
      $.ajax({
         type: 'POST',
         data: {
