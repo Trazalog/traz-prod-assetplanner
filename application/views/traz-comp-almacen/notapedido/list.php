@@ -73,13 +73,13 @@ function AbrirModal() {
     $('#agregar_pedido').modal('show');
 }
 
-// si cierra modal sin lanzar proceso, borra la nota de pedido de materiales
+//si cierra modal sin lanzar proceso, borra la nota de pedido de materiales
 $('#agregar_pedido').on('hidden.bs.modal', function (e) {
 	descartarPedido();
 })
 
 function descartarPedido() {
-
+debugger;
     var id = $('#pema_id').val();
     if (!id) return;
 		$.ajax({
