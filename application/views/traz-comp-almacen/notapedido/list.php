@@ -73,13 +73,8 @@ function AbrirModal() {
     $('#agregar_pedido').modal('show');
 }
 
-// si cierra modal sin lanzar proceso, borra la nota de pedido de materiales
-$('#agregar_pedido').on('hidden.bs.modal', function (e) {
-	descartarPedido();
-})
-
 function descartarPedido() {
-
+debugger;
     var id = $('#pema_id').val();
     if (!id) return;
 		$.ajax({
@@ -233,7 +228,7 @@ var tablaDeposito = $('#deposito').DataTable({});
 </script>
 
 <!-- Modal Agregar -->
-<div class="modal fade" id="agregar_pedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="agregar_pedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
