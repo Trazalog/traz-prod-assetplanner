@@ -81,7 +81,7 @@ function del_detalle() {
         });
     }
 }
-
+// Editar cantidad de pedido materiales
 function edit() {
 debugger;
     var id = $(selectRow).closest('tr').data('id');
@@ -94,7 +94,8 @@ debugger;
         },
         url: 'index.php/almacen/Notapedido/editarDetalle',
         success: function(data) {
-            get_detalle();
+debugger;
+						get_detalle();
             selectRow = null;
             $('#set_cantidad').modal('hide');
         },
@@ -114,15 +115,14 @@ function edit_cantidad(e) {
 
 
 function get_detalle() {
-
 debugger;
-    var id = $('#pema_id').val();
+		var id = $('#pema_id').val();
     if (id == null || id == '') {
         return;
     }
    // $(tabla).DataTable().destroy();
     console.log("ALM | Detalle Pedido N° "+id);
- debugger;
+    
     $.ajax({
         type: 'POST',
         url: 'index.php/almacen/Notapedido/getNotaPedidoId?id_nota=' + id,
@@ -138,7 +138,9 @@ debugger;
 
             var html = '';
             for (var i = 0; i < data.length; i++) {
-                html  += "<tr class='celdas' data-id='" + data[i]['depe_id'] + " data-json='" + JSON.stringify(data) + "'>" +
+                html  += "<tr class='celdas' data-id='" + data[i]['depe_id'] + "'data-id='" + data[i][
+                        'arti_id'
+                    ] + "' data-json='" + JSON.stringify(data) + "'>" +
                     "<td class='text-light-blue'>" +
                     "<i class='fa fa-fw fa-pencil' style='cursor: pointer;' title='Editar' onclick='edit_cantidad(this)'></i>" +
                     "<i class='fa fa-fw fa-times-circle' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
@@ -157,7 +159,7 @@ debugger;
 }
 </script>
 
-
+<!-- Modal Ingresar Cantidad -->
 <div class="modal fade" id="set_cantidad">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -229,7 +231,6 @@ function guardar_pedido() {
 }
 
 function set_pedido() {
-
 debugger;
     var idinsumos = new Array();
     var cantidades = new Array();
@@ -482,7 +483,7 @@ function lanzarPedidoModal() {
 }
 
 function edit_pedido() {
-debugger;
+
     var idinsumos = new Array();
     var cantidades = new Array();
 

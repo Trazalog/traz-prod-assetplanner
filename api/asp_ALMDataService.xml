@@ -96,7 +96,11 @@
       <param name="moin_id" optional="false" sqlType="INTEGER"/>
    </query>
    <query id="updateMovimientoInterno" useConfig="ToolsDataSource">
+<<<<<<< HEAD
       <sql>UPDATE alm_movimientos_internos&#xd;SET estado = :estado,&#xd;fec_recepcion = STR_TO_DATE(:fec_recepcion, '%Y-%m-%d'),&#xd;observaciones_recepcion = :observaciones_recepcion&#xd;WHERE moin_id = :moin_id</sql>
+=======
+      <sql>UPDATE assetv2.alm_movimientos_internos&#xd;SET estado = :estado,&#xd;fec_recepcion = STR_TO_DATE(:fec_recepcion, '%Y-%m-%d'),&#xd;observaciones_recepcion = :observaciones_recepcion&#xd;WHERE moin_id = :moin_id</sql>
+>>>>>>> develop
       <param name="estado" sqlType="STRING"/>
       <param name="fec_recepcion" sqlType="STRING"/>
       <param name="observaciones_recepcion" sqlType="STRING"/>

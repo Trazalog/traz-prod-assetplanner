@@ -606,7 +606,7 @@ class Tarea extends CI_Controller {
 						break;							
 							
 					default:
-							$this->load->view('tareas/view_', $data);					
+							$this->load->view('tareas/view_', $data);
 							$this->load->view('tareas/scripts/tarea_std');
 							break;
 				}
