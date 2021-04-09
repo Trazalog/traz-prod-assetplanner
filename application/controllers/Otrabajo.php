@@ -43,8 +43,8 @@ class Otrabajo extends CI_Controller {
 	public function listOrden($permission,$ot=null) // Ok
 	{
 		//Se pidio que el listado se cargue a aprtir de un filtro, filtrarListado()
-		$data['list']    = $this->Otrabajos->otrabajos_List($ot, 2);
-		// $data['list'] = false;
+		// $data['list']    = $this->Otrabajos->otrabajos_List($ot, 2);
+		$data['list'] = false;
 		$data['equipos'] = $this->Otrabajos->getEquiposNuevaOT();
 
 		$data['permission'] = $permission;
