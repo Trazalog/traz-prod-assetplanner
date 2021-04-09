@@ -1,4 +1,5 @@
 ﻿<input type="hidden" id="permission" value="<?php echo $permission ?>">
+
 <style>
 .datagrid table {
     border-collapse: collapse;
@@ -70,20 +71,17 @@ ul.dropdown-menu {
           ?>
                 </div><!-- /.box-header -->
                 <form id="frm-filtros">
+                <input type="hidden" id="permissionFilt" name="permissionFilt" value="<?php echo $permission ?>">
               <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding-top: 2%;">
                     <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                        <label>Fecha Programada Desde</label>
-                        <div class="input-group">
-                            <input type="date" class="form-control" id="fec_desde" name="fec_desde" onchange="habilitaFecHasta()">
-                        </div>
+                        <label>Programada Desde</label>
+                        <input type="date" class="form-control" id="fec_desde" name="fec_desde" onchange="habilitaFecHasta()">
                     </div>
                     <!-- /.form-group -->
                     <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                        <label>Fecha Programada Hasta</label>
-                        <div class="input-group">
-                            <input type="date" class="form-control" id="fec_hasta" name="fec_hasta" readonly>
-                        </div>
+                        <label>Programada Hasta</label>
+                        <input type="date" class="form-control" id="fec_hasta" name="fec_hasta" readonly>
                     </div>
                   <!-- /.form-group -->
                   <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
@@ -101,7 +99,6 @@ ul.dropdown-menu {
                   <!-- /.form-group -->
                   <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                     <label>Estado</label>
-                    <div class="input-group">
                         <select id="estadoFilt" name="estadoFilt" class="form-control">
                             <option value="" selected disabled> - Seleccionar - </option>
                             <option value="S">Solicitada</option>
@@ -112,7 +109,6 @@ ul.dropdown-menu {
                             <option value="CE">Cerrada</option>
                             <option value="CN">Conforme</option>
                         </select>
-                    </div>
                   </div>
                   <!-- /.form-group -->
                 </div>
@@ -4688,7 +4684,9 @@ function limpiar(){
 function filtrar() {
       var data = new FormData($('#frm-filtros')[0]);
       data = formToObject(data);
-    //   wo();
+
+      WaitingOpen();
+
       var url = "index.php/Otrabajo/filtrarListado";
       $.ajax({
         type: 'POST',
@@ -4704,10 +4702,19 @@ function filtrar() {
             if (data != null && data != ' null') {
                 var resp = JSON.parse(data);
                 console.log(resp);
+
                 for(var i=0; i<resp.length; i++){
                     var movimCabecera = resp[i];
-                    var row = `<tr id="${resp[i].id_orden}" class="${resp[i].id_orden} ot-row" data-id_equipo="${resp[i].id_equipo}" data-causa="${resp[i].descripcion}" data-idsolicitud="${resp[i].id_solicitud}">`
-                     row += `<td></td>`;
+                    var row = `<tr id="${resp[i].id_orden}" class="${resp[i].id_orden} ot-row" data-id_equipo="${resp[i].id_equipo}" data-causa="${resp[i].descripcion}" data-idsolicitud="${resp[i].id_solicitud}">`;
+                        row += `<td>`;
+                        row += `<?php echo $opciones; ?>`;
+                        if(resp[i].ordenservicioId !=  null){
+                            row += '<li role="presentation" id="cargOrden"><a onclick="ver_informe_servicio(this)" style="color:white;" role="menuitem" tabindex="-1" href="#" ><i class="fa fa-file-text text-white" style="color:white; cursor: pointer;margin-left:-1px"></i>Informe de Servicios</a></li>';
+                            row += "</ul><div></td>";
+                        }else{
+                            row += "</ul><div></td>";
+                        } 
+                        
                                 //N° ORDEN
                                 if(resp[i].id_orden){
                                     row += `<td>${resp[i].id_orden}</td>`;
@@ -4831,13 +4838,13 @@ function filtrar() {
                 }
             }
 
-            // wc();
+            WaitingClose();
         },
         error: function() {
           alert('Ha ocurrido un error');
         },
         complete: function(result) {
-        //   wc();
+          WaitingClose();
         },
         beforeSend: function(){
             // $("table#stock").empty();
