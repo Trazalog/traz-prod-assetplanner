@@ -69,6 +69,66 @@ ul.dropdown-menu {
           }
           ?>
                 </div><!-- /.box-header -->
+                <form id="frm-filtros">
+              <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding-top: 2%;">
+                    <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                        <label>Fecha Programada Desde</label>
+                        <div class="input-group">
+                            <input type="date" class="form-control" id="fec_desde" name="fec_desde" onchange="habilitaFecHasta()">
+                        </div>
+                    </div>
+                    <!-- /.form-group -->
+                    <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                        <label>Fecha Programada Hasta</label>
+                        <div class="input-group">
+                            <input type="date" class="form-control" id="fec_hasta" name="fec_hasta" readonly>
+                        </div>
+                    </div>
+                  <!-- /.form-group -->
+                  <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                    <label>Equipo</label>
+                        <select id="equipoFilt" name="equipoFilt" class="form-control" style="width: 100%">
+                            <option value="" selected disabled> - Seleccionar - </option>
+                                <?php 
+                                foreach ($equipos as $key => $o) {
+                                    echo "<option value='".$o['id_equipo']."'>".$o['codigo']."</option>";
+                                }
+                                ?>
+                        </select>
+                    
+                  </div>
+                  <!-- /.form-group -->
+                  <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                    <label>Estado</label>
+                    <div class="input-group">
+                        <select id="estadoFilt" name="estadoFilt" class="form-control">
+                            <option value="" selected disabled> - Seleccionar - </option>
+                            <option value="S">Solicitada</option>
+                            <option value="PL">Planificada</option>
+                            <option value="AS">Asignada</option>
+                            <option value="C">Curso</option>
+                            <option value="T">Terminada</option>
+                            <option value="CE">Cerrada</option>
+                            <option value="CN">Conforme</option>
+                        </select>
+                    </div>
+                  </div>
+                  <!-- /.form-group -->
+                </div>
+                <!-- /.col -->
+                <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2" style="float:right; margin-right: 1%">
+                    <label class="col-xs-12 col-sm-12 col-md-12 col-lg-12">&nbsp;</label>
+                    <button type="button" class="btn btn-success btn-flat col-xs-12 col-sm-6 col-md-6 col-lg-6" onclick="filtrar()">Filtrar</button>
+                    <button type="button" class="btn btn-danger btn-flat flt-clear col-xs-12 col-sm-6 col-md-6 col-lg-6" onclick="limpiar()">Limpiar</button>
+                  </div>
+                  <!-- /.form-group -->
+              </div>
+              <!-- /.row -->
+              <br>
+            </form>
+            <!-- <br> -->
+            <hr>
                 <div class="box-body">
                     <table id="otrabajo" class="table table-striped table-hover">
                         <thead>
@@ -94,7 +154,7 @@ ul.dropdown-menu {
                 {
                   $userdata = $this->session->userdata('user_data');
                   $usrId    = $userdata[0]['usrId']; 
-               	  foreach($list as $a)
+                  foreach($list as $a)
                   {
                     //$gr = $a['grpId'];
                     //echo "grupo: ".$gr;
@@ -4615,4 +4675,181 @@ function imprimir(e) {
         .fail(() => alert("Error al traer los datos de la OT."))
         .always(() => WaitingClose());
 };
+
+function limpiar(){
+    $("#fec_desde").val('');
+    $("#fec_hasta").val('');
+    $("#fec_hasta").attr('readonly', 'readonly');
+    $("#estadoFilt").val('');
+    $("#equipoFilt").val('');
+}
+//Filtra la tabla y la redibuja
+//Cada campo esta validado en caso de vacios o NULL no se muestren en la tabla
+function filtrar() {
+      var data = new FormData($('#frm-filtros')[0]);
+      data = formToObject(data);
+    //   wo();
+      var url = "index.php/Otrabajo/filtrarListado";
+      $.ajax({
+        type: 'POST',
+
+        data: data,
+
+        url: url,
+        success: function(data) {
+            WaitingClose();
+            // $("#tbl_recepciones").removeAttr('style');
+            var table = $('table#otrabajo').DataTable();
+            table.rows().remove().draw();
+            if (data != null) {
+                var resp = JSON.parse(data);
+                console.log(resp);
+                for(var i=0; i<resp.length; i++){
+                    var movimCabecera = resp[i];
+                    var row = `<tr id="${resp[i].id_orden}" class="${resp[i].id_orden} ot-row" data-id_equipo="${resp[i].id_equipo}" data-causa="${resp[i].descripcion}" data-idsolicitud="${resp[i].id_solicitud}">`
+                     row += `<td></td>`;
+                                //N° ORDEN
+                                if(resp[i].id_orden){
+                                    row += `<td>${resp[i].id_orden}</td>`;
+                                }else{
+                                    row += `<td></td>`;
+                                }
+                                //Fecha Programada
+                                if(resp[i].fecha_program){
+                                    var programada = resp[i].fecha_program.slice(0, 10);
+                                    Date.prototype.toDateInputValue = (function(){
+                                        var local = new Date(programada);
+                                        return local.toJSON().slice(0,10);
+                                    });
+                                    fecha = new Date().toDateInputValue();
+
+                                    row += `<td>`+ fecha +`</td>`;
+                                    // row += `<td>${resp[i].fecha_program}</td>`;
+                                }else{
+                                    row += `<td></td>`;
+                                }
+                                //Fecha Inicio
+                                if(resp[i].fecha_inicio){
+                                    var inicio = resp[i].fecha_inicio.slice(0, 10);
+                                    Date.prototype.toDateInputValue = (function(){
+                                        var local = new Date(inicio);
+                                        return local.toJSON().slice(0,10);
+                                    });
+                                    fecha = new Date().toDateInputValue();
+
+                                    row += `<td>`+ fecha +`</td>`;
+                                    // row += `<td>${resp[i].fecha_inicio}</td>`;
+                                }else{ row += `<td></td>`}
+                                //Fecha Terminada
+                                if(resp[i].fecha_terminada){
+                                    var terminada = resp[i].fecha_terminada.slice(0, 10);
+                                    Date.prototype.toDateInputValue = (function(){
+                                        var local = new Date(terminada);
+                                        return local.toJSON().slice(0,10);
+                                    });
+                                    fecha = new Date().toDateInputValue();
+
+                                    row += `<td>`+ fecha +`</td>`;
+                                    // row += `<td>${resp[i].fecha_terminada}</td>`;
+                                }else{ row += `<td></td>`
+                                }
+                                //Detalle
+                                if(resp[i].descripcion){
+                                    row += `<td>${resp[i].descripcion}</td>`;
+                                }else{ row += `<td></td>`
+                                }
+                                //Equipo
+                                if(resp[i].codigo){
+                                    row += `<td>${resp[i].codigo}</td>`;
+                                }else{ row += `<td></td>`;
+                                }
+                                //Origen
+                                if(resp[i].tipoDescrip){
+                                    row += `<td>${resp[i].tipoDescrip}</td>`;
+                                }else{ row += `<td></td>`;
+                                }
+                                //ID Solicitud
+                                if(resp[i].id_solicitud){
+                                    row += `<td>${resp[i].id_solicitud}</td>`;
+                                }else{ row += `<td></td>`;
+                                }
+                                //Asignado
+                                if(resp[i].nombre){
+                                    row += `<td>${resp[i].nombre}</td>`;
+                                }else{ row += `<td></td>`;
+                                }
+                                //Cliente
+                                if(resp[i].nomCli){
+                                    row += `<td>${resp[i].nomCli}</td>`;
+                                }else{ row += `<td></td>`;
+                                }
+                                //formateo de la fecha
+                                // if(resp[i].fec_alta){
+                                //     var fecha_alta = resp[i].fec_alta.slice(0, 10);
+                                //     Date.prototype.toDateInputValue = (function(){
+                                //         var local = new Date(fecha_alta);
+                                //         return local.toJSON().slice(0,10);
+                                //     });
+                                //     fecha = new Date().toDateInputValue();
+
+                                //     row += `<td>`+ fecha +`</td>`;
+                                // }else{ row += `<td></td>`}
+                                //Estado
+                                if(resp[i].estado){
+                                    var span_estado = '';
+                                    switch (resp[i].estado) {
+                                        case 'S':
+                                            span_estado = estado('Solicitada', 'red');
+                                            break;
+                                        case 'PL':
+                                            span_estado = estado('Planificada', 'yellow');
+                                            break;
+                                        case 'AS':
+                                            span_estado = estado('Asignada', 'purple');
+                                            break;
+                                        case 'C':
+                                            span_estado = estado('Curso', 'green');
+                                            break;
+                                        case 'T':
+                                            span_estado = estado('Terminada', 'blue');
+                                            break;
+                                        case 'CE':
+                                            span_estado = estado('Cerrada', 'default');
+                                            break;
+                                        case 'CN':
+                                            span_estado = estado('Conforme', 'black');
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                    // var span_estado = estado(resp[i].estado);
+                                    row += `<td>`+span_estado+`</td>`;
+                                }else{
+                                    row += `<td></td>`;
+                                }
+                                row += `</tr>`;
+                    table.row.add($(row)).draw();
+                    movimDetalle = "";
+                }
+            }
+
+            // wc();
+        },
+        error: function() {
+          alert('Ha ocurrido un error');
+        },
+        complete: function(result) {
+        //   wc();
+        },
+        beforeSend: function(){
+            // $("table#stock").empty();
+        },
+      });
+    }
+    function estado($texto,$color,$detalle=null){
+        return '<span data-toggle="tooltip" title="'+ $detalle +'" class="badge bg-'+$color+' estado">'+$texto+'</span>';
+    }
+    function habilitaFecHasta(){
+        $('#fec_hasta').attr('readonly', false);
+    }
 </script>
