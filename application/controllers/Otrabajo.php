@@ -1424,6 +1424,7 @@ class Otrabajo extends CI_Controller {
 	 * @param 	filtros 	array[].
 	 */
 	public function filtrarListado(){
+		$data = array();
 		if(!empty($this->input->post('fec_desde'))){
             $data['fec_desde'] = $this->input->post('fec_desde');
         }
@@ -1439,7 +1440,10 @@ class Otrabajo extends CI_Controller {
 
 		$response = $this->Otrabajos->filtrarListado($data,2);
         log_message('DEBUG','#ASSET | Otrabajo | filtrarListado() $response >> '.json_encode($response));
-        
-        echo json_encode($response);
+		if(!empty($data)){
+			echo json_encode($response);
+		}else{
+			echo json_encode($response=null);
+		}
 	}
 }
