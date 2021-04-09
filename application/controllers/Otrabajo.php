@@ -1437,10 +1437,13 @@ class Otrabajo extends CI_Controller {
 		if(!empty($this->input->post('equipoFilt'))){
             $data['equipoFilt'] = $this->input->post('equipoFilt');
         }
-
+		if(!empty($this->input->post('permissionFilt'))){
+            $permission = $this->input->post('permissionFilt');
+        }
+		$data['opciones'] = $this->load->view('otrabajos/tabla_opciones',['permission'=>$permission],true);
 		$response = $this->Otrabajos->filtrarListado($data,2);
         log_message('DEBUG','#ASSET | Otrabajo | filtrarListado() $response >> '.json_encode($response));
-		if(!empty($data)){
+		if(!empty($data['fec_desde']) || !empty($data['fec_hasta']) || !empty($data['estadoFilt']) || !empty($data['equipoFilt'])){
 			echo json_encode($response);
 		}else{
 			echo json_encode($response=null);
