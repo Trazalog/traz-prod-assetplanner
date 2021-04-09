@@ -4701,7 +4701,7 @@ function filtrar() {
             // $("#tbl_recepciones").removeAttr('style');
             var table = $('table#otrabajo').DataTable();
             table.rows().remove().draw();
-            if (data != null) {
+            if (data != null && data != ' null') {
                 var resp = JSON.parse(data);
                 console.log(resp);
                 for(var i=0; i<resp.length; i++){
@@ -4715,7 +4715,7 @@ function filtrar() {
                                     row += `<td></td>`;
                                 }
                                 //Fecha Programada
-                                if(resp[i].fecha_program){
+                                if(resp[i].fecha_program != '0000-00-00 00:00:00'){
                                     var programada = resp[i].fecha_program.slice(0, 10);
                                     Date.prototype.toDateInputValue = (function(){
                                         var local = new Date(programada);
@@ -4729,7 +4729,7 @@ function filtrar() {
                                     row += `<td></td>`;
                                 }
                                 //Fecha Inicio
-                                if(resp[i].fecha_inicio){
+                                if(resp[i].fecha_inicio != '0000-00-00 00:00:00'){
                                     var inicio = resp[i].fecha_inicio.slice(0, 10);
                                     Date.prototype.toDateInputValue = (function(){
                                         var local = new Date(inicio);
@@ -4738,10 +4738,9 @@ function filtrar() {
                                     fecha = new Date().toDateInputValue();
 
                                     row += `<td>`+ fecha +`</td>`;
-                                    // row += `<td>${resp[i].fecha_inicio}</td>`;
                                 }else{ row += `<td></td>`}
                                 //Fecha Terminada
-                                if(resp[i].fecha_terminada){
+                                if(resp[i].fecha_terminada != '0000-00-00 00:00:00'){
                                     var terminada = resp[i].fecha_terminada.slice(0, 10);
                                     Date.prototype.toDateInputValue = (function(){
                                         var local = new Date(terminada);
@@ -4750,7 +4749,6 @@ function filtrar() {
                                     fecha = new Date().toDateInputValue();
 
                                     row += `<td>`+ fecha +`</td>`;
-                                    // row += `<td>${resp[i].fecha_terminada}</td>`;
                                 }else{ row += `<td></td>`
                                 }
                                 //Detalle
