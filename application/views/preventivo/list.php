@@ -196,7 +196,7 @@
       'url': 'index.php/Preventivo/getHerramientasB',
     })
     .done( (data) => { tmp = data } )
-    .fail( () => alert("Error al traer Herramientas") );
+    // .fail( () => alert("Error al traer Herramientas") );
     return tmp;
   }();
 
@@ -376,7 +376,7 @@
       'url': 'index.php/Preventivo/getinsumo',
     })
     .done( (data) => { tmp = data } )
-    .fail( () => alert("Error al traer Herramientas") );
+    // .fail( () => alert("Error al traer Herramientas") );
     return tmp;
   }();
 
