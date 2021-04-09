@@ -42,7 +42,11 @@ class Otrabajo extends CI_Controller {
 	 */
 	public function listOrden($permission,$ot=null) // Ok
 	{
-		$data['list']    = $this->Otrabajos->otrabajos_List($ot, 2);
+		//Se pidio que el listado se cargue a aprtir de un filtro, filtrarListado()
+		// $data['list']    = $this->Otrabajos->otrabajos_List($ot, 2);
+		$data['list'] = false;
+		$data['equipos'] = $this->Otrabajos->getEquiposNuevaOT();
+
 		$data['permission'] = $permission;
 
 		$rsp = $this->bpm->getUsuariosBPM();
@@ -1412,6 +1416,34 @@ class Otrabajo extends CI_Controller {
 			//break;
 		default:
 			break;
+		}
+	}
+	/**
+	 * Filtrado de listado de Ordenes de Trabajo.
+	 *
+	 * @param 	filtros 	array[].
+	 */
+	public function filtrarListado(){
+		$data = array();
+		if(!empty($this->input->post('fec_desde'))){
+            $data['fec_desde'] = $this->input->post('fec_desde');
+        }
+		if(!empty($this->input->post('fec_hasta'))){
+            $data['fec_hasta'] = $this->input->post('fec_hasta');
+        }
+		if(!empty($this->input->post('estadoFilt'))){
+            $data['estadoFilt'] = $this->input->post('estadoFilt');
+        }
+		if(!empty($this->input->post('equipoFilt'))){
+            $data['equipoFilt'] = $this->input->post('equipoFilt');
+        }
+
+		$response = $this->Otrabajos->filtrarListado($data,2);
+        log_message('DEBUG','#ASSET | Otrabajo | filtrarListado() $response >> '.json_encode($response));
+		if(!empty($data)){
+			echo json_encode($response);
+		}else{
+			echo json_encode($response=null);
 		}
 	}
 }
