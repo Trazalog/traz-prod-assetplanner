@@ -102,8 +102,8 @@ define('FRM', 'traz-comp-form/');
 |
 | Version de Componente de Almacen
 |
-*/ 
-define('ALM', 'traz-comp-almacen/');  
+*/
+define('ALM', 'traz-comp-almacen/');
 
 define('files', 'files/');
 
@@ -115,9 +115,10 @@ define('SIM_FORMS', array(
     'eval_zona' =>3
 ));
 
+define('CMP_ALM', 'traz-comp-almacen/');
 
+define('AJST', 'http://10.142.0.7:8280');
 
-define('CMP_ALM', 'traz-comp-almacen/');  
 
 /*
 |--------------------------------------------------------------------------
@@ -128,11 +129,11 @@ define('CMP_ALM', 'traz-comp-almacen/');
 |
 */
 
-define('BONITA_URL', 'http://localhost:8080/bonita/'); 
+define('BONITA_URL', 'http://10.142.0.7:8080/bonita/');
 
-define('BPM_ADMIN_USER', 'supervisor1');
-define('BPM_ADMIN_PASS', 'bpm');
-define('BPM_USER_PASS', 'bpm');
+define('BPM_ADMIN_USER', 'admin');
+define('BPM_ADMIN_PASS', '123traza');
+define('BPM_USER_PASS', '123');
 
 
 
@@ -147,12 +148,12 @@ define('BPM_USER_PASS', 'bpm');
 
 
 //? PEDIDOS NORMALES
- 
-define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '6833268789089291878'); 
+
+define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '8803232493891311406');
 
 //? PEDIDOS EXTRAORDINATIOS
 
-define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '7321139677245257050');
+define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '6866538875650512673');
 
 
 /*
@@ -164,7 +165,7 @@ define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '7321139677245257050');
 |
 */
  
-define('BPM_PROCESS_ID', '9070110405395579127'); // localhost -
+define('BPM_PROCESS_ID', '8664799170016058315'); // localhost -
 
 /*
 |--------------------------------------------------------------------------
@@ -184,7 +185,7 @@ define('REST2', 'http://10.142.0.7:8280/services/ProduccionDataService');
 define('REST3', 'http://10.142.0.7:8280/services/produccionTest');
 define('REST4', 'http://10.142.0.7:8280/services/TrazabilidadDataService');
 
-define('AJST', 'http://10.142.0.7:8280');
+
 
 /*
 |--------------------------------------------------------------------------

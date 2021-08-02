@@ -257,7 +257,7 @@ class Users extends CI_Model
 			$this->db->where('sisusers.usrPassword', $pas);
 			$this->db->where('usuarioasempresa.tipo', 1); //!HARDCODE
 			$query = $this->db->get();
-			
+
 			if ($query->num_rows() != 0)
 			{
 				$datosSesionUsuario = $query->result_array();

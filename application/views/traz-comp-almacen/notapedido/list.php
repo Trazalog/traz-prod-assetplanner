@@ -3,14 +3,20 @@
         <div class="box-header">
             <h3 class="box-title">Pedido Materiales</h3>
             <?php
-            if(!viewOT)
-            {
+             
+             //if (strpos($permission,'Add') !== false) {
+                if(!viewOT)
+                {
                 echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
                 onclick="linkTo(\'almacen/Notapedido/crearPedido\')">Agregar</button>';
-            }else{
+                }else{
                 echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
                 onclick="AbrirModal()">Agregar</button>';
-            }
+                }
+               
+            //}
+             
+            
             if(isset($descripcionOT))
             {
                 echo '<input type="hidden" value="'.$descripcionOT.'" id="descripcionOT">';
@@ -68,11 +74,12 @@ function AbrirModal() {
 }
 
 function descartarPedido() {
+debugger;
     var id = $('#pema_id').val();
     if (!id) return;
-    $.ajax({
+		$.ajax({
         type: 'POST',
-        url: 'index.php/almacen/Notapedido/eliminar',
+				url: 'index.php/<?php echo CMP_ALM ?>Notapedido/eliminar',
         data: {
             id
         },
@@ -221,7 +228,7 @@ var tablaDeposito = $('#deposito').DataTable({});
 </script>
 
 <!-- Modal Agregar -->
-<div class="modal fade" id="agregar_pedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="agregar_pedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">

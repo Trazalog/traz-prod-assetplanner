@@ -22,8 +22,7 @@ class Otrabajo extends CI_Controller {
 		$data['list']       = $this->Otrabajos->otrabajos_List(null,0);
 		$data['kpi'] = $this->Equipos->informe_equipos();
 		$data['permission'] = $permission;
-
-		$this->load->view('otrabajos/dash', $data);
+		$this->load->view('otrabajos/dashOriginal', $data);
 	}  
 	/**
 	 * Muestra pantalla de Nueva Orden de Trabajo.
@@ -43,7 +42,11 @@ class Otrabajo extends CI_Controller {
 	 */
 	public function listOrden($permission,$ot=null) // Ok
 	{
-		$data['list']    = $this->Otrabajos->otrabajos_List($ot, 2);
+		//Se pidio que el listado se cargue a aprtir de un filtro, filtrarListado()
+		// $data['list']    = $this->Otrabajos->otrabajos_List($ot, 2);
+		$data['list'] = false;
+		$data['equipos'] = $this->Otrabajos->getEquiposNuevaOT();
+
 		$data['permission'] = $permission;
 
 		$rsp = $this->bpm->getUsuariosBPM();
@@ -1413,6 +1416,37 @@ class Otrabajo extends CI_Controller {
 			//break;
 		default:
 			break;
+		}
+	}
+	/**
+	 * Filtrado de listado de Ordenes de Trabajo.
+	 *
+	 * @param 	filtros 	array[].
+	 */
+	public function filtrarListado(){
+		$data = array();
+		if(!empty($this->input->post('fec_desde'))){
+            $data['fec_desde'] = $this->input->post('fec_desde');
+        }
+		if(!empty($this->input->post('fec_hasta'))){
+            $data['fec_hasta'] = $this->input->post('fec_hasta');
+        }
+		if(!empty($this->input->post('estadoFilt'))){
+            $data['estadoFilt'] = $this->input->post('estadoFilt');
+        }
+		if(!empty($this->input->post('equipoFilt'))){
+            $data['equipoFilt'] = $this->input->post('equipoFilt');
+        }
+		if(!empty($this->input->post('permissionFilt'))){
+            $permission = $this->input->post('permissionFilt');
+        }
+		$data['opciones'] = $this->load->view('otrabajos/tabla_opciones',['permission'=>$permission],true);
+		$response = $this->Otrabajos->filtrarListado($data,2);
+        log_message('DEBUG','#ASSET | Otrabajo | filtrarListado() $response >> '.json_encode($response));
+		if(!empty($data['fec_desde']) || !empty($data['fec_hasta']) || !empty($data['estadoFilt']) || !empty($data['equipoFilt'])){
+			echo json_encode($response);
+		}else{
+			echo json_encode($response=null);
 		}
 	}
 }

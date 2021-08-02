@@ -51,6 +51,7 @@
 			},
 			error: function (result) {
 				console.log("Error");
+				console.log(result);
 			}
 		});
 	}

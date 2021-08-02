@@ -13,8 +13,12 @@ class Articulo extends CI_Controller {
 	}
 
 	// Muestra listado de articulos
-	public function index($permission='Add-Edit-Del-View')
+	public function index()
 	{
+		if($_GET)
+		{
+			$permission = $_GET["permisos"];
+		}
 		$data['list'] = $this->Articulos->getList();
 		$data['permission'] = $permission;
 		$this->load->view(ALM.'/articulo/list', $data);

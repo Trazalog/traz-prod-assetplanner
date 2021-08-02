@@ -77,7 +77,7 @@ class Tarea extends CI_Controller {
 	/* ./ TAREAS ASSET ORIGINALES */
 	
 	/* INTEGRACION CON BPM */
-		
+
 		/*	./ FUNCIONES BPM */
 			// Bandea de entrada
 			public function index($permission = null){
@@ -86,6 +86,7 @@ class Tarea extends CI_Controller {
 						$detect = new Mobile_Detect();    				
 						//Obtener Bandeja de Usuario desde Bonita
 						$response = $this->bpm->getToDoList();
+					
 						//dump($response, 'respuesta tareas BPM: ');
 						if(!$response['status']){
 							//$this->load->view('404');
@@ -123,9 +124,16 @@ class Tarea extends CI_Controller {
 			public function inicioTarea(){
 				
 				$id_OT = $this->input->post('id_OT');
+				$lati = $this->input->post('lat');
+				$long = $this->input->post('lon');
 				$estado = 'C';
+				log_message('DEBUG','#Tarea/inicioTarea lat: '.json_encode($lati));
+				log_message('DEBUG','#Tarea/inicioTarea long: '.json_encode($long));
+				log_message('DEBUG','#Tarea/inicioTarea idOT: '.json_encode($id_OT));
 				// graba fecha de inicio en OT
 				if ($this->Tareas->inicioTareas($id_OT)) {
+						$res = $this->Tareas->actualizarLatLng($lati,$long,$id_OT);
+						log_message('DEBUG','#Tarea/inicioTarea: '.json_encode($res));
 						//cambia el estado a a OT
 						if ($this->Tareas->cambiarEstado($id_OT, $estado, 'OT')) {
 								// averigua origen de OT
@@ -454,7 +462,7 @@ class Tarea extends CI_Controller {
 			// trae datos para llenar notificaion estandar y formulario asociado
 			public function detaTarea($permission,$idTarBonita){
 
-				// detecta dispositivo				
+				// detecta dispositivo
 					$detect = new Mobile_Detect();
 					if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {				
 						$data['device'] = "android";
@@ -468,7 +476,7 @@ class Tarea extends CI_Controller {
 					$data['idTarBonita'] = $idTarBonita;
 					$caseId = $data['TareaBPM']["caseId"];
 			
-				// Trae id de OT y de Sol Serv por CaseId			
+				// Trae id de OT y de Sol Serv por CaseId
 					$id_SS = $this->getIdSolServPorIdCase($caseId);	
 					log_message('DEBUG','#TRAZA | #TAREA >> detatarea id_SS: '.$id_SS);
 					log_message('DEBUG','#TRAZA | #TAREA >> detatarea tarea BPM: '.json_encode($data['TareaBPM']));
@@ -503,7 +511,7 @@ class Tarea extends CI_Controller {
 					$data['id_SS'] = $id_SS;
 					$data['id_EQ'] = $id_EQ;
 					
-				
+
 				/* Bloque subtareas estandar */	
 					if($id_OT != 0){
 						/* funcion nueva de asset */										
@@ -513,13 +521,13 @@ class Tarea extends CI_Controller {
 							if(!empty($this->Tareas->getSubtareas($id_OT))){
 								$data['subtareas'] = $this->Tareas->getSubtareas($id_OT);
 							}						
-						//} 					
+						//}
 					}	
 
 				//LIBRERIA BPM
 					$case_id = $data['TareaBPM']["caseId"];
 					$case = array('caseId'=>$case_id);
-							
+
 				// LINEA DE TIEMPO 			
 					$data['timeline'] = $this->bpm->ObtenerLineaTiempo(BPM_PROCESS_ID, $case_id);			
 				//CARGAR VISTA COMENTARIOS 
@@ -598,11 +606,11 @@ class Tarea extends CI_Controller {
 						break;							
 							
 					default:
-							$this->load->view('tareas/view_', $data);					
-							$this->load->view('tareas/scripts/tarea_std');	
+							$this->load->view('tareas/view_', $data);
+							$this->load->view('tareas/scripts/tarea_std');
 							break;
 				}
-			}	
+			}
 			//
 			function getIdSolServPorIdCase($caseId){
 			
@@ -653,13 +661,21 @@ class Tarea extends CI_Controller {
 		/* COMENTARIOS */
 			public function GuardarComentario(){
 				$data = $this->input->post();
+				log_message('INFO','#TRAZA|Tarea|GuardarComentario() >> ');
+				log_message('DEBUG','#Tarea/GuardarComentario: '.json_encode($data));
 				$response = $this->bpm->GuardarComentario($data["processInstanceId"],$data["content"]);
+				log_message('DEBUG','#Tarea/GuardarComentario: '.json_encode($response));
 				echo json_encode($response);
 			}	
 
 			public function ObtenerComentariosBPM($case_id){
 			
-				$data['comentarios'] = $this->bpm->ObtenerComentarios()['data'];
+				log_message('INFO','#TRAZA|Tarea|ObtenerComentariosBPM() >> ');
+    			log_message('DEBUG','#Tarea/ObtenerComentariosBPM: '.json_encode($case_id));
+				$auxx = $this->bpm->ObtenerComentarios($case_id);
+				log_message('DEBUG','#Tarea/ObtenerComentariosBPM: '.json_encode($auxx));
+				$aux =json_decode($auxx["data"]);
+				$data['comentarios'] = $aux;
 				$data['case_id'] = $case_id;
 				$this->load->view('tareas/componentes/comentarios',$data);
 			}
@@ -760,7 +776,29 @@ class Tarea extends CI_Controller {
 
 
 	/*  ./ INTEGRACION CON BPM */
-	
+	public function CerrarTarea()
+	{
+		$id = $this->input->post('IdtarBonita');
+		$case_id= $this->input->post('caseid');
+		$tipo= $this->input->post('tipo');
+
+		$contract = array(
+			"entregaCompleta" => "true"
+		);
+		$result = $this->bpm->cerrarTarea($id, $contract);
+		if ($result['status']){
+
+			$resp = $this->Tareas->CambiarEstadoPedidoMat($case_id, $tipo);
+			if($resp){
+				echo json_encode(['status'=>true, 'msj'=> 'Tarea cerrada y cambio de Estado con Exito...!']);
+			}else{
+				echo json_encode(['status'=>false, 'msj'=> 'Tarea cerrada, cambio de Estado ha fallado...!']);
+			}
+			
+		}else{
+			echo json_encode(['status'=>false, 'msj'=> 'Error al cerrar Tarea']);
+		}
+	}
 
 	
 } 

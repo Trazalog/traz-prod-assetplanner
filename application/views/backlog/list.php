@@ -5,13 +5,12 @@
             <div class="box">
                 <div class="box-header">
                     <h3 class="box-title">Backlog</h3>
-                    <?php
-          //if (strpos($permission,'Add') !== false) {
-          ?>
-                    <button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
-                        id="btnAgre">Agregar</button>
-                    <? 
-          // }
+          <?php
+          if (strpos($permission,'Add') !== false) {
+                    
+                echo   '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"id="btnAgre">Agregar</button>';
+                     
+          }
           ?>
                 </div><!-- /.box-header -->
                 <div class="box-body">

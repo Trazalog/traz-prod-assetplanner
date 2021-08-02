@@ -34,7 +34,7 @@
 													echo "<button class='btn btn-block btn-success' id='btontomar' style='width: 100px; margin-top: 10px ;display: inline-block;' onclick='tomarTarea()'>Tomar tarea</button>";
 													
 													echo "<button class='btn btn-block btn-danger grupNoasignado' id='btonsoltr' style='width: 100px; margin-top: 10px; display: inline-block;' onclick='soltarTarea()'>Soltar tarea</button>";											
-													echo "</br>"; 
+													echo "</br>";
 													echo "</br>"; 			
 												?>
 
@@ -56,6 +56,7 @@
                                                             <input type="text" class="form-control" id="tarea"
                                                                 value="<?php echo $TareaBPM['displayName'] ?>" disabled>
                                                             <!-- id de listarea -->
+                                                            <input type="text" id="caseid" style="display:none;" value="<?php echo $TareaBPM['parentCaseId']?>">
                                                             <input type="text" class="hidden" id="tbl_listarea"
                                                                 value="<?php #echo #$datos[0]['id_listarea'] ?>">
                                                             <!-- id de task en bonita -->
@@ -155,8 +156,13 @@
 
             <div class="modal-footer">
             <?php echo (isset($estadoOT) && $estadoOT==false?'<h4 class="text-danger text-center">La Orden de Trabajo Asociada al Pedido de Materiales ha sido Cerrada</h4><h5 class="text-center">No se podran realizar mas Entregas</h5>':null) ?>  
-              <button type="button" id="cerrar" class="btn btn-primary" onclick="linkTo('Tarea');">Cerrar</button>
-                <button type="button" class="btn btn-success" id="hecho" onclick="cerrarTarea()" <?php echo (isset($estadoOT) && $estadoOT==false?'disabled':null) ?> >Hecho</button>
+
+						<button type="button" class="btn btn-warning" id="btncerrarTarea" style="display:none;" onclick="BtnCerrarTarea()">Finalizar Pedido</button>
+
+						<button type="button" id="cerrar" class="btn btn-primary" onclick="linkTo('Tarea');">Cerrar</button>
+
+						<button type="button" class="btn btn-success" id="hecho" onclick="cerrarTarea()" <?php echo (isset($estadoOT) && $estadoOT==false?'disabled':null) ?> >Hecho</button>
+
             </div> <!-- /.modal footer -->
 
         </div><!-- /.box body -->
@@ -166,14 +172,72 @@
 
 <?php $this->load->view(ALM.'/proceso/tareas/scripts/tarea_std'); ?></section>
 <script>
-$('.fecha').datepicker({
-    autoclose: true
-}).on('change', function(e) {
-    // $('#genericForm').bootstrapValidator('revalidateField',$(this).attr('name'));
-    console.log('Validando Campo...' + $(this).attr('name'));
-    $('#genericForm').data('bootstrapValidator').resetField($(this), false);
-    $('#genericForm').data('bootstrapValidator').validateField($(this));
-});
+  $(document).ready(function(event){
+		if($("#tarea").val()=="Entrega pedido pendiente")
+		{
+			$("#btncerrarTarea").removeAttr("style");
+		}
+	});
+	$('.fecha').datepicker({
+			autoclose: true
+	}).on('change', function(e) {
+			// $('#genericForm').bootstrapValidator('revalidateField',$(this).attr('name'));
+			console.log('Validando Campo...' + $(this).attr('name'));
+			$('#genericForm').data('bootstrapValidator').resetField($(this), false);
+			$('#genericForm').data('bootstrapValidator').validateField($(this));
+	});
+	function BtnCerrarTarea()
+	{
+		$("#modalaviso").modal("show");
+	}
+	function CerrarTarea(tipo)
+	{
+		if (tipo != "parcial") {
+			var tipo = null;
+		}
+
+		var caseid = $("#caseid").val();
+		var taskid = $("#idTarBonita").val();
+		$.ajax({
+					type: 'POST',
+					data: {
+				'IdtarBonita': taskid,
+				'caseid':caseid,
+				'tipo': tipo
+					},
+					dataType: "json",
+					url: 'index.php/Tarea/CerrarTarea',
+
+
+					success: function(result) {
+						debugger;
+
+						if (result.status) {
+							$("#modalaviso").modal("hide");
+							alert(result.msj);
+							$("#content").load(base_url + "index.php/Tarea/index/add-edit-del-view");
+						} else {
+							$("#modalaviso").modal("hide");
+							alert(result.msj);
+						}
+
+
+						// if(result=="ok")
+						// {
+						// 	$("#modalaviso").modal("hide");
+						// 	alert("Tarea Cerrada Exitosamente");
+						// }else{
+						// 	$("#modalaviso").modal("hide");
+						// 	alert("Error al cerrar Tarea");
+						// }
+					},
+					error: function(result) {
+						debugger;
+						$("#modalaviso").modal("hide");
+						alert(result.msj);
+					}
+			});
+	}
 </script>
 
 
@@ -197,3 +261,31 @@ $('.fecha').datepicker({
         </div>
     </div>
 </div>
+<!---///////--- MODAL AVISO ---///////--->
+<div class="modal fade" id="modalaviso">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header bg-blue">
+				
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true" >&times;</span>
+				</button>
+				<h5 class="modal-title" id="exampleModalLabel">AVISO</h5>
+			</div>
+			<input id="circuito_delete" style="display: none;">
+			<div class="modal-body">
+				<center>
+				<h4><p>¿ DESEA CERRAR LA TAREA ?</p></h4>
+				<h4><p>Si continua no podra seguir entregando materiales para el mismo.</p></h4>
+				</center>
+			</div>
+			<div class="modal-footer">
+				<center>
+				<button type="button" class="btn btn-primary" onclick="CerrarTarea('parcial')">SI</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">NO</button>
+				</center>
+			</div>
+		</div>
+	</div>
+</div>
+<!---///////--- FIN MODAL AVISO ---///////--->

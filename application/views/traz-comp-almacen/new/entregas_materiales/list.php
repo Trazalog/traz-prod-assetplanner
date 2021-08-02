@@ -99,12 +99,12 @@ function ImprimirEntrega(e){
         error: function(result) {
             alert('Error');
         },
-       
+
     });
     
 }
 function ImprimirEntregaMateriales($data)
-{    
+{
      $.ajax({
         type: 'POST',
         data: {
@@ -129,7 +129,7 @@ function ImprimirEntregaMateriales($data)
             console.log("error en la vista imprimir");
         },
     });
-           
+
 }
 
 function rellenarCabecera(json) {

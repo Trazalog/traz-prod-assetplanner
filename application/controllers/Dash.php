@@ -126,7 +126,7 @@ class dash extends CI_Controller {
 					$data['tareas'][$i]['subtareas'] = $array;
 				}
 			}
-		
+
 			$data['tareas'] = json_encode($data['tareas']);
 
 			}
@@ -139,7 +139,7 @@ class dash extends CI_Controller {
 			$this->load->view('footerdash');
 			$this->load->view('footer');
 	}
-	
+
 
 	/**
 	 *
