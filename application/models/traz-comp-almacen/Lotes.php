@@ -29,27 +29,28 @@ class Lotes extends CI_Model {
 
 	public function getPuntoPedido()
 	{
-		  // OBTENER CANTIDADES RESERVADAS
-		  $this->db->select('arti_id, IFNULL(sum(resto),0) as cant_reservada');
-		  $this->db->from('alm_deta_pedidos_materiales');
-		  $this->db->join('alm_pedidos_materiales', 'alm_deta_pedidos_materiales.pema_id = alm_pedidos_materiales.pema_id');
-		  $this->db->where('estado!=','Entregado');
-		  $this->db->where('estado!=','Rechazado');
-		  $this->db->where('estado!=','Cancelado');
-		  $this->db->where('alm_pedidos_materiales.empr_id', empresa());
-		  $this->db->group_by('arti_id');
-		  $C = '(' . $this->db->get_compiled_select() . ') C';
+		$empId = empresa();
+		//   OBTENER CANTIDADES RESERVADAS
+		$this->db->select('arti_id, IFNULL(sum(resto),0) as cant_reservada');
+		$this->db->from('alm_deta_pedidos_materiales');
+		$this->db->join('alm_pedidos_materiales', 'alm_deta_pedidos_materiales.pema_id = alm_pedidos_materiales.pema_id');
+		$this->db->where('estado!=','Entregado');
+		$this->db->where('estado!=','Rechazado');
+		$this->db->where('estado!=','Cancelado');
+		$this->db->where('alm_pedidos_materiales.empr_id', empresa());
+		$this->db->group_by('arti_id');
+		$C = '(' . $this->db->get_compiled_select() . ') C';
 
-		  $this->db->select('ART.arti_id, ART.barcode, ART.descripcion, punto_pedido, IFNULL(sum(LOTE.cantidad), 0) as cantidad_stock, IFNULL(sum(LOTE.cantidad),0)-cant_reservada as cantidad_disponible');
-		  $this->db->from('alm_articulos ART');
-		  $this->db->join('alm_lotes LOTE','LOTE.arti_id = ART.arti_id');
-		  $this->db->join($C,'C.arti_id = ART.arti_id');
-		  $this->db->group_by('ART.arti_id');
-		  $sql = '('.$this->db->get_compiled_select().') AUX';
+		$this->db->select('ART.arti_id, ART.barcode, ART.descripcion, punto_pedido, IFNULL(sum(LOTE.cantidad), 0) as cantidad_stock, IFNULL(sum(LOTE.cantidad),0)-ifnull(cant_reservada,0) as cantidad_disponible');
+		$this->db->from('alm_articulos ART');
+		$this->db->join('alm_lotes LOTE','LOTE.arti_id = ART.arti_id');
+		$this->db->join($C,'C.arti_id = ART.arti_id','left');
+		$this->db->group_by('ART.arti_id');
+		$sql = '('.$this->db->get_compiled_select().') AUX';
 
-		  $this->db->where('AUX.cantidad_disponible < AUX.punto_pedido');
-		  $this->db->from($sql);
-		  return $this->db->get()->result_array();
+		$this->db->where('AUX.cantidad_disponible < AUX.punto_pedido');
+		$this->db->from($sql);
+		return $this->db->get()->result_array();
 	}
 	
 	function getMotion($data = null){
