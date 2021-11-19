@@ -77,8 +77,7 @@ class Calendarios extends CI_Model {
     }
 
     // Preventivos por Hora para la Tabla
-    function 
-    getPreventivosHoras($mes, $year)
+    function getPreventivosHoras($mes, $year)
     {
         $userdata = $this->session->userdata('user_data');
         $empId    = $userdata[0]['id_empresa'];
@@ -103,11 +102,13 @@ class Calendarios extends CI_Model {
             join equipos ON preventivo.id_equipo = equipos.id_equipo 
             join tareas ON preventivo.id_tarea = tareas.id_tarea 
             join periodo ON preventivo.perido = periodo.idperiodo
-            WHERE preventivo.id_empresa = $empId AND preventivo.estadoprev = 'C' AND ((periodo.descripcion = 'Ciclos') OR (periodo.descripcion = 'Horas') OR (periodo.descripcion = 'Kilómetros')) AND (equipos.ultima_lectura >= (preventivo.lectura_base + preventivo.critico1))";//horas o ciclos
+            WHERE preventivo.id_empresa = $empId AND preventivo.estadoprev = 'C' OR preventivo.estadoprev = 'M' AND ((periodo.descripcion = 'Ciclos') OR (periodo.descripcion = 'Horas') OR (periodo.descripcion = 'Kilómetros')) AND (equipos.ultima_lectura >= (preventivo.lectura_base + preventivo.critico1))";//horas o ciclos
             //AND month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $mes 
             //AND year(orden_trabajo.fecha_program) = $year
             //";
-        $query = $this->db->query($sql);
+            log_message('debug', $sql);
+            $query = $this->db->query($sql);
+
                 if ($query->num_rows()!=0)
         {
             return $query->result_array();  
