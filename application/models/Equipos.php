@@ -786,7 +786,8 @@ class Equipos extends CI_Model
     /// Guarda lectura Hugo
     public function setLecturas($data)
     {
-
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
         $this->db->where('id_equipo', $data["id_equipo"]);
         $estadoActual = $this->db->get('equipos')->row('estado');
 
@@ -800,6 +801,27 @@ class Equipos extends CI_Model
         $userdata = $this->session->userdata('user_data');
         $usrId = $userdata[0]['usrId'];
 
+        //---------------------------------------------------------
+        //Me traigo la ultima lectura antes de colocar la nueva
+        $ultima_lectura = "SELECT equipos.ultima_lectura 
+                            FROM equipos
+                            WHERE equipos.id_equipo = $id_equipo";
+        $ultima_lectura = $this->db->query($ultima_lectura);
+        $ultima_lectura = $ultima_lectura->result()[0]->ultima_lectura;
+        //---------------------------------------------------------
+        $resultado = $lectura - $ultima_lectura;
+
+        $preventivo ="SELECT preventivo.prevId, preventivo.estadoprev, preventivo.critico1, preventivo.lectura_base
+        FROM preventivo
+        WHERE preventivo.id_empresa = $empId AND preventivo.id_equipo = $id_equipo AND preventivo.estadoprev = 'M' OR preventivo.estadoprev = 'C' OR preventivo.estadoprev = 'PL'";
+        $preventivo = $this->db->query($preventivo);
+        $preventivoEstado = $preventivo->result()[0]->estadoprev; 
+        if($preventivoEstado == 'C'){
+            //como es creado ('C') hay q sumarle la lectura base
+            //a la diferencia (guardada en $resultado) antes de preguntar
+            //si es mayor a critico1 (la frecuencia)
+            $resultado = + $preventivo->result()[0]->lectura_base;
+        }
         $datos = array(
             'id_equipo' => $id_equipo,
             'lectura' => $lectura,
@@ -825,14 +847,22 @@ class Equipos extends CI_Model
         }
         $this->db->where('equipos.id_equipo', $id_equipo);
         $this->db->update('equipos', $estado_eq);
-
         $this->db->trans_complete();
 
-        if ($this->db->trans_status() === false) {
-            return false;
-        } else {
-            return true;
-        }
+        if ($this->db->trans_status() === true) {
+            //preguntamos si la cantidad de horas ingresadas en la nueva lectura
+            //supera la frecuencia
+            $preventivoCritico1 = $preventivo->result()[0]->critico1;
+            if($resultado >= $preventivoCritico1){
+                $idPreventivo = $preventivo->result()[0]->prevId;
+                //realizo la modificacion del preventivo
+                $sql = "UPDATE preventivo 
+                        SET preventivo.estadoprev = 'M'
+                        WHERE preventivo.id_empresa = $empId AND preventivo.prevId = $idPreventivo";
+                $this->db->query($sql);
+                return true;
+            }else return false;
+        }else return false;
     }
 
     function anteriorHistorialLectura($idLectura = false, $id_equipo = false){
