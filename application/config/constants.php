@@ -117,7 +117,7 @@ define('SIM_FORMS', array(
 
 define('CMP_ALM', 'traz-comp-almacen/');
 
-define('AJST', 'http://10.142.0.7:8280');
+define('AJST', 'http://10.142.0.13:8280');
 
 
 /*
@@ -129,7 +129,7 @@ define('AJST', 'http://10.142.0.7:8280');
 |
 */
 
-define('BONITA_URL', 'http://10.142.0.7:8080/bonita/');
+define('BONITA_URL', 'http://10.142.0.13:8080/bonita/');
 
 define('BPM_ADMIN_USER', 'admin');
 define('BPM_ADMIN_PASS', '123traza');
@@ -176,14 +176,14 @@ define('BPM_PROCESS_ID', '8664799170016058315'); // localhost -
 |
 */
 
-define('REST', 'http://10.142.0.7:8280/services/ProduccionDataService/');
-define('RESTPT','http://10.142.0.7:8280/services/produccionTest/');
-define('REST_TDS', 'http://10.142.0.7:8280/services/TrazabilidadDataService/');
-define('REST0', 'http://10.142.0.7:8280/services/ALMDataServiceAsset/');
+define('REST', 'http://10.142.0.13:8280/services/ProduccionDataService/');
+define('RESTPT','http://10.142.0.13:8280/services/produccionTest/');
+define('REST_TDS', 'http://10.142.0.13:8280/services/TrazabilidadDataService/');
+define('REST0', 'http://10.142.0.13:8280/services/ALMDataServiceAsset/');
 
-define('REST2', 'http://10.142.0.7:8280/services/ProduccionDataService');
-define('REST3', 'http://10.142.0.7:8280/services/produccionTest');
-define('REST4', 'http://10.142.0.7:8280/services/TrazabilidadDataService');
+define('REST2', 'http://10.142.0.13:8280/services/ProduccionDataService');
+define('REST3', 'http://10.142.0.13:8280/services/produccionTest');
+define('REST4', 'http://10.142.0.13:8280/services/TrazabilidadDataService');
 
 
 
@@ -197,7 +197,7 @@ define('REST4', 'http://10.142.0.7:8280/services/TrazabilidadDataService');
 |
 */
 
-define('RTR','http://localhost:8088');
+define('RTR','http://10.142.0.13:8280/');
 
 
 

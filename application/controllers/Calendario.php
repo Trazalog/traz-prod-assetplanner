@@ -109,7 +109,7 @@ class Calendario extends CI_Controller
         $data = $this->input->post();
         //log_message('DEBUG', 'TRAZA | Data: '.json_decode($data));
 
-        $userdata = $this->session->userdata('user_data');
+        $userdata = $this->session->userdata('user_data');//linea repetida
         $usrId = $userdata[0]['usrId'];
         $empId = $userdata[0]['id_empresa'];
 
@@ -194,15 +194,16 @@ class Calendario extends CI_Controller
                     log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar | $taskId: ' . $infoTarea['taskId']);
                     if ($respCerrar['status']) {
                         $resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);
+                        // cambio de estado a PL de SServicio
+                        $this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);
                     } else {
                         log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar | Cerrar SS: ' . json_encode($respCerrar));
                         $error = true;
                         $estado = 'S';
+                        return msj(false, ASP_104);
                     }
                     // guardo el case_id en Otrabajo
                     $this->Calendarios->setCaseidenOT($infoTarea['caseId'], $idOTnueva);
-                    // cambio de estado a PL de SServicio
-                    $this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);
 
                     ////////////////////////////////////////////////////////////////////////
 
