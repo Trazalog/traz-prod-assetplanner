@@ -14,10 +14,10 @@
                 <div class="box-header">
                     <h3 class="box-title">Equipo/Sector</h3>
                     <?php
-          if (strpos($permission,'Add') !== false) {
-            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="btnAgre">Agregar</button>';
-          }
-          ?>
+                        if (strpos($permission,'Add') !== false) {
+                            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="btnAgre">Agregar</button>';
+                        }
+                    ?>
                 </div><!-- /.box-header -->
                 <div class="box-body">
                     <table id="sales" class="table table-bordered table-hover">
@@ -36,52 +36,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php
-
-                foreach($list as $a)
-                {
-                  $id = $a['id_equipo'];
-                  echo '<tr id="'.$id.'" data-equipo="'.$id.'" data-meta="'.$a['meta_disp'].'">';
-                  echo '<td>';
-                  if (strpos($permission,'Del') !== false) {
-                    echo '<i href="#" class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar"></i>';
-                  }
-                  if (strpos($permission,'Edit') !== false) {
-                    echo '<i class="fa fa-fw fa-pencil text-light-blue editEquipo" style="cursor: pointer; margin-left: 15px;" title="Editar"></i>' ;
-                    //echo '<i class="fa fa-sticky-note-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Datos Tecnicos" data-toggle="modal" data-target="#modaltecnico"></i>' ;
-                    //echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"></i>';
-                  }
-                  if (strpos($permission,'Del') !== false) {
-                    echo '<i class="fa fa-fw fa-user text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Contratista" data-toggle="modal" data-target="#modalasignar"></i>';
-                    //antes estaba el estado R por que ERA REPARACION pero ahora reparacion es R
-                    if( ($a['estado'] == 'AC') || ($a['estado'] == 'RE') ){
-                      echo '<i  href="#"class="fa fa-fw fa-toggle-on text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Inhabilitar"></i>';
-                    }
-                    else {
-                      echo '<i class="fa fa-fw fa-toggle-off text-light-blue" title="Habilitar" style="cursor: pointer; margin-left: 15px;"></i>';
-                    }
-                  }
-                  if (strpos($permission,'Lectura') !== false) {
-                    if( $a['estado'] == 'AC' OR $a['estado'] == 'RE' ) {
-                      echo '<i class="fa fa-hourglass-half text-light-blue nuevaLectura" style="cursor: pointer; margin-left: 15px;" title="Mantenimiento Autónomo"></i>';
-                    }
-                    echo '<i class="fa fa-history text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Historial de Lecturas" data-toggle="modal" data-target="#modalhistlect"></i>';
-                  }
-
-                  echo '<button class="btn-link" onclick="asignar_meta(this)"><i class="fa fa-bar-chart text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar Meta"></i></button>';
-
-                  echo '</td>';
-                 # '<input type="hidden" id="id_equipo" name="id_equipo">';
-                  echo '<td class="maquin">'.$a['codigo'].'</td>';
-                  echo '<td>'.$a['deeq'].'</td>';
-                  echo '<td>'.$a['dear'].'</td>';
-                  echo '<td>'.$a['depro'].'</td>';
-                  echo '<td>'.$a['desec'].'</td>';
-                  echo '<td>'.$a['decri'].'</td>';
-                  echo '<td>'.$a['clie'].'</td>';
-                  echo '<td>'.estado($a['estadoEquipo']).'</tr>';
-                }
-              ?>
                         </tbody>
                     </table>
                 </div><!-- /.box-body -->
@@ -93,6 +47,133 @@
 
 
 <script>
+$(document).ready(function(){
+    $('#sales').DataTable({
+    'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
+    'paging' : true,
+    'processing':true,
+    'serverSide': true,
+    'ajax':{
+        type: 'POST',
+        url: 'index.php/Equipo/paginado'
+    },
+    'columnDefs':[
+            {
+                'targets':[0],
+                'data':'acciones',
+                'render':function(data,type,row){
+                    var id = row['id_equipo'];
+                    
+                    if(row['meta_disp'] == null){
+                        var meta_disp = 0;
+                    }
+                    var permission = "<?php echo $permission?>";
+                    
+                    var r = `<tr id=" ${id} " data-equipo=" ${id} " data-meta=" ${meta_disp}">
+                    <td>`;
+                    if (permission.indexOf("Del") !== -1) {
+                        r = r + `<i href="#" class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar"></i>`;
+                    }
+                    if (permission.indexOf("Edit") !== -1) {
+                        r = r + `<i class="fa fa-fw fa-pencil text-light-blue editEquipo" style="cursor: pointer; margin-left: 15px;" title="Editar"></i>`;
+                    }
+                    if (permission.indexOf("Del") !== -1) {
+                        r = r + `<i class="fa fa-fw fa-user text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Contratista" data-toggle="modal" data-target="#modalasignar"></i>`;
+                        //antes estaba el estado R por que ERA REPARACION pero ahora reparacion es RE
+                        if( (row['estadoEquipo'] == 'AC') || (row['estadoEquipo'] == 'RE') ){
+                        r = r + `<i  href="#"class="fa fa-fw fa-toggle-on text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Inhabilitar"></i>`;
+                        }
+                        else {
+                        r = r + `<i class="fa fa-fw fa-toggle-off text-light-blue" title="Habilitar" style="cursor: pointer; margin-left: 15px;"></i>`;
+                        }
+                    }
+                    if (permission.indexOf("Lectura") !== -1) {
+                        if( row['estadoEquipo'] == 'AC' || row['estadoEquipo'] == 'RE' ) {
+                            r = r + `<i class="fa fa-hourglass-half text-light-blue nuevaLectura" style="cursor: pointer; margin-left: 15px;" title="Mantenimiento Autónomo"></i>`;
+                        }
+                        r = r + `<i class="fa fa-history text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Historial de Lecturas" data-toggle="modal" data-target="#modalhistlect"></i>`;
+                    }
+                    return r = r + `<button class="btn-link" onclick="asignar_meta(this)"><i class="fa fa-bar-chart text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar Meta"></i></button>
+                    </td>`;
+                }
+            }
+            ,
+            {
+                'targets':[1],
+                'data':'nombre',
+                'render': function(data, type, row){
+                    return `<td class="maquin">${row['codigo']}</td>`
+                }
+            },
+            {
+                'targets':[2],
+                'data':'descripcion',
+                'render': function(data, type, row){
+                    return `<td> ${row['deeq']} </td>`
+                }
+            },
+            {
+                'targets':[3],
+                'data':'area',
+                'render': function(data, type, row){
+                    return `<td class="maquin">${row['dear']}</td>`
+                }
+            },
+            {
+                'targets':[4],
+                'data':'proceso',
+                'render': function(data, type, row){
+                    return `<td class="maquin">${row['depro']}</td>`
+                }
+            },
+            {
+                'targets':[5],
+                'data':'sector',
+                'render': function(data, type, row){
+                    return `<td class="maquin">${row['desec']}</td>`
+                }
+            },
+            {
+                'targets':[6],
+                'data':'criticidad',
+                'render': function(data, type, row){
+                    return `<td class="maquin">${row['decri']}</td>`
+                }
+            },
+            {
+                'targets':[7],
+                'data':'cliente',
+                'render': function(data, type, row){
+                    return `<td class="maquin">${row['clie']}</td>`
+                }
+            },
+            {
+                'targets':[8],
+                'data':'estado',
+                'render': function(data, type, row){
+                    switch (row['estadoEquipo']) {
+                        case 'AC':
+                            return '<td class="maquin"><span data-toggle="tooltip" title="" class="badge bg-green estado">Activo</span></td></tr>';
+                            break;
+                        case 'RE':
+                            return '<td class="maquin"><span data-toggle="tooltip" title="" class="badge bg-yellow estado">Reparación</span></td></tr>';
+                            break;
+                        case 'AL':
+                            return '<td class="maquin"><span data-toggle="tooltip" title="" class="badge bg-blue estado">Alta</span></td></tr>';
+                            break;
+                        case 'IN':
+                            return '<td class="maquin"><span data-toggle="tooltip" title="" class="badge bg-red estado">Inhabilitado</span></td></tr>';
+                            break;
+                        default:
+                            return '<td class="maquin"><span data-toggle="tooltip" title="" class="badge bg-gray estado">S/E</span></td></tr>';
+                            break;
+                    }
+                }
+            }
+        ]
+    });
+});
+
 $('#modalhistlect').on('shown.bs.modal', function(e) {
     // recalcula el ancho de las columnas
     $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
@@ -1938,23 +2019,212 @@ $('#modaleditar').on('hidden.bs.modal', function(e) {
 
 
 // Datatable - Chequeado
-$('#sales').DataTable({
-    <?php echo (!DT_SIZE_ROWS ? '"paging": false,' : null) ?>
+//------------------------------------------------------
+// $('#sales').DataTable({
+//     <?php #echo (!DT_SIZE_ROWS ? '"paging": false,' : null) ?>
+//     "aLengthMenu": [10, 25, 50, 100],
+//     "columnDefs": [{
+//             "targets": [0],
+//             "searchable": false
+//         },
+//         {
+//             "targets": [0],
+//             "orderable": false
+//         }
+//     ],
+//     "order": [
+//         [1, "asc"]
+//     ]
+// });
+//------------------------------------------------------
+// $('#sales').DataTable({
+//     "iDisplayLength": 50
+// });
+    // $('#sales').DataTable({
+    //     // "lengthMenu":[[10,25,50,100,],[10,25,50,100]],
+    //     'lengthMenu':[10,25,50,100],
+    //     'paging' : true,
+    //     'info': true,
+    //     'filter': true,
+    //     'stateSave': true,
+    //     'processing':true,
+    //     'severSide': true,
+    //     debugger;
+    //     'ajax': {
+    //         type: 'POST',
+    //         url:'index.php/Equipo/paginado',
+    //         success: alert('success')
+    //     },
+    //     'columns':[
+    //         {data:'acciones'},
+    //         {data:'nombre'},
+    //         {data:'descripcion'},
+    //         {data:'area'},
+    //         {data:'proceso'},
+    //         {data:'sector'},
+    //         {data:'criticidad'},
+    //         {data:'cliente'},
+    //         {data:'estado'}
+    //     ],
+    //     'columnDefs':[
+    //             {
+    //                 'targets':[0],
+    //                 'data':'acciones',
+    //                 'render':function(data,type,row){
+    //                     var id = row['id_equipo'];
+    //                     `<tr id=" ${id} " data-equipo=" ${id} " data-meta=" ${row['meta_disp']}">
+    //                     <td>;`
+    //                     if (permission.indexOf("Del") !== -1) {
+    //                         `<i href="#" class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar"></i>`
+    //                     }
+    //                     if (permission.indexOf("Edit") !== -1) {
+    //                         `<i class="fa fa-fw fa-pencil text-light-blue editEquipo" style="cursor: pointer; margin-left: 15px;" title="Editar"></i>`
+    //                     }
+    //                     if (permission.indexOf("Del") !== -1) {
+    //                         `<i class="fa fa-fw fa-user text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Contratista" data-toggle="modal" data-target="#modalasignar"></i>`
+    //                         //antes estaba el estado R por que ERA REPARACION pero ahora reparacion es R
+    //                         if( (row['estado'] == 'AC') || (row['estado'] == 'RE') ){
+    //                         `<i  href="#"class="fa fa-fw fa-toggle-on text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Inhabilitar"></i>`
+    //                         }
+    //                         else {
+    //                         `<i class="fa fa-fw fa-toggle-off text-light-blue" title="Habilitar" style="cursor: pointer; margin-left: 15px;"></i>`
+    //                         }
+    //                     }
+    //                     if (permission.indexOf("Lectura") !== -1) {
+    //                         if( row['estado'] == 'AC' OR row['estado'] == 'RE' ) {
+    //                         `<i class="fa fa-hourglass-half text-light-blue nuevaLectura" style="cursor: pointer; margin-left: 15px;" title="Mantenimiento Autónomo"></i>`
+    //                         }
+    //                         `<i class="fa fa-history text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Historial de Lecturas" data-toggle="modal" data-target="#modalhistlect"></i>`
+    //                     }
+    //                     `<button class="btn-link" onclick="asignar_meta(this)"><i class="fa fa-bar-chart text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar Meta"></i></button>
+    //                     </td>`
+    //                 }
+    //             },
+    //             {
+    //                 'targets':[0],
+    //                 'data':'nombre',
+    //                 'render': function(data, type, row){
+    //                     `<td class="maquin">${row['codigo']}</td>`
+    //                 }
+    //             },
+    //             {
+    //                 'targets':[1],
+    //                 'data':'descripcion',
+    //                 'render': function(data, type, row){
+    //                     `<td> ${row['deeq'].} </td>`
+    //                 }
+    //             },
+    //             {
+    //                 'targets':[2],
+    //                 'data':'area',
+    //                 'render': function(data, type, row){
+    //                     `<td class="maquin">${row['dear']}</td>`
+    //                 }
+    //             },
+    //             {
+    //                 'targets':[3],
+    //                 'data':'proceso',
+    //                 'render': function(data, type, row){
+    //                     `<td class="maquin">${row['depro']}</td>`
+    //                 }
+    //             },
+    //             {
+    //                 'targets':[4],
+    //                 'data':'sector',
+    //                 'render': function(data, type, row){
+    //                     `<td class="maquin">${row['desec']}</td>`
+    //                 }
+    //             },
+    //             {
+    //                 'targets':[5],
+    //                 'data':'criticidad',
+    //                 'render': function(data, type, row){
+    //                     `<td class="maquin">${row['decri']}</td>`
+    //                 }
+    //             },
+    //             {
+    //                 'targets':[6],
+    //                 'data':'cliente',
+    //                 'render': function(data, type, row){
+    //                     `<td class="maquin">${row['clie']}</td>`
+    //                 }
+    //             },
+    //             {
+    //                 'targets':[7],
+    //                 'data':'estado',
+    //                 'render': function(data, type, row){
+    //                     `<td class="maquin">${estado(row['estadoEquipo'])}</td></tr>`
+    //                 }
+    //             }
+    //         ]
+    // });
+// var tablaSales = $('#sales').DataTable({
+//     "iDisplayLength": 50,
+    // "processing": true,
+    // "serverSide": true,
+    // "ajax": {
+    //         type: 'POST',
+    //         dataType: 'JSON',
+    //         url: 'index.php/Equipo/paginado',
+    //         data: function(d){
+    //             // var cantidadPaginas = $("select[name='sales_length']").val();
+    //             console.log(tablaSales().page.len());
+    //             var numeroPagina = tablaSales.page();
+    //         },
+    //         success: function() {},
+    //         error: function(rsp) {
+    //             alert('Error: ' + rsp.msj);
+    //             console.log(rsp.msj);
+    //         }
+    //     } 
+// });
+//------------------------------------------------------
+// $('#sales_length').on('change', function (){
+    // console.log(tablaSales.table().page());
+    // var nroPag = $("select[name='sales_length']").val();
+    // console.log(nroPag);
+    // $.ajax({
+    //     type: 'POST',
+    //     dataType: 'JSON',
+    //     url: 'index.php/Equipo/paginado',
+    //     data: {nroPag},
+    //     success: function() {},
+    //     error: function(rsp) {
+    //         alert('Error: ' + rsp.msj);
+    //         console.log(rsp.msj);
+    //     }
+    // });
+// });
+//------------------------------------------------------
+    // $('#sales_length').on('change', function (){
+    //     var nroPagina = $('#sales_length').val($("option:selected").text());
+    //     console.log('pagina: '+nroPagina);
+    // });
 
-    "aLengthMenu": [10, 25, 50, 100],
-    "columnDefs": [{
-            "targets": [0],
-            "searchable": false
-        },
-        {
-            "targets": [0],
-            "orderable": false
-        }
-    ],
-    "order": [
-        [1, "asc"]
-    ],
-});
+// $('#sales_length').on('change', function (){
+//     var nroPagina = document.getElementById('sales_length').value;
+//     console.log(nroPagina.toString());
+// });
+
+// $(document).on('change', '#sales', function(event) {
+//      var pagina = $('#sales sales_length').val($("option:selected").text());
+//      console.log('pagina: 'pagina);
+// });
+
+// $('#sales').on('page.dt').;
+
+// $('#sales').on('page.dt',function(){
+//     var info = tabla.page.info();
+//     console.log(info.page);
+// });
+
+// $('#sales').on('click', function () {
+//     var info = table.page.info();
+//     console.log("info : ",info);
+// });
+//------------------------------------------------------
+
+
 $('#tblhistorial').DataTable({
     "aLengthMenu": [10, 25, 50, 100],
     "columnDefs": [{
