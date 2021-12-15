@@ -12,40 +12,11 @@ class  Equipo extends CI_Controller {
     {
 		$userdata           = $this->session->userdata('user_data');
 		$data['empresa']    = $userdata[0]['id_empresa'];
-		// $data['list']       = $this->Equipos->equipos_List();
+		$data['list']       = $this->Equipos->equipos_List();
 		$data['permission'] = $permission;
-
-		$this->load->view('equipo/list', $data);
-    } 
-	/**
-	 * @param int inicio
-	 * @param int tamaño
-	 * @param string busqueda
-	 * @return Array equipos
-	 */
-	public function paginado(){//server side processing
-
-		$start = $this->input->post('start');
-		$length = $this->input->post('length');
-		$search = $this->input->post('search')['value'];
-
-		$r = $this->Equipos->equiposPaginados($start,$length,$search);
-
-		$resultado =$r['datos'];
-		$totalDatos = $r['numDataTotal'];
-
-		$datos = $resultado->result_array();
-		$datosPagina = $resultado->num_rows();
-
-		$json_data = array(
-			"draw" 				=> intval($this->input->post('draw')),
-			"recordsTotal"  	=> intval($datosPagina),
-			"recordsFiltered"	=> intval($totalDatos),
-			"data" 				=> $datos
-		);
-		$result = json_encode($json_data);
-		echo $result;
-	}
+		//dump( $data['list'] );
+		$this->load->view('equipo/list', $data);		     
+    }
 
     /********** ELIMINAR EQUIPO **********/
     
@@ -878,6 +849,5 @@ class  Equipo extends CI_Controller {
 			echo json_encode(['msj'=>'OK']);
 		}
 	}
-
 
 }
