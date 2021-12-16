@@ -14,10 +14,10 @@
                 <div class="box-header">
                     <h3 class="box-title">Equipo/Sector</h3>
                     <?php
-          if (strpos($permission,'Add') !== false) {
-            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="btnAgre">Agregar</button>';
-          }
-          ?>
+                        if (strpos($permission,'Add') !== false) {
+                            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="btnAgre">Agregar</button>';
+                        }
+                    ?>
                 </div><!-- /.box-header -->
                 <div class="box-body">
                     <table id="sales" class="table table-bordered table-hover">
@@ -36,52 +36,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php
-
-                foreach($list as $a)
-                {
-                  $id = $a['id_equipo'];
-                  echo '<tr id="'.$id.'" data-equipo="'.$id.'" data-meta="'.$a['meta_disp'].'">';
-                  echo '<td>';
-                  if (strpos($permission,'Del') !== false) {
-                    echo '<i href="#" class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar"></i>';
-                  }
-                  if (strpos($permission,'Edit') !== false) {
-                    echo '<i class="fa fa-fw fa-pencil text-light-blue editEquipo" style="cursor: pointer; margin-left: 15px;" title="Editar"></i>' ;
-                    //echo '<i class="fa fa-sticky-note-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Datos Tecnicos" data-toggle="modal" data-target="#modaltecnico"></i>' ;
-                    //echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"></i>';
-                  }
-                  if (strpos($permission,'Del') !== false) {
-                    echo '<i class="fa fa-fw fa-user text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Contratista" data-toggle="modal" data-target="#modalasignar"></i>';
-                    //antes estaba el estado R por que ERA REPARACION pero ahora reparacion es R
-                    if( ($a['estado'] == 'AC') || ($a['estado'] == 'RE') ){
-                      echo '<i  href="#"class="fa fa-fw fa-toggle-on text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Inhabilitar"></i>';
-                    }
-                    else {
-                      echo '<i class="fa fa-fw fa-toggle-off text-light-blue" title="Habilitar" style="cursor: pointer; margin-left: 15px;"></i>';
-                    }
-                  }
-                  if (strpos($permission,'Lectura') !== false) {
-                    if( $a['estado'] == 'AC' OR $a['estado'] == 'RE' ) {
-                      echo '<i class="fa fa-hourglass-half text-light-blue nuevaLectura" style="cursor: pointer; margin-left: 15px;" title="Mantenimiento Autónomo"></i>';
-                    }
-                    echo '<i class="fa fa-history text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Historial de Lecturas" data-toggle="modal" data-target="#modalhistlect"></i>';
-                  }
-
-                  echo '<button class="btn-link" onclick="asignar_meta(this)"><i class="fa fa-bar-chart text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar Meta"></i></button>';
-
-                  echo '</td>';
-                 # '<input type="hidden" id="id_equipo" name="id_equipo">';
-                  echo '<td class="maquin">'.$a['codigo'].'</td>';
-                  echo '<td>'.$a['deeq'].'</td>';
-                  echo '<td>'.$a['dear'].'</td>';
-                  echo '<td>'.$a['depro'].'</td>';
-                  echo '<td>'.$a['desec'].'</td>';
-                  echo '<td>'.$a['decri'].'</td>';
-                  echo '<td>'.$a['clie'].'</td>';
-                  echo '<td>'.estado($a['estadoEquipo']).'</tr>';
-                }
-              ?>
                         </tbody>
                     </table>
                 </div><!-- /.box-body -->
@@ -93,6 +47,133 @@
 
 
 <script>
+$(document).ready(function(){
+    $('#sales').DataTable({
+    'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
+    'paging' : true,
+    'processing':true,
+    'serverSide': true,
+    'ajax':{
+        type: 'POST',
+        url: 'index.php/Equipo/paginado'
+    },
+    'columnDefs':[
+            {
+                'targets':[0],
+                'data':'acciones',
+                'render':function(data,type,row){
+                    var id = row['id_equipo'];
+                    
+                    if(row['meta_disp'] == null){
+                        var meta_disp = 0;
+                    }
+                    var permission = "<?php echo $permission?>";
+                    
+                    var r = `<tr id=" ${id} " data-equipo=" ${id} " data-meta=" ${meta_disp}">
+                    <td>`;
+                    if (permission.indexOf("Del") !== -1) {
+                        r = r + `<i href="#" class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar"></i>`;
+                    }
+                    if (permission.indexOf("Edit") !== -1) {
+                        r = r + `<i class="fa fa-fw fa-pencil text-light-blue editEquipo" style="cursor: pointer; margin-left: 15px;" title="Editar"></i>`;
+                    }
+                    if (permission.indexOf("Del") !== -1) {
+                        r = r + `<i class="fa fa-fw fa-user text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Contratista" data-toggle="modal" data-target="#modalasignar"></i>`;
+                        //antes estaba el estado R por que ERA REPARACION pero ahora reparacion es RE
+                        if( (row['estadoEquipo'] == 'AC') || (row['estadoEquipo'] == 'RE') ){
+                        r = r + `<i  href="#"class="fa fa-fw fa-toggle-on text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Inhabilitar"></i>`;
+                        }
+                        else {
+                        r = r + `<i class="fa fa-fw fa-toggle-off text-light-blue" title="Habilitar" style="cursor: pointer; margin-left: 15px;"></i>`;
+                        }
+                    }
+                    if (permission.indexOf("Lectura") !== -1) {
+                        if( row['estadoEquipo'] == 'AC' || row['estadoEquipo'] == 'RE' ) {
+                            r = r + `<i class="fa fa-hourglass-half text-light-blue nuevaLectura" style="cursor: pointer; margin-left: 15px;" title="Mantenimiento Autónomo"></i>`;
+                        }
+                        r = r + `<i class="fa fa-history text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Historial de Lecturas" data-toggle="modal" data-target="#modalhistlect"></i>`;
+                    }
+                    return r = r + `<button class="btn-link" onclick="asignar_meta(this)"><i class="fa fa-bar-chart text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar Meta"></i></button>
+                    </td>`;
+                }
+            }
+            ,
+            {
+                'targets':[1],
+                'data':'nombre',
+                'render': function(data, type, row){
+                    return `<td class="maquin">${row['codigo']}</td>`
+                }
+            },
+            {
+                'targets':[2],
+                'data':'descripcion',
+                'render': function(data, type, row){
+                    return `<td> ${row['deeq']} </td>`
+                }
+            },
+            {
+                'targets':[3],
+                'data':'area',
+                'render': function(data, type, row){
+                    return `<td class="maquin">${row['dear']}</td>`
+                }
+            },
+            {
+                'targets':[4],
+                'data':'proceso',
+                'render': function(data, type, row){
+                    return `<td class="maquin">${row['depro']}</td>`
+                }
+            },
+            {
+                'targets':[5],
+                'data':'sector',
+                'render': function(data, type, row){
+                    return `<td class="maquin">${row['desec']}</td>`
+                }
+            },
+            {
+                'targets':[6],
+                'data':'criticidad',
+                'render': function(data, type, row){
+                    return `<td class="maquin">${row['decri']}</td>`
+                }
+            },
+            {
+                'targets':[7],
+                'data':'cliente',
+                'render': function(data, type, row){
+                    return `<td class="maquin">${row['clie']}</td>`
+                }
+            },
+            {
+                'targets':[8],
+                'data':'estado',
+                'render': function(data, type, row){
+                    switch (row['estadoEquipo']) {
+                        case 'AC':
+                            return '<td class="maquin"><span data-toggle="tooltip" title="" class="badge bg-green estado">Activo</span></td></tr>';
+                            break;
+                        case 'RE':
+                            return '<td class="maquin"><span data-toggle="tooltip" title="" class="badge bg-yellow estado">Reparación</span></td></tr>';
+                            break;
+                        case 'AL':
+                            return '<td class="maquin"><span data-toggle="tooltip" title="" class="badge bg-blue estado">Alta</span></td></tr>';
+                            break;
+                        case 'IN':
+                            return '<td class="maquin"><span data-toggle="tooltip" title="" class="badge bg-red estado">Inhabilitado</span></td></tr>';
+                            break;
+                        default:
+                            return '<td class="maquin"><span data-toggle="tooltip" title="" class="badge bg-gray estado">S/E</span></td></tr>';
+                            break;
+                    }
+                }
+            }
+        ]
+    });
+});
+
 $('#modalhistlect').on('shown.bs.modal', function(e) {
     // recalcula el ancho de las columnas
     $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
@@ -1936,25 +2017,26 @@ $('#modaleditar').on('hidden.bs.modal', function(e) {
     $("#content").load("<?php echo base_url(); ?>index.php/Equipo/index/<?php echo $permission; ?>");
 })
 
-
 // Datatable - Chequeado
-$('#sales').DataTable({
-    <?php echo (!DT_SIZE_ROWS ? '"paging": false,' : null) ?>
+//------------------------------------------------------
+// $('#sales').DataTable({
+//     <?php #echo (!DT_SIZE_ROWS ? '"paging": false,' : null) ?>
+//     "aLengthMenu": [10, 25, 50, 100],
+//     "columnDefs": [{
+//             "targets": [0],
+//             "searchable": false
+//         },
+//         {
+//             "targets": [0],
+//             "orderable": false
+//         }
+//     ],
+//     "order": [
+//         [1, "asc"]
+//     ]
+// });
+//------------------------------------------------------
 
-    "aLengthMenu": [10, 25, 50, 100],
-    "columnDefs": [{
-            "targets": [0],
-            "searchable": false
-        },
-        {
-            "targets": [0],
-            "orderable": false
-        }
-    ],
-    "order": [
-        [1, "asc"]
-    ],
-});
 $('#tblhistorial').DataTable({
     "aLengthMenu": [10, 25, 50, 100],
     "columnDefs": [{
