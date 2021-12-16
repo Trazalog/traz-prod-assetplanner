@@ -190,12 +190,12 @@ class Preventivo extends CI_Controller {
 				'lectura_base'  => $lectbase
 			);
 
-		//log_message('DEBUG', '#PREVENTIVO >> guardar_preventivo() $datos >> ' . json_encode($datos));
+		log_message('DEBUG', '#PREVENTIVO >> guardar_preventivo() $datos >> ' . json_encode($datos));
 
 		
 		$response['resPrenvent'] = $this->Preventivos->insert_preventivo($datos);
 
-		//log_message('DEBUG', '#PREVENTIVO >> guardar_preventivo()  $response[resPrenvent]>> ' . json_encode($datos));
+		log_message('DEBUG', '#PREVENTIVO >> guardar_preventivo()  $response[resPrenvent]>> ' . json_encode($datos));
 		
 		if($response['resPrenvent']){
 
@@ -274,7 +274,7 @@ class Preventivo extends CI_Controller {
 		}
 
 		
-		//log_message('DEBUG', '#PREVENTIVO >> guardar_preventivo()  $response[resPrenvent]>> ' . json_encode($response));
+		log_message('DEBUG', '#PREVENTIVO >> guardar_preventivo()  $response[resPrenvent]>> ' . json_encode($response));
 
 		echo json_encode($response);		
 	}

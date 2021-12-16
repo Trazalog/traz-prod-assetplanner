@@ -13,7 +13,6 @@
             <?php 
           }
           ?>
-          <h3 class="box-title"> <?php echo "resPrenvent: ". $resPrenvent." ".$response?></h3>
         </div><!-- /.box-header -->
         <div class="box-body">
           <table id="tabprev" class="table table-bordered table-hover">
