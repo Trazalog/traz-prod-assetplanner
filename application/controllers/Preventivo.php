@@ -189,8 +189,13 @@ class Preventivo extends CI_Controller {
 				'id_empresa'    => $empId,
 				'lectura_base'  => $lectbase
 			);
+
+		log_message('DEBUG', '#PREVENTIVO >> guardar_preventivo() $datos >> ' . json_encode($datos));
+
 		
 		$response['resPrenvent'] = $this->Preventivos->insert_preventivo($datos);
+
+		log_message('DEBUG', '#PREVENTIVO >> guardar_preventivo()  $response[resPrenvent]>> ' . json_encode($datos));
 		
 		if($response['resPrenvent']){
 
@@ -267,6 +272,9 @@ class Preventivo extends CI_Controller {
 					$response['respImagen'] = false;
 				}	
 		}
+
+		
+		log_message('DEBUG', '#PREVENTIVO >> guardar_preventivo()  $response[resPrenvent]>> ' . json_encode($response));
 
 		echo json_encode($response);		
 	}
@@ -487,6 +495,10 @@ class Preventivo extends CI_Controller {
 			$datos=$_POST['data'];
 			
 			$result = $this->Preventivos->insert_herramienta($datos);
+
+			//log_message('DEBUG', '#PREVENTIVO >> guardar_preventivo()  $result>> ' . json_encode($result));
+
+			echo json_encode($result);
 				
 		}
 	public function getperiodo(){

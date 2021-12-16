@@ -597,7 +597,7 @@ $("#formPreventivo").submit(function (event){
         console.log('resp prenevt: ');
         console.log(respuesta.resPrenvent);
         if (respuesta) {
-          //alert("Los datos han sido guardados correctamente");
+          alert("Los datos han sido guardados correctamente");
           cargarVista();
         }
         else if(respuesta==="error"){

@@ -596,6 +596,7 @@ function setOtPreventivo() {
         url: 'index.php/Calendario/guardar_agregar',
         success: function(data) {
             setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
+            alert("Se ha guardado Correctamente");
         },
         error: function(result) {
             console.log(result);
@@ -665,7 +666,9 @@ function setOtPrevHoras() {
         },
         url: 'index.php/Calendario/guardar_agregar',
         success: function(data) {
+           
             setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
+            alert("Se ha guardado Correctamente");
         },
         error: function(result) {
             console.log(result);
@@ -713,6 +716,7 @@ function fill_Backlog(dato) {
             } else {
                 desc_tarea_back = data[0]['tareadesc'];
             }
+            alert("Se ha guardado Correctamente");
         },
         error: function(data) {
 
@@ -742,7 +746,9 @@ function setOtBacklog() {
         },
         url: 'index.php/Calendario/guardar_agregar',
         success: function(data) {
+           
             setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
+            alert("Se ha guardado Correctamente");
         },
         error: function(result) {
             console.log(result);
@@ -782,6 +788,7 @@ function fill_Predictivo(dato) {
             idp = data[0]['predId'];
             ide = data[0]['id_equipo'];
             descripTarea = data[0]['descripcion'];
+            alert("Se ha guardado Correctamente");
         },
         error: function(data) {
 
@@ -826,6 +833,7 @@ function setOtPredictivo() {
         success: function(data) {
 
             setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
+            alert("Se ha guardado Correctamente");
         },
         error: function(result) {
 
@@ -882,6 +890,7 @@ function updateHora(id_OT, duracion) {
         success: function(data) {
             //alert('sucess');
             console.log(data);
+            alert("Se ha guardado Correctamente");
         },
         error: function(data) {
 
