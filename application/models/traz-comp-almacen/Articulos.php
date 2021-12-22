@@ -10,23 +10,68 @@ class Articulos extends CI_Model
 	
 	function getList()  
 	{	
+
 		$this->db->select('A.*, B.descripcion as medida,"AC" as valor, IFNULL(sum(C.cantidad),0) as stock');
 		$this->db->from('alm_articulos A');
 		$this->db->join('utl_tablas B', 'B.tabl_id = A.unidad_id','left');
 		$this->db->join('alm_lotes C', 'C.arti_id = A.arti_id','left');
 		$this->db->where('A.empr_id', empresa());
 		$this->db->where('not A.eliminado');
-		$this->db->group_by('arti_id');
-			
-		$query = $this->db->get();	
+		$this->db->group_by('arti_id'); 
+		$this->db->_compile_select();
+		$query = $this->db->last_query();
+		log_message('DEBUG','consulta -> '.$query);
 		if ($query->num_rows()!=0)
 		{
-			return $query->result_array();	
+			return $query->result_array();
 		}
 		else
 		{	
 			return array();
 		}
+	}
+
+	public function articulosPaginados($start,$length,$search){
+
+		$empId = empresa();
+        $srch="";
+        if($search){
+            $srch="	AND (A.barcode LIKE '%".$search."%' OR 
+			A.descripcion LIKE '%".$search."%' OR 
+			B.descripcion LIKE '%".$search."%')";
+        }
+        $qnr = "SELECT count(1) cant
+				FROM alm_articulos A
+				LEFT JOIN utl_tablas B ON B.tabl_id = A.unidad_id
+				LEFT JOIN alm_lotes C ON C.arti_id = A.arti_id 
+				WHERE A.empr_id = $empId AND (NOT A.eliminado) 
+				".$srch;
+
+		$qnr = $this->db->query($qnr);
+        $qnr = $qnr->row();
+        $qnr = $qnr->cant;
+
+		$q="SELECT	A.*,
+					B.descripcion as medida,
+					'AC' as valor,
+					IFNULL(sum(C.cantidad),0) as stock
+			FROM alm_articulos A
+			LEFT JOIN utl_tablas B ON B.tabl_id = A.unidad_id
+			LEFT JOIN alm_lotes C ON C.arti_id = A.arti_id 
+			WHERE A.empr_id = $empId AND (NOT A.eliminado) 
+			".$srch."
+			GROUP BY arti_id
+			LIMIT $start,$length ";
+
+		$r = $this->db->query($q);
+
+		$result = array (
+			'numDataTotal' => $qnr,
+			'datos' =>$r
+		);
+
+		return $result;
+
 	}
 
 	function get($id)

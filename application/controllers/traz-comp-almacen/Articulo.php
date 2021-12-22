@@ -19,9 +19,33 @@ class Articulo extends CI_Controller {
 		{
 			$permission = $_GET["permisos"];
 		}
-		$data['list'] = $this->Articulos->getList();
+		// $data['list'] = $this->Articulos->getList();
 		$data['permission'] = $permission;
 		$this->load->view(ALM.'/articulo/list', $data);
+	}
+
+	public function paginado(){//server side processing
+
+		$start = $this->input->post('start');
+		$length = $this->input->post('length');
+		$search = $this->input->post('search')['value'];
+
+		$r = $this->Articulos->articulosPaginados($start,$length,$search);
+
+		$resultado =$r['datos'];
+		$totalDatos = $r['numDataTotal'];
+
+		$datos = $resultado->result_array();
+		$datosPagina = $resultado->num_rows();
+
+		$json_data = array(
+			"draw" 				=> intval($this->input->post('draw')),
+			"recordsTotal"  	=> intval($datosPagina),
+			"recordsFiltered"	=> intval($totalDatos),
+			"data" 				=> $datos
+		);
+		$result = json_encode($json_data);
+		echo $result;
 	}
 		
 	public function getdatosart() // Ok
