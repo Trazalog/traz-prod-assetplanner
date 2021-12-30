@@ -19,7 +19,7 @@ class Articulo extends CI_Controller {
 		{
 			$permission = $_GET["permisos"];
 		}
-		// $data['list'] = $this->Articulos->getList();
+		$data['list'] = $this->Articulos->getList();
 		$data['permission'] = $permission;
 		$this->load->view(ALM.'/articulo/list', $data);
 	}
