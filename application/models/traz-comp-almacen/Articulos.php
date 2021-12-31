@@ -10,20 +10,17 @@ class Articulos extends CI_Model
 	
 	function getList()  
 	{	
-
 		$this->db->select('A.*, B.descripcion as medida,"AC" as valor, IFNULL(sum(C.cantidad),0) as stock');
 		$this->db->from('alm_articulos A');
 		$this->db->join('utl_tablas B', 'B.tabl_id = A.unidad_id','left');
 		$this->db->join('alm_lotes C', 'C.arti_id = A.arti_id','left');
 		$this->db->where('A.empr_id', empresa());
 		$this->db->where('not A.eliminado');
-		$this->db->group_by('arti_id'); 
-		$this->db->_compile_select();
-		$query = $this->db->last_query();
-		log_message('DEBUG','consulta -> '.$query);
+		$this->db->group_by('arti_id');
+		$query = $this->db->get();	
 		if ($query->num_rows()!=0)
 		{
-			return $query->result_array();
+			return $query->result_array();	
 		}
 		else
 		{	

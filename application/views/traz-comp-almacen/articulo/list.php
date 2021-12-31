@@ -22,7 +22,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            
                         </tbody>
                     </table>
                 </div><!-- /.box-body -->
@@ -32,6 +31,68 @@
 </section><!-- /.content -->
 
 <script>
+// $('#articles').DataTable();
+$(document).ready(function(){
+    $('#articles').DataTable({
+    'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
+    'paging' : true,
+    'processing':true,
+    'serverSide': true,
+    'ajax':{
+        type: 'POST',
+        url: 'index.php/almacen/Articulo/paginado'
+    },
+    'columnDefs':[
+            {
+                'targets':[0],
+                'data':'acciones',
+                'render':function(data,type,row){
+                    var id = row['arti_id'];
+                    var permission = "<?php echo $permission?>";
+                    debugger;
+                    var r = `<tr  id="${id}"><td class="text-center text-light-blue"><i class="fa fa-search" style="cursor: pointer;margin: 3px;" title="Ver Detalles" onclick="ver_detalles(${id});"></i>`;
+                    if (permission.indexOf("Edit") !== -1) {
+                        r = r + `<i class="fa fa-fw fa-pencil" style="cursor: pointer; margin: 3px;" title="Editar" onclick="EditarArticulos(${id});" data-toggle="modal" data-target="#modaleditar"></i>`;
+                    }
+                    if (permission.indexOf("Del") !== -1) {
+                        r = r + `<i class="fa fa-fw fa-times-circle" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="seleccionar(${id})"></i>`;
+                    }
+                    r = r + `</td>`;
+                    return r;
+                }
+            },
+            {
+                'targets':[1],
+                'data':'codigo',
+                'render': function(data, type, row){
+                    return `<td class="codigo"> ${row['barcode']} </td>`
+                }
+            },
+            {
+                'targets':[2],
+                'data':'descripcion',
+                'render': function(data, type, row){
+                    return `<td>${row['descripcion']}</td>`
+                }
+            },
+            {
+                'targets':[3],
+                'data':'area',
+                'render': function(data, type, row){
+                    return `<td>${row['medida'] == null ? '-' : row['medida']}</td>`;
+                }
+            },
+            {
+                'targets':[4],
+                'data':'proceso',
+                'render': function(data, type, row){
+                    return `<td class="text-center"> ${row['valor'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' : (row['valor'] == 'IN' ? '<small class="label pull-left bg-red">Inactivo</small>' : '<small class="label pull-left bg-yellow">Suspendido</small>')}</td></tr>`;
+                }
+            }
+        ]
+    });
+});
+
 // Abre modal agregar artículos
 function LoadArt(id_, action) {
     idArt = id_;
@@ -162,67 +223,6 @@ $('#btnSave').click(function() {
     });*/
 });
 
-$(document).ready(function(){
-    $('#articles').DataTable({
-    'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
-    'paging' : true,
-    'processing':true,
-    'serverSide': true,
-    'ajax':{
-        type: 'POST',
-        url: 'index.php/almacen/Articulo/paginado'
-    },
-    'columnDefs':[
-            {
-                'targets':[0],
-                'data':'acciones',
-                'render':function(data,type,row){
-                    var id = row['arti_id'];
-                    var permission = "<?php echo $permission?>";
-                    var r = `<tr  id="${id}" >
-                    <td class="text-center text-light-blue">
-                    <i class="fa fa-search" style="cursor: pointer;margin: 3px;" title="Ver Detalles" onclick="ver_detalles(this);"></i>`;
-                    if (permission.indexOf("Del") !== -1) {
-                        r = r + `<i class="fa fa-fw fa-pencil" style="cursor: pointer; margin: 3px;" title="Editar" onclick="EditarArticulos(this);" data-toggle="modal" data-target="#modaleditar"></i>`;
-                    }
-                    if (permission.indexOf("Edit") !== -1) {
-                        r = r + `<i class="fa fa-fw fa-times-circle" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="seleccionar(this)"></i>`;
-                    }
-                    return r = r + `</td>`;
-                }
-            },
-            {
-                'targets':[1],
-                'data':'codigo',
-                'render': function(data, type, row){
-                    return `<td class="codigo"> ${row['barcode']} </td>`
-                }
-            },
-            {
-                'targets':[2],
-                'data':'descripcion',
-                'render': function(data, type, row){
-                    return `<td>${row['descripcion']}</td>`
-                }
-            },
-            {
-                'targets':[3],
-                'data':'area',
-                'render': function(data, type, row){
-                    return `<td>${row['medida'] == null ? '-' : row['medida']}</td>`;
-                }
-            },
-            {
-                'targets':[4],
-                'data':'proceso',
-                'render': function(data, type, row){
-                    return `<td class="text-center"> ${row['valor'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' : (row['valor'] == 'IN' ? '<small class="label pull-left bg-red">Inactivo</small>' : '<small class="label pull-left bg-yellow">Suspendido</small>')}</td></tr>`;
-                }
-            }
-        ]
-    });
-});
-
 function validarCodigosExistentes(newCodigo){
     var ban = true;
     $('#articles .codigo').each(function(){
@@ -239,7 +239,8 @@ function validarCodigosExistentes(newCodigo){
 // Trae datos para llenar el modal Editar
 function EditarArticulos(e) { // Ok
     // var idartic = $(this).parent('td').parent('tr').attr('id');
-    var idartic = $(e).closest('tr').attr('id');
+    //--------------------------------------------
+    // var idartic = $(e).closest('tr').attr('id');
     ida = idartic;
     $('#artBarCode').val('');
     $('#artDescription').val('');
@@ -251,7 +252,8 @@ function EditarArticulos(e) { // Ok
     $('#puntped').val('');
     $.ajax({
         data: {
-            idartic: idartic
+            // idartic: idartic
+            idartic: e
         },
         dataType: 'json',
         type: 'POST',
@@ -394,7 +396,7 @@ function seleccionar(o) {
 }
 
 
-function eliminar_articulo() {
+function eliminar_articulo(o) {
     var id = select.attr('id');
     $.ajax({
         type: 'POST',
@@ -414,8 +416,7 @@ function eliminar_articulo() {
 }
 
 function ver_detalles(e) {
-    var idartic = $(e).closest('tr').attr('id');
-
+    // var idartic = $(e).closest('tr').attr('id');
     $('#artBarCode').val('');
     $('#artDescription').val('');
     $('#artIsByBox').val('');
@@ -426,7 +427,8 @@ function ver_detalles(e) {
     $('#puntped').val('');
     $.ajax({
         data: {
-            idartic: idartic
+            // idartic: idartic
+            idartic: e
         },
         dataType: 'json',
         type: 'POST',
