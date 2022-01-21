@@ -47,8 +47,8 @@
 
 
 <script>
-$(document).ready(function(){
-    $('#sales').DataTable({
+
+$('#sales').DataTable({
     'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
     'paging' : true,
     'processing':true,
@@ -68,9 +68,8 @@ $(document).ready(function(){
                         var meta_disp = 0;
                     }
                     var permission = "<?php echo $permission?>";
-                    
-                    var r = `<tr id=" ${id} " data-equipo=" ${id} " data-meta=" ${meta_disp}">
-                    <td>`;
+                    var r = `<tr id="${id}" data-equipo="${id}" data-meta="${meta_disp}">`;
+                    r = r + `<td>`;
                     if (permission.indexOf("Del") !== -1) {
                         r = r + `<i href="#" class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar"></i>`;
                     }
@@ -81,17 +80,18 @@ $(document).ready(function(){
                         r = r + `<i class="fa fa-fw fa-user text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Contratista" data-toggle="modal" data-target="#modalasignar"></i>`;
                         //antes estaba el estado R por que ERA REPARACION pero ahora reparacion es RE
                         if( (row['estadoEquipo'] == 'AC') || (row['estadoEquipo'] == 'RE') ){
-                        r = r + `<i  href="#"class="fa fa-fw fa-toggle-on text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Inhabilitar"></i>`;
+                        r = r + `<i  href="#"class="fa fa-fw fa-toggle-on text-light-blue " style="cursor: pointer; margin-left: 15px;" title="Inhabilitar" onclick="inhabilitarEquipo(${id})"></i>`;
                         }
                         else {
-                        r = r + `<i class="fa fa-fw fa-toggle-off text-light-blue" title="Habilitar" style="cursor: pointer; margin-left: 15px;"></i>`;
+                        r = r + `<i class="fa fa-fw fa-toggle-off text-light-blue" title="Habilitar" style="cursor: pointer; margin-left: 15px;" onclick="habilitarEquipo(${id})"></i>`;
                         }
                     }
                     if (permission.indexOf("Lectura") !== -1) {
                         if( row['estadoEquipo'] == 'AC' || row['estadoEquipo'] == 'RE' ) {
-                            r = r + `<i class="fa fa-hourglass-half text-light-blue nuevaLectura" style="cursor: pointer; margin-left: 15px;" title="Mantenimiento Autónomo"></i>`;
-                        }
-                        r = r + `<i class="fa fa-history text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Historial de Lecturas" data-toggle="modal" data-target="#modalhistlect"></i>`;
+                            let deeq = row['deeq'];
+                            r = r + `<i class="fa fa-hourglass-half text-light-blue nuevaLectura" style="cursor: pointer; margin-left: 15px;" title="Mantenimiento Autónomo" onclick="mantenimientoAutonomo(${id},'${deeq}')"></i>`;
+                        } 
+                        r = r + `<i class="fa fa-history text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Historial de Lecturas" data-toggle="modal" data-target="#modalhistlect" onclick="historialLectura(${id})"></i>`;
                     }
                     return r = r + `<button class="btn-link" onclick="asignar_meta(this)"><i class="fa fa-bar-chart text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar Meta"></i></button>
                     </td>`;
@@ -171,8 +171,8 @@ $(document).ready(function(){
                 }
             }
         ]
-    });
 });
+
 
 $('#modalhistlect').on('shown.bs.modal', function(e) {
     // recalcula el ancho de las columnas
@@ -215,15 +215,17 @@ $(".fa-user ").click(function(e) {
     llenaContratistasEquipo(id_equipo);
 });
 
-// Cambiar a estado - Chequeado
-$(".fa-toggle-on").click(function(e) {
-    WaitingOpen('Cambiando estado...');
-    var idequipo = $(this).parent('td').parent('tr').attr('id');
-    console.log(idequipo);
+$( document ).ready(function() {
+    console.log( "ready!" );
+    $(".inhabilitar").click(function(){
+    });
+});
+
+function inhabilitarEquipo(idEquipo){
     $.ajax({
         type: 'POST',
         data: {
-            idequipo: idequipo
+            idequipo: idEquipo
         },
         url: 'index.php/Equipo/cambio_equipo',
         success: function(data) {
@@ -237,21 +239,46 @@ $(".fa-toggle-on").click(function(e) {
         },
         dataType: 'json'
     });
-});
+}
 
+// Cambiar a estado - Chequeado
+// $(".fa-toggle-on").click(function(e) {
+//     WaitingOpen('Cambiando estado...');
+//     var idequipo = $(this).parent('td').parent('tr').attr('id');
+//     debugger;
+//     console.log(idequipo);
+//     $.ajax({
+//         type: 'POST',
+//         data: {
+//             idequipo: idequipo
+//         },
+//         url: 'index.php/Equipo/cambio_equipo',
+//         success: function(data) {
+//             console.log(data);
+//             //alert("Se cambio el estado del equipo a INACTIVO");
+//             WaitingClose();
+//             regresa();
+//         },
+//         error: function(result) {
+//             console.log(result);
+//         },
+//         dataType: 'json'
+//     });
+// });
 
 
 // Cambiar a estado - Chequeado
-$(".fa-toggle-off").click(function(e) {
-    var idequipo = $(this).parent('td').parent('tr').attr('id');
-    console.log("id de equipo: " + idequipo);
-    WaitingOpen('Cambiando estado...');
-    habilitarEquipo(idequipo);
-});
+// $(".fa-toggle-off").click(function(e) {
+//     var idequipo = $(this).parent('td').parent('tr').attr('id');
+//     console.log("id de equipo: " + idequipo);
+//     WaitingOpen('Cambiando estado...');
+//     habilitarEquipo(idequipo);
+// });
 
 function habilitarEquipo(idequipo) {
     console.log("ID equipo en fcion: " + idequipo);
     // Si el estado es Alta (saco lectura de tabla equipo (ultima lectura))
+    WaitingOpen('Cambiando estado...');
     $.ajax({
         async: true,
         data: {
@@ -644,43 +671,69 @@ $(".fa-print").click(function(e) {
     });
 });
 
-// Modal ingreso lectura
-$(".fa-hourglass-half").click(function(e) {
+function mantenimientoAutonomo(id,deeq){
     $(".clear").val(""); //llimpia los inputs del modal lectura
     $("#spanNuevaLectura").text("");
     $('#errorLectura').fadeOut(0);
     $('#errorLectura2').fadeOut(0);
     $("#modalectura").modal('show');
-    var $id_equipo = $(this).parent('td').parent('tr').attr('id');
-    $('#id_maquina').val($id_equipo);
-    console.log("id_equipo: " + $id_equipo);
-
-    var $nom_equipo = $(this).parents("tr").find("td").eq(1).html();
-    $('#maquina').val($nom_equipo);
-    //console.log("nom_equipo: "+$nom_equipo);
-
-    var $estado = $(this).closest('tr').find(".estado").html();
-    console.log("estado: " + $estado);
-
-
+    $('#id_maquina').val(id);
+    $('#maquina').val(deeq);
     $.ajax({
         data: {
-            idequipo: $id_equipo
+            idEquipo: id
         },
         dataType: 'json',
         type: 'POST',
         url: 'index.php/Equipo/getEqPorId',
         success: function(data) {
             console.table(data);
-            //console.log(data[0].lectura);
             $("#spanNuevaLectura").text(data[0].lectura);
-            estBoton($estado); //agrega boton de estados
+            estBoton(data[0].estado); //agrega boton de estados
         },
         error: function(result) {
             console.log(result);
         },
     });
-});
+}
+
+// Modal ingreso lectura
+// $(".fa-hourglass-half").click(function(e) {
+//     $(".clear").val(""); //llimpia los inputs del modal lectura
+//     $("#spanNuevaLectura").text("");
+//     $('#errorLectura').fadeOut(0);
+//     $('#errorLectura2').fadeOut(0);
+//     $("#modalectura").modal('show');
+//     var $id_equipo = $(this).parent('td').parent('tr').attr('id');
+//     $('#id_maquina').val($id_equipo);
+//     console.log("id_equipo: " + $id_equipo);
+
+//     var $nom_equipo = $(this).parents("tr").find("td").eq(1).html();
+//     $('#maquina').val($nom_equipo);
+//     //console.log("nom_equipo: "+$nom_equipo);
+
+//     var $estado = $(this).closest('tr').find(".estado").html();
+//     console.log("estado: " + $estado);
+
+
+//     $.ajax({
+//         data: {
+//             idequipo: $id_equipo
+//         },
+//         dataType: 'json',
+//         type: 'POST',
+//         url: 'index.php/Equipo/getEqPorId',
+//         success: function(data) {
+//             console.table(data);
+//             //console.log(data[0].lectura);
+//             $("#spanNuevaLectura").text(data[0].lectura);
+//             estBoton($estado); //agrega boton de estados
+//         },
+//         error: function(result) {
+//             console.log(result);
+//         },
+//     });
+// });
 
 /// agrega el estado del boton en modal - Chequeado
 function estBoton($estado) {
@@ -697,7 +750,6 @@ function estBoton($estado) {
 
 /// cambio de estado desde el boton - Chequeado
 $(".llave").click(function(e) {
-
     var estadobton = $(this).attr("class");
 
     if (estadobton == 'fa fa-fw llave fa-toggle-on') {
@@ -1103,18 +1155,12 @@ function click_co(id_equipo) {
     });
 }
 
-
-
-/// Hitorial de lecturas
-$(".fa-history").click(function(e) {
+function historialLectura(idEquipo){
     $("tr.registro").remove();
-    var $id_equipo = $(this).parent('td').parent('tr').attr('id');
-    console.log("id de equipo: " + $id_equipo);
-
     $.ajax({
         type: 'POST',
         data: {
-            idequipo: $id_equipo
+            idequipo: idEquipo
         },
         url: 'index.php/Equipo/getHistoriaLect',
         success: function(data) {
@@ -1126,7 +1172,30 @@ $(".fa-history").click(function(e) {
         },
         dataType: 'json'
     });
-});
+}
+
+/// Hitorial de lecturas
+// $(".fa-history").click(function(e) {
+//     $("tr.registro").remove();
+//     var $id_equipo = $(this).parent('td').parent('tr').attr('id');
+//     console.log("id de equipo: " + $id_equipo);
+
+//     $.ajax({
+//         type: 'POST',
+//         data: {
+//             idequipo: $id_equipo
+//         },
+//         url: 'index.php/Equipo/getHistoriaLect',
+//         success: function(data) {
+//             console.table(data);
+//             llenarModal(data);
+//         },
+//         error: function(result) {
+//             console.log(result);
+//         },
+//         dataType: 'json'
+//     });
+// });
 
 
 function recargarTabla() {
