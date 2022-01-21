@@ -12,7 +12,7 @@ class  Equipo extends CI_Controller {
     {
 		$userdata           = $this->session->userdata('user_data');
 		$data['empresa']    = $userdata[0]['id_empresa'];
-		// $data['list']       = $this->Equipos->equipos_List();
+		$data['list']       = $this->Equipos->equipos_List();
 		$data['permission'] = $permission;
 
 		$this->load->view('equipo/list', $data);
@@ -802,7 +802,8 @@ class  Equipo extends CI_Controller {
   	}
 
   	public function getEqPorId(){
-  		$result = $this->Equipos->getEqPorIds($this->input->post());
+		$idEquipo = $this->input->post()['idEquipo'];
+  		$result = $this->Equipos->getEqPorIds($idEquipo);
   	  	echo json_encode($result);
   	}
 
