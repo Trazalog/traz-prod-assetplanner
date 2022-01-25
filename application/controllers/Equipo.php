@@ -52,7 +52,7 @@ class  Equipo extends CI_Controller {
     // Da de baja equipos (AN)
     public function baja_equipo()
     {
-		$idequipo = $_POST['idequipo'];
+		$idequipo = $_POST['idEquipo'];
 		$datos    = array('estado'=>"AN");
 		$result   = $this->Equipos->baja_equipos($datos, $idequipo);
 		print_r(json_encode($result));	
