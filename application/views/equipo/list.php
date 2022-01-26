@@ -63,21 +63,21 @@ $('#sales').DataTable({
                 'data':'acciones',
                 'render':function(data,type,row){
                     var id = row['id_equipo'];
-                    
-                    if(row['meta_disp'] == null){
+                    meta_disp = row['meta_disp'];
+                    if(meta_disp == null){
                         var meta_disp = 0;
                     }
                     var permission = "<?php echo $permission?>";
                     var r = `<tr id="${id}" data-equipo="${id}" data-meta="${meta_disp}">`;
                     r = r + `<td>`;
                     if (permission.indexOf("Del") !== -1) {
-                        r = r + `<i href="#" class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar"></i>`;
+                        r = r + `<i href="#" class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar" onclick="eliminarEquipo(${id})"></i>`;
                     }
                     if (permission.indexOf("Edit") !== -1) {
-                        r = r + `<i class="fa fa-fw fa-pencil text-light-blue editEquipo" style="cursor: pointer; margin-left: 15px;" title="Editar"></i>`;
+                        r = r + `<i class="fa fa-fw fa-pencil text-light-blue editEquipo" style="cursor: pointer; margin-left: 15px;" title="Editar" onclick="editarEquipo(${id})"></i>`;
                     }
                     if (permission.indexOf("Del") !== -1) {
-                        r = r + `<i class="fa fa-fw fa-user text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Contratista" data-toggle="modal" data-target="#modalasignar"></i>`;
+                        r = r + `<i class="fa fa-fw fa-user text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Contratista" data-toggle="modal" data-target="#modalasignar" onclick="asignarContratista(${id})"></i>`;
                         //antes estaba el estado R por que ERA REPARACION pero ahora reparacion es RE
                         if( (row['estadoEquipo'] == 'AC') || (row['estadoEquipo'] == 'RE') ){
                         r = r + `<i  href="#"class="fa fa-fw fa-toggle-on text-light-blue " style="cursor: pointer; margin-left: 15px;" title="Inhabilitar" onclick="inhabilitarEquipo(${id})"></i>`;
@@ -93,7 +93,7 @@ $('#sales').DataTable({
                         } 
                         r = r + `<i class="fa fa-history text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Historial de Lecturas" data-toggle="modal" data-target="#modalhistlect" onclick="historialLectura(${id})"></i>`;
                     }
-                    return r = r + `<button class="btn-link" onclick="asignar_meta(this)"><i class="fa fa-bar-chart text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar Meta"></i></button>
+                    return r = r + `<button class="btn-link" onclick="asignar_meta(${meta_disp})"><i class="fa fa-bar-chart text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar Meta"></i></button>
                     </td>`;
                 }
             }
@@ -202,18 +202,30 @@ $('#btnAgre').click(function cargarVista() {
 
 
 // Asigna contratista - Chequeado
-$(".fa-user ").click(function(e) {
-    var id_equipo = $(this).parent('td').parent('tr').attr('id');
-    idglob = id_equipo;
-    console.log("variable global -> id de equipo: " + idglob);
+// $(".fa-user ").click(function(e) {
+//     var id_equipo = $(this).parent('td').parent('tr').attr('id');
+//     idglob = id_equipo;
+//     console.log("variable global -> id de equipo: " + idglob);
 
+//     $('#tablaempresa tbody').html("");
+//     tr = null;
+
+//     click_co(id_equipo);
+//     traer_contratista();
+//     llenaContratistasEquipo(id_equipo);
+// });
+
+// Asigna contratista - Chequeado
+function asignarContratista(idEquipo){
+    idglob = idEquipo;
+    console.log("variable global -> id de equipo: " + idglob);
     $('#tablaempresa tbody').html("");
     tr = null;
 
-    click_co(id_equipo);
+    click_co(idEquipo);
     traer_contratista();
-    llenaContratistasEquipo(id_equipo);
-});
+    llenaContratistasEquipo(idEquipo);
+}
 
 $( document ).ready(function() {
     console.log( "ready!" );
@@ -1400,17 +1412,43 @@ function guardarlectura() {
 /************************************/
 
 // Elimina Equipos (Cambio de estado a AN) - Chequeado
-$(".fa-times-circle").click(function(e) {
+// $(".fa-times-circle").click(function(e) {
+//     if (!confirm("Realmente desea eliminar este equipo?")) {
+//         return;
+//     } else {
+//         console.log("Estoy eliminando");
+//         var idequipo = $(this).parent('td').parent('tr').attr('id');
+//         console.log(idequipo);
+//         $.ajax({
+//             type: 'POST',
+//             data: {
+//                 idequipo: idequipo
+//             },
+//             url: 'index.php/Equipo/baja_equipo',
+//             success: function(data) {
+//                 alert("Equipo/sector ANULADO");
+//                 regresa();
+//             },
+//             error: function(result) {
+//                 console.log(result);
+//             },
+//             dataType: 'json'
+//         });
+//     }
+// });
+
+/************************************/
+/********** ELIMINA EQUIPO **********/
+/************************************/
+function eliminarEquipo(idEquipo){
     if (!confirm("Realmente desea eliminar este equipo?")) {
         return;
     } else {
-        console.log("Estoy eliminando");
-        var idequipo = $(this).parent('td').parent('tr').attr('id');
-        console.log(idequipo);
+        console.log(idEquipo);
         $.ajax({
             type: 'POST',
             data: {
-                idequipo: idequipo
+                idEquipo: idEquipo
             },
             url: 'index.php/Equipo/baja_equipo',
             success: function(data) {
@@ -1423,8 +1461,7 @@ $(".fa-times-circle").click(function(e) {
             dataType: 'json'
         });
     }
-});
-
+}
 
 
 
@@ -1434,10 +1471,33 @@ $(".fa-times-circle").click(function(e) {
 /************************************/
 
 // Traigo datos del equipo
-$(".editEquipo").click(function() {
-    //WaitingOpen();
-    var idEquipo = $(this).parent('td').parent('tr').attr('id');
-    //$('#id_equipo').val(idEquipo);
+// $(".editEquipo").click(function() {
+//     //WaitingOpen();
+//     var idEquipo = $(this).parent('td').parent('tr').attr('id');
+//     //$('#id_equipo').val(idEquipo);
+//     console.info('id de equipo a editar: ' + idEquipo);
+
+//     $.ajax({
+//         data: {
+//             idEquipo: idEquipo
+//         },
+//         dataType: 'json',
+//         type: 'POST',
+//         url: 'index.php/Equipo/geteditar',
+//         success: function(result) {
+//             console.log(result);
+//             llenarCampos(result);
+//         },
+//         error: function(result) {
+//             console.error(result);
+//         },
+//     });
+// });
+
+/************************************/
+/**********  EDITA EQUIPO  **********/
+/************************************/
+function editarEquipo(idEquipo){
     console.info('id de equipo a editar: ' + idEquipo);
 
     $.ajax({
@@ -1455,7 +1515,7 @@ $(".editEquipo").click(function() {
             console.error(result);
         },
     });
-});
+}
 
 function llenarCampos(data) {
     //ubicacion
@@ -2954,18 +3014,24 @@ $('#tablaempresa').DataTable({
 
 <script>
 var equipo = null;
-function asignar_meta(e){
+// function asignar_meta(e){
+//   equipo = $(e).closest('tr')[0];
 
-  equipo = $(e).closest('tr')[0];
-
-  $('#asignar_meta input').val(equipo.dataset.meta);
+//   $('#asignar_meta input').val(equipo.dataset.meta);
 
 
+//   $('#asignar_meta').modal('show');
+// };
+
+//ASIGNAR META
+function asignar_meta(meta){
+  $('#asignar_meta input').val(meta);
   $('#asignar_meta').modal('show');
 };
 
 $('#asignar_meta .btn-accion').click(function() {
     var meta = $('#asignar_meta input').val();
+    debugger;
     if (meta == null || meta == '') {
         alert('No se ingreso ningún valor.');
         return;

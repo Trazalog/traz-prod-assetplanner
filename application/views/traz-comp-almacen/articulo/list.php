@@ -49,13 +49,12 @@ $(document).ready(function(){
                 'render':function(data,type,row){
                     var id = row['arti_id'];
                     var permission = "<?php echo $permission?>";
-                    debugger;
                     var r = `<tr  id="${id}"><td class="text-center text-light-blue"><i class="fa fa-search" style="cursor: pointer;margin: 3px;" title="Ver Detalles" onclick="ver_detalles(${id});"></i>`;
                     if (permission.indexOf("Edit") !== -1) {
                         r = r + `<i class="fa fa-fw fa-pencil" style="cursor: pointer; margin: 3px;" title="Editar" onclick="EditarArticulos(${id});" data-toggle="modal" data-target="#modaleditar"></i>`;
                     }
                     if (permission.indexOf("Del") !== -1) {
-                        r = r + `<i class="fa fa-fw fa-times-circle" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="seleccionar(${id})"></i>`;
+                        r = r + `<i class="fa fa-fw fa-times-circle" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="eliminarArticulo(${id})"></i>`;
                     }
                     r = r + `</td>`;
                     return r;
@@ -388,20 +387,45 @@ function guardareditar() { // Ok
     });
 }
 
-var select = '';
+// var select = '';
 
-function seleccionar(o) {
-    select = $(o).closest('tr');
-    $('#modaleliminar').modal('show');
-}
+// function seleccionar(o) {
+//     select = $(o).closest('tr');
+//     $('#modaleliminar').modal('show');
+// }
 
 
-function eliminar_articulo(o) {
-    var id = select.attr('id');
-    $.ajax({
+// function eliminar_articulo(o) {
+//     var id = select.attr('id');
+//     $.ajax({
+//         type: 'POST',
+//         data: {
+//             idelim: id
+//         },
+//         url: 'index.php/almacen/Articulo/baja_articulo', //index.php/
+//         success: function(data) {
+//             alert("Articulo Eliminado");
+//             linkTo();
+//         },
+//         error: function(result) {
+//             console.log(result);
+//         }
+
+//     });
+// }
+
+/************************************/
+/********** ELIMINA ARTICULO **********/
+/************************************/
+function eliminarArticulo(idArticulo){
+    if (!confirm("Realmente desea eliminar este articulo?")) {
+        return;
+    } else {
+        console.log(idArticulo);
+        $.ajax({
         type: 'POST',
         data: {
-            idelim: id
+            idelim: idArticulo
         },
         url: 'index.php/almacen/Articulo/baja_articulo', //index.php/
         success: function(data) {
@@ -411,8 +435,8 @@ function eliminar_articulo(o) {
         error: function(result) {
             console.log(result);
         }
-
     });
+    }
 }
 
 function ver_detalles(e) {
