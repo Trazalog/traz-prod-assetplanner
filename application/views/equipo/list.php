@@ -63,8 +63,8 @@ $('#sales').DataTable({
                 'data':'acciones',
                 'render':function(data,type,row){
                     var id = row['id_equipo'];
-                    
-                    if(row['meta_disp'] == null){
+                    meta_disp = row['meta_disp'];
+                    if(meta_disp == null){
                         var meta_disp = 0;
                     }
                     var permission = "<?php echo $permission?>";
@@ -93,7 +93,7 @@ $('#sales').DataTable({
                         } 
                         r = r + `<i class="fa fa-history text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Historial de Lecturas" data-toggle="modal" data-target="#modalhistlect" onclick="historialLectura(${id})"></i>`;
                     }
-                    return r = r + `<button class="btn-link" onclick="asignar_meta(this)"><i class="fa fa-bar-chart text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar Meta"></i></button>
+                    return r = r + `<button class="btn-link" onclick="asignar_meta(${meta_disp})"><i class="fa fa-bar-chart text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar Meta"></i></button>
                     </td>`;
                 }
             }
@@ -3014,18 +3014,24 @@ $('#tablaempresa').DataTable({
 
 <script>
 var equipo = null;
-function asignar_meta(e){
+// function asignar_meta(e){
+//   equipo = $(e).closest('tr')[0];
 
-  equipo = $(e).closest('tr')[0];
-
-  $('#asignar_meta input').val(equipo.dataset.meta);
+//   $('#asignar_meta input').val(equipo.dataset.meta);
 
 
+//   $('#asignar_meta').modal('show');
+// };
+
+//ASIGNAR META
+function asignar_meta(meta){
+  $('#asignar_meta input').val(meta);
   $('#asignar_meta').modal('show');
 };
 
 $('#asignar_meta .btn-accion').click(function() {
     var meta = $('#asignar_meta input').val();
+    debugger;
     if (meta == null || meta == '') {
         alert('No se ingreso ningún valor.');
         return;
