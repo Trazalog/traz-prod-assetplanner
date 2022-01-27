@@ -992,10 +992,8 @@ class Equipos extends CI_Model
         }
     }
 
-    public function getEqPorIds($data)
+    public function getEqPorIds($ideq)
     {
-
-        $id = $data['idequipo'];
 
         $this->db->select('equipos.id_equipo,
 							equipos.codigo,
@@ -1004,7 +1002,7 @@ class Equipos extends CI_Model
 							historial_lecturas.estado');
         $this->db->from('historial_lecturas');
         $this->db->join('equipos', 'equipos.id_equipo = historial_lecturas.id_equipo');
-        $this->db->where('historial_lecturas.id_equipo', $id);
+        $this->db->where('historial_lecturas.id_equipo', $ideq);
         $this->db->order_by('id_lectura', 'DESC');
         $this->db->limit(1);
 
