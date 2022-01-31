@@ -62,6 +62,7 @@ class Preventivos extends CI_Model
         $this->db->join('proceso', 'proceso.id_proceso=equipos.id_proceso');
         $this->db->join('admcustomers', 'admcustomers.cliId=equipos.id_customer');
         $this->db->where('equipos.estado !=', 'AN');
+        $this->db->where('equipos.estado !=', 'IN');
         $this->db->where('equipos.id_empresa', $empId);
         $this->db->order_by('equipos.codigo', 'ASC');   
         
