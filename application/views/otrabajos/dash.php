@@ -22,7 +22,7 @@
                                 <input type="date" class="form-control pull-right" value="<?php echo date('Y-m-d');?>" id="fecha" placeholder="Seleccione Fecha">
                             </div>
 
-                           <?php //$this->load->view('kpis/disponibilidad'); ?>
+                           <?php $this->load->view('kpis/disponibilidad'); ?>
                         </div>
                     </div>
                     <div class="col-md-3">
