@@ -10,10 +10,28 @@ class  Equipo extends CI_Controller {
 
     public function index($permission)
     {
-		$userdata           = $this->session->userdata('user_data');
-		$data['empresa']    = $userdata[0]['id_empresa'];
-		$data['list']       = $this->Equipos->equipos_List();
-		$data['permission'] = $permission;
+			$this->session->set_userdata($var);
+		$data = $this->session->userdata();
+		log_message('DEBUG','#Main/index | Equipo >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+
+		if(empty($data['user_data'][0]['usrName'])){
+			log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+			$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+			$this->session->unset_userdata(null);
+			$this->session->sess_destroy();
+
+			echo ("<script>location.href='login'</script>");
+
+		}else{
+
+			$userdata           = $this->session->userdata('user_data');
+			$data['empresa']    = $userdata[0]['id_empresa'];
+			$data['list']       = $this->Equipos->equipos_List();
+			$data['permission'] = $permission;
+			//dump( $data['list'] );
+			$this->load->view('equipo/list', $data);	
+		}	     
+    }
 
 		$this->load->view('equipo/list', $data);
     } 

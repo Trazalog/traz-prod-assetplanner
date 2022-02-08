@@ -13,16 +13,43 @@ class Lote extends CI_Controller {
 
 	public function index()
 	{
-		$data['list']       = $this->Lotes->getList();
-		$data['permission'] = "Add-Edit-Del-View";
-		$this->load->view($this->path.'lotes/list', $data);
+		log_message('DEBUG','#Main/index | Envio >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+	
+		if(empty($data['user_data'][0]['usrName'])){
+			log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+			$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+			$this->session->set_userdata($var);
+			$this->session->unset_userdata(null);
+			$this->session->sess_destroy();
+	
+			echo ("<script>location.href='login'</script>");
+	
+		}else{
+			$data['list']       = $this->Lotes->getList();
+			$data['permission'] = "Add-Edit-Del-View";
+			$this->load->view($this->path.'lotes/list', $data);
+		}
 	}
 	
 	public function puntoPedList()
 	{
-		$data['list']       = $this->Lotes->getPuntoPedido();
-		$data['permission'] = "Add-Edit-Del-View";
-		$this->load->view($this->path.'lotes/list_punto_ped', $data);
+		$data = $this->session->userdata();
+		log_message('DEBUG','#Main/index | Lote >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+	
+		if(empty($data['user_data'][0]['usrName'])){
+			log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+			$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+			$this->session->set_userdata($var);
+			$this->session->unset_userdata(null);
+			$this->session->sess_destroy();
+	
+			echo ("<script>location.href='login'</script>");
+	
+		}else{
+			$data['list']       = $this->Lotes->getPuntoPedido();
+			$data['permission'] = "Add-Edit-Del-View";
+			$this->load->view($this->path.'lotes/list_punto_ped', $data);
+		}
 	}
 
 	public function getMotion(){

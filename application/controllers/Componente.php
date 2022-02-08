@@ -10,19 +10,47 @@ class Componente extends CI_Controller {
 
 	public function index($permission)
 	{	
-		$data['list']       = $this->Componentes->listadoABM();
-		//dump_exit($data['list']);
-		$data['permission'] = $permission;
-		$this->load->view('componente/listabm', $data);
+		$data = $this->session->userdata();
+		log_message('DEBUG','#Main/index | Componente >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+
+		if(empty($data['user_data'][0]['usrName'])){
+			log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+			$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+			$this->session->set_userdata($var);
+			$this->session->unset_userdata(null);
+			$this->session->sess_destroy();
+
+			echo ("<script>location.href='login'</script>");
+
+		}else{
+			$data['list']       = $this->Componentes->listadoABM();
+			//dump_exit($data['list']);
+			$data['permission'] = $permission;
+			$this->load->view('componente/listabm', $data);
+		}
 	}
 
 
 	// Listo
 	public function asigna($permission)
 	{	
-		$data['list']       = $this->Componentes->componentes_List();
-		$data['permission'] = $permission;
-		$this->load->view('componente/list', $data);
+		$data = $this->session->userdata();
+		log_message('DEBUG','#Main/index | Componente >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+
+		if(empty($data['user_data'][0]['usrName'])){
+			log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+			$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+			$this->session->set_userdata($var);
+			$this->session->unset_userdata(null);
+			$this->session->sess_destroy();
+
+			echo ("<script>location.href='login'</script>");
+
+		}else{
+			$data['list']       = $this->Componentes->componentes_List();
+			$data['permission'] = $permission;
+			$this->load->view('componente/list', $data);
+		}
 	}
 
 	//Carga vista agregar relacion comp/equipo
