@@ -33,8 +33,6 @@ class  Equipo extends CI_Controller {
 		}	     
     }
 
-		$this->load->view('equipo/list', $data);
-    } 
 	/**
 	 * @param int inicio
 	 * @param int tamaño
