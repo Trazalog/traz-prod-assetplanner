@@ -16,9 +16,23 @@ class Tarea extends CI_Controller {
 		// llama ABM tareas estandar
 		public function index2($permission)
     {
-        $data['list']       = $this->Tareas->Listado_Tareas();
-        $data['permission'] = $permission;
-        $this->load->view('tarea/list', $data);
+		$data = $this->session->userdata();
+		log_message('DEBUG','#Main/index | Tarea >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+
+		if(empty($data['user_data'][0]['usrName'])){
+			log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+			$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+			$this->session->set_userdata($var);
+			$this->session->unset_userdata(null);
+			$this->session->sess_destroy();
+
+			echo ("<script>location.href='login'</script>");
+
+		}else{
+			$data['list']       = $this->Tareas->Listado_Tareas();
+			$data['permission'] = $permission;
+			$this->load->view('tarea/list', $data);
+		}
     }
 
 		public function Obtener_Tarea(){
@@ -81,6 +95,23 @@ class Tarea extends CI_Controller {
 		/*	./ FUNCIONES BPM */
 			// Bandea de entrada
 			public function index($permission = null){
+
+				$data = $this->session->userdata();
+					log_message('DEBUG','#Main/index | Preventivo >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+
+					if(empty($data['user_data'][0]['usrName'])){
+						log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+						$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+						$this->session->set_userdata($var);
+						$this->session->unset_userdata(null);
+						$this->session->sess_destroy();
+
+						echo ("<script>location.href='login'</script>");
+
+					}else{
+
+
+
 				///$this->load->helper('control_sesion');
 				// if	(validaSesion()){
 						$detect = new Mobile_Detect();    				
@@ -105,7 +136,8 @@ class Tarea extends CI_Controller {
 							$data['device'] = "pc";				
 						}			
 						$this->load->view('tareas/list',$data);	
-				//}			
+				//}	
+					}		
 			}
 			// Verifica si la tarea fue guardada la fecha de inicio
 			public function confInicioTarea(){

@@ -19,10 +19,24 @@ class Otrabajo extends CI_Controller {
 	 */
 	public function index($permission) // Ok
 	{
-		$data['list']       = $this->Otrabajos->otrabajos_List(null,0);
-		$data['kpi'] = $this->Equipos->informe_equipos();
-		$data['permission'] = $permission;
-		$this->load->view('otrabajos/dashOriginal', $data);
+		$data = $this->session->userdata();
+		log_message('DEBUG','#Main/index | OTrabajo >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+	
+		if(empty($data['user_data'][0]['usrName'])){
+			log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+			$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+			$this->session->set_userdata($var);
+			$this->session->unset_userdata(null);
+			$this->session->sess_destroy();
+	
+			echo ("<script>location.href='login'</script>");
+	
+		}else{
+			$data['list']       = $this->Otrabajos->otrabajos_List(null,0);
+			$data['kpi'] = $this->Equipos->informe_equipos();
+			$data['permission'] = $permission;
+			$this->load->view('otrabajos/dashOriginal', $data);
+		}
 	}  
 	/**
 	 * Muestra pantalla de Nueva Orden de Trabajo.
@@ -42,20 +56,34 @@ class Otrabajo extends CI_Controller {
 	 */
 	public function listOrden($permission,$ot=null) // Ok
 	{
-		//Se pidio que el listado se cargue a aprtir de un filtro, filtrarListado()
-		// $data['list']    = $this->Otrabajos->otrabajos_List($ot, 2);
-		$data['list'] = false;
-		$data['equipos'] = $this->Otrabajos->getEquiposNuevaOT();
+		$data = $this->session->userdata();
+		log_message('DEBUG','#Main/index | Otrabajo >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+	
+		if(empty($data['user_data'][0]['usrName'])){
+			log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+			$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+			$this->session->set_userdata($var);
+			$this->session->unset_userdata(null);
+			$this->session->sess_destroy();
+	
+			echo ("<script>location.href='login'</script>");
+	
+		}else{
+			//Se pidio que el listado se cargue a aprtir de un filtro, filtrarListado()
+			// $data['list']    = $this->Otrabajos->otrabajos_List($ot, 2);
+			$data['list'] = false;
+			$data['equipos'] = $this->Otrabajos->getEquiposNuevaOT();
 
-		$data['permission'] = $permission;
+			$data['permission'] = $permission;
 
-		$rsp = $this->bpm->getUsuariosBPM();
+			$rsp = $this->bpm->getUsuariosBPM();
 
-		$data['list_usuarios'] = $rsp['data'];
+			$data['list_usuarios'] = $rsp['data'];
 
-		$data['opciones'] = $this->load->view('otrabajos/tabla_opciones',['permission'=>$permission],true);
-		
-		$this->load->view('otrabajos/list', $data);
+			$data['opciones'] = $this->load->view('otrabajos/tabla_opciones',['permission'=>$permission],true);
+			
+			$this->load->view('otrabajos/list', $data);
+	  }
 		
 	}  
 	/**

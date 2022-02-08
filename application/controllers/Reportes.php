@@ -11,30 +11,52 @@ class Reportes extends CI_Controller
         $this->load->model('koolreport/Opciones_Filtros');
     }
 
+    public function check_session(){
+
+        $data = $this->session->userdata();
+        log_message('DEBUG','#Main/index | Customer >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+
+        if(empty($data['user_data'][0]['usrName'])){
+            log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+            $var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+            $this->session->set_userdata($var);
+            $this->session->unset_userdata(null);
+            $this->session->sess_destroy();
+
+            echo ("<script>location.href='login'</script>");
+
+        }else{
+            return true;
+        }
+    }
+
     public function produccion()
     {
-        $data = $this->input->post('data');
-        $producto = $data['producto'];
-        $etapa = $data['etapa'];
-        $desde = $data['datepickerDesde'];
-        $hasta = $data['datepickerHasta'];
+        if($this->check_session()){
+            $data = $this->input->post('data');
+            $producto = $data['producto'];
+            $etapa = $data['etapa'];
+            $desde = $data['datepickerDesde'];
+            $hasta = $data['datepickerHasta'];
 
-        if ($producto || $etapa || $desde || $hasta) {
-            $desde = ($desde) ? date("d-m-Y", strtotime($desde)) : null;
-            $hasta = ($hasta) ? date("d-m-Y", strtotime($hasta)) : null;
-            log_message('INFO', '#TRAZA| #REPORTES.PHP|#REPORTES|#PRODUCCION| #ETAPA: >>' . $etapa . '#DESDE: >>' . $desde . '#HASTA: >>' . $hasta);
-            $url = REST_TDS . 'productos/etapa/' . $etapa . '/desde/' . $desde . '/hasta/' . $hasta . '/producto/' . $producto;
-            $json = $this->Koolreport->depurarJson($url)->productos->producto;
-            $reporte = new Produccion($json);
-            $reporte->run()->render();
-        } else {
-            log_message('INFO', '#TRAZA| #REPORTES.PHP|#REPORTES|#PRODUCCION| #INGRESO');
-            $url = REST_TDS . 'productos/etapa//desde//hasta//producto/';
-            $json = $this->Koolreport->depurarJson($url)->productos->producto;
-            log_message('DEBUG', '#TRAZA| #REPORTES.PHP|#REPORTES|#PRODRESPONSABLE| #JSON: >>' . $json);
-            $reporte = new Produccion($json);
-            $reporte->run()->render();
+            if ($producto || $etapa || $desde || $hasta) {
+                $desde = ($desde) ? date("d-m-Y", strtotime($desde)) : null;
+                $hasta = ($hasta) ? date("d-m-Y", strtotime($hasta)) : null;
+                log_message('INFO', '#TRAZA| #REPORTES.PHP|#REPORTES|#PRODUCCION| #ETAPA: >>' . $etapa . '#DESDE: >>' . $desde . '#HASTA: >>' . $hasta);
+                $url = REST_TDS . 'productos/etapa/' . $etapa . '/desde/' . $desde . '/hasta/' . $hasta . '/producto/' . $producto;
+                $json = $this->Koolreport->depurarJson($url)->productos->producto;
+                $reporte = new Produccion($json);
+                $reporte->run()->render();
+            }else{
+                log_message('INFO', '#TRAZA| #REPORTES.PHP|#REPORTES|#PRODUCCION| #INGRESO');
+                $url = REST_TDS . 'productos/etapa//desde//hasta//producto/';
+                $json = $this->Koolreport->depurarJson($url)->productos->producto;
+                log_message('DEBUG', '#TRAZA| #REPORTES.PHP|#REPORTES|#PRODRESPONSABLE| #JSON: >>' . $json);
+                $reporte = new Produccion($json);
+                $reporte->run()->render();
+            }
         }
+        
     }
 
     public function filtroProduccion()

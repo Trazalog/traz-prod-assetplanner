@@ -14,11 +14,24 @@ class Calendario extends CI_Controller
     }
 
     public function indexot($permission) // Ok
-
     {
-        $data['permission'] = $permission . "Correctivo-Preventivos-Backlog-Predictivo-";
+        $data = $this->session->userdata();
+        log_message('DEBUG','#Main/index | Calendario >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+    
+        if(empty($data['user_data'][0]['usrName'])){
+            log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+            $var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+            $this->session->set_userdata($var);
+            $this->session->unset_userdata(null);
+            $this->session->sess_destroy();
+    
+            echo ("<script>location.href='login'</script>");
+    
+        }else{
+            $data['permission'] = $permission . "Correctivo-Preventivos-Backlog-Predictivo-";
 
-        $this->load->view('calendar/calendar1', $data);
+            $this->load->view('calendar/calendar1', $data);
+        }
     }
 
     public function getcalendarot() // Ok

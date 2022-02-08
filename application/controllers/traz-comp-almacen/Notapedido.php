@@ -14,18 +14,33 @@ class Notapedido extends CI_Controller
 
     public function index()
     {
-        $this->load->model('traz-comp/Componentes');
-        #COMPONENTE ARTICULOS
-        if($_GET)
-				{
-					$permiso = $_GET["permisos"];
-				}
-				$data['items'] = $this->Componentes->listaArticulos();
-				$data['lang'] = lang_get('spanish', 'Ejecutar OT');
+        $data = $this->session->userdata();
+		log_message('DEBUG','#Main/index | Envio >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+	
+		if(empty($data['user_data'][0]['usrName'])){
+			log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+			$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+			$this->session->set_userdata($var);
+			$this->session->unset_userdata(null);
+			$this->session->sess_destroy();
+	
+			echo ("<script>location.href='login'</script>");
+	
+		}else{
 
-				$data['list'] = $this->Notapedidos->notaPedidos_List();
-				$data['permission'] = $permiso;
-				$this->load->view(ALM . '/notapedido/list', $data);
+
+            $this->load->model('traz-comp/Componentes');
+            #COMPONENTE ARTICULOS
+            if($_GET){
+                $permiso = $_GET["permisos"];
+            }
+            $data['items'] = $this->Componentes->listaArticulos();
+            $data['lang'] = lang_get('spanish', 'Ejecutar OT');
+
+            $data['list'] = $this->Notapedidos->notaPedidos_List();
+            $data['permission'] = $permiso;
+            $this->load->view(ALM . '/notapedido/list', $data);
+        }
     }
 
     public function ObtenerNotasPedidosxOT($idot)
