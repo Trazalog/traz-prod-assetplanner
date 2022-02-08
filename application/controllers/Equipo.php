@@ -10,7 +10,6 @@ class  Equipo extends CI_Controller {
 
     public function index($permission)
     {
-			$this->session->set_userdata($var);
 		$data = $this->session->userdata();
 		log_message('DEBUG','#Main/index | Equipo >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
 
@@ -32,6 +31,7 @@ class  Equipo extends CI_Controller {
 			$this->load->view('equipo/list', $data);	
 		}	     
     }
+
 
 	/**
 	 * @param int inicio
