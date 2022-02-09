@@ -60,6 +60,7 @@ $('#sales').DataTable({
     'columnDefs':[
             {
                 'targets':[0],
+                "searchable": true,
                 'data':'acciones',
                 'render':function(data,type,row){
                     var id = row['id_equipo'];

@@ -1563,7 +1563,7 @@ class Equipos extends CI_Model
         $userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa']; // guarda usuario logueado
 
-        $srch="";
+        /*
         if($search){
             $srch="WHERE(equipo.nombre LIKE'%".$search."%' OR
                         equipo.descripcion LIKE'%".$search."%' OR
@@ -1573,6 +1573,16 @@ class Equipos extends CI_Model
                         criticidad.descripcion LIKE'%".$search."%' OR
                         admcustomers.cliRazonSocial LIKE'%".$search."%' OR
                         equipo.estado LIKE'%".$search."%')";//creo q estado no hace falta
+        }*/
+        $srch="";
+        if($search){
+            $srch="and( equipos.descripcion LIKE'%".$search."%' OR
+                        area.descripcion LIKE'%".$search."%' OR
+                        proceso.descripcion LIKE'%".$search."%' OR
+                        sector.descripcion LIKE'%".$search."%' OR
+                        criticidad.descripcion LIKE'%".$search."%' OR
+                        admcustomers.cliRazonSocial LIKE'%".$search."%' OR
+                        equipos.estado LIKE'%".$search."%')";//creo q estado no hace falta
         }
         
         $qnr = "SELECT count(1) cant
