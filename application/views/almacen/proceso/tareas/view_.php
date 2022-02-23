@@ -95,18 +95,7 @@
 													
 
 
-<<<<<<< HEAD:application/views/almacen/proceso/tareas/view_.php
 												</form>
-=======
-            </div><!-- /.row -->
-
-
-            <div class="modal-footer">
-            <?php echo (isset($estadoOT) && $estado==false?'<h4 class="text-danger text-center">La Orden de Trabajo Asociada al Pedido de Materiales ha sido Cerrada</h4><h5 class="text-center">No se podran realizar mas Entregas</h5>':null) ?>  
-              <button type="button" id="cerrar" class="btn btn-primary" onclick="linkTo('Tarea');">Cerrar</button>
-                <button type="button" class="btn btn-success" id="hecho" onclick="cerrarTarea()" <?php echo (isset($estadoOT) && $estado==false?'disabled':null) ?> >Hecho</button>
-            </div> <!-- /.modal footer -->
->>>>>>> parent of d5ecaab... Merge remote-tracking branch 'origin/develop' into develop:application/views/traz-comp-almacen/proceso/tareas/view_.php
 
 													
 											</div>

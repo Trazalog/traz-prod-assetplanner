@@ -17,10 +17,10 @@ class Tarea extends CI_Controller {
 		public function index2($permission)
     {
 		$data = $this->session->userdata();
-		log_message('DEBUG','#Main/index | Tarea >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+		log_message('DEBUG','#Main/index2 | Tarea >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
 
 		if(empty($data['user_data'][0]['usrName'])){
-			log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+			log_message('DEBUG','#Main/index2 | Cerrar Sesion >> '.base_url());
 			$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
 			$this->session->set_userdata($var);
 			$this->session->unset_userdata(null);
@@ -30,6 +30,9 @@ class Tarea extends CI_Controller {
 
 		}else{
 			$data['list']       = $this->Tareas->Listado_Tareas();
+
+			log_message('DEBUG','#TRAZA | #Tarea/index2()>> data '.json_encode($data));
+
 			$data['permission'] = $permission;
 			$this->load->view('tarea/list', $data);
 		}
@@ -39,12 +42,16 @@ class Tarea extends CI_Controller {
 
 				$id     =$_POST['id_tarea'];
 				$result = $this->Tareas->Obtener_Tareas($id);
+				log_message('DEBUG','#TRAZA | #Tarea/Obtener_Tarea()>> data '.json_encode($result));
 				echo json_encode($result);
 		}
 	
 		/*Fernando Leiva */
 		public function Obtener_Todas(){
+
+			log_message('DEBUG','#TRAZA | #Tarea/Obtener_Todas()>> data '.json_encode($this->Tareas->Listado_Tareas()));
 			echo json_encode($this->Tareas->Listado_Tareas());
+
 		}
 
 		public function Obtener_Subtareas(){
@@ -117,6 +124,9 @@ class Tarea extends CI_Controller {
 						$detect = new Mobile_Detect();    				
 						//Obtener Bandeja de Usuario desde Bonita
 						$response = $this->bpm->getToDoList();
+
+						log_message('DEBUG','#TRAZA | #Tarea/index()>> response '.json_encode($response));
+
 					
 						//dump($response, 'respuesta tareas BPM: ');
 						if(!$response['status']){
@@ -126,6 +136,9 @@ class Tarea extends CI_Controller {
 						//Completar Tareas con ID Solicitud y ID OT
 						$data_extend = $this->Tareas->CompletarToDoList($response['data']);
 						// var_dump($data_extend);
+
+						log_message('DEBUG','#TRAZA | #Tarea/index()>> data_extend '.json_encode($data_extend));
+
 
 						$data['list'] = $data_extend;
 						$data['permission'] = $permission;		
@@ -208,14 +221,13 @@ class Tarea extends CI_Controller {
 			public function tomarTarea(){								
 
 				$idTarBonita = $this->input->post('idTarBonita');			
-				$response = $this->bpm->setUsuario($idTarBonita, userId());
+				$userdata = $this->session->userdata('user_data'); 
 
-				$userdata = $this->session->userdata('user_data');             
-				
 				log_message('DEBUG','#TRAZA | #Tarea/tomarTarea(usrNick)>> '.$userdata[0]['usrNick']);
 				log_message('DEBUG','#TRAZA | #Tarea/tomarTarea(userBpm)>> '.$userdata[0]['userBpm']);
 				log_message('DEBUG','#TRAZA | #Tarea/tomarTarea(idTarBonita)>> '.$idTarBonita);
-
+				$response = $this->bpm->setUsuario($idTarBonita, userId());
+				            
 				echo json_encode($response);
 			}
 			// Usr Toma tarea en BPM  
