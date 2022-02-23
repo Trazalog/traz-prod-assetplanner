@@ -46,26 +46,47 @@ class Calendario extends CI_Controller
     }
 
     public function getTablas() // Ok
-
     {
+        
         $mes = $this->input->post('mes');
         $year = $this->input->post('year');
         $permission = $this->input->post('permission');
         $data['mes'] = $mes;
         $data['year'] = $year;
+        
+        
+        // var_dump($data_extend);
+        
         $data['list0'] = $this->Calendarios->getPreventivosHoras($mes, $year);
         $data['list1'] = $this->Calendarios->getpredlist($mes, $year); // listo
         $data['list2'] = $this->Calendarios->getbacklog($mes, $year); // listo
         $data['list3'] = $this->Calendarios->getPreventivos($mes, $year); // listo
-        $data['list4'] = $this->Calendarios->getsservicio($mes, $year); // listo
+        //$data['list4'] = $this->Calendarios->getsservicio($mes, $year); // listo
+        //Buscar Bonita IdTarea para pode
+        //Completar Tareas con ID Solicitud y ID OT
+        //Nueva consulta Para traer los mismos datos de la bandeja de entrada
+		//Obtener Bandeja de Usuario desde Bonita
+		
+        $response = $this->bpm->getToDoList();
+		if($response['status']){
+            // Si trae datos une las tareas con las solicitudes
+            $data_extend = $this->Calendarios->getServicioTareas($response['data'],$mes,$year);
+            $data['list4'] = $data_extend; // listo
+        }
+        
         $data['permission'] = $permission;
 
+        
+        /*
+        log_message('DEBUG','#CALENDARIO >> getTablas() response >> '.json_encode($response));
+        log_message('DEBUG','#CALENDARIO >> getTablas() data_extend >> '.json_encode($data_extend));
         log_message('DEBUG', '#CALENDARIO >> getTablas() $datos >> ' . $preventivosHoras);
-        log_message('DEBUG', '#CALENDARIO >> getTablas() $datañ[list0] >> ' . json_encode($data['list0']));
-        log_message('DEBUG', '#CALENDARIO >> getTablas() $datañ[list1] >> ' . json_encode($data['list1']));
-        log_message('DEBUG', '#CALENDARIO >> getTablas() $datañ[list2] >> ' . json_encode($data['list2']));
-        log_message('DEBUG', '#CALENDARIO >> getTablas() $datañ[list3] >> ' . json_encode($data['list3']));
-        log_message('DEBUG', '#CALENDARIO >> getTablas() $datañ[list4] >> ' . json_encode($data['list4']));
+        log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list0] >> ' . json_encode($data['list0']));
+        log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list1] >> ' . json_encode($data['list1']));
+        log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list2] >> ' . json_encode($data['list2']));
+        log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list3] >> ' . json_encode($data['list3']));
+        log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list4] >> ' . json_encode($data['list4']));
+        */
         
         //para cada preventivo
         if ($preventivosHoras) {

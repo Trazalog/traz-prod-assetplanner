@@ -473,8 +473,19 @@ $('.fa-stop-circle').click(function() {
 
 });
 
-function fill_Correc(dato) {
+function fill_Correc(dato,eval) {
     //alert(dato);
+
+    //Luis Zorrilla - Modal Cargar IdTarea y Tomar tarea
+    $('#modal-correctivo').modal("show");
+    var data= $(eval).closest('tr').attr('id');
+    var idTareaBonita = data.split("-");
+    var idTarea = idTareaBonita[1];
+    console.log(idTarea);
+    $('#idTarBonita').val(idTarea);
+    //Luis Zorrilla - Modal Cargar IdTarea y Tomar tarea 
+    tomarTareaTabla();
+    
     $.ajax({
         type: 'POST',
         data: {
@@ -515,6 +526,8 @@ function setOtCorrectivo() {
     var progr_corr = $('#fecha_progr_correct').val();
     //  alert(progr_corr);
     var hor_corr = $('#hora_progr_correct').val();
+    //llamado a nueva funcion para toma la tarea
+
 
     $.ajax({
         type: 'POST',
@@ -543,6 +556,84 @@ function setOtCorrectivo() {
     });
 }
 //////////  / CORRECTIVO (Listoooo)
+
+//////////  / TOMAR TAREA (Listoooo)
+function tomarTareaTabla() {
+
+    var idTarBonita = $('#idTarBonita').val();
+   
+    var post = {
+        type: 'POST',
+        data: {
+            idTarBonita: idTarBonita
+        },
+        url: 'index.php/Tarea/tomarTarea',
+        success: function (data) {
+
+            // toma a tarea exitosamente
+            if (data.status) {
+                console.log("Tarea Tomada");
+            } else {
+                alert(data.msj)
+            }
+
+        },
+        error: function (result) {
+            console.log(result);
+        },
+        dataType: 'json'
+    };
+
+    if (conexion()) $.ajax(post);
+    else {
+        ajax(post);
+        
+    }
+    //Guardar Estado en Sesion
+    var task = $('#task').val() + '_tomar';
+    var id = 'tomar';
+    var value = true;
+    guardarEstado(task, value, id);
+}
+
+////////////Soltar Tarea Tabla (Listooooo)
+// Soltar tarea en BPM
+function soltarTareaTabla() {
+    var idTarBonita = $('#idTarBonita').val();
+    var post = {
+        type: 'POST',
+        data: {
+            idTarBonita: idTarBonita
+        },
+        url: 'index.php/Tarea/soltarTarea',
+        success: function (data) {
+
+            // toma a tarea exitosamente
+            if (data.status) {
+                console.log("Solar Tarea");
+            } else {
+                alert(data.msj)
+            }
+        },
+        error: function (result) {
+            console.log(result);
+        },
+        dataType: 'json'
+    };
+
+    if (conexion()) $.ajax(post);
+    else {
+        ajax(post);
+        deshabilitar();
+    }
+
+    //Guardar Estado en Sesion
+    var task = $('#task').val() + '_tomar';
+    var id = 'tomar';
+    var value = false;
+    guardarEstado(task, value, id);
+}
+
 
 //////////  PREVENTIVO (Listoooo)
 var id_tar = "";
@@ -944,9 +1035,11 @@ function updateHora(id_OT, duracion) {
             </div>
             <div class="modal-body">
                 <h5>Seleccione la fecha de Programación</h5>
+                <div class="col-xs-4">Tarea:
+                    <input type="text" id="idTarBonita" name="idTarBonita" class="form-control input-md" />
+                </div>
                 <div class="col-xs-4">Fecha:
-                    <input type="text" id="fecha_progr_correct" name="fecha_progr_correct"
-                        class="form-control input-md" />
+                    <input type="text" id="fecha_progr_correct" name="fecha_progr_correct" class="form-control input-md" />
                 </div>
                 <div class="col-xs-4">Hora:
                     <input type="time" name="hora_progr_correct" id="hora_progr_correct" class="form-control input-md">
@@ -954,10 +1047,12 @@ function updateHora(id_OT, duracion) {
             </div>
             <div class="clearfix"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal"
-                    onclick="CancCorrec()">Cancelar</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="setOtCorrectivo()">Generar
-                    Orden</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="CancCorrec()">Cancelar</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="setOtCorrectivo()">Generar Orden</button>
+                <!--
+                    <button type="button" id='btontomar' class="btn btn-success" data-dismiss="modal" onclick="tomarTareaTabla()">Tomar Tarea</button>
+                    <button type="button" id='btonsoltr' class="btn btn-danger grupNoasignado" data-dismiss="modal" onclick='soltarTareaTabla()'>Soltar tarea</button>
+                -->
             </div>
         </div>
     </div>
