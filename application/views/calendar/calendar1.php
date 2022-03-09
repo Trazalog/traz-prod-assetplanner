@@ -1035,8 +1035,8 @@ function updateHora(id_OT, duracion) {
             </div>
             <div class="modal-body">
                 <h5>Seleccione la fecha de Programación</h5>
-                <div class="col-xs-4">Tarea:
-                    <input type="text" id="idTarBonita" name="idTarBonita" class="form-control input-md" />
+                <div class="col-xs-4 hidden">Tarea:
+                    <input type="hidden" id="idTarBonita" name="idTarBonita" class="form-control input-md" />
                 </div>
                 <div class="col-xs-4">Fecha:
                     <input type="text" id="fecha_progr_correct" name="fecha_progr_correct" class="form-control input-md" />

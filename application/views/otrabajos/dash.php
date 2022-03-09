@@ -187,7 +187,7 @@ $(document).on("click",".fa-minus",function() {
 
 /* obtengo datos de disponibilidad */
 var idEquipo = 'all';
-getDisponibilidad(idEquipo);
+//getDisponibilidad(idEquipo);
 
 function getDisponibilidad(idEquipo) {
     //WaitingOpen("Obteniendo datos de disponibilidad...");
