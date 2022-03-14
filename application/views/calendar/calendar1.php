@@ -431,31 +431,36 @@ $('#predictivo').DataTable({
 ///// Datepicker para modales
 $("#fecha_progr_pred").datepicker({
     Format: 'dd/mm/yy',
-    startDate: '-3d'
+    startDate: '-3d',
+    //minDate: new Date(),
     //firstDay: 1
 }).datepicker("setDate", new Date());
 
 $("#fecha_progr_correct").datepicker({
     Format: 'dd/mm/yy',
-    startDate: '-3d'
+    startDate: '-3d',
+    //minDate: new Date(),
     //firstDay: 1
 }).datepicker("setDate", new Date());
 
 $("#fecha_progr_prevent").datepicker({
     Format: 'dd/mm/yy',
-    startDate: '-3d'
+    startDate: '-3d',
+    //minDate: new Date(),
     //firstDay: 1
 }).datepicker("setDate", new Date());
 
 $("#fecha_progr_back").datepicker({
     Format: 'dd/mm/yy',
-    startDate: '-3d'
+    startDate: '-3d',
+    //minDate: new Date(),
     //firstDay: 1
 }).datepicker("setDate", new Date());
 
 $("#fecha_progr_prevent_horas").datepicker({
     Format: 'dd/mm/yy',
-    startDate: '-3d'
+    startDate: '-3d',
+    //minDate: new Date(),
     //firstDay: 1
 }).datepicker("setDate", new Date());
 
