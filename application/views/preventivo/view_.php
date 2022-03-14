@@ -122,20 +122,20 @@
                       <div class="row">
                         <div class="col-xs-12 col-sm-6 col-md-4">
                           <label for="herramienta">Codigo <strong style="color: #dd4b39">*</strong>:</label>
-                          <input type="text" id="herramienta"  name="" class="form-control" placeholder="Buscar Código..." />
+                          <input type="text" id="herramienta"  name="herramienta" class="form-control" placeholder="Buscar Código..." />
                           <input type="hidden" id="id_herramienta" name="id_herramienta">
                         </div>                          
                         <div class="col-xs-12 col-sm-6 col-md-4">
                           <label for="marcaherram">Marca <strong style="color: #dd4b39">*</strong>:</label>
-                          <input type="text" id="marcaherram"  name="" class="form-control" />
+                          <input type="text" id="marcaherram"  name="marcaherram" class="form-control" />
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
                           <label for="descripcionherram">Descripcion <strong style="color: #dd4b39">*</strong>:</label>
-                          <input type="text" id="descripcionherram"  name="" class="form-control" />
+                          <input type="text" id="descripcionherram"  name="descripcionherram" class="form-control" />
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
                           <label for="cantidadherram">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
-                          <input type="text" id="cantidadherram"  name="" class="form-control" placeholder="Ingrese Cantidad..." />
+                          <input type="text" id="cantidadherram"  name="cantidadherram" class="form-control" placeholder="Ingrese Cantidad..." />
                         </div>
                         <br>
                         <div class="col-xs-12">
@@ -172,11 +172,11 @@
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
                           <label for="">Descripcion:</label>
-                          <input type="text" id="descript"  name="" class="form-control" />
+                          <input type="text" id="descript"  name="descript" class="form-control" />
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
-                          <label for="cant">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
-                          <input type="text" id="cant"  name="" class="form-control" placeholder="Ingrese Cantidad"/>
+                          <label for="">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
+                          <input type="text" id="cant"  name="cant" class="form-control" placeholder="Ingrese Cantidad"/>
                         </div>
                       </div><!-- /.row -->
                       <div class="row">
@@ -574,12 +574,23 @@ $("#formPreventivo").submit(function (event){
   var oper     = $('#cantOper').val();
   var hh       = $('#hshombre').val();
 
+  var insumo   = $('#insumo').val();
+  var cant   = $('#cant').val();
+
+  var herramienta = $('#herramienta').val();
+  var cantidadherram = $('#cantidadherram').val();
+  var marcaherram      = $('#marcaherram').val();
+  var descripcionherram = $('#descripcionherram').val();
+
+  console.log("cant: "+cant);
+
   if((periodo=='horas') || (periodo=='ciclos')){
     if ((lectbase < 0)||(alerta < 0)) {
       $('#error').fadeIn('slow');
     }
   }
-  if ((equipo < 0)||(tarea < 0)||(periodo < 0)||(unidad < 0)||(duracion == "")||(freq == "")||(oper == "")||(hh == "" || compon < 0)) {
+
+  if ((descripcionherram =="" || marcaherram == "" || cantidadherram < 0 || cantidadherram == "" || herramienta < 0 || herramienta == "")||(equipo < 0)||(tarea < 0)||(periodo < 0)||(unidad < 0)||(duracion == "")||(freq == "")||(oper == "")||(hh == "" || compon < 0) || (insumo == "" || insumo < 0 || cant < 0 || cant == "")) {
       $('#error').fadeIn('slow');
   }
   else{
