@@ -94,7 +94,7 @@ $('#sales').DataTable({
                         } 
                         r = r + `<i class="fa fa-history text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Historial de Lecturas" data-toggle="modal" data-target="#modalhistlect" onclick="historialLectura(${id})"></i>`;
                     }
-                    return r = r + `<button class="btn-link" onclick="asignar_meta(${meta_disp})"><i class="fa fa-bar-chart text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar Meta"></i></button>
+                    return r = r + `<button class="btn-link" onclick="asignar_meta(${meta_disp},${id})"><i class="fa fa-bar-chart text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar Meta"></i></button>
                     </td>`;
                 }
             }
@@ -3007,7 +3007,13 @@ $('#tablaempresa').DataTable({
  $modal->id = 'asignar_meta';
  $modal->titulo = 'Equipos | Asignar Meta';
  $modal->icono = 'fa fa-bar-chart';
- $modal->body = "<div class='form-group'><label>Meta:</label><input class='form-control' type='number' min='1' max='100' step='1'><a href='#' class='flt-clear pull-right text-red'><small><i class='fa fa-times'></i> Borrar Meta</small></a></div>";
+ $modal->body = "<div class='form-group'>
+                    <input class='form-control' type='hidden' step='1' id='eq_modal_meta' name='eq_modal_meta'>
+                    <input class='form-control' type='number' min='1' max='100' step='2' name='meta_modal_eq' id='meta_modal_eq'>
+                    <a href='#' class='flt-clear pull-right text-red'>
+                    <small><i class='fa fa-times'></i> Borrar Meta</small>
+                    </a>
+                </div>";
  $modal->accion = 'Guardar';
  $modal->tam ='sm';
  echo modal($modal);
@@ -3025,13 +3031,31 @@ var equipo = null;
 // };
 
 //ASIGNAR META
-function asignar_meta(meta){
-  $('#asignar_meta input').val(meta);
+function asignar_meta(meta,eq){
+  //console.log(meta+" "+eq);  
+  $('#eq_modal_meta').val(eq);
+  $('#meta_modal_eq').val(meta);
   $('#asignar_meta').modal('show');
 };
 
-$('#asignar_meta .btn-accion').click(function() {
-    var meta = $('#asignar_meta input').val();
+function guardarMeta(){
+
+    console.log('Meta Ready!');
+
+    $('#asignar_meta').on('hidden.bs.modal', function (e) {
+        
+        $('#content').empty();            
+        $("#content").load("<?php echo base_url(); ?>index.php/Equipo/index/<?php echo $permission; ?>");
+    })
+            
+            
+}
+
+$('#asignar_meta .btn-accion').click(function(event) {
+    
+    var eq = $('#eq_modal_meta').val();
+    var meta = $('#meta_modal_eq').val();
+
     debugger;
     if (meta == null || meta == '') {
         alert('No se ingreso ningún valor.');
@@ -3042,7 +3066,7 @@ $('#asignar_meta .btn-accion').click(function() {
         return;
     }
 
-    var eq = equipo.dataset.equipo;
+    /*var eq = equipo.dataset.equipo;*/
 
     if(eq == null || eq == ''){
       alert('Equipo Inválido');
@@ -3055,8 +3079,9 @@ $('#asignar_meta .btn-accion').click(function() {
         url: 'index.php/Equipo/asignarMeta',
         data: {eq, meta},
         success: function(rsp) {
-            $('.modal').modal('hide');
-            equipo.dataset.meta = meta;
+            
+            /*equipo.dataset.meta = meta;*/
+            guardarMeta();
         },
         error: function(rsp) {
             alert('Error: ' + rsp.msj);
