@@ -574,6 +574,7 @@ $("#formPreventivo").submit(function (event){
   var oper     = $('#cantOper').val();
   var hh       = $('#hshombre').val();
 
+  /*
   var insumo   = $('#insumo').val();
   var cant   = $('#cant').val();
 
@@ -581,8 +582,9 @@ $("#formPreventivo").submit(function (event){
   var cantidadherram = $('#cantidadherram').val();
   var marcaherram      = $('#marcaherram').val();
   var descripcionherram = $('#descripcionherram').val();
-
+  
   console.log("cant: "+cant);
+  */
 
   if((periodo=='horas') || (periodo=='ciclos')){
     if ((lectbase < 0)||(alerta < 0)) {
@@ -590,7 +592,7 @@ $("#formPreventivo").submit(function (event){
     }
   }
 
-  if ((descripcionherram =="" || marcaherram == "" || cantidadherram < 0 || cantidadherram == "" || herramienta < 0 || herramienta == "")||(equipo < 0)||(tarea < 0)||(periodo < 0)||(unidad < 0)||(duracion == "")||(freq == "")||(oper == "")||(hh == "" || compon < 0) || (insumo == "" || insumo < 0 || cant < 0 || cant == "")) {
+  if ((equipo < 0)||(tarea < 0)||(periodo < 0)||(unidad < 0)||(duracion == "")||(freq == "")||(oper == "")||(hh == "" || compon < 0)) {
       $('#error').fadeIn('slow');
   }
   else{
