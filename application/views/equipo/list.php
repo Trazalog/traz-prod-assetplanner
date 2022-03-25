@@ -1048,12 +1048,12 @@ function llenaContratistasEquipo(id_equipo) {
             for (var i = 0; i < data.length; i++) {
                 //agrego valores a la tabla
                 tablaCompleta = tabla.row.add([
-                    '<i class="fa fa-fw fa-times-circle text-light-blue elirow btnDel" style="cursor: pointer; margin-left: 15px;" data-eqContr="' +
-                    data[i]['id_contratistaquipo'] + '"></i>',
+                    '<i class="fa fa-fw fa-times-circle text-light-blue elirow" style="cursor: pointer; margin-left: 15px;" onclick="eliminarContratista('+data[i]['id_contratista']+')" data-eqContr="' +
+                    data[i]['id_contratista'] + '"></i>',
                     data[i]['codigo'],
                     data[i]['nombre']
                 ]);
-                tablaCompleta.node().id = data[i]['id_contratistaquipo'];
+                tablaCompleta.node().id = data[i]['id_contratista'];
                 tablaCompleta.nodes().to$().attr("data-equipo", data[i]['id_codigo']);
                 tablaCompleta.nodes().to$().attr("data-contratista", data[i]['id_contratista']);
                 tabla.draw();
@@ -1108,11 +1108,47 @@ $("#adde").click(function(e) {
     }
 });
 
-$(document).on("click", ".btnDel", function() {
-    var id_contratistaquipo = $(this).parent().parent().attr('id');
+function eliminarContratista(id_contratista){
+
+
+    //var id_contratistaquipo =$(e).find("td:first-child").html();
     var id_equipo = $('#id_equipoC').val();
 
+    console.log(" Constratista: "+id_contratista+" Equipo: "+id_equipo);
+
+    WaitingOpen("ELiminando contratista a equipo");
+    $.ajax({
+            data: {
+                id_contratista: id_contratista,
+                id_equipo: id_equipo,
+            },
+            dataType: 'json',
+            type: "POST",
+            url: 'index.php/Equipo/delContratista',
+        })
+        .done(function(data) {
+            llenaContratistasEquipo(id_equipo);
+        })
+        .error(function(result) {
+            alert("Error eliminando contratista...");
+            console.log("Error: " + result['status']);
+            console.table(result);
+        })
+        .always(function() {
+            WaitingClose();
+        });
+}
+
+$(document).on("click", ".btnDel", function() {
+
+    //var id_contratistaquipo = $(this).parent().parent().attr('id');
+    var id_contratistaquipo = $('#empresae').val();
+    var id_equipo = $('#id_equipoC').val();
+
+    console.log(" Constratista: "+id_contratistaquipo+" Equipo: "+id_equipo)
+
     WaitingOpen("Agregando contratista a equipo")
+    /*
     $.ajax({
             data: {
                 id_contratistaquipo: id_contratistaquipo
@@ -1132,6 +1168,7 @@ $(document).on("click", ".btnDel", function() {
         .always(function() {
             WaitingClose();
         });
+    */
 });
 
 
@@ -3042,12 +3079,11 @@ function guardarMeta(){
 
     console.log('Meta Ready!');
 
-    $('#asignar_meta').on('hidden.bs.modal', function (e) {
+    $('#asignar_meta').modal('show');
         
         $('#content').empty();            
         $("#content").load("<?php echo base_url(); ?>index.php/Equipo/index/<?php echo $permission; ?>");
-    })
-            
+          
             
 }
 

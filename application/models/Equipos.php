@@ -650,9 +650,10 @@ class Equipos extends CI_Model
         return $query;
     }
 
-    public function delContra($id_contratistaquipo)
+    public function delContratista($id_contratista,$id_equipo)
     {
-        $this->db->where('id_contratistaquipo', $id_contratistaquipo);
+        $this->db->where('id_contratista', $id_contratista);
+        $this->db->where('id_equipo', $id_equipo);
         $query = $this->db->delete('contratistaquipo');
         return $query;
     }
@@ -1463,7 +1464,7 @@ class Equipos extends CI_Model
     public function getContratistasEquipo($idEquipo)
     {
         $this->db->select('
-            contratistaquipo.id_contratistaquipo, contratistaquipo.id_equipo, contratistaquipo.id_contratista,
+            contratistaquipo.id_equipo, contratistaquipo.id_contratista,
             equipos.codigo,
             contratistas.nombre
             ');
@@ -1472,6 +1473,10 @@ class Equipos extends CI_Model
         $this->db->join('contratistas', 'contratistas.id_contratista = contratistaquipo.id_contratista');
         $this->db->where('contratistaquipo.id_equipo', $idEquipo);
         $query = $this->db->get();
+
+        
+        log_message('DEBUG','#Equipos | getContratistasEquipo >> query '.json_encode($query));
+        log_message('DEBUG','#Equipos | getContratistasEquipo >> query '.json_encode($query->result_array()));
 
         if ($query->num_rows() > 0) {
             return $query->result_array();

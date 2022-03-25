@@ -718,10 +718,11 @@ class  Equipo extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	public function delContra()
+	public function delContratista()
 	{
-		$id_contratistaquipo = $_POST['id_contratistaquipo'];
-		$response = $this->Equipos->delContra($id_contratistaquipo);
+		$id_contratista = $_POST['id_contratista'];
+		$id_equipo = $_POST['id_equipo'];
+		$response = $this->Equipos->delContratista($id_contratista,$id_equipo );
 		echo json_encode($response);
 	}
 
