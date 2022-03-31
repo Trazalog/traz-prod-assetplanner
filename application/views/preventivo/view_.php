@@ -121,20 +121,20 @@
                     <div role="tabpanel" class="tab-pane active" id="herramin">
                       <div class="row">
                         <div class="col-xs-12 col-sm-6 col-md-4">
-                          <label for="herramienta">Codigo <strong style="color: #dd4b39">*</strong>:</label>
+                          <label for="herramienta">Codigo<!-- <strong style="color: #dd4b39">*</strong> -->:</label>
                           <input type="text" id="herramienta"  name="herramienta" class="form-control" placeholder="Buscar Código..." />
                           <input type="hidden" id="id_herramienta" name="id_herramienta">
                         </div>                          
                         <div class="col-xs-12 col-sm-6 col-md-4">
-                          <label for="marcaherram">Marca <strong style="color: #dd4b39">*</strong>:</label>
+                          <label for="marcaherram">Marca<!-- <strong style="color: #dd4b39">*</strong> -->:</label>
                           <input type="text" id="marcaherram"  name="marcaherram" class="form-control" />
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
-                          <label for="descripcionherram">Descripcion <strong style="color: #dd4b39">*</strong>:</label>
+                          <label for="descripcionherram">Descripcion<!-- <strong style="color: #dd4b39">*</strong> -->:</label>
                           <input type="text" id="descripcionherram"  name="descripcionherram" class="form-control" />
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
-                          <label for="cantidadherram">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
+                          <label for="cantidadherram">Cantidad<!-- <strong style="color: #dd4b39">*</strong> -->:</label>
                           <input type="text" id="cantidadherram"  name="cantidadherram" class="form-control" placeholder="Ingrese Cantidad..." />
                         </div>
                         <br>
@@ -166,7 +166,7 @@
                     <div role="tabpanel" class="tab-pane" id="insum">
                       <div class="row">
                         <div class="col-xs-12 col-sm-6 col-md-4">
-                          <label for="insumo">Codigo <strong style="color: #dd4b39">*</strong>:</label>
+                          <label for="insumo">Codigo<!-- <strong style="color: #dd4b39">*</strong> -->:</label>
                           <input type="text" id="insumo" name="insumo" class="form-control" placeholder="Buscar Código..." />
                           <input type="hidden" id="id_insumo" name="">
                         </div>
@@ -175,7 +175,7 @@
                           <input type="text" id="descript"  name="descript" class="form-control" />
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
-                          <label for="">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
+                          <label for="">Cantidad<!-- <strong style="color: #dd4b39">*</strong> -->:</label>
                           <input type="text" id="cant"  name="cant" class="form-control" placeholder="Ingrese Cantidad"/>
                         </div>
                       </div><!-- /.row -->
