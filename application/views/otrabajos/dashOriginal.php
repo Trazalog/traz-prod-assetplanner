@@ -51,7 +51,7 @@
                                 </div>
                             </div>
 
-                           <?php //$this->load->view('kpis/disponibilidad'); ?>
+                           <?php $this->load->view('kpis/disponibilidad'); ?>
                         </div>
 
                         <div class="col-md-3 col-xs-12 daterange">
