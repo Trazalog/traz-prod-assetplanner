@@ -30,7 +30,7 @@
 
                   echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Fecha Asignación</td>';
 
-                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Hora Asignación</td>';
+                  /*echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Hora Asignación</td>';*/
 
                   echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Equipo</td>'; 
 
@@ -83,11 +83,9 @@
 
                     echo '<td '.($device == 'android' ? 'class= "celda nomTarea tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$f['usr_asignado'].'</td>'; 
 
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$fechaasig.'</td>'; 
+                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$f['assigned_date'].'</td>'; 
 
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">
-                    '.$horaasig.'										
-                    </td>'; 
+                    /*echo'<td '.($device == 'android' ? 'class= "celda nomTarea tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$horaasig.'</td>'; */
                     
                     echo '<td '.($device == 'android' ? 'class= "celda nomTarea  tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$f['equipoDesc'].'</td>';
                     
