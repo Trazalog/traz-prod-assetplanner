@@ -50,7 +50,7 @@
                     }   
                     
                     if ($a['prev_adjunto']) {
-                      echo '<a href="./assets/filespreventivos/'.$a['prev_adjunto'].'" target="_blank"><i class="fa fa-file-pdf-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Ver Pdf"></i></a>';                    
+                      echo '<a href="./assets/filespreventivos/'.$a['prev_adjunto'].'" target="_blank"><i class="fa fa-file-pdf-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Ver Archivo"></i></a>';                    
                     } 
 
                   }
