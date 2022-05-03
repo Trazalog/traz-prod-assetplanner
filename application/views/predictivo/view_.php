@@ -35,14 +35,14 @@
                         <input type="text" class="form-control buscSector" placeholder="Buscar Sector..." id="buscSector" name="buscSector">
                         <input type="text" class="hidden idSector" id="idSector" name="idSector">
                     </div>
-                  </div>
-                  <div class="row">
                     <div class="col-xs-12 col-sm-6 com-md-4">
                       <label for="equipo">Equipos <strong style="color: #dd4b39">*</strong></label>
                       <select  id="equipo" name="equipo" class="form-control equipo">
                         <option value="-1" selected disabled>Seleccione opcion</option>
                       </select>
                     </div>
+                  </div>
+                  <div class="row">
                     <div class="col-xs-12 col-sm-6 com-md-4">
                       <label for="fecha_ingreso">Fecha:</label>
                       <input type="text" id="fecha_ingreso"  name="fecha_ingreso" class="form-control input-md" disabled />
@@ -88,7 +88,7 @@
                     </div> 
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="cantidad">Frecuencia <strong style="color: #dd4b39">*</strong>:</label>
-                      <input type="text" class="form-control" id="cantidad" name="cantidad" placeholder="Ingrese valor..."/>
+                      <input type="text" class="form-control" id="cantidad" name="cantidad" onkeypress="return valideKey(event);" placeholder="Ingrese valor..."/>
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="duracion">Duración <strong style="color: #dd4b39">*</strong>:</label>
@@ -100,7 +100,7 @@
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="cantOper">Cant. Operarios <strong style="color: #dd4b39">*</strong>:</label>
-                      <input type="text" class="form-control" id="cantOper" name="cantOper" placeholder="Ingrese valor..."/>
+                      <input type="text" class="form-control" id="cantOper" name="cantOper" onkeypress="return valideKey(event);" placeholder="Ingrese valor..."/>
                     </div>
                     <div class="col-xs-12" id="dato" name="" style="margin-top: 19px;"></div>
                     <input type="hidden" name="hshombre" id="hshombre">                
@@ -139,7 +139,7 @@
                           </div>
                           <div class="col-xs-12 col-sm-6 col-md-4">
                             <label for="cantidadherram">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
-                            <input type="text" id="cantidadherram"  name="" class="form-control" placeholder="Ingrese Cantidad..." />
+                            <input type="text" id="cantidadherram"  name="" class="form-control" onkeypress="return valideKey(event);" placeholder="Ingrese Cantidad..." />
                           </div>
                           <br>
                           <div class="col-xs-12">
@@ -180,7 +180,7 @@
                           </div>
                           <div class="col-xs-12 col-sm-6 col-md-4">
                             <label for="cant">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
-                            <input type="text" id="cant"  name="" class="form-control" placeholder="Ingrese Cantidad..."/>
+                            <input type="text" id="cant"  name="" class="form-control" onkeypress="return valideKey(event);" placeholder="Ingrese Cantidad..."/>
                           </div>
                         </div><!-- /.row -->
                         <div class="row">
@@ -928,6 +928,19 @@ $("#fecha").datepicker({
   dateFormat: 'dd/mm/yy',
   firstDay: 1
 }).datepicker("setDate", new Date());
+
+function valideKey(evt){
+   // code is the decimal ASCII representation of the pressed key.
+   var code = (evt.which) ? evt.which : evt.keyCode;
+			
+			if(code==8) { // backspace.
+			  return true;
+			} else if(code>=48 && code<=57) { // is a number.
+			  return true;
+			} else{ // other keys.
+			  return false;
+			}
+ }
 
 </script>
 
