@@ -752,11 +752,11 @@ function mantenimientoAutonomo(id,deeq){
 function estBoton($estado) {
 
     var estado = $estado;
-    console.log(estado);
-    if (estado == 'Reparación') { //reparacion
+    console.log('esBoton Estado: '+estado);
+    if (estado == 'RE') { //reparacion -- Dato anterior erroneo Estado == Reparacion = RE
         inhabilitar();
     }
-    if (estado == 'Activo') { //activo
+    if (estado == 'AC') { //activo -- Dato anterior erroneo Estado == Activo = AC
         habilitar();
     }
 }
