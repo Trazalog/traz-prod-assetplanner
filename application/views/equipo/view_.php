@@ -370,6 +370,7 @@ function guardararea(){
           var texto = '<option value="'+data+'">'+ parametros.descripcion +'</option>';
           console.log(texto);
           $('#area').append(texto);
+          alert('Guardado con éxito!');
         } 
       },        
       error: function(result){
@@ -407,6 +408,7 @@ function guardarproceso(){
           var texto = '<option value="'+data+'">'+ parametros.descripcion +'</option>';
           console.log(texto);
           $('#proceso').append(texto);
+          alert('Guardado con éxito!');
         }            
       },
       error: function(result){
@@ -443,6 +445,7 @@ function guardarcri(){
           var texto = '<option value="'+data+'">'+ parametros.descripcion +'</option>';
           console.log(texto);
           $('#criticidad').append(texto);
+          alert('Guardado con éxito!');
         } 
       }, 
       error: function(result){
@@ -482,6 +485,7 @@ function guardaretapa(){
           var texto = '<option value="'+data+'">'+ parametros.descripcion +'</option>';
           console.log(texto);
           $('#etapa').append(texto);
+          alert('Guardado con éxito!');
         }            
       },        
       error: function(result){
@@ -520,6 +524,7 @@ function guardargrupo(){
           var texto = '<option value="'+data+'">'+ parametros.descripcion +'</option>';
           console.log(texto);
           $('#grupo').append(texto);
+          alert('Guardado con éxito!');
         }   
       },
       error: function(result){
@@ -572,6 +577,7 @@ function guardarCliente(){
           console.log(texto);
           $('#cliente').append(texto);
           $('#modalCliente').modal('hide');
+          alert('Guardado con éxito!');
         }           
       },        
       error: function(result){
@@ -609,6 +615,7 @@ function guardarmarca(){
           var texto = '<option value="'+data+'">'+ parametros.marcadescrip +'</option>';
           console.log(texto);
           $('#marca').append(texto);
+          alert('Guardado con éxito!');
         }      
       },
       error: function(result){
