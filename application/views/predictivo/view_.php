@@ -92,7 +92,7 @@
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="duracion">Duración <strong style="color: #dd4b39">*</strong>:</label>
-                      <input type="text" class="form-control" id="duracion" name="duracion" placeholder="Ingrese valor..."/>
+                      <input type="text" class="form-control" id="duracion" onkeypress="return valideKey(event);" name="duracion" placeholder="Ingrese valor..."/>
                     </div> 
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="unidad">U. de tiempo <strong style="color: #dd4b39">*</strong></label>
@@ -389,7 +389,7 @@ $("#formPredictivo").submit(function (event){
         console.log('resp prenevt: ');
         console.log(respuesta.resPrenvent);
         if (respuesta) {
-          //alert("Los datos han sido guardados correctamente");
+          alert("Los datos han sido guardados correctamente");
           cargarVista();
         }
         else if(respuesta==="error"){
