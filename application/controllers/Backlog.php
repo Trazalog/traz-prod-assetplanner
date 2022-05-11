@@ -449,12 +449,18 @@ class Backlog extends CI_Controller {
 
 		$idPredictivo = $this->input->post('idAgregaAdjunto');
 
+		log_message('DEBUG', '#BACKLOG >> agregarAdjunto >> userdata ' . json_encode($userdata). ' empId:'. json_encode($empId));
+
+
 		$nomcodif = $this->codifNombre($idPredictivo, $empId); // codificacion de nomb  		
 		$config   = [
 			"upload_path"   => "./assets/filesbacklog",
 			'allowed_types' => "png|jpg|pdf|xlsx",
 			'file_name'     => $nomcodif
 		];
+
+		log_message('DEBUG', '#BACKLOG >> agregarAdjunto >> nomcodif ' . json_encode($nomcodif));
+		log_message('DEBUG', '#BACKLOG >> agregarAdjunto >> config ' . json_encode($config));
 
 		$this->load->library("upload",$config);
 		if ($this->upload->do_upload('inputPDF'))
@@ -469,6 +475,8 @@ class Backlog extends CI_Controller {
 		{
 			$response = false;
 		}
+
+		log_message('DEBUG', '#BACKLOG >> agregarAdjunto >> response ' . json_encode($response));
 
 		echo json_encode($response);
 	}	
