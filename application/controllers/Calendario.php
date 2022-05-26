@@ -77,7 +77,7 @@ class Calendario extends CI_Controller
         $data['permission'] = $permission;
 
         
-        /*
+        
         log_message('DEBUG','#CALENDARIO >> getTablas() response >> '.json_encode($response));
         log_message('DEBUG','#CALENDARIO >> getTablas() data_extend >> '.json_encode($data_extend));
         log_message('DEBUG', '#CALENDARIO >> getTablas() $datos >> ' . $preventivosHoras);
@@ -86,7 +86,6 @@ class Calendario extends CI_Controller
         log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list2] >> ' . json_encode($data['list2']));
         log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list3] >> ' . json_encode($data['list3']));
         log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list4] >> ' . json_encode($data['list4']));
-        */
         
         //para cada preventivo
         if ($preventivosHoras) {
