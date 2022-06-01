@@ -20,7 +20,6 @@
                 <form id="formOT" role="form" action="<?php base_url();?>Otrabajo/guardar_agregar" method="POST">
 
                     <div class="box-body">
-
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <h3 class="panel-title"><span class="fa fa-cogs"></span> Datos del equipo </h3>
@@ -28,17 +27,20 @@
 
                             <div class="panel-body">
                                 <div class="row">
-                                    <div class="col-xs-12 col-sm-6">
+                                    <div class="col-xs-12 col-sm-6 com-md-4">
                                         <label for="idSector">Sector <strong style="color: #dd4b39">*</strong></label>
                                         <input type="text" class="form-control buscSector" placeholder="Buscar Sector..." id="buscSector" name="buscSector" >
                                         <input type="text" class="hidden idSector" id="idSector" name="idSector" >
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="col-xs-12 col-sm-6 com-md-4">
                                         <label for="equipo">Equipos <strong style="color: #dd4b39">*</strong></label>
-                                        <select id="equipo" name="equipo" class="form-control equipo" ></select>
+                                        <select id="equipo" name="equipo" class="form-control equipo" >
+                                            <option value="-1" selected disabled>Seleccione opción</option>
+                                        </select>
                                     </div>
+                                </div>
+                                <div class="row">
+                                    
                                     <div class="col-xs-12 col-sm-6 com-md-4">
                                         <label for="cliente">Cliente:</label>
                                         <input type="text" id="nomCliente" name="cliente" class="form-control input-md"
@@ -291,17 +293,60 @@ var dataF = function () {
     source: dataF,
     delay: 100,
     minLength: 1,
+    /*
     focus: function(event, ui) {
+        console.log('Focus');
+        // prevent autocomplete from updating the textbox
+        event.preventDefault();
+        // manually update the textbox
+        $(this).val(ui.item.label);
+        console.log(ui.item);
+        if(ui.item === null){
+            $("#equipo").html('<option value="-1" disabled selected>Seleccione opción</option>');
+            $("#idSector").val('');
+            alert("Debe seleccionar un Sector");
+        }
+    },
+    */
+    change: function(event,ui){
       // prevent autocomplete from updating the textbox
+      console.log('Change');
       event.preventDefault();
-      // manually update the textbox
-      $(this).val(ui.item.label);
+      console.log(ui.item);      
+      if(ui.item === null){
+        $("#equipo").html('<option value="-1" disabled selected>Seleccione opción</option>');
+        $("#idSector").val('');
+        alert("Debe seleccionar un Sector");
+      }else{
+        $("#idSector").val(ui.item.value);
+        $(this).val(ui.item.label);
+        $("#equipo").html('<option value="-1" disabled selected>Seleccione opción</option>');
+        // guardo el id de sector
+        var idSect =  $("#idSector").val();
+        if(idSect && idSect != '')
+          getEquiSector(idSect);
+        else
+          alert("Debe seleccionar un sector");
+      }
     },
     select: function(event, ui) {
       // prevent autocomplete from updating the textbox
+      console.log('Select');
       event.preventDefault();
       // manually update the textbox and hidden field
-      $(this).val(ui.item.label);
+      console.log(ui.item);
+      if(ui.item === null){
+        $("#equipo").html('<option value="-1" disabled selected>Seleccione opción</option>');
+        $("#idSector").val('');
+      }else{
+        $("#idSector").val(ui.item.value);
+        $(this).val(ui.item.label);
+        $("#equipo").html('<option value="-1" disabled selected>Seleccione opción</option>');
+        // guardo el id de sector
+        var idSect =  $("#idSector").val();
+        getEquiSector(idSect);
+      }
+      /*$(this).val(ui.item.label);
       $("#idSector").val(ui.item.value);
       $("#equipo").html('<option value="-1" disabled selected>Seleccione opcion</option>');
       // guardo el id de sector
@@ -309,6 +354,7 @@ var dataF = function () {
       getEquiSector(idSect);
       //console.log("id sector en autocompletar: ");
       //console.log(ui.item.value);
+      */
     },
   }); 
   //  llena select de equipos segun sector
@@ -514,7 +560,8 @@ $(".datepicker").datepicker({
 });
 
 // Trae equipos por empresa logueada - Chequeado
-$(function() {
+/** Desactivamos esta funcion para que no cargue a la primera */
+/*$(function() {
     $.ajax({
         type: 'POST',
         data: {},
@@ -536,7 +583,7 @@ $(function() {
         },
         dataType: 'json'
     });
-});
+});*/
 
 // Trae info de equipos por ID - Chequeado 
 $('#equipo').change(function() {
