@@ -35,7 +35,7 @@
                   </div>
                   <div class="col-xs-12 col-sm-6">Equipos <strong style="color: #dd4b39">*</strong>
                     <select  id="equipo" name="equipo" class="form-control equipo">
-                        <option value="-1" placeholder="Seleccione..."></option>
+                      <option value="-1" selected disabled>Seleccione opción</option>
                     </select>
                   </div>
                 </div><!-- /.row -->
@@ -90,7 +90,8 @@
 <script>
 
 // Trae equipos llena select - Chequeado
-traer_equipo();
+//traer_equipo();
+/** Desactivamos esta funcion para que no cargue a la primera */
 function traer_equipo(){
   $('#equipo').html('');
     $.ajax({
@@ -137,17 +138,52 @@ var dataF = function () {
     source: dataF,
     delay: 100,
     minLength: 1,
+    /*
     focus: function(event, ui) {
       // prevent autocomplete from updating the textbox
       event.preventDefault();
       // manually update the textbox
       $(this).val(ui.item.label);
+    },*/
+    change: function(event,ui){
+      // prevent autocomplete from updating the textbox
+      console.log('Change');
+      event.preventDefault();
+      console.log(ui.item);      
+      if(ui.item === null){
+        $("#equipo").html('<option value="-1" disabled selected>Seleccione opción</option>');
+        $("#idSector").val('');
+        alert("Debe seleccionar un Sector");
+      }else{
+        $("#idSector").val(ui.item.value);
+        $(this).val(ui.item.label);
+        $("#equipo").html('<option value="-1" disabled selected>Seleccione opción</option>');
+        // guardo el id de sector
+        var idSect =  $("#idSector").val();
+        if(idSect && idSect != '')
+          getEquiSector(idSect);
+        else
+          alert("Debe seleccionar un sector");
+      }
     },
     select: function(event, ui) {
       // prevent autocomplete from updating the textbox
+      console.log('Select');
       event.preventDefault();
       // manually update the textbox and hidden field
-      $(this).val(ui.item.label);
+      console.log(ui.item);
+      if(ui.item === null){
+        $("#equipo").html('<option value="-1" disabled selected>Seleccione opción</option>');
+        $("#idSector").val('');
+      }else{
+        $("#idSector").val(ui.item.value);
+        $(this).val(ui.item.label);
+        $("#equipo").html('<option value="-1" disabled selected>Seleccione opción</option>');
+        // guardo el id de sector
+        var idSect =  $("#idSector").val();
+        getEquiSector(idSect);
+      }
+      /*$(this).val(ui.item.label);
       $("#idSector").val(ui.item.value);
       $("#equipo").html('<option value="-1" disabled selected>Seleccione opcion</option>');
       // guardo el id de sector
@@ -155,6 +191,7 @@ var dataF = function () {
       getEquiSector(idSect);
       //console.log("id sector en autocompletar: ");
       //console.log(ui.item.value);
+      */
     },
   }); 
   //  llena select de equipos segun sector
