@@ -3045,8 +3045,8 @@ $('#tablaempresa').DataTable({
  $modal->titulo = 'Equipos | Asignar Meta';
  $modal->icono = 'fa fa-bar-chart';
  $modal->body = "<div class='form-group'>
-                    <input class='form-control' type='hidden' step='1' id='eq_modal_meta' name='eq_modal_meta'>
-                    <input class='form-control' type='number' min='1' max='100' step='2' name='meta_modal_eq' id='meta_modal_eq'>
+                    <input class='form-control' type='hidden' id='eq_modal_meta' name='eq_modal_meta'>
+                    <input class='form-control' type='number' min='1' max='100' name='meta_modal_eq' id='meta_modal_eq'>
                     <a href='#' class='flt-clear pull-right text-red'>
                     <small><i class='fa fa-times'></i> Borrar Meta</small>
                     </a>
@@ -3069,10 +3069,28 @@ var equipo = null;
 
 //ASIGNAR META
 function asignar_meta(meta,eq){
-  //console.log(meta+" "+eq);  
-  $('#eq_modal_meta').val(eq);
-  $('#meta_modal_eq').val(meta);
-  $('#asignar_meta').modal('show');
+    //console.log(meta+" "+eq);  
+    
+    //Datos de la metas
+    $.ajax({
+        type: 'POST',
+        dataType: 'JSON',
+        url: 'index.php/Equipo/getMeta',
+        data: {eq},
+        success: function(rsp) {
+            console.log(rsp);
+            $('#eq_modal_meta').val(eq);
+            $('#meta_modal_eq').val(rsp);            
+            $('#asignar_meta').modal('show');
+        },
+        error: function(rsp) {
+            alert('Error: ' + rsp.msj);
+            console.log(rsp.msj);
+        }
+    });
+
+
+    
 };
 
 function guardarMeta(){
@@ -3117,7 +3135,9 @@ $('#asignar_meta .btn-accion').click(function(event) {
         success: function(rsp) {
             
             /*equipo.dataset.meta = meta;*/
-            guardarMeta();
+            /*guardarMeta();*/
+            $('#asignar_meta').modal('hide');
+            //alert('Meta asignada correctamente.');
         },
         error: function(rsp) {
             alert('Error: ' + rsp.msj);

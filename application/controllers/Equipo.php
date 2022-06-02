@@ -887,6 +887,17 @@ class  Equipo extends CI_Controller {
 		echo json_encode($response);
 	}
 
+	public function getMeta(){
+
+		$data = $this->input->post();
+		$response = $this->Equipos->getMeta($data);
+		if(!$response){
+			echo json_encode(['msj'=>'Error al extraer Meta']);
+		}else{		
+			echo json_encode($response);
+		}
+	}
+
 	function asignarMeta(){
 
 		$data = $this->input->post();

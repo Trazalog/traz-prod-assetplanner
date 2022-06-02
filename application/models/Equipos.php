@@ -1556,6 +1556,16 @@ class Equipos extends CI_Model
         return $data;
     }
 
+    public function getMeta($data){
+
+        $this->db->select('meta_disponibilidad');
+        $this->db->where('id_equipo', $data['eq']);
+        $this->db->from('equipos');
+        $query = $this->db->get();
+        $meta = $query->result_array();
+        return $meta[0]['meta_disponibilidad'];        
+    }
+
     public function asignarMeta($data)
     {
         $this->db->set('meta_disponibilidad', $data['meta']);
