@@ -143,7 +143,7 @@
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-4">
                     <label>Archivo Adjunto:</label>
-                    <input type="file" id="inputPDF" name="inputPDF" class="form-control input-md">
+                    <input type="file" id="inputPDF" name="inputPDF[]" class="form-control input-md" formenctype="multipart/form-data" multiple>
                   </div>
                   <div class="col-xs-12">
                     <label>Descripción Técnica:</label>
@@ -632,6 +632,7 @@ function guardarmarca(){
 
 // Guarda equipo/sector nuevo - Chequeado
 $("#formAgregarEquipo").submit( function (event){   
+  debugger;
   event.preventDefault();
   WaitingOpen("Guardando Equipo");
 
@@ -657,7 +658,7 @@ $("#formAgregarEquipo").submit( function (event){
       type: 'POST',
     })
     .done( function(data){ 
-      console.table(data);
+      //console.table(data);
       alert("Guardado con exito...");
       regresa();
     })

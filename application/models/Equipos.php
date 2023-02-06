@@ -1388,7 +1388,6 @@ class Equipos extends CI_Model
                     equipos.descrip_tecnica,
                     equipos.numero_serie,
                     equipos.estado,
-                    equipos.adjunto,
                     unidad_industrial.id_unidad,
                     unidad_industrial.descripcion AS deun,
                     area.id_area,
@@ -1453,6 +1452,28 @@ class Equipos extends CI_Model
             } else {
                 $datosEquipo[0]["id_grupo"] = null;
                 $datosEquipo[0]["degr"] = null;
+            }
+
+            //traer adjunto
+            $this->db->select('equipos_archi_adjuntos.id_adjunto, equipos_archi_adjuntos.adjunto');
+            $this->db->from('equipos');
+            $this->db->join('equipos_archi_adjuntos', 'equipos.id_equipo = equipos_archi_adjuntos.id_equipo');
+            $this->db->where('equipos.id_equipo', $idEquipo);
+            $this->db->where('equipos_archi_adjuntos.eliminado !=', 1);
+            $query = $this->db->get();
+            if ($query->num_rows() != 0) {
+                $datosEquipoCustomer = $query->result_array();
+                $arr_length = count($datosEquipoCustomer);
+               
+                for($i = 0; $i < $arr_length; $i++)
+                {
+                    $archivos[]=array(
+                        'id_adjunto' => $datosEquipoCustomer[$i]["id_adjunto"], 
+                        'adjunto' =>$datosEquipoCustomer[$i]["adjunto"]); 
+                    $datosEquipo[0]["archivo"][$i] = $archivos[$i];
+                }
+            } else {
+                $datosEquipo[0]["archivo"] = null;
             }
 
             return $datosEquipo;
@@ -1523,6 +1544,25 @@ class Equipos extends CI_Model
         return $adjunto;
     }
 
+    public function updateAdjuntoEquipoV2($id_adjunto, $ultimoId)
+    {
+        $this->db->where('id_equipo', $ultimoId);
+        $query = $this->db->update("equipos", $id_adjunto);
+        return $id_adjunto;
+    }
+
+    /**
+     * Equipos:guardaAdjuntoEquipo();
+     *
+     * @param  String   $data    id_equipo, adjunto
+     * @return int       id_adjunto        
+     */
+    public function guardaAdjuntoEquipo($data){
+        $this->db->insert('equipos_archi_adjuntos', $data);
+        $query = $this->db->insert_id();
+        return $query;
+    }
+
     /**
      * Equipos:eliminarAdjunto
      * Elimina el Archivo Adjunto de un preventivo dado (no elimina el archivo).
@@ -1536,6 +1576,34 @@ class Equipos extends CI_Model
         $this->db->where('id_equipo', $idEquipo);
         $query = $this->db->update("equipos", $data);
         return $query;
+    }
+
+    /**
+     * Equipos:eliminaAdjunto
+     * Elimina el Archivo Adjunto de un equipo(Marca como eliminado)
+     *
+     * @param Int       $idAdjunto  Id de archivo adjunto
+     * @return Bool                     True o False
+     */
+    public function eliminaAdjunto($idAdjunto)
+    {
+        $data = array('eliminado' => '1');
+        $this->db->where('id_adjunto', $idAdjunto);
+        $query = $this->db->update("equipos_archi_adjuntos", $data);
+        return $query;
+    }
+
+
+    /**
+     * equipos_archi_adjuntos:updateAdjunto();
+     *
+     * @param  String   $data    idAdjunto, adjunto
+     * @return int       id_adjunto        
+     */
+    public function updateAdjunto($archivo, $idAdjunto){
+        $this->db->where('id_adjunto', $idAdjunto);
+        $query = $this->db->update("equipos_archi_adjuntos", $archivo);
+        return $archivo;
     }
 
     public function informe_equipos()
@@ -1656,6 +1724,35 @@ class Equipos extends CI_Model
         );
 
         return $result;
+    }
+
+    /**
+     * equipos_archi_adjuntos:getAdjuntos();
+     *
+     * @param  String   $idEquipo   idEquipo 
+     * @return int       array archivos adjuntos al equipo        
+     */
+    function getAdjuntos($idEquipo)
+    {
+        $this->db->select('equipos_archi_adjuntos.id_adjunto, equipos_archi_adjuntos.adjunto');
+        $this->db->from('equipos');
+        $this->db->join('equipos_archi_adjuntos', 'equipos.id_equipo = equipos_archi_adjuntos.id_equipo');
+        $this->db->where('equipos_archi_adjuntos.eliminado !=', 1);
+        $this->db->where('equipos.id_equipo', $idEquipo);
+        $query = $this->db->get();
+        if ($query->num_rows() != 0) {
+            $datosEquipoCustomer = $query->result_array();
+            $arr_length = count($datosEquipoCustomer);  
+            for($i = 0; $i < $arr_length; $i++)
+            {
+                $archivos[]=array(
+                    'id_adjunto' => $datosEquipoCustomer[$i]["id_adjunto"], 
+                    'adjunto' =>$datosEquipoCustomer[$i]["adjunto"]); 
+            }
+        } else {
+            $archivos[0] = null;
+        }
+        return $archivos;
     }
 
 }
