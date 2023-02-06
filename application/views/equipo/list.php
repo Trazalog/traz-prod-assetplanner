@@ -272,7 +272,7 @@ function inhabilitarEquipo(idEquipo){
 //             WaitingClose();
 //             regresa();
 //         },
-//         error: function(result) {
+//         error: function(result) {habilitarEquipo
 //             console.log(result);
 //         },
 //         dataType: 'json'
@@ -1577,7 +1577,7 @@ function llenarCampos(data) {
     $('#destec').val(data[0]['descrip_tecnica']);
     $('#estado').val(data[0]['estado']);
     //info complementaria
-    llenar_adjunto(data[0]['adjunto']);
+    llenar_adjunto(data[0]['archivo']);
     //abro modal
     $('#modaleditar').modal('show');
     WaitingClose();
@@ -1775,16 +1775,16 @@ function llenar_cliente(id) {
 }
 //llena los datos de archivo adjunto
 function llenar_adjunto(adjunto) {
+    var accion = '';
+    accion = '<i class="fa fa-plus-square agregaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Agregar Adjunto"></i>'+'<br>';
     //console.info( "adjunto: "+adjunto );
-    $('#adjunto').text(adjunto);
-    $('#adjunto').attr('href', 'assets/filesequipos/' + adjunto);
-    if (adjunto == null || adjunto == '') {
-        var accion =
-            '<i class="fa fa-plus-square agregaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Agregar Adjunto"></i>';
-    } else {
-        var accion =
-            '<i class="fa fa-times-circle eliminaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Eliminar Adjunto"></i>' +
-            '<i class="fa fa-pencil editaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Editar Adjunto"></i>';
+    if (adjunto){
+        for (let i = 0; i < adjunto.length; i++) {
+            accion += 
+                '<a href="assets/filesequipos/'+ adjunto[i].adjunto +'" target="_blank">'+ adjunto[i].adjunto +'</a>' +
+                '<i class="fa fa-times-circle text-light-blue" style="cursor:pointer; margin-right:10px" title="Eliminar Adjunto"  onclick=eliminaAdjunto('+adjunto[i].id_adjunto+')></i>' +
+                '<i class="fa fa-pencil text-light-blue" style="cursor:pointer; margin-right:10px" title="Editar Adjunto" onclick=editaAdjunto('+adjunto[i].id_adjunto+')></i>';
+            }
     }
     $('#accionAdjunto').html(accion);
 }
@@ -2102,64 +2102,71 @@ function guardarmarca() {
 
 
 //abrir modal eliminar adjunto
-$(document).on("click", ".eliminaAdjunto", function() {
+/* $(document).on("click", ".eliminaAdjunto", function() {
     $('#modalEliminarAdjunto').modal('show');
     var idEquipo = $('#id_equipo').val();
     $('#idAdjunto').val(idEquipo);
-});
+}); */
+
+
 //eliminar adjunto
-function eliminarAdjunto() {
-    $('#modalEliminarAdjunto').modal('hide');
-    var idEquipo = $('#idAdjunto').val();
-    $.ajax({
-            data: {
-                idEquipo: idEquipo
-            },
-            dataType: 'json',
-            type: 'POST',
-            url: 'index.php/Equipo/eliminarAdjunto',
-        })
-        .done(function(data) {
-            //console.table(data);
-            let prevAdjunto = '';
-            llenar_adjunto(prevAdjunto);
-        })
-        .error(function(result) {
-            console.error(result);
-        });
+function eliminaAdjunto(idAdjunto) {
+    $('#modalEliminarAdjunto').modal('show');
+    var idEquipo = $('#id_equipo').val();
+    $('#idEliminaEquipo').val(idEquipo);
+    $('#idEliminaAdjunto').val(idAdjunto);
 }
 
+//Eliminar adjunto
+$("#formEliminarAdjunto").submit(function(event) {
+    $('#modalEliminarAdjunto').modal('hide');
+    event.preventDefault();
+    var idEquipo = $('#idEliminaEquipo').val();
+    var idAdjunto = $('#idEliminaAdjunto').val();
+
+        $.ajax({
+                dataType: 'json',    
+                type: 'POST',
+                url: 'index.php/Equipo/eliminaAdjunto',
+                data: { 
+                    idEquipo:idEquipo,
+                    idAdjunto:idAdjunto
+                    }
+            })
+            .success(function(data) {
+                debugger;
+                llenar_adjunto(data);
+            })
+            .error(function(result) {
+                console.error(result);
+            });
+});
+
 //abrir modal agregar adjunto
-$(document).on("click", ".agregaAdjunto", function() {
-    $('.btnAgregarEditar').text("Agregar");
-    $('#modalAgregarAdjunto .modal-title').html(
-        '<span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar');
-
+ $(document).on("click", ".agregaAdjunto", function() {
     $('#modalAgregarAdjunto').modal('show');
     var idEquipo = $('#id_equipo').val();
     $('#idAgregaAdjunto').val(idEquipo);
 });
+
 //abrir modal editar adjunto
-$(document).on("click", ".editaAdjunto", function() {
-    $('.btnAgregarEditar').text("Editar");
-    $('#modalAgregarAdjunto .modal-title').html(
-        '<span class="fa fa-fw fa-pencil text-light-blue"></span> Editar');
-
-    $('#modalAgregarAdjunto').modal('show');
+function editaAdjunto(idAdjunto) {
+    $('#modalEditarAdjunto').modal('show');
     var idEquipo = $('#id_equipo').val();
-    $('#idAgregaAdjunto').val(idEquipo);
-});
-//agregar/editar adjunto
+    $('#idEquipo').val(idEquipo);
+    $('#id_adjunto').val(idAdjunto);
+};
+
+//agregar adjunto
 $("#formAgregarAdjunto").submit(function(event) {
     $('#modalAgregarAdjunto').modal('hide');
-
+   debugger
     event.preventDefault();
-    if (document.getElementById("inputPDF").files.length == 0) {
+     if (document.getElementById("inputPDF").files.length == 0) {
         $('#error').fadeIn('slow');
     } else {
-        $('#error').fadeOut('slow');
+        $('#error').fadeOut('slow'); 
         var formData = new FormData($("#formAgregarAdjunto")[0]);
-        //debugger
         $.ajax({
                 cache: false,
                 contentType: false,
@@ -2170,8 +2177,7 @@ $("#formAgregarAdjunto").submit(function(event) {
                 url: 'index.php/Equipo/agregarAdjunto',
             })
             .done(function(data) {
-                console.table(data['adjunto']);
-                llenar_adjunto(data['adjunto']);
+                llenar_adjunto(data);
             })
             .error(function(result) {
                 console.error(result);
@@ -2184,6 +2190,35 @@ $('#modaleditar').on('hidden.bs.modal', function(e) {
     $("#content").load("<?php echo base_url(); ?>index.php/Equipo/index/<?php echo $permission; ?>");
 })
 
+//editar adjunto
+$("#formEditarAdjunto").submit(function(event) {
+    $('#modalEditarAdjunto').modal('hide');
+    debugger
+    event.preventDefault();
+    if (document.getElementById("inputEditarPDF").files.length == 0) {
+        $('#error').fadeIn('slow');
+    } else {
+        $('#error').fadeOut('slow');
+        var formData = new FormData($("#formEditarAdjunto")[0]);
+
+        $.ajax({
+                cache: false,
+                contentType: false,
+                data: formData,
+                dataType: 'json',
+                processData: false,
+                type: 'POST',
+                url: 'index.php/Equipo/EditarAdjunto',
+            })
+            .done(function(data) {
+                debugger;
+                llenar_adjunto(data);
+            })
+            .error(function(result) {
+                console.error(result);
+            });
+    }
+});
 // Datatable - Chequeado
 //------------------------------------------------------
 // $('#sales').DataTable({
@@ -2531,9 +2566,6 @@ $('#tablaempresa').DataTable({
                                                 <tr>
                                                     <td id="accionAdjunto">
                                                         <!-- -->
-                                                    </td>
-                                                    <td>
-                                                        <a id="adjunto" href="" target="_blank"></a>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -2998,15 +3030,19 @@ $('#tablaempresa').DataTable({
                         aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title"><span class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar</h4>
             </div>
-            <div class="modal-body">
-                <input type="hidden" id="idAdjunto">
-                <h4>¿Desea eliminar Archivo Adjunto?</h4>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal"
-                    onclick="eliminarAdjunto();">Eliminar</button>
-            </div>
+            <form id="formEliminarAdjunto">
+                <div class="modal-body">
+                    <input type="hidden" id="idEliminaEquipo" name="idEliminaEquipo">
+                    <input type="hidden" id="idEliminaAdjunto" name="idEliminaAdjunto">
+
+                    <h4>¿Desea eliminar Archivo Adjunto?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Eliminar</button>
+                </div>
+            </form>
+
         </div>
     </div>
 </div>
@@ -3028,7 +3064,37 @@ $('#tablaempresa').DataTable({
                         Seleccione un Archivo Adjunto
                     </div>
                     <input type="hidden" id="idAgregaAdjunto" name="idAgregaAdjunto">
-                    <input id="inputPDF" name="inputPDF" type="file" class="form-control input-md">
+                    <input id="inputPDF" name="inputPDF[]" type="file" class="form-control input-md" multiple>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary btnAgregarEditar">Agregar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Editar adjunto -->
+<div class="modal" id="modalEditarAdjunto">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><span class="fa fa-fw fa-plus-square text-light-blue"></span> Editar</h4>
+            </div>
+
+            <form id="formEditarAdjunto" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+                        <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                        Seleccione un Archivo Adjunto
+                    </div>
+                    <input type="hidden" id="idEquipo" name="idEquipo">
+                    <input type="hidden" id="id_adjunto" name="id_adjunto">
+                    <input id="inputEditarPDF" name="inputEditarPDF" type="file" class="form-control input-md">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>

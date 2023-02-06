@@ -502,6 +502,8 @@ class  Equipo extends CI_Controller {
 	{
 		//$data     = $this->input->post();
 		$userdata = $this->session->userdata('user_data');
+		$files = $_FILES['inputPDF'];
+		$names = $_FILES['inputPDF']['name'];
 
 		$descripcion         = $this->input->post("descripcion");
 		$fecha_ingreso       = $this->input->post("fecha_ingreso");
@@ -558,37 +560,60 @@ class  Equipo extends CI_Controller {
 
 		if($result)
 		{
-			$ultimoId = $this->db->insert_id(); 
-			$nomcodif = $this->codifNombre($ultimoId, $id_empresa); // codificacion de nombre
-			$nomcodif = 'equipo'.$nomcodif;
-			// $config = [
-			// 	"upload_path"   => "./assets/filesequipos",
-			// 	'allowed_types' => "png|jpg|pdf|xlsx",
-			// 	'file_name'     => $nomcodif
-			// ];
-			$config = [
-				"upload_path"   => "./assets/filesequipos",
-				'allowed_types' => "*",
-				'file_name'     => $nomcodif
-			];
+			$ultimoId = $this->db->insert_id();
+			if(!empty($files['name'])){
+				$filesCount = count($files['name']);
+				for($i = 0; $i < $filesCount; $i++){
+					
+					$nombreArchivo = $names[$i];
+					$extension = pathinfo($nombreArchivo, PATHINFO_EXTENSION);//Extension del archivo
+					$nomcodif = $this->codificaNombreV2($nombreArchivo, $extension); // codificacion de nombre
+					
+					$config   = [
+						"upload_path"   => "./assets/filesequipos",
+						'allowed_types' => "*",
+						'file_name' => $nomcodif
+					];
+					$_FILES['inputPDF']['name'] =  $nomcodif;
+					$_FILES['inputPDF']['type'] = $files['type'][$i];
+					$_FILES['inputPDF']['tmp_name'] = $files['tmp_name'][$i];
+					$_FILES['inputPDF']['error'] = $files['error'][$i];
+					$_FILES['inputPDF']['size'] = $files['size'][$i];
+			
+					$config = [
+						"upload_path"   => "./assets/filesequipos",
+						'allowed_types' => "*",
+						'file_name'     => $nomcodif			];
+		
+					$this->load->library("upload", $config);
 
-			$this->load->library("upload",$config);
-			if ($this->upload->do_upload('inputPDF')) {
-				
-				$data     = array("upload_data" => $this->upload->data());
-				$extens   = $data['upload_data']['file_ext'];//guardo extesnsion de archivo
-				$nomcodif = $nomcodif.$extens;
-				$adjunto  = array('adjunto' => $nomcodif);
-				$response = $this->Equipos->updateAdjuntoEquipo($adjunto,$ultimoId);
-			}else{
-				$response = false;
+					if ($this->upload->do_upload('inputPDF')) {
+						 
+						$data     = array("upload_data" => $this->upload->data());
+						$datos =array(
+							'id_equipo' => $ultimoId,
+							'adjunto' => $nomcodif
+						);
+						$resp = $this->Equipos->guardaAdjuntoEquipo($datos);
+					} else{
+						$resp = false;
+					} 
+				}
 			}
-
-			echo json_encode($response);
+			echo json_encode($resp);
 		} else {
-			echo json_encode($result);
+			echo json_encode(['msj'=>'Error al guardar equipo']);
 		}
 
+	}
+
+
+	// Codifica nombre de imagen para no repetir en servidor
+	// elimino la extension para obtener solo el nombre y despues le agrego valores random mas la extension del archivo
+	function codificaNombreV2($nombre, $extension){
+		$long = strlen($extension) + 1; 
+		$newname = substr($nombre,0, -$long).rand(1,3000).".".$extension;
+		return $newname;
 	}
 
 	// Codifica nombre de imagen para no repetir en servidor
@@ -601,7 +626,7 @@ class  Equipo extends CI_Controller {
 		$delimiter = array(" ",",",".","'","\"","|","\\","/",";",":");
 		$replace = str_replace($delimiter, $delimiter[0], $hora);
 		$explode = explode($delimiter[0], $replace);
-		$strigHora = $explode[0].$guion_medio.$explode[1].$guion_medio.$explode[2].$guion_medio.$explode[3];
+		$strigHora = $explode[0].$guion_medio.$explode[1].$guion_medio.$explode[2].$guion_medio.$explode[3]; 
 		$nomImagen = $ultimoId.$guion.$empId.$guion.$strigHora;
 		
 		return $nomImagen;
@@ -850,6 +875,29 @@ class  Equipo extends CI_Controller {
 		$response = $this->Equipos->eliminarAdjunto($idEquipo);
 		echo json_encode($response);
 	}
+
+	/**
+	 * Equipo:eliminaAdjunto();
+	 *
+	 * @return Bool 	True si se eliminó el archivo o false si hubo error
+	 */
+	public function eliminaAdjunto()
+	{
+		$idEquipo = $this->input->post('idEquipo');
+		$idAdjunto = $this->input->post('idAdjunto');
+		$response = $this->Equipos->eliminaAdjunto($idAdjunto);
+		if($response)
+		{
+			$responseArchivos =  $this->Equipos->getAdjuntos($idEquipo); //listado adjuntos asosiados al equipo 
+			echo json_encode($responseArchivos);
+		}		
+		else{
+			echo json_encode(['msj'=>'Error al eliminar archivo']);
+		}
+		
+	}
+
+
 	
 	/**
 	 * Equipo:agregarAdjunto();
@@ -859,32 +907,82 @@ class  Equipo extends CI_Controller {
 	 */
 	public function agregarAdjunto()
 	{
+		$files = $_FILES['inputPDF'];
 		$userdata     = $this->session->userdata('user_data');
 		$empId        = $userdata[0]['id_empresa'];
-
 		$idEquipo = $this->input->post('idAgregaAdjunto');
+        $names=$_FILES['inputPDF']['name'];
+		
+		if(!empty($files['name'])){
+			$filesCount = count($files['name']);
+			for($i = 0; $i < $filesCount; $i++){
+				
+				$nombreArchivo = $names[$i];
+				$extension = pathinfo($nombreArchivo, PATHINFO_EXTENSION);//Extension del archivo
+				$nomcodif = $this->codificaNombreV2($nombreArchivo, $extension); // codificacion de nombre
+				
+				$config   = [
+					"upload_path"   => "./assets/filesequipos",
+					'allowed_types' => "*",
+					'file_name' => $nomcodif
+				];
+				$_FILES['inputPDF']['name'] =  $nomcodif;
+				$_FILES['inputPDF']['type'] = $files['type'][$i];
+				$_FILES['inputPDF']['tmp_name'] = $files['tmp_name'][$i];
+				$_FILES['inputPDF']['error'] = $files['error'][$i];
+				$_FILES['inputPDF']['size'] = $files['size'][$i];
+				$this->load->library("upload",$config);
+				
+				if ($this->upload->do_upload('inputPDF'))
+				{	
+					$data     = array("upload_data" => $this->upload->data());
+					$datos    = array(
+										'id_equipo' => $idEquipo,
+										'adjunto' => $nomcodif
+									);
+					$resp = $this->Equipos->guardaAdjuntoEquipo($datos); //Guarda adjunto tabla  
+				}else{
+					$resp = false;
+				}
+			}
+			$responseArchivos =  $this->Equipos->getAdjuntos($idEquipo);
+			if($responseArchivos){
+				echo json_encode($responseArchivos);
+			} else{
+				$responseArchivos=false;
+				echo json_encode($responseArchivos);
+			}
+			
+		}
+	}
 
-		$nomcodif = $this->codifNombre($idEquipo, $empId); // codificacion de nombre
-		$nomcodif = 'equipo'.$nomcodif;
+	/**
+	 * Equipo:EditarAdjunto();
+	 *
+	 * @return array listado de adjuntos 
+	 */
+	public function EditarAdjunto(){
+		$idEquipo = $this->input->post('idEquipo');
+		$idAdjunto = $this->input->post('id_adjunto');
+		$files = $_FILES['inputEditarPDF'];
+
+		$nombreArchivo = $files['name'];
+		$extension = pathinfo($nombreArchivo, PATHINFO_EXTENSION);//Extension del archivo
+		$nomcodif = $this->codificaNombreV2($nombreArchivo, $extension); // codificacion de nombre
 		$config   = [
 			"upload_path"   => "./assets/filesequipos",
-			'allowed_types' => "png|jpg|pdf|xlsx",
+			'allowed_types' => "*",
 			'file_name'     => $nomcodif
 		];
-
 		$this->load->library("upload",$config);
-		if ($this->upload->do_upload('inputPDF')) 
+		if ($this->upload->do_upload('inputEditarPDF')) 
 		{	
 			$data     = array("upload_data" => $this->upload->data());
-			$extens   = $data['upload_data']['file_ext'];//guardo extesnsion de archivo
-			$nomcodif = $nomcodif.$extens;
 			$adjunto  = array('adjunto' => $nomcodif);
-			$response = $this->Equipos->updateAdjuntoEquipo($adjunto,$idEquipo);
-		}else{
-			$response = false;
+			$response = $this->Equipos->updateAdjunto($adjunto , $idAdjunto);
+			$responseArchivos =  $this->Equipos->getAdjuntos($idEquipo); //listado adjuntos asosiados al equipo 
 		}
-
-		echo json_encode($response);
+		echo json_encode($responseArchivos);
 	}
 
 	public function getMeta(){
