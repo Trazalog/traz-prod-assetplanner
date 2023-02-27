@@ -16,17 +16,16 @@
                         <div class="col-md-6 col-xs-12">
                             <!-- class="daterange"-->
                             <?php //$disponibilidad = calcularDisponibilidad('all');
-                  /*
-                  echo "<pre>";
-                  //echo json_encode($disponibilidad["porcentajeHorasOperativas"]);
-                  print_r ($disponibilidad);
-                  echo "</pre>";
-                  */
-                  ?>
+                            /*
+                            echo "<pre>";
+                            //echo json_encode($disponibilidad["porcentajeHorasOperativas"]);
+                            print_r ($disponibilidad);
+                            echo "</pre>";
+                            */
+                            ?>
                             <h4>
                                 <center>Disponibilidad [%]</center>
                             </h4>
-
                             <div data-disponibilidad="">
                                 <div class="row">
                                     <div class="col-md-5 col-xs-12">

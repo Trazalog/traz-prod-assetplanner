@@ -35,14 +35,14 @@
                         <input type="text" class="form-control buscSector" placeholder="Buscar Sector..." id="buscSector" name="buscSector">
                         <input type="text" class="hidden idSector" id="idSector" name="idSector">
                     </div>
-                  </div>
-                  <div class="row">
                     <div class="col-xs-12 col-sm-6 com-md-4">
                       <label for="equipo">Equipos <strong style="color: #dd4b39">*</strong></label>
                       <select  id="equipo" name="equipo" class="form-control equipo">
-                        <option value="-1" selected disabled>Seleccione opcion</option>
+                        <option value="-1" selected disabled>Seleccione opción</option>
                       </select>
                     </div>
+                  </div>
+                  <div class="row">
                     <div class="col-xs-12 col-sm-6 com-md-4">
                       <label for="fecha_ingreso">Fecha:</label>
                       <input type="text" id="fecha_ingreso"  name="fecha_ingreso" class="form-control input-md" disabled />
@@ -88,11 +88,11 @@
                     </div> 
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="cantidad">Frecuencia <strong style="color: #dd4b39">*</strong>:</label>
-                      <input type="text" class="form-control" id="cantidad" name="cantidad" placeholder="Ingrese valor..."/>
+                      <input type="text" class="form-control" id="cantidad" name="cantidad" onkeypress="return valideKey(event);" placeholder="Ingrese valor..."/>
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="duracion">Duración <strong style="color: #dd4b39">*</strong>:</label>
-                      <input type="text" class="form-control" id="duracion" name="duracion" placeholder="Ingrese valor..."/>
+                      <input type="text" class="form-control" id="duracion" onkeypress="return valideKey(event);" name="duracion" placeholder="Ingrese valor..."/>
                     </div> 
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="unidad">U. de tiempo <strong style="color: #dd4b39">*</strong></label>
@@ -100,7 +100,7 @@
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="cantOper">Cant. Operarios <strong style="color: #dd4b39">*</strong>:</label>
-                      <input type="text" class="form-control" id="cantOper" name="cantOper" placeholder="Ingrese valor..."/>
+                      <input type="text" class="form-control" id="cantOper" name="cantOper" onkeypress="return valideKey(event);" placeholder="Ingrese valor..."/>
                     </div>
                     <div class="col-xs-12" id="dato" name="" style="margin-top: 19px;"></div>
                     <input type="hidden" name="hshombre" id="hshombre">                
@@ -139,7 +139,7 @@
                           </div>
                           <div class="col-xs-12 col-sm-6 col-md-4">
                             <label for="cantidadherram">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
-                            <input type="text" id="cantidadherram"  name="" class="form-control" placeholder="Ingrese Cantidad..." />
+                            <input type="text" id="cantidadherram"  name="" class="form-control" onkeypress="return valideKey(event);" placeholder="Ingrese Cantidad..." />
                           </div>
                           <br>
                           <div class="col-xs-12">
@@ -180,7 +180,7 @@
                           </div>
                           <div class="col-xs-12 col-sm-6 col-md-4">
                             <label for="cant">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
-                            <input type="text" id="cant"  name="" class="form-control" placeholder="Ingrese Cantidad..."/>
+                            <input type="text" id="cant"  name="" class="form-control" onkeypress="return valideKey(event);" placeholder="Ingrese Cantidad..."/>
                           </div>
                         </div><!-- /.row -->
                         <div class="row">
@@ -243,7 +243,8 @@
 <script> 
 
 // Trae equipos llena select - Chequeado
-traer_equipo();
+//traer_equipo();
+/** Desactivamos esta funcion para que no cargue a la primera */
 function traer_equipo(){
   $('#equipo').html('');
     $.ajax({
@@ -299,17 +300,53 @@ var dataF = function () {
     source: dataF,
     delay: 100,
     minLength: 1,
+    /*
     focus: function(event, ui) {
       // prevent autocomplete from updating the textbox
       event.preventDefault();
       // manually update the textbox
       $(this).val(ui.item.label);
     },
+    */
+    change: function(event,ui){
+      // prevent autocomplete from updating the textbox
+      console.log('Change');
+      event.preventDefault();
+      console.log(ui.item);      
+      if(ui.item === null){
+        $("#equipo").html('<option value="-1" disabled selected>Seleccione opción</option>');
+        $("#idSector").val('');
+        alert("Debe seleccionar un Sector");
+      }else{
+        $("#idSector").val(ui.item.value);
+        $(this).val(ui.item.label);
+        $("#equipo").html('<option value="-1" disabled selected>Seleccione opción</option>');
+        // guardo el id de sector
+        var idSect =  $("#idSector").val();
+        if(idSect && idSect != '')
+          getEquiSector(idSect);
+        else
+          alert("Debe seleccionar un sector");
+      }
+    },
     select: function(event, ui) {
       // prevent autocomplete from updating the textbox
+      console.log('Select');
       event.preventDefault();
       // manually update the textbox and hidden field
-      $(this).val(ui.item.label);
+      console.log(ui.item);
+      if(ui.item === null){
+        $("#equipo").html('<option value="-1" disabled selected>Seleccione opción</option>');
+        $("#idSector").val('');
+      }else{
+        $("#idSector").val(ui.item.value);
+        $(this).val(ui.item.label);
+        $("#equipo").html('<option value="-1" disabled selected>Seleccione opción</option>');
+        // guardo el id de sector
+        var idSect =  $("#idSector").val();
+        getEquiSector(idSect);
+      }
+      /*$(this).val(ui.item.label);
       $("#idSector").val(ui.item.value);
       $("#equipo").html('<option value="-1" disabled selected>Seleccione opcion</option>');
       // guardo el id de sector
@@ -317,6 +354,7 @@ var dataF = function () {
       getEquiSector(idSect);
       //console.log("id sector en autocompletar: ");
       //console.log(ui.item.value);
+      */
     },
   }); 
   //  llena select de equipos segun sector
@@ -389,7 +427,7 @@ $("#formPredictivo").submit(function (event){
         console.log('resp prenevt: ');
         console.log(respuesta.resPrenvent);
         if (respuesta) {
-          //alert("Los datos han sido guardados correctamente");
+          alert("Los datos han sido guardados correctamente");
           cargarVista();
         }
         else if(respuesta==="error"){
@@ -928,6 +966,19 @@ $("#fecha").datepicker({
   dateFormat: 'dd/mm/yy',
   firstDay: 1
 }).datepicker("setDate", new Date());
+
+function valideKey(evt){
+   // code is the decimal ASCII representation of the pressed key.
+   var code = (evt.which) ? evt.which : evt.keyCode;
+			
+			if(code==8) { // backspace.
+			  return true;
+			} else if(code>=48 && code<=57) { // is a number.
+			  return true;
+			} else{ // other keys.
+			  return false;
+			}
+ }
 
 </script>
 

@@ -22,37 +22,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php
-
-foreach ($list as $a) {
-
-    $id = $a['arti_id'];
-    echo '<tr  id="' . $id . '" >';
-
-    echo '<td class="text-center text-light-blue">';
-
-    echo '<i class="fa fa-search" style="cursor: pointer;margin: 3px;" title="Ver Detalles" onclick="ver_detalles(this);"></i>';
-    
-    if (strpos($permission, 'Edit') !== false) {
-        echo '<i class="fa fa-fw fa-pencil" style="cursor: pointer; margin: 3px;" title="Editar" onclick="EditarArticulos(this);" data-toggle="modal" data-target="#modaleditar"></i>';
-    }
-    if (strpos($permission, 'Del') !== false) {
-        echo '<i class="fa fa-fw fa-times-circle" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="seleccionar(this)"></i>';
-    }
-
-   
-  
-    echo '</td>';
-
-    echo '<td class="codigo">' . $a['barcode'] . '</td>';
-    echo '<td>' . $a['descripcion'] . '</td>';
-    echo '<td>' . ($a['medida'] == '' ? '-' : $a['medida']) . '</td>';
-    echo '<td class="text-center">' . ($a['valor'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' : ($a['valor'] == 'IN' ? '<small class="label pull-left bg-red">Inactivo</small>' : '<small class="label pull-left bg-yellow">Suspendido</small>')) . '</td>';
-    echo '</tr>';
-
-}
-
-?>
                         </tbody>
                     </table>
                 </div><!-- /.box-body -->
@@ -62,6 +31,67 @@ foreach ($list as $a) {
 </section><!-- /.content -->
 
 <script>
+// $('#articles').DataTable();
+$(document).ready(function(){
+    $('#articles').DataTable({
+    'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
+    'paging' : true,
+    'processing':true,
+    'serverSide': true,
+    'ajax':{
+        type: 'POST',
+        url: 'index.php/almacen/Articulo/paginado'
+    },
+    'columnDefs':[
+            {
+                'targets':[0],
+                'data':'acciones',
+                'render':function(data,type,row){
+                    var id = row['arti_id'];
+                    var permission = "<?php echo $permission?>";
+                    var r = `<tr  id="${id}"><td class="text-center text-light-blue"><i class="fa fa-search" style="cursor: pointer;margin: 3px;" title="Ver Detalles" onclick="ver_detalles(${id});"></i>`;
+                    if (permission.indexOf("Edit") !== -1) {
+                        r = r + `<i class="fa fa-fw fa-pencil" style="cursor: pointer; margin: 3px;" title="Editar" onclick="EditarArticulos(${id});" data-toggle="modal" data-target="#modaleditar"></i>`;
+                    }
+                    if (permission.indexOf("Del") !== -1) {
+                        r = r + `<i class="fa fa-fw fa-times-circle" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="eliminarArticulo(${id})"></i>`;
+                    }
+                    r = r + `</td>`;
+                    return r;
+                }
+            },
+            {
+                'targets':[1],
+                'data':'codigo',
+                'render': function(data, type, row){
+                    return `<td class="codigo"> ${row['barcode']} </td>`
+                }
+            },
+            {
+                'targets':[2],
+                'data':'descripcion',
+                'render': function(data, type, row){
+                    return `<td>${row['descripcion']}</td>`
+                }
+            },
+            {
+                'targets':[3],
+                'data':'area',
+                'render': function(data, type, row){
+                    return `<td>${row['medida'] == null ? '-' : row['medida']}</td>`;
+                }
+            },
+            {
+                'targets':[4],
+                'data':'proceso',
+                'render': function(data, type, row){
+                    return `<td class="text-center"> ${row['valor'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' : (row['valor'] == 'IN' ? '<small class="label pull-left bg-red">Inactivo</small>' : '<small class="label pull-left bg-yellow">Suspendido</small>')}</td></tr>`;
+                }
+            }
+        ]
+    });
+});
+
 // Abre modal agregar artículos
 function LoadArt(id_, action) {
     idArt = id_;
@@ -192,8 +222,6 @@ $('#btnSave').click(function() {
     });*/
 });
 
-DataTable('#articles');
-
 function validarCodigosExistentes(newCodigo){
     var ban = true;
     $('#articles .codigo').each(function(){
@@ -210,7 +238,8 @@ function validarCodigosExistentes(newCodigo){
 // Trae datos para llenar el modal Editar
 function EditarArticulos(e) { // Ok
     // var idartic = $(this).parent('td').parent('tr').attr('id');
-    var idartic = $(e).closest('tr').attr('id');
+    //--------------------------------------------
+    // var idartic = $(e).closest('tr').attr('id');
     ida = idartic;
     $('#artBarCode').val('');
     $('#artDescription').val('');
@@ -222,7 +251,8 @@ function EditarArticulos(e) { // Ok
     $('#puntped').val('');
     $.ajax({
         data: {
-            idartic: idartic
+            // idartic: idartic
+            idartic: e
         },
         dataType: 'json',
         type: 'POST',
@@ -357,20 +387,45 @@ function guardareditar() { // Ok
     });
 }
 
-var select = '';
+// var select = '';
 
-function seleccionar(o) {
-    select = $(o).closest('tr');
-    $('#modaleliminar').modal('show');
-}
+// function seleccionar(o) {
+//     select = $(o).closest('tr');
+//     $('#modaleliminar').modal('show');
+// }
 
 
-function eliminar_articulo() {
-    var id = select.attr('id');
-    $.ajax({
+// function eliminar_articulo(o) {
+//     var id = select.attr('id');
+//     $.ajax({
+//         type: 'POST',
+//         data: {
+//             idelim: id
+//         },
+//         url: 'index.php/almacen/Articulo/baja_articulo', //index.php/
+//         success: function(data) {
+//             alert("Articulo Eliminado");
+//             linkTo();
+//         },
+//         error: function(result) {
+//             console.log(result);
+//         }
+
+//     });
+// }
+
+/************************************/
+/********** ELIMINA ARTICULO **********/
+/************************************/
+function eliminarArticulo(idArticulo){
+    if (!confirm("Realmente desea eliminar este articulo?")) {
+        return;
+    } else {
+        console.log(idArticulo);
+        $.ajax({
         type: 'POST',
         data: {
-            idelim: id
+            idelim: idArticulo
         },
         url: 'index.php/almacen/Articulo/baja_articulo', //index.php/
         success: function(data) {
@@ -380,13 +435,12 @@ function eliminar_articulo() {
         error: function(result) {
             console.log(result);
         }
-
     });
+    }
 }
 
 function ver_detalles(e) {
-    var idartic = $(e).closest('tr').attr('id');
-
+    // var idartic = $(e).closest('tr').attr('id');
     $('#artBarCode').val('');
     $('#artDescription').val('');
     $('#artIsByBox').val('');
@@ -397,7 +451,8 @@ function ver_detalles(e) {
     $('#puntped').val('');
     $.ajax({
         data: {
-            idartic: idartic
+            // idartic: idartic
+            idartic: e
         },
         dataType: 'json',
         type: 'POST',

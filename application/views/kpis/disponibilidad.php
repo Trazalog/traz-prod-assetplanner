@@ -3,7 +3,6 @@
 
 </div>
 
-
 <style type="text/css">
 .daterange {
     position: relative;

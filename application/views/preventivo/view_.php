@@ -35,7 +35,7 @@
                   </div>
                   <div class="col-xs-12 col-sm-6">Equipos <strong style="color: #dd4b39">*</strong>
                     <select  id="equipo" name="id_equipo" class="form-control id_equipo">
-                        <option value="-1" placeholder="Seleccione..."></option>
+                      <option value="-1" selected disabled>Seleccione opción</option>
                     </select>
                   </div>
                 </div><!-- /.row -->
@@ -121,21 +121,21 @@
                     <div role="tabpanel" class="tab-pane active" id="herramin">
                       <div class="row">
                         <div class="col-xs-12 col-sm-6 col-md-4">
-                          <label for="herramienta">Codigo <strong style="color: #dd4b39">*</strong>:</label>
-                          <input type="text" id="herramienta"  name="" class="form-control" placeholder="Buscar Código..." />
+                          <label for="herramienta">Codigo<!-- <strong style="color: #dd4b39">*</strong> -->:</label>
+                          <input type="text" id="herramienta"  name="herramienta" class="form-control" placeholder="Buscar Código..." />
                           <input type="hidden" id="id_herramienta" name="id_herramienta">
                         </div>                          
                         <div class="col-xs-12 col-sm-6 col-md-4">
-                          <label for="marcaherram">Marca <strong style="color: #dd4b39">*</strong>:</label>
-                          <input type="text" id="marcaherram"  name="" class="form-control" />
+                          <label for="marcaherram">Marca<!-- <strong style="color: #dd4b39">*</strong> -->:</label>
+                          <input type="text" id="marcaherram"  name="marcaherram" class="form-control" />
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
-                          <label for="descripcionherram">Descripcion <strong style="color: #dd4b39">*</strong>:</label>
-                          <input type="text" id="descripcionherram"  name="" class="form-control" />
+                          <label for="descripcionherram">Descripcion<!-- <strong style="color: #dd4b39">*</strong> -->:</label>
+                          <input type="text" id="descripcionherram"  name="descripcionherram" class="form-control" />
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
-                          <label for="cantidadherram">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
-                          <input type="text" id="cantidadherram"  name="" class="form-control" placeholder="Ingrese Cantidad..." />
+                          <label for="cantidadherram">Cantidad<!-- <strong style="color: #dd4b39">*</strong> -->:</label>
+                          <input type="text" id="cantidadherram"  name="cantidadherram" class="form-control" placeholder="Ingrese Cantidad..." />
                         </div>
                         <br>
                         <div class="col-xs-12">
@@ -166,17 +166,17 @@
                     <div role="tabpanel" class="tab-pane" id="insum">
                       <div class="row">
                         <div class="col-xs-12 col-sm-6 col-md-4">
-                          <label for="insumo">Codigo <strong style="color: #dd4b39">*</strong>:</label>
+                          <label for="insumo">Codigo<!-- <strong style="color: #dd4b39">*</strong> -->:</label>
                           <input type="text" id="insumo" name="insumo" class="form-control" placeholder="Buscar Código..." />
                           <input type="hidden" id="id_insumo" name="">
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
                           <label for="">Descripcion:</label>
-                          <input type="text" id="descript"  name="" class="form-control" />
+                          <input type="text" id="descript"  name="descript" class="form-control" />
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
-                          <label for="cant">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
-                          <input type="text" id="cant"  name="" class="form-control" placeholder="Ingrese Cantidad"/>
+                          <label for="">Cantidad<!-- <strong style="color: #dd4b39">*</strong> -->:</label>
+                          <input type="text" id="cant"  name="cant" class="form-control" placeholder="Ingrese Cantidad"/>
                         </div>
                       </div><!-- /.row -->
                       <div class="row">
@@ -232,7 +232,8 @@
 <script>
 
 // Trae equipos llena select - Chequeado
-traer_equipo();
+//traer_equipo();
+/** Desactivamos esta funcion para que no cargue a la primera */
 function traer_equipo(){
   $('#equipo').html('');
     $.ajax({
@@ -279,24 +280,63 @@ var dataF = function () {
     source: dataF,
     delay: 100,
     minLength: 1,
+    /*
     focus: function(event, ui) {
       // prevent autocomplete from updating the textbox
       event.preventDefault();
       // manually update the textbox
       $(this).val(ui.item.label);
     },
-    select: function(event, ui) {
+    */
+    change: function(event, ui) {
       // prevent autocomplete from updating the textbox
+      console.log('Change');
       event.preventDefault();
       // manually update the textbox and hidden field
-      $(this).val(ui.item.label);
+      //$(this).val(ui.item.label);
+      console.log(ui.item);      
+      if(ui.item === null){
+        $("#equipo").html('<option value="-1" disabled selected>Seleccione opción</option>');
+        $("#idSector").val('');
+        alert("Debe seleccionar un Sector");
+      }else{
+        $("#idSector").val(ui.item.value);
+        $(this).val(ui.item.label);
+        $("#equipo").html('<option value="-1" disabled selected>Seleccione opción</option>');
+        // guardo el id de sector
+        var idSect =  $("#idSector").val();
+        if(idSect && idSect != '')
+          getEquiSector(idSect);
+        else
+          alert("Debe seleccionar un sector");
+      }
+    },
+    select: function(event, ui) {
+      // prevent autocomplete from updating the textbox
+      console.log('Select');
+      event.preventDefault();
+      // manually update the textbox and hidden field
+      console.log(ui.item);
+      if(ui.item === null){
+        $("#equipo").html('<option value="-1" disabled selected>Seleccione opción</option>');
+        $("#idSector").val('');
+      }else{
+        $("#idSector").val(ui.item.value);
+        $(this).val(ui.item.label);
+        $("#equipo").html('<option value="-1" disabled selected>Seleccione opción</option>');
+        // guardo el id de sector
+        var idSect =  $("#idSector").val();
+        getEquiSector(idSect);
+      }
+      /*
       $("#idSector").val(ui.item.value);
-      $("#equipo").html('<option value="-1" disabled selected>Seleccione opcion</option>');
+      $("#equipo").html('<option value="-1" disabled selected>Seleccione opción</option>');
       // guardo el id de sector
       var idSect =  $("#idSector").val();
       getEquiSector(idSect);
       //console.log("id sector en autocompletar: ");
       //console.log(ui.item.value);
+      */
     },
   }); 
   //  llena select de equipos segun sector
@@ -308,6 +348,9 @@ var dataF = function () {
     $("#descripcion").val("");
     $("#componente").html("<option value='-1'>Seleccione..</option>");
     console.log("id de sector para traer equipos: "+id);
+
+
+
     $.ajax({
       'data' : {id_sector : id },
       'async': true,
@@ -316,17 +359,17 @@ var dataF = function () {
       'dataType': 'json',
       'url': "Sservicio/getEquipSector",
       'success': function (data) {
-        console.log("Entro por getEquiSector ok");
+        console.log("Entro por Preventivo getEquiSector ok");
         console.table(data);//[0]['id_equipo']);
         // Asigna opciones al select Equipo en modal
-        //console.log("length: "+data.length);
+        console.log("length: "+data.length);
         var $select = $("#equipo");
         for (var i = 0; data.length; i++) {
           $select.append($('<option />', { value: data[i]['id_equipo'], text: data[i]['descripcion'] }));
         }
       },
       'error' : function(data){
-        console.log('Error en getEquiSector');
+        console.log('Error Preventivo en getEquiSector');
         console.table(data);
       },
     });
@@ -574,11 +617,24 @@ $("#formPreventivo").submit(function (event){
   var oper     = $('#cantOper').val();
   var hh       = $('#hshombre').val();
 
+  /*
+  var insumo   = $('#insumo').val();
+  var cant   = $('#cant').val();
+
+  var herramienta = $('#herramienta').val();
+  var cantidadherram = $('#cantidadherram').val();
+  var marcaherram      = $('#marcaherram').val();
+  var descripcionherram = $('#descripcionherram').val();
+  
+  console.log("cant: "+cant);
+  */
+
   if((periodo=='horas') || (periodo=='ciclos')){
     if ((lectbase < 0)||(alerta < 0)) {
       $('#error').fadeIn('slow');
     }
   }
+
   if ((equipo < 0)||(tarea < 0)||(periodo < 0)||(unidad < 0)||(duracion == "")||(freq == "")||(oper == "")||(hh == "" || compon < 0)) {
       $('#error').fadeIn('slow');
   }
@@ -597,7 +653,7 @@ $("#formPreventivo").submit(function (event){
         console.log('resp prenevt: ');
         console.log(respuesta.resPrenvent);
         if (respuesta) {
-          //alert("Los datos han sido guardados correctamente");
+          alert("Los datos han sido guardados correctamente");
           cargarVista();
         }
         else if(respuesta==="error"){

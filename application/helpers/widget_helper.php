@@ -210,10 +210,13 @@ if (!function_exists('sacarEquiposOperativos')) {
                 array_push($estados, $equipos[$i]['estado']);
             }
         }
-
+        
         //cuento cantidad de cada estado y agrego esos campos (Estado y cantidad) al arreglo $outuput
-        $output[0]['cantEstadoActivo'] = 0;
-        foreach ($estados as $clave) {
+        $output[0]['cantEstadoActivo'] = "0";                        //Aca he colocado el 0 entre comillas pero veo como que no lo usan
+        $estados = array_filter($estados);                           //esto es nuevo lo coloque porque a veces trae un null
+        //log_message("DEBUG","HELPER". json_encode($estados));
+        //log_message("DEBUG","HELPER". json_encode($equipos));
+        foreach ($estados as $clave) {   // no esta en mas ningun lugar solo aqui y a mi me parecio tambien extraño no creo que no
             if ($clave == 'AC') {
                 $output[0]['estado'] = 'OP'; //Operativo
                 $output[0]['cantEstadoActivo'] = array_count_values(array_column($equipos, 'estado'))[$clave];

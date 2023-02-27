@@ -431,31 +431,36 @@ $('#predictivo').DataTable({
 ///// Datepicker para modales
 $("#fecha_progr_pred").datepicker({
     Format: 'dd/mm/yy',
-    startDate: '-3d'
+    startDate: '-3d',
+    //minDate: new Date(),
     //firstDay: 1
 }).datepicker("setDate", new Date());
 
 $("#fecha_progr_correct").datepicker({
     Format: 'dd/mm/yy',
-    startDate: '-3d'
+    startDate: '-3d',
+    //minDate: new Date(),
     //firstDay: 1
 }).datepicker("setDate", new Date());
 
 $("#fecha_progr_prevent").datepicker({
     Format: 'dd/mm/yy',
-    startDate: '-3d'
+    startDate: '-3d',
+    //minDate: new Date(),
     //firstDay: 1
 }).datepicker("setDate", new Date());
 
 $("#fecha_progr_back").datepicker({
     Format: 'dd/mm/yy',
-    startDate: '-3d'
+    startDate: '-3d',
+    //minDate: new Date(),
     //firstDay: 1
 }).datepicker("setDate", new Date());
 
 $("#fecha_progr_prevent_horas").datepicker({
     Format: 'dd/mm/yy',
-    startDate: '-3d'
+    startDate: '-3d',
+    //minDate: new Date(),
     //firstDay: 1
 }).datepicker("setDate", new Date());
 
@@ -473,8 +478,19 @@ $('.fa-stop-circle').click(function() {
 
 });
 
-function fill_Correc(dato) {
+function fill_Correc(dato,eval) {
     //alert(dato);
+
+    //Luis Zorrilla - Modal Cargar IdTarea y Tomar tarea
+    $('#modal-correctivo').modal("show");
+    var data= $(eval).closest('tr').attr('id');
+    var idTareaBonita = data.split("-");
+    var idTarea = idTareaBonita[1];
+    console.log(idTarea);
+    $('#idTarBonita').val(idTarea);
+    //Luis Zorrilla - Modal Cargar IdTarea y Tomar tarea 
+    tomarTareaTabla();
+    
     $.ajax({
         type: 'POST',
         data: {
@@ -515,34 +531,122 @@ function setOtCorrectivo() {
     var progr_corr = $('#fecha_progr_correct').val();
     //  alert(progr_corr);
     var hor_corr = $('#hora_progr_correct').val();
+    //llamado a nueva funcion para toma la tarea
 
-    $.ajax({
-        type: 'POST',
-        data: {
-            event_tipo: 1, // evento unico
-            id_sol: id_sol,
-            id_tarea: tarea,
-            fecha_progr: progr_corr,
-            hora_progr: hor_corr,
-            fecha_inicio: fecha_solicit,
-            descripcion: desc_causa,
-            tipo: 2, // correctivo
-            ide: id_eq,
-            mes: mes,
-            cant_meses: 0 // cantidad de meses a repetir esta OT
-        },
-        url: 'index.php/Calendario/guardar_agregar',
-        success: function(data) {
+    var isExecuted = validarHorario(progr_corr,progr_corr);
 
-            setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
-        },
-        error: function(result) {
+    console.log('Excute: '+isExecuted); 
 
-            console.log(result);
-        }
-    });
+    if(isExecuted){
+        
+        $.ajax({
+            type: 'POST',
+            data: {
+                event_tipo: 1, // evento unico
+                id_sol: id_sol,
+                id_tarea: tarea,
+                fecha_progr: progr_corr,
+                hora_progr: hor_corr,
+                fecha_inicio: fecha_solicit,
+                descripcion: desc_causa,
+                tipo: 2, // correctivo
+                ide: id_eq,
+                mes: mes,
+                cant_meses: 0 // cantidad de meses a repetir esta OT
+            },
+            url: 'index.php/Calendario/guardar_agregar',
+            success: function(data) {
+
+                setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
+            },
+            error: function(result) {
+
+                console.log(result);
+            }
+        });
+    }else{
+        alert('Escoga un nuevo horario o fecha');
+    }
 }
 //////////  / CORRECTIVO (Listoooo)
+
+//////////  / TOMAR TAREA (Listoooo)
+function tomarTareaTabla() {
+
+    var idTarBonita = $('#idTarBonita').val();
+   
+    var post = {
+        type: 'POST',
+        data: {
+            idTarBonita: idTarBonita
+        },
+        url: 'index.php/Tarea/tomarTarea',
+        success: function (data) {
+
+            // toma a tarea exitosamente
+            if (data.status) {
+                console.log("Tarea Tomada");
+            } else {
+                alert(data.msj)
+            }
+
+        },
+        error: function (result) {
+            console.log(result);
+        },
+        dataType: 'json'
+    };
+
+    if (conexion()) $.ajax(post);
+    else {
+        ajax(post);
+        
+    }
+    //Guardar Estado en Sesion
+    var task = $('#task').val() + '_tomar';
+    var id = 'tomar';
+    var value = true;
+    guardarEstado(task, value, id);
+}
+
+////////////Soltar Tarea Tabla (Listooooo)
+// Soltar tarea en BPM
+function soltarTareaTabla() {
+    var idTarBonita = $('#idTarBonita').val();
+    var post = {
+        type: 'POST',
+        data: {
+            idTarBonita: idTarBonita
+        },
+        url: 'index.php/Tarea/soltarTarea',
+        success: function (data) {
+
+            // toma a tarea exitosamente
+            if (data.status) {
+                console.log("Solar Tarea");
+            } else {
+                alert(data.msj)
+            }
+        },
+        error: function (result) {
+            console.log(result);
+        },
+        dataType: 'json'
+    };
+
+    if (conexion()) $.ajax(post);
+    else {
+        ajax(post);
+        deshabilitar();
+    }
+
+    //Guardar Estado en Sesion
+    var task = $('#task').val() + '_tomar';
+    var id = 'tomar';
+    var value = false;
+    guardarEstado(task, value, id);
+}
+
 
 //////////  PREVENTIVO (Listoooo)
 var id_tar = "";
@@ -579,28 +683,38 @@ function setOtPreventivo() {
     var event_Preventivo = $('#event_Preventivo').val();
     var cant_meses_prev = $('#cant_meses_prev').val();
 
-    $.ajax({
-        type: 'POST',
-        data: {
-            id_sol: id_prev,
-            id_tarea: id_tar,
-            fecha_progr: progr_corr,
-            hora_progr: hora_prog_prevent,
-            fecha_inicio: fec_sol_prev,
-            descripcion: desc_tarea,
-            tipo: 3, // preventivo
-            ide: id_equ,
-            event_tipo: event_Preventivo,
-            cant_meses: cant_meses_prev
-        },
-        url: 'index.php/Calendario/guardar_agregar',
-        success: function(data) {
-            setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
-        },
-        error: function(result) {
-            console.log(result);
-        }
-    });
+    var isExecuted = validarHorario(progr_corr,hora_prog_prevent);
+
+    console.log('Excute: '+isExecuted); 
+
+    if(isExecuted){
+
+        $.ajax({
+            type: 'POST',
+            data: {
+                id_sol: id_prev,
+                id_tarea: id_tar,
+                fecha_progr: progr_corr,
+                hora_progr: hora_prog_prevent,
+                fecha_inicio: fec_sol_prev,
+                descripcion: desc_tarea,
+                tipo: 3, // preventivo
+                ide: id_equ,
+                event_tipo: event_Preventivo,
+                cant_meses: cant_meses_prev
+            },
+            url: 'index.php/Calendario/guardar_agregar',
+            success: function(data) {
+                setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
+                alert("Se ha guardado Correctamente");
+            },
+            error: function(result) {
+                console.log(result);
+            }
+        });
+    }else{
+        alert('Escoga un nuevo horario fecha');
+    }
 }
 
 function CancPrevent() {
@@ -641,36 +755,59 @@ $(document).on("click", ".fa-history", function() {
     ultima_lectura = $(this).parents("tr").find("td").eq(10).html();
 });
 
+function validarHorario(fecha,hora){
+
+    var isExecuted = true;
+    if(hora == '00:00'){
+        console.log('1: '+hora);
+        //alert();
+        isExecuted = confirm("Esta Seguro de la Asignación? Hora: "+hora+' Para la Fecha: '+fecha);    
+    }else{
+        isExecuted = true;
+    }
+
+    return isExecuted;
+}
+
 function setOtPrevHoras() {
     var progr_corr_hs = $('#fecha_progr_prevent_horas').val();
     var hora_progr_prevH = $('#hora_progr_prevH').val();
-    console.info(fec_sol_prevhs);
-    console.info(ultima_lectura);
 
-    $.ajax({
-        type: 'POST', //parametros:parametros
-        data: {
-            id_sol: id_prevhs,
-            id_tarea: id_tarhs,
-            fecha_progr: progr_corr_hs,
-            hora_progr: hora_progr_prevH,
-            fecha_inicio: fec_sol_prevhs,
-            descripcion: desc_tareahs,
-            idp: id_sol,
-            tipo: 3, // preventivo
-            ide: id_equhs,
-            //lectura_programada: proximo_servicio,
-            event_tipo:1,
-            lectura_ejecutada: ultima_lectura
-        },
-        url: 'index.php/Calendario/guardar_agregar',
-        success: function(data) {
-            setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
-        },
-        error: function(result) {
-            console.log(result);
-        }
-    });
+    var isExecuted = validarHorario(progr_corr_hs,hora_progr_prevH);
+
+    console.log('Excute: '+isExecuted); 
+
+    if(isExecuted){
+        $.ajax({
+            type: 'POST', //parametros:parametros
+            data: {
+                id_sol: id_prevhs,
+                id_tarea: id_tarhs,
+                fecha_progr: progr_corr_hs,
+                hora_progr: hora_progr_prevH,
+                fecha_inicio: fec_sol_prevhs,
+                descripcion: desc_tareahs,
+                idp: id_sol,
+                tipo: 3, // preventivo
+                ide: id_equhs,
+                //lectura_programada: proximo_servicio,
+                event_tipo:1,
+                lectura_ejecutada: ultima_lectura
+            },
+            url: 'index.php/Calendario/guardar_agregar',
+            success: function(data) {
+            
+                setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
+                alert("Se ha guardado Correctamente");
+            },
+            error: function(result) {
+                console.log(result);
+            }
+        });
+    }else{
+        alert('Escoga un nuevo horario o fecha');
+    }
+    
 }
 
 function CancPrevHoras() {
@@ -713,6 +850,7 @@ function fill_Backlog(dato) {
             } else {
                 desc_tarea_back = data[0]['tareadesc'];
             }
+            alert("Se ha guardado Correctamente");
         },
         error: function(data) {
 
@@ -726,28 +864,39 @@ function setOtBacklog() {
     var progr_back = $('#fecha_progr_back').val();
     var hora_progr_back = $('#hora_progr_back').val();
 
-    $.ajax({
-        type: 'POST',
-        data: {
-            event_tipo: 1, // evento unico
-            id_sol: id_back,
-            id_tarea: id_de_tar,
-            fecha_progr: progr_back,
-            hora_progr: hora_progr_back,
-            fecha_inicio: fec_sol_back,
-            descripcion: desc_tarea_back,
-            tipo: 4, // backlog
-            ide: id_equi,
-            duracion: duracion
-        },
-        url: 'index.php/Calendario/guardar_agregar',
-        success: function(data) {
-            setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
-        },
-        error: function(result) {
-            console.log(result);
-        }
-    });
+    var isExecuted = validarHorario(progr_back,hora_progr_back);
+
+    console.log('Excute: '+isExecuted); 
+
+    if(isExecuted){
+
+        $.ajax({
+            type: 'POST',
+            data: {
+                event_tipo: 1, // evento unico
+                id_sol: id_back,
+                id_tarea: id_de_tar,
+                fecha_progr: progr_back,
+                hora_progr: hora_progr_back,
+                fecha_inicio: fec_sol_back,
+                descripcion: desc_tarea_back,
+                tipo: 4, // backlog
+                ide: id_equi,
+                duracion: duracion
+            },
+            url: 'index.php/Calendario/guardar_agregar',
+            success: function(data) {
+            
+                setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
+                alert("Se ha guardado Correctamente");
+            },
+            error: function(result) {
+                console.log(result);
+            }
+        });
+    }else{
+        alert('Escoga un nuevo horario o fecha');
+    }
 }
 
 function CancBacklog() {
@@ -782,6 +931,7 @@ function fill_Predictivo(dato) {
             idp = data[0]['predId'];
             ide = data[0]['id_equipo'];
             descripTarea = data[0]['descripcion'];
+            alert("Se ha guardado Correctamente");
         },
         error: function(data) {
 
@@ -807,31 +957,40 @@ function setOtPredictivo() {
     var event_Predic = $('#event_Predictivo').val();
     var cant_meses_predic = $('#cant_meses_predic').val();
 
+    var isExecuted = validarHorario(progr_pred,hora_pred);
 
-    $.ajax({
-        type: 'POST', //parametros:parametros
-        data: {
-            id_sol: idp,
-            id_tarea: tarea_descrip,
-            fecha_progr: progr_pred,
-            hora_progr: hora_pred,
-            fecha_inicio: fecha_inicio,
-            descripcion: descripTarea,
-            tipo: 5, //predictivo
-            ide: ide,
-            event_tipo: event_Predic,
-            cant_meses: cant_meses_predic
-        },
-        url: 'index.php/Calendario/guardar_agregar', //index.php/
-        success: function(data) {
+    console.log('Excute: '+isExecuted); 
 
-            setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
-        },
-        error: function(result) {
+    if(isExecuted){
 
-            console.log(result);
-        }
-    });
+        $.ajax({
+            type: 'POST', //parametros:parametros
+            data: {
+                id_sol: idp,
+                id_tarea: tarea_descrip,
+                fecha_progr: progr_pred,
+                hora_progr: hora_pred,
+                fecha_inicio: fecha_inicio,
+                descripcion: descripTarea,
+                tipo: 5, //predictivo
+                ide: ide,
+                event_tipo: event_Predic,
+                cant_meses: cant_meses_predic
+            },
+            url: 'index.php/Calendario/guardar_agregar', //index.php/
+            success: function(data) {
+
+                setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
+                alert("Se ha guardado Correctamente");
+            },
+            error: function(result) {
+
+                console.log(result);
+            }
+        });
+    }else{
+        alert('Escoga un nuevo horario o fecha');
+    }
 }
 
 //habilita/deshabilita el campo cantidad
@@ -882,6 +1041,7 @@ function updateHora(id_OT, duracion) {
         success: function(data) {
             //alert('sucess');
             console.log(data);
+            alert("Se ha guardado Correctamente");
         },
         error: function(data) {
 
@@ -935,9 +1095,11 @@ function updateHora(id_OT, duracion) {
             </div>
             <div class="modal-body">
                 <h5>Seleccione la fecha de Programación</h5>
+                <div class="col-xs-4 hidden">Tarea:
+                    <input type="hidden" id="idTarBonita" name="idTarBonita" class="form-control input-md" />
+                </div>
                 <div class="col-xs-4">Fecha:
-                    <input type="text" id="fecha_progr_correct" name="fecha_progr_correct"
-                        class="form-control input-md" />
+                    <input type="text" id="fecha_progr_correct" name="fecha_progr_correct" class="form-control input-md" />
                 </div>
                 <div class="col-xs-4">Hora:
                     <input type="time" name="hora_progr_correct" id="hora_progr_correct" class="form-control input-md">
@@ -945,10 +1107,12 @@ function updateHora(id_OT, duracion) {
             </div>
             <div class="clearfix"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal"
-                    onclick="CancCorrec()">Cancelar</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="setOtCorrectivo()">Generar
-                    Orden</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="CancCorrec()">Cancelar</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="setOtCorrectivo()">Generar Orden</button>
+                <!--
+                    <button type="button" id='btontomar' class="btn btn-success" data-dismiss="modal" onclick="tomarTareaTabla()">Tomar Tarea</button>
+                    <button type="button" id='btonsoltr' class="btn btn-danger grupNoasignado" data-dismiss="modal" onclick='soltarTareaTabla()'>Soltar tarea</button>
+                -->
             </div>
         </div>
     </div>

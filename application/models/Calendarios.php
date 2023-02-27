@@ -77,8 +77,7 @@ class Calendarios extends CI_Model {
     }
 
     // Preventivos por Hora para la Tabla
-    function 
-    getPreventivosHoras($mes, $year)
+    function getPreventivosHoras($mes, $year)
     {
         $userdata = $this->session->userdata('user_data');
         $empId    = $userdata[0]['id_empresa'];
@@ -103,11 +102,13 @@ class Calendarios extends CI_Model {
             join equipos ON preventivo.id_equipo = equipos.id_equipo 
             join tareas ON preventivo.id_tarea = tareas.id_tarea 
             join periodo ON preventivo.perido = periodo.idperiodo
-            WHERE preventivo.id_empresa = $empId AND preventivo.estadoprev = 'C' AND ((periodo.descripcion = 'Ciclos') OR (periodo.descripcion = 'Horas') OR (periodo.descripcion = 'Kilómetros')) AND (equipos.ultima_lectura >= (preventivo.lectura_base + preventivo.critico1))";//horas o ciclos
+            WHERE preventivo.id_empresa = $empId AND (preventivo.estadoprev = 'C' OR preventivo.estadoprev = 'M') AND ((periodo.descripcion = 'Ciclos') OR (periodo.descripcion = 'Horas') OR (periodo.descripcion = 'Kilómetros')) AND (equipos.ultima_lectura >= (preventivo.lectura_base + preventivo.critico1))";//horas o ciclos
             //AND month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $mes 
             //AND year(orden_trabajo.fecha_program) = $year
             //";
-        $query = $this->db->query($sql);
+            log_message('debug', $sql);
+            $query = $this->db->query($sql);
+
                 if ($query->num_rows()!=0)
         {
             return $query->result_array();  
@@ -233,7 +234,58 @@ class Calendarios extends CI_Model {
         }       
     }
   
+    function getServicioTareas($data,$month,$year){
 
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
+
+        foreach ($data as $key => $value) {
+
+            $case_id = $value['caseId'];
+
+
+            $this->db->select('solicitud_reparacion.id_solicitud,solicitud_reparacion.numero,solicitud_reparacion.id_tipo,solicitud_reparacion.nivel,
+                               solicitud_reparacion.solicitante,solicitud_reparacion.f_solicitado,solicitud_reparacion.f_sugerido,solicitud_reparacion.hora_sug,
+                               solicitud_reparacion.estado,solicitud_reparacion.correctivo,solicitud_reparacion.causa,
+                               equipos.descripcion,equipos.codigo,equipos.id_equipo,            
+                               sector.descripcion AS sector');
+            $this->db->from('solicitud_reparacion');
+            $this->db->join('equipos', 'equipos.id_equipo = solicitud_reparacion.id_equipo');
+            $this->db->join('sector', 'sector.id_sector = equipos.id_sector');
+            $this->db->where('solicitud_reparacion.id_empresa',$empId);
+            $this->db->where('solicitud_reparacion.estado', 'S');
+            $this->db->where('solicitud_reparacion.urgente !=0');
+            $this->db->where('year(solicitud_reparacion.f_solicitado)',$year);
+            $this->db->where('month(solicitud_reparacion.f_solicitado)',$month);
+            $this->db->where('solicitud_reparacion.case_id', $case_id);                
+            $res = $this->db->get()->first_row();
+
+            //log_message('debug', json_encode($res));
+
+            $data[$key]['id_solicitud'] = $res->id_solicitud;
+            $data[$key]['numero'] = $res->numero;
+            $data[$key]['id_tipo'] = $res->id_tipo;
+            $data[$key]['nivel'] = $res->nivel;
+            $data[$key]['solicitante'] = $res->solicitante;
+            $data[$key]['f_solicitado'] = $res->f_solicitado;
+            $data[$key]['f_sugerido'] = $res->f_sugerido;
+            $data[$key]['hora_sug'] = $res->hora_sug;
+            $data[$key]['hora_sug'] = $res->hora_sug;
+            $data[$key]['estado'] = $res->estado;
+            $data[$key]['descripcion'] = $res->descripcion;
+            $data[$key]['codigo'] = $res->codigo;
+            $data[$key]['id_equipo'] = $res->id_equipo;
+            $data[$key]['correctivo'] = $res->correctivo;
+            $data[$key]['causa'] = $res->causa;
+                
+            $data = $this->infoUser($data, $key);
+        
+        }
+
+        return $data;
+    }
+
+    
 
 
     // Correctivos para la Tabla por id de empresa logueada
@@ -265,6 +317,7 @@ class Calendarios extends CI_Model {
 											AND year(solicitud_reparacion.f_solicitado) = $year
 											AND month(solicitud_reparacion.f_solicitado) = $month";
         $query = $this->db->query($sql);
+        log_message('debug', $sql);
         if ($query->num_rows()!=0)
         {
             return $query->result_array();  
@@ -329,12 +382,32 @@ class Calendarios extends CI_Model {
     }
 
 
+    /*     ./ TAREAS BPM */
 
+    public function infoUser($data, $key)
+    {
+        if (isset($data[$key]["ot"])) {
+            // si hay un usr asignado en bpm
+            if (isset($data[$key]['assigned_id'])) {
 
+                $sql = 'select (concat(usrName,", ", usrLastName) ) as usr_asig_nomb
+                    from sisusers SU
+                    join orden_trabajo OT on OT.id_usuario_a = SU.usrId
+                    where OT.id_orden = ' . $data[$key]["ot"];
 
+                $query = $this->db->query($sql);
+                $row = $query->row();
 
-
-
+                $data[$key]['usr_asignado'] = $row->usr_asig_nomb;
+            } else {
+                $data[$key]['usr_asignado'] = " S/A ";
+            }
+        } else {
+            $data[$key]['usr_asignado'] = " S/A ";
+        }
+        
+        return $data;
+    }
 
     function Equipos_List()
     {

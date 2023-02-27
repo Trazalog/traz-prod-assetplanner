@@ -9,10 +9,31 @@ class Reporte extends CI_Controller {
 		$this->load->model('Reportes');
 	}
 
+	public function check_session(){
+
+        $data = $this->session->userdata();
+		log_message('DEBUG','#Main/index | Reporte >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+
+		if(empty($data['user_data'][0]['usrName'])){
+			log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+			$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+			$this->session->set_userdata($var);
+			$this->session->unset_userdata(null);
+			$this->session->sess_destroy();
+
+			echo ("<script>location.href='login'</script>");
+
+		}else{
+            return true;
+        }
+    }
+
 	public function index($permission)
 	{
-		$data['permission'] = $permission;
-		$this->load->view('reportes/view_', $data);
+		if($this->check_session()){
+			$data['permission'] = $permission;
+			$this->load->view('reportes/view_', $data);
+		}
 	}
 	
 	public function getReporte()
@@ -33,7 +54,9 @@ class Reporte extends CI_Controller {
 
 	public function ejemplo(){
 
-		$this->load->view('reportes/ejemplo');
+		if($this->check_session()){
+			$this->load->view('reportes/ejemplo');
+		}
 
 	}
 	public function consultaConFiltros(){

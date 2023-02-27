@@ -14,11 +14,24 @@ class Calendario extends CI_Controller
     }
 
     public function indexot($permission) // Ok
-
     {
-        $data['permission'] = $permission . "Correctivo-Preventivos-Backlog-Predictivo-";
+        $data = $this->session->userdata();
+        log_message('DEBUG','#Main/index | Calendario >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+    
+        if(empty($data['user_data'][0]['usrName'])){
+            log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+            $var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+            $this->session->set_userdata($var);
+            $this->session->unset_userdata(null);
+            $this->session->sess_destroy();
+    
+            echo ("<script>location.href='login'</script>");
+    
+        }else{
+            $data['permission'] = $permission . "Correctivo-Preventivos-Backlog-Predictivo-";
 
-        $this->load->view('calendar/calendar1', $data);
+            $this->load->view('calendar/calendar1', $data);
+        }
     }
 
     public function getcalendarot() // Ok
@@ -33,20 +46,47 @@ class Calendario extends CI_Controller
     }
 
     public function getTablas() // Ok
-
     {
+        
         $mes = $this->input->post('mes');
         $year = $this->input->post('year');
         $permission = $this->input->post('permission');
         $data['mes'] = $mes;
         $data['year'] = $year;
+        
+        
+        // var_dump($data_extend);
+        
         $data['list0'] = $this->Calendarios->getPreventivosHoras($mes, $year);
         $data['list1'] = $this->Calendarios->getpredlist($mes, $year); // listo
         $data['list2'] = $this->Calendarios->getbacklog($mes, $year); // listo
         $data['list3'] = $this->Calendarios->getPreventivos($mes, $year); // listo
-        $data['list4'] = $this->Calendarios->getsservicio($mes, $year); // listo
+        //$data['list4'] = $this->Calendarios->getsservicio($mes, $year); // listo
+        //Buscar Bonita IdTarea para pode
+        //Completar Tareas con ID Solicitud y ID OT
+        //Nueva consulta Para traer los mismos datos de la bandeja de entrada
+		//Obtener Bandeja de Usuario desde Bonita
+		
+        $response = $this->bpm->getToDoList();
+		if($response['status']){
+            // Si trae datos une las tareas con las solicitudes
+            $data_extend = $this->Calendarios->getServicioTareas($response['data'],$mes,$year);
+            $data['list4'] = $data_extend; // listo
+        }
+        
         $data['permission'] = $permission;
 
+        
+        
+        log_message('DEBUG','#CALENDARIO >> getTablas() response >> '.json_encode($response));
+        log_message('DEBUG','#CALENDARIO >> getTablas() data_extend >> '.json_encode($data_extend));
+        log_message('DEBUG', '#CALENDARIO >> getTablas() $datos >> ' . $preventivosHoras);
+        log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list0] >> ' . json_encode($data['list0']));
+        log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list1] >> ' . json_encode($data['list1']));
+        log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list2] >> ' . json_encode($data['list2']));
+        log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list3] >> ' . json_encode($data['list3']));
+        log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list4] >> ' . json_encode($data['list4']));
+        
         //para cada preventivo
         if ($preventivosHoras) {
             $j = 0;
@@ -109,7 +149,7 @@ class Calendario extends CI_Controller
         $data = $this->input->post();
         //log_message('DEBUG', 'TRAZA | Data: '.json_decode($data));
 
-        $userdata = $this->session->userdata('user_data');
+        $userdata = $this->session->userdata('user_data');//linea repetida
         $usrId = $userdata[0]['usrId'];
         $empId = $userdata[0]['id_empresa'];
 
@@ -194,15 +234,16 @@ class Calendario extends CI_Controller
                     log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar | $taskId: ' . $infoTarea['taskId']);
                     if ($respCerrar['status']) {
                         $resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);
+                        // cambio de estado a PL de SServicio
+                        $this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);
                     } else {
                         log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar | Cerrar SS: ' . json_encode($respCerrar));
                         $error = true;
                         $estado = 'S';
+                        return msj(false, ASP_104);
                     }
                     // guardo el case_id en Otrabajo
                     $this->Calendarios->setCaseidenOT($infoTarea['caseId'], $idOTnueva);
-                    // cambio de estado a PL de SServicio
-                    $this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);
 
                     ////////////////////////////////////////////////////////////////////////
 

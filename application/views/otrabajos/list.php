@@ -299,7 +299,7 @@ $('#fechaEntrega,#fechaInicio, #fecha_inicio1, #fecha_inicio, #fecha_entrega1, #
 //   });
 // } 
 // llena el select de equipos - Ok 
-traer_equipo()
+//traer_equipo()
 
 function traer_equipo() {
     $.ajax({
@@ -2449,7 +2449,7 @@ function fillPrintView(datos, tipo) {
 
 // DATATABLE
 $('#otrabajo').DataTable({
-    <?php echo(!DT_SIZE_ROWS ? '"paging": false,' : null) ?>
+    <?php echo(!DT_SIZE_ROWS ? '"paging": true,' : null) ?>
 
     "aLengthMenu" : [10, 25, 50, 100],
     "columnDefs" : [{
@@ -4697,7 +4697,8 @@ function filtrar() {
         success: function(data) {
             WaitingClose();
             // $("#tbl_recepciones").removeAttr('style');
-            var table = $('table#otrabajo').DataTable();
+            var table = $('#otrabajo').DataTable();
+            //var table = $('table#otrabajo').DataTable();
             table.rows().remove().draw();
             if (data != null && data != ' null') {
                 var resp = JSON.parse(data);
