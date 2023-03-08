@@ -609,10 +609,11 @@ class  Equipo extends CI_Controller {
 
 
 	// Codifica nombre de imagen para no repetir en servidor
-	// elimino la extension para obtener solo el nombre y despues le agrego valores random mas la extension del archivo
+	// saco los espacios del nombre, elimino la extension para obtener solo el nombre y despues le agrego valores random mas la extension del archivo
 	function codificaNombreV2($nombre, $extension){
+		$nombreSinEspacios = strtr($nombre, " ", "_");
 		$long = strlen($extension) + 1; 
-		$newname = substr($nombre,0, -$long).rand(1,3000).".".$extension;
+		$newname = substr($nombreSinEspacios, 0 , -$long).rand(1,3000).".".$extension;
 		return $newname;
 	}
 

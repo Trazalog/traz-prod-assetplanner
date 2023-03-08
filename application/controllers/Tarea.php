@@ -104,9 +104,9 @@ class Tarea extends CI_Controller {
 			public function index($permission = null){
 
 				$data = $this->session->userdata();
-					log_message('DEBUG','#Main/index | Preventivo >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+					log_message('DEBUG','#TRAZA | TAREA | index() | UserId: '. $data['user_data'][0]['usrId'] ." ||| UserName: ". $data['user_data'][0]['usrName'] ." ||| id_empresa: ". $data['user_data'][0]['id_empresa']);
 
-					if(empty($data['user_data'][0]['usrName'])){
+					 if(empty($data['user_data'][0]['usrName'])){
 						log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
 						$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
 						$this->session->set_userdata($var);
@@ -117,30 +117,55 @@ class Tarea extends CI_Controller {
 
 					}else{
 
-
-
-				///$this->load->helper('control_sesion');
-				// if	(validaSesion()){
 						$detect = new Mobile_Detect();    				
 						//Obtener Bandeja de Usuario desde Bonita
-						$response = $this->bpm->getToDoList();
+					 	$response = $this->bpm->getToDoList();
 
-						log_message('DEBUG','#TRAZA | #Tarea/index()>> response '.json_encode($response));
-
-					
-						//dump($response, 'respuesta tareas BPM: ');
 						if(!$response['status']){
-							//$this->load->view('404');
 							return;
 						}
-						//Completar Tareas con ID Solicitud y ID OT
-						$data_extend = $this->Tareas->CompletarToDoList($response['data']);
-						// var_dump($data_extend);
+						
+						$empr_id = empresa();
+						$array=[];
+						$aux=[];
+						
+						//Filtra datos por empresa
+						foreach($response['data'] as $o){
+							if($this->Tareas->bandejaEmpresa($o['caseId'] , $empr_id)){
+								$aux['caseId'] = $o['caseId'];
+								$aux['displayDescription'] = $o['displayDescription'];
+								$aux['executedBy'] = $o['executedBy'];
+								$aux['rootContainerId'] = $o['rootContainerId'];
+								$aux['assigned_date'] = $o['assigned_date'];
+								$aux['displayName'] = $o['displayName'];
+								$aux['executedBySubstitute'] = $o['executedBySubstitute'];
+								$aux['dueDate'] = $o['dueDate'];
+								$aux['description'] = $o['description'];
+								$aux['type'] = $o['type'];
+								$aux['priority'] = $o['priority'];
+								$aux['actorId'] = $o['actorId'];
+								$aux['processId'] = $o['processId'];
+								$aux['name'] = $o['name'];
+								$aux['reached_state_date'] = $o['reached_state_date'];
+								$aux['rootCaseId'] = $o['rootCaseId'];
+								$aux['id'] = $o['id'];
+								$aux['state'] = $o['state'];
+								$aux['parentCaseId'] = $o['parentCaseId'];
+								$aux['last_update_date'] = $o['last_update_date'];
+								$aux['pema_id'] = $o['pema_id'];
+								$aux['ot'] = $o['ot'];
+								$aux['equipoDesc'] = $o['equipoDesc'];
+								$aux['sectorDesc'] = $o['sectorDesc'];
+								$aux['nomCli'] = $o['nomCli'];
+								$aux['usr_asignado'] = $o['usr_asignado'];
+								$aux['assigned_id'] = $o['assigned_id'];
 
-						log_message('DEBUG','#TRAZA | #Tarea/index()>> data_extend '.json_encode($data_extend));
-
-
-						$data['list'] = $data_extend;
+								$array[] = $aux; 
+							}
+						}
+						
+						//guardo en session todas las tareas filtradas por case_id
+						$_SESSION['listadoTareas'] = $array;
 						$data['permission'] = $permission;		
 
 						if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {								
@@ -149,8 +174,7 @@ class Tarea extends CI_Controller {
 							$data['device'] = "pc";				
 						}			
 						$this->load->view('tareas/list',$data);	
-				//}	
-					}		
+					}		 
 			}
 			// Verifica si la tarea fue guardada la fecha de inicio
 			public function confInicioTarea(){
@@ -842,6 +866,32 @@ class Tarea extends CI_Controller {
 		}else{
 			echo json_encode(['status'=>false, 'msj'=> 'Error al cerrar Tarea']);
 		}
+	}
+
+ 	/**
+	* Genera el listado de las tareas paginadas
+	* @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
+	* @return array listado paginado y la cantidad
+	*/
+	public function paginado(){
+		$start = $this->input->post('start');
+		$length = $this->input->post('length');
+		$search = $this->input->post('search')['value'];
+
+		$r = $this->Tareas->tareaspaginadas($start,$length,$search);
+	
+		$datos =$r['datos'];
+		$totalDatos = $r['numDataTotal'];
+		$datosPagina = count($datos);
+
+		$json_data = array(
+			"draw" 				=> intval($this->input->post('draw')),
+			"recordsTotal"  	=> intval($datosPagina),
+			"recordsFiltered"	=> intval($totalDatos),
+			"data" 				=> $datos
+		);
+		$result = json_encode($json_data);
+		echo $result;
 	}
 
 	
