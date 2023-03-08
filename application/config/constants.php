@@ -184,6 +184,7 @@ define('REST0', 'http://10.142.0.13:8280/services/ALMDataServiceAsset/');
 define('REST2', 'http://10.142.0.13:8280/services/ProduccionDataService');
 define('REST3', 'http://10.142.0.13:8280/services/produccionTest');
 define('REST4', 'http://10.142.0.13:8280/services/TrazabilidadDataService');
+define('REST_CORE', 'http://10.142.0.13:8280/services/COREDataService');
 
 
 

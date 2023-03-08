@@ -1031,4 +1031,75 @@ class Tareas extends CI_Model
         $query = $this->db->update('alm_pedidos_materiales');
         return $query;
     }
+
+    /**
+    * Devuelve correspondencua entre Case_id con Empresa
+    * @param
+    * @return bool true o false
+    */
+	function bandejaEmpresa($case_id, $empr_id)
+	{
+		$ci =& get_instance();
+		$aux = $ci->rest->callAPI("GET",REST_CORE."/assetbandeja/linea/validar/case_id/".$case_id."/empr_id/".$empr_id);
+		$aux =json_decode($aux["data"]);
+		
+		if ($aux->respuesta->case_id) {
+			return  true;
+		} else {
+			return  false;
+		}
+	}
+
+    /**
+	*Genera lista pedido de trabajo paginados
+	* @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
+	* @return array listado de tareas paginada, filtrada por empresa y la cantidad
+	**/
+    function tareaspaginadas($start, $length, $search){
+
+        //recupero tareas guardadas en session
+        $tareas = $_SESSION['listadoTareas'];
+ 
+        if($search){
+
+            $filtrado = [];
+            //completo todas las tareas primero para poder buscar en todas las paginas
+            $data = $this->CompletarToDoList($tareas);
+
+            foreach ($data as $d) {
+
+                //filtro por descripcion, equipo, id SS, id OT
+                if((strpos($d['displayDescription'], $search) !== false) || (strpos($d['equipoDesc'], $search) !== false) 
+                || (strpos($d['ss'], $search) !== false) || (strpos($d['ot'], $search) !== false)) 
+                {
+                    array_push($filtrado,$d);
+                }
+
+            }
+
+            $query_total = count($filtrado);
+
+            $tareasPaginadas = array_slice($filtrado, $start, $length);
+
+            $data = $tareasPaginadas; 
+        }else{
+            $query_total = count($tareas);
+
+            //armo las paginas con las tareas
+            $tareasPaginadas = array_slice($tareas, $start, $length);
+
+            //completo los datos de las tareas por pagina
+            $data = $this->CompletarToDoList($tareasPaginadas);
+        }
+
+        $result = array(
+            'numDataTotal' => $query_total,
+            'datos' => $data
+        );
+           
+        return $result;
+
+    }
+
+    
 }
