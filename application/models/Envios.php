@@ -10,10 +10,13 @@ class Envios extends CI_Model
 	
 	function envios_List(){
 
+			$empresa = empresa();
+
 			$this->db->select('orden_trabajo.*, sisusers.usrName,sucursal.descripc');
 			$this->db->from('orden_trabajo');
 			$this->db->join('sisusers', 'sisusers.usrId = orden_trabajo.id_usuario');
 			$this->db->join('sucursal', 'sucursal.id_sucursal = orden_trabajo.id_sucursal');
+			$this->db->where(" '$empresa' = orden_trabajo.id_empresa");
 			$this->db->group_by('orden_trabajo.id_orden');
 
 			
