@@ -352,7 +352,7 @@
       <param name="empr_id" sqlType="STRING"/>
    </query>
    <query id="validaBPMCaseYEmprAsset" useConfig="AssetPlannerDataSource">
-      <sql>select case_id&#xd;from assetv2.case_empresa&#xd; where case_id = cast(:case_id as INTEGER) &#xd; and empr_id = cast(:empr_id as INTEGER)</sql>
+      <sql>select case_id&#xd;from case_empresa&#xd; where case_id = cast(:case_id as INTEGER) &#xd; and empr_id = cast(:empr_id as INTEGER)</sql>
       <result outputType="json">{"respuesta":{ "case_id":"$case_id" }}</result>
       <param name="case_id" sqlType="STRING"/>
       <param name="empr_id" sqlType="STRING"/>
@@ -720,4 +720,3 @@
       </call-query>
    </resource>
 </data>
-
