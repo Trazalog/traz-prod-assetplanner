@@ -13,7 +13,9 @@ class Lote extends CI_Controller {
 
 	public function index()
 	{
-		log_message('DEBUG','#Main/index | Envio >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+		$data = $this->session->userdata();
+		log_message('DEBUG','#TRAZA | LOTE | index() | UserId: '. $data['user_data'][0]['usrId'] ." ||| UserName: ". $data['user_data'][0]['usrName'] ." ||| id_empresa: ". $data['user_data'][0]['id_empresa']);
+		//log_message('DEBUG','#Main/index | Envio >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
 	
 		if(empty($data['user_data'][0]['usrName'])){
 			log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
