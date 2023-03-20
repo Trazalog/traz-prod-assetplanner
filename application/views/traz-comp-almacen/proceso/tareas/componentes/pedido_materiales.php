@@ -261,6 +261,7 @@ debugger;
         },
         type: 'POST',
         dataType: 'json',
+        //url: '<?php echo base_url(ALM) ?>new/Pedido_Material/reLanzarPedidosErroneos', //activar para solucionar bug de pedido material sin case_id
         url: 'index.php/almacen/Notapedido/setNotaPedido',
         success: function(result) {
             $('#pema_id').val(result.pema_id);

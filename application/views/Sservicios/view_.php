@@ -30,8 +30,9 @@
               <div class="panel-body">
                 <div class="row">
                   <div class="col-xs-12 col-sm-6">Sector <strong style="color: #dd4b39">*</strong>
-                      <input type="text" class="form-control buscSector" placeholder="Buscar Sector..." id="buscSector" name="buscSector">
-                      <input type="text" class="hidden idSector" id="idSector" name="idSector">
+                      <select  id="sector" name="sector" class="form-control">
+                        <option value="-1" selected disabled>Seleccione opción</option>
+                      </select>                  
                   </div>
                   <div class="col-xs-12 col-sm-6">Equipos <strong style="color: #dd4b39">*</strong>
                     <select  id="equipo" name="equipo" class="form-control equipo">
@@ -130,73 +131,28 @@ var dataF = function () {
       'url': "Sservicio/getSector",
       'success': function (data) {
         tmp = data;
-      }
+        var $select = $("#sector");
+        for (var i = 0; i < data.length; i++) {
+          $select.append($('<option />', { value: data[i]['value'], text: data[i]['label'] }));
+        }
+      },
+      'error' : function(data){
+        console.log('Error en getSector');
+        console.table(data);
+      },
     });
     return tmp;
   }();
-  $(".buscSector").autocomplete({
-    source: dataF,
-    delay: 100,
-    minLength: 1,
-    /*
-    focus: function(event, ui) {
-      // prevent autocomplete from updating the textbox
-      event.preventDefault();
-      // manually update the textbox
-      $(this).val(ui.item.label);
-    },*/
-    change: function(event,ui){
-      // prevent autocomplete from updating the textbox
-      console.log('Change');
-      event.preventDefault();
-      console.log(ui.item);      
-      if(ui.item === null){
-        $("#equipo").html('<option value="-1" disabled selected>Seleccione opción</option>');
-        $("#idSector").val('');
-        alert("Debe seleccionar un Sector");
-      }else{
-        $("#idSector").val(ui.item.value);
-        $(this).val(ui.item.label);
-        $("#equipo").html('<option value="-1" disabled selected>Seleccione opción</option>');
-        // guardo el id de sector
-        var idSect =  $("#idSector").val();
-        if(idSect && idSect != '')
-          getEquiSector(idSect);
-        else
-          alert("Debe seleccionar un sector");
-      }
-    },
-    select: function(event, ui) {
-      // prevent autocomplete from updating the textbox
-      console.log('Select');
-      event.preventDefault();
-      // manually update the textbox and hidden field
-      console.log(ui.item);
-      if(ui.item === null){
-        $("#equipo").html('<option value="-1" disabled selected>Seleccione opción</option>');
-        $("#idSector").val('');
-      }else{
-        $("#idSector").val(ui.item.value);
-        $(this).val(ui.item.label);
-        $("#equipo").html('<option value="-1" disabled selected>Seleccione opción</option>');
-        // guardo el id de sector
-        var idSect =  $("#idSector").val();
-        getEquiSector(idSect);
-      }
-      /*$(this).val(ui.item.label);
-      $("#idSector").val(ui.item.value);
-      $("#equipo").html('<option value="-1" disabled selected>Seleccione opcion</option>');
-      // guardo el id de sector
-      var idSect =  $("#idSector").val();
-      getEquiSector(idSect);
-      //console.log("id sector en autocompletar: ");
-      //console.log(ui.item.value);
-      */
-    },
-  }); 
+  
+  $("#sector").change(function(){
+      var idSector = $("#sector").val();
+      getEquiSector(idSector);
+  });
+
   //  llena select de equipos segun sector
   function getEquiSector(idSect){
     var id =  idSect;
+    $("#equipo").html("");
     $("#area").val("");
     $("#proceso").val("");
     $("#descripcion").val("");
@@ -211,10 +167,15 @@ var dataF = function () {
       'success': function (data) {
         console.table(data);//[0]['id_equipo']);
         // Asigna opciones al select Equipo en modal
-        console.log("length: "+data.length);
-        var $select = $("#equipo");
-        for (var i = 0; i < data.length; i++) {
-          $select.append($('<option />', { value: data[i]['id_equipo'], text: data[i]['descripcion'] }));
+        //console.log("length: "+data.length);
+        var opcion = "<option value='-1'>Seleccione...</option>" ;
+        $('#equipo').append(opcion);
+        if(data){
+            for (var i = 0; i < data.length; i++) {
+            var nombre = data[i]['descripcion'];
+            var opcion = "<option value='"+data[i]['id_equipo']+"'>" +nombre+ "</option>" ; 
+            $('#equipo').append(opcion);  
+          }
         }
       },
       'error' : function(data){
