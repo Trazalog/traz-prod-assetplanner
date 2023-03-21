@@ -28,5 +28,15 @@ class Pedido_Material extends CI_Controller {
      $data['permission'] = 'View';
      $this->load->view(ALM.'/notapedido/list', $data);
    }
+ 
+   //script para relanzar pedidos erroneos con case_id en null
+  /**
+	* reLanza Pedidos de materiales Erroneos 
+	* @param array
+	* @return 
+	*/
+   public function reLanzarPedidosErroneos(){
+    $this->Pedidos_Materiales->reLanzaPedidosErroneos();
+   }
 }
 ?>
