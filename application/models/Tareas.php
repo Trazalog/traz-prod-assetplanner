@@ -830,9 +830,9 @@ class Tareas extends CI_Model
         return $respuesta;
     }
     // Agrega datos desde BPM y BD local
-    public function CompletarToDoList($data)
+    public function CompletarToDoList($data , $search = '')
     {
-
+        $filtrado = [];
         foreach ($data as $key => $value) {
 
             if ($value['processId'] == BPM_PROCESS_ID_PEDIDOS_NORMALES) {
@@ -855,14 +855,32 @@ class Tareas extends CI_Model
 				$data[$key]['nomCli'] = $res->nomCli;
 				
 				$data = $this->infoUser($data, $key);
-
+                if($search){
+                    if((strpos(strtoupper($data[$key]['displayDescription']), strtoupper($search)) !== false) 
+                    || (strpos(strtoupper($data[$key]['equipoDesc']), strtoupper($search)) !== false) 
+                    || (strpos($data[$key]['ss'], $search) !== false) 
+                    || (strpos($data[$key]['ot'], $search) !== false) 
+                    || (strpos($data[$key]['pema_id'], $search) !== false) )
+                    {
+                        array_push($filtrado,$data[$key]);
+                    }
+                }
                 continue;
             }
 
+            
             if ($value['processId'] == BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS) {
                 $res = $this->db->get_where('alm_pedidos_extraordinario', ['case_id' => $value['caseId']])->row();
                 $data[$key]['pema_id'] = $res->peex_id;
                 $data[$key]['ot'] = $res->ortr_id;
+                if($search){
+
+                if((strpos($data[$key]['ot'], $search) !== false) 
+                || (strpos($data[$key]['pema_id'], $search) !== false) )
+                    {
+                        array_push($filtrado,$data[$key]);
+                    }
+                }
                 continue;
             }
 
@@ -954,13 +972,35 @@ class Tareas extends CI_Model
                     $data[$key]['displayDescription'] = $res->causa;
                 }
             }
+            log_message('DEBUG','#Main/mostratemaster |  ');
+
             // si existe OT
             $data = $this->infoUser($data, $key);
-
+            
+            //BUSQUEDA
+            //filtro por descripcion, equipo, id SS, id OT, id pp 
+            if($search){
+                if((strpos(strtoupper($data[$key]['displayDescription']), strtoupper($search)) !== false) 
+                || (strpos(strtoupper($data[$key]['equipoDesc']), strtoupper($search)) !== false) 
+                || (strpos($data[$key]['ss'], $search) !== false) 
+                || (strpos($data[$key]['ot'], $search) !== false) 
+                || (strpos($data[$key]['pema_id'], $search) !== false) )
+                {
+                    array_push($filtrado,$data[$key]);
+                }
+            }
         }
+		log_message('DEBUG','#Main/BUSCADOR |  '.json_encode($filtrado));
 
-        return $data;
-    }
+        if($search){
+            return $filtrado;
+        }
+        else{
+            return $data;
+        }
+    } 
+    
+
     /*     ./ TAREAS BPM */
 
     public function infoUser($data, $key)
@@ -1062,20 +1102,8 @@ class Tareas extends CI_Model
  
         if($search){
 
-            $filtrado = [];
             //completo todas las tareas primero para poder buscar en todas las paginas
-            $data = $this->CompletarToDoList($tareas);
-
-            foreach ($data as $d) {
-
-                //filtro por descripcion, equipo, id SS, id OT
-                if((strpos($d['displayDescription'], $search) !== false) || (strpos($d['equipoDesc'], $search) !== false) 
-                || (strpos($d['ss'], $search) !== false) || (strpos($d['ot'], $search) !== false)) 
-                {
-                    array_push($filtrado,$d);
-                }
-
-            }
+            $filtrado = $this->CompletarToDoList($tareas, $search);
 
             $query_total = count($filtrado);
 

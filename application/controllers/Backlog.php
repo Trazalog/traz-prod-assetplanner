@@ -315,6 +315,16 @@ class Backlog extends CI_Controller {
 		echo json_encode($result);	
 	}
 
+	//Cambia de estado a "B" - BORRADO LOGICO
+	public function baja_backlog_estado_Borrado(){
+	
+		$idpre=$_POST['gloid'];
+		
+		$datos = array('estado'=>"B");
+		$result = $this->Backlogs->update_back($datos, $idpre);
+		echo json_encode($result);	
+	}
+
 	// Carga vista para backolg nuevo - Listo
 	public function cargarback($permission){ 
 		$data['permission'] = $permission;       

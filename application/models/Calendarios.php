@@ -374,9 +374,11 @@ class Calendarios extends CI_Model {
         $this->db->order_by('periodo.descripcion');
         $query = $this->db->get();
         if($query->num_rows()>0){
+            log_message('DEBUG','#Main/index | getperiodos >> true ');
             return $query->result();
         }
         else{
+            log_message('DEBUG','#Main/index | getperiodos >> false');
             return false;
         }
     }

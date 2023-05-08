@@ -119,7 +119,7 @@
 var gloid = "";
 
 $(document).ready(function(event) {
-
+ 
     edit = 0;
     datos = Array();
     $('#btnAgre').click(function cargarVista() {
@@ -130,14 +130,13 @@ $(document).ready(function(event) {
         WaitingClose();
     });
 
-    //Eliminar - Chequeado
+  //Eliminar backlog - Chequeado
     $(".fa-times-circle").click(function(e) {
         var idpre = $(this).parent('td').parent('tr').attr('id');
         console.log("ESTOY ELIMINANDO , el id de back es:");
         console.log(idpre);
         gloid = idpre;
-    });
-
+    }); 
     //Editar - Busca los datos de backlog por id - Chequeado
     $(".fa-pencil").click(function(e) {
 
@@ -220,14 +219,14 @@ $(document).ready(function(event) {
 
 //Eliminar - Chequeado     
 function eliminarpred() {
-
+   
     var idpre = $(this).parent('td').parent('tr').attr('id');
     $.ajax({
         type: 'POST',
         data: {
             gloid: gloid
         },
-        url: 'index.php/Backlog/baja_backlog',
+        url: 'index.php/Backlog/baja_backlog_estado_Borrado',
         success: function(data) {
 
             Refrescar1();
@@ -699,7 +698,6 @@ function Refrescar1() {
 
     $('#content').empty();
     // $('#modalSale').empty();
-    // $('#modalaviso').empty();
     $("#content").load("<?php echo base_url(); ?>index.php/Backlog/index/<?php echo $permission; ?>");
     // WaitingClose();
     WaitingClose();
@@ -810,7 +808,34 @@ function recargaTablaAdjunto(backAdjunto) {
     $('#accionAdjunto').html(accion);
 }
 </script>
-
+<!-- Modal Precaucion Eliminar -->
+<div class="modal" id="modalaviso">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><span class="fa fa-fw fa-times-circle" style="color:#A4A4A4"></span>
+                        Eliminar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <center>
+                        <h4>
+                            <p>¿ DESEA ELIMINAR BACKLOG ?</p>
+                        </h4>
+                    </center>
+                </div>
+                <div class="modal-footer">
+                    <center>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"
+                            onclick="eliminarpred()">SI</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">NO</button>
+                    </center>
+                </div>
+            </div>
+        </div>
+    </div>
 
 <!-- Modal Editar -->
 <div class="modal fade" id="modalSale" tabindex="2000" aria-labelledby="myModalLabel" style="display: none;">
@@ -1093,34 +1118,7 @@ function recargaTablaAdjunto(backAdjunto) {
         </div>
     </div>
 
-    <!-- Modal Precaucion Eliminar -->
-    <div class="modal fade" id="modalaviso">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><span class="fa fa-fw fa-times-circle" style="color:#A4A4A4"></span>
-                        Eliminar</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <center>
-                        <h4>
-                            <p>¿ DESEA ELIMINAR BACKLOG ?</p>
-                        </h4>
-                    </center>
-                </div>
-                <div class="modal-footer">
-                    <center>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal"
-                            onclick="eliminarpred()">SI</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">NO</button>
-                    </center>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 
     <!--------------- MODALES ADJUNTO ------------->
     <!-- Modal Eliminar Adjunto -->
