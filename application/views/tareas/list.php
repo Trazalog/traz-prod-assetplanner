@@ -87,36 +87,7 @@ $(document).ready(function(){
    'initComplete':function( settings, json ) {
          WaitingClose();
     },
-  /*   "fnDrawCallback": function( oSettings ) {
-        $('.dataTables_filter input').attr("id", "sSearch");
-        if($('#sSearch').val()){
-            msjBusqueda();
-        }
-        setTimeout(function(){
-            //$('.overlay>.fa').css('top','50%');
-            $('.overlay').css('background','rgb(247 247 247 / 70%)');
-            WaitingClose();
-        }, 1000); 
-    }, */
-   /*  "drawCallback": function( settings ) {
-     
-    WaitingClose();  */
-     /*   var api = this.api();
-        $('.dataTables_filter input').keyup(function() {
-            msjBusqueda(function(){
-    }, 1000 );
-    });
-    */
-
-     /*    $('.dataTables_filter input').attr("id", "sSearch");
-        if($('#sSearch').val()){
-            msjBusqueda();
-        }
-        WaitingClose(); */
-    //console.log(settings);
-        // Output the data for the visible rows to the browser's console
-      //  console.log( api.rows( {page:'current'} ).data() );
-    //},
+  
     'searchDelay': 3000,
     'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
     'paging' : true,
@@ -304,11 +275,11 @@ $(document).ready(function(){
     createdRow:function( row, data, dataIndex ) {
         var id = data['id'];
         var processId = data['processId'];
-        var proc=tagProceso(processId);
+        var proc = tagProceso(processId);
         $(row).attr('id', id);
         $(row).attr('class', id);
         $(row).attr('style', 'cursor:pointer');
-        $(row).attr('tags', proc);
+        $(row).attr('tags', (proc) ? proc : '' );
         $(row).attr('onclick', 'detalleTarea(this)');
     },
     }); 
@@ -419,9 +390,11 @@ function bolita(texto, color, detalle = null)
 
 function tagProceso($id)
     {
+        
         if($id == '<?php echo BPM_PROCESS_ID_PEDIDOS_NORMALES ?>') return '#pedidoMaterial';
 
         if($id == '<?php echo BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS ?>') return '#pedidoMaterial#extraordinario';
+
     }
 
 function msjBusqueda(){
