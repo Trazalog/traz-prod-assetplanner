@@ -49,7 +49,8 @@ class Ordenservicios extends CI_Model {
 
 		function getEquipos($data) // FUNCIONA BIEN 
     {
-        $id = $data['id_equipo'];       
+        $id = $data['id_equipo']; 
+        log_message('DEBUG','#Main/index | OrdenServicio >getEquipo> id_equipo '.$data);
         $this->db->select('
             equipos.codigo AS nomb_equipo,                
             equipos.descripcion AS desc_equip,

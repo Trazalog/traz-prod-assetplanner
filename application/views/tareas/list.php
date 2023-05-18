@@ -52,56 +52,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-              <!--          <?php                
-                foreach($list as $f){
-                //   var_dump($list);
-                  $id=$f["id"];
-                  $asig = $f['assigned_id'];
-                  $fechaasig = substr($f['assigned_date'], 0, 10);
-                  $horaasig = substr($f['assigned_date'],10);
-
-                //    if (strpos($permission,'Add') !== false) {
-                    echo '<tr id="'.$id.'" class="'.$id.'" style="cursor: pointer;" tags="'.tagProceso($f['processId']).'" onclick="detalleTarea(this)">';
-                //    }else{
-                    //  echo '<tr id="'.$id.'" class="'.$id.'" style="cursor: pointer;" tags="'.tagProceso($f['processId']).'">';
-                //    }
-                   
-
-                  if ( $asig != "")  {
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea text-center"').'><i class="fa fa-user" style="color: #5c99bc ; cursor: pointer;"" title="Asignado" data-toggle="modal" data-target="#modalSale"></i></td>';
-                  }else{
-                    echo '< '.($device == 'android' ? 'class= "celda nomTarea hidden"' :'class= "celda nomTarea text-center"').'>< class="fa fa-user" style="color: #d6d9db ; cursor: pointer;"" title="Sin Asignar" data-toggle="modal" data-target="#modalSale"></i></td>';
-                  }
-                  
-                    echo '</td>';
-
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$f['usr_asignado'].'</td>'; 
-
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$f['assigned_date'].'</td>'; 
-
-                    /*echo'<td '.($device == 'android' ? 'class= "celda nomTarea tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$horaasig.'</td>'; */
-                    
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea  tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.($f['equipoDesc'] == 'null') ? ' ' : $f['equipoDesc'].'</td>';
-                    
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea  tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$f['sectorDesc'].'</td>';
-
-                    echo '<td '.($device == 'android' ? 'class= "celda nomTarea  tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.$f['nomCli'].'</td>';
-                    
-                    echo '<td class="celda nomTarea" style="text-align: left">'.$f['displayName'].'</td>';  
-                     
-                    echo '<td class="celda tareaDesc '.($device == 'android' ? 'hidden':null).'" style="text-align: left">'.substr($f['displayDescription'],0,500).'</td>';                
-                      
-
-                    echo '<td class= "celda nomTarea text-center">'. ($f['ss'] == 'undefined') ? bolita($f['ss'],'blue') : " " .'</td>';   
-                    
-                    echo '<td class= "celda nomTarea text-center">'. ($f['ot'] == null) ? " " : bolita($f['ot'],'orange') .'</td>';                  
-                  
-                    echo '<td class= "celda nomTarea text-center">'. ($f['pema_id'] != null) ? bolita($f['pema_id'],'green') : " " .'</td>';                  
-                    
-                    echo '</tr>';
-
-                }
-              ?>  -->
+                                <!-- Redefinicion body de tabla en script de datatable abajo -->
 
                             </tbody>
                         </table>
@@ -132,23 +83,22 @@
 <script>
 
 $(document).ready(function(){
-   
-   /*  $.ajax({
-        type: 'POST',
-        url:'index.php/Tarea/paginado',
-        success: function(result) {
-                            console.log(result);
-                           
-                        },
-    });   */
     $('#bandeja').DataTable({
+   'initComplete':function( settings, json ) {
+         WaitingClose();
+    },
+  
+    'searchDelay': 3000,
     'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
     'paging' : true,
-    'processing':true,
+    'processing':   WaitingOpen()/* true */,
     'serverSide': true,
     'ajax':{
         type: 'POST',
         url: 'index.php/Tarea/paginado',
+        beforeSend: function(){
+            msjBusqueda();
+          },
     },
     'columnDefs':[
         {
@@ -158,7 +108,7 @@ $(document).ready(function(){
         },
         {
             'targets':[0],
-             'createdCell':  function (td, cellData, rowData, row, col) {
+             'createdCell':  function (td, cellData, rowData, row, col) { 
                     var device ="<?php  echo $device ?>"; 
                     var asig = row['assigned_id'];
                     if( asig != ""){
@@ -172,11 +122,16 @@ $(document).ready(function(){
             }, 
             'data':'Estado',
             'render':function(data,type,row){
+                $('.dataTables_filter input').keyup(function() {
+                    msjBusqueda(function(){
+                }, 1000 );
+                });
+        WaitingClose(); 
                 var id = row['id'];
                 var asig = row['assigned_id'];
                 var processId = row['processId'];
                 var device ="<?php  echo $device ?>";
-                r = '<tr';
+                r = '<tr>';
                 if( asig != ""){
                     r =  `<td> <i class="fa fa-user" style="color: #5c99bc ; cursor: pointer;"" title="Asignado" data-toggle="modal" data-target="#modalSale"></i></td>` 
                 }
@@ -319,14 +274,14 @@ $(document).ready(function(){
     //agregado de data-json al tr de la tabla
     createdRow:function( row, data, dataIndex ) {
         var id = data['id'];
-        //var processId = data['processId'];
+        var processId = data['processId'];
+        var proc = tagProceso(processId);
         $(row).attr('id', id);
         $(row).attr('class', id);
         $(row).attr('style', 'cursor:pointer');
-        $(row).attr('tags', 'tagProceso(processId)');
+        $(row).attr('tags', (proc) ? proc : '' );
         $(row).attr('onclick', 'detalleTarea(this)');
-
-        }, 
+    },
     }); 
 });
 
@@ -431,5 +386,23 @@ function offline() {
 function bolita(texto, color, detalle = null)
 {
     return `<span data-toggle='tooltip' title='${detalle}' class='badge bg-${color} estado'>${texto}</span>`;
+}
+
+function tagProceso($id)
+    {
+        
+        if($id == '<?php echo BPM_PROCESS_ID_PEDIDOS_NORMALES ?>') return '#pedidoMaterial';
+
+        if($id == '<?php echo BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS ?>') return '#pedidoMaterial#extraordinario';
+
+    }
+
+function msjBusqueda(){
+      /*   $('#waitingText').css('color','black');*/
+        $('.overlay>.fa').css('top','20%');
+        $('.overlay').css('background','rgb(247 247 247 / 40%)');  
+       /* SIM  WaitingOpen('El volumen de datos es muy grande, espere mientras se procesa la búsqueda. Gracias por su paciencia'); */
+        WaitingOpen('Cargando...');
+
 }
 </script>
