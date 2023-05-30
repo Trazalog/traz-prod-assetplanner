@@ -337,7 +337,7 @@
                     echo '<i class="fa fa-check-square" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-backlog" onclick="fill_Backlog('.$b['backId'].')"></i>';
                   }else{
                     echo '<i class="fa fa-check-square-o" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden Generada"></i>';
-                  }                
+                  }
                
                 echo "</td>";
                 // 1 // id equipo
