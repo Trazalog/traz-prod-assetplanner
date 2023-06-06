@@ -42,6 +42,7 @@ class  Equipo extends CI_Controller {
 	public function paginado(){//server side processing
 
 					$start = $this->input->post('start');
+					//$start = 40;
 					$length = $this->input->post('length');
 					$search = $this->input->post('search')['value'];
 
