@@ -721,14 +721,13 @@ class Calendario extends CI_Controller
     {
         log_message('DEBUG','#Controller/Calendario | getperiodos ');
         $periodo = $this->Calendarios->getperiodo($this->input->post());
-        log_message('DEBUG','#Controller/Calendario | getperiodos '.print_r($periodo));
         if ($periodo) {
             $arre = array();
             foreach ($periodo as $row) {
                 $arre[] = $row;
             }
+            log_message('DEBUG','#Main/index | Periodos >> data '.json_encode($arre)); 
             echo json_encode($arre);
-            log_message('DEBUG','#Main/index | Periodos >> data '.json_encode($arre));
         } else {
             echo "nada";
         }
