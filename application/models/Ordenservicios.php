@@ -149,7 +149,7 @@ class Ordenservicios extends CI_Model {
             $equipos[$i]['value'] = $row->usrId;
             $i++;
         }
-        return $equipos; 
+        return $equipos;
     }
 
 		function getRRHHOrdenTrabajo($idOT){

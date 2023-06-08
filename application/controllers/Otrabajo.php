@@ -1165,14 +1165,14 @@ class Otrabajo extends CI_Controller {
 
 						// si viene tarea opcional se actualiza, sino queda la original
 						if($tarOpc != null){
-							echo"tarOpc: ";
-							var_dump($tarOpc);
-							echo "entre por 1";
+							// echo"tarOpc: ";
+							// var_dump($tarOpc);
+							// echo "entre por 1";
 							$datos = array( 'id_tarea' =>$id_tarea,
 											'descripcion' =>$tarOpc,
 											'id_usuario_a'=>$usrId);
 						}else{
-							echo "entre por 2";
+							// echo "entre por 2";
 							$datos = array( 'id_tarea' =>$id_tarea,
 											'id_usuario_a'=>$usrId);
 						}

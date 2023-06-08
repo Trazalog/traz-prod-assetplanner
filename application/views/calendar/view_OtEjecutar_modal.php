@@ -43,49 +43,71 @@
                      <div role="tabpanel" class="tab-pane active" id="detalle">
                        <div class="row">
                         <table id="tblOrden">
-                            <thead>
-                                <th>F. Prog</th>
-                                <th>Nº Orden</th>
-                                <th>Tipo</th>
-                                <th>Nº Tarea</th>
-                                <th>Desc. Tarea</th>
-                                <!-- <th>Origen</th> -->
-                                <th>Duracion</th>
-                                <th>Frec.</th>
-                                <!-- <th>Nº Solicitud Origen</th> -->
-																															<?php // si no tiene componennte no muestra columnas
-																																	if ( isset($componente['codCompo']) && $componente['codCompo']!= null ) { ?>
-																																<th>Codigo Componente</th>
-                                <th>Desc. Comp.</th>
-																															<?php } ?>
-                                <th>Codigo de Equipo</th>
-                                <th>Desc. Equipo</th>
-                            </thead>
-                            <tbody class="text-center">
-                                <?php
+																									<thead>
+																													<th>F. Prog</th>
+																													<th>Nº Orden</th>
+																													<th>Tipo</th>
+																													<th>Nº Tarea</th>
+																													<th>Desc. Tarea</th>
+																													<!-- <th>Origen</th> -->
+																													<th>Duracion</th>
+																													<th>Frec.</th>
 
-                                 echo '<td>'.$detaOT[0]["fecha_program"].'</td>';
-                                 if ($detaOT[0]['id_orden'] != NULL) {
-                                   echo '<td>'.$detaOT[0]['id_orden'].'</td>';
-                                 } else {
-                                   echo '<td> </td>';
-                                 }
-                                 //dump($detaOT[0], 'datos de ot: ');
-                                 
-                                 echo '<td>'.$detaOT[0]["descrpcionSolicitud"].'</td>';
-                                 echo '<td>'.$detaOT[0]["id_solicitud"].'</td>';
-                                 echo '<td>'.$detaOT[0]['descripcion'].'</td>';
-                                 echo '<td>'.$infoSolicOrigen[0]["duracionTarea"]." ".$infoSolicOrigen[0]["unidaddescrip"] .'</td>';
-                                 echo '<td>'.$infoSolicOrigen[0]['frecuencia'].'</td>';
-																																	// si no tiene componennte no muestra columnas
-																																	if ( isset($componente['codCompo']) && $componente['codCompo']!= null ) {
-																																			echo '<td>'.$componente['codCompo'].'</td>';
-																																			echo '<td>'.$componente['descCompo'].'</td>';
-																																	}
-                                 echo '<td>'.$detaOT[0]['codigo'].'</td>';
-                                 echo '<td>'.$detaOT[0]['descripcionEquipo'].'</td>';
-                               ?>
-                            </tbody>
+																													<!-- <th>Nº Solicitud Origen</th> -->
+																												<?php // si no tiene componente no muestra columnas
+																														if ( isset($componente['descCompo']) && 		 $componente['descCompo']!= null ) {
+
+																																if(isset($componente['codigo']) && 										$componente['codigo']!= null){ ?>
+																																	<!-- <th>Codigo Componente</th> -->
+																												<?php	}  ?>
+
+																													<th>Desc. Comp.</th>
+																												<?php } ?>
+
+																													<th>Codigo de Equipo</th>
+																													<th>Desc. Equipo</th>
+																									</thead>
+																									<tbody class="text-center">
+																											<?php
+																												// fecha programacion
+																												echo '<td>'.$detaOT[0]["fecha_program"].'</td>';
+
+																												// nº orden
+																												if ($detaOT[0]['id_orden'] != NULL) {
+																														echo '<td>'.$detaOT[0]['id_orden'].'</td>';
+																												} else {
+																														echo '<td> </td>';
+																												}
+																												//dump($detaOT[0], 'datos de ot: ');
+																												// tipo orden
+																												echo '<td>'.$detaOT[0]["descrpcionSolicitud"].'</td>';
+
+																												// nº tarea
+																												echo '<td>'.$detaOT[0]["id_solicitud"].'</td>';
+
+																												//descripcion Tarea
+																												echo '<td>'.$detaOT[0]['descripcion'].'</td>';
+
+																												//duracion
+																												echo '<td>'.$infoSolicOrigen[0]["duracionTarea"]." ".$infoSolicOrigen[0]["unidaddescrip"] .'</td>';
+
+																												// frecuencia
+																												echo '<td>'.$infoSolicOrigen[0]['frecuencia'].'</td>';
+
+																												// si no tiene componennte no muestra columnas
+																												if ( isset($componente['descCompo']) && $componente['descCompo']!= null ) {
+
+																															if(isset($componente['codigo']) && 										$componente['codigo']!= null){
+																																	echo '<td>'.$componente['codCompo'].'</td>';
+																															}
+																															
+																														echo '<td>'.$componente['descCompo'].'</td>';
+																												}
+																												// equipo codigo y descripcion
+																												echo '<td>'.$detaOT[0]['codigo'].'</td>';
+																												echo '<td>'.$detaOT[0]['descripcionEquipo'].'</td>';
+																										?>
+																									</tbody>
                         </table>
                        </div><!-- /.row -->
                      </div>
@@ -200,9 +222,16 @@
  </div>
 </section>
 <script>
-DataTable('#tblOrden');
+	//DataTable('#tblOrden');
 
+	$(document).ready(function() {
 
+					// Ajusta columnas de modal Ejecutar OT
+					$('#modalInforme').on('shown.bs.modal', function(e) {
+									// recalcula el ancho de las columnas
+									$($.fn.dataTable.tables(true)).DataTable().columns.adjust();
+					})
+});
 //validarTarea();
 
 // function validarTarea() {

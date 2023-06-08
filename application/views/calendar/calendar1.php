@@ -428,6 +428,8 @@ $('#predictivo').DataTable({
     }
 });
 
+
+
 ///// Datepicker para modales
 $("#fecha_progr_pred").datepicker({
     Format: 'dd/mm/yy',
@@ -820,136 +822,136 @@ $("#fecha_progr_prevent_horas").datepicker({
 //////////  / PREVENTIVO POR HORAS 
 
 //////////  BACKLOG (Listoooo)
-var id_de_tar = "";
-var fec_sol_back = "";
-var desc_tarea_back = "";
-var id_back = "";
-var id_equi = "";
-var duracion = "";
+	var id_de_tar = "";
+	var fec_sol_back = "";
+	var desc_tarea_back = "";
+	var id_back = "";
+	var id_equi = "";
+	var duracion = "";
 
-function fill_Backlog(dato) {
-    console.log('Rellenar Backlog...');
-    $.ajax({
-        type: 'POST',
-        data: {
-            id: dato
-        },
-        url: 'index.php/Calendario/getBackPorId',
-        success: function(data) {
+	function fill_Backlog(dato) {
+					console.log('Rellenar Backlog...');
+					$.ajax({
+									type: 'POST',
+									data: {
+													id: dato
+									},
+									url: 'index.php/Calendario/getBackPorId',
+									success: function(data) {
 
-            id_de_tar = data[0]['id_tarea'];
-            fec_sol_back = data[0]['fecha'];
-            id_back = data[0]['backId'];
-            id_equi = data[0]['id_equipo'];
-            //tarea = data[0]['descripcion'];
-            id_sol = data[0]['sore_id'];
-            duracion = data[0]['back_duracion'];
-            // si tiene tarea estandar grava eso sino la tarea custom
-            if (id_de_tar <= 0) {
-                desc_tarea_back = data[0]['tarea_opcional'];
-            } else {
-                desc_tarea_back = data[0]['tareadesc'];
-            }
-            alert("Se ha guardado Correctamente");
-        },
-        error: function(data) {
+													id_de_tar = data[0]['id_tarea'];
+													fec_sol_back = data[0]['fecha'];
+													id_back = data[0]['backId'];
+													id_equi = data[0]['id_equipo'];
+													//tarea = data[0]['descripcion'];
+													id_sol = data[0]['sore_id'];
+													duracion = data[0]['back_duracion'];
+													// si tiene tarea estandar grava eso sino la tarea custom
+													if (id_de_tar <= 0) {
+																	desc_tarea_back = data[0]['tarea_opcional'];
+													} else {
+																	desc_tarea_back = data[0]['tareadesc'];
+													}
+													alert("Se ha guardado Correctamente");
+									},
+									error: function(data) {
 
-            console.log(data);
-        },
-        dataType: 'json'
-    });
-}
+													console.log(data);
+									},
+									dataType: 'json'
+					});
+	}
 
-function setOtBacklog() {
-    var progr_back = $('#fecha_progr_back').val();
-    var hora_progr_back = $('#hora_progr_back').val();
+	function setOtBacklog() {
+					var progr_back = $('#fecha_progr_back').val();
+					var hora_progr_back = $('#hora_progr_back').val();
 
-    var isExecuted = validarHorario(progr_back,hora_progr_back);
+					var isExecuted = validarHorario(progr_back,hora_progr_back);
 
-    console.log('Excute: '+isExecuted); 
+					console.log('Excute: '+isExecuted); 
 
-    if(isExecuted){
+					if(isExecuted){
 
-        $.ajax({
-            type: 'POST',
-            data: {
-                event_tipo: 1, // evento unico
-                id_sol: id_back,
-                id_tarea: id_de_tar,
-                fecha_progr: progr_back,
-                hora_progr: hora_progr_back,
-                fecha_inicio: fec_sol_back,
-                descripcion: desc_tarea_back,
-                tipo: 4, // backlog
-                ide: id_equi,
-                duracion: duracion
-            },
-            url: 'index.php/Calendario/guardar_agregar',
-            success: function(data) {
-            
-                setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
-                alert("Se ha guardado Correctamente");
-            },
-            error: function(result) {
-                console.log(result);
-            }
-        });
-    }else{
-        alert('Escoga un nuevo horario o fecha');
-    }
-}
+									$.ajax({
+													type: 'POST',
+													data: {
+																	event_tipo: 1, // evento unico
+																	id_sol: id_back,
+																	id_tarea: id_de_tar,
+																	fecha_progr: progr_back,
+																	hora_progr: hora_progr_back,
+																	fecha_inicio: fec_sol_back,
+																	descripcion: desc_tarea_back,
+																	tipo: 4, // backlog
+																	ide: id_equi,
+																	duracion: duracion
+													},
+													url: 'index.php/Calendario/guardar_agregar',
+													success: function(data) {
+													
+																	setTimeout("cargarView('Calendario', 'indexot', '" + $('#permission').val() + "');", 0);
+																	alert("Se ha guardado Correctamente");
+													},
+													error: function(result) {
+																	console.log(result);
+													}
+									});
+					}else{
+									alert('Escoga un nuevo horario o fecha');
+					}
+	}
 
-function CancBacklog() {
-    id_de_tar = "";
-    fec_sol_back = "";
-    desc_tarea_back = "";
-    id_back = "";
-    id_equi = "";
-}
+	function CancBacklog() {
+					id_de_tar = "";
+					fec_sol_back = "";
+					desc_tarea_back = "";
+					id_back = "";
+					id_equi = "";
+	}
 //////////  / BACKLOG ()
 
 //////////  PREDICTIVO ()
 
-// Variables globales para llenar al enviar
-var tarea_descrip = ""; //id tarea
-var idp = ""; // id predictivo
-var ide = ""; // id equipo
-var fecha_inicio = "";
-var descripTarea = "";
+	// Variables globales para llenar al enviar
+	var tarea_descrip = ""; //id tarea
+	var idp = ""; // id predictivo
+	var ide = ""; // id equipo
+	var fecha_inicio = "";
+	var descripTarea = "";
 
-function fill_Predictivo(dato) {
-    $.ajax({
-        type: 'POST', //parametros:parametros
-        data: {
-            id: dato
-        },
-        url: 'index.php/Calendario/getPredictPorId',
-        success: function(data) {
+	function fill_Predictivo(dato) {
+					$.ajax({
+									type: 'POST', //parametros:parametros
+									data: {
+													id: dato
+									},
+									url: 'index.php/Calendario/getPredictPorId',
+									success: function(data) {
 
-            tarea_descrip = data[0]['tarea_descrip']; // id de tarea
-            fecha_inicio = data[0]['fecha'];
-            idp = data[0]['predId'];
-            ide = data[0]['id_equipo'];
-            descripTarea = data[0]['descripcion'];
-            alert("Se ha guardado Correctamente");
-        },
-        error: function(data) {
+													tarea_descrip = data[0]['tarea_descrip']; // id de tarea
+													fecha_inicio = data[0]['fecha'];
+													idp = data[0]['predId'];
+													ide = data[0]['id_equipo'];
+													descripTarea = data[0]['descripcion'];
+													alert("Se ha guardado Correctamente");
+									},
+									error: function(data) {
 
-            console.log(data);
-        },
-        dataType: 'json'
-    });
-}
+													console.log(data);
+									},
+									dataType: 'json'
+					});
+	}
 
-// Limpia variables
-function CancPred() {
-    tarea_descrip = ""; //id tarea
-    idp = ""; // id predictivo
-    ide = ""; // id equipo
-    fecha_inicio = "";
-}
+	// Limpia variables
+	function CancPred() {
+					tarea_descrip = ""; //id tarea
+					idp = ""; // id predictivo
+					ide = ""; // id equipo
+					fecha_inicio = "";
+	}
 
-////Guarda OT desde Predictivo
+	////Guarda OT desde Predictivo
 	function setOtPredictivo() {
 
 					var progr_pred = $('#fecha_progr_pred').val();

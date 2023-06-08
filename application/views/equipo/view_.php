@@ -38,7 +38,7 @@
                       </div>
                       <div class="col-xs-4">
                         <label>&emsp;</label><br>
-                        <button type="button" class="btn btn-primary" id="addarea" data-toggle="modal" data-target="#modalarea"><i class="fa fa-plus"> Agregar</i></button> 
+                        <button type="button" class="btn btn-primary" id="addarea" data-toggle="modal" data-target="#modalarea"><i class="fa fa-plus"> Agregar</i></button>
                       </div>
 
                       <div class="col-xs-8"><label>Proceso<strong style="color: #dd4b39">*</strong>:</label>

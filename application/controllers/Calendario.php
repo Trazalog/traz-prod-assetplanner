@@ -370,7 +370,7 @@ class Calendario extends CI_Controller
                     $respcaseOT = $this->Calendarios->setCaseidenOT($infoTarea['caseId'], $idOT);
                 }
 
-            } else { // evento repetitivo solo preventivo o predictivo
+            } else { // evento repetitivo solo PREVENTIVO o PREDICTIVO
                 // Sumo a la fecha de program la cant de meses p/ sacar fecha limite
                 $fecha_limite = strtotime('+' . $cant_meses . ' month', strtotime($fec_programacion));
                 $fecha_limite = date('Y-m-d H:i:s', $fecha_limite); /// "2018-06-16 00:00:00"
@@ -379,6 +379,7 @@ class Calendario extends CI_Controller
 
                 // si es preventivo ACTUALIZA NUEVAMENTE LA FECHA BASE_ OK!
                 $estado = 'PL';
+
                 if ($tipo == '3') {
                     //pongo nueva fecha base en preventivos
                     $this->Calendarios->actualizarFechaBasePreventivos($fecha_limite, $id_solicitud);
@@ -473,9 +474,11 @@ class Calendario extends CI_Controller
             case '3': // Preventivo
                 $this->db->select('preventivo.cantidad, periodo.descripcion');
                 $this->db->from('preventivo');
+																$this->db->join('periodo', 'periodo.idperiodo = preventivo.perido');
                 $this->db->where('preventivo.prevId', $id_solicitud);
-                $this->db->join('periodo', 'periodo.idperiodo = preventivo.perido');
+
                 $query = $this->db->get();
+																$str = $this->db->last_query();
                 $info = $query->result_array();
                 break;
             case '5': // Predictivo
@@ -499,13 +502,13 @@ class Calendario extends CI_Controller
         $especie = $info[0]["descripcion"];
         $dias = 0;
         switch ($especie) {
-            case 'mensual':
+            case 'Mensual':
                 $dias = 30 * $cantidad;
                 break;
-            case 'semestral':
+            case 'Semestral':
                 $dias = 180 * $cantidad;
                 break;
-            case 'anual':
+            case 'Anual':
                 $dias = 365 * $cantidad;
                 break;
             default:
@@ -660,11 +663,6 @@ class Calendario extends CI_Controller
             $id_solicitud = $origen[0]['id_solicitud'];
 												$data['componente'] = $this->Calendarios->getCompEquipoOT($numtipo,$id_solicitud,$idOt);
         }
-
-
-
-
-
 
         $data['infoSolicOrigen'] = $this->Calendarios->getInfoTareaProgram($numtipo, $id_solicitud);
 

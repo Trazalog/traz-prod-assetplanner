@@ -517,7 +517,7 @@ class Calendarios extends CI_Model {
 			return $this->db->update('orden_trabajo', array('case_id'=>$case_id));			
 		}
 
-		function cambiarEstado($id_solicitud, $estado, $tipo){						
+		function cambiarEstado($id_solicitud, $estado, $tipo){
 			
 			if ($tipo == 'correctivo') {
 				$this->db->set('estado', $estado);
@@ -593,64 +593,26 @@ class Calendarios extends CI_Model {
 		}
 
 		//devuelve valores de todos los datos de la OT para mostrar en modal.
-		// function getDataOt($idOt){
-		// 		$this->db->select('orden_trabajo.id_orden,
-		// 											orden_trabajo.id_tarea,
-		// 											orden_trabajo.descripcion,
-		// 											orden_trabajo.tipo,
-		// 											orden_trabajo.id_solicitud,
-		// 											orden_trabajo.fecha_program,
-		// 											equipos.codigo,
-		// 											equipos.descripcion AS descripcionEquipo,
-		// 											tbl_tipoordentrabajo.descripcion AS descrpcionSolicitud,
-		// 											sisusers.usrId,
-		// 											sisusers.usrLastName,
-		// 											sisusers.usrName,
-		// 											');
-		// 		$this->db->from('orden_trabajo');
-		// 		$this->db->join('equipos', 'orden_trabajo.id_equipo = equipos.id_equipo');
-		// 		$this->db->join('tbl_tipoordentrabajo', 'tbl_tipoordentrabajo.id = orden_trabajo.tipo');
-		// 		$this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId','left');
-		// 		$this->db->where('orden_trabajo.id_orden', $idOt);
-		// 		$query = $this->db->get();
-		// 		if($query->num_rows()!=0)
-		// 		{
-
-		// 				return $query->result_array();
-		// 		}
-		// 		else
-		// 		{
-		// 				return array();
-		// 		}
-		// }
-
-		function getDataOt($idOt) {
-
-			$sql = "select ot.id_orden,
-												ot.id_tarea,
-												ot.descripcion,
-												ot.tipo,
-												ot.id_solicitud,
-												ot.fecha_program,
-												e.codigo,
-												e.descripcion AS descripcionEquipo,
-												su.usrId,
-												su.usrLastName,
-												su.usrName,
-									case
-									when ot.id_tarea = 0
-									then 'sin tarea estandar'
-									else tstd.descripcion
-									end AS descTareaStandar
-									from orden_trabajo ot, equipos e, tbl_tipoordentrabajo tipoOT, sisusers su, tareas tstd
-									where ot.id_equipo = e.id_equipo
-									and ot.tipo = tipoOT.id
-									and ot.id_usuario_a = su.usrId
-									and ot.id_tarea = tstd.id_tarea
-									and ot.id_orden = ".$idOt."";
-
-			 $query = $this->db->query($sql);
-
+		function getDataOt($idOt){
+				$this->db->select('orden_trabajo.id_orden,
+													orden_trabajo.id_tarea,
+													orden_trabajo.descripcion,
+													orden_trabajo.tipo,
+													orden_trabajo.id_solicitud,
+													orden_trabajo.fecha_program,
+													equipos.codigo,
+													equipos.descripcion AS descripcionEquipo,
+													tbl_tipoordentrabajo.descripcion AS descrpcionSolicitud,
+													sisusers.usrId,
+													sisusers.usrLastName,
+													sisusers.usrName,
+													');
+				$this->db->from('orden_trabajo');
+				$this->db->join('equipos', 'orden_trabajo.id_equipo = equipos.id_equipo');
+				$this->db->join('tbl_tipoordentrabajo', 'tbl_tipoordentrabajo.id = orden_trabajo.tipo');
+				$this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId','left');
+				$this->db->where('orden_trabajo.id_orden', $idOt);
+				$query = $this->db->get();
 				if($query->num_rows()!=0)
 				{
 
@@ -662,6 +624,44 @@ class Calendarios extends CI_Model {
 				}
 		}
 
+		// function getDataOt($idOt) {
+
+		// 	$sql = "select ot.id_orden,
+		// 										ot.id_tarea,
+		// 										ot.descripcion,
+		// 										ot.tipo,
+		// 										ot.id_solicitud,
+		// 										ot.fecha_program,
+		// 										e.codigo,
+		// 										e.descripcion AS descripcionEquipo,
+		// 										su.usrId,
+		// 										su.usrLastName,
+		// 										su.usrName,
+		// 							case
+		// 							when ot.id_tarea = 0
+		// 							then 'sin tarea estandar'
+		// 							else tstd.descripcion
+		// 							end AS descTareaStandar
+		// 							from orden_trabajo ot, equipos e, tbl_tipoordentrabajo tipoOT, sisusers su, tareas tstd
+		// 							where ot.id_equipo = e.id_equipo
+		// 							and ot.tipo = tipoOT.id
+		// 							and ot.id_usuario_a = su.usrId
+		// 							and ot.id_tarea = tstd.id_tarea
+		// 							and ot.id_orden = ".$idOt."";
+
+		// 	 $query = $this->db->query($sql);
+
+		// 		if($query->num_rows()!=0)
+		// 		{
+
+		// 				return $query->result_array();
+		// 		}
+		// 		else
+		// 		{
+		// 				return array();
+		// 		}
+		// }
+
 		/**
 		* Develvecomonentes concatenados de OT.
 		* @param string $idOT
@@ -672,6 +672,27 @@ class Calendarios extends CI_Model {
 
 				switch ($numtipo) {
 
+					case 3:
+						// $sql = "select c.descripcion as descCompo, ce.codigo as codCompo
+						// from orden_trabajo ot, tbl_back bck, componenteequipo ce, componentes c
+						// where bck.idcomponenteequipo = ce.idcomponenteequipo
+						// and ce.idcomponenteequipo = c.id_componente
+						// and bck.backId = ".$id_solicitud."
+						// and ot.id_orden = ".$idOt."";
+
+						$sql = "select c.id_componente
+												,c.descripcion as descCompo
+											from orden_trabajo ot
+												, preventivo pr
+												, componentes c
+											where pr.id_componente = c.id_componente
+											and pr.prevId = ".$id_solicitud."
+											and ot.id_orden = ".$idOt."";
+
+
+						return $this->db->query($sql)->result_array()[0];
+						break;
+
 					case 4:
 						$sql = "select c.descripcion as descCompo, ce.codigo as codCompo
 						from orden_trabajo ot, tbl_back bck, componenteequipo ce, componentes c
@@ -679,14 +700,15 @@ class Calendarios extends CI_Model {
 						and ce.idcomponenteequipo = c.id_componente
 						and bck.backId = ".$id_solicitud."
 						and ot.id_orden = ".$idOt."";
+						return $this->db->query($sql)->result_array()[0];
 						break;
 
 					default:
-						# code...
+					return array();
 						break;
 				}
 
-				return $this->db->query($sql)->result_array()[0];
+
 
 
 
