@@ -1216,7 +1216,7 @@ class Otrabajos extends CI_Model {
 	//devuelve valores de todos los datos de la OT para mostrar en modal.
     function getViewDataBacklog($idOt, $idSolicitud)
     {
-			$this->db->select('orden_trabajo.id_orden, orden_trabajo.nro, 
+			$this->db->select('orden_trabajo.id_orden, orden_trabajo.nro,
 												orden_trabajo.estado,
 												orden_trabajo.descripcion AS descripcionFalla, 
 												orden_trabajo.fecha_inicio, 
@@ -1226,7 +1226,7 @@ class Otrabajos extends CI_Model {
 												orden_trabajo.tipo, orden_trabajo.id_solicitud,
 												sucursal.id_sucursal, sucursal.descripc,
 												abmproveedores.provid, abmproveedores.provnombre,
-												equipos.codigo, equipos.fecha_ingreso, marcasequipos.marcadescrip AS marca, 
+												equipos.codigo, equipos.fecha_ingreso, marcasequipos.marcadescrip AS marca,
 												equipos.ubicacion, equipos.descripcion AS descripcionEquipo');
         $this->db->from('orden_trabajo');
         $this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId', 'left');
@@ -1480,7 +1480,7 @@ class Otrabajos extends CI_Model {
 			return $response;
 		}
 
-		// Actualiza tareas en OT 
+		// Actualiza tareas en OT
 		function updOT($ot, $datos){
 			$this->db->where('orden_trabajo.id_orden', $ot);
 			return $this->db->update('orden_trabajo', $datos);	
@@ -1515,7 +1515,8 @@ class Otrabajos extends CI_Model {
 		$userdata = $this->session->userdata('user_data');
 		$empId    = $userdata[0]['id_empresa'];
 	
-		$this->db->select('orden_trabajo.*, tbl_tipoordentrabajo.descripcion AS tipoDescrip, 
+		$this->db->select('orden_trabajo.*, tareas.descripcion as tareaSTD,
+												tbl_tipoordentrabajo.descripcion AS tipoDescrip,
 												user1.usrName AS nombre, user1.usrLastName,
 												sisusers.usrName, 
 												sisusers.usrLastName, equipos.codigo, 
@@ -1529,7 +1530,9 @@ class Otrabajos extends CI_Model {
 		$this->db->join('sisusers AS user1', 'orden_trabajo.id_usuario_a = user1.usrId', 'left');//usuario asignado?
 		$this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
 		$this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
-	
+
+		$this->db->join('tareas','tareas.id_tarea = orden_trabajo.id_tarea');
+
 		//LEFT JOIN orden_servicio ON orden_trabajo.id_orden = orden_servicio.id_ot
 
 		$this->db->join('orden_servicio', 'orden_trabajo.id_orden = orden_servicio.id_ot', 'left');

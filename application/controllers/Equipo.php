@@ -2,35 +2,35 @@
 
 class  Equipo extends CI_Controller {
 
-    public function __construct()
-    {
-       parent::__construct();
-       $this->load->model('Equipos');
-    }
+	public function __construct()
+	{
+				parent::__construct();
+				$this->load->model('Equipos');
+	}
 
-    public function index($permission)
-    {
-		$data = $this->session->userdata();
-		log_message('DEBUG','#Main/index | Equipo >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+	public function index($permission)
+	{
+			$data = $this->session->userdata();
+			log_message('DEBUG','#Main/index | Equipo >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
 
-		if(empty($data['user_data'][0]['usrName'])){
-			log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
-			$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
-			$this->session->unset_userdata(null);
-			$this->session->sess_destroy();
+			if(empty($data['user_data'][0]['usrName'])){
+				log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+				$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+				$this->session->unset_userdata(null);
+				$this->session->sess_destroy();
 
-			echo ("<script>location.href='login'</script>");
+				echo ("<script>location.href='login'</script>");
 
-		}else{
+			}else{
 
-			$userdata           = $this->session->userdata('user_data');
-			$data['empresa']    = $userdata[0]['id_empresa'];
-			$data['list']       = $this->Equipos->equipos_List();
-			$data['permission'] = $permission;
-			//dump( $data['list'] );
-			$this->load->view('equipo/list', $data);	
-		}	     
-    }
+				$userdata           = $this->session->userdata('user_data');
+				$data['empresa']    = $userdata[0]['id_empresa'];
+				$data['list']       = $this->Equipos->equipos_List();
+				$data['permission'] = $permission;
+				//dump( $data['list'] );
+				$this->load->view('equipo/list', $data);
+			}
+	}
 
 
 	/**
@@ -41,37 +41,38 @@ class  Equipo extends CI_Controller {
 	 */
 	public function paginado(){//server side processing
 
-		$start = $this->input->post('start');
-		$length = $this->input->post('length');
-		$search = $this->input->post('search')['value'];
+					$start = $this->input->post('start');
+					//$start = 40;
+					$length = $this->input->post('length');
+					$search = $this->input->post('search')['value'];
 
-		$r = $this->Equipos->equiposPaginados($start,$length,$search);
+					$r = $this->Equipos->equiposPaginados($start,$length,$search);
 
-		$resultado =$r['datos'];
-		$totalDatos = $r['numDataTotal'];
+					$resultado =$r['datos'];
+					$totalDatos = $r['numDataTotal'];
 
-		$datos = $resultado->result_array();
-		$datosPagina = $resultado->num_rows();
+					$datos = $resultado->result_array();
+					$datosPagina = $resultado->num_rows();
 
-		$json_data = array(
-			"draw" 				=> intval($this->input->post('draw')),
-			"recordsTotal"  	=> intval($datosPagina),
-			"recordsFiltered"	=> intval($totalDatos),
-			"data" 				=> $datos
-		);
-		$result = json_encode($json_data);
-		echo $result;
+					$json_data = array(
+									"draw" 				=> intval($this->input->post('draw')),
+									"recordsTotal"  	=> intval($datosPagina),
+									"recordsFiltered"	=> intval($totalDatos),
+									"data" 				=> $datos
+					);
+					$result = json_encode($json_data);
+					echo $result;
 	}
 
-    /********** ELIMINAR EQUIPO **********/
-    
-    // Da de baja equipos (AN)
-    public function baja_equipo()
-    {
+	/********** ELIMINAR EQUIPO **********/
+
+	// Da de baja equipos (AN)
+	public function baja_equipo()
+	{
 		$idequipo = $_POST['idEquipo'];
 		$datos    = array('estado'=>"AN");
 		$result   = $this->Equipos->baja_equipos($datos, $idequipo);
-		print_r(json_encode($result));	
+		print_r(json_encode($result));
 	}
 
 	/********** EDITAR EQUIPO **********/

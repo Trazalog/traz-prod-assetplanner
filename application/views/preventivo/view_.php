@@ -80,7 +80,7 @@
                     </select>
                   </div>
                   <div class="col-xs-12 col-sm-6">Frecuencia <strong style="color: #dd4b39">*</strong>:
-                    <input type="text"  id="cantidad" name="cantidad" class="form-control input-md" placeholder="Ingrese valor..."/>
+                    <input type="number" min="1" step="1" id="cantidad" name="cantidad" class="form-control input-md" placeholder="Ingrese valor..."/>
                   </div>
                   <div class="col-xs-12 col-sm-6">Lectura base <strong style="color: #dd4b39">*</strong>:
                     <input type="text"  id="lectura_base" name="lectura_base" class="form-control input-md" placeholder="Ingrese valor..." disabled/>

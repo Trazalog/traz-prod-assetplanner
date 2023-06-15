@@ -146,7 +146,7 @@
                             <label for="herramienta">Codigo <strong style="color: #dd4b39">*</strong>:</label>
                             <input type="text" id="herramienta"  name="" class="form-control" placeholder="Buscar Código..."/>
                             <input type="hidden" id="id_herramienta" name="id_herramienta">
-                          </div>                          
+                          </div>
                           <div class="col-xs-12 col-sm-6 col-md-4">
                             <label for="marcaherram">Marca <strong style="color: #dd4b39">*</strong>:</label>
                             <input type="text" id="marcaherram"  name="" class="form-control" />

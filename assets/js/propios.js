@@ -67,3 +67,13 @@ function getDosDigitos(partTime) {
 		return "0"+partTime;
 	return partTime;
 }
+
+
+/// Recarga la tabla manteniendo la posicion de la pagina
+function reloadTable(){
+
+	let table = $('#sales').DataTable();
+	 table
+	 .order( [[ 1, 'asc' ]] )
+	 .draw( false );
+}
