@@ -1,4 +1,4 @@
-<section class="content"> 
+<section class="content">
  <div class="row">
 
   <div class="col-xs-12">
@@ -42,7 +42,7 @@
                     <!-- Tab detalle -->
                      <div role="tabpanel" class="tab-pane active" id="detalle">
                        <div class="row">
-                        <table id="tblOrden">
+                        <table class="table" id="tblOrden">
 																									<thead>
 																													<th>F. Prog</th>
 																													<th>Nº Orden</th>
@@ -70,42 +70,54 @@
 																									<tbody class="text-center">
 																											<?php
 																												// fecha programacion
-																												echo '<td>'.$detaOT[0]["fecha_program"].'</td>';
+																												echo '<td class="izquierda">'.$detaOT[0]["fecha_program"].'</td>';
 
 																												// nº orden
 																												if ($detaOT[0]['id_orden'] != NULL) {
 																														echo '<td>'.$detaOT[0]['id_orden'].'</td>';
 																												} else {
-																														echo '<td> </td>';
+																														echo '<td class="izquierda" class="izquierda"> </td>';
 																												}
 																												//dump($detaOT[0], 'datos de ot: ');
 																												// tipo orden
-																												echo '<td>'.$detaOT[0]["descrpcionSolicitud"].'</td>';
+																												echo '<td class="izquierda">'.$detaOT[0]["descrpcionSolicitud"].'</td>';
 
 																												// nº tarea
-																												echo '<td>'.$detaOT[0]["id_solicitud"].'</td>';
+																												echo '<td class="izquierda">'.$detaOT[0]["id_solicitud"].'</td>';
 
+																												if ( isset($detaOT[0]['descripcion']) && $detaOT[0]['descripcion']!= null ) {
 																												//descripcion Tarea
-																												echo '<td>'.$detaOT[0]['descripcion'].'</td>';
+																												echo '<td class="izquierda">'.$detaOT[0]['descripcion'].'</td>';
+																												}else{
+																													echo '<td class="izquierda"> - </td>';
+																												}
 
+																												if ( isset($detaOT[0]['duracionTarea']) && $detaOT[0]['duracionTarea']!= null ) {
 																												//duracion
-																												echo '<td>'.$infoSolicOrigen[0]["duracionTarea"]." ".$infoSolicOrigen[0]["unidaddescrip"] .'</td>';
+																												echo '<td class="izquierda">'.$infoSolicOrigen[0]["duracionTarea"]." ".$infoSolicOrigen[0]["unidaddescrip"] .'</td>';
+																												}else{
+																													echo '<td class="izquierda"> - </td>';
+																												}
 
+																												if ( isset($detaOT[0]['duracionTarea']) && $detaOT[0]['duracionTarea']!= null ) {
 																												// frecuencia
-																												echo '<td>'.$infoSolicOrigen[0]['frecuencia'].'</td>';
+																												echo '<td class="izquierda">'.$infoSolicOrigen[0]['frecuencia'].'</td>';
+																												}else{
+																													echo '<td class="izquierda"> - </td>';
+																												}
 
 																												// si no tiene componennte no muestra columnas
 																												if ( isset($componente['descCompo']) && $componente['descCompo']!= null ) {
 
 																															if(isset($componente['codigo']) && 										$componente['codigo']!= null){
-																																	echo '<td>'.$componente['codCompo'].'</td>';
+																																	echo '<td class="izquierda">'.$componente['codCompo'].'</td>';
 																															}
-																															
-																														echo '<td>'.$componente['descCompo'].'</td>';
+
+																														echo '<td class="izquierda">'.$componente['descCompo'].'</td>';
 																												}
 																												// equipo codigo y descripcion
-																												echo '<td>'.$detaOT[0]['codigo'].'</td>';
-																												echo '<td>'.$detaOT[0]['descripcionEquipo'].'</td>';
+																												echo '<td class="izquierda">'.$detaOT[0]['codigo'].'</td>';
+																												echo '<td class="izquierda">'.$detaOT[0]['descripcionEquipo'].'</td>';
 																										?>
 																									</tbody>
                         </table>
@@ -221,6 +233,7 @@
   </div>
  </div>
 </section>
+
 <script>
 	//DataTable('#tblOrden');
 

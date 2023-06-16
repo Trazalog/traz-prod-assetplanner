@@ -419,6 +419,18 @@ class Equipos extends CI_Model
 
     }
 
+				//comprueba unicidad de codigo de equipo
+				function validaUnicidadCodigo($codigo){
+						$sql = "select * from equipos where codigo = '".$codigo."'";
+						$query = $this->db->query($sql);
+
+						if ($query->num_rows() > 0) {
+										return true;
+						} else {
+										return false;
+						}
+				}
+
     // Agrega equipo nuevo - Listo
     public function insert_equipo($data)
     {

@@ -240,7 +240,7 @@ function EditarArticulos(e) { // Ok
     // var idartic = $(this).parent('td').parent('tr').attr('id');
     //--------------------------------------------
     // var idartic = $(e).closest('tr').attr('id');
-    ida = idartic;
+    // ida = idartic;
     $('#artBarCode').val('');
     $('#artDescription').val('');
     $('#artIsByBox').val('');
@@ -390,28 +390,28 @@ function guardareditar() { // Ok
 // var select = '';
 
 // function seleccionar(o) {
-//     select = $(o).closest('tr');
-//     $('#modaleliminar').modal('show');
+	//     select = $(o).closest('tr');
+	//     $('#modaleliminar').modal('show');
 // }
 
 
 // function eliminar_articulo(o) {
-//     var id = select.attr('id');
-//     $.ajax({
-//         type: 'POST',
-//         data: {
-//             idelim: id
-//         },
-//         url: 'index.php/almacen/Articulo/baja_articulo', //index.php/
-//         success: function(data) {
-//             alert("Articulo Eliminado");
-//             linkTo();
-//         },
-//         error: function(result) {
-//             console.log(result);
-//         }
+	//     var id = select.attr('id');
+	//     $.ajax({
+	//         type: 'POST',
+	//         data: {
+	//             idelim: id
+	//         },
+	//         url: 'index.php/almacen/Articulo/baja_articulo', //index.php/
+	//         success: function(data) {
+	//             alert("Articulo Eliminado");
+	//             linkTo();
+	//         },
+	//         error: function(result) {
+	//             console.log(result);
+	//         }
 
-//     });
+	//     });
 // }
 
 /************************************/

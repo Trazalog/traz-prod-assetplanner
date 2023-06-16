@@ -586,33 +586,68 @@ class Calendarios extends CI_Model {
 		}
 
 		// TODO: ENTENDER SI YA NO SE USA CON LA NUEVA MODIFICACION DE HERRAM E INSUMOS
-		// Guarda batch de OT 
+		// Guarda batch de OT
 		function setOTbatch($data)
 		{
 			$this->db->insert_batch('orden_trabajo', $data);
 		}
 
 		//devuelve valores de todos los datos de la OT para mostrar en modal.
-		function getDataOt($idOt){
-				$this->db->select('orden_trabajo.id_orden,
-													orden_trabajo.id_tarea,
-													orden_trabajo.descripcion,
-													orden_trabajo.tipo,
-													orden_trabajo.id_solicitud,
-													orden_trabajo.fecha_program,
-													equipos.codigo,
-													equipos.descripcion AS descripcionEquipo,
-													tbl_tipoordentrabajo.descripcion AS descrpcionSolicitud,
-													sisusers.usrId,
-													sisusers.usrLastName,
-													sisusers.usrName,
-													');
-				$this->db->from('orden_trabajo');
-				$this->db->join('equipos', 'orden_trabajo.id_equipo = equipos.id_equipo');
-				$this->db->join('tbl_tipoordentrabajo', 'tbl_tipoordentrabajo.id = orden_trabajo.tipo');
-				$this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId','left');
-				$this->db->where('orden_trabajo.id_orden', $idOt);
-				$query = $this->db->get();
+
+		function getDataOt($idOt) {
+
+			// $sql = "select ot.id_orden,
+			// 										ot.id_tarea,
+			// 										ot.descripcion,
+			// 										ot.tipo,
+			// 										ot.id_solicitud,
+			// 										ot.fecha_program,
+			// 										e.codigo,
+			// 										e.descripcion AS descripcionEquipo,
+			// 										su.usrId,
+			// 										su.usrLastName,
+			// 										su.usrName,
+			// 										case
+			// 											when ot.id_tarea = 0
+			// 												then 'sin tarea estandar'
+			// 											else tstd.descripcion
+			// 										end AS descTareaStandar
+			// 								from orden_trabajo ot,
+			// 										equipos e,
+			// 										tbl_tipoordentrabajo tipoOT,
+			// 										sisusers su,
+			// 										tareas tstd
+			// 								where ot.id_equipo = e.id_equipo
+			// 								and ot.tipo = tipoOT.id
+			// 								and ot.id_usuario_a = su.usrId
+			// 								and ot.id_tarea = tstd.id_tarea
+			// 								and ot.id_orden = ".$idOt."";
+
+			$sql = "select ot.id_orden,
+											ot.id_tarea,
+											ot.descripcion,
+											ot.tipo,
+											ot.id_solicitud,
+											ot.fecha_program,
+											e.codigo,
+											e.descripcion AS descripcionEquipo,
+											su.usrId,
+											su.usrLastName,
+											su.usrName,
+											case
+												when ot.id_tarea = 0
+													then 'sin tarea estandar'
+												else tstd.descripcion
+											end AS descTareaStandar
+									from orden_trabajo ot
+									left join tareas tstd on ot.id_tarea = tstd.id_tarea
+									join equipos e on  ot.id_equipo = e.id_equipo
+									join sisusers su on ot.id_usuario_a = su.usrId
+									join tbl_tipoordentrabajo tipoOT on ot.tipo = tipoOT.id
+									and ot.id_orden = ".$idOt."";
+
+			 $query = $this->db->query($sql);
+
 				if($query->num_rows()!=0)
 				{
 
@@ -623,44 +658,6 @@ class Calendarios extends CI_Model {
 						return array();
 				}
 		}
-
-		// function getDataOt($idOt) {
-
-		// 	$sql = "select ot.id_orden,
-		// 										ot.id_tarea,
-		// 										ot.descripcion,
-		// 										ot.tipo,
-		// 										ot.id_solicitud,
-		// 										ot.fecha_program,
-		// 										e.codigo,
-		// 										e.descripcion AS descripcionEquipo,
-		// 										su.usrId,
-		// 										su.usrLastName,
-		// 										su.usrName,
-		// 							case
-		// 							when ot.id_tarea = 0
-		// 							then 'sin tarea estandar'
-		// 							else tstd.descripcion
-		// 							end AS descTareaStandar
-		// 							from orden_trabajo ot, equipos e, tbl_tipoordentrabajo tipoOT, sisusers su, tareas tstd
-		// 							where ot.id_equipo = e.id_equipo
-		// 							and ot.tipo = tipoOT.id
-		// 							and ot.id_usuario_a = su.usrId
-		// 							and ot.id_tarea = tstd.id_tarea
-		// 							and ot.id_orden = ".$idOt."";
-
-		// 	 $query = $this->db->query($sql);
-
-		// 		if($query->num_rows()!=0)
-		// 		{
-
-		// 				return $query->result_array();
-		// 		}
-		// 		else
-		// 		{
-		// 				return array();
-		// 		}
-		// }
 
 		/**
 		* Develvecomonentes concatenados de OT.
