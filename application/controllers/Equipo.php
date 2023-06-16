@@ -363,144 +363,153 @@ class  Equipo extends CI_Controller {
 		//       		echo $this->db->insert_id();
 		//       	else echo 0;
 		//     }
-	 //  	}
+	//  	}
 
-  	public function agregar_seguro(){
+	public function agregar_seguro(){
 
-	    if($_POST)
-	    {
-	    	$datos=$_POST['parametros'];
+		if($_POST)
+		{
+			$datos=$_POST['parametros'];
 
-	     	$result = $this->Equipos->agregar_seguros($datos);
-	      	//print_r($this->db->insert_id());
-	      	if($result)
-	      		echo $this->db->insert_id();
-	      	else echo 0;
-	    }
-  	}
+			$result = $this->Equipos->agregar_seguros($datos);
+				//print_r($this->db->insert_id());
+				if($result)
+					echo $this->db->insert_id();
+				else echo 0;
+		}
+	}
 
-  	// Agrega unidad industrial y devuelve id de insercion - Listo
-  	public function agregar_unidad(){
+	// Agrega unidad industrial y devuelve id de insercion - Listo
+	public function agregar_unidad(){
 
-	    if($_POST)
-	    {
-	    	$datos=$_POST['datos'];
+		if($_POST)
+		{
+			$datos=$_POST['datos'];
 
-	     	$result = $this->Equipos->agregar_unidades($datos);
-	      	//print_r($this->db->insert_id());
-	      	if($result > 0)
-	      		echo json_encode($result); // devuelve id de insercion en BD
-	      	else echo 0;
-	    }
-  	}
+			$result = $this->Equipos->agregar_unidades($datos);
+				//print_r($this->db->insert_id());
+				if($result > 0)
+					echo json_encode($result); // devuelve id de insercion en BD
+				else echo 0;
+		}
+	}
 
-  	// Agrega las areas nuevas - Listo
-  	public function agregar_area(){
+	// Agrega las areas nuevas - Listo
+	public function agregar_area(){
 
-	    if($_POST)
-	    {
-	    	$datos=$_POST['parametros'];
+		if($_POST)
+		{
+			$datos=$_POST['parametros'];
 
-	     	$result = $this->Equipos->agregar_area($datos);
-	      	//print_r($this->db->insert_id());
-	      	if($result)
-	      		echo $this->db->insert_id();
-	      	else echo 0;
-	    }
-  	}
+			$result = $this->Equipos->agregar_area($datos);
+				//print_r($this->db->insert_id());
+				if($result)
+					echo $this->db->insert_id();
+				else echo 0;
+		}
+	}
 
-  	// Agrega criticidad nueva - Listo
-  	public function agregar_criti(){
+	// Agrega criticidad nueva - Listo
+	public function agregar_criti(){
 
-	    if($_POST)
-	    {
-	    	$datos=$_POST['parametros'];
+		if($_POST)
+		{
+			$datos=$_POST['parametros'];
 
-	     	$result = $this->Equipos->agregar_criti($datos);
-	      	//print_r($this->db->insert_id());
-	      	if($result)
-	      		echo $this->db->insert_id();
-	      	else echo 0;
-	    }
-  	}
-  	
-  	// Agrega las procesos nuevos - Listo
-  	public function agregar_proceso(){
+			$result = $this->Equipos->agregar_criti($datos);
+				//print_r($this->db->insert_id());
+				if($result)
+					echo $this->db->insert_id();
+				else echo 0;
+		}
+	}
+	
+	// Agrega las procesos nuevos - Listo
+	public function agregar_proceso(){
 
-	    if($_POST)
-	    {
-	    	$datos=$_POST['parametros'];
+		if($_POST)
+		{
+			$datos=$_POST['parametros'];
 
-	     	$result = $this->Equipos->agregar_proceso($datos);
-	      	//print_r($this->db->insert_id());
-	      	if($result)
-	      		echo $this->db->insert_id();
-	      	else echo 0;
-	    }
-  	}
+			$result = $this->Equipos->agregar_proceso($datos);
+				//print_r($this->db->insert_id());
+				if($result)
+					echo $this->db->insert_id();
+				else echo 0;
+		}
+	}
 
-  	// Agrega sector/etapa nuevos - Listo
-  	public function agregar_etapa(){
+	// Agrega sector/etapa nuevos - Listo
+	public function agregar_etapa(){
 
-	    if($_POST)
-	    {
-	    	$datos=$_POST['parametros'];
+		if($_POST)
+		{
+			$datos=$_POST['parametros'];
 
-	     	$result = $this->Equipos->agregar_etapa($datos);
-	      	//print_r($this->db->insert_id());
-	      	if($result)
-	      		echo $this->db->insert_id();
-	      	else echo 0;
-	    }
-  	}
-  	// Agrega las grupos nuevos - Listo
-  	public function agregar_grupo(){
+			$result = $this->Equipos->agregar_etapa($datos);
+				//print_r($this->db->insert_id());
+				if($result)
+					echo $this->db->insert_id();
+				else echo 0;
+		}
+	}
+	// Agrega las grupos nuevos - Listo
+	public function agregar_grupo(){
 
-	    if($_POST)
-	    {
-	    	$datos=$_POST['parametros'];
+		if($_POST)
+		{
+			$datos=$_POST['parametros'];
 
-	     	$result = $this->Equipos->agregar_grupos($datos);
+			$result = $this->Equipos->agregar_grupos($datos);
 
-	      	if($result)
-	      		echo $this->db->insert_id();
-	      	else echo 0;
-	    }
-  	}
+				if($result)
+					echo $this->db->insert_id();
+				else echo 0;
+		}
+	}
 
-  	// Agrega las grupos nuevos - Listo
-  	public function agregar_marca(){
+	// Agrega las grupos nuevos - Listo
+	public function agregar_marca(){
 
-	    if($_POST)
-	    {
-	    	$datos=$_POST['parametros'];
+		if($_POST)
+		{
+			$datos=$_POST['parametros'];
 
-	     	$result = $this->Equipos->agregar_marcas($datos);
+			$result = $this->Equipos->agregar_marcas($datos);
 
-	      	if($result)
-	      		echo $this->db->insert_id();
-	      	else echo 0;
-	    }
-  	}
+				if($result)
+					echo $this->db->insert_id();
+				else echo 0;
+		}
+	}
 
-  	// Agrega las grupos nuevos - Listo
-  	public function agregar_cliente(){
+	// Agrega las grupos nuevos - Listo
+	public function agregar_cliente(){
 
-	    if($_POST)
-	    {
-	    	$datos=$_POST['parametros'];
+		if($_POST)
+		{
+			$datos=$_POST['parametros'];
 
-	     	$result = $this->Equipos->agregar_clientes($datos);
+			$result = $this->Equipos->agregar_clientes($datos);
 
-	      	if($result)
-	      		echo $this->db->insert_id();
-	      	else echo 0;
-	    }
-  	}
+				if($result)
+					echo $this->db->insert_id();
+				else echo 0;
+		}
+	}
 
-  	// Agrega equipo nuevo - Listo
+  // Agrega equipo nuevo - Listo
 	public function guardar_equipo()
 	{
+		$codigo              = $this->input->post("codigo");
+		$exisCodEquipo = $this->Equipos->validaUnicidadCodigo($codigo);
+
+		if ($exisCodEquipo) {
+			 echo json_encode(['status'=>'error','code'=>'201','msj'=>'El código ingresado se encuentra en uso']);
+			 return;
+		}
+
+
 		//$data     = $this->input->post();
 		$userdata = $this->session->userdata('user_data');
 		$files = $_FILES['inputPDF'];
@@ -511,7 +520,7 @@ class  Equipo extends CI_Controller {
 		//fecha_baja
 		$fecha_garantia      = $this->input->post("fecha_garantia");
 		$marca               = $this->input->post("marca");
-		$codigo              = $this->input->post("codigo");
+
 		$id_hubicacion       = $this->input->post("ubicacion");
 		$id_empresa          = $userdata[0]['id_empresa'];
 		$id_sector           = $this->input->post("etapa");
@@ -556,12 +565,13 @@ class  Equipo extends CI_Controller {
 			'id_proceso'          => $id_proceso,
 			'numero_serie'        => $numero_serie
 		);
-		//dump($data);
+
 		$result = $this->Equipos->insert_equipo($data);
 
 		if($result)
 		{
 			$ultimoId = $this->db->insert_id();
+
 			if(!empty($files['name'])){
 				$filesCount = count($files['name']);
 				for($i = 0; $i < $filesCount; $i++){
@@ -569,7 +579,7 @@ class  Equipo extends CI_Controller {
 					$nombreArchivo = $names[$i];
 					$extension = pathinfo($nombreArchivo, PATHINFO_EXTENSION);//Extension del archivo
 					$nomcodif = $this->codificaNombreV2($nombreArchivo, $extension); // codificacion de nombre
-					
+
 					$config   = [
 						"upload_path"   => "./assets/filesequipos",
 						'allowed_types' => "*",
@@ -595,15 +605,26 @@ class  Equipo extends CI_Controller {
 							'id_equipo' => $ultimoId,
 							'adjunto' => $nomcodif
 						);
-						$resp = $this->Equipos->guardaAdjuntoEquipo($datos);
+						$respuesta = $this->Equipos->guardaAdjuntoEquipo($datos);
+
+						// if ($respuesta != null) {
+						// 	$resp = array('status'=>'ok','code'=>'200');
+						// } else {
+						// 	$resp = array('status'=>'ok','code'=>'500','msj'=>'Error al guardar referencia en Tabla adjunto');
+						// }
+
 					} else{
-						$resp = false;
+						// $resp = array('status'=>'ok','code'=>'500','msj'=>'Error al subir el adjunto');
+
 					} 
 				}
 			}
-			echo json_encode($resp);
+
+			echo json_encode(['status'=>'ok','code'=>'200','msj'=>'Guardado exitoso de nuevo equipo']);
+
 		} else {
-			echo json_encode(['msj'=>'Error al guardar equipo']);
+
+			echo json_encode(['status'=>'ok','code'=>'500','msj'=>'Error al guardar equipo']);
 		}
 
 	}

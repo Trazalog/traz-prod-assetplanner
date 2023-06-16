@@ -20,7 +20,7 @@
           ?>
         </div><!-- /.box-header -->
         <div class="box-body">
-          
+
           <form id="formAgregarEquipo">
             <div class="panel panel-default">
               <div class="panel-heading">
@@ -632,9 +632,11 @@ function guardarmarca(){
 
 // Guarda equipo/sector nuevo - Chequeado
 $("#formAgregarEquipo").submit( function (event){   
-  debugger;
+  //debugger;
   event.preventDefault();
   WaitingOpen("Guardando Equipo");
+
+  $('span #respuesta').text('');
 
   var hayError = false;
   hayError     = validarCampos();
@@ -654,17 +656,23 @@ $("#formAgregarEquipo").submit( function (event){
       data:formData,
       dataType: 'json',
       processData:false,
-      url: 'index.php/Equipo/guardar_equipo',  //index.php/
+      url: 'index.php/Equipo/guardar_equipo',
       type: 'POST',
     })
-    .done( function(data){ 
-      //console.table(data);
-      alert("Guardado con exito...");
-      regresa();
+    .done( function(data){
+
+      if (data.code === '201') {
+
+        $('#respuesta').text(data.msj);
+        $('#modalResp').modal('show');
+      } else {
+
+        regresa();
+      }
     })
     .error( function(result){
       alert("Error en guardado...");
-      console.log(result);               
+      console.log(result);
     })
     .always( function(){
       WaitingClose()
@@ -722,6 +730,27 @@ function regresa(){
   WaitingClose();    
 }
 </script>
+
+
+<!-- Modal Codigo Existente-->
+<div class="modal" id="modalResp">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Equipo</h4>
+      </div>
+      <div class="modal-body" id="cuerpoModalEditar">
+       <h5><span id="respuesta"></span></h5>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+<!-- /  Modal Codigo Existente-->
+
 
 <!-- Modal area-->
 <div class="modal" id="modalarea" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
