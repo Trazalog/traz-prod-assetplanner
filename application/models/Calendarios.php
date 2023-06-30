@@ -35,6 +35,7 @@ class Calendarios extends CI_Model {
         $this->db->join('tbl_tipoordentrabajo TO', 'TO.tipo_orden = OT.tipo', 'left');
         $this->db->where('OT.id_empresa', $empId);
         $this->db->where('OT.estado!=','T');
+        $this->db->where('OT.estado!=','AN');
         $this->db->where("month(OT.fecha_program) = $month AND year(OT.fecha_program) = $year");
         $query = $this->db->get();
         if ($query->num_rows()!=0)
