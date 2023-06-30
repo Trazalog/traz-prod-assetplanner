@@ -139,7 +139,7 @@
                                  style="color: #dd4b39">*</strong> :</label>
                          <input type="text" class=" form-control operario" id="operario"
                              name="operario"
-                             value="<?php echo ($detaOT[0]['usrLastName']!=null?$detaOT[0]['usrLastName'].', '.$detaOT[0]['usrName']:null) ?>"
+                             value="<?php echo ($detaOT[0]['usrLastName']!=null?$detaOT[0]['usrName'].', '.$detaOT[0]['usrLastName']:null) ?>"
                              placeholder="Buscar...">
                          <input type="hidden" class=" form-control operario" id="id_operario"
                              name="id_operario" value="<?php echo $detaOT[0]['usrId'] ?>">

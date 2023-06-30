@@ -24,16 +24,22 @@ class user extends CI_Controller {
 			echo ("<script>location.href='login'</script>");
 
 		}else{
-			$data['list'] = $this->Users->User_List();
+			//$data['list'] = $this->Users->User_List();
 			$data['permission'] = $permission;
-			$this->load->view('users/list', $data);
+			$this->load->view('users/view_', $data);
 		}
+	}
+
+	function getTabla($permission){
+		$data['permission'] = $permission;
+		$data['list'] = $this->Users->User_List();
+		$this->load->view('users/list', $data);
 	}
 
 	public function getUser()
 	{
 		$data['data']     = $this->Users->getUser($this->input->post());
-		$response['html'] = $this->load->view('users/view_', $data, true);
+		$response['html'] = $this->load->view('users/modal', $data, true);
 
 		echo json_encode($response);
 	}
