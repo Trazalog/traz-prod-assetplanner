@@ -852,9 +852,9 @@ class Tareas extends CI_Model
                 $data[$key]['displayDescription'] = $res->desc;
                 $data[$key]['equipoDesc'] = $res->desceq;
                 $data[$key]['sectorDesc'] = $res->descsec;
-				$data[$key]['nomCli'] = $res->nomCli;
+																$data[$key]['nomCli'] = $res->nomCli;
 				
-				$data = $this->infoUser($data, $key);
+																$data = $this->infoUser($data, $key);
                 if($search){
                     if((strpos(strtoupper($data[$key]['displayDescription']), strtoupper($search)) !== false) 
                     || (strpos(strtoupper($data[$key]['equipoDesc']), strtoupper($search)) !== false) 
@@ -990,7 +990,7 @@ class Tareas extends CI_Model
                 }
             }
         }
-		log_message('DEBUG','#Main/BUSCADOR |  '.json_encode($filtrado));
+								log_message('DEBUG','#Main/BUSCADOR |  '.json_encode($filtrado));
 
         if($search){
             return $filtrado;
@@ -1010,9 +1010,9 @@ class Tareas extends CI_Model
             if (isset($data[$key]['assigned_id'])) {
 
                 $sql = 'select (concat(usrName,", ", usrLastName) ) as usr_asig_nomb
-					from sisusers SU
-					join orden_trabajo OT on OT.id_usuario_a = SU.usrId
-					where OT.id_orden = ' . $data[$key]["ot"];
+																from sisusers SU
+																join orden_trabajo OT on OT.id_usuario_a = SU.usrId
+																where OT.id_orden = ' . $data[$key]["ot"];
 
                 $query = $this->db->query($sql);
                 $row = $query->row();
@@ -1023,9 +1023,9 @@ class Tareas extends CI_Model
             }
         } else {
             $data[$key]['usr_asignado'] = " S/A ";
-		}
-		
-		return $data;
+						}
+
+						return $data;
     }
 
 /* ./ INTEGRACION CON BPM */

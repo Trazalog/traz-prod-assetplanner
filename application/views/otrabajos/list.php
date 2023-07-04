@@ -70,7 +70,7 @@ ul.dropdown-menu {
           }
           ?>
                 </div><!-- /.box-header -->
-                <form id="frm-filtros">
+           <form id="frm-filtros">
                 <input type="hidden" id="permissionFilt" name="permissionFilt" value="<?php echo $permission ?>">
               <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding-top: 2%;">
@@ -122,7 +122,7 @@ ul.dropdown-menu {
               </div>
               <!-- /.row -->
               <br>
-            </form>
+           </form>
             <!-- <br> -->
             <hr>
                 <div class="box-body">
@@ -135,6 +135,7 @@ ul.dropdown-menu {
                                 <th>Fecha Inicio</th>
                                 <th>Fecha Terminada</th>
                                 <th>Detalle</th>
+																																<th>Tarea STD</th>
                                 <th>Equipo</th>
                                 <th>Origen</th>
                                 <th>Id Solicitud</th>
@@ -146,7 +147,7 @@ ul.dropdown-menu {
                         <tbody>
                             <?php
               //dump_exit($list);
-                if( $list!=false && count($list) > 0) 
+                if( $list!=false && count($list) > 0)
                 {
                   $userdata = $this->session->userdata('user_data');
                   $usrId    = $userdata[0]['usrId']; 
@@ -172,7 +173,7 @@ ul.dropdown-menu {
                           echo '</ul><div>';
                         }
                         echo '</td>';                        
-                        echo '<td>'.floatval($a['id_orden']).'</td>';                       
+                        echo '<td>'.floatval($a['id_orden']).'</td>';
                         $fecha_program = ($a['fecha_program'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_program']), 'Y-m-d');
                         echo '<td>'.$fecha_program.'</td>';
                         $fecha_inicio = ($a['fecha_inicio'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_inicio']), 'Y-m-d');
@@ -180,6 +181,7 @@ ul.dropdown-menu {
                         $fecha_terminada = ($a['fecha_terminada'] == '0000-00-00 00:00:00') ? "0000-00-00" : date_format(date_create($a['fecha_terminada']), 'Y-m-d');
                         echo '<td>'.$fecha_terminada.'</td>';
                         echo '<td>'.$a['descripcion'].'</td>';
+																								echo '<td>'.$a['descripcion'].'</td>';
                         echo '<td>'.$a['codigo'].' </td>';
                         echo '<td>'.$a['tipoDescrip'].'</td>';
                         echo '<td>'.$a['id_solicitud'].'</td>';
@@ -373,705 +375,705 @@ function eliminarpred() {
 }
 
 
-///// EDICION DE ORDEN DE TRABAJO  
+///// EDICION DE ORDEN DE TRABAJO
 
-//Trae tareas y permite busqueda en el input
-var dataTarea = function() {
-    var tmp = null;
-    $.ajax({
-            'async': false,
-            'type': "POST",
-            'dataType': 'json',
-            'url': 'index.php/Preventivo/gettarea',
-        })
-        .done((data) => {
-            tmp = data
-        })
-        .fail(() => alert("Error al traer tareas"));
-    return tmp;
-}();
-$("#tarea").autocomplete({
-    source: dataTarea,
-    delay: 500,
-    minLength: 1,
-    focus: function(event, ui) {
-        event.preventDefault();
-        $(this).val(ui.item.label);
-        $('#id_tarea').val(ui.item.value);
-    },
-    select: function(event, ui) {
-        event.preventDefault();
-        $(this).val(ui.item.label);
-        $('#id_tarea').val(ui.item.value);
-        $('#tareacustom').val(''); // borra la tarea custom
-    },
-});
-// limpia un input al seleccionar o llenar otro
-$('#tarea').change(function() {
-    $('#tareacustom').val('');
-});
-$('#tareacustom').change(function() {
-    $('#tarea').val('');
-    $('#id_tarea').val('');
-});
+	//Trae tareas y permite busqueda en el input
+	var dataTarea = function() {
+					var tmp = null;
+					$.ajax({
+													'async': false,
+													'type': "POST",
+													'dataType': 'json',
+													'url': 'index.php/Preventivo/gettarea',
+									})
+									.done((data) => {
+													tmp = data
+									})
+									.fail(() => alert("Error al traer tareas"));
+					return tmp;
+	}();
+	$("#tarea").autocomplete({
+					source: dataTarea,
+					delay: 500,
+					minLength: 1,
+					focus: function(event, ui) {
+									event.preventDefault();
+									$(this).val(ui.item.label);
+									$('#id_tarea').val(ui.item.value);
+					},
+					select: function(event, ui) {
+									event.preventDefault();
+									$(this).val(ui.item.label);
+									$('#id_tarea').val(ui.item.value);
+									$('#tareacustom').val(''); // borra la tarea custom
+					},
+	});
+	// limpia un input al seleccionar o llenar otro
+	$('#tarea').change(function() {
+					$('#tareacustom').val('');
+	});
+	$('#tareacustom').change(function() {
+					$('#tarea').val('');
+					$('#id_tarea').val('');
+	});
 
-// Trae datos para llenar el modal Editar OT - Ok
-function editar(o) {
+	// Trae datos para llenar el modal Editar OT - Ok
+	function editar(o) {
 
-    $('#errorE').hide();
-    $('#btnEditar').prop("disabled", false);
-    var idp = $(o).closest('tr').attr('id');
-    // agrega id de ot par guardar con adjuntos
-    $('#idAgregaAdjunto').val(idp);
-    //borra la tabla de adjuntos antes de cargar 
-    $('#tablaadjunto tbody tr').remove();
+					$('#errorE').hide();
+					$('#btnEditar').prop("disabled", false);
+					var idp = $(o).closest('tr').attr('id');
+					// agrega id de ot par guardar con adjuntos
+					$('#idAgregaAdjunto').val(idp);
+					//borra la tabla de adjuntos antes de cargar 
+					$('#tablaadjunto tbody tr').remove();
 
-    $.ajax({
-        data: {
-            idp: idp
-        },
-        dataType: 'json',
-        type: 'POST',
-        url: 'index.php/Otrabajo/getpencil',
-        success: function(data) {
-            //console.table(data);
-            var resp = data['datos'];
+					$.ajax({
+									data: {
+													idp: idp
+									},
+									dataType: 'json',
+									type: 'POST',
+									url: 'index.php/Otrabajo/getpencil',
+									success: function(data) {
+													//console.table(data);
+													var resp = data['datos'];
 
-            datos = {
-                'id_ot': resp[0]['id_orden'], //
-                'nro': resp[0]['nro'],
-                'equipo_descrip': resp[0]['codigo'], //
-                'fecha_ingreso': resp[0]['fecha_ingreso'],
-                'id_equipo': resp[0]['id_equipo'], //
-                'marca': resp[0]['marca'],
-                'ubicacion': resp[0]['ubicacion'],
-                'descripcion': resp[0]['equipodescrip'],
-                'id_tarea': resp[0]['id_tarea'],
-                'fecha_program': resp[0]['fecha_program'], //            
-                'fecha_inicio': resp[0]['fecha_inicio'], //
-                'fecha_terminada': resp[0]['fecha_terminada'], //
-                'idusuario': resp[0]['id_usuario'], //
-                'tareadescrip': resp[0]['tareadescrip'], //,     //
-                'nomCli': resp[0]['nomCli']
-                //'id_sucu'       : resp[0]['id_sucursal'],     //
-                //'sucursal'      : resp[0]['descripc']//,        //
-                //'id_proveedor'  : resp[0]['provid'],          //
-                //'nombreprov'    : resp[0]['provnombre']//,      
-            }
+													datos = {
+																	'id_ot': resp[0]['id_orden'], //
+																	'nro': resp[0]['nro'],
+																	'equipo_descrip': resp[0]['codigo'], //
+																	'fecha_ingreso': resp[0]['fecha_ingreso'],
+																	'id_equipo': resp[0]['id_equipo'], //
+																	'marca': resp[0]['marca'],
+																	'ubicacion': resp[0]['ubicacion'],
+																	'descripcion': resp[0]['equipodescrip'],
+																	'id_tarea': resp[0]['id_tarea'],
+																	'fecha_program': resp[0]['fecha_program'], //            
+																	'fecha_inicio': resp[0]['fecha_inicio'], //
+																	'fecha_terminada': resp[0]['fecha_terminada'], //
+																	'idusuario': resp[0]['id_usuario'], //
+																	'tareadescrip': resp[0]['tareadescrip'], //,     //
+																	'nomCli': resp[0]['nomCli']
+																	//'id_sucu'       : resp[0]['id_sucursal'],     //
+																	//'sucursal'      : resp[0]['descripc']//,        //
+																	//'id_proveedor'  : resp[0]['provid'],          //
+																	//'nombreprov'    : resp[0]['provnombre']//,      
+													}
 
-            var herram = data['herramientas'];
-            var insum = data['insumos'];
-            var adjunto = data['adjunto'];
-            console.table(adjunto);
-            completarEdit(datos, herram, insum, adjunto);
-        },
-        error: function(result) {
-            console.error("Error al Editar OT. Ver console.table");
-            console.table(result);
-        },
-    });
-}
+													var herram = data['herramientas'];
+													var insum = data['insumos'];
+													var adjunto = data['adjunto'];
+													console.table(adjunto);
+													completarEdit(datos, herram, insum, adjunto);
+									},
+									error: function(result) {
+													console.error("Error al Editar OT. Ver console.table");
+													console.table(result);
+									},
+					});
+	}
 
-// completa los datos del modal Editar - Ok
-function completarEdit(datos, herram, insum, adjunto) {
+	// completa los datos del modal Editar - Ok
+	function completarEdit(datos, herram, insum, adjunto) {
 
-    $('#id_ot').val(datos['id_ot']);
-    $('#equipo_descrip').val(datos['equipo_descrip']);
-    $('#equipo').val(datos['id_equipo']);
-    $('#fecha_ingreso').val(datos['fecha_ingreso']);
-    $('#marca').val(datos['marca']);
-    $('#ubicacion').val(datos['ubicacion']);
-    $('#descripcion').val(datos['descripcion']);
-    if (datos['id_tarea'] > '0') {
-        $('#id_tarea').val(datos['id_tarea']);
-        $('#tarea').val(datos['tareadescrip']);
-    } else {
-        $('#tareacustom').val(datos['tareadescrip']);
-    }
+					$('#id_ot').val(datos['id_ot']);
+					$('#equipo_descrip').val(datos['equipo_descrip']);
+					$('#equipo').val(datos['id_equipo']);
+					$('#fecha_ingreso').val(datos['fecha_ingreso']);
+					$('#marca').val(datos['marca']);
+					$('#ubicacion').val(datos['ubicacion']);
+					$('#descripcion').val(datos['descripcion']);
+					if (datos['id_tarea'] > '0') {
+									$('#id_tarea').val(datos['id_tarea']);
+									$('#tarea').val(datos['tareadescrip']);
+					} else {
+									$('#tareacustom').val(datos['tareadescrip']);
+					}
 
-    $('#fechaProgramacion').val(datos['fecha_program']);
-    $('#fechaInicio').val(datos['fecha_inicio']);
-    $('#fechaTerminada').val(datos['fecha_terminada']);
-    $('#NombreCliente').val(datos['nomCli']);
-    //$("#suci").val(datos['id_sucu']);
-    //$("#prov").val(datos['id_proveedor']); 
+					$('#fechaProgramacion').val(datos['fecha_program']);
+					$('#fechaInicio').val(datos['fecha_inicio']);
+					$('#fechaTerminada').val(datos['fecha_terminada']);
+					$('#NombreCliente').val(datos['nomCli']);
+					//$("#suci").val(datos['id_sucu']);
+					//$("#prov").val(datos['id_proveedor']); 
 
-    $('#tablaherramienta tbody tr').remove();
-    for (var i = 0; i < herram.length; i++) {
-        var tr = "<tr id='" + herram[i]['herrId'] + "'>" +
-            "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>" +
-            "<td>" + herram[i]['herrcodigo'] + "</td>" +
-            "<td>" + herram[i]['herrmarca'] + "</td>" +
-            "<td>" + herram[i]['herrdescrip'] + "</td>" +
-            "<td>" + herram[i]['cantidad'] + "</td>" +
-            "</tr>";
-        $('#tablaherramienta tbody').append(tr);
-    }
+					$('#tablaherramienta tbody tr').remove();
+					for (var i = 0; i < herram.length; i++) {
+									var tr = "<tr id='" + herram[i]['herrId'] + "'>" +
+													"<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>" +
+													"<td>" + herram[i]['herrcodigo'] + "</td>" +
+													"<td>" + herram[i]['herrmarca'] + "</td>" +
+													"<td>" + herram[i]['herrdescrip'] + "</td>" +
+													"<td>" + herram[i]['cantidad'] + "</td>" +
+													"</tr>";
+									$('#tablaherramienta tbody').append(tr);
+					}
 
-    $('#tablainsumo tbody tr').remove();
-    for (var i = 0; i < insum.length; i++) {
-        var tr = "<tr id='" + insum[i]['artId'] + "'>" +
-            "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>" +
-            "<td>" + insum[i]['artBarCode'] + "</td>" +
-            "<td>" + insum[i]['artDescription'] + "</td>" +
-            "<td>" + insum[i]['cantidad'] + "</td>" +
-            "</tr>";
-        $('#tablainsumo tbody').append(tr);
-    }
+					$('#tablainsumo tbody tr').remove();
+					for (var i = 0; i < insum.length; i++) {
+									var tr = "<tr id='" + insum[i]['artId'] + "'>" +
+													"<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>" +
+													"<td>" + insum[i]['artBarCode'] + "</td>" +
+													"<td>" + insum[i]['artDescription'] + "</td>" +
+													"<td>" + insum[i]['cantidad'] + "</td>" +
+													"</tr>";
+									$('#tablainsumo tbody').append(tr);
+					}
 
-    recargaTablaAdjunto(adjunto);
+					recargaTablaAdjunto(adjunto);
 
-    $(document).on("click", ".elirow", function() {
-        var parent = $(this).closest('tr');
-        $(parent).remove();
-    });
-}
+					$(document).on("click", ".elirow", function() {
+									var parent = $(this).closest('tr');
+									$(parent).remove();
+					});
+	}
 
-// Guarda Edicion de OT - Ok
-function guardareditar() {
-    var idp = $('#id_ot').val();
-    WaitingOpen('Guardando Edición...');
-    $('#errorE').hide();
-    $('#btnEditar').prop("disabled", true);
-    var hayError = false;
+	// Guarda Edicion de OT - Ok
+	function guardareditar() {
+					var idp = $('#id_ot').val();
+					WaitingOpen('Guardando Edición...');
+					$('#errorE').hide();
+					$('#btnEditar').prop("disabled", true);
+					var hayError = false;
 
-    //var nro           = $('#nroedit').val();
-    var fecha_inicio = $('#fechaInicio').val();
+					//var nro           = $('#nroedit').val();
+					var fecha_inicio = $('#fechaInicio').val();
 
-    var fechaProgramacion = $('#fechaProgramacion').val();
-    var fecha_entrega = $('#fechaEntrega').val();
-    var id_sucu = $('#suci').val();
-    var id_prov = $('#prov').val();
-    var id_equipo = $('#equipo').val();
-    var tareacustom = $('#tareacustom').val();
-    var tareaestandar = $('#tarea').val();
-    var id_tarea = $('#id_tarea').val();
-    var descripcion = '';
-    if (tareacustom == '') {
-        descripcion = $('#tarea').val();
-    } else {
-        descripcion = $('#tareacustom').val();
-        id_tarea = 0;
-    }
+					var fechaProgramacion = $('#fechaProgramacion').val();
+					var fecha_entrega = $('#fechaEntrega').val();
+					var id_sucu = $('#suci').val();
+					var id_prov = $('#prov').val();
+					var id_equipo = $('#equipo').val();
+					var tareacustom = $('#tareacustom').val();
+					var tareaestandar = $('#tarea').val();
+					var id_tarea = $('#id_tarea').val();
+					var descripcion = '';
+					if (tareacustom == '') {
+									descripcion = $('#tarea').val();
+					} else {
+									descripcion = $('#tareacustom').val();
+									id_tarea = 0;
+					}
 
-    var parametros = {
-        //'nro'           : nro,                                          
-        'fecha_program': fechaProgramacion,
-        'fecha_entrega': fecha_entrega,
-        'id_tarea': id_tarea,
-        'descripcion': descripcion,
-        'id_sucursal': id_sucu,
-        'id_proveedor': id_prov,
-        'id_equipo': id_equipo
-    };
+					var parametros = {
+									//'nro'           : nro,                                          
+									'fecha_program': fechaProgramacion,
+									'fecha_entrega': fecha_entrega,
+									'id_tarea': id_tarea,
+									'descripcion': descripcion,
+									'id_sucursal': id_sucu,
+									'id_proveedor': id_prov,
+									'id_equipo': id_equipo
+					};
 
-    // Arma array de herramientas y cantidades
-    var idsherramienta = new Array();
-    $("#tablaherramienta tbody tr").each(function(index) {
-        var id_her = $(this).attr('id');
-        idsherramienta.push(id_her);
-    });
-    var cantHerram = new Array();
-    $("#tablaherramienta tbody tr").each(function(index) {
-        var cant_herr = $(this).find("td").eq(4).html();
-        cantHerram.push(cant_herr);
-    });
-    // Arma array de insumos y cantidades
-    var idsinsumo = new Array();
-    $("#tablainsumo tbody tr").each(function(index) {
-        var id_ins = $(this).attr('id');
-        idsinsumo.push(id_ins);
-    });
-    var cantInsum = new Array();
-    $("#tablainsumo tbody tr").each(function(index) {
-        var cant_insum = $(this).find("td").eq(3).html();
-        cantInsum.push(cant_insum);
-    });
+					// Arma array de herramientas y cantidades
+					var idsherramienta = new Array();
+					$("#tablaherramienta tbody tr").each(function(index) {
+									var id_her = $(this).attr('id');
+									idsherramienta.push(id_her);
+					});
+					var cantHerram = new Array();
+					$("#tablaherramienta tbody tr").each(function(index) {
+									var cant_herr = $(this).find("td").eq(4).html();
+									cantHerram.push(cant_herr);
+					});
+					// Arma array de insumos y cantidades
+					var idsinsumo = new Array();
+					$("#tablainsumo tbody tr").each(function(index) {
+									var id_ins = $(this).attr('id');
+									idsinsumo.push(id_ins);
+					});
+					var cantInsum = new Array();
+					$("#tablainsumo tbody tr").each(function(index) {
+									var cant_insum = $(this).find("td").eq(3).html();
+									cantInsum.push(cant_insum);
+					});
 
-    //validaciones
-    // if($('#equipo').val() == '')
-    // {
-    //   hayError = true;
-    // }      
-    // if ((tareacustom == '') && (id_tarea == '')){
-    //   hayError = true;
-    // }
-    // if($('#fechaInicio').val()=='' || $('#fechaEntrega').val()=='0000-00-00 00:00:00')
-    // {
-    //   hayError = true;
-    // }
-    // if(fecha_entrega=='' || fecha_entrega=='0000-00-00 00:00:00')
-    // {
-    //   hayError = true;
-    // }
-    // if($('#suci').val() == '-1')
-    // {
-    //   hayError = true;
-    // }
-    // if($('#prov').val() == '-1')
-    // {
-    //   hayError = true;
-    // }
-    // //console.error( hayError );
-    // if(hayError == true){
-    //   $('#errorE').fadeIn('slow');     
-    //   return;
-    // }
+					//validaciones
+					// if($('#equipo').val() == '')
+					// {
+					//   hayError = true;
+					// }      
+					// if ((tareacustom == '') && (id_tarea == '')){
+					//   hayError = true;
+					// }
+					// if($('#fechaInicio').val()=='' || $('#fechaEntrega').val()=='0000-00-00 00:00:00')
+					// {
+					//   hayError = true;
+					// }
+					// if(fecha_entrega=='' || fecha_entrega=='0000-00-00 00:00:00')
+					// {
+					//   hayError = true;
+					// }
+					// if($('#suci').val() == '-1')
+					// {
+					//   hayError = true;
+					// }
+					// if($('#prov').val() == '-1')
+					// {
+					//   hayError = true;
+					// }
+					// //console.error( hayError );
+					// if(hayError == true){
+					//   $('#errorE').fadeIn('slow');     
+					//   return;
+					// }
 
-    $.ajax({
-        type: 'POST',
-        data: {
-            parametros: parametros,
-            idOT: idp,
-            idsherramienta: idsherramienta,
-            cantHerram: cantHerram,
-            idsinsumo: idsinsumo,
-            cantInsum: cantInsum
-        },
-        url: 'index.php/Otrabajo/guardar_editar',
-        success: function(data) {
-            WaitingClose();
-            $('#modaleditar').modal('hide');
-            regresa1();
-        },
-        error: function(result) {
-            WaitingClose();
-            $('#btnEditar').prop("disabled", false);
-            console.error("Error al guardar en modal Editar Ot");
-            console.table(result);
-        }
-    });
+					$.ajax({
+									type: 'POST',
+									data: {
+													parametros: parametros,
+													idOT: idp,
+													idsherramienta: idsherramienta,
+													cantHerram: cantHerram,
+													idsinsumo: idsinsumo,
+													cantInsum: cantInsum
+									},
+									url: 'index.php/Otrabajo/guardar_editar',
+									success: function(data) {
+													WaitingClose();
+													$('#modaleditar').modal('hide');
+													regresa1();
+									},
+									error: function(result) {
+													WaitingClose();
+													$('#btnEditar').prop("disabled", false);
+													console.error("Error al guardar en modal Editar Ot");
+													console.table(result);
+									}
+					});
 
-}
+	}
 ///// EDICION DE ORDEN DE TRABAJO  
 
 /// EDICION Y AGREGADO DE ADJUNTOS
-//abrir modal eliminar adjunto
-$(document).on("click", ".eliminaAdjunto", function() {
-    $('#modalEliminarAdjunto').modal('show');
-    var id_adjunto = $(this).parents("tr").attr('id');
-    $('#idAdjunto').val(id_adjunto);
-    console.log(id_adjunto + 'adjunto');
-});
-//eliminar adjunto
-function eliminarAdjunto() {
-    $('#modalEliminarAdjunto').modal('hide');
-    var id_adjunto = $('#idAdjunto').val();
-    $.ajax({
-            data: {
-                id_adjunto: id_adjunto
-            },
-            dataType: 'json',
-            type: 'POST',
-            url: 'index.php/Otrabajo/eliminarAdjunto',
-        })
-        .done(function(data) {
-            //console.table(data); 
-            let prevAdjunto = '';
-            borrarRegistro(id_adjunto);
-            //recargaTablaAdjunto(prevAdjunto);
-        })
-        .error(function(result) {
-            console.error(result);
-        });
-}
-// //abrir modal agregar adjunto
-$(document).on("click", ".agregaAdjunto", function() {
-    $('#btnAgregarEditar').text("Agregar");
-    $('#modalAgregarAdjunto .modal-title').html(
-        '<span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar');
+	//abrir modal eliminar adjunto
+	$(document).on("click", ".eliminaAdjunto", function() {
+					$('#modalEliminarAdjunto').modal('show');
+					var id_adjunto = $(this).parents("tr").attr('id');
+					$('#idAdjunto').val(id_adjunto);
+					console.log(id_adjunto + 'adjunto');
+	});
+	//eliminar adjunto
+	function eliminarAdjunto() {
+					$('#modalEliminarAdjunto').modal('hide');
+					var id_adjunto = $('#idAdjunto').val();
+					$.ajax({
+													data: {
+																	id_adjunto: id_adjunto
+													},
+													dataType: 'json',
+													type: 'POST',
+													url: 'index.php/Otrabajo/eliminarAdjunto',
+									})
+									.done(function(data) {
+													//console.table(data); 
+													let prevAdjunto = '';
+													borrarRegistro(id_adjunto);
+													//recargaTablaAdjunto(prevAdjunto);
+									})
+									.error(function(result) {
+													console.error(result);
+									});
+	}
+	// //abrir modal agregar adjunto
+	$(document).on("click", ".agregaAdjunto", function() {
+					$('#btnAgregarEditar').text("Agregar");
+					$('#modalAgregarAdjunto .modal-title').html(
+									'<span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar');
 
-    $('#modalAgregarAdjunto').modal('show');
-    var idOT = $('#id_ot').val();
-    $('#idAgregaAdjunto').val(idOT);
-});
-//abrir modal editar adjunto
-$(document).on("click", ".editaAdjunto", function() {
-    $('#btnAgregarEditar').text("Editar");
-    $('#modalAgregarAdjunto .modal-title').html(
-        '<span class="fa fa-fw fa-pencil text-light-blue"></span> Editar');
+					$('#modalAgregarAdjunto').modal('show');
+					var idOT = $('#id_ot').val();
+					$('#idAgregaAdjunto').val(idOT);
+	});
+	//abrir modal editar adjunto
+	$(document).on("click", ".editaAdjunto", function() {
+					$('#btnAgregarEditar').text("Editar");
+					$('#modalAgregarAdjunto .modal-title').html(
+									'<span class="fa fa-fw fa-pencil text-light-blue"></span> Editar');
 
-    $('#modalAgregarAdjunto').modal('show');
-    var idprev = $('#id_Predictivo').val();
-    $('#idAgregaAdjunto').val(idprev);
-});
-//eliminar adjunto
-$("#formAgregarAdjunto").submit(function(event) {
-    $('#modalAgregarAdjunto').modal('hide');
-    WaitingOpen('Guardando Adjunto...');
-    event.preventDefault();
-    if (document.getElementById("inputPDF").files.length == 0) {
-        $('#error').fadeIn('slow');
-    } else {
-        $('#error').fadeOut('slow');
-        var formData = new FormData($("#formAgregarAdjunto")[0]);
-        //debugger
-        $.ajax({
-                cache: false,
-                contentType: false,
-                data: formData,
-                dataType: 'json',
-                processData: false,
-                type: 'POST',
-                url: 'index.php/Otrabajo/agregarAdjunto',
-            })
-            .done(function(data) {
-                nuevoAdjunto(data);
-                WaitingClose();
-            })
-            .error(function(result) {
-                WaitingClose();
-                console.error(result);
-            });
-    }
-});
-// recarga tablas de adjuntos al iniciar la edicion
-function recargaTablaAdjunto(Adjunto) {
+					$('#modalAgregarAdjunto').modal('show');
+					var idprev = $('#id_Predictivo').val();
+					$('#idAgregaAdjunto').val(idprev);
+	});
+	//eliminar adjunto
+	$("#formAgregarAdjunto").submit(function(event) {
+					$('#modalAgregarAdjunto').modal('hide');
+					WaitingOpen('Guardando Adjunto...');
+					event.preventDefault();
+					if (document.getElementById("inputPDF").files.length == 0) {
+									$('#error').fadeIn('slow');
+					} else {
+									$('#error').fadeOut('slow');
+									var formData = new FormData($("#formAgregarAdjunto")[0]);
+									//debugger
+									$.ajax({
+																	cache: false,
+																	contentType: false,
+																	data: formData,
+																	dataType: 'json',
+																	processData: false,
+																	type: 'POST',
+																	url: 'index.php/Otrabajo/agregarAdjunto',
+													})
+													.done(function(data) {
+																	nuevoAdjunto(data);
+																	WaitingClose();
+													})
+													.error(function(result) {
+																	WaitingClose();
+																	console.error(result);
+													});
+					}
+	});
+	// recarga tablas de adjuntos al iniciar la edicion
+	function recargaTablaAdjunto(Adjunto) {
 
-    for (var i = 0; i < Adjunto.length; i++) {
+					for (var i = 0; i < Adjunto.length; i++) {
 
-        var tr = "<tr id='" + Adjunto[i]['id'] + "'>" +
-            "<td ><i class='fa fa-times-circle eliminaAdjunto text-light-blue' style='cursor:pointer; margin-right:10px' title='Eliminar Adjunto'></i></td>'" +
-            "<td><a id='' href='" + Adjunto[i]['ot_adjunto'] + "' target='_blank'>Archivo adjunto</a></td>" +
-            "</tr>";
-        $('#tablaadjunto tbody').append(tr);
-    }
+									var tr = "<tr id='" + Adjunto[i]['id'] + "'>" +
+													"<td ><i class='fa fa-times-circle eliminaAdjunto text-light-blue' style='cursor:pointer; margin-right:10px' title='Eliminar Adjunto'></i></td>'" +
+													"<td><a id='' href='" + Adjunto[i]['ot_adjunto'] + "' target='_blank'>Archivo adjunto</a></td>" +
+													"</tr>";
+									$('#tablaadjunto tbody').append(tr);
+					}
 
-}
-// agrega nuevo registro en tabla despues de guardarlo
-function nuevoAdjunto(data) {
-    var tr = "<tr id='" + data['id'] + "'>" +
-        "<td ><i class='fa fa-times-circle eliminaAdjunto text-light-blue' style='cursor:pointer; margin-right:10px' title='Eliminar Adjunto'></i></td>'" +
-        "<td><a id='' href='" + data['ot_adjunto'] + "' target='_blank'>Archivo adjunto</a></td>" +
-        "</tr>";
-    $('#tablaadjunto tbody').append(tr);
-}
-// borra registro en tabla si fue eliminado con exito
-function borrarRegistro(id_adjunto) {
-    var tabla = $('#tablaadjunto tbody tr');
-    $.each(tabla, function() {
-        var idTrow = $(this).attr('id');
-        if (idTrow == id_adjunto) {
-            $(this).remove();
-        }
-    });
-}
+	}
+	// agrega nuevo registro en tabla despues de guardarlo
+	function nuevoAdjunto(data) {
+					var tr = "<tr id='" + data['id'] + "'>" +
+									"<td ><i class='fa fa-times-circle eliminaAdjunto text-light-blue' style='cursor:pointer; margin-right:10px' title='Eliminar Adjunto'></i></td>'" +
+									"<td><a id='' href='" + data['ot_adjunto'] + "' target='_blank'>Archivo adjunto</a></td>" +
+									"</tr>";
+					$('#tablaadjunto tbody').append(tr);
+	}
+	// borra registro en tabla si fue eliminado con exito
+	function borrarRegistro(id_adjunto) {
+					var tabla = $('#tablaadjunto tbody tr');
+					$.each(tabla, function() {
+									var idTrow = $(this).attr('id');
+									if (idTrow == id_adjunto) {
+													$(this).remove();
+									}
+					});
+	}
 ///  / EDICION Y AGREGADO DE ADJUNTOS
 
 ////// HERRAMIENTAS //////
 
-function ordenaArregloDeObjetosPor(propiedad) {
-    return function(a, b) {
-        if (a[propiedad] > b[propiedad]) {
-            return 1;
-        } else if (a[propiedad] < b[propiedad]) {
-            return -1;
-        }
-        return 0;
-    }
-}
-//Trae herramientas
-var dataHerramientas = function() {
-    var tmp = null;
-    $.ajax({
-            'async': false,
-            'type': "POST",
-            'dataType': 'json',
-            'url': 'index.php/Preventivo/getHerramientasB',
-        })
-        .done((data) => {
-            tmp = data
-        })
-    // .fail( () => alert("Error al traer Herramientas") );
-    return tmp;
-}();
+	function ordenaArregloDeObjetosPor(propiedad) {
+					return function(a, b) {
+									if (a[propiedad] > b[propiedad]) {
+													return 1;
+									} else if (a[propiedad] < b[propiedad]) {
+													return -1;
+									}
+									return 0;
+					}
+	}
+	//Trae herramientas
+	var dataHerramientas = function() {
+					var tmp = null;
+					$.ajax({
+													'async': false,
+													'type': "POST",
+													'dataType': 'json',
+													'url': 'index.php/Preventivo/getHerramientasB',
+									})
+									.done((data) => {
+													tmp = data
+									})
+					// .fail( () => alert("Error al traer Herramientas") );
+					return tmp;
+	}();
 
-// data busqueda por codigo de herramientas
-function dataCodigoHerr(request, response) {
-    function hasMatch(s) {
-        return s.toLowerCase().indexOf(request.term.toLowerCase()) !== -1;
-    }
-    var i, l, obj, matches = [];
+	// data busqueda por codigo de herramientas
+	function dataCodigoHerr(request, response) {
+					function hasMatch(s) {
+									return s.toLowerCase().indexOf(request.term.toLowerCase()) !== -1;
+					}
+					var i, l, obj, matches = [];
 
-    if (request.term === "") {
-        response([]);
-        return;
-    }
+					if (request.term === "") {
+									response([]);
+									return;
+					}
 
-    //ordeno por codigo de herramientas
-    dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("codigo"));
+					//ordeno por codigo de herramientas
+					dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("codigo"));
 
-    for (i = 0, l = dataHerramientas.length; i < l; i++) {
-        obj = dataHerramientas[i];
-        if (hasMatch(obj.codigo)) {
-            matches.push(obj);
-        }
-    }
-    response(matches);
-}
-// data busqueda por marca de herramientas
-function dataMarcaHerr(request, response) {
-    function hasMatch(s) {
-        return s.toLowerCase().indexOf(request.term.toLowerCase()) !== -1;
-    }
-    var i, l, obj, matches = [];
+					for (i = 0, l = dataHerramientas.length; i < l; i++) {
+									obj = dataHerramientas[i];
+									if (hasMatch(obj.codigo)) {
+													matches.push(obj);
+									}
+					}
+					response(matches);
+	}
+	// data busqueda por marca de herramientas
+	function dataMarcaHerr(request, response) {
+					function hasMatch(s) {
+									return s.toLowerCase().indexOf(request.term.toLowerCase()) !== -1;
+					}
+					var i, l, obj, matches = [];
 
-    if (request.term === "") {
-        response([]);
-        return;
-    }
+					if (request.term === "") {
+									response([]);
+									return;
+					}
 
-    //ordeno por marca de herramientas
-    dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("marca"));
+					//ordeno por marca de herramientas
+					dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("marca"));
 
-    for (i = 0, l = dataHerramientas.length; i < l; i++) {
-        obj = dataHerramientas[i];
-        if (hasMatch(obj.marca)) {
-            matches.push(obj);
-        }
-    }
-    response(matches);
-}
+					for (i = 0, l = dataHerramientas.length; i < l; i++) {
+									obj = dataHerramientas[i];
+									if (hasMatch(obj.marca)) {
+													matches.push(obj);
+									}
+					}
+					response(matches);
+	}
 
 
-//busqueda por marcas de herramientas
-$("#herramienta").autocomplete({
-        source: dataCodigoHerr,
-        delay: 500,
-        minLength: 1,
-        focus: function(event, ui) {
-            event.preventDefault();
-            $(this).val(ui.item.codigo);
-            $('#id_herramienta').val(ui.item.value);
-            $('#marcaherram').val(ui.item.marca);
-            $('#descripcionherram').val(ui.item.label);
-        },
-        select: function(event, ui) {
-            event.preventDefault();
-            $(this).val(ui.item.codigo);
-            $('#id_herramienta').val(ui.item.value);
-            $('#marcaherram').val(ui.item.marca);
-            $('#descripcionherram').val(ui.item.label);
-        },
-    })
-    //muestro marca en listado de resultados
-    .data("ui-autocomplete")._renderItem = function(ul, item) {
-        return $("<li>")
-            .append("<a>" + item.codigo + "</a>")
-            .appendTo(ul);
-    };
+	//busqueda por marcas de herramientas
+	$("#herramienta").autocomplete({
+									source: dataCodigoHerr,
+									delay: 500,
+									minLength: 1,
+									focus: function(event, ui) {
+													event.preventDefault();
+													$(this).val(ui.item.codigo);
+													$('#id_herramienta').val(ui.item.value);
+													$('#marcaherram').val(ui.item.marca);
+													$('#descripcionherram').val(ui.item.label);
+									},
+									select: function(event, ui) {
+													event.preventDefault();
+													$(this).val(ui.item.codigo);
+													$('#id_herramienta').val(ui.item.value);
+													$('#marcaherram').val(ui.item.marca);
+													$('#descripcionherram').val(ui.item.label);
+									},
+					})
+					//muestro marca en listado de resultados
+					.data("ui-autocomplete")._renderItem = function(ul, item) {
+									return $("<li>")
+													.append("<a>" + item.codigo + "</a>")
+													.appendTo(ul);
+					};
 
-//busqueda por marcas de herramientas
-$("#marcaherram").autocomplete({
-        source: dataMarcaHerr,
-        delay: 500,
-        minLength: 1,
-        focus: function(event, ui) {
-            event.preventDefault();
-            $(this).val(ui.item.marca);
-            $('#id_herramienta').val(ui.item.value);
-            $('#herramienta').val(ui.item.codigo);
-            $('#descripcionherram').val(ui.item.label);
-        },
-        select: function(event, ui) {
-            event.preventDefault();
-            $(this).val(ui.item.marca);
-            $('#id_herramienta').val(ui.item.value);
-            $('#herramienta').val(ui.item.codigo);
-            $('#descripcionherram').val(ui.item.label);
-        },
-    })
-    //muestro marca en listado de resultados
-    .data("ui-autocomplete")._renderItem = function(ul, item) {
-        return $("<li>")
-            .append("<a>" + item.marca + "</a>")
-            .appendTo(ul);
-    };
+	//busqueda por marcas de herramientas
+	$("#marcaherram").autocomplete({
+									source: dataMarcaHerr,
+									delay: 500,
+									minLength: 1,
+									focus: function(event, ui) {
+													event.preventDefault();
+													$(this).val(ui.item.marca);
+													$('#id_herramienta').val(ui.item.value);
+													$('#herramienta').val(ui.item.codigo);
+													$('#descripcionherram').val(ui.item.label);
+									},
+									select: function(event, ui) {
+													event.preventDefault();
+													$(this).val(ui.item.marca);
+													$('#id_herramienta').val(ui.item.value);
+													$('#herramienta').val(ui.item.codigo);
+													$('#descripcionherram').val(ui.item.label);
+									},
+					})
+					//muestro marca en listado de resultados
+					.data("ui-autocomplete")._renderItem = function(ul, item) {
+									return $("<li>")
+													.append("<a>" + item.marca + "</a>")
+													.appendTo(ul);
+					};
 
-//busqueda por descripcion de herramientas
-$("#descripcionherram").autocomplete({
-    source: dataHerramientas,
-    delay: 500,
-    minLength: 1,
-    focus: function(event, ui) {
-        event.preventDefault();
-        $(this).val(ui.item.label);
-        $('#id_herramienta').val(ui.item.value);
-        $('#herramienta').val(ui.item.codigo);
-        $('#marcaherram').val(ui.item.marca);
-    },
-    select: function(event, ui) {
-        event.preventDefault();
-        $(this).val(ui.item.label);
-        $('#id_herramienta').val(ui.item.value);
-        $('#herramienta').val(ui.item.codigo);
-        $('#marcaherram').val(ui.item.marca);
-    },
-});
+	//busqueda por descripcion de herramientas
+	$("#descripcionherram").autocomplete({
+					source: dataHerramientas,
+					delay: 500,
+					minLength: 1,
+					focus: function(event, ui) {
+									event.preventDefault();
+									$(this).val(ui.item.label);
+									$('#id_herramienta').val(ui.item.value);
+									$('#herramienta').val(ui.item.codigo);
+									$('#marcaherram').val(ui.item.marca);
+					},
+					select: function(event, ui) {
+									event.preventDefault();
+									$(this).val(ui.item.label);
+									$('#id_herramienta').val(ui.item.value);
+									$('#herramienta').val(ui.item.codigo);
+									$('#marcaherram').val(ui.item.marca);
+					},
+	});
 
-// Agrega herramientas a la tabla - Chequeado
-var nrofila = 0; // hace cada fila unica
-$("#agregarherr").click(function(e) {
-    // FALTA HACER VALIDACION
-    var id_her = $('#id_herramienta').val();
-    var herramienta = $("#herramienta").val();
-    var marcaherram = $('#marcaherram').val();
-    var descripcionherram = $('#descripcionherram').val();
-    var cantidadherram = $('#cantidadherram').val();
+	// Agrega herramientas a la tabla - Chequeado
+	var nrofila = 0; // hace cada fila unica
+	$("#agregarherr").click(function(e) {
+					// FALTA HACER VALIDACION
+					var id_her = $('#id_herramienta').val();
+					var herramienta = $("#herramienta").val();
+					var marcaherram = $('#marcaherram').val();
+					var descripcionherram = $('#descripcionherram').val();
+					var cantidadherram = $('#cantidadherram').val();
 
-    nrofila = nrofila + 1;
-    var tr = "<tr id='" + id_her + "' data-nrofila='" + nrofila + "'>" +
-        "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>" +
-        "<td class='herr'>" + herramienta + "</td>" +
-        "<td class='marca'>" + marcaherram + "</td>" +
-        "<td class='descrip'>" + descripcionherram + "</td>" +
-        "<td class='cant'>" + cantidadherram + "</td>" +
-        // guardo id de herram y cantidades
-        "<input type='hidden' name='id_her[" + nrofila + "]' value='" + id_her + "'>" +
-        "<input type='hidden' name='cant_herr[" + nrofila + "]' value='" + cantidadherram + "'>" +
-        "</tr>";
-    if (id_her > 0 && cantidadherram > 0) {
-        $('#tablaherramienta tbody').append(tr);
-    } else {
-        return;
-    }
+					nrofila = nrofila + 1;
+					var tr = "<tr id='" + id_her + "' data-nrofila='" + nrofila + "'>" +
+									"<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>" +
+									"<td class='herr'>" + herramienta + "</td>" +
+									"<td class='marca'>" + marcaherram + "</td>" +
+									"<td class='descrip'>" + descripcionherram + "</td>" +
+									"<td class='cant'>" + cantidadherram + "</td>" +
+									// guardo id de herram y cantidades
+									"<input type='hidden' name='id_her[" + nrofila + "]' value='" + id_her + "'>" +
+									"<input type='hidden' name='cant_herr[" + nrofila + "]' value='" + cantidadherram + "'>" +
+									"</tr>";
+					if (id_her > 0 && cantidadherram > 0) {
+									$('#tablaherramienta tbody').append(tr);
+					} else {
+									return;
+					}
 
-    $(document).on("click", ".elirow", function() {
-        var parent = $(this).closest('tr');
-        $(parent).remove();
-    });
+					$(document).on("click", ".elirow", function() {
+									var parent = $(this).closest('tr');
+									$(parent).remove();
+					});
 
-    $('#herramienta').val('');
-    $('#marcaherram').val('');
-    $('#descripcionherram').val('');
-    $('#cantidadherram').val('');
-});
+					$('#herramienta').val('');
+					$('#marcaherram').val('');
+					$('#descripcionherram').val('');
+					$('#cantidadherram').val('');
+	});
 ////// HERRAMIENTAS //////
 
 ////// INSUMOS //////
 
-//Trae insumos
-var dataInsumos = function() {
-    var tmp = null;
-    $.ajax({
-            'async': false,
-            'type': "POST",
-            'dataType': 'json',
-            'url': 'index.php/Preventivo/getinsumo',
-        })
-        .done((data) => {
-            tmp = data
-        })
-    // .fail( () => alert("Error al traer Herramientas") );
-    return tmp;
-}();
+	//Trae insumos
+	var dataInsumos = function() {
+					var tmp = null;
+					$.ajax({
+													'async': false,
+													'type': "POST",
+													'dataType': 'json',
+													'url': 'index.php/Preventivo/getinsumo',
+									})
+									.done((data) => {
+													tmp = data
+									})
+					// .fail( () => alert("Error al traer Herramientas") );
+					return tmp;
+	}();
 
-// data busqueda por codigo de herramientas
-function dataCodigoInsumo(request, response) {
-    function hasMatch(s) {
-        return s.toLowerCase().indexOf(request.term.toLowerCase()) !== -1;
-    }
-    var i, l, obj, matches = [];
+	// data busqueda por codigo de herramientas
+	function dataCodigoInsumo(request, response) {
+					function hasMatch(s) {
+									return s.toLowerCase().indexOf(request.term.toLowerCase()) !== -1;
+					}
+					var i, l, obj, matches = [];
 
-    if (request.term === "") {
-        response([]);
-        return;
-    }
+					if (request.term === "") {
+									response([]);
+									return;
+					}
 
-    //ordeno por codigo de herramientas
-    dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("codigo"));
+					//ordeno por codigo de herramientas
+					dataHerramientas = dataHerramientas.sort(ordenaArregloDeObjetosPor("codigo"));
 
-    for (i = 0, l = dataInsumos.length; i < l; i++) {
-        obj = dataInsumos[i];
-        if (hasMatch(obj.codigo)) {
-            matches.push(obj);
-        }
-    }
-    response(matches);
-}
+					for (i = 0, l = dataInsumos.length; i < l; i++) {
+									obj = dataInsumos[i];
+									if (hasMatch(obj.codigo)) {
+													matches.push(obj);
+									}
+					}
+					response(matches);
+	}
 
 
-//busqueda por marcas de herramientas
-$("#insumo").autocomplete({
-        source: dataCodigoInsumo,
-        delay: 500,
-        minLength: 1,
-        focus: function(event, ui) {
-            event.preventDefault();
-            $(this).val(ui.item.codigo);
-            $('#id_insumo').val(ui.item.value);
-            $('#descript').val(ui.item.label);
-        },
-        select: function(event, ui) {
-            event.preventDefault();
-            $(this).val(ui.item.codigo);
-            $('#id_insumo').val(ui.item.value);
-            $('#descript').val(ui.item.label);
-        },
-    })
-    //muestro marca en listado de resultados
-    .data("ui-autocomplete")._renderItem = function(ul, item) {
-        return $("<li>")
-            .append("<a>" + item.codigo + "</a>")
-            .appendTo(ul);
-    };
+	//busqueda por marcas de herramientas
+	$("#insumo").autocomplete({
+									source: dataCodigoInsumo,
+									delay: 500,
+									minLength: 1,
+									focus: function(event, ui) {
+													event.preventDefault();
+													$(this).val(ui.item.codigo);
+													$('#id_insumo').val(ui.item.value);
+													$('#descript').val(ui.item.label);
+									},
+									select: function(event, ui) {
+													event.preventDefault();
+													$(this).val(ui.item.codigo);
+													$('#id_insumo').val(ui.item.value);
+													$('#descript').val(ui.item.label);
+									},
+					})
+					//muestro marca en listado de resultados
+					.data("ui-autocomplete")._renderItem = function(ul, item) {
+									return $("<li>")
+													.append("<a>" + item.codigo + "</a>")
+													.appendTo(ul);
+					};
 
-//busqueda por descripcion de herramientas
-$("#descript").autocomplete({
-    source: dataInsumos,
-    delay: 500,
-    minLength: 1,
-    focus: function(event, ui) {
-        event.preventDefault();
-        $(this).val(ui.item.label);
-        $('#id_insumo').val(ui.item.value);
-        $('#insumo').val(ui.item.codigo);
-    },
-    select: function(event, ui) {
-        event.preventDefault();
-        $(this).val(ui.item.label);
-        $('#id_herramienta').val(ui.item.value);
-        $('#herramienta').val(ui.item.codigo);
-        $('#marcaherram').val(ui.item.marca);
-    },
-});
+	//busqueda por descripcion de herramientas
+	$("#descript").autocomplete({
+					source: dataInsumos,
+					delay: 500,
+					minLength: 1,
+					focus: function(event, ui) {
+									event.preventDefault();
+									$(this).val(ui.item.label);
+									$('#id_insumo').val(ui.item.value);
+									$('#insumo').val(ui.item.codigo);
+					},
+					select: function(event, ui) {
+									event.preventDefault();
+									$(this).val(ui.item.label);
+									$('#id_herramienta').val(ui.item.value);
+									$('#herramienta').val(ui.item.codigo);
+									$('#marcaherram').val(ui.item.marca);
+					},
+	});
 
-// Agrega insumos a la tabla 
-var nrofilaIns = 0;
-$("#agregarins").click(function(e) {
-    var id_insumo = $('#id_insumo').val();
-    var $insumo = $("#insumo").val();
-    var descript = $('#descript').val();
-    var cant = $('#cant').val();
-    console.log("El id  del insumo");
-    console.log(id_insumo);
-    var hayError = false;
-    var tr = "<tr id='" + id_insumo + "'>" +
-        "<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>" +
-        "<td>" + $insumo + "</td>" +
-        "<td>" + descript + "</td>" +
-        "<td>" + cant + "</td>" +
+	// Agrega insumos a la tabla
+	var nrofilaIns = 0;
+	$("#agregarins").click(function(e) {
+					var id_insumo = $('#id_insumo').val();
+					var $insumo = $("#insumo").val();
+					var descript = $('#descript').val();
+					var cant = $('#cant').val();
+					console.log("El id  del insumo");
+					console.log(id_insumo);
+					var hayError = false;
+					var tr = "<tr id='" + id_insumo + "'>" +
+									"<td ><i class='fa fa-ban elirow' style='color: #f39c12'; cursor: 'pointer'></i></td>" +
+									"<td>" + $insumo + "</td>" +
+									"<td>" + descript + "</td>" +
+									"<td>" + cant + "</td>" +
 
-        // guardo id de insumos y cantidades
-        "<input type='hidden' name='id_insumo[" + nrofilaIns + "]' value='" + id_insumo + "'>" +
-        "<input type='hidden' name='cant_insumo[" + nrofilaIns + "]' value='" + cant + "'>" +
-        "</tr>";
-    nrofilaIns = nrofilaIns + 1;
-    if (id_insumo > 0 && cant > 0) {
-        $('#tablainsumo tbody').append(tr);
-    } else {
-        return;
-    }
+									// guardo id de insumos y cantidades
+									"<input type='hidden' name='id_insumo[" + nrofilaIns + "]' value='" + id_insumo + "'>" +
+									"<input type='hidden' name='cant_insumo[" + nrofilaIns + "]' value='" + cant + "'>" +
+									"</tr>";
+					nrofilaIns = nrofilaIns + 1;
+					if (id_insumo > 0 && cant > 0) {
+									$('#tablainsumo tbody').append(tr);
+					} else {
+									return;
+					}
 
-    $(document).on("click", ".elirow", function() {
-        var parent = $(this).closest('tr');
-        $(parent).remove();
-    });
+					$(document).on("click", ".elirow", function() {
+									var parent = $(this).closest('tr');
+									$(parent).remove();
+					});
 
-    $('#insumo').val('');
-    $('#descript').val('');
-    $('#cant').val('');
-});
+					$('#insumo').val('');
+					$('#descript').val('');
+					$('#cant').val('');
+	});
 ////// INSUMOS //////
 
 
@@ -1193,7 +1195,7 @@ function orden() {
     });
 }
 
-// llena select clientes en modal Asignar OT - 
+// llena select clientes en modal Asignar OT -
 function traer_clientes(id_cliente) {
     $.ajax({
         type: 'POST',
@@ -1205,15 +1207,15 @@ function traer_clientes(id_cliente) {
             if(data[i]['cliId'] == id_cliente) { var selectAttr = 'selected'; console.log("sel")}
             var nombre = data[i]['cliLastName']+'. .'+datos['cliName'];
             var opcion = "<option value='"+data[i]['cliId']+"' "+selectAttr+">" +nombre+ "</option>";
-            $('#cli').append(opcion); 
+            $('#cli').append(opcion);
 
-            /*var opcion  = "<option value='-1'>Seleccione...</option>" ; 
-            $('#cli').append(opcion); 
+            /*var opcion  = "<option value='-1'>Seleccione...</option>" ;
+            $('#cli').append(opcion);
             for(var i=0; i < data.length ; i++) 
             {    
               var nombre = data[i]['cliLastName']+'. .'+datos['cliName'];
-              var opcion = "<option value='"+data[i]['cliId']+"'>" +nombre+ "</option>" ; 
-              $('#cli').append(opcion);          
+              var opcion = "<option value='"+data[i]['cliId']+"'>" +nombre+ "</option>" ;
+              $('#cli').append(opcion);
             }*/
         },
         error: function(result) {
@@ -1617,7 +1619,7 @@ function mostrarOT(o) {
 // Elige a que fcion que trae datos de OT llamar, según su origen
 function traerDatosOt(idOt, tipo, idSolicitud) {
     console.info('id deot' + idOt + ' - ' + idSolicitud + 'id solic');
-    var datos = null;
+    var datos = null;debugger;
     switch (tipo) {
         case '1': //Orden de trabajo
             datos = getDataOt(idOt, "orden de Trabajo");
@@ -1639,6 +1641,8 @@ function traerDatosOt(idOt, tipo, idSolicitud) {
             break;
         case '4': //Backlog 
             datos = getDataOtBacklog(idOt, idSolicitud, "Backlog");
+												console.log('loos datosque busco: ');
+												console.table(datos);
             fillModalViewBacklog(datos);
             $('#verOtBacklog').modal('show');
             WaitingClose();
@@ -2179,7 +2183,6 @@ function fillModalViewBacklog(datos) {
         $('#vAsignadoBack').val('Sin Asignar');
     }
 
-
     var estadoBack = getEstadosVer(datos['estado']);
     $('#vEstadoBack').val(estadoBack);
     //llenar datos de equipo
@@ -2187,10 +2190,17 @@ function fillModalViewBacklog(datos) {
     $('#vMarcaEquipoBack').val(datos['marca']);
     $('#vUbicacionEquipoBack').val(datos['ubicacion']);
     $('#vDescripcionEquipoBack').val(datos['descripcion_eq']);
-    //llenar campos de componente-equipo
-    // $('#vCodigoCompBack').val( datos['tarea']['compEquipo']['codigoComponente'] );
-    // $('#vDescripCompBack').val( datos['tarea']['compEquipo']['descripComponente'] );
-    // $('#vSistemaBack').val( datos['tarea']['compEquipo']['descripSistema'] );
+
+    //llenar campos de componente-equipo si existe componente
+				if (datos && datos['tarea'] && datos['tarea']['compEquipo'] && datos['tarea']['compEquipo'].codigoComponente) {
+						$('#vCodigoCompBack').val( datos['tarea']['compEquipo'].codigoComponente );
+						$('#vDescripCompBack').val( datos['tarea']['compEquipo'].descripComponente );
+						$('#vSistemaBack').val( datos['tarea']['compEquipo'].descripSistema );
+				} else {
+						$('#vCodigoCompBack').val('Sin componente');
+						$('#vDescripCompBack').val('-');
+						$('#vSistemaBack').val('-');
+				}
 
     //console.table(datos['tarea']);
     if (datos['tarea']['id_tarea'] == 0) {
@@ -4060,7 +4070,7 @@ $("#fechaProgramacion").datetimepicker({
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Orden de Trabajo</h4>
+                <h4 class="modal-title">Orden de Trabajobckl</h4>
             </div>
             <div class="modal-body">
 
@@ -4351,301 +4361,300 @@ $("#fechaProgramacion").datetimepicker({
 
 <!-- Modal Ver Orden de Trabajo Predictivo  LISTO -->
 <div class="modal" id="verOtPredictivo" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Orden de Trabajo</h4>
-            </div>
-            <div class="modal-body">
+		<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+						<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+																aria-hidden="true">&times;</span></button>
+								<h4 class="modal-title">Orden de Trabajo</h4>
+						</div>
+						<div class="modal-body">
 
-                <div class="panel-group" id="accordionPred" role="tablist" aria-multiselectable="true">
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="headingOnePred">
-                            <h4 class="panel-title">
-                                <a role="button" data-toggle="collapse" data-parent="#accordionPred"
-                                    href="#collapseOtPred" aria-expanded="true" aria-controls="collapseOtPred">
-                                    Datos de OT
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapseOtPred" class="panel-collapse collapse in" role="tabpanel"
-                            aria-labelledby="headingOnePred">
-                            <div class="panel-body">
+								<div class="panel-group" id="accordionPred" role="tablist" aria-multiselectable="true">
+												<div class="panel panel-default">
+														<div class="panel-heading" role="tab" id="headingOnePred">
+																<h4 class="panel-title">
+																				<a role="button" data-toggle="collapse" data-parent="#accordionPred"
+																								href="#collapseOtPred" aria-expanded="true" aria-controls="collapseOtPred">
+																								Datos de OT
+																				</a>
+																</h4>
+														</div>
+														<div id="collapseOtPred" class="panel-collapse collapse in" role="tabpanel"	aria-labelledby="headingOnePred">
+																<div class="panel-body">
 
-                                <div class="row">
-                                    <div class="col-xs-12 col-sm-3">
-                                        <label for="vIdOtPr">Nº de OT:</label>
-                                        <input type="text" class="form-control " name="vIdOtPr" id="vIdOtPr" disabled>
-                                    </div>
-                                    <!-- <div class="col-xs-12 col-sm-3">
-                    <label for="vNroOtPred">Número de OT:</label>
-                    <input type="text" class="form-control " name="vNroOtPred" id="vNroOtPred" disabled>
-                  </div> -->
-                                    <div class="col-xs-12 col-sm-9">
-                                        <label for="vDescripFallaPred">Descripción:</label>
-                                        <input type="text" class="form-control vDescripFallaPred" id="vDescripFallaPred"
-                                            disabled>
-                                    </div>
+																	<div class="row">
+																			<div class="col-xs-12 col-sm-3">
+																							<label for="vIdOtPr">Nº de OT:</label>
+																							<input type="text" class="form-control " name="vIdOtPr" id="vIdOtPr" disabled>
+																			</div>
+																			<!-- <div class="col-xs-12 col-sm-3">
+																					<label for="vNroOtPred">Número de OT:</label>
+																					<input type="text" class="form-control " name="vNroOtPred" id="vNroOtPred" disabled>
+																			</div> -->
+																			<div class="col-xs-12 col-sm-9">
+																							<label for="vDescripFallaPred">Descripción:</label>
+																							<input type="text" class="form-control vDescripFallaPred" id="vDescripFallaPred"
+																											disabled>
+																			</div>
 
-                                    <div class="col-xs-12 col-sm-6 col-md-3">
-                                        <label for="vFechaProgramPred">Fecha Programación:</label>
-                                        <input type="text" class="form-control " name="vFechaProgramPred"
-                                            id="vFechaProgramPred" disabled>
-                                    </div>
-                                    <div class="col-xs-12 col-sm-6 col-md-3">
-                                        <label for="vFechaCreacionPred">Fecha Inicio:</label>
-                                        <input type="text" class="form-control " name="vFechaCreacionPred"
-                                            id="vFechaCreacionPred" disabled>
-                                    </div>
-                                    <div class="col-xs-12 col-sm-6 col-md-3">
-                                        <label for="vFechaEntregaPred">Fecha Terminada:</label>
-                                        <input type="text" class="form-control " name="vFechaEntregaPred"
-                                            id="vFechaEntregaPred" disabled>
-                                    </div>
+																			<div class="col-xs-12 col-sm-6 col-md-3">
+																							<label for="vFechaProgramPred">Fecha Programación:</label>
+																							<input type="text" class="form-control " name="vFechaProgramPred"
+																											id="vFechaProgramPred" disabled>
+																			</div>
+																			<div class="col-xs-12 col-sm-6 col-md-3">
+																							<label for="vFechaCreacionPred">Fecha Inicio:</label>
+																							<input type="text" class="form-control " name="vFechaCreacionPred"
+																											id="vFechaCreacionPred" disabled>
+																			</div>
+																			<div class="col-xs-12 col-sm-6 col-md-3">
+																							<label for="vFechaEntregaPred">Fecha Terminada:</label>
+																							<input type="text" class="form-control " name="vFechaEntregaPred"
+																											id="vFechaEntregaPred" disabled>
+																			</div>
 
-                                    <div class="col-xs-12 col-sm-6 col-md-3">
-                                        <label for="vEstadoPred">Estado:</label>
-                                        <input type="text" class="form-control " name="vEstadoPred" id="vEstadoPred"
-                                            disabled>
-                                    </div>
+																			<div class="col-xs-12 col-sm-6 col-md-3">
+																							<label for="vEstadoPred">Estado:</label>
+																							<input type="text" class="form-control " name="vEstadoPred" id="vEstadoPred"
+																											disabled>
+																			</div>
 
-                                    <div class="col-xs-12 col-sm-6 col-md-3">
-                                        <label for="vSucursalPred">Sucursal:</label>
-                                        <input type="text" class="form-control " name="vSucursalPred" id="vSucursalPred"
-                                            disabled>
-                                    </div>
-                                    <div class="col-xs-12 col-sm-6 col-md-3">
-                                        <label for="vProveedorPred">Proveedor:</label>
-                                        <input type="text" class="form-control " name="vProveedorPred"
-                                            id="vProveedorPred" disabled>
-                                    </div>
-                                    <div class="col-xs-12 col-sm-6 col-md-3">
-                                        <label for="vOrigenPred">Origen:</label>
-                                        <input type="text" class="form-control " name="vOrigenPred" id="vOrigenPred"
-                                            disabled>
-                                    </div>
-                                    <div class="col-xs-12 col-sm-6 col-md-3">
-                                        <label for="vAsignadoPred">Asignado:</label>
-                                        <input type="text" class="form-control " name="vAsignadoPred" id="vAsignadoPred"
-                                            disabled>
-                                    </div>
-                                </div>
+																			<div class="col-xs-12 col-sm-6 col-md-3">
+																							<label for="vSucursalPred">Sucursal:</label>
+																							<input type="text" class="form-control " name="vSucursalPred" id="vSucursalPred"
+																											disabled>
+																			</div>
+																			<div class="col-xs-12 col-sm-6 col-md-3">
+																							<label for="vProveedorPred">Proveedor:</label>
+																							<input type="text" class="form-control " name="vProveedorPred"
+																											id="vProveedorPred" disabled>
+																			</div>
+																			<div class="col-xs-12 col-sm-6 col-md-3">
+																							<label for="vOrigenPred">Origen:</label>
+																							<input type="text" class="form-control " name="vOrigenPred" id="vOrigenPred"
+																											disabled>
+																			</div>
+																			<div class="col-xs-12 col-sm-6 col-md-3">
+																							<label for="vAsignadoPred">Asignado:</label>
+																							<input type="text" class="form-control " name="vAsignadoPred" id="vAsignadoPred"
+																											disabled>
+																			</div>
+																	</div>
 
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="headingTwoPred">
-                            <h4 class="panel-title">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionPred"
-                                    href="#collapseEquipoPred" aria-expanded="false" aria-controls="collapseEquipoPred">
-                                    Datos de equipo
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapseEquipoPred" class="panel-collapse collapse" role="tabpanel"
-                            aria-labelledby="headingTwoPred">
-                            <div class="panel-body">
+																</div>
+														</div>
+												</div>
+												<div class="panel panel-default">
+																<div class="panel-heading" role="tab" id="headingTwoPred">
+																		<h4 class="panel-title">
+																						<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionPred"
+																										href="#collapseEquipoPred" aria-expanded="false" aria-controls="collapseEquipoPred">
+																										Datos de equipo
+																						</a>
+																		</h4>
+																</div>
+																<div id="collapseEquipoPred" class="panel-collapse collapse" role="tabpanel"
+																				aria-labelledby="headingTwoPred">
+																				<div class="panel-body">
 
-                                <div class="row">
-                                    <div class="col-xs-12 col-sm-6 col-md-4">
-                                        <label for="vCodigoEquipoPred">Equipo:</label>
-                                        <input type="text" class="form-control " name="vCodigoEquipoPred"
-                                            id="vCodigoEquipoPred" disabled>
-                                    </div>
-                                    <div class="col-xs-12 col-sm-6 col-md-4">
-                                        <label for="vMarcaEquipoPred">Marca:</label>
-                                        <input type="text" class="form-control " name="vMarcaEquipoPred"
-                                            id="vMarcaEquipoPred" disabled>
-                                    </div>
-                                    <div class="col-xs-12 col-sm-6 col-md-4">
-                                        <label for="vUbicacionEquipoPred">Ubicación:</label>
-                                        <input type="text" class="form-control " name="vUbicacionEquipoPred"
-                                            id="vUbicacionEquipoPred" disabled>
-                                    </div>
+																						<div class="row">
+																								<div class="col-xs-12 col-sm-6 col-md-4">
+																												<label for="vCodigoEquipoPred">Equipo:</label>
+																												<input type="text" class="form-control " name="vCodigoEquipoPred"
+																																id="vCodigoEquipoPred" disabled>
+																								</div>
+																								<div class="col-xs-12 col-sm-6 col-md-4">
+																												<label for="vMarcaEquipoPred">Marca:</label>
+																												<input type="text" class="form-control " name="vMarcaEquipoPred"
+																																id="vMarcaEquipoPred" disabled>
+																								</div>
+																								<div class="col-xs-12 col-sm-6 col-md-4">
+																												<label for="vUbicacionEquipoPred">Ubicación:</label>
+																												<input type="text" class="form-control " name="vUbicacionEquipoPred"
+																																id="vUbicacionEquipoPred" disabled>
+																								</div>
 
-                                    <div class="col-xs-12">
-                                        <label for="vDescripcionEquipoPred">Descripción:</label>
-                                        <Textarea class="form-control " name="vDescripcionEquipoPred"
-                                            id="vDescripcionEquipoPred" disabled></Textarea>
-                                    </div>
-                                </div>
+																								<div class="col-xs-12">
+																												<label for="vDescripcionEquipoPred">Descripción:</label>
+																												<Textarea class="form-control " name="vDescripcionEquipoPred"
+																																id="vDescripcionEquipoPred" disabled></Textarea>
+																								</div>
+																						</div>
 
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="headingThreePred">
-                            <h4 class="panel-title">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionPred"
-                                    href="#collapseTareaPred" aria-expanded="false" aria-controls="collapseTareaPred">
-                                    Datos de la Tarea
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapseTareaPred" class="panel-collapse collapse" role="tabpanel"
-                            aria-labelledby="headingThreePred">
-                            <div class="panel-body">
+																				</div>
+																</div>
+												</div>
+												<div class="panel panel-default">
+																<div class="panel-heading" role="tab" id="headingThreePred">
+																				<h4 class="panel-title">
+																								<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionPred"
+																												href="#collapseTareaPred" aria-expanded="false" aria-controls="collapseTareaPred">
+																												Datos de la Tarea
+																								</a>
+																				</h4>
+																</div>
+																<div id="collapseTareaPred" class="panel-collapse collapse" role="tabpanel"
+																				aria-labelledby="headingThreePred">
+																				<div class="panel-body">
 
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <label for="vTareaPred">Tarea:</label>
-                                        <input type="text" class="form-control " name="vTareaPred" id="vTareaPred"
-                                            disabled>
-                                    </div>
+																								<div class="row">
+																												<div class="col-xs-12">
+																																<label for="vTareaPred">Tarea:</label>
+																																<input type="text" class="form-control " name="vTareaPred" id="vTareaPred"
+																																				disabled>
+																												</div>
 
-                                    <div class="col-xs-12 col-sm-6 col-md-4">
-                                        <label for="vFechaPred">Fecha:</label>
-                                        <input type="text" class="form-control " name="vFechaPred" id="vFechaPred"
-                                            disabled>
-                                    </div>
-                                    <div class="col-xs-12 col-sm-6 col-md-4">
-                                        <label for="vPeriodoPred">Periodo:</label>
-                                        <input type="text" class="form-control " name="vPeriodoPred" id="vPeriodoPred"
-                                            disabled>
-                                    </div>
-                                    <div class="col-xs-12 col-sm-6 col-md-4">
-                                        <label for="vFrecuenciaPred">Frecuencia:</label>
-                                        <input type="text" class="form-control " name="vFrecuenciaPred"
-                                            id="vFrecuenciaPred" disabled>
-                                    </div>
+																												<div class="col-xs-12 col-sm-6 col-md-4">
+																																<label for="vFechaPred">Fecha:</label>
+																																<input type="text" class="form-control " name="vFechaPred" id="vFechaPred"
+																																				disabled>
+																												</div>
+																												<div class="col-xs-12 col-sm-6 col-md-4">
+																																<label for="vPeriodoPred">Periodo:</label>
+																																<input type="text" class="form-control " name="vPeriodoPred" id="vPeriodoPred"
+																																				disabled>
+																												</div>
+																												<div class="col-xs-12 col-sm-6 col-md-4">
+																																<label for="vFrecuenciaPred">Frecuencia:</label>
+																																<input type="text" class="form-control " name="vFrecuenciaPred"
+																																				id="vFrecuenciaPred" disabled>
+																												</div>
 
-                                    <div class="col-xs-12 col-sm-6 col-md-4">
-                                        <label for="vDuraciónPred">Duración:</label>
-                                        <input type="text" class="form-control " name="vDuraciónPred" id="vDuraciónPred"
-                                            disabled>
-                                    </div>
-                                    <div class="col-xs-12 col-sm-6 col-md-4">
-                                        <label for="vCantOperariosPred">Cantidad Operarios:</label>
-                                        <input type="text" class="form-control " name="vCantOperariosPred"
-                                            id="vCantOperariosPred" disabled>
-                                    </div>
-                                    <div class="col-xs-12 col-sm-6 col-md-4">
-                                        <label for="vCantHsHombrePred">Cantidad horas hombre:</label>
-                                        <input type="text" class="form-control " name="vCantHsHombrePred"
-                                            id="vCantHsHombrePred" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- vista herramientas -->
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="headingThreePred">
-                            <h4 class="panel-title">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionPred"
-                                    href="#collapseTareaPredInsHerr" aria-expanded="false"
-                                    aria-controls="collapseTareaPredInsHerr">
-                                    Herramientas - Tareas - Insumos
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapseTareaPredInsHerr" class="panel-collapse collapse" role="tabpanel"
-                            aria-labelledby="headingThreePred">
-                            <div class="panel-body">
+																												<div class="col-xs-12 col-sm-6 col-md-4">
+																																<label for="vDuraciónPred">Duración:</label>
+																																<input type="text" class="form-control " name="vDuraciónPred" id="vDuraciónPred"
+																																				disabled>
+																												</div>
+																												<div class="col-xs-12 col-sm-6 col-md-4">
+																																<label for="vCantOperariosPred">Cantidad Operarios:</label>
+																																<input type="text" class="form-control " name="vCantOperariosPred"
+																																				id="vCantOperariosPred" disabled>
+																												</div>
+																												<div class="col-xs-12 col-sm-6 col-md-4">
+																																<label for="vCantHsHombrePred">Cantidad horas hombre:</label>
+																																<input type="text" class="form-control " name="vCantHsHombrePred"
+																																				id="vCantHsHombrePred" disabled>
+																												</div>
+																								</div>
+																				</div>
+																</div>
+												</div>
+												<!-- vista herramientas -->
+												<div class="panel panel-default">
+																<div class="panel-heading" role="tab" id="headingThreePred">
+																				<h4 class="panel-title">
+																								<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionPred"
+																												href="#collapseTareaPredInsHerr" aria-expanded="false"
+																												aria-controls="collapseTareaPredInsHerr">
+																												Herramientas - Tareas - Insumos
+																								</a>
+																				</h4>
+																</div>
+																<div id="collapseTareaPredInsHerr" class="panel-collapse collapse" role="tabpanel"
+																				aria-labelledby="headingThreePred">
+																				<div class="panel-body">
 
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <div class="nav-tabs-custom">
-                                            <!--tabs -->
-                                            <ul class="nav nav-tabs" role="tablist">
-                                                <li role="presentation" class="active"><a href="#tblherrPredictivo"
-                                                        aria-controls="profile" role="tab"
-                                                        data-toggle="tab">Herramientas</a></li>
-                                                <li role="presentation"><a href="#insumPredic" aria-controls="messages"
-                                                        role="tab" data-toggle="tab">Insumos</a></li>
-                                                <li role="presentation"><a href="#TabAdjuntoPred"
-                                                        aria-controls="messages" role="tab"
-                                                        data-toggle="tab">Adjunto</a></li>
-                                            </ul>
-                                            <!-- /tabs -->
+																								<div class="row">
+																												<div class="col-xs-12">
+																																<div class="nav-tabs-custom">
+																																				<!--tabs -->
+																																				<ul class="nav nav-tabs" role="tablist">
+																																								<li role="presentation" class="active"><a href="#tblherrPredictivo"
+																																																aria-controls="profile" role="tab"
+																																																data-toggle="tab">Herramientas</a></li>
+																																								<li role="presentation"><a href="#insumPredic" aria-controls="messages"
+																																																role="tab" data-toggle="tab">Insumos</a></li>
+																																								<li role="presentation"><a href="#TabAdjuntoPred"
+																																																aria-controls="messages" role="tab"
+																																																data-toggle="tab">Adjunto</a></li>
+																																				</ul>
+																																				<!-- /tabs -->
 
 
-                                            <!-- Tab panes -->
-                                            <div class="tab-content">
-                                                <div role="tabpanel" class="tab-pane active" id="tblherrPredictivo">
+																																				<!-- Tab panes -->
+																																				<div class="tab-content">
+																																								<div role="tabpanel" class="tab-pane active" id="tblherrPredictivo">
 
-                                                    <div class="row">
-                                                        <div class="col-xs-12">
-                                                            <br>
-                                                            <table class="table table-bordered" id="tblherrPred">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Código</th>
-                                                                        <th>Marca</th>
-                                                                        <th>Descripcion</th>
-                                                                        <th>Cantidad</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody></tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div><!-- /.row -->
-                                                </div> <!-- /.tabpanel #herramin-->
+																																												<div class="row">
+																																																<div class="col-xs-12">
+																																																				<br>
+																																																				<table class="table table-bordered" id="tblherrPred">
+																																																								<thead>
+																																																												<tr>
+																																																																<th>Código</th>
+																																																																<th>Marca</th>
+																																																																<th>Descripcion</th>
+																																																																<th>Cantidad</th>
+																																																												</tr>
+																																																								</thead>
+																																																								<tbody></tbody>
+																																																				</table>
+																																																</div>
+																																												</div><!-- /.row -->
+																																								</div> <!-- /.tabpanel #herramin-->
 
-                                                <div role="tabpanel" class="tab-pane" id="insumPredic">
+																																								<div role="tabpanel" class="tab-pane" id="insumPredic">
 
-                                                    <div class="row">
+																																												<div class="row">
 
-                                                    </div><!-- /.row -->
-                                                    <div class="row">
-                                                        <div class="col-xs-12">
-                                                            <table class="table table-bordered" id="tblinsPredictivo">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Código</th>
-                                                                        <th>Descripcion</th>
-                                                                        <th>Cantidad</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody></tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div><!-- /.row -->
-                                                </div>
-                                                <!--/#insum -->
+																																												</div><!-- /.row -->
+																																												<div class="row">
+																																																<div class="col-xs-12">
+																																																				<table class="table table-bordered" id="tblinsPredictivo">
+																																																								<thead>
+																																																												<tr>
+																																																																<th>Código</th>
+																																																																<th>Descripcion</th>
+																																																																<th>Cantidad</th>
+																																																												</tr>
+																																																								</thead>
+																																																								<tbody></tbody>
+																																																				</table>
+																																																</div>
+																																												</div><!-- /.row -->
+																																								</div>
+																																								<!--/#insum -->
 
-                                                <div role="tabpanel" class="tab-pane" id="TabAdjuntoPred">
+																																								<div role="tabpanel" class="tab-pane" id="TabAdjuntoPred">
 
-                                                    <div class="col-xs-12">
-                                                        <table class="table table-bordered" id="tblAdjuntoPred">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Archivo/s</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <a id="adjuntopred" href="" target="_blank"></a>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
+																																												<div class="col-xs-12">
+																																																<table class="table table-bordered" id="tblAdjuntoPred">
+																																																				<thead>
+																																																								<tr>
+																																																												<th>Archivo/s</th>
+																																																								</tr>
+																																																				</thead>
+																																																				<tbody>
+																																																								<tr>
+																																																												<td>
+																																																																<a id="adjuntopred" href="" target="_blank"></a>
+																																																												</td>
+																																																								</tr>
+																																																				</tbody>
+																																																</table>
+																																												</div>
 
-                                                </div>
-                                                <!--cierre de TabAdjunto-->
+																																								</div>
+																																								<!--cierre de TabAdjunto-->
 
-                                            </div> <!-- tab-content -->
+																																				</div> <!-- tab-content -->
 
-                                        </div><!-- /.nav-tabs-custom -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--  ./vista herramientas -->
-                </div>
+																																</div><!-- /.nav-tabs-custom -->
+																												</div>
+																								</div>
+																				</div>
+																</div>
+												</div>
+												<!--  ./vista herramientas -->
+								</div>
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
+						</div>
+						<div class="modal-footer">
+										<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+						</div>
+				</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
 
@@ -4764,6 +4773,11 @@ function filtrar() {
                                     row += `<td>${resp[i].descripcion}</td>`;
                                 }else{ row += `<td></td>`
                                 }
+																																//Tarea Estandar
+                                if(resp[i].tareaSTD){
+                                    row += `<td>${resp[i].tareaSTD}</td>`;
+                                }else{ row += `<td></td>`
+                                }
                                 //Equipo
                                 if(resp[i].codigo){
                                     row += `<td>${resp[i].codigo}</td>`;
@@ -4838,7 +4852,7 @@ function filtrar() {
                     movimDetalle = "";
                 }
             }
-
+												$($.fn.dataTable.tables(true)).DataTable().columns.adjust();
             WaitingClose();
         },
         error: function() {

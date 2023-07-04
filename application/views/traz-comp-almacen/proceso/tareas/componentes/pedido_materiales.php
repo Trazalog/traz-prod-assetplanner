@@ -115,19 +115,19 @@ function edit_cantidad(e) {
 
 function get_detalle() {
 
-debugger;
+//debugger;
     var id = $('#pema_id').val();
     if (id == null || id == '') {
         return;
     }
    // $(tabla).DataTable().destroy();
     console.log("ALM | Detalle Pedido N° "+id);
- debugger;
+ //debugger;
     $.ajax({
         type: 'POST',
         url: 'index.php/almacen/Notapedido/getNotaPedidoId?id_nota=' + id,
         success: function(data) {
-            debugger;
+            //debugger;
             if(data.length == 0){
                 console.log('Sin Detalle de Pedidos');
                 $('#tabladetalle2 tbody').empty();

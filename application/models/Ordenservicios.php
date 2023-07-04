@@ -144,12 +144,13 @@ class Ordenservicios extends CI_Model {
         $query = $this->db->get();
         $i     = 0;
         foreach ($query->result() as $row)
-        {   
-            $equipos[$i]['label'] = $row->usrLastName.", ". $row->usrname ;
+        {
+            // $equipos[$i]['label'] = $row->usrLastName.", ". $row->usrname ;
+            $equipos[$i]['label'] = $row->usrname.", ". $row->usrLastName;
             $equipos[$i]['value'] = $row->usrId;
             $i++;
         }
-        return $equipos; 
+        return $equipos;
     }
 
 		function getRRHHOrdenTrabajo($idOT){

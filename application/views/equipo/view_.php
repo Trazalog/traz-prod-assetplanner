@@ -20,7 +20,7 @@
           ?>
         </div><!-- /.box-header -->
         <div class="box-body">
-          
+
           <form id="formAgregarEquipo">
             <div class="panel panel-default">
               <div class="panel-heading">
@@ -38,7 +38,7 @@
                       </div>
                       <div class="col-xs-4">
                         <label>&emsp;</label><br>
-                        <button type="button" class="btn btn-primary" id="addarea" data-toggle="modal" data-target="#modalarea"><i class="fa fa-plus"> Agregar</i></button> 
+                        <button type="button" class="btn btn-primary" id="addarea" data-toggle="modal" data-target="#modalarea"><i class="fa fa-plus"> Agregar</i></button>
                       </div>
 
                       <div class="col-xs-8"><label>Proceso<strong style="color: #dd4b39">*</strong>:</label>
@@ -540,7 +540,10 @@ function guardargrupo(){
 }
 
 // Agrega sector/etapa nuevos
-function guardarCliente(){  
+function guardarCliente(){
+
+		WaitingOpen("Guardando Cliente...");
+
   var cliName        = $('#cliName').val();
   var cliLastName    = $('#cliLastName').val();
   var cliDni         = $('#cliDni').val();
@@ -557,39 +560,44 @@ function guardarCliente(){
         'cliPhone'    : cliPhone,
         'cliEmail'    : cliEmail,
         'cliRazonSocial' : cliRazonSocial,
-        'estado'      : 'AC',    
-    };                                              
+        'estado'      : 'AC',
+    };
+
     console.table(parametros);
-    var hayError = false; 
 
-    if( parametros !=0){                                         
+				if( cliName == '' || cliLastName == ''|| cliDni == ''|| cliAddress == ''|| cliPhone == ''|| cliEmail == ''|| cliRazonSocial == ''){
+						alert('Complete por favor los campos obligatorios...');
+						WaitingClose();
+						return;
+				}else{
 
-    $.ajax({
-      data:{parametros:parametros},
-      dataType: 'json',
-      type:"POST",
-      url: "index.php/Equipo/agregar_cliente", 
-      success: function(data){
-        console.log("exito");
-        console.log(data);
-        if(data > 0){  
-          var texto = '<option value="'+data+'">'+ parametros.cliRazonSocial +'</option>';
-          console.log(texto);
-          $('#cliente').append(texto);
-          $('#modalCliente').modal('hide');
-          alert('Guardado con éxito!');
-        }           
-      },        
-      error: function(result){
-        console.log("entro por el error");
-        console.log(result);
-      },
-    });     
-  }
-  else 
-  { 
-    alert("Por favor complete la descripcion del cliente, es un campo obligatorio");
-  }
+						$.ajax({
+								data:{parametros:parametros},
+								dataType: 'json',
+								type:"POST",
+								url: "index.php/Equipo/agregar_cliente",
+								success: function(data){
+
+										WaitingClose();
+										console.log("exito");
+										console.log(data);
+										if(data > 0){  
+												var texto = '<option value="'+data+'">'+ parametros.cliRazonSocial +'</option>';
+												console.log(texto);
+												$('#cliente').append(texto);
+												$('#modalCliente').modal('hide');
+												alert('Guardado con éxito!');
+										}           
+								},        
+								error: function(result){
+									alert('Error en guardado de Nuevo Cliente...');
+									WaitingClose();
+										console.log("entro por el error");
+										console.log(result);
+								},
+						});
+				}
+
 }
 
 // Agrega las grupos nuevos
@@ -631,10 +639,12 @@ function guardarmarca(){
 }
 
 // Guarda equipo/sector nuevo - Chequeado
-$("#formAgregarEquipo").submit( function (event){   
-  debugger;
+$("#formAgregarEquipo").submit( function (event){
+  //debugger;
   event.preventDefault();
   WaitingOpen("Guardando Equipo");
+
+  $('span #respuesta').text('');
 
   var hayError = false;
   hayError     = validarCampos();
@@ -654,17 +664,23 @@ $("#formAgregarEquipo").submit( function (event){
       data:formData,
       dataType: 'json',
       processData:false,
-      url: 'index.php/Equipo/guardar_equipo',  //index.php/
+      url: 'index.php/Equipo/guardar_equipo',
       type: 'POST',
     })
-    .done( function(data){ 
-      //console.table(data);
-      alert("Guardado con exito...");
-      regresa();
+    .done( function(data){
+
+      if (data.code === '201') {
+
+        $('#respuesta').text(data.msj);
+        $('#modalResp').modal('show');
+      } else {
+
+        regresa();
+      }
     })
     .error( function(result){
       alert("Error en guardado...");
-      console.log(result);               
+      console.log(result);
     })
     .always( function(){
       WaitingClose()
@@ -722,6 +738,27 @@ function regresa(){
   WaitingClose();    
 }
 </script>
+
+
+<!-- Modal Codigo Existente-->
+<div class="modal" id="modalResp">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Equipo</h4>
+      </div>
+      <div class="modal-body" id="cuerpoModalEditar">
+       <h5><span id="respuesta"></span></h5>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+<!-- /  Modal Codigo Existente-->
+
 
 <!-- Modal area-->
 <div class="modal" id="modalarea" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -1205,59 +1242,60 @@ function regresa(){
         <h4 class="modal-title">Agregar Cliente</h4>
       </div>
       <div class="modal-body">
-        <div class="row">
-          <div class="col-xs-12">
-            <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
-              <h4><i class="icon fa fa-ban"></i> Error!</h4>
-              Revise que todos los campos esten completos
-            </div>
-          </div>
-        </div>
-
-        <div class="row"> 
-          <div class="col-xs-12">
-            <label style="margin-top: 7px;">Nombre <strong style="color: #dd4b39">*</strong>: </label>
-            <input type="text" class="form-control" id="cliName" >
-          </div>
-        </div><br>
-        <div class="row"> 
-          <div class="col-xs-12">
-            <label style="margin-top: 7px;">Apellido <strong style="color: #dd4b39">*</strong>: </label>
-            <input type="text" class="form-control" id="cliLastName" >
-          </div>
-        </div><br>
-        <div class="row"> 
-          <div class="col-xs-12">
-            <label style="margin-top: 7px;">Dni <strong style="color: #dd4b39">*</strong>: </label>
-            <input type="text" class="form-control"  id="cliDni" >
-          </div>
-        </div><br>
-        <div class="row"> 
-          <div class="col-xs-12">
-            <label style="margin-top: 7px;">Direccion <strong style="color: #dd4b39">*</strong>: </label>
-            <input type="text" class="form-control"  id="cliAddress" >
-          </div>
-        </div><br>
-        <div class="row"> 
-          <div class="col-xs-12">
-            <label style="margin-top: 7px;">Telefono <strong style="color: #dd4b39">*</strong>: </label>
-            <input type="text" class="form-control"  id="cliPhone" >
-          </div>
-        </div><br>
-        <div class="row"> 
-          <div class="col-xs-12">
-            <label style="margin-top: 7px;">Email <strong style="color: #dd4b39">*</strong>: </label>
-          </div>
-          <div class="col-xs-5">
-            <input type="text" class="form-control"  id="cliEmail" >
-          </div>
-        </div><br>
-        <div class="row"> 
-          <div class="col-xs-12">
-            <label style="margin-top: 7px;">Razon Social <strong style="color: #dd4b39">*</strong>: </label>
-            <input type="text" class="form-control"  id="cliRazonSocial" >
-          </div>
-        </div><br>
+								<form id="nuevoCliente">
+										<div class="row">
+												<div class="col-xs-12">
+														<div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+																<h4><i class="icon fa fa-ban"></i> Error!</h4>
+																Revise que todos los campos esten completos
+														</div>
+												</div>
+										</div>
+										<div class="row">
+												<div class="col-xs-12">
+														<label style="margin-top: 7px;">Nombre <strong style="color: #dd4b39">*</strong>: </label>
+														<input type="text" class="form-control requerido" id="cliName" >
+												</div>
+										</div><br>
+										<div class="row">
+												<div class="col-xs-12">
+														<label style="margin-top: 7px;">Apellido <strong style="color: #dd4b39">*</strong>: </label>
+														<input type="text" class="form-control requerido" id="cliLastName" >
+												</div>
+										</div><br>
+										<div class="row"> 
+												<div class="col-xs-12">
+														<label style="margin-top: 7px;">Dni <strong style="color: #dd4b39">*</strong>: </label>
+														<input type="text" class="form-control requerido"  id="cliDni" >
+												</div>
+										</div><br>
+										<div class="row"> 
+												<div class="col-xs-12">
+														<label style="margin-top: 7px;">Direccion <strong style="color: #dd4b39">*</strong>: </label>
+														<input type="text" class="form-control requerido"  id="cliAddress" >
+												</div>
+										</div><br>
+										<div class="row">
+												<div class="col-xs-12">
+														<label style="margin-top: 7px;">Telefono <strong style="color: #dd4b39">*</strong>: </label>
+														<input type="text" class="form-control requerido"  id="cliPhone" >
+												</div>
+										</div><br>
+										<div class="row">
+												<div class="col-xs-12">
+														<label style="margin-top: 7px;">Email <strong style="color: #dd4b39">*</strong>: </label>
+												</div>
+												<div class="col-xs-5">
+														<input type="text" class="form-control requerido"  id="cliEmail" >
+												</div>
+										</div><br>
+										<div class="row">
+												<div class="col-xs-12">
+														<label style="margin-top: 7px;">Razon Social <strong style="color: #dd4b39">*</strong>: </label>
+														<input type="text" class="form-control requerido"  id="cliRazonSocial" >
+												</div>
+										</div><br>
+								</form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>

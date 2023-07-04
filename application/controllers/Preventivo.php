@@ -172,10 +172,10 @@ class Preventivo extends CI_Controller {
 
 	// Guarda preventivo segun empresa logueada
 	public function guardar_preventivo()
-	{	
+	{
 		$data     = $this->input->post();
 		$userdata = $this->session->userdata('user_data');
-		$empId    = $userdata[0]['id_empresa'];  		
+		$empId    = $userdata[0]['id_empresa'];
 
 		$eq         =$this->input->post('id_equipo');
 		$ta         =$this->input->post('id_tarea');

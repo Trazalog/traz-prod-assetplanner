@@ -173,7 +173,7 @@
                 // 7  //horas hombre
                 //echo "<td style='text-align: center'>".$p['horash']."</td>";
                 // 8  //periodo
-                echo "<td style='text-align: center'>".$periodo."</td>";               
+                echo "<td style='text-align: center'>".$p['desc_periodo']."</td>";           
                 // 9  //frecuencia
                 echo "<td style='text-align: center'>".$p['cantidad']."</td>";
                 echo "</tr>";
@@ -337,7 +337,7 @@
                     echo '<i class="fa fa-check-square" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-backlog" onclick="fill_Backlog('.$b['backId'].')"></i>';
                   }else{
                     echo '<i class="fa fa-check-square-o" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden Generada"></i>';
-                  }                
+                  }
                
                 echo "</td>";
                 // 1 // id equipo

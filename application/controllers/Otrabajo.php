@@ -193,7 +193,7 @@ class Otrabajo extends CI_Controller {
 		$sucursal      = $this->input->post('suci');
 		$proveedor     = $this->input->post('prov');
 
-    $datos2 = array(
+  $datos2 = array(
 			'id_tarea'			=> $id_tar,
 			'fecha_program' => $fecha_inicio,
 			//'fecha_inicio'  => $fecha_inicio,
@@ -527,15 +527,15 @@ class Otrabajo extends CI_Controller {
 		$data['permission'] = $permission;
 		$data['id_orden']   = $idglob; 
         $this->load->view('otrabajos/asignacion',$data);
-    }
+ }
 
-    /**
-     * Trae datos a mostrar en el Modal Asignar OT.
-     *
-     * @return 	String 	Arreglo con datos a mostrar en Modal Asignar OT.
-     */
-    public function getasigna() // Ok
-    {
+		/**
+			* Trae datos a mostrar en el Modal Asignar OT.
+			*
+			* @return 	String 	Arreglo con datos a mostrar en Modal Asignar OT.
+			*/
+		public function getasigna() // Ok
+		{
 			$id     = $_GET['id_orden'];
 			$result = $this->Otrabajos->getasigna($id);
 			if($result)
@@ -617,14 +617,14 @@ class Otrabajo extends CI_Controller {
 
 
 	// Cargar orden de servicios(Informe de servicios)
-	public function cargarOrden($permission, $id_sol = null, $id_eq = null, $causa = null){ 
-        $data['permission'] = $permission;    // envia permisos 
-        $data['id_solicitud'] = $id_sol;      // id de O.T. 
-        $data['id_eq'] = $id_eq;              // id de equipo
-        $data['causa'] = $causa;              // motivo de la O.T.
-        
-        $this->load->view('ordenservicios/view_',$data);
-    }
+	public function cargarOrden($permission, $id_sol = null, $id_eq = null, $causa = null){
+			$data['permission'] = $permission;    // envia permisos
+			$data['id_solicitud'] = $id_sol;      // id de O.T.
+			$data['id_eq'] = $id_eq;              // id de equipo
+			$data['causa'] = $causa;              // motivo de la O.T.
+
+			$this->load->view('ordenservicios/view_',$data);
+	}
 
 
 
@@ -699,7 +699,7 @@ class Otrabajo extends CI_Controller {
 	    }
     }
     
-  	public function guardar(){	
+ public function guardar(){
 
 		$case_id = $this->input->post('case_id');
 		$task_id = $this->input->post('task_id');
@@ -819,74 +819,74 @@ class Otrabajo extends CI_Controller {
 	//argegar un proveedor
 	public function agregar_proveedor()
 	{
-	    if($_POST)
-	    {
-	    	$datos  = $_POST['datos'];
-	     	$result = $this->Otrabajos->agregar_proveedor($datos);
-	      	if($result)
-	      		echo $this->db->insert_id();
-	      	else echo 0;
-	    }
-  	}
+			if($_POST)
+			{
+				$datos  = $_POST['datos'];
+					$result = $this->Otrabajos->agregar_proveedor($datos);
+						if($result)
+							echo $this->db->insert_id();
+						else echo 0;
+			}
+	}
 
-	  public function agregar_pedido(){
+	public function agregar_pedido(){
 
-	    $datos=$_POST['data'];
-	    $idot=$_POST['ido'];
+			$datos=$_POST['data'];
+			$idot=$_POST['ido'];
 
-	    $result = $this->Otrabajos->agregar_pedidos($datos);
-	      	//print_r($this->db->insert_id());
-	    if($result){
-	      
-	    	
-	    	$id= $this->db->insert_id();
-	    	$fec= date("Y-m-d H:i:s");
-	    	
-	    	$fecha = array(
-			        	 'fecha'=>$fec
- 
-		        		);
-	    	$result1 = $this->Otrabajos->agregar_pedidos_fecha($fecha,$id);
+			$result = $this->Otrabajos->agregar_pedidos($datos);
+						//print_r($this->db->insert_id());
+			if($result){
+					
+				
+				$id= $this->db->insert_id();
+				$fec= date("Y-m-d H:i:s");
+				
+				$fecha = array(
+											'fecha'=>$fec
 
-	    	$arre=array();
-	    	$datos2 = array(
-			        	 'id_orden'=>$idot, 
-			        	 'estado'=>'P'			        	
-			        	 
-		        		);
+										);
+				$result1 = $this->Otrabajos->agregar_pedidos_fecha($fecha,$id);
 
-	    	$result2 = $this->Otrabajos->update_ordtrab($idot, $datos2);
-	    }
-	   return $result2; 		
-	   
-  	}
+				$arre=array();
+				$datos2 = array(
+											'id_orden'=>$idot, 
+											'estado'=>'P'			        	
+											
+										);
+
+				$result2 = $this->Otrabajos->update_ordtrab($idot, $datos2);
+			}
+		return $result2; 		
+		
+	}
   	
-  	public function agregar_tarea(){
-	  
-	    $datos=$_POST['parametros'];
-	    $result = $this->Otrabajos->agregar_tareas($datos);
-	      	//print_r($this->db->insert_id());
-	   
-	   	if($result)
-	      		echo $this->db->insert_id();
-	    else echo 0;	
-	   
-    }
+	public function agregar_tarea(){
+
+			$datos=$_POST['parametros'];
+			$result = $this->Otrabajos->agregar_tareas($datos);
+						//print_r($this->db->insert_id());
+		
+			if($result)
+							echo $this->db->insert_id();
+			else echo 0;	
+
+		}
     
-    // trae detalle de nota de pedido
-  	public function getmostrar(){
+	// trae detalle de nota de pedido
+	public function getmostrar(){
 
-	    $idm=$_POST['id'];
-	    $dat= $this->Otrabajos->getdatos($idm); //traigo todos los datos 
-	    echo json_encode($dat);
-  	}
+			$idm=$_POST['id'];
+			$dat= $this->Otrabajos->getdatos($idm); //traigo todos los datos
+			echo json_encode($dat);
+	}
 
-  	public function baja_orden(){
-  
-	    $idO=$_POST['idord'];
-	    $result = $this->Otrabajos->eliminacion($idO);
-	    print_r($result);
-  	}
+	public function baja_orden(){
+
+			$idO=$_POST['idord'];
+			$result = $this->Otrabajos->eliminacion($idO);
+			print_r($result);
+	}
 
 
 
@@ -899,7 +899,7 @@ class Otrabajo extends CI_Controller {
 
  //mdificado
 
- 	public function EliminarTarea(){
+ public function EliminarTarea(){
 	
 		$idord=$_POST['idtarea'];	
 		$datos = array('estado'=>'IN');
@@ -983,8 +983,8 @@ class Otrabajo extends CI_Controller {
 		}	
 	}
   
-  //Obtener TaskID por OtID (Cuando hay procesos generados, sino los genera)
-  public function ObtenerTaskIDxOT(){ 	
+ //Obtener TaskID por OtID (Cuando hay procesos generados, sino los genera)
+ public function ObtenerTaskIDxOT(){
 		
 		$id = (int)$this->input->post('ot');	
 		//dump($id, 'id de OT:');
@@ -1068,6 +1068,7 @@ class Otrabajo extends CI_Controller {
 
 	//Ejecuta Orden de Trabajo en BPM
 	public function EjecutarOT(){
+
 		//log
 		log_message('DEBUG', '#TRAZA | OTrabajo/Ejecutar OT');
 
@@ -1080,26 +1081,24 @@ class Otrabajo extends CI_Controller {
 		$id_solicitud = (int)$this->input->post('id_solicitud');
 		$tipo					= (int)$this->input->post('tipo');
 		$estado				= 'AS';		
-		$id_tarea 		= (int)$this->input->post('tareastd');		
-		
+		$id_tarea 		= (int)$this->input->post('tareastd');
+		$tarOpc				=	$this->input->post('tareaOpcional');
 		$case_id = $this->Otrabajos->getCaseIdOT($ot);
+
+
 
 		//Guardo Posicion donde Se Ejecuto OT desde un MOVIL
 		$lat = $this->input->post('latitud');
 		$lon = $this->input->post('longitud');
 		$this->Otrabajos->guardarPosicion($ot , $lat, $lon);
 
-		// tarea estandar
+		// si se programa tarea estandar, se guarda tambien en tbl_listarea se inicializa form
 		if ($id_tarea != -1) {
-			$descripcion = $this->input->post('tareastdDesc');
-			#FLEIVA
 			$this->load->model('Tareas');
-		    $this->Tareas->instanciarSubtareas($id_tarea, $ot);
-		} else {
-			$descripcion = $this->input->post('tareaOpcional');;
-		}				
+		  $this->Tareas->instanciarSubtareas($id_tarea, $ot);
+		}
 
-		switch ($tipo) {			
+		switch ($tipo) {
 			case '3':
 				$tipo  = 'preventivo';
 				break;
@@ -1152,8 +1151,6 @@ class Otrabajo extends CI_Controller {
 			echo json_encode($responce);
 			return;
 		}
-		
-		
 
 		//Cambiar Estado de OT ('ASignada') y en solicitud origen en BD		
 		if($this->Otrabajos->cambiarEstado($ot, $estado, 'OT')){
@@ -1164,11 +1161,22 @@ class Otrabajo extends CI_Controller {
 					// SI backlog viene de SServicios, la cambia el estado a Asignado
 						if ($idSServicios != NULL) {
 							$respuestacambio = $this->Otrabajos->cambiarEstado($idSServicios, $estado, 'correctivo');
-						}					
+						}
 
-						$datos = array( 'id_tarea' =>$id_tarea,
-											'descripcion' =>$descripcion,
-											'id_usuario_a'=>$usrId);						
+						// si viene tarea opcional se actualiza, sino queda la original
+						if($tarOpc != null){
+							// echo"tarOpc: ";
+							// var_dump($tarOpc);
+							// echo "entre por 1";
+							$datos = array( 'id_tarea' =>$id_tarea,
+											'descripcion' =>$tarOpc,
+											'id_usuario_a'=>$usrId);
+						}else{
+							// echo "entre por 2";
+							$datos = array( 'id_tarea' =>$id_tarea,
+											'id_usuario_a'=>$usrId);
+						}
+
 						// actualiza tarea en OT					
 						if($this->Otrabajos->updOT($ot, $datos)){
 								echo json_encode(['status'=>true, 'msj'=>'OK']);
