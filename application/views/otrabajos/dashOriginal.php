@@ -12,6 +12,116 @@
                 </div><!-- /.box-header -->
 
                 <div class="box-body">
+
+                
+                    <div class="container">
+                        <div class="row">
+                        <form id="formKpi">
+                           
+                            <div class="col-md-6 col-xs-12">
+
+                                <div class="col-md-12 col-xs-12 form-group">
+
+                                    <div class="col-md-2 col-xs-12">
+                                        <label for="grupo" >Grupo:</label>
+                                    </div>
+
+                                    <div class="col-md-6 col-xs-12">
+                                        <select  id="grupo" name="grupo" class="form-control grupo">
+                                            <option value="" selected disabled>Seleccione grupo</option>
+                                        </select>
+                                       <!--  <input class="form-control" type="text" id="checkboxGrupoID" placeholder="Ingrese grupo del equipo"> -->
+                                    </div>    
+
+                                    <div class="col-md-4 col-xs-12">
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-mt-12 col-xs-12 form-group" >
+
+                                    <div class="col-md-2 col-xs-12">
+                                        <label for="sector">Sector: </label>
+                                    </div>
+
+                                    <div class="col-md-6 col-xs-12">
+                                        <select  id="sector" name="sector" class="form-control sector">
+                                            <option value="" selected disabled>Seleccione sector</option>
+                                        </select>
+                                            <!-- <input class="form-control" type="text" id="sector" placeholder="Ingrese el sector del equipo"> -->
+                                    </div> 
+
+                                    <div class="col-md-4 col-xs-12">
+                                    </div>
+
+                                </div> 
+
+                                <div class="col-md-12 col-xs-12 form-group">
+
+                                    <div class="col-md-2 col-xs-12">
+                                        <label for="equipo" >Equipo:</label>
+                                    </div>
+                                    <div class="col-md-6 col-xs-12">
+                                        <select  id="equipo" name="sector" class="form-control equipo">
+                                            <option value="" selected disabled>Seleccione equipo</option>
+                                        </select>
+                                           <!--  <input class="form-control" type="text" id="checkboxEquipoID" placeholder="Ingrese código del equipo"> -->
+                                    </div>
+
+                                    <div class="col-md-4 col-xs-12">
+                                    </div>
+                                </div>
+
+                            </div><!-- fin col-md-6 col-xs-12 -->
+                     
+                            <div class="col-md-6 col-xs-12">
+                            <div class="col-md-6 col-xs-12 form-group">
+
+                                <div class="col-md-4 col-xs-12">
+                                    <label for="fechaDesde">Fecha Desde:</label>
+                                </div>
+                                <div class="col-md-2 col-xs-12">
+                                        <div class="input-group date">
+                                        <a class="input-group-addon" id="daterange-btn" title="Más fechas">
+                                <i class="fa fa-magic"></i>
+                                <span></span>
+                                </a>
+                                            <input class="form-control" type="date" id="datepickerDesde">
+                                        </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-xs-12 form-group" >
+
+                                <div class="col-md-3 col-xs-12">
+                                    <label for="fechaHasta">Fecha Hasta:</label>
+                                </div>
+                                <div class="col-md-9 col-xs-12">
+                                        <input class="form-control" type="date" id="datepickerHasta">
+                                </div>
+                                </div>
+
+                            </div><!-- fin class="col-md-6 col-xs-12"  -->
+
+                            <div class="col-md-6 col-xs-12">
+                                <div class="col-md-8 col-xs-12">
+                                </div>
+
+                                <div class="col-md-4 col-xs-12">
+                                    <button type="button" class="btn btn-default"  onclick="buscar()">Filtrar</button>
+                                    <button type="reset" class="btn btn-primary">Limpiar</button>
+                                </div>
+                                
+                            </div> 
+                </form>
+                
+                        </div><!-- fin row  -->
+                    </div>  <!--  fin container -->
+
+               
+<br>
+
                     <div class="row">
                         <div class="col-md-6 col-xs-12">
                             <!-- class="daterange"-->
@@ -22,11 +132,11 @@
                             print_r ($disponibilidad);
                             echo "</pre>";
                             */
-                            ?>
+                            ?>                       
                             <h4>
                                 <center>Disponibilidad [%]</center>
                             </h4>
-                            <div data-disponibilidad="">
+                            <!--  <div data-disponibilidad="">
                                 <div class="row">
                                     <div class="col-md-5 col-xs-12">
                                         <div class="radio">
@@ -48,9 +158,12 @@
                                             </label>
                                         </div></div>
                                 </div>
+                            </div>-->
+                            <div id="graph-container">
+                                <canvas id="miGrafico"></canvas>
                             </div>
 
-                           <?php $this->load->view('kpis/disponibilidad'); ?>
+                           
                         </div>
 
                         <div class="col-md-3 col-xs-12 daterange">
@@ -76,7 +189,52 @@
                             </div>
                         </div>
 
+                        <div class="col-md-6 col-xs-12" >
+                            
+                            <h4>
+                                <center>MTBF</center>
+                            </h4>
+                            <div id="graph-containerMtbf">
+                                <canvas id="miGraficoMtbf"></canvas>
+                            </div>
+                             
+                           
+                        </div>
 
+                        <div class="col-md-6 col-xs-12">
+                            
+                            <h4>
+                                <center>MTTR</center>
+                            </h4>
+                            
+                            <div id="graph-containerMttr">
+                                <canvas id="miGraficoMttr"></canvas>
+                            </div>
+                         
+                        </div>
+
+                        <div class="col-md-6 col-xs-12">
+                            
+                            <h4>
+                                <center>MTTF</center>
+                            </h4>
+                            <div id="graph-containerMttf">
+                            <canvas id="miGraficoMttf"></canvas>
+                            </div>
+                            
+                        </div>
+
+                        <div class="col-md-6 col-xs-12">
+                            
+                            <h4>
+                                <center>Indice de Confiabilidad</center>
+                            </h4>
+                            <div id="graph-containerConfiabilidad">
+                            <canvas id="miGraficoConfiabilidad"></canvas>
+                            </div>
+                           
+                        </div>
+ 
                     </div><!-- /.row -->
                 </div>
 
@@ -95,6 +253,7 @@
 <style type="text/css">
 .daterange {
     position: relative;
+    margin-bottom:5%;
 }
 
 .daterange i {
@@ -108,11 +267,75 @@
 
 
 
+/* buscador fechas-grupo-sector-equipo*/
+function buscar()
+{
+  
+  var fechaDesde =  $('#datepickerDesde').val();
+  var fechaHasta =  $('#datepickerHasta').val();
+  var idEquipo = $('#equipo').val();
+  var iGrupo = $('#grupo').val();
+  var idSector = $('#sector').val();
+
+  if((idEquipo == null) || (idEquipo == "") )
+  {
+    alert("Seleccione algun equipo");
+    return;
+  }
+
+  if(fechaDesde == "")
+  {
+    alert("Seleccione fecha desde");
+    return;
+  }
+
+  if(fechaHasta == "")
+  {
+    alert("Seleccione fecha hasta");
+    return;
+  }
+  WaitingOpen("Obteniendo datos de disponibilidad...");
+
+  getDisponibilidad();
+
+  //debugger;
+}
+
 /* obtengo datos de disponibilidad */
 var idEquipo = 'all';
+
 getDisponibilidad(idEquipo);
 
+/* Obtener datos de disponibilidad para graficos KPI */
 function getDisponibilidad(idEquipo) {
+    //WaitingOpen("Obteniendo datos de disponibilidad...");
+    if($('#equipo').val())  {idEquipo= $('#equipo').val()} 
+    
+    $.ajax({
+            data: {
+                'fecha_desde':$('#datepickerDesde').val(),
+                'fecha_hasta':$('#datepickerHasta').val(),
+                'id_equipo': idEquipo
+            }, 
+            dataType: 'json',
+            type: 'POST',
+            url: 'index.php/Kpi/disponibilidadKpi',
+        })
+        .done((data) => {
+            WaitingClose();
+            //console.log(data);
+            graficarParametroMttf(data);
+            graficarParametro(data);
+            graficarParametroConfiabilidad(data);
+            graficarParametroMttr(data);
+            graficarParametroMtbf(data);
+        })
+        .fail(() => alert("Error al traer datos de Disponibilidad."))
+
+}
+
+//disponibilidad anterior
+/* function getDisponibilidad(idEquipo) {
     //WaitingOpen("Obteniendo datos de disponibilidad...");
     $.ajax({
             data: {
@@ -127,17 +350,18 @@ function getDisponibilidad(idEquipo) {
         })
         .fail(() => alert("Error al traer datos de Disponibilidad."))
        
-}
+} */
 
 /* grafico KPI de Disponibilidad*/
 function graficarParametro(disponibilidad) {
     //elimino grafico anterior si existe
     $('#miGrafico').remove();
-    $('#graph-container').append('<canvas id="miGrafico" style="width: 100%; margin:0 auto"></canvas>');
+    $('#graph-container').html('<canvas id="miGrafico" style="width: 100%; margin:0 auto"></canvas>');
 
     var ctx = document.getElementById("miGrafico");
     //var ctx = canvas.getContext("2d");
 
+    /* plugin linea meta  */
     var horizonalLinePlugin = {
         afterDraw: function(chartInstance) {
             var yScale = chartInstance.scales["y-axis-0"];
@@ -183,11 +407,14 @@ function graficarParametro(disponibilidad) {
         }
     };
     Chart.pluginService.register(horizonalLinePlugin);
-    var porcentajeHorasOperativas = [disponibilidad['promedioMetas']].concat(disponibilidad["porcentajeHorasOperativas"]);
-    var tiempo = ["meta"].concat(disponibilidad["tiempo"]);
+   // var porcentajeHorasOperativas = [disponibilidad['promedioMetas']].concat(disponibilidad["porcentajeHorasOperativas"]);
+    var porcentajeHorasOperativas = disponibilidad.porcentajeHorasOperativas;
+    //var tiempo = ["meta"].concat(disponibilidad["tiempo"]);
+    var tiempo = disponibilidad.tiempo;
 
-    var colors = ["#00A65A"];
-    for (let i = 1; i < tiempo.length; i++) colors.push('#81B5D4');
+    //var colors = ["#00A65A"];
+    var colors = [];
+    for (let i = 0; i < tiempo.length; i++) colors.push('#81B5D4');
         
     
 
@@ -197,9 +424,9 @@ function graficarParametro(disponibilidad) {
         datasets: [{
             backgroundColor: colors,
             data: porcentajeHorasOperativas,
-            //data:[80, 66, 70, 71, 75, 81, 77, 78, 77, 82, 81, 78, 80],
+           // data:[80, 66, 70, 71, 75, 81, 77, 78, 77, 82, 81, 78, 80],
            // fill: false,
-            label: ['Meta'],
+            //label: ['Meta'],
             lineTension: 0.2,
             pointRadius: 2,
             pointHitRadius: 10,
@@ -212,11 +439,11 @@ function graficarParametro(disponibilidad) {
         type: 'bar',
         data: data,
         options: {
-            "horizontalLine": [{
+            /*"horizontalLine": [{
                 "y": disponibilidad['promedioMetas'],
                 "style": "#00A65A",
                 "text": "meta"
-            }],
+            }],*/
             
             responsive: true,
             maintainAspectRatio: true,
@@ -243,51 +470,110 @@ function graficarParametro(disponibilidad) {
     });
 }
 
-$('#checkboxEquipoID').focusin(function() {
-    //console.log('Equipos');
-    $(this).prev().prop("checked", true);
-});
-$('#radioDisponibilidadAll').focusin(function() {
-    //console.log('Todos');
-    getDisponibilidad('all');
+
+$("#sector").change(function(){
+      var idSector = $("#sector").val();
+      getEquiSectorGrupo();
 });
 
-// autocomplete para codigo
-var dataEquipos = function() {
-    var tmp = null;
+$("#grupo").change(function(){
+      var idGrupo = $("#grupo").val();
+      getEquiSectorGrupo();
+});
+
+
+/* trae los grupos */
+var dataGrupos = function() {
+   
     $.ajax({
         'async': false,
         'type': "POST",
         'global': false,
         'dataType': 'json',
-        'url': "index.php/Otrabajo/getEquipoDisponibilidad",
+        'url': "index.php/Kpi/getGruposxEmpresa",
         'success': function(data) {
-            tmp = data;
+            if(data){
+                var opcion = "<option value=''>Todos</option>" ;
+                $('#grupo').append(opcion);
+                for (var i = 0; i < data.length; i++) {
+                var nombre = data[i]['descripcion'];
+                var opcion = "<option value='"+data[i]['id_grupo']+"'>" +nombre+ "</option>" ; 
+                $('#grupo').append(opcion);  
+            }
         }
+        },
+        'error': function(result){
+            console.log(result);
+          },
     });
-    return tmp;
 }();
-$("#checkboxEquipoID").autocomplete({
-    source: dataEquipos,
-    delay: 500,
-    minLength: 1,
-    focus: function(event, ui) {
-        event.preventDefault();
-        $(this).val(ui.item.label);
-    },
-    select: function(event, ui) {
-        event.preventDefault();
-        $(this).val(ui.item.label); //value
 
-        getDisponibilidad(ui.item.value);
-    },
-});
+
+/* trae los sectores */
+var dataSectores = function() {
+    
+    $.ajax({
+        'async': false,
+        'type': "POST",
+        'global': false,
+        'dataType': 'json',
+        'url': "index.php/Kpi/getSectoresxEmpresa",
+        'success': function(data) {
+            if(data){
+                var opcion = "<option value=''>Todos</option>" ;
+                $('#sector').append(opcion);
+                for (var i = 0; i < data.length; i++) {
+                var nombre = data[i]['descripcion'];
+                var opcion = "<option value='"+data[i]['id_sector']+"'>" +nombre+ "</option>" ; 
+                $('#sector').append(opcion);  
+            }
+        }
+        },
+        'error': function(result){
+            console.log(result);
+          },
+    });
+}();
+
+
+/*    trae equipos de sector y/o grupos */
+  function getEquiSectorGrupo(){
+    var id_grupo =  $("#grupo").val();
+    var id_sector =  $("#sector").val();
+    $("#equipo").html("");
+    $.ajax({
+      'data' : {id_sector : id_sector, 
+                id_grupo : id_grupo
+                },
+      'async': true,
+      'type': "POST",
+      'global': false,
+      'dataType': 'json',
+      'url': "index.php/Kpi/getEquiposxGrupoSector",
+      'success': function (data) {
+        //console.table(data);
+        if(data){
+            var opcion = "<option value='all'>Todos</option>" ;
+            $('#equipo').append(opcion);
+            for (var i = 0; i < data.length; i++) {
+            var nombre = data[i]['descripcion'];
+            var opcion = "<option value='"+data[i]['id_equipo']+"'>" +nombre+ "</option>" ; 
+            $('#equipo').append(opcion);  
+          }
+        }
+      },
+      'error' : function(data){
+        console.log('Error en getEquiSector');
+        console.table(data);
+      },
+    });
+  }
 
 
 
 graficarMantenimiento();
 
-
+/* grafico KPI de Mantenimiento*/
 function graficarMantenimiento() {
  //   WaitingOpen("Obteniendo datos de Mantenimiento...");
     var areaChartCanvas = document.getElementById("graficoMantenimiento");
@@ -416,4 +702,310 @@ function graficarEquiposOperativos() {
     });
    // WaitingClose();
 }
+
+
+fechaMagic();
+
+// config de daterangepicker
+function fechaMagic() {
+    
+    $('#daterange-btn').daterangepicker({
+        ranges: {
+          'Hoy': [moment(), moment()],
+          'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+          'Últimos 7 días': [moment().subtract(6, 'days'), moment()],
+          'Últimos 30 días': [moment().subtract(29, 'days'), moment()],
+          'Este mes': [moment().startOf('month'), moment().endOf('month')],
+          'Último mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        startDate: moment().subtract(29, 'days'),
+        endDate: moment()
+      },
+      function(start, end) {
+        $('#datepickerDesde').val(start.format('YYYY-MM-DD'));
+        $('#datepickerHasta').val(end.format('YYYY-MM-DD'));
+      }
+    );
+  }
+
+/* grafico KPI de Mttf*/
+  function graficarParametroMttf(disponibilidad) {
+    //debugger;
+    //elimino grafico anterior si existe
+    $('#miGraficoMttf').remove();
+    $('#graph-containerMttf').html('<canvas id="miGraficoMttf"></canvas>');
+
+    var ctx = document.getElementById("miGraficoMttf");
+    
+    var dataMttf = disponibilidad.mttf;
+    //var porcentajeHorasOperativas = [disponibilidad.promedioMetas].concat(disponibilidad.porcentajeHorasOperativas);
+    //var tiempo = ["meta"].concat(disponibilidad.tiempo);
+    var tiempo = disponibilidad.tiempo;
+
+    var colors = [];
+    for (let i = 0; i < tiempo.length; i++) colors.push('#4682B4');
+
+    var data = {
+        labels: tiempo,
+        datasets: [{
+            backgroundColor: colors,
+            data: dataMttf,
+            label: ''/* ['Meta'].concat(disponibilidad.promedioMetas) */,
+            lineTension: 0.2,
+            pointRadius: 2,
+            pointHitRadius: 10,
+            spanGaps: false,
+        }],
+    };
+   
+   
+    var miGraficoMttf = new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        //data:[80, 66, 70, 71, 75, 81, 77, 78, 77, 82, 81, 78, 80],
+        options: {
+            legend: {
+                position: 'bottom',
+                backgroundColor: 'blue',
+            },
+             /* linea meta */
+           /* "horizontalLine": [{
+                "y": disponibilidad.promedioMetas,
+                "style": "#00CC00",
+                "text": "meta " + disponibilidad.promedioMetas + 'hs     ',
+            }],*/
+            responsive: true,
+            maintainAspectRatio: true,
+             scales: {
+                yAxes: [{
+                    ticks: {
+                        //min:100, // Valor mínimo del eje Y
+                        //max: 0, // Valor máximo del eje Y
+                        //stepSize: 10 // Incremento entre los valores del eje Y
+                        // max:100,
+                        //beginAtZero:true, 
+                    }
+                }]
+            }, 
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        //get the concerned dataset
+                        var dataset = data.datasets[tooltipItem.datasetIndex];
+                        //get the current items value
+                        var currentValue = dataset.data[tooltipItem.index];
+                        return currentValue;
+                    }
+                }
+            }
+        }
+    });
+   
+}
+
+/* grafico KPI de Confiabilidad*/
+function graficarParametroConfiabilidad(disponibilidad) {
+    //debugger;
+    //elimino grafico anterior si existe
+    $('#miGraficoConfiabilidad').remove();
+    $('#graph-containerConfiabilidad').html('<canvas id="miGraficoConfiabilidad"></canvas>');
+
+    var ctx = document.getElementById("miGraficoConfiabilidad");
+   
+    var porcentajeHorasOperativas = disponibilidad.confiabilidad;
+ 
+    var tiempo = disponibilidad.tiempo;
+    var data = {
+        labels: tiempo,
+        datasets: [{
+            //backgroundColor: colors,
+            data: porcentajeHorasOperativas,
+            label: '',
+            fill: false,
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+
+        }],
+    };
+   
+    var miGraficoConfiabilidad = new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: {
+            legend: {
+                position: 'bottom',
+            },
+          
+            responsive: true,
+            maintainAspectRatio: true,
+             scales: {
+                yAxes: [{
+                    ticks: {
+                        
+                    }
+                }]
+            }, 
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        //get the concerned dataset
+                        var dataset = data.datasets[tooltipItem.datasetIndex];
+                        //get the current items value
+                        var currentValue = dataset.data[tooltipItem.index];
+                        return currentValue;
+                    }
+                }
+            }
+        }
+    });
+   
+}
+
+/* grafico KPI de Mtbf*/
+function graficarParametroMtbf(disponibilidad) {
+    //debugger;
+    //elimino grafico anterior si existe
+    $('#miGraficoMtbf').remove();
+    $('#graph-containerMtbf').html('<canvas id="miGraficoMtbf"></canvas>');
+
+    var ctx = document.getElementById("miGraficoMtbf");
+    var horasmtbf = disponibilidad.mtbf;
+    //var tiempo = ["meta"].concat(disponibilidad.tiempo);
+    var tiempo = disponibilidad.tiempo;
+
+    var colors = [];
+    //#75aa31
+    for (let i = 0; i < tiempo.length; i++) colors.push('#008d4c');
+    //console.log(colors);
+    var data = {
+        labels: tiempo,
+        datasets: [{
+            backgroundColor: colors,
+            data: horasmtbf,
+            label: ''/* ['Meta'].concat(disponibilidad.promedioMetas) */,
+            lineTension: 0.2,
+            pointRadius: 2,
+            pointHitRadius: 10,
+            spanGaps: false,
+        }],
+    };
+   
+    var miGraficoMtbf = new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        //data:[80, 66, 70, 71, 75, 81, 77, 78, 77, 82, 81, 78, 80],
+        options: {
+            legend: {
+                position: 'bottom',
+                backgroundColor: 'blue',
+            },
+            /*"horizontalLine": [{
+                "y": disponibilidad.promedioMetas,
+                //"style": "#00A65A",
+                "style": "#ffa031",
+                "text": "meta " + disponibilidad.promedioMetas  + 'hs     ',
+            }],*/
+            responsive: true,
+            maintainAspectRatio: true,
+             scales: {
+                yAxes: [{
+                    ticks: {
+                        //min:100, // Valor mínimo del eje Y
+                        //max: 0, // Valor máximo del eje Y
+                        //stepSize: 10 // Incremento entre los valores del eje Y
+                        // max:100,
+                        //beginAtZero:true, 
+                    }
+                }]
+            }, 
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        //get the concerned dataset
+                        var dataset = data.datasets[tooltipItem.datasetIndex];
+                        //get the current items value
+                        var currentValue = dataset.data[tooltipItem.index];
+                        return currentValue;
+                    }
+                }
+            }
+        }
+    });
+}
+
+
+/* grafico KPI de Mttr*/
+function graficarParametroMttr(disponibilidad) {
+    //debugger;
+    //elimino grafico anterior si existe
+    $('#miGraficoMttr').remove();
+    $('#graph-containerMttr').html('<canvas id="miGraficoMttr"></canvas>');
+
+    var ctx = document.getElementById("miGraficoMttr");
+    
+    var horasMttr = disponibilidad.mttr;
+    //var porcentajeHorasOperativas = [disponibilidad.promedioMetas].concat(disponibilidad.porcentajeHorasOperativas);
+    //var tiempo = ["meta"].concat(disponibilidad.tiempo);
+    var tiempo = disponibilidad.tiempo;
+
+    var colors = [];
+    for (let i = 0; i < tiempo.length; i++) colors.push('#ffa031');
+
+    var data = {
+        labels: tiempo,
+        datasets: [{
+            backgroundColor: colors,
+            data: horasMttr,
+            label: ''/* ['Meta'].concat(disponibilidad.promedioMetas) */,
+            lineTension: 0.2,
+            pointRadius: 2,
+            pointHitRadius: 10,
+            spanGaps: false,
+        }],
+    };
+   
+    var miGraficoMttr = new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        //data:[80, 66, 70, 71, 75, 81, 77, 78, 77, 82, 81, 78, 80],
+        options: {
+            legend: {
+                position: 'bottom',
+                backgroundColor: 'blue',
+            },
+           /* "horizontalLine": [{
+                "y": disponibilidad.promedioMetas,
+                "style": "#008d4c",
+                "text": "meta " + disponibilidad.promedioMetas + 'hs     ',
+            }],*/
+            responsive: true,
+            maintainAspectRatio: true,
+             scales: {
+                yAxes: [{
+                    ticks: {
+                        //min:100, // Valor mínimo del eje Y
+                        //max: 0, // Valor máximo del eje Y
+                        //stepSize: 10 // Incremento entre los valores del eje Y
+                        /* max:100,
+                        beginAtZero:true, */
+                    }
+                }]
+            }, 
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        //get the concerned dataset
+                        var dataset = data.datasets[tooltipItem.datasetIndex];
+                        //get the current items value
+                        var currentValue = dataset.data[tooltipItem.index];
+                        return currentValue;
+                    }
+                }
+            }
+        }
+    });
+   
+}
+
+
 </script>
