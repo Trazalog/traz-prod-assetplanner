@@ -293,8 +293,9 @@ function ejecutarOT() {
         dataType: 'json'
     }
 
-    if(SW) ajax(post);
-    else $.ajax(post);
+ /*    if(SW) ajax(post);
+    else $.ajax(post); */
+    $.ajax(post);
 }
 
 

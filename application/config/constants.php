@@ -186,6 +186,7 @@ define('REST3', 'http://10.142.0.13:8280/services/produccionTest');
 define('REST4', 'http://10.142.0.13:8280/services/TrazabilidadDataService');
 define('REST_CORE', 'http://10.142.0.13:8280/services/COREDataService');
 
+define('REST_MAN', 'http://10.142.0.13:8280/services/MANDataService/');
 
 
 /*
