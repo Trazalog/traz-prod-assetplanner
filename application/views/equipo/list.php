@@ -255,8 +255,6 @@ function inhabilitarEquipo(idEquipo){
     });
 }
 
-
-
 // Cambiar a estado - Chequeado
 // $(".fa-toggle-on").click(function(e) {
 	//     WaitingOpen('Cambiando estado...');
@@ -281,7 +279,6 @@ function inhabilitarEquipo(idEquipo){
 	//         dataType: 'json'
 	//     });
 // });
-
 
 // Cambiar a estado - Chequeado
 // $(".fa-toggle-off").click(function(e) {
@@ -1277,16 +1274,14 @@ function recargarTabla() {
     });
 }
 
+// redibuja tabla conservando la paginacion
 function reloadTable(){
 
-let table = $('#sales').DataTable();
-	table
-	.order( [[ 1, 'asc' ]] )
-	.draw( false );
+		let table = $('#sales').DataTable();
+			table
+			.order( [[ 1, 'asc' ]] )
+			.draw( false );
 }
-
-
-
 
 /// llena modal historial de lecturas
 function llenarModal(data) {
@@ -1324,7 +1319,6 @@ function llenarModal(data) {
         console.log("El equipo NO tiene historial de lecturas");
     }
 }
-
 
 $(document).on("click", ".editLectura", function(e) {
 
@@ -1467,29 +1461,29 @@ function guardarlectura() {
 /************************************/
 
 // Elimina Equipos (Cambio de estado a AN) - Chequeado
-// $(".fa-times-circle").click(function(e) {
-//     if (!confirm("Realmente desea eliminar este equipo?")) {
-//         return;
-//     } else {
-//         console.log("Estoy eliminando");
-//         var idequipo = $(this).parent('td').parent('tr').attr('id');
-//         console.log(idequipo);
-//         $.ajax({
-//             type: 'POST',
-//             data: {
-//                 idequipo: idequipo
-//             },
-//             url: 'index.php/Equipo/baja_equipo',
-//             success: function(data) {
-//                 alert("Equipo/sector ANULADO");
-//                 regresa();
-//             },
-//             error: function(result) {
-//                 console.log(result);
-//             },
-//             dataType: 'json'
-//         });
-//     }
+	// $(".fa-times-circle").click(function(e) {
+	//     if (!confirm("Realmente desea eliminar este equipo?")) {
+	//         return;
+	//     } else {
+	//         console.log("Estoy eliminando");
+	//         var idequipo = $(this).parent('td').parent('tr').attr('id');
+	//         console.log(idequipo);
+	//         $.ajax({
+	//             type: 'POST',
+	//             data: {
+	//                 idequipo: idequipo
+	//             },
+	//             url: 'index.php/Equipo/baja_equipo',
+	//             success: function(data) {
+	//                 alert("Equipo/sector ANULADO");
+	//                 regresa();
+	//             },
+	//             error: function(result) {
+	//                 console.log(result);
+	//             },
+	//             dataType: 'json'
+	//         });
+	//     }
 // });
 
 /************************************/
@@ -1518,35 +1512,31 @@ function eliminarEquipo(idEquipo){
     }
 }
 
-
-
-
 /************************************/
 /**********  EDITA EQUIPO  **********/
 /************************************/
-
 // Traigo datos del equipo
 // $(".editEquipo").click(function() {
-//     //WaitingOpen();
-//     var idEquipo = $(this).parent('td').parent('tr').attr('id');
-//     //$('#id_equipo').val(idEquipo);
-//     console.info('id de equipo a editar: ' + idEquipo);
+	//     //WaitingOpen();
+	//     var idEquipo = $(this).parent('td').parent('tr').attr('id');
+	//     //$('#id_equipo').val(idEquipo);
+	//     console.info('id de equipo a editar: ' + idEquipo);
 
-//     $.ajax({
-//         data: {
-//             idEquipo: idEquipo
-//         },
-//         dataType: 'json',
-//         type: 'POST',
-//         url: 'index.php/Equipo/geteditar',
-//         success: function(result) {
-//             console.log(result);
-//             llenarCampos(result);
-//         },
-//         error: function(result) {
-//             console.error(result);
-//         },
-//     });
+	//     $.ajax({
+	//         data: {
+	//             idEquipo: idEquipo
+	//         },
+	//         dataType: 'json',
+	//         type: 'POST',
+	//         url: 'index.php/Equipo/geteditar',
+	//         success: function(result) {
+	//             console.log(result);
+	//             llenarCampos(result);
+	//         },
+	//         error: function(result) {
+	//             console.error(result);
+	//         },
+	//     });
 // });
 
 /************************************/
@@ -2115,16 +2105,12 @@ function guardarmarca() {
     }
 }
 
-
-
-
 //abrir modal eliminar adjunto
 /* $(document).on("click", ".eliminaAdjunto", function() {
     $('#modalEliminarAdjunto').modal('show');
     var idEquipo = $('#id_equipo').val();
     $('#idAdjunto').val(idEquipo);
 }); */
-
 
 //eliminar adjunto
 function eliminaAdjunto(idAdjunto) {
@@ -2271,6 +2257,7 @@ $('#tblhistorial').DataTable({
         [1, "asc"]
     ],
 });
+
 $('#tablaempresa').DataTable({
     "aLengthMenu": [10, 25, 50, 100],
     "columnDefs": [{

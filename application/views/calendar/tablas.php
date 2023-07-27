@@ -173,7 +173,7 @@
                 // 7  //horas hombre
                 //echo "<td style='text-align: center'>".$p['horash']."</td>";
                 // 8  //periodo
-                echo "<td style='text-align: center'>".$periodo."</td>";               
+                echo "<td style='text-align: center'>".$p['desc_periodo']."</td>";           
                 // 9  //frecuencia
                 echo "<td style='text-align: center'>".$p['cantidad']."</td>";
                 echo "</tr>";

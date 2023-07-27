@@ -254,7 +254,7 @@ class Kpi extends CI_Controller
     {
         $fecha1 = new DateTime($fi); //fecha inicial
         $fecha2 = new DateTime($ff); //fecha de cierre
-
+        
         $intervalo = $fecha1->diff($fecha2);
 
         #echo $intervalo->format('%Y años %m meses %d days %H horas %i minutos %s segundos'); //00 años 0 meses 0 días 08 horas 0 minutos 0 segundos
@@ -267,6 +267,269 @@ class Kpi extends CI_Controller
         $totalMin = $minutos + (int) $intervalo->format('%i'); // Acumulo Minutos
 
         return $totalMin;
+    }
+
+    
+    /* Calculo de todos los kpis, 
+        Busqueda por todos los equipos dentro de un rango de fecha o todo el año
+        Busqueda por equipo y fechas dentro de un rango ingresado 
+    */
+    public function disponibilidadKpi(){
+
+        $tiempo = array();
+        $fecha_actual = date("Y-m-d");
+        $disponibilidadMeses = array();
+        $mtbf = array();
+        $mttr = array();
+        $mttf = array();
+        $confiabilidad = array();
+
+        $id_equipo =  $this->input->post('id_equipo');
+        $fecha_desde =  $this->input->post('fecha_desde')/* ." 00:00:00" */;
+        $fecha_hasta =  $this->input->post('fecha_hasta')/* ." 23:59:59" */;
+
+		log_message('DEBUG','KPI ||  disponibilidadKpi || $id_equipo '. $id_equipo);
+
+        /*busca todos los equipos */
+        if($id_equipo == 'all'){
+
+            /* Si ingresa fechas busco por las fechas ingresadas */
+            if(($fecha_desde) && ($fecha_hasta)){
+                // Convertir las fechas de texto a objetos DateTime
+
+                $fechaInicioObj = new DateTime($fecha_desde);
+                $fechaFinObj = new DateTime($fecha_hasta);
+
+                $i=0;
+                /* Recorro los meses del intervalo ingresado */
+                while ($fechaInicioObj <= $fechaFinObj) {
+                
+                    #Calcular Fecha inicio del Mes
+                    $fi = date("Y-m-01", strtotime($fecha_desde . "+ $i month"));
+                     #Calcular Fecha Fin del Mes
+                    $ff = (date("Y-m-d", strtotime($fi . "+ 1 month - 1 second")));
+                
+                    /* guardo mes que recorro para comparar con el numero de mes ingresado y elegir que parametro mandar */
+                    $mesRecorrido = $fechaInicioObj->format('m');
+
+                    if($mesHasta == $mesRecorrido)
+                    {
+                        #kpi disponibilidad
+                        $disponibilidadMeses[] = $this->Kpis->getDisponibilidadxFecha($fi, $fecha_hasta);
+                    
+                        #kpi Mttr
+                        $mttr[] = $this->Kpis->getMttrxFecha($fi, $fecha_hasta);
+                    
+                        #kpi Mttf
+                        $mttf[] = $this->Kpis->getMttfxFecha($fi, $fecha_hasta);
+
+                    }
+                    else if($mesDesde == $mesRecorrido){
+                    
+                        #kpi disponibilidad
+                        $disponibilidadMeses[] = $this->Kpis->getDisponibilidadxFecha($fecha_desde, $ff);
+
+                        #kpi Mttr
+                        $mttr[] = $this->Kpis->getMttrxFecha($fecha_desde, $ff);
+                    
+                        #kpi Mttf
+                        $mttf[] = $this->Kpis->getMttfxFecha($fecha_desde, $ff);
+                    
+                    }
+                        else{
+                        
+                        #kpi disponibilidad
+                        $disponibilidadMeses[] = $this->Kpis->getDisponibilidadxFecha($fi, $ff);
+                        
+                        #kpi Mttr
+                        $mttr[] = $this->Kpis->getMttrxFecha($fi, $ff);
+                        
+                        #kpi Mttf
+                        $mttf[] = $this->Kpis->getMttfxFecha($fi, $ff);
+                        
+                        }
+                    
+                    #Guardar tiempo medio entre fallos MTBF
+                    $mtbf[] = ($mttr[$i] + $mttf[$i]);
+                    /* si ambos valores viene en 0 el resultado es 0 */
+                     if(($mtbf[$i] == 0) && ($mttr[$i] == 0))
+                     {
+                        $confiabilidad[] = 0 ;
+                     }
+                     else{
+                        $confiabilidad[] = ($mtbf[$i] / ($mtbf[$i] +  $mttr[$i])) * 100 ;
+                     }
+                 
+                     #Guardar Labels para Gráfico MES/AÑO
+                     $tiempo[] =  date("m-Y", strtotime($fi));
+                    // Moverse al siguiente mes
+                    $fechaInicioObj->modify('+1 month');
+                    $i++;
+                 
+                }
+
+            }
+            /* si no ingreso fecha busca todos los equipos por todo el año */
+            else{
+                    for ($i = 0; $i < 12; $i++) {
+                        #Calular Fecha Inicio del Mes
+                        $fi = date("Y-m-01", strtotime($fecha_actual . "- $i month"));
+                    
+                        #Calcular Fecha Fin del Mes
+                        $ff = ($i == 0 ? date("Y-m-d") : date("Y-m-d", strtotime($fi . "+ 1 month - 1 second")));
+                    
+                        #Guardar Labels para Gráfico MES/AÑO
+                        array_unshift($tiempo, date("m-Y", strtotime($fi)));
+                    
+                        #Guardar disponibilidad por cada mes
+                        array_unshift($disponibilidadMeses ,$this->Kpis->getDisponibilidadxFecha($fi, $ff));
+                    
+                        #Guardar Tiempo promedio de reparación MTTR
+                        array_unshift($mttr ,$this->Kpis->getMttrxFecha($fi, $ff));
+                    
+                        #Guardar Tiempo medio hasta el fallo MTTF
+                        array_unshift($mttf ,$this->Kpis->getMttfxFecha($fi, $ff));
+                    
+                        #Guardar tiempo medio entre fallos MTBF
+                        array_unshift($mtbf , ($mttr[0] + $mttf[0]));
+                    
+                        /* si ambos valores viene en 0 el resultado es 0 */
+                         if(($mtbf[0] == 0) && ($mttr[0] == 0))
+                         {
+                            array_unshift($confiabilidad, 0 );
+                         }
+                         else{
+                            array_unshift($confiabilidad,($mtbf[0] / ($mtbf[0] +  $mttr[0])) * 100 );
+                         }
+                    }
+            }
+            $data['promedioMetas'] = 8;
+            $data['tiempo'] =  $tiempo;
+            $data['porcentajeHorasOperativas'] = $disponibilidadMeses;
+            $data['mtbf']=  $mtbf;
+            $data['mttr'] = $mttr;
+            $data['mttf'] = $mttf;
+            $data['confiabilidad'] = $confiabilidad;
+
+            echo json_encode($data);
+        }
+
+        /* busqueda por id_equipo */
+        else{
+            // Convertir las fechas de texto a objetos DateTime
+            $fechaInicioObj = new DateTime($fecha_desde);
+            $fechaFinObj = new DateTime($fecha_hasta);
+            
+            $i=0;
+            /* Recorro los meses del intervalo ingresado */
+            while ($fechaInicioObj <= $fechaFinObj) {
+
+                #Calcular Fecha inicio del Mes
+                $fi = date("Y-m-01", strtotime($fecha_desde . "+ $i month"));
+                 #Calcular Fecha Fin del Mes
+                $ff = (date("Y-m-d", strtotime($fi . "+ 1 month - 1 second")));
+
+                /* guardo mes que recorro para comparar con el numero de mes ingresado y elegir que parametro mandar */
+                $mesRecorrido = $fechaInicioObj->format('m');
+                if($mesHasta == $mesRecorrido)
+                {
+                    #Calcular desde inicio de mes a fecha_hasta
+
+                    #kpi disponibilidad
+                    $disponibilidadMeses[] = $this->Kpis->getDisponibilidadxFechaxEquipo($fi, $fecha_hasta, $id_equipo);
+
+                    #kpi Mttr
+                    $mttr[] = $this->Kpis->getMttrxFechaxEquipo($fi, $fecha_hasta, $id_equipo);
+
+                    #kpi Mttf
+                    $mttf[] = $this->Kpis->getMttfxFechaxEquipo($fi, $fecha_hasta, $id_equipo);
+                    
+                }
+                else if($mesDesde == $mesRecorrido){
+                    #Calcular de fecha_desde hasta fin del mes 
+
+                    #kpi disponibilidad
+                    $disponibilidadMeses[] = $this->Kpis->getDisponibilidadxFechaxEquipo($fecha_desde, $ff, $id_equipo);
+                    
+                    #kpi Mttr
+                    $mttr[] = $this->Kpis->getMttrxFechaxEquipo($fecha_desde, $ff, $id_equipo);
+
+                    #kpi Mttf
+                    $mttf[] = $this->Kpis->getMttfxFechaxEquipo($fecha_desde, $ff, $id_equipo);
+
+                }
+                    else{
+                     #Calcular desde principio a fin de mes
+
+                    #kpi disponibilidad
+                    $disponibilidadMeses[] = $this->Kpis->getDisponibilidadxFechaxEquipo($fi, $ff, $id_equipo);
+
+                    #kpi Mttr
+                    $mttr[] = $this->Kpis->getMttrxFechaxEquipo($fi, $ff, $id_equipo);
+
+                    #kpi Mttf
+                    $mttf[] = $this->Kpis->getMttfxFechaxEquipo($fi, $ff, $id_equipo);
+                    
+
+                    }
+
+                #Guardar tiempo medio entre fallos MTBF
+                $mtbf[] = ($mttr[$i] + $mttf[$i]);
+                /* si ambos valores viene en 0 el resultado es 0 */
+                 if(($mtbf[$i] == 0) && ($mttr[$i] == 0))
+                 {
+                    $confiabilidad[] = 0 ;
+                 }
+                 else{
+                    $confiabilidad[] = ($mtbf[$i] / ($mtbf[$i] +  $mttr[$i])) * 100 ;
+                 }
+
+                 #Guardar Labels para Gráfico MES/AÑO
+                 $tiempo[] =  date("m-Y", strtotime($fi));
+                // Moverse al siguiente mes
+                $fechaInicioObj->modify('+1 month');
+                $i++;
+
+            }
+
+            $data['promedioMetas'] = 8;
+            $data['tiempo'] =  $tiempo;
+            $data['porcentajeHorasOperativas'] = $disponibilidadMeses;
+            $data['mtbf']= $mtbf;
+            $data['mttr'] = $mttr;
+            $data['mttf'] = $mttf;
+            $data['confiabilidad'] = $confiabilidad;
+
+
+            echo json_encode($data);
+        }
+
+        
+    }
+
+
+    public function getGruposxEmpresa(){
+        $grupos = $this->Kpis->getGruposEmpresa();
+		log_message('DEBUG',' KPI || getSectoresxEmpresa '.json_encode($grupos));
+
+        echo json_encode($grupos);
+    }
+
+    public function getSectoresxEmpresa(){
+        $sectores = $this->Kpis->getSectoresEmpresa();
+		log_message('DEBUG',' KPI || getSectoresxEmpresa '.json_encode($sectores));
+
+        echo json_encode($sectores);
+    }
+
+    public function getEquiposxGrupoSector(){
+
+        $id_grupo = ($this->input->post('id_grupo')) ? $this->input->post('id_grupo') : '' ;
+        $id_sector = ($this->input->post('id_sector')) ? $this->input->post('id_sector') : ''; 
+        $equipos = $this->Kpis->getEquiposGrupoSector($id_grupo, $id_sector);
+		log_message('DEBUG',' KPI || getEquiposxGrupoSector '.json_encode($equipos));
+
+        echo json_encode($equipos);
     }
 
 }

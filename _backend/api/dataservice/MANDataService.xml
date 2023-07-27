@@ -1,0 +1,147 @@
+<data name="MANDataService" transports="http https local">
+   <description>DataService  para AssetPlanner                             &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                </description>
+   <config enableOData="false" id="AssetPlannerDataSource">
+      <property name="carbon_datasource_name">AssetPlannerDataSource</property>
+   </config>
+   <query id="getKPIDisponibiidadPorFecha" useConfig="AssetPlannerDataSource">
+      <sql>select activas.horas_activas / totales.horas_totales * 100 as disponibilidad&#xd;from&#xd;(select sum(his_lec.horas) horas_activas&#xd;from (&#xd;select h.id_lectura ,&#xd;	h.id_equipo,&#xd;	h.fecha_inicio, &#xd;	IFNULL(h.fecha_fin,CURRENT_TIMESTAMP) fecha_fin,&#xd;	TIMESTAMPDIFF( MINUTE , h.fecha_inicio, IFNULL(h.fecha_fin,CURRENT_TIMESTAMP))/24 horas,&#xd;	h.estado,&#xd;	h.id_empresa&#xd;from (select&#xd;	hl.id_lectura,&#xd;	e.id_equipo,&#xd;	hl.fecha fecha_inicio, &#xd;	(select hl2.fecha&#xd;	from historial_lecturas hl2&#xd;	where hl2.id_equipo = hl.id_equipo&#xd;	and hl2.id_lectura &gt; hl.id_lectura&#xd;	order by hl2.id_lectura&#xd;	limit 1) fecha_fin&#xd;	,hl.estado&#xd;	,e.id_empresa&#xd;from historial_lecturas hl &#xd;	, equipos e&#xd;where e.id_equipo = hl.id_equipo) h) his_lec&#xd;where his_lec.id_empresa=:id_empresa&#xd;and his_lec.estado = 'AC'&#xd;and his_lec.fecha_inicio &gt;= str_to_date( concat( :fec_inicio,' 00:00:00') , '%Y-%m-%d %H:%i:%s')&#xd;and his_lec.fecha_fin &lt;= str_to_date( concat(:fec_fin,' 23:59:59') ,'%Y-%m-%d %H:%i:%s')) activas&#xd;,(select sum(his_lec.horas) horas_totales&#xd;from (&#xd;select h.id_lectura ,&#xd;	h.id_equipo,&#xd;	h.fecha_inicio, &#xd;	IFNULL(h.fecha_fin,CURRENT_TIMESTAMP) fecha_fin,&#xd;	TIMESTAMPDIFF( MINUTE , h.fecha_inicio, IFNULL(h.fecha_fin,CURRENT_TIMESTAMP))/24 horas,&#xd;	h.estado,&#xd;	h.id_empresa&#xd;from (select&#xd;	hl.id_lectura,&#xd;	e.id_equipo,&#xd;	hl.fecha fecha_inicio, &#xd;	(select hl2.fecha&#xd;	from historial_lecturas hl2&#xd;	where hl2.id_equipo = hl.id_equipo&#xd;	and hl2.id_lectura &gt; hl.id_lectura&#xd;	order by hl2.id_lectura&#xd;	limit 1) fecha_fin&#xd;	,hl.estado&#xd;	,e.id_empresa&#xd;from historial_lecturas hl &#xd;	, equipos e&#xd;where e.id_equipo = hl.id_equipo) h) his_lec&#xd;where his_lec.id_empresa=:id_empresa2&#xd;and his_lec.fecha_inicio &gt;= str_to_date( concat( :fec_inicio2,' 00:00:00') , '%Y-%m-%d %H:%i:%s')&#xd;and his_lec.fecha_fin &lt;= str_to_date( concat(:fec_fin2,' 23:59:59') ,'%Y-%m-%d %H:%i:%s')) totales</sql>
+      <result outputType="json">{"respuesta":{ "disponibilidad":"$disponibilidad" }}</result>
+      <param name="id_empresa" sqlType="STRING"/>
+      <param name="fec_inicio" sqlType="STRING"/>
+      <param name="fec_fin" sqlType="STRING"/>
+      <param name="id_empresa2" sqlType="STRING"/>
+      <param name="fec_inicio2" sqlType="STRING"/>
+      <param name="fec_fin2" sqlType="STRING"/>
+   </query>
+   <query id="getKPIDisponibiidadPorFechaPorEquipo" useConfig="AssetPlannerDataSource">
+      <sql>select activas.horas_activas / totales.horas_totales * 100 as disponibilidad&#xd;from&#xd;(select sum(his_lec.horas) horas_activas&#xd;from (&#xd;select h.id_lectura ,&#xd;	h.id_equipo,&#xd;	h.fecha_inicio, &#xd;	IFNULL(h.fecha_fin,CURRENT_TIMESTAMP) fecha_fin,&#xd;	TIMESTAMPDIFF( MINUTE , h.fecha_inicio, IFNULL(h.fecha_fin,CURRENT_TIMESTAMP))/24 horas,&#xd;	h.estado,&#xd;	h.id_empresa&#xd;from (select&#xd;	hl.id_lectura,&#xd;	e.id_equipo,&#xd;	hl.fecha fecha_inicio, &#xd;	(select hl2.fecha&#xd;	from historial_lecturas hl2&#xd;	where hl2.id_equipo = hl.id_equipo&#xd;	and hl2.id_lectura &gt; hl.id_lectura&#xd;	order by hl2.id_lectura&#xd;	limit 1) fecha_fin&#xd;	,hl.estado&#xd;	,e.id_empresa&#xd;from historial_lecturas hl &#xd;	, equipos e&#xd;where e.id_equipo = hl.id_equipo) h) his_lec&#xd;where his_lec.id_empresa=:id_empresa&#xd;and his_lec.id_equipo = :id_equipo&#xd;and his_lec.estado = 'AC'&#xd;and his_lec.fecha_inicio &gt;= str_to_date( concat( :fec_inicio,' 00:00:00') , '%Y-%m-%d %H:%i:%s')&#xd;and his_lec.fecha_fin &lt;= str_to_date( concat(:fec_fin,' 23:59:59') ,'%Y-%m-%d %H:%i:%s')) activas&#xd;,(select sum(his_lec.horas) horas_totales&#xd;from (&#xd;select h.id_lectura ,&#xd;	h.id_equipo,&#xd;	h.fecha_inicio, &#xd;	IFNULL(h.fecha_fin,CURRENT_TIMESTAMP) fecha_fin,&#xd;	TIMESTAMPDIFF( MINUTE , h.fecha_inicio, IFNULL(h.fecha_fin,CURRENT_TIMESTAMP))/24 horas,&#xd;	h.estado,&#xd;	h.id_empresa&#xd;from (select&#xd;	hl.id_lectura,&#xd;	e.id_equipo,&#xd;	hl.fecha fecha_inicio, &#xd;	(select hl2.fecha&#xd;	from historial_lecturas hl2&#xd;	where hl2.id_equipo = hl.id_equipo&#xd;	and hl2.id_lectura &gt; hl.id_lectura&#xd;	order by hl2.id_lectura&#xd;	limit 1) fecha_fin&#xd;	,hl.estado&#xd;	,e.id_empresa&#xd;from historial_lecturas hl &#xd;	, equipos e&#xd;where e.id_equipo = hl.id_equipo) h) his_lec&#xd;where his_lec.id_empresa=:id_empresa2&#xd;and his_lec.id_equipo = :id_equipo2&#xd;and his_lec.fecha_inicio &gt;= str_to_date( concat( :fec_inicio2,' 00:00:00') , '%Y-%m-%d %H:%i:%s')&#xd;and his_lec.fecha_fin &lt;= str_to_date( concat(:fec_fin2,' 23:59:59') ,'%Y-%m-%d %H:%i:%s')) totales</sql>
+      <result outputType="json">{"respuesta":{ "disponibilidad":"$disponibilidad" }}</result>
+      <param name="id_empresa" sqlType="STRING"/>
+      <param name="id_equipo" sqlType="STRING"/>
+      <param name="fec_inicio" sqlType="STRING"/>
+      <param name="fec_fin" sqlType="STRING"/>
+      <param name="id_empresa2" sqlType="STRING"/>
+      <param name="fec_inicio2" sqlType="STRING"/>
+      <param name="fec_fin2" sqlType="STRING"/>
+      <param name="id_equipo2" sqlType="STRING"/>
+   </query>
+   <query id="getKPIMttrporFecha" useConfig="AssetPlannerDataSource">
+      <sql>select inactivas.horas_inactivas / fallos.numero_fallos as mttr&#xd;from&#xd;(&#xd;select sum(his_lec.horas) horas_inactivas&#xd;from (&#xd;select h.id_lectura ,&#xd;	h.id_equipo,&#xd;	h.fecha_inicio, &#xd;	IFNULL(h.fecha_fin,CURRENT_TIMESTAMP) fecha_fin,&#xd;	TIMESTAMPDIFF( MINUTE , h.fecha_inicio, IFNULL(h.fecha_fin,CURRENT_TIMESTAMP))/24 horas,&#xd;	h.estado,&#xd;	h.id_empresa&#xd;from (select&#xd;	hl.id_lectura,&#xd;	e.id_equipo,&#xd;	hl.fecha fecha_inicio, &#xd;	(select hl2.fecha&#xd;	from historial_lecturas hl2&#xd;	where hl2.id_equipo = hl.id_equipo&#xd;	and hl2.id_lectura &gt; hl.id_lectura&#xd;	order by hl2.id_lectura&#xd;	limit 1) fecha_fin&#xd;	,hl.estado&#xd;	,e.id_empresa&#xd;from historial_lecturas hl &#xd;	, equipos e&#xd;where e.id_equipo = hl.id_equipo) h) his_lec&#xd;where his_lec.id_empresa=:id_empresa&#xd;and his_lec.estado = 'RE'&#xd;and his_lec.fecha_inicio &gt;= str_to_date( concat( :fec_inicio,' 00:00:00') , '%Y-%m-%d %H:%i:%s')&#xd;and his_lec.fecha_fin &lt;= str_to_date( concat(:fec_fin,' 23:59:59') , '%Y-%m-%d %H:%i:%s')) inactivas&#xd;,(select COUNT(his_lec.estado) AS numero_fallos&#xd;from (&#xd;select h.id_lectura,&#xd;	h.id_equipo,&#xd;	h.fecha_inicio, &#xd;	IFNULL(h.fecha_fin,CURRENT_TIMESTAMP) fecha_fin,&#xd;	TIMESTAMPDIFF( MINUTE , h.fecha_inicio, IFNULL(h.fecha_fin,CURRENT_TIMESTAMP))/24 horas,&#xd;	h.estado,&#xd;	h.id_empresa&#xd;from (select&#xd;	hl.id_lectura,&#xd;	e.id_equipo,&#xd;	hl.fecha fecha_inicio, &#xd;	(select hl2.fecha&#xd;	from historial_lecturas hl2&#xd;	where hl2.id_equipo = hl.id_equipo&#xd;	and hl2.id_lectura &gt; hl.id_lectura&#xd;	order by hl2.id_lectura&#xd;	limit 1) fecha_fin&#xd;	,hl.estado&#xd;	,e.id_empresa&#xd;from historial_lecturas hl &#xd;	, equipos e&#xd;where e.id_equipo = hl.id_equipo) h) his_lec&#xd;where his_lec.id_empresa=:id_empresa2&#xd;and his_lec.estado = 'RE'&#xd;and his_lec.fecha_inicio &gt;= str_to_date( concat( :fec_inicio2,' 00:00:00') , '%Y-%m-%d %H:%i:%s')&#xd;and his_lec.fecha_fin &lt;= str_to_date( concat(:fec_fin2,' 23:59:59') , '%Y-%m-%d %H:%i:%s')) fallos</sql>
+      <result outputType="json">{"respuesta":{ "mttr":"$mttr" }}</result>
+      <param name="id_empresa" sqlType="STRING"/>
+      <param name="fec_inicio" sqlType="STRING"/>
+      <param name="fec_fin" sqlType="STRING"/>
+      <param name="id_empresa2" sqlType="STRING"/>
+      <param name="fec_inicio2" sqlType="STRING"/>
+      <param name="fec_fin2" sqlType="STRING"/>
+   </query>
+   <query id="getKPIMttrporFechaxEquipo" useConfig="AssetPlannerDataSource">
+      <sql>select inactivas.horas_inactivas / fallos.numero_fallos as mttr&#xd;from&#xd;(&#xd;select sum(his_lec.horas) horas_inactivas&#xd;from (&#xd;select h.id_lectura ,&#xd;	h.id_equipo,&#xd;	h.fecha_inicio, &#xd;	IFNULL(h.fecha_fin,CURRENT_TIMESTAMP) fecha_fin,&#xd;	TIMESTAMPDIFF( MINUTE , h.fecha_inicio, IFNULL(h.fecha_fin,CURRENT_TIMESTAMP))/24 horas,&#xd;	h.estado,&#xd;	h.id_empresa&#xd;from (select&#xd;	hl.id_lectura,&#xd;	e.id_equipo,&#xd;	hl.fecha fecha_inicio, &#xd;	(select hl2.fecha&#xd;	from historial_lecturas hl2&#xd;	where hl2.id_equipo = hl.id_equipo&#xd;	and hl2.id_lectura &gt; hl.id_lectura&#xd;	order by hl2.id_lectura&#xd;	limit 1) fecha_fin&#xd;	,hl.estado&#xd;	,e.id_empresa&#xd;from historial_lecturas hl &#xd;	, equipos e&#xd;where e.id_equipo = hl.id_equipo) h) his_lec&#xd;where his_lec.id_empresa=:id_empresa&#xd;and his_lec.id_equipo = :id_equipo&#xd;and his_lec.estado = 'RE'&#xd;and his_lec.fecha_inicio &gt;= str_to_date( concat( :fec_inicio,' 00:00:00') , '%Y-%m-%d %H:%i:%s')&#xd;and his_lec.fecha_fin &lt;= str_to_date( concat(:fec_fin,' 23:59:59') , '%Y-%m-%d %H:%i:%s')) inactivas&#xd;,(select COUNT(his_lec.estado) AS numero_fallos&#xd;from (&#xd;select h.id_lectura,&#xd;	h.id_equipo,&#xd;	h.fecha_inicio, &#xd;	IFNULL(h.fecha_fin,CURRENT_TIMESTAMP) fecha_fin,&#xd;	TIMESTAMPDIFF( MINUTE , h.fecha_inicio, IFNULL(h.fecha_fin,CURRENT_TIMESTAMP))/24 horas,&#xd;	h.estado,&#xd;	h.id_empresa&#xd;from (select&#xd;	hl.id_lectura,&#xd;	e.id_equipo,&#xd;	hl.fecha fecha_inicio, &#xd;	(select hl2.fecha&#xd;	from historial_lecturas hl2&#xd;	where hl2.id_equipo = hl.id_equipo&#xd;	and hl2.id_lectura &gt; hl.id_lectura&#xd;	order by hl2.id_lectura&#xd;	limit 1) fecha_fin&#xd;	,hl.estado&#xd;	,e.id_empresa&#xd;from historial_lecturas hl &#xd;	, equipos e&#xd;where e.id_equipo = hl.id_equipo) h) his_lec&#xd;where his_lec.id_empresa=:id_empresa2&#xd;and his_lec.id_equipo = :id_equipo2&#xd;and his_lec.estado = 'RE'&#xd;and his_lec.fecha_inicio &gt;= str_to_date( concat( :fec_inicio2,' 00:00:00') , '%Y-%m-%d %H:%i:%s')&#xd;and his_lec.fecha_fin &lt;= str_to_date( concat(:fec_fin2,' 23:59:59') , '%Y-%m-%d %H:%i:%s')) fallos</sql>
+      <result outputType="json">{"respuesta":{ "mttr":"$mttr" }}</result>
+      <param name="id_empresa" sqlType="STRING"/>
+      <param name="id_equipo" sqlType="STRING"/>
+      <param name="fec_inicio" sqlType="STRING"/>
+      <param name="fec_fin" sqlType="STRING"/>
+      <param name="id_empresa2" sqlType="STRING"/>
+      <param name="id_equipo2" sqlType="STRING"/>
+      <param name="fec_inicio2" sqlType="STRING"/>
+      <param name="fec_fin2" sqlType="STRING"/>
+   </query>
+   <query id="getKPIMttfporFecha" useConfig="AssetPlannerDataSource">
+      <sql>select activas.horas_activas / fallos.numero_fallos as mttf&#xd;from&#xd;(&#xd;select sum(his_lec.horas) horas_activas&#xd;from (&#xd;select h.id_lectura ,&#xd;	h.id_equipo,&#xd;	h.fecha_inicio, &#xd;	IFNULL(h.fecha_fin,CURRENT_TIMESTAMP) fecha_fin,&#xd;	TIMESTAMPDIFF( MINUTE , h.fecha_inicio, IFNULL(h.fecha_fin,CURRENT_TIMESTAMP))/24 horas,&#xd;	h.estado,&#xd;	h.id_empresa&#xd;from (select&#xd;	hl.id_lectura,&#xd;	e.id_equipo,&#xd;	hl.fecha fecha_inicio, &#xd;	(select hl2.fecha&#xd;	from historial_lecturas hl2&#xd;	where hl2.id_equipo = hl.id_equipo&#xd;	and hl2.id_lectura &gt; hl.id_lectura&#xd;	order by hl2.id_lectura&#xd;	limit 1) fecha_fin&#xd;	,hl.estado&#xd;	,e.id_empresa&#xd;from historial_lecturas hl &#xd;	, equipos e&#xd;where e.id_equipo = hl.id_equipo) h) his_lec&#xd;where his_lec.id_empresa=:id_empresa&#xd;and his_lec.estado = 'AC'&#xd;and his_lec.fecha_inicio &gt;= str_to_date( concat( :fec_inicio,' 00:00:00') , '%Y-%m-%d %H:%i:%s')&#xd;and his_lec.fecha_fin &lt;= str_to_date( concat(:fec_fin,' 23:59:59') , '%Y-%m-%d %H:%i:%s')) activas&#xd;,(select COUNT(his_lec.estado) AS numero_fallos&#xd;from (&#xd;select h.id_lectura,&#xd;	h.id_equipo,&#xd;	h.fecha_inicio, &#xd;	IFNULL(h.fecha_fin,CURRENT_TIMESTAMP) fecha_fin,&#xd;	TIMESTAMPDIFF( MINUTE , h.fecha_inicio, IFNULL(h.fecha_fin,CURRENT_TIMESTAMP))/24 horas,&#xd;	h.estado,&#xd;	h.id_empresa&#xd;from (select&#xd;	hl.id_lectura,&#xd;	e.id_equipo,&#xd;	hl.fecha fecha_inicio, &#xd;	(select hl2.fecha&#xd;	from historial_lecturas hl2&#xd;	where hl2.id_equipo = hl.id_equipo&#xd;	and hl2.id_lectura &gt; hl.id_lectura&#xd;	order by hl2.id_lectura&#xd;	limit 1) fecha_fin&#xd;	,hl.estado&#xd;	,e.id_empresa&#xd;from historial_lecturas hl &#xd;	, equipos e&#xd;where e.id_equipo = hl.id_equipo) h) his_lec&#xd;where his_lec.id_empresa=:id_empresa2&#xd;and his_lec.estado = 'RE'&#xd;and his_lec.fecha_inicio &gt;= str_to_date( concat( :fec_inicio2,' 00:00:00') , '%Y-%m-%d %H:%i:%s')&#xd;and his_lec.fecha_fin &lt;= str_to_date( concat(:fec_fin2,' 23:59:59') , '%Y-%m-%d %H:%i:%s')) fallos</sql>
+      <result outputType="json">{"respuesta":{ "mttf":"$mttf" }}</result>
+      <param name="id_empresa" sqlType="STRING"/>
+      <param name="fec_inicio" sqlType="STRING"/>
+      <param name="fec_fin" sqlType="STRING"/>
+      <param name="id_empresa2" sqlType="STRING"/>
+      <param name="fec_inicio2" sqlType="STRING"/>
+      <param name="fec_fin2" sqlType="STRING"/>
+   </query>
+   <query id="getKPIMttfporFechaporEquipo" useConfig="AssetPlannerDataSource">
+      <sql>select activas.horas_activas / fallos.numero_fallos as mttf&#xd;from&#xd;(&#xd;select sum(his_lec.horas) horas_activas&#xd;from (&#xd;select h.id_lectura ,&#xd;	h.id_equipo,&#xd;	h.fecha_inicio, &#xd;	IFNULL(h.fecha_fin,CURRENT_TIMESTAMP) fecha_fin,&#xd;	TIMESTAMPDIFF( MINUTE , h.fecha_inicio, IFNULL(h.fecha_fin,CURRENT_TIMESTAMP))/24 horas,&#xd;	h.estado,&#xd;	h.id_empresa&#xd;from (select&#xd;	hl.id_lectura,&#xd;	e.id_equipo,&#xd;	hl.fecha fecha_inicio, &#xd;	(select hl2.fecha&#xd;	from historial_lecturas hl2&#xd;	where hl2.id_equipo = hl.id_equipo&#xd;	and hl2.id_lectura &gt; hl.id_lectura&#xd;	order by hl2.id_lectura&#xd;	limit 1) fecha_fin&#xd;	,hl.estado&#xd;	,e.id_empresa&#xd;from historial_lecturas hl &#xd;	, equipos e&#xd;where e.id_equipo = hl.id_equipo) h) his_lec&#xd;where his_lec.id_empresa=:id_empresa&#xd;and his_lec.id_equipo = :id_equipo&#xd;and his_lec.estado = 'RE'&#xd;and his_lec.fecha_inicio &gt;= str_to_date( concat( :fec_inicio,' 00:00:00') , '%Y-%m-%d %H:%i:%s')&#xd;and his_lec.fecha_fin &lt;= str_to_date( concat(:fec_fin,' 23:59:59') , '%Y-%m-%d %H:%i:%s')) activas&#xd;,(select COUNT(his_lec.estado) AS numero_fallos&#xd;from (&#xd;select h.id_lectura,&#xd;	h.id_equipo,&#xd;	h.fecha_inicio, &#xd;	IFNULL(h.fecha_fin,CURRENT_TIMESTAMP) fecha_fin,&#xd;	TIMESTAMPDIFF( MINUTE , h.fecha_inicio, IFNULL(h.fecha_fin,CURRENT_TIMESTAMP))/24 horas,&#xd;	h.estado,&#xd;	h.id_empresa&#xd;from (select&#xd;	hl.id_lectura,&#xd;	e.id_equipo,&#xd;	hl.fecha fecha_inicio, &#xd;	(select hl2.fecha&#xd;	from historial_lecturas hl2&#xd;	where hl2.id_equipo = hl.id_equipo&#xd;	and hl2.id_lectura &gt; hl.id_lectura&#xd;	order by hl2.id_lectura&#xd;	limit 1) fecha_fin&#xd;	,hl.estado&#xd;	,e.id_empresa&#xd;from historial_lecturas hl &#xd;	, equipos e&#xd;where e.id_equipo = hl.id_equipo) h) his_lec&#xd;where his_lec.id_empresa=:id_empresa2&#xd;and his_lec.id_equipo = :id_equipo2&#xd;and his_lec.estado = 'RE'&#xd;and his_lec.fecha_inicio &gt;= str_to_date( concat( :fec_inicio2,' 00:00:00') , '%Y-%m-%d %H:%i:%s')&#xd;and his_lec.fecha_fin &lt;= str_to_date( concat(:fec_fin2,' 23:59:59') , '%Y-%m-%d %H:%i:%s')) fallos</sql>
+      <result outputType="json">{"respuesta":{ "mttf":"$mttf" }}</result>
+      <param name="id_empresa" sqlType="STRING"/>
+      <param name="id_equipo" sqlType="STRING"/>
+      <param name="fec_inicio" sqlType="STRING"/>
+      <param name="fec_fin" sqlType="STRING"/>
+      <param name="id_empresa2" sqlType="STRING"/>
+      <param name="id_equipo2" sqlType="STRING"/>
+      <param name="fec_inicio2" sqlType="STRING"/>
+      <param name="fec_fin2" sqlType="STRING"/>
+   </query>
+   <resource method="GET" path="/kpiDisponibilidadxFecha/{id_empresa}/fecinicio/{fec_inicio}/fecfin/{fec_fin}/idempr/{id_empresa2}/fecinicio2/{fec_inicio2}/fecfin2/{fec_fin2}">
+      <description>obtengo porcentaje de disponibilidad de los equipos por una fecha                                  &#xd;                                    &#xd;                                    </description>
+      <call-query href="getKPIDisponibiidadPorFecha">
+         <with-param name="id_empresa" query-param="id_empresa"/>
+         <with-param name="fec_inicio" query-param="fec_inicio"/>
+         <with-param name="fec_fin" query-param="fec_fin"/>
+         <with-param name="id_empresa2" query-param="id_empresa2"/>
+         <with-param name="fec_inicio2" query-param="fec_inicio2"/>
+         <with-param name="fec_fin2" query-param="fec_fin2"/>
+      </call-query>
+   </resource>
+   <resource method="GET" path="/kpiDisponibilidadxFechaxEquipo/{id_empresa}/idEquipo/{id_equipo}/fecinicio/{fec_inicio}/fecfin/{fec_fin}/idempr/{id_empresa2}/idEquipo2/{id_equipo2}/fecinicio2/{fec_inicio2}/fecfin2/{fec_fin2}">
+      <description>obtengo la disponibilidad por fecha y por id_equipo                                 &#xd;                                    &#xd;                                    </description>
+      <call-query href="getKPIDisponibiidadPorFechaPorEquipo">
+         <with-param name="id_empresa" query-param="id_empresa"/>
+         <with-param name="id_equipo" query-param="id_equipo"/>
+         <with-param name="fec_inicio" query-param="fec_inicio"/>
+         <with-param name="fec_fin" query-param="fec_fin"/>
+         <with-param name="id_empresa2" query-param="id_empresa2"/>
+         <with-param name="fec_inicio2" query-param="fec_inicio2"/>
+         <with-param name="fec_fin2" query-param="fec_fin2"/>
+         <with-param name="id_equipo2" query-param="id_equipo2"/>
+      </call-query>
+   </resource>
+   <resource method="GET" path="/KpiMttrxFecha/empresa/{id_empresa}/fec_inicio/{fec_inicio}/fec_fin/{fec_fin}">
+      <call-query href="getKPIMttrporFecha">
+         <with-param name="id_empresa" query-param="id_empresa"/>
+         <with-param name="fec_inicio" query-param="fec_inicio"/>
+         <with-param name="fec_fin" query-param="fec_fin"/>
+      </call-query>
+   </resource>
+   <resource method="GET" path="/KpiMttrxFechaxEquipo/empresa/{id_empresa}/equipo/{id_equipo}/fecinicio/{fec_inicio}/fecfin/{fec_fin}/empresa2/{id_empresa2}/equipo2/{id_equipo2}/fecinicio2/{fec_inicio2}/fecfin2/{fec_fin2}">
+      <call-query href="getKPIMttrporFechaxEquipo">
+         <with-param name="id_empresa" query-param="id_empresa"/>
+         <with-param name="id_equipo" query-param="id_equipo"/>
+         <with-param name="fec_inicio" query-param="fec_inicio"/>
+         <with-param name="fec_fin" query-param="fec_fin"/>
+         <with-param name="id_empresa2" query-param="id_empresa2"/>
+         <with-param name="id_equipo2" query-param="id_equipo2"/>
+         <with-param name="fec_inicio2" query-param="fec_inicio2"/>
+         <with-param name="fec_fin2" query-param="fec_fin2"/>
+      </call-query>
+   </resource>
+   <resource method="GET" path="/KpiMttrxFecha/empresa/{id_empresa}/fec_inicio/{fec_inicio}/fec_fin/{fec_fin}/empresa2/{id_empresa2}/fec_inicio2/{fec_inicio2}/fec_fin2/{fec_fin2}">
+      <call-query href="getKPIMttrporFecha">
+         <with-param name="id_empresa" query-param="id_empresa"/>
+         <with-param name="fec_inicio" query-param="fec_inicio"/>
+         <with-param name="fec_fin" query-param="fec_fin"/>
+         <with-param name="id_empresa2" query-param="id_empresa2"/>
+         <with-param name="fec_inicio2" query-param="fec_inicio2"/>
+         <with-param name="fec_fin2" query-param="fec_fin2"/>
+      </call-query>
+   </resource>
+   <resource method="GET" path="/KpiMttfxFecha/empresa/{id_empresa}/fec_inicio/{fec_inicio}/fec_fin/{fec_fin}/empresa2/{id_empresa2}/fec_inicio2/{fec_inicio2}/fec_fin2/{fec_fin2}">
+      <call-query href="getKPIMttfporFecha">
+         <with-param name="id_empresa" query-param="id_empresa"/>
+         <with-param name="fec_inicio" query-param="fec_inicio"/>
+         <with-param name="fec_fin" query-param="fec_fin"/>
+         <with-param name="id_empresa2" query-param="id_empresa2"/>
+         <with-param name="fec_inicio2" query-param="fec_inicio2"/>
+         <with-param name="fec_fin2" query-param="fec_fin2"/>
+      </call-query>
+   </resource>
+   <resource method="GET" path="/KpiMttfxFechaxEquipo/empresa/{id_empresa}/equipo/{id_equipo}/fecinicio/{fec_inicio}/fecfin/{fec_fin}/empresa2/{id_empresa2}/equipo2/{id_equipo2}/fecinicio2/{fec_inicio2}/fecfin2/{fec_fin2}">
+      <call-query href="getKPIMttfporFechaporEquipo">
+         <with-param name="id_empresa" query-param="id_empresa"/>
+         <with-param name="id_equipo" query-param="id_equipo"/>
+         <with-param name="fec_inicio" query-param="fec_inicio"/>
+         <with-param name="fec_fin" query-param="fec_fin"/>
+         <with-param name="id_empresa2" query-param="id_empresa2"/>
+         <with-param name="id_equipo2" query-param="id_equipo2"/>
+         <with-param name="fec_inicio2" query-param="fec_inicio2"/>
+         <with-param name="fec_fin2" query-param="fec_fin2"/>
+      </call-query>
+   </resource>
+</data>

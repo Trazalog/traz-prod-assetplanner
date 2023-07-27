@@ -167,6 +167,7 @@ class Tarea extends CI_Controller {
 						//guardo en session todas las tareas filtradas por case_id
 						$_SESSION['listadoTareas'] = $array;
 						$data['permission'] = $permission;		
+						log_message('DEBUG','#TRAZA | TAREA | index() | variable Sesion: '. json_encode($array));
 
 						if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {								
 							$data['device'] = "android";

@@ -90,7 +90,7 @@
             </nav>
         </header>
 
-        <?php $this->load->view('sw') ?>
+        <!-- <?php $this->load->view('sw') ?> -->
 
 
         <script>

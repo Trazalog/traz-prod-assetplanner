@@ -132,6 +132,10 @@ function ver(e) {
     });
 
 }
+$('#detalle_pedido').on('shown.bs.modal', function(e) {
+    // recalcula el ancho de las columnas
+    $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
+})
 
 function ConsultarEntrega(e) {
     var tr = $(e).closest('tr');
@@ -243,6 +247,7 @@ var tablaDeposito = $('#deposito').DataTable({});
     </div>
 </div> <!-- /.modal-dialog modal-lg -->
 <!-- Fin Modal Agregar -->
+
 <!-- Modal ver nota pedido-->
 <div class="modal fade" id="detalle_pedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-lg">
