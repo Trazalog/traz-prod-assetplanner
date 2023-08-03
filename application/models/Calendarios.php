@@ -611,15 +611,15 @@ class Calendarios extends CI_Model {
 											ELSE tstd.descripcion
 							END AS descTareaStandar,
 							CASE
-											WHEN ot.id_usuario_a IS NULL THEN 'sin asignar'
+											WHEN ot.id_usuario_a IS NULL THEN ''
 											ELSE su.usrId
 							END AS usrId,
 							CASE
-											WHEN ot.id_usuario_a IS NULL THEN 'sin asignar'
+											WHEN ot.id_usuario_a IS NULL THEN ''
 											ELSE su.usrLastName
 							END AS usrLastName,
 							CASE
-											WHEN ot.id_usuario_a IS NULL THEN 'sin asignar'
+											WHEN ot.id_usuario_a IS NULL THEN ''
 											ELSE su.usrName
 							END AS usrName
 				FROM orden_trabajo ot

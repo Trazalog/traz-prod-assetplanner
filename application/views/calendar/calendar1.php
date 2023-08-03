@@ -838,20 +838,20 @@ $("#fecha_progr_prevent_horas").datepicker({
 									},
 									url: 'index.php/Calendario/getBackPorId',
 									success: function(data) {
-
-													id_de_tar = data[0]['id_tarea'];
+debugger;
+													id_de_tar = parseInt(data[0]['id_tarea']);
 													fec_sol_back = data[0]['fecha'];
 													id_back = data[0]['backId'];
 													id_equi = data[0]['id_equipo'];
 													//tarea = data[0]['descripcion'];
 													id_sol = data[0]['sore_id'];
 													duracion = data[0]['back_duracion'];
-													// si tiene tarea estandar grava eso sino la tarea custom
-													if (id_de_tar <= 0) {
-																	desc_tarea_back = data[0]['tarea_opcional'];
-													} else {
-																	desc_tarea_back = data[0]['tareadesc'];
-													}
+
+													// - Si hay T.STD(solamente) ha grabado id_tarea sin T.CUSTOM
+													// - Si hay T.CUSTOM(solamente) graba id_tarea 0 y tarea_opcional
+													// - Si hay AMBAS graba id_tarea y tarea_opcional
+													desc_tarea_back = data[0]['tarea_opcional'];
+
 													alert("Se ha guardado Correctamente");
 									},
 									error: function(data) {
