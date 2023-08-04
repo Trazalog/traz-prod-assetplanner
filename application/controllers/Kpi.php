@@ -269,7 +269,7 @@ class Kpi extends CI_Controller
         return $totalMin;
     }
 
-    
+
     /* Calculo de todos los kpis, 
         Busqueda por todos los equipos dentro de un rango de fecha o todo el año
         Busqueda por equipo y fechas dentro de un rango ingresado 
