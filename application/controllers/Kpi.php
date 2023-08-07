@@ -510,7 +510,7 @@ class Kpi extends CI_Controller
 
     public function getGruposxEmpresa(){
         $grupos = $this->Kpis->getGruposEmpresa();
-		log_message('DEBUG',' KPI || getSectoresxEmpresa '.json_encode($grupos));
+		log_message('DEBUG',' KPI || getGruposxEmpresa '.json_encode($grupos));
 
         echo json_encode($grupos);
     }
