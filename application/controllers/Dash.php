@@ -149,6 +149,9 @@ class dash extends CI_Controller {
 				}
 				//Fin datos necesarios Precacheo
 			}
+
+			log_message('DEBUG','#Main/index | KPI | >> data '.json_encode($data));
+
 			$this->load->view('dash', $data);
 			// $this->load->view('recepcionDeposito', $data);
 			$this->load->view('menu');
