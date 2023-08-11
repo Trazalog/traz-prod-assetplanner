@@ -150,10 +150,10 @@ if (!function_exists('cantTipoOrdenTrabajo')) {
         // Call a function of the model
         $output = $CI->Otrabajos->kpiCantTipoOrdenTrabajo();
         // En DB tabla orden_trabajo, en el campo tipo
-        // 1 = correctivo
-        // 2 = preventivo
-        // 3 = predictivo
-        // 4 = backlog
+            // 1 = correctivo - Orden de Trabajo
+            // 2 = preventivo - Solicitud de servicio
+            // 3 = predictivo - Preventivo
+            // 4 = backlog    - Backlog
         // Output
 
         $aux = new StdClass();
