@@ -452,7 +452,7 @@ function graficarParametro(disponibilidad) {
                     ticks: {
                         max: 100,
                         min:0
-                        //beginAtZero:true,
+                        beginAtZero:true,
                     }
                 }]
             },
@@ -841,10 +841,10 @@ function fechaMagic() {
                 yAxes: [{
                     ticks: {
                         //min:100, // Valor mínimo del eje Y
-                        //max: 0, // Valor máximo del eje Y
+                        min: 0, // Valor máximo del eje Y
                         //stepSize: 10 // Incremento entre los valores del eje Y
                         // max:100,
-                        //beginAtZero:true, 
+                        beginAtZero:true, 
                     }
                 }]
             }, 
@@ -902,7 +902,9 @@ function graficarParametroConfiabilidad(disponibilidad) {
              scales: {
                 yAxes: [{
                     ticks: {
-                        
+                        min:0, // Valor mínimo del eje Y
+                        beginAtZero:true, 
+
                     }
                 }]
             }, 
@@ -971,11 +973,11 @@ function graficarParametroMtbf(disponibilidad) {
              scales: {
                 yAxes: [{
                     ticks: {
-                        //min:100, // Valor mínimo del eje Y
+                        min:0, // Valor mínimo del eje Y
                         //max: 0, // Valor máximo del eje Y
                         //stepSize: 10 // Incremento entre los valores del eje Y
                         // max:100,
-                        //beginAtZero:true, 
+                        beginAtZero:true, 
                     }
                 }]
             }, 
@@ -1044,11 +1046,11 @@ function graficarParametroMttr(disponibilidad) {
              scales: {
                 yAxes: [{
                     ticks: {
-                        //min:100, // Valor mínimo del eje Y
+                        min:0, // Valor mínimo del eje Y
                         //max: 0, // Valor máximo del eje Y
                         //stepSize: 10 // Incremento entre los valores del eje Y
-                        /* max:100,
-                        beginAtZero:true, */
+                        /* max:100,*/
+                        beginAtZero:true, 
                     }
                 }]
             }, 
