@@ -450,7 +450,8 @@ function graficarParametro(disponibilidad) {
             scales: {
                 yAxes: [{
                     ticks: {
-                        //max: 100,
+                        max: 100,
+                        min:0
                         //beginAtZero:true,
                     }
                 }]
