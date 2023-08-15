@@ -934,13 +934,16 @@ class Otrabajos extends CI_Model {
 		$this->db->join('tbl_tipoordentrabajo as B','A.tipo = B.tipo_orden');
 		$this->db->where('A.id_empresa', $empresaId);
 		//$this->db->where('B.descripcion!=','Solicitud de servicio');
-		$this->db->where('estado', 'T');
-		$this->db->or_where('estado', 'CN');
+		$this->db->where('estado', 'T'); 
+		//$this->db->or_where('estado', 'CN');
 		$this->db->group_by('A.tipo');
 		$this->db->order_by('A.tipo');
 
 		$query = $this->db->get();
 		$res = $query->result();
+
+		log_message('DEBUG','#Main/index | kpiCantTipoOrdenTrabajo >> data '.json_encode($query));
+
         if($query->num_rows()!=0)
         {
             return $res;
