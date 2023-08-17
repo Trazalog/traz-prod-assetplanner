@@ -928,21 +928,19 @@ class Otrabajos extends CI_Model {
     function kpiCantTipoOrdenTrabajo()
     {
 		$empresaId = empresa();
-		
-        $this->db->select('B.descripcion, count(*) as cantidad');
-		$this->db->from('orden_trabajo as A');
-		$this->db->join('tbl_tipoordentrabajo as B','A.tipo = B.tipo_orden');
-		$this->db->where('A.id_empresa', $empresaId);
-		//$this->db->where('B.descripcion!=','Solicitud de servicio');
-		$this->db->where('estado', 'T'); 
-		//$this->db->or_where('estado', 'CN');
-		$this->db->group_by('A.tipo');
-		$this->db->order_by('A.tipo');
 
-		$query = $this->db->get();
-		$res = $query->result();
+        $sql = "SELECT tt.descripcion as descripcion, count(*) as cantidad 
+		        FROM orden_trabajo ot
+                JOIN tbl_tipoordentrabajo tt  on ot.tipo = tt.tipo_orden
+                WHERE ot.id_empresa =".$empresaId."
+                AND (ot.estado  = 'CE' or estado = 'CN')
+                GROUP BY ot.tipo
+                ORDER BY ot.tipo";
 
-		log_message('DEBUG','#Main/index | kpiCantTipoOrdenTrabajo >> data '.json_encode($query));
+                $query = $this->db->query($sql);
+                $res = $query->result();
+
+		//log_message('DEBUG','#Main/index | kpiCantTipoOrdenTrabajo >> data '.json_encode($query));
 
         if($query->num_rows()!=0)
         {

@@ -517,7 +517,7 @@ class Kpi extends CI_Controller
 
     public function getSectoresxEmpresa(){
         $sectores = $this->Kpis->getSectoresEmpresa();
-		log_message('DEBUG',' KPI || getSectoresxEmpresa '.json_encode($sectores));
+		//log_message('DEBUG',' KPI || getSectoresxEmpresa '.json_encode($sectores));
 
         echo json_encode($sectores);
     }
