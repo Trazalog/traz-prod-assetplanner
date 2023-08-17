@@ -940,7 +940,7 @@ class Otrabajos extends CI_Model {
                 $query = $this->db->query($sql);
                 $res = $query->result();
 
-		log_message('DEBUG','#Main/index | kpiCantTipoOrdenTrabajo >> data '.json_encode($query));
+		//log_message('DEBUG','#Main/index | kpiCantTipoOrdenTrabajo >> data '.json_encode($query));
 
         if($query->num_rows()!=0)
         {
@@ -951,7 +951,7 @@ class Otrabajos extends CI_Model {
             return false;
         }
     }
-	
+
     function getEquipoDisponibilidad() // Ok
     {
     	$userdata = $this->session->userdata('user_data');
