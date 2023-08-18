@@ -451,7 +451,7 @@ function graficarParametro(disponibilidad) {
                 yAxes: [{
                     ticks: {
                         max: 100,
-                        min:0
+                        min:0,
                         beginAtZero:true,
                     }
                 }]
