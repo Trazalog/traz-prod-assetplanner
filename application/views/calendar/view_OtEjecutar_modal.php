@@ -163,7 +163,7 @@
                                <?php
                                  //dump($tareas, 'tareas en select: ');
                                    echo '<select id="tareaest" name="tareaest" class="form-control">';
-                                   echo '<option value="-1" >"Seleccione..."</option>';
+                                   echo '<option value="0" >"Seleccione..."</option>';
                                   
                                    foreach ($tareas as $tarea) {    
                                      
@@ -186,17 +186,11 @@
                              <div class="col-xs-12 col-sm-6">
                                <label for="tareaOpcional">Tarea No Estandar<strong style="color: #dd4b39">*</strong>:</label>
                                <?php
-                                // if ($detaOT[0]["id_tarea"] != 1) {
-                                //   echo '<input type="text" class="form-control" id="tareaOpcional" name="tareaOpcional" value=""/>';
-                                // } else {
-                                //   echo '<input type="text" class="form-control" id="tareaOpcional" name="tareaOpcional" value="'.$detaOT[0]["descripcion"].'"/>';
-                                // }
-
-                                if ( ($detaOT[0]["id_tarea"] == 0) || ($detaOT[0]["id_tarea"] == -1) ) {
+                                 if ( ($detaOT[0]["id_tarea"] == 0) || ($detaOT[0]["id_tarea"] == -1) ) {
                                   echo '<input type="text" class="form-control" id="tareaOpcional" name="tareaOpcional" value="'.$detaOT[0]["descripcion"].'"/>';
                                   
                                 } else {
-                                  echo '<input type="text" class="form-control" id="tareaOpcional" name="tareaOpcional" value=""/>';
+                                  echo '<input type="text" class="form-control" id="tareaOpcional" name="tareaOpcional" value="'.$detaOT[0]["descripcion"].'"/>';
                                 }
                                 ?>
                              </div>
@@ -431,7 +425,7 @@ function guardarTarea(idOt) {
 									$('#errorTable').fadeOut('slow');
 					}
 
-					if (tareastd == -1 && tareaOpcional == "") {
+					if (tareastd == 0 && tareaOpcional == "") {
 									$('#errorTarea').fadeIn('slow');
 									activaTab('tareas');
 									return;

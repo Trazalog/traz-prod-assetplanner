@@ -269,7 +269,7 @@ class Kpi extends CI_Controller
         return $totalMin;
     }
 
-    
+
     /* Calculo de todos los kpis, 
         Busqueda por todos los equipos dentro de un rango de fecha o todo el año
         Busqueda por equipo y fechas dentro de un rango ingresado 
@@ -510,14 +510,14 @@ class Kpi extends CI_Controller
 
     public function getGruposxEmpresa(){
         $grupos = $this->Kpis->getGruposEmpresa();
-		log_message('DEBUG',' KPI || getSectoresxEmpresa '.json_encode($grupos));
+		log_message('DEBUG',' KPI || getGruposxEmpresa '.json_encode($grupos));
 
         echo json_encode($grupos);
     }
 
     public function getSectoresxEmpresa(){
         $sectores = $this->Kpis->getSectoresEmpresa();
-		log_message('DEBUG',' KPI || getSectoresxEmpresa '.json_encode($sectores));
+		//log_message('DEBUG',' KPI || getSectoresxEmpresa '.json_encode($sectores));
 
         echo json_encode($sectores);
     }

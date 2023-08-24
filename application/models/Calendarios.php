@@ -597,55 +597,37 @@ class Calendarios extends CI_Model {
 
 		function getDataOt($idOt) {
 
-			// $sql = "select ot.id_orden,
-			// 										ot.id_tarea,
-			// 										ot.descripcion,
-			// 										ot.tipo,
-			// 										ot.id_solicitud,
-			// 										ot.fecha_program,
-			// 										e.codigo,
-			// 										e.descripcion AS descripcionEquipo,
-			// 										su.usrId,
-			// 										su.usrLastName,
-			// 										su.usrName,
-			// 										case
-			// 											when ot.id_tarea = 0
-			// 												then 'sin tarea estandar'
-			// 											else tstd.descripcion
-			// 										end AS descTareaStandar
-			// 								from orden_trabajo ot,
-			// 										equipos e,
-			// 										tbl_tipoordentrabajo tipoOT,
-			// 										sisusers su,
-			// 										tareas tstd
-			// 								where ot.id_equipo = e.id_equipo
-			// 								and ot.tipo = tipoOT.id
-			// 								and ot.id_usuario_a = su.usrId
-			// 								and ot.id_tarea = tstd.id_tarea
-			// 								and ot.id_orden = ".$idOt."";
-
-			$sql = "select ot.id_orden,
-											ot.id_tarea,
-											ot.descripcion,
-											ot.tipo,
-											ot.id_solicitud,
-											ot.fecha_program,
-											e.codigo,
-											e.descripcion AS descripcionEquipo,
-											su.usrId,
-											su.usrLastName,
-											su.usrName,
-											case
-												when ot.id_tarea = 0
-													then 'sin tarea estandar'
-												else tstd.descripcion
-											end AS descTareaStandar
-									from orden_trabajo ot
-									left join tareas tstd on ot.id_tarea = tstd.id_tarea
-									join equipos e on  ot.id_equipo = e.id_equipo
-									join sisusers su on ot.id_usuario_a = su.usrId
-									join tbl_tipoordentrabajo tipoOT on ot.tipo = tipoOT.id
-									and ot.id_orden = ".$idOt."";
+				$sql = "SELECT
+							ot.id_orden,
+							ot.id_tarea,
+							ot.descripcion,
+							ot.tipo,
+							ot.id_solicitud,
+							ot.fecha_program,
+							e.codigo,
+							e.descripcion AS descripcionEquipo,
+							CASE
+											WHEN ot.id_tarea = 0 THEN 'sin tarea estandar'
+											ELSE tstd.descripcion
+							END AS descTareaStandar,
+							CASE
+											WHEN ot.id_usuario_a IS NULL THEN ''
+											ELSE su.usrId
+							END AS usrId,
+							CASE
+											WHEN ot.id_usuario_a IS NULL THEN ''
+											ELSE su.usrLastName
+							END AS usrLastName,
+							CASE
+											WHEN ot.id_usuario_a IS NULL THEN ''
+											ELSE su.usrName
+							END AS usrName
+				FROM orden_trabajo ot
+				LEFT JOIN tareas tstd ON ot.id_tarea = tstd.id_tarea
+				JOIN equipos e ON ot.id_equipo = e.id_equipo
+				LEFT JOIN sisusers su ON ot.id_usuario_a = su.usrId
+				JOIN tbl_tipoordentrabajo tipoOT ON ot.tipo = tipoOT.id
+				WHERE ot.id_orden = ".$idOt."";
 
 			 $query = $this->db->query($sql);
 
