@@ -366,7 +366,7 @@ $('#tblorden').DataTable({
     "searchable": false
   },
   {
-    "targets": [ 0 ], 
+    "targets": [ 0 ],
     "orderable": false
   } ],
   "order": [[1, "asc"]],

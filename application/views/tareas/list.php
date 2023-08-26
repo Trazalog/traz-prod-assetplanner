@@ -87,7 +87,7 @@ $(document).ready(function(){
    'initComplete':function( settings, json ) {
          WaitingClose();
     },
-  
+				'ordering': true,
     'searchDelay': 3000,
     'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
     'paging' : true,
@@ -126,7 +126,7 @@ $(document).ready(function(){
                     msjBusqueda(function(){
                 }, 1000 );
                 });
-        WaitingClose(); 
+        								WaitingClose();
                 var id = row['id'];
                 var asig = row['assigned_id'];
                 var processId = row['processId'];
@@ -146,7 +146,7 @@ $(document).ready(function(){
             'createdCell':  function (td, cellData, rowData, row, col) {
                     var device ="<?php  echo $device ?>"; 
                     var clase =  (device == 'android' ? "celda nomTarea tddate" : "celda nomTarea tddate");
-                    $(td).attr('class', clase); 
+                    $(td).attr('class', clase);
                     $(td).attr('style', 'text-align: left'); 
             },
             'data':'Asignado',
