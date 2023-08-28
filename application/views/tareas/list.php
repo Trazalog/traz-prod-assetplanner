@@ -126,7 +126,7 @@ $(document).ready(function(){
                     msjBusqueda(function(){
                 }, 1000 );
                 });
-        WaitingClose(); 
+                WaitingClose(); 
                 var id = row['id'];
                 var asig = row['assigned_id'];
                 var processId = row['processId'];

@@ -2638,7 +2638,7 @@ $('#tablaempresa').DataTable({
                     </div>
                     <div class="form-group">
                         <label for="">Lectura <strong style="color: #dd4b39">*</strong>:</label>
-                        <input type="text" id="lectura" name="lectura" class="form-control clear">
+                        <input type="text" id="lectura" name="lectura" class="form-control clear" onkeypress="return validaNum(event)">
                         <span>Ingrese valor mayor a: </span><span id="spanNuevaLectura"></span>
                     </div>
                     <div class="form-group">
@@ -3216,4 +3216,15 @@ $('#asignar_meta .btn-accion').click(function(event) {
     });
 
 });
+
+/// FUNCION QUE VALIDA QUE EL CAMPO SEA SOLO NUMEROS
+function validaNum(e) {
+        e = (e) ? e : window.event;
+        var code = (e.which) ? e.which : e.keyCode;
+        if ( (code > 31 && code < 48) || code > 57) {
+            return false;
+        }
+        return true;
+    }
+
 </script>
