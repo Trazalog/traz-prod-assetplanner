@@ -2638,21 +2638,20 @@ $('#tablaempresa').DataTable({
                     </div>
                     <div class="form-group">
                         <label for="">Lectura <strong style="color: #dd4b39">*</strong>:</label>
-                        <input type="text" id="lectura" name="lectura" class="form-control clear" onkeypress="return validaNum(event)">
+                        <input type="text" id="lectura" name="lectura" class="form-control clear" placeholder="Inserte Cantidad" onkeypress="return validaNum(event)">
                         <span>Ingrese valor mayor a: </span><span id="spanNuevaLectura"></span>
                     </div>
                     <div class="form-group">
                         <label for="">Operario <strong style="color: #dd4b39">*</strong>:</label>
-                        <input type="text" id="operario" name="operario" class="form-control clear">
+                        <input type="text" id="operario" name="operario" class="form-control clear" placeholder="Inserte Operario">
                     </div>
                     <div class="form-group">
                         <label for="">Turno <strong style="color: #dd4b39">*</strong>:</label>
-                        <input type="text" id="turno" name="turno" class="form-control clear">
+                        <input type="text" id="turno" name="turno" class="form-control clear" placeholder="Inserte Turno">
                     </div>
                     <div class="form-group">
                         <label for="observacion">Observaciones <strong style="color: #dd4b39">*</strong>:</label>
-                        <textarea class="form-control clear" id="observacion" name="observacion"
-                            placeholder="Observaciones..."></textarea>
+                        <textarea class="form-control clear" id="observacion" name="observacion" placeholder="Observaciones..."></textarea>
                     </div>
                 </form>
             </div>
