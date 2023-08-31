@@ -485,7 +485,6 @@ $("#grupo").change(function(){
 
 /* trae los grupos */
 var dataGrupos = function() {
-   
     $.ajax({
         'async': false,
         'type': "POST",
@@ -503,33 +502,6 @@ var dataGrupos = function() {
         }
         }
         },
-        'error': function(result){
-            console.log(result);
-          },
-    });
-}();
-
-
-/* trae los sectores */
-var dataSectores = function() {
-    
-    $.ajax({
-        'async': false,
-        'type': "POST",
-        'global': false,
-        'dataType': 'json',
-        'url': "index.php/Kpi/getSectoresxEmpresa",
-        'success': function(data) {
-            if(data){
-                var opcion = "<option value=''>Todos</option>" ;
-                $('#sector').append(opcion);
-                for (var i = 0; i < data.length; i++) {
-                var nombre = data[i]['descripcion'];
-                var opcion = "<option value='"+data[i]['id_sector']+"'>" +nombre+ "</option>" ; 
-                $('#sector').append(opcion);  
-            }
-        }
-    },
         'error': function(result){
             console.log(result);
           },
@@ -595,41 +567,6 @@ var dataSectores = function() {
           },
     });
 }();
-
-
-/*    trae equipos de sector y/o grupos */
-  function getEquiSectorGrupo(){
-    var id_grupo =  $("#grupo").val();
-    var id_sector =  $("#sector").val();
-    $("#equipo").html("");
-    $.ajax({
-      'data' : {id_sector : id_sector, 
-                id_grupo : id_grupo
-                },
-      'async': true,
-      'type': "POST",
-      'global': false,
-      'dataType': 'json',
-      'url': "index.php/Kpi/getEquiposxGrupoSector",
-      'success': function (data) {
-        //console.table(data);
-        if(data){
-            var opcion = "<option value='all'>Todos</option>" ;
-            $('#equipo').append(opcion);
-            for (var i = 0; i < data.length; i++) {
-            var nombre = data[i]['descripcion'];
-            var opcion = "<option value='"+data[i]['id_equipo']+"'>" +nombre+ "</option>" ; 
-            $('#equipo').append(opcion);  
-          }
-        }
-      },
-      'error' : function(data){
-        console.log('Error en getEquiSector');
-        console.table(data);
-      },
-    });
-  }
-
 
 
 graficarMantenimiento();
