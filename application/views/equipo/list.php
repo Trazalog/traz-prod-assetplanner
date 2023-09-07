@@ -47,20 +47,24 @@
 
 
 <script>
+$(document).ready(function(){
+    $(".datepicker").datepicker();
 
-$('#sales').DataTable({
-    'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
-    'paging' : true,
-    'processing':true,
-    'serverSide': true,
-    'ajax':{
-        type: 'POST',
-        url: 'index.php/Equipo/paginado'
-    },
-    'columnDefs':[
+    $('#sales').DataTable({
+        'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
+        'paging' : true,
+        'processing':true,
+        'serverSide': true,
+        'order': [[1, 'asc']],
+        'search': true,
+        'ajax':{
+            type: 'POST',
+            url: 'index.php/Equipo/paginado'
+        },
+        'columnDefs':[
             {
                 'targets':[0],
-                "searchable": true,
+                "searchable": false,
                 'data':'acciones',
                 'render':function(data,type,row){
                     var id = row['id_equipo'];
@@ -101,7 +105,7 @@ $('#sales').DataTable({
             ,
             {
                 'targets':[1],
-                'data':'nombre',
+                'data':'codigo',
                 'render': function(data, type, row){
                     return `<td class="maquin">${row['codigo']}</td>`
                 }
@@ -151,6 +155,7 @@ $('#sales').DataTable({
             {
                 'targets':[8],
                 'data':'estado',
+                "searchable": false,
                 'render': function(data, type, row){
                     switch (row['estadoEquipo']) {
                         case 'AC':
@@ -172,8 +177,8 @@ $('#sales').DataTable({
                 }
             }
         ]
+    });
 });
-
 
 $('#modalhistlect').on('shown.bs.modal', function(e) {
     // recalcula el ancho de las columnas
@@ -187,9 +192,7 @@ var idEquipo = "";
 var ide = "";
 var idglob = "";
 
-$(function() {
-    $(".datepicker").datepicker();
-});
+
 
 // Carga vista para agregar equipo nuevo - Chequeado
 edit = 0;

@@ -11,7 +11,7 @@ class  Equipo extends CI_Controller {
 	public function index($permission)
 	{
 			$data = $this->session->userdata();
-			log_message('DEBUG','#Main/index | Equipo >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+			/*log_message('DEBUG','#Main/index | Equipo >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));*/
 
 			if(empty($data['user_data'][0]['usrName'])){
 				log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
@@ -28,6 +28,7 @@ class  Equipo extends CI_Controller {
 				$data['list']       = $this->Equipos->equipos_List();
 				$data['permission'] = $permission;
 				//dump( $data['list'] );
+				/*log_message('DEBUG','#Main/index | Equipo List >> data '.json_encode($data['list']));*/
 				$this->load->view('equipo/list', $data);
 			}
 	}
@@ -47,7 +48,7 @@ class  Equipo extends CI_Controller {
 					$search = $this->input->post('search')['value'];
 
 					$r = $this->Equipos->equiposPaginados($start,$length,$search);
-
+					
 					$resultado =$r['datos'];
 					$totalDatos = $r['numDataTotal'];
 
