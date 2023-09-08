@@ -370,11 +370,12 @@ class Kpi extends CI_Controller
 
             }
             /* si no ingreso fecha busca todos los equipos por todo el año */
-            else{
+            else{              
                     for ($i = 0; $i < 12; $i++) {
                         #Calular Fecha Inicio del Mes
-                        $fi = date("Y-m-01", strtotime($fecha_actual . "- $i month"));
-                    
+                        $l=1;
+                        $fi = ($i == 0 ?  date("Y-m-01", strtotime($fecha_actual)) : date("Y-m-01", strtotime("-$l months", strtotime($fi))));
+                        
                         #Calcular Fecha Fin del Mes
                         $ff = ($i == 0 ? date("Y-m-d") : date("Y-m-d", strtotime($fi . "+ 1 month - 1 second")));
                     

@@ -47,20 +47,24 @@
 
 
 <script>
+$(document).ready(function(){
+    $(".datepicker").datepicker();
 
-$('#sales').DataTable({
-    'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
-    'paging' : true,
-    'processing':true,
-    'serverSide': true,
-    'ajax':{
-        type: 'POST',
-        url: 'index.php/Equipo/paginado'
-    },
-    'columnDefs':[
+    $('#sales').DataTable({
+        'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
+        'paging' : true,
+        'processing':true,
+        'serverSide': true,
+        'order': [[1, 'asc']],
+        'search': true,
+        'ajax':{
+            type: 'POST',
+            url: 'index.php/Equipo/paginado'
+        },
+        'columnDefs':[
             {
                 'targets':[0],
-                "searchable": true,
+                "searchable": false,
                 'data':'acciones',
                 'render':function(data,type,row){
                     var id = row['id_equipo'];
@@ -101,7 +105,7 @@ $('#sales').DataTable({
             ,
             {
                 'targets':[1],
-                'data':'nombre',
+                'data':'codigo',
                 'render': function(data, type, row){
                     return `<td class="maquin">${row['codigo']}</td>`
                 }
@@ -151,6 +155,7 @@ $('#sales').DataTable({
             {
                 'targets':[8],
                 'data':'estado',
+                "searchable": false,
                 'render': function(data, type, row){
                     switch (row['estadoEquipo']) {
                         case 'AC':
@@ -172,8 +177,8 @@ $('#sales').DataTable({
                 }
             }
         ]
+    });
 });
-
 
 $('#modalhistlect').on('shown.bs.modal', function(e) {
     // recalcula el ancho de las columnas
@@ -187,9 +192,7 @@ var idEquipo = "";
 var ide = "";
 var idglob = "";
 
-$(function() {
-    $(".datepicker").datepicker();
-});
+
 
 // Carga vista para agregar equipo nuevo - Chequeado
 edit = 0;
@@ -2638,21 +2641,20 @@ $('#tablaempresa').DataTable({
                     </div>
                     <div class="form-group">
                         <label for="">Lectura <strong style="color: #dd4b39">*</strong>:</label>
-                        <input type="text" id="lectura" name="lectura" class="form-control clear">
+                        <input type="text" id="lectura" name="lectura" class="form-control clear" placeholder="Inserte Cantidad" onkeypress="return validaNum(event)">
                         <span>Ingrese valor mayor a: </span><span id="spanNuevaLectura"></span>
                     </div>
                     <div class="form-group">
                         <label for="">Operario <strong style="color: #dd4b39">*</strong>:</label>
-                        <input type="text" id="operario" name="operario" class="form-control clear">
+                        <input type="text" id="operario" name="operario" class="form-control clear" placeholder="Inserte Operario">
                     </div>
                     <div class="form-group">
                         <label for="">Turno <strong style="color: #dd4b39">*</strong>:</label>
-                        <input type="text" id="turno" name="turno" class="form-control clear">
+                        <input type="text" id="turno" name="turno" class="form-control clear" placeholder="Inserte Turno">
                     </div>
                     <div class="form-group">
                         <label for="observacion">Observaciones <strong style="color: #dd4b39">*</strong>:</label>
-                        <textarea class="form-control clear" id="observacion" name="observacion"
-                            placeholder="Observaciones..."></textarea>
+                        <textarea class="form-control clear" id="observacion" name="observacion" placeholder="Observaciones..."></textarea>
                     </div>
                 </form>
             </div>
@@ -3216,4 +3218,15 @@ $('#asignar_meta .btn-accion').click(function(event) {
     });
 
 });
+
+/// FUNCION QUE VALIDA QUE EL CAMPO SEA SOLO NUMEROS
+function validaNum(e) {
+        e = (e) ? e : window.event;
+        var code = (e.which) ? e.which : e.keyCode;
+        if ( (code > 31 && code < 48) || code > 57) {
+            return false;
+        }
+        return true;
+    }
+
 </script>

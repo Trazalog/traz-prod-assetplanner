@@ -1671,7 +1671,8 @@ class Equipos extends CI_Model
         }*/
         $srch="";
         if($search){
-            $srch="and( equipos.descripcion LIKE'%".$search."%' OR
+            $srch="and( equipos.codigo LIKE'%".$search."%' OR
+                        equipos.descripcion LIKE'%".$search."%' OR
                         area.descripcion LIKE'%".$search."%' OR
                         proceso.descripcion LIKE'%".$search."%' OR
                         sector.descripcion LIKE'%".$search."%' OR

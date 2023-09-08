@@ -173,7 +173,9 @@ class Tarea extends CI_Controller {
 							$data['device'] = "android";
 						}else{					
 							$data['device'] = "pc";				
-						}			
+						}		
+						//log_message('DEBUG','#TRAZA | TAREA | index() | data: '. json_encode($data));
+							
 						$this->load->view('tareas/list',$data);	
 					}		 
 			}
