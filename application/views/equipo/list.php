@@ -1379,7 +1379,7 @@ function guardarEdit() {
                     console.log("Guardado con exito...");
                     $("#modalEditLecturaObservacion").modal('hide');
                     //recargarTabla();
-																				reloadTable();
+					reloadTable();
                 }
             },
             error: function(result) {
@@ -1441,7 +1441,7 @@ function guardarlectura() {
             success: function(data) {
                 console.log("Guardado con exito...");
                 //regresa();
-																reloadTable();
+				reloadTable();
             },
             error: function(result) {
                 console.log("Error en guardado de Lectura...");
