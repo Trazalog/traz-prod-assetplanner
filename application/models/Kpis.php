@@ -274,4 +274,84 @@ class Kpis extends CI_Model
 		}
 		
     }
+
+
+    /**
+     * Trae el tiempo total en horas de un mes
+     *  @param date;date;interger  $fecha_desde, $fecha_hasta, $horas_laborales
+     * @return Array tiempo total, false en caso de que sea false
+     */
+    public function getTiempoTotal($fecha_desde, $fecha_hasta, $horas_laborales)
+    {
+        $ci =& get_instance();
+		$aux = $ci->rest->callAPI("GET",REST_MAN."getTiempoTotal/".$fecha_desde."/".$fecha_hasta."/".$horas_laborales);
+		$aux =json_decode($aux["data"]);
+
+        if ($aux->respuesta->tiempo_total) {
+			return $aux->respuesta->tiempo_total;
+		} else {
+			return  false;
+		}
+		
+    }
+
+    /**
+     * Trae el tiempo total en reparacion en horas de un mes de todos los equipos 
+     *  @param date;date;interger  $fecha_desde, $fecha_hasta, $horas_laborales
+     * @return Array valor de tiempo total de reparacion, 0 en caso de que sea false
+     */
+    public function getTiempoTotalReparacion($fecha_desde, $fecha_hasta, $horas_laborales)
+    {
+        $empId = empresa();
+        $ci =& get_instance();
+		$aux = $ci->rest->callAPI("GET",REST_MAN."getTiempoTotalReparacion/".$fecha_desde."/".$fecha_hasta."/".$fecha_desde."/".$fecha_hasta."/".$empId."/".$horas_laborales);
+		$aux =json_decode($aux["data"]);
+
+        if ($aux->respuesta->tiempo_total_reparacion) {
+			return $aux->respuesta->tiempo_total_reparacion;
+		} else {
+			return  false;
+		}
+		
+    }
+
+        /**
+     * Trae el tiempo total en reparacion en horas de un equipo
+     * @param date;date;interger;interger  $fecha_desde, $fecha_hasta, $horas_laborales, $id_equipo
+     * @return Array valor de tiempo total de reparacion, 0 en caso de que sea false
+     */
+    public function getTiempoTotalReparacionxEquipo($fecha_desde, $fecha_hasta, $horas_laborales, $id_equipo)
+    {
+        $ci =& get_instance();
+		$aux = $ci->rest->callAPI("GET",REST_MAN."getTiempoTotalReparacionxEquipo/".$fecha_desde."/".$fecha_hasta."/".$fecha_desde."/".$fecha_hasta."/".$id_equipo."/".$horas_laborales);
+		$aux =json_decode($aux["data"]);
+
+        if ($aux->respuesta->tiempo_total_reparacion) {
+			return $aux->respuesta->tiempo_total_reparacion;
+		} else {
+			return  false;
+		}
+		
+    }
+
+
+
+            /**
+     * Trae la cantidad de equipos de una empresa con estado AC o RE
+     * @return int cantidad de equipos
+     */
+    public function getCantEquiposxEmpresa()
+    {
+        $empId = empresa();
+        $ci =& get_instance();
+		$aux = $ci->rest->callAPI("GET",REST_MAN."getCantEquiposxEmpresa/".$empId);
+		$aux =json_decode($aux["data"]);
+
+        if ($aux->respuesta->cantidad) {
+			return $aux->respuesta->cantidad;
+		} else {
+			return  false;
+		}
+		
+    }
 }

@@ -288,6 +288,12 @@ class Kpi extends CI_Controller
         $fecha_desde =  $this->input->post('fecha_desde')/* ." 00:00:00" */;
         $fecha_hasta =  $this->input->post('fecha_hasta')/* ." 23:59:59" */;
 
+        /* cantidad de equipos */
+        $cantidad_equipos = $this->Kpis->getCantEquiposxEmpresa();  
+
+        /* harkcodeo horas laborales */
+        $horasLaborales = 8;
+        
 		log_message('DEBUG','KPI ||  disponibilidadKpi || $id_equipo '. $id_equipo);
 
         /*busca todos los equipos */
@@ -299,6 +305,8 @@ class Kpi extends CI_Controller
 
                 $fechaInicioObj = new DateTime($fecha_desde);
                 $fechaFinObj = new DateTime($fecha_hasta);
+
+                $mesDesde = $fechaInicioObj->format('m');
 
                 $i=0;
                 /* Recorro los meses del intervalo ingresado */
@@ -312,10 +320,24 @@ class Kpi extends CI_Controller
                     /* guardo mes que recorro para comparar con el numero de mes ingresado y elegir que parametro mandar */
                     $mesRecorrido = $fechaInicioObj->format('m');
 
+                    $mesHasta = $fechaFinObj->format('m');
+
                     if($mesHasta == $mesRecorrido)
                     {
+                         /*calculo tiempo total en base a las horas laborales de cada mes y lo multiplico por todos los equipos*/
+                         $horasLaborales = 8;
+                         $tiempoTotal = $this->Kpis->getTiempoTotal($fi, $fecha_hasta, $horasLaborales) * $cantidad_equipos;
+ 
+                         /*calculo tiempo total en reparacion */
+                         $tiempoTotalReparacion = $this->Kpis->getTiempoTotalReparacion($fi, $fecha_hasta, $horasLaborales);
+ 
+                         /* calculo el tiempo Activo multiplicando el tiempoTotal - tiempoReparacion*/
+                         $tiempoActivo =  $tiempoTotal  - $tiempoTotalReparacion;
+ 
+                         /* calculo disponibilidad (tiempoActivo / Tiempototal)*100 */
+                         $disponibilidadMeses[] =round( ($tiempoActivo / $tiempoTotal)*100) ;
                         #kpi disponibilidad
-                        $disponibilidadMeses[] = $this->Kpis->getDisponibilidadxFecha($fi, $fecha_hasta);
+                       // $disponibilidadMeses[] = $this->Kpis->getDisponibilidadxFecha($fi, $fecha_hasta);
                     
                         #kpi Mttr
                         $mttr[] = $this->Kpis->getMttrxFecha($fi, $fecha_hasta);
@@ -325,9 +347,22 @@ class Kpi extends CI_Controller
 
                     }
                     else if($mesDesde == $mesRecorrido){
+
+                         /*calculo tiempo total en base a las horas laborales de cada mes y lo multiplico por todos los equipos*/
+                    
+                         $tiempoTotal = $this->Kpis->getTiempoTotal($fecha_desde, $ff, $horasLaborales) * $cantidad_equipos;
+ 
+                         /*calculo tiempo total en reparacion */
+                         $tiempoTotalReparacion = $this->Kpis->getTiempoTotalReparacion($fecha_desde, $ff, $horasLaborales);
+ 
+                         /* calculo el tiempo Activo multiplicando el tiempoTotal - tiempoReparacion*/
+                         $tiempoActivo =  $tiempoTotal  - $tiempoTotalReparacion;
+ 
+                         /* calculo disponibilidad (tiempoActivo / Tiempototal)*100 */
+                         $disponibilidadMeses[] = round(($tiempoActivo / $tiempoTotal)*100) ;
                     
                         #kpi disponibilidad
-                        $disponibilidadMeses[] = $this->Kpis->getDisponibilidadxFecha($fecha_desde, $ff);
+                        //$disponibilidadMeses[] = $this->Kpis->getDisponibilidadxFecha($fecha_desde, $ff);
 
                         #kpi Mttr
                         $mttr[] = $this->Kpis->getMttrxFecha($fecha_desde, $ff);
@@ -338,8 +373,18 @@ class Kpi extends CI_Controller
                     }
                         else{
                         
-                        #kpi disponibilidad
-                        $disponibilidadMeses[] = $this->Kpis->getDisponibilidadxFecha($fi, $ff);
+                        /*calculo tiempo total en base a las horas laborales de cada mes y lo multiplico por todos los equipos*/
+                        
+                        $tiempoTotal = $this->Kpis->getTiempoTotal($fi, $ff, $horasLaborales) * $cantidad_equipos;
+
+                        /*calculo tiempo total en reparacion */
+                        $tiempoTotalReparacion = $this->Kpis->getTiempoTotalReparacion($fi, $ff, $horasLaborales);
+
+                        /* calculo el tiempo Activo multiplicando el tiempoTotal - tiempoReparacion*/
+                        $tiempoActivo =  $tiempoTotal  - $tiempoTotalReparacion;
+
+                        /* calculo kpi disponibilidad (tiempoActivo / Tiempototal)*100 */
+                        $disponibilidadMeses[] = round(($tiempoActivo / $tiempoTotal)*100) ;
                         
                         #kpi Mttr
                         $mttr[] = $this->Kpis->getMttrxFecha($fi, $ff);
@@ -370,7 +415,8 @@ class Kpi extends CI_Controller
 
             }
             /* si no ingreso fecha busca todos los equipos por todo el año */
-            else{              
+            else{ 
+           
                     for ($i = 0; $i < 12; $i++) {
                         #Calular Fecha Inicio del Mes
                         $l=1;
@@ -379,11 +425,25 @@ class Kpi extends CI_Controller
                         #Calcular Fecha Fin del Mes
                         $ff = ($i == 0 ? date("Y-m-d") : date("Y-m-d", strtotime($fi . "+ 1 month - 1 second")));
                     
+                        /*calculo tiempo total en base a las horas laborales de cada mes y lo multiplico por todos los equipos*/
+                    
+                        $tiempoTotal = $this->Kpis->getTiempoTotal($fi, $ff, $horasLaborales) * $cantidad_equipos;
+
+                        /*calculo tiempo total en reparacion */
+                        $tiempoTotalReparacion = $this->Kpis->getTiempoTotalReparacion($fi, $ff, $horasLaborales);
+
+                        /* calculo el tiempo Activo multiplicando el tiempoTotal - tiempoReparacion*/
+                        $tiempoActivo =  $tiempoTotal  - $tiempoTotalReparacion;
+
+                        /* calculo disponibilidad (tiempoActivo / Tiempototal)*100 */
+                        $disponibilidad = ($tiempoActivo / $tiempoTotal)*100 ;
+
                         #Guardar Labels para Gráfico MES/AÑO
                         array_unshift($tiempo, date("m-Y", strtotime($fi)));
                     
                         #Guardar disponibilidad por cada mes
-                        array_unshift($disponibilidadMeses ,$this->Kpis->getDisponibilidadxFecha($fi, $ff));
+                        array_unshift($disponibilidadMeses,  round($disponibilidad));
+                        //array_unshift($disponibilidadMeses ,$this->Kpis->getDisponibilidadxFecha($fi, $ff));
                     
                         #Guardar Tiempo promedio de reparación MTTR
                         array_unshift($mttr ,$this->Kpis->getMttrxFecha($fi, $ff));
@@ -421,6 +481,8 @@ class Kpi extends CI_Controller
             $fechaInicioObj = new DateTime($fecha_desde);
             $fechaFinObj = new DateTime($fecha_hasta);
             
+            $mesDesde = $fechaInicioObj->format('m');
+            
             $i=0;
             /* Recorro los meses del intervalo ingresado */
             while ($fechaInicioObj <= $fechaFinObj) {
@@ -432,12 +494,27 @@ class Kpi extends CI_Controller
 
                 /* guardo mes que recorro para comparar con el numero de mes ingresado y elegir que parametro mandar */
                 $mesRecorrido = $fechaInicioObj->format('m');
+                $mesHasta = $fechaFinObj->format('m');
+
                 if($mesHasta == $mesRecorrido)
                 {
                     #Calcular desde inicio de mes a fecha_hasta
 
+                      /*calculo tiempo total en base a las horas laborales de cada mes y lo multiplico por todos los equipos*/
+                     
+                      $tiempoTotal = $this->Kpis->getTiempoTotal($fi, $fecha_hasta, $horasLaborales);
+
+                      /*calculo tiempo total en reparacion */
+                      $tiempoTotalReparacion = $this->Kpis->getTiempoTotalReparacionxEquipo($fi, $fecha_hasta, $horasLaborales, $id_equipo);
+
+                      /* calculo el tiempo Activo multiplicando el tiempoTotal - tiempoReparacion*/
+                      $tiempoActivo =  $tiempoTotal  - $tiempoTotalReparacion;
+
+                      /* calculo disponibilidad (tiempoActivo / Tiempototal)*100 */
+                      $disponibilidadMeses[] =round( ($tiempoActivo / $tiempoTotal)*100) ;
+
                     #kpi disponibilidad
-                    $disponibilidadMeses[] = $this->Kpis->getDisponibilidadxFechaxEquipo($fi, $fecha_hasta, $id_equipo);
+                    //$disponibilidadMeses[] = $this->Kpis->getDisponibilidadxFechaxEquipo($fi, $fecha_hasta, $id_equipo);
 
                     #kpi Mttr
                     $mttr[] = $this->Kpis->getMttrxFechaxEquipo($fi, $fecha_hasta, $id_equipo);
@@ -447,10 +524,22 @@ class Kpi extends CI_Controller
                     
                 }
                 else if($mesDesde == $mesRecorrido){
-                    #Calcular de fecha_desde hasta fin del mes 
+                    
 
                     #kpi disponibilidad
-                    $disponibilidadMeses[] = $this->Kpis->getDisponibilidadxFechaxEquipo($fecha_desde, $ff, $id_equipo);
+                    /*calculo tiempo total en base a las horas laborales de cada mes y lo multiplico por todos los equipos*/
+                     
+                    $tiempoTotal = $this->Kpis->getTiempoTotal($fecha_desde, $ff, $horasLaborales);
+
+                    /*calculo tiempo total en reparacion */
+                    $tiempoTotalReparacion = $this->Kpis->getTiempoTotalReparacionxEquipo($fecha_desde, $ff, $horasLaborales ,  $id_equipo);
+
+                    /* calculo el tiempo Activo multiplicando el tiempoTotal - tiempoReparacion*/
+                    $tiempoActivo =  $tiempoTotal  - $tiempoTotalReparacion;
+
+                    /* calculo disponibilidad (tiempoActivo / Tiempototal)*100 */
+                    $disponibilidadMeses[] =round( ($tiempoActivo / $tiempoTotal)*100) ;
+                    //$disponibilidadMeses[] = $this->Kpis->getDisponibilidadxFechaxEquipo($fecha_desde, $ff, $id_equipo);
                     
                     #kpi Mttr
                     $mttr[] = $this->Kpis->getMttrxFechaxEquipo($fecha_desde, $ff, $id_equipo);
@@ -460,10 +549,22 @@ class Kpi extends CI_Controller
 
                 }
                     else{
-                     #Calcular desde principio a fin de mes
 
                     #kpi disponibilidad
-                    $disponibilidadMeses[] = $this->Kpis->getDisponibilidadxFechaxEquipo($fi, $ff, $id_equipo);
+                    /*calculo tiempo total en base a las horas laborales de cada mes y lo multiplico por todos los equipos*/
+
+                    $tiempoTotal = $this->Kpis->getTiempoTotal($fi, $ff, $horasLaborales);
+
+                    /*calculo tiempo total en reparacion */
+                    $tiempoTotalReparacion = $this->Kpis->getTiempoTotalReparacionxEquipo($fi, $ff, $horasLaborales,  $id_equipo);
+
+                    /* calculo el tiempo Activo multiplicando el tiempoTotal - tiempoReparacion*/
+                    $tiempoActivo =  $tiempoTotal  - $tiempoTotalReparacion;
+
+                    /* calculo disponibilidad (tiempoActivo / Tiempototal)*100 */
+                    $disponibilidadMeses[] =round( ($tiempoActivo / $tiempoTotal)*100) ;
+
+                    //$disponibilidadMeses[] = $this->Kpis->getDisponibilidadxFechaxEquipo($fi, $ff, $id_equipo);
 
                     #kpi Mttr
                     $mttr[] = $this->Kpis->getMttrxFechaxEquipo($fi, $ff, $id_equipo);
@@ -493,7 +594,7 @@ class Kpi extends CI_Controller
 
             }
 
-            $data['promedioMetas'] = 8;
+            //$data['promedioMetas'] = 8;
             $data['tiempo'] =  $tiempo;
             $data['porcentajeHorasOperativas'] = $disponibilidadMeses;
             $data['mtbf']= $mtbf;
