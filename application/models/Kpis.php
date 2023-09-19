@@ -279,7 +279,7 @@ class Kpis extends CI_Model
     /**
      * Trae el tiempo total en horas de un mes
      *  @param date;date;interger  $fecha_desde, $fecha_hasta, $horas_laborales
-     * @return Array tiempo total, false en caso de que sea false
+     * @return Array tiempo total, 0 en caso de que sea false
      */
     public function getTiempoTotal($fecha_desde, $fecha_hasta, $horas_laborales)
     {
@@ -290,7 +290,7 @@ class Kpis extends CI_Model
         if ($aux->respuesta->tiempo_total) {
 			return $aux->respuesta->tiempo_total;
 		} else {
-			return  false;
+			return  0;
 		}
 		
     }
@@ -310,7 +310,7 @@ class Kpis extends CI_Model
         if ($aux->respuesta->tiempo_total_reparacion) {
 			return $aux->respuesta->tiempo_total_reparacion;
 		} else {
-			return  false;
+			return  0;
 		}
 		
     }
@@ -329,7 +329,7 @@ class Kpis extends CI_Model
         if ($aux->respuesta->tiempo_total_reparacion) {
 			return $aux->respuesta->tiempo_total_reparacion;
 		} else {
-			return  false;
+			return  0;
 		}
 		
     }
@@ -350,8 +350,48 @@ class Kpis extends CI_Model
         if ($aux->respuesta->cantidad) {
 			return $aux->respuesta->cantidad;
 		} else {
-			return  false;
+			return  0;
 		}
 		
     }
+
+     /**
+     * Trae la cantidad de fallos de equipos de una empresa
+     * @return int cantidad de equipos con fallos
+     */
+    public function getCantidadFallos($fecha_desde, $fecha_hasta)
+    {
+        $empId = empresa();
+        $ci =& get_instance();
+		$aux = $ci->rest->callAPI("GET",REST_MAN."getCantidadFallos/".$fecha_desde."/".$fecha_hasta."/".$empId);
+		$aux =json_decode($aux["data"]);
+
+        if ($aux->respuesta->numero_fallos) {
+			return $aux->respuesta->numero_fallos;
+		} else {
+			return  0;
+		}
+		
+    }
+
+
+     /**
+     * Trae la cantidad de fallos de un equipo
+     * @return int cantidad de fallos x equipo
+     */
+    public function getCantidadFallosxEquipo($fecha_desde, $fecha_hasta, $id_equipo)
+    {
+        $empId = empresa();
+        $ci =& get_instance();
+		$aux = $ci->rest->callAPI("GET",REST_MAN."getCantidadFallosxEquipo/".$fecha_desde."/".$fecha_hasta."/".$empId."/".$id_equipo);
+		$aux =json_decode($aux["data"]);
+
+        if ($aux->respuesta->numero_fallos) {
+			return $aux->respuesta->numero_fallos;
+		} else {
+			return  0;
+		}
+		
+    }
+
 }
