@@ -83,7 +83,8 @@
 <script>
 
 $(document).ready(function(){
-    $('#bandeja').DataTable({
+    
+    var table = $('#bandeja').DataTable({
    'initComplete':function( settings, json ) {
          WaitingClose();
     },
@@ -283,6 +284,10 @@ $(document).ready(function(){
         $(row).attr('onclick', 'detalleTarea(this)');
     },
     }); 
+    //Recoarga cada 20seg
+    setInterval( function () {
+        table.ajax.reload();
+    }, 20000 );
 });
 
 var idfin = "";

@@ -33,8 +33,14 @@
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
 
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <img src="<?php base_url()?>assets/img/customers/record.png"  width = "20" height= "20"  alt="Notificaciones">
+                            </a>
+                        </li>
                         <!-- User Account: style can be found in dropdown.less -->
                         <li class="dropdown user user-menu">
+                            
                             <?php
                             if( $usrimag != '' ) {
                                 $usrimag = 'data:image/jpg;base64,'.base64_encode($usrimag).'" ';
@@ -101,6 +107,10 @@
             else{
                 alert("Sin Conexion");
             }
+        }
+        
+        function miTareas() {
+            location.href = '<?php echo base_url() ?>Tarea';
         }
 
         function procesarCola() {
