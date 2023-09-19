@@ -99,6 +99,9 @@ $(document).ready(function(){
         beforeSend: function(){
             msjBusqueda();
           },
+        complete: function(){
+            WaitingClose();
+        }
     },
     'columnDefs':[
         {
@@ -122,11 +125,11 @@ $(document).ready(function(){
             }, 
             'data':'Estado',
             'render':function(data,type,row){
-                $('.dataTables_filter input').keyup(function() {
+                /*$('.dataTables_filter input').keyup(function() {
                     msjBusqueda(function(){
                 }, 1000 );
-                });
-                WaitingClose(); 
+                });*/
+                //WaitingClose(); 
                 var id = row['id'];
                 var asig = row['assigned_id'];
                 var processId = row['processId'];
