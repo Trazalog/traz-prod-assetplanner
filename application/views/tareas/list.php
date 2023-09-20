@@ -287,6 +287,14 @@ $(document).ready(function(){
     //Recoarga cada 20seg
     setInterval( function () {
         table.ajax.reload();
+        var cant1 = table.data().count();
+        if(cant< cant1){
+            $("#notiTareas").css('visibility','visible');
+            cant=cant1;
+        }else{
+            $("#notiTareas").css('visibility','hidden');
+        }
+        
     }, 10000 );
 
     var cant = table.data().count();
