@@ -83,7 +83,8 @@
 <script>
 
 $(document).ready(function(){
-    $('#bandeja').DataTable({
+    
+    var table = $('#bandeja').DataTable({
    'initComplete':function( settings, json ) {
          WaitingClose();
     },
@@ -286,6 +287,21 @@ $(document).ready(function(){
         $(row).attr('onclick', 'detalleTarea(this)');
     },
     }); 
+    //Recoarga cada 20seg
+    setInterval( function () {
+        table.ajax.reload();
+        var cant1 = table.data().count();
+        if(cant< cant1){
+            $("#notiTareas").css('visibility','visible');
+            cant=cant1;
+        }else{
+            $("#notiTareas").css('visibility','hidden');
+        }
+        
+    }, 10000 );
+
+    var cant = table.data().count();
+    console.log(cant);
 });
 
 var idfin = "";
