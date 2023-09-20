@@ -33,7 +33,7 @@
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
 
-                        <li class="dropdown user user-menu">
+                        <li id="notiTareas" class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <img src="<?php base_url()?>assets/img/customers/record.png"  width = "20" height= "20"  alt="Notificaciones">
                             </a>
@@ -100,6 +100,10 @@
 
 
         <script>
+
+        $(document).ready(function(){
+            $("#notiTareas").css('visibility','hidden');
+        });
 
         function logout() {
             if(conexion())

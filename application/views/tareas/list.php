@@ -287,7 +287,10 @@ $(document).ready(function(){
     //Recoarga cada 20seg
     setInterval( function () {
         table.ajax.reload();
-    }, 20000 );
+    }, 10000 );
+
+    var cant = table.data().count();
+    console.log(cant);
 });
 
 var idfin = "";
