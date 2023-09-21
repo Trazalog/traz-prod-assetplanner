@@ -84,25 +84,12 @@
 
 $(document).ready(function(){
     
-    var tableBandeja = $('#bandeja').DataTable({
-   'initComplete':function( settings, json ) {
-         WaitingClose();
-        //Regarga 20seg
-        setInterval( function () {
-            //$('#bandeja').DataTable().data().reload();
-            $('#bandeja').DataTable().ajax.reload();
-            //Revisa cantidad nueva con cantidad anterior y activa el boton
-            var cant1 = $('#bandeja').DataTable().ajax.count();
-            alert(cant);
-            if(cant < cant1){
-                $("#notiTareas").css('visibility','visible');
-                cant=cant1;
-            }else{
-                $("#notiTareas").css('visibility','hidden');
-            }
+//Regarga 20seg
+setInterval( function () {
 
-        },20000);
-         
+$('#bandeja').DataTable({
+   'initComplete':function( settings, json ) {
+         WaitingClose();                 
     },
 	'ordering': true,
     'searchDelay': 3000,
@@ -299,7 +286,8 @@ $(document).ready(function(){
         $(row).attr('tags', (proc) ? proc : '' );
         $(row).attr('onclick', 'detalleTarea(this)');
     },
-    }); 
+    })
+    }, 20000 );
     //Recoarga cada 15seg
     /*setInterval( function () {
        
@@ -316,8 +304,8 @@ $(document).ready(function(){
         
     }, 15000 );*/
 
-    var cant = $('#bandeja').DataTable().ajax.count();
-    console.log(cant);
+    /*var cant = $('#bandeja').DataTable().ajax.count();
+    console.log(cant);*/
 });
 
 
