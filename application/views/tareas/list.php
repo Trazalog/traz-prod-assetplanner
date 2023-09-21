@@ -92,14 +92,14 @@ $(document).ready(function(){
             //$('#bandeja').DataTable().data().reload();
             $('#bandeja').DataTable().ajax.reload();
             //Revisa cantidad nueva con cantidad anterior y activa el boton
-            var cant1 = $('#bandeja').DataTable().ajax.count();
-            alert(cant);
+            //var cant1 = $('#bandeja').DataTable().ajax.count();
+            /*alert(cant);
             if(cant < cant1){
                 $("#notiTareas").css('visibility','visible');
                 cant=cant1;
             }else{
                 $("#notiTareas").css('visibility','hidden');
-            }
+            }*/
 
         },20000);
          
@@ -316,8 +316,8 @@ $(document).ready(function(){
         
     }, 15000 );*/
 
-    var cant = $('#bandeja').DataTable().ajax.count();
-    console.log(cant);
+    /*var cant = $('#bandeja').DataTable().ajax.count();
+    console.log(cant);*/
 });
 
 
