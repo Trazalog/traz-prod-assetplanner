@@ -87,11 +87,11 @@ $(document).ready(function(){
     var tableBandeja = $('#bandeja').DataTable({
    'initComplete':function( settings, json ) {
          WaitingClose();
-        
-         console.log(json);
-         setInterval( function () {
+        //Regarga 20seg
+        setInterval( function () {
             //$('#bandeja').DataTable().data().reload();
             $('#bandeja').DataTable().ajax.reload();
+            //Revisa cantidad nueva con cantidad anterior y activa el boton
             var cant1 = $('#bandeja').DataTable().ajax.count();
             alert(cant);
             if(cant < cant1){
@@ -101,7 +101,7 @@ $(document).ready(function(){
                 $("#notiTareas").css('visibility','hidden');
             }
 
-         },10000);
+        },20000);
          
     },
 	'ordering': true,
