@@ -84,12 +84,15 @@
 
 $(document).ready(function(){
     
-//Regarga 20seg
-setInterval( function () {
-
-$('#bandeja').DataTable({
+    $('#bandeja').DataTable({
    'initComplete':function( settings, json ) {
-         WaitingClose();                 
+         WaitingClose();
+        //Regarga 20seg
+        setInterval( function () {
+            //$('#bandeja').DataTable().data().reload();
+            $('#bandeja').DataTable().ajax.reload();           
+        },20000);
+         
     },
 	'ordering': true,
     'searchDelay': 3000,
@@ -286,8 +289,7 @@ $('#bandeja').DataTable({
         $(row).attr('tags', (proc) ? proc : '' );
         $(row).attr('onclick', 'detalleTarea(this)');
     },
-    })
-    }, 20000 );
+    }); 
     //Recoarga cada 15seg
     /*setInterval( function () {
        
