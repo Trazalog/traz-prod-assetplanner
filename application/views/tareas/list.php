@@ -84,11 +84,27 @@
 
 $(document).ready(function(){
     
-    var table = $('#bandeja').DataTable({
+    var tableBandeja = $('#bandeja').DataTable({
    'initComplete':function( settings, json ) {
          WaitingClose();
+        
+         console.log(json);
+         setInterval( function () {
+            //$('#bandeja').DataTable().data().reload();
+            $('#bandeja').DataTable().ajax.reload();
+            var cant1 = $('#bandeja').DataTable().ajax.count();
+            alert(cant);
+            if(cant < cant1){
+                $("#notiTareas").css('visibility','visible');
+                cant=cant1;
+            }else{
+                $("#notiTareas").css('visibility','hidden');
+            }
+
+         },10000);
+         
     },
-				'ordering': true,
+	'ordering': true,
     'searchDelay': 3000,
     'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
     'paging' : true,
@@ -99,7 +115,7 @@ $(document).ready(function(){
         url: 'index.php/Tarea/paginado',
         beforeSend: function(){
             msjBusqueda();
-          },
+        },
     },
     'columnDefs':[
         {
@@ -284,10 +300,13 @@ $(document).ready(function(){
         $(row).attr('onclick', 'detalleTarea(this)');
     },
     }); 
-    //Recoarga cada 20seg
-    setInterval( function () {
+    //Recoarga cada 15seg
+    /*setInterval( function () {
+       
         table.ajax.reload();
-        var cant1 = table.data().count();
+        alert(location.href);
+        alert( 'Rows '+table.rows( '.selected' ).count()+' are selected' );
+        var cant1 = table.data().count();        
         if(cant< cant1){
             $("#notiTareas").css('visibility','visible');
             cant=cant1;
@@ -295,11 +314,12 @@ $(document).ready(function(){
             $("#notiTareas").css('visibility','hidden');
         }
         
-    }, 10000 );
+    }, 15000 );*/
 
-    var cant = table.data().count();
+    var cant = $('#bandeja').DataTable().ajax.count();
     console.log(cant);
 });
+
 
 var idfin = "";
 var id_tarea = "";
