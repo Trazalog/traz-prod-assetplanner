@@ -86,13 +86,7 @@ $(document).ready(function(){
     
     $('#bandeja').DataTable({
    'initComplete':function( settings, json ) {
-         WaitingClose();
-        //Regarga 20seg
-        setInterval( function () {
-            //$('#bandeja').DataTable().data().reload();
-            $('#bandeja').DataTable().ajax.reload();           
-        },20000);
-         
+         WaitingClose();                 
     },
 	'ordering': true,
     'searchDelay': 3000,
@@ -105,7 +99,7 @@ $(document).ready(function(){
         url: 'index.php/Tarea/paginado',
         beforeSend: function(){
             msjBusqueda();
-        },
+        }
     },
     'columnDefs':[
         {
@@ -291,23 +285,11 @@ $(document).ready(function(){
     },
     }); 
     //Recoarga cada 15seg
-    /*setInterval( function () {
-       
-        table.ajax.reload();
-        alert(location.href);
-        alert( 'Rows '+table.rows( '.selected' ).count()+' are selected' );
-        var cant1 = table.data().count();        
-        if(cant< cant1){
-            $("#notiTareas").css('visibility','visible');
-            cant=cant1;
-        }else{
-            $("#notiTareas").css('visibility','hidden');
-        }
-        
-    }, 15000 );*/
+    setInterval( function () {
+        //$('#bandeja').DataTable().data().reload();
+        $('#bandeja').DataTable().ajax.reload();           
+    },20000);
 
-    /*var cant = $('#bandeja').DataTable().ajax.count();
-    console.log(cant);*/
 });
 
 
