@@ -1,7 +1,7 @@
 <body class="login-page">
     <div class="login-box">
         <div class="login-logo">
-            <a href="<?php echo base_url(); ?>">asset<b> PLANNER</b></a>
+            <a href="<?php echo base_url(); ?>"><b> Trazalog Mantenimiento</b></a>
         </div><!-- /.login-logo -->
         <div class="login-box-body">
             <p class="login-box-msg">Ingreso</p>

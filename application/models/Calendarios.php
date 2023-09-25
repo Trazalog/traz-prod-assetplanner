@@ -35,6 +35,7 @@ class Calendarios extends CI_Model {
         $this->db->join('tbl_tipoordentrabajo TO', 'TO.tipo_orden = OT.tipo', 'left');
         $this->db->where('OT.id_empresa', $empId);
         $this->db->where('OT.estado!=','T');
+        $this->db->where('OT.estado!=','AN');
         $this->db->where("month(OT.fecha_program) = $month AND year(OT.fecha_program) = $year");
         $query = $this->db->get();
         if ($query->num_rows()!=0)
@@ -77,8 +78,7 @@ class Calendarios extends CI_Model {
     }
 
     // Preventivos por Hora para la Tabla
-    function 
-    getPreventivosHoras($mes, $year)
+    function getPreventivosHoras($mes, $year)
     {
         $userdata = $this->session->userdata('user_data');
         $empId    = $userdata[0]['id_empresa'];
@@ -103,11 +103,13 @@ class Calendarios extends CI_Model {
             join equipos ON preventivo.id_equipo = equipos.id_equipo 
             join tareas ON preventivo.id_tarea = tareas.id_tarea 
             join periodo ON preventivo.perido = periodo.idperiodo
-            WHERE preventivo.id_empresa = $empId AND preventivo.estadoprev = 'C' AND ((periodo.descripcion = 'Ciclos') OR (periodo.descripcion = 'Horas') OR (periodo.descripcion = 'Kilómetros')) AND (equipos.ultima_lectura >= (preventivo.lectura_base + preventivo.critico1))";//horas o ciclos
+            WHERE preventivo.id_empresa = $empId AND (preventivo.estadoprev = 'C' OR preventivo.estadoprev = 'M') AND ((periodo.descripcion = 'Ciclos') OR (periodo.descripcion = 'Horas') OR (periodo.descripcion = 'Kilómetros')) AND (equipos.ultima_lectura >= (preventivo.lectura_base + preventivo.critico1))";//horas o ciclos
             //AND month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $mes 
             //AND year(orden_trabajo.fecha_program) = $year
             //";
-        $query = $this->db->query($sql);
+            log_message('debug', $sql);
+            $query = $this->db->query($sql);
+
                 if ($query->num_rows()!=0)
         {
             return $query->result_array();  
@@ -203,7 +205,8 @@ class Calendarios extends CI_Model {
             join tareas ON preventivo.id_tarea = tareas.id_tarea 
             join periodo ON preventivo.perido = periodo.idperiodo
             where (preventivo.estadoprev = 'C') AND ((periodo.descripcion != 'Ciclos') AND (periodo.descripcion != 'Horas') AND (periodo.descripcion != 'Kilómetros')) AND 
-            (month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $month or month(preventivo.ultimo) = $month)";  
+            (month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $month or month(preventivo.ultimo) = $month)
+            and preventivo.id_empresa = $empId";  
         // $sql = "SELECT preventivo.prevId, 
         //     preventivo.id_tarea, 
         //     preventivo.perido, 
@@ -233,7 +236,58 @@ class Calendarios extends CI_Model {
         }       
     }
   
+    function getServicioTareas($data,$month,$year){
 
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
+
+        foreach ($data as $key => $value) {
+
+            $case_id = $value['caseId'];
+
+
+            $this->db->select('solicitud_reparacion.id_solicitud,solicitud_reparacion.numero,solicitud_reparacion.id_tipo,solicitud_reparacion.nivel,
+                               solicitud_reparacion.solicitante,solicitud_reparacion.f_solicitado,solicitud_reparacion.f_sugerido,solicitud_reparacion.hora_sug,
+                               solicitud_reparacion.estado,solicitud_reparacion.correctivo,solicitud_reparacion.causa,
+                               equipos.descripcion,equipos.codigo,equipos.id_equipo,            
+                               sector.descripcion AS sector');
+            $this->db->from('solicitud_reparacion');
+            $this->db->join('equipos', 'equipos.id_equipo = solicitud_reparacion.id_equipo');
+            $this->db->join('sector', 'sector.id_sector = equipos.id_sector');
+            $this->db->where('solicitud_reparacion.id_empresa',$empId);
+            $this->db->where('solicitud_reparacion.estado', 'S');
+            $this->db->where('solicitud_reparacion.urgente !=0');
+            $this->db->where('year(solicitud_reparacion.f_solicitado)',$year);
+            $this->db->where('month(solicitud_reparacion.f_solicitado)',$month);
+            $this->db->where('solicitud_reparacion.case_id', $case_id);                
+            $res = $this->db->get()->first_row();
+
+            //log_message('debug', json_encode($res));
+
+            $data[$key]['id_solicitud'] = $res->id_solicitud;
+            $data[$key]['numero'] = $res->numero;
+            $data[$key]['id_tipo'] = $res->id_tipo;
+            $data[$key]['nivel'] = $res->nivel;
+            $data[$key]['solicitante'] = $res->solicitante;
+            $data[$key]['f_solicitado'] = $res->f_solicitado;
+            $data[$key]['f_sugerido'] = $res->f_sugerido;
+            $data[$key]['hora_sug'] = $res->hora_sug;
+            $data[$key]['hora_sug'] = $res->hora_sug;
+            $data[$key]['estado'] = $res->estado;
+            $data[$key]['descripcion'] = $res->descripcion;
+            $data[$key]['codigo'] = $res->codigo;
+            $data[$key]['id_equipo'] = $res->id_equipo;
+            $data[$key]['correctivo'] = $res->correctivo;
+            $data[$key]['causa'] = $res->causa;
+                
+            $data = $this->infoUser($data, $key);
+        
+        }
+
+        return $data;
+    }
+
+    
 
 
     // Correctivos para la Tabla por id de empresa logueada
@@ -265,6 +319,7 @@ class Calendarios extends CI_Model {
 											AND year(solicitud_reparacion.f_solicitado) = $year
 											AND month(solicitud_reparacion.f_solicitado) = $month";
         $query = $this->db->query($sql);
+        log_message('debug', $sql);
         if ($query->num_rows()!=0)
         {
             return $query->result_array();  
@@ -321,20 +376,42 @@ class Calendarios extends CI_Model {
         $this->db->order_by('periodo.descripcion');
         $query = $this->db->get();
         if($query->num_rows()>0){
+            log_message('DEBUG','#Main/index | getperiodos >> true ');
             return $query->result();
         }
         else{
+            log_message('DEBUG','#Main/index | getperiodos >> false');
             return false;
         }
     }
 
 
+    /*     ./ TAREAS BPM */
 
+    public function infoUser($data, $key)
+    {
+        if (isset($data[$key]["ot"])) {
+            // si hay un usr asignado en bpm
+            if (isset($data[$key]['assigned_id'])) {
 
+                $sql = 'select (concat(usrName,", ", usrLastName) ) as usr_asig_nomb
+                    from sisusers SU
+                    join orden_trabajo OT on OT.id_usuario_a = SU.usrId
+                    where OT.id_orden = ' . $data[$key]["ot"];
 
+                $query = $this->db->query($sql);
+                $row = $query->row();
 
-
-
+                $data[$key]['usr_asignado'] = $row->usr_asig_nomb;
+            } else {
+                $data[$key]['usr_asignado'] = " S/A ";
+            }
+        } else {
+            $data[$key]['usr_asignado'] = " S/A ";
+        }
+        
+        return $data;
+    }
 
     function Equipos_List()
     {
@@ -390,50 +467,50 @@ class Calendarios extends CI_Model {
 
     function getpred($data = null){
         
-        if($data == null)
-        {
-            return false;
-        }
-        else
-        {
-            $month = $data['month'] + 1 ;
+						if($data == null)
+						{
+										return false;
+						}
+						else
+						{
+								$month = $data['month'] + 1 ;
 
-			$sql= "select predictivo.predId, 
-					predictivo.tarea_descrip, 
-					predictivo.periodo, 
-					predictivo.cantidad, 
-					predictivo.fecha, 
-					equipos.id_equipo, 
-					predictivo.estado,
-					predictivo.id_equipo, 
-					tareas.descripcion,					 
-					DATE_ADD(predictivo.fecha, INTERVAL predictivo.cantidad DAY) AS prox 
-					from predictivo 
-					join equipos ON predictivo.id_equipo = equipos.id_equipo 
-					join tareas ON predictivo.tarea_descrip = tareas.id_tarea 
-					where predictivo.estado = 'C' 
-					AND month(DATE_ADD(predictivo.fecha, INTERVAL predictivo.cantidad DAY)) = $month ";
+								$sql= "select predictivo.predId,
+										predictivo.tarea_descrip,
+										predictivo.periodo,
+										predictivo.cantidad,
+										predictivo.fecha,
+										equipos.id_equipo,
+										predictivo.estado,
+										predictivo.id_equipo,
+										tareas.descripcion,
+										DATE_ADD(predictivo.fecha, INTERVAL predictivo.cantidad DAY) AS prox
+										from predictivo
+										join equipos ON predictivo.id_equipo = equipos.id_equipo
+										join tareas ON predictivo.tarea_descrip = tareas.id_tarea
+										where predictivo.estado = 'C'
+										AND month(DATE_ADD(predictivo.fecha, INTERVAL predictivo.cantidad DAY)) = $month ";
 			
-			$query= $this->db->query($sql);
-			
-			if ($query->num_rows()!=0)
-			{
-				return $query->result_array();	
-			}
-			else
-			{
-				return false;
-			}
-		}
-	}
+								$query= $this->db->query($sql);
+
+								if ($query->num_rows()!=0)
+								{
+									return $query->result_array();
+								}
+								else
+								{
+									return false;
+								}
+						}
+				}
 		
 	// FUNCIONES DE OT	
 		//Guarda orden de trabajo a partir de Pred/Correc/Backlog/Prevent
 		function guardar_agregar($data){
 	
-			$query = $this->db->insert("orden_trabajo",$data);
-			$idOT = $this->db->insert_id();
-			return $idOT;        
+				$query = $this->db->insert("orden_trabajo",$data);
+				$idOT = $this->db->insert_id();
+				return $idOT;
 		}
 
 		// guarda case_id en Otrabajo
@@ -442,7 +519,7 @@ class Calendarios extends CI_Model {
 			return $this->db->update('orden_trabajo', array('case_id'=>$case_id));			
 		}
 
-		function cambiarEstado($id_solicitud, $estado, $tipo){						
+		function cambiarEstado($id_solicitud, $estado, $tipo){
 			
 			if ($tipo == 'correctivo') {
 				$this->db->set('estado', $estado);
@@ -502,45 +579,62 @@ class Calendarios extends CI_Model {
 			return $result;
 		}
 
-        // guarda el adjunto que viene de la Tarea Original(Backlog, prevent y predict)
-        function insertAdjunto($idOT,$adjunto){     
-            $data = array('otId'=>$idOT,
-                                        'ot_adjunto'=>$adjunto);
-            $query = $this->db->insert("tbl_otadjuntos",$data);
-            return $query;
-        }
+		// guarda el adjunto que viene de la Tarea Original(Backlog, prevent y predict)
+		function insertAdjunto($idOT,$adjunto){
+						$data = array('otId'=>$idOT,
+																																		'ot_adjunto'=>$adjunto);
+						$query = $this->db->insert("tbl_otadjuntos",$data);
+						return $query;
+		}
 
 		// TODO: ENTENDER SI YA NO SE USA CON LA NUEVA MODIFICACION DE HERRAM E INSUMOS
-		// Guarda batch de OT 
+		// Guarda batch de OT
 		function setOTbatch($data)
 		{
 			$this->db->insert_batch('orden_trabajo', $data);
 		}
 
 		//devuelve valores de todos los datos de la OT para mostrar en modal.
-		function getDataOt($idOt){
-				$this->db->select('orden_trabajo.id_orden,
-													orden_trabajo.id_tarea,
-													orden_trabajo.descripcion,
-													orden_trabajo.tipo,
-													orden_trabajo.id_solicitud,
-													orden_trabajo.fecha_program,
-													equipos.codigo,
-													equipos.descripcion AS descripcionEquipo,
-													tbl_tipoordentrabajo.descripcion AS descrpcionSolicitud,
-													sisusers.usrId,
-													sisusers.usrLastName,
-													sisusers.usrName, 
-													');
-				$this->db->from('orden_trabajo');			
-				$this->db->join('equipos', 'orden_trabajo.id_equipo = equipos.id_equipo');
-				$this->db->join('tbl_tipoordentrabajo', 'tbl_tipoordentrabajo.id = orden_trabajo.tipo');	
-				$this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId','left');		
-				$this->db->where('orden_trabajo.id_orden', $idOt);
-				$query = $this->db->get();
+
+		function getDataOt($idOt) {
+
+				$sql = "SELECT
+							ot.id_orden,
+							ot.id_tarea,
+							ot.descripcion,
+							ot.tipo,
+							ot.id_solicitud,
+							ot.fecha_program,
+							e.codigo,
+							e.descripcion AS descripcionEquipo,
+							CASE
+											WHEN ot.id_tarea = 0 THEN 'sin tarea estandar'
+											ELSE tstd.descripcion
+							END AS descTareaStandar,
+							CASE
+											WHEN ot.id_usuario_a IS NULL THEN ''
+											ELSE su.usrId
+							END AS usrId,
+							CASE
+											WHEN ot.id_usuario_a IS NULL THEN ''
+											ELSE su.usrLastName
+							END AS usrLastName,
+							CASE
+											WHEN ot.id_usuario_a IS NULL THEN ''
+											ELSE su.usrName
+							END AS usrName
+				FROM orden_trabajo ot
+				LEFT JOIN tareas tstd ON ot.id_tarea = tstd.id_tarea
+				JOIN equipos e ON ot.id_equipo = e.id_equipo
+				LEFT JOIN sisusers su ON ot.id_usuario_a = su.usrId
+				JOIN tbl_tipoordentrabajo tipoOT ON ot.tipo = tipoOT.id
+				WHERE ot.id_orden = ".$idOt."";
+
+			 $query = $this->db->query($sql);
+
 				if($query->num_rows()!=0)
 				{
-					
+
 						return $query->result_array();
 				}
 				else
@@ -548,6 +642,64 @@ class Calendarios extends CI_Model {
 						return array();
 				}
 		}
+
+		/**
+		* Develvecomonentes concatenados de OT.
+		* @param string $idOT
+		* @return
+		*/
+		function getCompEquipoOT($numtipo,$id_solicitud,$idOt)
+		{
+
+				switch ($numtipo) {
+
+					case 3:
+						// $sql = "select c.descripcion as descCompo, ce.codigo as codCompo
+						// from orden_trabajo ot, tbl_back bck, componenteequipo ce, componentes c
+						// where bck.idcomponenteequipo = ce.idcomponenteequipo
+						// and ce.idcomponenteequipo = c.id_componente
+						// and bck.backId = ".$id_solicitud."
+						// and ot.id_orden = ".$idOt."";
+
+						$sql = "select c.id_componente
+												,c.descripcion as descCompo
+											from orden_trabajo ot
+												, preventivo pr
+												, componentes c
+											where pr.id_componente = c.id_componente
+											and pr.prevId = ".$id_solicitud."
+											and ot.id_orden = ".$idOt."";
+
+
+						return $this->db->query($sql)->result_array()[0];
+						break;
+
+					case 4:
+						$sql = "select c.descripcion as descCompo, ce.codigo as codCompo
+						from orden_trabajo ot, tbl_back bck, componenteequipo ce, componentes c
+						where bck.idcomponenteequipo = ce.idcomponenteequipo
+						and ce.idcomponenteequipo = c.id_componente
+						and bck.backId = ".$id_solicitud."
+						and ot.id_orden = ".$idOt."";
+						return $this->db->query($sql)->result_array()[0];
+						break;
+
+					default:
+					return array();
+						break;
+				}
+
+
+
+
+
+
+
+		}
+
+
+
+
 
 		function getInfoTareaProgram($numtipo, $id_solicitud){
 			
@@ -660,39 +812,39 @@ class Calendarios extends CI_Model {
 		}
 
 	//////// FUNCIONES CALENDARIO	
-    // Actualiza dia nueva fecha de programacion en OT
-    function updateDiaProgramacion($id, $diaNuevo){         
-        
-        $this->db->set('fecha_program', $diaNuevo);
-            $this->db->where('id_orden', $id);
-            $resposnse = $this->db->update('orden_trabajo');
-            return $resposnse;
-    }
-    // Actualiza la nueva duracion de la OT 
-    function updateDuraciones($id, $nueva){
+		// Actualiza dia nueva fecha de programacion en OT
+		function updateDiaProgramacion($id, $diaNuevo){
 
-        $this->db->set('duracion', $nueva);
-        $this->db->where('id_orden', $id);
-        $resposnse = $this->db->update('orden_trabajo');
-        return $resposnse;
-    }
+						$this->db->set('fecha_program', $diaNuevo);
+										$this->db->where('id_orden', $id);
+										$resposnse = $this->db->update('orden_trabajo');
+										return $resposnse;
+		}
+		// Actualiza la nueva duracion de la OT
+			function updateDuraciones($id, $nueva){
 
-   	////// CORRECTIVOS 
-        function getCorrectPorIds($data){
+							$this->db->set('duracion', $nueva);
+							$this->db->where('id_orden', $id);
+							$resposnse = $this->db->update('orden_trabajo');
+							return $resposnse;
+			}
 
-            $id = $data;
-            
-                    $this->db->select('solicitud_reparacion.id_solicitud,
-                                    solicitud_reparacion.f_solicitado, 
-                                    solicitud_reparacion.causa,
-                            solicitud_reparacion.id_equipo                      
-                            ');
-                    $this->db->from('solicitud_reparacion');        
-                    $this->db->where('solicitud_reparacion.id_solicitud', $id);
-                    $query = $this->db->get();      
-                    
-                    return $query->result_array();  
-        }
+		////// CORRECTIVOS
+					function getCorrectPorIds($data){
+
+									$id = $data;
+									
+																	$this->db->select('solicitud_reparacion.id_solicitud,
+																																	solicitud_reparacion.f_solicitado, 
+																																	solicitud_reparacion.causa,
+																									solicitud_reparacion.id_equipo                      
+																									');
+																	$this->db->from('solicitud_reparacion');        
+																	$this->db->where('solicitud_reparacion.id_solicitud', $id);
+																	$query = $this->db->get();      
+																	
+																	return $query->result_array();  
+					}
 
 		/////	BACKLOG
 		function getBackPorIds($data){
@@ -700,8 +852,8 @@ class Calendarios extends CI_Model {
 
 			$this->db->select('tbl_back.*,
 			tareas.descripcion as tareadesc');
-			$this->db->from('tbl_back'); 
-			$this->db->join('tareas', 'tbl_back.id_tarea = tareas.id_tarea', 'left');       
+			$this->db->from('tbl_back');
+			$this->db->join('tareas', 'tbl_back.id_tarea = tareas.id_tarea', 'left');
 			$this->db->where('tbl_back.backId', $id);
 			$query = $this->db->get();      
 			
@@ -1068,7 +1220,7 @@ class Calendarios extends CI_Model {
    
 
 
-/* funciones para BPM */
+	/* funciones para BPM */
     function getCaseIdporIdBacklog($id_solicitud){
 			// $this->db->select('solicitud_reparacion.case_id');
 			// $this->db->from('tbl_back');

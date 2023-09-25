@@ -7,13 +7,31 @@ class Preventivo extends CI_Controller {
         {
 		parent::__construct();
 		$this->load->model('Preventivos');
+		
 	}
 
 	public function index($permission){
 
-		$data['list'] = $this->Preventivos->preventivos_List();
-		$data['permission'] = $permission;
-		$this->load->view('preventivo/list', $data);
+		$data = $this->session->userdata();
+		log_message('DEBUG','#Main/index | Preventivo >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+
+		if(empty($data['user_data'][0]['usrName'])){
+			log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+			$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+			$this->session->set_userdata($var);
+			$this->session->unset_userdata(null);
+			$this->session->sess_destroy();
+
+			echo ("<script>location.href='login'</script>");
+
+		}else{
+			log_message('DEBUG','#Main/index | Sesion Activa >> '.'preventivo/list');
+			$data['list'] = $this->Preventivos->preventivos_List();
+			$data['permission'] = $permission;
+			$this->load->view('preventivo/list', $data);
+		}
+
+		
 	}	
 
     // Trae equipos por empresa logueada - Listo
@@ -154,10 +172,10 @@ class Preventivo extends CI_Controller {
 
 	// Guarda preventivo segun empresa logueada
 	public function guardar_preventivo()
-	{	
+	{
 		$data     = $this->input->post();
 		$userdata = $this->session->userdata('user_data');
-		$empId    = $userdata[0]['id_empresa'];  		
+		$empId    = $userdata[0]['id_empresa'];
 
 		$eq         =$this->input->post('id_equipo');
 		$ta         =$this->input->post('id_tarea');
@@ -189,8 +207,13 @@ class Preventivo extends CI_Controller {
 				'id_empresa'    => $empId,
 				'lectura_base'  => $lectbase
 			);
+
+		log_message('DEBUG', '#PREVENTIVO >> guardar_preventivo() $datos >> ' . json_encode($datos));
+
 		
 		$response['resPrenvent'] = $this->Preventivos->insert_preventivo($datos);
+
+		log_message('DEBUG', '#PREVENTIVO >> guardar_preventivo()  $response[resPrenvent]>> ' . json_encode($datos));
 		
 		if($response['resPrenvent']){
 
@@ -267,6 +290,9 @@ class Preventivo extends CI_Controller {
 					$response['respImagen'] = false;
 				}	
 		}
+
+		
+		log_message('DEBUG', '#PREVENTIVO >> guardar_preventivo()  $response[resPrenvent]>> ' . json_encode($response));
 
 		echo json_encode($response);		
 	}
@@ -487,6 +513,10 @@ class Preventivo extends CI_Controller {
 			$datos=$_POST['data'];
 			
 			$result = $this->Preventivos->insert_herramienta($datos);
+
+			//log_message('DEBUG', '#PREVENTIVO >> guardar_preventivo()  $result>> ' . json_encode($result));
+
+			echo json_encode($result);
 				
 		}
 	public function getperiodo(){

@@ -23,8 +23,9 @@
             <table id="correctivo" class="table table-bordered table-hover">
                 <thead>
                     <tr>
-                        <th style="text-align: center" class="hidden">Id Equipo</th>
-                        <th style="text-align: center" class="hidden">Id predictivo</th>
+                        <th style="text-align: center" class='hidden'>Id Equipo</th>
+                        <th style="text-align: center" class='hidden'>Id predictivo</th>
+                        <th style="text-align: center" class='hidden'>Id</th>
                         <th style="text-align: center">OT</th>
                         <th style="text-align: center">ID Solic.</th>
                         <th style="text-align: center">Codigo</th>
@@ -37,36 +38,42 @@
                 <tbody>
                     <?php
             //dump_exit($list4);
-            if( $list4!=false && count($list4) > 0) 
-            {
-              foreach( $list4 as $c ) 
-              {
-                $id_sol = $c['id_solicitud'];
-                $id_eq = $c['id_equipo'];
-                echo '<tr id="'.$id_sol.'" data-idequipo="'.$id_eq.'" >';
-                      //echo "<tr >";
-                echo "<td>";
-                      
-                if ($c['estado'] != 'OT') {
-                  echo '<i class="fa fa-stop-circle" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-correctivo" onclick="fill_Correc('.$c['id_solicitud'].')"></i>';
-                } else {
-                  echo '<i class="fa fa-stop-circle-o" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden Generada"></i>';
-                }                          
-                            
-                echo "</td>";
-                      // 1 // id equipo
-                echo "<td style='text-align: center' class='hidden'>".$c['id_equipo']."</td>";
-                      // 2 // id solicitud reparacion
-                echo "<td style='text-align: center' class='hidden'>".$c['id_solicitud']."</td>";
+            if( $list4!=false && count($list4) > 0) {
+              foreach( $list4 as $c ){
 
-                echo "<td style='text-align: center'>".$id_sol."</td>";
-                      // 3 // codigo de equipo
-                echo "<td style='text-align: center'>".$c['codigo']."</td>";
-                      // 4 // descripcion causa solicitud
-                echo "<td style='text-align: center'>".$c['causa']."</td>";
-                      // 5 // fecha guardada anteriromente
-                echo "<td style='text-align: center'>".$c['f_solicitado']."</td>";
-                echo "</tr>";
+                if($c['id_solicitud'] != null){
+
+                  $id_sol = $c['id_solicitud'];
+                  $id_eq = $c['id_equipo'];
+                  $id_tarea = $c['id'];
+                  //echo '<tr id="'.$id_sol.'" data-idequipo="'.$id_eq.'" >';
+                  echo '<tr id="'.$id_sol.'-'.$id_tarea.'" data-idequipo="'.$id_eq.'" >';
+                        
+                  echo "<td>";
+                        
+                  if ($c['estado'] != 'OT') {
+                    echo '<i class="fa fa-stop-circle" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden de Trabajo" data-toggle="modal"  onclick="fill_Correc('.$c['id_solicitud'].',this)"></i>';
+                  } else {
+                    echo '<i class="fa fa-stop-circle-o" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden Generada"></i>';
+                  }                          
+                              
+                  echo "</td>";
+                        // 1 // id equipo
+                  echo "<td style='text-align: center' class='hidden'>".$c['id_equipo']."</td>";
+                        // 2 // id solicitud reparacion
+                  echo "<td style='text-align: center'class='hidden' >".$c['id_solicitud']."</td>";
+                  
+                  echo "<td style='text-align: center' class='hidden'>".$c['id']."</td>";
+
+                  echo "<td style='text-align: center'>".$id_sol."</td>";
+                        // 3 // codigo de equipo
+                  echo "<td style='text-align: center'>".$c['codigo']."</td>";
+                        // 4 // descripcion causa solicitud
+                  echo "<td style='text-align: center'>".$c['causa']."</td>";
+                        // 5 // fecha guardada anteriromente
+                  echo "<td style='text-align: center'>".$c['f_solicitado']."</td>";
+                  echo "</tr>";
+                }
               }
             }
             ?>
@@ -166,7 +173,7 @@
                 // 7  //horas hombre
                 //echo "<td style='text-align: center'>".$p['horash']."</td>";
                 // 8  //periodo
-                echo "<td style='text-align: center'>".$periodo."</td>";               
+                echo "<td style='text-align: center'>".$p['desc_periodo']."</td>";           
                 // 9  //frecuencia
                 echo "<td style='text-align: center'>".$p['cantidad']."</td>";
                 echo "</tr>";
@@ -330,7 +337,7 @@
                     echo '<i class="fa fa-check-square" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden de Trabajo" data-toggle="modal" data-target="#modal-backlog" onclick="fill_Backlog('.$b['backId'].')"></i>';
                   }else{
                     echo '<i class="fa fa-check-square-o" id="cargOrden" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" title="Orden Generada"></i>';
-                  }                
+                  }
                
                 echo "</td>";
                 // 1 // id equipo

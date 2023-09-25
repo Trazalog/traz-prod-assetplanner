@@ -16,21 +16,42 @@ class Tarea extends CI_Controller {
 		// llama ABM tareas estandar
 		public function index2($permission)
     {
-        $data['list']       = $this->Tareas->Listado_Tareas();
-        $data['permission'] = $permission;
-        $this->load->view('tarea/list', $data);
+		$data = $this->session->userdata();
+		log_message('DEBUG','#Main/index2 | Tarea >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+
+		if(empty($data['user_data'][0]['usrName'])){
+			log_message('DEBUG','#Main/index2 | Cerrar Sesion >> '.base_url());
+			$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+			$this->session->set_userdata($var);
+			$this->session->unset_userdata(null);
+			$this->session->sess_destroy();
+
+			echo ("<script>location.href='login'</script>");
+
+		}else{
+			$data['list']       = $this->Tareas->Listado_Tareas();
+
+			log_message('DEBUG','#TRAZA | #Tarea/index2()>> data '.json_encode($data));
+
+			$data['permission'] = $permission;
+			$this->load->view('tarea/list', $data);
+		}
     }
 
 		public function Obtener_Tarea(){
 
 				$id     =$_POST['id_tarea'];
 				$result = $this->Tareas->Obtener_Tareas($id);
+				log_message('DEBUG','#TRAZA | #Tarea/Obtener_Tarea()>> data '.json_encode($result));
 				echo json_encode($result);
 		}
 	
 		/*Fernando Leiva */
 		public function Obtener_Todas(){
+
+			log_message('DEBUG','#TRAZA | #Tarea/Obtener_Todas()>> data '.json_encode($this->Tareas->Listado_Tareas()));
 			echo json_encode($this->Tareas->Listado_Tareas());
+
 		}
 
 		public function Obtener_Subtareas(){
@@ -81,31 +102,82 @@ class Tarea extends CI_Controller {
 		/*	./ FUNCIONES BPM */
 			// Bandea de entrada
 			public function index($permission = null){
-				///$this->load->helper('control_sesion');
-				// if	(validaSesion()){
+
+				$data = $this->session->userdata();
+					log_message('DEBUG','#TRAZA | TAREA | index() | UserId: '. $data['user_data'][0]['usrId'] ." ||| UserName: ". $data['user_data'][0]['usrName'] ." ||| id_empresa: ". $data['user_data'][0]['id_empresa']);
+
+					 if(empty($data['user_data'][0]['usrName'])){
+						log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+						$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+						$this->session->set_userdata($var);
+						$this->session->unset_userdata(null);
+						$this->session->sess_destroy();
+
+						echo ("<script>location.href='login'</script>");
+
+					}else{
+
 						$detect = new Mobile_Detect();    				
 						//Obtener Bandeja de Usuario desde Bonita
-						$response = $this->bpm->getToDoList();
-					
-						//dump($response, 'respuesta tareas BPM: ');
+					 	$response = $this->bpm->getToDoList();
+
 						if(!$response['status']){
-							//$this->load->view('404');
 							return;
 						}
-						//Completar Tareas con ID Solicitud y ID OT
-						$data_extend = $this->Tareas->CompletarToDoList($response['data']);
-						// var_dump($data_extend);
+						
+						$empr_id = empresa();
+						$array=[];
+						$aux=[];
+						
+						//Filtra datos por empresa
+						foreach($response['data'] as $o){
+							if($this->Tareas->bandejaEmpresa($o['caseId'] , $empr_id)){
+								$aux['caseId'] = $o['caseId'];
+								$aux['displayDescription'] = $o['displayDescription'];
+								$aux['executedBy'] = $o['executedBy'];
+								$aux['rootContainerId'] = $o['rootContainerId'];
+								$aux['assigned_date'] = $o['assigned_date'];
+								$aux['displayName'] = $o['displayName'];
+								$aux['executedBySubstitute'] = $o['executedBySubstitute'];
+								$aux['dueDate'] = $o['dueDate'];
+								$aux['description'] = $o['description'];
+								$aux['type'] = $o['type'];
+								$aux['priority'] = $o['priority'];
+								$aux['actorId'] = $o['actorId'];
+								$aux['processId'] = $o['processId'];
+								$aux['name'] = $o['name'];
+								$aux['reached_state_date'] = $o['reached_state_date'];
+								$aux['rootCaseId'] = $o['rootCaseId'];
+								$aux['id'] = $o['id'];
+								$aux['state'] = $o['state'];
+								$aux['parentCaseId'] = $o['parentCaseId'];
+								$aux['last_update_date'] = $o['last_update_date'];
+								$aux['pema_id'] = $o['pema_id'];
+								$aux['ot'] = $o['ot'];
+								$aux['equipoDesc'] = $o['equipoDesc'];
+								$aux['sectorDesc'] = $o['sectorDesc'];
+								$aux['nomCli'] = $o['nomCli'];
+								$aux['usr_asignado'] = $o['usr_asignado'];
+								$aux['assigned_id'] = $o['assigned_id'];
 
-						$data['list'] = $data_extend;
+								$array[] = $aux; 
+							}
+						}
+						
+						//guardo en session todas las tareas filtradas por case_id
+						$_SESSION['listadoTareas'] = $array;
 						$data['permission'] = $permission;		
+						log_message('DEBUG','#TRAZA | TAREA | index() | variable Sesion: '. json_encode($array));
 
 						if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {								
 							$data['device'] = "android";
 						}else{					
 							$data['device'] = "pc";				
-						}			
+						}		
+						//log_message('DEBUG','#TRAZA | TAREA | index() | data: '. json_encode($data));
+							
 						$this->load->view('tareas/list',$data);	
-				//}			
+					}		 
 			}
 			// Verifica si la tarea fue guardada la fecha de inicio
 			public function confInicioTarea(){
@@ -176,14 +248,13 @@ class Tarea extends CI_Controller {
 			public function tomarTarea(){								
 
 				$idTarBonita = $this->input->post('idTarBonita');			
-				$response = $this->bpm->setUsuario($idTarBonita, userId());
+				$userdata = $this->session->userdata('user_data'); 
 
-				$userdata = $this->session->userdata('user_data');             
-				
 				log_message('DEBUG','#TRAZA | #Tarea/tomarTarea(usrNick)>> '.$userdata[0]['usrNick']);
 				log_message('DEBUG','#TRAZA | #Tarea/tomarTarea(userBpm)>> '.$userdata[0]['userBpm']);
 				log_message('DEBUG','#TRAZA | #Tarea/tomarTarea(idTarBonita)>> '.$idTarBonita);
-
+				$response = $this->bpm->setUsuario($idTarBonita, userId());
+				            
 				echo json_encode($response);
 			}
 			// Usr Toma tarea en BPM  
@@ -248,7 +319,7 @@ class Tarea extends CI_Controller {
 
 				// log
 					log_message('DEBUG', 'TRAZA | $idTarBonita: '.$idTarBonita);
-					log_message('DEBUG', 'TRAZA | Informe correcto?: '.$opcionSel);
+					log_message('DEBUG', 'TRAZA | Informe correcto?: '.$opcion);
 
 				// si cierra la tarea en BPM
 				if ($result['status']){
@@ -309,9 +380,46 @@ class Tarea extends CI_Controller {
 								if(!$result){
 									echo json_encode(['status'=>false, 'msj'=>'error en setear la justificacion']);
 									return;
-								}
-								echo json_encode(['status'=>true, 'msj'=>'se rechazo el informe de servicio']);
-								return;
+								}	 
+
+									/* ASIGNACION INFORME DE SERVICIO AL MISMO USUARIO QUE SE REALIZO CONFECCIONA INFORME DE SERVICIO */
+
+									$infoOt = $this->Ordenservicios->getorden($id_OT);
+									$responsable = $data["usrId"] = $infoOt[0]["responsable"];
+									$usrId = $data["usrId"] = $infoOt[0]["id_usuario_a"];
+									$case_id = $this->Otrabajos->getCaseIdOT($id_OT);
+
+									// buscar task pa asignar la tarea siguiente (Confecciona informe servicio) a un responsable		
+									$nextTask = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Confecciona informe servicio');
+
+									if($nextTask == 0){
+										echo json_encode(msj(false,'No se pudo Obtener Tarea Siguiente | Confecciona informe servicio'));return;
+									}
+								
+									log_message('DEBUG', 'TRAZA |TAREAS | $case_id: '.$case_id);
+									log_message('DEBUG', 'TRAZA | TAREAS | INFORME SERVICIO-> $task_id: '.$nextTask);
+
+									if($responsable)
+									{
+										// sincroniza usuario local con el de BPM, para asignar el usr de BPM
+										$rsp = $this->bpm->getInfoSisUserenBPM($usrId);
+										if(!$rsp['status']){echo json_encode($rsp);return;}
+									
+										$usuarioBPM = $rsp['data']['id'];
+										// log	
+										log_message('DEBUG', 'TRAZA | Usr asignado (responsable Re Confecciona informe servicio) en BPM: '.$usuarioBPM);
+										log_message('DEBUG', 'TRAZA | Usr asignado (responsable Re Confecciona informe servicio) en LOCAL: '.$responsable);
+									
+										//Asignar Usuario a Tarea para Finanlizar
+										$responce = $this->bpm->setUsuario($nextTask,$usuarioBPM);
+									
+										if(!$responce['status']){
+											echo json_encode($responce);
+											return;
+										}
+									}
+									echo json_encode(['status'=>true, 'msj'=>'se rechazo el informe de servicio']);
+									return;
 						}	
 
 				} else {	// fallo al cerrar la tarea en BPM				
@@ -411,7 +519,7 @@ class Tarea extends CI_Controller {
 					$origen = $this->Tareas->getOrigenOt($id_OT);
 					$numtipo = 	$origen[0]['tipo'];
 					$id_solicitud = $origen[0]['id_solicitud'];
-					
+
 					$estado = 'T';
 					switch ($numtipo) {
 						case '1':
@@ -444,6 +552,42 @@ class Tarea extends CI_Controller {
 							$respuesta['status'] = true;
 							$respuesta['msj'] = 'OK';
 							$respuesta['code'] = 'Exito';
+
+							/* ASIGNACION INFORME DE SERVICIO AL MISMO USUARIO QUE SE ASIGNO Ejecutar OT */
+							$case_id = $this->Otrabajos->getCaseIdOT($id_OT);
+							/* obtengo usuario asignado */
+							$responsable = $this->Otrabajos->obtenerOT($id_OT)->id_usuario_a;
+
+							// buscar task pa asignar la tarea siguiente (Confecciona informe servicio) a un responsable		
+							$nextTask = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Confecciona informe servicio');
+
+							if($nextTask == 0){
+								echo json_encode(msj(false,'No se pudo Obtener Tarea Siguiente | Confecciona informe servicio'));return;
+							}
+
+							log_message('DEBUG', 'TRAZA |TAREAS | $case_id: '.$case_id);
+							log_message('DEBUG', 'TRAZA | TAREAS | INFORME SERVICIO-> $task_id: '.$nextTask);
+							
+							if($responsable)
+							{
+								// sincroniza usuario local con el de BPM, para asignar el usr de BPM
+								$rsp = $this->bpm->getInfoSisUserenBPM($responsable);
+								if(!$rsp['status']){echo json_encode($rsp);return;}
+
+								$usuarioBPM = $rsp['data']['id'];
+								// log	
+								log_message('DEBUG', 'TRAZA | Usr asignado (responsable Confecciona informe servicio) en BPM: '.$usuarioBPM);
+								log_message('DEBUG', 'TRAZA | Usr asignado (responsable Confecciona informe servicio) en LOCAL: '.$responsable);
+
+								//Asignar Usuario a Tarea para Finanlizar
+								$responce = $this->bpm->setUsuario($nextTask,$usuarioBPM);
+
+								if(!$responce['status']){
+									echo json_encode($responce);
+									return;
+								}
+							}
+							
 							echo json_encode($respuesta);
 					} else {
 							$respuesta['status'] = false;
@@ -798,6 +942,32 @@ class Tarea extends CI_Controller {
 		}else{
 			echo json_encode(['status'=>false, 'msj'=> 'Error al cerrar Tarea']);
 		}
+	}
+
+ 	/**
+	* Genera el listado de las tareas paginadas
+	* @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
+	* @return array listado paginado y la cantidad
+	*/
+	public function paginado(){
+		$start = $this->input->post('start');
+		$length = $this->input->post('length');
+		$search = $this->input->post('search')['value'];
+
+		$r = $this->Tareas->tareaspaginadas($start,$length,$search);
+	
+		$datos =$r['datos'];
+		$totalDatos = $r['numDataTotal'];
+		$datosPagina = count($datos);
+
+		$json_data = array(
+			"draw" 				=> intval($this->input->post('draw')),
+			"recordsTotal"  	=> intval($datosPagina),
+			"recordsFiltered"	=> intval($totalDatos),
+			"data" 				=> $datos
+		);
+		$result = json_encode($json_data);
+		echo $result;
 	}
 
 	

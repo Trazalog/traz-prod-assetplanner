@@ -62,8 +62,10 @@ class Preventivos extends CI_Model
         $this->db->join('proceso', 'proceso.id_proceso=equipos.id_proceso');
         $this->db->join('admcustomers', 'admcustomers.cliId=equipos.id_customer');
         $this->db->where('equipos.estado !=', 'AN');
+        $this->db->where('equipos.estado !=', 'IN');
         $this->db->where('equipos.id_empresa', $empId);
         $this->db->order_by('equipos.codigo', 'ASC');   
+        
         $query= $this->db->get();   
 
         if ($query->num_rows()!=0)
@@ -137,6 +139,7 @@ class Preventivos extends CI_Model
 	// Trae componente segun id de equipo - Listo
 	function getcomponente($id)
     {
+        $this->db->distinct();
 	   	$this->db->select('componentes.id_componente, componentes.descripcion');
     	$this->db->from('componentes');
     	$this->db->join('componenteequipo', 'componenteequipo.id_componente = componentes.id_componente');

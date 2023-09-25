@@ -1,106 +1,167 @@
-<div class="row">
-    <div class="col-xs-12">
-        <div class="alert alert-danger alert-dismissable" id="errorUsr" style="display: none">
-            <h4><i class="icon fa fa-ban"></i> Error!</h4>
-            Revise que todos los campos esten completos
+<input type="hidden" id="permission" value="<?php echo $permission;?>">
+<section class="content">
+		<div class="row">
+				<div class="col-xs-12">
+						<div class="box">
+								<div class="box-header">
+										<h3 class="box-title">Usuarios</h3>
+										<?php
+										if (strpos($permission,'Add') !== false) {
+														echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" data-toggle="modal" onclick="LoadUsr(0,\'Add\')" id="btnAdd">Agregar</button>';
+										}
+										?>
+								</div><!-- /.box-header -->
+								<div class="box-body" id="tabla">
+
+								</div><!-- /.box-body -->
+						</div><!-- /.box -->
+				</div><!-- /.col -->
+		</div><!-- /.row -->
+</section><!-- /.content -->
+
+<script>
+
+$("#tabla").load("<?php echo base_url(); ?>User/getTabla/<?php echo $permission; ?>");
+
+var idUsr = 0;
+var acUsr = '';
+
+function LoadUsr(id_, action){
+    idUsr = id_;
+    acUsr = action;
+
+    //Se cambia el texto de #btnSave de acuerdo al contexto
+    if( action == 'Add') {
+        $('#btnSave').html('Agregar').show();
+    }
+    if( action == 'Edit') {
+        $('#btnSave').html('Editar').show();
+    }
+    if( action == 'Del') {
+        $('#btnSave').html('Eliminar').show();
+    }
+    if( action == 'View') {
+        $('#btnSave').hide();
+    }
+    LoadIconAction('modalAction',action);
+    WaitingOpen('Cargando Usuario');
+
+    $.ajax({
+        data: { id : id_, act: action },
+        dataType: 'json',
+        type: 'POST',
+        url: 'index.php/user/getUser',
+        success: function(result){
+            WaitingClose();
+            $("#modalBodyUsr").html(result.html);
+            setTimeout("$('#modalUsr').modal('show')",800);
+        },
+        error: function(result){
+            WaitingClose();
+            alert("error");
+        },
+    });
+}
+
+$("#0").on("submit", function(e){
+    e.preventDefault();
+
+    if(acUsr == 'View') {
+        $('#modalUsr').modal('hide');
+        return;
+    }
+
+    var hayError = false;
+
+    if($('#usrNick').val() == '') {
+        hayError = true;
+    }
+
+    if($('#usrName').val() == '') {
+      hayError = true;
+    }
+
+    if($('#usrLastName').val() == '') {
+      hayError = true;
+    }
+
+    if($('#usrComision').val() == '') {
+      hayError = true;
+    }
+
+    if($('#usrPassword').val() != $('#usrPasswordConf').val()) {
+      hayError = true;
+    }
+
+    if(hayError == true) {
+        $('#errorUsr').fadeIn('slow');
+        return;
+    }
+
+    $('#errorUsr').fadeOut('slow');
+
+    //Preparo los datos para enviarlos al controlador
+    var formData = new FormData(document.getElementById("0"));
+    formData.append('id', idUsr); //estas 2 variables se cargan al llamar al usuario
+    formData.append('act', acUsr);
+
+    WaitingOpen('Guardando cambios');
+
+    $.ajax({
+        cache: false,
+        contentType: false,
+        data: formData,
+        dataType: "html",
+        processData: false,
+        type: "POST",
+        url: "index.php/user/test",
+        success: function(data){
+            WaitingClose();
+            $('#modalUsr').modal('hide');
+            $('.modal-backdrop').remove();//fix cierre del modal
+												$("#tabla").load("<?php echo base_url(); ?>User/getTabla/<?php echo $permission; ?>");
+            //cargarView( 'User', 'index', $('#permission').val() );
+        },
+        error: function(result){
+            WaitingClose();
+            //alert(result);
+            //VER QUE MENSAJE MOSTRAR
+            alert('Hubo un error al realizar la operación!');
+        },
+    });
+});
+</script>
+
+<!-- Modal -->
+<div class="modal fade" id="modalUsr" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="POST" id="0" enctype="multipart/form-data" accept-charset="utf-8">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Usuario</h4>
+                </div>
+                <div class="modal-body" id="modalBodyUsr">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btnSave">Guardar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-xs-4">
-        <label style="margin-top: 7px;">Usuario <strong style="color: #dd4b39">*</strong>: </label>
-    </div>
-    <div class="col-xs-8">
-        <input type="text" class="form-control" placeholder="Usuario" id="usrNick" name="usrNick" value="<?php echo $data['user']['usrNick'];?>" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?>  >
-    </div>
-</div>
-<br>
-<div class="row">
-    <div class="col-xs-4">
-        <label style="margin-top: 7px;">Nombre <strong style="color: #dd4b39">*</strong>: </label>
-    </div>
-    <div class="col-xs-8">
-        <input type="text" class="form-control" placeholder="Nombre" id="usrName" name="usrName" value="<?php echo $data['user']['usrName'];?>" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?>  >
-    </div>
-</div>
-<br>
-<div class="row">
-    <div class="col-xs-4">
-        <label style="margin-top: 7px;">Apellido <strong style="color: #dd4b39">*</strong>: </label>
-    </div>
-    <div class="col-xs-8">
-        <input type="text" class="form-control" placeholder="Apellido" id="usrLastName" name="usrLastName" value="<?php echo $data['user']['usrLastName'];?>" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?>  >
-    </div>
-</div>
-<br>
-<!--<div class="row">
-    <div class="col-xs-4">
-        <label style="margin-top: 7px;">Comisión <strong style="color: #dd4b39">*</strong>: </label>
-    </div>
-    <div class="col-xs-8">
-        <input type="text" class="form-control" placeholder="Comisión" id="usrComision" name="usrComision" value="<?php echo $data['user']['usrComision'];?>" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?>  >
-    </div>
-</div>
-<br>-->
-<div class="row">
-    <div class="col-xs-4">
-        <label style="margin-top: 7px;">Contraseña <strong style="color: #dd4b39">*</strong>: </label>
-    </div>
-    <div class="col-xs-8">
-        <input type="password" class="form-control" placeholder="••••••••" id="usrPassword" name="usrPassword" value="" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?>  >
-    </div>
-</div>
-<br>
-<div class="row">
-    <div class="col-xs-4">
-        <label style="margin-top: 7px;">Confirma Contraseña <strong style="color: #dd4b39">*</strong>: </label>
-    </div>
-    <div class="col-xs-8">
-        <input type="password" class="form-control" placeholder="••••••••" id="usrPasswordConf" name="usrPasswordConf" value="" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?>  >
-    </div>
-</div>
-<br>
-<div class="row">
-    <div class="col-xs-4">
-        <label style="margin-top: 7px;">Grupo <strong style="color: #dd4b39">*</strong>: </label>
-    </div>
-    <div class="col-xs-8">
-        <select class="form-control" id="grpId" name="grpId" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
-            <?php
-            foreach ($data['groups'] as $g) {
-                echo '<option value="'.$g['grpId'].'" '.($data['user']['grpId'] == $g['grpId'] ? 'selected' : '').'>'.$g['grpName'].'</option>';
-            }
-            ?>
-        </select>
-    </div>
-</div>
-<br>
-<div class="row">
-    <div class="col-xs-4">
-        <label style="margin-top: 7px;">Imagen de Perfil: </label>
-    </div>
-    <div class="col-xs-8">
-        <div class="fileinput fileinput-new" data-provides="fileinput" data-name="profileImage">
-            <div class="fileinput-new thumbnail" style="width: 150px; height: 150px;">
-                <?php $user_image = $data['user']['usrimag'];
-                if( $user_image != '' ) {
-                    $user_image = 'data:image/jpg;base64,'.base64_encode($user_image).'" ';
-                } else {
-                    $user_image = base_url() .'assets/images/avatar.png';
-                } ?>
-                <img alt="default user image" src="<?php echo $user_image ?>" style="height: 100%; width: 100%; display: block;">
-            </div>
-            <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 150px; max-height: 150px;"></div>
-            <div>
-                <?php if($data['read'] == true){
-                    echo '';
-                } else { ?>
-                <span class="btn btn-default btn-file"><span class="fileinput-new">Seleccionar imagen</span><span class="fileinput-exists">Cambiar</span><input type="file" id="input-img" name="imagen"></span>
-                <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remover</a>
-                <?php } ?>
-            </div>
-        </div><!-- END .fileinput -->
-        <br>
-    </div>
-</div>
+
+
+
+
+
+
+
+
+
+
+
+

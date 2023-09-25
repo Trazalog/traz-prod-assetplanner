@@ -84,8 +84,8 @@
                 <thead>
                   <tr>                
                     <th>Orden de Trabajo</th>
-                    <th>Descripcion</th>
-                    <th>Tarea</th>
+                    <th>Descripcion S.S.</th>
+                    <th>Tarea Estándar</th>
                     <th>Equipo</th>
                     <th>Fecha</th>
                     <th>Fecha de Programacion</th>

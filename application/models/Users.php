@@ -105,60 +105,60 @@ class Users extends CI_Model
 			$img  = $data['usrimag'];
 
 			if($act == 'Edit') {
-				if($pas == '') {
-					if($img == '') {
-						//No modificar la contraseña
-						$data = array(
-						   'usrNick'     => $usr,
-						   'usrName'     => $name,
-						   'usrLastName' => $lnam,
-						   //'estado'	     => 'AC',
-						   //'grpId'       => $grp,
-						   //'id_empresa'  => $empresaId
-						);
-					}
-					else {
-						$data = array(
-						   'usrNick'     => $usr,
-						   'usrName'     => $name,
-						   'usrLastName' => $lnam,
-						   //'usrComision' => $com,
-						   //'grpId'       => $grp,
-						   'usrimag'     => $img,
-						   //'estado'	     => 'AC',
-						   //'grpId'       => $grp,
-						   //'id_empresa'  => $empresaId
-						);
-					}
-				} else {
-					if($img == '') {
-					//Modificar la contraseña
-						$data = array(
-						   'usrNick'     => $usr,
-						   'usrName'     => $name,
-						   'usrLastName' => $lnam,
-						   //'usrComision' => $com,
-						   'usrPassword' => md5($pas),
-						   //'estado'	     => 'AC',
-						   //'grpId'       => $grp,
-						   //'usrimag'     => $img,
-						   //'id_empresa'  => $empresaId
-						);
+					if($pas == '') {
+						if($img == '') {
+							//No modificar la contraseña
+							$data = array(
+										'usrNick'     => $usr,
+										'usrName'     => $name,
+										'usrLastName' => $lnam,
+										//'estado'	     => 'AC',
+										//'grpId'       => $grp,
+										//'id_empresa'  => $empresaId
+							);
+						}
+						else {
+							$data = array(
+										'usrNick'     => $usr,
+										'usrName'     => $name,
+										'usrLastName' => $lnam,
+										//'usrComision' => $com,
+										//'grpId'       => $grp,
+										'usrimag'     => $img,
+										//'estado'	     => 'AC',
+										//'grpId'       => $grp,
+										//'id_empresa'  => $empresaId
+							);
+						}
 					} else {
-						$data = array(
-						   'usrNick'     => $usr,
-						   'usrName'     => $name,
-						   'usrLastName' => $lnam,
-						   //'usrComision' => $com,
-						   'usrPassword' => md5($pas),
-						   //'grpId'       => $grp,
-						   'usrimag'     => $img,
-						   //'estado'      => 'AC',
-						   //'grpId'       => $grp,
-						   //'id_empresa'  => $empresaId
-						);
+						if($img == '') {
+						//Modificar la contraseña
+							$data = array(
+										'usrNick'     => $usr,
+										'usrName'     => $name,
+										'usrLastName' => $lnam,
+										//'usrComision' => $com,
+										'usrPassword' => md5($pas),
+										//'estado'	     => 'AC',
+										//'grpId'       => $grp,
+										//'usrimag'     => $img,
+										//'id_empresa'  => $empresaId
+							);
+						} else {
+							$data = array(
+										'usrNick'     => $usr,
+										'usrName'     => $name,
+										'usrLastName' => $lnam,
+										//'usrComision' => $com,
+										'usrPassword' => md5($pas),
+										//'grpId'       => $grp,
+										'usrimag'     => $img,
+										//'estado'      => 'AC',
+										//'grpId'       => $grp,
+										//'id_empresa'  => $empresaId
+							);
+						}
 					}
-				}
 			} else {
 				$data = array(
 				   'usrNick'     => $usr,

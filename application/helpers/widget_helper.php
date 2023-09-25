@@ -150,10 +150,10 @@ if (!function_exists('cantTipoOrdenTrabajo')) {
         // Call a function of the model
         $output = $CI->Otrabajos->kpiCantTipoOrdenTrabajo();
         // En DB tabla orden_trabajo, en el campo tipo
-        // 1 = correctivo
-        // 2 = preventivo
-        // 3 = predictivo
-        // 4 = backlog
+            // 1 = correctivo - Orden de Trabajo
+            // 2 = preventivo - Solicitud de servicio
+            // 3 = predictivo - Preventivo
+            // 4 = backlog    - Backlog
         // Output
 
         $aux = new StdClass();
@@ -210,10 +210,13 @@ if (!function_exists('sacarEquiposOperativos')) {
                 array_push($estados, $equipos[$i]['estado']);
             }
         }
-
+        
         //cuento cantidad de cada estado y agrego esos campos (Estado y cantidad) al arreglo $outuput
-        $output[0]['cantEstadoActivo'] = 0;
-        foreach ($estados as $clave) {
+        $output[0]['cantEstadoActivo'] = "0";                        //Aca he colocado el 0 entre comillas pero veo como que no lo usan
+        $estados = array_filter($estados);                           //esto es nuevo lo coloque porque a veces trae un null
+        //log_message("DEBUG","HELPER". json_encode($estados));
+        //log_message("DEBUG","HELPER". json_encode($equipos));
+        foreach ($estados as $clave) {   // no esta en mas ningun lugar solo aqui y a mi me parecio tambien extraño no creo que no
             if ($clave == 'AC') {
                 $output[0]['estado'] = 'OP'; //Operativo
                 $output[0]['cantEstadoActivo'] = array_count_values(array_column($equipos, 'estado'))[$clave];

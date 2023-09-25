@@ -144,4 +144,55 @@ class Pedidos_Materiales extends CI_Model
         return $pema_id;
 
     }
+
+
+
+    /**
+	* reLanza Pedidos de materiales Erroneos 
+	* @param array
+	* @return 
+	*/
+    //solucion a bug que genera pedido de materiales en estado creado y no solicitado
+    public function reLanzaPedidosErroneos()
+    {
+        log_message('DEBUG','#TRAZA|TRAZ-COMP-ALMACEN|PEDIDOS_MATERIALES|reLanzaPedidosErroneos()  >> ');
+
+        //Traigo todos los casos con estado "Creada" y case_id = null
+        $this->db->select('*');
+        $this->db->from('alm_pedidos_materiales');
+        $this->db->where('empr_id', empresa());
+        $this->db->where('estado', 'Creada');
+        $this->db->where('case_id', null);
+        $data = $this->db->get()->result_array();
+        //$aux=[];
+        //$array=[];
+
+        //Recorro los casos
+        for ($i=0; $i < count($data); $i++) { 
+
+            //Filtro por pema_id los que necesito relanzar
+            if( ($data[$i]['pema_id'] >  9256 ) && ($data[$i]['pema_id'] < 10821 ))
+            {
+                $contract = [
+                    'pIdPedidoMaterial' => $data[$i]['pema_id'],
+                ];
+        
+                $rsp = $this->bpm->lanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES, $contract);
+
+				if ($rsp['status']) {
+				    log_message('DEBUG','#TRAZA|TRAZ-COMP-ALMACEN|NEW|PEDIDOS_MATERIALES|reLanzaPedidosErroneos()-> $rsp >> '.json_encode($rsp));
+				    //actualiza el case_id con el del proceso lanzado
+                    $this->setCaseId($data[$i]['pema_id'], $rsp['data']['caseId']);
+                    //Actualiza el estado a creado
+                    $this->setEstado($data[$i]['pema_id'], 'Solicitado');
+                }
+                else{
+                    log_message('ERROR','#TRAZA|TRAZ-COMP-ALMACEN|PEDIDOS_MATERIALES|reLanzaPedidosErroneos() >> ERROR: NO SE RELANZO PROCESO PEDIDO MATERIAL NORMAL');
+                }
+                //$aux[$i]['pema_id'] = $data[$i]['pema_id'] ;
+                //$array = $aux;
+            }         
+        }
+        return $data;   
+    }
 }

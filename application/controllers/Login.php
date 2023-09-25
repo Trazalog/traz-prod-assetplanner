@@ -25,6 +25,9 @@ class login extends CI_Controller {
 		
 		$data = $this->Users->sessionStart_($this->input->post());
 
+
+		log_message("DEBUG","LOGIN -> sessionStart_() data => ". json_encode($data));
+
 		if($data  == false)
 		{
 			echo json_encode(0);

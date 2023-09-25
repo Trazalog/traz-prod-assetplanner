@@ -11,9 +11,24 @@ class Ordenservicio extends CI_Controller {
 
     public function index($permission)
     {
+      $data = $this->session->userdata();
+      log_message('DEBUG','#Main/index | OrdenServicio >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+  
+      if(empty($data['user_data'][0]['usrName'])){
+        log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+        $var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+        $this->session->set_userdata($var);
+        $this->session->unset_userdata(null);
+        $this->session->sess_destroy();
+  
+        echo ("<script>location.href='login'</script>");
+  
+      }else{
+      
         $data['permission'] = $permission;
         $data['list']       = $this->Ordenservicios->getOrdServiciosList();
         $this->load->view('ordenservicios/list',$data);
+      }
     }
 
    
@@ -54,6 +69,7 @@ class Ordenservicio extends CI_Controller {
     {           
       $data['id_ot']      = $id_ot;            // id de OT. 
       $data['id_eq']      = $id_eq;             // id de equipo   
+      log_message('DEBUG','#Main/index | OrdenServicio >verInforme> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
     
       $infoOt = $this->Ordenservicios->getorden($id_ot);
       // si la tareas es opcional
@@ -68,8 +84,8 @@ class Ordenservicio extends CI_Controller {
       $data['nom_responsable'] = $infoOt[0]["responsable"];
       $data['idresponsable'] = $infoOt[0]["usrId"];
       $data['idTarBonita'] = $idTarBonita;
-      $equi['id_equipo']= $id_eq; // duplicado para reutilizar la funcion   
-      $data['equipos'] = $this->Ordenservicios->getEquipos($id_eq); 
+      $equi['id_equipo']= $id_eq; // duplicado para reutilizar la funcion
+      $data['equipos'] = $this->Ordenservicios->getEquipos($equi); 
       $data['lecturas'] = $this->Ordenservicios->getLecturasOrden($id_ot);
       $data['lecturasOT'] = $this->Otrabajos->getLecturasOrden($id_ot);
       $data['tareas'] = $this->Ordenservicios->getTareasOrden($id_ot);

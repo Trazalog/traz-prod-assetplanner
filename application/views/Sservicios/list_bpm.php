@@ -17,7 +17,8 @@
                   <tr>
                       <th width="2%">Acciones</th>
                       <th>Nro</th>
-                      <th>fecha</th>
+                      <th>Fecha</th>
+																						<th>Fecha Fin</th>
                       <th>Solicitante</th>
                       <th>Equipo</th>
                       <th>Sector</th>
@@ -39,8 +40,8 @@
                         // var_dump($list);
                           // usuario logueado o grupo administrador
                     //    if (($f['usrId'] == $usrId) || ($grupoId == 1)) {
-                           
-                            $id_sol = $f['id_solicitud'];                                    
+																												$fecTerminada = $f['fecha_terminada'];
+                            $id_sol = $f['id_solicitud'];
                             $id_eq = $f['id_equipo'];
 
                           echo '<tr id="'.$id_sol.'" class="'.$id_eq.'" data-idequipo="'.$id_eq.'" >' ;
@@ -59,12 +60,21 @@
                             //if ($f['estado'] !== 'T') { 
                             //echo '<i class="fa fa-thumbs-up text-light-blue" data-toggle="modal" data-target="#modalConformidad" style="cursor: pointer; margin-left: 15px;" title="Conformidad"></i>';
                             //}   
-                            
+
                             //echo '<i class="fa fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"></i> ';
 
                             echo '</td>';
                             echo '<td style="text-align: left">'.$f['id_solicitud'].'</td>';
                             echo '<td style="text-align: left">'.$f['f_solicitado'].'</td>';
+
+																												if ( ($fecTerminada == '0000-00-00 00:00:00') || ($fecTerminada == '') ) {
+
+																														echo '<td style="text-align: left"> S/Fecha</td>';
+																												} else {
+
+																														echo '<td style="text-align: left">'.$f['fecha_terminada'].'</td>';
+																												}
+
                             echo '<td style="text-align: left">'.$f['solicitante'].'</td>';
                             echo '<td style="text-align: left">'.$f['equipo'].'</td>';
                             echo '<td style="text-align: left">'.$f['sector'].'</td>';
