@@ -283,12 +283,12 @@ $(document).ready(function(){
         $(row).attr('tags', (proc) ? proc : '' );
         $(row).attr('onclick', 'detalleTarea(this)');
     },
-    }); 
-    //Recoarga cada 15seg
+    });  
+    /*alert( 'Rows '+$('#bandeja').DataTable().rows(':contains("Unknown")').data().length+' are selected' );    //Recoarga cada 15seg
     setInterval( function () {
         //$('#bandeja').DataTable().data().reload();
         $('#bandeja').DataTable().ajax.reload();           
-    },20000);
+    },20000);*/
 
 });
 
