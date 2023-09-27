@@ -159,6 +159,13 @@
                                         </div></div>
                                 </div>
                             </div>-->
+                            <div class="row">
+                                <div class="col-md-12 col-xs-12">     
+                                    <div style="padding: 0px 0px 0px 5px;">
+                                        [%]
+                                    </div>                                    
+                                </div>
+                            </div>
                             <div id="graph-container">
                                 <canvas id="miGrafico"></canvas>
                             </div>
@@ -439,6 +446,9 @@ function graficarParametro(disponibilidad) {
         type: 'bar',
         data: data,
         options: {
+            legend: {
+                position: 'bottom',
+            },
             /*"horizontalLine": [{
                 "y": disponibilidad['promedioMetas'],
                 "style": "#00A65A",
@@ -449,12 +459,13 @@ function graficarParametro(disponibilidad) {
             maintainAspectRatio: true,
             scales: {
                 yAxes: [{
+                    display: true, 
                     ticks: {
                         max: 100,
                         min:0,
                         beginAtZero:true,
                     }
-                }]
+                }]                
             },
             tooltips: {
                 callbacks: {
