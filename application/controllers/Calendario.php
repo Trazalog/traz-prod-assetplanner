@@ -144,7 +144,7 @@ class Calendario extends CI_Controller
         $userBpm = $userdata[0]['userBpm'];
 
         // log
-        log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar');
+        //log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar');
         $data = $this->input->post();
         //log_message('DEBUG', 'TRAZA | Data: '.json_decode($data));
 
