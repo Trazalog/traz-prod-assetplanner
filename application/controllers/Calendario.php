@@ -146,7 +146,7 @@ class Calendario extends CI_Controller
         // log
         //log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar');
         $data = $this->input->post();
-        //log_message('DEBUG', 'TRAZA | Data: '.json_decode($data));
+        log_message('DEBUG', 'TRAZA | Data: '.json_encode($data));
 
         $userdata = $this->session->userdata('user_data');//linea repetida
         $usrId = $userdata[0]['usrId'];
@@ -212,6 +212,9 @@ class Calendario extends CI_Controller
                 'lectura_ejecutada' => $lectura_ejecutada,
             );
 
+            log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar | datos2'.json_encode($data));
+
+
             // si el evento es unico lo guarda
             if ($event_tipo == '1') {
 
@@ -274,7 +277,7 @@ class Calendario extends CI_Controller
                 // $tipo == '3' -> Preventivo
                 if ($tipo == '3') {
                     //log
-                    log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar |  Tipo solicitud en 3: ' . $tipo);
+                    log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar |  Tipo solicitud en 3: ' . $tipo.' Datos2'.json_encode($datos2));
                     $tipo = 'preventivo';
                     $this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);
                 }
@@ -376,15 +379,17 @@ class Calendario extends CI_Controller
                 $fecha_limite = date('Y-m-d H:i:s', $fecha_limite); /// "2018-06-16 00:00:00"
                 //busco la frecuencia de la tarea
                 $diasFrecuencia = $this->getPeriodTarea($tipo, $id_solicitud);
+                log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar | diasfrecuencia: '.$diasFrecuencia);
 
                 // si es preventivo ACTUALIZA NUEVAMENTE LA FECHA BASE_ OK!
                 $estado = 'PL';
 
                 if ($tipo == '3') {
                     //pongo nueva fecha base en preventivos
+                    log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar | tipo: '.$tipo.' fechalimte: '.$fecha_limite.' idsolicitud: '.$id_solicitud);
                     $this->Calendarios->actualizarFechaBasePreventivos($fecha_limite, $id_solicitud);
                     // cambia estado al preventivo
-                    $tipo = 'preventivo';
+                    $tipo = 'preventivo';                    
                     $this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);
                 }
                 // cambia estado al predictivo
@@ -474,12 +479,13 @@ class Calendario extends CI_Controller
             case '3': // Preventivo
                 $this->db->select('preventivo.cantidad, periodo.descripcion');
                 $this->db->from('preventivo');
-																$this->db->join('periodo', 'periodo.idperiodo = preventivo.perido');
+				$this->db->join('periodo', 'periodo.idperiodo = preventivo.perido');
                 $this->db->where('preventivo.prevId', $id_solicitud);
 
                 $query = $this->db->get();
-																$str = $this->db->last_query();
+				$str = $this->db->last_query();
                 $info = $query->result_array();
+                log_message('DEBUG', 'TRAZA | Calendario/getPeriodTarea | info: '.json_encode($info));
                 break;
             case '5': // Predictivo
                 $this->db->select('predictivo.cantidad, periodo.descripcion');
@@ -492,6 +498,7 @@ class Calendario extends CI_Controller
         }
 
         $duracion = $this->getDiasDuracion($info);
+        log_message('DEBUG', 'TRAZA | Calendario/getPeriodTarea | info: '.json_encode($duracion));
         return $duracion;
     }
 
@@ -504,6 +511,9 @@ class Calendario extends CI_Controller
         switch ($especie) {
             case 'Mensual':
                 $dias = 30 * $cantidad;
+                break;
+            case 'Semanal':
+                $dias = 7 * $cantidad;
                 break;
             case 'Semestral':
                 $dias = 180 * $cantidad;
@@ -523,7 +533,7 @@ class Calendario extends CI_Controller
 
         //cargo libreria BPM
         $estado = 'PL';
-
+        
         while ($fecha_limite >= $fec_programacion) {
 
             $idOT = $this->Calendarios->guardar_agregar($datos2);
