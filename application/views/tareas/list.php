@@ -84,25 +84,9 @@
 
 $(document).ready(function(){
     
-    var tableBandeja = $('#bandeja').DataTable({
+    $('#bandeja').DataTable({
    'initComplete':function( settings, json ) {
-         WaitingClose();
-        //Regarga 20seg
-        setInterval( function () {
-            //$('#bandeja').DataTable().data().reload();
-            $('#bandeja').DataTable().ajax.reload();
-            //Revisa cantidad nueva con cantidad anterior y activa el boton
-            var cant1 = $('#bandeja').DataTable().ajax.count();
-            alert(cant);
-            if(cant < cant1){
-                $("#notiTareas").css('visibility','visible');
-                cant=cant1;
-            }else{
-                $("#notiTareas").css('visibility','hidden');
-            }
-
-        },20000);
-         
+         WaitingClose();                 
     },
 	'ordering': true,
     'searchDelay': 3000,
@@ -115,7 +99,7 @@ $(document).ready(function(){
         url: 'index.php/Tarea/paginado',
         beforeSend: function(){
             msjBusqueda();
-        },
+        }
     },
     'columnDefs':[
         {
@@ -299,25 +283,13 @@ $(document).ready(function(){
         $(row).attr('tags', (proc) ? proc : '' );
         $(row).attr('onclick', 'detalleTarea(this)');
     },
-    }); 
-    //Recoarga cada 15seg
-    /*setInterval( function () {
-       
-        table.ajax.reload();
-        alert(location.href);
-        alert( 'Rows '+table.rows( '.selected' ).count()+' are selected' );
-        var cant1 = table.data().count();        
-        if(cant< cant1){
-            $("#notiTareas").css('visibility','visible');
-            cant=cant1;
-        }else{
-            $("#notiTareas").css('visibility','hidden');
-        }
-        
-    }, 15000 );*/
+    });  
+    /*alert( 'Rows '+$('#bandeja').DataTable().rows(':contains("Unknown")').data().length+' are selected' );    //Recoarga cada 15seg
+    setInterval( function () {
+        //$('#bandeja').DataTable().data().reload();
+        $('#bandeja').DataTable().ajax.reload();           
+    },20000);*/
 
-    var cant = $('#bandeja').DataTable().ajax.count();
-    console.log(cant);
 });
 
 
