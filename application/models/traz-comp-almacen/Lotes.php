@@ -14,7 +14,7 @@ class Lotes extends CI_Model {
 		$this->db->join('alm_articulos', 'alm_lotes.arti_id = alm_articulos.arti_id');
 		$this->db->join('alm_depositos', ' alm_lotes.depo_id = alm_depositos.depo_id');
 		$this->db->join('utl_tablas C','alm_lotes.estado_id = C.tabl_id');
-
+		$this->db->where('alm_lotes.empr_id', empresa());
 		$query = $this->db->get();
 		if ($query->num_rows()!=0)
 		{
