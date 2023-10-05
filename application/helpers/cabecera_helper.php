@@ -270,7 +270,7 @@ if(!function_exists('cargarCabecera')){
 							echo '</div>
 							<div class="col-xs-12 col-sm-12">
 								<label style="margin-top: 7px;">Tarea: </label>
-								<textarea id="info-tarea" type="text" class="form-control" rows="7" disabled>'.$resultOT['tareaDescrip'].'</textarea>
+								<textarea id="info-tarea" class="form-control" rows="7" disabled>'.$resultOT['tareaDescrip'].'</textarea>
 							</div>
 						</div>
 						
