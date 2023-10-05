@@ -243,10 +243,7 @@ if(!function_exists('cargarCabecera')){
 								<label style="margin-top: 7px;">Duración: </label>
 								<input type="text" id="duracion" class="form-control"  value="'.$resultOT['duracion'].'" disabled/>
 							</div>							
-							<div class="col-xs-12 col-sm-4">
-								<label style="margin-top: 7px;">Tarea: </label>
-								<input id="info-tarea" type="text" class="form-control"  value="'.$resultOT['tareaDescrip'].'" disabled/>
-							</div>							
+							
 							<div class="col-xs-12 col-sm-4">
 								<label style="margin-top: 7px;">Estado: </label>';								
 								if ($resultOT['estado'] == 'S') {								
@@ -271,7 +268,12 @@ if(!function_exists('cargarCabecera')){
 									echo  '<input type="text" class="form-control"  value="Conforme" disabled/>';
 								} 							
 							echo '</div>
+							<div class="col-xs-12 col-sm-12">
+								<label style="margin-top: 7px;">Tarea: </label>
+								<textarea id="info-tarea" type="text" class="form-control" rows="7" disabled>'.$resultOT['tareaDescrip'].'</textarea>
+							</div>
 						</div>
+						
 						<!-- /.box-body -->
 				</div>
 			
