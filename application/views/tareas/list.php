@@ -83,11 +83,12 @@
 <script>
 
 $(document).ready(function(){
+    
     $('#bandeja').DataTable({
    'initComplete':function( settings, json ) {
-         WaitingClose();
+         WaitingClose();                 
     },
-				'ordering': true,
+	'ordering': true,
     'searchDelay': 3000,
     'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
     'paging' : true,
@@ -98,7 +99,7 @@ $(document).ready(function(){
         url: 'index.php/Tarea/paginado',
         beforeSend: function(){
             msjBusqueda();
-          },
+        }
     },
     'columnDefs':[
         {
@@ -122,11 +123,11 @@ $(document).ready(function(){
             }, 
             'data':'Estado',
             'render':function(data,type,row){
-                $('.dataTables_filter input').keyup(function() {
+                /*$('.dataTables_filter input').keyup(function() {
                     msjBusqueda(function(){
                 }, 1000 );
-                });
-                WaitingClose(); 
+                });*/
+                //WaitingClose(); 
                 var id = row['id'];
                 var asig = row['assigned_id'];
                 var processId = row['processId'];
@@ -282,8 +283,15 @@ $(document).ready(function(){
         $(row).attr('tags', (proc) ? proc : '' );
         $(row).attr('onclick', 'detalleTarea(this)');
     },
-    }); 
+    });  
+    /*alert( 'Rows '+$('#bandeja').DataTable().rows(':contains("Unknown")').data().length+' are selected' );    //Recoarga cada 15seg
+    setInterval( function () {
+        //$('#bandeja').DataTable().data().reload();
+        $('#bandeja').DataTable().ajax.reload();           
+    },20000);*/
+
 });
+
 
 var idfin = "";
 var id_tarea = "";

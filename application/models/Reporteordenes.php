@@ -41,6 +41,7 @@ class Reporteordenes extends CI_Model
     {
         $userdata  = $this->session->userdata('user_data');
         $empresaId = $userdata[0]['id_empresa'];
+        //log_message('DEBUG','#Reporteordenes/getequipos | getequipos >> data: '.$userdata.' '.$empresaId);
         $this->db->select('tbl_estado.estadoid, tbl_estado.descripcion, orden_trabajo.estado');
         $this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
         $this->db->from('orden_trabajo');

@@ -870,6 +870,7 @@ class  Equipo extends CI_Controller {
   	public function getEqPorId(){
 		$idEquipo = $this->input->post()['idEquipo'];
   		$result = $this->Equipos->getEqPorIds($idEquipo);
+		/*log_message('DEBUG','#Main/index | getEqPorId >> data '.json_encode($result));*/
   	  	echo json_encode($result);
   	}
 

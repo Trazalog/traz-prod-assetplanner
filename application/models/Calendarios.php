@@ -205,7 +205,8 @@ class Calendarios extends CI_Model {
             join tareas ON preventivo.id_tarea = tareas.id_tarea 
             join periodo ON preventivo.perido = periodo.idperiodo
             where (preventivo.estadoprev = 'C') AND ((periodo.descripcion != 'Ciclos') AND (periodo.descripcion != 'Horas') AND (periodo.descripcion != 'Kilómetros')) AND 
-            (month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $month or month(preventivo.ultimo) = $month)";  
+            (month(DATE_ADD(preventivo.ultimo, INTERVAL preventivo.cantidad DAY)) = $month or month(preventivo.ultimo) = $month)
+            and preventivo.id_empresa = $empId";  
         // $sql = "SELECT preventivo.prevId, 
         //     preventivo.id_tarea, 
         //     preventivo.perido, 

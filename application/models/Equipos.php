@@ -1017,6 +1017,7 @@ class Equipos extends CI_Model
         $this->db->join('equipos', 'equipos.id_equipo = historial_lecturas.id_equipo');
         $this->db->where('historial_lecturas.id_equipo', $ideq);
         $this->db->order_by('id_lectura', 'DESC');
+        //
         $this->db->limit(1);
 
         $query = $this->db->get();
