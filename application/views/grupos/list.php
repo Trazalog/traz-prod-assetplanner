@@ -20,6 +20,7 @@
                 <th>Descripcion:</th>
                 <th style="display:none">id_empresa</th>
                 <th style="display:none">estado</th>
+                <th style="display:none">form_id</th>
               </tr>
             </thead>
             <tbody>
@@ -39,6 +40,7 @@
                   echo '<td>'.$f['descripcion'].'</td>';
                   echo '<td style="display:none">'.$f['id_empresa'].'</td>';
                   echo '<td style="display:none">'.$f['estado'].'</td>';
+                  echo '<td style="display:none">'.$f['form_id'].'</td>';
                   echo '</tr>';
                 }
               ?>
@@ -55,6 +57,8 @@ function guardarGrupo(){
   var descripcion = $('#descripcion').val();
   var id_empresa  = $('#id_empresa').val();
   var estado      = $('#estado').val();
+  var formulario =  ($('#tipoFormulario').val() == null) ? '0' : $('#tipoFormulario').val();
+  debugger;
   var hayError    = false;
   if($('#descripcion').val() == '' || $('#id_empresa').val() == '' || $('#estado').val() == '' )
   {
@@ -68,7 +72,7 @@ function guardarGrupo(){
   WaitingOpen();
   $.ajax({
     type: 'POST',
-    data: {    "descripcion":descripcion,  "id_empresa":id_empresa,  "estado":estado },
+    data: {    "descripcion":descripcion,  "id_empresa":id_empresa,  "estado":estado , "form_id": formulario},
     url: 'index.php/Grupo/Guardar_Grupo', 
     success: function(result){
       WaitingClose();
@@ -81,13 +85,19 @@ function guardarGrupo(){
   });
 }
 
+getFormularios();
+
 var id_ = "";
-$(".fa-pencil").click(function (e) { 
+$(".fa-pencil").click(function (e) {
+
   id_ = $(this).parents('tr').find('td').eq(1).html();
   var descripcion = $(this).parents('tr').find('td').eq(2).html();
   var estado = $(this).parents('tr').find('td').eq(3).html();
   var id_empresa = $(this).parents('tr').find('td').eq(4).html();
-  $('#cuerpoModalEditar').html(' <div class="row">'+
+  var form_id = $(this).parents('tr').find('td').eq(5).html();
+  $('#descripcionE').val(descripcion);
+  $('#errorE').append(id_empresa);
+/*   $('#cuerpoModalEditar').html(' <div class="row">'+
     '<div class="col-xs-12">'+
       '<div class="alert alert-danger alert-dismissable" id="errorE" style="display: none">'+
         '<h4><i class="icon fa fa-ban"></i> Error!</h4>'+
@@ -102,13 +112,81 @@ $(".fa-pencil").click(function (e) {
       '<div class="col-xs-12 col-sm-8">'+
         '<input type="text" class="form-control"  id="descripcionE" value="'+descripcion+'" >'+
       '</div>'+
-  '</div><br>');
+      '<div class="col-xs-12 col-sm-4">'+
+        ' <label style="margin-top: 7px;">Formulario: </label>'+
+      '</div>'+
+      '<div class="col-xs-12 col-sm-8">'+
+      '<select class="form-control"  id="tipoFormulario"></select>'+
+      '</div>'+
+      
+  '</div><br>'); */
+  getFormulariosE(form_id);
   $('#modalEditar').modal('show');
 });    
 
+/*    trae formularios cargados en frm_formularios */
+function getFormulariosE(form_id){
+    $("#tipoFormularioE").html("");
+    $.ajax({
+      'data':{},
+      'async': true,
+      'type': "POST",
+      'global': false,
+      'dataType': 'json',
+      'url': "index.php/Grupo/get_formularios",
+      'success': function (data) {
+        //console.table(data);
+        if(data){
+            var opcion = "<option value='0'>Ninguno</option>" ;
+            $('#tipoFormularioE').append(opcion);
+            debugger;
+            for (var i = 0; i < data.length; i++) { 
+            var selected = (data[i]['form_id'] == form_id) ? selected = 'selected' : selected = '';
+            var nombre = data[i]['nombre'];
+            var opcion = "<option value='"+data[i]['form_id']+"' "+ selected +">" +nombre+ "</option>" ; 
+            $('#tipoFormularioE').append(opcion);  
+          }
+        }
+      },
+      'error' : function(data){
+        console.log('Error en getFormularios');
+        console.table(data);
+    },
+});
+  }
+/*    trae formularios cargados en frm_formularios */
+function getFormularios(){
+    $("#tipoFormulario").html("");
+    $.ajax({
+      'data':{},
+      'async': true,
+      'type': "POST",
+      'global': false,
+      'dataType': 'json',
+      'url': "index.php/Grupo/get_formularios",
+      'success': function (data) {
+        //console.table(data);
+        if(data){
+            var opcion = "<option value='0'>Ninguno</option>" ;
+            //$('#tipoFormularioE').append(opcion);
+            $('#tipoFormulario').append(opcion);
+            for (var i = 0; i < data.length; i++) {
+            var nombre = data[i]['nombre'];
+            var opcion = "<option value='"+data[i]['form_id']+"'>" +nombre+ "</option>" ; 
+            $('#tipoFormulario').append(opcion);
+          }
+        }
+      },
+      'error' : function(data){
+        console.log('Error en getFormularios');
+        console.table(data);
+    },
+});
+  }
 function editarGrupo(){
   var id          = id_;
   var descripcion = $('#descripcionE').val();
+  var formulario =  ($('#tipoFormularioE').val() == null) ? '0' : $('#tipoFormularioE').val();
   var hayError    = false;
   if($('#descripcionE').val() == '')
   {
@@ -123,7 +201,7 @@ function editarGrupo(){
   $.ajax({
     type: 'POST',
     dataType : "json",
-    data: {"id_grupo" : id,  "descripcion":descripcion },
+    data: {"id_grupo" : id,  "descripcion":descripcion, "formulario": formulario },
     url: 'index.php/Grupo/Modificar_Grupo', 
     success: function(result){
       WaitingClose();
@@ -203,6 +281,13 @@ $(function () {
           <div class="col-xs-12 col-sm-8">
             <input type="text" class="form-control" id="descripcion" >
           </div>
+          <div class="col-xs-12 col-sm-4">
+            <label style="margin-top: 7px;">Formulario: </label>
+          </div>
+          <div class="col-xs-12 col-sm-8">
+          <select class="form-control"  id="tipoFormulario"> 
+           </select>
+          </div>
         </div><br>
       </div>
 
@@ -223,7 +308,7 @@ $(function () {
         <h4 class="modal-title">Editar Grupo</h4>
       </div>
 
-      <div class="modal-body" id="cuerpoModalEditar">
+     <!--  <div class="modal-body" id="cuerpoModalEditar">
         <div class="row">
           <div class="col-xs-12">
             <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
@@ -232,6 +317,31 @@ $(function () {
             </div>
           </div>
         </div>   
+      </div> -->
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="alert alert-danger alert-dismissable" id="errorE" style="display: none">
+              <h4><i class="icon fa fa-ban"></i> Error!</h4>
+              Revise que todos los campos esten completos
+            </div>
+          </div>
+        </div>
+        <div class="row"> 
+          <div class="col-xs-12 col-sm-4">
+            <label style="margin-top: 7px;">Descripcion <strong style="color: #dd4b39">*</strong>: </label>
+          </div>
+          <div class="col-xs-12 col-sm-8">
+            <input type="text" class="form-control" id="descripcionE" >
+          </div>
+          <div class="col-xs-12 col-sm-4">
+            <label style="margin-top: 7px;">Formulario: </label>
+          </div>
+          <div class="col-xs-12 col-sm-8">
+          <select class="form-control"  id="tipoFormularioE"> 
+           </select>
+          </div>
+        </div><br>
       </div>
 
       <div class="modal-footer">
