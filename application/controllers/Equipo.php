@@ -6,6 +6,7 @@ class  Equipo extends CI_Controller {
 	{
 				parent::__construct();
 				$this->load->model('Equipos');
+				$this->load->model('Sservicios');
 	}
 
 	public function index($permission)
@@ -25,7 +26,7 @@ class  Equipo extends CI_Controller {
 
 				$userdata           = $this->session->userdata('user_data');
 				$data['empresa']    = $userdata[0]['id_empresa'];
-				$data['list']       = $this->Equipos->equipos_List();
+				//$data['list']       = $this->Equipos->equipos_List();
 				$data['permission'] = $permission;
 				//dump( $data['list'] );
 				/*log_message('DEBUG','#Main/index | Equipo List >> data '.json_encode($data['list']));*/
@@ -853,6 +854,10 @@ class  Equipo extends CI_Controller {
 
   	/// Guarda lectura Hugo
   	public function setLectura(){
+		if($this->input->post('falla'))
+		{
+			$Sservicios = $this->Sservicios->setservicios($this->input->post());
+		}
   		$result = $this->Equipos->setLecturas($this->input->post());
   		echo json_encode($result);
 		}
@@ -1030,6 +1035,20 @@ class  Equipo extends CI_Controller {
 		}else{
 			echo json_encode(['msj'=>'OK']);
 		}
+	}
+
+	function getFormxIdGrupo()
+	{
+		log_message('DEBUG','#TRAZA | #TRAZ-COMP-FORM | #Equipo | getFormxIdGrupo()');
+		$id_grupo = $this->input->post('id_grupo');
+		$res = $this->Equipos->getFormxIdGrupo($id_grupo);
+		echo json_encode($res);	
+	}
+
+	function guardaInfo_idLectura(){
+		log_message('DEBUG','#TRAZA | #TRAZ-COMP-FORM | #Equipo | guardaInfo_idLectura()');
+		$res = $this->Equipos->guardaInfo_idLectura($this->input->post());
+		echo json_encode($res);
 	}
 
 
