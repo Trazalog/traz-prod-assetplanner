@@ -34,8 +34,8 @@ class Forms extends CI_Model
             }
         }
 
-        if(!$this->db->insert_batch('frm_instancias_formularios', $aux)) return FALSE;
-        if(!$this->db->insert_batch('frm_instancias_formularios', $array)) return FALSE;
+        if($aux && !$this->db->insert_batch('frm_instancias_formularios', $aux)) return FALSE;
+        if($array && !$this->db->insert_batch('frm_instancias_formularios', $array)) return FALSE;
 
         return $newInfo;
     }
@@ -130,5 +130,14 @@ class Forms extends CI_Model
         $this->db->join('frm_formularios as B', 'B.form_id = A.form_id');
         $this->db->group_by('A.info_id');
         return $this->db->get()->result();
+    }
+
+    public function get_formularios(){
+        $id= empresa();
+        $this->db->select('A.nombre, A.form_id, A.descripcion, A.empr_id');
+        $this->db->from('frm_formularios as A');
+        $this->db->where('A.empr_id', $id);
+        $result = $this->db->get()->result_array();
+        return $result;
     }
 }

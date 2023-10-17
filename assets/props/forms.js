@@ -21,8 +21,18 @@ function frmValidar(id = false) {
     }
 }
 
-function initForm() {
+function frm_validar(id) {
+	$(id).bootstrapValidator("validate");
+	return $(id).data("bootstrapValidator").isValid();
+}
 
+function getForm(form) {
+    debugger;
+	const data = new FormData($(form)[0]);
+	return formToObject(data);
+}
+
+function initForm() {
     $('form').each(function () {
         $(this).bootstrapValidator({
             feedbackIcons: {
@@ -86,7 +96,7 @@ function initForm() {
 
 function frmGuardar(e) {
     console.log('FRM | Guardando...');
-    
+ 
     WaitingOpen();
 
     var form = $(e).closest('form').attr('id');
@@ -158,9 +168,9 @@ function frmGuardar(e) {
             url: 'index.php/' + frmUrl + 'Form/guardar/' + info +(nuevo?'/true':''),
             data: formData,
             success: function (rsp) {
-
+                //return rsp.info_id;
                 $('#' + form).closest('.modal').modal('hide');
-                
+               
                 if(exist('dgf'))dgf();
 
             },
@@ -171,25 +181,51 @@ function frmGuardar(e) {
             },
             complete: function () {
                 WaitingClose();
+             
             }
         });
 
     }
 }
 
-function detectarForm() {
-    $('.frm-open').click(function () {
-
-        if (isModalOpen()) return;
-
-        obtenerForm(this.dataset.info, true, this.dataset.readonly == 'true');
+/* original de asset tiene los estilos */
+function detectarForm(ban = false) {
+  $('.frm-open').click(function () {
+    //debugger;
+       if (isModalOpen() && ban == true) return;
+        else
+        {
+            obtenerForm(this.dataset.info, true, this.dataset.readonly == 'true');
+            ban = true;
+        }
 
     });
 
     $('.frm-new').click(function(){
         nuevoForm(this.dataset.form);
-    });
+    });  
 }
+
+
+/* el que usamos en tools, se amolda en estilos a otros modales */
+function detectarFormV2() {
+  // debugger;
+      $(".frm-open").click(function () {
+          $(this).load(
+              "index.php/" + frmUrl + "Form/obtener/" + this.dataset.info
+          );
+      });
+  
+      $(".frm-new-modal").click(function () {
+          nuevoForm(this.dataset.form);
+      });
+  
+      $(".frm-new").each(function () {
+          $(this).load(
+              "index.php/" + frmUrl + "Form/obtenerNuevoV2/" + this.dataset.form
+          );
+      });
+  }
 
 function nuevoForm(form, show = true) {
     WaitingOpen();
@@ -223,6 +259,7 @@ function nuevoForm(form, show = true) {
 
 function obtenerForm(info, show = true, readonly = false) {
     WaitingOpen();
+    //debugger;
     $.ajax({
         type: 'GET',
         dataType: 'JSON',
@@ -262,11 +299,11 @@ function obtenerForm(info, show = true, readonly = false) {
                                     var input = $(id + ' [name="' + key + '"]')[0];
 
                                     //Radio
-                                    // if (input.getAttribute('type') == 'radio' && input.value ==
-                                    //     form[key]) {
-                                    //     input.checked = true;
-                                    //     return;
-                                    // }
+                                    if (input.getAttribute('type') == 'radio' && input.value ==
+                                        form[key]) {
+                                       input.checked = true;
+                                       return;
+                                    }
 
                                     if (input.tagName == 'TEXTAREA') {
                                        
@@ -376,5 +413,58 @@ function showFD(formData) {
 
 function formToObject(formData) {
     return JSON.parse(formToJson(formData));
+}
+
+//Funcion para guardar el formulario dinamico con promesas y retornando el info_id generado
+async function frmGuardarConPromesa(e) {
+    var form = $(e).closest("form").attr("id");
+	var info = $(e).closest("form").data("info");
+
+	var nuevo = info == "";
+	if (nuevo) info = $(e).closest("form").data("form");
+    var formData = new FormData($("#" + form)[0]);
+
+    //Preparo Informacion Checkboxs
+	var checkbox = $("#" + form).find("input[type=checkbox]");
+	$.each(checkbox, function (key, val) {
+		if (!formData.has($(val).attr("name"))) {
+			formData.append($(val).attr("name"), "");
+		}
+	});
+
+	//Preparo Informacion Files
+	var files = $("#" + form + ' input[type="file"]');
+	files.each(function () {
+		if (conexion()) {
+			if (this.value != null && this.value != "")
+				formData.append(this.name, this.value);
+		} else {
+			formData.delete(this.name);
+		}
+	});
+    let guardadoFormDinamico = new Promise((resolve,reject) => {
+        $.ajax({
+            type: "POST",
+            dataType: "JSON",
+            cache: false,
+            contentType: false,
+            processData: false,
+            url:
+                "index.php/" + frmUrl + "Form/guardar/" + info + (nuevo ? "/true" : ""),
+            data: formData,
+            success: function (rsp) {
+                if(rsp.info_id){
+                    resolve(rsp.info_id);
+                }else{
+                    reject("Ocurrió un error al gurdar el formulario dinámico");
+                }  
+            },
+            error: function (rsp) {
+                //Swal.fire('Oops...','No se guardo formulario dinámico','error');
+                reject("Ocurrió un error al gurdar el formulario dinámico");
+            }
+        });
+    });
+    return await guardadoFormDinamico;
 }
 

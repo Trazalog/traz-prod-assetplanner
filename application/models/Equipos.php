@@ -32,6 +32,8 @@ class Equipos extends CI_Model
         criticidad.descripcion AS decri,
         admcustomers.cliId,
         admcustomers.cliRazonSocial AS clie,
+        grupo.form_id,
+        grupo.id_grupo,
         proceso.id_proceso,
         proceso.descripcion AS depro');
         $this->db->from('equipos');
@@ -40,6 +42,7 @@ class Equipos extends CI_Model
         $this->db->join('unidad_industrial', 'unidad_industrial.id_unidad=equipos.id_unidad');
         $this->db->join('criticidad', 'criticidad.id_criti=equipos.id_criticidad');
         $this->db->join('area', 'area.id_area=equipos.id_area');
+        $this->db->join('grupo', 'grupo.id_grupo=equipos.id_grupo');
         $this->db->join('proceso', 'proceso.id_proceso=equipos.id_proceso');
         $this->db->join('admcustomers', 'admcustomers.cliId=equipos.id_customer');
         $this->db->where('equipos.estado !=', 'AN');
@@ -1010,9 +1013,11 @@ class Equipos extends CI_Model
 
         $this->db->select('equipos.id_equipo,
 							equipos.codigo,
+                            equipos.id_grupo,
 							historial_lecturas.lectura,
 							historial_lecturas.fecha,
-							historial_lecturas.estado');
+							historial_lecturas.estado'
+                        );
         $this->db->from('historial_lecturas');
         $this->db->join('equipos', 'equipos.id_equipo = historial_lecturas.id_equipo');
         $this->db->where('historial_lecturas.id_equipo', $ideq);
@@ -1713,6 +1718,8 @@ class Equipos extends CI_Model
                     sector.descripcion AS desec,
                     criticidad.id_criti,
                     criticidad.descripcion AS decri,
+                    grupo.form_id,
+                    grupo.id_grupo,
                     admcustomers.cliId,
                     admcustomers.cliRazonSocial AS clie,
                     proceso.id_proceso,
@@ -1724,6 +1731,7 @@ class Equipos extends CI_Model
             INNER JOIN criticidad ON criticidad.id_criti = equipos.id_criticidad
             INNER JOIN area ON area.id_area = equipos.id_area
             INNER JOIN proceso ON proceso.id_proceso = equipos.id_proceso
+            INNER JOIN grupo on grupo.id_grupo = equipos.id_grupo
             INNER JOIN admcustomers ON admcustomers.cliId = equipos.id_customer
             WHERE equipos.estado != 'AN' AND equipos.id_empresa = $empId
             ".$srch."
@@ -1768,5 +1776,49 @@ class Equipos extends CI_Model
         }
         return $archivos;
     }
+
+
+    /**
+     * getFormxIdGrupo: obtiene el id del formulario asociado al grupo
+     * @param int $id_grupo
+     * @return bool true o false
+     */
+
+    function getFormxIdGrupo($id_grupo){
+        $this->db->select('form_id');
+        $this->db->from('grupo');
+        $this->db->where('grupo.id_grupo', $id_grupo); 
+       // $sql="select form_id from grupo where id_grupo = $id_grupo";
+        $query = $this->db->get()->result();
+        return $query;
+    }
+
+    /**
+     * setInfoId: guarda en la tabla historial lecturas el info_id del formulario asociado
+     * 
+     * @return bool true o false
+     */
+    function guardaInfo_idLectura(){
+    $info_id= $this->input->post('info_id');
+    $equipo= $this->input->post('equipo');
+        
+    $id_lectura = $this->db->select_max('id_lectura')->where('id_equipo', $equipo)->get('historial_lecturas')->row('id_lectura');
+    
+    $this->db->set('info_id', $info_id);
+    $this->db->where('id_lectura', $id_lectura);
+    return $this->db->update('historial_lecturas');
+
+   /*  $data = array(
+        'info_id' => $info_id,
+    );
+
+    $this->db->where('id_lectura', $id_lectura);
+    $query = $this->db->update("historial_lecturas", $data);
+    return $query; */
+
+    /* $this->db->set('estado', $ultimoEstado);
+        return $this->db->update("equipos"); */
+        
+    } 
 
 }

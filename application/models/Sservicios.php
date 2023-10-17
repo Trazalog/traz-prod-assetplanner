@@ -191,6 +191,9 @@ class Sservicios extends CI_Model
 				$userdata = $this->session->userdata('user_data');
 				$empId    = $userdata[0]['id_empresa'];
 
+				//solicitud de servicio desde mantenimiento autonomo
+				if(!$equipId) $equipId = $this->input->post('id_equipo');
+
 				$userdata = $this->session->userdata('user_data');
 				$usrId    = $userdata[0]['usrId'];     // guarda usuario logueado
 				$usrName  = $userdata[0]['usrName'];

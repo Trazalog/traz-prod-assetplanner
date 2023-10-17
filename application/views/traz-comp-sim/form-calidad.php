@@ -1,9 +1,9 @@
 <div class="content">
     <div class="box box-primary">
         <div class="box-body">
-<!-- 
-            <button class="btn btn-primary frm-new" data-form="<?php #echo SIM_FORMS['eval_zona']?>">
-                <i class="fa fa-plus"></i> Nuevo Formulario</button><br><br><br> -->
+ 
+      <!--       <button class="btn btn-primary frm-new" data-form="">
+                <i class="fa fa-plus"></i> Nuevo Formulario</button><br><br><br>  -->
 
             <table class="table" id="lista-forms">
                 <thead>
@@ -32,10 +32,12 @@
 </div>
 
 <script>
-DataTable($('#lista-forms'), false);
+//DataTable($('#lista-forms'), false);
+$( document ).ready(function() {
+    detectarForm();
+});
 
-detectarForm();
-
+var miTabla =  $('#lista-forms').DataTable();
 function getInfo() {
 
     var operario = $('#operario').val();

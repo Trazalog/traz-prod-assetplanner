@@ -108,6 +108,12 @@ define('ALM', 'traz-comp-almacen/');
 define('files', 'files/');
 
 
+define('EMPRESAS_FORM', array(
+
+    'DEFAULT' => 6,
+
+));
+
 define('SIM_FORMS', array(
 
     'eval_ope' => 2,
