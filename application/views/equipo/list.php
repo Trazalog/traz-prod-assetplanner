@@ -1248,7 +1248,7 @@ function llenarModal(data) {
         $('#tblhistorial').DataTable().clear().draw(); 
 
         /*  harkodeo muestra formulario de empresas*/
-        var formulario = <?php if(EMPRESAS_FORM['DEFAULT'] == empresa()) echo 1; else echo 0; ?>;
+        var formulario = <?php if(EMPRESAS_FORM == empresa()) echo 1; else echo 0; ?>;
 
         for (var i = 0; i < data.length; i++) {
             var fecha =  data[i]['fecha'].substr(0,10);
@@ -2670,7 +2670,7 @@ $('#tablaempresa').DataTable({
                     <input type="hidden" name="form_id" id="form_id">
 
                     <!-- si la empresa quiere que se largue la solicitud cuando se pone en RE el equipo -->
-                    <?php if(EMPRESAS_FORM['DEFAULT'] == empresa()) 
+                    <?php if(EMPRESAS_FORM == empresa()) 
                 
                         echo '<div class="form-group" id="divFalla" style="display: none;">
                                 <label for="falla">Falla <strong style="color: #dd4b39">*</strong>:</label>
@@ -2681,7 +2681,7 @@ $('#tablaempresa').DataTable({
                     
                 </form>
                  <!-- si la empresa tiene formularios -->
-                <?php if(EMPRESAS_FORM['DEFAULT'] == empresa()) 
+                <?php if(EMPRESAS_FORM == empresa()) 
                 
                     echo '<div class="frm-new" id="formulario"></div> '
                 
