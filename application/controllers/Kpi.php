@@ -412,6 +412,8 @@ class Kpi extends CI_Controller
             $data['mttf'] = $mttf;
             $data['confiabilidad'] = $confiabilidad;
 
+            log_message('DEBUG','KPI ||  disponibilidadKpi || $data '. json_encode($data));
+
             echo json_encode($data);
         }
 
