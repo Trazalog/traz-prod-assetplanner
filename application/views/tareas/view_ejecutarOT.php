@@ -417,9 +417,9 @@ function procedimiento(){
                     //alert('pdf');
                     $('#content_adjunto').html('<iframe width="100%" height="600px" src="'+url+'"></iframe>');
                 break;
-                case 'xlsx':
+                /*case 'xlsx':
                     alert('xlsx');
-                break;
+                break;*/
                 default:
                 
             }     
