@@ -241,7 +241,8 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer">
+                        <div class="modal-footer">                            
+                          <button type="button" class="btn btn-danger" style="float: left;" id="procedimiento" onclick="procedimiento()"><i class="fa fa-file-text"> </i> Procedimiento</button>
                           <button type="button" class="btn btn-success" id="hecho" onclick="validarSubtareas()">Terminar Tarea</button>
                           <button type="button" class="btn btn-primary" id="cerrar">Cerrar</button>                            
                         </div> <!-- /.modal footer -->
@@ -256,6 +257,25 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
     </div><!-- /.col -->
     </div><!-- /.row -->
 </section><!-- /.content -->
+
+
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Modal Header</h4>
+                    </div>
+                    <div class="modal-body" id="content_adjunto">                        
+                                                                   
+                    </div>
+                </div>
+            </div>
+        </div>
 
 <script>
 // valida el estado de la OT y muestra llave segun corressponda 		
@@ -366,6 +386,50 @@ function validaInicio() {
         dataType: 'json'
     });
 }
+
+//visualiza Documento
+function procedimiento(){
+    
+    var ot = $('#ot').val();
+    console.log(ot);
+    ajax({
+        type: 'POST',
+        data: { ot: ot },
+        url: 'index.php/Tarea/procedimiento',
+        success: function(data) {
+            WaitingClose();
+            console.log(data[0]['prev_adjunto']);
+            $('#myModal').modal('show'); 
+            //$('#content_adjunto').html('<iframe width="100%" height="600px" src="<?php echo base_url(); ?>/assets/filespreventivos/preventivo110_6_2023-10-30-10-44-01.pdf"></iframe>');
+            var archivo = data[0]['prev_adjunto'];            
+            var extension = archivo.substr( (archivo.lastIndexOf('.') +1) );
+            var url = "<?php echo base_url(); ?>/assets/filespreventivos/"+archivo;
+            switch(extension) {
+                case 'jpg':
+                    //alert('jpg');        
+                    $('#content_adjunto').html('<img src="'+url+'" style="width: 400px; height: 264px;"></iframe>');
+                break;
+                case 'png':
+                    //alert('png');   
+                    $('#content_adjunto').html('<img src="'+url+'" style="width: 400px; height: 264px;"></iframe>');
+                break;
+                case 'pdf':
+                    //alert('pdf');
+                    $('#content_adjunto').html('<iframe width="100%" height="600px" src="'+url+'"></iframe>');
+                break;
+                case 'xlsx':
+                    alert('xlsx');
+                break;
+                default:
+                
+            }     
+               
+        },       
+        dataType: 'json'
+    });
+
+}
+
 
 // /* verifica estado de subrtareas para cerrar OT */
 function validarSubtareas() {
