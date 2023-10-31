@@ -272,9 +272,10 @@ class Preventivo extends CI_Controller {
 			////////// Subir imagen o pdf 
 				$nomcodif = $this->codifNombre($ultimoId,$empId); // codificacion de nomb  	
 				$nomcodif = 'preventivo'.$nomcodif;	
+				//'allowed_types' => "png|jpg|pdf|xlsx", Inicialmente guarda asi -> 26102023
 				$config = [
 					"upload_path" => "./assets/filespreventivos",
-					'allowed_types' => "png|jpg|pdf|xlsx",
+					'allowed_types' => "png|jpg|pdf",					
 					'file_name'=> $nomcodif
 				];
 

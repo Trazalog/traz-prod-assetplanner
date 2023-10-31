@@ -881,9 +881,15 @@ function graficarParametroMtbf(disponibilidad) {
     $('#graph-containerMtbf').html('<canvas id="miGraficoMtbf"></canvas>');
 
     var ctx = document.getElementById("miGraficoMtbf");
-    var horasmtbf = disponibilidad.mtbf;
-    //var tiempo = ["meta"].concat(disponibilidad.tiempo);
+    var horasmtbf = disponibilidad.mtbf;  
+    var hmtbf = '';
+    console.log(horasmtbf);
+    for(var i=0; i < horasmtbf.length; i++){
+        hmtbf[i] = (horasmtbf[i]/100);
+    }  
     var tiempo = disponibilidad.tiempo;
+    console.log(hmtbf);
+    console.log(tiempo);
 
     var colors = [];
     //#75aa31
@@ -893,11 +899,11 @@ function graficarParametroMtbf(disponibilidad) {
         labels: tiempo,
         datasets: [{
             backgroundColor: colors,
-            data: horasmtbf,
+            data: hmtbf,
             label: ''/* ['Meta'].concat(disponibilidad.promedioMetas) */,
             lineTension: 0.2,
             pointRadius: 2,
-            pointHitRadius: 10,
+            pointHitRadius: 1,
             spanGaps: false,
         }],
     };
@@ -905,7 +911,7 @@ function graficarParametroMtbf(disponibilidad) {
     var miGraficoMtbf = new Chart(ctx, {
         type: 'bar',
         data: data,
-        //data:[80, 66, 70, 71, 75, 81, 77, 78, 77, 82, 81, 78, 80],
+        //data:[1000, 2000, 3000, 7100, 7500, 8100, 7700, 7800, 7700, 8200, 8100, 7800, 8000],
         options: {
             legend: {
                 position: 'bottom',
@@ -922,10 +928,10 @@ function graficarParametroMtbf(disponibilidad) {
              scales: {
                 yAxes: [{
                     ticks: {
-                        min:0, // Valor mínimo del eje Y
+                        //min:0, // Valor mínimo del eje Y
                         //max: 0, // Valor máximo del eje Y
-                        //stepSize: 10 // Incremento entre los valores del eje Y
-                        // max:100,
+                        //stepSize: 100 // Incremento entre los valores del eje Y
+                         max:1000,
                         beginAtZero:true, 
                     }
                 }]
