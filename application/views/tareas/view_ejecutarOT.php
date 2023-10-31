@@ -401,28 +401,32 @@ function procedimiento(){
             console.log(data[0]['prev_adjunto']);
             $('#myModal').modal('show'); 
             //$('#content_adjunto').html('<iframe width="100%" height="600px" src="<?php echo base_url(); ?>/assets/filespreventivos/preventivo110_6_2023-10-30-10-44-01.pdf"></iframe>');
-            var archivo = data[0]['prev_adjunto'];            
-            var extension = archivo.substr( (archivo.lastIndexOf('.') +1) );
-            var url = "<?php echo base_url(); ?>/assets/filespreventivos/"+archivo;
-            switch(extension) {
-                case 'jpg':
-                    //alert('jpg');        
-                    $('#content_adjunto').html('<img src="'+url+'" style="width: 400px; height: 264px;"></iframe>');
-                break;
-                case 'png':
-                    //alert('png');   
-                    $('#content_adjunto').html('<img src="'+url+'" style="width: 400px; height: 264px;"></iframe>');
-                break;
-                case 'pdf':
-                    //alert('pdf');
-                    $('#content_adjunto').html('<iframe width="100%" height="600px" src="'+url+'"></iframe>');
-                break;
-                /*case 'xlsx':
-                    alert('xlsx');
-                break;*/
-                default:
-                
-            }     
+            var archivo = data[0]['prev_adjunto'];  
+            if(archivo !=='' || archivo == NULL){          
+                var extension = archivo.substr( (archivo.lastIndexOf('.') +1) );
+                var url = "<?php echo base_url(); ?>/assets/filespreventivos/"+archivo;
+                switch(extension) {
+                    case 'jpg':
+                        //alert('jpg');        
+                        $('#content_adjunto').html('<img src="'+url+'" style="width: 400px; height: 264px;"></iframe>');
+                    break;
+                    case 'png':
+                        //alert('png');   
+                        $('#content_adjunto').html('<img src="'+url+'" style="width: 400px; height: 264px;"></iframe>');
+                    break;
+                    case 'pdf':
+                        //alert('pdf');
+                        $('#content_adjunto').html('<iframe width="100%" height="600px" src="'+url+'"></iframe>');
+                    break;
+                    /*case 'xlsx':
+                        alert('xlsx');
+                    break;*/
+                    default:
+                    
+                }     
+            }else{
+                alert('Esta solicitud no contiene archivo adjunto');
+            }
                
         },       
         dataType: 'json'
