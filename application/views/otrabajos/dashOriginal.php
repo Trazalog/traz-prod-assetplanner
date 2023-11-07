@@ -882,13 +882,13 @@ function graficarParametroMtbf(disponibilidad) {
     var ctx = document.getElementById("miGraficoMtbf");
     var horasmtbf = disponibilidad.mtbf;  
     var hmtbf = '';
-    console.log(horasmtbf);
+    var tiempo = disponibilidad.tiempo;
+    /*console.log(horasmtbf);
     for(var i=0; i < horasmtbf.length; i++){
         hmtbf[i] = (horasmtbf[i]/100);
-    }  
-    var tiempo = disponibilidad.tiempo;
+    }      
     console.log(hmtbf);
-    console.log(tiempo);
+    console.log(tiempo);*/
 
     var colors = [];
     //#75aa31
@@ -898,7 +898,7 @@ function graficarParametroMtbf(disponibilidad) {
         labels: tiempo,
         datasets: [{
             backgroundColor: colors,
-            data: hmtbf,
+            data: horasmtbf,
             label: ''/* ['Meta'].concat(disponibilidad.promedioMetas) */,
             lineTension: 0.2,
             pointRadius: 2,
