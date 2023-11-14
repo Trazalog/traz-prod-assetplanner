@@ -500,7 +500,7 @@ class Kpi extends CI_Controller
                          }
                     }
             }
-            $data['promedioMetas'] = 8;
+            $data['promedioMetas'] = 80;
             $data['tiempo'] =  $tiempo;
             $data['porcentajeHorasOperativas'] = $disponibilidadMeses;
             $data['mtbf']=  $mtbf;
@@ -654,7 +654,7 @@ class Kpi extends CI_Controller
 
             }
 
-            //$data['promedioMetas'] = 8;
+            $data['promedioMetas'] = 80;
             $data['tiempo'] =  $tiempo;
             $data['porcentajeHorasOperativas'] = $disponibilidadMeses;
             $data['mtbf']= $mtbf;
@@ -662,6 +662,7 @@ class Kpi extends CI_Controller
             $data['mttf'] = $mttf;
             $data['confiabilidad'] = $confiabilidad;
 
+            log_message('DEBUG','KPI ||  disponibilidadKpi || $data '. json_encode($data));
 
             echo json_encode($data);
         }

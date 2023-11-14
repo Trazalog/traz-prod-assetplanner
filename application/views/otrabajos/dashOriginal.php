@@ -162,12 +162,19 @@
                             <div class="row">
                                 <div class="col-md-12 col-xs-12">     
                                     <div style="padding: 0px 0px 0px 5px;">
-                                        [%]
+                                    <strong>[%] </strong>
                                     </div>                                    
                                 </div>
                             </div>
                             <div id="graph-container">
                                 <canvas id="miGrafico"></canvas>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-xs-12">     
+                                    <div style="padding:  0px 0px 0px 15px;">
+                                        <strong>Meta 80% </strong>
+                                    </div>                                    
+                                </div>
                             </div>
 
                            
@@ -201,6 +208,13 @@
                             <h4>
                                 <center>MTBF</center>
                             </h4>
+                            <div class="row">
+                                <div class="col-md-12 col-xs-12">     
+                                    <div style="padding: 0px 0px 0px 5px;">
+                                    <strong>[Hs] </strong>
+                                    </div>                                    
+                                </div>
+                            </div>
                             <div id="graph-containerMtbf">
                                 <canvas id="miGraficoMtbf"></canvas>
                             </div>
@@ -210,10 +224,14 @@
 
                         <div class="col-md-6 col-xs-12">
                             
-                            <h4>
-                                <center>MTTR</center>
-                            </h4>
-                            
+                            <h4><center>MTTR</center></h4>
+                            <div class="row">
+                                <div class="col-md-12 col-xs-12">     
+                                    <div style="padding: 0px 0px 0px 5px;">
+                                        <strong>[Hs] </strong>
+                                    </div>                                    
+                                </div>
+                            </div>
                             <div id="graph-containerMttr">
                                 <canvas id="miGraficoMttr"></canvas>
                             </div>
@@ -222,9 +240,14 @@
 
                         <div class="col-md-6 col-xs-12">
                             
-                            <h4>
-                                <center>MTTF</center>
-                            </h4>
+                            <h4><center>MTTF</center></h4>
+                            <div class="row">
+                                <div class="col-md-12 col-xs-12">     
+                                    <div style="padding: 0px 0px 0px 5px;">
+                                        <strong>[Hs] </strong>
+                                    </div>                                    
+                                </div>
+                            </div>
                             <div id="graph-containerMttf">
                             <canvas id="miGraficoMttf"></canvas>
                             </div>
@@ -233,9 +256,14 @@
 
                         <div class="col-md-6 col-xs-12">
                             
-                            <h4>
-                                <center>Indice de Confiabilidad</center>
-                            </h4>
+                            <h4><center>Indice de Confiabilidad</center></h4>
+                            <div class="row">
+                                <div class="col-md-12 col-xs-12">     
+                                    <div style="padding: 0px 0px 0px 5px;">
+                                        <strong>[Hs] </strong>
+                                    </div>                                    
+                                </div>
+                            </div>
                             <div id="graph-containerConfiabilidad">
                             <canvas id="miGraficoConfiabilidad"></canvas>
                             </div>
@@ -414,10 +442,10 @@ function graficarParametro(disponibilidad) {
         }
     };
     Chart.pluginService.register(horizonalLinePlugin);
-   // var porcentajeHorasOperativas = [disponibilidad['promedioMetas']].concat(disponibilidad["porcentajeHorasOperativas"]);
-    var porcentajeHorasOperativas = disponibilidad.porcentajeHorasOperativas;
-    //var tiempo = ["meta"].concat(disponibilidad["tiempo"]);
-    var tiempo = disponibilidad.tiempo;
+    var porcentajeHorasOperativas = [disponibilidad['promedioMetas']].concat(disponibilidad["porcentajeHorasOperativas"]);
+    //var porcentajeHorasOperativas = disponibilidad.porcentajeHorasOperativas;
+    var tiempo = ["meta"].concat(disponibilidad["tiempo"]);
+    //var tiempo = disponibilidad.tiempo;
 
     //var colors = ["#00A65A"];
     var colors = [];
@@ -433,7 +461,7 @@ function graficarParametro(disponibilidad) {
             data: porcentajeHorasOperativas,
            // data:[80, 66, 70, 71, 75, 81, 77, 78, 77, 82, 81, 78, 80],
            // fill: false,
-            //label: ['Meta'],
+            //label: ['Meta 80%'],
             lineTension: 0.2,
             pointRadius: 2,
             pointHitRadius: 10,
@@ -449,11 +477,11 @@ function graficarParametro(disponibilidad) {
             legend: {
                 position: 'bottom',
             },
-            /*"horizontalLine": [{
+            "horizontalLine": [{
                 "y": disponibilidad['promedioMetas'],
-                "style": "#00A65A",
-                "text": "meta"
-            }],*/
+                "style": "#ffa031",
+                "text": "80%"
+            }],
             
             responsive: true,
             maintainAspectRatio: true,
@@ -883,13 +911,13 @@ function graficarParametroMtbf(disponibilidad) {
     var ctx = document.getElementById("miGraficoMtbf");
     var horasmtbf = disponibilidad.mtbf;  
     var hmtbf = '';
-    console.log(horasmtbf);
+    var tiempo = disponibilidad.tiempo;
+    /*console.log(horasmtbf);
     for(var i=0; i < horasmtbf.length; i++){
         hmtbf[i] = (horasmtbf[i]/100);
-    }  
-    var tiempo = disponibilidad.tiempo;
+    }      
     console.log(hmtbf);
-    console.log(tiempo);
+    console.log(tiempo);*/
 
     var colors = [];
     //#75aa31
@@ -899,7 +927,7 @@ function graficarParametroMtbf(disponibilidad) {
         labels: tiempo,
         datasets: [{
             backgroundColor: colors,
-            data: hmtbf,
+            data: horasmtbf,
             label: ''/* ['Meta'].concat(disponibilidad.promedioMetas) */,
             lineTension: 0.2,
             pointRadius: 2,
