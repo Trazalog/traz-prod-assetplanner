@@ -89,9 +89,9 @@ $(document).ready(function(){
     'ajax':{
         type: 'POST',
         url: 'index.php/Tarea/paginado'
-        /*beforeSend: function(){
+        beforeSend: function(){
             //msjBusqueda();
-        }*/
+        }
     },
     'columnDefs':[
         {
