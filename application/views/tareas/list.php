@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
 <section class="content">
     <div class="row">
