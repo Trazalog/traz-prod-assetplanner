@@ -82,13 +82,15 @@ $(document).ready(function(){
     'searchDelay': 3000,
     'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
     'paging' : true,
-    'processing': true,
+    'processing':   WaitingOpen()/* true */,
     'serverSide': true,
+    'order': [[1, 'asc']],
+    'search': true,
     'ajax':{
         type: 'POST',
-        url: 'index.php/Tarea/paginado',
+        url: 'index.php/Tarea/paginado'
         beforeSend: function(){
-            msjBusqueda();
+            //msjBusqueda();
         }
     },
     'columnDefs':[
