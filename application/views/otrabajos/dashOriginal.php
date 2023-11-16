@@ -260,7 +260,7 @@
                             <div class="row">
                                 <div class="col-md-12 col-xs-12">     
                                     <div style="padding: 0px 0px 0px 5px;">
-                                        <strong>[Hs] </strong>
+                                        <strong>[%] </strong>
                                     </div>                                    
                                 </div>
                             </div>
