@@ -192,6 +192,9 @@ class Tarea extends CI_Controller {
 					echo json_encode(TRUE);
 				}			
 			}
+
+			
+
 			// marca inicio de Tarea en OT
 			public function inicioTarea(){
 				
@@ -789,6 +792,15 @@ class Tarea extends CI_Controller {
 				}
 				return $rsp['data'];
 			}
+
+			public function procedimiento(){
+		
+				$id_OT = $this->input->post('ot');				
+				$response['adjunto'] = $this->Tareas->procedimientos($id_OT);
+				log_message('DEBUG','#Tarea/procedimiento: '.json_encode($response));
+				echo json_encode($response['adjunto']);
+			}
+		
 			// cambia el estado de cada subtarea 
 			public function cambiarEstadoSubtask(){
 				$idlistarea = $this->input->post('idListarea');
@@ -955,6 +967,7 @@ class Tarea extends CI_Controller {
 		$search = $this->input->post('search')['value'];
 
 		$r = $this->Tareas->tareaspaginadas($start,$length,$search);
+		log_message('DEBUG','#TRAZA | #TAREA >> paginado tareas: '.json_encode($r));
 	
 		$datos =$r['datos'];
 		$totalDatos = $r['numDataTotal'];
@@ -969,6 +982,7 @@ class Tarea extends CI_Controller {
 		$result = json_encode($json_data);
 		echo $result;
 	}
+
 
 	
 } 

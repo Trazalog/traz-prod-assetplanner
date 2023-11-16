@@ -793,6 +793,20 @@ class Tareas extends CI_Model
         $response = $this->parseHeaders($http_response_header);
         return $response;
     }
+    public function procedimientos($ot){
+
+        $this->db->select('B.prev_adjunto');
+        $this->db->from('orden_trabajo as A');
+        $this->db->join('preventivo as B', 'A.id_solicitud = B.prevId', 'left');
+        $this->db->where('A.id_orden', $ot);
+
+        $query = $this->db->get();
+        if ($query->num_rows() != 0) {
+            return $query->result_array();
+        } else {
+            return false;
+        }  
+    }
 
     public function actualizarIdOTenBPM($caseId, $param)
     {

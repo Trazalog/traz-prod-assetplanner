@@ -1,28 +1,18 @@
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
-
-
-
 <section class="content">
-
     <div class="row">
         <div class="col-xs-12">
             <div class="box box-primary">
                 <div class="box-header">
-
-
                     <h1 class="box-title">Mis Tareas</h1>
                     <!-- <button id="pruebagps">gps</button> -->
-
-
                 </div><!-- /.box-header -->
                 <div class="box-body">
-                    <div class="datagrid">
-                    
+                    <div class="datagrid">                  
                     <table id="bandeja" class="table table-hover table-striped">
                             <thead>
                                 <tr> 
                                     <?php  
-
                                       echo '<th width="7%"'.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Estado</th>';
 
                                       echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Asignado</th>';
