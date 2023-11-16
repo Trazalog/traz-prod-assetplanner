@@ -88,7 +88,7 @@ $(document).ready(function(){
     'search': true,
     'ajax':{
         type: 'POST',
-        url: 'index.php/Tarea/paginado'
+        url: 'index.php/Tarea/paginado',
         beforeSend: function(){
             //msjBusqueda();
         }
