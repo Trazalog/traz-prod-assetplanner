@@ -450,7 +450,12 @@ class Tarea extends CI_Controller {
 				$origen = $this->Tareas->getOrigenOt($id_OT);
 				$numtipo = 	$origen[0]['tipo'];
 				$id_solicitud = $origen[0]['id_solicitud'];
-				$estado = 'CN';
+				if($opcion){
+					$estado = 'CN';
+				}else{
+					$estado = 'S';
+				}
+				log_message('DEBUG', 'TRAZA | Tarea/prestarConformidad >>'.$numtipo);
 				switch ($numtipo) {
 					case '2':
 						$tipo = 'correctivo';
