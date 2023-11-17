@@ -211,13 +211,16 @@ $('#listado').click( function cargarVista(){
 // Guardado de datos y validaciones
 $("#btnSave").click(function(){
 
-  //WaitingOpen('Generando Solcitud');
+  WaitingOpen('Generando Solcitud');
   var hayError = false;
-  if($('#equipo').val() == '' || $('#sector').val() == '' || $('#equipo').val() == null || $('#sector').val() == null){
+  console.log(" Eqquipo: "+$('#equipo').val() +" Sector: "+ $('#sector').val());
+  if($('#equipo').val() == '' || $('#sector').val() == '' || $('#equipo').val() == null || $('#sector').val() == null || $('#equipo').val() == -1 || $('#sector').val() == -1){
     hayError = true;
+    WaitingClose();
   }
   if(hayError == true){
     $('#error').fadeIn('slow');
+    
     return;
   }
 
@@ -225,6 +228,8 @@ $("#btnSave").click(function(){
   $('#modalservicio').modal('hide');
   var formData = new FormData($("#formSS")[0]);
   var permisos = $('#permission').val();
+  console.log(formData);
+  console.log(permisos);
 
     $.ajax({
           type: 'POST',
