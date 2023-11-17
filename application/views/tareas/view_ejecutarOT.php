@@ -408,15 +408,15 @@ function procedimiento(){
                 switch(extension) {
                     case 'jpg':
                         //alert('jpg');        
-                        $('#content_adjunto').html('<img src="'+url+'" style="width: 400px; height: 264px;"></iframe>');
+                        $('#content_adjunto').html('<img src="'+url+'" style="width: 400px; height: 264px;">');
                     break;
                     case 'png':
                         //alert('png');   
-                        $('#content_adjunto').html('<img src="'+url+'" style="width: 400px; height: 264px;"></iframe>');
+                        $('#content_adjunto').html('<img src="'+url+'" style="width: 400px; height: 264px;"/>');
                     break;
                     case 'pdf':
                         //alert('pdf');
-                        $('#content_adjunto').html('<iframe width="100%" height="600px" src="'+url+'"></iframe>');
+                        $('#content_adjunto').html('<embed class="embed-responsive-item" width="100%" height="600px" src="'+url+'" type="application/pdf" scrolling="auto"></embed>');
                     break;
                     /*case 'xlsx':
                         alert('xlsx');

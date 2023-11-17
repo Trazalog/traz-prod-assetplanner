@@ -82,14 +82,16 @@ $(document).ready(function(){
     'searchDelay': 3000,
     'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
     'paging' : true,
-    'processing':   WaitingOpen()/* true */,
+    'processing':    true,
     'serverSide': true,
+    'order': [[1, 'asc']],
+    'search': true,
     'ajax':{
         type: 'POST',
-        url: 'index.php/Tarea/paginado',
-        beforeSend: function(){
-            msjBusqueda();
-        }
+        url: 'index.php/Tarea/paginado'
+       /* beforeSend: function(){
+            //msjBusqueda();
+        }*/
     },
     'columnDefs':[
         {
@@ -397,10 +399,11 @@ function tagProceso($id)
 
 function msjBusqueda(){
       /*   $('#waitingText').css('color','black');*/
-        $('.overlay>.fa').css('top','20%');
-        $('.overlay').css('background','rgb(247 247 247 / 40%)');  
+        //$('.overlay>.fa').css('top','20%');
+        //$('.overlay').css('background','rgb(247 247 247 / 40%)');  
        /* SIM  WaitingOpen('El volumen de datos es muy grande, espere mientras se procesa la búsqueda. Gracias por su paciencia'); */
         WaitingOpen('Cargando...');
 
 }
+
 </script>
