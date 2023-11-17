@@ -416,7 +416,7 @@ function procedimiento(){
                     break;
                     case 'pdf':
                         //alert('pdf');
-                        $('#content_adjunto').html('<embed class="responsive" width="100%" height="600px" src="'+url+'" type="application/pdf" scrolling="auto"></embed>');
+                        $('#content_adjunto').html('<embed class="embed-responsive-item" width="100%" height="600px" src="'+url+'" type="application/pdf" scrolling="auto"></embed>');
                     break;
                     /*case 'xlsx':
                         alert('xlsx');
