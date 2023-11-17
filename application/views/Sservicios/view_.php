@@ -20,6 +20,21 @@
           ?>
         </div><!-- /.box-header -->
 
+        <div class="modal-body" id="modalBodyservicio">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+              <h4><i class="icon fa fa-ban"></i> Error!</h4>
+              Revise que todos los campos esten completos...
+            </div>
+          </div>
+        </div>
+        <style>
+          .ui-autocomplete{
+              z-index:1050;
+          }
+        </style>
+
         <div class="box-body">
           <form id="formSS" role="form" method="POST" >
             <div class="panel panel-default">
@@ -196,47 +211,50 @@ $('#listado').click( function cargarVista(){
 // Guardado de datos y validaciones
 $("#btnSave").click(function(){
 
-WaitingOpen('Generando Solcitud');
-var hayError = false;
+  WaitingOpen('Generando Solcitud');
+  var hayError = false;
+  console.log(" Eqquipo: "+$('#equipo').val() +" Sector: "+ $('#sector').val());
+  if($('#equipo').val() == '' || $('#sector').val() == '' || $('#equipo').val() == null || $('#sector').val() == null || $('#equipo').val() == -1 || $('#sector').val() == -1){
+    hayError = true;
+    WaitingClose();
+  }
+  if(hayError == true){
+    $('#error').fadeIn('slow');
+    
+    return;
+  }
 
-if($('#equipId').val() == '')
-{
-  hayError = true;
-}
-if(hayError == true){
-  $('#error').fadeIn('slow');
-  return;
-}
+  $('#error').fadeOut('slow');
+  $('#modalservicio').modal('hide');
+  var formData = new FormData($("#formSS")[0]);
+  var permisos = $('#permission').val();
+  console.log(formData);
+  console.log(permisos);
 
-$('#error').fadeOut('slow');
-$('#modalservicio').modal('hide');
-var formData = new FormData($("#formSS")[0]);
-var permisos = $('#permission').val();
-
-  $.ajax({
-        type: 'POST',
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        url: 'index.php/Sservicio/lanzarProcesoBPM',
-        success: function(data){
-                WaitingClose();
-                console.log(data);
-                if (data.status == true){
-                  //alert("Solicitud generada exitosamente");
-                 
-                  cargarView('Sservicio', 'index', permisos) ;           
-                } else{             
-                    alert("Falla: "+data.msj);
-                }                   
+    $.ajax({
+          type: 'POST',
+          data: formData,
+          cache: false,
+          contentType: false,
+          processData: false,
+          url: 'index.php/Sservicio/lanzarProcesoBPM',
+          success: function(data){
+                  WaitingClose();
+                  console.log(data);
+                  if (data.status == true){
+                    //alert("Solicitud generada exitosamente");
+                  
+                    cargarView('Sservicio', 'index', permisos) ;           
+                  } else{             
+                      alert("Falla: "+data.msj);
+                  }                   
+                },
+          error: function(data){
+                  WaitingClose();
+                  alert("Error: "+data.msj);         
               },
-        error: function(data){
-                WaitingClose();
-                alert("Error: "+data.msj);         
-            },
-        dataType: 'json'
-    });
+          dataType: 'json'
+      });
 });
 
 $('#ultimo').datetimepicker({
