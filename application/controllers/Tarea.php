@@ -434,28 +434,27 @@ class Tarea extends CI_Controller {
 			public function prestarConformidad(){
 
 				//log
-					log_message('DEBUG', 'TRAZA | Tarea/prestarConformidad');	
+				//log_message('DEBUG', 'TRAZA | Tarea/prestarConformidad');	
 
 				$idTarBonita = $this->input->post('idTarBonita');				
 				$opcion = $this->input->post('opcion');	
 				$id_SS = 	$this->input->post('id_SS');	
 				$id_OT =  $this->input->post('id_OT');
 				// log
-					log_message('DEBUG', 'TRAZA | $idTarBonita: '.$idTarBonita);
+					/*log_message('DEBUG', 'TRAZA | $idTarBonita: '.$idTarBonita);
 					log_message('DEBUG', 'TRAZA | Conforme?: '.$opcion);	
 					log_message('DEBUG', 'TRAZA | $idSServicos: '.$id_SS);
-					log_message('DEBUG', 'TRAZA | $idOT: '.$id_OT);	
+					log_message('DEBUG', 'TRAZA | $idOT: '.$id_OT);	*/
 							
 				// averigua origen de OT
 				$origen = $this->Tareas->getOrigenOt($id_OT);
 				$numtipo = 	$origen[0]['tipo'];
 				$id_solicitud = $origen[0]['id_solicitud'];
-				if($opcion){
-					$estado = 'CN';
-				}else{
+				$estado = 'CN';
+				if($opcion == 'false'){
 					$estado = 'S';
 				}
-				log_message('DEBUG', 'TRAZA | Tarea/prestarConformidad >>'.$numtipo);
+				//log_message('DEBUG', 'TRAZA | Tarea/prestarConformidad >> numtipo: '.$numtipo." Id Solicitud: ".$id_solicitud." Estado: ".$estado);
 				switch ($numtipo) {
 					case '2':
 						$tipo = 'correctivo';
@@ -477,10 +476,11 @@ class Tarea extends CI_Controller {
 				$opcionSel = array(
 					"prestaConformidad" => $opcion
 				);
-			
+
 				$response = $this->bpm->cerrarTarea($idTarBonita,$opcionSel);
+				//log_message('DEBUG', 'TRAZA | Tarea/prestarConformidad  $response >>'.$response['status']);
 				// si cierra la tarea en BPM
-				if ($response['status']){						
+				if ($response['status']){
 						// La respuesta es conforme con trabajo
 						if($opcion){
 							
@@ -509,7 +509,7 @@ class Tarea extends CI_Controller {
 
 				} else {	// fallo al cerrar la tarea en BPM				
 					echo json_encode(['status'=>true, 'msj'=>'OK', 'code'=>$code]);
-				}					
+				}				
 			}
 			// terminar tarea ejecutar OT
 			public function ejecutarOT(){
