@@ -285,10 +285,12 @@ class Kpi extends CI_Controller
         $confiabilidad = array();
 
         $id_equipo =  $this->input->post('id_equipo');
+        $id_sector =  $this->input->post('id_sector');
+        $id_grupo =  $this->input->post('id_grupo');
         $fecha_desde =  $this->input->post('fecha_desde')/* ." 00:00:00" */;
         $fecha_hasta =  $this->input->post('fecha_hasta')/* ." 23:59:59" */;
 
-		log_message('DEBUG','KPI ||  disponibilidadKpi || $id_equipo '. $id_equipo);
+		log_message('DEBUG','KPI ||  disponibilidadKpi || Equipo '. $id_equipo.' Sector: '.$id_sector.' Grupo: '.$id_grupo);
 
         /*busca todos los equipos */
         if($id_equipo == 'all'){
@@ -404,7 +406,22 @@ class Kpi extends CI_Controller
                          }
                     }
             }
-            $data['promedioMetas'] = 80;
+
+            $dataeq = $this->Kpis->getEquiposKpi('all',$id_sector,$id_grupo);
+            log_message('DEBUG','KPI ||  disponibilidadKpi || $dataeq '. json_encode($dataeq));
+
+            # Calcular Promedio Metas all
+            $acum = 0;
+            $cantMetas = 0;
+            foreach ($dataeq as $o) {        
+                if ($o["meta_disponibilidad"]) {                    
+                    $acum += $o["meta_disponibilidad"];
+                    $cantMetas++;
+                }
+            }
+            $promedioMetas = ($cantMetas == 0 ? 0 : number_format($acum / ($cantMetas), 0));
+            log_message('DEBUG','KPI ||  disponibilidadKpi || Metas: '.$acum.' CantMetas: '.$cantMetas);
+            $data['promedioMetas'] = $promedioMetas;
             $data['tiempo'] =  $tiempo;
             $data['porcentajeHorasOperativas'] = $disponibilidadMeses;
             $data['mtbf']=  $mtbf;
@@ -415,10 +432,8 @@ class Kpi extends CI_Controller
             log_message('DEBUG','KPI ||  disponibilidadKpi || $data '. json_encode($data));
 
             echo json_encode($data);
-        }
-
-        /* busqueda por id_equipo */
-        else{
+        
+        }else{/* busqueda por id_equipo */
             // Convertir las fechas de texto a objetos DateTime
             $fechaInicioObj = new DateTime($fecha_desde);
             $fechaFinObj = new DateTime($fecha_hasta);
@@ -495,7 +510,22 @@ class Kpi extends CI_Controller
 
             }
 
-            $data['promedioMetas'] = 80;
+
+            $dataeq = $this->Kpis->getEquiposKpi($id_equipo,$id_sector,$id_grupo);
+            log_message('DEBUG','KPI ||  disponibilidadKpi || $dataeq '. json_encode($dataeq));
+
+            # Calcular Promedio Metas all
+            $acum = 0;
+            $cantMetas = 0;
+            foreach ($dataeq as $o) {        
+                if ($o["meta_disponibilidad"]) {                    
+                    $acum += $o["meta_disponibilidad"];
+                    $cantMetas++;
+                }
+            }
+            $promedioMetas = ($cantMetas == 0 ? 0 : number_format($acum / ($cantMetas), 0));
+            log_message('DEBUG','KPI ||  disponibilidadKpi || Metas: '.$acum.' CantMetas: '.$cantMetas);
+            $data['promedioMetas'] = $promedioMetas;
             $data['tiempo'] =  $tiempo;
             $data['porcentajeHorasOperativas'] = $disponibilidadMeses;
             $data['mtbf']= $mtbf;

@@ -63,7 +63,7 @@
                                         <label for="equipo" >Equipo:</label>
                                     </div>
                                     <div class="col-md-6 col-xs-12">
-                                        <select  id="equipo" name="sector" class="form-control equipo">
+                                        <select  id="equipo" name="equipo" class="form-control equipo">
                                             <option value="" selected disabled>Seleccione equipo</option>
                                         </select>
                                            <!--  <input class="form-control" type="text" id="checkboxEquipoID" placeholder="Ingrese código del equipo"> -->
@@ -172,7 +172,7 @@
                             <div class="row">
                                 <div class="col-md-12 col-xs-12">     
                                     <div style="padding:  0px 0px 0px 15px;">
-                                        <strong>Meta 80% </strong>
+                                        <strong id="metastrong"> </strong>
                                     </div>                                    
                                 </div>
                             </div>
@@ -345,11 +345,14 @@ getDisponibilidad(idEquipo);
 function getDisponibilidad(idEquipo) {
     //WaitingOpen("Obteniendo datos de disponibilidad...");
     if($('#equipo').val())  {idEquipo= $('#equipo').val()}
+    //if($('#sector').val())  { var idSector= $('#sector').val()}
     
     $.ajax({
             data: {
                 'fecha_desde':$('#datepickerDesde').val(),
                 'fecha_hasta':$('#datepickerHasta').val(),
+                'id_grupo': $('#grupo').val(),
+                'id_sector': $('#sector').val(),
                 'id_equipo': idEquipo
             }, 
             dataType: 'json',
@@ -358,7 +361,7 @@ function getDisponibilidad(idEquipo) {
         })
         .done((data) => {
             WaitingClose();
-            //console.log(data);
+            console.log(data);
             graficarParametroMttf(data);
             graficarParametro(data);
             graficarParametroConfiabilidad(data);
@@ -392,6 +395,7 @@ function graficarParametro(disponibilidad) {
     //elimino grafico anterior si existe
     $('#miGrafico').remove();
     $('#graph-container').html('<canvas id="miGrafico" style="width: 100%; margin:0 auto"></canvas>');
+    
 
     var ctx = document.getElementById("miGrafico");
     //var ctx = canvas.getContext("2d");
@@ -442,6 +446,12 @@ function graficarParametro(disponibilidad) {
         }
     };
     Chart.pluginService.register(horizonalLinePlugin);
+    var promedioMetas =disponibilidad['promedioMetas'];
+    if(promedioMetas == 0){
+        $('#metastrong').html('En este periodo no existen metas');
+    }else{
+        $('#metastrong').html('Meta: '+promedioMetas+'%');
+    }
     var porcentajeHorasOperativas = [disponibilidad['promedioMetas']].concat(disponibilidad["porcentajeHorasOperativas"]);
     //var porcentajeHorasOperativas = disponibilidad.porcentajeHorasOperativas;
     var tiempo = ["meta"].concat(disponibilidad["tiempo"]);
@@ -480,7 +490,7 @@ function graficarParametro(disponibilidad) {
             "horizontalLine": [{
                 "y": disponibilidad['promedioMetas'],
                 "style": "#ffa031",
-                "text": "80%"
+                "text": promedioMetas
             }],
             
             responsive: true,
