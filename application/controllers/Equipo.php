@@ -219,7 +219,7 @@ class  Equipo extends CI_Controller {
 		$userdata         = $this->session->userdata('user_data');
 		$datos['id_empresa'] = $userdata[0]['id_empresa'];
 		$result           = $this->Equipos->update_editar($datos,$id);
-		print_r(json_encode($result));
+		echo json_encode($result);
 		
 	}
 

@@ -256,7 +256,7 @@ function inhabilitarEquipo(idEquipo){
             //alert("Se cambio el estado del equipo a INACTIVO");
             WaitingClose();
             //regresa();
-												reloadTable();
+			reloadTable();
         },
         error: function(result) {
             console.log(result);
@@ -313,7 +313,7 @@ function habilitarEquipo(idequipo) {
         url: 'index.php/Equipo/estado_alta',
         success: function(data) {
             WaitingClose();
-												reloadTable(idequipo)
+			reloadTable(idequipo)
             //linkTo();
         },
         error: function(result) {
@@ -696,6 +696,7 @@ $(".fa-print").click(function(e) {
     });
 });
 
+    $(".clear").val(""); //llimpia los inputs del modal lectura
 
 /// agrega el estado del boton en modal - Chequeado
 function estBoton($estado) {
@@ -739,7 +740,7 @@ function inhabilitar() {
     $("input#estado").val('RE'); // Estado Reparacion
 }
 
-
+isOpenWindo
 // Completa campos y select para Editar equipos - Listo
 function completarEdit(datos, edit) {
     console.log("datos que llegaron");
@@ -808,6 +809,7 @@ function cerro() {
 
 // Guarda edicion de equipo
 function guardar() {
+
     var idEquipo = $('#id_equipo').val();
     var codigo = $('#codigo').val();
     var ubicacion = $('#ubicacion').val();
@@ -859,10 +861,11 @@ function guardar() {
         },
         url: 'index.php/Equipo/editar_equipo',
         success: function(data) {
-									debugger;
+			debugger;
             console.log(data);
+            WaitingClose();
             //regresa();
-												reloadTable();
+			reloadTable();
         },
         error: function(result) {
             console.log(result);
@@ -2603,10 +2606,8 @@ $('#tablaempresa').DataTable({
                 </div><!-- /.row -->
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"
-                        onclick="cerro()">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="reset" data-dismiss="modal"
-                        onclick="guardar()">Guardar</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="reset" data-dismiss="modal"  onclick="guardar()">Guardar</button>
                 </div>
 
             </div><!-- /.modal-body -->
