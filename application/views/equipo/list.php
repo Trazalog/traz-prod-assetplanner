@@ -94,7 +94,7 @@ $(document).ready(function(){
                     if (permission.indexOf("Lectura") !== -1) {
                         if( row['estadoEquipo'] == 'AC' || row['estadoEquipo'] == 'RE' ) {
                             let deeq = row['deeq'];
-                            r = r + `<i class="fa fa-hourglass-half text-light-blue nuevaLectura" style="cursor: pointer; margin-left: 15px;" title="Mantenimiento Autónomo" onclick="mantenimientoAutonomo(${id},'${deeq}')"></i>`;
+                            r = r + `<i class="fa fa-hourglass-half text-light-blue nuevaLectura" style="cursor: pointer; margin-left: 15px;" title="Mantenimiento Autónomo" onclick="mantenimientoAutonomo(${id})"></i>`;
                         }
                         r = r + `<i class="fa fa-history text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Historial de Lecturas" data-toggle="modal" data-target="#modalhistlect" onclick="historialLectura(${id})"></i>`;
                     }
@@ -690,14 +690,13 @@ $(".fa-print").click(function(e) {
 });
 
 
-function mantenimientoAutonomo(id,deeq){
+function mantenimientoAutonomo(id){
     $(".clear").val(""); //llimpia los inputs del modal lectura
     $("#spanNuevaLectura").text("");
     $('#errorLectura').fadeOut(0);
     $('#errorLectura2').fadeOut(0);
     $("#modalectura").modal('show');
-    $('#id_maquina').val(id);
-    $('#maquina').val(deeq);
+    
     $.ajax({
         data: {
             idEquipo: id
@@ -708,6 +707,8 @@ function mantenimientoAutonomo(id,deeq){
         success: function(data) {
             console.table(data);
             $("#spanNuevaLectura").text(data[0].lectura);
+            $('#id_maquina').val(id);
+            $('#maquina').val(data[0].descripcion);
             estBoton(data[0].estado); //agrega boton de estados
 												//reloadTable();
         },
@@ -795,7 +796,7 @@ function inhabilitar() {
     $("input#estado").val('RE'); // Estado Reparacion
 }
 
-isOpenWindo
+
 // Completa campos y select para Editar equipos - Listo
 function completarEdit(datos, edit) {
     console.log("datos que llegaron");

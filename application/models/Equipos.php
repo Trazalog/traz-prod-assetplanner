@@ -1010,9 +1010,10 @@ class Equipos extends CI_Model
 
         $this->db->select('equipos.id_equipo,
 							equipos.codigo,
+							equipos.descripcion,
 							historial_lecturas.lectura,
 							historial_lecturas.fecha,
-							historial_lecturas.estado');
+							historial_lecturas.estado');  //Estado Reparacion RE / Activo AC
         $this->db->from('historial_lecturas');
         $this->db->join('equipos', 'equipos.id_equipo = historial_lecturas.id_equipo');
         $this->db->where('historial_lecturas.id_equipo', $ideq);
