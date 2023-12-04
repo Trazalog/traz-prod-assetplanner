@@ -1,3 +1,8 @@
+<style>
+	.frm-save {
+		display: none;
+	}
+</style>
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
 <div class="row">
     <div class="col-xs-12">
@@ -45,6 +50,7 @@
 </section><!-- /.content -->
 
 
+ <div id="form-dinamico" class="frm-open" data-readonly='true' href='#' data-info="38"></div> 
 
 <script>
 $(document).ready(function(){
@@ -94,7 +100,8 @@ $(document).ready(function(){
                     if (permission.indexOf("Lectura") !== -1) {
                         if( row['estadoEquipo'] == 'AC' || row['estadoEquipo'] == 'RE' ) {
                             let deeq = row['deeq'];
-                            r = r + `<i class="fa fa-hourglass-half text-light-blue nuevaLectura" style="cursor: pointer; margin-left: 15px;" title="Mantenimiento Autónomo" onclick="mantenimientoAutonomo(${id})"></i>`;
+                            let form_id =  row['form_id'];
+                            r = r + `<i class="fa fa-hourglass-half text-light-blue nuevaLectura" style="cursor: pointer; margin-left: 15px;" title="Mantenimiento Autónomo" onclick="mantenimientoAutonomo(${id},'${deeq}' ,'${form_id}')"></i>`;
                         }
                         r = r + `<i class="fa fa-history text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Historial de Lecturas" data-toggle="modal" data-target="#modalhistlect" onclick="historialLectura(${id})"></i>`;
                     }
@@ -664,7 +671,7 @@ $(".fa-print").click(function(e) {
                 '</div>' +
                 '<style>' +
                 '.table, .table>tr, .table>td  {} ' +
-                '</style>';
+                '</styl>';
             //border:  1px solid black;
 
 
@@ -696,7 +703,8 @@ function mantenimientoAutonomo(id){
     $('#errorLectura').fadeOut(0);
     $('#errorLectura2').fadeOut(0);
     $("#modalectura").modal('show');
-    
+    $('#id_maquina').val(id);
+    $('#maquina').val(deeq);
     $.ajax({
         data: {
             idEquipo: id
@@ -707,8 +715,6 @@ function mantenimientoAutonomo(id){
         success: function(data) {
             console.table(data);
             $("#spanNuevaLectura").text(data[0].lectura);
-            $('#id_maquina').val(id);
-            $('#maquina').val(data[0].descripcion);
             estBoton(data[0].estado); //agrega boton de estados
 												//reloadTable();
         },
@@ -717,44 +723,6 @@ function mantenimientoAutonomo(id){
         },
     });
 }
-
-// Modal ingreso lectura
-// $(".fa-hourglass-half").click(function(e) {
-	//     $(".clear").val(""); //llimpia los inputs del modal lectura
-	//     $("#spanNuevaLectura").text("");
-	//     $('#errorLectura').fadeOut(0);
-	//     $('#errorLectura2').fadeOut(0);
-	//     $("#modalectura").modal('show');
-	//     var $id_equipo = $(this).parent('td').parent('tr').attr('id');
-	//     $('#id_maquina').val($id_equipo);
-	//     console.log("id_equipo: " + $id_equipo);
-
-	//     var $nom_equipo = $(this).parents("tr").find("td").eq(1).html();
-	//     $('#maquina').val($nom_equipo);
-	//     //console.log("nom_equipo: "+$nom_equipo);
-
-	//     var $estado = $(this).closest('tr').find(".estado").html();
-	//     console.log("estado: " + $estado);
-
-
-	//     $.ajax({
-	//         data: {
-	//             idequipo: $id_equipo
-	//         },
-	//         dataType: 'json',
-	//         type: 'POST',
-	//         url: 'index.php/Equipo/getEqPorId',
-	//         success: function(data) {
-	//             console.table(data);
-	//             //console.log(data[0].lectura);
-	//             $("#spanNuevaLectura").text(data[0].lectura);
-	//             estBoton($estado); //agrega boton de estados
-	//         },
-	//         error: function(result) {
-	//             console.log(result);
-	//         },
-	//     });
-// });
 
 /// agrega el estado del boton en modal - Chequeado
 function estBoton($estado) {
@@ -775,9 +743,11 @@ $(".llave").click(function(e) {
 
     if (estadobton == 'fa fa-fw llave fa-toggle-on') {
         inhabilitar();
+        $('#divFalla').css('display', 'block');
     }
     if (estadobton == 'fa fa-fw llave fa-toggle-off') {
         habilitar();
+        $('#divFalla').css('display', 'none');
     }
 });
 
@@ -1218,6 +1188,9 @@ function click_co(id_equipo) {
 }
 
 function historialLectura(idEquipo){
+  
+    //detectarForm();
+    //initForm();
     $("tr.registro").remove();
     $.ajax({
         type: 'POST',
@@ -1292,7 +1265,6 @@ function reloadTable(){
 
 /// llena modal historial de lecturas
 function llenarModal(data) {
-
     $('#tblhistorial').DataTable().clear().draw();
     if (data.length == 0) return;
     $('#id_Equipo_modal').val(data[0]['id_equipo']);
@@ -1302,14 +1274,26 @@ function llenarModal(data) {
         console.log("El equipo SI tiene historial de lecturas");
         $("#codEquipo").text(data[0]['codigo']);
         //borro los datos de la tabla
-        $('#tblhistorial').DataTable().clear().draw();
+        $('#tblhistorial').DataTable().clear().draw(); 
+
+        /*  harkodeo muestra formulario de empresas*/
+        var formulario = <?php if(EMPRESAS_FORM == empresa()) echo 1; else echo 0; ?>;
+
         for (var i = 0; i < data.length; i++) {
             var fecha =  data[i]['fecha'].substr(0,10);
             var hora =   data[i]['fecha'].substr(10,17);
             var lectura = parseFloat(data[i]['lectura']);
+            
+            /* Muestra boton de formulario o no */
+            if(formulario){
+                var frmOpenLink = '<a class="frm-open" data-readonly="true"  href="#" data-info="'+data[i]['info_id']+'"><i class="fa fa-paperclip formularios"></i></a>';
+            }else {
+                var frmOpenLink = '';
+                }
+           // </i><td class="text-center"><a class="frm-open" data-readonly="true"  href="#" data-info="'+data[i]['info_id']+'"><i class="fa fa-paperclip"></i></a></td>'
             $('#tblhistorial').DataTable().row.add([
                 '<i class="fa fa-fw fa-pencil text-light-blue editLectura" style="cursor: pointer; margin-left: 15px;" title="Editar lectura" data-idLectura="' +
-                data[i]['id_lectura'] + '"></i>',
+                data[i]['id_lectura'] + '"></i> '+ frmOpenLink +'  ',
                 lectura,
                 fecha,
                 hora,
@@ -1327,14 +1311,21 @@ function llenarModal(data) {
     }
 }
 
-$(document).on("click", ".editLectura", function(e) {
+    // Manejar clic en elementos con clase .formularios dentro de #form-dinamico
+    $(document).on("click", ".formularios", function() {
+        //initForm();
+        detectarForm(); 
+        $("#form-dinamico").show();
+   
+    });
 
+$(document).on("click", ".editLectura", function(e) {
     e.preventDefault();
     e.stopImmediatePropagation();
     $("#modalEditLecturaObservacion").modal('show');
     var idLectura = $(this).data("idlectura");
     var lectura = $(this).parents("tr").find("td").eq(1).html();
-    var observacion = $(this).parents("tr").find("td").eq(5).html();
+    var observacion = $(this).parents("tr").find("td").eq(6).html();
     // console.log(observacion);
     $('#idLecturaEdit').val(idLectura);
     $('#lecturaEdit').val(lectura);
@@ -1426,6 +1417,7 @@ function validarCampos() {
 
 // guada lectura nueva de equipo
 function guardarlectura() {
+    equipo= $('#id_maquina').val();
     var hayError = false;
     hayError = validarCampos();
     if (hayError == true) {
@@ -1442,10 +1434,11 @@ function guardarlectura() {
             type: "POST",
             url: "index.php/Equipo/setLectura",
             data: lectura,
-            success: function(data) {
+            success: function(data) {               
+                guardaForm(equipo);
                 console.log("Guardado con exito...");
-                //regresa();
-				reloadTable();
+                
+				//reloadTable();
             },
             error: function(result) {
                 console.log("Error en guardado de Lectura...");
@@ -1456,12 +1449,51 @@ function guardarlectura() {
 
         $('#modalectura').modal('hide');
         $('#errorLectura').hide();
+        reloadTable();
     }
 }
 
+async function guardaForm(equipo)
+{
+     //obtengo el formulario
+     idFormDinamico = "#"+$('.frm-new').find('form').attr('id');
 
+    //si tiene id_form guardo el formulario 
+    if(idFormDinamico != "#undefined") 
+    {
+    
+        frm_validar(idFormDinamico)
+        if(!frm_validar(idFormDinamico)){
+            error('Error..','Debes completar los campos obligatorios (*)');
+            return;                    
+        }
+        //var info_id = frmGuardar(idFormDinamico);
+        var info_id = await frmGuardarConPromesa($(idFormDinamico));
+        guradaInfo_id(info_id, equipo);
+    } 
+}
 
+function guradaInfo_id(info_id = '', equipo)
+{
+    console.log(equipo)
+    console.log(info_id)
+    $.ajax({
+            type: "POST",
+            url: "index.php/Equipo/guardaInfo_idLectura",
+            data: {'info_id':info_id, 'equipo': equipo},
+            success: function(data) {
 
+                console.log("Guardado info_id con exito...");
+                
+				//reloadTable();
+            },
+            error: function(result) {
+                console.log("Error en guardado de Lectura...");
+                console.log(result);
+            },
+            dataType: 'json'
+        });
+}
 
 /************************************/
 /********** ELIMINA EQUIPO **********/
@@ -2075,6 +2107,7 @@ function guardarCliente() {
     }
 }
 
+
 // Agrega las grupos nuevos - Listo
 function guardarmarca() {
     var descripcion = $('#nombreMarca').val();
@@ -2280,7 +2313,10 @@ $('#tablaempresa').DataTable({
         [1, "asc"]
     ],
 });
+
 </script>
+
+
 
 
 <!-- Modal CONTRATISTA -->
@@ -2658,9 +2694,26 @@ $('#tablaempresa').DataTable({
                         <label for="observacion">Observaciones <strong style="color: #dd4b39">*</strong>:</label>
                         <textarea class="form-control clear" id="observacion" name="observacion" placeholder="Observaciones..."></textarea>
                     </div>
-                </form>
-            </div>
+                    <input type="hidden" name="form_id" id="form_id">
 
+                    <!-- si la empresa quiere que se largue la solicitud cuando se pone en RE el equipo -->
+                    <?php if(EMPRESAS_FORM == empresa()) 
+                
+                        echo '<div class="form-group" id="divFalla" style="display: none;">
+                                <label for="falla">Falla <strong style="color: #dd4b39">*</strong>:</label>
+                                <textarea class="form-control clear" id="falla" name="falla" placeholder="Inserte falla"></textarea>
+                            </div> '
+                
+                    ?>
+                    
+                </form>
+                 <!-- si la empresa tiene formularios -->
+                <?php if(EMPRESAS_FORM == empresa()) 
+                
+                    echo '<div class="frm-new" id="formulario"></div> '
+                
+                ?>
+            </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-primary" onclick="guardarlectura()">Guardar</button>
@@ -2688,7 +2741,7 @@ $('#tablaempresa').DataTable({
                 <table id="tblhistorial" class="table table-condensed table-responsive">
                     <thead>
                         <tr>
-                            <th>Edición</th>
+                            <th>Edición/Formulario</th>
                             <th>Lectura</th>
                             <th>Fecha</th>
                             <th>Hora</th>
@@ -3113,6 +3166,31 @@ $('#tablaempresa').DataTable({
     </div>
 </div>
 
+<!-- Modal area-->
+<div class="modal" id="modalFormulario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+        <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><span class="fa fa-fw fa-plus-square text-light-blue"></span> Editar</h4>
+            </div>
+            <div class="modal-body">
+    
+             <?php
+                /* detectarForm();
+                initForm(); */
+                echo "<a class='frm-open' id='form' data-readonly='true' href='#' data-info='38'><i class='fa fa-paperclip'></i></a>";
+             ?>
+            </div>
+
+    
+        </div> <!-- /.modal-content -->
+    </div> <!-- /.modal-dialog -->
+</div> <!-- /.modal fade -->
+<!-- / Modal -->
+
 <?php
  $modal = new StdClass();
  $modal->id = 'asignar_meta';
@@ -3231,4 +3309,39 @@ function validaNum(e) {
         return true;
     }
 
+
+
+function mantenimientoAutonomo(id,deeq, form_id){
+   
+
+    $(".clear").val(""); //llimpia los inputs del modal lectura
+    $("#spanNuevaLectura").text("");
+    $('#errorLectura').fadeOut(0);
+    $('#errorLectura2').fadeOut(0);
+    $("#modalectura").modal('show');
+    $('#id_maquina').val(id);
+    $('#maquina').val(deeq);
+    $('#form_id').val(form_id)
+    $('#formulario').attr('data-form', form_id);
+    detectarFormV2();
+    initForm();
+    //debugger;
+    $.ajax({
+        data: {
+            idEquipo: id
+        },
+        dataType: 'json',
+        type: 'POST',
+        url: 'index.php/Equipo/getEqPorId',
+        success: function(data) {
+            console.table(data);
+            $("#spanNuevaLectura").text(data[0].lectura);
+            estBoton(data[0].estado); //agrega boton de estados
+												//reloadTable();
+        },
+        error: function(result) {
+            console.log(result);
+        },
+    });
+}
 </script>

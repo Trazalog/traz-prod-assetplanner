@@ -6,6 +6,7 @@ class  Equipo extends CI_Controller {
 	{
 				parent::__construct();
 				$this->load->model('Equipos');
+				$this->load->model('Sservicios');
 	}
 
 	public function index($permission)
@@ -25,7 +26,7 @@ class  Equipo extends CI_Controller {
 
 				$userdata           = $this->session->userdata('user_data');
 				$data['empresa']    = $userdata[0]['id_empresa'];
-				$data['list']       = $this->Equipos->equipos_List();
+				//$data['list']       = $this->Equipos->equipos_List();
 				$data['permission'] = $permission;
 				//dump( $data['list'] );
 				/*log_message('DEBUG','#Main/index | Equipo List >> data '.json_encode($data['list']));*/
@@ -853,6 +854,39 @@ class  Equipo extends CI_Controller {
 
   	/// Guarda lectura Hugo
   	public function setLectura(){
+
+		//Larga solicitud de servicio desde Mantenimiento autonomo
+		if($this->input->post('falla'))
+		{
+			$id_solServicio = $this->Sservicios->setservicios($this->input->post());
+			if ($id_solServicio) {
+				//Contrato para lanzar Solcitud de Servicio
+				$contract = array(
+					"idSolicitudServicio"	=>	$id_solServicio,
+					"idOT"  => 	0
+				);			
+
+				//Lanzar Proceso
+				$responce  = $this->bpm->lanzarProceso(BPM_PROCESS_ID, $contract);
+				
+				if(!$responce['status']){
+					$this->Sservicios->eliminar($id_solServicio);
+					echo json_encode($responce); 
+					return;
+				}
+				
+				//update de solic de servicio concaseid
+				if($this->Sservicios->setCaseId($responce['data']['caseId'],$id_solServicio)){
+
+					echo json_encode(['status'=> true, 'msj'=>'OK']);
+
+				}else{
+
+					echo json_encode(['status'=> false, 'msj'=>ASP_0200]);return;
+
+				}	
+			}
+		}
   		$result = $this->Equipos->setLecturas($this->input->post());
   		echo json_encode($result);
 		}
@@ -1030,6 +1064,20 @@ class  Equipo extends CI_Controller {
 		}else{
 			echo json_encode(['msj'=>'OK']);
 		}
+	}
+
+	function getFormxIdGrupo()
+	{
+		log_message('DEBUG','#TRAZA | #TRAZ-COMP-FORM | #Equipo | getFormxIdGrupo()');
+		$id_grupo = $this->input->post('id_grupo');
+		$res = $this->Equipos->getFormxIdGrupo($id_grupo);
+		echo json_encode($res);	
+	}
+
+	function guardaInfo_idLectura(){
+		log_message('DEBUG','#TRAZA | #TRAZ-COMP-FORM | #Equipo | guardaInfo_idLectura()');
+		$res = $this->Equipos->guardaInfo_idLectura($this->input->post());
+		echo json_encode($res);
 	}
 
 

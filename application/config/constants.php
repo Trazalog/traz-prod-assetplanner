@@ -107,6 +107,8 @@ define('ALM', 'traz-comp-almacen/');
 
 define('files', 'files/');
 
+/* Empresas que les aparecera los formularios de mantenimiento autonomo */
+define('EMPRESAS_FORM', 6);
 
 define('SIM_FORMS', array(
 

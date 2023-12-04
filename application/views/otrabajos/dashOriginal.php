@@ -888,8 +888,9 @@ function graficarParametroConfiabilidad(disponibilidad) {
              scales: {
                 yAxes: [{
                     ticks: {
+                        max:100,
                         min:0, // Valor mínimo del eje Y
-                        beginAtZero:true, 
+                        beginAtZero:true
 
                     }
                 }]

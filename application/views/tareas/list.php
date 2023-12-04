@@ -82,14 +82,14 @@ $(document).ready(function(){
     'searchDelay': 3000,
     'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
     'paging' : true,
-    'processing':true,
+    'processing':    true,
     'serverSide': true,
     'order': [[1, 'asc']],
     'search': true,
     'ajax':{
         type: 'POST',
         url: 'index.php/Tarea/paginado'
-        /*beforeSend: function(){
+       /* beforeSend: function(){
             //msjBusqueda();
         }*/
     },
@@ -405,4 +405,5 @@ function msjBusqueda(){
         WaitingOpen('Cargando...');
 
 }
+
 </script>
