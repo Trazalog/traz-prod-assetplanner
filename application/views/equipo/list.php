@@ -740,7 +740,6 @@ function inhabilitar() {
     $("input#estado").val('RE'); // Estado Reparacion
 }
 
-isOpenWindo
 // Completa campos y select para Editar equipos - Listo
 function completarEdit(datos, edit) {
     console.log("datos que llegaron");
