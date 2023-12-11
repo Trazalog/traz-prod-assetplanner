@@ -357,7 +357,7 @@ class Tarea extends CI_Controller {
 									  $causa = $infoOt[0]["tareadescrip"];
 									}             
 									$data["observacion"] = 'Descripcion: '.$causa.' | OT: '.$id_OT;
-									$data["estado"] = $this->Ordenservicios->getEquipos($data["id_equipo"])["estado"];
+									$data["estado"] = $this->Ordenservicios->getEquipos($data)["estado"];
 									$data["lectura"] = $this->Ordenservicios->getLecturasOrden($id_OT)[0]["horometrofin"];
 									$data["fecha"] = $this->Ordenservicios->getLecturasOrden($id_OT)[0]["fechahorafin"];
 									$data["operario_nom"] = $infoOt[0]["responsable"];
