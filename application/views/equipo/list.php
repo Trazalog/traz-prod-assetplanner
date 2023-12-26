@@ -2200,11 +2200,11 @@ $("#formAgregarAdjunto").submit(function(event) {
             });
     }
 });
-
+/*
 $('#modaleditar').on('hidden.bs.modal', function(e) {
     $('#content').empty();
     $("#content").load("<?php echo base_url(); ?>index.php/Equipo/index/<?php echo $permission; ?>");
-})
+})*/
 
 //editar adjunto
 $("#formEditarAdjunto").submit(function(event) {
