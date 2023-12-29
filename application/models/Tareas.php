@@ -160,6 +160,9 @@ class Tareas extends CI_Model
         $turno = $data["turno"];
         $estado = $data["estado"];
 
+        log_message('DEBUG','#Main/setUltimaLecturaIS |  estado: '.$estado);
+
+
         $sql = "INSERT INTO historial_lecturas(id_equipo,lectura,fecha,usrId,observacion,operario_nom,turno,estado)
             VALUES('" . $id_equipo . "','" . $lectura . "','" . $fecha . "','" . $usrid . "','" . $observacion . "','" . $operario_nom . "','" . $turno . "','" . $estado . "')
             ";

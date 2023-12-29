@@ -357,12 +357,14 @@ class Tarea extends CI_Controller {
 									  $causa = $infoOt[0]["tareadescrip"];
 									}             
 									$data["observacion"] = 'Descripcion: '.$causa.' | OT: '.$id_OT;
-									$data["estado"] = $this->Ordenservicios->getEquipos($id_eq)["estado"];
+									$data["estado"] = $this->Ordenservicios->getEquipos($data)["estado"];
 									$data["lectura"] = $this->Ordenservicios->getLecturasOrden($id_OT)[0]["horometrofin"];
 									$data["fecha"] = $this->Ordenservicios->getLecturasOrden($id_OT)[0]["fechahorafin"];
 									$data["operario_nom"] = $infoOt[0]["responsable"];
 									$data["turno"] = "-";
 									$data["usrId"] = $infoOt[0]["usrId"];
+
+									log_message('DEBUG','#Main/verificarInforme |  $data: '.json_encode($data));
 
 									$result = $this->Tareas->setUltimaLecturaIS($data);
 

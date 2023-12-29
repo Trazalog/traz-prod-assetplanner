@@ -1515,7 +1515,7 @@ class Otrabajos extends CI_Model {
 	public function filtrarListado($data, $tipo){
 		$userdata = $this->session->userdata('user_data');
 		$empId    = $userdata[0]['id_empresa'];
-	
+		//
 		$this->db->select('orden_trabajo.*, tareas.descripcion as tareaSTD,
 												tbl_tipoordentrabajo.descripcion AS tipoDescrip,
 												user1.usrName AS nombre, user1.usrLastName,
@@ -1532,7 +1532,7 @@ class Otrabajos extends CI_Model {
 		$this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
 		$this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
 
-		$this->db->join('tareas','tareas.id_tarea = orden_trabajo.id_tarea');
+		$this->db->join('tareas', 'tareas.id_tarea = orden_trabajo.id_tarea', 'left');
 
 		//LEFT JOIN orden_servicio ON orden_trabajo.id_orden = orden_servicio.id_ot
 

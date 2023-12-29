@@ -24,6 +24,30 @@ class Kpis extends CI_Model
         return $this->db->get('historial_lecturas')->result();
     }
 
+    public function getEquiposKpi($id,$sector,$grupo){
+
+        log_message('DEBUG','KPI ||  getEquiposKpi || Equipo: '.$id.' Sector: '.$sector.' Grupo: '.$grupo);
+		        
+		$this->db->select('equipos.id_equipo, meta_disponibilidad');									
+		$this->db->from('equipos');		
+		$this->db->where("(equipos.estado = 'AC' or equipos.estado ='RE')");	
+        if ($id != 'all') {
+            log_message('DEBUG','KPI ||  getEquiposKpi || Entro Equipo: '.$id);
+            $this->db->where('equipos.id_equipo', $id);
+        }
+        if($sector != ''){
+            log_message('DEBUG','KPI ||  getEquiposKpi || Entro Sector: '.$sector);
+            $this->db->where('equipos.id_sector', $sector);
+        }
+        if($grupo !=''){
+            log_message('DEBUG','KPI ||  getEquiposKpi || Entro Grupo:'.$grupo);
+            $this->db->where('equipos.id_grupo', $grupo);
+        }
+		$query = $this->db->get();
+        
+		return $query->result_array();
+    }
+
     public function getEquipos($id = false)
     {
 
