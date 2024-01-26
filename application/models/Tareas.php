@@ -160,6 +160,9 @@ class Tareas extends CI_Model
         $turno = $data["turno"];
         $estado = $data["estado"];
 
+        log_message('DEBUG','#Main/setUltimaLecturaIS |  estado: '.$estado);
+
+
         $sql = "INSERT INTO historial_lecturas(id_equipo,lectura,fecha,usrId,observacion,operario_nom,turno,estado)
             VALUES('" . $id_equipo . "','" . $lectura . "','" . $fecha . "','" . $usrid . "','" . $observacion . "','" . $operario_nom . "','" . $turno . "','" . $estado . "')
             ";
@@ -792,6 +795,20 @@ class Tareas extends CI_Model
         file_get_contents($url, false, $param);
         $response = $this->parseHeaders($http_response_header);
         return $response;
+    }
+    public function procedimientos($ot){
+
+        $this->db->select('B.prev_adjunto');
+        $this->db->from('orden_trabajo as A');
+        $this->db->join('preventivo as B', 'A.id_solicitud = B.prevId', 'left');
+        $this->db->where('A.id_orden', $ot);
+
+        $query = $this->db->get();
+        if ($query->num_rows() != 0) {
+            return $query->result_array();
+        } else {
+            return false;
+        }  
     }
 
     public function actualizarIdOTenBPM($caseId, $param)

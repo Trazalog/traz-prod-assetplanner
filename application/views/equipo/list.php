@@ -256,7 +256,7 @@ function inhabilitarEquipo(idEquipo){
             //alert("Se cambio el estado del equipo a INACTIVO");
             WaitingClose();
             //regresa();
-												reloadTable();
+			reloadTable();
         },
         error: function(result) {
             console.log(result);
@@ -313,7 +313,7 @@ function habilitarEquipo(idequipo) {
         url: 'index.php/Equipo/estado_alta',
         success: function(data) {
             WaitingClose();
-												reloadTable(idequipo)
+			reloadTable(idequipo)
             //linkTo();
         },
         error: function(result) {
@@ -696,6 +696,7 @@ $(".fa-print").click(function(e) {
     });
 });
 
+    $(".clear").val(""); //llimpia los inputs del modal lectura
 
 /// agrega el estado del boton en modal - Chequeado
 function estBoton($estado) {
@@ -738,7 +739,6 @@ function inhabilitar() {
     $("label#botestado").text('Reparación');
     $("input#estado").val('RE'); // Estado Reparacion
 }
-
 
 // Completa campos y select para Editar equipos - Listo
 function completarEdit(datos, edit) {
@@ -808,6 +808,7 @@ function cerro() {
 
 // Guarda edicion de equipo
 function guardar() {
+
     var idEquipo = $('#id_equipo').val();
     var codigo = $('#codigo').val();
     var ubicacion = $('#ubicacion').val();
@@ -859,10 +860,11 @@ function guardar() {
         },
         url: 'index.php/Equipo/editar_equipo',
         success: function(data) {
-									debugger;
+			debugger;
             console.log(data);
+            WaitingClose();
             //regresa();
-												reloadTable();
+			reloadTable();
         },
         error: function(result) {
             console.log(result);
@@ -1248,7 +1250,7 @@ function llenarModal(data) {
         $('#tblhistorial').DataTable().clear().draw(); 
 
         /*  harkodeo muestra formulario de empresas*/
-        var formulario = <?php if(EMPRESAS_FORM['DEFAULT'] == empresa()) echo 1; else echo 0; ?>;
+        var formulario = <?php if(EMPRESAS_FORM == empresa()) echo 1; else echo 0; ?>;
 
         for (var i = 0; i < data.length; i++) {
             var fecha =  data[i]['fecha'].substr(0,10);
@@ -2198,11 +2200,11 @@ $("#formAgregarAdjunto").submit(function(event) {
             });
     }
 });
-
+/*
 $('#modaleditar').on('hidden.bs.modal', function(e) {
     $('#content').empty();
     $("#content").load("<?php echo base_url(); ?>index.php/Equipo/index/<?php echo $permission; ?>");
-})
+})*/
 
 //editar adjunto
 $("#formEditarAdjunto").submit(function(event) {
@@ -2603,10 +2605,8 @@ $('#tablaempresa').DataTable({
                 </div><!-- /.row -->
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"
-                        onclick="cerro()">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="reset" data-dismiss="modal"
-                        onclick="guardar()">Guardar</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="reset" data-dismiss="modal"  onclick="guardar()">Guardar</button>
                 </div>
 
             </div><!-- /.modal-body -->
@@ -2670,7 +2670,7 @@ $('#tablaempresa').DataTable({
                     <input type="hidden" name="form_id" id="form_id">
 
                     <!-- si la empresa quiere que se largue la solicitud cuando se pone en RE el equipo -->
-                    <?php if(EMPRESAS_FORM['DEFAULT'] == empresa()) 
+                    <?php if(EMPRESAS_FORM == empresa()) 
                 
                         echo '<div class="form-group" id="divFalla" style="display: none;">
                                 <label for="falla">Falla <strong style="color: #dd4b39">*</strong>:</label>
@@ -2681,7 +2681,7 @@ $('#tablaempresa').DataTable({
                     
                 </form>
                  <!-- si la empresa tiene formularios -->
-                <?php if(EMPRESAS_FORM['DEFAULT'] == empresa()) 
+                <?php if(EMPRESAS_FORM == empresa()) 
                 
                     echo '<div class="frm-new" id="formulario"></div> '
                 

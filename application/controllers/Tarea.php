@@ -192,6 +192,9 @@ class Tarea extends CI_Controller {
 					echo json_encode(TRUE);
 				}			
 			}
+
+			
+
 			// marca inicio de Tarea en OT
 			public function inicioTarea(){
 				
@@ -354,12 +357,14 @@ class Tarea extends CI_Controller {
 									  $causa = $infoOt[0]["tareadescrip"];
 									}             
 									$data["observacion"] = 'Descripcion: '.$causa.' | OT: '.$id_OT;
-									$data["estado"] = $this->Ordenservicios->getEquipos($id_eq)["estado"];
+									$data["estado"] = $this->Ordenservicios->getEquipos($data)["estado"];
 									$data["lectura"] = $this->Ordenservicios->getLecturasOrden($id_OT)[0]["horometrofin"];
 									$data["fecha"] = $this->Ordenservicios->getLecturasOrden($id_OT)[0]["fechahorafin"];
 									$data["operario_nom"] = $infoOt[0]["responsable"];
 									$data["turno"] = "-";
 									$data["usrId"] = $infoOt[0]["usrId"];
+
+									log_message('DEBUG','#Main/verificarInforme |  $data: '.json_encode($data));
 
 									$result = $this->Tareas->setUltimaLecturaIS($data);
 
@@ -431,23 +436,27 @@ class Tarea extends CI_Controller {
 			public function prestarConformidad(){
 
 				//log
-					log_message('DEBUG', 'TRAZA | Tarea/prestarConformidad');	
+				//log_message('DEBUG', 'TRAZA | Tarea/prestarConformidad');	
 
 				$idTarBonita = $this->input->post('idTarBonita');				
 				$opcion = $this->input->post('opcion');	
 				$id_SS = 	$this->input->post('id_SS');	
 				$id_OT =  $this->input->post('id_OT');
 				// log
-					log_message('DEBUG', 'TRAZA | $idTarBonita: '.$idTarBonita);
+					/*log_message('DEBUG', 'TRAZA | $idTarBonita: '.$idTarBonita);
 					log_message('DEBUG', 'TRAZA | Conforme?: '.$opcion);	
 					log_message('DEBUG', 'TRAZA | $idSServicos: '.$id_SS);
-					log_message('DEBUG', 'TRAZA | $idOT: '.$id_OT);	
+					log_message('DEBUG', 'TRAZA | $idOT: '.$id_OT);	*/
 							
 				// averigua origen de OT
 				$origen = $this->Tareas->getOrigenOt($id_OT);
 				$numtipo = 	$origen[0]['tipo'];
 				$id_solicitud = $origen[0]['id_solicitud'];
 				$estado = 'CN';
+				if($opcion == 'false'){
+					$estado = 'S';
+				}
+				//log_message('DEBUG', 'TRAZA | Tarea/prestarConformidad >> numtipo: '.$numtipo." Id Solicitud: ".$id_solicitud." Estado: ".$estado);
 				switch ($numtipo) {
 					case '2':
 						$tipo = 'correctivo';
@@ -469,10 +478,11 @@ class Tarea extends CI_Controller {
 				$opcionSel = array(
 					"prestaConformidad" => $opcion
 				);
-			
+
 				$response = $this->bpm->cerrarTarea($idTarBonita,$opcionSel);
+				//log_message('DEBUG', 'TRAZA | Tarea/prestarConformidad  $response >>'.$response['status']);
 				// si cierra la tarea en BPM
-				if ($response['status']){						
+				if ($response['status']){
 						// La respuesta es conforme con trabajo
 						if($opcion){
 							
@@ -501,7 +511,7 @@ class Tarea extends CI_Controller {
 
 				} else {	// fallo al cerrar la tarea en BPM				
 					echo json_encode(['status'=>true, 'msj'=>'OK', 'code'=>$code]);
-				}					
+				}				
 			}
 			// terminar tarea ejecutar OT
 			public function ejecutarOT(){
@@ -789,6 +799,15 @@ class Tarea extends CI_Controller {
 				}
 				return $rsp['data'];
 			}
+
+			public function procedimiento(){
+		
+				$id_OT = $this->input->post('ot');				
+				$response['adjunto'] = $this->Tareas->procedimientos($id_OT);
+				log_message('DEBUG','#Tarea/procedimiento: '.json_encode($response));
+				echo json_encode($response['adjunto']);
+			}
+		
 			// cambia el estado de cada subtarea 
 			public function cambiarEstadoSubtask(){
 				$idlistarea = $this->input->post('idListarea');
@@ -955,6 +974,7 @@ class Tarea extends CI_Controller {
 		$search = $this->input->post('search')['value'];
 
 		$r = $this->Tareas->tareaspaginadas($start,$length,$search);
+		log_message('DEBUG','#TRAZA | #TAREA >> paginado tareas: '.json_encode($r));
 	
 		$datos =$r['datos'];
 		$totalDatos = $r['numDataTotal'];
@@ -969,6 +989,7 @@ class Tarea extends CI_Controller {
 		$result = json_encode($json_data);
 		echo $result;
 	}
+
 
 	
 } 

@@ -63,7 +63,7 @@
                                         <label for="equipo" >Equipo:</label>
                                     </div>
                                     <div class="col-md-6 col-xs-12">
-                                        <select  id="equipo" name="sector" class="form-control equipo">
+                                        <select  id="equipo" name="equipo" class="form-control equipo">
                                             <option value="" selected disabled>Seleccione equipo</option>
                                         </select>
                                            <!--  <input class="form-control" type="text" id="checkboxEquipoID" placeholder="Ingrese código del equipo"> -->
@@ -162,12 +162,19 @@
                             <div class="row">
                                 <div class="col-md-12 col-xs-12">     
                                     <div style="padding: 0px 0px 0px 5px;">
-                                        [%]
+                                    <strong>[%] </strong>
                                     </div>                                    
                                 </div>
                             </div>
                             <div id="graph-container">
                                 <canvas id="miGrafico"></canvas>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-xs-12">     
+                                    <div style="padding:  0px 0px 0px 15px;">
+                                        <strong id="metastrong"> </strong>
+                                    </div>                                    
+                                </div>
                             </div>
 
                            
@@ -201,6 +208,13 @@
                             <h4>
                                 <center>MTBF</center>
                             </h4>
+                            <div class="row">
+                                <div class="col-md-12 col-xs-12">     
+                                    <div style="padding: 0px 0px 0px 5px;">
+                                    <strong>[Hs] </strong>
+                                    </div>                                    
+                                </div>
+                            </div>
                             <div id="graph-containerMtbf">
                                 <canvas id="miGraficoMtbf"></canvas>
                             </div>
@@ -210,10 +224,14 @@
 
                         <div class="col-md-6 col-xs-12">
                             
-                            <h4>
-                                <center>MTTR</center>
-                            </h4>
-                            
+                            <h4><center>MTTR</center></h4>
+                            <div class="row">
+                                <div class="col-md-12 col-xs-12">     
+                                    <div style="padding: 0px 0px 0px 5px;">
+                                        <strong>[Hs] </strong>
+                                    </div>                                    
+                                </div>
+                            </div>
                             <div id="graph-containerMttr">
                                 <canvas id="miGraficoMttr"></canvas>
                             </div>
@@ -222,9 +240,14 @@
 
                         <div class="col-md-6 col-xs-12">
                             
-                            <h4>
-                                <center>MTTF</center>
-                            </h4>
+                            <h4><center>MTTF</center></h4>
+                            <div class="row">
+                                <div class="col-md-12 col-xs-12">     
+                                    <div style="padding: 0px 0px 0px 5px;">
+                                        <strong>[Hs] </strong>
+                                    </div>                                    
+                                </div>
+                            </div>
                             <div id="graph-containerMttf">
                             <canvas id="miGraficoMttf"></canvas>
                             </div>
@@ -233,9 +256,14 @@
 
                         <div class="col-md-6 col-xs-12">
                             
-                            <h4>
-                                <center>Indice de Confiabilidad</center>
-                            </h4>
+                            <h4><center>Indice de Confiabilidad</center></h4>
+                            <div class="row">
+                                <div class="col-md-12 col-xs-12">     
+                                    <div style="padding: 0px 0px 0px 5px;">
+                                        <strong>[%] </strong>
+                                    </div>                                    
+                                </div>
+                            </div>
                             <div id="graph-containerConfiabilidad">
                             <canvas id="miGraficoConfiabilidad"></canvas>
                             </div>
@@ -317,11 +345,14 @@ getDisponibilidad(idEquipo);
 function getDisponibilidad(idEquipo) {
     //WaitingOpen("Obteniendo datos de disponibilidad...");
     if($('#equipo').val())  {idEquipo= $('#equipo').val()}
+    //if($('#sector').val())  { var idSector= $('#sector').val()}
     
     $.ajax({
             data: {
                 'fecha_desde':$('#datepickerDesde').val(),
                 'fecha_hasta':$('#datepickerHasta').val(),
+                'id_grupo': $('#grupo').val(),
+                'id_sector': $('#sector').val(),
                 'id_equipo': idEquipo
             }, 
             dataType: 'json',
@@ -330,7 +361,7 @@ function getDisponibilidad(idEquipo) {
         })
         .done((data) => {
             WaitingClose();
-            //console.log(data);
+            console.log(data);
             graficarParametroMttf(data);
             graficarParametro(data);
             graficarParametroConfiabilidad(data);
@@ -364,6 +395,7 @@ function graficarParametro(disponibilidad) {
     //elimino grafico anterior si existe
     $('#miGrafico').remove();
     $('#graph-container').html('<canvas id="miGrafico" style="width: 100%; margin:0 auto"></canvas>');
+    
 
     var ctx = document.getElementById("miGrafico");
     //var ctx = canvas.getContext("2d");
@@ -414,10 +446,16 @@ function graficarParametro(disponibilidad) {
         }
     };
     Chart.pluginService.register(horizonalLinePlugin);
-   // var porcentajeHorasOperativas = [disponibilidad['promedioMetas']].concat(disponibilidad["porcentajeHorasOperativas"]);
-    var porcentajeHorasOperativas = disponibilidad.porcentajeHorasOperativas;
-    //var tiempo = ["meta"].concat(disponibilidad["tiempo"]);
-    var tiempo = disponibilidad.tiempo;
+    var promedioMetas =disponibilidad['promedioMetas'];
+    if(promedioMetas == 0){
+        $('#metastrong').html('En este periodo no existen metas');
+    }else{
+        $('#metastrong').html('Meta: '+promedioMetas+'%');
+    }
+    var porcentajeHorasOperativas = [disponibilidad['promedioMetas']].concat(disponibilidad["porcentajeHorasOperativas"]);
+    //var porcentajeHorasOperativas = disponibilidad.porcentajeHorasOperativas;
+    var tiempo = ["meta"].concat(disponibilidad["tiempo"]);
+    //var tiempo = disponibilidad.tiempo;
 
     //var colors = ["#00A65A"];
     var colors = [];
@@ -433,7 +471,7 @@ function graficarParametro(disponibilidad) {
             data: porcentajeHorasOperativas,
            // data:[80, 66, 70, 71, 75, 81, 77, 78, 77, 82, 81, 78, 80],
            // fill: false,
-            //label: ['Meta'],
+            //label: ['Meta 80%'],
             lineTension: 0.2,
             pointRadius: 2,
             pointHitRadius: 10,
@@ -449,11 +487,11 @@ function graficarParametro(disponibilidad) {
             legend: {
                 position: 'bottom',
             },
-            /*"horizontalLine": [{
+            "horizontalLine": [{
                 "y": disponibilidad['promedioMetas'],
-                "style": "#00A65A",
-                "text": "meta"
-            }],*/
+                "style": "#ffa031",
+                "text": promedioMetas
+            }],
             
             responsive: true,
             maintainAspectRatio: true,
@@ -881,9 +919,15 @@ function graficarParametroMtbf(disponibilidad) {
     $('#graph-containerMtbf').html('<canvas id="miGraficoMtbf"></canvas>');
 
     var ctx = document.getElementById("miGraficoMtbf");
-    var horasmtbf = disponibilidad.mtbf;
-    //var tiempo = ["meta"].concat(disponibilidad.tiempo);
+    var horasmtbf = disponibilidad.mtbf;  
+    var hmtbf = '';
     var tiempo = disponibilidad.tiempo;
+    /*console.log(horasmtbf);
+    for(var i=0; i < horasmtbf.length; i++){
+        hmtbf[i] = (horasmtbf[i]/100);
+    }      
+    console.log(hmtbf);
+    console.log(tiempo);*/
 
     var colors = [];
     //#75aa31
@@ -897,7 +941,7 @@ function graficarParametroMtbf(disponibilidad) {
             label: ''/* ['Meta'].concat(disponibilidad.promedioMetas) */,
             lineTension: 0.2,
             pointRadius: 2,
-            pointHitRadius: 10,
+            pointHitRadius: 1,
             spanGaps: false,
         }],
     };
@@ -905,7 +949,7 @@ function graficarParametroMtbf(disponibilidad) {
     var miGraficoMtbf = new Chart(ctx, {
         type: 'bar',
         data: data,
-        //data:[80, 66, 70, 71, 75, 81, 77, 78, 77, 82, 81, 78, 80],
+        //data:[1000, 2000, 3000, 7100, 7500, 8100, 7700, 7800, 7700, 8200, 8100, 7800, 8000],
         options: {
             legend: {
                 position: 'bottom',
@@ -922,10 +966,10 @@ function graficarParametroMtbf(disponibilidad) {
              scales: {
                 yAxes: [{
                     ticks: {
-                        min:0, // Valor mínimo del eje Y
+                        //min:0, // Valor mínimo del eje Y
                         //max: 0, // Valor máximo del eje Y
-                        //stepSize: 10 // Incremento entre los valores del eje Y
-                        // max:100,
+                        //stepSize: 100 // Incremento entre los valores del eje Y
+                         max:1000,
                         beginAtZero:true, 
                     }
                 }]

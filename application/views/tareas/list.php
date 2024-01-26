@@ -1,28 +1,18 @@
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
-
-
-
 <section class="content">
-
     <div class="row">
         <div class="col-xs-12">
             <div class="box box-primary">
                 <div class="box-header">
-
-
                     <h1 class="box-title">Mis Tareas</h1>
                     <!-- <button id="pruebagps">gps</button> -->
-
-
                 </div><!-- /.box-header -->
                 <div class="box-body">
-                    <div class="datagrid">
-                    
+                    <div class="datagrid">                  
                     <table id="bandeja" class="table table-hover table-striped">
                             <thead>
                                 <tr> 
                                     <?php  
-
                                       echo '<th width="7%"'.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Estado</th>';
 
                                       echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Asignado</th>';
@@ -92,14 +82,16 @@ $(document).ready(function(){
     'searchDelay': 3000,
     'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
     'paging' : true,
-    'processing':   WaitingOpen()/* true */,
+    'processing':    true,
     'serverSide': true,
+    'order': [[1, 'asc']],
+    'search': true,
     'ajax':{
         type: 'POST',
-        url: 'index.php/Tarea/paginado',
-        beforeSend: function(){
-            msjBusqueda();
-        }
+        url: 'index.php/Tarea/paginado'
+       /* beforeSend: function(){
+            //msjBusqueda();
+        }*/
     },
     'columnDefs':[
         {
@@ -407,10 +399,11 @@ function tagProceso($id)
 
 function msjBusqueda(){
       /*   $('#waitingText').css('color','black');*/
-        $('.overlay>.fa').css('top','20%');
-        $('.overlay').css('background','rgb(247 247 247 / 40%)');  
+        //$('.overlay>.fa').css('top','20%');
+        //$('.overlay').css('background','rgb(247 247 247 / 40%)');  
        /* SIM  WaitingOpen('El volumen de datos es muy grande, espere mientras se procesa la búsqueda. Gracias por su paciencia'); */
         WaitingOpen('Cargando...');
 
 }
+
 </script>

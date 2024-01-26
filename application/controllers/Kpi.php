@@ -285,6 +285,8 @@ class Kpi extends CI_Controller
         $confiabilidad = array();
 
         $id_equipo =  $this->input->post('id_equipo');
+        $id_sector =  $this->input->post('id_sector');
+        $id_grupo =  $this->input->post('id_grupo');
         $fecha_desde =  $this->input->post('fecha_desde')/* ." 00:00:00" */;
         $fecha_hasta =  $this->input->post('fecha_hasta')/* ." 23:59:59" */;
 
@@ -341,15 +343,15 @@ class Kpi extends CI_Controller
                         $cantidadFallos = $this->Kpis->getCantidadFallos($fi, $fecha_hasta);
                         if($cantidadFallos == 0) {
                             $mttr[]=0;
-                            $mttf[]=$tiempoActivo;
+                            $mttf[]=number_format($tiempoActivo,0);
                         }
                         else 
                         {
                              #kpi Mttr
-                            $mttr[] = $tiempoTotalReparacion/$cantidadFallos ;
+                            $mttr[] = number_format(($tiempoTotalReparacion/$cantidadFallos),0) ;
                                                    
                             #kpi Mttf
-                            $mttf[] =  $tiempoActivo/$cantidadFallos;
+                            $mttf[] =  number_format(($tiempoActivo/$cantidadFallos),0);
                             
                         }
 
@@ -373,15 +375,15 @@ class Kpi extends CI_Controller
                         $cantidadFallos = $this->Kpis->getCantidadFallos($fecha_desde, $ff);
                         if($cantidadFallos == 0) {
                             $mttr[]=0;
-                            $mttf[]=$tiempoActivo;
+                            $mttf[]=number_format($tiempoActivo,0);
                         }
                         else 
                         {
                             #kpi Mttr
-                            $mttr[] = $tiempoTotalReparacion/$cantidadFallos ;
+                            $mttr[] = number_format(($tiempoTotalReparacion/$cantidadFallos),0) ;
                                                    
                             #kpi Mttf
-                            $mttf[] =  $tiempoActivo/$cantidadFallos;
+                            $mttf[] =  number_format(($tiempoActivo/$cantidadFallos),0);
                             
                         }
                     
@@ -396,7 +398,7 @@ class Kpi extends CI_Controller
                         $tiempoTotalReparacion = $this->Kpis->getTiempoTotalReparacion($fi, $ff, $horasLaborales);
 
                         /* calculo el tiempo Activo multiplicando el tiempoTotal - tiempoReparacion*/
-                        $tiempoActivo =  $tiempoTotal  - $tiempoTotalReparacion;
+                        $tiempoActivo = number_format(($tiempoTotal  - $tiempoTotalReparacion),0);
 
                         /* calculo kpi disponibilidad (tiempoActivo / Tiempototal)*100 */
                         $disponibilidadMeses[] = round(($tiempoActivo / $tiempoTotal)*100) ;
@@ -405,15 +407,15 @@ class Kpi extends CI_Controller
 
                         if($cantidadFallos == 0) {
                             $mttr[]=0;
-                            $mttf[]=$tiempoActivo;
+                            $mttf[]=number_format($tiempoActivo,0);
                         }
                         else 
                         {
                             #kpi Mttr
-                            $mttr[] = $tiempoTotalReparacion/$cantidadFallos ;
+                            $mttr[] = number_format(($tiempoTotalReparacion/$cantidadFallos),0) ;
                                                    
                             #kpi Mttf
-                            $mttf[] =  $tiempoActivo/$cantidadFallos;
+                            $mttf[] =  number_format(($tiempoActivo/$cantidadFallos9),0);
                             
                         }
                         
@@ -422,7 +424,7 @@ class Kpi extends CI_Controller
                         }
                     
                     #Guardar tiempo medio entre fallos MTBF
-                    $mtbf[] = ($mttr[$i] + $mttf[$i]);
+                    $mtbf[] = number_format(($mttr[$i] + $mttf[$i]),0);
                     /* si ambos valores viene en 0 el resultado es 0 */
                      if(($mtbf[$i] == 0) && ($mttr[$i] == 0))
                      {
@@ -477,18 +479,18 @@ class Kpi extends CI_Controller
                         
                         if($cantidadFallos == 0) {
                             array_unshift($mttr ,0);
-                            array_unshift($mttf ,$tiempoActivo);
+                            array_unshift($mttf ,number_format($tiempoActivo,0));
                         }
                         else 
                         {
-                            array_unshift($mttr ,$tiempoTotalReparacion/$cantidadFallos);
+                            array_unshift($mttr ,number_format(($tiempoTotalReparacion/$cantidadFallos),0));
                             #Guardar Tiempo medio hasta el fallo MTTF
-                            array_unshift($mttf ,$tiempoActivo/$cantidadFallos);
+                            array_unshift($mttf ,number_format(($tiempoActivo/$cantidadFallos),0));
                         }
                         
                     
                         #Guardar tiempo medio entre fallos MTBF
-                        array_unshift($mtbf , ($mttr[0] + $mttf[0]));
+                        array_unshift($mtbf , number_format(($mttr[0] + $mttf[0]),0));
                     
                         /* si ambos valores viene en 0 el resultado es 0 */
                          if(($mtbf[0] == 0) && ($mttr[0] == 0))
@@ -500,7 +502,22 @@ class Kpi extends CI_Controller
                          }
                     }
             }
-            $data['promedioMetas'] = 8;
+
+            $dataeq = $this->Kpis->getEquiposKpi('all',$id_sector,$id_grupo);
+            log_message('DEBUG','KPI ||  disponibilidadKpi || $dataeq '. json_encode($dataeq));
+
+            # Calcular Promedio Metas all
+            $acum = 0;
+            $cantMetas = 0;
+            foreach ($dataeq as $o) {        
+                if ($o["meta_disponibilidad"]) {                    
+                    $acum += $o["meta_disponibilidad"];
+                    $cantMetas++;
+                }
+            }
+            $promedioMetas = ($cantMetas == 0 ? 0 : number_format($acum / ($cantMetas), 0));
+            log_message('DEBUG','KPI ||  disponibilidadKpi || Metas: '.$acum.' CantMetas: '.$cantMetas);
+            $data['promedioMetas'] = $promedioMetas;
             $data['tiempo'] =  $tiempo;
             $data['porcentajeHorasOperativas'] = $disponibilidadMeses;
             $data['mtbf']=  $mtbf;
@@ -508,11 +525,11 @@ class Kpi extends CI_Controller
             $data['mttf'] = $mttf;
             $data['confiabilidad'] = $confiabilidad;
 
-            echo json_encode($data);
-        }
+            log_message('DEBUG','KPI ||  disponibilidadKpi || $data '. json_encode($data));
 
-        /* busqueda por id_equipo */
-        else{
+            echo json_encode($data);
+        
+        }else{/* busqueda por id_equipo */
             // Convertir las fechas de texto a objetos DateTime
             $fechaInicioObj = new DateTime($fecha_desde);
             $fechaFinObj = new DateTime($fecha_hasta);
@@ -554,15 +571,15 @@ class Kpi extends CI_Controller
                     if($cantidadFallos == 0){
                        
                         $mttr[] = 0;
-                        $mttf[]= $tiempoActivo;
+                        $mttf[]= number_format($tiempoActivo,0);
                     }
                     else
                     {
                         #kpi Mttr
-                        $mttr[] = $tiempoTotalReparacion/$cantidadFallos;
+                        $mttr[] = number_format(($tiempoTotalReparacion/$cantidadFallos),0);
                         
                         #kpi Mttf
-                        $mttf[]= $tiempoActivo/$cantidadFallos;
+                        $mttf[]= number_format(($tiempoActivo/$cantidadFallos),0);
                     }
                     
                 }
@@ -587,15 +604,15 @@ class Kpi extends CI_Controller
                     if($cantidadFallos == 0){
                        
                         $mttr[] = 0;
-                        $mttf[]= $tiempoActivo;
+                        $mttf[]= number_format($tiempoActivo,0);
                     }
                     else
                     {
                         #kpi Mttr
-                        $mttr[] = $tiempoTotalReparacion/$cantidadFallos;
+                        $mttr[] = number_format(($tiempoTotalReparacion/$cantidadFallos),0);
                         
                         #kpi Mttf
-                        $mttf[]= $tiempoActivo/$cantidadFallos;
+                        $mttf[]= number_format(($tiempoActivo/$cantidadFallos),0);
                     }
 
                 }
@@ -620,28 +637,28 @@ class Kpi extends CI_Controller
                     if($cantidadFallos == 0){
                        
                         $mttr[] = 0;
-                        $mttf[]= $tiempoActivo;
+                        $mttf[]= number_format($tiempoActivo,0);
                     }
                     else
                     {
                         #kpi Mttr
-                        $mttr[] = $tiempoTotalReparacion/$cantidadFallos;
+                        $mttr[] = number_format(($tiempoTotalReparacion/$cantidadFallos),0);
                         
                         #kpi Mttf
-                        $mttf[]= $tiempoActivo/$cantidadFallos;
+                        $mttf[]= number_format(($tiempoActivo/$cantidadFallos),0);
                     }
 
                     }
 
                 #Guardar tiempo medio entre fallos MTBF
-                $mtbf[] = ($mttr[$i] + $mttf[$i]);
+                $mtbf[] = number_format(($mttr[$i] + $mttf[$i]),0);
                 /* si ambos valores viene en 0 el resultado es 0 */
                  if(($mtbf[$i] == 0) && ($mttr[$i] == 0))
                  {
                     $confiabilidad[] = 0 ;
                  }
                  else{
-                    $confiabilidad[] = ($mtbf[$i] / ($mtbf[$i] +  $mttr[$i])) * 100 ;
+                    $confiabilidad[] = number_format((($mtbf[$i] / ($mtbf[$i] +  $mttr[$i])) * 100),0) ;
                  }
 
                  #Guardar Labels para Gráfico MES/AÑO
@@ -652,7 +669,22 @@ class Kpi extends CI_Controller
 
             }
 
-            //$data['promedioMetas'] = 8;
+
+            $dataeq = $this->Kpis->getEquiposKpi($id_equipo,$id_sector,$id_grupo);
+            log_message('DEBUG','KPI ||  disponibilidadKpi || $dataeq '. json_encode($dataeq));
+
+            # Calcular Promedio Metas all
+            $acum = 0;
+            $cantMetas = 0;
+            foreach ($dataeq as $o) {        
+                if ($o["meta_disponibilidad"]) {                    
+                    $acum += $o["meta_disponibilidad"];
+                    $cantMetas++;
+                }
+            }
+            $promedioMetas = ($cantMetas == 0 ? 0 : number_format($acum / ($cantMetas), 0));
+            log_message('DEBUG','KPI ||  disponibilidadKpi || Metas: '.$acum.' CantMetas: '.$cantMetas);
+            $data['promedioMetas'] = $promedioMetas;
             $data['tiempo'] =  $tiempo;
             $data['porcentajeHorasOperativas'] = $disponibilidadMeses;
             $data['mtbf']= $mtbf;
@@ -660,6 +692,7 @@ class Kpi extends CI_Controller
             $data['mttf'] = $mttf;
             $data['confiabilidad'] = $confiabilidad;
 
+            log_message('DEBUG','KPI ||  disponibilidadKpi || $data '. json_encode($data));
 
             echo json_encode($data);
         }

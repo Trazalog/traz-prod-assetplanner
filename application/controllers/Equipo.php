@@ -219,7 +219,7 @@ class  Equipo extends CI_Controller {
 		$userdata         = $this->session->userdata('user_data');
 		$datos['id_empresa'] = $userdata[0]['id_empresa'];
 		$result           = $this->Equipos->update_editar($datos,$id);
-		print_r(json_encode($result));
+		echo json_encode($result);
 		
 	}
 
@@ -854,9 +854,38 @@ class  Equipo extends CI_Controller {
 
   	/// Guarda lectura Hugo
   	public function setLectura(){
+
+		//Larga solicitud de servicio desde Mantenimiento autonomo
 		if($this->input->post('falla'))
 		{
-			$Sservicios = $this->Sservicios->setservicios($this->input->post());
+			$id_solServicio = $this->Sservicios->setservicios($this->input->post());
+			if ($id_solServicio) {
+				//Contrato para lanzar Solcitud de Servicio
+				$contract = array(
+					"idSolicitudServicio"	=>	$id_solServicio,
+					"idOT"  => 	0
+				);			
+
+				//Lanzar Proceso
+				$responce  = $this->bpm->lanzarProceso(BPM_PROCESS_ID, $contract);
+				
+				if(!$responce['status']){
+					$this->Sservicios->eliminar($id_solServicio);
+					echo json_encode($responce); 
+					return;
+				}
+				
+				//update de solic de servicio concaseid
+				if($this->Sservicios->setCaseId($responce['data']['caseId'],$id_solServicio)){
+
+					echo json_encode(['status'=> true, 'msj'=>'OK']);
+
+				}else{
+
+					echo json_encode(['status'=> false, 'msj'=>ASP_0200]);return;
+
+				}	
+			}
 		}
   		$result = $this->Equipos->setLecturas($this->input->post());
   		echo json_encode($result);
