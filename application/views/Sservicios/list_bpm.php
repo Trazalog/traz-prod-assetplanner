@@ -18,12 +18,13 @@
                       <th width="2%">Acciones</th>
                       <th>Nro</th>
                       <th>Fecha</th>
-																						<th>Fecha Fin</th>
+											<th>Fecha Fin</th>
                       <th>Solicitante</th>
                       <th>Equipo</th>
                       <th>Sector</th>
                       <th>Grupo</th>
                       <th>Causa</th>
+                      <th>Mantenedor</th>
                       <th>Estado</th>
                   </tr>
               </thead>
@@ -80,6 +81,7 @@
                             echo '<td style="text-align: left">'.$f['sector'].'</td>';
                             echo '<td style="text-align: left">'.$f['grupo'].'</td>';  
                             echo '<td style="text-align: left">'.$f['causa'].'</td>';
+                            echo '<td style="text-align: left">'.$f['mantenedor'].'</td>';
 
                             echo '<td>';           
                             

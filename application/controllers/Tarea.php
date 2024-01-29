@@ -991,6 +991,69 @@ class Tarea extends CI_Controller {
 	}
 
 
+
+	/**
+	* Genera un nuevo listado de las tareas 
+	* @param 
+	* @return array con nuevo listado de tareas
+	*/
+
+	//actualiza $_SESSION['listadoTareas'] con las nuevas tareas
+	function actualizaTareas(){
+		$data = $this->session->userdata();
+
+		$response = $this->bpm->getToDoList();
+
+						if(!$response['status']){
+							return;
+						}
+						
+						$empr_id = empresa();
+						$array=[];
+						$aux=[];
+						
+						//Filtra datos por empresa
+						foreach($response['data'] as $o){
+							if($this->Tareas->bandejaEmpresa($o['caseId'] , $empr_id)){
+								$aux['caseId'] = $o['caseId'];
+								$aux['displayDescription'] = $o['displayDescription'];
+								$aux['executedBy'] = $o['executedBy'];
+								$aux['rootContainerId'] = $o['rootContainerId'];
+								$aux['assigned_date'] = $o['assigned_date'];
+								$aux['displayName'] = $o['displayName'];
+								$aux['executedBySubstitute'] = $o['executedBySubstitute'];
+								$aux['dueDate'] = $o['dueDate'];
+								$aux['description'] = $o['description'];
+								$aux['type'] = $o['type'];
+								$aux['priority'] = $o['priority'];
+								$aux['actorId'] = $o['actorId'];
+								$aux['processId'] = $o['processId'];
+								$aux['name'] = $o['name'];
+								$aux['reached_state_date'] = $o['reached_state_date'];
+								$aux['rootCaseId'] = $o['rootCaseId'];
+								$aux['id'] = $o['id'];
+								$aux['state'] = $o['state'];
+								$aux['parentCaseId'] = $o['parentCaseId'];
+								$aux['last_update_date'] = $o['last_update_date'];
+								$aux['pema_id'] = $o['pema_id'];
+								$aux['ot'] = $o['ot'];
+								$aux['equipoDesc'] = $o['equipoDesc'];
+								$aux['sectorDesc'] = $o['sectorDesc'];
+								$aux['nomCli'] = $o['nomCli'];
+								$aux['usr_asignado'] = $o['usr_asignado'];
+								$aux['assigned_id'] = $o['assigned_id'];
+
+								$array[] = $aux; 
+							}
+						}
+						
+						//guardo en session todas las tareas filtradas por case_id
+						$_SESSION['listadoTareas'] = $array;
+
+						echo $array;
+	}
+
+
 	
 } 
 
