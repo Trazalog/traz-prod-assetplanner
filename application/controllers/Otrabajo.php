@@ -1084,8 +1084,7 @@ class Otrabajo extends CI_Controller {
 		$id_tarea 		= (int)$this->input->post('tareastd');
 		$tarOpc				=	$this->input->post('tareaOpcional');
 		$case_id = $this->Otrabajos->getCaseIdOT($ot);
-
-
+		
 
 		//Guardo Posicion donde Se Ejecuto OT desde un MOVIL
 		$lat = $this->input->post('latitud');

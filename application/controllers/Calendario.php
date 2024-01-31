@@ -16,10 +16,10 @@ class Calendario extends CI_Controller
     public function indexot($permission) // Ok
     {
         $data = $this->session->userdata();
-        //log_message('DEBUG','#Main/index | Calendario >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+        log_message('DEBUG','#Main/index | Calendario >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
     
         if(empty($data['user_data'][0]['usrName'])){
-            //log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+            log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
             $var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
             $this->session->set_userdata($var);
             $this->session->unset_userdata(null);
@@ -29,7 +29,7 @@ class Calendario extends CI_Controller
     
         }else{
             $data['permission'] = $permission . "Correctivo-Preventivos-Backlog-Predictivo-";
-            //log_message('DEBUG','#Main/index | Calendario >> IndexOT >> data: '.json_encode($data));
+
             $this->load->view('calendar/calendar1', $data);
         }
     }
@@ -40,7 +40,6 @@ class Calendario extends CI_Controller
         if ($data == false) {
             echo json_encode(false);
         } else {
-            log_message('DEBUG','#Main/index | Calendario >> getcalendarot >> data: '.json_encode($data));
             echo json_encode($data);
         }
     }
@@ -728,14 +727,14 @@ class Calendario extends CI_Controller
 
     public function getperiodo()
     {
-        //log_message('DEBUG','#Controller/Calendario | getperiodos ');
+        log_message('DEBUG','#Controller/Calendario | getperiodos ');
         $periodo = $this->Calendarios->getperiodo($this->input->post());
         if ($periodo) {
             $arre = array();
             foreach ($periodo as $row) {
                 $arre[] = $row;
             }
-            //log_message('DEBUG','#Main/index | Periodos >> data '.json_encode($arre)); 
+            log_message('DEBUG','#Main/index | Periodos >> data '.json_encode($arre)); 
             echo json_encode($arre);
         } else {
             echo "nada";
