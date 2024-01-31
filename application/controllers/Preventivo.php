@@ -178,7 +178,7 @@ class Preventivo extends CI_Controller {
 		$empId    = $userdata[0]['id_empresa'];
 
 		$eq         =$this->input->post('id_equipo');
-		$ta         =$this->input->post('id_tarea');
+		$ta         =$this->input->post('tarea');
 		$com        =$this->input->post('id_componente');
 		$ultimo     =$this->input->post('ultimo');
 		$pe         =$this->input->post('periodo');

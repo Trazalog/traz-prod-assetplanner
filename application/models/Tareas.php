@@ -334,6 +334,7 @@ class Tareas extends CI_Model
     // cambia de estado la Tareas(SServ, Prevent, Predic, Back y OT)
     public function cambiarEstado($id_solicitud, $estado, $tipo)
     {
+        $f_inicio =  date("Y-m-d H:i:s"); 
 
         if ($tipo == 'correctivo') {
             $this->db->set('estado', $estado);
@@ -361,6 +362,7 @@ class Tareas extends CI_Model
 
         if ($tipo == 'OT') {
             $this->db->set('estado', $estado);
+            $this->db->set('fecha_inicio', $f_inicio);
             $this->db->where('id_orden', $id_solicitud);
             return $this->db->update('orden_trabajo');
         }

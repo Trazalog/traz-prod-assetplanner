@@ -19,7 +19,8 @@
                       <th>Nro</th>
                       <th>Fecha</th>
 											<th>Fecha Fin</th>
-											<th>T. Generaciòn</th>
+											<th>T. Asignación</th>
+											<th>T. Generación</th>
                       <th>Solicitante</th>
                       <th>Equipo</th>
                       <th>Sector</th>
@@ -76,15 +77,27 @@
 
 																														echo '<td style="text-align: left">'.$f['fecha_terminada'].'</td>';
 																												}
-                            if(!is_null($f['f_asignacion'])){
+                            
+                            if(!is_null($f['f_asignacion']) && !is_null($f['f_inicio']) && $f['f_inicio'] != '0000-00-00 00:00:00'){
+
+                              $f_asignacion = strtotime($f['f_asignacion']);
+                              $f_inicio = strtotime($f['f_inicio']);
+                              $t_asignacion = number_format((($f_inicio - $f_asignacion)/3600), 2, ':', ' ');
+                             
+                              echo '<td style="text-align: left">'.$t_asignacion.'</td>';
+                            }else{
+                              echo '<td style="text-align: left">S/Datos</td>';
+                            }
+                                                        
+                            if(!is_null($f['f_asignacion']) && !is_null($f['f_solicitado'])){
 
                               $f_asignacion = strtotime($f['f_asignacion']);
                               $f_solicitado = strtotime($f['f_solicitado']);
-                              $tiempo = number_format((($f_asignacion - $f_solicitado)/3600), 2, ':', ' ');
+                              $t_genracion = number_format((($f_asignacion - $f_solicitado)/3600), 2, ':', ' ');
                              
-                              echo '<td style="text-align: left">'.$tiempo.'</td>';
+                              echo '<td style="text-align: left">'.$t_genracion.'</td>';
                             }else{
-                              echo '<td style="text-align: left">No Aplica</td>';
+                              echo '<td style="text-align: left">S/Datos</td>';
                             }                           
                             
                             echo '<td style="text-align: left">'.$f['solicitante'].'</td>';
