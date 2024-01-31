@@ -21,7 +21,7 @@ class Calendarios extends CI_Model {
         $month = $data['month'] + 1 ; 
         $year  = $data['year'] ;
  
-        $this->db->select('OT.id_orden,OT.nro,OT.fecha_program,OT.tipo,OT.descripcion,OT.duracion');
+        $this->db->select('OT.id_orden,OT.nro,OT.fecha_program,OT.tipo,OT.descripcion,OT.duracion, OT.id_usuario_a');
         $this->db->select('EQ.codigo');
         $this->db->select('A.descripcion as area');
         $this->db->select('G.descripcion as grupo');
