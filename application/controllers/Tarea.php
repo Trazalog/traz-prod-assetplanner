@@ -104,7 +104,8 @@ class Tarea extends CI_Controller {
 			public function index($permission = null){
 
 				$data = $this->session->userdata();
-					log_message('DEBUG','#TRAZA | TAREA | index() | UserId: '. $data['user_data'][0]['usrId'] ." ||| UserName: ". $data['user_data'][0]['usrName'] ." ||| id_empresa: ". $data['user_data'][0]['id_empresa']);
+				log_message('DEBUG','#TRAZA | TAREA | index() | UserId: '. $data['user_data'][0]['usrId'] ." ||| UserName: ". $data['user_data'][0]['usrName'] ." ||| id_empresa: ". $data['user_data'][0]['id_empresa']);
+				log_message('DEBUG','#TRAZA | TAREA | index() | UserId: '. json_encode($data));
 
 					 if(empty($data['user_data'][0]['usrName'])){
 						log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
@@ -174,7 +175,7 @@ class Tarea extends CI_Controller {
 						}else{					
 							$data['device'] = "pc";				
 						}		
-						//log_message('DEBUG','#TRAZA | TAREA | index() | data: '. json_encode($data));
+						log_message('DEBUG','#TRAZA >> TAREA >> index() >> list: '. json_encode($data));
 							
 						$this->load->view('tareas/list',$data);	
 					}		 
@@ -804,7 +805,7 @@ class Tarea extends CI_Controller {
 		
 				$id_OT = $this->input->post('ot');				
 				$response['adjunto'] = $this->Tareas->procedimientos($id_OT);
-				log_message('DEBUG','#Tarea/procedimiento: '.json_encode($response));
+				//log_message('DEBUG','#Tarea/procedimiento: '.json_encode($response));
 				echo json_encode($response['adjunto']);
 			}
 		
@@ -824,19 +825,19 @@ class Tarea extends CI_Controller {
 		/* COMENTARIOS */
 			public function GuardarComentario(){
 				$data = $this->input->post();
-				log_message('INFO','#TRAZA|Tarea|GuardarComentario() >> ');
-				log_message('DEBUG','#Tarea/GuardarComentario: '.json_encode($data));
+				//log_message('INFO','#TRAZA|Tarea|GuardarComentario() >> ');
+				//log_message('DEBUG','#Tarea/GuardarComentario: '.json_encode($data));
 				$response = $this->bpm->GuardarComentario($data["processInstanceId"],$data["content"]);
-				log_message('DEBUG','#Tarea/GuardarComentario: '.json_encode($response));
+				//log_message('DEBUG','#Tarea/GuardarComentario: '.json_encode($response));
 				echo json_encode($response);
 			}	
 
 			public function ObtenerComentariosBPM($case_id){
 			
-				log_message('INFO','#TRAZA|Tarea|ObtenerComentariosBPM() >> ');
-    			log_message('DEBUG','#Tarea/ObtenerComentariosBPM: '.json_encode($case_id));
+				//log_message('INFO','#TRAZA|Tarea|ObtenerComentariosBPM() >> ');
+    			//_message('DEBUG','#Tarea/ObtenerComentariosBPM: '.json_encode($case_id));
 				$auxx = $this->bpm->ObtenerComentarios($case_id);
-				log_message('DEBUG','#Tarea/ObtenerComentariosBPM: '.json_encode($auxx));
+				//log_message('DEBUG','#Tarea/ObtenerComentariosBPM: '.json_encode($auxx));
 				$aux =json_decode($auxx["data"]);
 				$data['comentarios'] = $aux;
 				$data['case_id'] = $case_id;
@@ -974,7 +975,7 @@ class Tarea extends CI_Controller {
 		$search = $this->input->post('search')['value'];
 
 		$r = $this->Tareas->tareaspaginadas($start,$length,$search);
-		log_message('DEBUG','#TRAZA | #TAREA >> paginado tareas: '.json_encode($r));
+		//log_message('DEBUG','#TRAZA | #TAREA >> paginado tareas: '.json_encode($r));
 	
 		$datos =$r['datos'];
 		$totalDatos = $r['numDataTotal'];

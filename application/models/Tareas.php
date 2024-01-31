@@ -160,7 +160,7 @@ class Tareas extends CI_Model
         $turno = $data["turno"];
         $estado = $data["estado"];
 
-        log_message('DEBUG','#Main/setUltimaLecturaIS |  estado: '.$estado);
+        //log_message('DEBUG','#Main/setUltimaLecturaIS |  estado: '.$estado);
 
 
         $sql = "INSERT INTO historial_lecturas(id_equipo,lectura,fecha,usrId,observacion,operario_nom,turno,estado)
@@ -857,7 +857,7 @@ class Tareas extends CI_Model
                 $data[$key]['pema_id'] = $res->pema_id;
                 $data[$key]['ot'] = $res->ortr_id;
 
-                $this->db->select('B.id_solicitud as "ss", id_orden as "ot", A.descripcion as "desc", causa, X.codigo as "desceq", P.cliRazonSocial as "nomCli", Z.descripcion as "descsec"');
+                $this->db->select('B.id_solicitud as "ss", A.tipo as "tip_ta", id_orden as "ot", A.descripcion as "desc", causa, X.codigo as "desceq", P.cliRazonSocial as "nomCli", Z.descripcion as "descsec"');
                 $this->db->from('orden_trabajo  as A');
                 $this->db->join('solicitud_reparacion as B', 'A.case_id = B.case_id', 'left');
                 $this->db->join('equipos as X', 'X.id_equipo = A.id_equipo', 'left');
@@ -883,6 +883,7 @@ class Tareas extends CI_Model
                     }
                 }
                 continue;
+                //log_message('DEBUG','#TRAZA | #TAREA >> CompletarToDoList >> BPM_PROCESS_ID_PEDIDOS_NORMALES');
             }
 
             
@@ -899,9 +900,11 @@ class Tareas extends CI_Model
                     }
                 }
                 continue;
+                //log_message('DEBUG','#TRAZA | #TAREA >> CompletarToDoList >> BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS');
+
             }
 
-            $this->db->select('A.id_solicitud as \'ss\', id_orden as \'ot\', B.descripcion as \'desc\', causa, X.codigo as \'desceq\', P.cliRazonSocial as \'nomCli\', Z.descripcion as \'descsec\'');
+            $this->db->select('A.id_solicitud as \'ss\', B.tipo as  \'tip_ta\', id_orden as \'ot\', B.descripcion as \'desc\', causa, X.codigo as \'desceq\', P.cliRazonSocial as \'nomCli\', Z.descripcion as \'descsec\'');
 
             $this->db->from('solicitud_reparacion as A');
             $this->db->join('orden_trabajo as B', 'A.case_id = B.case_id', 'left');
@@ -910,10 +913,12 @@ class Tareas extends CI_Model
             $this->db->join('sector as Z', 'Z.id_sector = X.id_sector', 'left');
             $this->db->where('A.case_id', $value['caseId']);
             $res = $this->db->get()->first_row();
+            
+            //log_message('DEBUG','#TRAZA | #TAREA >> CompletarToDoList  $res>> '.json_encode($res));
 
             if (!$res) {
 
-                $this->db->select('A.id_solicitud as \'ss\', id_orden as \'ot\', B.descripcion as \'desc\', causa, X.codigo as \'desceq\', P.cliRazonSocial as \'nomCli\', Z.descripcion as \'descsec\'');
+                $this->db->select('A.id_solicitud as \'ss\', B.tipo as  \'tip_ta\', id_orden as \'ot\', B.descripcion as \'desc\', causa, X.codigo as \'desceq\', P.cliRazonSocial as \'nomCli\', Z.descripcion as \'descsec\'');
                 $this->db->from('solicitud_reparacion as A');
                 $this->db->from('orden_trabajo as B');
                 $this->db->from('tbl_back as C');
@@ -925,10 +930,10 @@ class Tareas extends CI_Model
                 $this->db->where('C.sore_id', 'A.id_solicitud', 'left');
 
                 $res = $this->db->get()->first_row();
-
+                
                 if (!$res) {
 
-                    $this->db->select('id_orden as \'ot\', B.descripcion as \'desc\', causa, X.codigo as \'desceq\', P.cliRazonSocial as \'nomCli\', Z.descripcion as \'descsec\'');
+                    $this->db->select('id_orden as \'ot\', B.tipo as  \'tip_ta\', B.descripcion as \'desc\', causa, X.codigo as \'desceq\', P.cliRazonSocial as \'nomCli\', Z.descripcion as \'descsec\'');
                     $this->db->where('A.case_id', $value['caseId']);
                     $this->db->from('solicitud_reparacion as A');
                     $this->db->join('orden_trabajo as B', 'B.id_solicitud = A.id_solicitud', 'left');
@@ -939,7 +944,7 @@ class Tareas extends CI_Model
 
                     if (!$res) {
 
-                        $this->db->select('id_orden as \'ot\', A.descripcion as \'desc\', X.codigo as \'desceq\', P.cliRazonSocial as \'nomCli\', Z.descripcion as \'descsec\'');
+                        $this->db->select('id_orden as \'ot\', A.tipo as  \'tip_ta\', A.descripcion as \'desc\', X.codigo as \'desceq\', P.cliRazonSocial as \'nomCli\', Z.descripcion as \'descsec\'');
                         $this->db->from('orden_trabajo as A');
                         $this->db->join('equipos as X', 'X.id_equipo = A.id_equipo', 'left');
                         $this->db->join('admcustomers as P', 'P.cliId = X.id_customer');
@@ -949,6 +954,7 @@ class Tareas extends CI_Model
 
                         $data[$key]['ss'] = '';
                         $data[$key]['ot'] = $res->ot;
+                        $data[$key]['tip_ta'] = $res->tip_ta;
                         $data[$key]['displayDescription'] = $res->desc;
                         $data[$key]['equipoDesc'] = $res->desceq;
                         $data[$key]['sectorDesc'] = $res->descsec;
@@ -956,6 +962,7 @@ class Tareas extends CI_Model
                     } else {
                         $data[$key]['ss'] = $res->ss;
                         $data[$key]['ot'] = $res->ot;
+                        $data[$key]['tip_ta'] = $res->tip_ta;
                         $data[$key]['equipoDesc'] = $res->desceq;
                         $data[$key]['sectorDesc'] = $res->descsec;
                         $data[$key]['nomCli'] = $res->nomCli;
@@ -968,6 +975,7 @@ class Tareas extends CI_Model
                 } else {
                     $data[$key]['ss'] = $res->ss;
                     $data[$key]['ot'] = $res->ot;
+                    $data[$key]['tip_ta'] = $res->tip_ta;
                     $data[$key]['equipoDesc'] = $res->desceq;
                     $data[$key]['sectorDesc'] = $res->descsec;
                     $data[$key]['nomCli'] = $res->nomCli;
@@ -980,6 +988,7 @@ class Tareas extends CI_Model
             } else {
                 $data[$key]['ss'] = $res->ss;
                 $data[$key]['ot'] = $res->ot;
+                $data[$key]['tip_ta'] = $res->tip_ta;
                 $data[$key]['equipoDesc'] = $res->desceq;
                 $data[$key]['sectorDesc'] = $res->descsec;
                 $data[$key]['nomCli'] = $res->nomCli;
@@ -989,7 +998,7 @@ class Tareas extends CI_Model
                     $data[$key]['displayDescription'] = $res->causa;
                 }
             }
-            log_message('DEBUG','#Main/mostratemaster |  ');
+            //log_message('DEBUG','#Main/mostratemaster |  ');
 
             // si existe OT
             $data = $this->infoUser($data, $key);
@@ -1007,7 +1016,7 @@ class Tareas extends CI_Model
                 }
             }
         }
-								log_message('DEBUG','#Main/BUSCADOR |  '.json_encode($filtrado));
+								//log_message('DEBUG','#Main/BUSCADOR |  '.json_encode($filtrado));
 
         if($search){
             return $filtrado;
@@ -1128,6 +1137,7 @@ class Tareas extends CI_Model
 
             $data = $tareasPaginadas; 
         }else{
+            
             $query_total = count($tareas);
 
             //armo las paginas con las tareas
@@ -1141,6 +1151,7 @@ class Tareas extends CI_Model
             'numDataTotal' => $query_total,
             'datos' => $data
         );
+        //log_message('DEBUG','#TRAZA | #TAREA >> tareaspaginadas >> $result: '.json_encode($result));
            
         return $result;
 
