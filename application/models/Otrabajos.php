@@ -1446,7 +1446,8 @@ class Otrabajos extends CI_Model {
 		}
 
 		// cambbia de estado la Tareas(SServ, Prevent, Predic, Back y OT)
-		function cambiarEstado($id_solicitud, $estado, $tipo){						
+		function cambiarEstado($id_solicitud, $estado, $tipo){		
+			$f_asignacion =  date("Y-m-d H:i:s"); 				
 			
 			if ($tipo == 'correctivo') {
 				$this->db->set('estado', $estado);
@@ -1474,8 +1475,9 @@ class Otrabajos extends CI_Model {
 			
 			if ($tipo == 'OT') {
 				$this->db->set('estado',$estado);
+				$this->db->set('f_asignacion', $f_asignacion);
 				$this->db->where('id_orden',$id_solicitud);
-        return $this->db->update('orden_trabajo');
+        		return $this->db->update('orden_trabajo');
 			}
 
 			return $response;

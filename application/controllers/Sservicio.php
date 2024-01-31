@@ -107,6 +107,8 @@ class Sservicio extends CI_Controller
 		{
 			$data['list'] = $this->Sservicios->servicios_List();
 			$data['permission'] = $permission;
+			log_message('DEBUG','#Main/index | Sservicio >> Index >> Data '.json_encode($data));
+
 			$this->load->view('Sservicios/list_bpm', $data);
 		}
 		// trae tareas estandar para select de nueva solicitud

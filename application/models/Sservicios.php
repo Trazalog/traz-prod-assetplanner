@@ -33,6 +33,8 @@ class Sservicios extends CI_Model
 												grupo.descripcion as grupo,
 												equipos.ubicacion,
 												orden_trabajo.fecha_terminada,
+												orden_trabajo.f_asignacion,
+												solicitud_reparacion.f_solicitado,
 												orden_trabajo.case_id,
 												orden_trabajo.id_usuario_a,
 												sisusers.usrName as mantenedor');

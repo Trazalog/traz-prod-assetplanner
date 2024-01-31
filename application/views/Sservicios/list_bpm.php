@@ -19,6 +19,7 @@
                       <th>Nro</th>
                       <th>Fecha</th>
 											<th>Fecha Fin</th>
+											<th>T. Generaciòn</th>
                       <th>Solicitante</th>
                       <th>Equipo</th>
                       <th>Sector</th>
@@ -75,7 +76,17 @@
 
 																														echo '<td style="text-align: left">'.$f['fecha_terminada'].'</td>';
 																												}
+                            if(!is_null($f['f_asignacion'])){
 
+                              $f_asignacion = strtotime($f['f_asignacion']);
+                              $f_solicitado = strtotime($f['f_solicitado']);
+                              $tiempo = number_format((($f_asignacion - $f_solicitado)/3600), 2, ':', ' ');
+                             
+                              echo '<td style="text-align: left">'.$tiempo.'</td>';
+                            }else{
+                              echo '<td style="text-align: left">No Aplica</td>';
+                            }                           
+                            
                             echo '<td style="text-align: left">'.$f['solicitante'].'</td>';
                             echo '<td style="text-align: left">'.$f['equipo'].'</td>';
                             echo '<td style="text-align: left">'.$f['sector'].'</td>';
