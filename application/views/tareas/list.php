@@ -261,7 +261,58 @@ function initDataTable(){
                     return `<td>${(row['pema_id']) ? bolita(row['pema_id'],'green') : ' '}</td></tr>`;
                 }
             },
-        ],
+            {
+                'targets':[11],
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                        var device ="<?php  echo $device ?>"; 
+                        var clase =  "celda nomTarea text-center"; 
+                        $(td).attr('class', clase);
+                },
+                //visible: false,
+                'data':'Tipo',
+                'render': function(data, type, row){
+
+                    var color='';
+                    var valor='';
+                    var detalle='';
+                    switch (row['tip_ta']) {
+                        case '1':
+                            color = '#3c8dbc'; //Orden Trabajo (celeste)
+                            valor = 'OT';
+                            detalle = 'Orden Trabajo';
+                            break;
+                        case '2':
+                            color = '#f56954'; //Correctivo (rojo)
+                            valor = 'CR';
+                            detalle = 'Correctivo';
+                            break;
+                        case '3':
+                            color = '#39CCCC'; //Preventivo (turquesa)
+                            valor = 'PV';
+                            detalle = 'Preventivo';
+                            break;
+                        case '4':
+                            color = '#ff851b'; //Backlog (naranja)
+                            valor = 'BK';
+                            detalle = 'Backlog';
+                            break;
+                        case '5':
+                            color = '#00a65a'; //Predictivo (verde)
+                            valor = 'PD';
+                            detalle = 'Predictivo';
+                            break;
+                        case '6':
+                            color = '#D81B60'; //Correctivo Programado (fucsia)
+                            valor = 'UR';
+                            detalle = 'Urgente';
+                            break;
+                    };
+                    //$('td', data).css('background-color', color);                
+                    //$(row).find('td:eq(1)').css('background-color', color);                 
+                    return  `<td>${(row['tip_ta']) ? bolitaEstado(valor,color, detalle) : ' '}</td></tr>`;
+                }
+            }
+        ],        
         //agregado de data-json al tr de la tabla
         createdRow:function( row, data, dataIndex ) {
             var id = data['id'];
@@ -272,114 +323,16 @@ function initDataTable(){
             $(row).attr('style', 'cursor:pointer');
             $(row).attr('tags', (proc) ? proc : '' );
             $(row).attr('onclick', 'detalleTarea(this)');
-        },
-        {
-            'targets':[10],
-            'createdCell':  function (td, cellData, rowData, row, col) {
-                    var device ="<?php  echo $device ?>"; 
-                    var clase =  "celda nomTarea text-center"; 
-                    $(td).attr('class', clase);
-            },
-            'data':'Id Pedido',
-            'render': function(data, type, row){
-                return `<td>${(row['pema_id']) ? bolitaEstado(row['pema_id'],'green') : ' '}</td></tr>`;
-            }
-        },
-        {
-            'targets':[11],
-            'createdCell':  function (td, cellData, rowData, row, col) {
-                    var device ="<?php  echo $device ?>"; 
-                    var clase =  "celda nomTarea text-center"; 
-                    $(td).attr('class', clase);
-            },
-            //visible: false,
-            'data':'Tipo',
-            'render': function(data, type, row){
-
-                var color='';
-                var valor='';
-                var detalle='';
-                switch (row['tip_ta']) {
-                    case '1':
-                        color = '#3c8dbc'; //Orden Trabajo (celeste)
-                        valor = 'OT';
-                        detalle = 'Orden Trabajo';
-                        break;
-                    case '2':
-                        color = '#f56954'; //Correctivo (rojo)
-                        valor = 'CR';
-                        detalle = 'Correctivo';
-                        break;
-                    case '3':
-                        color = '#39CCCC'; //Preventivo (turquesa)
-                        valor = 'PV';
-                        detalle = 'Preventivo';
-                        break;
-                    case '4':
-                        color = '#ff851b'; //Backlog (naranja)
-                        valor = 'BK';
-                        detalle = 'Backlog';
-                        break;
-                    case '5':
-                        color = '#00a65a'; //Predictivo (verde)
-                        valor = 'PD';
-                        detalle = 'Predictivo';
-                        break;
-                    case '6':
-                        color = '#D81B60'; //Correctivo Programado (fucsia)
-                        valor = 'UR';
-                        detalle = 'Urgente';
-                        break;
-                };
-                //$('td', data).css('background-color', color);                
-                //$(row).find('td:eq(1)').css('background-color', color);                 
-                return  `<td>${(row['tip_ta']) ? bolitaEstado(valor,color, detalle) : ' '}</td></tr>`;
-            }
-        }
-    ],
-    /*"rowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-        var tipo = aData['tip_ta'];
-        switch (tipo) {
-            case '1':
-                color = '#3c8dbc'; //Orden Trabajo (celeste)
-                break;
-            case '2':
-                color = '#f56954'; //Correctivo (rojo)
-                break;
-            case '3':
-                color = '#39CCCC'; //Preventivo (turquesa)
-                break;
-            case '4':
-                color = '#ff851b'; //Backlog (naranja)
-                break;
-            case '5':
-                color = '#00a65a'; //Predictivo (verde)
-                break;
-            case '6':
-                color = '#D81B60'; //Correctivo Programado (fucsia)
-                break;
-        };
-        $(nRow).css('background-color', color);
-    },*/
-    //agregado de data-json al tr de la tabla
-    createdRow:function( row, data, dataIndex ) {
-        var id = data['id'];
-        var processId = data['processId'];
-        var proc = tagProceso(processId);
-        $(row).attr('id', id);
-        $(row).attr('class', id);
-        $(row).attr('style', 'cursor:pointer');
-        $(row).attr('tags', (proc) ? proc : '' );
-        $(row).attr('onclick', 'detalleTarea(this)');
 
         
-    },
+        }
     });  
     /*alert( 'Rows '+$('#bandeja').DataTable().rows(':contains("Unknown")').data().length+' are selected' );    //Recoarga cada 15seg
     setInterval( function () {
         //$('#bandeja').DataTable().data().reload();
         $('#bandeja').DataTable().ajax.reload();           
     },20000);*/
+}
 
 $(document).ready(function(){
     initDataTable();
@@ -391,8 +344,7 @@ $(document).ready(function(){
 });
 
 //actualiza la tabla de tareas y rearma el datatable
-function btnActualizar()
-{
+function btnActualizar(){
     WaitingOpen();
     $.ajax({
       type: 'GET',
@@ -510,24 +462,21 @@ function offline() {
     }
 }
 //DataTable('#bandeja',true, false);
-function bolita(texto, color, detalle = null)
-{
+function bolita(texto, color, detalle = null){
     return `<span data-toggle='tooltip' title='${detalle}' class='badge bg-${color} estado'>${texto}</span>`;
 }
 
-function bolitaEstado(texto, color, detalle = null)
-{
+function bolitaEstado(texto, color, detalle = null){
     return `<span data-toggle='tooltip' title='${detalle}' style='font-weight: bold; color: #FFFFFF; display: inline-block;  height: 10%;  width: 30%;  background-color: ${color};  border-radius: 45px;'>${texto}</span>`;
 }
 
-function tagProceso($id)
-    {
+function tagProceso($id){
         
-        if($id == '<?php echo BPM_PROCESS_ID_PEDIDOS_NORMALES ?>') return '#pedidoMaterial';
+    if($id == '<?php echo BPM_PROCESS_ID_PEDIDOS_NORMALES ?>') return '#pedidoMaterial';
 
-        if($id == '<?php echo BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS ?>') return '#pedidoMaterial#extraordinario';
+    if($id == '<?php echo BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS ?>') return '#pedidoMaterial#extraordinario';
 
-    }
+}
 
 function msjBusqueda(){
       /*   $('#waitingText').css('color','black');*/
