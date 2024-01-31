@@ -5,6 +5,7 @@
             <div class="box box-primary">
                 <div class="box-header">
                     <h1 class="box-title">Mis Tareas</h1>
+                    <a class="btn btn-primary" style="margin-left: 5%"  title="Actualizar" id="btnActualizar"><i class="glyphicon glyphicon-refresh"></i></a>
                     <!-- <button id="pruebagps">gps</button> -->
                 </div><!-- /.box-header -->
                 <div class="box-body">
@@ -72,298 +73,295 @@
 </div>
 
 <script>
+         
 
-$(document).ready(function(){
-    
-    $('#bandeja').DataTable({
-   'initComplete':function( settings, json ) {
-         WaitingClose();                 
-    },
-	'ordering': true,
-    'searchDelay': 3000,
-    'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
-    'paging' : true,
-    'processing':    true,
-    'serverSide': true,
-    'order': [[1, 'asc']],
-    'search': true,
-    'ajax':{
-        type: 'POST',
-        url: 'index.php/Tarea/paginado'
-       /* beforeSend: function(){
-            //msjBusqueda();
-        }*/
-    },    
-    'columnDefs':[
-        
-        {
-                //Agregado para que funcione cabecera de imprimir,descargar excel o pdf.   
-                "defaultContent": "-",
-                "targets": "_all",
-        },
-        {
-            'targets':[0],
-             'createdCell':  function (td, cellData, rowData, row, col) { 
-                    var device ="<?php  echo $device ?>"; 
+function initDataTable(){
+    myTable = $('#bandeja').DataTable({
+       'initComplete':function( settings, json ) {
+        }, 
+	    'ordering': true,
+        'searchDelay': 3000,
+        'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
+        'paging' : true,
+        'processing':    true,
+        'serverSide': true,
+        'order': [[1, 'asc']],
+        'search': true,
+        'ajax':{
+            type: 'POST',
+            url: 'index.php/Tarea/paginado'
+        }, 
+        'columnDefs':[
+            {
+                    //Agregado para que funcione cabecera de imprimir,descargar excel o pdf.   
+                    "defaultContent": "-",
+                    "targets": "_all",
+            },
+            {
+                'targets':[0],
+                 'createdCell':  function (td, cellData, rowData, row, col) { 
+                        var device ="<?php  echo $device ?>"; 
+                        var asig = row['assigned_id'];
+                        if( asig != ""){
+                            clase =  (device == 'android' ?  "celda nomTarea hidden" : "celda nomTarea text-center");
+                        
+                        }
+                        else{
+                            clase = (device == 'android' ?  "celda nomTarea hidden" : "celda nomTarea text-center");
+                        } 
+                        $(td).attr('class', clase);
+                }, 
+                'data':'Estado',
+                'render':function(data,type,row){
+                    /*$('.dataTables_filter input').keyup(function() {
+                        msjBusqueda(function(){
+                    }, 1000 );
+                    });*/
+                    //WaitingClose(); 
+                    var id = row['id'];
                     var asig = row['assigned_id'];
-
+                    var processId = row['processId'];
+                    var device ="<?php  echo $device ?>";
+                    r = '<tr>';
                     if( asig != ""){
-                        clase =  (device == 'android' ?  "celda nomTarea hidden" : "celda nomTarea text-center");
-    
+                        r =  `<td> <i class="fa fa-user" style="color: #5c99bc ; cursor: pointer;"" title="Asignado" data-toggle="modal" data-target="#modalSale"></i></td>` 
                     }
                     else{
-                        clase = (device == 'android' ?  "celda nomTarea hidden" : "celda nomTarea text-center");
+                        r = `<td> <i class="fa fa-user" style="color: #d6d9db ; cursor: pointer;"" title="Sin Asignar" data-toggle="modal" data-target="#modalSale"></i></td>`
                     } 
-                    $(td).attr('class', clase);
-
-            }, 
-            'data':'Estado',
-            'render':function(data,type,row){
-                /*$('.dataTables_filter input').keyup(function() {
-                    msjBusqueda(function(){
-                }, 1000 );
-                });*/
-                //WaitingClose(); 
-                var id = row['id'];
-                var asig = row['assigned_id'];
-                var processId = row['processId'];
-                var device ="<?php  echo $device ?>";
-                r = '<tr>';
-                if( asig != ""){
-                    r =  `<td> <i class="fa fa-user" style="color: #5c99bc ; cursor: pointer;"" title="Asignado" data-toggle="modal" data-target="#modalSale"></i></td>` 
+                    return r;
+                    }
+            },
+            {
+                'targets':[1],
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                        var device ="<?php  echo $device ?>"; 
+                        var clase =  (device == 'android' ? "celda nomTarea tddate" : "celda nomTarea tddate");
+                        $(td).attr('class', clase);
+                        $(td).attr('style', 'text-align: left'); 
+                },
+                'data':'Asignado',
+                'render': function(data, type, row){
+                    return `<td>${row['usr_asignado']}</td>`;
                 }
-                else{
-                    r = `<td> <i class="fa fa-user" style="color: #d6d9db ; cursor: pointer;"" title="Sin Asignar" data-toggle="modal" data-target="#modalSale"></i></td>`
-                } 
-                return r;
+            },
+            {
+                'targets':[2],
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                        var device ="<?php  echo $device ?>"; 
+                        var clase =  (device == 'android' ? "celda nomTarea tddate" : "celda nomTarea tddate");
+                        $(td).attr('class', clase); 
+                        $(td).attr('style', 'text-align: left'); 
+                },
+                'data':'Fecha Asignación',
+                'render': function(data, type, row){
+                    return `<td>${row['assigned_date']}</td>`;
                 }
-        },
-        {
-            'targets':[1],
-            'createdCell':  function (td, cellData, rowData, row, col) {
-                    var device ="<?php  echo $device ?>"; 
-                    var clase =  (device == 'android' ? "celda nomTarea tddate" : "celda nomTarea tddate");
-                    $(td).attr('class', clase);
-                    $(td).attr('style', 'text-align: left'); 
             },
-            'data':'Asignado',
-            'render': function(data, type, row){
-                return `<td>${row['usr_asignado']}</td>`;
-            }
-        },
-        {
-            'targets':[2],
-            'createdCell':  function (td, cellData, rowData, row, col) {
-                    var device ="<?php  echo $device ?>"; 
-                    var clase =  (device == 'android' ? "celda nomTarea tddate" : "celda nomTarea tddate");
-                    $(td).attr('class', clase); 
-                    $(td).attr('style', 'text-align: left'); 
+            {
+                'targets':[3],
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                        var device ="<?php  echo $device ?>"; 
+                        var clase =  (device == 'android' ? "celda nomTarea tddate" : "celda nomTarea tddate");
+                        $(td).attr('class', clase); 
+                        $(td).attr('style', 'text-align: left'); 
+                },
+                'data':'Equipo',
+                'render': function(data, type, row){
+                    return `<td>${(row['equipoDesc']) ? row['equipoDesc'] : ' '}</td>`;
+                }
             },
-            'data':'Fecha Asignación',
-            'render': function(data, type, row){
-                return `<td>${row['assigned_date']}</td>`;
-            }
-        },
-        {
-            'targets':[3],
-            'createdCell':  function (td, cellData, rowData, row, col) {
-                    var device ="<?php  echo $device ?>"; 
-                    var clase =  (device == 'android' ? "celda nomTarea tddate" : "celda nomTarea tddate");
-                    $(td).attr('class', clase); 
-                    $(td).attr('style', 'text-align: left'); 
+            {
+                'targets':[4],
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                        var device ="<?php  echo $device ?>"; 
+                        var clase =  (device == 'android' ? "celda nomTarea tddate" : "celda nomTarea tddate");
+                        $(td).attr('class', clase); 
+                        $(td).attr('style', 'text-align: left'); 
+                },
+                'data':'Sector',
+                'render': function(data, type, row){
+                    device ="<?php  echo $device ?>";
+                    return `<td>${(row['sectorDesc']) ? row['sectorDesc'] : ' ' }</td>`;
+                }
             },
-            'data':'Equipo',
-            'render': function(data, type, row){
-                return `<td>${(row['equipoDesc']) ? row['equipoDesc'] : ' '}</td>`;
-            }
-        },
-        {
-            'targets':[4],
-            'createdCell':  function (td, cellData, rowData, row, col) {
-                    var device ="<?php  echo $device ?>"; 
-                    var clase =  (device == 'android' ? "celda nomTarea tddate" : "celda nomTarea tddate");
-                    $(td).attr('class', clase); 
-                    $(td).attr('style', 'text-align: left'); 
+            {
+                'targets':[5],
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                        var device ="<?php  echo $device ?>"; 
+                        var clase =  (device == 'android' ? "celda nomTarea tddate" : "celda nomTarea tddate");
+                        $(td).attr('class', clase); 
+                        $(td).attr('style', 'text-align: left'); 
+                },
+                'data':'Cliente',
+                'render': function(data, type, row){
+                    return `<td>${(row['nomCli']) ? row['nomCli'] : ' '}</td>`;
+                }
             },
-            'data':'Sector',
-            'render': function(data, type, row){
-                device ="<?php  echo $device ?>";
-                return `<td>${(row['sectorDesc']) ? row['sectorDesc'] : ' ' }</td>`;
-            }
-        },
-        {
-            'targets':[5],
-            'createdCell':  function (td, cellData, rowData, row, col) {
-                    var device ="<?php  echo $device ?>"; 
-                    var clase =  (device == 'android' ? "celda nomTarea tddate" : "celda nomTarea tddate");
-                    $(td).attr('class', clase); 
-                    $(td).attr('style', 'text-align: left'); 
+            {
+                'targets':[6],
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                        var device ="<?php  echo $device ?>"; 
+                        var clase =  "celda nomTarea tddate";
+                        $(td).attr('class', clase); 
+                        $(td).attr('style', 'text-align: left'); 
+                },
+                'data':'Tarea',
+                'render': function(data, type, row){
+                    return `<td>${row['displayName']}</td>`;
+                }
             },
-            'data':'Cliente',
-            'render': function(data, type, row){
-                return `<td>${(row['nomCli']) ? row['nomCli'] : ' '}</td>`;
-            }
-        },
-        {
-            'targets':[6],
-            'createdCell':  function (td, cellData, rowData, row, col) {
+            {
+                'targets':[7],
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                        var device ="<?php  echo $device ?>"; 
+                        var clase =  "celda tareaDesc " + (device == 'android' ? 'hidden':null); 
+                        $(td).attr('class', clase); 
+                        $(td).attr('style', 'text-align: left'); 
+                },
+                'data':'Descripcion',
+                'render': function(data, type, row){
                     var device ="<?php  echo $device ?>"; 
-                    var clase =  "celda nomTarea tddate";
-                    $(td).attr('class', clase); 
-                    $(td).attr('style', 'text-align: left'); 
+                    return `<td>${(row['displayDescription']) ? row['displayDescription'] : ' '}</td>`;
+                }
             },
-            'data':'Tarea',
-            'render': function(data, type, row){
-                return `<td>${row['displayName']}</td>`;
-            }
-        },
-        {
-            'targets':[7],
-            'createdCell':  function (td, cellData, rowData, row, col) {
-                    var device ="<?php  echo $device ?>"; 
-                    var clase =  "celda tareaDesc " + (device == 'android' ? 'hidden':null); 
-                    $(td).attr('class', clase); 
-                    $(td).attr('style', 'text-align: left'); 
+            {
+                'targets':[8],
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                        var device ="<?php  echo $device ?>"; 
+                        var clase =  "celda nomTarea text-center"; 
+                        $(td).attr('class', clase);
+                },
+                'data':'Id S.S',
+                'render': function(data, type, row){
+                    return `<td>${(row['ss']) ? bolita(row['ss'],'blue') : ' '}</td>`;
+                }
             },
-            'data':'Descripcion',
-            'render': function(data, type, row){
-                var device ="<?php  echo $device ?>"; 
-                return `<td>${(row['displayDescription']) ? row['displayDescription'] : ' '}</td>`;
-            }
-        },
-        {
-            'targets':[8],
-            'createdCell':  function (td, cellData, rowData, row, col) {
-                    var device ="<?php  echo $device ?>"; 
-                    var clase =  "celda nomTarea text-center"; 
-                    $(td).attr('class', clase);
+            {
+                'targets':[9],
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                        var device ="<?php  echo $device ?>"; 
+                        var clase =  "celda nomTarea text-center"; 
+                        $(td).attr('class', clase);
+                },
+                'data':'Id OT',
+                'render': function(data, type, row){
+                    return `<td ">${(row['ot']) ? bolita(row['ot'],'orange') : ' '}</td>`;
+                }
             },
-            'data':'Id S.S',
-            'render': function(data, type, row){
-                return `<td>${(row['ss']) ? bolita(row['ss'],'blue') : ' '}</td>`;
-            }
-        },
-        {
-            'targets':[9],
-            'createdCell':  function (td, cellData, rowData, row, col) {
-                    var device ="<?php  echo $device ?>"; 
-                    var clase =  "celda nomTarea text-center"; 
-                    $(td).attr('class', clase);
+            {
+                'targets':[10],
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                        var device ="<?php  echo $device ?>"; 
+                        var clase =  "celda nomTarea text-center"; 
+                        $(td).attr('class', clase);
+                },
+                'data':'Id Pedido',
+                'render': function(data, type, row){
+                    return `<td>${(row['pema_id']) ? bolita(row['pema_id'],'green') : ' '}</td></tr>`;
+                }
             },
-            'data':'Id OT',
-            'render': function(data, type, row){
-                return `<td ">${(row['ot']) ? bolita(row['ot'],'orange') : ' '}</td>`;
-            }
-        },
-        {
-            'targets':[10],
-            'createdCell':  function (td, cellData, rowData, row, col) {
-                    var device ="<?php  echo $device ?>"; 
-                    var clase =  "celda nomTarea text-center"; 
-                    $(td).attr('class', clase);
-            },
-            'data':'Id Pedido',
-            'render': function(data, type, row){
-                return `<td>${(row['pema_id']) ? bolitaEstado(row['pema_id'],'green') : ' '}</td></tr>`;
-            }
-        },
-        {
-            'targets':[11],
-            'createdCell':  function (td, cellData, rowData, row, col) {
-                    var device ="<?php  echo $device ?>"; 
-                    var clase =  "celda nomTarea text-center"; 
-                    $(td).attr('class', clase);
-            },
-            //visible: false,
-            'data':'Tipo',
-            'render': function(data, type, row){
+            {
+                'targets':[11],
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                        var device ="<?php  echo $device ?>"; 
+                        var clase =  "celda nomTarea text-center"; 
+                        $(td).attr('class', clase);
+                },
+                //visible: false,
+                'data':'Tipo',
+                'render': function(data, type, row){
 
-                var color='';
-                var valor='';
-                var detalle='';
-                switch (row['tip_ta']) {
-                    case '1':
-                        color = '#3c8dbc'; //Orden Trabajo (celeste)
-                        valor = 'OT';
-                        detalle = 'Orden Trabajo';
-                        break;
-                    case '2':
-                        color = '#f56954'; //Correctivo (rojo)
-                        valor = 'CR';
-                        detalle = 'Correctivo';
-                        break;
-                    case '3':
-                        color = '#39CCCC'; //Preventivo (turquesa)
-                        valor = 'PV';
-                        detalle = 'Preventivo';
-                        break;
-                    case '4':
-                        color = '#ff851b'; //Backlog (naranja)
-                        valor = 'BK';
-                        detalle = 'Backlog';
-                        break;
-                    case '5':
-                        color = '#00a65a'; //Predictivo (verde)
-                        valor = 'PD';
-                        detalle = 'Predictivo';
-                        break;
-                    case '6':
-                        color = '#D81B60'; //Correctivo Programado (fucsia)
-                        valor = 'UR';
-                        detalle = 'Urgente';
-                        break;
-                };
-                //$('td', data).css('background-color', color);                
-                //$(row).find('td:eq(1)').css('background-color', color);                 
-                return  `<td>${(row['tip_ta']) ? bolitaEstado(valor,color, detalle) : ' '}</td></tr>`;
+                    var color='';
+                    var valor='';
+                    var detalle='';
+                    switch (row['tip_ta']) {
+                        case '1':
+                            color = '#3c8dbc'; //Orden Trabajo (celeste)
+                            valor = 'OT';
+                            detalle = 'Orden Trabajo';
+                            break;
+                        case '2':
+                            color = '#f56954'; //Correctivo (rojo)
+                            valor = 'CR';
+                            detalle = 'Correctivo';
+                            break;
+                        case '3':
+                            color = '#39CCCC'; //Preventivo (turquesa)
+                            valor = 'PV';
+                            detalle = 'Preventivo';
+                            break;
+                        case '4':
+                            color = '#ff851b'; //Backlog (naranja)
+                            valor = 'BK';
+                            detalle = 'Backlog';
+                            break;
+                        case '5':
+                            color = '#00a65a'; //Predictivo (verde)
+                            valor = 'PD';
+                            detalle = 'Predictivo';
+                            break;
+                        case '6':
+                            color = '#D81B60'; //Correctivo Programado (fucsia)
+                            valor = 'UR';
+                            detalle = 'Urgente';
+                            break;
+                    };
+                    //$('td', data).css('background-color', color);                
+                    //$(row).find('td:eq(1)').css('background-color', color);                 
+                    return  `<td>${(row['tip_ta']) ? bolitaEstado(valor,color, detalle) : ' '}</td></tr>`;
+                }
             }
-        }
-    ],
-    /*"rowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-        var tipo = aData['tip_ta'];
-        switch (tipo) {
-            case '1':
-                color = '#3c8dbc'; //Orden Trabajo (celeste)
-                break;
-            case '2':
-                color = '#f56954'; //Correctivo (rojo)
-                break;
-            case '3':
-                color = '#39CCCC'; //Preventivo (turquesa)
-                break;
-            case '4':
-                color = '#ff851b'; //Backlog (naranja)
-                break;
-            case '5':
-                color = '#00a65a'; //Predictivo (verde)
-                break;
-            case '6':
-                color = '#D81B60'; //Correctivo Programado (fucsia)
-                break;
-        };
-        $(nRow).css('background-color', color);
-    },*/
-    //agregado de data-json al tr de la tabla
-    createdRow:function( row, data, dataIndex ) {
-        var id = data['id'];
-        var processId = data['processId'];
-        var proc = tagProceso(processId);
-        $(row).attr('id', id);
-        $(row).attr('class', id);
-        $(row).attr('style', 'cursor:pointer');
-        $(row).attr('tags', (proc) ? proc : '' );
-        $(row).attr('onclick', 'detalleTarea(this)');
+        ],        
+        //agregado de data-json al tr de la tabla
+        createdRow:function( row, data, dataIndex ) {
+            var id = data['id'];
+            var processId = data['processId'];
+            var proc = tagProceso(processId);
+            $(row).attr('id', id);
+            $(row).attr('class', id);
+            $(row).attr('style', 'cursor:pointer');
+            $(row).attr('tags', (proc) ? proc : '' );
+            $(row).attr('onclick', 'detalleTarea(this)');
 
         
-    },
+        }
     });  
     /*alert( 'Rows '+$('#bandeja').DataTable().rows(':contains("Unknown")').data().length+' are selected' );    //Recoarga cada 15seg
     setInterval( function () {
         //$('#bandeja').DataTable().data().reload();
         $('#bandeja').DataTable().ajax.reload();           
     },20000);*/
+}
 
+$(document).ready(function(){
+    initDataTable();
+
+     // Asignar la función btnActualizar al evento click del botón
+     $('#btnActualizar').on('click', function () {
+        btnActualizar();
+    });
 });
+
+//actualiza la tabla de tareas y rearma el datatable
+function btnActualizar(){
+    WaitingOpen();
+    $.ajax({
+      type: 'GET',
+      data: {},
+      url: 'index.php/Tarea/actualizaTareas',
+      success: function(data){
+        myTable.clear();
+        myTable.destroy();
+        WaitingClose();
+        initDataTable();
+      },
+      error: function(result){
+        console.log(result);
+      },
+    });
+    
+}
 
 
 var idfin = "";
@@ -464,24 +462,21 @@ function offline() {
     }
 }
 //DataTable('#bandeja',true, false);
-function bolita(texto, color, detalle = null)
-{
+function bolita(texto, color, detalle = null){
     return `<span data-toggle='tooltip' title='${detalle}' class='badge bg-${color} estado'>${texto}</span>`;
 }
 
-function bolitaEstado(texto, color, detalle = null)
-{
+function bolitaEstado(texto, color, detalle = null){
     return `<span data-toggle='tooltip' title='${detalle}' style='font-weight: bold; color: #FFFFFF; display: inline-block;  height: 10%;  width: 30%;  background-color: ${color};  border-radius: 45px;'>${texto}</span>`;
 }
 
-function tagProceso($id)
-    {
+function tagProceso($id){
         
-        if($id == '<?php echo BPM_PROCESS_ID_PEDIDOS_NORMALES ?>') return '#pedidoMaterial';
+    if($id == '<?php echo BPM_PROCESS_ID_PEDIDOS_NORMALES ?>') return '#pedidoMaterial';
 
-        if($id == '<?php echo BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS ?>') return '#pedidoMaterial#extraordinario';
+    if($id == '<?php echo BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS ?>') return '#pedidoMaterial#extraordinario';
 
-    }
+}
 
 function msjBusqueda(){
       /*   $('#waitingText').css('color','black');*/

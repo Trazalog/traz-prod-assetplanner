@@ -33,12 +33,15 @@ class Sservicios extends CI_Model
 												grupo.descripcion as grupo,
 												equipos.ubicacion,
 												orden_trabajo.fecha_terminada,
-												orden_trabajo.case_id');
+												orden_trabajo.case_id,
+												orden_trabajo.id_usuario_a,
+												sisusers.usrName as mantenedor');
 			$this->db->from('solicitud_reparacion');
 			$this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo');
 			$this->db->join('sector', 'equipos.id_sector = sector.id_sector');
 			$this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo', 'left');
 			$this->db->join('orden_trabajo', 'solicitud_reparacion.case_id = orden_trabajo.case_id', 'left');
+			$this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId', 'left');
 			$this->db->where('solicitud_reparacion.estado !=', 'AN');
 			$this->db->where('solicitud_reparacion.id_empresa', $empId);
 			$query = $this->db->get();
