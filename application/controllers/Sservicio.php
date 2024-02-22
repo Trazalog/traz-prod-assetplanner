@@ -11,6 +11,7 @@ class Sservicio extends CI_Controller
 		$this->load->model('procesos');
 	}
 	public function getSS(){
+
 		$data["SS"] = $this->Sservicios->getSSs($_POST['idSS']);
 		$id_equipo = $data["SS"][0]->id_equipo;
 		$data["EQ_SEC"] = $this->Sservicios->getEquipoSector($id_equipo);
@@ -26,8 +27,22 @@ class Sservicio extends CI_Controller
 	// Trae sectores por empresa logueada - Listo
 	public function getSector()
 	{
-		$response = $this->Sservicios->getSectores($this->input->post());
-		echo json_encode($response);
+		$data = $this->session->userdata();
+		log_message('DEBUG','#Main/index | Sservicio >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+
+		if(empty($data['user_data'][0]['usrName'])){
+			log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+			$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+			$this->session->set_userdata($var);
+			$this->session->unset_userdata(null);
+			$this->session->sess_destroy();
+
+			echo ("<script>location.href='login'</script>");
+
+		}else{
+			$response = $this->Sservicios->getSectores($this->input->post());
+			echo json_encode($response);
+		}
 	}
 	public function getEquipo()
 	{
@@ -92,6 +107,8 @@ class Sservicio extends CI_Controller
 		{
 			$data['list'] = $this->Sservicios->servicios_List();
 			$data['permission'] = $permission;
+			log_message('DEBUG','#Main/index | Sservicio >> Index >> Data '.json_encode($data));
+
 			$this->load->view('Sservicios/list_bpm', $data);
 		}
 		// trae tareas estandar para select de nueva solicitud

@@ -30,12 +30,13 @@
               <div class="panel-body">
                 <div class="row">
                   <div class="col-xs-12 col-sm-6">Sector <strong style="color: #dd4b39">*</strong>
-                      <input type="text" class="form-control buscSector" placeholder="Buscar Sector..." id="buscSector" name="buscSector">
-                      <input type="text" class="hidden idSector" id="idSector" name="idSector">
+                    <select id="sector" name="sector" class=" selectpicker form-control input-md">
+                      <option value="-1" selected disabled>Seleccione opción</option>
+                    </select>
                   </div>
                   <div class="col-xs-12 col-sm-6">Equipos <strong style="color: #dd4b39">*</strong>
                     <select  id="equipo" name="id_equipo" class="form-control id_equipo">
-                        <option value="-1" placeholder="Seleccione..."></option>
+                      <option value="-1" selected disabled>Seleccione opción</option>
                     </select>
                   </div>
                 </div><!-- /.row -->
@@ -64,8 +65,9 @@
               <div class="panel-body">
                 <div class="row">
                   <div class="col-xs-12 col-sm-6 col-md-4">Tarea <strong style="color: #dd4b39">*</strong>:
-                    <input type="text" id="tarea" name="tarea" class="form-control" placeholder="Buscar Tarea...">
-                    <input type="hidden" id="id_tarea" name="id_tarea">
+                    <select id="tarea" name="tarea" class=" selectpicker form-control input-md">
+                      <option value="-1" selected disabled>Seleccione opción</option>
+                    </select>
                   </div>
 
                   <div class="col-xs-12 col-sm-6 col-md-4">Componente <strong style="color: #dd4b39">*</strong>:
@@ -80,7 +82,7 @@
                     </select>
                   </div>
                   <div class="col-xs-12 col-sm-6">Frecuencia <strong style="color: #dd4b39">*</strong>:
-                    <input type="text"  id="cantidad" name="cantidad" class="form-control input-md" placeholder="Ingrese valor..."/>
+                    <input type="number" min="1" step="1" id="cantidad" name="cantidad" class="form-control input-md" placeholder="Ingrese valor..."/>
                   </div>
                   <div class="col-xs-12 col-sm-6">Lectura base <strong style="color: #dd4b39">*</strong>:
                     <input type="text"  id="lectura_base" name="lectura_base" class="form-control input-md" placeholder="Ingrese valor..." disabled/>
@@ -94,7 +96,7 @@
                     <input type="text" class="form-control" id="duracion" name="duracion" placeholder="Ingrese valor..."/>
                   </div> 
                   <div class="col-xs-12 col-sm-6 col-md-4">U. de tiempo <strong style="color: #dd4b39">*</strong>
-                    <select  id="unidad" name="unidad" class="form-control" />
+                    <select  id="unidad" name="unidad" class="form-control" >
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-4">Cant. Operarios <strong style="color: #dd4b39">*</strong>:
                     <input type="text" class="form-control" id="cantOper" name="cantOper" placeholder="Ingrese valor..."/>
@@ -121,21 +123,21 @@
                     <div role="tabpanel" class="tab-pane active" id="herramin">
                       <div class="row">
                         <div class="col-xs-12 col-sm-6 col-md-4">
-                          <label for="herramienta">Codigo <strong style="color: #dd4b39">*</strong>:</label>
-                          <input type="text" id="herramienta"  name="" class="form-control" placeholder="Buscar Código..." />
+                          <label for="herramienta">Codigo<!-- <strong style="color: #dd4b39">*</strong> -->:</label>
+                          <input type="text" id="herramienta"  name="herramienta" class="form-control" placeholder="Buscar Código..." />
                           <input type="hidden" id="id_herramienta" name="id_herramienta">
                         </div>                          
                         <div class="col-xs-12 col-sm-6 col-md-4">
-                          <label for="marcaherram">Marca <strong style="color: #dd4b39">*</strong>:</label>
-                          <input type="text" id="marcaherram"  name="" class="form-control" />
+                          <label for="marcaherram">Marca<!-- <strong style="color: #dd4b39">*</strong> -->:</label>
+                          <input type="text" id="marcaherram"  name="marcaherram" class="form-control" />
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
-                          <label for="descripcionherram">Descripcion <strong style="color: #dd4b39">*</strong>:</label>
-                          <input type="text" id="descripcionherram"  name="" class="form-control" />
+                          <label for="descripcionherram">Descripcion<!-- <strong style="color: #dd4b39">*</strong> -->:</label>
+                          <input type="text" id="descripcionherram"  name="descripcionherram" class="form-control" />
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
-                          <label for="cantidadherram">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
-                          <input type="text" id="cantidadherram"  name="" class="form-control" placeholder="Ingrese Cantidad..." />
+                          <label for="cantidadherram">Cantidad<!-- <strong style="color: #dd4b39">*</strong> -->:</label>
+                          <input type="text" id="cantidadherram"  name="cantidadherram" class="form-control" placeholder="Ingrese Cantidad..." />
                         </div>
                         <br>
                         <div class="col-xs-12">
@@ -166,17 +168,17 @@
                     <div role="tabpanel" class="tab-pane" id="insum">
                       <div class="row">
                         <div class="col-xs-12 col-sm-6 col-md-4">
-                          <label for="insumo">Codigo <strong style="color: #dd4b39">*</strong>:</label>
+                          <label for="insumo">Codigo<!-- <strong style="color: #dd4b39">*</strong> -->:</label>
                           <input type="text" id="insumo" name="insumo" class="form-control" placeholder="Buscar Código..." />
                           <input type="hidden" id="id_insumo" name="">
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
                           <label for="">Descripcion:</label>
-                          <input type="text" id="descript"  name="" class="form-control" />
+                          <input type="text" id="descript"  name="descript" class="form-control" />
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
-                          <label for="cant">Cantidad <strong style="color: #dd4b39">*</strong>:</label>
-                          <input type="text" id="cant"  name="" class="form-control" placeholder="Ingrese Cantidad"/>
+                          <label for="">Cantidad<!-- <strong style="color: #dd4b39">*</strong> -->:</label>
+                          <input type="text" id="cant"  name="cant" class="form-control" placeholder="Ingrese Cantidad"/>
                         </div>
                       </div><!-- /.row -->
                       <div class="row">
@@ -232,7 +234,8 @@
 <script>
 
 // Trae equipos llena select - Chequeado
-traer_equipo();
+//traer_equipo();
+/** Desactivamos esta funcion para que no cargue a la primera */
 function traer_equipo(){
   $('#equipo').html('');
     $.ajax({
@@ -260,7 +263,6 @@ function traer_equipo(){
       });
 }
 
-// Trae Sectores y autocompleta el campo
 var dataF = function () {
     var tmp = null;
     $.ajax({
@@ -271,36 +273,29 @@ var dataF = function () {
       'url': "Sservicio/getSector",
       'success': function (data) {
         tmp = data;
-      }
+        var $select = $("#sector");
+        for (var i = 0; i < data.length; i++) {
+          $select.append($('<option />', { value: data[i]['value'], text: data[i]['label'] }));
+        }
+      },
+      'error' : function(data){
+        console.log('Error en getSector');
+        console.table(data);
+      },
     });
     return tmp;
   }();
-  $(".buscSector").autocomplete({
-    source: dataF,
-    delay: 100,
-    minLength: 1,
-    focus: function(event, ui) {
-      // prevent autocomplete from updating the textbox
-      event.preventDefault();
-      // manually update the textbox
-      $(this).val(ui.item.label);
-    },
-    select: function(event, ui) {
-      // prevent autocomplete from updating the textbox
-      event.preventDefault();
-      // manually update the textbox and hidden field
-      $(this).val(ui.item.label);
-      $("#idSector").val(ui.item.value);
-      $("#equipo").html('<option value="-1" disabled selected>Seleccione opcion</option>');
-      // guardo el id de sector
-      var idSect =  $("#idSector").val();
-      getEquiSector(idSect);
-      //console.log("id sector en autocompletar: ");
-      //console.log(ui.item.value);
-    },
-  }); 
+  
+  $("#sector").change(function(){
+      var idSector = $("#sector").val();
+      getEquiSector(idSector);
+  });
+
+// Trae Sectores y autocompleta el campo
+
   //  llena select de equipos segun sector
   function getEquiSector(idSect){
+    $("#equipo").empty();
     var id =  idSect;
     $("#fecha_ingreso").val("");
     $("#marca").val("");
@@ -308,6 +303,7 @@ var dataF = function () {
     $("#descripcion").val("");
     $("#componente").html("<option value='-1'>Seleccione..</option>");
     console.log("id de sector para traer equipos: "+id);
+
     $.ajax({
       'data' : {id_sector : id },
       'async': true,
@@ -316,17 +312,25 @@ var dataF = function () {
       'dataType': 'json',
       'url': "Sservicio/getEquipSector",
       'success': function (data) {
-        console.log("Entro por getEquiSector ok");
-        console.table(data);//[0]['id_equipo']);
-        // Asigna opciones al select Equipo en modal
-        //console.log("length: "+data.length);
-        var $select = $("#equipo");
-        for (var i = 0; data.length; i++) {
-          $select.append($('<option />', { value: data[i]['id_equipo'], text: data[i]['descripcion'] }));
+        console.table(data)
+
+        if(data){
+          var opcion = "<option value='-1'>Seleccione...</option>" ;
+          $('#equipo').append(opcion);
+          
+            for (var i = 0; i < data.length; i++) {
+            var nombre = data[i]['descripcion'];
+            var opcion = "<option value='"+data[i]['id_equipo']+"'>" +nombre+ "</option>" ; 
+            $('#equipo').append(opcion);  
+          }
+        }
+        else{
+          var opcion = "<option value='-1'>Sin equipos asociados</option>" ;
+          $('#equipo').append(opcion);  
         }
       },
       'error' : function(data){
-        console.log('Error en getEquiSector');
+        console.log('Error Preventivo en getEquiSector');
         console.table(data);
       },
     });
@@ -346,24 +350,6 @@ $('#ultimo').datetimepicker({
 });
 
 // // Trae equipos
-// WaitingOpen("Cargando Equipos...");
-// $.ajax({
-//   data: { },
-//   dataType: 'json',
-//   url: 'index.php/Predictivo/getEquipo', 
-//   type: 'POST',
-// })
-// .done( (data) => {
-//   let opcion  = "<option value='-1'>Seleccione...</option>" ;
-//   $('#equipo').append(opcion);
-//   for(let i=0; i < data.length ; i++){
-//     let nombre = data[i]['codigo'];
-//     let opcion  = "<option value='"+data[i]['id_equipo']+"'>" +nombre+ "</option>";
-//     $('#equipo').append(opcion);
-//   }
-// })
-// .fail( () => alert("Error al traer Equipos.") )
-// .always( () => WaitingClose() );
 // Con equipo seleccionado llama funcion para traer sus componentes
 $('#equipo').change(function(){
   WaitingOpen("Cargando datos de Equipo...");
@@ -431,11 +417,17 @@ var dataTarea = function() {
     'dataType': 'json',
     'url': 'index.php/Preventivo/gettarea',
   })
-  .done( (data) => { tmp = data } )
+  .done( (data) => { tmp = data;
+    var $select = $("#tarea");
+        for (var i = 0; i < data.length; i++) {
+          $select.append($('<option>', { value: data[i]['value'], text: data[i]['label'] }, '</option>'));
+        }} 
+        )
   .fail( () => alert("Error al traer tareas") );
   return tmp;
 }();
-$("#tarea").autocomplete({
+
+/* $("#tarea").autocomplete({
   source:    dataTarea,
   delay:     500, 
   minLength: 1,
@@ -451,7 +443,7 @@ $("#tarea").autocomplete({
   },change: function(event,ui){
     $(this).val(ui.item == null ? "" : ui.item.label);
   }
-});
+}); */
 
 // Trae periodo y llena select
 traer_periodo();
@@ -496,7 +488,7 @@ $('#periodo').change(function(){
   }
 });
 
-// Trae unidades de tiempo y llena select
+ // Trae unidades de tiempo y llena select
 $('#unidad').html("");
 $.ajax({
   type: 'POST',
@@ -560,6 +552,7 @@ function cargarVista(){
 
 // Guarda Preventivo  
 $("#formPreventivo").submit(function (event){   
+  debugger;
   event.preventDefault();  
 
   var equipo   = $('#equipo').val();
@@ -574,11 +567,24 @@ $("#formPreventivo").submit(function (event){
   var oper     = $('#cantOper').val();
   var hh       = $('#hshombre').val();
 
+  /*
+  var insumo   = $('#insumo').val();
+  var cant   = $('#cant').val();
+
+  var herramienta = $('#herramienta').val();
+  var cantidadherram = $('#cantidadherram').val();
+  var marcaherram      = $('#marcaherram').val();
+  var descripcionherram = $('#descripcionherram').val();
+  
+  console.log("cant: "+cant);
+  */
+
   if((periodo=='horas') || (periodo=='ciclos')){
     if ((lectbase < 0)||(alerta < 0)) {
       $('#error').fadeIn('slow');
     }
   }
+
   if ((equipo < 0)||(tarea < 0)||(periodo < 0)||(unidad < 0)||(duracion == "")||(freq == "")||(oper == "")||(hh == "" || compon < 0)) {
       $('#error').fadeIn('slow');
   }
@@ -597,7 +603,7 @@ $("#formPreventivo").submit(function (event){
         console.log('resp prenevt: ');
         console.log(respuesta.resPrenvent);
         if (respuesta) {
-          //alert("Los datos han sido guardados correctamente");
+          alert("Los datos han sido guardados correctamente");
           cargarVista();
         }
         else if(respuesta==="error"){

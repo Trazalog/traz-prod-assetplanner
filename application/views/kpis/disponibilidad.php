@@ -3,7 +3,6 @@
 
 </div>
 
-
 <style type="text/css">
 .daterange {
     position: relative;
@@ -23,6 +22,7 @@ var idEquipo = 'all';
 getDisponibilidad(idEquipo);
 
 function getDisponibilidad(idEquipo) {
+    debugger;
     //WaitingOpen("Obteniendo datos de disponibilidad...");
     $.ajax({
             data: {
@@ -33,6 +33,7 @@ function getDisponibilidad(idEquipo) {
             url: 'index.php/Kpi/kpiDisponibilidad',
         })
         .done((data) => {
+            debugger;
             graficarParametro(data);
         })
         .fail(() => alert("Error al traer datos de Disponibilidad."))

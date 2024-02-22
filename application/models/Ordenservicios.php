@@ -47,9 +47,11 @@ class Ordenservicios extends CI_Model {
         }      
     }
 
-		function getEquipos($data) // FUNCIONA BIEN 
+	function getEquipos($data) // FUNCIONA BIEN 
     {
-        $id = $data['id_equipo'];       
+        $id = $data['id_equipo'];
+        log_message('DEBUG','#Main/index | OrdenServicio >getEquipo> id_equipo '.json_encode($data));
+        log_message('DEBUG','#Main/index | OrdenServicio >getEquipo> id_equipo '.$id);
         $this->db->select('
             equipos.codigo AS nomb_equipo,                
             equipos.descripcion AS desc_equip,
@@ -65,7 +67,7 @@ class Ordenservicios extends CI_Model {
         $this->db->from('equipos');        
         $this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo', 'left');
         $this->db->join('sector', 'equipos.id_sector = sector.id_sector');      
-				$this->db->group_by('equipos.id_equipo');
+		$this->db->group_by('equipos.id_equipo');
         $this->db->where('equipos.id_equipo', $id);
         $query = $this->db->get();      			
 				
@@ -82,6 +84,8 @@ class Ordenservicios extends CI_Model {
 					$datos['sector']         = $row['sector_desc'];
 					$datos['ubicacion']      = $row['ubicacion'];
 				}
+
+                log_message('DEBUG','#Main/getEquipos |  datos: '.json_encode($datos));
 				
 				return $datos;
     }
@@ -143,12 +147,13 @@ class Ordenservicios extends CI_Model {
         $query = $this->db->get();
         $i     = 0;
         foreach ($query->result() as $row)
-        {   
-            $equipos[$i]['label'] = $row->usrLastName.", ". $row->usrname ;
+        {
+            // $equipos[$i]['label'] = $row->usrLastName.", ". $row->usrname ;
+            $equipos[$i]['label'] = $row->usrname.", ". $row->usrLastName;
             $equipos[$i]['value'] = $row->usrId;
             $i++;
         }
-        return $equipos; 
+        return $equipos;
     }
 
 		function getRRHHOrdenTrabajo($idOT){

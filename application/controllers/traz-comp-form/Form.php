@@ -49,6 +49,24 @@ class Form extends CI_Controller
         echo json_encode($data);
     }
 
+    public function obtenerNuevoV2($form, $modal = false)
+    {
+
+        log_message('DEBUG','#TRAZA | #TRAZ-COMP-FORM | #FORM | obtenerNuevo() form_id ->'. $form);
+        if(!empty($form)){
+
+            $data['html'] = form($this->Forms->obtenerPlantilla($form), $modal);
+            
+            if($modal){
+                echo json_encode($data);
+            }else{
+                echo $data['html'];
+            }
+        }else{
+            echo '<h5>No se especificó un formulario.</h5>';
+        }
+    }
+
     public function guardar($info_id = false, $new = false)
     {
         $data = $this->input->post();
@@ -70,15 +88,14 @@ class Form extends CI_Controller
 
         if ($new) {
 
-            $res = $this->Forms->guardar($info_id, $data);
+            $res['info_id'] = $this->Forms->guardar($info_id, $data);
             
         } else {
             
-            $res = $this->Forms->actualizar($info_id, $data);
+            $res['info_id'] = $this->Forms->actualizar($info_id, $data);
 
         }
-
-        echo json_encode(true);
+        echo json_encode($res);
     }
 
     public function guardarJson($info_id = false)

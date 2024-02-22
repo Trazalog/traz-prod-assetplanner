@@ -160,6 +160,9 @@ class Tareas extends CI_Model
         $turno = $data["turno"];
         $estado = $data["estado"];
 
+        //log_message('DEBUG','#Main/setUltimaLecturaIS |  estado: '.$estado);
+
+
         $sql = "INSERT INTO historial_lecturas(id_equipo,lectura,fecha,usrId,observacion,operario_nom,turno,estado)
             VALUES('" . $id_equipo . "','" . $lectura . "','" . $fecha . "','" . $usrid . "','" . $observacion . "','" . $operario_nom . "','" . $turno . "','" . $estado . "')
             ";
@@ -331,6 +334,7 @@ class Tareas extends CI_Model
     // cambia de estado la Tareas(SServ, Prevent, Predic, Back y OT)
     public function cambiarEstado($id_solicitud, $estado, $tipo)
     {
+        $f_inicio =  date("Y-m-d H:i:s"); 
 
         if ($tipo == 'correctivo') {
             $this->db->set('estado', $estado);
@@ -358,6 +362,7 @@ class Tareas extends CI_Model
 
         if ($tipo == 'OT') {
             $this->db->set('estado', $estado);
+            $this->db->set('fecha_inicio', $f_inicio);
             $this->db->where('id_orden', $id_solicitud);
             return $this->db->update('orden_trabajo');
         }
@@ -793,6 +798,20 @@ class Tareas extends CI_Model
         $response = $this->parseHeaders($http_response_header);
         return $response;
     }
+    public function procedimientos($ot){
+
+        $this->db->select('B.prev_adjunto');
+        $this->db->from('orden_trabajo as A');
+        $this->db->join('preventivo as B', 'A.id_solicitud = B.prevId', 'left');
+        $this->db->where('A.id_orden', $ot);
+
+        $query = $this->db->get();
+        if ($query->num_rows() != 0) {
+            return $query->result_array();
+        } else {
+            return false;
+        }  
+    }
 
     public function actualizarIdOTenBPM($caseId, $param)
     {
@@ -830,9 +849,9 @@ class Tareas extends CI_Model
         return $respuesta;
     }
     // Agrega datos desde BPM y BD local
-    public function CompletarToDoList($data)
+    public function CompletarToDoList($data , $search = '')
     {
-
+        $filtrado = [];
         foreach ($data as $key => $value) {
 
             if ($value['processId'] == BPM_PROCESS_ID_PEDIDOS_NORMALES) {
@@ -840,7 +859,7 @@ class Tareas extends CI_Model
                 $data[$key]['pema_id'] = $res->pema_id;
                 $data[$key]['ot'] = $res->ortr_id;
 
-                $this->db->select('B.id_solicitud as "ss", id_orden as "ot", A.descripcion as "desc", causa, X.codigo as "desceq", P.cliRazonSocial as "nomCli", Z.descripcion as "descsec"');
+                $this->db->select('B.id_solicitud as "ss", A.tipo as "tip_ta", id_orden as "ot", A.descripcion as "desc", causa, X.codigo as "desceq", P.cliRazonSocial as "nomCli", Z.descripcion as "descsec"');
                 $this->db->from('orden_trabajo  as A');
                 $this->db->join('solicitud_reparacion as B', 'A.case_id = B.case_id', 'left');
                 $this->db->join('equipos as X', 'X.id_equipo = A.id_equipo', 'left');
@@ -852,21 +871,42 @@ class Tareas extends CI_Model
                 $data[$key]['displayDescription'] = $res->desc;
                 $data[$key]['equipoDesc'] = $res->desceq;
                 $data[$key]['sectorDesc'] = $res->descsec;
-				$data[$key]['nomCli'] = $res->nomCli;
+																$data[$key]['nomCli'] = $res->nomCli;
 				
-				$data = $this->infoUser($data, $key);
-
+																$data = $this->infoUser($data, $key);
+                if($search){
+                    if((strpos(strtoupper($data[$key]['displayDescription']), strtoupper($search)) !== false) 
+                    || (strpos(strtoupper($data[$key]['equipoDesc']), strtoupper($search)) !== false) 
+                    || (strpos($data[$key]['ss'], $search) !== false) 
+                    || (strpos($data[$key]['ot'], $search) !== false) 
+                    || (strpos($data[$key]['pema_id'], $search) !== false) )
+                    {
+                        array_push($filtrado,$data[$key]);
+                    }
+                }
                 continue;
+                //log_message('DEBUG','#TRAZA | #TAREA >> CompletarToDoList >> BPM_PROCESS_ID_PEDIDOS_NORMALES');
             }
 
+            
             if ($value['processId'] == BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS) {
                 $res = $this->db->get_where('alm_pedidos_extraordinario', ['case_id' => $value['caseId']])->row();
                 $data[$key]['pema_id'] = $res->peex_id;
                 $data[$key]['ot'] = $res->ortr_id;
+                if($search){
+
+                if((strpos($data[$key]['ot'], $search) !== false) 
+                || (strpos($data[$key]['pema_id'], $search) !== false) )
+                    {
+                        array_push($filtrado,$data[$key]);
+                    }
+                }
                 continue;
+                //log_message('DEBUG','#TRAZA | #TAREA >> CompletarToDoList >> BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS');
+
             }
 
-            $this->db->select('A.id_solicitud as \'ss\', id_orden as \'ot\', B.descripcion as \'desc\', causa, X.codigo as \'desceq\', P.cliRazonSocial as \'nomCli\', Z.descripcion as \'descsec\'');
+            $this->db->select('A.id_solicitud as \'ss\', B.tipo as  \'tip_ta\', id_orden as \'ot\', B.descripcion as \'desc\', causa, X.codigo as \'desceq\', P.cliRazonSocial as \'nomCli\', Z.descripcion as \'descsec\'');
 
             $this->db->from('solicitud_reparacion as A');
             $this->db->join('orden_trabajo as B', 'A.case_id = B.case_id', 'left');
@@ -875,10 +915,12 @@ class Tareas extends CI_Model
             $this->db->join('sector as Z', 'Z.id_sector = X.id_sector', 'left');
             $this->db->where('A.case_id', $value['caseId']);
             $res = $this->db->get()->first_row();
+            
+            //log_message('DEBUG','#TRAZA | #TAREA >> CompletarToDoList  $res>> '.json_encode($res));
 
             if (!$res) {
 
-                $this->db->select('A.id_solicitud as \'ss\', id_orden as \'ot\', B.descripcion as \'desc\', causa, X.codigo as \'desceq\', P.cliRazonSocial as \'nomCli\', Z.descripcion as \'descsec\'');
+                $this->db->select('A.id_solicitud as \'ss\', B.tipo as  \'tip_ta\', id_orden as \'ot\', B.descripcion as \'desc\', causa, X.codigo as \'desceq\', P.cliRazonSocial as \'nomCli\', Z.descripcion as \'descsec\'');
                 $this->db->from('solicitud_reparacion as A');
                 $this->db->from('orden_trabajo as B');
                 $this->db->from('tbl_back as C');
@@ -890,10 +932,10 @@ class Tareas extends CI_Model
                 $this->db->where('C.sore_id', 'A.id_solicitud', 'left');
 
                 $res = $this->db->get()->first_row();
-
+                
                 if (!$res) {
 
-                    $this->db->select('id_orden as \'ot\', B.descripcion as \'desc\', causa, X.codigo as \'desceq\', P.cliRazonSocial as \'nomCli\', Z.descripcion as \'descsec\'');
+                    $this->db->select('id_orden as \'ot\', B.tipo as  \'tip_ta\', B.descripcion as \'desc\', causa, X.codigo as \'desceq\', P.cliRazonSocial as \'nomCli\', Z.descripcion as \'descsec\'');
                     $this->db->where('A.case_id', $value['caseId']);
                     $this->db->from('solicitud_reparacion as A');
                     $this->db->join('orden_trabajo as B', 'B.id_solicitud = A.id_solicitud', 'left');
@@ -904,7 +946,7 @@ class Tareas extends CI_Model
 
                     if (!$res) {
 
-                        $this->db->select('id_orden as \'ot\', A.descripcion as \'desc\', X.codigo as \'desceq\', P.cliRazonSocial as \'nomCli\', Z.descripcion as \'descsec\'');
+                        $this->db->select('id_orden as \'ot\', A.tipo as  \'tip_ta\', A.descripcion as \'desc\', X.codigo as \'desceq\', P.cliRazonSocial as \'nomCli\', Z.descripcion as \'descsec\'');
                         $this->db->from('orden_trabajo as A');
                         $this->db->join('equipos as X', 'X.id_equipo = A.id_equipo', 'left');
                         $this->db->join('admcustomers as P', 'P.cliId = X.id_customer');
@@ -914,6 +956,7 @@ class Tareas extends CI_Model
 
                         $data[$key]['ss'] = '';
                         $data[$key]['ot'] = $res->ot;
+                        $data[$key]['tip_ta'] = $res->tip_ta;
                         $data[$key]['displayDescription'] = $res->desc;
                         $data[$key]['equipoDesc'] = $res->desceq;
                         $data[$key]['sectorDesc'] = $res->descsec;
@@ -921,6 +964,7 @@ class Tareas extends CI_Model
                     } else {
                         $data[$key]['ss'] = $res->ss;
                         $data[$key]['ot'] = $res->ot;
+                        $data[$key]['tip_ta'] = $res->tip_ta;
                         $data[$key]['equipoDesc'] = $res->desceq;
                         $data[$key]['sectorDesc'] = $res->descsec;
                         $data[$key]['nomCli'] = $res->nomCli;
@@ -933,6 +977,7 @@ class Tareas extends CI_Model
                 } else {
                     $data[$key]['ss'] = $res->ss;
                     $data[$key]['ot'] = $res->ot;
+                    $data[$key]['tip_ta'] = $res->tip_ta;
                     $data[$key]['equipoDesc'] = $res->desceq;
                     $data[$key]['sectorDesc'] = $res->descsec;
                     $data[$key]['nomCli'] = $res->nomCli;
@@ -945,6 +990,7 @@ class Tareas extends CI_Model
             } else {
                 $data[$key]['ss'] = $res->ss;
                 $data[$key]['ot'] = $res->ot;
+                $data[$key]['tip_ta'] = $res->tip_ta;
                 $data[$key]['equipoDesc'] = $res->desceq;
                 $data[$key]['sectorDesc'] = $res->descsec;
                 $data[$key]['nomCli'] = $res->nomCli;
@@ -954,13 +1000,35 @@ class Tareas extends CI_Model
                     $data[$key]['displayDescription'] = $res->causa;
                 }
             }
+            //log_message('DEBUG','#Main/mostratemaster |  ');
+
             // si existe OT
             $data = $this->infoUser($data, $key);
-
+            
+            //BUSQUEDA
+            //filtro por descripcion, equipo, id SS, id OT, id pp 
+            if($search){
+                if((strpos(strtoupper($data[$key]['displayDescription']), strtoupper($search)) !== false) 
+                || (strpos(strtoupper($data[$key]['equipoDesc']), strtoupper($search)) !== false) 
+                || (strpos($data[$key]['ss'], $search) !== false) 
+                || (strpos($data[$key]['ot'], $search) !== false) 
+                || (strpos($data[$key]['pema_id'], $search) !== false) )
+                {
+                    array_push($filtrado,$data[$key]);
+                }
+            }
         }
+								//log_message('DEBUG','#Main/BUSCADOR |  '.json_encode($filtrado));
 
-        return $data;
-    }
+        if($search){
+            return $filtrado;
+        }
+        else{
+            return $data;
+        }
+    } 
+    
+
     /*     ./ TAREAS BPM */
 
     public function infoUser($data, $key)
@@ -970,9 +1038,9 @@ class Tareas extends CI_Model
             if (isset($data[$key]['assigned_id'])) {
 
                 $sql = 'select (concat(usrName,", ", usrLastName) ) as usr_asig_nomb
-					from sisusers SU
-					join orden_trabajo OT on OT.id_usuario_a = SU.usrId
-					where OT.id_orden = ' . $data[$key]["ot"];
+																from sisusers SU
+																join orden_trabajo OT on OT.id_usuario_a = SU.usrId
+																where OT.id_orden = ' . $data[$key]["ot"];
 
                 $query = $this->db->query($sql);
                 $row = $query->row();
@@ -983,9 +1051,9 @@ class Tareas extends CI_Model
             }
         } else {
             $data[$key]['usr_asignado'] = " S/A ";
-		}
-		
-		return $data;
+						}
+
+						return $data;
     }
 
 /* ./ INTEGRACION CON BPM */
@@ -1031,4 +1099,65 @@ class Tareas extends CI_Model
         $query = $this->db->update('alm_pedidos_materiales');
         return $query;
     }
+
+    /**
+    * Devuelve correspondencua entre Case_id con Empresa
+    * @param
+    * @return bool true o false
+    */
+	function bandejaEmpresa($case_id, $empr_id)
+	{
+		$ci =& get_instance();
+		$aux = $ci->rest->callAPI("GET",REST_CORE."/assetbandeja/linea/validar/case_id/".$case_id."/empr_id/".$empr_id);
+		$aux =json_decode($aux["data"]);
+		
+		if ($aux->respuesta->case_id) {
+			return  true;
+		} else {
+			return  false;
+		}
+	}
+
+    /**
+	*Genera lista pedido de trabajo paginados
+	* @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
+	* @return array listado de tareas paginada, filtrada por empresa y la cantidad
+	**/
+    function tareaspaginadas($start, $length, $search){
+
+        //recupero tareas guardadas en session
+        $tareas = $_SESSION['listadoTareas'];
+ 
+        if($search){
+
+            //completo todas las tareas primero para poder buscar en todas las paginas
+            $filtrado = $this->CompletarToDoList($tareas, $search);
+
+            $query_total = count($filtrado);
+
+            $tareasPaginadas = array_slice($filtrado, $start, $length);
+
+            $data = $tareasPaginadas; 
+        }else{
+            
+            $query_total = count($tareas);
+
+            //armo las paginas con las tareas
+            $tareasPaginadas = array_slice($tareas, $start, $length);
+
+            //completo los datos de las tareas por pagina
+            $data = $this->CompletarToDoList($tareasPaginadas);
+        }
+
+        $result = array(
+            'numDataTotal' => $query_total,
+            'datos' => $data
+        );
+        //log_message('DEBUG','#TRAZA | #TAREA >> tareaspaginadas >> $result: '.json_encode($result));
+           
+        return $result;
+
+    }
+
+    
 }

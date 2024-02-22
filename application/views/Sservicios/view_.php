@@ -20,6 +20,21 @@
           ?>
         </div><!-- /.box-header -->
 
+        <div class="modal-body" id="modalBodyservicio">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+              <h4><i class="icon fa fa-ban"></i> Error!</h4>
+              Revise que todos los campos esten completos...
+            </div>
+          </div>
+        </div>
+        <style>
+          .ui-autocomplete{
+              z-index:1050;
+          }
+        </style>
+
         <div class="box-body">
           <form id="formSS" role="form" method="POST" >
             <div class="panel panel-default">
@@ -30,12 +45,13 @@
               <div class="panel-body">
                 <div class="row">
                   <div class="col-xs-12 col-sm-6">Sector <strong style="color: #dd4b39">*</strong>
-                      <input type="text" class="form-control buscSector" placeholder="Buscar Sector..." id="buscSector" name="buscSector">
-                      <input type="text" class="hidden idSector" id="idSector" name="idSector">
+                      <select  id="sector" name="sector" class="form-control">
+                        <option value="-1" selected disabled>Seleccione opción</option>
+                      </select>                  
                   </div>
                   <div class="col-xs-12 col-sm-6">Equipos <strong style="color: #dd4b39">*</strong>
                     <select  id="equipo" name="equipo" class="form-control equipo">
-                        <option value="-1" placeholder="Seleccione..."></option>
+                      <option value="-1" selected disabled>Seleccione opción</option>
                     </select>
                   </div>
                 </div><!-- /.row -->
@@ -90,7 +106,8 @@
 <script>
 
 // Trae equipos llena select - Chequeado
-traer_equipo();
+//traer_equipo();
+/** Desactivamos esta funcion para que no cargue a la primera */
 function traer_equipo(){
   $('#equipo').html('');
     $.ajax({
@@ -129,37 +146,28 @@ var dataF = function () {
       'url': "Sservicio/getSector",
       'success': function (data) {
         tmp = data;
-      }
+        var $select = $("#sector");
+        for (var i = 0; i < data.length; i++) {
+          $select.append($('<option />', { value: data[i]['value'], text: data[i]['label'] }));
+        }
+      },
+      'error' : function(data){
+        console.log('Error en getSector');
+        console.table(data);
+      },
     });
     return tmp;
   }();
-  $(".buscSector").autocomplete({
-    source: dataF,
-    delay: 100,
-    minLength: 1,
-    focus: function(event, ui) {
-      // prevent autocomplete from updating the textbox
-      event.preventDefault();
-      // manually update the textbox
-      $(this).val(ui.item.label);
-    },
-    select: function(event, ui) {
-      // prevent autocomplete from updating the textbox
-      event.preventDefault();
-      // manually update the textbox and hidden field
-      $(this).val(ui.item.label);
-      $("#idSector").val(ui.item.value);
-      $("#equipo").html('<option value="-1" disabled selected>Seleccione opcion</option>');
-      // guardo el id de sector
-      var idSect =  $("#idSector").val();
-      getEquiSector(idSect);
-      //console.log("id sector en autocompletar: ");
-      //console.log(ui.item.value);
-    },
-  }); 
+  
+  $("#sector").change(function(){
+      var idSector = $("#sector").val();
+      getEquiSector(idSector);
+  });
+
   //  llena select de equipos segun sector
   function getEquiSector(idSect){
     var id =  idSect;
+    $("#equipo").html("");
     $("#area").val("");
     $("#proceso").val("");
     $("#descripcion").val("");
@@ -174,10 +182,15 @@ var dataF = function () {
       'success': function (data) {
         console.table(data);//[0]['id_equipo']);
         // Asigna opciones al select Equipo en modal
-        console.log("length: "+data.length);
-        var $select = $("#equipo");
-        for (var i = 0; i < data.length; i++) {
-          $select.append($('<option />', { value: data[i]['id_equipo'], text: data[i]['descripcion'] }));
+        //console.log("length: "+data.length);
+        var opcion = "<option value='-1'>Seleccione...</option>" ;
+        $('#equipo').append(opcion);
+        if(data){
+            for (var i = 0; i < data.length; i++) {
+            var nombre = data[i]['descripcion'];
+            var opcion = "<option value='"+data[i]['id_equipo']+"'>" +nombre+ "</option>" ; 
+            $('#equipo').append(opcion);  
+          }
         }
       },
       'error' : function(data){
@@ -198,47 +211,50 @@ $('#listado').click( function cargarVista(){
 // Guardado de datos y validaciones
 $("#btnSave").click(function(){
 
-WaitingOpen('Generando Solcitud');
-var hayError = false;
+  WaitingOpen('Generando Solcitud');
+  var hayError = false;
+  console.log(" Eqquipo: "+$('#equipo').val() +" Sector: "+ $('#sector').val());
+  if($('#equipo').val() == '' || $('#sector').val() == '' || $('#equipo').val() == null || $('#sector').val() == null || $('#equipo').val() == -1 || $('#sector').val() == -1){
+    hayError = true;
+    WaitingClose();
+  }
+  if(hayError == true){
+    $('#error').fadeIn('slow');
+    
+    return;
+  }
 
-if($('#equipId').val() == '')
-{
-  hayError = true;
-}
-if(hayError == true){
-  $('#error').fadeIn('slow');
-  return;
-}
+  $('#error').fadeOut('slow');
+  $('#modalservicio').modal('hide');
+  var formData = new FormData($("#formSS")[0]);
+  var permisos = $('#permission').val();
+  console.log(formData);
+  console.log(permisos);
 
-$('#error').fadeOut('slow');
-$('#modalservicio').modal('hide');
-var formData = new FormData($("#formSS")[0]);
-var permisos = $('#permission').val();
-
-  $.ajax({
-        type: 'POST',
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        url: 'index.php/Sservicio/lanzarProcesoBPM',
-        success: function(data){
-                WaitingClose();
-                console.log(data);
-                if (data.status == true){
-                  //alert("Solicitud generada exitosamente");
-                 
-                  cargarView('Sservicio', 'index', permisos) ;           
-                } else{             
-                    alert("Falla: "+data.msj);
-                }                   
+    $.ajax({
+          type: 'POST',
+          data: formData,
+          cache: false,
+          contentType: false,
+          processData: false,
+          url: 'index.php/Sservicio/lanzarProcesoBPM',
+          success: function(data){
+                  WaitingClose();
+                  console.log(data);
+                  if (data.status == true){
+                    //alert("Solicitud generada exitosamente");
+                  
+                    cargarView('Sservicio', 'index', permisos) ;           
+                  } else{             
+                      alert("Falla: "+data.msj);
+                  }                   
+                },
+          error: function(data){
+                  WaitingClose();
+                  alert("Error: "+data.msj);         
               },
-        error: function(data){
-                WaitingClose();
-                alert("Error: "+data.msj);         
-            },
-        dataType: 'json'
-    });
+          dataType: 'json'
+      });
 });
 
 $('#ultimo').datetimepicker({

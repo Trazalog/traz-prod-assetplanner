@@ -14,15 +14,27 @@ class Calendario extends CI_Controller
     }
 
     public function indexot($permission) // Ok
-
     {
-        $data['permission'] = $permission . "Correctivo-Preventivos-Backlog-Predictivo-";
+        $data = $this->session->userdata();
+        log_message('DEBUG','#Main/index | Calendario >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+    
+        if(empty($data['user_data'][0]['usrName'])){
+            log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+            $var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+            $this->session->set_userdata($var);
+            $this->session->unset_userdata(null);
+            $this->session->sess_destroy();
+    
+            echo ("<script>location.href='login'</script>");
+    
+        }else{
+            $data['permission'] = $permission . "Correctivo-Preventivos-Backlog-Predictivo-";
 
-        $this->load->view('calendar/calendar1', $data);
+            $this->load->view('calendar/calendar1', $data);
+        }
     }
 
     public function getcalendarot() // Ok
-
     {
         $data = $this->Calendarios->getot($this->input->post());
         if ($data == false) {
@@ -33,60 +45,87 @@ class Calendario extends CI_Controller
     }
 
     public function getTablas() // Ok
-
     {
-        $mes = $this->input->post('mes');
-        $year = $this->input->post('year');
-        $permission = $this->input->post('permission');
-        $data['mes'] = $mes;
-        $data['year'] = $year;
-        $data['list0'] = $this->Calendarios->getPreventivosHoras($mes, $year);
-        $data['list1'] = $this->Calendarios->getpredlist($mes, $year); // listo
-        $data['list2'] = $this->Calendarios->getbacklog($mes, $year); // listo
-        $data['list3'] = $this->Calendarios->getPreventivos($mes, $year); // listo
-        $data['list4'] = $this->Calendarios->getsservicio($mes, $year); // listo
-        $data['permission'] = $permission;
+        
+						$mes = $this->input->post('mes');
+						$year = $this->input->post('year');
+						$permission = $this->input->post('permission');
+						$data['mes'] = $mes;
+						$data['year'] = $year;
 
-        //para cada preventivo
-        if ($preventivosHoras) {
-            $j = 0;
-            for ($i = 0; $i < sizeof($preventivosHoras); $i++) {
-                $estaAlertado = false;
-                //sacar tipo alerta
-                //proximo servicio = lectura base + frecuencia
-                $proximoServicio = $preventivosHoras[$i]['lectura_base'] + $preventivosHoras[$i]['cantidad'];
-                $proximaAlerta = $preventivosHoras[$i]['lectura_base'] + $preventivosHoras[$i]['critico1'];
-                $lecturaAutonomo = $preventivosHoras[$i]['ultima_lectura'];
-                //si alerta amarilla pone en array y agrega dato amarillo
-                if ($lecturaAutonomo >= $proximaAlerta) {
-                    $tipoAlerta = 'A';
-                    $estaAlertado = true;
-                }
-                //si alerta es roja pone en array y agrega rojo
-                if ($lecturaAutonomo >= $proximoServicio) {
-                    $tipoAlerta = 'R';
-                    $estaAlertado = true;
-                }
-                //si esta alertado guardo
-                if ($estaAlertado) {
-                    $preventivosHorasVisible[$j] = $preventivosHoras[$i];
-                    //agrego tipo alerta, proximo servicio y ultima lectura
-                    $preventivosHorasVisible[$j]['tipoAlerta'] = $tipoAlerta;
-                    $preventivosHorasVisible[$j]['proximoServicio'] = $proximoServicio;
-                    $preventivosHorasVisible[$j]['ultimaLectura'] = $preventivosHoras[$i]['ultima_lectura'];
-                    $j++;
-                } else {
-                    $preventivosHorasVisible = false;
-                }
-            }
-        } else {
-            $preventivosHorasVisible = false;
-        }
+						
+						// var_dump($data_extend);
 
-        $data['list'] = $preventivosHorasVisible;
+						$data['list0'] = $this->Calendarios->getPreventivosHoras($mes, $year);
+						$data['list1'] = $this->Calendarios->getpredlist($mes, $year); // listo
+						$data['list2'] = $this->Calendarios->getbacklog($mes, $year); // listo
+						$data['list3'] = $this->Calendarios->getPreventivos($mes, $year); // listo
+						//$data['list4'] = $this->Calendarios->getsservicio($mes, $year); // listo
+						//Buscar Bonita IdTarea para pode
+						//Completar Tareas con ID Solicitud y ID OT
+						//Nueva consulta Para traer los mismos datos de la bandeja de entrada
+						//Obtener Bandeja de Usuario desde Bonita
 
-        $response['html'] = $this->load->view('calendar/tablas', $data);
-        echo json_encode($response);
+      $response = $this->bpm->getToDoList();
+						if($response['status']){
+            // Si trae datos une las tareas con las solicitudes
+            $data_extend = $this->Calendarios->getServicioTareas($response['data'],$mes,$year);
+            $data['list4'] = $data_extend; // listo
+      }
+        
+      $data['permission'] = $permission;
+
+        
+        
+						log_message('DEBUG','#CALENDARIO >> getTablas() response >> '.json_encode($response));
+						log_message('DEBUG','#CALENDARIO >> getTablas() data_extend >> '.json_encode($data_extend));
+						log_message('DEBUG', '#CALENDARIO >> getTablas() $datos >> ' . $preventivosHoras);
+						log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list0] >> ' . json_encode($data['list0']));
+						log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list1] >> ' . json_encode($data['list1']));
+						log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list2] >> ' . json_encode($data['list2']));
+						log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list3] >> ' . json_encode($data['list3']));
+						log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list4] >> ' . json_encode($data['list4']));
+        
+						//para cada preventivo
+						if ($preventivosHoras) {
+										$j = 0;
+										for ($i = 0; $i < sizeof($preventivosHoras); $i++) {
+														$estaAlertado = false;
+														//sacar tipo alerta
+														//proximo servicio = lectura base + frecuencia
+														$proximoServicio = $preventivosHoras[$i]['lectura_base'] + $preventivosHoras[$i]['cantidad'];
+														$proximaAlerta = $preventivosHoras[$i]['lectura_base'] + $preventivosHoras[$i]['critico1'];
+														$lecturaAutonomo = $preventivosHoras[$i]['ultima_lectura'];
+														//si alerta amarilla pone en array y agrega dato amarillo
+														if ($lecturaAutonomo >= $proximaAlerta) {
+																		$tipoAlerta = 'A';
+																		$estaAlertado = true;
+														}
+														//si alerta es roja pone en array y agrega rojo
+														if ($lecturaAutonomo >= $proximoServicio) {
+																		$tipoAlerta = 'R';
+																		$estaAlertado = true;
+														}
+														//si esta alertado guardo
+														if ($estaAlertado) {
+																		$preventivosHorasVisible[$j] = $preventivosHoras[$i];
+																		//agrego tipo alerta, proximo servicio y ultima lectura
+																		$preventivosHorasVisible[$j]['tipoAlerta'] = $tipoAlerta;
+																		$preventivosHorasVisible[$j]['proximoServicio'] = $proximoServicio;
+																		$preventivosHorasVisible[$j]['ultimaLectura'] = $preventivosHoras[$i]['ultima_lectura'];
+																		$j++;
+														} else {
+																		$preventivosHorasVisible = false;
+														}
+										}
+						} else {
+										$preventivosHorasVisible = false;
+						}
+
+						$data['list'] = $preventivosHorasVisible;
+
+						$response['html'] = $this->load->view('calendar/tablas', $data);
+						echo json_encode($response);
     }
 
     // Devuelve info de Preventivo por Id para llenar en OT
@@ -105,11 +144,11 @@ class Calendario extends CI_Controller
         $userBpm = $userdata[0]['userBpm'];
 
         // log
-        log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar');
+        //log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar');
         $data = $this->input->post();
-        //log_message('DEBUG', 'TRAZA | Data: '.json_decode($data));
+        log_message('DEBUG', 'TRAZA | Data: '.json_encode($data));
 
-        $userdata = $this->session->userdata('user_data');
+        $userdata = $this->session->userdata('user_data');//linea repetida
         $usrId = $userdata[0]['usrId'];
         $empId = $userdata[0]['id_empresa'];
 
@@ -173,6 +212,9 @@ class Calendario extends CI_Controller
                 'lectura_ejecutada' => $lectura_ejecutada,
             );
 
+            log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar | datos2'.json_encode($data));
+
+
             // si el evento es unico lo guarda
             if ($event_tipo == '1') {
 
@@ -194,15 +236,16 @@ class Calendario extends CI_Controller
                     log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar | $taskId: ' . $infoTarea['taskId']);
                     if ($respCerrar['status']) {
                         $resActualizar = $this->actualizarIdOTenBPM($infoTarea['caseId'], $idOTnueva);
+                        // cambio de estado a PL de SServicio
+                        $this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);
                     } else {
                         log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar | Cerrar SS: ' . json_encode($respCerrar));
                         $error = true;
                         $estado = 'S';
+                        return msj(false, ASP_104);
                     }
                     // guardo el case_id en Otrabajo
                     $this->Calendarios->setCaseidenOT($infoTarea['caseId'], $idOTnueva);
-                    // cambio de estado a PL de SServicio
-                    $this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);
 
                     ////////////////////////////////////////////////////////////////////////
 
@@ -234,7 +277,7 @@ class Calendario extends CI_Controller
                 // $tipo == '3' -> Preventivo
                 if ($tipo == '3') {
                     //log
-                    log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar |  Tipo solicitud en 3: ' . $tipo);
+                    log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar |  Tipo solicitud en 3: ' . $tipo.' Datos2'.json_encode($datos2));
                     $tipo = 'preventivo';
                     $this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);
                 }
@@ -330,20 +373,23 @@ class Calendario extends CI_Controller
                     $respcaseOT = $this->Calendarios->setCaseidenOT($infoTarea['caseId'], $idOT);
                 }
 
-            } else { // evento repetitivo solo preventivo o predictivo
+            } else { // evento repetitivo solo PREVENTIVO o PREDICTIVO
                 // Sumo a la fecha de program la cant de meses p/ sacar fecha limite
                 $fecha_limite = strtotime('+' . $cant_meses . ' month', strtotime($fec_programacion));
                 $fecha_limite = date('Y-m-d H:i:s', $fecha_limite); /// "2018-06-16 00:00:00"
                 //busco la frecuencia de la tarea
                 $diasFrecuencia = $this->getPeriodTarea($tipo, $id_solicitud);
+                log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar | diasfrecuencia: '.$diasFrecuencia);
 
                 // si es preventivo ACTUALIZA NUEVAMENTE LA FECHA BASE_ OK!
                 $estado = 'PL';
+
                 if ($tipo == '3') {
                     //pongo nueva fecha base en preventivos
+                    log_message('DEBUG', 'TRAZA | Calendario/guardar_agregar | tipo: '.$tipo.' fechalimte: '.$fecha_limite.' idsolicitud: '.$id_solicitud);
                     $this->Calendarios->actualizarFechaBasePreventivos($fecha_limite, $id_solicitud);
                     // cambia estado al preventivo
-                    $tipo = 'preventivo';
+                    $tipo = 'preventivo';                    
                     $this->Calendarios->cambiarEstado($id_solicitud, $estado, $tipo);
                 }
                 // cambia estado al predictivo
@@ -433,10 +479,13 @@ class Calendario extends CI_Controller
             case '3': // Preventivo
                 $this->db->select('preventivo.cantidad, periodo.descripcion');
                 $this->db->from('preventivo');
+				$this->db->join('periodo', 'periodo.idperiodo = preventivo.perido');
                 $this->db->where('preventivo.prevId', $id_solicitud);
-                $this->db->join('periodo', 'periodo.idperiodo = preventivo.perido');
+
                 $query = $this->db->get();
+				$str = $this->db->last_query();
                 $info = $query->result_array();
+                log_message('DEBUG', 'TRAZA | Calendario/getPeriodTarea | info: '.json_encode($info));
                 break;
             case '5': // Predictivo
                 $this->db->select('predictivo.cantidad, periodo.descripcion');
@@ -449,6 +498,7 @@ class Calendario extends CI_Controller
         }
 
         $duracion = $this->getDiasDuracion($info);
+        log_message('DEBUG', 'TRAZA | Calendario/getPeriodTarea | info: '.json_encode($duracion));
         return $duracion;
     }
 
@@ -459,13 +509,16 @@ class Calendario extends CI_Controller
         $especie = $info[0]["descripcion"];
         $dias = 0;
         switch ($especie) {
-            case 'mensual':
+            case 'Mensual':
                 $dias = 30 * $cantidad;
                 break;
-            case 'semestral':
+            case 'Semanal':
+                $dias = 7 * $cantidad;
+                break;
+            case 'Semestral':
                 $dias = 180 * $cantidad;
                 break;
-            case 'anual':
+            case 'Anual':
                 $dias = 365 * $cantidad;
                 break;
             default:
@@ -480,7 +533,7 @@ class Calendario extends CI_Controller
 
         //cargo libreria BPM
         $estado = 'PL';
-
+        
         while ($fecha_limite >= $fec_programacion) {
 
             $idOT = $this->Calendarios->guardar_agregar($datos2);
@@ -618,6 +671,7 @@ class Calendario extends CI_Controller
         } else {
             $numtipo = $origen[0]['tipo'];
             $id_solicitud = $origen[0]['id_solicitud'];
+												$data['componente'] = $this->Calendarios->getCompEquipoOT($numtipo,$id_solicitud,$idOt);
         }
 
         $data['infoSolicOrigen'] = $this->Calendarios->getInfoTareaProgram($numtipo, $id_solicitud);
@@ -673,12 +727,14 @@ class Calendario extends CI_Controller
 
     public function getperiodo()
     {
+        log_message('DEBUG','#Controller/Calendario | getperiodos ');
         $periodo = $this->Calendarios->getperiodo($this->input->post());
         if ($periodo) {
             $arre = array();
             foreach ($periodo as $row) {
                 $arre[] = $row;
             }
+            log_message('DEBUG','#Main/index | Periodos >> data '.json_encode($arre)); 
             echo json_encode($arre);
         } else {
             echo "nada";

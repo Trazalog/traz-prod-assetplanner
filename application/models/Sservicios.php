@@ -8,28 +8,49 @@ class Sservicios extends CI_Model
 	}
 	/* FUNCIONES ORIGINALES DE ASSET	*/
 		// Trae solicitudes en estado en Curso	
-		function servicios_List(){			
+		function servicios_List(){
 			$userdata = $this->session->userdata('user_data');
 			$usrId    = $userdata[0]['usrId'];   
 			$grupoId  = $userdata[0]["grpId"];
 			$empId    = $userdata[0]['id_empresa'];
 			
+			// $this->db->select('solicitud_reparacion.*,
+			// 									equipos.codigo as equipo,
+			// 									sector.descripcion as sector, 
+			// 									grupo.descripcion as grupo,
+			// 									equipos.ubicacion');
+			// $this->db->from('solicitud_reparacion');
+			// $this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo');
+			// $this->db->join('sector', 'equipos.id_sector = sector.id_sector');
+			// $this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo', 'left');
+			// $this->db->where('solicitud_reparacion.estado !=', 'AN');
+			// //$this->db->or_where('solicitud_reparacion.estado', 'S');
+			// $this->db->where('solicitud_reparacion.id_empresa', $empId);
+
 			$this->db->select('solicitud_reparacion.*,
-												equipos.codigo as equipo, 
+												equipos.codigo as equipo,
 												sector.descripcion as sector, 
-												grupo.descripcion as grupo, 
-												equipos.ubicacion');
+												grupo.descripcion as grupo,
+												equipos.ubicacion,
+												orden_trabajo.fecha_terminada,
+												orden_trabajo.fecha_inicio as "f_inicio",
+												orden_trabajo.f_asignacion,
+												solicitud_reparacion.f_solicitado,
+												orden_trabajo.case_id,
+												orden_trabajo.id_usuario_a,
+												sisusers.usrName as mantenedor');
 			$this->db->from('solicitud_reparacion');
 			$this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo');
 			$this->db->join('sector', 'equipos.id_sector = sector.id_sector');
 			$this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo', 'left');
+			$this->db->join('orden_trabajo', 'solicitud_reparacion.case_id = orden_trabajo.case_id', 'left');
+			$this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId', 'left');
 			$this->db->where('solicitud_reparacion.estado !=', 'AN');
-			//$this->db->or_where('solicitud_reparacion.estado', 'S');
 			$this->db->where('solicitud_reparacion.id_empresa', $empId);
 			$query = $this->db->get();
 			if ($query->num_rows()!=0)
 			{
-				return $query->result_array();	
+				return $query->result_array();
 			}
 			else
 			{
@@ -164,7 +185,7 @@ class Sservicios extends CI_Model
         return $equipos; 
     }
 		// Guarda solicitud de Servicio - Listo
-		function setservicios($data = null){ 	
+		function setservicios($data = null){
 			if($data == null)
 			{
 				return false;
@@ -175,6 +196,9 @@ class Sservicios extends CI_Model
 				$falla    = $this->input->post('falla');//
 				$userdata = $this->session->userdata('user_data');
 				$empId    = $userdata[0]['id_empresa'];
+
+				//solicitud de servicio desde mantenimiento autonomo
+				if(!$equipId) $equipId = $this->input->post('id_equipo');
 
 				$userdata = $this->session->userdata('user_data');
 				$usrId    = $userdata[0]['usrId'];     // guarda usuario logueado
@@ -194,7 +218,7 @@ class Sservicios extends CI_Model
 				$idSolServicios = $this->db->insert_id();
 				return $idSolServicios;
 
-			}	
+			}
 		}	
 	/* 	./ FUNCIONES ORIGINALES DE ASSET	*/
 
@@ -216,7 +240,7 @@ class Sservicios extends CI_Model
 		function getTareasStandar(){
 
 			$userdata = $this->session->userdata('user_data');
-      $empId = $userdata[0]['id_empresa'];   
+   $empId = $userdata[0]['id_empresa'];
 			$this->db->select('tareas.id_tarea,tareas.descripcion');		
 			$this->db->from('tareas');			
 			$this->db->where('tareas.estado !=', 'AN');
@@ -238,7 +262,7 @@ class Sservicios extends CI_Model
 	// 		$com = '/instantiation';			
 	// 		$caseId = file_get_contents($url.BPM_PROCESS_ID.$com, false, $param);
 	// 		$response['responsecabecera'] = $this->parseHeaders( $http_response_header );
-	// 		$response['caseId'] = $caseId;	
+	// 		$response['caseId'] = $caseId;
 	// 		return $response;
 	// 	}
 

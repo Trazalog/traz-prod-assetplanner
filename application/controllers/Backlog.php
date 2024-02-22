@@ -11,9 +11,24 @@ class Backlog extends CI_Controller {
 	}
 
 	public function index($permission){
-		$data['list'] = $this->Backlogs->backlog_List();		
-		$data['permission'] = $permission;
-		$this->load->view('backlog/list', $data);
+		$data = $this->session->userdata();
+		log_message('DEBUG','#Main/index | Backlog >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+	
+		if(empty($data['user_data'][0]['usrName'])){
+			log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+			$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+			$this->session->set_userdata($var);
+			$this->session->unset_userdata(null);
+			$this->session->sess_destroy();
+	
+			echo ("<script>location.href='login'</script>");
+	
+		}else{
+
+			$data['list'] = $this->Backlogs->backlog_List();		
+			$data['permission'] = $permission;
+			$this->load->view('backlog/list', $data);
+		}
 	}
 
 	// Trae equipos para llenar select vista - Listo
@@ -300,6 +315,16 @@ class Backlog extends CI_Controller {
 		echo json_encode($result);	
 	}
 
+	//Cambia de estado a "B" - BORRADO LOGICO
+	public function baja_backlog_estado_Borrado(){
+	
+		$idpre=$_POST['gloid'];
+		
+		$datos = array('estado'=>"B");
+		$result = $this->Backlogs->update_back($datos, $idpre);
+		echo json_encode($result);	
+	}
+
 	// Carga vista para backolg nuevo - Listo
 	public function cargarback($permission){ 
 		$data['permission'] = $permission;       
@@ -434,12 +459,18 @@ class Backlog extends CI_Controller {
 
 		$idPredictivo = $this->input->post('idAgregaAdjunto');
 
+		log_message('DEBUG', '#BACKLOG >> agregarAdjunto >> userdata ' . json_encode($userdata). ' empId:'. json_encode($empId));
+
+
 		$nomcodif = $this->codifNombre($idPredictivo, $empId); // codificacion de nomb  		
 		$config   = [
 			"upload_path"   => "./assets/filesbacklog",
 			'allowed_types' => "png|jpg|pdf|xlsx",
 			'file_name'     => $nomcodif
 		];
+
+		log_message('DEBUG', '#BACKLOG >> agregarAdjunto >> nomcodif ' . json_encode($nomcodif));
+		log_message('DEBUG', '#BACKLOG >> agregarAdjunto >> config ' . json_encode($config));
 
 		$this->load->library("upload",$config);
 		if ($this->upload->do_upload('inputPDF'))
@@ -454,6 +485,8 @@ class Backlog extends CI_Controller {
 		{
 			$response = false;
 		}
+
+		log_message('DEBUG', '#BACKLOG >> agregarAdjunto >> response ' . json_encode($response));
 
 		echo json_encode($response);
 	}	

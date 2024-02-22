@@ -928,19 +928,20 @@ class Otrabajos extends CI_Model {
     function kpiCantTipoOrdenTrabajo()
     {
 		$empresaId = empresa();
-		
-        $this->db->select('B.descripcion, count(*) as cantidad');
-		$this->db->from('orden_trabajo as A');
-		$this->db->join('tbl_tipoordentrabajo as B','A.tipo = B.tipo_orden');
-		$this->db->where('A.id_empresa', $empresaId);
-		//$this->db->where('B.descripcion!=','Solicitud de servicio');
-		$this->db->where('estado', 'T');
-		$this->db->or_where('estado', 'CN');
-		$this->db->group_by('A.tipo');
-		$this->db->order_by('A.tipo');
 
-		$query = $this->db->get();
-		$res = $query->result();
+        $sql = "SELECT tt.descripcion as descripcion, count(*) as cantidad 
+		        FROM orden_trabajo ot
+                JOIN tbl_tipoordentrabajo tt  on ot.tipo = tt.tipo_orden
+                WHERE ot.id_empresa =".$empresaId."
+                AND (ot.estado  = 'CE' or estado = 'CN')
+                GROUP BY ot.tipo
+                ORDER BY ot.tipo";
+
+                $query = $this->db->query($sql);
+                $res = $query->result();
+
+		//log_message('DEBUG','#Main/index | kpiCantTipoOrdenTrabajo >> data '.json_encode($query));
+
         if($query->num_rows()!=0)
         {
             return $res;
@@ -1216,7 +1217,7 @@ class Otrabajos extends CI_Model {
 	//devuelve valores de todos los datos de la OT para mostrar en modal.
     function getViewDataBacklog($idOt, $idSolicitud)
     {
-			$this->db->select('orden_trabajo.id_orden, orden_trabajo.nro, 
+			$this->db->select('orden_trabajo.id_orden, orden_trabajo.nro,
 												orden_trabajo.estado,
 												orden_trabajo.descripcion AS descripcionFalla, 
 												orden_trabajo.fecha_inicio, 
@@ -1226,7 +1227,7 @@ class Otrabajos extends CI_Model {
 												orden_trabajo.tipo, orden_trabajo.id_solicitud,
 												sucursal.id_sucursal, sucursal.descripc,
 												abmproveedores.provid, abmproveedores.provnombre,
-												equipos.codigo, equipos.fecha_ingreso, marcasequipos.marcadescrip AS marca, 
+												equipos.codigo, equipos.fecha_ingreso, marcasequipos.marcadescrip AS marca,
 												equipos.ubicacion, equipos.descripcion AS descripcionEquipo');
         $this->db->from('orden_trabajo');
         $this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId', 'left');
@@ -1445,7 +1446,8 @@ class Otrabajos extends CI_Model {
 		}
 
 		// cambbia de estado la Tareas(SServ, Prevent, Predic, Back y OT)
-		function cambiarEstado($id_solicitud, $estado, $tipo){						
+		function cambiarEstado($id_solicitud, $estado, $tipo){		
+			$f_asignacion =  date("Y-m-d H:i:s"); 				
 			
 			if ($tipo == 'correctivo') {
 				$this->db->set('estado', $estado);
@@ -1473,14 +1475,15 @@ class Otrabajos extends CI_Model {
 			
 			if ($tipo == 'OT') {
 				$this->db->set('estado',$estado);
+				$this->db->set('f_asignacion', $f_asignacion);
 				$this->db->where('id_orden',$id_solicitud);
-        return $this->db->update('orden_trabajo');
+        		return $this->db->update('orden_trabajo');
 			}
 
 			return $response;
 		}
 
-		// Actualiza tareas en OT 
+		// Actualiza tareas en OT
 		function updOT($ot, $datos){
 			$this->db->where('orden_trabajo.id_orden', $ot);
 			return $this->db->update('orden_trabajo', $datos);	
@@ -1514,8 +1517,9 @@ class Otrabajos extends CI_Model {
 	public function filtrarListado($data, $tipo){
 		$userdata = $this->session->userdata('user_data');
 		$empId    = $userdata[0]['id_empresa'];
-	
-		$this->db->select('orden_trabajo.*, tbl_tipoordentrabajo.descripcion AS tipoDescrip, 
+		//
+		$this->db->select('orden_trabajo.*, tareas.descripcion as tareaSTD,
+												tbl_tipoordentrabajo.descripcion AS tipoDescrip,
 												user1.usrName AS nombre, user1.usrLastName,
 												sisusers.usrName, 
 												sisusers.usrLastName, equipos.codigo, 
@@ -1529,7 +1533,9 @@ class Otrabajos extends CI_Model {
 		$this->db->join('sisusers AS user1', 'orden_trabajo.id_usuario_a = user1.usrId', 'left');//usuario asignado?
 		$this->db->join('equipos','equipos.id_equipo = orden_trabajo.id_equipo');
 		$this->db->join('admcustomers','admcustomers.cliId = equipos.id_customer');
-	
+
+		$this->db->join('tareas', 'tareas.id_tarea = orden_trabajo.id_tarea', 'left');
+
 		//LEFT JOIN orden_servicio ON orden_trabajo.id_orden = orden_servicio.id_ot
 
 		$this->db->join('orden_servicio', 'orden_trabajo.id_orden = orden_servicio.id_ot', 'left');

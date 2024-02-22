@@ -131,10 +131,12 @@ function terminarTarea() {
 // cerrar tarea Analisis de urgencia
 function decidirUrgencia() {
 
-    WaitingOpen();
+    
     var opcion = $('input[name="opcion"]:checked').val();
     var idTarBonita = $('#idTarBonita').val();
 
+
+    
     $.ajax({
         type: 'POST',
         data: {
@@ -143,7 +145,17 @@ function decidirUrgencia() {
         },
         url: 'index.php/Tarea/decidirUrgencia',
         success: function (data) {
-            console.table(data);
+            //console.table(data);
+            //console.log('Opcion: '+opcion);
+            if(opcion == 'true'){
+                alert('Guardado de Solicitud Urgente Exitoso!');
+                console.log('Opcion: '+opcion);
+            }
+            if(opcion == 'false'){
+                alert('Guardado de Solicitud No Urgente Exitoso');
+                console.log('Opcion: '+opcion);
+            }
+            WaitingOpen();
         },
         error: function (data) {
             WaitingClose();
@@ -161,6 +173,7 @@ function decidirUrgencia() {
             }
         }
     });
+    
 }
 // cierra tarea Verificar Informe
 function verificarInforme() {
@@ -280,8 +293,9 @@ function ejecutarOT() {
         dataType: 'json'
     }
 
-    if(SW) ajax(post);
-    else $.ajax(post);
+ /*    if(SW) ajax(post);
+    else $.ajax(post); */
+    $.ajax(post);
 }
 
 

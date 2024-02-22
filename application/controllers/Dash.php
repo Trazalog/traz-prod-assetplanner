@@ -47,97 +47,119 @@ class dash extends CI_Controller {
 		}
 	}
 
+	public function check_session(){
+
+        $data = $this->session->userdata();
+		log_message('DEBUG','#Main/index | KPI >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+
+		if(empty($data['user_data'][0]['usrName'])){
+			log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+			$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+			$this->session->set_userdata($var);
+			$this->session->unset_userdata(null);
+			$this->session->sess_destroy();
+
+			echo ("<script>location.href='login'</script>");
+
+		}else{
+            return true;
+        }
+    }
+
 	public function index()
 	{
-		$this->_init_Menu();// Inicializa el menu
-		$this->_trae_empresas();// trae las empresas del usuario
+		if($this->check_session()){
+			$this->_init_Menu();// Inicializa el menu
+			$this->_trae_empresas();// trae las empresas del usuario
 
-		$this->load->view('header');
-		$userdata       = $this->session->userdata('user_data');
-		$enterprisedata = $this->session->userdata('enterprise_data');
-		//dump_exit($enterprisedata);
+			$this->load->view('header');
+			$userdata       = $this->session->userdata('user_data');
+			$enterprisedata = $this->session->userdata('enterprise_data');
+			//dump_exit($enterprisedata);
 
-		if( !$userdata )
-		{
-			redirect( base_url() );
-		}
-		else
-		{
-			//dump_exit($userdata);
-			$data['usrimag']      = $userdata[0]['usrimag'];
-			$data['userName']     = $userdata[0]['usrNick'];
-			$data['grpId']        = $userdata[0]['grpId'];
-			$data['descEmpresas'] = $userdata[0]['descripcion'];
-			$data['empresas']     = $enterprisedata[0]['empresas'];
-			//para el dash x defecto segun grupo de usr
-			$data['grpDash']    = $this->Groups->grpDash($userdata[0]['grpId']);
-			//$data['permission'] = $this->items['seguridad'];
-			//Guille inicio datos necesarios Precacheo//
-			$ban = true;
-			$i=0;
-			while($ban && $i< count($this->items) )
-			{
-				
-				if($this->items[$i]['name'] == "Mis Tareas")
+			if( !$userdata ){
+				redirect( base_url() );
+			}else{
+				//dump_exit($userdata);
+				$data['usrimag']      = $userdata[0]['usrimag'];
+				$data['userName']     = $userdata[0]['usrNick'];
+				$data['grpId']        = $userdata[0]['grpId'];
+				$data['descEmpresas'] = $userdata[0]['descripcion'];
+				$data['empresas']     = $enterprisedata[0]['empresas'];
+				//para el dash x defecto segun grupo de usr
+				$data['grpDash']    = $this->Groups->grpDash($userdata[0]['grpId']);
+				//$data['permission'] = $this->items['seguridad'];
+				//Guille inicio datos necesarios Precacheo//
+				$ban = true;
+				$i=0;
+				while($ban && $i< count($this->items) )
 				{
-					$ban = false;
-					break;
-				}
-				$i++;
-			}
-			if($i<count($this->items))
-			{
-				$data['permiso'] = $this->items[$i]['seguridad'];
-			}
-
-			if(SW) {
-			
-			$rsp = $this->bpm->getToDoList();
-		
-				if(!$rsp['status']){
-				return $rsp;
-			}
-		
-			$data['tareas'] = $rsp['data'];
-			
-			for($i=0;$i<count($data['tareas']); $i++)
-			{
-				if($data['tareas'][$i]['name'] == "Ejecutar OT") //Solo Cashear Tareas De Ejecutar OT
-				{
-					$caseId = $data['tareas'][$i]['caseId'];
-					$id = $this->Otrabajos->ObtenerOTporCaseId($caseId);
-					$data['tareas'][$i]['id_Ot'] = $id;
-
-					$pedidos = $this->Pedidos->xOT($id);
-					$data['tareas'][$i]['pedidos'] = $pedidos;
 					
-					// for($j=0;$j<count($data['tareas'][$i]['pedidos']);$j++)
-					// {
-					// 	$data['tareas'][$i]['pedidos'][$j]['entregas'] = $this->Entregas_Materiales->getEntregasPedido($data['tareas'][$i]['pedidos'][$j]['id_notaPedido']);
-					// }
-
-					//Obtener Formularios de Subtareas
-					$subtareas = $this->Tareas->getSubtareas($id);
-					$array = [];
-					for($j=0;$j<count($subtareas);$j++)
+					if($this->items[$i]['name'] == "Mis Tareas")
 					{
-						array_push($array, $subtareas[$j]['info_id']);
+						$ban = false;
+						break;
 					}
-					$data['tareas'][$i]['subtareas'] = $array;
+					$i++;
 				}
+				if($i<count($this->items))
+				{
+					$data['permiso'] = $this->items[$i]['seguridad'];
+				}
+
+				if(SW) {
+				
+				$rsp = $this->bpm->getToDoList();
+			
+					if(!$rsp['status']){
+					return $rsp;
+				}
+			
+				$data['tareas'] = $rsp['data'];
+				
+				for($i=0;$i<count($data['tareas']); $i++)
+				{
+					if($data['tareas'][$i]['name'] == "Ejecutar OT") //Solo Cashear Tareas De Ejecutar OT
+					{
+						$caseId = $data['tareas'][$i]['caseId'];
+						$id = $this->Otrabajos->ObtenerOTporCaseId($caseId);
+						$data['tareas'][$i]['id_Ot'] = $id;
+
+						$pedidos = $this->Pedidos->xOT($id);
+						$data['tareas'][$i]['pedidos'] = $pedidos;
+						
+						// for($j=0;$j<count($data['tareas'][$i]['pedidos']);$j++)
+						// {
+						// 	$data['tareas'][$i]['pedidos'][$j]['entregas'] = $this->Entregas_Materiales->getEntregasPedido($data['tareas'][$i]['pedidos'][$j]['id_notaPedido']);
+						// }
+
+						//Obtener Formularios de Subtareas
+						$subtareas = $this->Tareas->getSubtareas($id);
+						$array = [];
+						for($j=0;$j<count($subtareas);$j++)
+						{
+							array_push($array, $subtareas[$j]['info_id']);
+						}
+						$data['tareas'][$i]['subtareas'] = $array;
+					}
+				}
+
+				$data['tareas'] = json_encode($data['tareas']);
+
+				}
+				//Fin datos necesarios Precacheo
 			}
 
-			$data['tareas'] = json_encode($data['tareas']);
+			log_message('DEBUG','#Main/index | KPI | >> data '.json_encode($data));
 
-			}
-			//Fin datos necesarios Precacheo
-			}
 			$this->load->view('dash', $data);
 			// $this->load->view('recepcionDeposito', $data);
 			$this->load->view('menu');
 			$this->load->view('content');
 			$this->load->view('footerdash');
 			$this->load->view('footer');
+
+		}
 	}
 
 

@@ -11,15 +11,35 @@ class user extends CI_Controller {
 
 	public function index($permission)
 	{
-		$data['list'] = $this->Users->User_List();
+		$data = $this->session->userdata();
+		log_message('DEBUG','#Main/index | User >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+
+		if(empty($data['user_data'][0]['usrName'])){
+			log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+			$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+			$this->session->set_userdata($var);
+			$this->session->unset_userdata(null);
+			$this->session->sess_destroy();
+
+			echo ("<script>location.href='login'</script>");
+
+		}else{
+			//$data['list'] = $this->Users->User_List();
+			$data['permission'] = $permission;
+			$this->load->view('users/view_', $data);
+		}
+	}
+
+	function getTabla($permission){
 		$data['permission'] = $permission;
+		$data['list'] = $this->Users->User_List();
 		$this->load->view('users/list', $data);
 	}
 
 	public function getUser()
 	{
 		$data['data']     = $this->Users->getUser($this->input->post());
-		$response['html'] = $this->load->view('users/view_', $data, true);
+		$response['html'] = $this->load->view('users/modal', $data, true);
 
 		echo json_encode($response);
 	}

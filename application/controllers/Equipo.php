@@ -2,31 +2,79 @@
 
 class  Equipo extends CI_Controller {
 
-    public function __construct()
-    {
-       parent::__construct();
-       $this->load->model('Equipos');
-    }
+	public function __construct()
+	{
+				parent::__construct();
+				$this->load->model('Equipos');
+				$this->load->model('Sservicios');
+	}
 
-    public function index($permission)
-    {
-		$userdata           = $this->session->userdata('user_data');
-		$data['empresa']    = $userdata[0]['id_empresa'];
-		$data['list']       = $this->Equipos->equipos_List();
-		$data['permission'] = $permission;
-		//dump( $data['list'] );
-		$this->load->view('equipo/list', $data);		     
-    }
+	public function index($permission)
+	{
+			$data = $this->session->userdata();
+			/*log_message('DEBUG','#Main/index | Equipo >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));*/
 
-    /********** ELIMINAR EQUIPO **********/
-    
-    // Da de baja equipos (AN)
-    public function baja_equipo()
-    {
-		$idequipo = $_POST['idequipo'];
+			if(empty($data['user_data'][0]['usrName'])){
+				log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+				$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+				$this->session->unset_userdata(null);
+				$this->session->sess_destroy();
+
+				echo ("<script>location.href='login'</script>");
+
+			}else{
+
+				$userdata           = $this->session->userdata('user_data');
+				$data['empresa']    = $userdata[0]['id_empresa'];
+				//$data['list']       = $this->Equipos->equipos_List();
+				$data['permission'] = $permission;
+				//dump( $data['list'] );
+				/*log_message('DEBUG','#Main/index | Equipo List >> data '.json_encode($data['list']));*/
+				$this->load->view('equipo/list', $data);
+			}
+	}
+
+
+	/**
+	 * @param int inicio
+	 * @param int tamaño
+	 * @param string busqueda
+	 * @return Array equipos
+	 */
+	public function paginado(){//server side processing
+
+					$start = $this->input->post('start');
+					//$start = 40;
+					$length = $this->input->post('length');
+					$search = $this->input->post('search')['value'];
+
+					$r = $this->Equipos->equiposPaginados($start,$length,$search);
+					
+					$resultado =$r['datos'];
+					$totalDatos = $r['numDataTotal'];
+
+					$datos = $resultado->result_array();
+					$datosPagina = $resultado->num_rows();
+
+					$json_data = array(
+									"draw" 				=> intval($this->input->post('draw')),
+									"recordsTotal"  	=> intval($datosPagina),
+									"recordsFiltered"	=> intval($totalDatos),
+									"data" 				=> $datos
+					);
+					$result = json_encode($json_data);
+					echo $result;
+	}
+
+	/********** ELIMINAR EQUIPO **********/
+
+	// Da de baja equipos (AN)
+	public function baja_equipo()
+	{
+		$idequipo = $_POST['idEquipo'];
 		$datos    = array('estado'=>"AN");
 		$result   = $this->Equipos->baja_equipos($datos, $idequipo);
-		print_r(json_encode($result));	
+		print_r(json_encode($result));
 	}
 
 	/********** EDITAR EQUIPO **********/
@@ -171,7 +219,7 @@ class  Equipo extends CI_Controller {
 		$userdata         = $this->session->userdata('user_data');
 		$datos['id_empresa'] = $userdata[0]['id_empresa'];
 		$result           = $this->Equipos->update_editar($datos,$id);
-		print_r(json_encode($result));
+		echo json_encode($result);
 		
 	}
 
@@ -317,153 +365,164 @@ class  Equipo extends CI_Controller {
 		//       		echo $this->db->insert_id();
 		//       	else echo 0;
 		//     }
-	 //  	}
+	//  	}
 
-  	public function agregar_seguro(){
+	public function agregar_seguro(){
 
-	    if($_POST)
-	    {
-	    	$datos=$_POST['parametros'];
+		if($_POST)
+		{
+			$datos=$_POST['parametros'];
 
-	     	$result = $this->Equipos->agregar_seguros($datos);
-	      	//print_r($this->db->insert_id());
-	      	if($result)
-	      		echo $this->db->insert_id();
-	      	else echo 0;
-	    }
-  	}
+			$result = $this->Equipos->agregar_seguros($datos);
+				//print_r($this->db->insert_id());
+				if($result)
+					echo $this->db->insert_id();
+				else echo 0;
+		}
+	}
 
-  	// Agrega unidad industrial y devuelve id de insercion - Listo
-  	public function agregar_unidad(){
+	// Agrega unidad industrial y devuelve id de insercion - Listo
+	public function agregar_unidad(){
 
-	    if($_POST)
-	    {
-	    	$datos=$_POST['datos'];
+		if($_POST)
+		{
+			$datos=$_POST['datos'];
 
-	     	$result = $this->Equipos->agregar_unidades($datos);
-	      	//print_r($this->db->insert_id());
-	      	if($result > 0)
-	      		echo json_encode($result); // devuelve id de insercion en BD
-	      	else echo 0;
-	    }
-  	}
+			$result = $this->Equipos->agregar_unidades($datos);
+				//print_r($this->db->insert_id());
+				if($result > 0)
+					echo json_encode($result); // devuelve id de insercion en BD
+				else echo 0;
+		}
+	}
 
-  	// Agrega las areas nuevas - Listo
-  	public function agregar_area(){
+	// Agrega las areas nuevas - Listo
+	public function agregar_area(){
 
-	    if($_POST)
-	    {
-	    	$datos=$_POST['parametros'];
+		if($_POST)
+		{
+			$datos=$_POST['parametros'];
 
-	     	$result = $this->Equipos->agregar_area($datos);
-	      	//print_r($this->db->insert_id());
-	      	if($result)
-	      		echo $this->db->insert_id();
-	      	else echo 0;
-	    }
-  	}
+			$result = $this->Equipos->agregar_area($datos);
+				//print_r($this->db->insert_id());
+				if($result)
+					echo $this->db->insert_id();
+				else echo 0;
+		}
+	}
 
-  	// Agrega criticidad nueva - Listo
-  	public function agregar_criti(){
+	// Agrega criticidad nueva - Listo
+	public function agregar_criti(){
 
-	    if($_POST)
-	    {
-	    	$datos=$_POST['parametros'];
+		if($_POST)
+		{
+			$datos=$_POST['parametros'];
 
-	     	$result = $this->Equipos->agregar_criti($datos);
-	      	//print_r($this->db->insert_id());
-	      	if($result)
-	      		echo $this->db->insert_id();
-	      	else echo 0;
-	    }
-  	}
-  	
-  	// Agrega las procesos nuevos - Listo
-  	public function agregar_proceso(){
+			$result = $this->Equipos->agregar_criti($datos);
+				//print_r($this->db->insert_id());
+				if($result)
+					echo $this->db->insert_id();
+				else echo 0;
+		}
+	}
+	
+	// Agrega las procesos nuevos - Listo
+	public function agregar_proceso(){
 
-	    if($_POST)
-	    {
-	    	$datos=$_POST['parametros'];
+		if($_POST)
+		{
+			$datos=$_POST['parametros'];
 
-	     	$result = $this->Equipos->agregar_proceso($datos);
-	      	//print_r($this->db->insert_id());
-	      	if($result)
-	      		echo $this->db->insert_id();
-	      	else echo 0;
-	    }
-  	}
+			$result = $this->Equipos->agregar_proceso($datos);
+				//print_r($this->db->insert_id());
+				if($result)
+					echo $this->db->insert_id();
+				else echo 0;
+		}
+	}
 
-  	// Agrega sector/etapa nuevos - Listo
-  	public function agregar_etapa(){
+	// Agrega sector/etapa nuevos - Listo
+	public function agregar_etapa(){
 
-	    if($_POST)
-	    {
-	    	$datos=$_POST['parametros'];
+		if($_POST)
+		{
+			$datos=$_POST['parametros'];
 
-	     	$result = $this->Equipos->agregar_etapa($datos);
-	      	//print_r($this->db->insert_id());
-	      	if($result)
-	      		echo $this->db->insert_id();
-	      	else echo 0;
-	    }
-  	}
-  	// Agrega las grupos nuevos - Listo
-  	public function agregar_grupo(){
+			$result = $this->Equipos->agregar_etapa($datos);
+				//print_r($this->db->insert_id());
+				if($result)
+					echo $this->db->insert_id();
+				else echo 0;
+		}
+	}
+	// Agrega las grupos nuevos - Listo
+	public function agregar_grupo(){
 
-	    if($_POST)
-	    {
-	    	$datos=$_POST['parametros'];
+		if($_POST)
+		{
+			$datos=$_POST['parametros'];
 
-	     	$result = $this->Equipos->agregar_grupos($datos);
+			$result = $this->Equipos->agregar_grupos($datos);
 
-	      	if($result)
-	      		echo $this->db->insert_id();
-	      	else echo 0;
-	    }
-  	}
+				if($result)
+					echo $this->db->insert_id();
+				else echo 0;
+		}
+	}
 
-  	// Agrega las grupos nuevos - Listo
-  	public function agregar_marca(){
+	// Agrega las grupos nuevos - Listo
+	public function agregar_marca(){
 
-	    if($_POST)
-	    {
-	    	$datos=$_POST['parametros'];
+		if($_POST)
+		{
+			$datos=$_POST['parametros'];
 
-	     	$result = $this->Equipos->agregar_marcas($datos);
+			$result = $this->Equipos->agregar_marcas($datos);
 
-	      	if($result)
-	      		echo $this->db->insert_id();
-	      	else echo 0;
-	    }
-  	}
+				if($result)
+					echo $this->db->insert_id();
+				else echo 0;
+		}
+	}
 
-  	// Agrega las grupos nuevos - Listo
-  	public function agregar_cliente(){
+	// Agrega las grupos nuevos - Listo
+	public function agregar_cliente(){
 
-	    if($_POST)
-	    {
-	    	$datos=$_POST['parametros'];
+		if($_POST)
+		{
+			$datos=$_POST['parametros'];
 
-	     	$result = $this->Equipos->agregar_clientes($datos);
+			$result = $this->Equipos->agregar_clientes($datos);
 
-	      	if($result)
-	      		echo $this->db->insert_id();
-	      	else echo 0;
-	    }
-  	}
+				if($result)
+					echo $this->db->insert_id();
+				else echo 0;
+		}
+	}
 
-  	// Agrega equipo nuevo - Listo
+  // Agrega equipo nuevo - Listo
 	public function guardar_equipo()
 	{
+		$codigo              = $this->input->post("codigo");
+		$exisCodEquipo = $this->Equipos->validaUnicidadCodigo($codigo);
+
+		if ($exisCodEquipo) {
+			 echo json_encode(['status'=>'error','code'=>'201','msj'=>'El código ingresado se encuentra en uso']);
+			 return;
+		}
+
+
 		//$data     = $this->input->post();
 		$userdata = $this->session->userdata('user_data');
+		$files = $_FILES['inputPDF'];
+		$names = $_FILES['inputPDF']['name'];
 
 		$descripcion         = $this->input->post("descripcion");
 		$fecha_ingreso       = $this->input->post("fecha_ingreso");
 		//fecha_baja
 		$fecha_garantia      = $this->input->post("fecha_garantia");
 		$marca               = $this->input->post("marca");
-		$codigo              = $this->input->post("codigo");
+
 		$id_hubicacion       = $this->input->post("ubicacion");
 		$id_empresa          = $userdata[0]['id_empresa'];
 		$id_sector           = $this->input->post("etapa");
@@ -508,42 +567,78 @@ class  Equipo extends CI_Controller {
 			'id_proceso'          => $id_proceso,
 			'numero_serie'        => $numero_serie
 		);
-		//dump($data);
+
 		$result = $this->Equipos->insert_equipo($data);
 
 		if($result)
 		{
-			$ultimoId = $this->db->insert_id(); 
-			$nomcodif = $this->codifNombre($ultimoId, $id_empresa); // codificacion de nombre
-			$nomcodif = 'equipo'.$nomcodif;
-			// $config = [
-			// 	"upload_path"   => "./assets/filesequipos",
-			// 	'allowed_types' => "png|jpg|pdf|xlsx",
-			// 	'file_name'     => $nomcodif
-			// ];
-			$config = [
-				"upload_path"   => "./assets/filesequipos",
-				'allowed_types' => "*",
-				'file_name'     => $nomcodif
-			];
+			$ultimoId = $this->db->insert_id();
 
-			$this->load->library("upload",$config);
-			if ($this->upload->do_upload('inputPDF')) {
-				
-				$data     = array("upload_data" => $this->upload->data());
-				$extens   = $data['upload_data']['file_ext'];//guardo extesnsion de archivo
-				$nomcodif = $nomcodif.$extens;
-				$adjunto  = array('adjunto' => $nomcodif);
-				$response = $this->Equipos->updateAdjuntoEquipo($adjunto,$ultimoId);
-			}else{
-				$response = false;
+			if(!empty($files['name'])){
+				$filesCount = count($files['name']);
+				for($i = 0; $i < $filesCount; $i++){
+					
+					$nombreArchivo = $names[$i];
+					$extension = pathinfo($nombreArchivo, PATHINFO_EXTENSION);//Extension del archivo
+					$nomcodif = $this->codificaNombreV2($nombreArchivo, $extension); // codificacion de nombre
+
+					$config   = [
+						"upload_path"   => "./assets/filesequipos",
+						'allowed_types' => "*",
+						'file_name' => $nomcodif
+					];
+					$_FILES['inputPDF']['name'] =  $nomcodif;
+					$_FILES['inputPDF']['type'] = $files['type'][$i];
+					$_FILES['inputPDF']['tmp_name'] = $files['tmp_name'][$i];
+					$_FILES['inputPDF']['error'] = $files['error'][$i];
+					$_FILES['inputPDF']['size'] = $files['size'][$i];
+			
+					$config = [
+						"upload_path"   => "./assets/filesequipos",
+						'allowed_types' => "*",
+						'file_name'     => $nomcodif			];
+		
+					$this->load->library("upload", $config);
+
+					if ($this->upload->do_upload('inputPDF')) {
+						 
+						$data     = array("upload_data" => $this->upload->data());
+						$datos =array(
+							'id_equipo' => $ultimoId,
+							'adjunto' => $nomcodif
+						);
+						$respuesta = $this->Equipos->guardaAdjuntoEquipo($datos);
+
+						// if ($respuesta != null) {
+						// 	$resp = array('status'=>'ok','code'=>'200');
+						// } else {
+						// 	$resp = array('status'=>'ok','code'=>'500','msj'=>'Error al guardar referencia en Tabla adjunto');
+						// }
+
+					} else{
+						// $resp = array('status'=>'ok','code'=>'500','msj'=>'Error al subir el adjunto');
+
+					} 
+				}
 			}
 
-			echo json_encode($response);
+			echo json_encode(['status'=>'ok','code'=>'200','msj'=>'Guardado exitoso de nuevo equipo']);
+
 		} else {
-			echo json_encode($result);
+
+			echo json_encode(['status'=>'ok','code'=>'500','msj'=>'Error al guardar equipo']);
 		}
 
+	}
+
+
+	// Codifica nombre de imagen para no repetir en servidor
+	// saco los espacios del nombre, elimino la extension para obtener solo el nombre y despues le agrego valores random mas la extension del archivo
+	function codificaNombreV2($nombre, $extension){
+		$nombreSinEspacios = strtr($nombre, " ", "_");
+		$long = strlen($extension) + 1; 
+		$newname = substr($nombreSinEspacios, 0 , -$long).rand(1,3000).".".$extension;
+		return $newname;
 	}
 
 	// Codifica nombre de imagen para no repetir en servidor
@@ -556,7 +651,7 @@ class  Equipo extends CI_Controller {
 		$delimiter = array(" ",",",".","'","\"","|","\\","/",";",":");
 		$replace = str_replace($delimiter, $delimiter[0], $hora);
 		$explode = explode($delimiter[0], $replace);
-		$strigHora = $explode[0].$guion_medio.$explode[1].$guion_medio.$explode[2].$guion_medio.$explode[3];
+		$strigHora = $explode[0].$guion_medio.$explode[1].$guion_medio.$explode[2].$guion_medio.$explode[3]; 
 		$nomImagen = $ultimoId.$guion.$empId.$guion.$strigHora;
 		
 		return $nomImagen;
@@ -673,10 +768,11 @@ class  Equipo extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	public function delContra()
+	public function delContratista()
 	{
-		$id_contratistaquipo = $_POST['id_contratistaquipo'];
-		$response = $this->Equipos->delContra($id_contratistaquipo);
+		$id_contratista = $_POST['id_contratista'];
+		$id_equipo = $_POST['id_equipo'];
+		$response = $this->Equipos->delContratista($id_contratista,$id_equipo );
 		echo json_encode($response);
 	}
 
@@ -758,6 +854,39 @@ class  Equipo extends CI_Controller {
 
   	/// Guarda lectura Hugo
   	public function setLectura(){
+
+		//Larga solicitud de servicio desde Mantenimiento autonomo
+		if($this->input->post('falla'))
+		{
+			$id_solServicio = $this->Sservicios->setservicios($this->input->post());
+			if ($id_solServicio) {
+				//Contrato para lanzar Solcitud de Servicio
+				$contract = array(
+					"idSolicitudServicio"	=>	$id_solServicio,
+					"idOT"  => 	0
+				);			
+
+				//Lanzar Proceso
+				$responce  = $this->bpm->lanzarProceso(BPM_PROCESS_ID, $contract);
+				
+				if(!$responce['status']){
+					$this->Sservicios->eliminar($id_solServicio);
+					echo json_encode($responce); 
+					return;
+				}
+				
+				//update de solic de servicio concaseid
+				if($this->Sservicios->setCaseId($responce['data']['caseId'],$id_solServicio)){
+
+					echo json_encode(['status'=> true, 'msj'=>'OK']);
+
+				}else{
+
+					echo json_encode(['status'=> false, 'msj'=>ASP_0200]);return;
+
+				}	
+			}
+		}
   		$result = $this->Equipos->setLecturas($this->input->post());
   		echo json_encode($result);
 		}
@@ -773,7 +902,9 @@ class  Equipo extends CI_Controller {
   	}
 
   	public function getEqPorId(){
-  		$result = $this->Equipos->getEqPorIds($this->input->post());
+		$idEquipo = $this->input->post()['idEquipo'];
+  		$result = $this->Equipos->getEqPorIds($idEquipo);
+		/*log_message('DEBUG','#Main/index | getEqPorId >> data '.json_encode($result));*/
   	  	echo json_encode($result);
   	}
 
@@ -803,6 +934,29 @@ class  Equipo extends CI_Controller {
 		$response = $this->Equipos->eliminarAdjunto($idEquipo);
 		echo json_encode($response);
 	}
+
+	/**
+	 * Equipo:eliminaAdjunto();
+	 *
+	 * @return Bool 	True si se eliminó el archivo o false si hubo error
+	 */
+	public function eliminaAdjunto()
+	{
+		$idEquipo = $this->input->post('idEquipo');
+		$idAdjunto = $this->input->post('idAdjunto');
+		$response = $this->Equipos->eliminaAdjunto($idAdjunto);
+		if($response)
+		{
+			$responseArchivos =  $this->Equipos->getAdjuntos($idEquipo); //listado adjuntos asosiados al equipo 
+			echo json_encode($responseArchivos);
+		}		
+		else{
+			echo json_encode(['msj'=>'Error al eliminar archivo']);
+		}
+		
+	}
+
+
 	
 	/**
 	 * Equipo:agregarAdjunto();
@@ -812,42 +966,119 @@ class  Equipo extends CI_Controller {
 	 */
 	public function agregarAdjunto()
 	{
+		$files = $_FILES['inputPDF'];
 		$userdata     = $this->session->userdata('user_data');
 		$empId        = $userdata[0]['id_empresa'];
-
 		$idEquipo = $this->input->post('idAgregaAdjunto');
+        $names=$_FILES['inputPDF']['name'];
+		
+		if(!empty($files['name'])){
+			$filesCount = count($files['name']);
+			for($i = 0; $i < $filesCount; $i++){
+				
+				$nombreArchivo = $names[$i];
+				$extension = pathinfo($nombreArchivo, PATHINFO_EXTENSION);//Extension del archivo
+				$nomcodif = $this->codificaNombreV2($nombreArchivo, $extension); // codificacion de nombre
+				
+				$config   = [
+					"upload_path"   => "./assets/filesequipos",
+					'allowed_types' => "*",
+					'file_name' => $nomcodif
+				];
+				$_FILES['inputPDF']['name'] =  $nomcodif;
+				$_FILES['inputPDF']['type'] = $files['type'][$i];
+				$_FILES['inputPDF']['tmp_name'] = $files['tmp_name'][$i];
+				$_FILES['inputPDF']['error'] = $files['error'][$i];
+				$_FILES['inputPDF']['size'] = $files['size'][$i];
+				$this->load->library("upload",$config);
+				
+				if ($this->upload->do_upload('inputPDF'))
+				{	
+					$data     = array("upload_data" => $this->upload->data());
+					$datos    = array(
+										'id_equipo' => $idEquipo,
+										'adjunto' => $nomcodif
+									);
+					$resp = $this->Equipos->guardaAdjuntoEquipo($datos); //Guarda adjunto tabla  
+				}else{
+					$resp = false;
+				}
+			}
+			$responseArchivos =  $this->Equipos->getAdjuntos($idEquipo);
+			if($responseArchivos){
+				echo json_encode($responseArchivos);
+			} else{
+				$responseArchivos=false;
+				echo json_encode($responseArchivos);
+			}
+			
+		}
+	}
 
-		$nomcodif = $this->codifNombre($idEquipo, $empId); // codificacion de nombre
-		$nomcodif = 'equipo'.$nomcodif;
+	/**
+	 * Equipo:EditarAdjunto();
+	 *
+	 * @return array listado de adjuntos 
+	 */
+	public function EditarAdjunto(){
+		$idEquipo = $this->input->post('idEquipo');
+		$idAdjunto = $this->input->post('id_adjunto');
+		$files = $_FILES['inputEditarPDF'];
+
+		$nombreArchivo = $files['name'];
+		$extension = pathinfo($nombreArchivo, PATHINFO_EXTENSION);//Extension del archivo
+		$nomcodif = $this->codificaNombreV2($nombreArchivo, $extension); // codificacion de nombre
 		$config   = [
 			"upload_path"   => "./assets/filesequipos",
-			'allowed_types' => "png|jpg|pdf|xlsx",
+			'allowed_types' => "*",
 			'file_name'     => $nomcodif
 		];
-
 		$this->load->library("upload",$config);
-		if ($this->upload->do_upload('inputPDF')) 
+		if ($this->upload->do_upload('inputEditarPDF')) 
 		{	
 			$data     = array("upload_data" => $this->upload->data());
-			$extens   = $data['upload_data']['file_ext'];//guardo extesnsion de archivo
-			$nomcodif = $nomcodif.$extens;
 			$adjunto  = array('adjunto' => $nomcodif);
-			$response = $this->Equipos->updateAdjuntoEquipo($adjunto,$idEquipo);
-		}else{
-			$response = false;
+			$response = $this->Equipos->updateAdjunto($adjunto , $idAdjunto);
+			$responseArchivos =  $this->Equipos->getAdjuntos($idEquipo); //listado adjuntos asosiados al equipo 
 		}
+		echo json_encode($responseArchivos);
+	}
 
-		echo json_encode($response);
+	public function getMeta(){
+
+		$data = $this->input->post();
+		$response = $this->Equipos->getMeta($data);
+		if(!$response){
+			echo json_encode(['msj'=>'Error al extraer Meta']);
+		}else{		
+			echo json_encode($response);
+		}
 	}
 
 	function asignarMeta(){
 
 		$data = $this->input->post();
+		
 		if(!$this->Equipos->asignarMeta($data)){
 			echo json_encode(['msj'=>'Error al asinar Meta']);
 		}else{
 			echo json_encode(['msj'=>'OK']);
 		}
 	}
+
+	function getFormxIdGrupo()
+	{
+		log_message('DEBUG','#TRAZA | #TRAZ-COMP-FORM | #Equipo | getFormxIdGrupo()');
+		$id_grupo = $this->input->post('id_grupo');
+		$res = $this->Equipos->getFormxIdGrupo($id_grupo);
+		echo json_encode($res);	
+	}
+
+	function guardaInfo_idLectura(){
+		log_message('DEBUG','#TRAZA | #TRAZ-COMP-FORM | #Equipo | guardaInfo_idLectura()');
+		$res = $this->Equipos->guardaInfo_idLectura($this->input->post());
+		echo json_encode($res);
+	}
+
 
 }

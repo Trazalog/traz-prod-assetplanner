@@ -14,18 +14,32 @@ class MovimientoDepoRecep extends CI_Controller {
 	// Muestra listado de articulos
 	public function index()
 	{
-		$this->load->model('traz-comp/Componentes');
-    if($_GET)
-		{
-			$permission = $_GET["permisos"];
+		$data = $this->session->userdata();
+		log_message('DEBUG','#Main/index | Envio >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+	
+		if(empty($data['user_data'][0]['usrName'])){
+			log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+			$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+			$this->session->set_userdata($var);
+			$this->session->unset_userdata(null);
+			$this->session->sess_destroy();
+	
+			echo ("<script>location.href='login'</script>");
+	
+		}else{
+			$this->load->model('traz-comp/Componentes');
+			if($_GET)
+			{
+				$permission = $_GET["permisos"];
+			}
+			$data['items'] = $this->Componentes->listaArticulos(); // esto se agrego para la funcionalidad de depositos - esto me permite buscar articulo por codigo para eso necesita la funcion que esta en el model anterior
+			$data['permission'] = $permission;
+			$data['establecimiento'] = $this->MovimientoDepositosRecep->Get_Esta();
+			$data['depositos'] = $this->MovimientoDepositosRecep->Get_depo_todos();
+			$list = json_decode(json_encode($this->MovimientoDepositosRecep->Get_unidades()));
+			$data['unidades'] = $list;
+			$this->load->view(ALM.'/Depositos/MovimientoRecepcion', $data);
 		}
-    $data['items'] = $this->Componentes->listaArticulos(); // esto se agrego para la funcionalidad de depositos - esto me permite buscar articulo por codigo para eso necesita la funcion que esta en el model anterior
-		$data['permission'] = $permission;
-		$data['establecimiento'] = $this->MovimientoDepositosRecep->Get_Esta();
-		$data['depositos'] = $this->MovimientoDepositosRecep->Get_depo_todos();
-		$list = json_decode(json_encode($this->MovimientoDepositosRecep->Get_unidades()));
-		$data['unidades'] = $list;
-		$this->load->view(ALM.'/Depositos/MovimientoRecepcion', $data);
   }
     // Funciones creadas para la pantalla salida deposito MIGRAR
 	 //----funcion que trea todos los depositos dado un id de un establecimineto que se selecciono anteriormente

@@ -9,31 +9,55 @@ class Test extends CI_Controller
         $this->load->model('Kpis');
     }
 
+    public function check_session(){
+
+        $data = $this->session->userdata();
+		log_message('DEBUG','#Main/index | Customer >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+
+		if(empty($data['user_data'][0]['usrName'])){
+			log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+			$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+			$this->session->set_userdata($var);
+			$this->session->unset_userdata(null);
+			$this->session->sess_destroy();
+
+			echo ("<script>location.href='login'</script>");
+
+		}else{
+            return true;
+        }
+    }
+
+
     public function index(){
-        
-        $this->load->model('Tareas');
+    
+        if($this->check_session()){
+            $this->load->model('Tareas');
 
-        $this->Tareas->instanciarSubtareas(233, 7);
+            $this->Tareas->instanciarSubtareas(233, 7);
 
-        echo 'Hecho';
+            echo 'Hecho';
+        }
 
     }
 
     public function index4()
     {
-        $this->load->model('traz-comp/Componentes');
+        if($this->check_session()){
+            $this->load->model('traz-comp/Componentes');
 
-        #COMPONENTE ARTICULOS
-        $data['items'] = $this->Componentes->listaArticulos();
-        $data['lang'] = lang_get('spanish', 'Ejecutar OT');
+            #COMPONENTE ARTICULOS
+            $data['items'] = $this->Componentes->listaArticulos();
+            $data['lang'] = lang_get('spanish', 'Ejecutar OT');
 
-        if ($ot) {
-            $info = new stdClass();
-            $info->ortr_id = $ot;
-            $data['info'] = $info;
+            if ($ot) {
+                $info = new stdClass();
+                $info->ortr_id = $ot;
+                $data['info'] = $info;
+            }
+            $data['hecho'] = false;
+            $this->load->view(ALM . '/notapedido/generar_pedido', $data);
         }
-        $data['hecho'] = false;
-        $this->load->view(ALM . '/notapedido/generar_pedido', $data);
     }
 
     public function index2()
@@ -43,7 +67,9 @@ class Test extends CI_Controller
 
     public function index1()
     {
-        $this->load->view('kpis/disponibilidad');
+        if($this->check_session()){
+            $this->load->view('kpis/disponibilidad');
+        }
     }
 
     public function filtro()

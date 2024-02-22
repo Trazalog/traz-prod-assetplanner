@@ -11,16 +11,41 @@ class Kpi extends CI_Controller
         $this->load->model('Equipos');
     }
 
+    public function check_session(){
+
+        $data = $this->session->userdata();
+		log_message('DEBUG','#Main/index | KPI >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+
+		if(empty($data['user_data'][0]['usrName'])){
+			log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
+			$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
+			$this->session->set_userdata($var);
+			$this->session->unset_userdata(null);
+			$this->session->sess_destroy();
+
+			echo ("<script>location.href='login'</script>");
+
+		}else{
+            return true;
+        }
+    }
+
     public function index()
     {
-        $data['list'] = $this->Equipos->equipos_List();
-
-        $this->load->view('test', $data);
+       
+        if($this->check_session()){
+        
+            $data['list'] = $this->Equipos->equipos_List();
+            $this->load->view('test', $data);
+        }
+        
     }
 
     public function index1()
     {
-        $this->load->view('kpis/disponibilidad');
+        if($this->check_session()){
+            $this->load->view('kpis/disponibilidad');
+        }
     }
 
     public function dsp($eq)
@@ -229,7 +254,7 @@ class Kpi extends CI_Controller
     {
         $fecha1 = new DateTime($fi); //fecha inicial
         $fecha2 = new DateTime($ff); //fecha de cierre
-
+        
         $intervalo = $fecha1->diff($fecha2);
 
         #echo $intervalo->format('%Y años %m meses %d days %H horas %i minutos %s segundos'); //00 años 0 meses 0 días 08 horas 0 minutos 0 segundos
@@ -242,6 +267,462 @@ class Kpi extends CI_Controller
         $totalMin = $minutos + (int) $intervalo->format('%i'); // Acumulo Minutos
 
         return $totalMin;
+    }
+
+
+    /* Calculo de todos los kpis, 
+        Busqueda por todos los equipos dentro de un rango de fecha o todo el año
+        Busqueda por equipo y fechas dentro de un rango ingresado 
+    */
+    public function disponibilidadKpi(){
+
+        $tiempo = array();
+        $fecha_actual = date("Y-m-d");
+        $disponibilidadMeses = array();
+        $mtbf = array();
+        $mttr = array();
+        $mttf = array();
+        $confiabilidad = array();
+
+        $id_equipo =  $this->input->post('id_equipo');
+        $id_sector =  $this->input->post('id_sector');
+        $id_grupo =  $this->input->post('id_grupo');
+        $fecha_desde =  $this->input->post('fecha_desde')/* ." 00:00:00" */;
+        $fecha_hasta =  $this->input->post('fecha_hasta')/* ." 23:59:59" */;
+
+        /* cantidad de equipos */
+        $cantidad_equipos = $this->Kpis->getCantEquiposxEmpresa();  
+
+        /* harkcodeo horas laborales */
+        $horasLaborales = 8;
+        
+		log_message('DEBUG','KPI ||  disponibilidadKpi || $id_equipo '. $id_equipo);
+
+        /*busca todos los equipos */
+        if($id_equipo == 'all'){
+
+            /* Si ingresa fechas busco por las fechas ingresadas */
+            if(($fecha_desde) && ($fecha_hasta)){
+                // Convertir las fechas de texto a objetos DateTime
+
+                $fechaInicioObj = new DateTime($fecha_desde);
+                $fechaFinObj = new DateTime($fecha_hasta);
+
+                $mesDesde = $fechaInicioObj->format('m');
+
+                $i=0;
+                /* Recorro los meses del intervalo ingresado */
+                while ($fechaInicioObj <= $fechaFinObj) {
+                
+                    #Calcular Fecha inicio del Mes
+                    $fi = date("Y-m-01", strtotime($fecha_desde . "+ $i month"));
+                     #Calcular Fecha Fin del Mes
+                    $ff = (date("Y-m-d", strtotime($fi . "+ 1 month - 1 second")));
+                
+                    /* guardo mes que recorro para comparar con el numero de mes ingresado y elegir que parametro mandar */
+                    $mesRecorrido = $fechaInicioObj->format('m');
+
+                    $mesHasta = $fechaFinObj->format('m');
+
+                    if($mesHasta == $mesRecorrido)
+                    {
+                         /*calculo tiempo total en base a las horas laborales de cada mes y lo multiplico por todos los equipos*/
+                         $tiempoTotal = $this->Kpis->getTiempoTotal($fi, $fecha_hasta, $horasLaborales) * $cantidad_equipos;
+ 
+                         /*calculo tiempo total en reparacion */
+                         $tiempoTotalReparacion = $this->Kpis->getTiempoTotalReparacion($fi, $fecha_hasta, $horasLaborales);
+ 
+                         /* calculo el tiempo Activo multiplicando el tiempoTotal - tiempoReparacion*/
+                         $tiempoActivo =  $tiempoTotal  - $tiempoTotalReparacion;
+ 
+                          #kpi disponibilidad
+                         /* calculo disponibilidad (tiempoActivo / Tiempototal)*100 */
+                         $disponibilidadMeses[] =round( ($tiempoActivo / $tiempoTotal)*100) ;
+                       
+                       
+                        $cantidadFallos = $this->Kpis->getCantidadFallos($fi, $fecha_hasta);
+                        if($cantidadFallos == 0) {
+                            $mttr[]=0;
+                            $mttf[]=number_format($tiempoActivo,0);
+                        }
+                        else 
+                        {
+                             #kpi Mttr
+                            $mttr[] = number_format(($tiempoTotalReparacion/$cantidadFallos),0) ;
+                                                   
+                            #kpi Mttf
+                            $mttf[] =  number_format(($tiempoActivo/$cantidadFallos),0);
+                            
+                        }
+
+                    }
+                    else if($mesDesde == $mesRecorrido){
+
+                         /*calculo tiempo total en base a las horas laborales de cada mes y lo multiplico por todos los equipos*/
+                    
+                         $tiempoTotal = $this->Kpis->getTiempoTotal($fecha_desde, $ff, $horasLaborales) * $cantidad_equipos;
+ 
+                         /*calculo tiempo total en reparacion */
+                         $tiempoTotalReparacion = $this->Kpis->getTiempoTotalReparacion($fecha_desde, $ff, $horasLaborales);
+ 
+                         /* calculo el tiempo Activo multiplicando el tiempoTotal - tiempoReparacion*/
+                         $tiempoActivo =  $tiempoTotal  - $tiempoTotalReparacion;
+ 
+                          #kpi disponibilidad
+                         /* calculo disponibilidad (tiempoActivo / Tiempototal)*100 */
+                         $disponibilidadMeses[] = round(($tiempoActivo / $tiempoTotal)*100) ;
+                        
+                        $cantidadFallos = $this->Kpis->getCantidadFallos($fecha_desde, $ff);
+                        if($cantidadFallos == 0) {
+                            $mttr[]=0;
+                            $mttf[]=number_format($tiempoActivo,0);
+                        }
+                        else 
+                        {
+                            #kpi Mttr
+                            $mttr[] = number_format(($tiempoTotalReparacion/$cantidadFallos),0) ;
+                                                   
+                            #kpi Mttf
+                            $mttf[] =  number_format(($tiempoActivo/$cantidadFallos),0);
+                            
+                        }
+                    
+                    }
+                        else{
+                        
+                        /*calculo tiempo total en base a las horas laborales de cada mes y lo multiplico por todos los equipos*/
+                        
+                        $tiempoTotal = $this->Kpis->getTiempoTotal($fi, $ff, $horasLaborales) * $cantidad_equipos;
+
+                        /*calculo tiempo total en reparacion */
+                        $tiempoTotalReparacion = $this->Kpis->getTiempoTotalReparacion($fi, $ff, $horasLaborales);
+
+                        /* calculo el tiempo Activo multiplicando el tiempoTotal - tiempoReparacion*/
+                        $tiempoActivo = number_format(($tiempoTotal  - $tiempoTotalReparacion),0);
+
+                        /* calculo kpi disponibilidad (tiempoActivo / Tiempototal)*100 */
+                        $disponibilidadMeses[] = round(($tiempoActivo / $tiempoTotal)*100) ;
+                        
+                        $cantidadFallos = $this->Kpis->getCantidadFallos($fi, $ff);
+
+                        if($cantidadFallos == 0) {
+                            $mttr[]=0;
+                            $mttf[]=number_format($tiempoActivo,0);
+                        }
+                        else 
+                        {
+                            #kpi Mttr
+                            $mttr[] = number_format(($tiempoTotalReparacion/$cantidadFallos),0) ;
+                                                   
+                            #kpi Mttf
+                            $mttf[] =  number_format(($tiempoActivo/$cantidadFallos9),0);
+                            
+                        }
+                        
+                        
+                        
+                        }
+                    
+                    #Guardar tiempo medio entre fallos MTBF
+                    $mtbf[] = number_format(($mttr[$i] + $mttf[$i]),0);
+                    /* si ambos valores viene en 0 el resultado es 0 */
+                     if(($mtbf[$i] == 0) && ($mttr[$i] == 0))
+                     {
+                        $confiabilidad[] = 0 ;
+                     }
+                     else{
+                        $confiabilidad[] = ($mtbf[$i] / ($mtbf[$i] +  $mttr[$i])) * 100 ;
+                     }
+                 
+                     #Guardar Labels para Gráfico MES/AÑO
+                     $tiempo[] =  date("m-Y", strtotime($fi));
+                    // Moverse al siguiente mes
+                    $fechaInicioObj->modify('+1 month');
+                    $i++;
+                 
+                }
+
+            }
+            /* si no ingreso fecha busca todos los equipos por todo el año */
+            else{ 
+           
+                    for ($i = 0; $i < 12; $i++) {
+                        #Calular Fecha Inicio del Mes
+                        $l=1;
+                        $fi = ($i == 0 ?  date("Y-m-01", strtotime($fecha_actual)) : date("Y-m-01", strtotime("-$l months", strtotime($fi))));
+                        
+                        #Calcular Fecha Fin del Mes
+                        $ff = ($i == 0 ? date("Y-m-d") : date("Y-m-d", strtotime($fi . "+ 1 month - 1 second")));
+                    
+                        /*calculo tiempo total en base a las horas laborales de cada mes y lo multiplico por todos los equipos*/
+                    
+                        $tiempoTotal = $this->Kpis->getTiempoTotal($fi, $ff, $horasLaborales) * $cantidad_equipos;
+
+                        /*calculo tiempo total en reparacion */
+                        $tiempoTotalReparacion = $this->Kpis->getTiempoTotalReparacion($fi, $ff, $horasLaborales);
+
+                        /* calculo el tiempo Activo multiplicando el tiempoTotal - tiempoReparacion*/
+                        $tiempoActivo =  $tiempoTotal  - $tiempoTotalReparacion;
+
+                        /* calculo disponibilidad (tiempoActivo / Tiempototal)*100 */
+                        $disponibilidad = ($tiempoActivo / $tiempoTotal)*100 ;
+
+                        #Guardar Labels para Gráfico MES/AÑO
+                        array_unshift($tiempo, date("m-Y", strtotime($fi)));
+                    
+                        #Guardar disponibilidad por cada mes
+                        array_unshift($disponibilidadMeses,  round($disponibilidad));
+                        //array_unshift($disponibilidadMeses ,$this->Kpis->getDisponibilidadxFecha($fi, $ff));
+                    
+                        #Guardar Tiempo promedio de reparación MTTR
+                        $cantidadFallos = $this->Kpis->getCantidadFallos($fi, $ff);
+                        
+                        if($cantidadFallos == 0) {
+                            array_unshift($mttr ,0);
+                            array_unshift($mttf ,number_format($tiempoActivo,0));
+                        }
+                        else 
+                        {
+                            array_unshift($mttr ,number_format(($tiempoTotalReparacion/$cantidadFallos),0));
+                            #Guardar Tiempo medio hasta el fallo MTTF
+                            array_unshift($mttf ,number_format(($tiempoActivo/$cantidadFallos),0));
+                        }
+                        
+                    
+                        #Guardar tiempo medio entre fallos MTBF
+                        array_unshift($mtbf , number_format(($mttr[0] + $mttf[0]),0));
+                    
+                        /* si ambos valores viene en 0 el resultado es 0 */
+                         if(($mtbf[0] == 0) && ($mttr[0] == 0))
+                         {
+                            array_unshift($confiabilidad, 0 );
+                         }
+                         else{
+                            array_unshift($confiabilidad,($mtbf[0] / ($mtbf[0] +  $mttr[0])) * 100 );
+                         }
+                    }
+            }
+
+            $dataeq = $this->Kpis->getEquiposKpi('all',$id_sector,$id_grupo);
+            log_message('DEBUG','KPI ||  disponibilidadKpi || $dataeq '. json_encode($dataeq));
+
+            # Calcular Promedio Metas all
+            $acum = 0;
+            $cantMetas = 0;
+            foreach ($dataeq as $o) {        
+                if ($o["meta_disponibilidad"]) {                    
+                    $acum += $o["meta_disponibilidad"];
+                    $cantMetas++;
+                }
+            }
+            $promedioMetas = ($cantMetas == 0 ? 0 : number_format($acum / ($cantMetas), 0));
+            log_message('DEBUG','KPI ||  disponibilidadKpi || Metas: '.$acum.' CantMetas: '.$cantMetas);
+            $data['promedioMetas'] = $promedioMetas;
+            $data['tiempo'] =  $tiempo;
+            $data['porcentajeHorasOperativas'] = $disponibilidadMeses;
+            $data['mtbf']=  $mtbf;
+            $data['mttr'] = $mttr;
+            $data['mttf'] = $mttf;
+            $data['confiabilidad'] = $confiabilidad;
+
+            log_message('DEBUG','KPI ||  disponibilidadKpi || $data '. json_encode($data));
+
+            echo json_encode($data);
+        
+        }else{/* busqueda por id_equipo */
+            // Convertir las fechas de texto a objetos DateTime
+            $fechaInicioObj = new DateTime($fecha_desde);
+            $fechaFinObj = new DateTime($fecha_hasta);
+            
+            $mesDesde = $fechaInicioObj->format('m');
+            
+            $i=0;
+            /* Recorro los meses del intervalo ingresado */
+            while ($fechaInicioObj <= $fechaFinObj) {
+
+                #Calcular Fecha inicio del Mes
+                $fi = date("Y-m-01", strtotime($fecha_desde . "+ $i month"));
+                 #Calcular Fecha Fin del Mes
+                $ff = (date("Y-m-d", strtotime($fi . "+ 1 month - 1 second")));
+
+                /* guardo mes que recorro para comparar con el numero de mes ingresado y elegir que parametro mandar */
+                $mesRecorrido = $fechaInicioObj->format('m');
+                $mesHasta = $fechaFinObj->format('m');
+
+                if($mesHasta == $mesRecorrido)
+                {
+                    #Calcular desde inicio de mes a fecha_hasta
+
+                      /*calculo tiempo total en base a las horas laborales de cada mes y lo multiplico por todos los equipos*/
+                     
+                      $tiempoTotal = $this->Kpis->getTiempoTotal($fi, $fecha_hasta, $horasLaborales);
+
+                      /*calculo tiempo total en reparacion */
+                      $tiempoTotalReparacion = $this->Kpis->getTiempoTotalReparacionxEquipo($fi, $fecha_hasta, $horasLaborales, $id_equipo);
+
+                      /* calculo el tiempo Activo multiplicando el tiempoTotal - tiempoReparacion*/
+                      $tiempoActivo =  $tiempoTotal  - $tiempoTotalReparacion;
+                    
+                      #kpi disponibilidad
+                      /* calculo disponibilidad (tiempoActivo / Tiempototal)*100 */
+                      $disponibilidadMeses[] =round( ($tiempoActivo / $tiempoTotal)*100) ;
+
+                    $cantidadFallos=  $this->Kpis->getCantidadFallosxEquipo($fi, $fecha_hasta, $id_equipo);
+                    if($cantidadFallos == 0){
+                       
+                        $mttr[] = 0;
+                        $mttf[]= number_format($tiempoActivo,0);
+                    }
+                    else
+                    {
+                        #kpi Mttr
+                        $mttr[] = number_format(($tiempoTotalReparacion/$cantidadFallos),0);
+                        
+                        #kpi Mttf
+                        $mttf[]= number_format(($tiempoActivo/$cantidadFallos),0);
+                    }
+                    
+                }
+                else if($mesDesde == $mesRecorrido){
+                    
+
+                    #kpi disponibilidad
+                    /*calculo tiempo total en base a las horas laborales de cada mes y lo multiplico por todos los equipos*/
+                     
+                    $tiempoTotal = $this->Kpis->getTiempoTotal($fecha_desde, $ff, $horasLaborales);
+
+                    /*calculo tiempo total en reparacion */
+                    $tiempoTotalReparacion = $this->Kpis->getTiempoTotalReparacionxEquipo($fecha_desde, $ff, $horasLaborales ,  $id_equipo);
+
+                    /* calculo el tiempo Activo multiplicando el tiempoTotal - tiempoReparacion*/
+                    $tiempoActivo =  $tiempoTotal  - $tiempoTotalReparacion;
+
+                    /* calculo disponibilidad (tiempoActivo / Tiempototal)*100 */
+                    $disponibilidadMeses[] =round( ($tiempoActivo / $tiempoTotal)*100) ;
+
+                    $cantidadFallos=  $this->Kpis->getCantidadFallosxEquipo($fecha_desde, $ff, $id_equipo);
+                    if($cantidadFallos == 0){
+                       
+                        $mttr[] = 0;
+                        $mttf[]= number_format($tiempoActivo,0);
+                    }
+                    else
+                    {
+                        #kpi Mttr
+                        $mttr[] = number_format(($tiempoTotalReparacion/$cantidadFallos),0);
+                        
+                        #kpi Mttf
+                        $mttf[]= number_format(($tiempoActivo/$cantidadFallos),0);
+                    }
+
+                }
+                    else{
+
+                    #kpi disponibilidad
+                    /*calculo tiempo total en base a las horas laborales de cada mes y lo multiplico por todos los equipos*/
+
+                    $tiempoTotal = $this->Kpis->getTiempoTotal($fi, $ff, $horasLaborales);
+
+                    /*calculo tiempo total en reparacion */
+                    $tiempoTotalReparacion = $this->Kpis->getTiempoTotalReparacionxEquipo($fi, $ff, $horasLaborales,  $id_equipo);
+
+                    /* calculo el tiempo Activo multiplicando el tiempoTotal - tiempoReparacion*/
+                    $tiempoActivo =  $tiempoTotal  - $tiempoTotalReparacion;
+
+                    /* calculo disponibilidad (tiempoActivo / Tiempototal)*100 */
+                    $disponibilidadMeses[] =round( ($tiempoActivo / $tiempoTotal)*100) ;
+
+                    $cantidadFallos=  $this->Kpis->getCantidadFallosxEquipo($fi, $ff, $id_equipo);
+                    
+                    if($cantidadFallos == 0){
+                       
+                        $mttr[] = 0;
+                        $mttf[]= number_format($tiempoActivo,0);
+                    }
+                    else
+                    {
+                        #kpi Mttr
+                        $mttr[] = number_format(($tiempoTotalReparacion/$cantidadFallos),0);
+                        
+                        #kpi Mttf
+                        $mttf[]= number_format(($tiempoActivo/$cantidadFallos),0);
+                    }
+
+                    }
+
+                #Guardar tiempo medio entre fallos MTBF
+                $mtbf[] = number_format(($mttr[$i] + $mttf[$i]),0);
+                /* si ambos valores viene en 0 el resultado es 0 */
+                 if(($mtbf[$i] == 0) && ($mttr[$i] == 0))
+                 {
+                    $confiabilidad[] = 0 ;
+                 }
+                 else{
+                    $confiabilidad[] = number_format((($mtbf[$i] / ($mtbf[$i] +  $mttr[$i])) * 100),0) ;
+                 }
+
+                 #Guardar Labels para Gráfico MES/AÑO
+                 $tiempo[] =  date("m-Y", strtotime($fi));
+                // Moverse al siguiente mes
+                $fechaInicioObj->modify('+1 month');
+                $i++;
+
+            }
+
+
+            $dataeq = $this->Kpis->getEquiposKpi($id_equipo,$id_sector,$id_grupo);
+            log_message('DEBUG','KPI ||  disponibilidadKpi || $dataeq '. json_encode($dataeq));
+
+            # Calcular Promedio Metas all
+            $acum = 0;
+            $cantMetas = 0;
+            foreach ($dataeq as $o) {        
+                if ($o["meta_disponibilidad"]) {                    
+                    $acum += $o["meta_disponibilidad"];
+                    $cantMetas++;
+                }
+            }
+            $promedioMetas = ($cantMetas == 0 ? 0 : number_format($acum / ($cantMetas), 0));
+            log_message('DEBUG','KPI ||  disponibilidadKpi || Metas: '.$acum.' CantMetas: '.$cantMetas);
+            $data['promedioMetas'] = $promedioMetas;
+            $data['tiempo'] =  $tiempo;
+            $data['porcentajeHorasOperativas'] = $disponibilidadMeses;
+            $data['mtbf']= $mtbf;
+            $data['mttr'] = $mttr;
+            $data['mttf'] = $mttf;
+            $data['confiabilidad'] = $confiabilidad;
+
+            log_message('DEBUG','KPI ||  disponibilidadKpi || $data '. json_encode($data));
+
+            echo json_encode($data);
+        }
+
+        
+    }
+
+
+    public function getGruposxEmpresa(){
+        $grupos = $this->Kpis->getGruposEmpresa();
+		log_message('DEBUG',' KPI || getGruposxEmpresa '.json_encode($grupos));
+
+        echo json_encode($grupos);
+    }
+
+    public function getSectoresxEmpresa(){
+        $sectores = $this->Kpis->getSectoresEmpresa();
+		//log_message('DEBUG',' KPI || getSectoresxEmpresa '.json_encode($sectores));
+
+        echo json_encode($sectores);
+    }
+
+    public function getEquiposxGrupoSector(){
+
+        $id_grupo = ($this->input->post('id_grupo')) ? $this->input->post('id_grupo') : '' ;
+        $id_sector = ($this->input->post('id_sector')) ? $this->input->post('id_sector') : ''; 
+        $equipos = $this->Kpis->getEquiposGrupoSector($id_grupo, $id_sector);
+		log_message('DEBUG',' KPI || getEquiposxGrupoSector '.json_encode($equipos));
+
+        echo json_encode($equipos);
     }
 
 }

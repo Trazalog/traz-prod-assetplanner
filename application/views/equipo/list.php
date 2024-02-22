@@ -1,3 +1,8 @@
+<style>
+	.frm-save {
+		display: none;
+	}
+</style>
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
 <div class="row">
     <div class="col-xs-12">
@@ -14,10 +19,10 @@
                 <div class="box-header">
                     <h3 class="box-title">Equipo/Sector</h3>
                     <?php
-          if (strpos($permission,'Add') !== false) {
-            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="btnAgre">Agregar</button>';
-          }
-          ?>
+                        if (strpos($permission,'Add') !== false) {
+                            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="btnAgre">Agregar</button>';
+                        }
+                    ?>
                 </div><!-- /.box-header -->
                 <div class="box-body">
                     <table id="sales" class="table table-bordered table-hover">
@@ -36,52 +41,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php
-
-                foreach($list as $a)
-                {
-                  $id = $a['id_equipo'];
-                  echo '<tr id="'.$id.'" data-equipo="'.$id.'" data-meta="'.$a['meta_disp'].'">';
-                  echo '<td>';
-                  if (strpos($permission,'Del') !== false) {
-                    echo '<i href="#" class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar"></i>';
-                  }
-                  if (strpos($permission,'Edit') !== false) {
-                    echo '<i class="fa fa-fw fa-pencil text-light-blue editEquipo" style="cursor: pointer; margin-left: 15px;" title="Editar"></i>' ;
-                    //echo '<i class="fa fa-sticky-note-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Datos Tecnicos" data-toggle="modal" data-target="#modaltecnico"></i>' ;
-                    //echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"></i>';
-                  }
-                  if (strpos($permission,'Del') !== false) {
-                    echo '<i class="fa fa-fw fa-user text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Contratista" data-toggle="modal" data-target="#modalasignar"></i>';
-                    //antes estaba el estado R por que ERA REPARACION pero ahora reparacion es R
-                    if( ($a['estado'] == 'AC') || ($a['estado'] == 'RE') ){
-                      echo '<i  href="#"class="fa fa-fw fa-toggle-on text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Inhabilitar"></i>';
-                    }
-                    else {
-                      echo '<i class="fa fa-fw fa-toggle-off text-light-blue" title="Habilitar" style="cursor: pointer; margin-left: 15px;"></i>';
-                    }
-                  }
-                  if (strpos($permission,'Lectura') !== false) {
-                    if( $a['estado'] == 'AC' OR $a['estado'] == 'RE' ) {
-                      echo '<i class="fa fa-hourglass-half text-light-blue nuevaLectura" style="cursor: pointer; margin-left: 15px;" title="Mantenimiento Autónomo"></i>';
-                    }
-                    echo '<i class="fa fa-history text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Historial de Lecturas" data-toggle="modal" data-target="#modalhistlect"></i>';
-                  }
-
-                  echo '<button class="btn-link" onclick="asignar_meta(this)"><i class="fa fa-bar-chart text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar Meta"></i></button>';
-
-                  echo '</td>';
-                 # '<input type="hidden" id="id_equipo" name="id_equipo">';
-                  echo '<td class="maquin">'.$a['codigo'].'</td>';
-                  echo '<td>'.$a['deeq'].'</td>';
-                  echo '<td>'.$a['dear'].'</td>';
-                  echo '<td>'.$a['depro'].'</td>';
-                  echo '<td>'.$a['desec'].'</td>';
-                  echo '<td>'.$a['decri'].'</td>';
-                  echo '<td>'.$a['clie'].'</td>';
-                  echo '<td>'.estado($a['estadoEquipo']).'</tr>';
-                }
-              ?>
                         </tbody>
                     </table>
                 </div><!-- /.box-body -->
@@ -91,8 +50,143 @@
 </section><!-- /.content -->
 
 
+ <div id="form-dinamico" class="frm-open" data-readonly='true' href='#' data-info="38"></div> 
 
 <script>
+$(document).ready(function(){
+    $(".datepicker").datepicker();
+
+    $('#sales').DataTable({
+        'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
+        'paging' : true,
+        'processing':true,
+        'serverSide': true,
+        'order': [[1, 'asc']],
+        'search': true,
+        'ajax':{
+            type: 'POST',
+            url: 'index.php/Equipo/paginado'
+        },
+        'columnDefs':[
+            {
+                'targets':[0],
+                "searchable": false,
+                'data':'acciones',
+                'render':function(data,type,row){
+                    var id = row['id_equipo'];
+                    meta_disp = row['meta_disp'];
+                    if(meta_disp == null){
+                        var meta_disp = 0;
+                    }
+                    var permission = "<?php echo $permission?>";
+                    var r = `<tr id="${id}" data-equipo="${id}" data-meta="${meta_disp}">`;
+                    r = r + `<td>`;
+                    if (permission.indexOf("Del") !== -1) {
+                        r = r + `<i href="#" class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar" onclick="eliminarEquipo(${id})"></i>`;
+                    }
+                    if (permission.indexOf("Edit") !== -1) {
+                        r = r + `<i class="fa fa-fw fa-pencil text-light-blue editEquipo" style="cursor: pointer; margin-left: 15px;" title="Editar" onclick="editarEquipo(${id})"></i>`;
+                    }
+                    if (permission.indexOf("Del") !== -1) {
+                        r = r + `<i class="fa fa-fw fa-user text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Contratista" data-toggle="modal" data-target="#modalasignar" onclick="asignarContratista(${id})"></i>`;
+                        //antes estaba el estado R por que ERA REPARACION pero ahora reparacion es RE
+                        if( (row['estadoEquipo'] == 'AC') || (row['estadoEquipo'] == 'RE') ){
+                        r = r + `<i  href="#"class="fa fa-fw fa-toggle-on text-light-blue " style="cursor: pointer; margin-left: 15px;" title="Inhabilitar" onclick="inhabilitarEquipo(${id})"></i>`;
+                        }
+                        else {
+                        r = r + `<i class="fa fa-fw fa-toggle-off text-light-blue" title="Habilitar" style="cursor: pointer; margin-left: 15px;" onclick="habilitarEquipo(${id})"></i>`;
+                        }
+                    }
+                    if (permission.indexOf("Lectura") !== -1) {
+                        if( row['estadoEquipo'] == 'AC' || row['estadoEquipo'] == 'RE' ) {
+                            let deeq = row['deeq'];
+                            let form_id =  row['form_id'];
+                            r = r + `<i class="fa fa-hourglass-half text-light-blue nuevaLectura" style="cursor: pointer; margin-left: 15px;" title="Mantenimiento Autónomo" onclick="mantenimientoAutonomo(${id},'${deeq}' ,'${form_id}')"></i>`;
+                        }
+                        r = r + `<i class="fa fa-history text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Historial de Lecturas" data-toggle="modal" data-target="#modalhistlect" onclick="historialLectura(${id})"></i>`;
+                    }
+                    return r = r + `<button class="btn-link" onclick="asignar_meta(${meta_disp},${id})"><i class="fa fa-bar-chart text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Asignar Meta"></i></button>
+                    </td>`;
+                }
+            }
+            ,
+            {
+                'targets':[1],
+                'data':'codigo',
+                'render': function(data, type, row){
+                    return `<td class="maquin">${row['codigo']}</td>`
+                }
+            },
+            {
+                'targets':[2],
+                'data':'descripcion',
+                'render': function(data, type, row){
+                    return `<td> ${row['deeq']} </td>`
+                }
+            },
+            {
+                'targets':[3],
+                'data':'area',
+                'render': function(data, type, row){
+                    return `<td class="maquin">${row['dear']}</td>`
+                }
+            },
+            {
+                'targets':[4],
+                'data':'proceso',
+                'render': function(data, type, row){
+                    return `<td class="maquin">${row['depro']}</td>`
+                }
+            },
+            {
+                'targets':[5],
+                'data':'sector',
+                'render': function(data, type, row){
+                    return `<td class="maquin">${row['desec']}</td>`
+                }
+            },
+            {
+                'targets':[6],
+                'data':'criticidad',
+                'render': function(data, type, row){
+                    return `<td class="maquin">${row['decri']}</td>`
+                }
+            },
+            {
+                'targets':[7],
+                'data':'cliente',
+                'render': function(data, type, row){
+                    return `<td class="maquin">${row['clie']}</td>`
+                }
+            },
+            {
+                'targets':[8],
+                'data':'estado',
+                "searchable": false,
+                'render': function(data, type, row){
+                    switch (row['estadoEquipo']) {
+                        case 'AC':
+                            return '<td class="maquin"><span data-toggle="tooltip" title="" class="badge bg-green estado">Activo</span></td></tr>';
+                            break;
+                        case 'RE':
+                            return '<td class="maquin"><span data-toggle="tooltip" title="" class="badge bg-yellow estado">Reparación</span></td></tr>';
+                            break;
+                        case 'AL':
+                            return '<td class="maquin"><span data-toggle="tooltip" title="" class="badge bg-blue estado">Alta</span></td></tr>';
+                            break;
+                        case 'IN':
+                            return '<td class="maquin"><span data-toggle="tooltip" title="" class="badge bg-red estado">Inhabilitado</span></td></tr>';
+                            break;
+                        default:
+                            return '<td class="maquin"><span data-toggle="tooltip" title="" class="badge bg-gray estado">S/E</span></td></tr>';
+                            break;
+                    }
+                }
+            }
+        ]
+    });
+});
+
 $('#modalhistlect').on('shown.bs.modal', function(e) {
     // recalcula el ancho de las columnas
     $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
@@ -105,9 +199,7 @@ var idEquipo = "";
 var ide = "";
 var idglob = "";
 
-$(function() {
-    $(".datepicker").datepicker();
-});
+
 
 // Carga vista para agregar equipo nuevo - Chequeado
 edit = 0;
@@ -121,56 +213,96 @@ $('#btnAgre').click(function cargarVista() {
 
 
 // Asigna contratista - Chequeado
-$(".fa-user ").click(function(e) {
-    var id_equipo = $(this).parent('td').parent('tr').attr('id');
-    idglob = id_equipo;
-    console.log("variable global -> id de equipo: " + idglob);
+	// $(".fa-user ").click(function(e) {
+	//     var id_equipo = $(this).parent('td').parent('tr').attr('id');
+	//     idglob = id_equipo;
+	//     console.log("variable global -> id de equipo: " + idglob);
 
+	//     $('#tablaempresa tbody').html("");
+	//     tr = null;
+
+	//     click_co(id_equipo);
+	//     traer_contratista();
+	//     llenaContratistasEquipo(id_equipo);
+// });
+
+// Asigna contratista - Chequeado
+function asignarContratista(idEquipo){
+    idglob = idEquipo;
+    console.log("variable global -> id de equipo: " + idglob);
     $('#tablaempresa tbody').html("");
     tr = null;
 
-    click_co(id_equipo);
+    click_co(idEquipo);
     traer_contratista();
-    llenaContratistasEquipo(id_equipo);
+    llenaContratistasEquipo(idEquipo);
+}
+
+$( document ).ready(function() {
+    console.log( "ready!" );
+    $(".inhabilitar").click(function(){
+    });
 });
 
-// Cambiar a estado - Chequeado
-$(".fa-toggle-on").click(function(e) {
-    WaitingOpen('Cambiando estado...');
-    var idequipo = $(this).parent('td').parent('tr').attr('id');
-    console.log(idequipo);
+function inhabilitarEquipo(idEquipo){
     $.ajax({
         type: 'POST',
         data: {
-            idequipo: idequipo
+            idequipo: idEquipo
         },
         url: 'index.php/Equipo/cambio_equipo',
         success: function(data) {
             console.log(data);
             //alert("Se cambio el estado del equipo a INACTIVO");
             WaitingClose();
-            regresa();
+            //regresa();
+			reloadTable();
         },
         error: function(result) {
             console.log(result);
         },
         dataType: 'json'
     });
-});
-
-
+}
 
 // Cambiar a estado - Chequeado
-$(".fa-toggle-off").click(function(e) {
-    var idequipo = $(this).parent('td').parent('tr').attr('id');
-    console.log("id de equipo: " + idequipo);
-    WaitingOpen('Cambiando estado...');
-    habilitarEquipo(idequipo);
-});
+// $(".fa-toggle-on").click(function(e) {
+	//     WaitingOpen('Cambiando estado...');
+	//     var idequipo = $(this).parent('td').parent('tr').attr('id');
+	//     debugger;
+	//     console.log(idequipo);
+	//     $.ajax({
+	//         type: 'POST',
+	//         data: {
+	//             idequipo: idequipo
+	//         },
+	//         url: 'index.php/Equipo/cambio_equipo',
+	//         success: function(data) {
+	//             console.log(data);
+	//             //alert("Se cambio el estado del equipo a INACTIVO");
+	//             WaitingClose();
+	//             regresa();
+	//         },
+	//         error: function(result) {habilitarEquipo
+	//             console.log(result);
+	//         },
+	//         dataType: 'json'
+	//     });
+// });
+
+// Cambiar a estado - Chequeado
+// $(".fa-toggle-off").click(function(e) {
+	//     var idequipo = $(this).parent('td').parent('tr').attr('id');
+	//     console.log("id de equipo: " + idequipo);
+	//     WaitingOpen('Cambiando estado...');
+	//     habilitarEquipo(idequipo);
+// });
 
 function habilitarEquipo(idequipo) {
+
     console.log("ID equipo en fcion: " + idequipo);
     // Si el estado es Alta (saco lectura de tabla equipo (ultima lectura))
+    WaitingOpen('Cambiando estado...');
     $.ajax({
         async: true,
         data: {
@@ -181,7 +313,8 @@ function habilitarEquipo(idequipo) {
         url: 'index.php/Equipo/estado_alta',
         success: function(data) {
             WaitingClose();
-            linkTo();
+			reloadTable(idequipo)
+            //linkTo();
         },
         error: function(result) {
             console.log(result);
@@ -538,7 +671,7 @@ $(".fa-print").click(function(e) {
                 '</div>' +
                 '<style>' +
                 '.table, .table>tr, .table>td  {} ' +
-                '</style>';
+                '</styl>';
             //border:  1px solid black;
 
 
@@ -563,67 +696,32 @@ $(".fa-print").click(function(e) {
     });
 });
 
-// Modal ingreso lectura
-$(".fa-hourglass-half").click(function(e) {
     $(".clear").val(""); //llimpia los inputs del modal lectura
-    $("#spanNuevaLectura").text("");
-    $('#errorLectura').fadeOut(0);
-    $('#errorLectura2').fadeOut(0);
-    $("#modalectura").modal('show');
-    var $id_equipo = $(this).parent('td').parent('tr').attr('id');
-    $('#id_maquina').val($id_equipo);
-    console.log("id_equipo: " + $id_equipo);
-
-    var $nom_equipo = $(this).parents("tr").find("td").eq(1).html();
-    $('#maquina').val($nom_equipo);
-    //console.log("nom_equipo: "+$nom_equipo);
-
-    var $estado = $(this).closest('tr').find(".estado").html();
-    console.log("estado: " + $estado);
-
-
-    $.ajax({
-        data: {
-            idequipo: $id_equipo
-        },
-        dataType: 'json',
-        type: 'POST',
-        url: 'index.php/Equipo/getEqPorId',
-        success: function(data) {
-            console.table(data);
-            //console.log(data[0].lectura);
-            $("#spanNuevaLectura").text(data[0].lectura);
-            estBoton($estado); //agrega boton de estados
-        },
-        error: function(result) {
-            console.log(result);
-        },
-    });
-});
 
 /// agrega el estado del boton en modal - Chequeado
 function estBoton($estado) {
 
     var estado = $estado;
-    console.log(estado);
-    if (estado == 'Reparación') { //reparacion
+    console.log('esBoton Estado: '+estado);
+    if (estado == 'RE') { //reparacion -- Dato anterior erroneo Estado == Reparacion = RE
         inhabilitar();
     }
-    if (estado == 'Activo') { //activo
+    if (estado == 'AC') { //activo -- Dato anterior erroneo Estado == Activo = AC
         habilitar();
     }
 }
 
 /// cambio de estado desde el boton - Chequeado
 $(".llave").click(function(e) {
-
     var estadobton = $(this).attr("class");
 
     if (estadobton == 'fa fa-fw llave fa-toggle-on') {
         inhabilitar();
+        $('#divFalla').css('display', 'block');
     }
     if (estadobton == 'fa fa-fw llave fa-toggle-off') {
         habilitar();
+        $('#divFalla').css('display', 'none');
     }
 });
 
@@ -641,7 +739,6 @@ function inhabilitar() {
     $("label#botestado").text('Reparación');
     $("input#estado").val('RE'); // Estado Reparacion
 }
-
 
 // Completa campos y select para Editar equipos - Listo
 function completarEdit(datos, edit) {
@@ -711,6 +808,7 @@ function cerro() {
 
 // Guarda edicion de equipo
 function guardar() {
+
     var idEquipo = $('#id_equipo').val();
     var codigo = $('#codigo').val();
     var ubicacion = $('#ubicacion').val();
@@ -762,8 +860,11 @@ function guardar() {
         },
         url: 'index.php/Equipo/editar_equipo',
         success: function(data) {
+			debugger;
             console.log(data);
-            regresa();
+            WaitingClose();
+            //regresa();
+			reloadTable();
         },
         error: function(result) {
             console.log(result);
@@ -902,12 +1003,12 @@ function llenaContratistasEquipo(id_equipo) {
             for (var i = 0; i < data.length; i++) {
                 //agrego valores a la tabla
                 tablaCompleta = tabla.row.add([
-                    '<i class="fa fa-fw fa-times-circle text-light-blue elirow btnDel" style="cursor: pointer; margin-left: 15px;" data-eqContr="' +
-                    data[i]['id_contratistaquipo'] + '"></i>',
+                    '<i class="fa fa-fw fa-times-circle text-light-blue elirow" style="cursor: pointer; margin-left: 15px;" onclick="eliminarContratista('+data[i]['id_contratista']+')" data-eqContr="' +
+                    data[i]['id_contratista'] + '"></i>',
                     data[i]['codigo'],
                     data[i]['nombre']
                 ]);
-                tablaCompleta.node().id = data[i]['id_contratistaquipo'];
+                tablaCompleta.node().id = data[i]['id_contratista'];
                 tablaCompleta.nodes().to$().attr("data-equipo", data[i]['id_codigo']);
                 tablaCompleta.nodes().to$().attr("data-contratista", data[i]['id_contratista']);
                 tabla.draw();
@@ -962,11 +1063,47 @@ $("#adde").click(function(e) {
     }
 });
 
-$(document).on("click", ".btnDel", function() {
-    var id_contratistaquipo = $(this).parent().parent().attr('id');
+function eliminarContratista(id_contratista){
+
+
+    //var id_contratistaquipo =$(e).find("td:first-child").html();
     var id_equipo = $('#id_equipoC').val();
 
+    console.log(" Constratista: "+id_contratista+" Equipo: "+id_equipo);
+
+    WaitingOpen("ELiminando contratista a equipo");
+    $.ajax({
+            data: {
+                id_contratista: id_contratista,
+                id_equipo: id_equipo,
+            },
+            dataType: 'json',
+            type: "POST",
+            url: 'index.php/Equipo/delContratista',
+        })
+        .done(function(data) {
+            llenaContratistasEquipo(id_equipo);
+        })
+        .error(function(result) {
+            alert("Error eliminando contratista...");
+            console.log("Error: " + result['status']);
+            console.table(result);
+        })
+        .always(function() {
+            WaitingClose();
+        });
+}
+
+$(document).on("click", ".btnDel", function() {
+
+    //var id_contratistaquipo = $(this).parent().parent().attr('id');
+    var id_contratistaquipo = $('#empresae').val();
+    var id_equipo = $('#id_equipoC').val();
+
+    console.log(" Constratista: "+id_contratistaquipo+" Equipo: "+id_equipo)
+
     WaitingOpen("Agregando contratista a equipo")
+    /*
     $.ajax({
             data: {
                 id_contratistaquipo: id_contratistaquipo
@@ -986,6 +1123,7 @@ $(document).on("click", ".btnDel", function() {
         .always(function() {
             WaitingClose();
         });
+    */
 });
 
 
@@ -1022,18 +1160,15 @@ function click_co(id_equipo) {
     });
 }
 
-
-
-/// Hitorial de lecturas
-$(".fa-history").click(function(e) {
+function historialLectura(idEquipo){
+  
+    //detectarForm();
+    //initForm();
     $("tr.registro").remove();
-    var $id_equipo = $(this).parent('td').parent('tr').attr('id');
-    console.log("id de equipo: " + $id_equipo);
-
     $.ajax({
         type: 'POST',
         data: {
-            idequipo: $id_equipo
+            idequipo: idEquipo
         },
         url: 'index.php/Equipo/getHistoriaLect',
         success: function(data) {
@@ -1045,7 +1180,30 @@ $(".fa-history").click(function(e) {
         },
         dataType: 'json'
     });
-});
+}
+
+/// Hitorial de lecturas
+// $(".fa-history").click(function(e) {
+	//     $("tr.registro").remove();
+	//     var $id_equipo = $(this).parent('td').parent('tr').attr('id');
+	//     console.log("id de equipo: " + $id_equipo);
+
+	//     $.ajax({
+	//         type: 'POST',
+	//         data: {
+	//             idequipo: $id_equipo
+	//         },
+	//         url: 'index.php/Equipo/getHistoriaLect',
+	//         success: function(data) {
+	//             console.table(data);
+	//             llenarModal(data);
+	//         },
+	//         error: function(result) {
+	//             console.log(result);
+	//         },
+	//         dataType: 'json'
+	//     });
+// });
 
 
 function recargarTabla() {
@@ -1069,14 +1227,17 @@ function recargarTabla() {
     });
 }
 
+// redibuja tabla conservando la paginacion
+function reloadTable(){
 
-
-
-
+		let table = $('#sales').DataTable();
+			table
+			.order( [[ 1, 'asc' ]] )
+			.draw( false );
+}
 
 /// llena modal historial de lecturas
 function llenarModal(data) {
-
     $('#tblhistorial').DataTable().clear().draw();
     if (data.length == 0) return;
     $('#id_Equipo_modal').val(data[0]['id_equipo']);
@@ -1086,14 +1247,26 @@ function llenarModal(data) {
         console.log("El equipo SI tiene historial de lecturas");
         $("#codEquipo").text(data[0]['codigo']);
         //borro los datos de la tabla
-        $('#tblhistorial').DataTable().clear().draw();
+        $('#tblhistorial').DataTable().clear().draw(); 
+
+        /*  harkodeo muestra formulario de empresas*/
+        var formulario = <?php if(EMPRESAS_FORM == empresa()) echo 1; else echo 0; ?>;
+
         for (var i = 0; i < data.length; i++) {
             var fecha =  data[i]['fecha'].substr(0,10);
             var hora =   data[i]['fecha'].substr(10,17);
             var lectura = parseFloat(data[i]['lectura']);
+            
+            /* Muestra boton de formulario o no */
+            if(formulario){
+                var frmOpenLink = '<a class="frm-open" data-readonly="true"  href="#" data-info="'+data[i]['info_id']+'"><i class="fa fa-paperclip formularios"></i></a>';
+            }else {
+                var frmOpenLink = '';
+                }
+           // </i><td class="text-center"><a class="frm-open" data-readonly="true"  href="#" data-info="'+data[i]['info_id']+'"><i class="fa fa-paperclip"></i></a></td>'
             $('#tblhistorial').DataTable().row.add([
                 '<i class="fa fa-fw fa-pencil text-light-blue editLectura" style="cursor: pointer; margin-left: 15px;" title="Editar lectura" data-idLectura="' +
-                data[i]['id_lectura'] + '"></i>',
+                data[i]['id_lectura'] + '"></i> '+ frmOpenLink +'  ',
                 lectura,
                 fecha,
                 hora,
@@ -1111,15 +1284,21 @@ function llenarModal(data) {
     }
 }
 
+    // Manejar clic en elementos con clase .formularios dentro de #form-dinamico
+    $(document).on("click", ".formularios", function() {
+        //initForm();
+        detectarForm(); 
+        $("#form-dinamico").show();
+   
+    });
 
 $(document).on("click", ".editLectura", function(e) {
-
     e.preventDefault();
     e.stopImmediatePropagation();
     $("#modalEditLecturaObservacion").modal('show');
     var idLectura = $(this).data("idlectura");
     var lectura = $(this).parents("tr").find("td").eq(1).html();
-    var observacion = $(this).parents("tr").find("td").eq(5).html();
+    var observacion = $(this).parents("tr").find("td").eq(6).html();
     // console.log(observacion);
     $('#idLecturaEdit').val(idLectura);
     $('#lecturaEdit').val(lectura);
@@ -1164,9 +1343,11 @@ function guardarEdit() {
                 if(!data){
                     $('#errorEditLectura2').fadeIn('slow');
                 }else{
+																	debugger;
                     console.log("Guardado con exito...");
                     $("#modalEditLecturaObservacion").modal('hide');
-                    recargarTabla();
+                    //recargarTabla();
+					reloadTable();
                 }
             },
             error: function(result) {
@@ -1207,8 +1388,9 @@ function validarCampos() {
     return hayError;
 }
 
-
+// guada lectura nueva de equipo
 function guardarlectura() {
+    equipo= $('#id_maquina').val();
     var hayError = false;
     hayError = validarCampos();
     if (hayError == true) {
@@ -1225,9 +1407,11 @@ function guardarlectura() {
             type: "POST",
             url: "index.php/Equipo/setLectura",
             data: lectura,
-            success: function(data) {
+            success: function(data) {               
+                guardaForm(equipo);
                 console.log("Guardado con exito...");
-                regresa();
+                
+				//reloadTable();
             },
             error: function(result) {
                 console.log("Error en guardado de Lectura...");
@@ -1238,29 +1422,94 @@ function guardarlectura() {
 
         $('#modalectura').modal('hide');
         $('#errorLectura').hide();
+        reloadTable();
     }
 }
 
+async function guardaForm(equipo)
+{
+     //obtengo el formulario
+     idFormDinamico = "#"+$('.frm-new').find('form').attr('id');
 
+    //si tiene id_form guardo el formulario 
+    if(idFormDinamico != "#undefined") 
+    {
+    
+        frm_validar(idFormDinamico)
+        if(!frm_validar(idFormDinamico)){
+            error('Error..','Debes completar los campos obligatorios (*)');
+            return;                    
+        }
+        //var info_id = frmGuardar(idFormDinamico);
+        var info_id = await frmGuardarConPromesa($(idFormDinamico));
+        guradaInfo_id(info_id, equipo);
+    } 
+}
 
+function guradaInfo_id(info_id = '', equipo)
+{
+    console.log(equipo)
+    console.log(info_id)
+    $.ajax({
+            type: "POST",
+            url: "index.php/Equipo/guardaInfo_idLectura",
+            data: {'info_id':info_id, 'equipo': equipo},
+            success: function(data) {
 
+                console.log("Guardado info_id con exito...");
+                
+				//reloadTable();
+            },
+            error: function(result) {
+                console.log("Error en guardado de Lectura...");
+                console.log(result);
+            },
+            dataType: 'json'
+        });
+}
 
 /************************************/
 /********** ELIMINA EQUIPO **********/
 /************************************/
 
 // Elimina Equipos (Cambio de estado a AN) - Chequeado
-$(".fa-times-circle").click(function(e) {
+	// $(".fa-times-circle").click(function(e) {
+	//     if (!confirm("Realmente desea eliminar este equipo?")) {
+	//         return;
+	//     } else {
+	//         console.log("Estoy eliminando");
+	//         var idequipo = $(this).parent('td').parent('tr').attr('id');
+	//         console.log(idequipo);
+	//         $.ajax({
+	//             type: 'POST',
+	//             data: {
+	//                 idequipo: idequipo
+	//             },
+	//             url: 'index.php/Equipo/baja_equipo',
+	//             success: function(data) {
+	//                 alert("Equipo/sector ANULADO");
+	//                 regresa();
+	//             },
+	//             error: function(result) {
+	//                 console.log(result);
+	//             },
+	//             dataType: 'json'
+	//         });
+	//     }
+// });
+
+/************************************/
+/********** ELIMINA EQUIPO **********/
+/************************************/
+function eliminarEquipo(idEquipo){
     if (!confirm("Realmente desea eliminar este equipo?")) {
         return;
     } else {
-        console.log("Estoy eliminando");
-        var idequipo = $(this).parent('td').parent('tr').attr('id');
-        console.log(idequipo);
+        console.log(idEquipo);
         $.ajax({
             type: 'POST',
             data: {
-                idequipo: idequipo
+                idEquipo: idEquipo
             },
             url: 'index.php/Equipo/baja_equipo',
             success: function(data) {
@@ -1273,21 +1522,39 @@ $(".fa-times-circle").click(function(e) {
             dataType: 'json'
         });
     }
-});
-
-
-
-
+}
 
 /************************************/
 /**********  EDITA EQUIPO  **********/
 /************************************/
-
 // Traigo datos del equipo
-$(".editEquipo").click(function() {
-    //WaitingOpen();
-    var idEquipo = $(this).parent('td').parent('tr').attr('id');
-    //$('#id_equipo').val(idEquipo);
+// $(".editEquipo").click(function() {
+	//     //WaitingOpen();
+	//     var idEquipo = $(this).parent('td').parent('tr').attr('id');
+	//     //$('#id_equipo').val(idEquipo);
+	//     console.info('id de equipo a editar: ' + idEquipo);
+
+	//     $.ajax({
+	//         data: {
+	//             idEquipo: idEquipo
+	//         },
+	//         dataType: 'json',
+	//         type: 'POST',
+	//         url: 'index.php/Equipo/geteditar',
+	//         success: function(result) {
+	//             console.log(result);
+	//             llenarCampos(result);
+	//         },
+	//         error: function(result) {
+	//             console.error(result);
+	//         },
+	//     });
+// });
+
+/************************************/
+/**********  EDITA EQUIPO  **********/
+/************************************/
+function editarEquipo(idEquipo){
     console.info('id de equipo a editar: ' + idEquipo);
 
     $.ajax({
@@ -1305,7 +1572,7 @@ $(".editEquipo").click(function() {
             console.error(result);
         },
     });
-});
+}
 
 function llenarCampos(data) {
     //ubicacion
@@ -1329,7 +1596,7 @@ function llenarCampos(data) {
     $('#destec').val(data[0]['descrip_tecnica']);
     $('#estado').val(data[0]['estado']);
     //info complementaria
-    llenar_adjunto(data[0]['adjunto']);
+    llenar_adjunto(data[0]['archivo']);
     //abro modal
     $('#modaleditar').modal('show');
     WaitingClose();
@@ -1527,16 +1794,16 @@ function llenar_cliente(id) {
 }
 //llena los datos de archivo adjunto
 function llenar_adjunto(adjunto) {
+    var accion = '';
+    accion = '<i class="fa fa-plus-square agregaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Agregar Adjunto"></i>'+'<br>';
     //console.info( "adjunto: "+adjunto );
-    $('#adjunto').text(adjunto);
-    $('#adjunto').attr('href', 'assets/filesequipos/' + adjunto);
-    if (adjunto == null || adjunto == '') {
-        var accion =
-            '<i class="fa fa-plus-square agregaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Agregar Adjunto"></i>';
-    } else {
-        var accion =
-            '<i class="fa fa-times-circle eliminaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Eliminar Adjunto"></i>' +
-            '<i class="fa fa-pencil editaAdjunto text-light-blue" style="cursor:pointer; margin-right:10px" title="Editar Adjunto"></i>';
+    if (adjunto){
+        for (let i = 0; i < adjunto.length; i++) {
+            accion += 
+                '<a href="assets/filesequipos/'+ adjunto[i].adjunto +'" target="_blank">'+ adjunto[i].adjunto +'</a>' +
+                '<i class="fa fa-times-circle text-light-blue" style="cursor:pointer; margin-right:10px" title="Eliminar Adjunto"  onclick=eliminaAdjunto('+adjunto[i].id_adjunto+')></i>' +
+                '<i class="fa fa-pencil text-light-blue" style="cursor:pointer; margin-right:10px" title="Editar Adjunto" onclick=editaAdjunto('+adjunto[i].id_adjunto+')></i>';
+            }
     }
     $('#accionAdjunto').html(accion);
 }
@@ -1813,6 +2080,7 @@ function guardarCliente() {
     }
 }
 
+
 // Agrega las grupos nuevos - Listo
 function guardarmarca() {
     var descripcion = $('#nombreMarca').val();
@@ -1850,68 +2118,71 @@ function guardarmarca() {
     }
 }
 
-
-
-
 //abrir modal eliminar adjunto
-$(document).on("click", ".eliminaAdjunto", function() {
+/* $(document).on("click", ".eliminaAdjunto", function() {
     $('#modalEliminarAdjunto').modal('show');
     var idEquipo = $('#id_equipo').val();
     $('#idAdjunto').val(idEquipo);
-});
+}); */
+
 //eliminar adjunto
-function eliminarAdjunto() {
-    $('#modalEliminarAdjunto').modal('hide');
-    var idEquipo = $('#idAdjunto').val();
-    $.ajax({
-            data: {
-                idEquipo: idEquipo
-            },
-            dataType: 'json',
-            type: 'POST',
-            url: 'index.php/Equipo/eliminarAdjunto',
-        })
-        .done(function(data) {
-            //console.table(data);
-            let prevAdjunto = '';
-            llenar_adjunto(prevAdjunto);
-        })
-        .error(function(result) {
-            console.error(result);
-        });
+function eliminaAdjunto(idAdjunto) {
+    $('#modalEliminarAdjunto').modal('show');
+    var idEquipo = $('#id_equipo').val();
+    $('#idEliminaEquipo').val(idEquipo);
+    $('#idEliminaAdjunto').val(idAdjunto);
 }
 
+//Eliminar adjunto
+$("#formEliminarAdjunto").submit(function(event) {
+    $('#modalEliminarAdjunto').modal('hide');
+    event.preventDefault();
+    var idEquipo = $('#idEliminaEquipo').val();
+    var idAdjunto = $('#idEliminaAdjunto').val();
+
+        $.ajax({
+                dataType: 'json',    
+                type: 'POST',
+                url: 'index.php/Equipo/eliminaAdjunto',
+                data: { 
+                    idEquipo:idEquipo,
+                    idAdjunto:idAdjunto
+                    }
+            })
+            .success(function(data) {
+                debugger;
+                llenar_adjunto(data);
+            })
+            .error(function(result) {
+                console.error(result);
+            });
+});
+
 //abrir modal agregar adjunto
-$(document).on("click", ".agregaAdjunto", function() {
-    $('.btnAgregarEditar').text("Agregar");
-    $('#modalAgregarAdjunto .modal-title').html(
-        '<span class="fa fa-fw fa-plus-square text-light-blue"></span> Agregar');
-
+ $(document).on("click", ".agregaAdjunto", function() {
     $('#modalAgregarAdjunto').modal('show');
     var idEquipo = $('#id_equipo').val();
     $('#idAgregaAdjunto').val(idEquipo);
 });
+
 //abrir modal editar adjunto
-$(document).on("click", ".editaAdjunto", function() {
-    $('.btnAgregarEditar').text("Editar");
-    $('#modalAgregarAdjunto .modal-title').html(
-        '<span class="fa fa-fw fa-pencil text-light-blue"></span> Editar');
-
-    $('#modalAgregarAdjunto').modal('show');
+function editaAdjunto(idAdjunto) {
+    $('#modalEditarAdjunto').modal('show');
     var idEquipo = $('#id_equipo').val();
-    $('#idAgregaAdjunto').val(idEquipo);
-});
-//agregar/editar adjunto
+    $('#idEquipo').val(idEquipo);
+    $('#id_adjunto').val(idAdjunto);
+};
+
+//agregar adjunto
 $("#formAgregarAdjunto").submit(function(event) {
     $('#modalAgregarAdjunto').modal('hide');
-
+   debugger
     event.preventDefault();
-    if (document.getElementById("inputPDF").files.length == 0) {
+     if (document.getElementById("inputPDF").files.length == 0) {
         $('#error').fadeIn('slow');
     } else {
-        $('#error').fadeOut('slow');
+        $('#error').fadeOut('slow'); 
         var formData = new FormData($("#formAgregarAdjunto")[0]);
-        //debugger
         $.ajax({
                 cache: false,
                 contentType: false,
@@ -1922,39 +2193,68 @@ $("#formAgregarAdjunto").submit(function(event) {
                 url: 'index.php/Equipo/agregarAdjunto',
             })
             .done(function(data) {
-                console.table(data['adjunto']);
-                llenar_adjunto(data['adjunto']);
+                llenar_adjunto(data);
             })
             .error(function(result) {
                 console.error(result);
             });
     }
 });
-
+/*
 $('#modaleditar').on('hidden.bs.modal', function(e) {
     $('#content').empty();
     $("#content").load("<?php echo base_url(); ?>index.php/Equipo/index/<?php echo $permission; ?>");
-})
+})*/
 
+//editar adjunto
+$("#formEditarAdjunto").submit(function(event) {
+    $('#modalEditarAdjunto').modal('hide');
+    debugger
+    event.preventDefault();
+    if (document.getElementById("inputEditarPDF").files.length == 0) {
+        $('#error').fadeIn('slow');
+    } else {
+        $('#error').fadeOut('slow');
+        var formData = new FormData($("#formEditarAdjunto")[0]);
 
-// Datatable - Chequeado
-$('#sales').DataTable({
-    <?php echo (!DT_SIZE_ROWS ? '"paging": false,' : null) ?>
-
-    "aLengthMenu": [10, 25, 50, 100],
-    "columnDefs": [{
-            "targets": [0],
-            "searchable": false
-        },
-        {
-            "targets": [0],
-            "orderable": false
-        }
-    ],
-    "order": [
-        [1, "asc"]
-    ],
+        $.ajax({
+                cache: false,
+                contentType: false,
+                data: formData,
+                dataType: 'json',
+                processData: false,
+                type: 'POST',
+                url: 'index.php/Equipo/EditarAdjunto',
+            })
+            .done(function(data) {
+                debugger;
+                llenar_adjunto(data);
+            })
+            .error(function(result) {
+                console.error(result);
+            });
+    }
 });
+// Datatable - Chequeado
+//------------------------------------------------------
+	// $('#sales').DataTable({
+	//     <?php #echo (!DT_SIZE_ROWS ? '"paging": false,' : null) ?>
+	//     "aLengthMenu": [10, 25, 50, 100],
+	//     "columnDefs": [{
+	//             "targets": [0],
+	//             "searchable": false
+	//         },
+	//         {
+	//             "targets": [0],
+	//             "orderable": false
+	//         }
+	//     ],
+	//     "order": [
+	//         [1, "asc"]
+	//     ]
+	// });
+//------------------------------------------------------
+
 $('#tblhistorial').DataTable({
     "aLengthMenu": [10, 25, 50, 100],
     "columnDefs": [{
@@ -1970,6 +2270,7 @@ $('#tblhistorial').DataTable({
         [1, "asc"]
     ],
 });
+
 $('#tablaempresa').DataTable({
     "aLengthMenu": [10, 25, 50, 100],
     "columnDefs": [{
@@ -1985,7 +2286,10 @@ $('#tablaempresa').DataTable({
         [1, "asc"]
     ],
 });
+
 </script>
+
+
 
 
 <!-- Modal CONTRATISTA -->
@@ -2283,9 +2587,6 @@ $('#tablaempresa').DataTable({
                                                     <td id="accionAdjunto">
                                                         <!-- -->
                                                     </td>
-                                                    <td>
-                                                        <a id="adjunto" href="" target="_blank"></a>
-                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -2304,10 +2605,8 @@ $('#tablaempresa').DataTable({
                 </div><!-- /.row -->
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"
-                        onclick="cerro()">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="reset" data-dismiss="modal"
-                        onclick="guardar()">Guardar</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="reset" data-dismiss="modal"  onclick="guardar()">Guardar</button>
                 </div>
 
             </div><!-- /.modal-body -->
@@ -2353,25 +2652,41 @@ $('#tablaempresa').DataTable({
                     </div>
                     <div class="form-group">
                         <label for="">Lectura <strong style="color: #dd4b39">*</strong>:</label>
-                        <input type="text" id="lectura" name="lectura" class="form-control clear">
+                        <input type="text" id="lectura" name="lectura" class="form-control clear" placeholder="Inserte Cantidad" onkeypress="return validaNum(event)">
                         <span>Ingrese valor mayor a: </span><span id="spanNuevaLectura"></span>
                     </div>
                     <div class="form-group">
                         <label for="">Operario <strong style="color: #dd4b39">*</strong>:</label>
-                        <input type="text" id="operario" name="operario" class="form-control clear">
+                        <input type="text" id="operario" name="operario" class="form-control clear" placeholder="Inserte Operario">
                     </div>
                     <div class="form-group">
                         <label for="">Turno <strong style="color: #dd4b39">*</strong>:</label>
-                        <input type="text" id="turno" name="turno" class="form-control clear">
+                        <input type="text" id="turno" name="turno" class="form-control clear" placeholder="Inserte Turno">
                     </div>
                     <div class="form-group">
                         <label for="observacion">Observaciones <strong style="color: #dd4b39">*</strong>:</label>
-                        <textarea class="form-control clear" id="observacion" name="observacion"
-                            placeholder="Observaciones..."></textarea>
+                        <textarea class="form-control clear" id="observacion" name="observacion" placeholder="Observaciones..."></textarea>
                     </div>
-                </form>
-            </div>
+                    <input type="hidden" name="form_id" id="form_id">
 
+                    <!-- si la empresa quiere que se largue la solicitud cuando se pone en RE el equipo -->
+                    <?php if(EMPRESAS_FORM == empresa()) 
+                
+                        echo '<div class="form-group" id="divFalla" style="display: none;">
+                                <label for="falla">Falla <strong style="color: #dd4b39">*</strong>:</label>
+                                <textarea class="form-control clear" id="falla" name="falla" placeholder="Inserte falla"></textarea>
+                            </div> '
+                
+                    ?>
+                    
+                </form>
+                 <!-- si la empresa tiene formularios -->
+                <?php if(EMPRESAS_FORM == empresa()) 
+                
+                    echo '<div class="frm-new" id="formulario"></div> '
+                
+                ?>
+            </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-primary" onclick="guardarlectura()">Guardar</button>
@@ -2399,7 +2714,7 @@ $('#tablaempresa').DataTable({
                 <table id="tblhistorial" class="table table-condensed table-responsive">
                     <thead>
                         <tr>
-                            <th>Edición</th>
+                            <th>Edición/Formulario</th>
                             <th>Lectura</th>
                             <th>Fecha</th>
                             <th>Hora</th>
@@ -2749,15 +3064,19 @@ $('#tablaempresa').DataTable({
                         aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title"><span class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar</h4>
             </div>
-            <div class="modal-body">
-                <input type="hidden" id="idAdjunto">
-                <h4>¿Desea eliminar Archivo Adjunto?</h4>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal"
-                    onclick="eliminarAdjunto();">Eliminar</button>
-            </div>
+            <form id="formEliminarAdjunto">
+                <div class="modal-body">
+                    <input type="hidden" id="idEliminaEquipo" name="idEliminaEquipo">
+                    <input type="hidden" id="idEliminaAdjunto" name="idEliminaAdjunto">
+
+                    <h4>¿Desea eliminar Archivo Adjunto?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Eliminar</button>
+                </div>
+            </form>
+
         </div>
     </div>
 </div>
@@ -2779,7 +3098,7 @@ $('#tablaempresa').DataTable({
                         Seleccione un Archivo Adjunto
                     </div>
                     <input type="hidden" id="idAgregaAdjunto" name="idAgregaAdjunto">
-                    <input id="inputPDF" name="inputPDF" type="file" class="form-control input-md">
+                    <input id="inputPDF" name="inputPDF[]" type="file" class="form-control input-md" multiple>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -2790,12 +3109,73 @@ $('#tablaempresa').DataTable({
     </div>
 </div>
 
+
+<!-- Modal Editar adjunto -->
+<div class="modal" id="modalEditarAdjunto">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><span class="fa fa-fw fa-plus-square text-light-blue"></span> Editar</h4>
+            </div>
+
+            <form id="formEditarAdjunto" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+                        <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                        Seleccione un Archivo Adjunto
+                    </div>
+                    <input type="hidden" id="idEquipo" name="idEquipo">
+                    <input type="hidden" id="id_adjunto" name="id_adjunto">
+                    <input id="inputEditarPDF" name="inputEditarPDF" type="file" class="form-control input-md">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary btnAgregarEditar">Agregar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal area-->
+<div class="modal" id="modalFormulario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+        <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><span class="fa fa-fw fa-plus-square text-light-blue"></span> Editar</h4>
+            </div>
+            <div class="modal-body">
+    
+             <?php
+                /* detectarForm();
+                initForm(); */
+                echo "<a class='frm-open' id='form' data-readonly='true' href='#' data-info='38'><i class='fa fa-paperclip'></i></a>";
+             ?>
+            </div>
+
+    
+        </div> <!-- /.modal-content -->
+    </div> <!-- /.modal-dialog -->
+</div> <!-- /.modal fade -->
+<!-- / Modal -->
+
 <?php
  $modal = new StdClass();
  $modal->id = 'asignar_meta';
  $modal->titulo = 'Equipos | Asignar Meta';
  $modal->icono = 'fa fa-bar-chart';
- $modal->body = "<div class='form-group'><label>Meta:</label><input class='form-control' type='number' min='1' max='100' step='1'><a href='#' class='flt-clear pull-right text-red'><small><i class='fa fa-times'></i> Borrar Meta</small></a></div>";
+ $modal->body = "<div class='form-group'>
+                    <input class='form-control' type='hidden' id='eq_modal_meta' name='eq_modal_meta'>
+                    <input class='form-control' type='number' min='1' max='100' name='meta_modal_eq' id='meta_modal_eq'>
+                    <a href='#' class='flt-clear pull-right text-red'>
+                    <small><i class='fa fa-times'></i> Borrar Meta</small>
+                    </a>
+                </div>";
  $modal->accion = 'Guardar';
  $modal->tam ='sm';
  echo modal($modal);
@@ -2803,18 +3183,59 @@ $('#tablaempresa').DataTable({
 
 <script>
 var equipo = null;
-function asignar_meta(e){
+// function asignar_meta(e){
+	//   equipo = $(e).closest('tr')[0];
 
-  equipo = $(e).closest('tr')[0];
-
-  $('#asignar_meta input').val(equipo.dataset.meta);
+	//   $('#asignar_meta input').val(equipo.dataset.meta);
 
 
-  $('#asignar_meta').modal('show');
+	//   $('#asignar_meta').modal('show');
+// };
+
+//ASIGNAR META
+function asignar_meta(meta,eq){
+    //console.log(meta+" "+eq);  
+    
+    //Datos de la metas
+    $.ajax({
+        type: 'POST',
+        dataType: 'JSON',
+        url: 'index.php/Equipo/getMeta',
+        data: {eq},
+        success: function(rsp) {
+            console.log(rsp);
+            $('#eq_modal_meta').val(eq);
+            $('#meta_modal_eq').val(rsp);            
+            $('#asignar_meta').modal('show');
+        },
+        error: function(rsp) {
+            alert('Error: ' + rsp.msj);
+            console.log(rsp.msj);
+        }
+    });
+
+
+    
 };
 
-$('#asignar_meta .btn-accion').click(function() {
-    var meta = $('#asignar_meta input').val();
+function guardarMeta(){
+
+    console.log('Meta Ready!');
+
+    $('#asignar_meta').modal('show');
+        
+        $('#content').empty();            
+        $("#content").load("<?php echo base_url(); ?>index.php/Equipo/index/<?php echo $permission; ?>");
+          
+            
+}
+
+$('#asignar_meta .btn-accion').click(function(event) {
+    
+    var eq = $('#eq_modal_meta').val();
+    var meta = $('#meta_modal_eq').val();
+
+    debugger;
     if (meta == null || meta == '') {
         alert('No se ingreso ningún valor.');
         return;
@@ -2824,7 +3245,7 @@ $('#asignar_meta .btn-accion').click(function() {
         return;
     }
 
-    var eq = equipo.dataset.equipo;
+    /*var eq = equipo.dataset.equipo;*/
 
     if(eq == null || eq == ''){
       alert('Equipo Inválido');
@@ -2837,8 +3258,11 @@ $('#asignar_meta .btn-accion').click(function() {
         url: 'index.php/Equipo/asignarMeta',
         data: {eq, meta},
         success: function(rsp) {
-            $('.modal').modal('hide');
-            equipo.dataset.meta = meta;
+            
+            /*equipo.dataset.meta = meta;*/
+            /*guardarMeta();*/
+            $('#asignar_meta').modal('hide');
+            //alert('Meta asignada correctamente.');
         },
         error: function(rsp) {
             alert('Error: ' + rsp.msj);
@@ -2847,4 +3271,50 @@ $('#asignar_meta .btn-accion').click(function() {
     });
 
 });
+
+/// FUNCION QUE VALIDA QUE EL CAMPO SEA SOLO NUMEROS
+function validaNum(e) {
+        e = (e) ? e : window.event;
+        var code = (e.which) ? e.which : e.keyCode;
+        if ( (code > 31 && code < 48) || code > 57) {
+            return false;
+        }
+        return true;
+    }
+
+
+
+function mantenimientoAutonomo(id,deeq, form_id){
+   
+
+    $(".clear").val(""); //llimpia los inputs del modal lectura
+    $("#spanNuevaLectura").text("");
+    $('#errorLectura').fadeOut(0);
+    $('#errorLectura2').fadeOut(0);
+    $("#modalectura").modal('show');
+    $('#id_maquina').val(id);
+    $('#maquina').val(deeq);
+    $('#form_id').val(form_id)
+    $('#formulario').attr('data-form', form_id);
+    detectarFormV2();
+    initForm();
+    //debugger;
+    $.ajax({
+        data: {
+            idEquipo: id
+        },
+        dataType: 'json',
+        type: 'POST',
+        url: 'index.php/Equipo/getEqPorId',
+        success: function(data) {
+            console.table(data);
+            $("#spanNuevaLectura").text(data[0].lectura);
+            estBoton(data[0].estado); //agrega boton de estados
+												//reloadTable();
+        },
+        error: function(result) {
+            console.log(result);
+        },
+    });
+}
 </script>

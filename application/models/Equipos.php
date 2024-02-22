@@ -32,6 +32,8 @@ class Equipos extends CI_Model
         criticidad.descripcion AS decri,
         admcustomers.cliId,
         admcustomers.cliRazonSocial AS clie,
+        grupo.form_id,
+        grupo.id_grupo,
         proceso.id_proceso,
         proceso.descripcion AS depro');
         $this->db->from('equipos');
@@ -40,6 +42,7 @@ class Equipos extends CI_Model
         $this->db->join('unidad_industrial', 'unidad_industrial.id_unidad=equipos.id_unidad');
         $this->db->join('criticidad', 'criticidad.id_criti=equipos.id_criticidad');
         $this->db->join('area', 'area.id_area=equipos.id_area');
+        $this->db->join('grupo', 'grupo.id_grupo=equipos.id_grupo');
         $this->db->join('proceso', 'proceso.id_proceso=equipos.id_proceso');
         $this->db->join('admcustomers', 'admcustomers.cliId=equipos.id_customer');
         $this->db->where('equipos.estado !=', 'AN');
@@ -419,6 +422,18 @@ class Equipos extends CI_Model
 
     }
 
+				//comprueba unicidad de codigo de equipo
+				function validaUnicidadCodigo($codigo){
+						$sql = "select * from equipos where codigo = '".$codigo."'";
+						$query = $this->db->query($sql);
+
+						if ($query->num_rows() > 0) {
+										return true;
+						} else {
+										return false;
+						}
+				}
+
     // Agrega equipo nuevo - Listo
     public function insert_equipo($data)
     {
@@ -650,9 +665,10 @@ class Equipos extends CI_Model
         return $query;
     }
 
-    public function delContra($id_contratistaquipo)
+    public function delContratista($id_contratista,$id_equipo)
     {
-        $this->db->where('id_contratistaquipo', $id_contratistaquipo);
+        $this->db->where('id_contratista', $id_contratista);
+        $this->db->where('id_equipo', $id_equipo);
         $query = $this->db->delete('contratistaquipo');
         return $query;
     }
@@ -786,7 +802,8 @@ class Equipos extends CI_Model
     /// Guarda lectura Hugo
     public function setLecturas($data)
     {
-
+        $userdata = $this->session->userdata('user_data');
+        $empId    = $userdata[0]['id_empresa'];
         $this->db->where('id_equipo', $data["id_equipo"]);
         $estadoActual = $this->db->get('equipos')->row('estado');
 
@@ -800,6 +817,27 @@ class Equipos extends CI_Model
         $userdata = $this->session->userdata('user_data');
         $usrId = $userdata[0]['usrId'];
 
+        //---------------------------------------------------------
+        //Me traigo la ultima lectura antes de colocar la nueva
+        $ultima_lectura = "SELECT equipos.ultima_lectura 
+                            FROM equipos
+                            WHERE equipos.id_equipo = $id_equipo";
+        $ultima_lectura = $this->db->query($ultima_lectura);
+        $ultima_lectura = $ultima_lectura->result()[0]->ultima_lectura;
+        //---------------------------------------------------------
+        $resultado = $lectura - $ultima_lectura;
+
+        $preventivo ="SELECT preventivo.prevId, preventivo.estadoprev, preventivo.critico1, preventivo.lectura_base
+        FROM preventivo
+        WHERE preventivo.id_empresa = $empId AND preventivo.id_equipo = $id_equipo AND preventivo.estadoprev = 'M' OR preventivo.estadoprev = 'C' OR preventivo.estadoprev = 'PL'";
+        $preventivo = $this->db->query($preventivo);
+        $preventivoEstado = $preventivo->result()[0]->estadoprev; 
+        if($preventivoEstado == 'C'){
+            //como es creado ('C') hay q sumarle la lectura base
+            //a la diferencia (guardada en $resultado) antes de preguntar
+            //si es mayor a critico1 (la frecuencia)
+            $resultado = + $preventivo->result()[0]->lectura_base;
+        }
         $datos = array(
             'id_equipo' => $id_equipo,
             'lectura' => $lectura,
@@ -825,14 +863,22 @@ class Equipos extends CI_Model
         }
         $this->db->where('equipos.id_equipo', $id_equipo);
         $this->db->update('equipos', $estado_eq);
-
         $this->db->trans_complete();
 
-        if ($this->db->trans_status() === false) {
-            return false;
-        } else {
-            return true;
-        }
+        if ($this->db->trans_status() === true) {
+            //preguntamos si la cantidad de horas ingresadas en la nueva lectura
+            //supera la frecuencia
+            $preventivoCritico1 = $preventivo->result()[0]->critico1;
+            if($resultado >= $preventivoCritico1){
+                $idPreventivo = $preventivo->result()[0]->prevId;
+                //realizo la modificacion del preventivo
+                $sql = "UPDATE preventivo 
+                        SET preventivo.estadoprev = 'M'
+                        WHERE preventivo.id_empresa = $empId AND preventivo.prevId = $idPreventivo";
+                $this->db->query($sql);
+                return true;
+            }else return false;
+        }else return false;
     }
 
     function anteriorHistorialLectura($idLectura = false, $id_equipo = false){
@@ -962,20 +1008,21 @@ class Equipos extends CI_Model
         }
     }
 
-    public function getEqPorIds($data)
+    public function getEqPorIds($ideq)
     {
-
-        $id = $data['idequipo'];
 
         $this->db->select('equipos.id_equipo,
 							equipos.codigo,
+                            equipos.id_grupo,
 							historial_lecturas.lectura,
 							historial_lecturas.fecha,
-							historial_lecturas.estado');
+							historial_lecturas.estado'
+                        );
         $this->db->from('historial_lecturas');
         $this->db->join('equipos', 'equipos.id_equipo = historial_lecturas.id_equipo');
-        $this->db->where('historial_lecturas.id_equipo', $id);
+        $this->db->where('historial_lecturas.id_equipo', $ideq);
         $this->db->order_by('id_lectura', 'DESC');
+        //
         $this->db->limit(1);
 
         $query = $this->db->get();
@@ -1359,7 +1406,6 @@ class Equipos extends CI_Model
                     equipos.descrip_tecnica,
                     equipos.numero_serie,
                     equipos.estado,
-                    equipos.adjunto,
                     unidad_industrial.id_unidad,
                     unidad_industrial.descripcion AS deun,
                     area.id_area,
@@ -1426,6 +1472,28 @@ class Equipos extends CI_Model
                 $datosEquipo[0]["degr"] = null;
             }
 
+            //traer adjunto
+            $this->db->select('equipos_archi_adjuntos.id_adjunto, equipos_archi_adjuntos.adjunto');
+            $this->db->from('equipos');
+            $this->db->join('equipos_archi_adjuntos', 'equipos.id_equipo = equipos_archi_adjuntos.id_equipo');
+            $this->db->where('equipos.id_equipo', $idEquipo);
+            $this->db->where('equipos_archi_adjuntos.eliminado !=', 1);
+            $query = $this->db->get();
+            if ($query->num_rows() != 0) {
+                $datosEquipoCustomer = $query->result_array();
+                $arr_length = count($datosEquipoCustomer);
+               
+                for($i = 0; $i < $arr_length; $i++)
+                {
+                    $archivos[]=array(
+                        'id_adjunto' => $datosEquipoCustomer[$i]["id_adjunto"], 
+                        'adjunto' =>$datosEquipoCustomer[$i]["adjunto"]); 
+                    $datosEquipo[0]["archivo"][$i] = $archivos[$i];
+                }
+            } else {
+                $datosEquipo[0]["archivo"] = null;
+            }
+
             return $datosEquipo;
         } else {
             return [];
@@ -1435,7 +1503,7 @@ class Equipos extends CI_Model
     public function getContratistasEquipo($idEquipo)
     {
         $this->db->select('
-            contratistaquipo.id_contratistaquipo, contratistaquipo.id_equipo, contratistaquipo.id_contratista,
+            contratistaquipo.id_equipo, contratistaquipo.id_contratista,
             equipos.codigo,
             contratistas.nombre
             ');
@@ -1444,6 +1512,10 @@ class Equipos extends CI_Model
         $this->db->join('contratistas', 'contratistas.id_contratista = contratistaquipo.id_contratista');
         $this->db->where('contratistaquipo.id_equipo', $idEquipo);
         $query = $this->db->get();
+
+        
+        log_message('DEBUG','#Equipos | getContratistasEquipo >> query '.json_encode($query));
+        log_message('DEBUG','#Equipos | getContratistasEquipo >> query '.json_encode($query->result_array()));
 
         if ($query->num_rows() > 0) {
             return $query->result_array();
@@ -1490,6 +1562,25 @@ class Equipos extends CI_Model
         return $adjunto;
     }
 
+    public function updateAdjuntoEquipoV2($id_adjunto, $ultimoId)
+    {
+        $this->db->where('id_equipo', $ultimoId);
+        $query = $this->db->update("equipos", $id_adjunto);
+        return $id_adjunto;
+    }
+
+    /**
+     * Equipos:guardaAdjuntoEquipo();
+     *
+     * @param  String   $data    id_equipo, adjunto
+     * @return int       id_adjunto        
+     */
+    public function guardaAdjuntoEquipo($data){
+        $this->db->insert('equipos_archi_adjuntos', $data);
+        $query = $this->db->insert_id();
+        return $query;
+    }
+
     /**
      * Equipos:eliminarAdjunto
      * Elimina el Archivo Adjunto de un preventivo dado (no elimina el archivo).
@@ -1503,6 +1594,34 @@ class Equipos extends CI_Model
         $this->db->where('id_equipo', $idEquipo);
         $query = $this->db->update("equipos", $data);
         return $query;
+    }
+
+    /**
+     * Equipos:eliminaAdjunto
+     * Elimina el Archivo Adjunto de un equipo(Marca como eliminado)
+     *
+     * @param Int       $idAdjunto  Id de archivo adjunto
+     * @return Bool                     True o False
+     */
+    public function eliminaAdjunto($idAdjunto)
+    {
+        $data = array('eliminado' => '1');
+        $this->db->where('id_adjunto', $idAdjunto);
+        $query = $this->db->update("equipos_archi_adjuntos", $data);
+        return $query;
+    }
+
+
+    /**
+     * equipos_archi_adjuntos:updateAdjunto();
+     *
+     * @param  String   $data    idAdjunto, adjunto
+     * @return int       id_adjunto        
+     */
+    public function updateAdjunto($archivo, $idAdjunto){
+        $this->db->where('id_adjunto', $idAdjunto);
+        $query = $this->db->update("equipos_archi_adjuntos", $archivo);
+        return $archivo;
     }
 
     public function informe_equipos()
@@ -1523,11 +1642,183 @@ class Equipos extends CI_Model
         return $data;
     }
 
+    public function getMeta($data){
+
+        $this->db->select('meta_disponibilidad');
+        $this->db->where('id_equipo', $data['eq']);
+        $this->db->from('equipos');
+        $query = $this->db->get();
+        $meta = $query->result_array();
+        return $meta[0]['meta_disponibilidad'];        
+    }
+
     public function asignarMeta($data)
     {
         $this->db->set('meta_disponibilidad', $data['meta']);
         $this->db->where('id_equipo', $data['eq']);
         return $this->db->update('equipos');
     }
+
+    public function equiposPaginados($start,$length,$search){
+
+        $userdata = $this->session->userdata('user_data');
+        $empId = $userdata[0]['id_empresa']; // guarda usuario logueado
+
+        /*
+        if($search){
+            $srch="WHERE(equipo.nombre LIKE'%".$search."%' OR
+                        equipo.descripcion LIKE'%".$search."%' OR
+                        area.descripcion LIKE'%".$search."%' OR
+                        proceso.descripcion LIKE'%".$search."%' OR
+                        sector.descripcion LIKE'%".$search."%' OR
+                        criticidad.descripcion LIKE'%".$search."%' OR
+                        admcustomers.cliRazonSocial LIKE'%".$search."%' OR
+                        equipo.estado LIKE'%".$search."%')";//creo q estado no hace falta
+        }*/
+        $srch="";
+        if($search){
+            $srch="and( equipos.codigo LIKE'%".$search."%' OR
+                        equipos.descripcion LIKE'%".$search."%' OR
+                        area.descripcion LIKE'%".$search."%' OR
+                        proceso.descripcion LIKE'%".$search."%' OR
+                        sector.descripcion LIKE'%".$search."%' OR
+                        criticidad.descripcion LIKE'%".$search."%' OR
+                        admcustomers.cliRazonSocial LIKE'%".$search."%' OR
+                        equipos.estado LIKE'%".$search."%')";//creo q estado no hace falta
+        }
+        
+        $qnr = "SELECT count(1) cant
+                FROM equipos 
+                INNER JOIN sector ON sector.id_sector=equipos.id_sector
+                INNER JOIN empresas ON empresas.id_empresa = equipos.id_empresa
+                INNER JOIN unidad_industrial ON unidad_industrial.id_unidad=equipos.id_unidad
+                INNER JOIN criticidad ON criticidad.id_criti = equipos.id_criticidad
+                INNER JOIN area ON area.id_area = equipos.id_area
+                INNER JOIN proceso ON proceso.id_proceso = equipos.id_proceso
+                INNER JOIN admcustomers ON admcustomers.cliId = equipos.id_customer
+                WHERE equipos.estado != 'AN' AND equipos.id_empresa = $empId
+                ".$srch;
+
+        $qnr = $this->db->query($qnr);
+        $qnr = $qnr->row();
+        $qnr = $qnr->cant;
+
+        $q = "SELECT equipos.id_equipo,
+                    equipos.codigo,
+                    equipos.descripcion AS deeq,
+                    equipos.estado AS estadoEquipo,
+                    equipos.meta_disponibilidad AS meta_disp,
+                    unidad_industrial.id_unidad,
+                    unidad_industrial.descripcion AS deun,
+                    area.id_area,
+                    area.descripcion AS dear,
+                    empresas.id_empresa,
+                    empresas.descripcion AS deem,
+                    sector.id_sector,
+                    sector.descripcion AS desec,
+                    criticidad.id_criti,
+                    criticidad.descripcion AS decri,
+                    grupo.form_id,
+                    grupo.id_grupo,
+                    admcustomers.cliId,
+                    admcustomers.cliRazonSocial AS clie,
+                    proceso.id_proceso,
+                    proceso.descripcion AS depro
+            FROM equipos 
+            INNER JOIN sector ON sector.id_sector = equipos.id_sector
+            INNER JOIN empresas ON empresas.id_empresa = equipos.id_empresa
+            INNER JOIN unidad_industrial ON unidad_industrial.id_unidad = equipos.id_unidad
+            INNER JOIN criticidad ON criticidad.id_criti = equipos.id_criticidad
+            INNER JOIN area ON area.id_area = equipos.id_area
+            INNER JOIN proceso ON proceso.id_proceso = equipos.id_proceso
+            INNER JOIN grupo on grupo.id_grupo = equipos.id_grupo
+            INNER JOIN admcustomers ON admcustomers.cliId = equipos.id_customer
+            WHERE equipos.estado != 'AN' AND equipos.id_empresa = $empId
+            ".$srch."
+            ORDER BY equipos.id_equipo ASC
+            LIMIT $start,$length";
+
+        $r = $this->db->query($q);
+
+        $result = array (
+            'numDataTotal' => $qnr,
+            'datos' =>$r
+        );
+
+        return $result;
+    }
+
+    /**
+     * equipos_archi_adjuntos:getAdjuntos();
+     *
+     * @param  String   $idEquipo   idEquipo 
+     * @return int       array archivos adjuntos al equipo        
+     */
+    function getAdjuntos($idEquipo)
+    {
+        $this->db->select('equipos_archi_adjuntos.id_adjunto, equipos_archi_adjuntos.adjunto');
+        $this->db->from('equipos');
+        $this->db->join('equipos_archi_adjuntos', 'equipos.id_equipo = equipos_archi_adjuntos.id_equipo');
+        $this->db->where('equipos_archi_adjuntos.eliminado !=', 1);
+        $this->db->where('equipos.id_equipo', $idEquipo);
+        $query = $this->db->get();
+        if ($query->num_rows() != 0) {
+            $datosEquipoCustomer = $query->result_array();
+            $arr_length = count($datosEquipoCustomer);  
+            for($i = 0; $i < $arr_length; $i++)
+            {
+                $archivos[]=array(
+                    'id_adjunto' => $datosEquipoCustomer[$i]["id_adjunto"], 
+                    'adjunto' =>$datosEquipoCustomer[$i]["adjunto"]); 
+            }
+        } else {
+            $archivos[0] = null;
+        }
+        return $archivos;
+    }
+
+
+    /**
+     * getFormxIdGrupo: obtiene el id del formulario asociado al grupo
+     * @param int $id_grupo
+     * @return bool true o false
+     */
+
+    function getFormxIdGrupo($id_grupo){
+        $this->db->select('form_id');
+        $this->db->from('grupo');
+        $this->db->where('grupo.id_grupo', $id_grupo); 
+       // $sql="select form_id from grupo where id_grupo = $id_grupo";
+        $query = $this->db->get()->result();
+        return $query;
+    }
+
+    /**
+     * setInfoId: guarda en la tabla historial lecturas el info_id del formulario asociado
+     * 
+     * @return bool true o false
+     */
+    function guardaInfo_idLectura(){
+    $info_id= $this->input->post('info_id');
+    $equipo= $this->input->post('equipo');
+        
+    $id_lectura = $this->db->select_max('id_lectura')->where('id_equipo', $equipo)->get('historial_lecturas')->row('id_lectura');
+    
+    $this->db->set('info_id', $info_id);
+    $this->db->where('id_lectura', $id_lectura);
+    return $this->db->update('historial_lecturas');
+
+   /*  $data = array(
+        'info_id' => $info_id,
+    );
+
+    $this->db->where('id_lectura', $id_lectura);
+    $query = $this->db->update("historial_lecturas", $data);
+    return $query; */
+
+    /* $this->db->set('estado', $ultimoEstado);
+        return $this->db->update("equipos"); */
+        
+    } 
 
 }
