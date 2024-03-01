@@ -167,7 +167,10 @@ class Tarea extends CI_Controller {
 						
 						//guardo en session todas las tareas filtradas por case_id
 						$_SESSION['listadoTareas'] = $array;
-						$data['permission'] = $permission;		
+						$data['permission'] = $permission;	
+						//tiempo de recarga harkode en constant
+						$data['tiempoRecarga'] = TIEMPO_RECARGA; 
+						
 						log_message('DEBUG','#TRAZA | TAREA | index() | variable Sesion: '. json_encode($array));
 
 						if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {								
@@ -1051,7 +1054,6 @@ class Tarea extends CI_Controller {
 						//guardo en session todas las tareas filtradas por case_id
 						$_SESSION['listadoTareas'] = $array;
 
-						echo $array;
 	}
 
 
