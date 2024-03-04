@@ -383,6 +383,7 @@ function startUpdateInterval() {
                             if(!cambioPagina){
                                 myTable.clear();
                                 myTable.destroy();
+                                clearInterval(intervalID); //se recargaba infinitamente en test 
                                 initDataTable();
                             }
                         } 
