@@ -573,8 +573,6 @@ class Kpi extends CI_Controller
                                     array_unshift($mttf ,round($tiempoActivo/$cantidadFallos, 2));
                                 }
 
-                                #Guardar Labels para Gráfico MES/AÑO
-                                array_unshift($tiempo, date("m-Y", strtotime($fi)));
                             
                                 #Guardar tiempo medio entre fallos MTBF
                                 array_unshift($mtbf , round($mttr[0] + $mttf[0], 2));
@@ -590,6 +588,8 @@ class Kpi extends CI_Controller
                             
                         }
                         
+                        #Guardar Labels para Gráfico MES/AÑO
+                        array_unshift($tiempo, date("m-Y", strtotime($fi)));
                         
                          log_message('DEBUG','KPI ||  disponibilidadKpi || Cantidadequipos: '. $cantidad_equipos);
                          log_message('DEBUG','KPI ||  disponibilidadKpi || MES: '. ($i + 1));
