@@ -12,116 +12,90 @@
                 </div><!-- /.box-header -->
 
                 <div class="box-body">
-
-                
                     <div class="container">
                         <div class="row">
-                        <form id="formKpi">
-                           
-                            <div class="col-md-6 col-xs-12">
-
-                                <div class="col-md-12 col-xs-12 form-group">
-
-                                    <div class="col-md-2 col-xs-12">
-                                        <label for="grupo" >Grupo:</label>
-                                    </div>
-
-                                    <div class="col-md-6 col-xs-12">
-                                        <select  id="grupo" name="grupo" class="form-control grupo">
-                                            <option value="" selected disabled>Seleccione grupo</option>
-                                        </select>
-                                       <!--  <input class="form-control" type="text" id="checkboxGrupoID" placeholder="Ingrese grupo del equipo"> -->
-                                    </div>    
-
-                                    <div class="col-md-4 col-xs-12">
-                                    </div>
-
-                                </div>
-
-
-                                <div class="col-mt-12 col-xs-12 form-group" >
-
-                                    <div class="col-md-2 col-xs-12">
-                                        <label for="sector">Sector: </label>
-                                    </div>
-
-                                    <div class="col-md-6 col-xs-12">
-                                        <select  id="sector" name="sector" class="form-control sector">
-                                            <option value="" selected disabled>Seleccione sector</option>
-                                        </select>
-                                            <!-- <input class="form-control" type="text" id="sector" placeholder="Ingrese el sector del equipo"> -->
-                                    </div> 
-
-                                    <div class="col-md-4 col-xs-12">
-                                    </div>
-
-                                </div> 
-
-                                <div class="col-md-12 col-xs-12 form-group">
-
-                                    <div class="col-md-2 col-xs-12">
-                                        <label for="equipo" >Equipo:</label>
-                                    </div>
-                                    <div class="col-md-6 col-xs-12">
-                                        <select  id="equipo" name="equipo" class="form-control equipo">
-                                            <option value="" selected disabled>Seleccione equipo</option>
-                                        </select>
-                                           <!--  <input class="form-control" type="text" id="checkboxEquipoID" placeholder="Ingrese código del equipo"> -->
-                                    </div>
-
-                                    <div class="col-md-4 col-xs-12">
-                                    </div>
-                                </div>
-
-                            </div><!-- fin col-md-6 col-xs-12 -->
-                     
-                            <div class="col-md-6 col-xs-12">
-                            <div class="col-md-6 col-xs-12 form-group">
-
-                                <div class="col-md-4 col-xs-12">
-                                    <label for="fechaDesde">Fecha Desde:</label>
-                                </div>
-                                <div class="col-md-2 col-xs-12">
-                                        <div class="input-group date">
-                                        <a class="input-group-addon" id="daterange-btn" title="Más fechas">
-                                <i class="fa fa-magic"></i>
-                                <span></span>
-                                </a>
-                                            <input class="form-control" type="date" id="datepickerDesde">
+                            <form id="formKpi">
+                                <div class="col-md-6 col-xs-12">
+                                    <div class="col-md-12 col-xs-12 form-group">
+                                        <div class="col-md-2 col-xs-12">
+                                            <label for="grupo" >Grupo:</label>
                                         </div>
+                                        <div class="col-md-6 col-xs-12">
+                                            <select  id="grupo" name="grupo" class="form-control grupo">
+                                                <option value="" selected disabled>Seleccione grupo</option>
+                                            </select>
+                                        <!--  <input class="form-control" type="text" id="checkboxGrupoID" placeholder="Ingrese grupo del equipo"> -->
+                                        </div>    
+                                        <div class="col-md-4 col-xs-12">
+                                        </div>
+                                    </div>
+                                    <div class="col-mt-12 col-xs-12 form-group" >
+                                        <div class="col-md-2 col-xs-12">
+                                            <label for="sector">Sector: </label>
+                                        </div>
+                                        <div class="col-md-6 col-xs-12">
+                                            <select  id="sector" name="sector" class="form-control sector">
+                                                <option value="" selected disabled>Seleccione sector</option>
+                                            </select>
+                                                <!-- <input class="form-control" type="text" id="sector" placeholder="Ingrese el sector del equipo"> -->
+                                        </div> 
+                                        <div class="col-md-4 col-xs-12">
+                                        </div>
+                                    </div> 
+                                    <div class="col-md-12 col-xs-12 form-group">
+                                        <div class="col-md-2 col-xs-12">
+                                            <label for="equipo" >Equipo:</label>
+                                        </div>
+                                        <div class="col-md-6 col-xs-12">
+                                            <select  id="equipo" name="equipo" class="form-control equipo">
+                                                <option value="" selected disabled>Seleccione equipo</option>
+                                            </select>
+                                            <!--  <input class="form-control" type="text" id="checkboxEquipoID" placeholder="Ingrese código del equipo"> -->
+                                        </div>
+                                        <div class="col-md-4 col-xs-12">
+                                        </div>
+                                    </div>
+                                </div><!-- fin col-md-6 col-xs-12 -->
+                     
+                                <div class="col-md-6 col-xs-12">
+                                    <div class="col-md-6 col-xs-12 form-group">
+                                        <div class="col-md-4 col-xs-12">
+                                            <label for="fechaDesde">Fecha Desde:</label>
+                                        </div>
+                                        <div class="col-md-2 col-xs-12">
+                                            <div class="input-group date">
+                                                <a class="input-group-addon" id="daterange-btn" title="Más fechas">
+                                                    <i class="fa fa-magic"></i>
+                                                    <span></span>
+                                                </a>
+                                                <input class="form-control" type="date" id="datepickerDesde">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-xs-12 form-group" >
+                                        <div class="col-md-3 col-xs-12">
+                                            <label for="fechaHasta">Fecha Hasta:</label>
+                                        </div>
+                                        <div class="col-md-9 col-xs-12">
+                                            <input class="form-control" type="date" id="datepickerHasta">
+                                        </div>
+                                    </div>
+                                </div><!-- fin class="col-md-6 col-xs-12"  -->
 
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-xs-12 form-group" >
+                                <div class="col-md-6 col-xs-12">
+                                    <div class="col-md-8 col-xs-12">
+                                    </div>
 
-                                <div class="col-md-3 col-xs-12">
-                                    <label for="fechaHasta">Fecha Hasta:</label>
-                                </div>
-                                <div class="col-md-9 col-xs-12">
-                                        <input class="form-control" type="date" id="datepickerHasta">
-                                </div>
-                                </div>
-
-                            </div><!-- fin class="col-md-6 col-xs-12"  -->
-
-                            <div class="col-md-6 col-xs-12">
-                                <div class="col-md-8 col-xs-12">
-                                </div>
-
-                                <div class="col-md-4 col-xs-12">
-                                    <button type="button" class="btn btn-default"  onclick="buscar()">Filtrar</button>
-                                    <button type="reset" class="btn btn-primary">Limpiar</button>
-                                </div>
-                                
-                            </div> 
-                </form>
-                
+                                    <div class="col-md-4 col-xs-12">
+                                        <button type="button" class="btn btn-default"  onclick="buscar()">Filtrar</button>
+                                        <button type="reset" class="btn btn-primary">Limpiar</button>
+                                    </div>
+                                    
+                                </div> 
+                            </form>
                         </div><!-- fin row  -->
                     </div>  <!--  fin container -->
-
-               
-<br>
-
+                    <br>
                     <div class="row">
                         <div class="col-md-6 col-xs-12">
                             <!-- class="daterange"-->
@@ -300,7 +274,25 @@
 
 <script>
 
+$(document).ready(function() {
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
 
+    today = yyyy + '-' + mm + '-' + dd;
+    //Bloquea los dias posteriores a HOY
+    $('#datepickerHasta').attr('max', today);
+
+    //En caso de querer ingresar por teclado fecha posterior a HOY
+    $('#datepickerHasta').on('change', function() {
+        var selectedDate = $(this).val();
+        if (new Date(selectedDate) > new Date()) {
+            alert('No se puede seleccionar una fecha posterior a hoy.');
+            $(this).val(today);
+        }
+    });
+});
 
 /* buscador fechas-grupo-sector-equipo*/
 function buscar()
