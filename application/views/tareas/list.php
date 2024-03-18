@@ -1,4 +1,5 @@
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
+<input type="hidden" id="tiempoRecarga" value="<?php echo $tiempoRecarga;?>">
 <section class="content">
     <div class="row">
         <div class="col-xs-12">
@@ -73,11 +74,24 @@
 </div>
 
 <script>
-         
 
+//variable de control para saber si ya estoy updateando la tabla(evita multiples llamados al controlador cuando ya hay uno en curso) 
+var isUpdating;
+//variable de control para la recarga cuando cambio de pagina o busco
+var cambioPagina; 
+
+/*-----------inicio datatable--------*/
 function initDataTable(){
+    //debugger;
     myTable = $('#bandeja').DataTable({
        'initComplete':function( settings, json ) {
+            //console.log('tabla completada');
+
+            //bandera para activar la actualizacion de la tabla
+            isUpdating = false;
+            /* funcion que crea intervalo de actualizar tabla */
+            startUpdateInterval();
+           
         }, 
 	    'ordering': true,
         'searchDelay': 3000,
@@ -327,24 +341,98 @@ function initDataTable(){
         
         }
     });  
-    /*alert( 'Rows '+$('#bandeja').DataTable().rows(':contains("Unknown")').data().length+' are selected' );    //Recoarga cada 15seg
-    setInterval( function () {
-        //$('#bandeja').DataTable().data().reload();
-        $('#bandeja').DataTable().ajax.reload();           
-    },20000);*/
+   
+}
+/*-----------fin datatable--------*/
+
+
+/* -----------actualiza la data de las tareas -------- */
+ async function actualizaData () {
+    isUpdating = true;
+    let dataUpdate = new Promise( function(resolve,reject){
+        $.ajax({
+            type: 'POST',
+            data: {},
+            cache: false,
+            url: 'index.php/Tarea/actualizaTareas',
+            success: function(data) {
+                resolve("Se updateo data correctamente");
+            },
+            error: function(data) {
+                reject("Error al updatear datos");
+            }
+        });
+    });
+
+    return await dataUpdate; 
+}
+
+
+/* -----------actualiza cada cierto tiempo la tabla -------- */
+function startUpdateInterval() {
+        intervalID = setInterval(function () {
+            //console.log('creando intervalo');
+            //debugger;
+            if (!isUpdating) {
+                actualizaData()
+                    .then((result) => {
+                        console.log(result);
+                
+                         if (myTable && myTable.settings()[0].oInit.initComplete) {
+                            //si cambie de pagina o estoy buscando no borro la tabla
+                            if(!cambioPagina){
+                                myTable.clear();
+                                myTable.destroy();
+                                clearInterval(intervalID); //se recargaba infinitamente en test 
+                                initDataTable();
+                            }
+                        } 
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })     
+            }
+            else  {
+                //elimino intervalo para no generar reiteradas llamadas
+                clearInterval(intervalID); 
+                //console.log('intervalo delete');
+            }
+        }, $('#tiempoRecarga').val());
+
 }
 
 $(document).ready(function(){
+    isUpdating = false;
+    cambioPagina   = false;
+
+    /* inicia datatable */
     initDataTable();
 
-     // Asignar la función btnActualizar al evento click del botón
-     $('#btnActualizar').on('click', function () {
-        btnActualizar();
+    /* control de cambio de pagina en tabla*/
+    myTable.on('page.dt', function () {
+        //console.log('El usuario cambió de página');
+        cambioPagina = true;
+        clearInterval(intervalID); 
     });
+ 
+    /* control de busqueda en tabla */
+    $('body').on('click', '#bandeja_filter input', function () {
+        //console.log('El usuario hizo clic en el input de búsqueda');
+        cambioPagina = true;
+        clearInterval(intervalID);
+    });
+    
+});
+
+// Asignar la función btnActualizar al evento click del botón, reinicia la recarga
+$('#btnActualizar').on('click', function () {
+    btnActualizar();
 });
 
 //actualiza la tabla de tareas y rearma el datatable
 function btnActualizar(){
+    clearInterval(intervalID);
+    cambioPagina   = false;
     WaitingOpen();
     $.ajax({
       type: 'GET',
@@ -385,6 +473,9 @@ function actualizar_terminadas() {
 
 //Tomo valor de la celda y carga detalle de la tarea
 function detalleTarea(e) {
+    
+    isUpdating = true;
+    
     var id = $(e).attr('id');
     WaitingOpen();
     if (!$(e).attr('tags').includes('#pedidoMaterial')) {

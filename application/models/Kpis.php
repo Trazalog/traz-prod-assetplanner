@@ -305,10 +305,10 @@ class Kpis extends CI_Model
      *  @param date;date;interger  $fecha_desde, $fecha_hasta, $horas_laborales
      * @return Array tiempo total, 0 en caso de que sea false
      */
-    public function getTiempoTotal($fecha_desde, $fecha_hasta, $horas_laborales)
+    public function getTiempoTotal($fecha_desde, $fecha_hasta)
     {
         $ci =& get_instance();
-		$aux = $ci->rest->callAPI("GET",REST_MAN."getTiempoTotal/".$fecha_desde."/".$fecha_hasta."/".$horas_laborales);
+		$aux = $ci->rest->callAPI("GET",REST_MAN."getTiempoTotal/".$fecha_desde."/".$fecha_hasta);
 		$aux =json_decode($aux["data"]);
 
         if ($aux->respuesta->tiempo_total) {
@@ -324,11 +324,11 @@ class Kpis extends CI_Model
      *  @param date;date;interger  $fecha_desde, $fecha_hasta, $horas_laborales
      * @return Array valor de tiempo total de reparacion, 0 en caso de que sea false
      */
-    public function getTiempoTotalReparacion($fecha_desde, $fecha_hasta, $horas_laborales)
+    public function getTiempoTotalReparacion($fecha_desde, $fecha_hasta, $id_sector, $id_grupo)
     {
         $empId = empresa();
         $ci =& get_instance();
-		$aux = $ci->rest->callAPI("GET",REST_MAN."getTiempoTotalReparacion/".$fecha_desde."/".$fecha_hasta."/".$fecha_desde."/".$fecha_hasta."/".$empId."/".$horas_laborales);
+		$aux = $ci->rest->callAPI("GET",REST_MAN."getTiempoTotalReparacion/".$fecha_desde."/".$fecha_hasta."/".$fecha_desde."/".$fecha_hasta."/".$empId."/".$id_sector."/".$id_grupo);
 		$aux =json_decode($aux["data"]);
 
         if ($aux->respuesta->tiempo_total_reparacion) {
@@ -344,10 +344,10 @@ class Kpis extends CI_Model
      * @param date;date;interger;interger  $fecha_desde, $fecha_hasta, $horas_laborales, $id_equipo
      * @return Array valor de tiempo total de reparacion, 0 en caso de que sea false
      */
-    public function getTiempoTotalReparacionxEquipo($fecha_desde, $fecha_hasta, $horas_laborales, $id_equipo)
+    public function getTiempoTotalReparacionxEquipo($fecha_desde, $fecha_hasta, $id_equipo)
     {
         $ci =& get_instance();
-		$aux = $ci->rest->callAPI("GET",REST_MAN."getTiempoTotalReparacionxEquipo/".$fecha_desde."/".$fecha_hasta."/".$fecha_desde."/".$fecha_hasta."/".$id_equipo."/".$horas_laborales);
+		$aux = $ci->rest->callAPI("GET",REST_MAN."getTiempoTotalReparacionxEquipo/".$fecha_desde."/".$fecha_hasta."/".$fecha_desde."/".$fecha_hasta."/".$id_equipo);
 		$aux =json_decode($aux["data"]);
 
         if ($aux->respuesta->tiempo_total_reparacion) {
@@ -379,15 +379,34 @@ class Kpis extends CI_Model
 		
     }
 
+      /**
+     * Trae la cantidad de equipos de una empresa con estado AC, RE x grupo o sector
+     * @return int cantidad de equipos
+     */
+    public function getCantEquiposxEmpresaxSectorxGrupo($id_sector, $id_grupo, $fecha_inicio, $fecha_fin)
+    {
+        $empId = empresa();
+        $ci =& get_instance();
+		$aux = $ci->rest->callAPI("GET",REST_MAN."getCantEquiposxEmpresaxSectorxGrupo/".$empId."/".$id_sector."/".$id_grupo."/".$fecha_inicio."/".$fecha_fin);
+		$aux =json_decode($aux["data"]);
+
+        if ($aux->respuesta->cantidad) {
+			return $aux->respuesta->cantidad;
+		} else {
+			return  0;
+		}
+		
+    }
+
      /**
      * Trae la cantidad de fallos de equipos de una empresa
      * @return int cantidad de equipos con fallos
      */
-    public function getCantidadFallos($fecha_desde, $fecha_hasta)
+    public function getCantidadFallos($fecha_desde, $fecha_hasta, $id_sector, $id_grupo)
     {
         $empId = empresa();
         $ci =& get_instance();
-		$aux = $ci->rest->callAPI("GET",REST_MAN."getCantidadFallos/".$fecha_desde."/".$fecha_hasta."/".$empId);
+		$aux = $ci->rest->callAPI("GET",REST_MAN."getCantidadFallos/".$fecha_desde."/".$fecha_hasta."/".$empId."/".$id_sector."/".$id_grupo);
 		$aux =json_decode($aux["data"]);
 
         if ($aux->respuesta->numero_fallos) {
@@ -416,6 +435,44 @@ class Kpis extends CI_Model
 			return  0;
 		}
 		
+    }
+
+     /**
+     * Trae el estado de un equipo
+     * @return int estado actual de un equipo
+     */
+    public function getEstadoEquipo($id_equipo)
+    {
+        $empId = empresa();
+        $ci =& get_instance();
+		$aux = $ci->rest->callAPI("GET",REST_MAN."getEstadoEquipo/".$id_equipo);
+		$aux =json_decode($aux["data"]);
+
+        if ($aux->estados->estado) {
+			return $aux->estados->estado;
+		} else {
+			return  false;
+		}
+		
+    }
+
+    
+ /**
+     * Trae el estado de un equipo
+     * @return int estado actual de un equipo
+     */
+    public function fechaAltaEquipo($id_equipo)
+    {
+        $empId = empresa();
+        $ci =& get_instance();
+		$aux = $ci->rest->callAPI("GET",REST_MAN."getFechaAltaEquipo/".$empId."/".$id_equipo);
+		$aux =json_decode($aux["data"]);
+
+        if ($aux->respuesta->fecha) {
+			return $aux->respuesta->fecha;
+		} else {
+			return  false;
+		}
     }
 
 }

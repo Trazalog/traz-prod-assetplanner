@@ -108,7 +108,7 @@ define('ALM', 'traz-comp-almacen/');
 define('files', 'files/');
 
 /* Empresas que les aparecera los formularios de mantenimiento autonomo */
-define('EMPRESAS_FORM', 6);
+define('EMPRESAS_FORM', 1);
 
 define('SIM_FORMS', array(
 
@@ -247,3 +247,10 @@ define('SW', false);
 #define('SW', false);
 
 define('DT_SIZE_ROWS', false);
+
+/*
+|--------------------------------------------------------------------------
+| Tiempo de recarga de la bandeja de tareas  
+|--------------------------------------------------------------------------
+*/
+define('TIEMPO_RECARGA', 15000);

@@ -120,6 +120,7 @@ class Sservicio extends CI_Controller
 		// GUARDA SSERVICIOS y lanza proceso en BPM (inspección)
 		function lanzarProcesoBPM()
 		{
+			log_message('DEBUG', "#TRAZA | #ASSET | Sservicio | lanzarProcesoBPM()");
 			$userdata = $this->session->userdata('user_data');
 			$empId    = $userdata[0]['id_empresa'];
 			// inserta registro en  tabla solicitud de reparacion
