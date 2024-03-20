@@ -1,3 +1,52 @@
+<style>
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}  
+.switch input {display:none;}  
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}  
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}  
+input:checked + .slider {
+    background-color: #2196F3;
+}  
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}  
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}  
+/* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+}  
+.slider.round:before {
+    border-radius: 50%;
+}
+</style>
 <input type="hidden" id="permission" value="<?php echo $permission;?>"> 
 <section class="content">    
   <div class="row">
@@ -11,6 +60,10 @@
            }          
           ?>
         </div><!-- /.box-header -->
+        <label class="switch">
+          <input type="checkbox" id="boton-check" checked>
+          <span class="slider round"></span>
+        </label>
         <div class="box-body">
           <table id="servicio" class="table table-striped table-hover">
               <thead>
@@ -1308,3 +1361,26 @@ $("#vstsolicita").autocomplete({
     </div>
   </div>
 </div>
+
+<script>
+$(document).ready(function(){
+    $("#boton-check").click(function(){
+        // if($(this).is(":checked")){
+        //   estado = "CONFORME";
+        // } else {
+        //   estado = "DISCONFORME";
+        // }
+        // Realizar la llamada AJAX
+        $.ajax({
+          type: 'GET',
+          data: {
+              estado: estado
+          },
+          url: 'index.php/Sservicio/get_servicios_x_estado',
+          success: function(data){
+            console.log(data);
+          }
+        });
+    });
+});
+</script>
