@@ -56,10 +56,62 @@ class Sservicios extends CI_Model
 			{
 				return false;
 			}
+		}
+		
+		// Trae solicitudes en estado en Curso	
+		function servicios_List_sin_conformes(){
+			$userdata = $this->session->userdata('user_data');
+			$usrId    = $userdata[0]['usrId'];   
+			$grupoId  = $userdata[0]["grpId"];
+			$empId    = $userdata[0]['id_empresa'];
+			
+			// $this->db->select('solicitud_reparacion.*,
+			// 									equipos.codigo as equipo,
+			// 									sector.descripcion as sector, 
+			// 									grupo.descripcion as grupo,
+			// 									equipos.ubicacion');
+			// $this->db->from('solicitud_reparacion');
+			// $this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo');
+			// $this->db->join('sector', 'equipos.id_sector = sector.id_sector');
+			// $this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo', 'left');
+			// $this->db->where('solicitud_reparacion.estado !=', 'AN');
+			// //$this->db->or_where('solicitud_reparacion.estado', 'S');
+			// $this->db->where('solicitud_reparacion.id_empresa', $empId);
+
+			$this->db->select('solicitud_reparacion.*,
+												equipos.codigo as equipo,
+												sector.descripcion as sector, 
+												grupo.descripcion as grupo,
+												equipos.ubicacion,
+												orden_trabajo.fecha_terminada,
+												orden_trabajo.fecha_inicio as "f_inicio",
+												orden_trabajo.f_asignacion,
+												solicitud_reparacion.f_solicitado,
+												orden_trabajo.case_id,
+												orden_trabajo.id_usuario_a,
+												sisusers.usrName as mantenedor');
+			$this->db->from('solicitud_reparacion');
+			$this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo');
+			$this->db->join('sector', 'equipos.id_sector = sector.id_sector');
+			$this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo', 'left');
+			$this->db->join('orden_trabajo', 'solicitud_reparacion.case_id = orden_trabajo.case_id', 'left');
+			$this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId', 'left');
+			$this->db->where('solicitud_reparacion.estado !=', 'AN');
+			$this->db->where('solicitud_reparacion.estado !=', 'CN');
+			$this->db->where('solicitud_reparacion.id_empresa', $empId);
+			$query = $this->db->get();
+			if ($query->num_rows()!=0)
+			{
+				return $query->result_array();
+			}
+			else
+			{
+				return false;
+			}
 		}	
 
 		function getEquipoSector($idequipo)
-{
+	{
     $this->db->select('A.codigo as equipo,A.descripcion as descripcion,B.descripcion as sector, A.id_area as area, A.id_proceso as proceso');
     $this->db->from('equipos as A');
     $this->db->join('sector as B', 'B.id_sector=A.id_sector');
