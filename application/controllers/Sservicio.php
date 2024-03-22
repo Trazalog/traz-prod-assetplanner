@@ -248,7 +248,5 @@ class Sservicio extends CI_Controller
 		$data = $this->input->post();
 		$response = $this->Sservicios->activSolicitudes($data);
 		$this->load->view('Sservicios/list', $data);
-	}	
-	
-
+	}
 }

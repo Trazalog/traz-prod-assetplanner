@@ -15,6 +15,8 @@
                             <thead>
                                 <tr> 
                                     <?php  
+                                      echo '<th width="10%">Tip. Tarea</td>';
+
                                       echo '<th width="7%"'.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Estado</th>';
 
                                       echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Asignado</th>';
@@ -38,7 +40,6 @@
                                       echo '<th width="7%">Id OT</td>';          
 
                                       echo '<th width="10%">Id Pedido</td>';                                                                                              
-                                      echo '<th width="10%">Tip. Tarea</td>';                                                                                              
 
                                       // echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Prioridad</td>';
                                   ?> 
@@ -99,7 +100,7 @@ function initDataTable(){
         'paging' : true,
         'processing':    true,
         'serverSide': true,
-        'order': [[1, 'asc']],
+        'order': [[2, 'asc']],
         'search': true,
         'ajax':{
             type: 'POST',
@@ -113,170 +114,6 @@ function initDataTable(){
             },
             {
                 'targets':[0],
-                 'createdCell':  function (td, cellData, rowData, row, col) { 
-                        var device ="<?php  echo $device ?>"; 
-                        var asig = row['assigned_id'];
-                        if( asig != ""){
-                            clase =  (device == 'android' ?  "celda nomTarea hidden" : "celda nomTarea text-center");
-                        
-                        }
-                        else{
-                            clase = (device == 'android' ?  "celda nomTarea hidden" : "celda nomTarea text-center");
-                        } 
-                        $(td).attr('class', clase);
-                }, 
-                'data':'Estado',
-                'render':function(data,type,row){
-                    /*$('.dataTables_filter input').keyup(function() {
-                        msjBusqueda(function(){
-                    }, 1000 );
-                    });*/
-                    //WaitingClose(); 
-                    var id = row['id'];
-                    var asig = row['assigned_id'];
-                    var processId = row['processId'];
-                    var device ="<?php  echo $device ?>";
-                    r = '<tr>';
-                    if( asig != ""){
-                        r =  `<td> <i class="fa fa-user" style="color: #5c99bc ; cursor: pointer;"" title="Asignado" data-toggle="modal" data-target="#modalSale"></i></td>` 
-                    }
-                    else{
-                        r = `<td> <i class="fa fa-user" style="color: #d6d9db ; cursor: pointer;"" title="Sin Asignar" data-toggle="modal" data-target="#modalSale"></i></td>`
-                    } 
-                    return r;
-                    }
-            },
-            {
-                'targets':[1],
-                'createdCell':  function (td, cellData, rowData, row, col) {
-                        var device ="<?php  echo $device ?>"; 
-                        var clase =  (device == 'android' ? "celda nomTarea tddate" : "celda nomTarea tddate");
-                        $(td).attr('class', clase);
-                        $(td).attr('style', 'text-align: left'); 
-                },
-                'data':'Asignado',
-                'render': function(data, type, row){
-                    return `<td>${row['usr_asignado']}</td>`;
-                }
-            },
-            {
-                'targets':[2],
-                'createdCell':  function (td, cellData, rowData, row, col) {
-                        var device ="<?php  echo $device ?>"; 
-                        var clase =  (device == 'android' ? "celda nomTarea tddate" : "celda nomTarea tddate");
-                        $(td).attr('class', clase); 
-                        $(td).attr('style', 'text-align: left'); 
-                },
-                'data':'Fecha Asignación',
-                'render': function(data, type, row){
-                    return `<td>${row['assigned_date']}</td>`;
-                }
-            },
-            {
-                'targets':[3],
-                'createdCell':  function (td, cellData, rowData, row, col) {
-                        var device ="<?php  echo $device ?>"; 
-                        var clase =  (device == 'android' ? "celda nomTarea tddate" : "celda nomTarea tddate");
-                        $(td).attr('class', clase); 
-                        $(td).attr('style', 'text-align: left'); 
-                },
-                'data':'Equipo',
-                'render': function(data, type, row){
-                    return `<td>${(row['equipoDesc']) ? row['equipoDesc'] : ' '}</td>`;
-                }
-            },
-            {
-                'targets':[4],
-                'createdCell':  function (td, cellData, rowData, row, col) {
-                        var device ="<?php  echo $device ?>"; 
-                        var clase =  (device == 'android' ? "celda nomTarea tddate" : "celda nomTarea tddate");
-                        $(td).attr('class', clase); 
-                        $(td).attr('style', 'text-align: left'); 
-                },
-                'data':'Sector',
-                'render': function(data, type, row){
-                    device ="<?php  echo $device ?>";
-                    return `<td>${(row['sectorDesc']) ? row['sectorDesc'] : ' ' }</td>`;
-                }
-            },
-            {
-                'targets':[5],
-                'createdCell':  function (td, cellData, rowData, row, col) {
-                        var device ="<?php  echo $device ?>"; 
-                        var clase =  (device == 'android' ? "celda nomTarea tddate" : "celda nomTarea tddate");
-                        $(td).attr('class', clase); 
-                        $(td).attr('style', 'text-align: left'); 
-                },
-                'data':'Cliente',
-                'render': function(data, type, row){
-                    return `<td>${(row['nomCli']) ? row['nomCli'] : ' '}</td>`;
-                }
-            },
-            {
-                'targets':[6],
-                'createdCell':  function (td, cellData, rowData, row, col) {
-                        var device ="<?php  echo $device ?>"; 
-                        var clase =  "celda nomTarea tddate";
-                        $(td).attr('class', clase); 
-                        $(td).attr('style', 'text-align: left'); 
-                },
-                'data':'Tarea',
-                'render': function(data, type, row){
-                    return `<td>${row['displayName']}</td>`;
-                }
-            },
-            {
-                'targets':[7],
-                'createdCell':  function (td, cellData, rowData, row, col) {
-                        var device ="<?php  echo $device ?>"; 
-                        var clase =  "celda tareaDesc " + (device == 'android' ? 'hidden':null); 
-                        $(td).attr('class', clase); 
-                        $(td).attr('style', 'text-align: left'); 
-                },
-                'data':'Descripcion',
-                'render': function(data, type, row){
-                    var device ="<?php  echo $device ?>"; 
-                    return `<td>${(row['displayDescription']) ? row['displayDescription'] : ' '}</td>`;
-                }
-            },
-            {
-                'targets':[8],
-                'createdCell':  function (td, cellData, rowData, row, col) {
-                        var device ="<?php  echo $device ?>"; 
-                        var clase =  "celda nomTarea text-center"; 
-                        $(td).attr('class', clase);
-                },
-                'data':'Id S.S',
-                'render': function(data, type, row){
-                    return `<td>${(row['ss']) ? bolita(row['ss'],'blue') : ' '}</td>`;
-                }
-            },
-            {
-                'targets':[9],
-                'createdCell':  function (td, cellData, rowData, row, col) {
-                        var device ="<?php  echo $device ?>"; 
-                        var clase =  "celda nomTarea text-center"; 
-                        $(td).attr('class', clase);
-                },
-                'data':'Id OT',
-                'render': function(data, type, row){
-                    return `<td ">${(row['ot']) ? bolita(row['ot'],'orange') : ' '}</td>`;
-                }
-            },
-            {
-                'targets':[10],
-                'createdCell':  function (td, cellData, rowData, row, col) {
-                        var device ="<?php  echo $device ?>"; 
-                        var clase =  "celda nomTarea text-center"; 
-                        $(td).attr('class', clase);
-                },
-                'data':'Id Pedido',
-                'render': function(data, type, row){
-                    return `<td>${(row['pema_id']) ? bolita(row['pema_id'],'green') : ' '}</td></tr>`;
-                }
-            },
-            {
-                'targets':[11],
                 'createdCell':  function (td, cellData, rowData, row, col) {
                         var device ="<?php  echo $device ?>"; 
                         var clase =  "celda nomTarea text-center"; 
@@ -325,7 +162,171 @@ function initDataTable(){
                     //$(row).find('td:eq(1)').css('background-color', color);                 
                     return  `<td>${(row['tip_ta']) ? bolitaEstado(valor,color, detalle) : ' '}</td></tr>`;
                 }
-            }
+            },
+            {
+                'targets':[1],
+                 'createdCell':  function (td, cellData, rowData, row, col) { 
+                        var device ="<?php  echo $device ?>"; 
+                        var asig = row['assigned_id'];
+                        if( asig != ""){
+                            clase =  (device == 'android' ?  "celda nomTarea hidden" : "celda nomTarea text-center");
+                        
+                        }
+                        else{
+                            clase = (device == 'android' ?  "celda nomTarea hidden" : "celda nomTarea text-center");
+                        } 
+                        $(td).attr('class', clase);
+                }, 
+                'data':'Estado',
+                'render':function(data,type,row){
+                    /*$('.dataTables_filter input').keyup(function() {
+                        msjBusqueda(function(){
+                    }, 1000 );
+                    });*/
+                    //WaitingClose(); 
+                    var id = row['id'];
+                    var asig = row['assigned_id'];
+                    var processId = row['processId'];
+                    var device ="<?php  echo $device ?>";
+                    r = '<tr>';
+                    if( asig != ""){
+                        r =  `<td> <i class="fa fa-user" style="color: #5c99bc ; cursor: pointer;"" title="Asignado" data-toggle="modal" data-target="#modalSale"></i></td>` 
+                    }
+                    else{
+                        r = `<td> <i class="fa fa-user" style="color: #d6d9db ; cursor: pointer;"" title="Sin Asignar" data-toggle="modal" data-target="#modalSale"></i></td>`
+                    } 
+                    return r;
+                    }
+            },
+            {
+                'targets':[2],
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                        var device ="<?php  echo $device ?>"; 
+                        var clase =  (device == 'android' ? "celda nomTarea tddate" : "celda nomTarea tddate");
+                        $(td).attr('class', clase);
+                        $(td).attr('style', 'text-align: left'); 
+                },
+                'data':'Asignado',
+                'render': function(data, type, row){
+                    return `<td>${row['usr_asignado']}</td>`;
+                }
+            },
+            {
+                'targets':[3],
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                        var device ="<?php  echo $device ?>"; 
+                        var clase =  (device == 'android' ? "celda nomTarea tddate" : "celda nomTarea tddate");
+                        $(td).attr('class', clase); 
+                        $(td).attr('style', 'text-align: left'); 
+                },
+                'data':'Fecha Asignación',
+                'render': function(data, type, row){
+                    return `<td>${row['assigned_date']}</td>`;
+                }
+            },
+            {
+                'targets':[4],
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                        var device ="<?php  echo $device ?>"; 
+                        var clase =  (device == 'android' ? "celda nomTarea tddate" : "celda nomTarea tddate");
+                        $(td).attr('class', clase); 
+                        $(td).attr('style', 'text-align: left'); 
+                },
+                'data':'Equipo',
+                'render': function(data, type, row){
+                    return `<td>${(row['equipoDesc']) ? row['equipoDesc'] : ' '}</td>`;
+                }
+            },
+            {
+                'targets':[5],
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                        var device ="<?php  echo $device ?>"; 
+                        var clase =  (device == 'android' ? "celda nomTarea tddate" : "celda nomTarea tddate");
+                        $(td).attr('class', clase); 
+                        $(td).attr('style', 'text-align: left'); 
+                },
+                'data':'Sector',
+                'render': function(data, type, row){
+                    device ="<?php  echo $device ?>";
+                    return `<td>${(row['sectorDesc']) ? row['sectorDesc'] : ' ' }</td>`;
+                }
+            },
+            {
+                'targets':[6],
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                        var device ="<?php  echo $device ?>"; 
+                        var clase =  (device == 'android' ? "celda nomTarea tddate" : "celda nomTarea tddate");
+                        $(td).attr('class', clase); 
+                        $(td).attr('style', 'text-align: left'); 
+                },
+                'data':'Cliente',
+                'render': function(data, type, row){
+                    return `<td>${(row['nomCli']) ? row['nomCli'] : ' '}</td>`;
+                }
+            },
+            {
+                'targets':[7],
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                        var device ="<?php  echo $device ?>"; 
+                        var clase =  "celda nomTarea tddate";
+                        $(td).attr('class', clase); 
+                        $(td).attr('style', 'text-align: left'); 
+                },
+                'data':'Tarea',
+                'render': function(data, type, row){
+                    return `<td>${row['displayName']}</td>`;
+                }
+            },
+            {
+                'targets':[8],
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                        var device ="<?php  echo $device ?>"; 
+                        var clase =  "celda tareaDesc " + (device == 'android' ? 'hidden':null); 
+                        $(td).attr('class', clase); 
+                        $(td).attr('style', 'text-align: left'); 
+                },
+                'data':'Descripcion',
+                'render': function(data, type, row){
+                    var device ="<?php  echo $device ?>"; 
+                    return `<td>${(row['displayDescription']) ? row['displayDescription'] : ' '}</td>`;
+                }
+            },
+            {
+                'targets':[9],
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                        var device ="<?php  echo $device ?>"; 
+                        var clase =  "celda nomTarea text-center"; 
+                        $(td).attr('class', clase);
+                },
+                'data':'Id S.S',
+                'render': function(data, type, row){
+                    return `<td>${(row['ss']) ? bolita(row['ss'],'blue') : ' '}</td>`;
+                }
+            },
+            {
+                'targets':[10],
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                        var device ="<?php  echo $device ?>"; 
+                        var clase =  "celda nomTarea text-center"; 
+                        $(td).attr('class', clase);
+                },
+                'data':'Id OT',
+                'render': function(data, type, row){
+                    return `<td ">${(row['ot']) ? bolita(row['ot'],'orange') : ' '}</td>`;
+                }
+            },
+            {
+                'targets':[11],
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                        var device ="<?php  echo $device ?>"; 
+                        var clase =  "celda nomTarea text-center"; 
+                        $(td).attr('class', clase);
+                },
+                'data':'Id Pedido',
+                'render': function(data, type, row){
+                    return `<td>${(row['pema_id']) ? bolita(row['pema_id'],'green') : ' '}</td></tr>`;
+                }
+            },
         ],        
         //agregado de data-json al tr de la tabla
         createdRow:function( row, data, dataIndex ) {
