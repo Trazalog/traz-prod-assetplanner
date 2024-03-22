@@ -11,6 +11,11 @@
     .selmes {
         margin-bottom: 10px;
     }
+
+	/* Estilo para preventivos no asignados, resalta el borde*/
+	.tipo-3-border {
+    	border: 2px solid blue; 
+	}	
     </style>
 
     <!-- CALENDARIO -->
@@ -170,7 +175,10 @@ ini_events($('#external-events div.external-event'));
 																									id_orden: $(this).attr('id_orden'),
 																									allDay: false,
 																									backgroundColor: Color,
-
+																									
+																									//le agrego una clase a los preventivos sin asignar para poder darles un estilo distinto de css
+																									className: (!$(this).attr('id_usuario_a') || $(this).attr('id_usuario_a') == 0) ? 'tipo-3-border' : undefined,
+																									
 																									//Datos Filtro
 																									area: $(this).attr('area'),
 																									grupo: $(this).attr('grupo'),

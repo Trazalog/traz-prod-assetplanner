@@ -1,29 +1,92 @@
+<style>
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+}  
+.switch input {display:none;}  
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}  
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}  
+input:checked + .slider {
+    background-color: #2196F3;
+}  
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}  
+input:checked + .slider:before {
+    -webkit-transform: translateX(19px);
+    -ms-transform: translateX(19px);
+    transform: translateX(19px);
+}  
+/* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+}  
+.slider.round:before {
+    border-radius: 50%;
+}
+</style>
 <input type="hidden" id="permission" value="<?php echo $permission;?>"> 
 <section class="content">    
   <div class="row">
     <div class="col-xs-12">
       <div class="box box-primary">
         <div class="box-header">
-          <h3 class="box-title">Solicitud de Servicios</h3>
+          <div class="col-xs-12">
+            <h3 class="box-title">Solicitudes de Servicios</h3>
+          </div>
           <?php
            if (strpos($permission,'Add') !== false) {
-              echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" data-toggle="modal" data-target="#modalservicio" id="btnAdd">Agregar</button>';
+              echo '<div class="col-xs-4"><button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" data-toggle="modal" data-target="#modalservicio" id="btnAdd">Agregar</button></div>';
            }          
           ?>
+          <div class="col-xs-8" style="text-align: center;">
+            <div class="form-check">
+              <label style="margin-right: 10px;">Mostrar solicitudes conformes</label>
+            </div>
+              <label class="switch">
+                <input type="checkbox" id="check-conformes" onclick="showSolicitudesConformes()">
+                <span class="slider round"></span>
+              </label>
+          </div><!-- /.col-xs-12 -->
         </div><!-- /.box-header -->
         <div class="box-body">
-          <table id="servicio" class="table table-striped table-hover">
+          <table id="servicio" class="table table-striped table-hover" style="width:100%;table-layout: fixed;">
               <thead>
                   <tr>
                       <th width="2%">Acciones</th>
                       <th>Nro</th>
                       <th>Fecha</th>
-																						<th>Fecha Fin</th>
+											<th>Fecha Fin</th>
+											<th>T. Asignación</th>
+											<th>T. Generación</th>
                       <th>Solicitante</th>
                       <th>Equipo</th>
                       <th>Sector</th>
                       <th>Grupo</th>
                       <th>Causa</th>
+                      <th>Mantenedor</th>
                       <th>Estado</th>
                   </tr>
               </thead>
@@ -74,12 +137,35 @@
 
 																														echo '<td style="text-align: left">'.$f['fecha_terminada'].'</td>';
 																												}
+                            
+                            if(!is_null($f['f_asignacion']) && !is_null($f['f_inicio']) && $f['f_inicio'] != '0000-00-00 00:00:00'){
 
+                              $f_asignacion = strtotime($f['f_asignacion']);
+                              $f_inicio = strtotime($f['f_inicio']);
+                              $t_asignacion = number_format((($f_inicio - $f_asignacion)/3600), 2, ':', ' ');
+                             
+                              echo '<td style="text-align: left">'.$t_asignacion.'</td>';
+                            }else{
+                              echo '<td style="text-align: left">S/Datos</td>';
+                            }
+                                                        
+                            if(!is_null($f['f_asignacion']) && !is_null($f['f_solicitado'])){
+
+                              $f_asignacion = strtotime($f['f_asignacion']);
+                              $f_solicitado = strtotime($f['f_solicitado']);
+                              $t_genracion = number_format((($f_asignacion - $f_solicitado)/3600), 2, ':', ' ');
+                             
+                              echo '<td style="text-align: left">'.$t_genracion.'</td>';
+                            }else{
+                              echo '<td style="text-align: left">S/Datos</td>';
+                            }                           
+                            
                             echo '<td style="text-align: left">'.$f['solicitante'].'</td>';
                             echo '<td style="text-align: left">'.$f['equipo'].'</td>';
                             echo '<td style="text-align: left">'.$f['sector'].'</td>';
                             echo '<td style="text-align: left">'.$f['grupo'].'</td>';  
                             echo '<td style="text-align: left">'.$f['causa'].'</td>';
+                            echo '<td style="text-align: left">'.$f['mantenedor'].'</td>';
 
                             echo '<td>';           
                             
@@ -1048,29 +1134,11 @@ $("#vstsolicita").autocomplete({
             dataType: 'json'
         });
   }
-
-  // Datatable
-  // $(function () {
-
-  //   $('#servicio').DataTable({
-  //     "aLengthMenu": [ 10, 25, 50, 100 ],
-  //     "columnDefs": [ {
-  //       "targets": [ 0 ], 
-  //       "searchable": false
-  //     },
-  //     {
-  //       "targets": [ 0 ], 
-  //       "orderable": false
-  //     } ],
-  //     "order": [[1, "asc"]],
-  //   });
-
-  // });
-
   // Datatables
   $('#servicio').DataTable({
     <?php echo (!DT_SIZE_ROWS ? '"paging": false,' : null) ?>
-
+    "autoWidth": false,
+    "paging": true,
     "aLengthMenu": [ 10, 25, 50, 100 ],
     "columnDefs": [ 
       {
@@ -1282,3 +1350,19 @@ $("#vstsolicita").autocomplete({
     </div>
   </div>
 </div>
+
+<script>
+$(document).ready(function(){
+  //Oculto solicitudes conformes
+  showSolicitudesConformes();
+});
+//Oculta/Muestra solicitudes con estado Conforme
+function showSolicitudesConformes() {
+    estado = $('#check-conformes').is(':checked');
+    if (estado) {
+      $('#servicio').DataTable().columns().search('').draw();
+    } else {
+      $('#servicio').DataTable().columns(12).search('Cerrada|Terminada|Asignada|Solicitada|Planificada|Curso', true, false).draw();
+    }
+  }
+</script>

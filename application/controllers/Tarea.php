@@ -104,7 +104,8 @@ class Tarea extends CI_Controller {
 			public function index($permission = null){
 
 				$data = $this->session->userdata();
-					log_message('DEBUG','#TRAZA | TAREA | index() | UserId: '. $data['user_data'][0]['usrId'] ." ||| UserName: ". $data['user_data'][0]['usrName'] ." ||| id_empresa: ". $data['user_data'][0]['id_empresa']);
+				log_message('DEBUG','#TRAZA | TAREA | index() | UserId: '. $data['user_data'][0]['usrId'] ." ||| UserName: ". $data['user_data'][0]['usrName'] ." ||| id_empresa: ". $data['user_data'][0]['id_empresa']);
+				log_message('DEBUG','#TRAZA | TAREA | index() | UserId: '. json_encode($data));
 
 					 if(empty($data['user_data'][0]['usrName'])){
 						log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
@@ -166,7 +167,10 @@ class Tarea extends CI_Controller {
 						
 						//guardo en session todas las tareas filtradas por case_id
 						$_SESSION['listadoTareas'] = $array;
-						$data['permission'] = $permission;		
+						$data['permission'] = $permission;	
+						//tiempo de recarga harkode en constant
+						$data['tiempoRecarga'] = TIEMPO_RECARGA; 
+						
 						log_message('DEBUG','#TRAZA | TAREA | index() | variable Sesion: '. json_encode($array));
 
 						if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {								
@@ -174,7 +178,7 @@ class Tarea extends CI_Controller {
 						}else{					
 							$data['device'] = "pc";				
 						}		
-						//log_message('DEBUG','#TRAZA | TAREA | index() | data: '. json_encode($data));
+						log_message('DEBUG','#TRAZA >> TAREA >> index() >> list: '. json_encode($data));
 							
 						$this->load->view('tareas/list',$data);	
 					}		 
@@ -287,7 +291,7 @@ class Tarea extends CI_Controller {
 			public function verificarInforme(){
 				
 				//log
-					log_message('DEBUG', 'TRAZA | Tarea/verificarInforme()');					
+				log_message('DEBUG', 'TRAZA | TRAZA | ASSET | TAREAS | verificarInforme()');					
 				$id_eq = $this->input->post('id_eq');
 				$id_OT = $this->input->post('id_OT');
 				$id_SS = $this->input->post('id_SS');
@@ -364,7 +368,7 @@ class Tarea extends CI_Controller {
 									$data["turno"] = "-";
 									$data["usrId"] = $infoOt[0]["usrId"];
 
-									log_message('DEBUG','#Main/verificarInforme |  $data: '.json_encode($data));
+									log_message('DEBUG','TRAZA | ASSET | TAREAS |verificarInforme() |  $data: '.json_encode($data));
 
 									$result = $this->Tareas->setUltimaLecturaIS($data);
 
@@ -401,8 +405,8 @@ class Tarea extends CI_Controller {
 										echo json_encode(msj(false,'No se pudo Obtener Tarea Siguiente | Confecciona informe servicio'));return;
 									}
 								
-									log_message('DEBUG', 'TRAZA |TAREAS | $case_id: '.$case_id);
-									log_message('DEBUG', 'TRAZA | TAREAS | INFORME SERVICIO-> $task_id: '.$nextTask);
+									log_message('DEBUG', 'TRAZA | ASSET | TAREAS | $case_id: '.$case_id);
+									log_message('DEBUG', 'TRAZA | ASSET | TAREAS | INFORME SERVICIO-> $task_id: '.$nextTask);
 
 									if($responsable)
 									{
@@ -412,8 +416,8 @@ class Tarea extends CI_Controller {
 									
 										$usuarioBPM = $rsp['data']['id'];
 										// log	
-										log_message('DEBUG', 'TRAZA | Usr asignado (responsable Re Confecciona informe servicio) en BPM: '.$usuarioBPM);
-										log_message('DEBUG', 'TRAZA | Usr asignado (responsable Re Confecciona informe servicio) en LOCAL: '.$responsable);
+										log_message('DEBUG', 'TRAZA | ASSET | Usr asignado (responsable Re Confecciona informe servicio) en BPM: '.$usuarioBPM);
+										log_message('DEBUG', 'TRAZA | ASSET |  Usr asignado (responsable Re Confecciona informe servicio) en LOCAL: '.$responsable);
 									
 										//Asignar Usuario a Tarea para Finanlizar
 										$responce = $this->bpm->setUsuario($nextTask,$usuarioBPM);
@@ -436,7 +440,7 @@ class Tarea extends CI_Controller {
 			public function prestarConformidad(){
 
 				//log
-				//log_message('DEBUG', 'TRAZA | Tarea/prestarConformidad');	
+				log_message('DEBUG', 'TRAZA | ASSET | Tarea | prestarConformidad()');	
 
 				$idTarBonita = $this->input->post('idTarBonita');				
 				$opcion = $this->input->post('opcion');	
@@ -804,7 +808,7 @@ class Tarea extends CI_Controller {
 		
 				$id_OT = $this->input->post('ot');				
 				$response['adjunto'] = $this->Tareas->procedimientos($id_OT);
-				log_message('DEBUG','#Tarea/procedimiento: '.json_encode($response));
+				//log_message('DEBUG','#Tarea/procedimiento: '.json_encode($response));
 				echo json_encode($response['adjunto']);
 			}
 		
@@ -824,19 +828,19 @@ class Tarea extends CI_Controller {
 		/* COMENTARIOS */
 			public function GuardarComentario(){
 				$data = $this->input->post();
-				log_message('INFO','#TRAZA|Tarea|GuardarComentario() >> ');
-				log_message('DEBUG','#Tarea/GuardarComentario: '.json_encode($data));
+				//log_message('INFO','#TRAZA|Tarea|GuardarComentario() >> ');
+				//log_message('DEBUG','#Tarea/GuardarComentario: '.json_encode($data));
 				$response = $this->bpm->GuardarComentario($data["processInstanceId"],$data["content"]);
-				log_message('DEBUG','#Tarea/GuardarComentario: '.json_encode($response));
+				//log_message('DEBUG','#Tarea/GuardarComentario: '.json_encode($response));
 				echo json_encode($response);
 			}	
 
 			public function ObtenerComentariosBPM($case_id){
 			
-				log_message('INFO','#TRAZA|Tarea|ObtenerComentariosBPM() >> ');
-    			log_message('DEBUG','#Tarea/ObtenerComentariosBPM: '.json_encode($case_id));
+				//log_message('INFO','#TRAZA|Tarea|ObtenerComentariosBPM() >> ');
+    			//_message('DEBUG','#Tarea/ObtenerComentariosBPM: '.json_encode($case_id));
 				$auxx = $this->bpm->ObtenerComentarios($case_id);
-				log_message('DEBUG','#Tarea/ObtenerComentariosBPM: '.json_encode($auxx));
+				//log_message('DEBUG','#Tarea/ObtenerComentariosBPM: '.json_encode($auxx));
 				$aux =json_decode($auxx["data"]);
 				$data['comentarios'] = $aux;
 				$data['case_id'] = $case_id;
@@ -974,7 +978,7 @@ class Tarea extends CI_Controller {
 		$search = $this->input->post('search')['value'];
 
 		$r = $this->Tareas->tareaspaginadas($start,$length,$search);
-		log_message('DEBUG','#TRAZA | #TAREA >> paginado tareas: '.json_encode($r));
+		//log_message('DEBUG','#TRAZA | #TAREA >> paginado tareas: '.json_encode($r));
 	
 		$datos =$r['datos'];
 		$totalDatos = $r['numDataTotal'];
@@ -988,6 +992,68 @@ class Tarea extends CI_Controller {
 		);
 		$result = json_encode($json_data);
 		echo $result;
+	}
+
+
+
+	/**
+	* Genera un nuevo listado de las tareas 
+	* @param 
+	* @return array con nuevo listado de tareas
+	*/
+
+	//actualiza $_SESSION['listadoTareas'] con las nuevas tareas
+	function actualizaTareas(){
+		$data = $this->session->userdata();
+
+		$response = $this->bpm->getToDoList();
+
+						if(!$response['status']){
+							return;
+						}
+						
+						$empr_id = empresa();
+						$array=[];
+						$aux=[];
+						
+						//Filtra datos por empresa
+						foreach($response['data'] as $o){
+							if($this->Tareas->bandejaEmpresa($o['caseId'] , $empr_id)){
+								$aux['caseId'] = $o['caseId'];
+								$aux['displayDescription'] = $o['displayDescription'];
+								$aux['executedBy'] = $o['executedBy'];
+								$aux['rootContainerId'] = $o['rootContainerId'];
+								$aux['assigned_date'] = $o['assigned_date'];
+								$aux['displayName'] = $o['displayName'];
+								$aux['executedBySubstitute'] = $o['executedBySubstitute'];
+								$aux['dueDate'] = $o['dueDate'];
+								$aux['description'] = $o['description'];
+								$aux['type'] = $o['type'];
+								$aux['priority'] = $o['priority'];
+								$aux['actorId'] = $o['actorId'];
+								$aux['processId'] = $o['processId'];
+								$aux['name'] = $o['name'];
+								$aux['reached_state_date'] = $o['reached_state_date'];
+								$aux['rootCaseId'] = $o['rootCaseId'];
+								$aux['id'] = $o['id'];
+								$aux['state'] = $o['state'];
+								$aux['parentCaseId'] = $o['parentCaseId'];
+								$aux['last_update_date'] = $o['last_update_date'];
+								$aux['pema_id'] = $o['pema_id'];
+								$aux['ot'] = $o['ot'];
+								$aux['equipoDesc'] = $o['equipoDesc'];
+								$aux['sectorDesc'] = $o['sectorDesc'];
+								$aux['nomCli'] = $o['nomCli'];
+								$aux['usr_asignado'] = $o['usr_asignado'];
+								$aux['assigned_id'] = $o['assigned_id'];
+
+								$array[] = $aux; 
+							}
+						}
+						
+						//guardo en session todas las tareas filtradas por case_id
+						$_SESSION['listadoTareas'] = $array;
+
 	}
 
 

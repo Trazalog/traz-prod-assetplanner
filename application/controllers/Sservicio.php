@@ -107,6 +107,8 @@ class Sservicio extends CI_Controller
 		{
 			$data['list'] = $this->Sservicios->servicios_List();
 			$data['permission'] = $permission;
+			log_message('DEBUG','#Main/index | Sservicio >> Index >> Data '.json_encode($data));
+
 			$this->load->view('Sservicios/list_bpm', $data);
 		}
 		// trae tareas estandar para select de nueva solicitud
@@ -118,6 +120,7 @@ class Sservicio extends CI_Controller
 		// GUARDA SSERVICIOS y lanza proceso en BPM (inspección)
 		function lanzarProcesoBPM()
 		{
+			log_message('DEBUG', "#TRAZA | #ASSET | Sservicio | lanzarProcesoBPM()");
 			$userdata = $this->session->userdata('user_data');
 			$empId    = $userdata[0]['id_empresa'];
 			// inserta registro en  tabla solicitud de reparacion
@@ -245,7 +248,5 @@ class Sservicio extends CI_Controller
 		$data = $this->input->post();
 		$response = $this->Sservicios->activSolicitudes($data);
 		$this->load->view('Sservicios/list', $data);
-	}	
-	
-
+	}
 }

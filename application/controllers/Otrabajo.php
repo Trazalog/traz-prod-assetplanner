@@ -330,7 +330,7 @@ class Otrabajo extends CI_Controller {
 	 *  en modalejecutar ot 
 	 */
 	public function updateResponsable(){
-
+		log_message('DEBUG', "#TRAZA | #ASSET | Sservicio | updateResponsable()");
 		$id_responsable = $this->input->post('id_usuario_a');
 		$id_orden = $this->input->post('idOt');
 		$response = $this->Otrabajos->updateResponsables($id_orden, $id_responsable);
@@ -1070,7 +1070,7 @@ class Otrabajo extends CI_Controller {
 	public function EjecutarOT(){
 
 		//log
-		log_message('DEBUG', '#TRAZA | OTrabajo/Ejecutar OT');
+		log_message('DEBUG', "#TRAZA | #ASSET | Otrabajo | EjecutarOT()");
 
 		$userdata = $this->session->userdata('user_data');
 		$userBpm = $userdata[0]['userBpm']['id']; 
@@ -1084,8 +1084,7 @@ class Otrabajo extends CI_Controller {
 		$id_tarea 		= (int)$this->input->post('tareastd');
 		$tarOpc				=	$this->input->post('tareaOpcional');
 		$case_id = $this->Otrabajos->getCaseIdOT($ot);
-
-
+		
 
 		//Guardo Posicion donde Se Ejecuto OT desde un MOVIL
 		$lat = $this->input->post('latitud');
@@ -1130,8 +1129,8 @@ class Otrabajo extends CI_Controller {
 			echo json_encode(msj(false,'No se pudo Obtener Tarea Siguiente | Ejecutar OT'));return;
 		}
 		// log
-		log_message('DEBUG', 'TRAZA | $case_id: '.$case_id);
-		log_message('DEBUG', 'TRAZA | Ejecutar OT-> $task_id: '.$nextTask);
+		log_message('DEBUG', 'TRAZA | #ASSET | Otrabajo |  $case_id: '.$case_id);
+		log_message('DEBUG', 'TRAZA | #ASSET | Otrabajo | Ejecutar OT-> $task_id: '.$nextTask);
 
 		// sincroniza usuario local con el de BPM, para asignar el usr de BPM
 		$rsp = $this->bpm->getInfoSisUserenBPM($usrId);
@@ -1141,8 +1140,8 @@ class Otrabajo extends CI_Controller {
 		$usuarioBPM = $rsp['data']['id'];
 
 		// log	
-		log_message('DEBUG', 'TRAZA | Usr asignado (responsable OT) en BPM: '.$usuarioBPM);
-		log_message('DEBUG', 'TRAZA | Usr asignado (responsable OT) en LOCAL: '.$usrId);
+		log_message('DEBUG', 'TRAZA | #ASSET | Otrabajo | Usr asignado (responsable OT) en BPM: '.$usuarioBPM);
+		log_message('DEBUG', 'TRAZA | #ASSET | Otrabajo | Usr asignado (responsable OT) en LOCAL: '.$usrId);
 
 		//Asignar Usuario a Tarea para Finanlizar
 		$responce = $this->bpm->setUsuario($nextTask,$usuarioBPM);
