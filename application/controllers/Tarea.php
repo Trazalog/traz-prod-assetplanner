@@ -291,7 +291,7 @@ class Tarea extends CI_Controller {
 			public function verificarInforme(){
 				
 				//log
-					log_message('DEBUG', 'TRAZA | Tarea/verificarInforme()');					
+				log_message('DEBUG', 'TRAZA | TRAZA | ASSET | TAREAS | verificarInforme()');					
 				$id_eq = $this->input->post('id_eq');
 				$id_OT = $this->input->post('id_OT');
 				$id_SS = $this->input->post('id_SS');
@@ -368,7 +368,7 @@ class Tarea extends CI_Controller {
 									$data["turno"] = "-";
 									$data["usrId"] = $infoOt[0]["usrId"];
 
-									log_message('DEBUG','#Main/verificarInforme |  $data: '.json_encode($data));
+									log_message('DEBUG','TRAZA | ASSET | TAREAS |verificarInforme() |  $data: '.json_encode($data));
 
 									$result = $this->Tareas->setUltimaLecturaIS($data);
 
@@ -405,8 +405,8 @@ class Tarea extends CI_Controller {
 										echo json_encode(msj(false,'No se pudo Obtener Tarea Siguiente | Confecciona informe servicio'));return;
 									}
 								
-									log_message('DEBUG', 'TRAZA |TAREAS | $case_id: '.$case_id);
-									log_message('DEBUG', 'TRAZA | TAREAS | INFORME SERVICIO-> $task_id: '.$nextTask);
+									log_message('DEBUG', 'TRAZA | ASSET | TAREAS | $case_id: '.$case_id);
+									log_message('DEBUG', 'TRAZA | ASSET | TAREAS | INFORME SERVICIO-> $task_id: '.$nextTask);
 
 									if($responsable)
 									{
@@ -416,8 +416,8 @@ class Tarea extends CI_Controller {
 									
 										$usuarioBPM = $rsp['data']['id'];
 										// log	
-										log_message('DEBUG', 'TRAZA | Usr asignado (responsable Re Confecciona informe servicio) en BPM: '.$usuarioBPM);
-										log_message('DEBUG', 'TRAZA | Usr asignado (responsable Re Confecciona informe servicio) en LOCAL: '.$responsable);
+										log_message('DEBUG', 'TRAZA | ASSET | Usr asignado (responsable Re Confecciona informe servicio) en BPM: '.$usuarioBPM);
+										log_message('DEBUG', 'TRAZA | ASSET |  Usr asignado (responsable Re Confecciona informe servicio) en LOCAL: '.$responsable);
 									
 										//Asignar Usuario a Tarea para Finanlizar
 										$responce = $this->bpm->setUsuario($nextTask,$usuarioBPM);
@@ -440,7 +440,7 @@ class Tarea extends CI_Controller {
 			public function prestarConformidad(){
 
 				//log
-				//log_message('DEBUG', 'TRAZA | Tarea/prestarConformidad');	
+				log_message('DEBUG', 'TRAZA | ASSET | Tarea | prestarConformidad()');	
 
 				$idTarBonita = $this->input->post('idTarBonita');				
 				$opcion = $this->input->post('opcion');	

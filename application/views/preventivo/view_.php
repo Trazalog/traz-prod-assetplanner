@@ -96,7 +96,8 @@
                     <input type="text" class="form-control" id="duracion" name="duracion" placeholder="Ingrese valor..."/>
                   </div> 
                   <div class="col-xs-12 col-sm-6 col-md-4">U. de tiempo <strong style="color: #dd4b39">*</strong>
-                    <select  id="unidad" name="unidad" class="form-control" >
+                    <select id="unidad" name="unidad" class="form-control">
+                    </select>
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-4">Cant. Operarios <strong style="color: #dd4b39">*</strong>:
                     <input type="text" class="form-control" id="cantOper" name="cantOper" placeholder="Ingrese valor..."/>
