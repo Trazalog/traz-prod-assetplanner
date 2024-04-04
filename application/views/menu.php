@@ -74,6 +74,8 @@ $(".sidebar .sidebar-menu a").click(function(event) {
  */
 function cargarView(controller, action, permission) {
     WaitingOpen();
+    //cada vez que cambia de pagina verifica las notificaciones en el controlador Dash
+    obtenerNotificaciones();
     linkTo(controller+"/"+action+"/"+permission);
     WaitingClose();
 }

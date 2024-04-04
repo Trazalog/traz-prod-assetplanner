@@ -215,4 +215,29 @@ class dash extends CI_Controller {
         $this->load->view('calendar/calendar', $data);
     }
 
+
+    //Trae nuevas notificaciones
+	public function notificaciones()
+    {
+        $res=$this->Dashs->notificaciones();
+		if($res) echo json_encode($res);
+		else echo json_encode([]);
+    }
+
+	//actualiza la tabla si las notificaciones fueron vistas
+	public function marcarNotificacionesLeidas()
+    {
+		$id_notificaciones = $this->input->post('id_notificaciones');
+
+		if (is_array($id_notificaciones) && !empty($id_notificaciones)) {
+			foreach ($id_notificaciones as $id) {
+				$res = $this->Dashs->marcarNotificacionesLeidas($id);
+			}
+		} else {
+			echo "No se han recibido notificaciones.";
+		}
+		
+    }
+	
+
 }
