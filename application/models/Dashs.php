@@ -70,4 +70,45 @@ class Dashs extends CI_Model
         //}
     }
 
+     /**
+     * Trae nuevas notificaciones desde tabla synch_notificacion_queue
+     *  @param 
+     * @return Array con nuevas notificaciones
+     */
+    public function notificaciones()
+    {
+        $userdata  = $this->session->userdata('user_data');
+        $usrId = $userdata[0]['usrId'];
+
+        $ci =& get_instance();
+		$aux = $ci->rest->callAPI("GET",REST_MAN."getNotificaciones/".$usrId);
+		
+        if($aux['status'])
+        {
+            $aux = json_decode($aux["data"]);
+            $notificaciones_array = json_decode(json_encode($aux->notificaciones->notificacion), true);
+            return $notificaciones_array;
+        }
+        else return false;
+    }
+
+    /**
+     * actualiza notificaciones vistas en tabla synch_notificacion_queue
+     *  @param $id_notificacion 
+     * @return true
+     */
+    public function marcarNotificacionesLeidas($id_notificacion)
+    {
+        $userdata  = $this->session->userdata('user_data');
+        $usrId = $userdata[0]['usrId'];
+
+        //pongo en 1 el tipo de la nueva empresa
+        $this->db->set('synch_notificacion_queue.leido', true);
+        $this->db->where('synch_notificacion_queue.queue_id', $id_notificacion);
+        $this->db->update('synch_notificacion_queue');
+        
+        //$this->db->where('usuarioasempresa.usrId', $usrId);
+        return true;
+    }
+
 }
