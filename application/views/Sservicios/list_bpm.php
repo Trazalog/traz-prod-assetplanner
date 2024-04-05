@@ -130,13 +130,11 @@ input:checked + .slider:before {
                             echo '<td style="text-align: left">'.$f['id_solicitud'].'</td>';
                             echo '<td style="text-align: left">'.$f['f_solicitado'].'</td>';
 
-																												if ( ($fecTerminada == '0000-00-00 00:00:00') || ($fecTerminada == '') ) {
-
-																														echo '<td style="text-align: left"> S/Fecha</td>';
-																												} else {
-
-																														echo '<td style="text-align: left">'.$f['fecha_terminada'].'</td>';
-																												}
+                            if ( ($fecTerminada == '0000-00-00 00:00:00') || ($fecTerminada == '') ) {
+                                echo '<td style="text-align: left"> S/Fecha</td>';
+                            } else {
+                                echo '<td style="text-align: left">'.$f['fecha_terminada'].'</td>';
+                            }
                             
                             if(!is_null($f['f_asignacion']) && !is_null($f['f_inicio']) && $f['f_inicio'] != '0000-00-00 00:00:00'){
 
@@ -1378,17 +1376,117 @@ $("#vstsolicita").autocomplete({
 </div>
 
 <script>
-$(document).ready(function(){
-  //Oculto solicitudes conformes
-  showSolicitudesConformes();
-});
+// $(document).ready(function(){
+//   //Oculto solicitudes conformes
+//   showSolicitudesConformes();
+// });
 //Oculta/Muestra solicitudes con estado Conforme
 function showSolicitudesConformes() {
-    estado = $('#check-conformes').is(':checked');
-    if (estado) {
-      $('#servicio').DataTable().columns().search('').draw();
-    } else {
-      $('#servicio').DataTable().columns(12).search('Cerrada|Terminada|Asignada|Solicitada|Planificada|Curso', true, false).draw();
+  showConformes = $('#check-conformes').is(':checked');
+  table = $('#servicio').DataTable();
+
+  $.ajax({
+    type: 'GET',
+    dataType: 'json',
+    data: {
+        showConformes: showConformes
+    },
+    url: 'index.php/Sservicio/getServiciosConformes',
+    success: function(data){
+      // Limpio tabla
+      table.clear();
+
+      // Loopeo, dibujo y agrego las filas de la tabla
+      $.each(data, function(index, item) {
+        var t_asignacion;
+        var t_generacion;
+
+        //Checkeo la nullidad de la fecha de asignacion e inicio
+        if((item.f_asignacion != null && item.f_asignacion != '0000-00-00 00:00:00') && (item.f_inicio != null && item.f_inicio != '0000-00-00 00:00:00')){
+          //Parseo las fechas como objetos Date
+          var f_asignacion = new Date(item.f_asignacion);
+          var f_inicio = new Date(item.f_inicio);
+          //Obtengo la diferencia de tiempo entre la asignacion y el inicio en milisegundos
+          var tiempoAsignacion = f_inicio - f_asignacion;
+          // Parseo los milisegundos a horas y minutos de asignacion
+          var horasAsignacion = Math.floor(tiempoAsignacion / 1000 / 60 / 60);
+          var minutosAsignacion = Math.floor((tiempoAsignacion / 1000 / 60) % 60);
+          // Agrego un 0 a los minutos si es necesario
+          minutosAsignacion = String(minutosAsignacion).padStart(2, '0');
+          //Formateo fecha final
+          t_asignacion = horasAsignacion + ":" + minutosAsignacion;
+        }else{
+          t_asignacion = 'S/Datos';
+        }
+        //Checkeo la nullidad de la fecha de asignacion y solicitado
+        if((item.f_asignacion != null && item.f_asignacion != '0000-00-00 00:00:00') && (item.f_solicitado != null && item.f_solicitado != '0000-00-00 00:00:00')){
+          var f_asignacion = new Date(item.f_asignacion);
+          var f_solicitado = new Date(item.f_solicitado);
+          var tiempoGeneracion = f_asignacion - f_solicitado;
+          var horasGeneracion = Math.floor(tiempoGeneracion / 1000 / 60 / 60);
+          var minutosGeneracion = Math.floor((tiempoGeneracion / 1000 / 60) % 60);
+  
+          minutosGeneracion = String(minutosGeneracion).padStart(2, '0');
+          
+          t_generacion = horasGeneracion + ":" + minutosGeneracion;
+        }else{
+          t_generacion = 'S/Datos';
+        }
+        
+        switch (item.estado) {
+          case 'S':
+            estado = "Solicitada";
+            color = 'red';
+            break;
+          case 'PL':
+            estado = "Planificada";
+            color = 'yellow';
+            break;
+          case 'AS':
+            estado = "Asignada";
+            color = 'purple';
+            break;
+          case 'C':
+            estado = "Curso";
+            color = 'green';
+            break;
+          case 'T':
+            estado = "Terminada";
+            color = 'blue';
+            break;
+          case 'CE':
+            estado = "Cerrada";
+            color = 'default';
+            break;
+          case 'CN':
+            estado = "Conforme";
+            color = 'black';
+            break;
+        
+          default:
+            break;
+        }
+        fila = "<tr id='"+ item.id_solicitud +"' class='"+ item.id_equipo +"' data-idequipo='"+ item.id_equipo +"'>" +
+                '<td><a onclick="mostrarOT(this)" href="#"><i class="fa fa-search text-white" style="cursor: pointer;margin-left:-3px"></i>   Ver</a>' +
+                '<td>' + item.id_solicitud + '</td>' +
+                '<td>' + item.f_solicitado + '</td>' +
+                '<td>' + (item.fecha_terminada != null && item.fecha_terminada != '0000-00-00 00:00:00' ? item.fecha_terminada : 'S/Fecha') + '</td>' +
+                '<td>' + t_asignacion + '</td>' +
+                '<td>' + t_generacion + '</td>' +
+                '<td>' + item.solicitante + '</td>' +
+                '<td>' + (item.equipo != null ? item.equipo : '') + '</td>' +
+                '<td>' + (item.sector != null ? item.sector : '') + '</td>' +
+                '<td>' + (item.grupo != null ? item.grupo : '') + '</td>' +
+                '<td>' + (item.causa != null ? item.causa : '') + '</td>' +
+                '<td>' + (item.mantenedor != null ? item.mantenedor : '') + '</td>' +
+                '<td><span data-toggle="tooltip" title="'+ item.estado +'" class="badge bg-'+ color +' estado">'+ estado +'</span></td>' +
+            '</tr>';
+        table.row.add($(fila));
+      });
+
+      // Redibujo la nueva tabla
+      table.draw();
     }
-  }
+  });
+}
 </script>
