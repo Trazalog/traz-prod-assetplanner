@@ -140,10 +140,24 @@ input:checked + .slider:before {
                             
                             if(!is_null($f['f_asignacion']) && !is_null($f['f_inicio']) && $f['f_inicio'] != '0000-00-00 00:00:00'){
 
-                              $f_asignacion = strtotime($f['f_asignacion']);
+                              /* $f_asignacion = strtotime($f['f_asignacion']);
                               $f_inicio = strtotime($f['f_inicio']);
-                              $t_asignacion = number_format((($f_inicio - $f_asignacion)/3600), 2, ':', ' ');
-                             
+                              $t_asignacion = number_format((($f_inicio - $f_asignacion)/3600), 2, ':', ' ');  */
+
+                              $f_asignacion = new DateTime($f['f_asignacion']);
+                              $f_inicio = new DateTime($f['f_inicio']);
+
+                              // Calcula la diferencia entre las fechas
+                              $intervalo = $f_inicio->diff($f_asignacion);
+
+                              // Formatea la diferencia en horas:minutos
+                              $horas = $intervalo->format('%h');
+                              $minutos = $intervalo->format('%i');
+
+                               // Rellena los minutos con ceros a la izquierda si es necesario
+                               $minutos = str_pad($minutos, 2, '0', STR_PAD_LEFT);
+
+                              $t_asignacion = "$horas:$minutos";
                               echo '<td style="text-align: left">'.$t_asignacion.'</td>';
                             }else{
                               echo '<td style="text-align: left">S/Datos</td>';
@@ -151,9 +165,21 @@ input:checked + .slider:before {
                                                         
                             if(!is_null($f['f_asignacion']) && !is_null($f['f_solicitado'])){
 
-                              $f_asignacion = strtotime($f['f_asignacion']);
+                            /*   $f_asignacion = strtotime($f['f_asignacion']);
                               $f_solicitado = strtotime($f['f_solicitado']);
-                              $t_genracion = number_format((($f_asignacion - $f_solicitado)/3600), 2, ':', ' ');
+                              $t_genracion = number_format((($f_asignacion - $f_solicitado)/3600), 2, ':', ' '); */
+
+                              $f_asignacion = new DateTime($f['f_asignacion']);
+                              $f_solicitado = new DateTime($f['f_solicitado']);
+
+                              $intervalo = $f_solicitado->diff($f_asignacion);
+
+                              $horas = $intervalo->format('%h');
+                              $minutos = $intervalo->format('%i');
+                              // Rellena los minutos con ceros a la izquierda si es necesario
+                              $minutos = str_pad($minutos, 2, '0', STR_PAD_LEFT);
+
+                              $t_genracion = "$horas:$minutos";
                              
                               echo '<td style="text-align: left">'.$t_genracion.'</td>';
                             }else{
