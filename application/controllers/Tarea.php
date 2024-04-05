@@ -344,7 +344,7 @@ class Tarea extends CI_Controller {
 								}		
 																		
 								// Cambia  estado de la OT a CERRADO					
-								$result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT');
+								$result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT', true);
 
 								// Cambio Inform Servicio  a TERMINADO					
 								$result = $this->Tareas->cambiarEstado($id_OT, 'CE', 'informe servicios');
