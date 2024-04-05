@@ -29,14 +29,64 @@
                     font-size: 20px;
                     line-height: 50px;
                 }
+
+                .footer{
+                    display: none;
+                }
+
+                .dropdown-menu{
+                    border: 2px solid #3c8dbc;
+                }
                 </style>
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
 
-                        <li id="notiTareas" class="dropdown user user-menu">
+                        <!-- <li id="notiTareas" class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <img src="<?php base_url()?>assets/img/customers/record.png"  width = "20" height= "20"  alt="Notificaciones">
                             </a>
+                        </li> -->
+                        <!-- notificaciones -->
+                        <li class="dropdown notifications-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-bell-o"></i>
+                                 <span class="label label-warning cantidadNotificaciones"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="header"></li> 
+                            <li> 
+
+                            <ul class="menu">
+                              <!--   <li>
+                                    <a href="#">
+                                        <i class="fa fa-users text-aqua"></i> 5 new members joined today
+                                    </a> 
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="fa fa-warning text-yellow"></i> Very long description here that may not fit into the
+                                        page and may cause design problems
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="fa fa-users text-red"></i> 5 new members joined
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="fa fa-shopping-cart text-green"></i> 25 sales made
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="fa fa-user text-red"></i> You changed your username
+                                    </a>
+                                </li> -->
+                            </ul>
+                            </li>
+                                <li class="footer"><a href="#">Ver todas</a></li> 
+                            </ul>
                         </li>
                         <!-- User Account: style can be found in dropdown.less -->
                         <li class="dropdown user user-menu">
@@ -101,8 +151,22 @@
 
         <script>
 
-        $(document).ready(function(){
-            $("#notiTareas").css('visibility','hidden');
+var id_notificaciones = [];
+        $(document).ready(function() {
+            
+
+            //cuando esta oculta la campanita
+            $('.dropdown.notifications-menu').on('hidden.bs.dropdown', function () {
+                    // Resetear notificacionesMostradas cuando se cierra el menú desplegable
+                    $('.dropdown-menu .menu').empty();
+                    // Actualizar la cantidad de notificaciones a cero
+                    $('.cantidadNotificaciones').text('0');
+                    // Actualizar el texto del encabezado
+                    $('.dropdown-menu .header').text("No tienes notificaciones nuevas");
+                    $('.dropdown-menu .footer').css('display', 'none');
+                    marcarNotificacionesLeidas();
+            });
+          
         });
 
         function logout() {
@@ -149,4 +213,109 @@
                 },
             });
         }
+
+        //va a la bandeja cuando clickea una notificacion
+        $(document).on('click', '.notificacion-link', function() {
+                event.preventDefault(); // Evita el comportamiento predeterminado del enlace
+                // Ejecutar la función cargarView con el ID o cualquier otro dato necesario
+                $('.dropdown-menu .menu').empty();
+                // Actualizar la cantidad de notificaciones a cero
+                $('.cantidadNotificaciones').text('0');
+                // Actualizar el texto del encabezado
+                $('.dropdown-menu .header').text("No tienes notificaciones nuevas");
+                $('.dropdown-menu .footer').css('display', 'none');
+                marcarNotificacionesLeidas();
+                cargarView('Tarea', 'index', 'Add-Edit-Del-View-');
+
+        });
+
+        //va a la bandeja cuando clickea ver todos en notificaciones
+        $(document).on('click', '.footer', function() {
+                event.preventDefault(); // Evita el comportamiento predeterminado del enlace
+                // Ejecutar la función cargarView con el ID o cualquier otro dato necesario
+                $('.dropdown-menu .menu').empty();
+                // Actualizar la cantidad de notificaciones a cero
+                $('.cantidadNotificaciones').text('0');
+                // Actualizar el texto del encabezado
+                $('.dropdown-menu .header').text("No tienes notificaciones nuevas");
+                $('.dropdown-menu .footer').css('display', 'none');
+                marcarNotificacionesLeidas();
+                cargarView('Tarea', 'index', 'Add-Edit-Del-View-');
+
+        });
+
+        
+    // Función para obtener las notificaciones nuevas
+    function obtenerNotificaciones() {
+        console.log("Obteniendo notificaciones...");
+        $.ajax({
+            data: '',
+            dataType: 'json',
+            type: 'GET',
+            url: 'index.php/Dash/notificaciones',
+            success: function(result) {
+                console.log(result);
+
+                if (result.length > 0) {
+                    result.forEach(function(notification) {
+                        // Convertir la cadena JSON en un objeto JavaScript
+                        id_notificaciones.push(notification.queue_id);
+                        var data = JSON.parse(notification.data_json);
+
+                        // Construir el HTML de la notificación
+                        var notificationHtml = '<li><a href="#" class="notificacion-link" >' +
+                            '<i class="fa fa-bell-o"></i> ' + data.nombre +
+                            '</a></li>';
+
+                        // Agregar la notificación al menú
+                        $('.dropdown-menu .menu').append(notificationHtml);
+                    });
+
+                    // Actualizar la cantidad de notificaciones
+                    var cantidadNotificaciones = result.length;
+                    $('.cantidadNotificaciones').text(cantidadNotificaciones);
+                    $('.dropdown-menu .header').text("Tienes " + cantidadNotificaciones + " notificaciones nuevas");
+                    $('.dropdown-menu .footer').css('display', 'block');
+  
+                }
+                else{
+                    // Resetear notificacionesMostradas cuando se cierra el menú desplegable
+                    $('.dropdown-menu .menu').empty();
+                    // Actualizar la cantidad de notificaciones a cero
+                    $('.cantidadNotificaciones').text('0');
+                    // Actualizar el texto del encabezado
+                    $('.dropdown-menu .header').text("No tienes notificaciones nuevas");
+                    $('.dropdown-menu .footer').css('display', 'none');
+                }
+            },
+            error: function(result) {
+                console.log(result);
+            },
+        });
+    }
+
+
+    //cambia estado de notificacion a leida para no mostrarla nuevamente
+    function marcarNotificacionesLeidas(){
+
+        $.ajax({
+            data:{ 
+                id_notificaciones: id_notificaciones
+            },
+            dataType: 'json',
+            type: 'POST',
+            url: 'index.php/Dash/marcarNotificacionesLeidas',
+            success: function(result) {
+                console.log(result);
+                id_notificaciones.splice(0, id_notificaciones.length);
+                debugger;
+            },
+            error: function(result) {
+                console.log(result);
+            },
+        });
+    }
+
+
+
         </script>
