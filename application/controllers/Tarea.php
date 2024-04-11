@@ -976,9 +976,9 @@ class Tarea extends CI_Controller {
 		$start = $this->input->post('start');
 		$length = $this->input->post('length');
 		$search = $this->input->post('search')['value'];
+		$ordering = $this->input->post('order');
 
-		$r = $this->Tareas->tareaspaginadas($start,$length,$search);
-		//log_message('DEBUG','#TRAZA | #TAREA >> paginado tareas: '.json_encode($r));
+		$r = $this->Tareas->tareaspaginadas($start,$length,$search,$ordering);
 	
 		$datos =$r['datos'];
 		$totalDatos = $r['numDataTotal'];

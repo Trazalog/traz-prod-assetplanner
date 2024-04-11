@@ -105,7 +105,7 @@ class Sservicio extends CI_Controller
 
 		public function index($permission)
 		{
-			$data['list'] = $this->Sservicios->servicios_List();
+			$data['list'] = $this->Sservicios->getServiciosList('false');
 			$data['permission'] = $permission;
 			log_message('DEBUG','#Main/index | Sservicio >> Index >> Data '.json_encode($data));
 
@@ -248,5 +248,10 @@ class Sservicio extends CI_Controller
 		$data = $this->input->post();
 		$response = $this->Sservicios->activSolicitudes($data);
 		$this->load->view('Sservicios/list', $data);
+	}
+	public function getServiciosConformes(){
+		$showConformes = $_GET['showConformes'];
+		$data['list'] = $this->Sservicios->getServiciosList($showConformes);
+		echo json_encode($data['list']);
 	}
 }
