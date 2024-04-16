@@ -85,7 +85,7 @@ $(document).ready(function(){
                 'targets':[4],
                 'data':'proceso',
                 'render': function(data, type, row){
-                    return `<td class="text-center"> ${row['valor'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' : (row['valor'] == 'IN' ? '<small class="label pull-left bg-red">Inactivo</small>' : '<small class="label pull-left bg-yellow">Suspendido</small>')}</td></tr>`;
+                    return `<td class="text-center"> ${row['estado_id'] == '1' ? '<small class="label pull-left bg-green">Activo</small>' : (row['estado_id'] == '7' ? '<small class="label pull-left bg-red">Inactivo</small>' : '<small class="label pull-left bg-yellow">Suspendido</small>')}</td></tr>`;
                 }
             }
         ]
@@ -259,11 +259,12 @@ function EditarArticulos(e) { // Ok
         url: 'index.php/almacen/Articulo/getpencil',
         success: function(data) {
             datos = {
+                'idArticulo': e,
                 'codigoart': data[0]['barcode'],
                 'descripart': data[0]['descripcion'],
                 'artIsByBox': data[0]['es_caja'],
                 'artcant': data[0]['cantidad_caja'],
-                'estado_id': data[0]['estado'],
+                'estado': data[0]['estado_id'],
                 'idunidad': data[0]['unidadmedida'],
                 'unidadmedidades': data[0]['unidad_descripcion'],
                 'punto_pedido': data[0]['punto_pedido'],
@@ -283,7 +284,7 @@ function completarEdit(datos) { // Ok
 
     $('#artBarCode').val(datos['codigoart']);
     $('#artDescription').val(datos['descripart']);
-
+    $('#artIdEdit').val(datos['idArticulo']);
     if (datos['artIsByBox'] == 1) {
         $('#artIsByBox').prop('checked', true);
         $('#artCantBox').val(datos['artcant']);
@@ -311,10 +312,11 @@ function traer_estado(estado) { // Ok
     $('#artEstado').empty();
     for (var i = 0; i < estados.length; i++) {
         var nombre = estados[i][1];
-        var selected = (estado == estados[i][0]) ? 'selected' : '';
-        var opcion = "<option value='" + estados[i][0] + "' " + selected + ">" + nombre + "</option>";
+        var opcion = "<option value='" + estados[i][0] + "'>" + nombre + "</option>";
         $('#artEstado').append(opcion);
     }
+    $('#artEstado').val(estado);
+    
 }
 
 // trae unidad de medida y llena select
@@ -351,7 +353,7 @@ function guardareditar() { // Ok
         var box = 0;
         var unidades = '';
     }
-
+    var ida = $('#artIdEdit').val();
     var estado = $('#artEstado').val();
     var unmed = $('#unidmed').val();
     var punto = $('#puntped').val();
@@ -566,7 +568,7 @@ $('#artIsByBox').click(function() {
                         aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel"><span id="modalAction"class="fa fa-fw fa-pencil text-light-blue"></span> <titu>Editar Artículo</titu></h4>
             </div> <!-- /.modal-header  -->
-
+            <input id="artIdEdit" type="hidden">
             <div class="modal-body" id="modalBodyArticle">
                 <div class="row">
                     <div class="col-xs-12 col-sm-4">
