@@ -443,8 +443,12 @@ class Ordenservicios extends CI_Model {
     }
 
 		// devuelve insumos pedidos por id de OT
-    function getInsumosPorOT($id_ot){        
+    function getInsumosPorOT($id_ot){     
+        
+        $userdata      = $this->session->userdata('user_data');
+        $empresaId     = $userdata[0]['id_empresa'];
 
+        log_message('DEBUG','OrdenServicio | getInsumosPorOT | id_ot '.$id_ot);
 			$this->db->select('alm_pedidos_materiales.pema_id, 
 												alm_pedidos_materiales.ortr_id , 
 												alm_articulos.barcode, alm_articulos.descripcion, 
@@ -454,8 +458,8 @@ class Ordenservicios extends CI_Model {
 			$this->db->from('alm_pedidos_materiales');
 			$this->db->join('alm_deta_pedidos_materiales', 'alm_pedidos_materiales.pema_id = alm_deta_pedidos_materiales.pema_id');
 			$this->db->join('alm_articulos', 'alm_deta_pedidos_materiales.arti_id = alm_articulos.arti_id');
-		
 			$this->db->where('alm_pedidos_materiales.ortr_id', $id_ot);
+            $this->db->where('alm_pedidos_materiales.empr_id', $empresaId);
 			$query = $this->db->get();
 		
 			if ($query->num_rows()!=0){
