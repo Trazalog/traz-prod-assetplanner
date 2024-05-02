@@ -19,16 +19,13 @@
                             echo "<td> $o->nombre </td>";
                             echo "<td>".fecha_hora($o->fecha)."</td>";
                             echo "<td class='text-center'><a class='frm-open' data-readonly='true' href='#' data-info='$o->info_id'><i class='fa fa-paperclip'></i></a></td>";
-                            echo '</tr>';
-                           
+                            echo '</tr>';   
                         }
-
                     ?>
                 </tbody>
             </table>
         </div>
     </div>
-
 </div>
 
 <script>
