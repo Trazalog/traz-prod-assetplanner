@@ -264,7 +264,7 @@ var id_notificaciones = [];
 
                         // Construir el HTML de la notificación
                         var notificationHtml = '<li><a href="#" class="notificacion-link" >' +
-                            '<i class="fa fa-bell-o"></i> ' + data.nombre +
+                            '<i class="fa fa-bell-o"></i> ' + data.notificationTitle +
                             '</a></li>';
 
                         // Agregar la notificación al menú
@@ -315,7 +315,5 @@ var id_notificaciones = [];
             },
         });
     }
-
-
 
         </script>

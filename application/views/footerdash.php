@@ -123,8 +123,17 @@ function guardarEstado(){
 
 
 </script>
-
 <?php 
     $this->load->view(FRM . 'scripts');
     $this->load->view('tareas/scripts/tarea_std');
 ?>
+
+<script type="module" src="<?php echo base_url('assets/props/firebase_config.js')?>"></script>
+
+<script type="module">
+    import { firebase, analytics, messaging, sendPushNotification } from "./assets/props/firebase_config.js";
+    window.sendPushNotification = () => {
+        sendPushNotification();
+    } 
+    console.log(window.sendPushNotification());
+</script>

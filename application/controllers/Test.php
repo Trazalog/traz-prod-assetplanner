@@ -247,4 +247,8 @@ class Test extends CI_Controller
         echo 'C';
     }
 
+    public function testeando(){
+        $token = $_POST['currentToken'];
+        echo $token;
+    }
 }
