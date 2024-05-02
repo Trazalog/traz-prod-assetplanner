@@ -1123,7 +1123,7 @@ class Tareas extends CI_Model
 	* @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
 	* @return array listado de tareas paginada, filtrada por empresa y la cantidad
 	**/
-    function tareaspaginadas($start, $length, $search){
+    function tareaspaginadas($start, $length, $search, $ordering){
 
         //recupero tareas guardadas en session
         $tareas = $_SESSION['listadoTareas'];
@@ -1132,23 +1132,29 @@ class Tareas extends CI_Model
 
             //completo todas las tareas primero para poder buscar en todas las paginas
             $filtrado = $this->CompletarToDoList($tareas, $search);
+            //Ordeno las tareas segun el criterio seleccionado
+            if($ordering[0]['column'] != "" && $ordering[0]['dir'] != ""){
+                $dataOrdenada = $this->sortTareasBy($filtrado, $ordering);
+            }
+            $query_total = count($dataOrdenada);
 
-            $query_total = count($filtrado);
+            $data = array_slice($dataOrdenada, $start, $length);
 
-            $tareasPaginadas = array_slice($filtrado, $start, $length);
-
-            $data = $tareasPaginadas; 
+            // $data = $tareasPaginadas; 
         }else{
             
             $query_total = count($tareas);
+            //completo los datos de las tareas por pagina
+            $data = $this->CompletarToDoList($tareas);
+            //Ordeno las tareas segun el criterio seleccionado
+            if($ordering[0]['column'] != "" && $ordering[0]['dir'] != ""){
+                $dataOrdenada = $this->sortTareasBy($data, $ordering);
+            }
 
             //armo las paginas con las tareas
-            $tareasPaginadas = array_slice($tareas, $start, $length);
-
-            //completo los datos de las tareas por pagina
-            $data = $this->CompletarToDoList($tareasPaginadas);
+            $data = array_slice($dataOrdenada, $start, $length);
         }
-
+        
         $result = array(
             'numDataTotal' => $query_total,
             'datos' => $data
@@ -1158,6 +1164,132 @@ class Tareas extends CI_Model
         return $result;
 
     }
+    /**
+	*Metodo de ordenamiento para el pagina de la tabla de tareas
+	* @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
+	* @return array listado de tareas paginada, filtrada por empresa y la cantidad
+	**/
+    function sortTareasBy($data,$ordering){
+        $column = $ordering[0]['column'];
+        $direction = $ordering[0]['dir'];
 
+        switch ($column) {
+            case '2':
+                if($direction == 'asc'){
+                    usort($data, function($a, $b) {
+                        return $a['usr_asignado'] <=> $b['usr_asignado'];
+                    });
+                }else{
+                    usort($data, function($a, $b) {
+                        return $b['usr_asignado'] <=> $a['usr_asignado'];
+                    });
+                }
+            break;
+            case '3':
+                if($direction == 'asc'){//revisar
+                    usort($data, function($a, $b) {
+                        return $a['assigned_date'] <=> $b['assigned_date'];
+                    });
+                }else{
+                    usort($data, function($a, $b) {
+                        return $b['assigned_date'] <=> $a['assigned_date'];
+                    });
+                }
+            break;
+            case '4':
+                if($direction == 'asc'){
+                    usort($data, function($a, $b) {
+                        return $a['equipoDesc'] <=> $b['equipoDesc'];
+                    });
+                }else{
+                    usort($data, function($a, $b) {
+                        return $b['equipoDesc'] <=> $a['equipoDesc'];
+                    });
+                }
+            break;
+            case '5':
+                if($direction == 'asc'){
+                    usort($data, function($a, $b) {
+                        return $a['sectorDesc'] <=> $b['sectorDesc'];
+                    });
+                }else{
+                    usort($data, function($a, $b) {
+                        return $b['sectorDesc'] <=> $a['sectorDesc'];
+                    });
+                }
+            break;
+            case '6':
+                if($direction == 'asc'){
+                    usort($data, function($a, $b) {
+                        return $a['nomCli'] <=> $b['nomCli'];
+                    });
+                }else{
+                    usort($data, function($a, $b) {
+                        return $b['nomCli'] <=> $a['nomCli'];
+                    });
+                }
+            break;
+            case '7':
+                if($direction == 'asc'){
+                    usort($data, function($a, $b) {
+                        return $a['displayName'] <=> $b['displayName'];
+                    });
+                }else{
+                    usort($data, function($a, $b) {
+                        return $b['displayName'] <=> $a['displayName'];
+                    });
+                }
+            break;
+            case '8':
+                if($direction == 'asc'){
+                    usort($data, function($a, $b) {
+                        return $a['displayDescription'] <=> $b['displayDescription'];
+                    });
+                }else{
+                    usort($data, function($a, $b) {
+                        return $b['displayDescription'] <=> $a['displayDescription'];
+                    });
+                }
+            break;
+            case '9':
+                if($direction == 'asc'){
+                    usort($data, function($a, $b) {
+                        return $a['ss'] <=> $b['ss'];
+                    });
+                }else{
+                    usort($data, function($a, $b) {
+                        return $b['ss'] <=> $a['ss'];
+                    });
+                }
+            break;
+            case '10':
+                if($direction == 'asc'){
+                    usort($data, function($a, $b) {
+                        return $a['ot'] <=> $b['ot'];
+                    });
+                }else{
+                    usort($data, function($a, $b) {
+                        return $b['ot'] <=> $a['ot'];
+                    });
+                }
+            break;
+            case '11':
+                if($direction == 'asc'){
+                    usort($data, function($a, $b) {
+                        return $a['pema_id'] <=> $b['pema_id'];
+                    });
+                }else{
+                    usort($data, function($a, $b) {
+                        return $b['pema_id'] <=> $a['pema_id'];
+                    });
+                }
+            break;
+            
+            default:
+                # code...
+            break;
+        }
+        return $data;
+    }
     
 }
