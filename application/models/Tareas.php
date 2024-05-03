@@ -1127,7 +1127,6 @@ class Tareas extends CI_Model
 
         //recupero tareas guardadas en session
         $tareas = $_SESSION['listadoTareas'];
- 
         if($search){
 
             //completo todas las tareas primero para poder buscar en todas las paginas
@@ -1175,119 +1174,68 @@ class Tareas extends CI_Model
 
         switch ($column) {
             case '2':
-                if($direction == 'asc'){
-                    usort($data, function($a, $b) {
-                        return $a['usr_asignado'] <=> $b['usr_asignado'];
-                    });
-                }else{
-                    usort($data, function($a, $b) {
-                        return $b['usr_asignado'] <=> $a['usr_asignado'];
-                    });
-                }
-            break;
+                usort($data, function($a, $b) use ($direction) {
+                    if ($a['usr_asignado'] == $b['usr_asignado']) return 0;
+                    return ($direction == 'asc') ? ($a['usr_asignado'] < $b['usr_asignado'] ? -1 : 1) : ($a['usr_asignado'] > $b['usr_asignado'] ? -1 : 1);
+                });
+                break;
             case '3':
-                if($direction == 'asc'){//revisar
-                    usort($data, function($a, $b) {
-                        return $a['assigned_date'] <=> $b['assigned_date'];
-                    });
-                }else{
-                    usort($data, function($a, $b) {
-                        return $b['assigned_date'] <=> $a['assigned_date'];
-                    });
-                }
-            break;
+                usort($data, function($a, $b) use ($direction) {
+                    if ($a['assigned_date'] == $b['assigned_date']) return 0;
+                    return ($direction == 'asc') ? ($a['assigned_date'] < $b['assigned_date'] ? -1 : 1) : ($a['assigned_date'] > $b['assigned_date'] ? -1 : 1);
+                });
+                break;
             case '4':
-                if($direction == 'asc'){
-                    usort($data, function($a, $b) {
-                        return $a['equipoDesc'] <=> $b['equipoDesc'];
-                    });
-                }else{
-                    usort($data, function($a, $b) {
-                        return $b['equipoDesc'] <=> $a['equipoDesc'];
-                    });
-                }
-            break;
+                usort($data, function($a, $b) use ($direction) {
+                    if ($a['equipoDesc'] == $b['equipoDesc']) return 0;
+                    return ($direction == 'asc') ? ($a['equipoDesc'] < $b['equipoDesc'] ? -1 : 1) : ($a['equipoDesc'] > $b['equipoDesc'] ? -1 : 1);
+                });
+                break;
             case '5':
-                if($direction == 'asc'){
-                    usort($data, function($a, $b) {
-                        return $a['sectorDesc'] <=> $b['sectorDesc'];
-                    });
-                }else{
-                    usort($data, function($a, $b) {
-                        return $b['sectorDesc'] <=> $a['sectorDesc'];
-                    });
-                }
-            break;
+                usort($data, function($a, $b) use ($direction) {
+                    if ($a['sectorDesc'] == $b['sectorDesc']) return 0;
+                    return ($direction == 'asc') ? ($a['sectorDesc'] < $b['sectorDesc'] ? -1 : 1) : ($a['sectorDesc'] > $b['sectorDesc'] ? -1 : 1);
+                });
+                break;
             case '6':
-                if($direction == 'asc'){
-                    usort($data, function($a, $b) {
-                        return $a['nomCli'] <=> $b['nomCli'];
-                    });
-                }else{
-                    usort($data, function($a, $b) {
-                        return $b['nomCli'] <=> $a['nomCli'];
-                    });
-                }
-            break;
+                usort($data, function($a, $b) use ($direction) {
+                    if ($a['nomCli'] == $b['nomCli']) return 0;
+                    return ($direction == 'asc') ? ($a['nomCli'] < $b['nomCli'] ? -1 : 1) : ($a['nomCli'] > $b['nomCli'] ? -1 : 1);
+                });
+                break;
             case '7':
-                if($direction == 'asc'){
-                    usort($data, function($a, $b) {
-                        return $a['displayName'] <=> $b['displayName'];
-                    });
-                }else{
-                    usort($data, function($a, $b) {
-                        return $b['displayName'] <=> $a['displayName'];
-                    });
-                }
-            break;
+                usort($data, function($a, $b) use ($direction) {
+                    if ($a['displayName'] == $b['displayName']) return 0;
+                    return ($direction == 'asc') ? ($a['displayName'] < $b['displayName'] ? -1 : 1) : ($a['displayName'] > $b['displayName'] ? -1 : 1);
+                });
+                break;
             case '8':
-                if($direction == 'asc'){
-                    usort($data, function($a, $b) {
-                        return $a['displayDescription'] <=> $b['displayDescription'];
-                    });
-                }else{
-                    usort($data, function($a, $b) {
-                        return $b['displayDescription'] <=> $a['displayDescription'];
-                    });
-                }
-            break;
+                usort($data, function($a, $b) use ($direction) {
+                    if ($a['displayDescription'] == $b['displayDescription']) return 0;
+                    return ($direction == 'asc') ? ($a['displayDescription'] < $b['displayDescription'] ? -1 : 1) : ($a['displayDescription'] > $b['displayDescription'] ? -1 : 1);
+                });
+                break;
             case '9':
-                if($direction == 'asc'){
-                    usort($data, function($a, $b) {
-                        return $a['ss'] <=> $b['ss'];
-                    });
-                }else{
-                    usort($data, function($a, $b) {
-                        return $b['ss'] <=> $a['ss'];
-                    });
-                }
-            break;
+                usort($data, function($a, $b) use ($direction) {
+                    if ($a['ss'] == $b['ss']) return 0;
+                    return ($direction == 'asc') ? ($a['ss'] < $b['ss'] ? -1 : 1) : ($a['ss'] > $b['ss'] ? -1 : 1);
+                });
+                break;
             case '10':
-                if($direction == 'asc'){
-                    usort($data, function($a, $b) {
-                        return $a['ot'] <=> $b['ot'];
-                    });
-                }else{
-                    usort($data, function($a, $b) {
-                        return $b['ot'] <=> $a['ot'];
-                    });
-                }
-            break;
+                usort($data, function($a, $b) use ($direction) {
+                    if ($a['ot'] == $b['ot']) return 0;
+                    return ($direction == 'asc') ? ($a['ot'] < $b['ot'] ? -1 : 1) : ($a['ot'] > $b['ot'] ? -1 : 1);
+                });
+                break;
             case '11':
-                if($direction == 'asc'){
-                    usort($data, function($a, $b) {
-                        return $a['pema_id'] <=> $b['pema_id'];
-                    });
-                }else{
-                    usort($data, function($a, $b) {
-                        return $b['pema_id'] <=> $a['pema_id'];
-                    });
-                }
-            break;
-            
+                usort($data, function($a, $b) use ($direction) {
+                    if ($a['pema_id'] == $b['pema_id']) return 0;
+                    return ($direction == 'asc') ? ($a['pema_id'] < $b['pema_id'] ? -1 : 1) : ($a['pema_id'] > $b['pema_id'] ? -1 : 1);
+                });
+                break;
             default:
-                # code...
-            break;
+                
+                break;
         }
         return $data;
     }
