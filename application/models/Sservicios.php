@@ -8,7 +8,7 @@ class Sservicios extends CI_Model
 	}
 	/* FUNCIONES ORIGINALES DE ASSET	*/
 	// Trae solicitudes en estado en Curso	
-	function servicios_List(){
+	function getServiciosList($showConformes){
 		$userdata = $this->session->userdata('user_data');
 		$usrId    = $userdata[0]['usrId'];   
 		$grupoId  = $userdata[0]["grpId"];
@@ -46,6 +46,9 @@ class Sservicios extends CI_Model
 		$this->db->join('orden_trabajo', 'solicitud_reparacion.case_id = orden_trabajo.case_id', 'left');
 		$this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId', 'left');
 		$this->db->where('solicitud_reparacion.estado !=', 'AN');
+		if ($showConformes == 'false') {
+			$this->db->where('solicitud_reparacion.estado !=', 'CN');
+		}
 		$this->db->where('solicitud_reparacion.id_empresa', $empId);
 		$query = $this->db->get();
 		if ($query->num_rows()!=0)

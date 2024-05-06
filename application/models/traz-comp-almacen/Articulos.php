@@ -50,7 +50,6 @@ class Articulos extends CI_Model
 
 		$q="SELECT	A.*,
 					B.descripcion as medida,
-					'AC' as valor,
 					IFNULL(sum(C.cantidad),0) as stock
 			FROM alm_articulos A
 			LEFT JOIN utl_tablas B ON B.tabl_id = A.unidad_id

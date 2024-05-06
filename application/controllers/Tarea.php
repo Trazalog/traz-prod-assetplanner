@@ -344,7 +344,7 @@ class Tarea extends CI_Controller {
 								}		
 																		
 								// Cambia  estado de la OT a CERRADO					
-								$result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT');
+								$result = $this->Tareas->cambiarEstado($id_OT, $estado, 'OT', true);
 
 								// Cambio Inform Servicio  a TERMINADO					
 								$result = $this->Tareas->cambiarEstado($id_OT, 'CE', 'informe servicios');
@@ -976,9 +976,9 @@ class Tarea extends CI_Controller {
 		$start = $this->input->post('start');
 		$length = $this->input->post('length');
 		$search = $this->input->post('search')['value'];
+		$ordering = $this->input->post('order');
 
-		$r = $this->Tareas->tareaspaginadas($start,$length,$search);
-		//log_message('DEBUG','#TRAZA | #TAREA >> paginado tareas: '.json_encode($r));
+		$r = $this->Tareas->tareaspaginadas($start,$length,$search,$ordering);
 	
 		$datos =$r['datos'];
 		$totalDatos = $r['numDataTotal'];

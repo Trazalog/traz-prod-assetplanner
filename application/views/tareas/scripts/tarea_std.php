@@ -1,1 +1,1 @@
-        <script src="<?php echo base_url('assets/props/notificacion_estandar.js') ?>"></script>
+       <script src="<?php echo base_url('assets/props/notificacion_estandar.js') ?>"></script>
