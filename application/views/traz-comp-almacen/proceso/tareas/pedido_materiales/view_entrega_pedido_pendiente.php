@@ -5,26 +5,26 @@
 <div class="row">
     <div class="col-sm-6">
         <div class="form-group">
-            <label for="comprobante">N° Comprobante <strong style="color: #dd4b39">*</strong>:</label>
-            <input class="form-control required" type="text" placeholder="Comprobante" id="comprobante">
+            <label for="comprobante">N° Comprobante:</label>
+            <input class="form-control" type="text" placeholder="Comprobante" id="comprobante">
         </div>
     </div>
     <div class="col-sm-6">
         <div class="form-group">
-            <label for="entrega">Fecha Entrega<strong style="color: #dd4b39">*</strong>:</label>
-            <input class="form-control required" type="text" placeholder="Fecha" id="fecha_entrega">
+            <label for="entrega">Fecha Entrega:</label>
+            <input class="form-control" type="text" placeholder="Fecha" id="fecha_entrega">
         </div>
     </div>
     <div class="col-sm-6">
         <div class="form-group">
-            <label for="solicitante">Recibe Nombre y Apellido <strong style="color: #dd4b39">*</strong>:</label>
-            <input class="form-control required" type="text" placeholder="Ingresar Solcitante..." id="solicitante">
+            <label for="solicitante">Recibe Nombre y Apellido:</label>
+            <input class="form-control" type="text" placeholder="Ingresar Solcitante..." id="solicitante">
         </div>
     </div>
     <div class="col-sm-6">
         <div class="form-group">
-            <label for="dni">D.N.I<strong style="color: #dd4b39">*</strong>:</label>
-            <input class="form-control required" type="text" placeholder="Ingresar Solcitante..." id="dni">
+            <label for="dni">D.N.I:</label>
+            <input class="form-control" type="text" placeholder="Ingresar Solcitante..." id="dni">
         </div>
     </div>
 </div>
