@@ -50,7 +50,7 @@ function sendPushNotification(){
             getToken(messaging, { vapidKey: 'BLysBFbsObmUYACjOXtSS5BHNBwSjRFVW7hyN27xXpey8_hBO5XyiAN6iER0UbKXDs0J4VUy0RvtzDQTr-ptLQE' }).then((currentToken) => {
                 if (currentToken) {
                     console.log("Tengo el tokenn");
-                    console.log(currentToken);
+                
 
                     registraToken(currentToken);
                     // $("#noti_id").val(currentToken);
