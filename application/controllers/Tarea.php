@@ -112,7 +112,7 @@ class Tarea extends CI_Controller {
 					$aux=[];					
 					//Filtra datos por empresa
 					foreach($response['data'] as $o){
-						if($this->Tareas->bandejaEmpresa($o['caseId'] , $empr_id)){
+						
 							if(($o['equipoDesc'] !== "") && ($o['nomCli'] !== "") && ($o['equipoDesc'] !== "")){
 								$aux['caseId'] = $o['caseId'];
 								$aux['displayDescription'] = $o['displayDescription'];
@@ -141,7 +141,7 @@ class Tarea extends CI_Controller {
 								$aux['nomCli'] = $o['nomCli'];
 								$aux['usr_asignado'] = $o['usr_asignado'];
 								$aux['assigned_id'] = $o['assigned_id'];
-							}
+							
 							$array[] = $aux; 
 						}
 					}					

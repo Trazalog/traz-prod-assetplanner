@@ -1137,7 +1137,7 @@ class Otrabajo extends CI_Controller {
 
 		if(!$rsp['status']){echo json_encode($rsp);return;}
 		
-		$usuarioBPM = $usrId;
+		$usuarioBPM = $rsp['data']['id'];
 
 		// log	
 		log_message('DEBUG', 'TRAZA | #ASSET | Otrabajo | Usr asignado (responsable OT) en BPM: '.$usuarioBPM);
