@@ -543,7 +543,9 @@ class Tarea extends CI_Controller {
 							/* ASIGNACION INFORME DE SERVICIO AL MISMO USUARIO QUE SE ASIGNO Ejecutar OT */
 							$case_id = $this->Otrabajos->getCaseIdOT($id_OT);
 							/* obtengo usuario asignado */
-							$responsable = $this->Otrabajos->obtenerOT($id_OT)->id_usuario_a;
+							$userdata = $this->session->userdata('user_data');
+							$userSession = $userdata[0]['userBpm']; 
+							$responsable = $userSession;
 
 							// buscar task pa asignar la tarea siguiente (Confecciona informe servicio) a un responsable		
 							$nextTask = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Confecciona informe servicio');
@@ -558,10 +560,10 @@ class Tarea extends CI_Controller {
 							if($responsable)
 							{
 								// sincroniza usuario local con el de BPM, para asignar el usr de BPM
-								$rsp = $this->bpm->getInfoSisUserenBPM($responsable);
-								if(!$rsp['status']){echo json_encode($rsp);return;}
+								// $rsp = $this->bpm->getInfoSisUserenBPM($responsable);
+								// if(!$rsp['status']){echo json_encode($rsp);return;}
 
-								$usuarioBPM = $rsp['data']['id'];
+								$usuarioBPM = $responsable;
 								// log	
 								log_message('DEBUG', 'TRAZA | Usr asignado (responsable Confecciona informe servicio) en BPM: '.$usuarioBPM);
 								log_message('DEBUG', 'TRAZA | Usr asignado (responsable Confecciona informe servicio) en LOCAL: '.$responsable);
@@ -573,6 +575,8 @@ class Tarea extends CI_Controller {
 									echo json_encode($responce);
 									return;
 								}
+								
+								$rsp_update_user_a = $this->Otrabajos->updateResponsables($id_OT,$userdata[0]['usrId']);
 							}
 							
 							echo json_encode($respuesta);
