@@ -385,104 +385,101 @@ function guardarTarea(idOt) {
 
 //cierra la tarea ejecutar OT y asigna la tarea a la OT
 	function EjecutarOT() {
-					var xlat = null;
-					var xlon = null;
-					if (!window.mobileAndTabletcheck()) {
-									if (obtenerPosicion()) {
-													console.log('LAT: ' + lat + ' - LON: ' + lon + ' - ACC: ' + ac);
-													xlat = lat;
-													xlon = lon;
-									}
-									else {
-													alert('GPS | No se pudo Obtener Ubicación, Por favor Activar el GPS del Dispositivo.');
-													return;
-									}
-					} else {
-									console.log('GPS | No Mobile');
-					}
+		var xlat = null;
+		var xlon = null;
+		if (!window.mobileAndTabletcheck()) {
+			if (obtenerPosicion()) {
+				console.log('LAT: ' + lat + ' - LON: ' + lon + ' - ACC: ' + ac);
+				xlat = lat;
+				xlon = lon;
+			}
+			else {
+				alert('GPS | No se pudo Obtener Ubicación, Por favor Activar el GPS del Dispositivo.');
+				return;
+			}
+		} else {
+			console.log('GPS | No Mobile');
+		}
 
-					var pema_id = $('#pema_id').val();
-					if ((pema_id == null || pema_id == '') && !confirm('No se Realizarán Pedido de Materiales, ¿Desea Continuar?')) {
-									return;
-					}
+		var pema_id = $('#pema_id').val();
+		if ((pema_id == null || pema_id == '') && !confirm('No se Realizarán Pedido de Materiales, ¿Desea Continuar?')) {
+			return;
+		}
 
-					$('#errorTable').fadeIn('slow');
+		$('#errorTable').fadeIn('slow');
 
-					var task = $('#task').val();
-					var ot = $('#idOt').val();
-					var responsable = $('#id_operario').val();
-					var id_solicitud = $('#id_solicitud').val();
-					var tipo = $('#tipo').val();
-					var tareaOpcional = $('#tareaOpcional').val();
-					var tareastd = $('#tareaest').val();
-					var tareastdDesc = $('#tareaest option:selected').text();
+		var task = $('#task').val();
+		var ot = $('#idOt').val();
+		var responsable = $('#id_operario').val();
+		var id_solicitud = $('#id_solicitud').val();
+		var tipo = $('#tipo').val();
+		var tareaOpcional = $('#tareaOpcional').val();
+		var tareastd = $('#tareaest').val();
+		var tareastdDesc = $('#tareaest option:selected').text();
 
-					if (responsable == "") {
-									$('#errorTable').fadeIn('slow');
-									activaTab('responsable');
-									return;
-					} else {
-									$('#errorTable').fadeOut('slow');
-					}
+		if (responsable == "") {
+			$('#errorTable').fadeIn('slow');
+			activaTab('responsable');
+			return;
+		} else {
+			$('#errorTable').fadeOut('slow');
+		}
 
-					if (tareastd == 0 && tareaOpcional == "") {
-									$('#errorTarea').fadeIn('slow');
-									activaTab('tareas');
-									return;
-					} else {
-									$('#errorTarea').fadeOut('slow');
-					}
+		if (tareastd == 0 && tareaOpcional == "") {
+			$('#errorTarea').fadeIn('slow');
+			activaTab('tareas');
+			return;
+		} else {
+			$('#errorTarea').fadeOut('slow');
+		}
 
-					if (ot == null || task == null) {
-									alert('Error');
-									return;
-					}
+		if (ot == null || task == null) {
+			alert('Error');
+			return;
+		}
 
-					WaitingOpen();
+		WaitingOpen();
 
-					$.ajax({
-									type: 'POST',
-									data: {
-													ot: ot,
-													task: task,
-													responsable: responsable,
-													id_solicitud: id_solicitud,
-													tipo: tipo,
-													tareaOpcional: tareaOpcional,
-													tareastd: tareastd,
-													tareastdDesc: tareastdDesc,
-													latitud: xlat,
-													longitud: xlon
-									},
-									url: 'index.php/Otrabajo/EjecutarOT',
-									success: function(data) {
-													if (data.status) {
-																	$('#modalInforme').modal('hide');
-																	$("#modalRespyTareas").modal('hide');
-																	lanzarPedidoMateriales();
-																	linkTo();
-																	//$("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/listOrden/<?php echo $permission; ?>");
-																	// WaitingClose();               
-																	//regresa1();
-																	
-																
-													} else {
-																	alert('Falla | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
-													}
-									},
-									error: function(data) {
-													
-													alert('Error | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
-									},
-									complete: function(){
-													WaitingClose();
-									},
-									dataType: 'json'
-					});
+		$.ajax({
+			type: 'POST',
+			data: {
+				ot: ot,
+				task: task,
+				responsable: responsable,
+				id_solicitud: id_solicitud,
+				tipo: tipo,
+				tareaOpcional: tareaOpcional,
+				tareastd: tareastd,
+				tareastdDesc: tareastdDesc,
+				latitud: xlat,
+				longitud: xlon
+			},
+			url: 'index.php/Otrabajo/EjecutarOT',
+			success: function(data) {
+				if (data.status) {
+					$('#modalInforme').modal('hide');
+					$("#modalRespyTareas").modal('hide');
+					lanzarPedidoMateriales();
+					linkTo();
+					//$("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/listOrden/<?php echo $permission; ?>");
+					// WaitingClose();               
+					//regresa1();
+				} else {
+					alert('Falla | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
+				}
+			},
+			error: function(data) {							
+				alert('Error | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
+			},
+			complete: function(){
+				WaitingClose();
+			},
+			dataType: 'json'
+		});
 	}
 
 //activa el tab= tab
 	function activaTab(tab) {
-					$('.nav-tabs a[href="#' + tab + '"]').tab('show');
+		$('.nav-tabs a[href="#' + tab + '"]').tab('show');
 	};
 </script>

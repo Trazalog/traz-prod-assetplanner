@@ -100,7 +100,7 @@ function initDataTable(){
         'paging' : true,
         'processing':    true,
         'serverSide': true,
-        'order': [[10, 'desc']],
+        'order': [[9, 'desc']],
         'search': true,
         'ajax':{
             type: 'POST',
