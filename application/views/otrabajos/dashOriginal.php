@@ -571,7 +571,8 @@ var dataGrupos = function() {
             $('#equipo').append(opcion);
             for (var i = 0; i < data.length; i++) {
             var nombre = data[i]['descripcion'];
-            var opcion = "<option value='"+data[i]['id_equipo']+"'>" +nombre+ "</option>" ; 
+            var codigo = data[i]['id_equipo'];
+            var opcion = "<option value='"+data[i]['id_equipo']+"'>" + codigo + " - " + nombre + "</option>" ; 
             $('#equipo').append(opcion);  
           }
         }
