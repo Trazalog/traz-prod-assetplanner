@@ -53,9 +53,6 @@ $(document).ready(function(){
                     if (permission.indexOf("Edit") !== -1) {
                         r = r + `<i class="fa fa-fw fa-pencil" style="cursor: pointer; margin: 3px;" title="Editar" onclick="EditarArticulos(${id});" data-toggle="modal" data-target="#modaleditar"></i>`;
                     }
-                    if (permission.indexOf("Del") !== -1) {
-                        r = r + `<i class="fa fa-fw fa-times-circle" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="eliminarArticulo(${id})"></i>`;
-                    }
                     r = r + `</td>`;
                     return r;
                 }
