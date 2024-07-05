@@ -1397,8 +1397,21 @@ function showSolicitudesConformes() {
 
       // Loopeo, dibujo y agrego las filas de la tabla
       $.each(data, function(index, item) {
+        var t_ciclo;
         var t_asignacion;
         var t_generacion;
+
+        if((item.f_asignacion != null && item.f_asignacion != '0000-00-00 00:00:00') && (item.f_inicio != null && item.f_inicio != '0000-00-00 00:00:00')){
+          var f_asignacion = new Date(item.f_asignacion);
+          var f_inicio = new Date(item.f_inicio);
+          var tiempoAsignacion = f_inicio - f_asignacion;
+          var horasAsignacion = Math.floor(tiempoAsignacion / 1000 / 60 / 60);
+          var minutosAsignacion = Math.floor((tiempoAsignacion / 1000 / 60) % 60);
+          minutosAsignacion = String(minutosAsignacion).padStart(2, '0');
+          t_ciclo = horasAsignacion + ":" + minutosAsignacion;
+        }else{
+          t_ciclo = 'S/Datos';
+        }
 
         //Checkeo la nullidad de la fecha de asignacion e inicio
         if((item.f_asignacion != null && item.f_asignacion != '0000-00-00 00:00:00') && (item.f_inicio != null && item.f_inicio != '0000-00-00 00:00:00')){
@@ -1470,6 +1483,7 @@ function showSolicitudesConformes() {
                 '<td>' + item.id_solicitud + '</td>' +
                 '<td>' + item.f_solicitado + '</td>' +
                 '<td>' + (item.fecha_terminada != null && item.fecha_terminada != '0000-00-00 00:00:00' ? item.fecha_terminada : 'S/Fecha') + '</td>' +
+                '<td>' + t_ciclo + '</td>' +
                 '<td>' + t_asignacion + '</td>' +
                 '<td>' + t_generacion + '</td>' +
                 '<td>' + item.solicitante + '</td>' +
