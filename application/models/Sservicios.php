@@ -398,4 +398,171 @@ class Sservicios extends CI_Model
 		}
 	}
 	
+
+	/**
+	*Genera lista pedido de trabajo paginados
+	* @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
+	* @return array listado de solicitudes paginada, filtrada por empresa y la cantidad
+	**/
+	function solicitudespaginadas($start, $length, $search, $ordering){
+		$showConformes = 'false'; 
+
+		$userdata = $this->session->userdata('user_data');
+		$usrId    = $userdata[0]['usrId'];   
+		$grupoId  = $userdata[0]["grpId"];
+		$empId    = $userdata[0]['id_empresa'];
+	
+		// Obtengo cantidad de datos
+		$qnr = "SELECT COUNT(1) AS cant
+				FROM solicitud_reparacion
+				INNER JOIN equipos ON solicitud_reparacion.id_equipo = equipos.id_equipo
+				INNER JOIN sector ON equipos.id_sector = sector.id_sector
+				LEFT JOIN grupo ON equipos.id_grupo = grupo.id_grupo
+				LEFT JOIN orden_trabajo ON solicitud_reparacion.case_id = orden_trabajo.case_id
+				LEFT JOIN sisusers ON orden_trabajo.id_usuario_a = sisusers.usrId
+				WHERE solicitud_reparacion.estado != 'AN' 
+				AND solicitud_reparacion.id_empresa = ?";
+		
+		if ($showConformes == 'false') {
+			$qnr .= " AND solicitud_reparacion.estado != 'CN'";
+		}
+	
+		// Prepare and execute the count query
+		$qnr_query = $this->db->query($qnr, array($empId));
+		$qnr_row = $qnr_query->row();
+		$cant = $qnr_row->cant;
+	
+		// Data retrieval query
+		$q = "SELECT solicitud_reparacion.*,
+					 equipos.codigo AS equipo,
+					 sector.descripcion AS sector, 
+					 grupo.descripcion AS grupo,
+					 equipos.ubicacion,
+					 orden_trabajo.fecha_terminada,
+					 orden_trabajo.fecha_inicio AS f_inicio,
+					 orden_trabajo.f_asignacion,
+					 solicitud_reparacion.f_solicitado,
+					 orden_trabajo.case_id,
+					 orden_trabajo.id_usuario_a,
+					 sisusers.usrName AS mantenedor
+			  FROM solicitud_reparacion
+			  INNER JOIN equipos ON solicitud_reparacion.id_equipo = equipos.id_equipo
+			  INNER JOIN sector ON equipos.id_sector = sector.id_sector
+			  left JOIN grupo ON equipos.id_grupo = grupo.id_grupo
+			  left JOIN orden_trabajo ON solicitud_reparacion.case_id = orden_trabajo.case_id
+			  left JOIN sisusers ON orden_trabajo.id_usuario_a = sisusers.usrId
+			  WHERE solicitud_reparacion.estado != 'AN' 
+			  AND solicitud_reparacion.id_empresa = ?";
+		
+		if ($showConformes == 'false') {
+			$q .= " AND solicitud_reparacion.estado != 'CN'";
+		}
+	
+		$q .= " ORDER BY solicitud_reparacion.id_solicitud DESC
+				LIMIT ?, ?";
+	
+		// Prepare and execute the data retrieval query
+		$data_query = $this->db->query($q, array($empId, $start, $length));
+		$data_result = $data_query->result_array();
+	
+		//Ordeno las tareas segun el criterio seleccionado
+		$ordering = [
+			'column' => 1,
+			'dir' => 'desc'
+		];
+
+		//if($ordering[0]['column'] != "" && $ordering[0]['dir'] != ""){
+		if($ordering['column'] != "" && $ordering['dir'] != ""){
+			$dataOrdenada = $this->sortTareasBy($data_result, $ordering);
+		} 
+
+		$result = array(
+			'numDataTotal' => $cant,
+			'datos' => $data_result
+		);
+	
+		return $result;
+
+
+	}
+
+	/**
+	*Metodo de ordenamiento para el pagina de la tabla de tareas
+	* @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
+	* @return array listado de tareas paginada, filtrada por empresa y la cantidad
+	**/
+    function sortTareasBy($data,$ordering){
+        //$column = $ordering[0]['column'];
+        //$direction = $ordering[0]['dir'];
+
+		$column = $ordering['column'];
+		$direction = $ordering['dir'];
+
+        switch ($column) {
+            case '1':
+                usort($data, function($a, $b) use ($direction) {
+                    if ($a['id_solicitud'] == $b['id_solicitud']) return 0;
+                    return ($direction == 'asc') ? ($a['id_solicitud'] < $b['id_solicitud'] ? -1 : 1) : ($a['id_solicitud'] > $b['id_solicitud'] ? -1 : 1);
+                });
+                break;
+            /*case '3':
+                usort($data, function($a, $b) use ($direction) {
+                    if ($a['assigned_date'] == $b['assigned_date']) return 0;
+                    return ($direction == 'asc') ? ($a['assigned_date'] < $b['assigned_date'] ? -1 : 1) : ($a['assigned_date'] > $b['assigned_date'] ? -1 : 1);
+                });
+                break;
+            case '4':
+                usort($data, function($a, $b) use ($direction) {
+                    if ($a['equipoDesc'] == $b['equipoDesc']) return 0;
+                    return ($direction == 'asc') ? ($a['equipoDesc'] < $b['equipoDesc'] ? -1 : 1) : ($a['equipoDesc'] > $b['equipoDesc'] ? -1 : 1);
+                });
+                break;
+            case '5':
+                usort($data, function($a, $b) use ($direction) {
+                    if ($a['sectorDesc'] == $b['sectorDesc']) return 0;
+                    return ($direction == 'asc') ? ($a['sectorDesc'] < $b['sectorDesc'] ? -1 : 1) : ($a['sectorDesc'] > $b['sectorDesc'] ? -1 : 1);
+                });
+                break;
+            case '6':
+                usort($data, function($a, $b) use ($direction) {
+                    if ($a['nomCli'] == $b['nomCli']) return 0;
+                    return ($direction == 'asc') ? ($a['nomCli'] < $b['nomCli'] ? -1 : 1) : ($a['nomCli'] > $b['nomCli'] ? -1 : 1);
+                });
+                break;
+            case '7':
+                usort($data, function($a, $b) use ($direction) {
+                    if ($a['displayName'] == $b['displayName']) return 0;
+                    return ($direction == 'asc') ? ($a['displayName'] < $b['displayName'] ? -1 : 1) : ($a['displayName'] > $b['displayName'] ? -1 : 1);
+                });
+                break;
+            case '8':
+                usort($data, function($a, $b) use ($direction) {
+                    if ($a['displayDescription'] == $b['displayDescription']) return 0;
+                    return ($direction == 'asc') ? ($a['displayDescription'] < $b['displayDescription'] ? -1 : 1) : ($a['displayDescription'] > $b['displayDescription'] ? -1 : 1);
+                });
+                break;
+            case '9':
+                usort($data, function($a, $b) use ($direction) {
+                    if ($a['ss'] == $b['ss']) return 0;
+                    return ($direction == 'asc') ? ($a['ss'] < $b['ss'] ? -1 : 1) : ($a['ss'] > $b['ss'] ? -1 : 1);
+                });
+                break;
+            case '10':
+                usort($data, function($a, $b) use ($direction) {
+                    if ($a['ot'] == $b['ot']) return 0;
+                    return ($direction == 'asc') ? ($a['ot'] < $b['ot'] ? -1 : 1) : ($a['ot'] > $b['ot'] ? -1 : 1);
+                });
+                break;
+            case '11':
+                usort($data, function($a, $b) use ($direction) {
+                    if ($a['pema_id'] == $b['pema_id']) return 0;
+                    return ($direction == 'asc') ? ($a['pema_id'] < $b['pema_id'] ? -1 : 1) : ($a['pema_id'] > $b['pema_id'] ? -1 : 1);
+                });
+                break;
+            default:*/
+                
+                break;
+        }
+        return $data;
+    }
 }	
