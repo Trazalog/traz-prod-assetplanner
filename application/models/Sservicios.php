@@ -398,4 +398,88 @@ class Sservicios extends CI_Model
 		}
 	}
 	
+
+	/**
+	*Genera lista pedido de trabajo paginados
+	* @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
+	* @return array listado de solicitudes paginada, filtrada por empresa y la cantidad
+	**/
+	public function solicitudespaginadas($start, $length, $search, $ordering, $showConformes) {
+		$userdata = $this->session->userdata('user_data');
+		$empId = $userdata[0]['id_empresa'];
+	
+		// Total de registros
+		$this->db->select('COUNT(*) as count');
+		$this->db->from('solicitud_reparacion');
+		$this->db->where('solicitud_reparacion.id_empresa', $empId); // Aquí califica id_empresa con el nombre de la tabla
+	
+		if ($showConformes == 'false') {
+			$this->db->where('solicitud_reparacion.estado !=', 'CN');
+		}
+	
+		if (!empty($search)) {
+			// Añade los JOINs solo si hay criterio de búsqueda
+			$this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo', 'inner');
+			$this->db->join('sector', 'equipos.id_sector = sector.id_sector', 'inner');
+			$this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo', 'left');
+
+			// Convierte la búsqueda a minúsculas y aplica LIKE
+			$this->db->group_start();
+			$this->db->like('LOWER(solicitud_reparacion.id_solicitud)', strtolower($search));
+			$this->db->or_like('LOWER(solicitud_reparacion.solicitante)', strtolower($search));
+			$this->db->or_like('LOWER(equipos.codigo)', strtolower($search));
+			$this->db->or_like('LOWER(sector.descripcion)', strtolower($search));
+			$this->db->or_like('LOWER(grupo.descripcion)', strtolower($search));
+			$this->db->group_end();
+		}
+	
+		$countQuery = $this->db->get();
+		$countResult = $countQuery->row();
+		$totalFiltered = $countResult->count;
+		//fin Total de registros
+
+		//completado de datos
+		$this->db->select('solicitud_reparacion.*, equipos.codigo AS equipo, sector.descripcion AS sector, grupo.descripcion AS grupo, equipos.ubicacion, orden_trabajo.fecha_terminada, orden_trabajo.fecha_inicio AS f_inicio, orden_trabajo.f_asignacion, solicitud_reparacion.f_solicitado, orden_trabajo.case_id, orden_trabajo.id_usuario_a, sisusers.usrName AS mantenedor');
+		$this->db->from('solicitud_reparacion');
+		$this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo', 'inner');
+		$this->db->join('sector', 'equipos.id_sector = sector.id_sector', 'inner');
+		$this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo', 'left');
+		$this->db->join('orden_trabajo', 'solicitud_reparacion.case_id = orden_trabajo.case_id', 'left');
+		$this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId', 'left');
+		$this->db->where('solicitud_reparacion.id_empresa', $empId); 
+	
+		if ($showConformes == 'false') {
+			$this->db->where('solicitud_reparacion.estado !=', 'CN');
+		}
+	
+		if (!empty($search)) {
+			$this->db->group_start();
+			$this->db->like('LOWER(solicitud_reparacion.id_solicitud)', strtolower($search));
+			$this->db->or_like('LOWER(solicitud_reparacion.solicitante)', strtolower($search));
+			$this->db->or_like('LOWER(equipos.codigo)', strtolower($search));
+			$this->db->or_like('LOWER(sector.descripcion)', strtolower($search));
+			$this->db->or_like('LOWER(grupo.descripcion)', strtolower($search));
+			$this->db->group_end();
+		}
+	
+		if (!empty($ordering)) {
+			foreach ($ordering as $order) {
+				$column = $order['column'];
+				$dir = $order['dir'];
+				$this->db->order_by($column, $dir);
+			}
+		}
+	
+		$this->db->limit($length, $start);
+		$data_query = $this->db->get();
+		$result = $data_query->result_array();
+	
+		return array(
+			'datos' => $result,
+			'numDataTotal' => $totalFiltered,
+			'totalData' => $totalData 
+		);
+	}
+	
+	
 }	

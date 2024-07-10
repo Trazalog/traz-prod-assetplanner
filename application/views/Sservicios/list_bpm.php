@@ -66,7 +66,7 @@ input:checked + .slider:before {
               <label style="margin-right: 10px;">Mostrar solicitudes conformes</label>
             </div>
               <label class="switch">
-                <input type="checkbox" id="check-conformes" onclick="showSolicitudesConformes()">
+                <input type="checkbox" id="check-conformes" >
                 <span class="slider round"></span>
               </label>
           </div><!-- /.col-xs-12 -->
@@ -92,143 +92,7 @@ input:checked + .slider:before {
               </tr>
             </thead>
             <tbody>
-              <?php
-                $userdata = $this->session->userdata('user_data');
-                $usrId = $userdata[0]['usrId'];   
-                $grupoId = $userdata[0]["grpId"];
-                if(count($list) > 0) {
-                  foreach($list as $f){
-                    // var_dump($list);
-                    // usuario logueado o grupo administrador
-                    // if (($f['usrId'] == $usrId) || ($grupoId == 1)) {
-                    $fecTerminada = $f['fecha_terminada'];
-                    $id_sol = $f['id_solicitud'];
-                    $id_eq = $f['id_equipo'];
-                    echo '<tr id="'.$id_sol.'" class="'.$id_eq.'" data-idequipo="'.$id_eq.'" >' ;
-                    echo '<td>';
-                    //if (strpos($permission,'Del') !== false) {
-                      //echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar"></i>';
-                    //}
-                    //echo '<i class="fa fa-picture-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imagen" data-imagen ="'.$f['foto'].'" data-toggle="modal" data-target="#foto"></i> ';
-                    // echo '<i class="fa fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"></i> ';
-                    echo '<a onclick="mostrarOT(this)" href="#"><i class="fa fa-search text-white" style="cursor: pointer;margin-left:-3px"></i>   Ver</a>';
-                    //if ($f['estado'] !== 'T') { 
-                      //echo '<i class="fa fa-thumbs-up text-light-blue" data-toggle="modal" data-target="#modalConformidad" style="cursor: pointer; margin-left: 15px;" title="Conformidad"></i>';
-                    //}
-                    //echo '<i class="fa fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"></i> ';
-                    echo '</td>';
-                    echo '<td style="text-align: left">'.$f['id_solicitud'].'</td>';
-                    echo '<td style="text-align: left">'.$f['f_solicitado'].'</td>';
-                    if ( ($fecTerminada == '0000-00-00 00:00:00') || ($fecTerminada == '') ) {
-                      echo '<td style="text-align: left"> S/Fecha</td>';
-                    } else {
-                      echo '<td style="text-align: left">'.$f['fecha_terminada'].'</td>';
-                    }
-                    if(!is_null($f['f_asignacion']) && !is_null($f['f_inicio']) && $f['f_inicio'] != '0000-00-00 00:00:00'){
-                      $f_asignacion = new DateTime($f['f_asignacion']);
-                      $f_solicitado = new DateTime($f['f_solicitado']);
-                      $intervalo = $f_solicitado->diff($f_asignacion);
-                      $horas = $intervalo->format('%h');
-                      $minutos = $intervalo->format('%i');
-                      $minutos = str_pad($minutos, 2, '0', STR_PAD_LEFT);
-                      $t_genracion = "$horas:$minutos";                          
-                      echo '<td style="text-align: left">'.$t_genracion.'</td>';
-                    }else{
-                      echo '<td style="text-align: left">S/Datos</td>';
-                    }
-                    if(!is_null($f['f_asignacion']) && !is_null($f['f_inicio']) && $f['f_inicio'] != '0000-00-00 00:00:00'){
-                      $f_asignacion = new DateTime($f['f_asignacion']);
-                      $f_solicitado = new DateTime($f['f_solicitado']);
-                      $intervalo = $f_solicitado->diff($f_asignacion);
-                      $horas = $intervalo->format('%h');
-                      $minutos = $intervalo->format('%i');
-                      $minutos = str_pad($minutos, 2, '0', STR_PAD_LEFT);
-                      $t_genracion = "$horas:$minutos";                          
-                      echo '<td style="text-align: left">'.$t_genracion.'</td>';
-                    }else{
-                      echo '<td style="text-align: left">S/Datos</td>';
-                    }
-                    if(!is_null($f['f_asignacion']) && !is_null($f['f_inicio']) && $f['f_inicio'] != '0000-00-00 00:00:00'){
-                      /* $f_asignacion = strtotime($f['f_asignacion']);
-                      $f_inicio = strtotime($f['f_inicio']);
-                      $t_asignacion = number_format((($f_inicio - $f_asignacion)/3600), 2, ':', ' ');  
-                      $f_asignacion = new DateTime($f['f_asignacion']);
-                      $f_inicio = new DateTime($f['f_inicio']);
-
-                      // Calcula la diferencia entre las fechas
-                      $intervalo = $f_inicio->diff($f_asignacion);
-
-                      // Formatea la diferencia en horas:minutos
-                      $horas = $intervalo->format('%h');
-                      $minutos = $intervalo->format('%i');
-
-                        // Rellena los minutos con ceros a la izquierda si es necesario
-                        $minutos = str_pad($minutos, 2, '0', STR_PAD_LEFT);
-
-                      $t_asignacion = "$horas:$minutos";
-                      echo '<td style="text-align: left">'.$t_asignacion.'</td>';
-                      }else{
-                        echo '<td style="text-align: left">S/Datos</td>';
-                      }
-                                                  
-                      if(!is_null($f['f_asignacion']) && !is_null($f['f_solicitado'])){
-
-                      /*   $f_asignacion = strtotime($f['f_asignacion']);
-                      $f_solicitado = strtotime($f['f_solicitado']);
-                      $t_genracion = number_format((($f_asignacion - $f_solicitado)/3600), 2, ':', ' '); */
-                      $f_asignacion = new DateTime($f['f_asignacion']);
-                      $f_solicitado = new DateTime($f['f_solicitado']);
-                      $intervalo = $f_solicitado->diff($f_asignacion);
-                      $horas = $intervalo->format('%h');
-                      $minutos = $intervalo->format('%i');
-                      // Rellena los minutos con ceros a la izquierda si es necesario
-                      $minutos = str_pad($minutos, 2, '0', STR_PAD_LEFT);
-                      $t_genracion = "$horas:$minutos";                          
-                      echo '<td style="text-align: left">'.$t_genracion.'</td>';
-                    }else{
-                      echo '<td style="text-align: left">S/Datos</td>';
-                    }
-                    echo '<td style="text-align: left">'.$f['solicitante'].'</td>';
-                    echo '<td style="text-align: left">'.$f['equipo'].'</td>';
-                    echo '<td style="text-align: left">'.$f['sector'].'</td>';
-                    echo '<td style="text-align: left">'.$f['grupo'].'</td>';  
-                    echo '<td style="text-align: left">'.$f['causa'].'</td>';
-                    echo '<td style="text-align: left">'.$f['mantenedor'].'</td>';
-                    echo '<td>';
-                    if ($f['estado'] == 'S') {
-                    // echo  '<small class="label pull-left bg-red">Solicitada</small>';
-                      echo bolita('Solicitada', 'red');
-                    }
-                    if($f['estado'] == 'PL'){                           
-                      //echo '<small class="label pull-left bg-orange">Planificada</small>';
-                      echo bolita('Planificada', 'yellow');
-                    }
-                    if($f['estado'] == 'AS'){
-                      // echo '<small class="label pull-left bg-yellow">Asignada</small>';
-                      echo bolita('Asignada', 'purple');
-                    }
-                    if ($f['estado'] == 'C') {
-                      //echo '<small class="label pull-left bg-blue">Curso</small>' ;
-                      echo bolita('Curso', 'green');
-                    }
-                    if ($f['estado'] == 'T') {
-                      //echo  '<small class="label pull-left bg-navy">Terminada</small>';
-                      echo bolita('Terminada', 'blue');
-                    }
-                    if ($f['estado'] == 'CE') {
-                      //echo  '<small class="label pull-left bg-green">Cerrada</small>';
-                      echo bolita('Cerrada', 'default');
-                    }  
-                    if ($f['estado'] == 'CN') {
-                      //echo  '<small class="label pull-left bg-black">Conforme</small>';
-                      echo bolita('Conforme', 'black');
-                    }
-                    echo '</td>';
-                    echo '</tr>'; 
-                  //  } // if ($f['usrId'] == $usrId)
-                  } // fin foreach($list as $f)   
-                } // fin if(count($list) > 0)
-              ?>
+             
             </tbody>
           </table>
         </div><!-- /.box-body -->
@@ -440,11 +304,121 @@ input:checked + .slider:before {
 
 <script>
 
+  
+        //calculo diferencia entre horas
+        function calculateTimeDiff(start, end) {
+            if (!start || !end || start === '0000-00-00 00:00:00' || end === '0000-00-00 00:00:00') {
+                return 'S/Datos';
+            } else {
+                let startDate = new Date(start);
+                let endDate = new Date(end);
+                let diff = endDate - startDate;
+                let hours = Math.floor(diff / 3600000);
+                let minutes = Math.floor((diff % 3600000) / 60000);
+                return `${hours}:${minutes.toString().padStart(2, '0')}`;
+            }
+        }
+
+        function bolita(text, color) {
+            return `<small class="label pull-left bg-${color}">${text}</small>`;
+        }
+
+       
+  $(document).ready(function() {
+
+    var table = $('#servicio').DataTable({
+        'ordering': true,
+        'lengthMenu': [[10, 25, 50, 100], [10, 25, 50, 100]],
+        'paging': true,
+        'processing': true,
+        'serverSide': true,
+        'order': [[1, 'desc']],
+        'ajax': {
+            'url': 'index.php/Sservicio/paginado',
+            'type': 'POST',
+            'data': function(d) {
+                d.showConformes = $('#check-conformes').is(':checked'); // Agrega el parámetro showConformes
+            }
+        },
+        'columns': [
+            {
+                "data": null,
+                "render": function(data, type, row) {
+                    return `<a onclick='mostrarOT(${JSON.stringify(row)})' href="#"><i class="fa fa-search text-white" style="cursor: pointer;margin-left:-3px"></i> Ver</a>`;
+                }
+            },
+            { "data": "id_solicitud" },
+            { "data": "f_solicitado" },
+            {
+                "data": "fecha_terminada",
+                "render": function(data, type, row) {
+                    return (data == '0000-00-00 00:00:00' || data == '') ? 'S/Fecha' : data;
+                }
+            },
+            {
+                "data": null,
+                "render": function(data, type, row) {
+                    return calculateTimeDiff(row.f_solicitado, row.f_asignacion);
+                }
+            },
+            {
+                "data": null,
+                "render": function(data, type, row) {
+                    return calculateTimeDiff(row.f_asignacion, row.f_inicio);
+                }
+            },
+            {
+                "data": null,
+                "render": function(data, type, row) {
+                    return calculateTimeDiff(row.f_solicitado, row.f_asignacion);
+                }
+            },
+            { "data": "solicitante" },
+            { "data": "equipo" },
+            { "data": "sector" },
+            { "data": "grupo" },
+            { "data": "causa" },
+            { "data": "mantenedor" },
+            {
+                "data": "estado",
+                "render": function(data, type, row) {
+                    let colors = {
+                        'S': 'red',
+                        'PL': 'yellow',
+                        'AS': 'purple',
+                        'C': 'green',
+                        'T': 'blue',
+                        'CE': 'default',
+                        'CN': 'black'
+                    };
+                    let labels = {
+                        'S': 'Solicitada',
+                        'PL': 'Planificada',
+                        'AS': 'Asignada',
+                        'C': 'Curso',
+                        'T': 'Terminada',
+                        'CE': 'Cerrada',
+                        'CN': 'Conforme'
+                    };
+                    return bolita(labels[data], colors[data]);
+                }
+            }
+        ]
+    });
+
+    $('#check-conformes').on('change', function() {
+        table.ajax.reload();
+    });
+});
+
+  
+
   // VER OT 
   function mostrarOT(o){
 
-    let idSS = $(o).closest('tr').attr('id');
+    //let idSS = $(o).closest('tr').attr('id');
     //console.log(idSS); 
+    let idSS = o.id_solicitud;
     
     WaitingOpen('Obteniendo datos de OT...');
     // datos = getDataOtSolServicio(idSS, "Solicitud de Servicio");
@@ -1157,28 +1131,7 @@ $("#vstsolicita").autocomplete({
             dataType: 'json'
         });
   }
-  // Datatables
-  $('#servicio').DataTable({
-    <?php echo (!DT_SIZE_ROWS ? '"paging": false,' : null) ?>
-    "autoWidth": false,
-    "paging": true,
-    "aLengthMenu": [ 10, 25, 50, 100 ],
-    "columnDefs": [ 
-      {
-        "targets": [ 0 ], 
-        "searchable": false,
-      },
-      {
-        "targets": [ 0 ], 
-        "orderable": false,
-      },
-      { 
-        "targets": [ 1, 8 ],
-        "type": "num",
-      }
-    ],
-    "order": [[1, "desc"]],
-  });
+
 </script>
 
 
@@ -1380,7 +1333,7 @@ $("#vstsolicita").autocomplete({
 //   showSolicitudesConformes();
 // });
 //Oculta/Muestra solicitudes con estado Conforme
-function showSolicitudesConformes() {
+/*function showSolicitudesConformes() {
   showConformes = $('#check-conformes').is(':checked');
   table = $('#servicio').DataTable();
 
@@ -1501,5 +1454,6 @@ function showSolicitudesConformes() {
       table.draw();
     }
   });
-}
+}*/
+
 </script>
