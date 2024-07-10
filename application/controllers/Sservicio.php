@@ -105,8 +105,8 @@ class Sservicio extends CI_Controller
 
 		public function index($permission)
 		{
-			$data['list'] = $this->Sservicios->getServiciosList('false');
-			$data['listPaginado'] = $this->paginado();
+			//$data['list'] = $this->Sservicios->getServiciosList('false');
+			//$data['list'] = $this->paginado();
 			$data['permission'] = $permission;
 			log_message('DEBUG','#Main/index | Sservicio >> Index >> Data '.json_encode($data));
 
@@ -261,26 +261,28 @@ class Sservicio extends CI_Controller
 	* @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
 	* @return array listado paginado y la cantidad
 	*/
-	public function paginado(){
+	public function paginado() {
 		$start = $this->input->post('start');
 		$length = $this->input->post('length');
 		$search = $this->input->post('search')['value'];
 		$ordering = $this->input->post('order');
+		$showConformes = $this->input->post('showConformes');
 
-		//$r = $this->Sservicios->solicitudespaginadas($start,$length,$search,$ordering);
-		$r = $this->Sservicios->solicitudespaginadas(1,10,$search,$ordering);
+		log_message('DEBUG','ASSET | Sservicio | paginado |');
 	
-		$datos =$r['datos'];
+		$r = $this->Sservicios->solicitudespaginadas($start, $length, $search, $ordering, $showConformes);
+		
+		$datos = $r['datos'];
 		$totalDatos = $r['numDataTotal'];
 		$datosPagina = count($datos);
-
+	
 		$json_data = array(
-			"draw" 				=> intval($this->input->post('draw')),
-			"recordsTotal"  	=> intval($datosPagina),
-			"recordsFiltered"	=> intval($totalDatos),
-			"data" 				=> $datos
+			"draw" => intval($this->input->post('draw')),
+			"recordsTotal" => intval($totalDatos),
+			"recordsFiltered" => intval($totalDatos),
+			"data" => $datos
 		);
-		$result = json_encode($json_data);
-		echo $result;
+	
+		echo json_encode($json_data);
 	}
 }
