@@ -102,8 +102,9 @@ class Sservicios extends CI_Model
 
 		function getSSs($idSS)
 		{
-			$this->db->select('solicitud_reparacion.*');
+			$this->db->select('solicitud_reparacion.*, CONCAT(sisusers.usrName, " ", sisusers.usrLastName) as nombre_usuario');
 			$this->db->from('solicitud_reparacion');
+			$this->db->join('sisusers', 'solicitud_reparacion.id_usuario_eliminada = sisusers.usrId', 'left');
 			$this->db->where('solicitud_reparacion.id_solicitud', $idSS);
 
 			$query = $this->db->get()->result();
@@ -479,6 +480,32 @@ class Sservicios extends CI_Model
 			'numDataTotal' => $totalFiltered,
 			'totalData' => $totalData 
 		);
+	}
+
+	public function eliminar_solicitud($id, $id_usuario, $motivo)
+	{
+		$data = array(
+			'estado' => 'EL',
+			'id_usuario_eliminada' => $id_usuario,
+			'fecha_eliminada' => date('Y-m-d H:i:s'),
+			'motivo_eliminada' => $motivo
+		);
+
+		$this->db->where('id_solicitud', $id);
+		return $this->db->update('solicitud_reparacion', $data);
+	}
+
+	public function eliminar_orden_trabajo($id, $id_usuario, $motivo)
+	{
+		$data = array(
+			'estado' => 'EL',
+			'id_usuario_eliminada' => $id_usuario,
+			'fecha_eliminada' => date('Y-m-d H:i:s'),
+			'motivo_eliminada' => $motivo
+		);
+
+		$this->db->where('id_solicitud', $id);
+		return $this->db->update('orden_trabajo', $data);
 	}
 	
 	

@@ -46,6 +46,9 @@ input:checked + .slider:before {
 .slider.round:before {
     border-radius: 50%;
 }
+.oculto {
+  display: none;
+}
 </style>
 <input type="hidden" id="permission" value="<?php echo $permission;?>"> 
 <section class="content">    
@@ -102,6 +105,31 @@ input:checked + .slider:before {
 
 </section><!-- /.content -->
 
+<!-- Modal para eliminar solicitud -->
+<div class="modal fade" id="modalEliminarSolicitud" tabindex="-1" role="dialog" aria-labelledby="modalEliminarSolicitudLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalEliminarSolicitudLabel">Eliminar Solicitud</h4>
+      </div>
+      <div class="modal-body">
+        <form id="formEliminarSolicitud">
+          <input type="hidden" id="idSolicitud" name="id_solicitud">
+          <div class="form-group">
+            <label for="motivoEliminacion">Motivo de eliminación:</label>
+            <textarea class="form-control" id="motivoEliminacion" name="motivoEliminacion" rows="3" required></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" onclick="confirmarEliminacion()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal Ver Orden de Trabajo Solicitud de Servicio-->
 <div class="modal" id="verOtSolServicio" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-lg" role="document">
@@ -155,7 +183,26 @@ input:checked + .slider:before {
                   <div class="col-xs-12">
                     <label for="vFalla">Falla:</label>
                     <Textarea class="form-control " name="vFalla" id="vFalla" disabled></Textarea>
-                  </div>  
+                  </div>
+
+                  <!-- Nuevos campos para motivo, ID usuario y fecha de eliminación -->
+                  <div class="col-xs-12" style="margin-top: 30px;">
+                    <label for="motivo_eliminada" class="oculto">Motivo de Eliminación:</label>
+                    <textarea class="form-control" id="motivo_eliminada" name="motivo_eliminada" class="oculto" disabled></textarea>
+                  </div>
+                  <div class="col-xs-12 col-sm-6">
+                    <label for="fecha_eliminada" class="oculto">Fecha de Eliminación:</label>
+                    <input type="date" class="form-control oculto" id="fecha_eliminada" name="fecha_eliminada" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6">
+                    <label for="hora_eliminada" class="oculto">Hora de Eliminación:</label>
+                    <input type="time" class="form-control oculto" id="hora_eliminada" name="hora_eliminada" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6">
+                    <label for="nombre_usuario" class="oculto">Usuario que Eliminó:</label>
+                    <input type="text" class="form-control oculto" id="nombre_usuario" name="nombre_usuario" disabled>
+                  </div>
+                  <!-- Fin de nuevos campos -->  
                 </div>
 
               </div>
@@ -344,7 +391,12 @@ input:checked + .slider:before {
             {
                 "data": null,
                 "render": function(data, type, row) {
-                    return `<a onclick='mostrarOT(${JSON.stringify(row)})' href="#"><i class="fa fa-search text-white" style="cursor: pointer;margin-left:-3px"></i> Ver</a>`;
+                    var r = `<a onclick='mostrarOT(${JSON.stringify(row)})' href="#" title="Consultar"><i class="fa fa-search text-white" style="cursor: pointer;margin-left:-3px"></i></a>`;
+                    r = r + `<td>`;
+                    if (row.estado === 'S') {
+                      var r = r + `<a onclick='mostrarModalEliminacion(${JSON.stringify(row)})' href="#" title="Eliminar"><i class="fa fa-trash text-white" style="cursor: pointer; margin-left: 15px;"></i></a>`;
+                    }
+                    return r = r + `</td>`;
                 }
             },
             { "data": "id_solicitud" },
@@ -383,6 +435,7 @@ input:checked + .slider:before {
                 "data": "estado",
                 "render": function(data, type, row) {
                     let colors = {
+                        'EL': 'light-blue',
                         'S': 'red',
                         'PL': 'yellow',
                         'AS': 'purple',
@@ -392,6 +445,7 @@ input:checked + .slider:before {
                         'CN': 'black'
                     };
                     let labels = {
+                        'EL': 'Eliminada',
                         'S': 'Solicitada',
                         'PL': 'Planificada',
                         'AS': 'Asignada',
@@ -411,7 +465,41 @@ input:checked + .slider:before {
     });
 });
 
+function mostrarModalEliminacion(row) {
+  console.log(row);
+  document.getElementById('idSolicitud').value = row.id_solicitud;
+  $('#modalEliminarSolicitud').modal('show');
+}
+
+function confirmarEliminacion() {
+  WaitingOpen('Eliminando Solcitud');
+  var motivo = document.getElementById('motivoEliminacion').value;
+  var idSolicitud = document.getElementById('idSolicitud').value;
+  if (motivo.trim() === "") {
+    alert("Por favor, ingrese un motivo para la eliminación.");
+    return;
+  }
   
+  $.ajax({
+    url: 'index.php/Sservicio/eliminar_solicitud', 
+    method: 'POST',
+    data: {
+      id_solicitud: idSolicitud,
+      motivo: motivo
+    },
+    success: function(response) {
+      WaitingClose('Eliminado con éxito...');
+      var permisos = '<?php echo $permission; ?>';
+      cargarView('Sservicio', 'index', permisos) ; 
+    },
+    error: function(error) {
+      WaitingClose();
+      alert('Error al eliminar la solicitud.');
+    }
+  });
+
+  $('#modalEliminarSolicitud').modal('hide');
+}
 
   // VER OT 
   function mostrarOT(o){
@@ -444,7 +532,32 @@ input:checked + .slider:before {
           $("#adjunto").attr("href", data.SS[0].sol_adjunto);
 
         }
-        
+        // Validación del estado y manipulación de campos
+        if (data.SS[0].estado === "EL") {
+            $("#motivo_eliminada").val(data.SS[0].motivo_eliminada).removeClass('oculto');
+            $("#nombre_usuario").val(data.SS[0].nombre_usuario).removeClass('oculto');
+            // Extracción de la parte de la fecha y la hora del campo datetime
+            let [fechaEliminada, horaEliminada] = data.SS[0].fecha_eliminada.split(' ');
+            $("#fecha_eliminada").val(fechaEliminada).removeClass('oculto');
+            $("#hora_eliminada").val(horaEliminada).removeClass('oculto');
+            
+            // Mostrar las etiquetas también
+            $("label[for='motivo_eliminada']").removeClass('oculto');
+            $("label[for='fecha_eliminada']").removeClass('oculto');
+            $("label[for='hora_eliminada']").removeClass('oculto');
+            $("label[for='nombre_usuario']").removeClass('oculto');
+        } else {
+            $("#motivo_eliminada").addClass('oculto');
+            $("#nombre_usuario").addClass('oculto');
+            $("#fecha_eliminada").addClass('oculto');
+            $("#hora_eliminada").addClass('oculto');
+            
+            // Ocultar las etiquetas también
+            $("label[for='motivo_eliminada']").addClass('oculto');
+            $("label[for='fecha_eliminada']").addClass('oculto');
+            $("label[for='hora_eliminada']").addClass('oculto');
+            $("label[for='nombre_usuario']").addClass('oculto');
+        }
       })
       .fail( () => alert( "Error al traer los datos de la OT." ) )
       .always( () => WaitingClose() );
@@ -1132,6 +1245,8 @@ $("#vstsolicita").autocomplete({
         });
   }
 
+  
+
 </script>
 
 
@@ -1326,6 +1441,32 @@ $("#vstsolicita").autocomplete({
     </div>
   </div>
 </div>
+
+<!-- Modal Aviso eliminar -->
+<div class="modal" id="modalEliminarSolServicio2" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><span class="fa fa-fw fa-times-circle text-light-blue"></span>Eliminar</h4>
+      </div>
+      <div class="modal-body">
+        <div class="col-xs-12">
+            <input type="hidden" id="e_idSolicitud" name="e_idSolicitud">
+            <label for="e_motivo">Motivo: </label>
+            <textarea class="form-control" id="e_motivo" name="e_motivo"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="#">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- / Modal -->
+
+
 
 <script>
 // $(document).ready(function(){
