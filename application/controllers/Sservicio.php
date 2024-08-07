@@ -285,4 +285,26 @@ class Sservicio extends CI_Controller
 	
 		echo json_encode($json_data);
 	}
+
+	public function eliminar_solicitud()
+	{
+		$id_solicitud = $this->input->post('id_solicitud');
+		$motivo = $this->input->post('motivo');
+		$userdata = $this->session->userdata('user_data');
+		$id_usuario = $userdata[0]['usrId'];
+
+		if (empty($id_solicitud) || empty($motivo)) {
+			echo "ID de solicitud o motivo no proporcionado.";
+			return;
+		}
+		$resultado_solicitud = $this->Sservicios->eliminar_solicitud($id_solicitud, $id_usuario, $motivo);
+		$resultado_OT = $this->Sservicios->eliminar_orden_trabajo($id_solicitud, $id_usuario, $motivo);
+		
+		if ($resultado_solicitud & $resultado_OT) {
+			echo "Solicitud de servicio y orden de trabajo eliminadas exitosamente.";
+		} else {
+			echo "Error al eliminar solicitud de servicio y orden de trabajo.";
+		}
+	}
+
 }
