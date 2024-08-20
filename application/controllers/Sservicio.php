@@ -105,7 +105,8 @@ class Sservicio extends CI_Controller
 
 		public function index($permission)
 		{
-			$data['list'] = $this->Sservicios->getServiciosList('false');
+			//$data['list'] = $this->Sservicios->getServiciosList('false');
+			//$data['list'] = $this->paginado();
 			$data['permission'] = $permission;
 			log_message('DEBUG','#Main/index | Sservicio >> Index >> Data '.json_encode($data));
 
@@ -254,4 +255,56 @@ class Sservicio extends CI_Controller
 		$data['list'] = $this->Sservicios->getServiciosList($showConformes);
 		echo json_encode($data['list']);
 	}
+
+	/**
+	* Genera el listado de solicitudes servicio paginadas
+	* @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
+	* @return array listado paginado y la cantidad
+	*/
+	public function paginado() {
+		$start = $this->input->post('start');
+		$length = $this->input->post('length');
+		$search = $this->input->post('search')['value'];
+		$ordering = $this->input->post('order');
+		$showConformes = $this->input->post('showConformes');
+
+		log_message('DEBUG','ASSET | Sservicio | paginado |');
+	
+		$r = $this->Sservicios->solicitudespaginadas($start, $length, $search, $ordering, $showConformes);
+		
+		$datos = $r['datos'];
+		$totalDatos = $r['numDataTotal'];
+		$datosPagina = count($datos);
+	
+		$json_data = array(
+			"draw" => intval($this->input->post('draw')),
+			"recordsTotal" => intval($totalDatos),
+			"recordsFiltered" => intval($totalDatos),
+			"data" => $datos
+		);
+	
+		echo json_encode($json_data);
+	}
+
+	public function eliminar_solicitud()
+	{
+		$id_solicitud = $this->input->post('id_solicitud');
+		$motivo = $this->input->post('motivo');
+		$userdata = $this->session->userdata('user_data');
+		$id_usuario = $userdata[0]['usrId'];
+
+		if (empty($id_solicitud) || empty($motivo)) {
+			echo "ID de solicitud o motivo no proporcionado.";
+			return;
+		}
+		$resultado_solicitud = $this->Sservicios->eliminar_solicitud($id_solicitud, $id_usuario, $motivo);
+		$resultado_OT = $this->Sservicios->eliminar_orden_trabajo($id_solicitud, $id_usuario, $motivo);
+		
+		if ($resultado_solicitud & $resultado_OT) {
+			echo "Solicitud de servicio y orden de trabajo eliminadas exitosamente.";
+		} else {
+			echo "Error al eliminar solicitud de servicio y orden de trabajo.";
+		}
+	}
+
 }

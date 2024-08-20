@@ -253,4 +253,4 @@ define('DT_SIZE_ROWS', false);
 | Tiempo de recarga de la bandeja de tareas  
 |--------------------------------------------------------------------------
 */
-define('TIEMPO_RECARGA', 15000);
+define('TIEMPO_RECARGA', 1000000);

@@ -157,7 +157,7 @@
             <div class="modal-footer">
             <?php echo (isset($estadoOT) && $estadoOT==false?'<h4 class="text-danger text-center">La Orden de Trabajo Asociada al Pedido de Materiales ha sido Cerrada</h4><h5 class="text-center">No se podran realizar mas Entregas</h5>':null) ?>  
 
-						<button type="button" class="btn btn-warning" id="btncerrarTarea" style="display:none;" onclick="BtnCerrarTarea()">Finalizar Pedido</button>
+						<button type="button" class="btn btn-warning" id="btncerrarTarea" style="display:none;" onclick="BtnCerrarTarea()">Finalizar Pedido con Entrega Parcial</button>
 
 						<button type="button" id="cerrar" class="btn btn-primary" onclick="linkTo('Tarea');">Cerrar</button>
 
