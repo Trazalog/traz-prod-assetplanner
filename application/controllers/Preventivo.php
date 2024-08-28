@@ -82,6 +82,14 @@ class Preventivo extends CI_Controller {
 		$tareas = $this->Preventivos->gettarea();
 		echo json_encode($tareas);
 	}
+
+	// Trae tareas por empresa logueada por busqueda
+	public function gettareaxPatron()
+	{	
+		$dato = $this->input->get('patron'); 
+		$tareas = $this->Preventivos->gettareaxPatron($dato);
+		echo json_encode($tareas);
+	}
 	
 	//Trae insumo por id 
 	public function traerinsumo(){
