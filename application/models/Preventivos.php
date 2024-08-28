@@ -136,6 +136,33 @@ class Preventivos extends CI_Model
         }
 	}	
 
+    /**
+     * trae tareas por patron de busqueda
+     *
+     * @param   String  $dato patron de busqueda
+     * @return  String  resultado de busqueda                   
+     */
+	function gettareaxPatron($dato)
+    {
+		$userdata = $this->session->userdata('user_data');
+        $empId = $userdata[0]['id_empresa']; 
+    	$this->db->select('tareas.id_tarea AS value, tareas.descripcion AS label');
+    	$this->db->from('tareas');    	
+    	$this->db->where('tareas.id_empresa', $empId);
+        $this->db->where('estado', 'AC');
+        $this->db->where('LOWER(tareas.descripcion) LIKE', '%' . strtolower($dato) . '%');
+
+        $this->db->order_by('label', 'ASC');
+    	$query= $this->db->get();
+
+		if($query->num_rows()>0){
+            return $query->result_array();
+        }
+        else{
+            return false;
+        }
+	}	
+
 	// Trae componente segun id de equipo - Listo
 	function getcomponente($id)
     {

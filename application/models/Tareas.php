@@ -331,7 +331,7 @@ class Tareas extends CI_Model
         return $result;
     }
 
-    // cambia de estado la Tareas(SServ, Prevent, Predic, Back y OT), VerificaInforme sirve para no modificar la fecha inicio en OT en el paso verificaInforme
+    // cambia de estado la Tareas(SServ, Prevent, Predic, Back y OT), VerificaInforme sirve para no modificar la fecha inicio en OT en el paso verificaInforme o conformidad
     public function cambiarEstado($id_solicitud, $estado, $tipo, $VerificaInforme = null)
     {
         $f_inicio =  date("Y-m-d H:i:s"); 
