@@ -17,9 +17,9 @@
               <tr>
                 <th>Acciones</th>
                 <th>Nro:</th>
-                <th>Descripcion:</th>
-                <th style="display:none">id_empresa</th>
-                <th style="display:none">estado</th>
+                <th>Descripción:</th>
+                <th>id_empresa</th>
+                <th>estado</th>
               </tr>
             </thead>
             <tbody>
@@ -37,8 +37,8 @@
                   echo '</td>';
                   echo '<td>'.$f['id_tarea'].'</td>';
                   echo '<td>'.$f['descripcion'].'</td>';
-                  echo '<td style="display:none">'.$f['id_empresa'].'</td>';
-                  echo '<td style="display:none">'.$f['estado'].'</td>';
+                  echo '<td>'.$f['id_empresa'].'</td>';
+                  echo '<td>'.$f['estado'].'</td>';
                   echo '</tr>';
                 }
               ?>
@@ -168,13 +168,40 @@ $(function () {
     "aLengthMenu": [ 10, 25, 50, 100 ],
     "columnDefs": [ {
       "targets": [ 0 ], 
-      "searchable": false
+      "searchable": false,
+      "orderable": false,
+      "className": "text-center"
     },
     {
-      "targets": [ 0 ], 
+      "targets": [1],
+      "type": "num",
+      "visible": true,
+      "orderable": true,
+      "className": "text-center"
+    },
+    {
+      "targets": [2], 
+      "visible": true,
+      "orderable": true
+    },
+    {
+      "targets": [3], 
+      "visible": false,
       "orderable": false
-    } ],
+    },
+    {
+      "targets": [4], 
+      "visible": false,
+      "orderable": false
+    }],
     "order": [[1, "asc"]],
+    "columns": [
+      { "width": "5%" },
+      { "width": "8%" },
+      { "width": "87%" },
+      { "width": "0%" },
+      { "width": "0%" }
+    ]
   });
 });
 </script>
