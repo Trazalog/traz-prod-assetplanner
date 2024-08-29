@@ -349,27 +349,24 @@ input:checked + .slider:before {
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<script>
+<script>  
+  //calculo diferencia entre horas
+  function calculateTimeDiff(start, end) {
+      if (!start || !end || start === '0000-00-00 00:00:00' || end === '0000-00-00 00:00:00') {
+          return 'S/Datos';
+      } else {
+          let startDate = new Date(start);
+          let endDate = new Date(end);
+          let diff = endDate - startDate;
+          let hours = Math.floor(diff / 3600000);
+          let minutes = Math.floor((diff % 3600000) / 60000);
+          return `${hours}:${minutes.toString().padStart(2, '0')}`;
+      }
+  }
 
-  
-        //calculo diferencia entre horas
-        function calculateTimeDiff(start, end) {
-            if (!start || !end || start === '0000-00-00 00:00:00' || end === '0000-00-00 00:00:00') {
-                return 'S/Datos';
-            } else {
-                let startDate = new Date(start);
-                let endDate = new Date(end);
-                let diff = endDate - startDate;
-                let hours = Math.floor(diff / 3600000);
-                let minutes = Math.floor((diff % 3600000) / 60000);
-                return `${hours}:${minutes.toString().padStart(2, '0')}`;
-            }
-        }
-
-        function bolita(text, color) {
-            return `<small class="label pull-left bg-${color}">${text}</small>`;
-        }
-
+  function bolita(text, color) {
+      return `<small class="label pull-left bg-${color}">${text}</small>`;
+  }
        
   $(document).ready(function() {
 

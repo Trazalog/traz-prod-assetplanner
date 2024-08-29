@@ -445,7 +445,8 @@ class Sservicios extends CI_Model
 		$this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo', 'inner');
 		$this->db->join('sector', 'equipos.id_sector = sector.id_sector', 'inner');
 		$this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo', 'left');
-		$this->db->join('orden_trabajo', 'solicitud_reparacion.case_id = orden_trabajo.case_id', 'left');
+		$this->db->join("(SELECT case_id, MAX(id_orden) AS max_id FROM orden_trabajo GROUP BY case_id) ot_max", 'solicitud_reparacion.case_id = ot_max.case_id', 'left');
+		$this->db->join('orden_trabajo', 'ot_max.max_id = orden_trabajo.id_orden', 'left');
 		$this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId', 'left');
 		$this->db->where('solicitud_reparacion.id_empresa', $empId); 
 	
