@@ -245,7 +245,8 @@
 
 				<div class="modal-footer">
 					<button type="button" class="btn btn-success" id="hecho" onclick="ver_informe_servicio()"> Ver Inf. Servicio</button>
-					<button type="button" id="cerrar" class="btn btn-primary" onclick="cargarVista()">Cerrar</button>
+					<!-- <button type="button" id="cerrar" class="btn btn-primary" onclick="cargarVista()">Cerrar</button> -->
+					<button type="button" id="cerrar" class="btn btn-primary" onclick="cargarVistaTarea()">Cerrar</button>
 					<button type="button" class="btn btn-success" id="hecho" onclick="verificarInforme()">Hecho</button>
 				</div> <!-- /.modal footer -->
 
@@ -383,6 +384,13 @@
 </style>
 
 <script>
+
+	$('#cerrar').click(function cargarVistaTarea() {
+		WaitingOpen();
+		$('#content').empty();
+		$("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+		WaitingClose();
+	});
 
 	function ver_informe_servicio (o){ 
 	
