@@ -107,12 +107,12 @@ input:checked + .slider:before {
 </section><!-- /.content -->
 
 <!-- Modal para eliminar solicitud -->
-<div class="modal fade" id="modalPruebita" tabindex="-1" role="dialog" aria-labelledby="modalPruebitaLabel">
+<div class="modal fade" id="modalVerOT" tabindex="-1" role="dialog" aria-labelledby="modalVerOTLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="modalPruebitaLabel">Ver OT</h4>
+        <h4 class="modal-title" id="modalVerOTLabel">Ver OT</h4>
       </div>
       <div class="modal-body">
         <p><strong>Fecha de Inicio:</strong> <span id="modal-f_inicio"></span></p>
@@ -519,10 +519,10 @@ function abrirModal(rowData) {
     $('#modal-f_asignacion').text(formatDate(rowData.f_asignacion));
 
     // Actualizar el título del modal
-    $('#modalPruebitaLabel').text(`Orden de Trabajo ${rowData.id_orden}`);
+    $('#modalVerOTLabel').text(`Orden de Trabajo ${rowData.id_orden}`);
 
     // Mostrar el modal
-    $('#modalPruebita').modal('show');
+    $('#modalVerOT').modal('show');
 }
 
 function mostrarModalEliminacion(row) {
