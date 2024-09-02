@@ -138,6 +138,7 @@ input:checked + .slider:before {
       <div class="modal-body">
         <form id="formEliminarSolicitud">
           <input type="hidden" id="idSolicitud" name="id_solicitud">
+          <input type="hidden" id="case_id" name="case_id">
           <div class="form-group">
             <label for="motivoEliminacion">Motivo de eliminación:</label>
             <textarea class="form-control" id="motivoEliminacion" name="motivoEliminacion" rows="3" required></textarea>
@@ -525,16 +526,89 @@ function abrirModal(rowData) {
     $('#modalVerOT').modal('show');
 }
 
-function mostrarModalEliminacion(row) {
+/*function mostrarModalEliminacion(row) {
   console.log(row);
-  document.getElementById('idSolicitud').value = row.id_solicitud;
-  $('#modalEliminarSolicitud').modal('show');
+  Swal.fire({
+      title: 'Atención!',
+      text: 'Solo los usuarios solicitantes pueden eliminar solicitudes!',
+      confirmButtonText: 'Aceptar',
+    }).then((result) => {
+      if (result.value) {
+        console.log('Confirmado');
+        var validacionSolicitante = validaUserSolicitante();
+        console.log(validacionSolicitante);
+        document.getElementById('idSolicitud').value = row.id_solicitud;
+        $('#modalEliminarSolicitud').modal('show');
+      }
+    });
+} */
+
+async function mostrarModalEliminacion(row) {
+  console.log(row);
+  Swal.fire({
+    title: 'Atención!',
+    text: 'Solo los usuarios solicitantes pueden eliminar solicitudes!',
+    confirmButtonText: 'Aceptar',
+  }).then(async (result) => {
+    if (result.value) {
+      console.log('Confirmado');
+      
+      try {
+        var validacionSolicitante = await validaUserSolicitante();
+        console.log(validacionSolicitante);
+        debugger;
+        if (validacionSolicitante.trim() == "true") { // Aquí puedes verificar si el usuario es solicitante
+          document.getElementById('idSolicitud').value = row.id_solicitud;
+          document.getElementById('case_id').value = row.case_id;
+          $('#modalEliminarSolicitud').modal('show');
+        } else {
+          Swal.fire('Error', 'No tienes permisos para eliminar esta solicitud.', 'error');
+        }
+      } catch (error) {
+        Swal.fire('Error', 'Ocurrió un error al validar el usuario.', 'error');
+      }
+    }
+  });
+}
+
+/* function validaUserSolicitante()
+{
+  $.ajax({
+    url: 'index.php/Sservicio/validaUsuarioSolicitante', 
+    method: 'POST',
+    data: {},
+    success: function(response) {
+      return response;
+    },
+    error: function(error) {
+      WaitingClose();
+      alert('Error al eliminar la solicitud.');
+    }
+  });
+}
+ */
+function validaUserSolicitante() {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      url: 'index.php/Sservicio/validaUsuarioSolicitante',
+      method: 'POST',
+      data: {},
+      success: function(response) {
+        resolve(response);
+      },
+      error: function(error) {
+        reject(error);
+      }
+    });
+  });
 }
 
 function confirmarEliminacion() {
   WaitingOpen('Eliminando Solcitud');
   var motivo = document.getElementById('motivoEliminacion').value;
   var idSolicitud = document.getElementById('idSolicitud').value;
+  var case_id = document.getElementById('case_id').value;
+
   if (motivo.trim() === "") {
     alert("Por favor, ingrese un motivo para la eliminación.");
     return;
@@ -545,7 +619,8 @@ function confirmarEliminacion() {
     method: 'POST',
     data: {
       id_solicitud: idSolicitud,
-      motivo: motivo
+      motivo: motivo,
+      case_id : case_id
     },
     success: function(response) {
       WaitingClose('Eliminado con éxito...');
