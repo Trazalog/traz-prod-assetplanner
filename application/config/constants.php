@@ -191,6 +191,9 @@ define('REST_CORE', 'http://10.142.0.13:8280/services/COREDataService');
 define('REST_MAN', 'http://10.142.0.13:8280/services/MANDataService/');
 
 
+define('HOST', 'http://10.142.0.13:8280');
+define('REST_API_BPM', HOST.'/tools/bpm/proceso/instancia');
+define('REST_PRO', HOST.'/services/PRODataService');
 /*
 |--------------------------------------------------------------------------
 | REPORTES
