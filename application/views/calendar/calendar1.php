@@ -18,18 +18,30 @@
 	}	
     </style>
 
-    <!-- CALENDARIO -->
-    <div class="col-md-6">
-        <div class="box box-primary">
-            <div class="box-body">
-                <div class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left:10px;"
-                    title="Imprimir"></div>
-                <button class="btn btn-link" title="Filtrar OT" onclick="openPanel()">
+	<!-- CALENDARIO -->
+	<div class="col-md-6">
+		<div class="box box-primary">
+			<div class="box-body">
+				<div class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left:10px;" title="Imprimir"></div>
+				<button class="btn btn-link" title="Filtrar OT" onclick="openPanel()">
 					<i class="fa fa-fw fa-filter text-light-blue"></i>
 				</button>
-                <div id="calendar"></div>
-            </div><!-- /.box-body -->
-        </div><!-- /. box -->
+				<!-- Contenedor de referencias de colores -->
+				<div class="d-flex align-items-center" style="margin-top: 15px;">
+					<strong style="margin-left: 10px;">Referencias de colores:</strong>
+				</div>
+				<div style="margin-top: 5px;">
+					<ul style="list-style-type: none; padding-left: 0; display: flex; gap: 10px;">
+						<li><span style="background-color: red; color: white; padding: 2px 5px; border-radius: 3px;">Urgente</span></li>
+						<li><span style="background-color: orange; color: white; padding: 2px 5px; border-radius: 3px;">Backlog</span></li>
+						<li><span style="background-color: #00c0ef; color: white; padding: 2px 5px; border-radius: 3px;">Preventivo</span></li>
+						<li><span style="background-color: green; color: white; padding: 2px 5px; border-radius: 3px;">Predictivo</span></li>
+						<li><span style="background-color: blue; color: white; padding: 2px 5px; border-radius: 3px;">Orden Trabajo</span></li>
+					</ul>
+				</div>
+				<div id="calendar"></div>
+			</div><!-- /.box-body -->
+		</div><!-- /. box -->
 	</div><!-- /.col -->
 	
     <div id="tablas">

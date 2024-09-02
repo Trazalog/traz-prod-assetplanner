@@ -80,6 +80,7 @@ input:checked + .slider:before {
               <tr>
                 <th width="2%">Acciones</th>
                 <th>Nro</th>
+                <th>Nro de OT</th>
                 <th>Fecha</th>
                 <th>Fecha Fin</th>
                 <th>T. de ciclo</th>
@@ -104,6 +105,27 @@ input:checked + .slider:before {
   </div><!-- /.row -->
 
 </section><!-- /.content -->
+
+<!-- Modal para eliminar solicitud -->
+<div class="modal fade" id="modalVerOT" tabindex="-1" role="dialog" aria-labelledby="modalVerOTLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalVerOTLabel">Ver OT</h4>
+      </div>
+      <div class="modal-body">
+        <p><strong>Fecha de Inicio:</strong> <span id="modal-f_inicio"></span></p>
+        <p><strong>Fecha Terminada:</strong> <span id="modal-fecha_terminada"></span></p>
+        <p><strong>Descripción:</strong> <span id="modal-descripcion"></span></p>
+        <p><strong>Fecha de Asignación:</strong> <span id="modal-f_asignacion"></span></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Modal para eliminar solicitud -->
 <div class="modal fade" id="modalEliminarSolicitud" tabindex="-1" role="dialog" aria-labelledby="modalEliminarSolicitudLabel">
@@ -349,27 +371,24 @@ input:checked + .slider:before {
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<script>
+<script>  
+  //calculo diferencia entre horas
+  function calculateTimeDiff(start, end) {
+      if (!start || !end || start === '0000-00-00 00:00:00' || end === '0000-00-00 00:00:00') {
+          return 'S/Datos';
+      } else {
+          let startDate = new Date(start);
+          let endDate = new Date(end);
+          let diff = endDate - startDate;
+          let hours = Math.floor(diff / 3600000);
+          let minutes = Math.floor((diff % 3600000) / 60000);
+          return `${hours}:${minutes.toString().padStart(2, '0')}`;
+      }
+  }
 
-  
-        //calculo diferencia entre horas
-        function calculateTimeDiff(start, end) {
-            if (!start || !end || start === '0000-00-00 00:00:00' || end === '0000-00-00 00:00:00') {
-                return 'S/Datos';
-            } else {
-                let startDate = new Date(start);
-                let endDate = new Date(end);
-                let diff = endDate - startDate;
-                let hours = Math.floor(diff / 3600000);
-                let minutes = Math.floor((diff % 3600000) / 60000);
-                return `${hours}:${minutes.toString().padStart(2, '0')}`;
-            }
-        }
-
-        function bolita(text, color) {
-            return `<small class="label pull-left bg-${color}">${text}</small>`;
-        }
-
+  function bolita(text, color) {
+      return `<small class="label pull-left bg-${color}">${text}</small>`;
+  }  
        
   $(document).ready(function() {
 
@@ -400,6 +419,16 @@ input:checked + .slider:before {
                 }
             },
             { "data": "id_solicitud" },
+            {
+                "data": "id_orden",
+                "render": function(data, type, row) {
+                    if (data) {
+                        return `<button class="btn btn-warning" onclick='abrirModal(${JSON.stringify(row)})'>${data}</button>`;
+                    } else {
+                        return '';
+                    }
+                }
+            },
             { "data": "f_solicitado" },
             {
                 "data": "fecha_terminada",
@@ -464,6 +493,37 @@ input:checked + .slider:before {
         table.ajax.reload();
     });
 });
+
+function abrirModal(rowData) {
+    // Función para formatear fechas
+    function formatDate(datetime) {
+        if (!datetime || datetime === '0000-00-00 00:00:00') {
+            return 'Sin fecha';
+        }
+        const date = new Date(datetime);
+        const options = {
+            year: 'numeric', 
+            month: '2-digit', 
+            day: '2-digit', 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit'
+        };
+        return date.toLocaleDateString('es-AR', options);
+    }
+
+    // Rellenar el modal con los datos formateados
+    $('#modal-f_inicio').text(formatDate(rowData.f_inicio));
+    $('#modal-fecha_terminada').text(formatDate(rowData.fecha_terminada));
+    $('#modal-descripcion').text(rowData.descripcion || 'Sin descripción');
+    $('#modal-f_asignacion').text(formatDate(rowData.f_asignacion));
+
+    // Actualizar el título del modal
+    $('#modalVerOTLabel').text(`Orden de Trabajo ${rowData.id_orden}`);
+
+    // Mostrar el modal
+    $('#modalVerOT').modal('show');
+}
 
 function mostrarModalEliminacion(row) {
   console.log(row);

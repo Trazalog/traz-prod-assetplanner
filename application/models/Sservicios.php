@@ -440,12 +440,13 @@ class Sservicios extends CI_Model
 		//fin Total de registros
 
 		//completado de datos
-		$this->db->select('solicitud_reparacion.*, equipos.codigo AS equipo, sector.descripcion AS sector, grupo.descripcion AS grupo, equipos.ubicacion, orden_trabajo.fecha_terminada, orden_trabajo.fecha_inicio AS f_inicio, orden_trabajo.f_asignacion, solicitud_reparacion.f_solicitado, orden_trabajo.case_id, orden_trabajo.id_usuario_a, sisusers.usrName AS mantenedor');
+		$this->db->select('solicitud_reparacion.*, equipos.codigo AS equipo, sector.descripcion AS sector, grupo.descripcion AS grupo, equipos.ubicacion, orden_trabajo.fecha_terminada, orden_trabajo.fecha_inicio AS f_inicio, orden_trabajo.descripcion, orden_trabajo.f_asignacion, solicitud_reparacion.f_solicitado, orden_trabajo.case_id, orden_trabajo.id_orden, orden_trabajo.id_usuario_a, sisusers.usrName AS mantenedor');
 		$this->db->from('solicitud_reparacion');
 		$this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo', 'inner');
 		$this->db->join('sector', 'equipos.id_sector = sector.id_sector', 'inner');
 		$this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo', 'left');
-		$this->db->join('orden_trabajo', 'solicitud_reparacion.case_id = orden_trabajo.case_id', 'left');
+		$this->db->join("(SELECT case_id, MAX(id_orden) AS max_id FROM orden_trabajo GROUP BY case_id) ot_max", 'solicitud_reparacion.case_id = ot_max.case_id', 'left');
+		$this->db->join('orden_trabajo', 'ot_max.max_id = orden_trabajo.id_orden', 'left');
 		$this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId', 'left');
 		$this->db->where('solicitud_reparacion.id_empresa', $empId); 
 	
