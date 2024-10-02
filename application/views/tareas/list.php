@@ -1,3 +1,10 @@
+<style>
+.badge-orange {
+    background-color: orange;
+    color: white;
+}
+</style>
+
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
 <input type="hidden" id="tiempoRecarga" value="<?php echo $tiempoRecarga;?>">
 <section class="content">
@@ -73,6 +80,247 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Ver Orden de Trabajo LISTO con Adjunto-->
+<div class="modal" id="verOt" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Orden de Trabajo</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOt"
+                                    aria-expanded="true" aria-controls="collapseOt">
+                                    Datos de OT
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOt" class="panel-collapse collapse in" role="tabpanel"
+                            aria-labelledby="headingOne">
+                            <div class="panel-body">
+
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-3">
+                                        <label for="vIdOt">Nº de OT:</label>
+                                        <input type="text" class="form-control " name="vIdOt" id="vIdOt" disabled>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-9">
+                                        <label for="vDescripFalla">Descripción:</label>
+                                        <input type="text" class="form-control vDescripFalla" id="vDescripFalla"
+                                            disabled>
+                                    </div>
+
+                                    <div class="col-xs-12 col-sm-6 col-md-3">
+                                        <label for="vFechaProgram">Fecha Programación:</label>
+                                        <input type="text" class="form-control " name="vFechaProgram" id="vFechaProgram"
+                                            disabled>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-md-3">
+                                        <label for="vFechaCreacion">Fecha Inicio:</label>
+                                        <input type="text" class="form-control " name="vFechaCreacion"
+                                            id="vFechaCreacion" disabled>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-md-3">
+                                        <label for="vFechaTerminOT">Fecha Terminada:</label>
+                                        <input type="text" class="form-control " name="vFechaTerminOT"
+                                            id="vFechaTerminOT" disabled>
+                                    </div>
+
+                                    <div class="col-xs-12 col-sm-6 col-md-3">
+                                        <label for="vEstado">Estado:</label>
+                                        <input type="text" class="form-control " name="vEstado" id="vEstado" disabled>
+                                    </div>
+
+                                    <div class="col-xs-12 col-sm-6 col-md-3">
+                                        <label for="vSucursal">Sucursal:</label>
+                                        <input type="text" class="form-control " name="vSucursal" id="vSucursal"
+                                            disabled>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-md-3">
+                                        <label for="vProveedor">Proveedor:</label>
+                                        <input type="text" class="form-control " name="vProveedor" id="vProveedor"
+                                            disabled>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-md-3">
+                                        <label for="vOrigen">Origen:</label>
+                                        <input type="text" class="form-control " name="vOrigen" id="vOrigen" disabled>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-md-3">
+                                        <label for="vAsignado">Asignado:</label>
+                                        <input type="text" class="form-control " name="vAsignado" id="vAsignado"
+                                            disabled>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingTwo">
+                            <h4 class="panel-title">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                                    href="#collapseEquipo" aria-expanded="false" aria-controls="collapseEquipo">
+                                    Datos de equipo
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseEquipo" class="panel-collapse collapse" role="tabpanel"
+                            aria-labelledby="headingTwo">
+                            <div class="panel-body">
+
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6 col-md-4">
+                                        <label for="vCodigoEquipo">Equipo:</label>
+                                        <input type="text" class="form-control " name="vCodigoEquipo" id="vCodigoEquipo"
+                                            disabled>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-md-4">
+                                        <label for="vCliente">Cliente:</label>
+                                        <input type="text" class="form-control " name="vCliente" id="vCliente" disabled>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-md-4">
+                                        <label for="vMarcaEquipo">Marca:</label>
+                                        <input type="text" class="form-control " name="vMarcaEquipo" id="vMarcaEquipo"
+                                            disabled>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-md-4">
+                                        <label for="vUbicacionEquipo">Ubicación:</label>
+                                        <input type="text" class="form-control " name="vUbicacionEquipo"
+                                            id="vUbicacionEquipo" disabled>
+                                    </div>
+
+                                    <div class="col-xs-12">
+                                        <label for="vDescripcionEquipo">Descripción:</label>
+                                        <Textarea class="form-control " name="vDescripcionEquipo"
+                                            id="vDescripcionEquipo" disabled></Textarea>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- vista herramientas -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingThreePred">
+                            <h4 class="panel-title">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionPred"
+                                    href="#collapseTareaPredInsHerrOT" aria-expanded="false"
+                                    aria-controls="collapseTareaPredInsHerrOT">
+                                    Herramientas - Tareas - Insumos
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseTareaPredInsHerrOT" class="panel-collapse collapse" role="tabpanel"
+                            aria-labelledby="headingThreePred">
+                            <div class="panel-body">
+
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="nav-tabs-custom">
+                                            <!--tabs -->
+                                            <ul class="nav nav-tabs" role="tablist">
+                                                <li role="presentation" class="active"><a href="#herrOT"
+                                                        aria-controls="profile" role="tab"
+                                                        data-toggle="tab">Herramientas</a></li>
+                                                <li role="presentation"><a href="#insumOT" aria-controls="messages"
+                                                        role="tab" data-toggle="tab">Insumos</a></li>
+                                                <li role="presentation"><a href="#TabAdjuntoOT" aria-controls="messages"
+                                                        role="tab" data-toggle="tab">Adjunto</a></li>
+                                            </ul>
+                                            <!-- /tabs -->
+
+                                            <!-- Tab panes -->
+                                            <div class="tab-content">
+                                                <div role="tabpanel" class="tab-pane active" id="herrOT">
+
+                                                    <div class="row">
+                                                        <div class="col-xs-12">
+                                                            <br>
+                                                            <table class="table table-bordered" id="tblherrOT">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Código</th>
+                                                                        <th>Marca</th>
+                                                                        <th>Descripcion</th>
+                                                                        <th>Cantidad</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody></tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div><!-- /.row -->
+                                                </div> <!-- /.tabpanel #herramin-->
+
+                                                <div role="tabpanel" class="tab-pane" id="insumOT">
+
+                                                    <div class="row">
+
+                                                    </div><!-- /.row -->
+                                                    <div class="row">
+                                                        <div class="col-xs-12">
+                                                            <table class="table table-bordered" id="tblinsOT">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Código</th>
+                                                                        <th>Descripcion</th>
+                                                                        <th>Cantidad</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody></tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div><!-- /.row -->
+                                                </div>
+                                                <!--/#insum -->
+
+                                                <div role="tabpanel" class="tab-pane" id="TabAdjuntoOT">
+
+                                                    <div class="col-xs-12">
+                                                        <table class="table table-bordered" id="tblAdjuntoOT">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Archivo</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>
+                                                                        <a id="adjunto" href="" target="_blank"></a>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
+                                                <!--cierre de TabAdjunto-->
+
+                                            </div> <!-- tab-content -->
+
+                                        </div><!-- /.nav-tabs-custom -->
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!--  ./vista herramientas -->
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <script>
 
@@ -312,7 +560,7 @@ function initDataTable(){
                 },
                 'data':'Id OT',
                 'render': function(data, type, row){
-                    return `<td ">${(row['ot']) ? bolita(row['ot'],'orange') : ' '}</td>`;
+                    return `<td>${(row['ot']) ? bolitaButton(row['ot'], 'orange', row['detalle']) : ' '}</td>`;
                 }
             },
             {
@@ -471,10 +719,10 @@ function actualizar_terminadas() {
 }
 
 
-
 //Tomo valor de la celda y carga detalle de la tarea
 function detalleTarea(e) {
-    
+    //quedaba pegado tooltip
+    $('.ui-tooltip').css('display', 'none');
     isUpdating = true;
     
     var id = $(e).attr('id');
@@ -558,6 +806,13 @@ function bolita(texto, color, detalle = null){
     return `<span data-toggle='tooltip' title='${detalle}' class='badge bg-${color} estado'>${texto}</span>`;
 }
 
+function bolitaButton(texto, color, detalle = null){
+        return `
+        <span data-toggle="tooltip" title="${texto}" class="badge badge-${color} estado" onclick="verOt(event, ${texto})" style="cursor: pointer;">
+            ${texto}
+        </span>`;
+}
+
 function bolitaEstado(texto, color, detalle = null){
     return `<span data-toggle='tooltip' title='${detalle}' style='font-weight: bold; color: #FFFFFF; display: inline-block;  height: 10%;  width: 30%;  background-color: ${color};  border-radius: 45px;'>${texto}</span>`;
 }
@@ -579,4 +834,151 @@ function msjBusqueda(){
 
 }
 
+ function verOt(event, idOt) {
+    event.stopPropagation(); // Detén la propagación del evento a los elementos padres (como la fila)
+    event.preventDefault();  // Previene la acción predeterminada del evento (como la navegación)
+    WaitingOpen('Cargando datos...');
+    //busca datos de ot
+    getDataOt(idOt);
+
+    // Abrir el modal
+    $('#verOt').modal('show');
+    WaitingClose();
+}
+
+// Trae datos de OT 
+function getDataOt(idOt) {
+
+    var datos = null;
+    $.ajax({
+            async: false,
+            data: {
+                idOt: idOt
+            },
+            dataType: 'json',
+            method: 'POST',
+            url: 'index.php/Otrabajo/getViewDataOt',
+        })
+        .done((data) => {
+            datos = {
+                //Panel datos de OT
+                'id_ot': data['otrabajo'][0]['id_orden'],
+                'nro': data['otrabajo'][0]['nro'],
+                'descripcion_ot': data['otrabajo'][0]['descripcionFalla'],
+                'fecha_inicio': data['otrabajo'][0]['fecha_inicio'],
+                'fecha_entrega': data['otrabajo'][0]['fecha_entrega'],
+                'fecha_program': data['otrabajo'][0]['fecha_program'],
+                'fecha_terminada': data['otrabajo'][0]['fecha_terminada'],
+                'estado': data['otrabajo'][0]['estado'],
+                'sucursal': data['otrabajo'][0]['descripc'],
+                'nombreprov': data['otrabajo'][0]['provnombre'],
+
+                'asignado': data['otrabajo'][0]['usrLastName'] + ' ' + data['otrabajo'][0]['usrLastName'],
+                'estado': data['otrabajo'][0]['estado'],
+                //Panel datos de equipos
+                'codigo': data['otrabajo'][0]['codigo'],
+                'marca': data['otrabajo'][0]['marca'],
+                'ubicacion': data['otrabajo'][0]['ubicacion'],
+                'descripcion_eq': data['otrabajo'][0]['descripcionEquipo'],
+                'nomCli': data['otrabajo'][0]['nomCli'],
+                'comp_equipo': data['otrabajo'][0]['compEquipo'],
+            };
+    $('#vNroOt').val(datos['nro']);
+    $('#vDescripFalla').val(datos['descripcion_ot']);
+
+    $('#vFechaProgram').val(datos['fecha_program']);
+    $('#vFechaCreacion').val(datos['fecha_inicio']);
+    $('#vFechaTerminOT').val(datos['fecha_terminada']);
+
+    $('#vSucursal').val(datos['sucursal']);
+    $('#vProveedor').val(datos['nombreprov']);
+    $('#vIdOt').val(datos['id_ot']);
+    $('#vOrigen').val('Orden de Trabajo');
+
+    if (datos['asignado'] != 'null null') {
+        $('#vAsignado').val(datos['asignado']);
+    } else {
+        $('#vAsignado').val('Sin Asignar');
+    }
+
+    var estadoPred = getEstadosVer(datos['estado']);
+    $('#vEstado').val(estadoPred);
+    // datos de equipo
+    $('#vCodigoEquipo').val(datos['codigo']);
+    $('#vMarcaEquipo').val(datos['marca']);
+    $('#vUbicacionEquipo').val(datos['ubicacion']);
+    $('#vDescripcionEquipo').val(datos['descripcion_eq']); 
+
+    //datos de herramientas
+    var herram = data['herramientas'];
+    var insum = data['insumos'];
+    var adjunto = data['adjunto']
+    $('#tblherrOT tbody tr').remove();
+    for (var i = 0; i < herram.length; i++) {
+        var tr = "<tr id='" + herram[i]['herrId'] + "'>" +
+            "<td>" + herram[i]['herrcodigo'] + "</td>" +
+            "<td>" + herram[i]['herrmarca'] + "</td>" +
+            "<td>" + herram[i]['herrdescrip'] + "</td>" +
+            "<td>" + herram[i]['cantidad'] + "</td>" +
+            "</tr>";
+        $('#tblherrOT tbody').append(tr);
+    }
+    $('#tblinsOT tbody tr').remove();
+    for (var i = 0; i < insum.length; i++) {
+        var tr = "<tr id='" + insum[i]['artId'] + "'>" 
+            "<td>" + insum[i]['artBarCode'] + "</td>" +
+            "<td>" + insum[i]['artDescription'] + "</td>" +
+            "<td>" + insum[i]['cantidad'] + "</td>" +
+            "</tr>";
+        $('#tblinsOT tbody').append(tr);
+    }
+    recargaTablaAdjuntoOT(adjunto); 
+})
+        .fail(() => alert("Error al traer los datos de la OT."));
+    return datos;
+}
+
+
+// devuelve palabra competa en funcion de estados
+function getEstadosVer(letraestado) {
+    var estado = "";
+    switch (letraestado) {
+        case 'S':
+            estado = 'Solicitado';
+            break;
+        case 'PL':
+            estado = 'Planificado';
+            break;
+        case 'AS':
+            estado = 'Asignado';
+            break;
+        case 'C':
+            estado = 'Curso';
+            break;
+        case 'T':
+            estado = 'Terminada';
+            break;
+        default:
+            estado = 'Cerrada';
+            break;
+    }
+    return estado;
+}
+
+
+// recarga tablas de adjuntos al iniciar la edicion
+function recargaTablaAdjuntoOT(Adjunto) {
+    $('#TabAdjuntoOT tbody tr').remove();
+    if (Adjunto == 0) {
+        $('#TabAdjuntoOT').html('<p>Sin Adjuntos</p>');
+    } else {
+        for (var i = 0; i < Adjunto.length; i++) {
+            var tr = "<tr id='" + Adjunto[i]['id'] + "'>" +
+                "<td><a id='' href='" + Adjunto[i]['ot_adjunto'] + "' target='_blank'>Archivo adjunto " + (i + 1) +
+                "</a></td>" +
+                "</tr>";
+            $('#tblAdjuntoOT tbody').append(tr);
+        }
+    }
+}
 </script>
