@@ -92,14 +92,14 @@
 																													echo '<td class="izquierda"> - </td>';
 																												}
 
-																												if ( isset($detaOT[0]['duracionTarea']) && $detaOT[0]['duracionTarea']!= null ) {
+																												if ( isset($infoSolicOrigen[0]["duracionTarea"]) ) {
 																												//duracion
 																												echo '<td class="izquierda">'.$infoSolicOrigen[0]["duracionTarea"]." ".$infoSolicOrigen[0]["unidaddescrip"] .'</td>';
 																												}else{
 																													echo '<td class="izquierda"> - </td>';
 																												}
 
-																												if ( isset($detaOT[0]['duracionTarea']) && $detaOT[0]['duracionTarea']!= null ) {
+																												if ( isset($infoSolicOrigen[0]['frecuencia']) ) {
 																												// frecuencia
 																												echo '<td class="izquierda">'.$infoSolicOrigen[0]['frecuencia'].'</td>';
 																												}else{

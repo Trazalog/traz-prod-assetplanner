@@ -46,6 +46,9 @@ input:checked + .slider:before {
 .slider.round:before {
     border-radius: 50%;
 }
+.oculto {
+  display: none;
+}
 </style>
 <input type="hidden" id="permission" value="<?php echo $permission;?>"> 
 <section class="content">    
@@ -66,171 +69,35 @@ input:checked + .slider:before {
               <label style="margin-right: 10px;">Mostrar solicitudes conformes</label>
             </div>
               <label class="switch">
-                <input type="checkbox" id="check-conformes" onclick="showSolicitudesConformes()">
+                <input type="checkbox" id="check-conformes" >
                 <span class="slider round"></span>
               </label>
           </div><!-- /.col-xs-12 -->
         </div><!-- /.box-header -->
         <div class="box-body">
           <table id="servicio" class="table table-striped table-hover" style="width:100%;table-layout: fixed;">
-              <thead>
-                  <tr>
-                      <th width="2%">Acciones</th>
-                      <th>Nro</th>
-                      <th>Fecha</th>
-											<th>Fecha Fin</th>
-											<th>T. Asignación</th>
-											<th>T. Generación</th>
-                      <th>Solicitante</th>
-                      <th>Equipo</th>
-                      <th>Sector</th>
-                      <th>Grupo</th>
-                      <th>Causa</th>
-                      <th>Mantenedor</th>
-                      <th>Estado</th>
-                  </tr>
-              </thead>
-              <tbody>
-                <?php
-
-                  $userdata = $this->session->userdata('user_data');
-                  $usrId = $userdata[0]['usrId'];   
-                  $grupoId = $userdata[0]["grpId"];
-
-                    if(count($list) > 0) {
-
-                      foreach($list as $f){
-                        // var_dump($list);
-                          // usuario logueado o grupo administrador
-                    //    if (($f['usrId'] == $usrId) || ($grupoId == 1)) {
-																												$fecTerminada = $f['fecha_terminada'];
-                            $id_sol = $f['id_solicitud'];
-                            $id_eq = $f['id_equipo'];
-
-                          echo '<tr id="'.$id_sol.'" class="'.$id_eq.'" data-idequipo="'.$id_eq.'" >' ;
-                            echo '<td>';
-
-                            //if (strpos($permission,'Del') !== false) {
-
-                                //echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar"></i>';
-                            //}                                      
-
-                            //echo '<i class="fa fa-picture-o text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imagen" data-imagen ="'.$f['foto'].'" data-toggle="modal" data-target="#foto"></i> '; 
-                            
-                            // echo '<i class="fa fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"></i> '; 
-                            echo '<a onclick="mostrarOT(this)" href="#"><i class="fa fa-search text-white" style="cursor: pointer;margin-left:-3px"></i>   Ver</a>';
-
-                            //if ($f['estado'] !== 'T') { 
-                            //echo '<i class="fa fa-thumbs-up text-light-blue" data-toggle="modal" data-target="#modalConformidad" style="cursor: pointer; margin-left: 15px;" title="Conformidad"></i>';
-                            //}   
-
-                            //echo '<i class="fa fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"></i> ';
-
-                            echo '</td>';
-                            echo '<td style="text-align: left">'.$f['id_solicitud'].'</td>';
-                            echo '<td style="text-align: left">'.$f['f_solicitado'].'</td>';
-
-                            if ( ($fecTerminada == '0000-00-00 00:00:00') || ($fecTerminada == '') ) {
-                                echo '<td style="text-align: left"> S/Fecha</td>';
-                            } else {
-                                echo '<td style="text-align: left">'.$f['fecha_terminada'].'</td>';
-                            }
-                            
-                            if(!is_null($f['f_asignacion']) && !is_null($f['f_inicio']) && $f['f_inicio'] != '0000-00-00 00:00:00'){
-
-                              /* $f_asignacion = strtotime($f['f_asignacion']);
-                              $f_inicio = strtotime($f['f_inicio']);
-                              $t_asignacion = number_format((($f_inicio - $f_asignacion)/3600), 2, ':', ' ');  */
-
-                              $f_asignacion = new DateTime($f['f_asignacion']);
-                              $f_inicio = new DateTime($f['f_inicio']);
-
-                              // Calcula la diferencia entre las fechas
-                              $intervalo = $f_inicio->diff($f_asignacion);
-
-                              // Formatea la diferencia en horas:minutos
-                              $horas = $intervalo->format('%h');
-                              $minutos = $intervalo->format('%i');
-
-                               // Rellena los minutos con ceros a la izquierda si es necesario
-                               $minutos = str_pad($minutos, 2, '0', STR_PAD_LEFT);
-
-                              $t_asignacion = "$horas:$minutos";
-                              echo '<td style="text-align: left">'.$t_asignacion.'</td>';
-                            }else{
-                              echo '<td style="text-align: left">S/Datos</td>';
-                            }
-                                                        
-                            if(!is_null($f['f_asignacion']) && !is_null($f['f_solicitado'])){
-
-                            /*   $f_asignacion = strtotime($f['f_asignacion']);
-                              $f_solicitado = strtotime($f['f_solicitado']);
-                              $t_genracion = number_format((($f_asignacion - $f_solicitado)/3600), 2, ':', ' '); */
-
-                              $f_asignacion = new DateTime($f['f_asignacion']);
-                              $f_solicitado = new DateTime($f['f_solicitado']);
-
-                              $intervalo = $f_solicitado->diff($f_asignacion);
-
-                              $horas = $intervalo->format('%h');
-                              $minutos = $intervalo->format('%i');
-                              // Rellena los minutos con ceros a la izquierda si es necesario
-                              $minutos = str_pad($minutos, 2, '0', STR_PAD_LEFT);
-
-                              $t_genracion = "$horas:$minutos";
-                             
-                              echo '<td style="text-align: left">'.$t_genracion.'</td>';
-                            }else{
-                              echo '<td style="text-align: left">S/Datos</td>';
-                            }                           
-                            
-                            echo '<td style="text-align: left">'.$f['solicitante'].'</td>';
-                            echo '<td style="text-align: left">'.$f['equipo'].'</td>';
-                            echo '<td style="text-align: left">'.$f['sector'].'</td>';
-                            echo '<td style="text-align: left">'.$f['grupo'].'</td>';  
-                            echo '<td style="text-align: left">'.$f['causa'].'</td>';
-                            echo '<td style="text-align: left">'.$f['mantenedor'].'</td>';
-
-                            echo '<td>';           
-                            
-                            if ($f['estado'] == 'S') {
-                              // echo  '<small class="label pull-left bg-red">Solicitada</small>';
-                               echo bolita('Solicitada', 'red');
-                             }
-                             if($f['estado'] == 'PL'){                           
-                               //echo '<small class="label pull-left bg-orange">Planificada</small>';
-                               echo bolita('Planificada', 'yellow');
-                             }
-                             if($f['estado'] == 'AS'){
-                               // echo '<small class="label pull-left bg-yellow">Asignada</small>';
-                               echo bolita('Asignada', 'purple');
-                             }
-                             if ($f['estado'] == 'C') {
-                               //echo '<small class="label pull-left bg-blue">Curso</small>' ;
-                               echo bolita('Curso', 'green');
-                             }
-                             if ($f['estado'] == 'T') {
-                               //echo  '<small class="label pull-left bg-navy">Terminada</small>';
-                               echo bolita('Terminada', 'blue');
-                             }
-                             if ($f['estado'] == 'CE') {
-                               //echo  '<small class="label pull-left bg-green">Cerrada</small>';
-                               echo bolita('Cerrada', 'default');
-                             }  
-                             if ($f['estado'] == 'CN') {
-                               //echo  '<small class="label pull-left bg-black">Conforme</small>';
-                               echo bolita('Conforme', 'black');
-                             }
-                                                  
-
-                            echo '</td>';            
-                         echo '</tr>'; 
-                      //  } // if ($f['usrId'] == $usrId)
-                      } // fin foreach($list as $f)   
-                    } // fin if(count($list) > 0)
-
-                ?>
-              </tbody>
+            <thead>
+              <tr>
+                <th width="2%">Acciones</th>
+                <th>Nro</th>
+                <th>Nro de OT</th>
+                <th>Fecha</th>
+                <th>Fecha Fin</th>
+                <th>T. de ciclo</th>
+                <th>T. Asignación</th>
+                <th>T. Generación</th>
+                <th>Solicitante</th>
+                <th>Equipo</th>
+                <th>Sector</th>
+                <th>Grupo</th>
+                <th>Causa</th>
+                <th>Mantenedor</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+             
+            </tbody>
           </table>
         </div><!-- /.box-body -->
       </div><!-- /.box -->
@@ -238,6 +105,53 @@ input:checked + .slider:before {
   </div><!-- /.row -->
 
 </section><!-- /.content -->
+
+<!-- Modal para eliminar solicitud -->
+<div class="modal fade" id="modalVerOT" tabindex="-1" role="dialog" aria-labelledby="modalVerOTLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalVerOTLabel">Ver OT</h4>
+      </div>
+      <div class="modal-body">
+        <p><strong>Fecha de Inicio:</strong> <span id="modal-f_inicio"></span></p>
+        <p><strong>Fecha Terminada:</strong> <span id="modal-fecha_terminada"></span></p>
+        <p><strong>Descripción:</strong> <span id="modal-descripcion"></span></p>
+        <p><strong>Fecha de Asignación:</strong> <span id="modal-f_asignacion"></span></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para eliminar solicitud -->
+<div class="modal fade" id="modalEliminarSolicitud" tabindex="-1" role="dialog" aria-labelledby="modalEliminarSolicitudLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalEliminarSolicitudLabel">Eliminar Solicitud</h4>
+      </div>
+      <div class="modal-body">
+        <form id="formEliminarSolicitud">
+          <input type="hidden" id="idSolicitud" name="id_solicitud">
+          <input type="hidden" id="case_id" name="case_id">
+          <div class="form-group">
+            <label for="motivoEliminacion">Motivo de eliminación:</label>
+            <textarea class="form-control" id="motivoEliminacion" name="motivoEliminacion" rows="3" required></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" onclick="confirmarEliminacion()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Modal Ver Orden de Trabajo Solicitud de Servicio-->
 <div class="modal" id="verOtSolServicio" tabindex="-1" role="dialog">
@@ -292,7 +206,26 @@ input:checked + .slider:before {
                   <div class="col-xs-12">
                     <label for="vFalla">Falla:</label>
                     <Textarea class="form-control " name="vFalla" id="vFalla" disabled></Textarea>
-                  </div>  
+                  </div>
+
+                  <!-- Nuevos campos para motivo, ID usuario y fecha de eliminación -->
+                  <div class="col-xs-12" style="margin-top: 30px;">
+                    <label for="motivo_eliminada" class="oculto">Motivo de Eliminación:</label>
+                    <textarea class="form-control" id="motivo_eliminada" name="motivo_eliminada" class="oculto" disabled></textarea>
+                  </div>
+                  <div class="col-xs-12 col-sm-6">
+                    <label for="fecha_eliminada" class="oculto">Fecha de Eliminación:</label>
+                    <input type="date" class="form-control oculto" id="fecha_eliminada" name="fecha_eliminada" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6">
+                    <label for="hora_eliminada" class="oculto">Hora de Eliminación:</label>
+                    <input type="time" class="form-control oculto" id="hora_eliminada" name="hora_eliminada" disabled>
+                  </div>
+                  <div class="col-xs-12 col-sm-6">
+                    <label for="nombre_usuario" class="oculto">Usuario que Eliminó:</label>
+                    <input type="text" class="form-control oculto" id="nombre_usuario" name="nombre_usuario" disabled>
+                  </div>
+                  <!-- Fin de nuevos campos -->  
                 </div>
 
               </div>
@@ -439,13 +372,276 @@ input:checked + .slider:before {
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<script>
+<script>  
+  //calculo diferencia entre horas
+  function calculateTimeDiff(start, end) {
+      if (!start || !end || start === '0000-00-00 00:00:00' || end === '0000-00-00 00:00:00') {
+          return 'S/Datos';
+      } else {
+          let startDate = new Date(start);
+          let endDate = new Date(end);
+          let diff = endDate - startDate;
+          let hours = Math.floor(diff / 3600000);
+          let minutes = Math.floor((diff % 3600000) / 60000);
+          return `${hours}:${minutes.toString().padStart(2, '0')}`;
+      }
+  }
+
+  function bolita(text, color) {
+      return `<small class="label pull-left bg-${color}">${text}</small>`;
+  }  
+       
+  $(document).ready(function() {
+
+    var table = $('#servicio').DataTable({
+        'ordering': true,
+        'lengthMenu': [[10, 25, 50, 100], [10, 25, 50, 100]],
+        'paging': true,
+        'processing': true,
+        'serverSide': true,
+        'order': [[1, 'desc']],
+        'ajax': {
+            'url': 'index.php/Sservicio/paginado',
+            'type': 'POST',
+            'data': function(d) {
+                d.showConformes = $('#check-conformes').is(':checked'); // Agrega el parámetro showConformes
+            }
+        },
+        'columns': [
+            {
+                "data": null,
+                "render": function(data, type, row) {
+                    var r = `<a onclick='mostrarOT(${JSON.stringify(row)})' href="#" title="Consultar"><i class="fa fa-search text-white" style="cursor: pointer;margin-left:-3px"></i></a>`;
+                    r = r + `<td>`;
+                    if (row.estado === 'S') {
+                      var r = r + `<a onclick='mostrarModalEliminacion(${JSON.stringify(row)})' href="#" title="Eliminar"><i class="fa fa-trash text-white" style="cursor: pointer; margin-left: 15px;"></i></a>`;
+                    }
+                    return r = r + `</td>`;
+                }
+            },
+            { "data": "id_solicitud" },
+            {
+                "data": "id_orden",
+                "render": function(data, type, row) {
+                    if (data) {
+                        return `<button class="btn btn-warning" onclick='abrirModal(${JSON.stringify(row)})'>${data}</button>`;
+                    } else {
+                        return '';
+                    }
+                }
+            },
+            { "data": "f_solicitado" },
+            {
+                "data": "fecha_terminada",
+                "render": function(data, type, row) {
+                    return (data == '0000-00-00 00:00:00' || data == '') ? 'S/Fecha' : data;
+                }
+            },
+            {
+                "data": null,
+                "render": function(data, type, row) {
+                    return calculateTimeDiff(row.f_solicitado, row.f_asignacion);
+                }
+            },
+            {
+                "data": null,
+                "render": function(data, type, row) {
+                    return calculateTimeDiff(row.f_asignacion, row.f_inicio);
+                }
+            },
+            {
+                "data": null,
+                "render": function(data, type, row) {
+                    return calculateTimeDiff(row.f_solicitado, row.f_asignacion);
+                }
+            },
+            { "data": "solicitante" },
+            { "data": "equipo" },
+            { "data": "sector" },
+            { "data": "grupo" },
+            { "data": "causa" },
+            { "data": "mantenedor" },
+            {
+                "data": "estado",
+                "render": function(data, type, row) {
+                    let colors = {
+                        'EL': 'light-blue',
+                        'S': 'red',
+                        'PL': 'yellow',
+                        'AS': 'purple',
+                        'C': 'green',
+                        'T': 'blue',
+                        'CE': 'default',
+                        'CN': 'black'
+                    };
+                    let labels = {
+                        'EL': 'Eliminada',
+                        'S': 'Solicitada',
+                        'PL': 'Planificada',
+                        'AS': 'Asignada',
+                        'C': 'Curso',
+                        'T': 'Terminada',
+                        'CE': 'Cerrada',
+                        'CN': 'Conforme'
+                    };
+                    return bolita(labels[data], colors[data]);
+                }
+            }
+        ]
+    });
+
+    $('#check-conformes').on('change', function() {
+        table.ajax.reload();
+    });
+});
+
+function abrirModal(rowData) {
+    // Función para formatear fechas
+    function formatDate(datetime) {
+        if (!datetime || datetime === '0000-00-00 00:00:00') {
+            return 'Sin fecha';
+        }
+        const date = new Date(datetime);
+        const options = {
+            year: 'numeric', 
+            month: '2-digit', 
+            day: '2-digit', 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit'
+        };
+        return date.toLocaleDateString('es-AR', options);
+    }
+
+    // Rellenar el modal con los datos formateados
+    $('#modal-f_inicio').text(formatDate(rowData.f_inicio));
+    $('#modal-fecha_terminada').text(formatDate(rowData.fecha_terminada));
+    $('#modal-descripcion').text(rowData.descripcion || 'Sin descripción');
+    $('#modal-f_asignacion').text(formatDate(rowData.f_asignacion));
+
+    // Actualizar el título del modal
+    $('#modalVerOTLabel').text(`Orden de Trabajo ${rowData.id_orden}`);
+
+    // Mostrar el modal
+    $('#modalVerOT').modal('show');
+}
+
+/*function mostrarModalEliminacion(row) {
+  console.log(row);
+  Swal.fire({
+      title: 'Atención!',
+      text: 'Solo los usuarios solicitantes pueden eliminar solicitudes!',
+      confirmButtonText: 'Aceptar',
+    }).then((result) => {
+      if (result.value) {
+        console.log('Confirmado');
+        var validacionSolicitante = validaUserSolicitante();
+        console.log(validacionSolicitante);
+        document.getElementById('idSolicitud').value = row.id_solicitud;
+        $('#modalEliminarSolicitud').modal('show');
+      }
+    });
+} */
+
+async function mostrarModalEliminacion(row) {
+  console.log(row);
+  Swal.fire({
+    title: 'Atención!',
+    text: 'Solo los usuarios solicitantes pueden eliminar solicitudes!',
+    confirmButtonText: 'Aceptar',
+  }).then(async (result) => {
+    if (result.value) {
+      console.log('Confirmado');
+      
+      try {
+        var validacionSolicitante = await validaUserSolicitante();
+        console.log(validacionSolicitante);
+        debugger;
+        if (validacionSolicitante.trim() == "true") { // Aquí puedes verificar si el usuario es solicitante
+          document.getElementById('idSolicitud').value = row.id_solicitud;
+          document.getElementById('case_id').value = row.case_id;
+          $('#modalEliminarSolicitud').modal('show');
+        } else {
+          Swal.fire('Error', 'No tienes permisos para eliminar esta solicitud.', 'error');
+        }
+      } catch (error) {
+        Swal.fire('Error', 'Ocurrió un error al validar el usuario.', 'error');
+      }
+    }
+  });
+}
+
+/* function validaUserSolicitante()
+{
+  $.ajax({
+    url: 'index.php/Sservicio/validaUsuarioSolicitante', 
+    method: 'POST',
+    data: {},
+    success: function(response) {
+      return response;
+    },
+    error: function(error) {
+      WaitingClose();
+      alert('Error al eliminar la solicitud.');
+    }
+  });
+}
+ */
+function validaUserSolicitante() {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      url: 'index.php/Sservicio/validaUsuarioSolicitante',
+      method: 'POST',
+      data: {},
+      success: function(response) {
+        resolve(response);
+      },
+      error: function(error) {
+        reject(error);
+      }
+    });
+  });
+}
+
+function confirmarEliminacion() {
+  WaitingOpen('Eliminando Solcitud');
+  var motivo = document.getElementById('motivoEliminacion').value;
+  var idSolicitud = document.getElementById('idSolicitud').value;
+  var case_id = document.getElementById('case_id').value;
+
+  if (motivo.trim() === "") {
+    alert("Por favor, ingrese un motivo para la eliminación.");
+    return;
+  }
+  
+  $.ajax({
+    url: 'index.php/Sservicio/eliminar_solicitud', 
+    method: 'POST',
+    data: {
+      id_solicitud: idSolicitud,
+      motivo: motivo,
+      case_id : case_id
+    },
+    success: function(response) {
+      WaitingClose('Eliminado con éxito...');
+      var permisos = '<?php echo $permission; ?>';
+      cargarView('Sservicio', 'index', permisos) ; 
+    },
+    error: function(error) {
+      WaitingClose();
+      alert('Error al eliminar la solicitud.');
+    }
+  });
+
+  $('#modalEliminarSolicitud').modal('hide');
+}
 
   // VER OT 
   function mostrarOT(o){
 
-    let idSS = $(o).closest('tr').attr('id');
+    //let idSS = $(o).closest('tr').attr('id');
     //console.log(idSS); 
+    let idSS = o.id_solicitud;
     
     WaitingOpen('Obteniendo datos de OT...');
     // datos = getDataOtSolServicio(idSS, "Solicitud de Servicio");
@@ -471,7 +667,32 @@ input:checked + .slider:before {
           $("#adjunto").attr("href", data.SS[0].sol_adjunto);
 
         }
-        
+        // Validación del estado y manipulación de campos
+        if (data.SS[0].estado === "EL") {
+            $("#motivo_eliminada").val(data.SS[0].motivo_eliminada).removeClass('oculto');
+            $("#nombre_usuario").val(data.SS[0].nombre_usuario).removeClass('oculto');
+            // Extracción de la parte de la fecha y la hora del campo datetime
+            let [fechaEliminada, horaEliminada] = data.SS[0].fecha_eliminada.split(' ');
+            $("#fecha_eliminada").val(fechaEliminada).removeClass('oculto');
+            $("#hora_eliminada").val(horaEliminada).removeClass('oculto');
+            
+            // Mostrar las etiquetas también
+            $("label[for='motivo_eliminada']").removeClass('oculto');
+            $("label[for='fecha_eliminada']").removeClass('oculto');
+            $("label[for='hora_eliminada']").removeClass('oculto');
+            $("label[for='nombre_usuario']").removeClass('oculto');
+        } else {
+            $("#motivo_eliminada").addClass('oculto');
+            $("#nombre_usuario").addClass('oculto');
+            $("#fecha_eliminada").addClass('oculto');
+            $("#hora_eliminada").addClass('oculto');
+            
+            // Ocultar las etiquetas también
+            $("label[for='motivo_eliminada']").addClass('oculto');
+            $("label[for='fecha_eliminada']").addClass('oculto');
+            $("label[for='hora_eliminada']").addClass('oculto');
+            $("label[for='nombre_usuario']").addClass('oculto');
+        }
       })
       .fail( () => alert( "Error al traer los datos de la OT." ) )
       .always( () => WaitingClose() );
@@ -1158,28 +1379,9 @@ $("#vstsolicita").autocomplete({
             dataType: 'json'
         });
   }
-  // Datatables
-  $('#servicio').DataTable({
-    <?php echo (!DT_SIZE_ROWS ? '"paging": false,' : null) ?>
-    "autoWidth": false,
-    "paging": true,
-    "aLengthMenu": [ 10, 25, 50, 100 ],
-    "columnDefs": [ 
-      {
-        "targets": [ 0 ], 
-        "searchable": false,
-      },
-      {
-        "targets": [ 0 ], 
-        "orderable": false,
-      },
-      { 
-        "targets": [ 1, 8 ],
-        "type": "num",
-      }
-    ],
-    "order": [[1, "desc"]],
-  });
+
+  
+
 </script>
 
 
@@ -1375,13 +1577,39 @@ $("#vstsolicita").autocomplete({
   </div>
 </div>
 
+<!-- Modal Aviso eliminar -->
+<div class="modal" id="modalEliminarSolServicio2" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><span class="fa fa-fw fa-times-circle text-light-blue"></span>Eliminar</h4>
+      </div>
+      <div class="modal-body">
+        <div class="col-xs-12">
+            <input type="hidden" id="e_idSolicitud" name="e_idSolicitud">
+            <label for="e_motivo">Motivo: </label>
+            <textarea class="form-control" id="e_motivo" name="e_motivo"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="#">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- / Modal -->
+
+
+
 <script>
 // $(document).ready(function(){
 //   //Oculto solicitudes conformes
 //   showSolicitudesConformes();
 // });
 //Oculta/Muestra solicitudes con estado Conforme
-function showSolicitudesConformes() {
+/*function showSolicitudesConformes() {
   showConformes = $('#check-conformes').is(':checked');
   table = $('#servicio').DataTable();
 
@@ -1398,8 +1626,21 @@ function showSolicitudesConformes() {
 
       // Loopeo, dibujo y agrego las filas de la tabla
       $.each(data, function(index, item) {
+        var t_ciclo;
         var t_asignacion;
         var t_generacion;
+
+        if((item.f_asignacion != null && item.f_asignacion != '0000-00-00 00:00:00') && (item.f_inicio != null && item.f_inicio != '0000-00-00 00:00:00')){
+          var f_asignacion = new Date(item.f_asignacion);
+          var f_inicio = new Date(item.f_inicio);
+          var tiempoAsignacion = f_inicio - f_asignacion;
+          var horasAsignacion = Math.floor(tiempoAsignacion / 1000 / 60 / 60);
+          var minutosAsignacion = Math.floor((tiempoAsignacion / 1000 / 60) % 60);
+          minutosAsignacion = String(minutosAsignacion).padStart(2, '0');
+          t_ciclo = horasAsignacion + ":" + minutosAsignacion;
+        }else{
+          t_ciclo = 'S/Datos';
+        }
 
         //Checkeo la nullidad de la fecha de asignacion e inicio
         if((item.f_asignacion != null && item.f_asignacion != '0000-00-00 00:00:00') && (item.f_inicio != null && item.f_inicio != '0000-00-00 00:00:00')){
@@ -1471,6 +1712,7 @@ function showSolicitudesConformes() {
                 '<td>' + item.id_solicitud + '</td>' +
                 '<td>' + item.f_solicitado + '</td>' +
                 '<td>' + (item.fecha_terminada != null && item.fecha_terminada != '0000-00-00 00:00:00' ? item.fecha_terminada : 'S/Fecha') + '</td>' +
+                '<td>' + t_ciclo + '</td>' +
                 '<td>' + t_asignacion + '</td>' +
                 '<td>' + t_generacion + '</td>' +
                 '<td>' + item.solicitante + '</td>' +
@@ -1488,5 +1730,6 @@ function showSolicitudesConformes() {
       table.draw();
     }
   });
-}
+}*/
+
 </script>

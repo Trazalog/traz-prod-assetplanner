@@ -2,6 +2,21 @@
 
 <input type="text" class="hidden" id="task" value="<?php echo $idTarBonita ?>">
 
+<style>
+#pdf-container {
+    width: 100%;
+}
+.pdf-page-canvas {
+    width: 100%;
+    height: auto;
+}
+
+.img-responsive {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+</style>
 <?php 
 $userdata = $this->session->userdata('user_data');
 $usrId = $userdata[0]['usrId'];     // guarda usuario logueado 
@@ -262,16 +277,16 @@ echo "<input type='text' class='hidden' id='estadoTarea' value=''>";
 
 <!-- Modal -->
 <div id="myModal" class="modal fade" role="dialog">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
 
                 <!-- Modal content-->
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Modal Header</h4>
+                        <h4 class="modal-title">Procedimiento</h4>
                     </div>
                     <div class="modal-body" id="content_adjunto">                        
-                                                                   
+                    <div id="pdf-container"></div>              
                     </div>
                 </div>
             </div>
@@ -389,7 +404,7 @@ function validaInicio() {
 
 //visualiza Documento
 function procedimiento(){
-    
+
     var ot = $('#ot').val();
     console.log(ot);
     ajax({
@@ -408,15 +423,25 @@ function procedimiento(){
                 switch(extension) {
                     case 'jpg':
                         //alert('jpg');        
-                        $('#content_adjunto').html('<img src="'+url+'" style="width: 400px; height: 264px;">');
+                       // $('#content_adjunto').html('<img src="'+url+'" style="width: 400px; height: 264px;">');
+                       $('#content_adjunto').html('<img src="' + url + '" class="img-responsive">');
                     break;
                     case 'png':
                         //alert('png');   
-                        $('#content_adjunto').html('<img src="'+url+'" style="width: 400px; height: 264px;"/>');
+                       // $('#content_adjunto').html('<img src="'+url+'" style="width: 400px; height: 264px;"/>');
+                       $('#content_adjunto').html('<img src="' + url + '" class="img-responsive">');
                     break;
                     case 'pdf':
                         //alert('pdf');
-                        $('#content_adjunto').html('<embed class="embed-responsive-item" width="100%" height="600px" src="'+url+'" type="application/pdf" scrolling="auto"></embed>');
+                        //$('#content_adjunto').html('<embed class="embed-responsive-item" width="100%" height="600px" src="'+url+'" type="application/pdf" scrolling="auto"></embed>');
+                        //$('#content_adjunto').html('<iframe class="embed-responsive-item" width="100%" height="600px" src="' + url + '" type="application/pdf" style="border: none;"></iframe>');
+                       //abrir en nueva pestaña, funciona
+                        /* if ($(window).width() < 768) {
+                            window.open(url, '_blank');
+                        } else { 
+                            $('#content_adjunto').html('<iframe class="embed-responsive-item" width="100%" height="600px" src="' + url + '" type="application/pdf" style="border: none;"></iframe>');
+                        }*/
+                        renderPDF(url);
                     break;
                     /*case 'xlsx':
                         alert('xlsx');
@@ -432,6 +457,45 @@ function procedimiento(){
         dataType: 'json'
     });
 
+}
+
+
+//renderiza pdf en modal 
+function renderPDF(url) {
+    pdfjsLib.getDocument(url).promise.then(function(pdf) {
+        console.log('PDF loaded');
+        var pdfContainer = document.getElementById('pdf-container');
+        pdfContainer.innerHTML = '';
+
+        for (var pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+           
+            pdf.getPage(pageNum).then(function(page) {
+                var scale = 1.5;
+                var viewport = page.getViewport({ scale: scale });
+
+                
+                var canvas = document.createElement('canvas');
+                canvas.className = 'pdf-page-canvas';
+                var context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                
+                pdfContainer.appendChild(canvas);
+
+                
+                var renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                page.render(renderContext).promise.then(function() {
+                    console.log('Page rendered');
+                });
+            });
+        }
+    }, function(reason) {
+        console.error(reason);
+    });
 }
 
 

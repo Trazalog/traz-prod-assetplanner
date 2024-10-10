@@ -1,3 +1,26 @@
+<style>
+.select2-container .select2-selection--single {
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    height: auto; 
+    background-color: #fff; 
+    padding: 4px; 
+    margin-top: 0;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 100%; 
+    right: 4px; 
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #333; 
+    padding-left: 8px; 
+}
+
+
+</style>
+
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
 <div class="row">
   <div class="col-xs-12">
@@ -65,8 +88,8 @@
               <div class="panel-body">
                 <div class="row">
                   <div class="col-xs-12 col-sm-6 col-md-4">Tarea <strong style="color: #dd4b39">*</strong>:
-                    <select id="tarea" name="tarea" class=" selectpicker form-control input-md">
-                      <option value="-1" selected disabled>Seleccione opción</option>
+                    <select id="tarea" name="tarea" class="selectpicker form-control select2 select2-hidden-accesible input-md">
+                      <option value="" selected disabled>Seleccione opción</option>
                     </select>
                   </div>
 
@@ -408,43 +431,83 @@ function traer_componente(id_equipo){
   });
 }
 
+$('.select2').select2();
 
-//Trae tareas y permite busqueda en el input
-var dataTarea = function() {
-  var tmp = null;
-  $.ajax({
-    'async': false,
-    'type': "POST",
-    'dataType': 'json',
-    'url': 'index.php/Preventivo/gettarea',
-  })
-  .done( (data) => { tmp = data;
-    var $select = $("#tarea");
-        for (var i = 0; i < data.length; i++) {
-          $select.append($('<option>', { value: data[i]['value'], text: data[i]['label'] }, '</option>'));
-        }} 
-        )
-  .fail( () => alert("Error al traer tareas") );
-  return tmp;
-}();
+//busca tareas por patron de busqueda 
+$('#tarea').select2({
+        ajax: {
+            url: "index.php/Preventivo/gettareaxPatron",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    patron: params.term, // parámetro búsqueda que recibe el controlador
+                    page: params.pageP
+                };
+            },
+            processResults: function (data, params) {
 
-/* $("#tarea").autocomplete({
-  source:    dataTarea,
-  delay:     500, 
-  minLength: 1,
-  focus: function(event, ui) {
-    event.preventDefault();
-    $(this).val(ui.item.label);
-    $('#id_tarea').val(ui.item.value);
-  },
-  select: function(event, ui) {
-    event.preventDefault();
-    $(this).val(ui.item.label);
-    $('#id_tarea').val(ui.item.value);
-  },change: function(event,ui){
-    $(this).val(ui.item == null ? "" : ui.item.label);
-  }
-}); */
+                params.page = params.page || 1;
+                
+                var results = [];
+                $.each(data, function(i, obj) {
+                    results.push({
+                        id: obj.value,
+                        text: obj.label,
+                        //fec_alta: obj.fec_alta
+                    });
+                });
+                return {
+                    results: results,
+                    pagination: {
+                        more: (params.page * 30) < results.length
+                    }
+                };
+            }
+        },
+        language: "es",
+        placeholder: 'Buscar tareas',
+        minimumInputLength: 3,
+        maximumInputLength: 8,
+        dropdownCssClass: "tareas",
+        templateResult: function (tarea) {
+
+            if (tarea.loading) {
+                return "Buscando tareas...";
+            }
+
+            var $container = $(
+                "<div class='select2-result-repository clearfix'>" +
+                "<div class='select2-result-repository__meta'>" +
+                    "<div class='select2-result-repository__title'></div>" +
+                    "<div class='select2-result-repository__description'></div>" +
+                "</div>" +
+                "</div>"
+            );
+
+            $container.find(".select2-result-repository__title").text(tarea.text);
+            //$container.find(".select2-result-repository__description").text(tarea.text);
+
+            return $container;
+        },
+        templateSelection: function (tarea) {
+            return tarea.text;
+        },
+        language: {
+            noResults: function() {
+                return '<option>No hay coincidencias</option>';
+            },
+            inputTooShort: function () {
+                return 'Ingrese 3 o mas dígitos para comenzar la búsqueda'; 
+            },
+            inputTooLong: function () {
+                return 'Hasta 8 dígitos permitidos'; 
+            }
+        },
+        escapeMarkup: function(markup) {
+            return markup;
+        },
+    });
 
 // Trae periodo y llena select
 traer_periodo();
