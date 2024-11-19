@@ -11358,7 +11358,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sProcessing": "Procesando...", //"Processing...",
+			"sProcessing": "Procesando, por favor espere...", //"Processing...",
 	
 	
 			/**
