@@ -125,9 +125,11 @@ class Forms extends CI_Model
 
     public function listado()
     {
-        $this->db->select('nombre, A.form_id, info_id, A.fec_alta as fecha');
+        $id= empresa();
+        $this->db->select('nombre, A.form_id, info_id, A.fec_alta as fecha, B.empr_id');
         $this->db->from('frm_instancias_formularios as A');
         $this->db->join('frm_formularios as B', 'B.form_id = A.form_id');
+        $this->db->where('B.empr_id', $id);
         $this->db->group_by('A.info_id');
         return $this->db->get()->result();
     }
