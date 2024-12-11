@@ -835,7 +835,7 @@
           WaitingClose();
           if(result['status']){
             $('#modalInforme').modal('hide');
-            $("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+            $("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/add-edit-del-view");
           }else{
             WaitingClose();
             $('#modalInforme').modal('hide');
