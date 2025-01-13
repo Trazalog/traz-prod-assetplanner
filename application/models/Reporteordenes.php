@@ -135,6 +135,7 @@ class Reporteordenes extends CI_Model
             orden_trabajo.fecha_program,
             orden_trabajo.fecha_terminada,
             orden_trabajo.fecha_entregada,
+            CONCAT(sisusers.usrName, " ", sisusers.usrLastName) as nombre_usuario,
             tbl_tipoordentrabajo.descripcion AS origenOT,
             tbl_estado.descripcion AS estado
         ');
@@ -143,6 +144,7 @@ class Reporteordenes extends CI_Model
         $this->db->join('equipos', 'equipos.id_equipo = orden_trabajo.id_equipo');
         $this->db->join('tbl_tipoordentrabajo', 'tbl_tipoordentrabajo.tipo_orden = orden_trabajo.tipo');
         $this->db->join('tbl_estado', 'tbl_estado.estado = orden_trabajo.estado');
+        $this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId', 'left');
         
         $this->db->where('orden_trabajo.id_empresa', $empresaId);
 
