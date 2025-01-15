@@ -633,7 +633,7 @@ class Calendario extends CI_Controller
         echo json_encode($response);
     }
     // carga modal ver OT y ejecutar OT
-    public function verEjecutarOT($idOt)
+    public function verEjecutarOT($idOt, $reasignaOt = null)
     {
 
         $this->load->model('traz-comp/Componentes');
@@ -683,6 +683,12 @@ class Calendario extends CI_Controller
         } else {
             $data['btnVisibilidad'] = false;
         }
+
+        if($reasignaOt !== null)
+        {
+            $data['reasignaOt'] = true;
+        }
+
         $data['task'] = $task;
 
         $this->load->view('calendar/view_OtEjecutar_modal', $data);

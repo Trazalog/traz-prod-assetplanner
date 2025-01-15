@@ -32,7 +32,13 @@
                          echo '<li role="presentation"><a href="#tareas" aria-controls="messages" role="tab" data-toggle="tab">Agregar Tareas</a></li>';
                          echo '<li role="presentation" onclick="$(\'#tabladetalle\').click();"><a href="#pedidomateriales" aria-controls="messages" role="tab" data-toggle="tab">Pedido Materiales</a></li>';
                        }
+
+					   if($reasignaOt){
+						echo '<li role="presentation"><a href="#responsable" aria-controls="messages" role="tab" data-toggle="tab">Asignación Responsable</a></li>';
+					   }
                       ?>
+
+					  
                    </ul>
                   <!-- /tabs -->
 
@@ -220,6 +226,11 @@
        <?php if($btnVisibilidad){
           echo '<button type="button" class="btn btn-success" id="ejecutar_ot" onclick="EjecutarOT()">Asignar OT</button>';
          }
+
+		 if($reasignaOt){
+			echo '<button type="button" class="btn btn-success" id="reasignar_ot" onclick="reasignaOt()">Asignar OT</button>';
+		   }
+
        ?>
        <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
       </div>
@@ -482,4 +493,45 @@ function guardarTarea(idOt) {
 	function activaTab(tab) {
 		$('.nav-tabs a[href="#' + tab + '"]').tab('show');
 	};
+
+
+	// reasigna y updatea el responsable asignado de la ot
+	function reasignaOt(){
+		var task = $('#task').val();
+		var ot = $('#idOt').val();
+		var responsable = $('#id_operario').val();
+		var id_solicitud = $('#id_solicitud').val();
+		var tareastd = $('#tareaest').val();
+		WaitingOpen();
+		$.ajax({
+			type: 'POST',
+			data: {
+				ot: ot,
+				task: task,
+				responsable: responsable,
+				tareastd: tareastd,
+				id_solicitud: id_solicitud
+			},
+			url: 'index.php/Otrabajo/reasignaOt',
+			success: function(data) {
+				if (data.status) {
+					
+					$("#modalRespyTareas").modal('hide');
+					WaitingClose();
+					linkTo();
+					Swal.fire('¡Éxito!', 'Se actualizo el responsable correctamente.', 'success');
+					
+				} else {
+					alert('Falla | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
+				}
+			},
+			error: function(data) {							
+				alert('Error | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
+			},
+			complete: function(){
+				WaitingClose();
+			},
+			dataType: 'json'
+		});
+	}
 </script>

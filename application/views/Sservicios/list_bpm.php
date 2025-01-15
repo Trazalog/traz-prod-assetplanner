@@ -447,7 +447,7 @@ input:checked + .slider:before {
                       var r = r + `<a onclick='mostrarModalEliminacion(${JSON.stringify(row)})' href="#" title="Eliminar"><i class="fa fa-trash text-white" style="cursor: pointer; margin-left: 15px;"></i></a>`;
                     }
                     if (row.estado === 'AS') {
-                      var r = r + `<a onclick='verEjecutarOT(${JSON.stringify(row)})' href="#" title="Editar Asignado"><i class="fa fa-user text-white" style="cursor: pointer; margin-left: 15px;"></i></a>`;
+                      var r = r + `<a onclick='mostrarModalEditarResponsable(${JSON.stringify(row)})' href="#" title="Editar Asignado"><i class="fa fa-user text-white" style="cursor: pointer; margin-left: 15px;"></i></a>`;
                     }
                     return r = r + `</td>`;
                 }
@@ -623,9 +623,9 @@ async function mostrarModalEliminacion(row) {
 function validaUserSolicitante() {
   return new Promise((resolve, reject) => {
     $.ajax({
-      url: 'index.php/Sservicio/validaUsuarioSolicitante',
+      url: 'index.php/Sservicio/validaUsuario',
       method: 'POST',
-      data: {},
+      data: {filtro1: 'Solicitante',},
       success: function(response) {
         resolve(response);
       },
@@ -1409,16 +1409,55 @@ function confirmarEliminacion() {
             dataType: 'json'
         });
   }
-  // ASIGNAR OT (RESPONSBLE) 
-  // carga vista modal ejecutar ot y asignar responsable
-  function verEjecutarOT(o) {
-      console.log(o);
-      var id_orden = o.id_orden;
-      WaitingOpen();
-      $('#contRespyTareas').empty();
-      $("#contRespyTareas").load("<?php echo base_url(); ?>index.php/Calendario/verEjecutarOT/" + id_orden + "/");
-      $('#modalRespyTareas').modal('show');      
-      WaitingClose();  
+
+  //cartel de aviso modificacion responsable
+  async function mostrarModalEditarResponsable(row) {
+    console.log(row);
+  Swal.fire({
+    title: 'Atención!',
+    text: 'Solo los usuarios supervisores pueden editar solicitudes!',
+    confirmButtonText: 'Aceptar',
+  }).then(async (result) => {
+    if (result.value) {
+      console.log('Confirmado');
+      
+      try {
+        var validacionUser = await validaUserAsignacion();
+        console.log(validacionUser);
+
+        if (validacionUser.trim() == "true") { 
+          var id_orden = row.id_orden;
+          WaitingOpen();
+          $('#contRespyTareas').empty();
+          $("#contRespyTareas").load("<?php echo base_url(); ?>index.php/Calendario/verEjecutarOT/" + id_orden + "/" + true);
+          $('#modalRespyTareas').modal('show'); 
+          WaitingClose();  
+
+        } else {
+          Swal.fire('Error', 'No tienes permisos para editar esta solicitud.', 'error');
+        }
+      } catch (error) {
+        Swal.fire('Error', 'Ocurrió un error al validar el usuario.', 'error');
+      }
+    }
+  });
+}
+
+
+  function validaUserAsignacion() {
+       return new Promise((resolve, reject) => {
+      $.ajax({
+        url: 'index.php/Sservicio/validaUsuario',
+        method: 'POST',
+        data: {filtro1: 'Supervisor de Taller', filtro2: 'Administrador'},
+        success: function(response) {
+          resolve(response);
+        },
+        error: function(error) {
+          reject(error);
+        }
+      });
+    }); 
   }
 </script>
 

@@ -331,17 +331,20 @@ class Sservicio extends CI_Controller
 	}
 
 	/**
-	* Comprueba si el usuario tiene rol solicitante
+	* Comprueba si el usuario tiene algun rol comparado con los filtros
 	* @return true
 	*/
-	public function validaUsuarioSolicitante() {
+	public function validaUsuario() {
 		
-		log_message('DEBUG', '#ASSET | SSERVICIO | validaUsuarioSolicitante()');
+		log_message('DEBUG', '#ASSET | SSERVICIO | validaUsuario()');
+
+		$filtro1 = $this->input->post('filtro1');
+    	$filtro2 = $this->input->post('filtro2');
 
 		$userdata = $this->session->userdata('user_data');
 		$id_usuario = $userdata[0]['usrId'];
 		$empresaId = $userdata[0]['id_empresa'];
-		$resp = $this->Sservicios->validaUsuarioSolicitantes($id_usuario, $empresaId);
+		$resp = $this->Sservicios->validaUsuario($id_usuario, $empresaId, $filtro1, $filtro2);
 		
 		echo json_encode($resp);
 	}
