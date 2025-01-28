@@ -1431,14 +1431,25 @@ class Otrabajo extends CI_Controller {
 	{
 		$datos = $this->input->post('datos');
 		$tipo = $this->input->post('tipo');
+		$userdata  = $this->session->userdata('user_data');
+		$empresaId = $userdata[0]['id_empresa'];
+
 		switch ($tipo) {
 		case '1': //Orden de trabajo
 			$this->load->view('otrabajos/printot', $datos);
 			break;
 		case '2': //Solicitud de servicio
+
+			//harkodeo para que lo vea solo tierras
+			if($empresaId === '15') $datos['muestraFirma'] = true;
+
 			$this->load->view('otrabajos/printotsolserv', $datos);
 			break;
 		case '3': //preventivo
+
+		 	//harkodeo para que lo vea solo tierras
+			if($empresaId === '15') $datos['muestraFirma'] = true; 
+
 			$this->load->view('otrabajos/printotprev', $datos);
 			break;
 		case '4': //Backlog
