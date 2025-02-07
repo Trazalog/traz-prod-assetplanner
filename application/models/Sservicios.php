@@ -440,12 +440,13 @@ class Sservicios extends CI_Model
 		//fin Total de registros
 
 		//completado de datos
-		$this->db->select('solicitud_reparacion.*, equipos.codigo AS equipo, sector.descripcion AS sector, grupo.descripcion AS grupo, equipos.ubicacion, orden_trabajo.fecha_terminada, orden_trabajo.fecha_inicio AS f_inicio, orden_trabajo.f_asignacion, solicitud_reparacion.f_solicitado, orden_trabajo.case_id, orden_trabajo.id_usuario_a, sisusers.usrName AS mantenedor');
+		$this->db->select('solicitud_reparacion.*, equipos.codigo AS equipo, sector.descripcion AS sector, grupo.descripcion AS grupo, equipos.ubicacion, orden_trabajo.fecha_terminada, orden_trabajo.fecha_inicio AS f_inicio, orden_trabajo.descripcion, orden_trabajo.f_asignacion, solicitud_reparacion.f_solicitado, COALESCE(orden_trabajo.case_id, solicitud_reparacion.case_id) as case_id, orden_trabajo.id_orden, orden_trabajo.id_usuario_a, sisusers.usrName AS mantenedor');
 		$this->db->from('solicitud_reparacion');
 		$this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo', 'inner');
 		$this->db->join('sector', 'equipos.id_sector = sector.id_sector', 'inner');
 		$this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo', 'left');
-		$this->db->join('orden_trabajo', 'solicitud_reparacion.case_id = orden_trabajo.case_id', 'left');
+		$this->db->join("(SELECT case_id, MAX(id_orden) AS max_id FROM orden_trabajo GROUP BY case_id) ot_max", 'solicitud_reparacion.case_id = ot_max.case_id', 'left');
+		$this->db->join('orden_trabajo', 'ot_max.max_id = orden_trabajo.id_orden', 'left');
 		$this->db->join('sisusers', 'orden_trabajo.id_usuario_a = sisusers.usrId', 'left');
 		$this->db->where('solicitud_reparacion.id_empresa', $empId); 
 	
@@ -508,5 +509,59 @@ class Sservicios extends CI_Model
 		return $this->db->update('orden_trabajo', $data);
 	}
 	
+
+	/**
+	* Comprueba si el usuario pertenece a un rol enviado en alguno de los dos filtros
+	* @param integer;integer;string;string  
+	* @return true
+	*/
+	public function validaUsuario($id_usuario, $empresaId, $filtro1 = null, $filtro2 = null)
+	{
+		$this->db->select('sisusers.usrId');
+		$this->db->from('sisusers');
+		$this->db->join('usuarioasempresa', 'usuarioasempresa.usrId = sisusers.usrId');
+		$this->db->join('sisgroups', 'sisgroups.grpId = usuarioasempresa.grpId');
+		$this->db->where('usuarioasempresa.empresaid', $empresaId);
+		$this->db->where('usuarioasempresa.estado', 'AC');
+		$this->db->where('sisusers.usrId', $id_usuario);
+	
+		// Agrupar condiciones con los filtros dinámicos
+		$this->db->group_start();
+	
+		if ($filtro1 !== null) {
+			$this->db->where('sisgroups.grpName', $filtro1);
+		}
+		if ($filtro2 !== null) {
+			$this->db->or_where('sisgroups.grpName', $filtro2);
+		}
+	
+		$this->db->group_end();
+	
+		$query = $this->db->get();
+	
+		if ($query->num_rows() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+	 /**
+	* Obtengo la informacion relacionada al proceso guardada en pro.procesos
+	* @param $processname (se obtiene de la data del usuario processname que se le carga desde el menú)
+	* @return array datos del proceso asociado
+	*/
+    public function procesos(){
+        $proccessname = $this->session->userdata('proccessname');
+
+        $resource = "/proceso/nombre/$proccessname/empresa/" . empresa();
+
+        $url = REST_PRO . $resource;
+        
+        $array = $this->rest->callApi('GET', $url);
+
+        return json_decode($array['data']);
+    }
 	
 }	

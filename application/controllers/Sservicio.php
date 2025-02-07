@@ -288,8 +288,11 @@ class Sservicio extends CI_Controller
 
 	public function eliminar_solicitud()
 	{
+		log_message('DEBUG', '#ASSET | SSERVICIO  | eliminar_solicitud()');
+
 		$id_solicitud = $this->input->post('id_solicitud');
 		$motivo = $this->input->post('motivo');
+		$case_id = $this->input->post('case_id');
 		$userdata = $this->session->userdata('user_data');
 		$id_usuario = $userdata[0]['usrId'];
 
@@ -301,10 +304,49 @@ class Sservicio extends CI_Controller
 		$resultado_OT = $this->Sservicios->eliminar_orden_trabajo($id_solicitud, $id_usuario, $motivo);
 		
 		if ($resultado_solicitud & $resultado_OT) {
+
 			echo "Solicitud de servicio y orden de trabajo eliminadas exitosamente.";
+
+			//eliminado de bonita
+			$processId = BPM_PROCESS_ID;
+			//una vez que cerramos el ingreso en barrera(pedido de trabajo) procedemos a cerrar el Case si este esta abierto
+			$respCaso = $this->bpm->eliminarCaso($processId, $case_id);
+
+			if ($respCaso['status']) {
+
+				log_message('DEBUG', '#ASSET | SSERVICIO | eliminarCaso() >> Caso e Sservicio eliminados correctamente');
+				
+				echo json_encode($respCaso);
+ 
+			 } else {
+				 
+				 log_message('ERROR', '#ASSET | SSERVICIO | eliminarCaso()  >> Error al eliminar CASE en BONITA');
+ 
+				 echo json_encode($respCaso);
+			}
+
 		} else {
 			echo "Error al eliminar solicitud de servicio y orden de trabajo.";
 		}
+	}
+
+	/**
+	* Comprueba si el usuario tiene algun rol comparado con los filtros
+	* @return true
+	*/
+	public function validaUsuario() {
+		
+		log_message('DEBUG', '#ASSET | SSERVICIO | validaUsuario()');
+
+		$filtro1 = $this->input->post('filtro1');
+    	$filtro2 = $this->input->post('filtro2');
+
+		$userdata = $this->session->userdata('user_data');
+		$id_usuario = $userdata[0]['usrId'];
+		$empresaId = $userdata[0]['id_empresa'];
+		$resp = $this->Sservicios->validaUsuario($id_usuario, $empresaId, $filtro1, $filtro2);
+		
+		echo json_encode($resp);
 	}
 
 }

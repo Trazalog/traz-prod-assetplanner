@@ -1972,7 +1972,7 @@ function getDataOtPreventivo(idOt, idPreventivo, origen) {
                 'ubicacion': data['preventivo'][0]['ubicacion'],
                 'descripcion_eq': data['preventivo'][0]['descripcionEquipo'],
                 'nomCli': data['preventivo'][0]['nomCli'],
-                'tarea': data['preventivo'][0]['tarea'],
+                'tarea': data['preventivo'][0]['tarea']
             };
 
             var herram = data['herramientas'];

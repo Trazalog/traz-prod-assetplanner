@@ -80,6 +80,7 @@ input:checked + .slider:before {
               <tr>
                 <th width="2%">Acciones</th>
                 <th>Nro</th>
+                <th>Nro de OT</th>
                 <th>Fecha</th>
                 <th>Fecha Fin</th>
                 <th>T. de ciclo</th>
@@ -105,6 +106,57 @@ input:checked + .slider:before {
 
 </section><!-- /.content -->
 
+<!--  MODAL asignar Responsable y tareas   -->
+<div class="modal bs-example-modal-lg" id="modalRespyTareas" tabindex="-1" role="dialog"
+    aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Asignar Responsable y Tareas</h4>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="box">
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12" id="contRespyTareas">
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para eliminar solicitud -->
+<div class="modal fade" id="modalVerOT" tabindex="-1" role="dialog" aria-labelledby="modalVerOTLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalVerOTLabel">Ver OT</h4>
+      </div>
+      <div class="modal-body">
+        <p><strong>Fecha de Inicio:</strong> <span id="modal-f_inicio"></span></p>
+        <p><strong>Fecha Terminada:</strong> <span id="modal-fecha_terminada"></span></p>
+        <p><strong>Descripción:</strong> <span id="modal-descripcion"></span></p>
+        <p><strong>Fecha de Asignación:</strong> <span id="modal-f_asignacion"></span></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal para eliminar solicitud -->
 <div class="modal fade" id="modalEliminarSolicitud" tabindex="-1" role="dialog" aria-labelledby="modalEliminarSolicitudLabel">
   <div class="modal-dialog" role="document">
@@ -116,6 +168,7 @@ input:checked + .slider:before {
       <div class="modal-body">
         <form id="formEliminarSolicitud">
           <input type="hidden" id="idSolicitud" name="id_solicitud">
+          <input type="hidden" id="case_id" name="case_id">
           <div class="form-group">
             <label for="motivoEliminacion">Motivo de eliminación:</label>
             <textarea class="form-control" id="motivoEliminacion" name="motivoEliminacion" rows="3" required></textarea>
@@ -349,27 +402,24 @@ input:checked + .slider:before {
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<script>
+<script>  
+  //calculo diferencia entre horas
+  function calculateTimeDiff(start, end) {
+      if (!start || !end || start === '0000-00-00 00:00:00' || end === '0000-00-00 00:00:00') {
+          return 'S/Datos';
+      } else {
+          let startDate = new Date(start);
+          let endDate = new Date(end);
+          let diff = endDate - startDate;
+          let hours = Math.floor(diff / 3600000);
+          let minutes = Math.floor((diff % 3600000) / 60000);
+          return `${hours}:${minutes.toString().padStart(2, '0')}`;
+      }
+  }
 
-  
-        //calculo diferencia entre horas
-        function calculateTimeDiff(start, end) {
-            if (!start || !end || start === '0000-00-00 00:00:00' || end === '0000-00-00 00:00:00') {
-                return 'S/Datos';
-            } else {
-                let startDate = new Date(start);
-                let endDate = new Date(end);
-                let diff = endDate - startDate;
-                let hours = Math.floor(diff / 3600000);
-                let minutes = Math.floor((diff % 3600000) / 60000);
-                return `${hours}:${minutes.toString().padStart(2, '0')}`;
-            }
-        }
-
-        function bolita(text, color) {
-            return `<small class="label pull-left bg-${color}">${text}</small>`;
-        }
-
+  function bolita(text, color) {
+      return `<small class="label pull-left bg-${color}">${text}</small>`;
+  }  
        
   $(document).ready(function() {
 
@@ -396,10 +446,23 @@ input:checked + .slider:before {
                     if (row.estado === 'S') {
                       var r = r + `<a onclick='mostrarModalEliminacion(${JSON.stringify(row)})' href="#" title="Eliminar"><i class="fa fa-trash text-white" style="cursor: pointer; margin-left: 15px;"></i></a>`;
                     }
+                    if (row.estado === 'AS') {
+                      var r = r + `<a onclick='mostrarModalEditarResponsable(${JSON.stringify(row)})' href="#" title="Editar Asignado"><i class="fa fa-user text-white" style="cursor: pointer; margin-left: 15px;"></i></a>`;
+                    }
                     return r = r + `</td>`;
                 }
             },
             { "data": "id_solicitud" },
+            {
+                "data": "id_orden",
+                "render": function(data, type, row) {
+                    if (data) {
+                        return `<button class="btn btn-warning" onclick='abrirModal(${JSON.stringify(row)})'>${data}</button>`;
+                    } else {
+                        return '';
+                    }
+                }
+            },
             { "data": "f_solicitado" },
             {
                 "data": "fecha_terminada",
@@ -465,16 +528,120 @@ input:checked + .slider:before {
     });
 });
 
-function mostrarModalEliminacion(row) {
+function abrirModal(rowData) {
+    // Función para formatear fechas
+    function formatDate(datetime) {
+        if (!datetime || datetime === '0000-00-00 00:00:00') {
+            return 'Sin fecha';
+        }
+        const date = new Date(datetime);
+        const options = {
+            year: 'numeric', 
+            month: '2-digit', 
+            day: '2-digit', 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit'
+        };
+        return date.toLocaleDateString('es-AR', options);
+    }
+
+    // Rellenar el modal con los datos formateados
+    $('#modal-f_inicio').text(formatDate(rowData.f_inicio));
+    $('#modal-fecha_terminada').text(formatDate(rowData.fecha_terminada));
+    $('#modal-descripcion').text(rowData.descripcion || 'Sin descripción');
+    $('#modal-f_asignacion').text(formatDate(rowData.f_asignacion));
+
+    // Actualizar el título del modal
+    $('#modalVerOTLabel').text(`Orden de Trabajo ${rowData.id_orden}`);
+
+    // Mostrar el modal
+    $('#modalVerOT').modal('show');
+}
+
+/*function mostrarModalEliminacion(row) {
   console.log(row);
-  document.getElementById('idSolicitud').value = row.id_solicitud;
-  $('#modalEliminarSolicitud').modal('show');
+  Swal.fire({
+      title: 'Atención!',
+      text: 'Solo los usuarios solicitantes pueden eliminar solicitudes!',
+      confirmButtonText: 'Aceptar',
+    }).then((result) => {
+      if (result.value) {
+        console.log('Confirmado');
+        var validacionSolicitante = validaUserSolicitante();
+        console.log(validacionSolicitante);
+        document.getElementById('idSolicitud').value = row.id_solicitud;
+        $('#modalEliminarSolicitud').modal('show');
+      }
+    });
+} */
+
+async function mostrarModalEliminacion(row) {
+  console.log(row);
+  Swal.fire({
+    title: 'Atención!',
+    text: 'Solo los usuarios solicitantes pueden eliminar solicitudes!',
+    confirmButtonText: 'Aceptar',
+  }).then(async (result) => {
+    if (result.value) {
+      console.log('Confirmado');
+      
+      try {
+        var validacionSolicitante = await validaUserSolicitante();
+        console.log(validacionSolicitante);
+        debugger;
+        if (validacionSolicitante.trim() == "true") { // Aquí puedes verificar si el usuario es solicitante
+          document.getElementById('idSolicitud').value = row.id_solicitud;
+          document.getElementById('case_id').value = row.case_id;
+          $('#modalEliminarSolicitud').modal('show');
+        } else {
+          Swal.fire('Error', 'No tienes permisos para eliminar esta solicitud.', 'error');
+        }
+      } catch (error) {
+        Swal.fire('Error', 'Ocurrió un error al validar el usuario.', 'error');
+      }
+    }
+  });
+}
+
+/* function validaUserSolicitante()
+{
+  $.ajax({
+    url: 'index.php/Sservicio/validaUsuarioSolicitante', 
+    method: 'POST',
+    data: {},
+    success: function(response) {
+      return response;
+    },
+    error: function(error) {
+      WaitingClose();
+      alert('Error al eliminar la solicitud.');
+    }
+  });
+}
+ */
+function validaUserSolicitante() {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      url: 'index.php/Sservicio/validaUsuario',
+      method: 'POST',
+      data: {filtro1: 'Solicitante',},
+      success: function(response) {
+        resolve(response);
+      },
+      error: function(error) {
+        reject(error);
+      }
+    });
+  });
 }
 
 function confirmarEliminacion() {
   WaitingOpen('Eliminando Solcitud');
   var motivo = document.getElementById('motivoEliminacion').value;
   var idSolicitud = document.getElementById('idSolicitud').value;
+  var case_id = document.getElementById('case_id').value;
+
   if (motivo.trim() === "") {
     alert("Por favor, ingrese un motivo para la eliminación.");
     return;
@@ -485,7 +652,8 @@ function confirmarEliminacion() {
     method: 'POST',
     data: {
       id_solicitud: idSolicitud,
-      motivo: motivo
+      motivo: motivo,
+      case_id : case_id
     },
     success: function(response) {
       WaitingClose('Eliminado con éxito...');
@@ -1092,52 +1260,49 @@ function confirmarEliminacion() {
   //   });
   // }
 
-// Trae Operarios
-var dataO = function () {
-  var tmp = null;
-  $.ajax({
-    'async': false,
-    'type': "POST",
-    'global': false,
-    'dataType': 'json',
-    'url': "ordenservicio/getOperario",
-    'success': function (data) {
-        tmp = data;
+  // Trae Operarios
+  var dataO = function () {
+    var tmp = null;
+    $.ajax({
+      'async': false,
+      'type': "POST",
+      'global': false,
+      'dataType': 'json',
+      'url': "ordenservicio/getOperario",
+      'success': function (data) {
+          tmp = data;
+      }
+    });
+    return tmp;
+  }();
+  $("#vstsolicita").autocomplete({
+    autoFocus: true,
+    delay: 300,
+    minLength: 1,
+    source: dataO,
+    /*focus: function(event, ui) {
+      // prevent autocomplete from updating the textbox
+      event.preventDefault();
+      // manually update the textbox
+      $(this).val(ui.item.label);
+      $("#id-Operario").val(ui.item.value);
+    },*/
+    select: function(event, ui) {
+      // prevent autocomplete from updating the textbox
+      event.preventDefault();
+      // manually update the textbox and hidden field
+      $(this).val(ui.item.label); 
+      $("#id_vstsolicita").val(ui.item.value);                 
+    },
+    /*open: function( event, ui ) {
+      $("#ui-id-3").css('z-index',1050);
+    },*/
+    change: function (event, ui) {
+      if (!ui.item) {
+        this.value = '';
+      }
     }
   });
-  return tmp;
-}();
-$("#vstsolicita").autocomplete({
-  autoFocus: true,
-  delay: 300,
-  minLength: 1,
-  source: dataO,
-  /*focus: function(event, ui) {
-    // prevent autocomplete from updating the textbox
-    event.preventDefault();
-    // manually update the textbox
-    $(this).val(ui.item.label);
-    $("#id-Operario").val(ui.item.value);
-  },*/
-  select: function(event, ui) {
-    // prevent autocomplete from updating the textbox
-    event.preventDefault();
-    // manually update the textbox and hidden field
-    $(this).val(ui.item.label); 
-    $("#id_vstsolicita").val(ui.item.value);                 
-  },
-  /*open: function( event, ui ) {
-    $("#ui-id-3").css('z-index',1050);
-  },*/
-  change: function (event, ui) {
-    if (!ui.item) {
-      this.value = '';
-    }
-  }
-});
-
-
-
   // Guardado de datos y validaciones
   $("#btnSave").click(function(){
 
@@ -1245,8 +1410,55 @@ $("#vstsolicita").autocomplete({
         });
   }
 
-  
+  //cartel de aviso modificacion responsable
+  async function mostrarModalEditarResponsable(row) {
+    console.log(row);
+  Swal.fire({
+    title: 'Atención!',
+    text: 'Solo los usuarios supervisores pueden editar solicitudes!',
+    confirmButtonText: 'Aceptar',
+  }).then(async (result) => {
+    if (result.value) {
+      console.log('Confirmado');
+      
+      try {
+        var validacionUser = await validaUserAsignacion();
+        console.log(validacionUser);
 
+        if (validacionUser.trim() == "true") { 
+          var id_orden = row.id_orden;
+          WaitingOpen();
+          $('#contRespyTareas').empty();
+          $("#contRespyTareas").load("<?php echo base_url(); ?>index.php/Calendario/verEjecutarOT/" + id_orden + "/" + true);
+          $('#modalRespyTareas').modal('show'); 
+          WaitingClose();  
+
+        } else {
+          Swal.fire('Error', 'No tienes permisos para editar esta solicitud.', 'error');
+        }
+      } catch (error) {
+        Swal.fire('Error', 'Ocurrió un error al validar el usuario.', 'error');
+      }
+    }
+  });
+}
+
+
+  function validaUserAsignacion() {
+       return new Promise((resolve, reject) => {
+      $.ajax({
+        url: 'index.php/Sservicio/validaUsuario',
+        method: 'POST',
+        data: {filtro1: 'Supervisor de Taller', filtro2: 'Administrador'},
+        success: function(response) {
+          resolve(response);
+        },
+        error: function(error) {
+          reject(error);
+        }
+      });
+    }); 
+  }
 </script>
 
 
