@@ -563,5 +563,18 @@ class Sservicios extends CI_Model
 
         return json_decode($array['data']);
     }
-	
+	/**
+	* Obtiene los adjuntos por solicitud de servicio
+	* @param integer $id_solicitud
+	* @return array adjuntos de la solicitud de servicio
+	*/
+	public function getAdjuntosSolServicio($id_solicitud){
+		log_message("DEBUG", "#TRAZA | #TRAZ-PROD-ASSETPLANNER | Sservicios | getAdjuntosSolServicio($id_solicitud)");
+		$url = REST_MAN."solicitudServicio/adjuntos/solicitud/".$id_solicitud;
+
+        $aux = $this->rest->callAPI("GET",$url);
+        $resp = json_decode($aux['data']);
+
+        return $resp->adjuntos->adjunto;
+	}
 }	

@@ -45,6 +45,8 @@ if(!function_exists('cargarCabecera')){
 				if($querySS->num_rows() > 0){
 						$resultSS = $querySS->row_array();
 				}
+				$ci->load->model('Sservicios');
+				$adjuntos = $ci->Sservicios->getAdjuntosSolServicio($id_SS);
 			}	
 			// OT
 			if($id_OT != 0){
@@ -139,6 +141,18 @@ if(!function_exists('cargarCabecera')){
 
 			// Solicitud Servicios
 			if($id_SS != 0){
+				if($adjuntos != null){
+					$adjuntosGallery = '';
+					$baseUrl = base_url();
+					foreach ($adjuntos as $key => $value) {
+						$href = $baseUrl . $value->url . $value->nombre;
+						$adjuntosGallery += '<div class="col-md-3 col-xs-6">
+							<a href="'.$href.'" target="_blank">
+							<img src="'.$href.'" class="img-responsive" style="width: 100%; height: 100px;">
+							</a>
+						</div>';
+					}
+				}
 				echo '        
 				<div id="collapseDivCli" class="box box-default collapsed-box box-solid">
 					<div class="box-header with-border">
@@ -189,7 +203,30 @@ if(!function_exists('cargarCabecera')){
 							
 
 							
-
+						<div class="col-md-12">
+							<div class="panel-group" id="panelAdj" role="tablist" aria-multiselectable="true">
+								<div class="panel panel-default">
+									<div class="panel-heading" role="tab" id="headingOneSolServicio">
+										<h4 class="panel-title">
+										<a role="button" data-toggle="collapse" data-parent="#panelAdj" href="#collapseadj" aria-expanded="false" aria-controls="collapseadj">
+											Adjuntos
+										</a>
+										</h4>
+									</div>
+									<div id="collapseadj" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOneSolServicio">
+										<div class="panel-body">
+											<div class="row">
+												<div class="col-md-12 col-xs-12 col-lg-12">
+													<div id="adjuntosGallery">
+														'.$adjuntosGallery.'
+													</div>
+												</div>
+											</div><!-- /.row -->
+										</div><!-- ./panel-body -->
+									</div><!-- ./panel-collapse -->
+								</div><!-- ./panel-default -->
+							</div><!-- ./panel-group -->
+						</div><!-- ./col-md-12 -->
 						</div>
 						<!-- /.box-body -->
 				</div>
