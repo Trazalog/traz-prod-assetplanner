@@ -1,5 +1,5 @@
-<data name="MANDataService" transports="http https local">
-   <description>DataService  para AssetPlanner                             &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                </description>
+<data enableBatchRequests="true" enableBoxcarring="true" name="MANDataService" transports="http https local">
+   <description>DataService  para AssetPlanner&#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                &#xd;                                </description>
    <config enableOData="false" id="AssetPlannerDataSource">
       <property name="carbon_datasource_name">AssetPlannerDataSource</property>
    </config>
@@ -146,6 +146,54 @@
       <sql>SELECT data_json, queue_id &#xd;FROM synch_notificacion_queue &#xd;WHERE leido = 0 &#xd;AND user_id =  cast(:user_id as integer);</sql>
       <result outputType="json">{&#xd;    "notificaciones": {&#xd;        "notificacion": [&#xd;            {&#xd;                "queue_id": "$queue_id",&#xd;                "data_json": "$data_json"&#xd;            } &#xd;        ]&#xd;    }&#xd;}</result>
       <param name="user_id" sqlType="STRING"/>
+   </query>
+   <query id="setsolicitudServicio" useConfig="AssetPlannerDataSource">
+      <sql>INSERT&#xd;	INTO&#xd;	solicitud_reparacion&#xd;(f_solicitado &#xd; ,id_equipo&#xd; ,estado&#xd; ,usrId&#xd; ,solicitante&#xd; ,causa&#xd; ,foto&#xd; ,id_empresa&#xd; ,f_sugerido&#xd; ,hora_sug&#xd; ,fecha_conformidad&#xd; ,observ_conformidad)&#xd;VALUES(:f_solicitado &#xd; ,:id_equipo&#xd; ,:estado&#xd; ,:usrId&#xd; ,:solicitante&#xd; ,:causa&#xd; ,:foto&#xd; ,:id_empresa&#xd; ,'1899-01-01 00:00:00'&#xd; ,0&#xd; ,'1899-01-01 00:00:00'&#xd; ,'')</sql>
+      <param name="f_solicitado" sqlType="STRING"/>
+      <param name="id_equipo" sqlType="STRING"/>
+      <param name="estado" sqlType="STRING"/>
+      <param name="usrId" sqlType="STRING"/>
+      <param name="solicitante" sqlType="STRING"/>
+      <param name="causa" sqlType="STRING"/>
+      <param name="foto" sqlType="STRING"/>
+      <param name="id_empresa" sqlType="STRING"/>
+   </query>
+   <query id="getLastsolicitudServicio" useConfig="AssetPlannerDataSource">
+      <sql>select max(sr.id_solicitud) sose_id, sr.id_equipo equiid&#xd;from solicitud_reparacion sr &#xd;where sr.id_equipo = :equi_id</sql>
+      <result outputType="json">{&#xd; "resultado":{"sose_id":"$sose_id",&#xd;              "equi_id":"$equiid"&#xd;              }&#xd;}</result>
+      <param name="equi_id" optional="false" sqlType="INTEGER"/>
+   </query>
+   <query id="putSolicitudServicioCase" returnUpdatedRowCount="true" useConfig="AssetPlannerDataSource">
+      <sql>update solicitud_reparacion&#xd;set case_id = :case_id&#xd;where id_solicitud= :sose_id</sql>
+      <result element="UpdatedRowCount" rowName="" useColumnNumbers="true">
+         <element column="1" name="Value" xsdType="integer"/>
+      </result>
+      <param name="case_id" sqlType="STRING"/>
+      <param name="sose_id" sqlType="STRING"/>
+   </query>
+   <query id="deleteSolicitudServicio" returnUpdatedRowCount="true" useConfig="AssetPlannerDataSource">
+      <sql>DELETE FROM solicitud_reparacion&#xd;WHERE id_solicitud = :sose_id</sql>
+      <result element="UpdatedRowCount" rowName="" useColumnNumbers="true">
+         <element column="1" name="Value" xsdType="integer"/>
+      </result>
+      <param name="sose_id" sqlType="STRING"/>
+   </query>
+   <query id="getEquipo" useConfig="AssetPlannerDataSource">
+      <sql>select e.id_equipo,e.codigo,e.descripcion,e.estado, e2.id_empresa empr_id,e2.descripcion empresa,m.marcadescrip marca, s.descripcion sector,g.descripcion grupo,c.descripcion criticidad,a.descripcion area,p.descripcion proceso&#xd;from equipos e &#xd;join marcasequipos m on m.marcaid = e.marca &#xd;join empresas e2 on e2.id_empresa = e.id_empresa &#xd;join sector s on s.id_sector = e.id_sector &#xd;join grupo g on g.id_grupo =e.id_grupo&#xd;join criticidad c on c.id_criti = e.id_criticidad &#xd;join area a on a.id_area = e.id_area &#xd;join proceso p on p.id_proceso = e.id_proceso &#xd;where e.id_equipo =:equi_id</sql>
+      <result outputType="json">{&#xd;   "equipo":{&#xd;      "id_equipo":"$id_equipo",&#xd;      "codigo":"$codigo",&#xd;      "descripcion":"$descripcion",&#xd;      "estado":"$estado",&#xd;      "empr_id":"$empr_id",&#xd;      "empresa":"$empresa",&#xd;      "marca":"$marca",&#xd;      "sector":"$sector",&#xd;      "grupo":"$grupo",&#xd;      "criticidad":"$criticidad",&#xd;      "area":"$area",&#xd;      "proceso":"$proceso"&#xd;   }&#xd;}&#xd;</result>
+      <param name="equi_id" sqlType="STRING"/>
+   </query>
+   <query id="setAdjuntosSolReparacion" useConfig="AssetPlannerDataSource">
+      <sql>INSERT INTO solicitud_reparacion_adjuntos&#xd;(id_solicitud &#xd; ,url&#xd; ,adjunto&#xd; ,nombre)&#xd;VALUES(:id_solicitud &#xd; ,:url&#xd; ,:adjunto&#xd; ,:nombre)</sql>
+      <param name="id_solicitud" sqlType="STRING"/>
+      <param name="url" sqlType="STRING"/>
+      <param name="adjunto" sqlType="STRING"/>
+      <param name="nombre" sqlType="STRING"/>
+   </query>
+   <query id="getAdjuntosSolReparacion" useConfig="AssetPlannerDataSource">
+      <sql>select * from solicitud_reparacion_adjuntos WHERE id_solicitud = :id_solicitud</sql>
+      <result outputType="json">{&#xd;    "adjuntos": {&#xd;        "adjunto": [{&#xd;            "id_adjunto": "$id_adjunto",&#xd;            "url": "$url",&#xd;            "adjunto": "$adjunto",&#xd;            "nombre": "$nombre"&#xd;        }]&#xd;    }&#xd;}</result>
+      <param name="id_solicitud" sqlType="STRING"/>
    </query>
    <resource method="GET" path="/kpiDisponibilidadxFecha/{id_empresa}/fecinicio/{fec_inicio}/fecfin/{fec_fin}/idempr/{id_empresa2}/fecinicio2/{fec_inicio2}/fecfin2/{fec_fin2}">
       <description>obtengo porcentaje de disponibilidad de los equipos por una fecha                                  &#xd;                                    &#xd;                                    </description>
@@ -298,6 +346,52 @@
    <resource method="GET" path="/getNotificaciones/{user_id}">
       <call-query href="getNotificaciones">
          <with-param name="user_id" query-param="user_id"/>
+      </call-query>
+   </resource>
+   <resource method="POST" path="/solicitudServicio" returnRequestStatus="true">
+      <call-query href="setsolicitudServicio">
+         <with-param name="f_solicitado" query-param="f_solicitado"/>
+         <with-param name="id_equipo" query-param="id_equipo"/>
+         <with-param name="estado" query-param="estado"/>
+         <with-param name="usrId" query-param="usrId"/>
+         <with-param name="solicitante" query-param="solicitante"/>
+         <with-param name="causa" query-param="causa"/>
+         <with-param name="foto" query-param="foto"/>
+         <with-param name="id_empresa" query-param="id_empresa"/>
+      </call-query>
+   </resource>
+   <resource method="GET" path="/solicitudServicio/ultima/{equi_id}">
+      <call-query href="getLastsolicitudServicio">
+         <with-param name="equi_id" query-param="equi_id"/>
+      </call-query>
+   </resource>
+   <resource method="PUT" path="/solicitudServicio/caseid">
+      <call-query href="putSolicitudServicioCase">
+         <with-param name="case_id" query-param="case_id"/>
+         <with-param name="sose_id" query-param="sose_id"/>
+      </call-query>
+   </resource>
+   <resource method="DELETE" path="/solicitudServicio">
+      <call-query href="deleteSolicitudServicio">
+         <with-param name="sose_id" query-param="sose_id"/>
+      </call-query>
+   </resource>
+   <resource method="GET" path="/equipo/{equi_id}">
+      <call-query href="getEquipo">
+         <with-param name="equi_id" query-param="equi_id"/>
+      </call-query>
+   </resource>
+   <resource method="GET" path="/solicitudServicio/adjuntos/solicitud/{id_solicitud}">
+      <call-query href="getAdjuntosSolReparacion">
+         <with-param name="id_solicitud" query-param="id_solicitud"/>
+      </call-query>
+   </resource>
+   <resource method="POST" path="/solicitudServicio/adjuntos">
+      <call-query href="setAdjuntosSolReparacion">
+         <with-param name="id_solicitud" query-param="id_solicitud"/>
+         <with-param name="url" query-param="url"/>
+         <with-param name="adjunto" query-param="adjunto"/>
+         <with-param name="nombre" query-param="nombre"/>
       </call-query>
    </resource>
 </data>

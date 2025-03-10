@@ -21,7 +21,7 @@ class Sservicio extends CI_Controller
 		$data["AR"] = $area[0]["descripcion"];
 		$proceso = $this->procesos->Obtener_procesos($id_proceso);
 		$data["PR"] = $proceso[0]["descripcion"];
-
+		$data['adjuntos'] = $this->Sservicios->getAdjuntosSolServicio($_POST['idSS']);
 		echo json_encode($data);
 	}
 	// Trae sectores por empresa logueada - Listo

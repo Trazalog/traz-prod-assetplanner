@@ -273,27 +273,31 @@ input:checked + .slider:before {
             </div>
             <div id="collapseadj" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOneSolServicio">
               <div class="panel-body">
-
                 <div class="row">
-                                 <div class="col-xs-12">
-                                  <table class="table table-bordered" id="tbladjSolicitud"> 
-                                    <thead>
-                                      <tr>                                       
-                                        <th>Archivo/s</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>                                     
-                                      <td>
-                                        <a id="adjunto" href="" target="_blank"></a> 
-                                      </td>
-                                    </tr>
-                                    </tbody>
-                                  </table>
-                                </div>
-                </div>
-
-              </div>
+                  <div class="col-xs-12">
+                    <table class="table table-bordered" id="tbladjSolicitud"> 
+                      <thead>
+                        <tr>                                       
+                          <th>Archivo/s</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      <tr>                                     
+                        <td>
+                          <a id="adjunto" href="" target="_blank"></a> 
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div><!-- ./col-xs-12 -->
+                </div><!-- ./row -->
+                <div class="row">
+                  <div class="col-md-12 col-xs-12 col-lg-12">
+                    <div id="adjuntosGallery">
+                    </div>
+                  </div>
+                </div><!-- /.row -->
+              </div><!-- ./panel-body -->
             </div>
           </div> 
 
@@ -725,6 +729,21 @@ function confirmarEliminacion() {
             $("label[for='fecha_eliminada']").addClass('oculto');
             $("label[for='hora_eliminada']").addClass('oculto');
             $("label[for='nombre_usuario']").addClass('oculto');
+        }
+        if(data.adjuntos != null){
+          $contenedor = $('#adjuntosGallery');
+          $contenedor.empty();
+          let baseUrl = <?php echo base_url(); ?>;
+          data.adjuntos.forEach((adjunto) => {
+            $contenedor.append(`
+              <div class="col-md-3 col-xs-6">
+                <a href="${baseUrl + adjunto.url + adjunto.nombre}" target="_blank">
+                  <img src="${baseUrl + adjunto.url + adjunto.nombre}" class="img-responsive" style="width: 100%; height: 100px;">
+                </a>
+              </div>
+            `);
+          });
+
         }
       })
       .fail( () => alert( "Error al traer los datos de la OT." ) )
