@@ -83,16 +83,23 @@ function calcularDsp() {
 
     if (fi == '' || ff == '') return;
     else{
+        WaitingOpen();
         $.ajax({
         type: 'GET',
         dataType: 'JSON',
         url: 'index.php/Kpi/dspRangoFecha?fi=' + fi + '&ff=' + ff,
         success: function(rsp) {
-            rsp.forEach(function(e) {
-                $('#dsp-' + e.id_equipo).html(e.dsp + ' %');
-            });
 
-            initTable($('#tbl-equipos'));
+            var table = $('#tbl-equipos').DataTable();
+                var rows = table.rows().nodes(); // Obtiene todas las filas de la tabla
+
+                rsp.forEach(function(e) {
+                    var row = $(rows).find('#dsp-' + e.id_equipo);
+                    if (row.length) {
+                        row.html(e.dsp + ' %');
+                    }
+                });
+            WaitingClose();
 
         },
         error: function(rsp) {
@@ -110,11 +117,13 @@ function initTable(e) {
     var aux = $(e).DataTable();
     if (aux) aux.destroy();
 
-    $(e).DataTable({
-        dom: 'Bfrtip',
-        buttons: ['excel']
-    });
+    if (!$.fn.dataTable.isDataTable(e)) {
+        $(e).DataTable({
+            dom: 'Bfrtip',
+            buttons: ['excel']
+        });
 
-    $('.buttons-excel').removeClass('btn-default').addClass('btn-primary').html('Exportar Excel');
+        $('.buttons-excel').removeClass('btn-default').addClass('btn-primary').html('Exportar Excel');
+    }
 }
 </script>
