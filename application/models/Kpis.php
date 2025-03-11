@@ -157,7 +157,7 @@ class Kpis extends CI_Model
     {
         $empId = empresa();
 
-        $this->db->select('equipos.id_equipo, equipos.descripcion');
+        $this->db->select('equipos.id_equipo, equipos.descripcion, equipos.codigo');
         $this->db->from('equipos');
         $this->db->where('estado!=', 'AN');
         $this->db->where('equipos.id_empresa', $empId);
