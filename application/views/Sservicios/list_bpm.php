@@ -673,9 +673,10 @@ function confirmarEliminacion() {
   $('#modalEliminarSolicitud').modal('hide');
 }
 
+let baseUrl = "<?php echo base_url(); ?>";
   // VER OT 
   function mostrarOT(o){
-
+    
     //let idSS = $(o).closest('tr').attr('id');
     //console.log(idSS); 
     let idSS = o.id_solicitud;
@@ -733,7 +734,6 @@ function confirmarEliminacion() {
         if(data.adjuntos != null){
           $contenedor = $('#adjuntosGallery');
           $contenedor.empty();
-          let baseUrl = <?php echo base_url(); ?>;
           data.adjuntos.forEach((adjunto) => {
             $contenedor.append(`
               <div class="col-md-3 col-xs-6">
