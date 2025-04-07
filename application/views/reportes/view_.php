@@ -70,15 +70,16 @@
                 <table id="sales" class="table table-bordered table-hover">
                   <thead>
                     <tr>                
-                      <th>Solicitud de Servicio</th>
-                      <th>Fecha</th>
-                      <th>Solicitante</th>
+                      <th>Orden</th>
+                      <th>Id</th>
+                      <th>Fecha Creac.</th>
+                      <th>Fecha Inicio</th>
+                      <th>Fecha Fin</th>
+                      <th>Cant. Personas</th>
+                      <th>H.H Ejecutadas</th>
                       <th>Equipo</th>
                       <th>Sector</th>
-                      <th>Grupo</th>
-                      <th>Ubicación</th>
-                      <th>Causa</th>
-                      <th>Observaciones</th>
+                      <th>Asignado</th>
                       <th>Estado</th>
                     </tr>
                   </thead>
@@ -101,10 +102,10 @@
 $(".fecha").datepicker();
 
 // Datatables -->
-$('#sales').DataTable({
+/* $('#sales').DataTable({
   "aLengthMenu": [ 10, 25, 50, 100 ],
   "order": [[0, "asc"]],
-});
+}); */
 
 // Habilitar y deshabilitar fecha sector y equipo -->
 $(function() {
@@ -225,86 +226,167 @@ function limpCombo(){
 
 
 function consReporte() {    
-  
   var id_eq  = $('#equipSelec').val();
   var id_sec = $('#idSector').val();
   var de     = $('#desde').val();
-  var a      = $('#hasta').val();	
-  //console.log("id_eq: "+id_eq+" - id_sec: "+id_sec+" - de: "+de+" - a: "+a);
+  var a      = $('#hasta').val();  
   WaitingOpen('Cargando Solicitud de Servicios...');
-  //limpio la tabla
-  $('#sales').DataTable().clear().draw();
+  
+  if ($.fn.dataTable.isDataTable('#sales')) {
+    $('#sales').DataTable().destroy();
+  }
 
   $.ajax({    
-    data:{
-    	id_equipo: id_eq,
-    	id_sector: id_sec,
-    	desde: de,
-    	hasta: a
+    data: {
+      id_equipo: id_eq,
+      id_sector: id_sec,
+      desde: de,
+      hasta: a
     },
     type: 'POST',             
     dataType: 'json',
     url: 'index.php/Reporte/getReporte',                
-    success: function(result){
+    success: function(result) {
       console.table(result[0]);
       limpCombo();
       $("#tablaReportes").css("display", "block");
-      if(result !==0){
-        for(var i=0; i <= result.length-1; i++){
-          switch( result[i]['estado'] ){
-            case 'C':
-              var e ='Curso';
-              break;
-            case 'IN':
-              var e ='Inactivo';
-              break;
-            case 'RE':
-              var e = 'Reparación';
-              break;
-            case 'AN':
-              var e = 'Anulado';
-              break;
-            case 'T':
-              var e = 'Terminadas';
-              break;
-            case 'AS':
-              var e = 'Asignadas';
-              break;
-            case 'P':
-              var e = 'Pedido';
-              break;
-            case 'S':
-              var e = 'Solicitado';
-              break;
-            default:
-              var e = result[i]['estado'];
+      
+      // Prepare data array
+      var tableData = [];
+      if (result !== 0) {
+        for (var i = 0; i < result.length; i++) {
+          let color = 'secondary';
+          let texto = result[i]['estado'];
+          let estadoValor = result[i]['estado'].trim().toUpperCase();
+
+          switch (estadoValor) {
+            case 'C': texto = 'Curso'; color = 'info'; break;
+            case 'IN': texto = 'Inactivo'; color = 'secondary'; break;
+            case 'RE': texto = 'Reparación'; color = 'warning'; break;
+            case 'AN': texto = 'Anulado'; color = 'danger'; break;
+            case 'T': texto = 'Terminada'; color = 'success'; break;
+            case 'AS': texto = 'Asignada'; color = 'primary'; break;
+            case 'P': texto = 'Pedido'; color = 'primary'; break;
+            case 'S': texto = 'Solicitado'; color = 'primary'; break;
+            case 'CN': texto = 'Conforme'; color = 'success'; break;
+            case 'CE': texto = 'Cerrado'; color = 'dark'; break;
+            case 'PL': texto = 'Planificada'; color = 'warning'; break;
+            default: texto = estadoValor; color = 'secondary';
           }
-          $('#sales').DataTable().row.add( [
-            result[i]['id_solicitud'],
+
+          let bolita = estado(texto, color);
+
+          const fechaInicio = new Date(result[i]['fecha_inicio']);
+          const fechaFin = new Date(result[i]['fecha_terminada']);
+          const cantidadPersonas = result[i]['cantidad_personas'];
+          let total_horas_persona = '';
+
+          if (cantidadPersonas !== "0") {
+            const diffMs = fechaFin - fechaInicio;
+            const diffHoras = diffMs / (1000 * 60 * 60);
+            const totalHorasPersona = diffHoras * cantidadPersonas;
+            total_horas_persona = totalHorasPersona.toFixed(2);
+          }
+
+          tableData.push([
+            result[i]['origen'],
+            result[i]['id'],
             result[i]['f_solicitado'],
-            result[i]['solicitante'],
+            result[i]['fecha_inicio'],
+            result[i]['fecha_terminada'],
+            result[i]['cantidad_personas'],
+            total_horas_persona,
             result[i]['equipo'],
             result[i]['sector'],
-            result[i]['grupo'],
-            result[i]['ubicacion'],
-            result[i]['causa'],
-            result[i]['observaciones'],
-            e,
-          ] ).draw();
+            result[i]['asignado'],
+            bolita,
+          ]);
         }
-      }
-      else{
+      } else {
         alert("Este equipo no se puede filtrar, POR FAVOR SELCCIONO OTRO");
       }
+      
+      // Initialize DataTable with all data at once
+      initTable($('#sales'), tableData);
       WaitingClose();
     },
-    error: function(result){
-     	limpCombo();
+    error: function(result) {
+      limpCombo();
       WaitingClose();                                              
       console.error("Error al traer solicitud de servicio");
     }
   });
 }
 
+//inicializa los botones del datatable
+function initTable(e, data) {
+  $(e).DataTable({
+    data: data, 
+    responsive: true,
+    dom: 'lBfrtip',
+    buttons: [
+      {
+        extend: 'excel',
+        text: 'Exportar Excel',
+        exportOptions: {
+          columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        },
+        //Aquí es donde generas el botón personalizado
+        text: '<button class="btn btn-success ml-2 mb-2 mb-2 mt-3">Exportar a Excel <i class="fa fa-file-excel-o"></i></button>'
+      },
+      {
+        extend: 'pdf',
+        text: 'Exportar PDF',
+        exportOptions: {
+          columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        },
+        text: '<button class="btn btn-danger ml-2 mb-2 mb-2 mt-3">Exportar a PDF <i class="fa fa-file-pdf-o mr-1"></i></button>'
+
+      },
+      {
+        extend: 'copy',
+        text: 'Copiar',
+        exportOptions: {
+          columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        },
+        text: '<button class="btn btn-primary ml-2 mb-2 mb-2 mt-3">Copiar <i class="fa fa-file-text-o mr-1"></i></button>'
+      },
+      {
+        extend: 'print',
+        text: 'Imprimir',
+        exportOptions: {
+          columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        },
+        text: '<button class="btn btn-default ml-2 mb-2 mb-2 mt-3">Imprimir <i class="fa fa-print mr-1"></i></button>'
+      }
+    ],
+    language: {
+      url: '<?php echo base_url(); ?>lib/bower_components/datatables.net/js/es-ar.json'
+    },
+    lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+    paging: true,
+    processing: true,
+    serverSide: false, 
+    order: [[2, "asc"]],
+  });
+}
+
+
+
+function estado(texto, color, detalle = null) {
+  //no toma los colores de bootstrap
+   let colores = {
+    'primary': '#0d6efd',
+    'secondary': '#6c757d',
+    'success': '#198754',
+    'danger': '#dc3545',
+    'warning': '#ffc107',
+    'info': '#0dcaf0',
+    'dark': '#212529'
+  }; 
+
+  let colorFondo = colores[color] || '#6c757d'; // Usa gris si no encuentra el color
+  return `<span class="badge estado" style="background-color:${colorFondo} !important; color: white !important;">${texto}</span>`;
+} 
 
 </script>

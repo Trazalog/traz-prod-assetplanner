@@ -4747,26 +4747,14 @@ function filtrar() {
                                 }
                                 //Fecha Inicio
                                 if(resp[i].fecha_inicio != '0000-00-00 00:00:00'){
-                                    var inicio = resp[i].fecha_inicio.slice(0, 10);
-                                    Date.prototype.toDateInputValue = (function(){
-                                        var local = new Date(inicio);
-                                        return local.toJSON().slice(0,10);
-                                    });
-                                    fecha = new Date().toDateInputValue();
-
-                                    row += `<td>`+ fecha +`</td>`;
-                                }else{ row += `<td></td>`}
+                                    row += `<td>`+ resp[i].fecha_inicio +`</td>`;
+                                }
+                                else{ row += `<td></td>`}
                                 //Fecha Terminada
                                 if(resp[i].fecha_terminada != '0000-00-00 00:00:00'){
-                                    var terminada = resp[i].fecha_terminada.slice(0, 10);
-                                    Date.prototype.toDateInputValue = (function(){
-                                        var local = new Date(terminada);
-                                        return local.toJSON().slice(0,10);
-                                    });
-                                    fecha = new Date().toDateInputValue();
-
-                                    row += `<td>`+ fecha +`</td>`;
-                                }else{ row += `<td></td>`
+                                    row += `<td>`+ resp[i].fecha_terminada +`</td>`;
+                                }
+                                else{ row += `<td></td>`
                                 }
                                 //Detalle
                                 if(resp[i].descripcion){
