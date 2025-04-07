@@ -122,6 +122,10 @@
     <!-- SWAL ALERT -->
     <script src="<?php echo base_url() ?>assets/plugin/swal/dist/sweetalert2.js"></script>
     <link rel="stylesheet" href="<?php echo base_url() ?>assets/plugin/swal/dist/sweetalert2.min.css">
+
+    <!-- Impresion PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
 </head>
 
 
