@@ -23,8 +23,19 @@ class Reportes extends CI_Model {
         $hasta = $datHasta[2].'-'.$datHasta[1].'-'.$datHasta[0];
     }
     
-    $id_equipo = $data['id_equipo'] ?? null;
-    $id_sector = $data['id_sector'] ?? null;
+   // Para $id_equipo
+    if (isset($data['id_equipo'])) {
+        $id_equipo = $data['id_equipo'];
+    } else {
+        $id_equipo = null;
+    }
+
+    // Para $id_sector
+    if (isset($data['id_sector'])) {
+        $id_sector = $data['id_sector'];
+    } else {
+        $id_sector = null;
+    }
 
     $this->db->select("
     sr.id_solicitud AS id,
@@ -96,8 +107,19 @@ class Reportes extends CI_Model {
             $hasta = $datHasta[2].'-'.$datHasta[1].'-'.$datHasta[0];
         }
 
-        $id_equipo = $data['id_equipo'] ?? null;
-        $id_sector = $data['id_sector'] ?? null;
+        // Para $id_equipo
+        if (isset($data['id_equipo'])) {
+            $id_equipo = $data['id_equipo'];
+        } else {
+            $id_equipo = null;
+        }
+
+        // Para $id_sector
+        if (isset($data['id_sector'])) {
+            $id_sector = $data['id_sector'];
+        } else {
+            $id_sector = null;
+        }
 
         $this->db->select("
             p.prevId AS id,
@@ -166,8 +188,19 @@ class Reportes extends CI_Model {
             $hasta = $datHasta[2] . '-' . $datHasta[1] . '-' . $datHasta[0];
         }
 
-        $id_equipo = $data['id_equipo'] ?? null;
-        $id_sector = $data['id_sector'] ?? null;
+         // Para $id_equipo
+        if (isset($data['id_equipo'])) {
+            $id_equipo = $data['id_equipo'];
+        } else {
+            $id_equipo = null;
+        }
+
+        // Para $id_sector
+        if (isset($data['id_sector'])) {
+            $id_sector = $data['id_sector'];
+        } else {
+            $id_sector = null;
+        }
 
         $this->db->select("
             tb.backId AS id,
