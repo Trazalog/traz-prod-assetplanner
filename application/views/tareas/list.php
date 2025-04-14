@@ -3,6 +3,38 @@
     background-color: orange;
     color: white;
 }
+
+.my-processing-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.7); /* Fondo blanco semitransparente */
+    z-index: 9999;
+}
+
+/* Contenedor del mensaje */
+.my-processing-content {
+    background-color: #3c8dbc; /* Color de fondo azul  */
+    color: white;
+    padding: 20px 30px;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+/* Estilo del spinner  */
+.my-processing-content i {
+    margin-bottom: 10px;
+    display: block;
+    font-size: 24px;
+}
 </style>
 
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
@@ -347,6 +379,9 @@ function initDataTable(){
         'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
         'paging' : true,
         'processing':    true,
+        'language': {
+        'processing': '<div class="my-processing-overlay"><div class="my-processing-content"><i class="fa fa-spinner fa-spin fa-2x"></i><div>Procesando...<br>Por favor, espere</div></div></div>'
+        },
         'serverSide': true,
         'order': [[9, 'desc']],
         'search': true,
