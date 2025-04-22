@@ -508,7 +508,7 @@ input:checked + .slider:before {
                         'AS': 'purple',
                         'C': 'green',
                         'T': 'blue',
-                        'CE': 'default',
+                        'CE': 'gray',
                         'CN': 'black'
                     };
                     let labels = {
