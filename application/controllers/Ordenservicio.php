@@ -92,6 +92,15 @@ class Ordenservicio extends CI_Controller {
       $data['herramientas'] = $this->Ordenservicios->getHerramOrdenes($id_ot);
       $data['insumos'] = $this->Ordenservicios->getInsumosPorOT($id_ot);
       $data['rrhh'] = $this->Ordenservicios->getOperariosOrden($id_ot);
+      
+      //trae imagenes, archivos de evidencia
+      $id_orden = $this->Ordenservicios->getIdOrdenPorOT($data['id_ot']);
+      if ($id_orden) {
+          $data['evidencias'] = $this->Ordenservicios->getEvidenciasOrden($id_orden);
+      } else {
+          $data['evidencias'] = array();
+      }
+      
       $this->load->view('tareas/view_presta_presta_conf_modal',$data);
     } 
 
@@ -210,6 +219,19 @@ class Ordenservicio extends CI_Controller {
         // guardo el informe de servicios
         $response = $this->Ordenservicios->setOrdenServicios($data);          
         if ($response) {
+          // Guardar las evidencias(imagenes, archivos) si existen
+          if (isset($datosInfoServicio['evidencias']) && !empty($datosInfoServicio['evidencias'])) {
+            $id_orden = $response;
+            foreach ($datosInfoServicio['evidencias'] as $ev) {
+              $evidencia = array(
+                'id_orden'      => $id_orden,
+                'valor_base64'  => $ev['valor_base64'],
+                'nombre'        => $ev['nombre_archivo']
+              );
+              $this->Ordenservicios->guardarEvidencia($evidencia);
+            }
+          }
+
           $respuesta['status'] = true;
           $respuesta['msj'] = 'OK';
           $respuesta['code'] = 'Exito';

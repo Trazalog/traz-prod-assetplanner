@@ -262,6 +262,54 @@
               </div>
             </div>
           </div>
+          <!-- Panel imagenes de evidencia  -->
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingEvidencias">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEvidencias" aria-expanded="false" aria-controls="collapseEvidencias">
+                  Evidencias
+                </a>
+              </h4>
+            </div>
+            <div id="collapseEvidencias" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEvidencias">
+              <div class="panel-body">
+                <div class="row">
+                  <?php foreach ($evidencias as $ev): ?>
+                    <?php
+                      $mime = obtenerExtension($ev['nombre']); //obtengo la extension del archivo
+                      $mimeType = explode(';', explode(':', $mime)[1])[0]; // Extrae: image/jpeg
+                      $base64 = $ev['valor_base64'];
+                      $src = $mime . $base64; // src completo para img
+                      $nombre = htmlspecialchars($ev['nombre']);
+                    ?>
+                    <div class="col-sm-6 col-md-4 col-lg-3" style="margin-bottom: 20px;">
+                      <div class="thumbnail text-center">
+                        <a href="javascript:void(0);" onclick="mostrarArchivo('<?= $base64 ?>', '<?= $mimeType ?>', '<?= $nombre ?>', 'modalEvidencia')" title="<?= $nombre ?>">
+                          <?php if (strpos($mimeType, 'image/') !== false): ?>
+                            <img src="<?= $src ?>" class="img-responsive" style="height: 180px; object-fit: cover;" alt="<?= $nombre ?>">
+                          <?php elseif ($mimeType === 'application/pdf'): ?>
+                            <div class="text-center" style="height: 150px; display: flex; align-items: center; justify-content: center;">
+                              <i class="fa fa-file-pdf-o fa-3x"></i>
+                            </div>
+                            <div class="caption text-center">
+                              <p><?= $nombre ?></p>
+                            </div>
+                          <?php else: ?>
+                            <i class="fa fa-download fa-2x"></i>
+                            <p>Descargar <?= $nombre ?></p>
+                          <?php endif; ?>
+                        </a>
+                        <div class="caption">
+                          <small><?= $nombre ?></small>
+                        </div>
+                      </div>
+                    </div>
+                  <?php endforeach; ?>
+                </div>
+              </div>
+            </div>
+          </div><!-- Fin Panel imagenes de evidencia  -->
+  
         </div> <!-- / .panel-group -->
   </form>      
 
@@ -269,6 +317,23 @@
     <!-- <button type="button" class="botones btn btn-primary" onclick="enviarOrden()">Guardar</button>  -->
     <button type="button" id="cerrar" class="btn btn-primary" onclick="cerrarModal()">Cerrar</button>
   </div>      
+
+<!-- Modal para evidencias -->
+<div class="modal fade" id="modalEvidencia" tabindex="-1" role="dialog" aria-labelledby="modalEvidenciaLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEvidenciaLabel">Evidencia</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center" style="padding: 0;">
+        <div id="contenedorEvidencia" style="width: 100%; max-height: 80vh; overflow: auto;"></div>
+      </div>
+    </div>
+  </div>
+</div><!-- FIN Modal para evidencias -->
 
   <script>
     
@@ -311,6 +376,6 @@
             "orderable": false
           } ],
           "order": [[0, "asc"]],
-      });  
+      }); 
   
   </script>

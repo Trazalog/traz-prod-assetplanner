@@ -32,8 +32,8 @@ class Otrabajo extends CI_Controller {
 			echo ("<script>location.href='login'</script>");
 	
 		}else{
-			$data['list']       = $this->Otrabajos->otrabajos_List(null,0);
-			$data['kpi'] = $this->Equipos->informe_equipos();
+	/* 		$data['list']       = $this->Otrabajos->otrabajos_List(null,0);
+			$data['kpi'] = $this->Equipos->informe_equipos(); */
 			$data['permission'] = $permission;
 			$this->load->view('otrabajos/dashOriginal', $data);
 		}

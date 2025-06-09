@@ -1500,7 +1500,7 @@ function ver_informe_servicio(o) {
     WaitingOpen();
     $('#modalInforme').modal('show');
     $('#modalInformeServicios').empty();
-    $("#modalInformeServicios").load("<?php echo base_url(); ?>P+" / "+id_solicitud+" / "");
+    $("#modalInformeServicios").load("<?php echo base_url(); ?>index.php/Ordenservicio/verInforme/"+id_OT+"/"+id_eq+"/");
     WaitingClose();
 }
 
