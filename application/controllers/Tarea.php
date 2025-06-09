@@ -16,7 +16,7 @@ class Tarea extends CI_Controller {
 	public function index2($permission)
     {
 		$data = $this->session->userdata();
-		log_message('DEBUG','#Main/index2 | Tarea >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
+		//log_message('DEBUG','#Main/index2 | Tarea >> data '.json_encode($data)." ||| ". $data['user_data'][0]['usrName'] ." ||| ".empty($data['user_data'][0]['usrName']));
 
 		if(empty($data['user_data'][0]['usrName'])){
 			log_message('DEBUG','#Main/index2 | Cerrar Sesion >> '.base_url());
@@ -26,8 +26,8 @@ class Tarea extends CI_Controller {
 			$this->session->sess_destroy();
 			echo ("<script>location.href='login'</script>");
 		}else{
-			$data['list']       = $this->Tareas->Listado_Tareas();
-			log_message('DEBUG','#TRAZA | #Tarea/index2()>> data '.json_encode($data));
+			//$data['list']       = $this->Tareas->Listado_Tareas();
+			//log_message('DEBUG','#TRAZA | #Tarea/index2()>> data '.json_encode($data));
 			$data['permission'] = $permission;
 			$this->load->view('tarea/list', $data);
 		}
@@ -91,8 +91,8 @@ class Tarea extends CI_Controller {
 			// Bandea de entrada
 			public function index($permission = null){
 				$data = $this->session->userdata();
-				log_message('DEBUG','#TRAZA | TAREA | index() | UserId: '. $data['user_data'][0]['usrId'] ." ||| UserName: ". $data['user_data'][0]['usrName'] ." ||| id_empresa: ". $data['user_data'][0]['id_empresa']);
-				log_message('DEBUG','#TRAZA | TAREA | index() | UserId: '. json_encode($data));
+				//log_message('DEBUG','#TRAZA | TAREA | index() | UserId: '. $data['user_data'][0]['usrId'] ." ||| UserName: ". $data['user_data'][0]['usrName'] ." ||| id_empresa: ". $data['user_data'][0]['id_empresa']);
+				//log_message('DEBUG','#TRAZA | TAREA | index() | UserId: '. json_encode($data));
 				if(empty($data['user_data'][0]['usrName'])){
 					log_message('DEBUG','#Main/index | Cerrar Sesion >> '.base_url());
 					$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
@@ -112,8 +112,7 @@ class Tarea extends CI_Controller {
 					$aux=[];					
 					//Filtra datos por empresa
 					foreach($response['data'] as $o){
-						
-						if($this->Tareas->bandejaEmpresa($o['caseId'] , $empr_id)){
+					 	if($this->Tareas->bandejaEmpresa($o['caseId'] , $empr_id)){
 								$aux['caseId'] = $o['caseId'];
 								$aux['displayDescription'] = $o['displayDescription'];
 								$aux['executedBy'] = $o['executedBy'];
@@ -143,20 +142,20 @@ class Tarea extends CI_Controller {
 								$aux['assigned_id'] = $o['assigned_id'];
 							
 							$array[] = $aux; 
-						}
+						} 
 					}					
 					//guardo en session todas las tareas filtradas por case_id
 					$_SESSION['listadoTareas'] = $array;
 					$data['permission'] = $permission;	
 					//tiempo de recarga harkode en constant
 					$data['tiempoRecarga'] = TIEMPO_RECARGA;
-					log_message('DEBUG','#TRAZA | TAREA | index() | variable Sesion: '. json_encode($array));
+					//log_message('DEBUG','#TRAZA | TAREA | index() | variable Sesion: '. json_encode($array));
 					if ($detect->isMobile() || $detect->isTablet() || $detect->isAndroidOS()) {								
 						$data['device'] = "android";
 					}else{					
 						$data['device'] = "pc";				
 					}		
-					log_message('DEBUG','#TRAZA >> TAREA >> index() >> list: '. json_encode($data));
+					//log_message('DEBUG','#TRAZA >> TAREA >> index() >> list: '. json_encode($data));
 					$this->load->view('tareas/list',$data);	
 				}
 			}

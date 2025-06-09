@@ -77,3 +77,42 @@ function reloadTable(){
 	 .order( [[ 1, 'asc' ]] )
 	 .draw( false );
 }
+
+
+/// Muestra el archivo en el modal
+// recibe archivo en base64, extension del archivo, nombre de archivo, id modal a mostrar
+function mostrarArchivo(base64Data, mimeType, fileName, modalId) {
+	const contenedor = document.getElementById('contenedorEvidencia');
+	contenedor.innerHTML = '';
+  
+	if (mimeType.startsWith('image/')) {
+	   const img = document.createElement('img');
+	img.src = `data:${mimeType};base64,${base64Data}`;
+	img.style.width = '90%';
+	img.style.height = 'auto';
+	img.style.maxHeight = '75vh'; // para que no se pase del alto visible
+	img.style.margin = 'auto';
+	contenedor.appendChild(img);
+	$('#'+modalId).modal('show');
+	} else if (mimeType === 'application/pdf') {
+	  // Crear un Blob para el PDF y abrirlo en una nueva pestaña
+	  const byteCharacters = atob(base64Data);
+	  const byteNumbers = new Array(byteCharacters.length);
+	  for (let i = 0; i < byteCharacters.length; i++) {
+		  byteNumbers[i] = byteCharacters.charCodeAt(i);
+	  }
+	  const byteArray = new Uint8Array(byteNumbers);
+	  const blob = new Blob([byteArray], { type: mimeType });
+	  const blobUrl = URL.createObjectURL(blob);
+	  window.open(blobUrl, '_blank');
+	  // Cerrar el modal actual ya que el PDF se abre en otra pestaña
+	  $('#'+modalId).modal('hide');
+	} else {
+	  const link = document.createElement('a');
+	  link.href = `data:${mimeType};base64,${base64Data}`;
+	  link.download = fileName;
+	  link.innerText = 'Descargar archivo';
+	  link.className = 'btn btn-primary';
+	  contenedor.appendChild(link);
+	}
+  }
