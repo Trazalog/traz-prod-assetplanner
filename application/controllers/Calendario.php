@@ -29,8 +29,12 @@ class Calendario extends CI_Controller
     
         }else{
             $data['permission'] = $permission . "Correctivo-Preventivos-Backlog-Predictivo-";
-
-            $this->load->view('calendar/calendar1', $data);
+            $response = $this->bpm->getToDoList();
+            $data['tareas'] = $response['data'];
+            
+            // Desactivar el header y footer para esta vista
+            $this->output->set_header('Content-Type: text/html; charset=utf-8');
+            $this->load->view('calendar/calendar1', $data, false);
         }
     }
 
@@ -47,85 +51,73 @@ class Calendario extends CI_Controller
     public function getTablas() // Ok
     {
         
-						$mes = $this->input->post('mes');
-						$year = $this->input->post('year');
-						$permission = $this->input->post('permission');
-						$data['mes'] = $mes;
-						$data['year'] = $year;
+        $mes = $this->input->post('mes');
+        $year = $this->input->post('year');
+        $permission = $this->input->post('permission');
+        $tareas = $this->input->post('tareas');
 
-						
-						// var_dump($data_extend);
-
-						$data['list0'] = $this->Calendarios->getPreventivosHoras($mes, $year);
-						$data['list1'] = $this->Calendarios->getpredlist($mes, $year); // listo
-						$data['list2'] = $this->Calendarios->getbacklog($mes, $year); // listo
-						$data['list3'] = $this->Calendarios->getPreventivos($mes, $year); // listo
-						//$data['list4'] = $this->Calendarios->getsservicio($mes, $year); // listo
-						//Buscar Bonita IdTarea para pode
-						//Completar Tareas con ID Solicitud y ID OT
-						//Nueva consulta Para traer los mismos datos de la bandeja de entrada
-						//Obtener Bandeja de Usuario desde Bonita
-
-      $response = $this->bpm->getToDoList();
-						if($response['status']){
-            // Si trae datos une las tareas con las solicitudes
-            $data_extend = $this->Calendarios->getServicioTareas($response['data'],$mes,$year);
-            $data['list4'] = $data_extend; // listo
-      }
+        $data['mes'] = $mes;
+        $data['year'] = $year;
         
-      $data['permission'] = $permission;
+        $data['list0'] = $this->Calendarios->getPreventivosHoras($mes, $year);
+        $data['list1'] = $this->Calendarios->getpredlist($mes, $year);
+        $data['list2'] = $this->Calendarios->getbacklog($mes, $year);
+        $data['list3'] = $this->Calendarios->getPreventivos($mes, $year);
+        $data_extend = $this->Calendarios->getServicioTareas($tareas,$mes,$year);
+        $data['list4'] = $data_extend;
+        $data['permission'] = $permission;
 
         
         
-						log_message('DEBUG','#CALENDARIO >> getTablas() response >> '.json_encode($response));
+					/*	log_message('DEBUG','#CALENDARIO >> getTablas() response >> '.json_encode($response));
 						log_message('DEBUG','#CALENDARIO >> getTablas() data_extend >> '.json_encode($data_extend));
 						log_message('DEBUG', '#CALENDARIO >> getTablas() $datos >> ' . $preventivosHoras);
 						log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list0] >> ' . json_encode($data['list0']));
 						log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list1] >> ' . json_encode($data['list1']));
 						log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list2] >> ' . json_encode($data['list2']));
 						log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list3] >> ' . json_encode($data['list3']));
-						log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list4] >> ' . json_encode($data['list4']));
+						log_message('DEBUG', '#CALENDARIO >> getTablas() $data[list4] >> ' . json_encode($data['list4']));*/
         
-						//para cada preventivo
-						if ($preventivosHoras) {
-										$j = 0;
-										for ($i = 0; $i < sizeof($preventivosHoras); $i++) {
-														$estaAlertado = false;
-														//sacar tipo alerta
-														//proximo servicio = lectura base + frecuencia
-														$proximoServicio = $preventivosHoras[$i]['lectura_base'] + $preventivosHoras[$i]['cantidad'];
-														$proximaAlerta = $preventivosHoras[$i]['lectura_base'] + $preventivosHoras[$i]['critico1'];
-														$lecturaAutonomo = $preventivosHoras[$i]['ultima_lectura'];
-														//si alerta amarilla pone en array y agrega dato amarillo
-														if ($lecturaAutonomo >= $proximaAlerta) {
-																		$tipoAlerta = 'A';
-																		$estaAlertado = true;
-														}
-														//si alerta es roja pone en array y agrega rojo
-														if ($lecturaAutonomo >= $proximoServicio) {
-																		$tipoAlerta = 'R';
-																		$estaAlertado = true;
-														}
-														//si esta alertado guardo
-														if ($estaAlertado) {
-																		$preventivosHorasVisible[$j] = $preventivosHoras[$i];
-																		//agrego tipo alerta, proximo servicio y ultima lectura
-																		$preventivosHorasVisible[$j]['tipoAlerta'] = $tipoAlerta;
-																		$preventivosHorasVisible[$j]['proximoServicio'] = $proximoServicio;
-																		$preventivosHorasVisible[$j]['ultimaLectura'] = $preventivosHoras[$i]['ultima_lectura'];
-																		$j++;
-														} else {
-																		$preventivosHorasVisible = false;
-														}
-										}
-						} else {
-										$preventivosHorasVisible = false;
-						}
+        //para cada preventivo
+        if ($preventivosHoras) {
+            $j = 0;
+            for ($i = 0; $i < sizeof($preventivosHoras); $i++) {
+                $estaAlertado = false;
+                //sacar tipo alerta
+                //proximo servicio = lectura base + frecuencia
+                $proximoServicio = $preventivosHoras[$i]['lectura_base'] + $preventivosHoras[$i]['cantidad'];
+                $proximaAlerta = $preventivosHoras[$i]['lectura_base'] + $preventivosHoras[$i]['critico1'];
+                $lecturaAutonomo = $preventivosHoras[$i]['ultima_lectura'];
+                //si alerta amarilla pone en array y agrega dato amarillo
+                if ($lecturaAutonomo >= $proximaAlerta) {
+                    $tipoAlerta = 'A';
+                    $estaAlertado = true;
+                }
+                //si alerta es roja pone en array y agrega rojo
+                if ($lecturaAutonomo >= $proximoServicio) {
+                    $tipoAlerta = 'R';
+                    $estaAlertado = true;
+                }
+                //si esta alertado guardo
+                if ($estaAlertado) {
+                    $preventivosHorasVisible[$j] = $preventivosHoras[$i];
+                    //agrego tipo alerta, proximo servicio y ultima lectura
+                    $preventivosHorasVisible[$j]['tipoAlerta'] = $tipoAlerta;
+                    $preventivosHorasVisible[$j]['proximoServicio'] = $proximoServicio;
+                    $preventivosHorasVisible[$j]['ultimaLectura'] = $preventivosHoras[$i]['ultima_lectura'];
+                    $j++;
+                } else {
+                    $preventivosHorasVisible = false;
+                }
+            }
+        } else {
+            $preventivosHorasVisible = false;
+        }
 
-						$data['list'] = $preventivosHorasVisible;
+        $data['list'] = $preventivosHorasVisible;
 
-						$response['html'] = $this->load->view('calendar/tablas', $data);
-						echo json_encode($response);
+        // Cargar la vista sin template
+        $this->load->view('calendar/tablas', $data, false);
     }
 
     // Devuelve info de Preventivo por Id para llenar en OT
@@ -900,8 +892,14 @@ class Calendario extends CI_Controller
 
     public function panelFiltro()
     {
+        // Desactivar el header y footer para esta respuesta
+        $this->output->set_header('Content-Type: text/html; charset=utf-8');
+        
+        // Obtener los datos del filtro
         $data['filtro'] = $this->Calendarios->opcionesFiltro();
-        $this->load->view('calendar/filtro', $data);
+        
+        // Cargar la vista sin template
+        $this->load->view('calendar/filtro', $data, false);
     }
 
     /*    ./ INTEGRACION CON BPM */
