@@ -26,7 +26,7 @@ class Tarea extends CI_Controller {
 			$this->session->sess_destroy();
 			echo ("<script>location.href='login'</script>");
 		}else{
-			//$data['list']       = $this->Tareas->Listado_Tareas();
+			$data['list']       = $this->Tareas->Listado_Tareas();
 			//log_message('DEBUG','#TRAZA | #Tarea/index2()>> data '.json_encode($data));
 			$data['permission'] = $permission;
 			$this->load->view('tarea/list', $data);

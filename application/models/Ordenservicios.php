@@ -33,6 +33,7 @@ class Ordenservicios extends CI_Model {
         $this->db->join('orden_trabajo', 'orden_servicio.id_ot = orden_trabajo.id_orden');
         $this->db->join('equipos', 'orden_trabajo.id_equipo = equipos.id_equipo');
         $this->db->where('orden_servicio.id_empresa', $empresaId);
+		$this->db->order_by('orden_servicio.id_orden', 'DESC');
         //$this->db->join('solicitud_reparacion', 'orden_servicio.id_solicitudreparacion = solicitud_reparacion.id_solicitud');
         //$this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo');
         $query = $this->db->get();
