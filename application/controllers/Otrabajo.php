@@ -32,8 +32,8 @@ class Otrabajo extends CI_Controller {
 			echo ("<script>location.href='login'</script>");
 	
 		}else{
-			$data['list']       = $this->Otrabajos->otrabajos_List(null,0);
-			$data['kpi'] = $this->Equipos->informe_equipos();
+	/* 		$data['list']       = $this->Otrabajos->otrabajos_List(null,0);
+			$data['kpi'] = $this->Equipos->informe_equipos(); */
 			$data['permission'] = $permission;
 			$this->load->view('otrabajos/dashOriginal', $data);
 		}
@@ -1431,14 +1431,25 @@ class Otrabajo extends CI_Controller {
 	{
 		$datos = $this->input->post('datos');
 		$tipo = $this->input->post('tipo');
+		$userdata  = $this->session->userdata('user_data');
+		$empresaId = $userdata[0]['id_empresa'];
+
 		switch ($tipo) {
 		case '1': //Orden de trabajo
 			$this->load->view('otrabajos/printot', $datos);
 			break;
 		case '2': //Solicitud de servicio
+
+			//harkodeo para que lo vea solo tierras
+			if($empresaId === '15') $datos['muestraFirma'] = true;
+
 			$this->load->view('otrabajos/printotsolserv', $datos);
 			break;
 		case '3': //preventivo
+
+		 	//harkodeo para que lo vea solo tierras
+			if($empresaId === '15') $datos['muestraFirma'] = true; 
+
 			$this->load->view('otrabajos/printotprev', $datos);
 			break;
 		case '4': //Backlog
@@ -1484,4 +1495,45 @@ class Otrabajo extends CI_Controller {
 			echo json_encode($response=null);
 		}
 	}
+
+	/**
+	 * reasigna responsable de Ordenes de Trabajo.
+	 * @param 	
+	 */
+	public function reasignaOt(){
+
+		$task 				= (int)$this->input->post('task');
+		$ot 					= (int)$this->input->post('ot');
+		$usrId				= (int)$this->input->post('responsable');
+		$id_solicitud = (int)$this->input->post('id_solicitud');
+		$id_tarea 		= (int)$this->input->post('tareastd');
+		$case_id = $this->Otrabajos->getCaseIdOT($ot);
+
+		log_message('DEBUG', "#TRAZA | #ASSET | Otrabajo | reasignaOt()");
+
+		// obtengo id de usuario en bonita
+		$userId_bpm = $this->bpm->getInfoSisUserenBPM($usrId);
+
+		//obtengo id tarea de bonita
+		$task_id = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID,$case_id,'Ejecutar OT');
+
+		//desasigno la tarea para poder asignarla
+		$resp = $this->bpm->setUsuario($task_id, '');
+
+		// asigno nuevo usuario responsable en bonita
+		$resp = $this->bpm->setUsuario($task_id, $userId_bpm['data']['id']);
+
+		//updateo en base de datos el usuario asignado
+		$datos = array('id_usuario_a'=>$usrId);
+
+		if($this->Otrabajos->updOT($ot, $datos)){
+			echo json_encode(['status'=>true, 'msj'=>'OK']);
+			return;
+		}else {
+				echo json_encode(['status'=>false, 'msj'=>'Error Actualizando Tarea en OT']);
+				return;
+		}	
+
+	}
+
 }

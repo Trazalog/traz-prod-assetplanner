@@ -75,7 +75,8 @@
     <li role="presentation"><a href="#tar" aria-controls="tar" role="tab" data-toggle="tab">Tareas</a></li>
     <li role="presentation"><a href="#herramientas" aria-controls="herramientas" role="tab" data-toggle="tab">Herramientas</a></li>
     <li role="presentation"><a href="#rrhh" aria-controls="rrhh" role="tab" data-toggle="tab">Recursos Humanos</a></li> 
-    <li role="presentation"><a href="#insumosPed" aria-controls="insumosPed" role="tab" data-toggle="tab">Insumos </a></li>       
+    <li role="presentation"><a href="#insumosPed" aria-controls="insumosPed" role="tab" data-toggle="tab">Insumos </a></li> 
+    <li role="presentation"><a href="#evidencias" aria-controls="evidencias" role="tab" data-toggle="tab">Evidencias </a></li>   
   </ul>
 
   <!-- Tab panes -->
@@ -337,7 +338,6 @@
                   <tr>
                     <th>Nº O.Insumo</th>
                     <th>Fecha</th>
-                    <!-- <th>Solicitante</th> -->
                     <th>Código</th>
                     <th>Descripción</th>
                     <th>Cantidad</th>
@@ -350,7 +350,46 @@
           </div>
         </div><!-- end .panel-body -->
       </div><!-- end .panel-default -->
-    </div><!-- end .tabpanel -->      
+    </div><!-- end .tabpanel -->
+
+    <div role="tabpanel" class="tab-pane" id="evidencias">
+      <!--  EVIDENCIAS  -->
+      <div class="panel panel-default">
+        <div class="panel-heading"><span class="fa fa-camera icotitulo" aria-hidden="true"></span> Evidencias
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="alert alert-danger alert-dismissable" id="errorEvidencias" style="display: none">
+                <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                Por favor seleccione un archivo para cargar.
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xs-12 col-sm-6">
+              <div class="form-group">
+                <label for="archivoEvidencia">Seleccionar archivo:</label>
+                <input type="file" class="form-control" id="archivoEvidencia" accept="image/*,.pdf,.doc,.docx">
+              </div>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+              <button type="button" class="btn btn-primary" style="margin-top: 25px;" onclick="agregarEvidencia()">Agregar</button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xs-12">
+              <hr>
+              <div id="galeriaEvidencias" class="row">
+                <!-- Aquí se mostrarán las miniaturas -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </form>      
 
@@ -808,7 +847,30 @@
           operario[j] = act;
           j++;
       });         
-      //datosInfoServicio
+      // Recolectar todas las evidencias
+      const evidencias = [];
+      document.querySelectorAll('.base64-data').forEach((input) => {
+        // Buscar el nombre del archivo asociado a este input base64
+        let nombre = '';
+        // Para imágenes, el nombre esta en el siguiente input oculto con clase 'nombre-archivo'
+        const nombreInput = input.nextElementSibling;
+        if (nombreInput && nombreInput.classList.contains('nombre-archivo')) {
+          nombre = nombreInput.value;
+        } else {
+          // Para otros tipos, el nombre esta en el parrafo anterior
+          const nombreP = input.previousElementSibling;
+          if (nombreP && nombreP.tagName === 'P') {
+            nombre = nombreP.innerText;
+          }
+        }
+
+        evidencias.push({
+          valor_base64: input.value,
+          nombre_archivo: nombre
+        });
+      });
+
+      // Agregar las evidencias a los datos que se envían
       var datosInfoServicio = {
         'id_equipo'              : $("#id_equipoSolic").val(),
         'fecha'                  : $("#fechaOrden").val(),           
@@ -818,16 +880,19 @@
         'horometro_fin'          : $("#lectura_fin").val(),
         'fecha_inicio'           : $("#fecha_inicio").val(),
         'fecha_fin'              : $("#fecha_fin").val(),
-        'idTarBonita'            : $("#idTarBonita").val() 
+        'idTarBonita'            : $("#idTarBonita").val(),
+        'evidencias'             : evidencias
       };          
       WaitingOpen('Guardando cambios');  
       var func = 'guardar';        
       $.ajax({
-        data: {datosInfoServicio:datosInfoServicio, 
-                tarea:tarea,  
-                operario:operario,
-                herramienta:herramienta, 
-                func:func},
+        data: {
+          datosInfoServicio: datosInfoServicio, 
+          tarea: tarea,  
+          operario: operario,
+          herramienta: herramienta, 
+          func: func
+        },
         type: 'POST',
         dataType: 'json',
         url: 'index.php/Ordenservicio/setOrdenServ',
@@ -835,7 +900,7 @@
           WaitingClose();
           if(result['status']){
             $('#modalInforme').modal('hide');
-            $("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/<?php echo $permission; ?>");
+            $("#content").load("<?php echo base_url(); ?>index.php/Tarea/index/add-edit-del-view");
           }else{
             WaitingClose();
             $('#modalInforme').modal('hide');
@@ -877,5 +942,72 @@
         } ],
         "order": [[0, "asc"]],
     });  
+
+    // Funciones para manejar evidencias
+    function agregarEvidencia() {
+      const archivo = document.getElementById('archivoEvidencia').files[0];
+      
+      if (!archivo) {
+        $('#errorEvidencias').fadeIn('slow');
+        return;
+      }
+
+      $('#errorEvidencias').fadeOut('slow');
+
+      // Crear miniatura
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const esImagen = archivo.type.startsWith('image/');
+        let miniaturaHTML = '';
+        
+        // Obtener el base64
+        const base64Data = e.target.result.split(',')[1];
+        
+        if (esImagen) {
+          miniaturaHTML = `
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" style="margin-bottom: 20px;">
+              <div class="thumbnail">
+                <img src="${e.target.result}" style="width: 100%; height: 150px; object-fit: cover;">
+                <div class="caption text-center">
+                  <input type="hidden" class="base64-data" value="${base64Data}">
+                  <input type="hidden" class="nombre-archivo" value="${archivo.name}">
+                  <button class="btn btn-danger btn-sm" onclick="eliminarEvidencia(this)">
+                    <i class="fa fa-trash"></i> Eliminar
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          miniaturaHTML = `
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" style="margin-bottom: 20px;">
+              <div class="thumbnail">
+                <div class="text-center" style="height: 150px; display: flex; align-items: center; justify-content: center;">
+                  <i class="fa fa-file fa-3x"></i>
+                </div>
+                <div class="caption text-center">
+                  <p>${archivo.name}</p>
+                  <input type="hidden" class="base64-data" value="${base64Data}">
+                  <button class="btn btn-danger btn-sm" onclick="eliminarEvidencia(this)">
+                    <i class="fa fa-trash"></i> Eliminar
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        
+        document.getElementById('galeriaEvidencias').insertAdjacentHTML('beforeend', miniaturaHTML);
+        
+        // Limpiar formulario
+        document.getElementById('archivoEvidencia').value = '';
+      };
+      
+      reader.readAsDataURL(archivo);
+    }
+
+    function eliminarEvidencia(boton) {
+      boton.closest('.col-xs-12').remove();
+    }
 
 </script>

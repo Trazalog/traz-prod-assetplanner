@@ -92,6 +92,7 @@
                     <th>Fecha Terminacion</th>
                     <th>Fecha de Entregada</th>
                     <th>Origen</th>
+                    <th>Mantenedor</th>
                     <th>Estado</th>
                   </tr>
                 </thead>
@@ -264,6 +265,7 @@ function llenarTabla(data){
         data[i].fecha_terminada,
         data[i].fecha_entregada,
         data[i].origenOT,
+        data[i].nombre_usuario,
         data[i].estado,
        
       ]
@@ -280,6 +282,7 @@ function llenarTabla(data){
         data[i].fecha_terminada,
         data[i].fecha_entregada,
         data[i].origenOT,
+        data[i].nombre_usuario,
         data[i].estado,
        
       ]

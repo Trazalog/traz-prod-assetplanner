@@ -105,3 +105,26 @@
         </div>
     </div>
 </div>
+<?php if ($muestraFirma): ?>
+
+<div class="row">
+    <div class="col-xs-12">
+        <br>
+        Fecha y hora inicio: <?php ($fecha_inicio) ? print_r($fecha_inicio) : print_r('') ?><br>
+        Fecha y hora fin: <?php ($fecha_terminada) ? print_r($fecha_terminada) : print_r('') ?><br>
+    </div>
+</div> 
+
+
+<div class="row" style="display: flex; justify-content: center; align-items: center; margin-top: 150px; text-align: center;">
+    
+    <div style="margin-right: 50px;">
+        ___________________________<br>
+        <strong>Firma y Aclaración del Supervisor</strong>
+    </div>
+    <div style="margin-left: 50px;">
+        ___________________________<br>
+        <strong>Firma y Aclaración del Mantenedor</strong>
+    </div>
+</div>
+<?php endif; ?>

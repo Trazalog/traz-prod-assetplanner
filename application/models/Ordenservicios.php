@@ -294,7 +294,7 @@ class Ordenservicios extends CI_Model {
 					}
 			}
 
-			return true;
+			return $idInsertOrden;
         
 		}
 		// borra herramientas de Informe Servicios
@@ -721,6 +721,43 @@ class Ordenservicios extends CI_Model {
         // $this->db->update('solicitud_reparacion', $estado);        
     }
 
+    /**
+	 * Guarda archivos, imagenes de evidencia cargados en confeccion informe de servicios
+	 * @param 	data.
+     * 
+	 */
+    public function guardarEvidencia($data) {
+        return $this->db->insert('orden_servicio_adjuntos', $data);
+    }
+
+    /**
+	 * trae imagenes, documentos de evidencia
+	 * @param id_orden.
+     * @return array evidencias
+	 */
+    public function getEvidenciasOrden($id_orden) {
+        $this->db->select('id_adjunto, valor_base64, nombre');
+        $this->db->from('orden_servicio_adjuntos');
+        $this->db->where('id_orden', $id_orden);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+      /**
+	 * trae id_orden de informe de servicio por id_ot
+	 * @param id_ot.
+     * @return id_orden
+	 */
+    public function getIdOrdenPorOT($id_ot) {
+        $this->db->select('id_orden');
+        $this->db->from('orden_servicio');
+        $this->db->where('id_ot', $id_ot);
+        $this->db->order_by('id_orden', 'DESC');
+        $this->db->limit(1);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        return $result['id_orden'];
+    }
 
 }
 

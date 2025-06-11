@@ -7,6 +7,7 @@ class Reporte extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->model('Reportes');
+		$this->load->model('Ordenservicios');
 	}
 
 	public function check_session(){
@@ -36,17 +37,23 @@ class Reporte extends CI_Controller {
 		}
 	}
 	
+	/**
+	 * Trae reportes de SS, Preventivo y Backlog
+	 *
+	 * @param 	filtros 	array[].
+	 */
 	public function getReporte()
 	{
       	$solicitudServicio = $this->Reportes->getRepOrdServicio($this->input->post());
-		if($solicitudServicio)
+		$preventivos = $this->Reportes->getRepPreventivos($this->input->post());
+		$backlog = $this->Reportes->getRepbacklog($this->input->post());
+		$resultado = array_merge($solicitudServicio, $preventivos, $backlog);
+
+		log_message('DEBUG','#ASSET | Reporte | getReporte() $response >> '.json_encode($resultado));
+
+		if($resultado)
 		{	
-			$arre = array();
-			foreach ($solicitudServicio as $row ) 
-			{   
-				$arre[] = $row;
-			}
-			echo json_encode($arre);
+			 echo json_encode($resultado);
 		}
 		else 
 			echo json_encode(0);

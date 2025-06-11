@@ -9,51 +9,250 @@ class Reportes extends CI_Model {
 	
 	function getRepOrdServicio($data)
     {
-        $userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-		if (($data['desde'] !== "") || ($data['hasta'] !== "")) {
-            $datDesde = $data['desde'];
-            $datDesde = explode('-', $datDesde);
-            $desde    = $datDesde[2].'-'.$datDesde[1].'-'.$datDesde[0];
-            $datHasta = $data['hasta'];
-            $datHasta = explode('-', $datHasta);
-            $hasta    = $datHasta[2].'-'.$datHasta[1].'-'.$datHasta[0];
-		}
-        $id_equipo = $data['id_equipo'];
-        $id_sector = $data['id_sector'];
-        $this->db->select('solicitud_reparacion.*,
-            equipos.codigo as equipo, 
-            sector.descripcion as sector, 
-            grupo.descripcion as grupo, 
-            equipos.ubicacion');
-        $this->db->from('solicitud_reparacion');
-        $this->db->join('equipos', 'solicitud_reparacion.id_equipo = equipos.id_equipo');
-        $this->db->join('sector', 'equipos.id_sector = sector.id_sector');
-        $this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo');
-        
-        if ($id_sector !== "") {
-            $this->db->where('sector.id_sector', $id_sector);
-        }
-        if ($id_equipo !== "") {
-            $this->db->where('equipos.id_equipo', $id_equipo);
-        }
-        if ($data['desde'] || $data['hasta'] !== "") {
-            $this->db->where('solicitud_reparacion.f_solicitado >=', $desde);
-            $this->db->where('solicitud_reparacion.f_solicitado <=', $hasta);
-        }
-        //$this->db->where('solicitud_reparacion.estado', 'C');
-        $this->db->where('solicitud_reparacion.id_empresa', $empresaId);
-        $query = $this->db->get();
-        if ($query->num_rows()!=0)
-        {
-            //dump_exit($query->result_array());
-            return $query->result_array();  
-        }
-        else
-        {   
-            return array();
-        }  
+    $userdata = $this->session->userdata('user_data');
+    $empresaId = $userdata[0]['id_empresa'];
+    
+    // Procesamiento de fechas
+    if (!empty($data['desde'])) {
+        $datDesde = explode('-', $data['desde']);
+        $desde = $datDesde[2].'-'.$datDesde[1].'-'.$datDesde[0];
     }
+    
+    if (!empty($data['hasta'])) {
+        $datHasta = explode('-', $data['hasta']);
+        $hasta = $datHasta[2].'-'.$datHasta[1].'-'.$datHasta[0];
+    }
+    
+   // Para $id_equipo
+    if (isset($data['id_equipo'])) {
+        $id_equipo = $data['id_equipo'];
+    } else {
+        $id_equipo = null;
+    }
+
+    // Para $id_sector
+    if (isset($data['id_sector'])) {
+        $id_sector = $data['id_sector'];
+    } else {
+        $id_sector = null;
+    }
+
+    $this->db->select("
+    sr.id_solicitud AS id,
+    'Solicitud' AS origen,
+    sr.f_solicitado, 
+    sr.id_equipo,
+    sr.estado,
+    MAX(os.fechahorainicio) AS fecha_inicio, 
+    MAX(os.fechahorafin) AS fecha_terminada,
+    ot.id_usuario_a, 
+    e.codigo AS equipo, 
+    s.descripcion AS sector, 
+    g.descripcion AS grupo, 
+    e.ubicacion,
+    ot.id_orden,
+    us.usrName AS asignado,
+    COUNT(DISTINCT au.usrId) AS cantidad_personas
+    ");
+
+    $this->db->from('solicitud_reparacion sr');
+    $this->db->join('equipos e', 'sr.id_equipo = e.id_equipo');
+    $this->db->join('sector s', 'e.id_sector = s.id_sector');
+    $this->db->join('grupo g', 'e.id_grupo = g.id_grupo');
+    $this->db->join('orden_trabajo ot', 'ot.id_solicitud = sr.id_solicitud', 'left');
+    $this->db->join('sisusers us', 'us.usrId = ot.id_usuario_a', 'left');
+    $this->db->join('tbl_tipoordentrabajo tt', "tt.descripcion = 'Solicitud de servicio' AND tt.id = ot.tipo", 'left');
+
+    //Cantidad de personas en informe de servicio
+    $this->db->join('orden_servicio os', 'os.id_ot = ot.id_orden', 'left');
+    $this->db->join('asignausuario au', 'au.id_orden = os.id_orden', 'left');   
+
+    //tipo de solicitud servicio
+    $this->db->where('ot.tipo = tt.id');
+    $this->db->where('sr.id_empresa', $empresaId);
+    $this->db->group_by('sr.id_solicitud'); // Mantiene la agrupación
+
+    // Filtros opcionales
+    if (!empty($id_sector)) {
+        $this->db->where('s.id_sector', $id_sector);
+    }
+    if (!empty($id_equipo)) {
+        $this->db->where('e.id_equipo', $id_equipo);
+    }
+    if (!empty($desde) && !empty($hasta)) {
+        $this->db->where('sr.f_solicitado >=', $desde);
+        $this->db->where('sr.f_solicitado <=', $hasta);
+    }
+
+    $query = $this->db->get();
+
+    return ($query->num_rows() > 0) ? $query->result_array() : [];
+    
+
+    }
+
+    public function getRepPreventivos($data)
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empresaId = $userdata[0]['id_empresa'];
+
+        // Procesamiento de fechas
+        if (!empty($data['desde'])) {
+            $datDesde = explode('-', $data['desde']);
+            $desde = $datDesde[2].'-'.$datDesde[1].'-'.$datDesde[0];
+        }
+
+        if (!empty($data['hasta'])) {
+            $datHasta = explode('-', $data['hasta']);
+            $hasta = $datHasta[2].'-'.$datHasta[1].'-'.$datHasta[0];
+        }
+
+        // Para $id_equipo
+        if (isset($data['id_equipo'])) {
+            $id_equipo = $data['id_equipo'];
+        } else {
+            $id_equipo = null;
+        }
+
+        // Para $id_sector
+        if (isset($data['id_sector'])) {
+            $id_sector = $data['id_sector'];
+        } else {
+            $id_sector = null;
+        }
+
+        $this->db->select("
+            p.prevId AS id,
+            'Preventivo' AS origen,
+            ot.fecha as f_solicitado, 
+            p.id_equipo,
+            ot.estado,
+            MAX(os.fechahorainicio) AS fecha_inicio, 
+            MAX(os.fechahorafin) AS fecha_terminada,
+            ot.id_usuario_a, 
+            e.codigo AS equipo, 
+            s.descripcion AS sector, 
+            g.descripcion AS grupo, 
+            e.ubicacion,
+            ot.id_orden,
+            us.usrName as asignado,
+            COUNT(DISTINCT au.usrId) AS cantidad_personas
+        ");
+
+        $this->db->from('preventivo p');
+        $this->db->join('equipos e', 'p.id_equipo = e.id_equipo');
+        $this->db->join('sector s', 'e.id_sector = s.id_sector');
+        $this->db->join('grupo g', 'e.id_grupo = g.id_grupo');
+        $this->db->join('orden_trabajo ot', 'ot.id_solicitud = p.prevId', 'left');
+        $this->db->join('sisusers us', 'us.usrId = ot.id_usuario_a', 'left');
+        //tipo preventivo
+        $this->db->join('tbl_tipoordentrabajo tt', "tt.descripcion = 'Preventivo' AND tt.id = ot.tipo", 'left');
+        $this->db->where('ot.tipo = tt.id');
+
+         //Cantidad de personas en informe de servicio
+        $this->db->join('orden_servicio os', 'os.id_ot = ot.id_orden', 'left');
+        $this->db->join('asignausuario au', 'au.id_orden = os.id_orden', 'left');   
+
+        $this->db->where('p.id_empresa', $empresaId);
+        $this->db->group_by('p.prevId');
+
+        // Filtros
+        if (!empty($id_sector)) {
+            $this->db->where('s.id_sector', $id_sector);
+        }
+        if (!empty($id_equipo)) {
+            $this->db->where('e.id_equipo', $id_equipo);
+        }
+        if (!empty($desde) && !empty($hasta)) {
+            $this->db->where('p.ultimo >=', $desde);
+            $this->db->where('p.ultimo <=', $hasta);
+        }
+
+        $query = $this->db->get();
+        return ($query->num_rows() > 0) ? $query->result_array() : [];
+    }
+
+    public function getRepbacklog($data)
+    {
+        $userdata = $this->session->userdata('user_data');
+        $empresaId = $userdata[0]['id_empresa'];
+
+        // Procesamiento de fechas
+        if (!empty($data['desde'])) {
+            $datDesde = explode('-', $data['desde']);
+            $desde = $datDesde[2] . '-' . $datDesde[1] . '-' . $datDesde[0];
+        }
+
+        if (!empty($data['hasta'])) {
+            $datHasta = explode('-', $data['hasta']);
+            $hasta = $datHasta[2] . '-' . $datHasta[1] . '-' . $datHasta[0];
+        }
+
+         // Para $id_equipo
+        if (isset($data['id_equipo'])) {
+            $id_equipo = $data['id_equipo'];
+        } else {
+            $id_equipo = null;
+        }
+
+        // Para $id_sector
+        if (isset($data['id_sector'])) {
+            $id_sector = $data['id_sector'];
+        } else {
+            $id_sector = null;
+        }
+
+        $this->db->select("
+            tb.backId AS id,
+            'Backlog' AS origen,
+            tb.fecha AS f_solicitado, 
+            tb.id_equipo,
+            ot.estado,
+            MAX(os.fechahorainicio) AS fecha_inicio, 
+            MAX(os.fechahorafin) AS fecha_terminada,
+            ot.id_usuario_a, 
+            e.codigo AS equipo, 
+            s.descripcion AS sector, 
+            g.descripcion AS grupo, 
+            e.ubicacion,
+            ot.id_orden,
+            us.usrName AS asignado,
+            COUNT(DISTINCT au.usrId) AS cantidad_personas
+        ");
+
+        $this->db->from('tbl_back tb');
+        $this->db->join('equipos e', 'tb.id_equipo = e.id_equipo');
+        $this->db->join('sector s', 'e.id_sector = s.id_sector');
+        $this->db->join('grupo g', 'e.id_grupo = g.id_grupo');
+        $this->db->join('orden_trabajo ot', 'ot.id_solicitud = tb.backId', 'left');
+        $this->db->join('tbl_tipoordentrabajo tt', "tt.descripcion = 'Backlog' AND tt.id = ot.tipo", 'left');
+        $this->db->join('sisusers us', 'us.usrId = ot.id_usuario_a', 'left');
+
+        //Cantidad de personas en informe de servicio
+        $this->db->join('orden_servicio os', 'os.id_ot = ot.id_orden', 'left');
+        $this->db->join('asignausuario au', 'au.id_orden = os.id_orden', 'left');   
+
+        $this->db->where('tb.id_empresa', $empresaId);
+        $this->db->group_by('tb.backId');
+
+        // Filtros
+        if (!empty($id_sector)) {
+            $this->db->where('s.id_sector', $id_sector);
+        }
+
+        if (!empty($id_equipo)) {
+            $this->db->where('e.id_equipo', $id_equipo);
+        }
+
+        if (!empty($desde) && !empty($hasta)) {
+            $this->db->where('tb.fecha >=', $desde);
+            $this->db->where('tb.fecha <=', $hasta);
+        }
+
+        $query = $this->db->get();
+        return ($query->num_rows() > 0) ? $query->result_array() : [];
+    }
+
 
     function getConsulta($data){
 

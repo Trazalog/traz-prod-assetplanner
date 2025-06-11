@@ -1500,7 +1500,7 @@ function ver_informe_servicio(o) {
     WaitingOpen();
     $('#modalInforme').modal('show');
     $('#modalInformeServicios').empty();
-    $("#modalInformeServicios").load("<?php echo base_url(); ?>P+" / "+id_solicitud+" / "");
+    $("#modalInformeServicios").load("<?php echo base_url(); ?>index.php/Ordenservicio/verInforme/"+id_OT+"/"+id_eq+"/");
     WaitingClose();
 }
 
@@ -1972,7 +1972,7 @@ function getDataOtPreventivo(idOt, idPreventivo, origen) {
                 'ubicacion': data['preventivo'][0]['ubicacion'],
                 'descripcion_eq': data['preventivo'][0]['descripcionEquipo'],
                 'nomCli': data['preventivo'][0]['nomCli'],
-                'tarea': data['preventivo'][0]['tarea'],
+                'tarea': data['preventivo'][0]['tarea']
             };
 
             var herram = data['herramientas'];
@@ -4747,26 +4747,14 @@ function filtrar() {
                                 }
                                 //Fecha Inicio
                                 if(resp[i].fecha_inicio != '0000-00-00 00:00:00'){
-                                    var inicio = resp[i].fecha_inicio.slice(0, 10);
-                                    Date.prototype.toDateInputValue = (function(){
-                                        var local = new Date(inicio);
-                                        return local.toJSON().slice(0,10);
-                                    });
-                                    fecha = new Date().toDateInputValue();
-
-                                    row += `<td>`+ fecha +`</td>`;
-                                }else{ row += `<td></td>`}
+                                    row += `<td>`+ resp[i].fecha_inicio +`</td>`;
+                                }
+                                else{ row += `<td></td>`}
                                 //Fecha Terminada
                                 if(resp[i].fecha_terminada != '0000-00-00 00:00:00'){
-                                    var terminada = resp[i].fecha_terminada.slice(0, 10);
-                                    Date.prototype.toDateInputValue = (function(){
-                                        var local = new Date(terminada);
-                                        return local.toJSON().slice(0,10);
-                                    });
-                                    fecha = new Date().toDateInputValue();
-
-                                    row += `<td>`+ fecha +`</td>`;
-                                }else{ row += `<td></td>`
+                                    row += `<td>`+ resp[i].fecha_terminada +`</td>`;
+                                }
+                                else{ row += `<td></td>`
                                 }
                                 //Detalle
                                 if(resp[i].descripcion){

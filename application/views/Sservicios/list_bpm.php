@@ -106,6 +106,36 @@ input:checked + .slider:before {
 
 </section><!-- /.content -->
 
+<!--  MODAL asignar Responsable y tareas   -->
+<div class="modal bs-example-modal-lg" id="modalRespyTareas" tabindex="-1" role="dialog"
+    aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Asignar Responsable y Tareas</h4>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="box">
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12" id="contRespyTareas">
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Modal para eliminar solicitud -->
 <div class="modal fade" id="modalVerOT" tabindex="-1" role="dialog" aria-labelledby="modalVerOTLabel">
   <div class="modal-dialog" role="document">
@@ -243,27 +273,31 @@ input:checked + .slider:before {
             </div>
             <div id="collapseadj" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOneSolServicio">
               <div class="panel-body">
-
                 <div class="row">
-                                 <div class="col-xs-12">
-                                  <table class="table table-bordered" id="tbladjSolicitud"> 
-                                    <thead>
-                                      <tr>                                       
-                                        <th>Archivo/s</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>                                     
-                                      <td>
-                                        <a id="adjunto" href="" target="_blank"></a> 
-                                      </td>
-                                    </tr>
-                                    </tbody>
-                                  </table>
-                                </div>
-                </div>
-
-              </div>
+                  <div class="col-xs-12">
+                    <table class="table table-bordered" id="tbladjSolicitud"> 
+                      <thead>
+                        <tr>                                       
+                          <th>Archivo/s</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      <tr>                                     
+                        <td>
+                          <a id="adjunto" href="" target="_blank"></a> 
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div><!-- ./col-xs-12 -->
+                </div><!-- ./row -->
+                <div class="row">
+                  <div class="col-md-12 col-xs-12 col-lg-12">
+                    <div id="adjuntosGallery">
+                    </div>
+                  </div>
+                </div><!-- /.row -->
+              </div><!-- ./panel-body -->
             </div>
           </div> 
 
@@ -416,6 +450,9 @@ input:checked + .slider:before {
                     if (row.estado === 'S') {
                       var r = r + `<a onclick='mostrarModalEliminacion(${JSON.stringify(row)})' href="#" title="Eliminar"><i class="fa fa-trash text-white" style="cursor: pointer; margin-left: 15px;"></i></a>`;
                     }
+                    if (row.estado === 'AS') {
+                      var r = r + `<a onclick='mostrarModalEditarResponsable(${JSON.stringify(row)})' href="#" title="Editar Asignado"><i class="fa fa-user text-white" style="cursor: pointer; margin-left: 15px;"></i></a>`;
+                    }
                     return r = r + `</td>`;
                 }
             },
@@ -471,7 +508,7 @@ input:checked + .slider:before {
                         'AS': 'purple',
                         'C': 'green',
                         'T': 'blue',
-                        'CE': 'default',
+                        'CE': 'gray',
                         'CN': 'black'
                     };
                     let labels = {
@@ -590,9 +627,9 @@ async function mostrarModalEliminacion(row) {
 function validaUserSolicitante() {
   return new Promise((resolve, reject) => {
     $.ajax({
-      url: 'index.php/Sservicio/validaUsuarioSolicitante',
+      url: 'index.php/Sservicio/validaUsuario',
       method: 'POST',
-      data: {},
+      data: {filtro1: 'Solicitante',},
       success: function(response) {
         resolve(response);
       },
@@ -636,9 +673,10 @@ function confirmarEliminacion() {
   $('#modalEliminarSolicitud').modal('hide');
 }
 
+let baseUrl = "<?php echo base_url(); ?>";
   // VER OT 
   function mostrarOT(o){
-
+    
     //let idSS = $(o).closest('tr').attr('id');
     //console.log(idSS); 
     let idSS = o.id_solicitud;
@@ -692,6 +730,20 @@ function confirmarEliminacion() {
             $("label[for='fecha_eliminada']").addClass('oculto');
             $("label[for='hora_eliminada']").addClass('oculto');
             $("label[for='nombre_usuario']").addClass('oculto');
+        }
+        if(data.adjuntos != null){
+          $contenedor = $('#adjuntosGallery');
+          $contenedor.empty();
+          data.adjuntos.forEach((adjunto) => {
+            $contenedor.append(`
+              <div class="col-md-3 col-xs-6">
+                <a href="${baseUrl + adjunto.url + adjunto.nombre}" target="_blank">
+                  <img src="${baseUrl + adjunto.url + adjunto.nombre}" class="img-responsive" style="width: 100%; height: 100px;">
+                </a>
+              </div>
+            `);
+          });
+
         }
       })
       .fail( () => alert( "Error al traer los datos de la OT." ) )
@@ -1227,52 +1279,49 @@ function confirmarEliminacion() {
   //   });
   // }
 
-// Trae Operarios
-var dataO = function () {
-  var tmp = null;
-  $.ajax({
-    'async': false,
-    'type': "POST",
-    'global': false,
-    'dataType': 'json',
-    'url': "ordenservicio/getOperario",
-    'success': function (data) {
-        tmp = data;
+  // Trae Operarios
+  var dataO = function () {
+    var tmp = null;
+    $.ajax({
+      'async': false,
+      'type': "POST",
+      'global': false,
+      'dataType': 'json',
+      'url': "ordenservicio/getOperario",
+      'success': function (data) {
+          tmp = data;
+      }
+    });
+    return tmp;
+  }();
+  $("#vstsolicita").autocomplete({
+    autoFocus: true,
+    delay: 300,
+    minLength: 1,
+    source: dataO,
+    /*focus: function(event, ui) {
+      // prevent autocomplete from updating the textbox
+      event.preventDefault();
+      // manually update the textbox
+      $(this).val(ui.item.label);
+      $("#id-Operario").val(ui.item.value);
+    },*/
+    select: function(event, ui) {
+      // prevent autocomplete from updating the textbox
+      event.preventDefault();
+      // manually update the textbox and hidden field
+      $(this).val(ui.item.label); 
+      $("#id_vstsolicita").val(ui.item.value);                 
+    },
+    /*open: function( event, ui ) {
+      $("#ui-id-3").css('z-index',1050);
+    },*/
+    change: function (event, ui) {
+      if (!ui.item) {
+        this.value = '';
+      }
     }
   });
-  return tmp;
-}();
-$("#vstsolicita").autocomplete({
-  autoFocus: true,
-  delay: 300,
-  minLength: 1,
-  source: dataO,
-  /*focus: function(event, ui) {
-    // prevent autocomplete from updating the textbox
-    event.preventDefault();
-    // manually update the textbox
-    $(this).val(ui.item.label);
-    $("#id-Operario").val(ui.item.value);
-  },*/
-  select: function(event, ui) {
-    // prevent autocomplete from updating the textbox
-    event.preventDefault();
-    // manually update the textbox and hidden field
-    $(this).val(ui.item.label); 
-    $("#id_vstsolicita").val(ui.item.value);                 
-  },
-  /*open: function( event, ui ) {
-    $("#ui-id-3").css('z-index',1050);
-  },*/
-  change: function (event, ui) {
-    if (!ui.item) {
-      this.value = '';
-    }
-  }
-});
-
-
-
   // Guardado de datos y validaciones
   $("#btnSave").click(function(){
 
@@ -1380,8 +1429,55 @@ $("#vstsolicita").autocomplete({
         });
   }
 
-  
+  //cartel de aviso modificacion responsable
+  async function mostrarModalEditarResponsable(row) {
+    console.log(row);
+  Swal.fire({
+    title: 'Atención!',
+    text: 'Solo los usuarios supervisores pueden editar solicitudes!',
+    confirmButtonText: 'Aceptar',
+  }).then(async (result) => {
+    if (result.value) {
+      console.log('Confirmado');
+      
+      try {
+        var validacionUser = await validaUserAsignacion();
+        console.log(validacionUser);
 
+        if (validacionUser.trim() == "true") { 
+          var id_orden = row.id_orden;
+          WaitingOpen();
+          $('#contRespyTareas').empty();
+          $("#contRespyTareas").load("<?php echo base_url(); ?>index.php/Calendario/verEjecutarOT/" + id_orden + "/" + true);
+          $('#modalRespyTareas').modal('show'); 
+          WaitingClose();  
+
+        } else {
+          Swal.fire('Error', 'No tienes permisos para editar esta solicitud.', 'error');
+        }
+      } catch (error) {
+        Swal.fire('Error', 'Ocurrió un error al validar el usuario.', 'error');
+      }
+    }
+  });
+}
+
+
+  function validaUserAsignacion() {
+       return new Promise((resolve, reject) => {
+      $.ajax({
+        url: 'index.php/Sservicio/validaUsuario',
+        method: 'POST',
+        data: {filtro1: 'Supervisor de Taller', filtro2: 'Administrador'},
+        success: function(response) {
+          resolve(response);
+        },
+        error: function(error) {
+          reject(error);
+        }
+      });
+    }); 
+  }
 </script>
 
 

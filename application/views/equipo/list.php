@@ -29,7 +29,7 @@
                         <thead>
                             <tr>
                                 <th>Acciones</th>
-                                <th>Equipo</th>
+                                <th>Codigo Equipo</th>
                                 <th>Descripción</th>
                                 <th>Área</th>
                                 <th>Proceso</th>

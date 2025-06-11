@@ -510,7 +510,12 @@ class Sservicios extends CI_Model
 	}
 	
 
-	public function validaUsuarioSolicitantes($id_usuario, $empresaId)
+	/**
+	* Comprueba si el usuario pertenece a un rol enviado en alguno de los dos filtros
+	* @param integer;integer;string;string  
+	* @return true
+	*/
+	public function validaUsuario($id_usuario, $empresaId, $filtro1 = null, $filtro2 = null)
 	{
 		$this->db->select('sisusers.usrId');
 		$this->db->from('sisusers');
@@ -518,10 +523,22 @@ class Sservicios extends CI_Model
 		$this->db->join('sisgroups', 'sisgroups.grpId = usuarioasempresa.grpId');
 		$this->db->where('usuarioasempresa.empresaid', $empresaId);
 		$this->db->where('usuarioasempresa.estado', 'AC');
-		$this->db->where('sisgroups.grpName', 'Solicitante');
-		$this->db->where('sisusers.usrId', $id_usuario); 
+		$this->db->where('sisusers.usrId', $id_usuario);
+	
+		// Agrupar condiciones con los filtros dinámicos
+		$this->db->group_start();
+	
+		if ($filtro1 !== null) {
+			$this->db->where('sisgroups.grpName', $filtro1);
+		}
+		if ($filtro2 !== null) {
+			$this->db->or_where('sisgroups.grpName', $filtro2);
+		}
+	
+		$this->db->group_end();
+	
 		$query = $this->db->get();
-
+	
 		if ($query->num_rows() > 0) {
 			return true;
 		} else {
@@ -546,5 +563,18 @@ class Sservicios extends CI_Model
 
         return json_decode($array['data']);
     }
-	
+	/**
+	* Obtiene los adjuntos por solicitud de servicio
+	* @param integer $id_solicitud
+	* @return array adjuntos de la solicitud de servicio
+	*/
+	public function getAdjuntosSolServicio($id_solicitud){
+		log_message("DEBUG", "#TRAZA | #TRAZ-PROD-ASSETPLANNER | Sservicios | getAdjuntosSolServicio($id_solicitud)");
+		$url = REST_MAN."solicitudServicio/adjuntos/solicitud/".$id_solicitud;
+
+        $aux = $this->rest->callAPI("GET",$url);
+        $resp = json_decode($aux['data']);
+
+        return $resp->adjuntos->adjunto;
+	}
 }	
