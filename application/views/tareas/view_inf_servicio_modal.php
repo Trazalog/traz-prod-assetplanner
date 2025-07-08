@@ -266,6 +266,11 @@
             </div>
           </div>
 
+          <div class="alert alert-danger alert-dismissable" id="errorRecursosVacios" style="display: none">
+            <h4><i class="icon fa fa-ban"></i> Error!</h4>
+            No se han agregado recursos. Por favor agregar los Recursos que participaron en esta tarea.
+          </div>
+
           <input type="hidden" class="id-Operario" id="id-Operario" value="">
           <div class="row">
             <div class="col-xs-12">
@@ -708,6 +713,7 @@
         'url': "Ordenservicio/getRRHHOrdenTrabajo",
         'success': function (data) {
             var recursos = data['recursos'];
+            if (!recursos || recursos.length === 0) return;
             for(i = 0; i < recursos.length; i++) {
               var idRRHH = recursos[i].value;
               var nameRRHH = recursos[i].label;
@@ -735,6 +741,11 @@
       
       $('#error3').fadeOut('slow');
       $('#error2').fadeOut('slow');          
+      $('#errorLecturas').fadeOut('slow');
+      // Validar fechas antes de continuar
+      if (!validarFechasInicioFin()) {
+        return;
+      }
       
       var hayError = false;
       var hayError2 = false;
@@ -797,6 +808,16 @@
         activaTab('tar');
         return;
       }
+      // Validación de recursos humanos vacíos
+      var hayErrorRecursos = false;
+      if( ! $('#tabModRecursos').DataTable().data().any() ) {
+          hayErrorRecursos = true;
+      }
+      if(hayErrorRecursos == true){
+        $('#errorRecursosVacios').fadeIn('slow');
+        activaTab('rrhh');
+        return;
+      } 
             
       var tarea = new Array(); 
       var j = 0;
@@ -1010,4 +1031,40 @@
       boton.closest('.col-xs-12').remove();
     }
 
+// Función para validar fechas sin moment.js
+function validarFechasInicioFin() {
+  var fechaInicio = $("#fecha_inicio").val();
+  var fechaFin = $("#fecha_fin").val();
+  // Solo validar si ambos campos tienen valor
+  if (fechaInicio !== '' && fechaFin !== '') {
+    // Convertir a objeto Date
+    var inicio = new Date(fechaInicio);
+    var fin = new Date(fechaFin);
+
+    // Si la fecha de inicio es mayor o igual a la de fin, mostrar error
+    if (inicio >= fin) {
+      $('#errorLecturas').fadeIn('slow');
+      $('#errorLecturas').find('h4').text('¡Error!');
+      $('#errorLecturas').find('.fecha-error').remove();
+      $('#errorLecturas').append('<div class="fecha-error">La fecha de inicio debe ser menor a la fecha de fin.</div>');
+      activaTab('lecturaTab');
+      return false;
+    } else {
+      // Oculta el error si la validación es correcta
+      $('#errorLecturas').fadeOut('slow');
+      $('#errorLecturas').find('.fecha-error').remove();
+      return true;
+    }
+  } else {
+    // Si falta alguna fecha, oculta el error
+    $('#errorLecturas').fadeOut('slow');
+    $('#errorLecturas').find('.fecha-error').remove();
+    return true;
+  }
+}
+
+// Asociar la validación a los eventos change y blur de los campos de fecha
+$("#fecha_inicio, #fecha_fin").on('change blur', function() {
+  validarFechasInicioFin();
+});
 </script>
