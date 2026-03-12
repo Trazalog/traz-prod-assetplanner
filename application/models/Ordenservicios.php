@@ -352,6 +352,13 @@ class Ordenservicios extends CI_Model {
 
 			$this->db->where('id_ordenservicio', $idOrdServ);							
 			$response = $this->db->delete('deta_ordenservicio');
+
+            // Eliminar adjuntos relacionados
+            $this->db->where('id_orden', $idOrdServ);
+            $this->db->delete('orden_servicio_adjuntos');
+
+            $this->db->where('id_ordenservicio', $idOrdServ);							
+            $response = $this->db->delete('deta_ordenservicio');
 			
 			if($response){
 				$this->db->where('id_ot', $id_ot);							

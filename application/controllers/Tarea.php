@@ -146,7 +146,8 @@ class Tarea extends CI_Controller {
 					}					
 					//guardo en session todas las tareas filtradas por case_id
 					$_SESSION['listadoTareas'] = $array;
-					$data['permission'] = $permission;	
+					$data['permission'] = $permission;
+					$data['empr_id'] = $empr_id;
 					//tiempo de recarga harkode en constant
 					$data['tiempoRecarga'] = TIEMPO_RECARGA;
 					//log_message('DEBUG','#TRAZA | TAREA | index() | variable Sesion: '. json_encode($array));
@@ -1033,6 +1034,134 @@ class Tarea extends CI_Controller {
 	}
 
 
+	/**
+	* avanza todas las tareas al estado verifica informe de servicio en bonita
+	* @param  $fecha_corte
+	* @return 
+	*/
+
+	public function cierreMasivoConfeccionaInforme() {
+	//fecha de corte para las tareas que se van a cerrar
+    $fecha_corte = $this->input->post('fecha_corte');
+    if ($fecha_corte) {
+        // Reemplaza la 'T' por un espacio y agrega los segundos
+        $fecha_corte = str_replace('T', ' ', $fecha_corte) . ':00';
+    } else {
+        $fecha_corte = "2025-07-29 00:00:00"; // valor por defecto
+    }
+    $tareas = $_SESSION['listadoTareas'];
+    $case_ids = [];
+    $ids_tareas = [];
+
+    foreach ($tareas as $tarea) {
+        if (
+            $tarea['displayName'] == "Confecciona informe servicio" &&
+            (isset($tarea['reached_state_date']) && $tarea['reached_state_date'] < $fecha_corte)
+        ) {
+            $case_ids[] = $tarea['caseId'];
+            $ids_tareas[$tarea['caseId']] = $tarea['id'];
+        }
+    }
+    
+    //traigo datos de las ordenes
+    $ordenes_info = $this->Tareas->getOrdenesPorCaseIds($case_ids);
+
+    foreach ($ordenes_info as &$orden) {
+        if (isset($ids_tareas[$orden['case_id']])) {
+            $idTarBonita = $ids_tareas[$orden['case_id']];
+            $result = $this->bpm->cerrarTarea($idTarBonita);
+            $orden['id_tarea_bonita'] = $idTarBonita;
+            $orden['cerrado_bpm'] = $result;
+        }
+        // Actualiza el estado en la base
+        $idSservicios = $orden['id_ot'];
+        $estado = 'CE';
+        $tipo = 'informe servicios';
+        $orden['cambio_estado'] = $this->Tareas->cambiarEstado($idSservicios, $estado, $tipo);
+    }
+    unset($orden);
+
+    echo json_encode($ordenes_info);
+}
+
+
+	/**
+	* verifica todos los informes de servicios como correctos en bonita, tambien genera un registro en historial_lecturas
+	* @param  $fecha_corte
+	* @return 
+	*/
+public function cierreMasivoVerificaInforme() {
+    $fecha_corte = $this->input->post('fecha_corte');
+    if ($fecha_corte) {
+        // Reemplaza la 'T' por un espacio y agrega los segundos
+        $fecha_corte = str_replace('T', ' ', $fecha_corte) . ':00';
+    } else {
+        $fecha_corte = "2025-07-29 00:00:00"; // valor por defecto
+    }
+    $tareas = $_SESSION['listadoTareas'];
+    $tareas_a_cerrar = [];
+    $case_ids = [];
+
+    foreach ($tareas as $tarea) {
+        if (
+            $tarea['displayName'] == "Verifica Informe de Servicio" &&
+            (isset($tarea['reached_state_date']) && $tarea['reached_state_date'] < $fecha_corte)
+        ) {
+           	$case_ids[] = $tarea['caseId'];
+            $ids_tareas[$tarea['caseId']] = $tarea['id'];
+        }
+    }
+
+    $ordenes_info = $this->Tareas->getOrdenesPorCaseIds($case_ids);
+	$opcionSel = array(
+		"informeServicioOk" => 'true'
+	);
+
+    foreach ($ordenes_info as &$orden) {
+        if (isset($ids_tareas[$orden['case_id']])) {
+            $idTarBonita = $ids_tareas[$orden['case_id']];
+            
+            // Primero tomar la tarea
+            $userdata = $this->session->userdata('user_data');
+            $usuarioBPM = $userdata[0]['userBpm'];
+            $tomarTarea = $this->bpm->setUsuario($idTarBonita, $usuarioBPM);
+            $orden['tomada_bpm'] = $tomarTarea;
+            
+            // Luego cerrar la tarea
+			$result = $this->bpm->cerrarTarea($idTarBonita,$opcionSel);
+            $orden['cerrado_bpm'] = $result;
+            
+            // Si se cerró correctamente en BPM, guardar en BD
+            if ($result['status']) {
+                // Preparar datos para setUltimaLecturaIS usando datos ya disponibles
+                $data = array();
+                $data["id_equipo"] = $orden['id_equipo'];
+                $data["observacion"] = 'Descripcion: OT '.$orden['id_orden'].' | OT: '.$orden['id_orden'];
+                $data["estado"] = 'AC';
+                $data["lectura"] = $orden['horometrofin'];
+                $data["fecha"] = $orden['fecha_terminada'];
+                $data["operario_nom"] = "-";
+                $data["turno"] = "-";
+                $data["usrId"] = "-";
+                // Actualiza el estado en la TABLA HISTORIAL_LECTURAS
+                $orden['guardado_bd'] = $this->Tareas->setUltimaLecturaIS($data);
+            }
+        }
+        // Actualiza el estado en la TABLA ORDEN_SERVICIO
+        $idSservicios = $orden['id_ot'];
+        $estado = 'CE';
+        $tipo = 'informe servicios';
+        $orden['cambio_estado_informe'] = $this->Tareas->cambiarEstado($idSservicios, $estado, $tipo);
+		// Actualiza el estado en la TABLA ORDEN_TRABAJO
+        $idSservicios = $orden['id_orden'];
+		$tipo = 'OT';
+		$orden['cambio_estado_OT'] = $this->Tareas->cambiarEstado($idSservicios, $estado, $tipo);
+
+    }
+    unset($orden);
+
+    echo json_encode($ordenes_info);
+}
 	
 } 
 
