@@ -1239,5 +1239,15 @@ class Tareas extends CI_Model
         }
         return $data;
     }
-    
+
+    public function getOrdenesPorCaseIds($case_ids) {
+        if (empty($case_ids)) return [];
+
+        $this->db->select('ot.*, ot.case_id');
+        $this->db->from('orden_trabajo ot');
+        $this->db->where_in('ot.case_id', $case_ids);
+        // Puedes agregar más filtros si lo necesitas
+        $query = $this->db->get();
+        return $query->result_array();
+    }
 }
