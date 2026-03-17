@@ -49,7 +49,7 @@
                     <h1 class="box-title">Mis Tareas</h1>
                     <a class="btn btn-primary" style="margin-left: 5%" title="Actualizar" id="btnActualizar"><i
                             class="glyphicon glyphicon-refresh"></i></a>
-                    <?php if (isset($empr_id) && $empr_id == '13'): ?>
+                    <?php if (isset($empr_id) && $empr_id == '6'): ?>
                         <!-- Campo para ingresar la fecha de corte -->
                         <div style="margin-bottom:10px; display:inline-block;">
                             <label for="fechaCorte">Fecha de corte:</label>
