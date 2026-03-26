@@ -391,6 +391,7 @@
             'searchDelay': 3000,
             'lengthMenu': [[10, 25, 50, 100,], [10, 25, 50, 100]],
             'paging': true,
+            'pagingType': 'simple',
             'processing': true,
             'language': {
                 'processing': '<div class="my-processing-overlay"><div class="my-processing-content"><i class="fa fa-spinner fa-spin fa-2x"></i><div>Procesando...<br>Por favor, espere</div></div></div>'
