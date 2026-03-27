@@ -137,24 +137,64 @@ input:checked + .slider:before {
 </div>
 
 <!-- Modal para eliminar solicitud -->
-<div class="modal fade" id="modalVerOT" tabindex="-1" role="dialog" aria-labelledby="modalVerOTLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="modalVerOTLabel">Ver OT</h4>
-      </div>
-      <div class="modal-body">
-        <p><strong>Fecha de Inicio:</strong> <span id="modal-f_inicio"></span></p>
-        <p><strong>Fecha Terminada:</strong> <span id="modal-fecha_terminada"></span></p>
-        <p><strong>Descripción:</strong> <span id="modal-descripcion"></span></p>
-        <p><strong>Fecha de Asignación:</strong> <span id="modal-f_asignacion"></span></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-      </div>
+<div class="modal fade" id="modalVerOT" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Orden de Trabajo</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOt"
+                                    aria-expanded="true" aria-controls="collapseOt">
+                                    Datos de OT
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOt" class="panel-collapse collapse in" role="tabpanel"
+                            aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-3">
+                                        <label for="vIdOt">Nº de OT:</label>
+                                        <input type="text" class="form-control" name="vIdOt" id="vIdOt" disabled>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-9">
+                                        <label for="vDescripFalla">Descripción:</label>
+                                        <input type="text" class="form-control vDescripFalla" id="vDescripFalla" disabled>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-md-3">
+                                        <label for="vFechaProgram">Fecha Programación:</label>
+                                        <input type="text" class="form-control" name="vFechaProgram" id="vFechaProgram" disabled>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-md-3">
+                                        <label for="vFechaCreacion">Fecha Inicio:</label>
+                                        <input type="text" class="form-control" name="vFechaCreacion" id="vFechaCreacion" disabled>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-md-3">
+                                        <label for="vFechaTerminOT">Fecha Terminada:</label>
+                                        <input type="text" class="form-control" name="vFechaTerminOT" id="vFechaTerminOT" disabled>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-md-3">
+                                        <label for="vEstado">Estado:</label>
+                                        <input type="text" class="form-control" name="vEstado" id="vEstado" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <!-- Modal para eliminar solicitud -->
@@ -551,13 +591,24 @@ function abrirModal(rowData) {
     }
 
     // Rellenar el modal con los datos formateados
-    $('#modal-f_inicio').text(formatDate(rowData.f_inicio));
-    $('#modal-fecha_terminada').text(formatDate(rowData.fecha_terminada));
-    $('#modal-descripcion').text(rowData.descripcion || 'Sin descripción');
-    $('#modal-f_asignacion').text(formatDate(rowData.f_asignacion));
-
-    // Actualizar el título del modal
-    $('#modalVerOTLabel').text(`Orden de Trabajo ${rowData.id_orden}`);
+    $('#vIdOt').val(rowData.id_orden || '');
+    $('#vDescripFalla').val(rowData.descripcion || 'Sin descripción');
+    $('#vFechaProgram').val(formatDate(rowData.fecha_program));
+    $('#vFechaCreacion').val(formatDate(rowData.f_inicio));
+    $('#vFechaTerminOT').val(formatDate(rowData.fecha_terminada));
+    
+    // Mapeo de estados
+    let estadoLabels = {
+        'EL': 'Eliminada',
+        'S': 'Solicitada',
+        'PL': 'Planificada',
+        'AS': 'Asignada',
+        'C': 'Curso',
+        'T': 'Terminada',
+        'CE': 'Cerrada',
+        'CN': 'Conforme'
+    };
+    $('#vEstado').val(estadoLabels[rowData.estado] || rowData.estado || '');
 
     // Mostrar el modal
     $('#modalVerOT').modal('show');

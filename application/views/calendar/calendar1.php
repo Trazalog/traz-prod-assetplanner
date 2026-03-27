@@ -1,4 +1,5 @@
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
+<input type="hidden" id="tareas" value='<?php echo json_encode($tareas);?>'>
 
 <section class="content">
     <style>
@@ -52,28 +53,57 @@
 </section><!-- /.content -->
 
 <script>
-
-$('#panel-derecho-body').load('<?php echo base_url() ?>index.php/Calendario/panelFiltro');
+$(document).ready(function() {
+    // Cargar el panel de filtro
+	WaitingOpen();
+    $.ajax({
+        url: '<?php echo base_url() ?>index.php/Calendario/panelFiltro',
+        type: 'GET',
+        dataType: 'html',
+        success: function(response) {
+            $('#panel-derecho-body').html(response);
+			WaitingClose();
+        },
+        error: function(xhr, status, error) {
+            console.error('Error al cargar el panel de filtro:', error);
+        }
+    });
+});
 
 // Trae tablas con tareas al costado del Calendar
 function getTablas(month_, year_) {
     var mes = parseInt(month_) + 1;
     var year = parseInt(year_);
     var permission = '<?php echo $permission ?>';
+    var tareas = JSON.parse($('#tareas').val());
+    WaitingOpen();
     //var permission = $('#permission').val();
     $.ajax({
-        url: 'index.php/Calendario/getTablas',
+        url: '<?php echo base_url() ?>index.php/Calendario/getTablas',
         type: "POST",
         data: {
             mes: mes,
             year: year,
-            permission: permission
+            permission: permission,
+            tareas: tareas
         },
-        success: function(data) {
-            $('#tablas').html(data);
+        dataType: 'html',
+        cache: false,
+        success: function(response) {
+            try {
+                $('#tablas').html(response);
+                WaitingClose();
+            } catch(e) {
+                console.error('Error al procesar la respuesta:', e);
+                alert('Error al procesar la respuesta del servidor');
+                WaitingClose();
+            }
         },
-        error: function(data) {
-            alert('Error. No se encontraron tablas');
+        error: function(xhr, status, error) {
+            console.error('Error en la petición AJAX:', status, error);
+            console.error('Respuesta del servidor:', xhr.responseText);
+            alert('Error al cargar las tablas');
+            WaitingClose();
         }
     });
 }
@@ -200,7 +230,7 @@ ini_events($('#external-events div.external-event'));
 
 																	});
 																	callback(events);
-																	WaitingClose();
+																	//WaitingClose();
 																	//filtro();
 													},
 													error: function(doc) {

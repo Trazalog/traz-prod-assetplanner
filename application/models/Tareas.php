@@ -10,7 +10,7 @@ class Tareas extends CI_Model
         parent::__construct();
         $this->load->model(FRM . 'Forms');
     }
-/* TAREAS ASSET ORIGINALES (TAREAS ESTANDAR)*/
+    /* TAREAS ASSET ORIGINALES (TAREAS ESTANDAR)*/
     public function Listado_Tareas()
     {
         $userdata = $this->session->userdata('user_data');
@@ -64,11 +64,11 @@ class Tareas extends CI_Model
         return $query;
     }
 
-/* ./ TAREAS ASSET ORIGINALES (TAREAS ESTANDAR)*/
+    /* ./ TAREAS ASSET ORIGINALES (TAREAS ESTANDAR)*/
 
-/* INTEGRACION CON BPM */
+    /* INTEGRACION CON BPM */
 
-/*********** funciones nuevas de asset */
+    /*********** funciones nuevas de asset */
     //devuelve array con subtareas
     public function getSubtareaseEstandar($nomTarea)
     {
@@ -334,7 +334,7 @@ class Tareas extends CI_Model
     // cambia de estado la Tareas(SServ, Prevent, Predic, Back y OT), VerificaInforme sirve para no modificar la fecha inicio en OT en el paso verificaInforme o conformidad
     public function cambiarEstado($id_solicitud, $estado, $tipo, $VerificaInforme = null)
     {
-        $f_inicio =  date("Y-m-d H:i:s"); 
+        $f_inicio = date("Y-m-d H:i:s");
 
         if ($tipo == 'correctivo') {
             $this->db->set('estado', $estado);
@@ -362,7 +362,8 @@ class Tareas extends CI_Model
 
         if ($tipo == 'OT') {
             $this->db->set('estado', $estado);
-            if(!$VerificaInforme) $this->db->set('fecha_inicio', $f_inicio);
+            if (!$VerificaInforme)
+                $this->db->set('fecha_inicio', $f_inicio);
             $this->db->where('id_orden', $id_solicitud);
             return $this->db->update('orden_trabajo');
         }
@@ -798,7 +799,8 @@ class Tareas extends CI_Model
         $response = $this->parseHeaders($http_response_header);
         return $response;
     }
-    public function procedimientos($ot){
+    public function procedimientos($ot)
+    {
 
         $this->db->select('B.prev_adjunto');
         $this->db->from('orden_trabajo as A');
@@ -810,7 +812,7 @@ class Tareas extends CI_Model
             return $query->result_array();
         } else {
             return false;
-        }  
+        }
     }
 
     public function actualizarIdOTenBPM($caseId, $param)
@@ -849,7 +851,7 @@ class Tareas extends CI_Model
         return $respuesta;
     }
     // Agrega datos desde BPM y BD local
-    public function CompletarToDoList($data , $search = '')
+    public function CompletarToDoList($data, $search = '')
     {
         $filtrado = [];
         foreach ($data as $key => $value) {
@@ -871,34 +873,36 @@ class Tareas extends CI_Model
                 $data[$key]['displayDescription'] = $res->desc;
                 $data[$key]['equipoDesc'] = $res->desceq;
                 $data[$key]['sectorDesc'] = $res->descsec;
-																$data[$key]['nomCli'] = $res->nomCli;
-				
-																$data = $this->infoUser($data, $key);
-                if($search){
-                    if((strpos(strtoupper($data[$key]['displayDescription']), strtoupper($search)) !== false) 
-                    || (strpos(strtoupper($data[$key]['equipoDesc']), strtoupper($search)) !== false) 
-                    || (strpos($data[$key]['ss'], $search) !== false) 
-                    || (strpos($data[$key]['ot'], $search) !== false) 
-                    || (strpos($data[$key]['pema_id'], $search) !== false) )
-                    {
-                        array_push($filtrado,$data[$key]);
+                $data[$key]['nomCli'] = $res->nomCli;
+
+                $data = $this->infoUser($data, $key);
+                if ($search) {
+                    if (
+                        (strpos(strtoupper($data[$key]['displayDescription']), strtoupper($search)) !== false)
+                        || (strpos(strtoupper($data[$key]['equipoDesc']), strtoupper($search)) !== false)
+                        || (strpos($data[$key]['ss'], $search) !== false)
+                        || (strpos($data[$key]['ot'], $search) !== false)
+                        || (strpos($data[$key]['pema_id'], $search) !== false)
+                    ) {
+                        array_push($filtrado, $data[$key]);
                     }
                 }
                 continue;
                 //log_message('DEBUG','#TRAZA | #TAREA >> CompletarToDoList >> BPM_PROCESS_ID_PEDIDOS_NORMALES');
             }
 
-            
+
             if ($value['processId'] == BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS) {
                 $res = $this->db->get_where('alm_pedidos_extraordinario', ['case_id' => $value['caseId']])->row();
                 $data[$key]['pema_id'] = $res->peex_id;
                 $data[$key]['ot'] = $res->ortr_id;
-                if($search){
+                if ($search) {
 
-                if((strpos($data[$key]['ot'], $search) !== false) 
-                || (strpos($data[$key]['pema_id'], $search) !== false) )
-                    {
-                        array_push($filtrado,$data[$key]);
+                    if (
+                        (strpos($data[$key]['ot'], $search) !== false)
+                        || (strpos($data[$key]['pema_id'], $search) !== false)
+                    ) {
+                        array_push($filtrado, $data[$key]);
                     }
                 }
                 continue;
@@ -915,7 +919,7 @@ class Tareas extends CI_Model
             $this->db->join('sector as Z', 'Z.id_sector = X.id_sector', 'left');
             $this->db->where('A.case_id', $value['caseId']);
             $res = $this->db->get()->first_row();
-            
+
             //log_message('DEBUG','#TRAZA | #TAREA >> CompletarToDoList  $res>> '.json_encode($res));
 
             if (!$res) {
@@ -932,7 +936,7 @@ class Tareas extends CI_Model
                 $this->db->where('C.sore_id', 'A.id_solicitud', 'left');
 
                 $res = $this->db->get()->first_row();
-                
+
                 if (!$res) {
 
                     $this->db->select('id_orden as \'ot\', B.tipo as  \'tip_ta\', B.descripcion as \'desc\', causa, X.codigo as \'desceq\', P.cliRazonSocial as \'nomCli\', Z.descripcion as \'descsec\'');
@@ -1004,30 +1008,30 @@ class Tareas extends CI_Model
 
             // si existe OT
             $data = $this->infoUser($data, $key);
-            
+
             //BUSQUEDA
             //filtro por descripcion, equipo, id SS, id OT, id pp 
-            if($search){
-                if((strpos(strtoupper($data[$key]['displayDescription']), strtoupper($search)) !== false) 
-                || (strpos(strtoupper($data[$key]['equipoDesc']), strtoupper($search)) !== false) 
-                || (strpos($data[$key]['ss'], $search) !== false) 
-                || (strpos($data[$key]['ot'], $search) !== false) 
-                || (strpos($data[$key]['pema_id'], $search) !== false) )
-                {
-                    array_push($filtrado,$data[$key]);
+            if ($search) {
+                if (
+                    (strpos(strtoupper($data[$key]['displayDescription']), strtoupper($search)) !== false)
+                    || (strpos(strtoupper($data[$key]['equipoDesc']), strtoupper($search)) !== false)
+                    || (strpos($data[$key]['ss'], $search) !== false)
+                    || (strpos($data[$key]['ot'], $search) !== false)
+                    || (strpos($data[$key]['pema_id'], $search) !== false)
+                ) {
+                    array_push($filtrado, $data[$key]);
                 }
             }
         }
-								//log_message('DEBUG','#Main/BUSCADOR |  '.json_encode($filtrado));
+        //log_message('DEBUG','#Main/BUSCADOR |  '.json_encode($filtrado));
 
-        if($search){
+        if ($search) {
             return $filtrado;
-        }
-        else{
+        } else {
             return $data;
         }
-    } 
-    
+    }
+
 
     /*     ./ TAREAS BPM */
 
@@ -1051,12 +1055,12 @@ class Tareas extends CI_Model
             }
         } else {
             $data[$key]['usr_asignado'] = " S/A ";
-						}
+        }
 
-						return $data;
+        return $data;
     }
 
-/* ./ INTEGRACION CON BPM */
+    /* ./ INTEGRACION CON BPM */
 
     public function instanciarSubtareas($idTarea, $ot)
     {
@@ -1088,12 +1092,12 @@ class Tareas extends CI_Model
     }
     public function CambiarEstadoPedidoMat($id, $tipo)
     {
-				if ($tipo == "parcial") {
-					$estado = 'Ent. Parcial';
-				} else {
-					$estado = 'Entregado';
-				}
-				
+        if ($tipo == "parcial") {
+            $estado = 'Ent. Parcial';
+        } else {
+            $estado = 'Entregado';
+        }
+
         $this->db->set('estado', $estado);
         $this->db->where('case_id', $id);
         $query = $this->db->update('alm_pedidos_materiales');
@@ -1101,143 +1105,218 @@ class Tareas extends CI_Model
     }
 
     /**
-    * Devuelve correspondencua entre Case_id con Empresa
-    * @param
-    * @return bool true o false
-    */
-	function bandejaEmpresa($case_id, $empr_id)
-	{
-		$ci =& get_instance();
-		$aux = $ci->rest->callAPI("GET",REST_CORE."/assetbandeja/linea/validar/case_id/".$case_id."/empr_id/".$empr_id);
-		$aux =json_decode($aux["data"]);
-		
-		if ($aux->respuesta->case_id) {
-			return  true;
-		} else {
-			return  false;
-		}
-	}
+     * Devuelve correspondencua entre Case_id con Empresa
+     * @param
+     * @return bool true o false
+     */
+    function bandejaEmpresa($case_id, $empr_id)
+    {
+        $ci =& get_instance();
+        $aux = $ci->rest->callAPI("GET", REST_CORE . "/assetbandeja/linea/validar/case_id/" . $case_id . "/empr_id/" . $empr_id);
+        $aux = json_decode($aux["data"]);
+
+        if ($aux->respuesta->case_id) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
-	*Genera lista pedido de trabajo paginados
-	* @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
-	* @return array listado de tareas paginada, filtrada por empresa y la cantidad
-	**/
-    function tareaspaginadas($start, $length, $search, $ordering){
+     *Genera lista pedido de trabajo paginados
+     * @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
+     * @return array listado de tareas paginada, filtrada por empresa y la cantidad
+     **/
+    function tareaspaginadas($start, $length, $search, $ordering)
+    {
+        $searchQuery = isset($search) ? $search : '';
+        $sessionSearch = isset($_SESSION['bonita_search']) ? $_SESSION['bonita_search'] : null;
 
-        //recupero tareas guardadas en session
-        $tareas = $_SESSION['listadoTareas'];
-        if($search){
-
-            //completo todas las tareas primero para poder buscar en todas las paginas
-            $filtrado = $this->CompletarToDoList($tareas, $search);
-            //Ordeno las tareas segun el criterio seleccionado
-            if($ordering[0]['column'] != "" && $ordering[0]['dir'] != ""){
-                $dataOrdenada = $this->sortTareasBy($filtrado, $ordering);
-            }
-            $query_total = count($dataOrdenada);
-
-            $data = array_slice($dataOrdenada, $start, $length);
-
-            // $data = $tareasPaginadas; 
-        }else{
-            
-            $query_total = count($tareas);
-            //completo los datos de las tareas por pagina
-            $data = $this->CompletarToDoList($tareas);
-            //Ordeno las tareas segun el criterio seleccionado
-            if($ordering[0]['column'] != "" && $ordering[0]['dir'] != ""){
-                $dataOrdenada = $this->sortTareasBy($data, $ordering);
-            }
-
-            //armo las paginas con las tareas
-            $data = array_slice($dataOrdenada, $start, $length);
+        // Si start == 0 o si search cambió, reiniciamos cache
+        if ($start == 0 || $searchQuery !== $sessionSearch || !isset($_SESSION['listadoTareas_cache'])) {
+            $_SESSION['listadoTareas_cache'] = [];
+            $_SESSION['bonita_page'] = 0;
+            $_SESSION['bonita_exhausted'] = false;
+            $_SESSION['bonita_search'] = $searchQuery;
         }
-        
+
+        $empr_id = empresa();
+        $limit_needed = $start + $length;
+        //cantidad de iteraciones para evitar que se cuelgue
+        $max_iters = 10;
+        $iters = 0;
+        $CI = &get_instance();
+
+        while (count($_SESSION['listadoTareas_cache']) < $limit_needed && !$_SESSION['bonita_exhausted'] && $iters < $max_iters) {
+            $iters++;
+            $p = $_SESSION['bonita_page'];
+            $c = 50;
+
+            //trae los daos de bonita paginados
+            $response = $CI->bpm->getTodoListPaginated($p, $c);
+
+            if (!$response['status'] || empty($response['data'])) {
+                $_SESSION['bonita_exhausted'] = true;
+                break;
+            }
+
+            $bonita_tasks = $response['data'];
+            if (count($bonita_tasks) < $c) {
+                $_SESSION['bonita_exhausted'] = true;
+            }
+
+            // Optimización: validar empresa por lote
+            $case_ids = array_column($bonita_tasks, 'caseId');
+            if (empty($case_ids)) {
+                $_SESSION['bonita_page']++;
+                continue;
+            }
+
+            $this->db->select('case_id');
+            $this->db->from('case_empresa');
+            $this->db->where('empr_id', $empr_id);
+            $this->db->where_in('case_id', $case_ids);
+            $valid_cases_res = $this->db->get()->result_array();
+            $valid_cases = array_column($valid_cases_res, 'case_id');
+
+            $auxList = [];
+            foreach ($bonita_tasks as $o) {
+                if (in_array($o['caseId'], $valid_cases)) {
+                    $auxList[] = $o;
+                }
+            }
+
+            if (!empty($auxList)) {
+                $completadas = $this->CompletarToDoList($auxList, $searchQuery);
+
+                if (!empty($completadas)) {
+                    $_SESSION['listadoTareas_cache'] = array_merge($_SESSION['listadoTareas_cache'], $completadas);
+                }
+            }
+
+            $_SESSION['bonita_page']++;
+        }
+
+        $todas = $_SESSION['listadoTareas_cache'];
+
+        // Ordenar (sólo lo ya cacheado de forma parcial)
+        if (isset($ordering[0]['column']) && $ordering[0]['column'] != "" && $ordering[0]['dir'] != "") {
+            $todas = $this->sortTareasBy($todas, $ordering);
+        }
+
+        $data = array_slice($todas, $start, $length);
+
+        // recordsTotal simulado
+        $total = count($todas);
+        if (!$_SESSION['bonita_exhausted']) {
+            $total += 1; // Indicador para DataTables que todavía hay más páginas
+        }
+
         $result = array(
-            'numDataTotal' => $query_total,
+            'numDataTotal' => $total,
             'datos' => $data
         );
-        //log_message('DEBUG','#TRAZA | #TAREA >> tareaspaginadas >> $result: '.json_encode($result));
-           
-        return $result;
 
+        return $result;
     }
     /**
-	*Metodo de ordenamiento para el pagina de la tabla de tareas
-	* @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
-	* @return array listado de tareas paginada, filtrada por empresa y la cantidad
-	**/
-    function sortTareasBy($data,$ordering){
+     *Metodo de ordenamiento para el pagina de la tabla de tareas
+     * @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
+     * @return array listado de tareas paginada, filtrada por empresa y la cantidad
+     **/
+    function sortTareasBy($data, $ordering)
+    {
         $column = $ordering[0]['column'];
         $direction = $ordering[0]['dir'];
 
         switch ($column) {
             case '2':
-                usort($data, function($a, $b) use ($direction) {
-                    if ($a['usr_asignado'] == $b['usr_asignado']) return 0;
+                usort($data, function ($a, $b) use ($direction) {
+                    if ($a['usr_asignado'] == $b['usr_asignado'])
+                        return 0;
                     return ($direction == 'asc') ? ($a['usr_asignado'] < $b['usr_asignado'] ? -1 : 1) : ($a['usr_asignado'] > $b['usr_asignado'] ? -1 : 1);
                 });
                 break;
             case '3':
-                usort($data, function($a, $b) use ($direction) {
-                    if ($a['assigned_date'] == $b['assigned_date']) return 0;
+                usort($data, function ($a, $b) use ($direction) {
+                    if ($a['assigned_date'] == $b['assigned_date'])
+                        return 0;
                     return ($direction == 'asc') ? ($a['assigned_date'] < $b['assigned_date'] ? -1 : 1) : ($a['assigned_date'] > $b['assigned_date'] ? -1 : 1);
                 });
                 break;
             case '4':
-                usort($data, function($a, $b) use ($direction) {
-                    if ($a['equipoDesc'] == $b['equipoDesc']) return 0;
+                usort($data, function ($a, $b) use ($direction) {
+                    if ($a['equipoDesc'] == $b['equipoDesc'])
+                        return 0;
                     return ($direction == 'asc') ? ($a['equipoDesc'] < $b['equipoDesc'] ? -1 : 1) : ($a['equipoDesc'] > $b['equipoDesc'] ? -1 : 1);
                 });
                 break;
             case '5':
-                usort($data, function($a, $b) use ($direction) {
-                    if ($a['sectorDesc'] == $b['sectorDesc']) return 0;
+                usort($data, function ($a, $b) use ($direction) {
+                    if ($a['sectorDesc'] == $b['sectorDesc'])
+                        return 0;
                     return ($direction == 'asc') ? ($a['sectorDesc'] < $b['sectorDesc'] ? -1 : 1) : ($a['sectorDesc'] > $b['sectorDesc'] ? -1 : 1);
                 });
                 break;
             case '6':
-                usort($data, function($a, $b) use ($direction) {
-                    if ($a['nomCli'] == $b['nomCli']) return 0;
+                usort($data, function ($a, $b) use ($direction) {
+                    if ($a['nomCli'] == $b['nomCli'])
+                        return 0;
                     return ($direction == 'asc') ? ($a['nomCli'] < $b['nomCli'] ? -1 : 1) : ($a['nomCli'] > $b['nomCli'] ? -1 : 1);
                 });
                 break;
             case '7':
-                usort($data, function($a, $b) use ($direction) {
-                    if ($a['displayName'] == $b['displayName']) return 0;
+                usort($data, function ($a, $b) use ($direction) {
+                    if ($a['displayName'] == $b['displayName'])
+                        return 0;
                     return ($direction == 'asc') ? ($a['displayName'] < $b['displayName'] ? -1 : 1) : ($a['displayName'] > $b['displayName'] ? -1 : 1);
                 });
                 break;
             case '8':
-                usort($data, function($a, $b) use ($direction) {
-                    if ($a['displayDescription'] == $b['displayDescription']) return 0;
+                usort($data, function ($a, $b) use ($direction) {
+                    if ($a['displayDescription'] == $b['displayDescription'])
+                        return 0;
                     return ($direction == 'asc') ? ($a['displayDescription'] < $b['displayDescription'] ? -1 : 1) : ($a['displayDescription'] > $b['displayDescription'] ? -1 : 1);
                 });
                 break;
             case '9':
-                usort($data, function($a, $b) use ($direction) {
-                    if ($a['ss'] == $b['ss']) return 0;
+                usort($data, function ($a, $b) use ($direction) {
+                    if ($a['ss'] == $b['ss'])
+                        return 0;
                     return ($direction == 'asc') ? ($a['ss'] < $b['ss'] ? -1 : 1) : ($a['ss'] > $b['ss'] ? -1 : 1);
                 });
                 break;
             case '10':
-                usort($data, function($a, $b) use ($direction) {
-                    if ($a['ot'] == $b['ot']) return 0;
+                usort($data, function ($a, $b) use ($direction) {
+                    if ($a['ot'] == $b['ot'])
+                        return 0;
                     return ($direction == 'asc') ? ($a['ot'] < $b['ot'] ? -1 : 1) : ($a['ot'] > $b['ot'] ? -1 : 1);
                 });
                 break;
             case '11':
-                usort($data, function($a, $b) use ($direction) {
-                    if ($a['pema_id'] == $b['pema_id']) return 0;
+                usort($data, function ($a, $b) use ($direction) {
+                    if ($a['pema_id'] == $b['pema_id'])
+                        return 0;
                     return ($direction == 'asc') ? ($a['pema_id'] < $b['pema_id'] ? -1 : 1) : ($a['pema_id'] > $b['pema_id'] ? -1 : 1);
                 });
                 break;
             default:
-                
+
                 break;
         }
         return $data;
     }
-    
+
+    public function getOrdenesPorCaseIds($case_ids)
+    {
+        if (empty($case_ids))
+            return [];
+
+        $this->db->select('ot.*, ot.case_id');
+        $this->db->from('orden_trabajo ot');
+        $this->db->where_in('ot.case_id', $case_ids);
+        // Puedes agregar más filtros si lo necesitas
+        $query = $this->db->get();
+        return $query->result_array();
+    }
 }

@@ -16,7 +16,7 @@ class BPM
 
         log_message('DEBUG', '#TRAZA | #BPM >> Obtener Bandeja de Entrada userID: ' . userId());
 
-        $resource = 'API/bpm/humanTask?p=0&c=1000&f=user_id%3D'.userId().'&o=reachedStateDate%20DESC';
+        $resource = 'API/bpm/humanTask?p=0&c=10&f=user_id%3D' . userId() . '&o=reachedStateDate%20DESC';
 
         $url = BONITA_URL . $resource;
 
@@ -33,13 +33,27 @@ class BPM
         return $this->msj(true, 'OK', json_decode($rsp['data'], true));
     }
 
+    public function getTodoListPaginated($p, $c)
+    {
+        $resource = 'API/bpm/humanTask?p=' . $p . '&c=' . $c . '&f=user_id%3D' . userId() . '&o=reachedStateDate%20DESC';
+        $url = BONITA_URL . $resource;
+        $rsp = $this->REST->callAPI('GET', $url, false, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
+
+        if (!$rsp['status']) {
+            log_message('DEBUG', '#TRAZA | #BPM >> getTodoListPaginated ERROR');
+            return $this->msj(false, ASP_111);
+        }
+
+        return $this->msj(true, 'OK', json_decode($rsp['data'], true));
+    }
+
     public function getTarea($id)
     {
 
         $url = BONITA_URL . 'API/bpm/humanTask/' . $id;
 
-				$rsp = $this->REST->callAPI('GET', $url, false, $this->loggin(userNick(), userPass()));
-				
+        $rsp = $this->REST->callAPI('GET', $url, false, $this->loggin(userNick(), userPass()));
+
 
         if (!$rsp['status']) {
 
@@ -53,7 +67,6 @@ class BPM
     }
 
     public function ObtenerTaskidXNombre($proccesId, $caseId, $nombre) //!FALTA TERMINAR
-
     {
         $actividades = $this->ObtenerActividades($proccesId, $caseId);
 
@@ -95,16 +108,16 @@ class BPM
     }
 
     // Lanza proceso en BPM
-  
+
     public function lanzarProceso($processId, $contract)
     {
         $resource = 'API/bpm/process/';
 
         $url = BONITA_URL . $resource . $processId . '/instantiation';
 
-		
-         $rsp = $this->REST->callAPI('POST', $url, $contract, $this->loggin(userNick(), userPass()));
-        
+
+        $rsp = $this->REST->callAPI('POST', $url, $contract, $this->loggin(userNick(), userPass()));
+
 
         if (!$rsp['status']) {
 
@@ -115,7 +128,7 @@ class BPM
         }
 
         $dato = json_decode($rsp['data']);
-		$resp = $this->setCaseEmpresa($dato->caseId);
+        $resp = $this->setCaseEmpresa($dato->caseId);
 
         return $this->msj(true, 'OK', json_decode($rsp['data'], true));
     }
@@ -154,7 +167,9 @@ class BPM
 
         foreach ($array as $key => $value) {
 
-            if ($value['type'] == 'MULTI_INSTANCE_ACTIVITY') {unset($array[$key]);}
+            if ($value['type'] == 'MULTI_INSTANCE_ACTIVITY') {
+                unset($array[$key]);
+            }
 
         }
 
@@ -170,34 +185,34 @@ class BPM
     }
 
 
-  /**
-		*Elimina Case_id en BPM 
-		* @param //$processId, $caseId, $session.
-		* @return array json
-		**/
+    /**
+     *Elimina Case_id en BPM 
+     * @param //$processId, $caseId, $session.
+     * @return array json
+     **/
     public function eliminarCaso($processId, $caseId)
     {
-        
-    // DELETE http://10.142.0.13:8280/tools/bpm/proceso/instancia 
-  //  {"caseid":"11208","session":"fruta"}
 
-       // $resource = '/proceso/instancia';
+        // DELETE http://10.142.0.13:8280/tools/bpm/proceso/instancia 
+        //  {"caseid":"11208","session":"fruta"}
 
-       // $url = REST_API_BPM . $resource ;
+        // $resource = '/proceso/instancia';
 
-       $url = REST_API_BPM;
-       
+        // $url = REST_API_BPM . $resource ;
+
+        $url = REST_API_BPM;
+
         $data = array(
             "caseid" => $caseId,
             "session" => 'fruta'
-    
+
         );
 
         $rsp = $this->REST->callAPI('DELETE', $url, $data, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
 
         $status = ($rsp['status']);
 
-            if ($status == true) {
+        if ($status == true) {
 
             log_message('DEBUG', '#TRAZA | #BPM - Eliminar Caso >> Se Elimino Caso Correctamente');
 
@@ -218,7 +233,7 @@ class BPM
 
             log_message('ERROR', '#TRAZA | #BPM - Eliminar Caso >> NO Se Elimino Caso - ERROR TREMENDO');
 
-          //  $this->eliminarPedidoTrabajo($petr_id);
+            //  $this->eliminarPedidoTrabajo($petr_id);
 
             return $rsp;
 
@@ -240,7 +255,9 @@ class BPM
 
         foreach ($array as $key => $value) {
 
-            if ($value['type'] == 'MULTI_INSTANCE_ACTIVITY') {unset($array[$key]);}
+            if ($value['type'] == 'MULTI_INSTANCE_ACTIVITY') {
+                unset($array[$key]);
+            }
 
         }
 
@@ -271,8 +288,8 @@ class BPM
 
         }
 
-				//        return $this->msj(true, 'OK', json_decode($rsp['data'], true));
-          return json_decode($rsp['data'], true);
+        //        return $this->msj(true, 'OK', json_decode($rsp['data'], true));
+        return json_decode($rsp['data'], true);
     }
 
     public function guardarComentario($caseId)//$caseId, $comentario
@@ -295,8 +312,8 @@ class BPM
 
         }
 
-     //        return $this->msj(true, 'OK', json_decode($rsp['data'], true));
-     return json_decode($rsp['data'], true);
+        //        return $this->msj(true, 'OK', json_decode($rsp['data'], true));
+        return json_decode($rsp['data'], true);
     }
 
     public function actualizarIdOT($caseId, $ot)
@@ -392,7 +409,9 @@ class BPM
     {
         $list = $this->getUsuariosBPM();
 
-        if (!$list['status']) {return $this->msj(false, ASP_106);}
+        if (!$list['status']) {
+            return $this->msj(false, ASP_106);
+        }
 
         foreach ($list['data'] as $o) {
 
@@ -444,25 +463,26 @@ class BPM
         return $idUsrBPM;
     }
 
-		// con userIdBpm devuelve las memberships de ese usuario
-		public function getMemeberships($userIdBpm){
+    // con userIdBpm devuelve las memberships de ese usuario
+    public function getMemeberships($userIdBpm)
+    {
 
-				log_message('DEBUG', '#TRAZA | #BPM >> Obtener Bandeja de Entrada userID: ' . userId());
+        log_message('DEBUG', '#TRAZA | #BPM >> Obtener Bandeja de Entrada userID: ' . userId());
 
-				$resource = 'API/identity/membership?p=0&c=10&f=user\_id%3d';
+        $resource = 'API/identity/membership?p=0&c=10&f=user\_id%3d';
 
-				$url = BONITA_URL . $resource .$userIdBpm .'&d=role\_id';
+        $url = BONITA_URL . $resource . $userIdBpm . '&d=role\_id';
 
-				$rsp = $this->REST->callAPI('GET', $url, false, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
+        $rsp = $this->REST->callAPI('GET', $url, false, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
 
-				if (!$rsp['status']) {
+        if (!$rsp['status']) {
 
-						log_message('DEBUG', '#TRAZA | #BPM >> ' . ASP_111);
-						return $this->msj(false, ASP_111);
-				}
+            log_message('DEBUG', '#TRAZA | #BPM >> ' . ASP_111);
+            return $this->msj(false, ASP_111);
+        }
 
-				return $this->msj(true, 'OK', json_decode($rsp['data'], true));
-		}
+        return $this->msj(true, 'OK', json_decode($rsp['data'], true));
+    }
 
     public function loggin($user, $pass)
     {
@@ -517,36 +537,37 @@ class BPM
         );
     }
 
-	/**
-		* Agrega la relacion case_id con empr_id desp de lanzar PROCESOS
-		* @param string case_id
-		* @returnarray con mensaje depandiendo del resultado
-		*/
-		function setCaseEmpresa($caseid){
+    /**
+     * Agrega la relacion case_id con empr_id desp de lanzar PROCESOS
+     * @param string case_id
+     * @returnarray con mensaje depandiendo del resultado
+     */
+    function setCaseEmpresa($caseid)
+    {
 
-            $empr_id = empresa();
+        $empr_id = empresa();
 
-			log_message('DEBUG','#TRAZA|BPM|setCaseEmpresa($caseid) >> '.json_encode($caseid));
-			log_message('DEBUG','#TRAZA|BPM|setCaseEmpresa($caseid)  $empr_id>> '.json_encode($empr_id));
+        log_message('DEBUG', '#TRAZA|BPM|setCaseEmpresa($caseid) >> ' . json_encode($caseid));
+        log_message('DEBUG', '#TRAZA|BPM|setCaseEmpresa($caseid)  $empr_id>> ' . json_encode($empr_id));
 
-           $string_case_id = (string)$caseid;
+        $string_case_id = (string) $caseid;
 
-			$data = array("case_id"=>$string_case_id,"empr_id"=>$empr_id);
+        $data = array("case_id" => $string_case_id, "empr_id" => $empr_id);
 
-			$CI = &get_instance();
-			$CI->load->database();
-			$resp = $CI->db->insert('case_empresa', $data);
+        $CI = &get_instance();
+        $CI->load->database();
+        $resp = $CI->db->insert('case_empresa', $data);
 
-			if ($resp === FALSE) {
+        if ($resp === FALSE) {
 
-				log_message('ERROR','#TRAZA|BPM|setCaseEmpresa($caseid) >> ERROR No se actualizó la tabla case_empresa con el case_id');
-				return $this->msj(false, 'No se guardo el case_id');
-			} else {
+            log_message('ERROR', '#TRAZA|BPM|setCaseEmpresa($caseid) >> ERROR No se actualizó la tabla case_empresa con el case_id');
+            return $this->msj(false, 'No se guardo el case_id');
+        } else {
 
-				log_message('INFO','#TRAZA|BPM|setCaseEmpresa($caseid) >> Guardado Exitoso');
-				return $this->msj(true, 'Guardado exitosamente');
-			}
+            log_message('INFO', '#TRAZA|BPM|setCaseEmpresa($caseid) >> Guardado Exitoso');
+            return $this->msj(true, 'Guardado exitosamente');
+        }
 
-		}
+    }
 
 }

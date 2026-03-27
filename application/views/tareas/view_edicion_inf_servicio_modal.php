@@ -87,6 +87,15 @@
         </div>
         <div class="panel-body">
           
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="alert alert-danger alert-dismissable" id="errorLecturas" style="display: none">
+                <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                Por favor complete los campos obligatorios.
+              </div>
+            </div>
+          </div>
+          
           <input type="hidden" name="id-comp" class="id-comp" id="id-comp" value="" disabled>
           <div class="row">
             <div class="col-xs-12 col-sm-6">
@@ -103,7 +112,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
               <label for="fecha_fin">Fecha fin <strong style="color: #dd4b39">*</strong> :</label>
-              <input type="text" class="form-control fecha_fin" id="fecha_fin" value="<?php echo $lecturas[0]["fechahorafin"]; ?> placeholder="">
+              <input type="text" class="form-control fecha_fin" id="fecha_fin" value="<?php echo $lecturas[0]["fechahorafin"]; ?>" placeholder="">
             </div>
           </div>
           <br><br>
@@ -260,6 +269,10 @@
               <div class="alert alert-danger alert-dismissable" id="errorRRHH" style="display: none">
                 <h4><i class="icon fa fa-ban"></i> Error!</h4>
                 Revise que todos los campos obligatorios de Recursos Humanos estén seleccionados.
+              </div>
+              <div class="alert alert-danger alert-dismissable" id="errorRecursosVacios" style="display: none">
+                <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                No se han agregado recursos. Por favor agregar los Recursos que participaron en esta tarea.
               </div>
             </div>
           </div>
@@ -663,6 +676,7 @@
         'url': "Ordenservicio/getRRHHOrdenTrabajo",
         'success': function (data) {
             var recursos = data['recursos'];
+            if (!recursos || recursos.length === 0) return;
             for(i = 0; i < recursos.length; i++) {
               var idRRHH = recursos[i].value;
               var nameRRHH = recursos[i].label;
@@ -687,6 +701,11 @@
       
   // Guarda orden de servicio
     function enviarOrden() {
+      // Validar fechas antes de continuar
+      if (!validarFechasInicioFin()) {
+        return;
+      }
+      
       var hayError = false;
       var hayError2 = false;
       var hayError3 = false;
@@ -714,6 +733,15 @@
       if(hayError2 == true) {
         $('#errorTable').fadeIn('slow');
         activaTab('tar');
+        return;
+      }
+      var hayErrorRecursos = false;
+      if( ! $('#tabModRecursos').DataTable().data().any() ) {
+          hayErrorRecursos = true;
+      }
+      if(hayErrorRecursos == true){
+        $('#errorRecursosVacios').fadeIn('slow');
+        activaTab('rrhh');
         return;
       }
       else {
@@ -838,5 +866,54 @@
         } ],
         "order": [[0, "asc"]],
     });  
+
+// Función para validar fechas sin moment.js
+function validarFechasInicioFin() {
+  var fechaInicio = $("#fecha_inicio").val();
+  var fechaFin = $("#fecha_fin").val();
+  
+  // Solo validar si ambos campos tienen valor
+  if (fechaInicio !== '' && fechaFin !== '') {
+    // Convertir a objeto Date
+    var inicio = new Date(fechaInicio);
+    var fin = new Date(fechaFin);
+
+    // Si la fecha de inicio es mayor o igual a la de fin, mostrar error
+    if (inicio >= fin) {
+      // Verificar si existe el elemento errorLecturas, si no, usar errorTareas
+      var errorElement = $('#errorLecturas').length ? $('#errorLecturas') : $('#errorTareas');
+      errorElement.fadeIn('slow');
+      errorElement.find('h4').text('¡Error!');
+      errorElement.find('.fecha-error').remove();
+      errorElement.append('<div class="fecha-error">La fecha de inicio debe ser menor a la fecha de fin.</div>');
+      activaTab('lecturaTab');
+      return false;
+    } else {
+      // Oculta el error si la validación es correcta
+      $('#errorLecturas').fadeOut('slow');
+      $('#errorLecturas').find('.fecha-error').remove();
+      return true;
+    }
+  } else {
+    // Si falta alguna fecha, oculta el error
+    $('#errorLecturas').fadeOut('slow');
+    $('#errorLecturas').find('.fecha-error').remove();
+    return true;
+  }
+}
+
+// Asociar la validación a los eventos change y blur de los campos de fecha
+$("#fecha_inicio, #fecha_fin").on('change blur', function() {
+  validarFechasInicioFin();
+});
+
+// Validación inicial cuando se cargan datos precargados
+$(document).ready(function() {
+  setTimeout(function() {
+    validarFechasInicioFin();
+  }, 500);
+});
+
+
 
 </script>

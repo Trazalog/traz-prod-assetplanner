@@ -146,7 +146,7 @@ if(!function_exists('cargarCabecera')){
 					$baseUrl = base_url();
 					foreach ($adjuntos as $key => $value) {
 						$href = $baseUrl . $value->url . $value->nombre;
-						$adjuntosGallery += '<div class="col-md-3 col-xs-6">
+						$adjuntosGallery = $adjuntosGallery .'<div class="col-md-3 col-xs-6">
 							<a href="'.$href.'" target="_blank">
 							<img src="'.$href.'" class="img-responsive" style="width: 100%; height: 100px;">
 							</a>
