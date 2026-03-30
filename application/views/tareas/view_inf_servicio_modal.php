@@ -810,16 +810,16 @@
         Swal.fire({
           title: 'Recursos Humanos',
           text: 'Ud. no ha cargado Recursos Humanos en el Informe, ¿Desea continuar de todas maneras?',
-          icon: 'warning',
+          type: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#28a745',
           cancelButtonColor: '#6c757d',
           confirmButtonText: 'Sí, guardar',
           cancelButtonText: 'No, ir a RRHH'
         }).then(function(result) {
-          if (result.isConfirmed) {
+          if (result.value) {
             guardarInformeServicio();
-          } else if (result.dismiss === Swal.DismissReason.cancel) {
+          } else {
             activaTab('rrhh');
           }
         });
