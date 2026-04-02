@@ -479,8 +479,15 @@ function guardarTarea(idOt) {
 					alert('Falla | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
 				}
 			},
-			error: function(data) {							
-				alert('Error | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
+			error: function(jqXHR, textStatus, errorThrown) {
+				var msj = '';
+				try {
+					var respuesta = JSON.parse(jqXHR.responseText);
+					msj = respuesta.msj || errorThrown;
+				} catch(e) {
+					msj = errorThrown || textStatus;
+				}
+				alert('Error | No se pudo Ejecutar la Orden de Trabajo | ' + msj);
 			},
 			complete: function(){
 				WaitingClose();
@@ -525,8 +532,15 @@ function guardarTarea(idOt) {
 					alert('Falla | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
 				}
 			},
-			error: function(data) {							
-				alert('Error | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
+			error: function(jqXHR, textStatus, errorThrown) {
+				var msj = '';
+				try {
+					var respuesta = JSON.parse(jqXHR.responseText);
+					msj = respuesta.msj || errorThrown;
+				} catch(e) {
+					msj = errorThrown || textStatus;
+				}
+				alert('Error | No se pudo Reasignar la Orden de Trabajo | ' + msj);
 			},
 			complete: function(){
 				WaitingClose();
