@@ -59,6 +59,8 @@
                             informe</button>
                         <button id="btn-cierre-masivo-verifica" class="btn btn-success">Cierre masivo Verifica
                             informe</button>
+
+                        <button id="btn-asignaBonita" class="btn btn-primary">Asignar Bonita</button>
                     <?php endif; ?>
                 </div><!-- /.box-header -->
                 <div class="box-body">
@@ -1065,6 +1067,33 @@
                 WaitingClose();
                 alert('Cierre masivo Verifica informe realizado');
                 console.log(data);
+            }
+        });
+    });
+
+    $('#btn-asignaBonita').on('click', function () {
+        if (!confirm('¿Desea asignar todas las tareas "Ejecutar OT" sin asignar?')) {
+            return;
+        }
+        WaitingOpen('Asignando tareas Ejecutar OT sin asignar...');
+        $.ajax({
+            url: 'Tarea/asignaBonita',
+            type: 'POST',
+            dataType: 'json',
+            success: function (data) {
+                WaitingClose();
+                if (data.status) {
+                    alert('Asignación completada. Tareas asignadas: ' + data.cantidad);
+                    btnActualizar();
+                } else {
+                    alert('Error: ' + data.msj);
+                }
+                console.log(data);
+            },
+            error: function (xhr, status, error) {
+                WaitingClose();
+                alert('Error en la solicitud: ' + error);
+                console.log(xhr.responseText);
             }
         });
     });

@@ -1118,6 +1118,115 @@ class Tarea extends CI_Controller
 		echo json_encode($ordenes_info);
 	}
 
+	/**
+	 * Asigna en Bonita todas las tareas "Ejecutar OT" sin asignar al usuario que figura como asignado en la OT (id_usuario_a)
+	 * @return JSON con status, cantidad asignada y detalle por tarea
+	 */
+	public function asignaBonita()
+	{
+		$tareas = isset($_SESSION['listadoTareas']) ? $_SESSION['listadoTareas'] : [];
+
+		// Si no hay en listadoTareas, probar con listadoTareas_cache
+		if (empty($tareas) && isset($_SESSION['listadoTareas_cache'])) {
+			$tareas = $_SESSION['listadoTareas_cache'];
+		}
+
+		if (empty($tareas)) {
+			echo json_encode(['status' => false, 'msj' => 'No hay tareas en sesión. Actualice la bandeja primero.', 'cantidad' => 0]);
+			return;
+		}
+
+		$resultados = [];
+		$cantidad = 0;
+		$errores = 0;
+
+		foreach ($tareas as $tarea) {
+			// Filtrar: solo "Ejecutar OT" y sin asignar (assigned_id vacío)
+			if (
+				$tarea['displayName'] == 'Ejecutar OT' &&
+				(empty($tarea['assigned_id']) || $tarea['assigned_id'] == '')
+			) {
+				$idTarBonita = $tarea['id'];
+				$idOT = isset($tarea['ot']) ? $tarea['ot'] : null;
+
+				if (empty($idOT)) {
+					$resultados[] = [
+						'id_tarea' => $idTarBonita,
+						'caseId' => $tarea['caseId'],
+						'error' => 'No se encontró id de OT en la tarea'
+					];
+					$errores++;
+					continue;
+				}
+
+				// Buscar el usuario asignado en la OT (id_usuario_a)
+				$this->db->select('id_usuario_a');
+				$this->db->from('orden_trabajo');
+				$this->db->where('id_orden', $idOT);
+				$query = $this->db->get();
+				$row = $query->row();
+
+				if (!$row || empty($row->id_usuario_a)) {
+					$resultados[] = [
+						'id_tarea' => $idTarBonita,
+						'caseId' => $tarea['caseId'],
+						'ot' => $idOT,
+						'error' => 'No hay usuario asignado en la OT'
+					];
+					$errores++;
+					continue;
+				}
+
+				$usrIdLocal = $row->id_usuario_a;
+
+				// Obtener el ID del usuario en Bonita a partir del asignado en la base
+				$rsp = $this->bpm->getInfoSisUserenBPM($usrIdLocal);
+
+				if (!$rsp['status']) {
+					$resultados[] = [
+						'id_tarea' => $idTarBonita,
+						'caseId' => $tarea['caseId'],
+						'ot' => $idOT,
+						'usrIdLocal' => $usrIdLocal,
+						'error' => 'No se pudo obtener el usuario en Bonita: ' . $rsp['msj']
+					];
+					$errores++;
+					continue;
+				}
+
+				$usuarioBPM = $rsp['data']['id'];
+
+				// Asignar la tarea en Bonita al usuario correspondiente
+				$response = $this->bpm->setUsuario($idTarBonita, $usuarioBPM);
+
+				$resultados[] = [
+					'id_tarea' => $idTarBonita,
+					'caseId' => $tarea['caseId'],
+					'ot' => $idOT,
+					'usrIdLocal' => $usrIdLocal,
+					'usuarioBPM' => $usuarioBPM,
+					'asignado' => $response
+				];
+
+				if (isset($response['status']) && $response['status']) {
+					$cantidad++;
+				} else {
+					$errores++;
+				}
+			}
+		}
+
+		log_message('DEBUG', 'TRAZA | Tarea/asignaBonita | Tareas asignadas: ' . $cantidad . ' | Errores: ' . $errores);
+
+		echo json_encode([
+			'status' => true,
+			'msj' => 'Proceso completado. Asignadas: ' . $cantidad . ' | Errores: ' . $errores,
+			'cantidad' => $cantidad,
+			'errores' => $errores,
+			'detalle' => $resultados
+		]);
+	}
+
 }
 
 ?>
