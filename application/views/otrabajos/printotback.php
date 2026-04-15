@@ -38,4 +38,25 @@
         Fecha: <?php print_r($tarea['fecha']); ?><br>
         Duración: <?php print_r($tarea['back_duracion']); ?><br>
     </div>
-</div>      
+</div>
+
+<div class="row" style="margin-top: 20px;">
+    <div class="col-xs-12">
+        <h3>Sector ordenado</h3>
+        <label style="margin-right: 20px;">
+            <span style="display:inline-block; width:14px; height:14px; border:1px solid #000; margin-right:5px; vertical-align:middle;"></span> Sí
+        </label>
+        <label>
+            <span style="display:inline-block; width:14px; height:14px; border:1px solid #000; margin-right:5px; vertical-align:middle;"></span> No
+        </label>
+    </div>
+</div>
+<div class="row" style="margin-top: 20px;">
+    <div class="col-xs-12">
+        <h3>Observaciones</h3>
+        <div style="border-bottom: 1px dashed #000; margin-bottom: 12px; height: 20px;"></div>
+        <div style="border-bottom: 1px dashed #000; margin-bottom: 12px; height: 20px;"></div>
+        <div style="border-bottom: 1px dashed #000; margin-bottom: 12px; height: 20px;"></div>
+        <div style="border-bottom: 1px dashed #000; margin-bottom: 12px; height: 20px;"></div>
+    </div>
+</div>

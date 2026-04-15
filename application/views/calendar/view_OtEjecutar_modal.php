@@ -417,8 +417,6 @@ function guardarTarea(idOt) {
 			return;
 		}
 
-		$('#errorTable').fadeIn('slow');
-
 		var task = $('#task').val();
 		var ot = $('#idOt').val();
 		var responsable = $('#id_operario').val();
