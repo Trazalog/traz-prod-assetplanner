@@ -28,9 +28,9 @@
                     <li role="presentation" class="active"><a href="#detalle" aria-controls="profile" role="tab" data-toggle="tab">Detalle</a></li>
                       <?php
                        if($btnVisibilidad){
-                         echo '<li role="presentation"><a href="#responsable" aria-controls="messages" role="tab" data-toggle="tab">Asignación Responsable</a></li>';
-                         echo '<li role="presentation"><a href="#tareas" aria-controls="messages" role="tab" data-toggle="tab">Agregar Tareas</a></li>';
-                         echo '<li role="presentation" onclick="$(\'#tabladetalle\').click();"><a href="#pedidomateriales" aria-controls="messages" role="tab" data-toggle="tab">Pedido Materiales</a></li>';
+                         echo '<li role="presentation"><a href="#responsable" aria-controls="responsable" role="tab" data-toggle="tab">Asignación Responsable</a></li>';
+                         echo '<li role="presentation"><a href="#asignar-tareas" aria-controls="asignar-tareas" role="tab" data-toggle="tab">Agregar Tareas</a></li>';
+                         echo '<li role="presentation" onclick="$(\'#tabladetalle\').click();"><a href="#pedidomateriales" aria-controls="pedidomateriales" role="tab" data-toggle="tab">Pedido Materiales</a></li>';
                        }
 
 					   if($reasignaOt){
@@ -154,7 +154,7 @@
                     </div>
                     <!--/#responsable -->
                     <!-- Tab tareas -->
-                     <div role="tabpanel" class="tab-pane" id="tareas">
+                     <div role="tabpanel" class="tab-pane" id="asignar-tareas">
                          <div class="row">
                              <div class="col-xs-12">
                                  <div class="alert alert-danger alert-dismissable" id="errorTarea"
@@ -417,8 +417,6 @@ function guardarTarea(idOt) {
 			return;
 		}
 
-		$('#errorTable').fadeIn('slow');
-
 		var task = $('#task').val();
 		var ot = $('#idOt').val();
 		var responsable = $('#id_operario').val();
@@ -438,7 +436,7 @@ function guardarTarea(idOt) {
 
 		if (tareastd == 0 && tareaOpcional == "") {
 			$('#errorTarea').fadeIn('slow');
-			activaTab('tareas');
+			activaTab('asignar-tareas');
 			return;
 		} else {
 			$('#errorTarea').fadeOut('slow');
@@ -479,8 +477,15 @@ function guardarTarea(idOt) {
 					alert('Falla | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
 				}
 			},
-			error: function(data) {							
-				alert('Error | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
+			error: function(jqXHR, textStatus, errorThrown) {
+				var msj = '';
+				try {
+					var respuesta = JSON.parse(jqXHR.responseText);
+					msj = respuesta.msj || errorThrown;
+				} catch(e) {
+					msj = errorThrown || textStatus;
+				}
+				alert('Error | No se pudo Ejecutar la Orden de Trabajo | ' + msj);
 			},
 			complete: function(){
 				WaitingClose();
@@ -525,8 +530,15 @@ function guardarTarea(idOt) {
 					alert('Falla | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
 				}
 			},
-			error: function(data) {							
-				alert('Error | No se pudo Ejecutar la Orden de Trabajo | ' + data.msj);
+			error: function(jqXHR, textStatus, errorThrown) {
+				var msj = '';
+				try {
+					var respuesta = JSON.parse(jqXHR.responseText);
+					msj = respuesta.msj || errorThrown;
+				} catch(e) {
+					msj = errorThrown || textStatus;
+				}
+				alert('Error | No se pudo Reasignar la Orden de Trabajo | ' + msj);
 			},
 			complete: function(){
 				WaitingClose();

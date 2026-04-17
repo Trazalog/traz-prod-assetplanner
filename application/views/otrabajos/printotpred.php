@@ -40,3 +40,23 @@
         Horas Hombre: <?php echo $tarea['horash']; ?><br>
     </div>
 </div> 
+<div class="row" style="margin-top: 20px;">
+    <div class="col-xs-12">
+        <h3>Sector ordenado</h3>
+        <label style="margin-right: 20px;">
+            <span style="display:inline-block; width:14px; height:14px; border:1px solid #000; margin-right:5px; vertical-align:middle;"></span> Sí
+        </label>
+        <label>
+            <span style="display:inline-block; width:14px; height:14px; border:1px solid #000; margin-right:5px; vertical-align:middle;"></span> No
+        </label>
+    </div>
+</div>
+<div class="row" style="margin-top: 20px;">
+    <div class="col-xs-12">
+        <h3>Observaciones</h3>
+        <div style="border-bottom: 1px dashed #000; margin-bottom: 12px; height: 20px;"></div>
+        <div style="border-bottom: 1px dashed #000; margin-bottom: 12px; height: 20px;"></div>
+        <div style="border-bottom: 1px dashed #000; margin-bottom: 12px; height: 20px;"></div>
+        <div style="border-bottom: 1px dashed #000; margin-bottom: 12px; height: 20px;"></div>
+    </div>
+</div>

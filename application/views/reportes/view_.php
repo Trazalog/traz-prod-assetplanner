@@ -72,7 +72,7 @@
                     <tr>                
                       <th>Orden</th>
                       <th>Id</th>
-                      <th>Fecha Creac.</th>
+                      <th>Tarea</th>
                       <th>Fecha Inicio</th>
                       <th>Fecha Fin</th>
                       <th>Cant. Personas</th>
@@ -291,7 +291,7 @@ function consReporte() {
           tableData.push([
             result[i]['origen'],
             result[i]['id'],
-            result[i]['f_solicitado'],
+            result[i]['tarea'] || '',
             result[i]['fecha_inicio'],
             result[i]['fecha_terminada'],
             result[i]['cantidad_personas'],

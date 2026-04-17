@@ -19,11 +19,18 @@ class Ordenservicios extends CI_Model
             orden_servicio.comprobante,
             orden_servicio.fecha, 
             orden_servicio.id_ot,
+            orden_servicio.fechahorainicio,
+            orden_servicio.fechahorafin,
             orden_trabajo.descripcion AS descripcion_ot,
             orden_trabajo.case_id,
             equipos.codigo AS equipo,
-            equipos.id_equipo
-        ');
+            equipos.id_equipo,
+            tareas.descripcion AS tarea,
+            (SELECT GROUP_CONCAT(CONCAT(su.usrName, " ", su.usrLastName) SEPARATOR ", ") 
+             FROM asignausuario au 
+             INNER JOIN sisusers su ON au.usrId = su.usrId 
+             WHERE au.id_orden = orden_servicio.id_orden) AS recursos_humanos
+        ', FALSE);
         /*
         equipos.id_equipo,
         equipos.codigo,
@@ -34,6 +41,7 @@ class Ordenservicios extends CI_Model
         //TODO: ACA CAMBIE LA QUERY (se tomo id equipos de OT en vez de sol rep)
         $this->db->from('orden_servicio');
         $this->db->join('orden_trabajo', 'orden_servicio.id_ot = orden_trabajo.id_orden');
+        $this->db->join('tareas', 'tareas.id_tarea  = orden_trabajo.id_tarea', 'left');
         $this->db->join('equipos', 'orden_trabajo.id_equipo = equipos.id_equipo');
         $this->db->where('orden_servicio.id_empresa', $empresaId);
         $this->db->order_by('orden_servicio.id_orden', 'DESC');

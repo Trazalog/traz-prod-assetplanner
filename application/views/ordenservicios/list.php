@@ -30,11 +30,15 @@
             <thead>
               <tr>
                 <th>Acciones</th>
-                <th>Nº de Informe</th>
-                <th>Nº de OT</th>
-                <th>Descripción de OT</th>
+                <th style="width: 100px;">Nº Informe</th>
+                <th style="width: 100px;">Nº OT</th>
+                <th>Descripción OT</th>
+                <th style="min-width: 250px;">Tarea</th>
                 <th>Equipo</th>
                 <th>Fecha</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Fin</th>
+                <th>Recursos Humanos</th>
                 <th class="hidden">id equipo</th>
                 <th>Estado</th>
               </tr>
@@ -53,8 +57,12 @@
                   echo '<td>' . $a['id_orden'] . '</td>';
                   echo '<td>' . $a['id_ot'] . '</td>';
                   echo '<td>' . $a['descripcion_ot'] . '</td>';
+                  echo '<td>' . $a['tarea'] . '</td>';
                   echo '<td>' . $a['equipo'] . '</td>';
                   echo '<td>' . $a['fecha'] . '</td>';
+                  echo '<td>' . $a['fechahorainicio'] . '</td>';
+                  echo '<td>' . $a['fechahorafin'] . '</td>';
+                  echo '<td>' . (isset($a['recursos_humanos']) ? $a['recursos_humanos'] : '') . '</td>';
                   echo '<td class="hidden">' . $a['id_equipo'] . '</td>';
                   //echo '<td>'.($a['estado'] == 'C' ? '<small class="label pull-left bg-green">Curso</small>' :($a['estado'] == 'T' ? '<small class="label pull-left bg-blue">Terminado</small>' : '<small class="label pull-left bg-red">Solicitado</small>')).'</td>';
               
@@ -422,7 +430,7 @@
 
   $('#filtro_estado').on('change', function () {
     var val = $(this).val();
-    $('#tblorden').DataTable().column(7).search(val ? '^' + val + '$' : '', true, false).draw();
+    $('#tblorden').DataTable().column(11).search(val ? '^' + val + '$' : '', true, false).draw();
   });
 
   // Seleccionar todos

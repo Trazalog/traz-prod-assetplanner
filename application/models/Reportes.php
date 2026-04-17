@@ -52,7 +52,8 @@ class Reportes extends CI_Model {
     e.ubicacion,
     ot.id_orden,
     us.usrName AS asignado,
-    COUNT(DISTINCT au.usrId) AS cantidad_personas
+    COUNT(DISTINCT au.usrId) AS cantidad_personas,
+    t.descripcion AS tarea
     ");
 
     $this->db->from('solicitud_reparacion sr');
@@ -61,6 +62,7 @@ class Reportes extends CI_Model {
     $this->db->join('grupo g', 'e.id_grupo = g.id_grupo');
     $this->db->join('orden_trabajo ot', 'ot.id_solicitud = sr.id_solicitud', 'left');
     $this->db->join('sisusers us', 'us.usrId = ot.id_usuario_a', 'left');
+    $this->db->join('tareas t', 't.id_tarea = ot.id_tarea', 'left');
     $this->db->join('tbl_tipoordentrabajo tt', "tt.descripcion = 'Solicitud de servicio' AND tt.id = ot.tipo", 'left');
 
     //Cantidad de personas en informe de servicio
@@ -136,7 +138,8 @@ class Reportes extends CI_Model {
             e.ubicacion,
             ot.id_orden,
             us.usrName as asignado,
-            COUNT(DISTINCT au.usrId) AS cantidad_personas
+            COUNT(DISTINCT au.usrId) AS cantidad_personas,
+            t.descripcion AS tarea
         ");
 
         $this->db->from('preventivo p');
@@ -145,6 +148,7 @@ class Reportes extends CI_Model {
         $this->db->join('grupo g', 'e.id_grupo = g.id_grupo');
         $this->db->join('orden_trabajo ot', 'ot.id_solicitud = p.prevId', 'left');
         $this->db->join('sisusers us', 'us.usrId = ot.id_usuario_a', 'left');
+        $this->db->join('tareas t', 't.id_tarea = ot.id_tarea', 'left');
         //tipo preventivo
         $this->db->join('tbl_tipoordentrabajo tt', "tt.descripcion = 'Preventivo' AND tt.id = ot.tipo", 'left');
         $this->db->where('ot.tipo = tt.id');
@@ -217,7 +221,8 @@ class Reportes extends CI_Model {
             e.ubicacion,
             ot.id_orden,
             us.usrName AS asignado,
-            COUNT(DISTINCT au.usrId) AS cantidad_personas
+            COUNT(DISTINCT au.usrId) AS cantidad_personas,
+            t.descripcion AS tarea
         ");
 
         $this->db->from('tbl_back tb');
@@ -227,6 +232,7 @@ class Reportes extends CI_Model {
         $this->db->join('orden_trabajo ot', 'ot.id_solicitud = tb.backId', 'left');
         $this->db->join('tbl_tipoordentrabajo tt', "tt.descripcion = 'Backlog' AND tt.id = ot.tipo", 'left');
         $this->db->join('sisusers us', 'us.usrId = ot.id_usuario_a', 'left');
+        $this->db->join('tareas t', 't.id_tarea = ot.id_tarea', 'left');
 
         //Cantidad de personas en informe de servicio
         $this->db->join('orden_servicio os', 'os.id_ot = ot.id_orden', 'left');

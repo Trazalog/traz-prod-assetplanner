@@ -266,10 +266,7 @@
             </div>
           </div>
 
-          <div class="alert alert-danger alert-dismissable" id="errorRecursosVacios" style="display: none">
-            <h4><i class="icon fa fa-ban"></i> Error!</h4>
-            No se han agregado recursos. Por favor agregar los Recursos que participaron en esta tarea.
-          </div>
+
 
           <input type="hidden" class="id-Operario" id="id-Operario" value="">
           <div class="row">
@@ -809,16 +806,29 @@
         return;
       }
       // Validación de recursos humanos vacíos
-      var hayErrorRecursos = false;
       if( ! $('#tabModRecursos').DataTable().data().any() ) {
-          hayErrorRecursos = true;
-      }
-      if(hayErrorRecursos == true){
-        $('#errorRecursosVacios').fadeIn('slow');
-        activaTab('rrhh');
+        Swal.fire({
+          title: 'Recursos Humanos',
+          text: 'Ud. no ha cargado Recursos Humanos en el Informe, ¿Desea continuar de todas maneras?',
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#28a745',
+          cancelButtonColor: '#6c757d',
+          confirmButtonText: 'Sí, guardar',
+          cancelButtonText: 'No, ir a RRHH'
+        }).then(function(result) {
+          if (result.value) {
+            guardarInformeServicio();
+          } else {
+            activaTab('rrhh');
+          }
+        });
         return;
-      } 
-            
+      }
+      guardarInformeServicio();
+    }
+
+    function guardarInformeServicio() {
       var tarea = new Array(); 
       var j = 0;
       $("#tablalistareas tbody tr").each(function (index) {
@@ -1032,31 +1042,39 @@
     }
 
 // Función para validar fechas sin moment.js
+function parseFechaInforme(str) {
+  // Parseo manual de 'YYYY-MM-DD H:mm:ss' (H puede ser 1 o 2 dígitos)
+  if (!str) return null;
+  var m = str.match(/^(\d{4})-(\d{2})-(\d{2})\s+(\d{1,2}):(\d{2}):(\d{2})$/);
+  if (!m) return null;
+  return new Date(+m[1], +m[2]-1, +m[3], +m[4], +m[5], +m[6]);
+}
+
 function validarFechasInicioFin() {
   var fechaInicio = $("#fecha_inicio").val();
   var fechaFin = $("#fecha_fin").val();
   // Solo validar si ambos campos tienen valor
   if (fechaInicio !== '' && fechaFin !== '') {
-    // Convertir a objeto Date
-    var inicio = new Date(fechaInicio);
-    var fin = new Date(fechaFin);
+    var inicio = parseFechaInforme(fechaInicio);
+    var fin    = parseFechaInforme(fechaFin);
 
-    // Si la fecha de inicio es mayor o igual a la de fin, mostrar error
+    if (!inicio || !fin) {
+      return true; // no se puede parsear, se deja pasar (otro bloque lo detecta como vacío)
+    }
+    // La fecha/hora de inicio debe ser estrictamente menor a la de fin
     if (inicio >= fin) {
       $('#errorLecturas').fadeIn('slow');
       $('#errorLecturas').find('h4').text('¡Error!');
       $('#errorLecturas').find('.fecha-error').remove();
-      $('#errorLecturas').append('<div class="fecha-error">La fecha de inicio debe ser menor a la fecha de fin.</div>');
+      $('#errorLecturas').append('<div class="fecha-error">La fecha y hora de inicio debe ser menor a la fecha y hora de fin.</div>');
       activaTab('lecturaTab');
       return false;
     } else {
-      // Oculta el error si la validación es correcta
       $('#errorLecturas').fadeOut('slow');
       $('#errorLecturas').find('.fecha-error').remove();
       return true;
     }
   } else {
-    // Si falta alguna fecha, oculta el error
     $('#errorLecturas').fadeOut('slow');
     $('#errorLecturas').find('.fecha-error').remove();
     return true;

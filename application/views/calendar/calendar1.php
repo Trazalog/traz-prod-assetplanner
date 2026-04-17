@@ -24,6 +24,7 @@
 		<div class="box box-primary">
 			<div class="box-body">
 				<div class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left:10px;" title="Imprimir"></div>
+				<div class="fa fa-fw fa-file-excel-o text-light-blue" style="cursor: pointer; margin-left:10px;" title="Exportar a Excel" id="btnExportExcel"></div>
 				<button class="btn btn-link" title="Filtrar OT" onclick="openPanel()">
 					<i class="fa fa-fw fa-filter text-light-blue"></i>
 				</button>
@@ -370,6 +371,59 @@ ini_events($('#external-events div.external-event'));
 
 $(".fa-print").click(function(e) {
     $("#calendar").printArea();
+});
+
+// Exportar calendario a Excel
+$('#btnExportExcel').click(function() {
+    var events = $('#calendar').fullCalendar('clientEvents');
+    if (events.length === 0) {
+        alert('No hay eventos para exportar');
+        return;
+    }
+
+    // Cargar SheetJS si no está cargado
+    function doExport() {
+        var data = [];
+        events.forEach(function(ev) {
+            data.push({
+                'Nº OT': ev.id_orden || '',
+                'Equipo': ev.equipo || '',
+                'Descripción': ev.title || '',
+                'Inicio': ev.start ? ev.start.format('DD/MM/YYYY HH:mm') : '',
+                'Fin': ev.end ? ev.end.format('DD/MM/YYYY HH:mm') : '',
+                'Área': ev.area || '',
+                'Grupo': ev.grupo || '',
+                'Sector': ev.sector || '',
+                'Origen': ev.origen || ''
+            });
+        });
+
+        var ws = XLSX.utils.json_to_sheet(data);
+        var wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Calendario');
+
+        // Auto-ajustar ancho de columnas
+        var colWidths = Object.keys(data[0]).map(function(key) {
+            var maxLen = key.length;
+            data.forEach(function(row) {
+                var val = (row[key] || '').toString();
+                if (val.length > maxLen) maxLen = val.length;
+            });
+            return { wch: maxLen + 2 };
+        });
+        ws['!cols'] = colWidths;
+
+        XLSX.writeFile(wb, 'calendario_OT.xlsx');
+    }
+
+    if (typeof XLSX === 'undefined') {
+        var script = document.createElement('script');
+        script.src = 'https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js';
+        script.onload = doExport;
+        document.head.appendChild(script);
+    } else {
+        doExport();
+    }
 });
 
 //  Datatables listas
