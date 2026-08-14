@@ -9,7 +9,7 @@ Tablero de estado del trabajo v3 en ESTE repo (integración con traz-tools: alma
 ---
 
 **Workstream actual:** Requerimiento "asset consume ALM+PAN de tools" (cliente en el corto plazo) — adelanta la Etapa 5 del plan de migración.
-**Última actualización:** 2026-08-12 por Claude Code (F0: metodología y fundaciones).
+**Última actualización:** 2026-08-14 por Claude Code (F0 mergeada; F1 completada y en PR en traz-tools).
 
 ### Fases del plan y su estado
 
@@ -17,8 +17,8 @@ Tablero de estado del trabajo v3 en ESTE repo (integración con traz-tools: alma
 
 | Fase | Descripción | Repo donde se ejecuta | Clase | Estado | Rama / PR |
 |---|---|---|---|---|---|
-| F0 | Metodología y fundaciones: `develop-v3` creada, CLAUDE.md + CONTEXT-PACK + STATE, branch protection pendiente de configurar en GitHub (Settings → Branches, requiere PR + no bypass) | asset | 🟢 | **En PR** | `docs/e0-metodologia-v3` |
-| F1 | Sincronizar `ALMDataService` EI←MI (fix aislamiento + parametrización de `getArticulos2` y revisión de las demás queries divergentes) + crear query `getEmpresaByMysqlId` en `COREDataService` (ambas copias) + índice/unicidad de `empr_id_mysql` | **traz-tools** | 🟡 | Pendiente — **bloquea F3-F5** | — |
+| F0 | Metodología y fundaciones: `develop-v3` creada, CLAUDE.md + CONTEXT-PACK + STATE | asset | 🟢 | **Mergeada** (branch protection de `develop-v3` configurada por Rodolfo el 2026-08-14) | PR #322 |
+| F1 | Sincronizar `ALMDataService` EI←MI + `getEmpresaByMysqlId` en `COREDataService` (ambas copias) + migración formal de `empr_id_mysql` | **traz-tools** | 🟡 | **Completada, en PR (bloquea F3-F5 hasta el merge).** 84 queries idénticas en ambas copias; fix de aislamiento en las 3 queries de artículos verificado contra Postgres DEV (empresa 87: 7.534 → 4.532 de stock); lookup probado (match y no-match); `scripts/sql/2026-08-core-empresas-empr-id-mysql.sql` idempotente, **aplicación manual pendiente en TEST/PROD**; CAR del MI buildea con los fixes. El hardcode `empr_id = 1` de la copia EI quedó eliminado | traz-tools PR #426 (mergear después del #425) |
 | F2 | Checklist de setup por cliente: verificar vínculo `empr_id_mysql`, crear establecimiento + "Depósito \<empresa\>" + "Pañol \<empresa\>" en tools, cargar catálogo del cliente (Caleras: 32 artículos, 2 herramientas), registrar `empr_id`/`depo_id`/`pano_id` en config de asset. Documento autocontenido con DÓNDE se ejecuta cada paso | asset (doc) + manual | 🟢 | Pendiente | — |
 | F3 | Asset almacén → tools: inhabilitar menús de almacén en `sismenu`; models de almacén de SQL a REST (`REST.php` → `ALMDataService`); resolución de `empr_id` tools en sesión | asset | 🟡 | Pendiente — requiere F1 | — |
 | F4 | Asset herramientas → tools: ídem contra `PANDataservice`; autocompletes de herramientas en planes/OTs consumen REST; definir tratamiento de las 10 referencias históricas de Caleras en `tbl_otherramientas` (remapeo manual o histórico de solo lectura) | asset | 🟡 | Pendiente — requiere F1 | — |
@@ -27,9 +27,9 @@ Tablero de estado del trabajo v3 en ESTE repo (integración con traz-tools: alma
 
 ### Próxima acción
 
-1. Aprobar y mergear el PR de F0; configurar branch protection de `develop-v3` en GitHub (manual, Rodolfo).
-2. Arrancar F1 en `traz-tools` (es prerrequisito de todo lo demás): sincronización EI←MI de `ALMDataService` + `getEmpresaByMysqlId`. Sale de rama en traz-tools, PR a su `develop-v3`.
-3. En paralelo puede escribirse el checklist de F2 (doc, no bloquea ni se bloquea).
+1. Aprobar y mergear en `traz-tools`: **#425** (landeo del registro REQ-ASSET-ALM que quedó huérfano tras el merge de #424) y después **#426** (F1).
+2. Rodolfo: aplicar `scripts/sql/2026-08-core-empresas-empr-id-mysql.sql` a mano en TEST cuando corresponda (DEV ya verificado sin duplicados).
+3. Escribir el checklist de F2 (doc, no depende de F1) y arrancar F3 en este repo apenas #426 esté mergeado.
 
 ### Decisiones recientes (últimas 5)
 
@@ -43,6 +43,5 @@ Tablero de estado del trabajo v3 en ESTE repo (integración con traz-tools: alma
 
 ### Bloqueos
 
-- **F1 bloquea F3, F4 y F5.** Sin la sincronización EI←MI, asset consumiría queries con `empr_id=1` hardcodeado.
-- **Branch protection de `develop-v3` en este repo**: pendiente de configurar en GitHub (solo Rodolfo tiene admin).
-- Heredados de tools (informativos): `empr_id_mysql` sin migración formal; credenciales legacy en configs de ambos repos pendientes de rotación (inventariadas en el plan de migración).
+- **F1 en PR (traz-tools #426) — F3-F5 siguen bloqueadas hasta su merge.** El hardcode `empr_id=1` ya está corregido en la rama.
+- Heredados de tools (informativos): la migración formal de `empr_id_mysql` ya existe como script (F1) pero falta aplicarla en TEST/PROD; credenciales legacy en configs de ambos repos pendientes de rotación (inventariadas en el plan de migración).
