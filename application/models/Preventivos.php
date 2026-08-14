@@ -257,7 +257,7 @@ class Preventivos extends CI_Model
 		}
 		$a = $map[$id];
 		return array((object) array(
-			'artId'          => (int) $a['id'],
+			'artId'          => (int) $a['arti_id'],
 			'artBarCode'     => $a['barcode'],
 			'artDescription' => $a['descripcion'],
 			'artCoste'       => $a['costo'],

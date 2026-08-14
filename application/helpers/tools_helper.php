@@ -93,10 +93,12 @@ if (!function_exists('tools_config')) {
 
 if (!function_exists('tools_articulos')) {
     /**
-     * Catálogo de artículos de tools para la empresa logueada (getArticulos2).
-     * Cache por request (static). Devuelve array de arrays asociativos con las
-     * claves del DataService: id, barcode, titulo, descripcion, costo,
-     * cantidad_caja, punto_pedido, estado, unidad_medida, es_loteado, stock.
+     * Catálogo de artículos de tools para la empresa logueada (getArticulos,
+     * vía /articulos/empresa/{empr_id} — path SIN duplicados; /articulos/{empr_id}
+     * está definido dos veces en el DataService y el que responde depende del
+     * orden de los resources). Cache por request (static). Claves devueltas:
+     * arti_id, barcode, titulo, descripcion, costo, cantidad_caja, punto_pedido,
+     * estado, unidad_medida, es_loteado, batch_id, stock.
      *
      * @return array
      */
@@ -114,20 +116,20 @@ if (!function_exists('tools_articulos')) {
             return $cache = array();
         }
 
-        $aux  = $ci->rest->callAPI('GET', REST_TOOLS_ALM . '/articulos/' . $emprId);
+        $aux  = $ci->rest->callAPI('GET', REST_TOOLS_ALM . '/articulos/empresa/' . $emprId);
         $resp = json_decode($aux['data'], true);
 
-        if (empty($resp['materias']['materia'])) {
+        if (empty($resp['articulos']['articulo'])) {
             return $cache = array();
         }
 
-        $materias = $resp['materias']['materia'];
+        $articulos = $resp['articulos']['articulo'];
         // El DataService devuelve un objeto (no una lista) cuando hay una sola fila.
-        if (isset($materias['id'])) {
-            $materias = array($materias);
+        if (isset($articulos['arti_id'])) {
+            $articulos = array($articulos);
         }
 
-        return $cache = $materias;
+        return $cache = $articulos;
     }
 }
 
@@ -141,7 +143,7 @@ if (!function_exists('tools_articulos_map')) {
     {
         $map = array();
         foreach (tools_articulos() as $a) {
-            $map[(int) $a['id']] = $a;
+            $map[(int) $a['arti_id']] = $a;
         }
         return $map;
     }
@@ -162,7 +164,7 @@ if (!function_exists('tools_articulos_autocomplete')) {
                 continue;
             }
             $out[] = (object) array(
-                'value'  => (int) $a['id'],
+                'value'  => (int) $a['arti_id'],
                 'codigo' => $a['barcode'],
                 'label'  => $a['descripcion'],
             );

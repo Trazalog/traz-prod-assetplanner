@@ -97,7 +97,7 @@ El depósito y el pañol cuelgan de un establecimiento (`prd.establecimientos`),
 **Dónde: terminal con `curl` contra el WSO2 del ambiente.**
 
 ```bash
-curl -s -X POST http://10.142.0.13:8280/services/ALMDataService/establecimientos -H "Content-Type: application/json" -d '{"nombre":"<NombreEmpresa>","longitud":"","latitud":"","calles":"","altura":"","localidad":"","pais":"Argentina","usuario":"setup","empr_id":"<EMPR_ID>"}'
+curl -s -X POST http://10.142.0.13:8280/services/ALMDataService/establecimientos -H "Content-Type: application/json" -d '{"_postestablecimientos":{"nombre":"<NombreEmpresa>","longitud":"","latitud":"","calles":"","altura":"","localidad":"","pais":"Argentina","usuario":"setup","empr_id":"<EMPR_ID>"}}'
 ```
 
 **Verificación** (psql): `SELECT esta_id, nombre FROM prd.establecimientos WHERE empr_id = <EMPR_ID>;`
@@ -137,7 +137,7 @@ El pañol no tiene ABM en pantalla — se crea por REST contra `PANDataservice`.
 **Dónde: terminal con `curl` contra el WSO2 del ambiente.**
 
 ```bash
-curl -s -X POST http://10.142.0.13:8280/services/PANDataservice/panol -H "Content-Type: application/json" -d '{"descripcion":"Pañol <NombreEmpresa>","usuario_app":"setup","empr_id":"<EMPR_ID>","esta_id":"<ESTA_ID>","nombre":"Pañol <NombreEmpresa>"}'
+curl -s -X POST http://10.142.0.13:8280/services/PANDataservice/panol -H "Content-Type: application/json" -d '{"_postpanol":{"descripcion":"Pañol <NombreEmpresa>","usuario_app":"setup","empr_id":"<EMPR_ID>","esta_id":"<ESTA_ID>","nombre":"Pañol <NombreEmpresa>"}}'
 ```
 
 Devuelve `{"respuesta":{"pano_id":"<PANO_ID>"}}`.
@@ -155,9 +155,9 @@ Los tres ids quedan guardados en `core.tablas` (tabla genérica clave-valor de t
 **Dónde: terminal con `curl` contra el WSO2 del ambiente.** Un POST por id:
 
 ```bash
-curl -s -X POST http://10.142.0.13:8280/services/COREDataService/tablas -H "Content-Type: application/json" -d '{"tabla":"ASSET","valor":"DEPO","valor2":"","valor3":"","descripcion":"<DEPO_ID>","empr_id":"<EMPR_ID>"}'
-curl -s -X POST http://10.142.0.13:8280/services/COREDataService/tablas -H "Content-Type: application/json" -d '{"tabla":"ASSET","valor":"PANO","valor2":"","valor3":"","descripcion":"<PANO_ID>","empr_id":"<EMPR_ID>"}'
-curl -s -X POST http://10.142.0.13:8280/services/COREDataService/tablas -H "Content-Type: application/json" -d '{"tabla":"ASSET","valor":"ESTA","valor2":"","valor3":"","descripcion":"<ESTA_ID>","empr_id":"<EMPR_ID>"}'
+curl -s -X POST http://10.142.0.13:8280/services/COREDataService/tablas -H "Content-Type: application/json" -d '{"_posttablas":{"tabla":"ASSET","valor":"DEPO","valor2":"","valor3":"","descripcion":"<DEPO_ID>","empr_id":"<EMPR_ID>"}}'
+curl -s -X POST http://10.142.0.13:8280/services/COREDataService/tablas -H "Content-Type: application/json" -d '{"_posttablas":{"tabla":"ASSET","valor":"PANO","valor2":"","valor3":"","descripcion":"<PANO_ID>","empr_id":"<EMPR_ID>"}}'
+curl -s -X POST http://10.142.0.13:8280/services/COREDataService/tablas -H "Content-Type: application/json" -d '{"_posttablas":{"tabla":"ASSET","valor":"ESTA","valor2":"","valor3":"","descripcion":"<ESTA_ID>","empr_id":"<EMPR_ID>"}}'
 ```
 
 **Verificación** — leer la config como la va a leer asset (`getTablaValorXEmp`):
@@ -170,6 +170,8 @@ curl -s http://10.142.0.13:8280/services/COREDataService/tabla/ASSET/valor/PANO/
 Cada uno debe devolver el id guardado en `descripcion`.
 
 > La clave `ASSET` + `DEPO`/`PANO`/`ESTA` es la convención que asume F3. Si se cambia acá, cambiarla también en el código de F3.
+>
+> Nota (smoke 2026-08-14): los POST a DataServices necesitan la envoltura `_post<path>` en el body (sin ella el DSS responde `Value type miss match`). El round-trip completo quedó verificado en DEV con la empresa de prueba 1 (fila `1-ASSETDEPO` → depósito 2000, se dejó cargada para las pruebas de F6).
 
 ---
 
