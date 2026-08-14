@@ -213,3 +213,153 @@ if (!function_exists('tools_merge_articulos')) {
         return $rows;
     }
 }
+
+if (!function_exists('tools_herramientas')) {
+    /**
+     * Catálogo de herramientas de tools (pañol) para la empresa logueada
+     * (PANDataservice herramientasGet, vía /herramientas/empresa/{empr_id}).
+     * Cache por request (static). Claves devueltas: herr_id, codigo, marca
+     * (nombre resuelto desde core.tablas), marca_id, modelo, tipo, descripcion,
+     * pano_id, estado, pan_descrip.
+     *
+     * @return array
+     */
+    function tools_herramientas()
+    {
+        static $cache = null;
+        if ($cache !== null) {
+            return $cache;
+        }
+
+        $ci =& get_instance();
+
+        $emprId = tools_empr_id();
+        if ($emprId === null) {
+            return $cache = array();
+        }
+
+        $aux  = $ci->rest->callAPI('GET', REST_TOOLS_PAN . '/herramientas/empresa/' . $emprId);
+        $resp = json_decode($aux['data'], true);
+
+        if (empty($resp['herramientas']['herramienta'])) {
+            return $cache = array();
+        }
+
+        $herr = $resp['herramientas']['herramienta'];
+        // El DataService devuelve un objeto (no una lista) cuando hay una sola fila.
+        if (isset($herr['herr_id'])) {
+            $herr = array($herr);
+        }
+
+        return $cache = $herr;
+    }
+}
+
+if (!function_exists('tools_herramientas_map')) {
+    /**
+     * Catálogo de herramientas indexado por herr_id.
+     *
+     * @return array [herr_id => herramienta]
+     */
+    function tools_herramientas_map()
+    {
+        $map = array();
+        foreach (tools_herramientas() as $h) {
+            $map[(int) $h['herr_id']] = $h;
+        }
+        return $map;
+    }
+}
+
+if (!function_exists('tools_merge_herramientas')) {
+    /**
+     * Completa filas locales (tbl_preventivoherramientas / tbl_predictivoherramientas /
+     * tbl_backlogherramientas / tbl_otherramientas) con los datos del catálogo del
+     * pañol de tools, conservando las claves que las vistas de asset esperan
+     * (herrcodigo, herrmarca, herrdescrip).
+     *
+     * @param  array $rows filas con al menos ['herrId' => ...]
+     * @return array mismas filas + herrcodigo / herrmarca / herrdescrip
+     */
+    function tools_merge_herramientas($rows)
+    {
+        if (empty($rows)) {
+            return array();
+        }
+
+        $map = tools_herramientas_map();
+
+        foreach ($rows as &$r) {
+            $herrId = isset($r['herrId']) ? (int) $r['herrId'] : 0;
+            if (isset($map[$herrId])) {
+                $r['herrcodigo'] = $map[$herrId]['codigo'];
+                $r['herrmarca']  = $map[$herrId]['marca'];
+                $r['herrdescrip'] = $map[$herrId]['descripcion'];
+            } else {
+                // Referencia histórica a un id que no existe en el pañol de tools
+                // (dato anterior al setup del cliente). Se muestra, no se oculta.
+                $r['herrcodigo'] = '';
+                $r['herrmarca']  = '';
+                $r['herrdescrip'] = '(herramienta ' . $herrId . ' no disponible en tools)';
+            }
+        }
+        unset($r);
+
+        return $rows;
+    }
+}
+
+if (!function_exists('tools_herramientas_autocomplete')) {
+    /**
+     * Catálogo de herramientas con el shape del autocomplete de asset
+     * (reemplaza getHerramientasB): value / codigo / marca / label.
+     *
+     * @return array de arrays asociativos
+     */
+    function tools_herramientas_autocomplete()
+    {
+        $out = array();
+        foreach (tools_herramientas() as $h) {
+            if (isset($h['estado']) && $h['estado'] === 'AN') {
+                continue;
+            }
+            $out[] = array(
+                'value'  => (int) $h['herr_id'],
+                'codigo' => $h['codigo'],
+                'marca'  => $h['marca'],
+                'label'  => $h['descripcion'],
+            );
+        }
+        usort($out, function ($x, $y) {
+            return strcasecmp($x['label'], $y['label']);
+        });
+        return $out;
+    }
+}
+
+if (!function_exists('tools_herramientas_full')) {
+    /**
+     * Catálogo completo con los nombres de columna de la tabla `herramientas`
+     * de asset (para los consumidores que esperaban result() del modelo viejo).
+     *
+     * @return array de objetos con herrId/herrcodigo/herrmarca/herrdescrip/...
+     */
+    function tools_herramientas_full()
+    {
+        $out = array();
+        foreach (tools_herramientas() as $h) {
+            $out[] = (object) array(
+                'herrId'      => (int) $h['herr_id'],
+                'herrcodigo'  => $h['codigo'],
+                'herrmarca'   => $h['marca'],
+                'modid'       => isset($h['marca_id']) ? $h['marca_id'] : null,
+                'tipoid'      => isset($h['tipo']) ? $h['tipo'] : null,
+                'equip_estad' => isset($h['estado']) ? $h['estado'] : null,
+                'herrdescrip' => $h['descripcion'],
+                'depositoId'  => isset($h['pano_id']) ? $h['pano_id'] : null,
+                'id_empresa'  => tools_empr_id(),
+            );
+        }
+        return $out;
+    }
+}
