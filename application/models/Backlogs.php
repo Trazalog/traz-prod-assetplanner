@@ -219,31 +219,16 @@ class Backlogs extends CI_Model
 		}
 	}
 	// Trae insumos por id de preventivo para Editar
-	function getBacklogInsumos($id){
-			
-		$userdata = $this->session->userdata('user_data');
-		$empId = $userdata[0]['id_empresa']; 
-
-		$this->db->select('tbl_backloginsumos.id,
-												tbl_backloginsumos.cantidad,
-												articles.artBarCode,
-												articles.artId,
-												articles.artDescription,
-												articles.id_empresa');                            
-		$this->db->from('tbl_backloginsumos');
-		$this->db->join('articles', 'articles.artId = tbl_backloginsumos.artId');   
-		$this->db->where('tbl_backloginsumos.backId', $id);        
-		$this->db->where('articles.id_empresa', $empId);
-		$query= $this->db->get(); 
-
-		if( $query->num_rows() > 0)
-		{
-			return $query->result_array();
-		}
-		else {
-			return 0;
-		}
-	}
+    function getBacklogInsumos($id){
+        log_message('DEBUG', "#TRAZA | ASSET | Backlogs | getBacklogInsumos()");
+        // F3 (REQ-ASSET-ALM): el detalle local se conserva en MariaDB; los datos
+        // del articulo salen del catalogo de tools via REST (tools_helper).
+        $this->load->helper('tools');
+        $this->db->select('id, cantidad, artId');
+        $this->db->from('tbl_backloginsumos');
+        $this->db->where('backId', $id);
+        return tools_merge_articulos($this->db->get()->result_array());
+    }
   // Actualiza edicion de Backlog
  	function editar_backlogs($datos,$id_back){
  		$this->db->where('backId', $id_back);

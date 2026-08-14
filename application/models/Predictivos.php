@@ -224,29 +224,14 @@ function updateAdjunto($adjunto,$ultimoId){
 
     // Trae insumos por id de preventivo para Editar
     function getPredictivoInsumos($id){
-        
-        $userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa']; 
-
-        $this->db->select('tbl_predictivoinsumos.id,
-                            tbl_predictivoinsumos.cantidad,
-                            articles.artBarCode,
-                            articles.artId,
-                            articles.artDescription,
-                            articles.id_empresa');                            
+        log_message('DEBUG', "#TRAZA | ASSET | Predictivos | getPredictivoInsumos()");
+        // F3 (REQ-ASSET-ALM): el detalle local se conserva en MariaDB; los datos
+        // del articulo salen del catalogo de tools via REST (tools_helper).
+        $this->load->helper('tools');
+        $this->db->select('id, cantidad, artId');
         $this->db->from('tbl_predictivoinsumos');
-        $this->db->join('articles', 'articles.artId = tbl_predictivoinsumos.artId');   
-        $this->db->where('tbl_predictivoinsumos.predId', $id);        
-        $this->db->where('articles.id_empresa', $empId);
-        $query= $this->db->get(); 
-
-        if( $query->num_rows() > 0)
-        {
-          return $query->result_array();
-        }
-        else {
-          return 0;
-        }
+        $this->db->where('predId', $id);
+        return tools_merge_articulos($this->db->get()->result_array());
     }
 
 	

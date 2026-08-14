@@ -194,6 +194,13 @@ define('REST_MAN', 'http://10.142.0.13:8280/services/MANDataService/');
 define('HOST', 'http://10.142.0.13:8280');
 define('REST_API_BPM', HOST.'/tools/bpm/proceso/instancia');
 define('REST_PRO', HOST.'/services/PRODataService');
+
+#INTEGRACION TRAZ-TOOLS (REQ-ASSET-ALM) — hoy es el mismo WSO2 del ambiente (HOST);
+#si tools pasa a otro host/MI, ajustar solo HOST_TOOLS.
+define('HOST_TOOLS', HOST);
+define('REST_TOOLS_CORE', HOST_TOOLS.'/services/COREDataService');
+define('REST_TOOLS_ALM', HOST_TOOLS.'/services/ALMDataService');
+define('REST_TOOLS_PAN', HOST_TOOLS.'/services/PANDataservice');
 /*
 |--------------------------------------------------------------------------
 | REPORTES
