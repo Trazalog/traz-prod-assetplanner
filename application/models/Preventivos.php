@@ -236,42 +236,35 @@ class Preventivos extends CI_Model
 
 	//Trae insumos (articles) por empresa logueada
 	function getinsumo(){
-		$userdata = $this->session->userdata('user_data');
-			$empId = $userdata[0]['id_empresa'];
-			$this->db->select('articles.artId AS value, 
-												articles.artBarCode AS codigo,
-												articles.artDescription AS label');
-			$this->db->from('articles');      
-			$this->db->where('articles.id_empresa', $empId);
-			$this->db->where('articles.artEstado !=', 'AN');
-			$this->db->order_by('label', 'ASC');
-			$query = $this->db->get();		
-		if($query->num_rows()>0){
-			return $query->result();
-		}
-		else{
-			return false;
-		}
+		log_message('DEBUG', "#TRAZA | ASSET | Preventivos | getinsumo()");
+		// F3 (REQ-ASSET-ALM): el catalogo de articulos vive en tools, no en `articles`.
+		$this->load->helper('tools');
+		return tools_articulos_autocomplete();
 	}
 
 	//Trae insumo por id
 	function traerinsumo($data = null){
-		$id = $data['id_insumo'];
-		$userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa']; 
-
-        $this->db->select('articles.*');
-    	$this->db->from('articles');    	
-    	$this->db->where('articles.artId', $id);    	
-    	$this->db->where('articles.id_empresa', $empId);
-
-    	$query= $this->db->get();
-    	if($query->num_rows()>0){
-                return $query->result();
-       	}
-        else{
-                return false;
-        }	
+		log_message('DEBUG', "#TRAZA | ASSET | Preventivos | traerinsumo()");
+		// F3 (REQ-ASSET-ALM): el articulo se resuelve contra el catalogo de tools.
+		if ($data == null || empty($data['id_insumo'])) {
+			return false;
+		}
+		$this->load->helper('tools');
+		$map = tools_articulos_map();
+		$id  = (int) $data['id_insumo'];
+		if (!isset($map[$id])) {
+			return false;
+		}
+		$a = $map[$id];
+		return array((object) array(
+			'artId'          => (int) $a['id'],
+			'artBarCode'     => $a['barcode'],
+			'artDescription' => $a['descripcion'],
+			'artCoste'       => $a['costo'],
+			'punto_pedido'   => $a['punto_pedido'],
+			'unidadmedida'   => $a['unidad_medida'],
+			'id_empresa'     => tools_empr_id(),
+		));
 	}
 
 	// Guarda Preventivo 
@@ -381,29 +374,14 @@ class Preventivos extends CI_Model
 
     // Trae insumos por id de preventivo para Editar
     function getPreventivoInsumos($id){
-        
-        $userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa']; 
-
-        $this->db->select('tbl_preventivoinsumos.id,
-                            tbl_preventivoinsumos.cantidad,
-                            articles.artBarCode,
-                            articles.artId,
-                            articles.artDescription,
-                            articles.id_empresa');                            
+        log_message('DEBUG', "#TRAZA | ASSET | Preventivos | getPreventivoInsumos()");
+        // F3 (REQ-ASSET-ALM): el detalle local se conserva en MariaDB; los datos
+        // del articulo salen del catalogo de tools via REST (tools_helper).
+        $this->load->helper('tools');
+        $this->db->select('id, cantidad, artId');
         $this->db->from('tbl_preventivoinsumos');
-        $this->db->join('articles', 'articles.artId = tbl_preventivoinsumos.artId');   
-        $this->db->where('tbl_preventivoinsumos.prevId', $id);        
-        $this->db->where('articles.id_empresa', $empId);
-        $query= $this->db->get(); 
-
-        if( $query->num_rows() > 0)
-        {
-          return $query->result_array();
-        }
-        else {
-          return 0;
-        }
+        $this->db->where('prevId', $id);
+        return tools_merge_articulos($this->db->get()->result_array());
     }
 
     // Guarda edicion de Preventivo 

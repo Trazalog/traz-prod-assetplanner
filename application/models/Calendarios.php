@@ -894,31 +894,16 @@ class Calendarios extends CI_Model {
             }
         }   
         // Trae insumos por id de preventivo para Editar
-        function getBacklogInsumos($id){
-                
-            $userdata = $this->session->userdata('user_data');
-            $empId = $userdata[0]['id_empresa']; 
-
-            $this->db->select('tbl_backloginsumos.id,
-                                                    tbl_backloginsumos.cantidad,
-                                                    articles.artBarCode,
-                                                    articles.artId,
-                                                    articles.artDescription,
-                                                    articles.id_empresa');                            
-            $this->db->from('tbl_backloginsumos');
-            $this->db->join('articles', 'articles.artId = tbl_backloginsumos.artId');   
-            $this->db->where('tbl_backloginsumos.backId', $id);        
-            $this->db->where('articles.id_empresa', $empId);
-            $query= $this->db->get(); 
-
-            if( $query->num_rows() > 0)
-            {
-                return $query->result_array();
-            }
-            else {
-                return 0;
-            }
-        }
+    function getBacklogInsumos($id){
+        log_message('DEBUG', "#TRAZA | ASSET | Calendarios | getBacklogInsumos()");
+        // F3 (REQ-ASSET-ALM): el detalle local se conserva en MariaDB; los datos
+        // del articulo salen del catalogo de tools via REST (tools_helper).
+        $this->load->helper('tools');
+        $this->db->select('id, cantidad, artId');
+        $this->db->from('tbl_backloginsumos');
+        $this->db->where('backId', $id);
+        return tools_merge_articulos($this->db->get()->result_array());
+    }
 
 
 
@@ -965,30 +950,15 @@ class Calendarios extends CI_Model {
         }
         // Trae insumos por id de preventivo para Editar
     function getPredictivoInsumos($id){
-        
-            $userdata = $this->session->userdata('user_data');
-            $empId = $userdata[0]['id_empresa']; 
-
-            $this->db->select('tbl_predictivoinsumos.id,
-                                                    tbl_predictivoinsumos.cantidad,
-                                                    articles.artBarCode,
-                                                    articles.artId,
-                                                    articles.artDescription,
-                                                    articles.id_empresa');                            
-            $this->db->from('tbl_predictivoinsumos');
-            $this->db->join('articles', 'articles.artId = tbl_predictivoinsumos.artId');   
-            $this->db->where('tbl_predictivoinsumos.predId', $id);        
-            $this->db->where('articles.id_empresa', $empId);
-            $query= $this->db->get(); 
-
-            if( $query->num_rows() > 0)
-            {
-                return $query->result_array();
-            }
-            else {
-                return 0;
-            }
-        }
+        log_message('DEBUG', "#TRAZA | ASSET | Calendarios | getPredictivoInsumos()");
+        // F3 (REQ-ASSET-ALM): el detalle local se conserva en MariaDB; los datos
+        // del articulo salen del catalogo de tools via REST (tools_helper).
+        $this->load->helper('tools');
+        $this->db->select('id, cantidad, artId');
+        $this->db->from('tbl_predictivoinsumos');
+        $this->db->where('predId', $id);
+        return tools_merge_articulos($this->db->get()->result_array());
+    }
         // Guarda el bacht de datos de herramientas 
         function insertOTHerram($idOT,$herra){
 
@@ -1056,31 +1026,16 @@ class Calendarios extends CI_Model {
             }
         }   
         // Trae insumos por id de preventivo para Editar
-        function getPreventivoInsumos($id){
-                
-            $userdata = $this->session->userdata('user_data');
-            $empId = $userdata[0]['id_empresa']; 
-
-            $this->db->select('tbl_preventivoinsumos.id,
-                                                    tbl_preventivoinsumos.cantidad,
-                                                    articles.artBarCode,
-                                                    articles.artId,
-                                                    articles.artDescription,
-                                                    articles.id_empresa');                            
-            $this->db->from('tbl_preventivoinsumos');
-            $this->db->join('articles', 'articles.artId = tbl_preventivoinsumos.artId');   
-            $this->db->where('tbl_preventivoinsumos.prevId', $id);        
-            $this->db->where('articles.id_empresa', $empId);
-            $query= $this->db->get(); 
-
-            if( $query->num_rows() > 0)
-            {
-                return $query->result_array();
-            }
-            else {
-                return 0;
-            }
-        }
+    function getPreventivoInsumos($id){
+        log_message('DEBUG', "#TRAZA | ASSET | Calendarios | getPreventivoInsumos()");
+        // F3 (REQ-ASSET-ALM): el detalle local se conserva en MariaDB; los datos
+        // del articulo salen del catalogo de tools via REST (tools_helper).
+        $this->load->helper('tools');
+        $this->db->select('id, cantidad, artId');
+        $this->db->from('tbl_preventivoinsumos');
+        $this->db->where('prevId', $id);
+        return tools_merge_articulos($this->db->get()->result_array());
+    }
     
 
         /**
