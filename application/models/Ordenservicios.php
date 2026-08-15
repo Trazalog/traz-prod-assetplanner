@@ -472,6 +472,12 @@ class Ordenservicios extends CI_Model
                 $detalles = array($detalles);
             }
             foreach ($detalles as $d) {
+                // Consumo real (mejora): el detalle del pedido trae la cantidad
+                // pedida y el `resto` pendiente de entregar. Lo entregado (el
+                // consumo real) es pedido - resto.
+                $pedido    = (float) $d['cantidad'];
+                $pendiente = isset($d['resto']) ? (float) $d['resto'] : $pedido;
+                $entregado = $pedido - $pendiente;
                 $out[] = array(
                     'pema_id'     => $p['pema_id'],
                     'ortr_id'     => $p['ortr_id'],
@@ -480,6 +486,9 @@ class Ordenservicios extends CI_Model
                     'fecha'       => $p['fecha'],
                     'estado'      => $p['estado'],
                     'cantidad'    => $d['cantidad'],
+                    'pedido'      => $pedido,
+                    'entregado'   => $entregado,
+                    'pendiente'   => $pendiente,
                 );
             }
         }
