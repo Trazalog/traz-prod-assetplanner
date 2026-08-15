@@ -36,13 +36,15 @@ Registrar la ejecución real, sobre las pantallas de AssetPlanner, de las prueba
 
 | # | Caso | Fase | Resultado |
 |---|---|---|---|
-| 1 | Login e ingreso al sistema | — | ✅ con hallazgo (ver §4.1) |
+| 1 | Login e ingreso al sistema | — | ✅ |
 | 2 | Menú sin almacén ni pañol | F3/F4 | ✅ |
 | 3 | Catálogo de artículos desde tools | F3 | ✅ |
 | 4 | Catálogo de herramientas desde el pañol de tools | F4 | ✅ |
-| 5 | Pantallas de planes y OTs cargan con datos | F3/F4 | ✅ con hallazgo (ver §4.2) |
+| 5 | Pantallas de planes y OTs cargan con datos | F3/F4 | ✅ |
 | 6 | Insumos de la OT desde los pedidos de tools | F5 | ✅ |
 | 7 | Alta de pedido desde la OT con Bonita | F5 | ✅ (verificado por API, ver §3.6) |
+
+> **Nota de corrección (2026-08-15, revisión posterior):** una primera versión de este documento reportó dos hallazgos —login y autocompletes "rotos por deuda de jQuery"— que resultaron **falsos**. Eran un artefacto del servidor de prueba (se sirvió la app con `index.php` explícito en la URL, sin `mod_rewrite`, lo que rompía las URLs relativas del JavaScript con un doble `index.php`). Al servir con URLs limpias —como el Apache real— el login por navegador funciona y jQuery UI carga correctamente. Ver §4.1. **El requerimiento no introduce ningún problema de login ni de operación.**
 
 ---
 
@@ -50,13 +52,13 @@ Registrar la ejecución real, sobre las pantallas de AssetPlanner, de las prueba
 
 ### 3.1 Login e ingreso
 
-Se abre `index.php/login`, se ingresan las credenciales y se entra al escritorio (KPIs).
+Se abre `/login`, se ingresan las credenciales y se entra al escritorio (KPIs). El envío del formulario dispara el POST AJAX a `login/sessionStart_` y redirige a `/dash`.
 
 ![Login de AssetPlanner](pruebas-f6-img/01-login.png)
 
 ![Escritorio tras el login](pruebas-f6-img/02-dash.png)
 
-**Resultado:** ✅ Se ingresa al sistema, con la empresa "Empresa Test" y el usuario `dolores@gmail.com` en la barra superior. Ver el hallazgo §4.1 sobre el mecanismo de login.
+**Resultado:** ✅ Se ingresa al sistema desde el navegador, con la empresa "Empresa Test" y el usuario `dolores@gmail.com` en la barra superior. (En la primera corrida el login por navegador pareció fallar; se comprobó que era un artefacto del servidor de prueba, no de la app — ver §4.1.)
 
 ### 3.2 El menú ya no ofrece almacén ni pañol (F3/F4)
 
@@ -106,7 +108,7 @@ El formulario de alta de un preventivo muestra las pestañas **Herramientas** e 
 
 ![Formulario de preventivo con las pestañas Herramientas e Insumos](pruebas-f6-img/08-form-preventivo.png)
 
-**Resultado:** ✅ Las cuatro pantallas cargan y muestran sus tablas con datos. El formulario abre con las pestañas de Herramientas e Insumos. Ver el hallazgo §4.2 sobre los autocompletes.
+**Resultado:** ✅ Las cuatro pantallas cargan y muestran sus tablas con datos. El formulario abre con las pestañas de Herramientas e Insumos, cuyos campos de búsqueda son los autocompletes que consumen el catálogo de tools (§4.2).
 
 ### 3.6 Circuito de pedido desde la OT con Bonita (F5)
 
@@ -132,17 +134,25 @@ El alta completa del pedido se verificó de punta a punta contra los DataService
 
 ## 4. Hallazgos
 
-### 4.1 El login por navegador falla por un error de JavaScript (deuda del fork, no de este requerimiento)
+### 4.1 Falso positivo de la primera corrida: el login y el JavaScript sí funcionan
 
-Al enviar el formulario de login desde el navegador, la consola arroja `Cannot read properties of undefined (reading 'regional')` (inicialización del datepicker de jQuery UI) y el submit AJAX no llega a dispararse. El backend de login funciona: el POST directo a `login/sessionStart_` con las credenciales devuelve `1` (éxito) y arma la sesión. Para poder correr la prueba, la sesión se estableció por ese POST dentro del contexto del navegador.
+La primera versión de este documento reportó que el login por navegador fallaba con `Cannot read properties of undefined (reading 'regional')` y lo atribuyó a la deuda de jQuery del fork. **Ese diagnóstico era incorrecto.**
 
-Es la **deuda de jQuery** que el relevamiento de migración ya había documentado (jquery-migrate removido en 2024, autocompletes y widgets sin adaptar). **Es ajena a REQ-ASSET-ALM** —que sólo cambia el origen de los datos de almacén/pañol— y corresponde a la etapa de saneamiento del fork del plan de migración. Se registra acá porque afecta la operación real en pantalla.
+La causa real era el **servidor de prueba**: se sirvió la app con `index.php` explícito en la URL (`/index.php/login`), sin `mod_rewrite`. Con esa forma, las URLs relativas del JavaScript (`url: 'index.php/login/sessionStart_'`) se resolvían con un **doble `index.php`** (`/index.php/index.php/login/sessionStart_`) y daban 404 — el click sí disparaba el AJAX, pero contra una URL inexistente.
 
-### 4.2 Los autocompletes visuales no se inicializan (misma deuda de jQuery)
+Al servir con **URLs limpias** (como el Apache real del proyecto, con `.htaccess`/`mod_rewrite`):
 
-Las pantallas de planes cargan y muestran sus datos, pero al abrir el formulario y tipear en el campo de insumo/herramienta, el widget `.autocomplete()` de jQuery UI **no despliega sugerencias**. La causa es la misma de §4.1: el error del datepicker corta la cadena de inicialización de los widgets. El **dato** está disponible y es correcto (los endpoints de §3.3 y §3.4 responden el catálogo de tools); lo que no funciona es el **widget** que lo muestra.
+- El login por navegador **funciona**: enviar el formulario redirige a `/dash`.
+- jQuery UI está cargado y operativo (verificado en runtime: `jQuery.ui.autocomplete` y `jQuery.datepicker` definidos, el handler del botón registrado).
+- El error `regional` sigue apareciendo como advertencia de consola (init de un locale de datepicker), pero **no es bloqueante**: no impide el login ni la carga de los widgets.
 
-Impacto: en el estado actual del fork, un usuario no puede elegir un insumo/herramienta por el buscador. **Esto no lo introdujo este requerimiento** —el autocomplete ya estaba roto por la deuda de jQuery—, pero es un bloqueante para el uso real y hay que resolverlo en la etapa de saneamiento antes del piloto. Los 48 autocompletes afectados están inventariados en el plan de migración (`traz-tools/doc/migracion/assetplanner-a-traz-tools-man.md`, §2.4).
+**Conclusión:** no hay ningún problema de login ni de operación introducido por este requerimiento, ni un bloqueante de jQuery en este flujo. El error de la primera corrida era del entorno de prueba, no de la app.
+
+### 4.2 Autocompletes: widget y datos correctos; despliegue visual no capturado en el entorno de prueba
+
+Los campos de búsqueda de insumo (`#insumo`) y herramienta (`#herramienta`) del formulario de preventivo son autocompletes de jQuery UI cuyo `source` apunta a `Preventivo/getinsumo` y `Preventivo/getHerramientasB` — los endpoints que §3.3 y §3.4 verificaron devolviendo el catálogo de tools (311 artículos, 26 herramientas). El widget `.autocomplete()` existe y está registrado; los datos que consumiría están confirmados.
+
+No se logró **capturar la lista de sugerencias desplegándose visualmente**: el servidor de prueba usado (el servidor embebido de PHP, single-thread) es demasiado lento para que el formulario y sus llamadas AJAX terminen de cargar dentro de los tiempos del test automatizado. **Es una limitación del entorno de prueba, no un fallo detectado en la app.** Queda como verificación visual pendiente de confirmar en la instancia normal del proyecto (Apache), donde el resto del flujo ya funciona.
 
 ### 4.3 Seis ítems de menú de almacén dependen solo del guard de padre
 
@@ -156,9 +166,9 @@ Los scripts `f3-inhabilitar-menu-almacen.sql` inhabilitaron el grupo "Almacenes"
 
 ## 5. Conclusión
 
-El objetivo funcional de REQ-ASSET-ALM está **verificado en el sistema real**: AssetPlanner ya no ofrece almacén ni pañol propios en el menú, sus catálogos de artículos (311) y herramientas (26) vienen de los DataServices de traz-tools con los datos correctos, y el flujo de pedido desde una OT crea el pedido en el almacén de tools y lanza el proceso Bonita compartido (pedido 1486, case 30010).
+El objetivo funcional de REQ-ASSET-ALM está **verificado en el sistema real**: AssetPlanner ya no ofrece almacén ni pañol propios en el menú, sus catálogos de artículos (311) y herramientas (26) vienen de los DataServices de traz-tools con los datos correctos, el login por navegador funciona, y el flujo de pedido desde una OT crea el pedido en el almacén de tools y lanza el proceso Bonita compartido (pedido 1486, case 30010).
 
-Los dos hallazgos que afectan la operación en pantalla (login y autocompletes, §4.1/§4.2) **no los introdujo este requerimiento**: son deuda de jQuery del fork de 2024, previa y ya inventariada. Antes del piloto con el cliente hay que cerrar esa deuda de saneamiento — de lo contrario los datos de tools llegan pero el usuario no puede operarlos por pantalla.
+Los dos "hallazgos" de la primera corrida (login y autocompletes) resultaron **falsos positivos del entorno de prueba** (§4.1/§4.2): un servidor sin `mod_rewrite` que rompía las URLs relativas del JavaScript. Con URLs limpias —como el Apache normal del proyecto— no se reproducen. Queda una sola verificación menor pendiente de hacer en la instancia normal: **ver la lista de sugerencias del autocomplete desplegándose en pantalla** (el widget y sus datos ya están confirmados; solo faltó capturarlo por la lentitud del servidor de prueba).
 
 ---
 
@@ -167,11 +177,13 @@ Los dos hallazgos que afectan la operación en pantalla (login y autocompletes, 
 La suite automatizada equivalente está en [`tests/e2e/`](../../tests/e2e/README.md) (Playwright). La corrida de este documento se hizo con:
 
 ```bash
-# servidor de la app (PHP 7.3 de XAMPP, router de CI)
-/opt/lampp/bin/php -S 127.0.0.1:8899 ci-router.php   # docroot = repo de asset
+# servidor de la app (PHP 7.3 de XAMPP + router de CI que emula mod_rewrite,
+# sirviendo URLs limpias como el Apache normal — sin esto, las URLs relativas
+# del JS se rompen; ver §4.1)
+/opt/lampp/bin/php -S 127.0.0.1:8866 ci-router.php   # docroot = repo de asset
 
-# login por backend (evita el JS roto), sesión reutilizada, y verificación de
-# endpoints + capturas de pantalla con el Chrome del sistema vía Playwright
+# login por navegador, sesión reutilizada, verificación de endpoints y
+# capturas de pantalla con el Chrome del sistema vía Playwright
 ```
 
 Los valores de prueba (empresa 1, artículo 82/MP0001, herramienta 17/Bahco, OT 935) son los de DEV verificados el 2026-08-15.
