@@ -261,6 +261,41 @@ La asimetría define dónde está el riesgo y, por lo tanto, dónde concentrar l
 
 ---
 
+## 7. Mejoras funcionales implementadas (cierran los dos huecos del §1 y §6)
+
+Tras este relevamiento se implementaron dos mejoras que cierran la asimetría descrita arriba. Ya no son "decisión a tomar": están hechas.
+
+### 7.1 M1 — El informe muestra el consumo real (pedido / entregado / pendiente)
+
+**Antes:** el informe mostraba la cantidad **pedida** rotulada como "usada" (§4.C).
+
+**Ahora:** las tres vistas del informe (crear, revisar, conformidad) muestran tres columnas — **Pedido**, **Entregado**, **Pendiente**. El dato ya viajaba en el detalle del pedido de tools (`cantidad` y `resto`), así que **entregado = cantidad − resto**; no hizo falta tocar tools.
+
+- Archivos: `Ordenservicios::getInsumosPorOT` (suma `pedido`/`entregado`/`pendiente`) y las 3 vistas `views/tareas/view_*_inf_servicio_modal.php` / `view_presta_presta_conf_modal.php`.
+- Efecto en el circuito: el informe de mantenimiento ahora refleja lo que realmente se entregó del almacén (dato que antes solo se veía en la pantalla de entrega de ALM).
+
+### 7.2 M2 — Herramientas del pañol: filtro de disponibilidad + vale de salida
+
+**Antes:** las listas de herramientas mostraban todo el catálogo; al usar una herramienta en el informe no había ningún movimiento de pañol (§4.D.4). El circuito de PAN era solo catálogo.
+
+**Ahora:**
+- **Filtro:** todas las listas de herramientas del módulo (preventivo, predictivo, backlog, OT e informe) muestran **solo las disponibles** — estado `ACTIVO` y del **pañol asignado** a la empresa (`PANO` del setup), ordenadas por nombre. Las prestadas (`TRANSITO`) y las de otros pañoles no aparecen. Centralizado en `tools_herramientas_disponibles()`.
+- **Vale de salida:** al guardar el informe, además del registro local, se crea el vale de salida real contra `PANDataService` (`salidaHerramientasSet` + detalle) y cada herramienta usada pasa a **`TRANSITO`** (sale del pañol hasta que se devuelva). Si el pañol de tools falla, se loguea y no rompe el guardado del informe.
+- Archivos: `tools_helper.php` (`tools_herramientas_disponibles`, `tools_herramientas_informe`, `tools_crear_vale_salida`), `Ordenservicios::getHerramientas` (pasa a leer el pañol de tools) y `setOrdenServicios`.
+
+**Efecto en el circuito — la asimetría se cierra:** ahora las herramientas también tienen un movimiento transaccional. El ciclo de una herramienta en una OT es: se declara → se ofrece solo si está disponible en el pañol → al usarla sale del pañol (vale + `TRANSITO`) → deja de ofrecerse hasta la devolución.
+
+```mermaid
+flowchart LR
+    D["Disponible (ACTIVO)<br/>en el pañol asignado"] -->|se ofrece en las listas| U["Se usa en un informe"]
+    U -->|vale de salida + PUT estado| T["TRANSITO (fuera del pañol)"]
+    T -.->|devolución = entrada de pañol<br/>(flujo pendiente)| D
+```
+
+**Estados de la herramienta en el pañol de tools:** `ACTIVO` = disponible; `TRANSITO` = salió y no volvió. La **devolución** (reingreso al pañol, que volvería a marcarla `ACTIVO`) es el único tramo que queda pendiente — `PANDataservice` ya tiene el endpoint de entrada (`entradaHerramientas*`).
+
+---
+
 ## Anexo — Máquina de estados del pedido de materiales
 
 | Estado | Significado | Quién lo setea |
