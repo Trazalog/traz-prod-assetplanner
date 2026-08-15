@@ -9,7 +9,7 @@ Tablero de estado del trabajo v3 en ESTE repo (integración con traz-tools: alma
 ---
 
 **Workstream actual:** Requerimiento "asset consume ALM+PAN de tools" (cliente en el corto plazo) — adelanta la Etapa 5 del plan de migración.
-**Última actualización:** 2026-08-15 por Claude Code (F0-F5 mergeadas; setup de la empresa 1 completo; smokes F4/F5 bloqueados por redeploys).
+**Última actualización:** 2026-08-15 por Claude Code (smoke F4 en verde; F5 solo pendiente del redeploy de #430).
 
 ### Mejoras funcionales del circuito MAN↔ALM/PAN (post-relevamiento)
 
@@ -37,8 +37,9 @@ Derivadas del documento `doc/v3/circuitos-man-alm-pan.md`. Cierran los dos hueco
 ### Estado del camino a F6 (2026-08-15)
 
 - ✅ Mergeado todo: asset #324-#327, tools #427/#428. Scripts de menú corridos en DEV (16 ítems en `IN`). Setup de la empresa 1 COMPLETO: vínculo, catálogo (311 art. / 27 herr.), config `DEPO=2000` `PANO=10` `ESTA=6` verificada por REST.
-- ⛔ **Smoke F4 bloqueado**: `PANDataservice` del EI de DEV sigue sin redesplegar (404 en `/herramientas/empresa/{empr_id}`).
-- ⛔ **Smoke F5 bloqueado**: el matching goloso del DSS hacía que `GET /pedidos/{pema_id}/{empr_id}` capture `/pedidos/orden/...` (fault verificado: `pema_id=orden`). Fix en **tools #429** (resources específicos antes que genéricos) — mergear y **redesplegar `ALMDataService.dbs`** en el EI de DEV.
+- ✅ **Smoke F4 en verde**: 26 herramientas activas de la empresa 1 (la 27ª está `eliminado=true`, el DS la excluye bien), marca resuelta desde `core.tablas`, merge y autocomplete validados con PHP contra el JSON real. **El 404 era un bug mío, no del deploy**: el servicio se llama `PANDataService` (atributo `name` interno) y la constante apuntaba a `PANDataservice` (nombre del archivo) — en runtime F4 habría fallado entero. Corregido.
+- ✅ **F5 verificado end-to-end salvo un eslabón**: pedido 1485 creado para la OT 934, Bonita real instanciado (case 30009), `case_id`+estado `Solicitado` persistidos y releídos. Falta solo el alta de detalle → **redesplegar `ALMDataService.dbs` con el fix de tools #430** (ya mergeado; el DSS tira NPE si un parámetro nombrado se repite en el SQL).
+- 📌 Nota para futuras integraciones: **el nombre del servicio DSS lo define el atributo `name` del `.dbs`, no el filename** — `PANDataservice.dbs` expone `/services/PANDataService`.
 
 ### Próxima acción
 

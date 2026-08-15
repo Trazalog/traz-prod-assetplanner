@@ -200,7 +200,7 @@ define('REST_PRO', HOST.'/services/PRODataService');
 define('HOST_TOOLS', HOST);
 define('REST_TOOLS_CORE', HOST_TOOLS.'/services/COREDataService');
 define('REST_TOOLS_ALM', HOST_TOOLS.'/services/ALMDataService');
-define('REST_TOOLS_PAN', HOST_TOOLS.'/services/PANDataservice');
+define('REST_TOOLS_PAN', HOST_TOOLS.'/services/PANDataService');
 /*
 |--------------------------------------------------------------------------
 | REPORTES
