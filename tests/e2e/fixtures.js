@@ -15,11 +15,20 @@ const DATA = {
     codigo: process.env.TEST_ARTI_COD || 'MP0001',
     descripcion: process.env.TEST_ARTI_DESC || 'Ajo semilla',
   },
-  // herramienta del pañol de TOOLS
+  // herramienta DISPONIBLE del pañol asignado (PANO=10): debe aparecer en las listas
   herramienta: {
-    id: process.env.TEST_HERR_ID || '17',
-    codigo: process.env.TEST_HERR_COD || '123456',
-    marca: process.env.TEST_HERR_MARCA || 'Bahco',
+    id: process.env.TEST_HERR_ID || '66',
+    codigo: process.env.TEST_HERR_COD || 'HERR-3',
+    marca: process.env.TEST_HERR_MARCA || 'Stanley',
+    descripcion: process.env.TEST_HERR_DESC || 'HERR-3',
+  },
+  // herramienta en TRANSITO (prestada) del pañol asignado: NO debe aparecer (M2)
+  herramientaTransito: {
+    id: process.env.TEST_HERR_TRANSITO || '22',
+  },
+  // herramienta ACTIVO pero de OTRO pañol (no el asignado): NO debe aparecer (M2)
+  herramientaOtroPanol: {
+    id: process.env.TEST_HERR_OTRO_PANOL || '17',
   },
   // OT con insumos declarados en tbl_otinsumos
   ot: process.env.TEST_OT || '935',
@@ -43,15 +52,19 @@ async function loginAsset(page) {
   const pass = process.env.ASSET_PASS;
   if (!user || !pass) throw new Error('Faltan ASSET_USER / ASSET_PASS');
 
-  await page.goto('index.php/login');
+  // URL limpia (sin index.php): así el AJAX relativo del login resuelve bien
+  // tanto con mod_rewrite (Apache normal) como con el server de pruebas.
+  await page.goto('login');
   await page.fill('#usrName', user);
   await page.fill('#usrPassword', pass);
+  // 'commit' (no 'load'): el dashboard es pesado y su `load` puede tardar;
+  // basta con que la navegación a /dash haya empezado.
   await Promise.all([
-    page.waitForURL(/dash/, { timeout: 30_000 }),
+    page.waitForURL(/dash/, { timeout: 60_000, waitUntil: 'commit' }),
     page.click('#login'),
   ]);
   // el menú lateral es la señal de que la sesión quedó armada
-  await expect(page.locator('.sidebar-menu, aside')).toBeVisible();
+  await expect(page.locator('.sidebar-menu, aside').first()).toBeVisible({ timeout: 60_000 });
 }
 
 /**
