@@ -209,7 +209,9 @@ class Pedidos_Materiales extends CI_Model
         }
 
         foreach ($result as $o) {
-            $this->apiWrite('POST', '/pedidos/detalle/orden', array(
+            // `resto` lo completa el trigger alm.tgrupdateresto (AFTER INSERT) —
+            // no hace falta enviarlo ni una query propia para esto.
+            $this->apiWrite('POST', '/pedidos/detalle', array(
                 'cantidad' => (string) $o->cantidad,
                 'pema_id'  => (string) $pema_id,
                 'arti_id'  => (string) $o->arti_id,
