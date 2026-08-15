@@ -447,30 +447,43 @@ class Ordenservicios extends CI_Model
     // devuelve insumos pedidos por id de OT
     function getInsumosPorOT($id_ot)
     {
-
-        $userdata = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-
-        log_message('DEBUG', 'OrdenServicio | getInsumosPorOT | id_ot ' . $id_ot);
-        $this->db->select('alm_pedidos_materiales.pema_id, 
-												alm_pedidos_materiales.ortr_id , 
-												alm_articulos.barcode, alm_articulos.descripcion, 
-												alm_pedidos_materiales.fecha,
-												alm_pedidos_materiales.estado,
-												alm_deta_pedidos_materiales.cantidad');
-        $this->db->from('alm_pedidos_materiales');
-        $this->db->join('alm_deta_pedidos_materiales', 'alm_pedidos_materiales.pema_id = alm_deta_pedidos_materiales.pema_id');
-        $this->db->join('alm_articulos', 'alm_deta_pedidos_materiales.arti_id = alm_articulos.arti_id');
-        $this->db->where('alm_pedidos_materiales.ortr_id', $id_ot);
-        $this->db->where('alm_pedidos_materiales.empr_id', $empresaId);
-        $query = $this->db->get();
-
-        if ($query->num_rows() != 0) {
-            return $query->result_array();
-        } else {
+        log_message('DEBUG', "#TRAZA | ASSET | Ordenservicios | getInsumosPorOT($id_ot)");
+        // F5 (REQ-ASSET-ALM): los pedidos viven en el almacen de tools;
+        // se leen via REST (pedido por OT + detalle con nombres de articulo).
+        $this->load->helper('tools');
+        $emprId = tools_empr_id();
+        if ($emprId === null) {
             return array();
         }
 
+        $aux  = $this->rest->callAPI('GET', REST_TOOLS_ALM . '/pedidos/orden/' . $id_ot . '/' . $emprId);
+        $resp = json_decode($aux['data'], true);
+        $pedidos = isset($resp['pedidos']['pedido']) ? $resp['pedidos']['pedido'] : array();
+        if ($pedidos && !isset($pedidos[0])) {
+            $pedidos = array($pedidos);
+        }
+
+        $out = array();
+        foreach ($pedidos as $p) {
+            $auxD  = $this->rest->callAPI('GET', REST_TOOLS_ALM . '/pedidos/detalle/' . $p['pema_id']);
+            $respD = json_decode($auxD['data'], true);
+            $detalles = isset($respD['detalles']['detalle']) ? $respD['detalles']['detalle'] : array();
+            if ($detalles && !isset($detalles[0])) {
+                $detalles = array($detalles);
+            }
+            foreach ($detalles as $d) {
+                $out[] = array(
+                    'pema_id'     => $p['pema_id'],
+                    'ortr_id'     => $p['ortr_id'],
+                    'barcode'     => $d['barcode'],
+                    'descripcion' => $d['descripcion'],
+                    'fecha'       => $p['fecha'],
+                    'estado'      => $p['estado'],
+                    'cantidad'    => $d['cantidad'],
+                );
+            }
+        }
+        return $out;
     }
 
 
