@@ -9,7 +9,7 @@ Tablero de estado del trabajo v3 en ESTE repo (integración con traz-tools: alma
 ---
 
 **Workstream actual:** Requerimiento "asset consume ALM+PAN de tools" (cliente en el corto plazo) — adelanta la Etapa 5 del plan de migración.
-**Última actualización:** 2026-08-14 por Claude Code (F5: flujo ejecutar-OT contra los pedidos de tools, en PR).
+**Última actualización:** 2026-08-15 por Claude Code (F0-F5 mergeadas; setup de la empresa 1 completo; smokes F4/F5 bloqueados por redeploys).
 
 ### Fases del plan y su estado
 
@@ -24,6 +24,12 @@ Tablero de estado del trabajo v3 en ESTE repo (integración con traz-tools: alma
 | F4 | Asset herramientas → tools | asset | 🟡 | **Completada, en PR.** El helper suma el bloque de herramientas (`tools_herramientas`/`_map`/`_merge`/`_autocomplete`/`_full` contra `PANDataservice /herramientas/empresa/{empr_id}`). Los 10 lectores del catálogo `herramientas` del núcleo pasan a REST conservando shape: los 7 getters gemelos `getXHerramientas` (Preventivos/Predictivos/Backlogs/Otrabajos×2/Calendarios×3) + `getherramienta`, `getHerramientasB` y `getProductos` (que de paso corrige su bug `$i=$i++`). Las referencias históricas se muestran con fallback `(herramienta N no disponible en tools)` — resuelve la duda de las 10 filas de Caleras: histórico visible, sin remapeo. Menú Pañol (16/23/24/25/26) → `database/scripts/f4-inhabilitar-menu-panol.sql`. Las escrituras locales (`tbl_*herramientas`, `setHerramInsPorTarea`, `insert_herramienta`) NO se tocan: siguen en MariaDB con el id de tools. ⚠️ **El PAN del EI de DEV está desactualizado** (404 en `/herramientas/empresa/{empr_id}`) — redeployar `PANDataservice.dbs` para el smoke | `feat/f4-herramientas-rest` — PR abierto |
 | F5 | Flujo ejecutar-OT contra los pedidos de tools | asset + traz-tools | 🟡 | **Completada, en PR.** El model embebido `traz-comp-almacen/new/Pedidos_Materiales.php` reescrito completo a REST (mismas firmas — `Calendario.php`, `Tarea.php`, `Proceso.php` y `Pedido_Material.php` no se tocan): los pedidos se crean/consultan/actualizan en el Postgres de tools; el proceso Bonita es EL MISMO (`8803232493891311406`, verificado igual en ambos constants); los insumos declarados de la OT (`tbl_otinsumos`) siguen locales. `Ordenservicios::getInsumosPorOT` también a REST. Requiere las 4 queries aditivas de traz-tools PR #428 (`getPedidoPorOrden`, `setPedidoOrden`, `setEstadoPedido`, `setDetallePedidoOrden` — el vínculo `ortr_id` existía en la tabla pero el DS no lo exponía; el detalle nuevo inicializa `resto = cantidad`). El espejo local `alm_*` de MariaDB queda abandonado (sin lectores ni escritores en el flujo) — cero referencias en `Ordenservicios` verificado | asset `feat/f5-ejecutar-ot-rest`; tools PR #428 |
 | F6 | Prueba integral en DEV + piloto con el cliente del requerimiento | ambos | 🟡 | Pendiente — requiere F2-F5 | — |
+
+### Estado del camino a F6 (2026-08-15)
+
+- ✅ Mergeado todo: asset #324-#327, tools #427/#428. Scripts de menú corridos en DEV (16 ítems en `IN`). Setup de la empresa 1 COMPLETO: vínculo, catálogo (311 art. / 27 herr.), config `DEPO=2000` `PANO=10` `ESTA=6` verificada por REST.
+- ⛔ **Smoke F4 bloqueado**: `PANDataservice` del EI de DEV sigue sin redesplegar (404 en `/herramientas/empresa/{empr_id}`).
+- ⛔ **Smoke F5 bloqueado**: el matching goloso del DSS hacía que `GET /pedidos/{pema_id}/{empr_id}` capture `/pedidos/orden/...` (fault verificado: `pema_id=orden`). Fix en **tools #429** (resources específicos antes que genéricos) — mergear y **redesplegar `ALMDataService.dbs`** en el EI de DEV.
 
 ### Próxima acción
 
