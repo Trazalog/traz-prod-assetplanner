@@ -291,30 +291,16 @@ class Otrabajos extends CI_Model {
 			}
 		}
 		// Trae herramientas ppor id de preventivo para Editar
-		function getOTHerramientas($id){
-					
-			$userdata = $this->session->userdata('user_data');
-			$empId = $userdata[0]['id_empresa']; 
-
-			$this->db->select('tbl_otherramientas.cantidad,
-													herramientas.herrcodigo,
-													herramientas.herrmarca,
-													herramientas.herrdescrip,
-													herramientas.herrId');
-			$this->db->from('tbl_otherramientas');
-			$this->db->join('herramientas', 'herramientas.herrId = tbl_otherramientas.herrId');   
-			$this->db->where('tbl_otherramientas.otId', $id);        
-			$this->db->where('tbl_otherramientas.id_empresa', $empId);
-			$query= $this->db->get();
-
-			if( $query->num_rows() > 0)
-			{
-				return $query->result_array();
-			}
-			else {
-				return 0;
-			}
-		}
+    function getOTHerramientas($id){
+        log_message('DEBUG', "#TRAZA | ASSET | Otrabajos | getOTHerramientas()");
+        // F4 (REQ-ASSET-ALM): el detalle local se conserva en MariaDB; los datos
+        // de la herramienta salen del pañol de tools via REST (tools_helper).
+        $this->load->helper('tools');
+        $this->db->select('cantidad, herrId');
+        $this->db->from('tbl_otherramientas');
+        $this->db->where('otId', $id);
+        return tools_merge_herramientas($this->db->get()->result_array());
+    }
 		// Trae insumos por id de preventivo para Editar
     function getOTInsumos($id){
         log_message('DEBUG', "#TRAZA | ASSET | Otrabajos | getOTInsumos()");
@@ -1151,27 +1137,16 @@ class Otrabajos extends CI_Model {
 	    }
 
 		    // Trae herramientas ppor id de preventivo para Editar
-		    function getPreventivoHerramientas($id)
-		    {
-		        $this->db->select('tbl_preventivoherramientas.cantidad,
-		                            herramientas.herrcodigo,
-		                            herramientas.herrmarca,
-		                            herramientas.herrdescrip,
-		                            herramientas.herrId');
-		        $this->db->from('tbl_preventivoherramientas');
-		        $this->db->join('herramientas', 'herramientas.herrId = tbl_preventivoherramientas.herrId');   
-		        $this->db->where('tbl_preventivoherramientas.prevId', $id);   
-		             
-		        $query = $this->db->get();
-		        if( $query->num_rows() > 0)
-		        {
-		        	$herramientas = $query->result_array();
-		          	return $herramientas;
-		        }
-		        else {
-		          return 0;
-		        }
-		    }
+    function getPreventivoHerramientas($id){
+        log_message('DEBUG', "#TRAZA | ASSET | Otrabajos | getPreventivoHerramientas()");
+        // F4 (REQ-ASSET-ALM): el detalle local se conserva en MariaDB; los datos
+        // de la herramienta salen del pañol de tools via REST (tools_helper).
+        $this->load->helper('tools');
+        $this->db->select('cantidad, herrId');
+        $this->db->from('tbl_preventivoherramientas');
+        $this->db->where('prevId', $id);
+        return tools_merge_herramientas($this->db->get()->result_array());
+    }
 
 		    // Trae insumos por id de preventivo para Editar
     function getPreventivoInsumos($id){
