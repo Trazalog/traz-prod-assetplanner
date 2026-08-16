@@ -124,22 +124,13 @@ class Ordenservicios extends CI_Model
 
     function getHerramientas() // Ok
     {
-        $userdata = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-        $this->db->select('herrdescrip, herrmarca, herrcodigo, herrId');
-        $this->db->from('herramientas');
-        $this->db->where('id_empresa', $empresaId);
-        $this->db->where('equip_estad !=', 'AN');
-        $query = $this->db->get();
-        $i = 0;
-        foreach ($query->result() as $row) {
-            $herramientas[$i]['label'] = $row->herrdescrip;
-            $herramientas[$i]['value'] = $row->herrmarca;
-            $herramientas[$i]['codherram'] = $row->herrcodigo;
-            $herramientas[$i]['herrId'] = $row->herrId;
-            $i++;
-        }
-        return $herramientas;
+        log_message('DEBUG', "#TRAZA | ASSET | Ordenservicios | getHerramientas()");
+        // Mejora: el catálogo del informe sale del pañol de tools (como los
+        // planes) y solo muestra las herramientas DISPONIBLES del pañol
+        // asignado a la empresa, ordenadas por nombre. Shape del autocomplete
+        // del informe: label / value(marca) / codherram / herrId.
+        $this->load->helper('tools');
+        return tools_herramientas_informe();
     }
 
     function getOperarios() // Ok
@@ -232,7 +223,8 @@ class Ordenservicios extends CI_Model
             }
             $idInsertVale = $this->db->insert_id();
 
-            // detalle herramientas
+            // detalle herramientas (registro local del informe, para su visualización)
+            $herrIds = array();
             for ($i = 0; $i < count($data['herramienta']); $i++) {
                 $detavalHerram["valesid"] = $idInsertVale;
                 $detavalHerram["herrId"] = $data["herramienta"][$i][3];
@@ -240,7 +232,16 @@ class Ordenservicios extends CI_Model
                 if (!$this->db->insert('tbl_detavalesalida', $detavalHerram)) {
                     return $this->db->error(); // Has keys 'code' and 'message'
                 }
+                $herrIds[] = $data["herramienta"][$i][3];
             }
+            // Mejora: además del registro local, se genera el vale de salida
+            // contra el módulo Pañol de tools (descuenta disponibilidad: las
+            // herramientas quedan en TRANSITO hasta que se devuelvan).
+            $this->load->helper('tools');
+            tools_crear_vale_salida($herrIds, array(
+                'destino'     => 'Informe de servicio OT ' . (isset($data['id_ot']) ? $data['id_ot'] : ''),
+                'comprobante' => isset($data['id_ot']) ? (string) $data['id_ot'] : '',
+            ));
         } else {
 
             $idInsertVale = 0;    // esta ba en 1 hardcode (no puede ser 0 por la clave foranea)

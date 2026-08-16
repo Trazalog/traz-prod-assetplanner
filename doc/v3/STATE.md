@@ -11,6 +11,15 @@ Tablero de estado del trabajo v3 en ESTE repo (integración con traz-tools: alma
 **Workstream actual:** Requerimiento "asset consume ALM+PAN de tools" (cliente en el corto plazo) — adelanta la Etapa 5 del plan de migración.
 **Última actualización:** 2026-08-15 por Claude Code (smoke F4 en verde; F5 solo pendiente del redeploy de #430).
 
+### Mejoras funcionales del circuito MAN↔ALM/PAN (post-relevamiento)
+
+Derivadas del documento `doc/v3/circuitos-man-alm-pan.md`. Cierran los dos huecos que el relevamiento identificó (el informe mostraba lo pedido como usado; las herramientas no tenían circuito transaccional de pañol).
+
+| Mejora | Descripción | Estado | PR |
+|---|---|---|---|
+| M1 — Consumo real en el informe | Las 3 vistas del informe muestran Pedido/Entregado/Pendiente (entregado = cantidad − resto, ya venía del pedido de tools). Sin cambios en tools | **En PR** | asset #334 |
+| M2 — Herramientas del pañol + vale | Todas las listas de herramientas (planes + informe) filtran solo las disponibles (`ACTIVO`) del pañol asignado (`PANO`), ordenadas por nombre; al guardar el informe se crea el vale de salida contra `PANDataService` (`salidaHerramientas*`) y la herramienta pasa a `TRANSITO`. Verificado end-to-end contra DEV | **En PR** | asset (esta rama) |
+
 ### Fases del plan y su estado
 
 > Regla: **cada fase entra por su propio PR (mínimo uno) contra `develop-v3`**. Una fase no arranca si la anterior que la bloquea no está mergeada.

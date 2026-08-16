@@ -309,20 +309,48 @@ if (!function_exists('tools_merge_herramientas')) {
     }
 }
 
+if (!function_exists('tools_herramientas_disponibles')) {
+    /**
+     * Herramientas que se pueden OFRECER para usar: las del pañol asignado a
+     * la empresa (config `PANO`) y con estado 'ACTIVO'. Se excluyen las que
+     * están en 'TRANSITO' (salieron y no volvieron) y las de otros pañoles.
+     * Ordenadas por nombre (descripción). Devuelve las filas crudas del
+     * catálogo (mismas claves que tools_herramientas()).
+     *
+     * Si no hay pañol configurado, filtra solo por estado (no rompe).
+     *
+     * @return array
+     */
+    function tools_herramientas_disponibles()
+    {
+        $pano = tools_config('PANO');
+        $out  = array();
+        foreach (tools_herramientas() as $h) {
+            $disponible = isset($h['estado']) && $h['estado'] === 'ACTIVO';
+            $delPanol   = ($pano === null) || (isset($h['pano_id']) && (string) $h['pano_id'] === (string) $pano);
+            if ($disponible && $delPanol) {
+                $out[] = $h;
+            }
+        }
+        usort($out, function ($x, $y) {
+            return strcasecmp($x['descripcion'], $y['descripcion']);
+        });
+        return $out;
+    }
+}
+
 if (!function_exists('tools_herramientas_autocomplete')) {
     /**
-     * Catálogo de herramientas con el shape del autocomplete de asset
-     * (reemplaza getHerramientasB): value / codigo / marca / label.
+     * Catálogo de herramientas disponibles del pañol asignado, con el shape del
+     * autocomplete de los planes (reemplaza getHerramientasB): value / codigo /
+     * marca / label. Ordenado por nombre.
      *
      * @return array de arrays asociativos
      */
     function tools_herramientas_autocomplete()
     {
         $out = array();
-        foreach (tools_herramientas() as $h) {
-            if (isset($h['estado']) && $h['estado'] === 'AN') {
-                continue;
-            }
+        foreach (tools_herramientas_disponibles() as $h) {
             $out[] = array(
                 'value'  => (int) $h['herr_id'],
                 'codigo' => $h['codigo'],
@@ -330,24 +358,45 @@ if (!function_exists('tools_herramientas_autocomplete')) {
                 'label'  => $h['descripcion'],
             );
         }
-        usort($out, function ($x, $y) {
-            return strcasecmp($x['label'], $y['label']);
-        });
+        return $out;
+    }
+}
+
+if (!function_exists('tools_herramientas_informe')) {
+    /**
+     * Catálogo de herramientas disponibles del pañol asignado, con el shape que
+     * espera el autocomplete del INFORME de servicio (distinto del de los
+     * planes): label=descripción, value=marca, codherram=código, herrId=id.
+     *
+     * @return array de arrays asociativos
+     */
+    function tools_herramientas_informe()
+    {
+        $out = array();
+        foreach (tools_herramientas_disponibles() as $h) {
+            $out[] = array(
+                'label'     => $h['descripcion'],
+                'value'     => $h['marca'],
+                'codherram' => $h['codigo'],
+                'herrId'    => (int) $h['herr_id'],
+            );
+        }
         return $out;
     }
 }
 
 if (!function_exists('tools_herramientas_full')) {
     /**
-     * Catálogo completo con los nombres de columna de la tabla `herramientas`
-     * de asset (para los consumidores que esperaban result() del modelo viejo).
+     * Catálogo de herramientas disponibles del pañol asignado, con los nombres
+     * de columna de la tabla `herramientas` de asset (para los consumidores que
+     * esperaban result() del modelo viejo).
      *
      * @return array de objetos con herrId/herrcodigo/herrmarca/herrdescrip/...
      */
     function tools_herramientas_full()
     {
         $out = array();
-        foreach (tools_herramientas() as $h) {
+        foreach (tools_herramientas_disponibles() as $h) {
             $out[] = (object) array(
                 'herrId'      => (int) $h['herr_id'],
                 'herrcodigo'  => $h['codigo'],
@@ -361,5 +410,87 @@ if (!function_exists('tools_herramientas_full')) {
             );
         }
         return $out;
+    }
+}
+
+if (!function_exists('tools_crear_vale_salida')) {
+    /**
+     * Registra un vale de salida de herramientas contra el módulo Pañol de tools
+     * (PANDataservice) y marca cada herramienta como 'TRANSITO' (fuera del pañol).
+     * Se usa al confeccionar el informe de servicio: las herramientas usadas
+     * salen del pañol asignado a la empresa.
+     *
+     * @param  array  $herrIds ids de herramienta (herr_id de tools)
+     * @param  array  $meta    opcional: destino, observaciones, comprobante, responsable
+     * @return int|false       sapa_id de la salida creada, o false si no se pudo
+     */
+    function tools_crear_vale_salida($herrIds, $meta = array())
+    {
+        $ci =& get_instance();
+
+        if (empty($herrIds)) {
+            return false;
+        }
+
+        $emprId = tools_empr_id();
+        $panoId = tools_config('PANO');
+        if ($emprId === null || $panoId === null) {
+            log_message('ERROR', '#TRAZA | ASSET | tools_helper | tools_crear_vale_salida() >> sin empr_id o PANO configurado');
+            return false;
+        }
+
+        $userdata = $ci->session->userdata('user_data');
+        $usuario  = isset($userdata[0]['usrNick']) ? $userdata[0]['usrNick'] : 'informe';
+
+        // cabecera de la salida
+        $cab = array(
+            'usuario_app'   => $usuario,
+            'destino'       => isset($meta['destino']) ? $meta['destino'] : 'Informe de servicio',
+            'empr_id'       => (string) $emprId,
+            'pano_id'       => (string) $panoId,
+            'observaciones' => isset($meta['observaciones']) ? $meta['observaciones'] : '',
+            'comprobante'   => isset($meta['comprobante']) ? $meta['comprobante'] : '',
+            'responsable'   => isset($meta['responsable']) ? $meta['responsable'] : $usuario,
+        );
+        $aux  = tools_pan_write('POST', '/panol/salida/herramientas', $cab);
+        $resp = json_decode($aux['data'], true);
+        if (empty($resp['respuesta']['sapa_id'])) {
+            log_message('ERROR', '#TRAZA | ASSET | tools_helper | tools_crear_vale_salida() >> no se creó la salida en pañol');
+            return false;
+        }
+        $sapaId = (int) $resp['respuesta']['sapa_id'];
+
+        // detalle + marcar cada herramienta en TRANSITO
+        foreach ($herrIds as $herrId) {
+            $herrId = (int) $herrId;
+            if ($herrId <= 0) {
+                continue;
+            }
+            tools_pan_write('POST', 'panol/salida/herramientas/detalle', array(
+                'sapa_id' => (string) $sapaId,
+                'herr_id' => (string) $herrId,
+            ));
+            tools_pan_write('PUT', '/herramientas/estado', array(
+                'estado'  => 'TRANSITO',
+                'herr_id' => (string) $herrId,
+            ));
+        }
+
+        return $sapaId;
+    }
+}
+
+if (!function_exists('tools_pan_write')) {
+    /**
+     * Escritura contra PANDataservice con la envoltura `_<metodo><path>` que
+     * exige el DSS (mismo patrón que las escrituras de ALM).
+     */
+    function tools_pan_write($metodo, $path, $params)
+    {
+        $ci =& get_instance();
+        $wrapper = '_' . strtolower($metodo) . str_replace('/', '_', ltrim($path, '/'));
+        $body    = json_encode(array($wrapper => $params));
+        $headers = array('Content-Type: application/json', 'Accept: application/json');
+        return $ci->rest->callAPI($metodo, REST_TOOLS_PAN . '/' . ltrim($path, '/'), $body, $headers);
     }
 }
