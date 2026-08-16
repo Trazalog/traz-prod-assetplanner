@@ -205,14 +205,18 @@
                     <th>Nº O.Insumo</th>
                     <th>Fecha</th>
                     <!-- <th>Solicitante</th> -->
-                    <th>Código</th>  
-                    <th>Descripción</th>           
-                    <th>Cantidad</th> 
+                    <th>Código</th>
+                    <th>Descripción</th>
+                    <th>Pedido</th>
+                    <th>Entregado</th>
+                    <th>Pendiente</th>
                   </tr>
                 </thead>
                 <tbody>
-                <?php                  
+                <?php
                    foreach($insumos as $ins){
+                      $entregado = isset($ins['entregado']) ? $ins['entregado'] : '';
+                      $pendiente = isset($ins['pendiente']) ? $ins['pendiente'] : '';
                       echo '<tr>';
                       echo '<td>'.$ins['pema_id'].'</td>';
                       echo '<td>'.$ins['fecha'].'</td>';
@@ -220,8 +224,10 @@
                       echo '<td>'.$ins['barcode'].'</td>';
                       echo '<td>'.$ins['descripcion'].'</td>';
                       echo '<td>'.$ins['cantidad'].'</td>';
+                      echo '<td>'.$entregado.'</td>';
+                      echo '<td>'.$pendiente.'</td>';
                       echo '</tr>';
-                    }     
+                    }
                   ?>
                 </tbody>
               </table>

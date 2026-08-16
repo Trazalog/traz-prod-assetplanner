@@ -342,7 +342,9 @@
                     <th>Fecha</th>
                     <th>Código</th>
                     <th>Descripción</th>
-                    <th>Cantidad</th>
+                    <th>Pedido</th>
+                    <th>Entregado</th>
+                    <th>Pendiente</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
@@ -487,15 +489,19 @@
              // var solicitante = data[i]['nombre'] + ' '+ data[i]['apellido'];
               var codigo = data[i]['barcode'];
               var descripcion = data[i]['descripcion'];
-              var cantidad = data[i]['cantidad'];
+              var pedido = data[i]['pedido'];
+              var entregado = data[i]['entregado'];
+              var pendiente = data[i]['pendiente'];
               //agrego valores a la tabla
-              $('#tablalistinsumos').DataTable().row.add( [            
+              $('#tablalistinsumos').DataTable().row.add( [
                 otNro,
                 fecha,
                 //solicitante,
                 codigo,
-                descripcion, 
-                cantidad             
+                descripcion,
+                pedido,
+                entregado,
+                pendiente
               ] );
               $('#tablalistinsumos').DataTable().draw();        
             }   
