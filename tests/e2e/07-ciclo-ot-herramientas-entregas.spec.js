@@ -158,6 +158,23 @@ test.describe('MAN-UC-011/012/013 — entregas de almacén y herramientas usadas
     }
   });
 
+  // ---- Regresión: el modal Ejecutar OT renderiza las entregas anidadas (no "N° undefined") ----
+  test('UI ejecutar OT: la pestaña Pedido Materiales muestra las entregas con su N°', async ({ authedPage: page }) => {
+    test.setTimeout(150_000);
+    page.on('dialog', (d) => d.accept());
+    await page.goto('dash', { waitUntil: 'commit' });
+    await page.locator('.sidebar-menu, aside').first().waitFor({ timeout: 30000 });
+    // cargar el listado de OT y abrir el modal Ejecutar OT de la OT de prueba
+    // cargar el contenido del modal Ejecutar OT directamente (su JS inline puebla las tablas)
+    await page.evaluate((ot) => new Promise((r) => window.jQuery('#content').load('index.php/Calendario/verEjecutarOT/' + ot, () => r(null))), OT);
+    await page.waitForTimeout(2500);
+    await page.evaluate(() => window.jQuery('a[href="#pedidomateriales"]').tab('show'));
+    await expect.poll(async () => page.locator('#tablaEntregasEjec tbody tr').count(), { timeout: 10000 }).toBeGreaterThan(0);
+    const texto = await page.locator('#tablaEntregasEjec tbody').innerText();
+    expect(texto, 'las entregas no deben mostrar "undefined"').not.toContain('undefined');
+    expect(texto, 'la entrega debe mostrar un N° numérico').toMatch(/N[°º]\s*\d+/);
+  });
+
   // ---- Estado vacío (def. 14) ----
   test('estado vacío: una OT sin pedido ni herramientas rinde sin fatal', async ({ authedPage: page }) => {
     const ins = await json(page, 'Ordenservicio/getInsumosPorOT', { id_ot: OT_VACIA });
