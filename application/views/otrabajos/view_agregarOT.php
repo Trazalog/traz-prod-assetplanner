@@ -176,6 +176,16 @@
                                                 </div>
                                             </div><!-- /.row -->
                                             <div class="row">
+                                                <div class="col-xs-12 col-sm-8 col-md-6">
+                                                    <label for="herrlibre">Herramienta fuera del maestro (texto libre):</label>
+                                                    <input type="text" id="herrlibre" class="form-control" placeholder="Ej.: Zuncho de izaje 3 t (prestado)" />
+                                                </div>
+                                                <div class="col-xs-12 col-sm-4 col-md-3">
+                                                    <label>&nbsp;</label><br>
+                                                    <button type="button" class="btn btn-default" id="agregarherrlibre"><i class="fa fa-plus"></i> Agregar texto libre</button>
+                                                </div>
+                                            </div><!-- /.row texto libre -->
+                                            <div class="row">
                                                 <div class="col-xs-12">
                                                     <br>
                                                     <table class="table table-bordered" id="tablaherramienta">
@@ -1091,4 +1101,23 @@ $(document).ready(function() {
         }
     });
 });
+
+$("#agregarherrlibre").click(function(e){
+    var txt = $("#herrlibre").val();
+    if (!txt) { $("#herrlibre").focus(); return; }
+    nrofila = nrofila + 1;
+    var tr = "<tr data-nrofila='"+nrofila+"'>"+
+        "<td><i class='fa fa-ban elirow' style='color:#f39c12;cursor:pointer'></i></td>"+
+        "<td class='herr'><span class='label label-default'>texto libre</span></td>"+
+        "<td class='marca'>-</td>"+
+        "<td class='descrip'>"+txt+"</td>"+
+        "<td class='cant'>1</td>"+
+        "<input type='hidden' name='id_her["+nrofila+"]' value='0'>"+
+        "<input type='hidden' name='cant_herr["+nrofila+"]' value='1'>"+
+        "<input type='hidden' name='desc_libre["+nrofila+"]' value=\""+txt.replace(/"/g,'&quot;')+"\">"+
+        "</tr>";
+    $("#tablaherramienta tbody").append(tr);
+    $("#herrlibre").val('');
+});
+
 </script>

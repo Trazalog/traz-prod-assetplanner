@@ -233,20 +233,19 @@ class Otrabajo extends CI_Controller {
 				if ( !empty($data['id_her']) ){
 					//saco array con herramientas y el id de empresa
 					$herr = $data["id_her"]; 
+					$cantHerr = isset($data["cant_herr"]) ? $data["cant_herr"] : array();
+					// F3 REQ-ASSET-ALM: texto libre para herramientas que no estan en el maestro (herrId 0)
+					$descLibre = isset($data["desc_libre"]) ? $data["desc_libre"] : array();
+					$herram = array();
 					$i = 0;
-					foreach ($herr as $h) {
-						$herram[$i]['herrId']= $h;
+					foreach ($herr as $k => $h) {
+						$herram[$i]['herrId']    = $h;
 						$herram[$i]['id_empresa']= $empresaId;
-						$i++;                                
-					} 
-					//saco array con cant de herramientas y el id de preventivo 
-					$cantHerr = $data["cant_herr"];
-					$z = 0;
-					foreach ($cantHerr as $c) {
-						$herram[$z]['cantidad']= $c;
-						$herram[$z]['otId']= $ultimoId;
-						$z++;                                
-					}				
+						$herram[$i]['cantidad']  = isset($cantHerr[$k]) ? $cantHerr[$k] : 1;
+						$herram[$i]['otId']      = $ultimoId;
+						$herram[$i]['descripcion_libre'] = (isset($descLibre[$k]) && $descLibre[$k] !== '') ? $descLibre[$k] : null;
+						$i++;
+					}
 					// Guarda el bacht de datos de herramientas
 					$result['respHerram'] = $this->Otrabajos->insertOTHerram($herram);
 				}else{
