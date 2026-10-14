@@ -92,6 +92,7 @@ test.describe('MAN-UC-011/012/013 — entregas de almacén y herramientas usadas
 
   // ---- UI: el informe muestra ambos bloques y el asociar refresca la tabla ----
   test('@escribe UI informe: Insumos muestra entregas; Herramientas asocia y refresca', async ({ authedPage: page }) => {
+    test.setTimeout(150_000); // login + dash pesado + informe + asociar (getHerramientasUsadas hace N llamadas al MI)
     page.on('dialog', (d) => d.accept());
     await page.goto('dash', { waitUntil: 'commit' });
     await page.locator('.sidebar-menu, aside').first().waitFor({ timeout: 30000 });
