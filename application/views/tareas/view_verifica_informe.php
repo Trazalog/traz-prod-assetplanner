@@ -559,11 +559,10 @@
   }
   function cargarEntregasSup(){
     $.ajax({ type:'POST', global:false, dataType:'json', url:'Ordenservicio/getEntregasPorOT', data:{ id_ot:otId() },
-      success:function(d){
-        var tb=$('#tablaEntregasSup tbody'); tb.empty(); d=d||[];
-        for(var i=0;i<d.length;i++){ var e=d[i];
-          tb.append('<tr><td>N° '+e.enma_id+'</td><td>'+(e.fecha||'')+'</td><td>'+(e.comprobante||'')+'</td><td>'+(e.solicitante||'')+'</td><td>'+(e.destino||'')+'</td></tr>'); }
-        $('#sinEntregasSup').toggle(d.length===0);
+      success:function(peds){
+        var tb=$('#tablaEntregasSup tbody'); tb.empty(); peds=peds||[]; var n=0;
+        for(var i=0;i<peds.length;i++){ var ents=peds[i].entregas||[]; for(var j=0;j<ents.length;j++){ var e=ents[j]; n++; tb.append('<tr><td>N° '+e.enma_id+'</td><td>'+(e.fecha||'')+'</td><td>'+(e.comprobante||'')+'</td><td>'+(e.solicitante||'')+'</td><td>'+(e.destino||'')+'</td></tr>'); } }
+        $('#sinEntregasSup').toggle(n===0);
       }});
   }
   function cargarHerrSup(){

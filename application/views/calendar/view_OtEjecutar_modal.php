@@ -579,9 +579,9 @@ function guardarTarea(idOt) {
 (function(){
   var oid = $('#idOt').val();
   $.ajax({ type:'POST', global:false, dataType:'json', url:'Ordenservicio/getEntregasPorOT', data:{ id_ot:oid },
-    success:function(d){ var tb=$('#tablaEntregasEjec tbody'); tb.empty(); d=d||[];
-      for(var i=0;i<d.length;i++){ var e=d[i]; tb.append('<tr><td>N\u00b0 '+e.enma_id+'</td><td>'+(e.fecha||'')+'</td><td>'+(e.comprobante||'')+'</td><td>'+(e.solicitante||'')+'</td><td>'+(e.destino||'')+'</td></tr>'); }
-      $('#sinEntregasEjec').toggle(d.length===0); }});
+    success:function(peds){ var tb=$('#tablaEntregasEjec tbody'); tb.empty(); peds=peds||[]; var n=0;
+      for(var i=0;i<peds.length;i++){ var ents=peds[i].entregas||[]; for(var j=0;j<ents.length;j++){ var e=ents[j]; n++; tb.append('<tr><td>N° '+e.enma_id+'</td><td>'+(e.fecha||'')+'</td><td>'+(e.comprobante||'')+'</td><td>'+(e.solicitante||'')+'</td><td>'+(e.destino||'')+'</td></tr>'); } }
+      $('#sinEntregasEjec').toggle(n===0); }});
   $.ajax({ type:'POST', global:false, dataType:'json', url:'Ordenservicio/getHerramientasUsadas', data:{ id_ot:oid },
     success:function(d){ var tb=$('#tablaHerrUsadasEjec tbody'); tb.empty(); d=d||[];
       for(var i=0;i<d.length;i++){ var h=d[i];
