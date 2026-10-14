@@ -496,6 +496,238 @@ class Ordenservicios extends CI_Model
         return $out;
     }
 
+    /**
+     * F4 REQ-ASSET-ALM: entregas (parciales/totales) de los pedidos de una OT,
+     * leidas del almacen de tools. Devuelve, por pedido, su lista de entregas y
+     * el detalle de cada una (articulo, cantidad, lote, deposito; sin precio).
+     */
+    function getEntregasPorOT($id_ot)
+    {
+        log_message('DEBUG', "#TRAZA | ASSET | Ordenservicios | getEntregasPorOT($id_ot)");
+        $this->load->helper('tools');
+        $emprId = tools_empr_id();
+        if ($emprId === null) {
+            return array();
+        }
+        $aux  = $this->rest->callAPI('GET', REST_TOOLS_ALM . '/pedidos/orden/' . $id_ot . '/' . $emprId);
+        $resp = json_decode($aux['data'], true);
+        $pedidos = isset($resp['pedidos']['pedido']) ? $resp['pedidos']['pedido'] : array();
+        if ($pedidos && !isset($pedidos[0])) {
+            $pedidos = array($pedidos);
+        }
+        $out = array();
+        foreach ($pedidos as $p) {
+            $pema = isset($p['pema_id']) ? $p['pema_id'] : null;
+            $entregas = tools_entregas_pedido($pema);
+            foreach ($entregas as $k => $e) {
+                $enma = isset($e['enma_id']) ? $e['enma_id'] : null;
+                $entregas[$k]['detalle'] = tools_entrega_detalle($enma);
+            }
+            $out[] = array(
+                'pema_id'  => $pema,
+                'estado'   => isset($p['estado']) ? $p['estado'] : '',
+                'fecha'    => isset($p['fecha']) ? $p['fecha'] : '',
+                'entregas' => $entregas,
+            );
+        }
+        return $out;
+    }
+
+    /**
+     * F5 REQ-ASSET-ALM: herramientas usadas en la OT, construidas desde los
+     * vales de panol asociados. Lee las tablas de asset (directo) y enriquece
+     * con el catalogo de panol de tools; calcula los dias de uso (desde la
+     * salida hasta la devolucion, o hasta hoy si no volvio).
+     */
+    function getHerramientasUsadas($id_ot)
+    {
+        log_message('DEBUG', "#TRAZA | ASSET | Ordenservicios | getHerramientasUsadas($id_ot)");
+        $this->load->helper('tools');
+        $emprId = tools_empr_id();
+        if ($emprId === null) {
+            return array();
+        }
+        $empresaAsset = empresa();
+        // lista de asset (tabla propia) + origen del vale
+        $this->db->select('u.herrId, u.sapa_id, u.activa, v.origen');
+        $this->db->from('tbl_otherramientasusadas u');
+        $this->db->join('tbl_otvales v', 'v.sapa_id = u.sapa_id AND v.id_empresa = u.id_empresa', 'left');
+        $this->db->where('u.otId', $id_ot);
+        $this->db->where('u.id_empresa', $empresaAsset);
+        $rows = $this->db->get()->result_array();
+        if (!$rows) {
+            return array();
+        }
+        // catalogo de panol para nombres/marca (mapa herr_id -> datos)
+        $cat = array();
+        foreach (tools_herramientas() as $h) {
+            if (isset($h['herr_id'])) {
+                $cat[(string) $h['herr_id']] = $h;
+            }
+        }
+        // cache de fecha de salida por vale
+        $salidas = array();
+        $out = array();
+        foreach ($rows as $r) {
+            $sapa = $r['sapa_id'];
+            if (!isset($salidas[$sapa])) {
+                $salidas[$sapa] = tools_salida_fecha($sapa);
+            }
+            $fsalida = isset($salidas[$sapa]['fecha']) ? $salidas[$sapa]['fecha'] : null;
+            $fdevol  = tools_devolucion_herramienta($r['herrId'], $fsalida);
+            $h = isset($cat[(string) $r['herrId']]) ? $cat[(string) $r['herrId']] : array();
+            $out[] = array(
+                'herrId'      => $r['herrId'],
+                'sapa_id'     => $sapa,
+                'origen'      => $r['origen'] ? $r['origen'] : 'MANTENEDOR',
+                'activa'      => (int) $r['activa'],
+                'codigo'      => isset($h['codigo']) ? $h['codigo'] : '',
+                'descripcion' => isset($h['descripcion']) ? $h['descripcion'] : ('herr ' . $r['herrId']),
+                'marca'       => isset($h['marca']) ? $h['marca'] : '',
+                'salida'      => $fsalida,
+                'devolucion'  => $fdevol,
+                'dias'        => tools_dias_entre($fsalida, $fdevol),
+            );
+        }
+        return $out;
+    }
+
+    /**
+     * Asocia un vale de panol (y sus herramientas) a una OT. Definicion 5:
+     * un vale, una sola OT -> la unique de tbl_otvales evita duplicar.
+     * $origen: PANOLERO | MANTENEDOR | SUPERVISOR (quien lo asocia).
+     * Devuelve array('ok'=>bool,'msg'=>str,'herr'=>int).
+     */
+    function asociarVale($otId, $sapa, $origen)
+    {
+        log_message('DEBUG', "#TRAZA | ASSET | Ordenservicios | asociarVale($otId,$sapa,$origen)");
+        $this->load->helper('tools');
+        $otId = (int) $otId;
+        $sapa = (int) $sapa;
+        $origen = in_array($origen, array('PANOLERO', 'MANTENEDOR', 'SUPERVISOR')) ? $origen : 'MANTENEDOR';
+        if (!$otId || !$sapa) {
+            return array('ok' => false, 'msg' => 'Faltan datos (OT o vale).', 'herr' => 0);
+        }
+        $empresaAsset = empresa();
+        $userdata = $this->session->userdata('user_data');
+        $usrId = isset($userdata[0]['usrId']) ? (int) $userdata[0]['usrId'] : 0;
+
+        // Definicion 5: el vale no puede estar ya asociado a OTRA OT.
+        $ya = $this->db->select('otId')
+            ->from('tbl_otvales')
+            ->where('sapa_id', $sapa)
+            ->where('id_empresa', $empresaAsset)
+            ->get()->row_array();
+        if ($ya) {
+            if ((int) $ya['otId'] === $otId) {
+                return array('ok' => false, 'msg' => 'Este vale ya esta asociado a esta OT.', 'herr' => 0);
+            }
+            return array('ok' => false, 'msg' => 'El vale ya esta asociado a la OT ' . $ya['otId'] . '.', 'herr' => 0);
+        }
+
+        $herrs = tools_herramientas_de_vale($sapa);
+        if (!$herrs) {
+            return array('ok' => false, 'msg' => 'El vale no tiene herramientas.', 'herr' => 0);
+        }
+
+        $this->db->trans_start();
+        $this->db->insert('tbl_otvales', array(
+            'otId'       => $otId,
+            'sapa_id'    => $sapa,
+            'origen'     => $origen,
+            'usrId'      => $usrId,
+            'fecha'      => date('Y-m-d H:i:s'),
+            'id_empresa' => $empresaAsset,
+        ));
+        $n = 0;
+        foreach ($herrs as $h) {
+            $herrId = (int) $h['herr_id'];
+            $existe = $this->db->select('otherrusada_id')
+                ->from('tbl_otherramientasusadas')
+                ->where('otId', $otId)
+                ->where('herrId', $herrId)
+                ->where('sapa_id', $sapa)
+                ->where('id_empresa', $empresaAsset)
+                ->get()->row_array();
+            if (!$existe) {
+                $this->db->insert('tbl_otherramientasusadas', array(
+                    'otId'       => $otId,
+                    'herrId'     => $herrId,
+                    'sapa_id'    => $sapa,
+                    'activa'     => 1,
+                    'id_empresa' => $empresaAsset,
+                ));
+                $n++;
+            }
+        }
+        $this->db->trans_complete();
+        if ($this->db->trans_status() === false) {
+            return array('ok' => false, 'msg' => 'No se pudo asociar el vale.', 'herr' => 0);
+        }
+        return array('ok' => true, 'msg' => 'Vale asociado.', 'herr' => $n);
+    }
+
+    /**
+     * Quita un vale asociado y sus herramientas usadas. Definicion 8:
+     * el MANTENEDOR solo quita lo que el asocio (origen MANTENEDOR);
+     * el SUPERVISOR puede quitar ademas los vales del PANOLERO.
+     * $rolActor: MANTENEDOR | SUPERVISOR.
+     */
+    function quitarVale($otId, $sapa, $rolActor)
+    {
+        log_message('DEBUG', "#TRAZA | ASSET | Ordenservicios | quitarVale($otId,$sapa,$rolActor)");
+        $otId = (int) $otId;
+        $sapa = (int) $sapa;
+        $empresaAsset = empresa();
+        if (!$otId || !$sapa) {
+            return array('ok' => false, 'msg' => 'Faltan datos.');
+        }
+        $vale = $this->db->select('origen')
+            ->from('tbl_otvales')
+            ->where('otId', $otId)
+            ->where('sapa_id', $sapa)
+            ->where('id_empresa', $empresaAsset)
+            ->get()->row_array();
+        if (!$vale) {
+            return array('ok' => false, 'msg' => 'El vale no esta asociado a esta OT.');
+        }
+        $origen = $vale['origen'];
+        // Permisos definicion 8 (control en servidor, no solo en la vista).
+        $permitido = array('MANTENEDOR' => array('MANTENEDOR'),
+                           'SUPERVISOR' => array('SUPERVISOR', 'PANOLERO'));
+        $rolActor = isset($permitido[$rolActor]) ? $rolActor : 'MANTENEDOR';
+        if (!in_array($origen, $permitido[$rolActor])) {
+            return array('ok' => false, 'msg' => 'No tiene permiso para quitar este vale (' . $origen . ').');
+        }
+        $this->db->trans_start();
+        $this->db->where('otId', $otId)->where('sapa_id', $sapa)
+                 ->where('id_empresa', $empresaAsset)->delete('tbl_otherramientasusadas');
+        $this->db->where('otId', $otId)->where('sapa_id', $sapa)
+                 ->where('id_empresa', $empresaAsset)->delete('tbl_otvales');
+        $this->db->trans_complete();
+        if ($this->db->trans_status() === false) {
+            return array('ok' => false, 'msg' => 'No se pudo quitar el vale.');
+        }
+        return array('ok' => true, 'msg' => 'Vale quitado.');
+    }
+
+    /**
+     * Marca/desmarca una herramienta usada (el tilde de "se uso"). Definicion 6.
+     */
+    function setActivaHerramienta($otId, $herrId, $sapa, $activa)
+    {
+        $empresaAsset = empresa();
+        $this->db->where('otId', (int) $otId)
+                 ->where('herrId', (int) $herrId)
+                 ->where('sapa_id', (int) $sapa)
+                 ->where('id_empresa', $empresaAsset)
+                 ->update('tbl_otherramientasusadas', array('activa' => $activa ? 1 : 0));
+        return array('ok' => true);
+    }
+
+
+
+
 
 
 

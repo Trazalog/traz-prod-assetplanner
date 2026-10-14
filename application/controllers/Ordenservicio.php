@@ -263,6 +263,74 @@ class Ordenservicio extends CI_Controller
     echo json_encode($response);
   }
 
+  // F4 REQ-ASSET-ALM: entregas (parciales/totales) de los pedidos de la OT
+  public function getEntregasPorOT()
+  {
+    $response = $this->Ordenservicios->getEntregasPorOT($this->input->post('id_ot'));
+    echo json_encode($response);
+  }
+
+  // F5 REQ-ASSET-ALM: herramientas usadas (desde vales de panol) con dias de uso
+  public function getHerramientasUsadas()
+  {
+    $response = $this->Ordenservicios->getHerramientasUsadas($this->input->post('id_ot'));
+    echo json_encode($response);
+  }
+
+  // F5 REQ-ASSET-ALM: busca vales de panol para asociar a la OT.
+  // rol=SUPERVISOR -> sin filtro de DNI; cualquier otro -> por DNI (def. 2 y 3).
+  public function buscarVales()
+  {
+    $this->load->helper('tools');
+    $rol   = strtoupper((string) $this->input->post('rol'));
+    $desde = $this->input->post('desde');
+    $hasta = $this->input->post('hasta');
+    $dni   = trim((string) $this->input->post('dni'));
+    if (!$desde) { $desde = date('Y-m-d', strtotime('-3 months')); }
+    if (!$hasta) { $hasta = date('Y-m-d'); }
+    if ($rol === 'SUPERVISOR') {
+      $vales = tools_vales($desde, $hasta);
+    } else {
+      if ($dni === '') {
+        echo json_encode(array('ok' => false, 'msg' => 'Sin DNI cargado no se pueden asociar herramientas.', 'vales' => array()));
+        return;
+      }
+      $vales = tools_vales_por_dni($dni, $desde, $hasta);
+    }
+    echo json_encode(array('ok' => true, 'vales' => $vales));
+  }
+
+  // F5: asocia un vale a la OT. origen se deriva del rol/pantalla.
+  public function asociarVale()
+  {
+    $otId   = $this->input->post('id_ot');
+    $sapa   = $this->input->post('sapa_id');
+    $origen = strtoupper((string) $this->input->post('origen'));
+    $response = $this->Ordenservicios->asociarVale($otId, $sapa, $origen);
+    echo json_encode($response);
+  }
+
+  // F5: quita un vale asociado (permisos def. 8, controlados en el modelo).
+  public function quitarVale()
+  {
+    $otId = $this->input->post('id_ot');
+    $sapa = $this->input->post('sapa_id');
+    $rol  = strtoupper((string) $this->input->post('rol'));
+    $response = $this->Ordenservicios->quitarVale($otId, $sapa, $rol);
+    echo json_encode($response);
+  }
+
+  // F5: marca/desmarca "se uso" una herramienta del vale (def. 6).
+  public function tildarHerramienta()
+  {
+    $otId   = $this->input->post('id_ot');
+    $herrId = $this->input->post('herr_id');
+    $sapa   = $this->input->post('sapa_id');
+    $activa = $this->input->post('activa');
+    $response = $this->Ordenservicios->setActivaHerramienta($otId, $herrId, $sapa, $activa);
+    echo json_encode($response);
+  }
+
   public function getsolicitud()
   {
 
