@@ -124,6 +124,40 @@ test.describe('MAN-UC-011/012/013 — entregas de almacén y herramientas usadas
     await expect.poll(async () => page.locator('#tablaHerrUsadas tbody tr').count(), { timeout: 10000 }).toBe(antes);
   });
 
+  // ---- Correctitud: lo "entregado" (derivado) = suma de las entregas reales ----
+  test('F4 "entregado" coincide con la suma de las entregas del almacén', async ({ authedPage: page }) => {
+    const ins = await json(page, 'Ordenservicio/getInsumosPorOT', { id_ot: OT });
+    const ped = await json(page, 'Ordenservicio/getEntregasPorOT', { id_ot: OT });
+    const sumadas = {};
+    for (const p of ped) for (const e of (p.entregas || [])) for (const d of (e.detalle || [])) {
+      sumadas[d.barcode] = (sumadas[d.barcode] || 0) + Number(d.cantidad);
+    }
+    for (const f of ins) {
+      expect(Number(f.entregado), `art ${f.barcode}: derivado vs entregas`).toBe(sumadas[f.barcode] || 0);
+    }
+  });
+
+  // ---- Correctitud: días de uso en las dos ramas (devuelta / sin devolver) def. 6 y 10 ----
+  test('@escribe F5 días de uso: con devolución = devol−salida; sin devolución = hoy−salida', async ({ authedPage: page }) => {
+    // vale 74 tiene una herramienta devuelta (123456) y otra sin devolver — se asocia a una OT vacía
+    const SAPA = process.env.TEST_SAPA_DEVUELTO || '74';
+    await json(page, 'Ordenservicio/asociarVale', { id_ot: OT_VACIA, sapa_id: SAPA, origen: 'MANTENEDOR' });
+    try {
+      const hs = await json(page, 'Ordenservicio/getHerramientasUsadas', { id_ot: OT_VACIA });
+      expect(hs.length).toBeGreaterThan(0);
+      const dias = (desde, hasta) => Math.floor((Date.parse(hasta) - Date.parse(desde)) / 86400000);
+      const hoy = new Date().toISOString().slice(0, 10);
+      let conDevol = 0, sinDevol = 0;
+      for (const h of hs) {
+        if (h.devolucion) { conDevol++; expect(Number(h.dias)).toBe(dias(h.salida, h.devolucion)); }
+        else { sinDevol++; expect(Math.abs(Number(h.dias) - dias(h.salida, hoy))).toBeLessThanOrEqual(1); }
+      }
+      expect(conDevol, 'el vale de prueba tiene al menos una herramienta devuelta').toBeGreaterThan(0);
+    } finally {
+      await json(page, 'Ordenservicio/quitarVale', { id_ot: OT_VACIA, sapa_id: SAPA, rol: 'MANTENEDOR' });
+    }
+  });
+
   // ---- Estado vacío (def. 14) ----
   test('estado vacío: una OT sin pedido ni herramientas rinde sin fatal', async ({ authedPage: page }) => {
     const ins = await json(page, 'Ordenservicio/getInsumosPorOT', { id_ot: OT_VACIA });
