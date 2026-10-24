@@ -206,13 +206,26 @@
                     <!--/#tareas -->
                     <!-- Tab pedidomateriales -->
                     <div role="tabpanel" class="tab-pane" id="pedidomateriales">
-                        <?php 
+                        <!-- F4 REQ-ASSET-ALM: aclaracion de los dos bloques de esta pestana -->
+                        <p class="text-muted" style="margin:0 0 10px">
+                          <span class="fa fa-info-circle"></span>
+                          Esta pesta&ntilde;a tiene dos partes: arriba, <strong>solicitar materiales</strong> (crear el pedido al almac&eacute;n);
+                          abajo, las <strong>entregas ya realizadas</strong> de esta OT (informativo, solo lectura).
+                        </p>
+                        <?php
                         $this->load->view(ALM.'notapedido/generar_pedido');
                       ?>
                         <!-- F4 REQ-ASSET-ALM: entregas del pedido (lectura) -->
                         <div class="panel panel-default" style="margin-top:12px">
-                          <div class="panel-heading"><span class="fa fa-truck"></span> Entregas del Pedido</div>
+                          <div class="panel-heading">
+                            <span class="fa fa-truck"></span> Entregas ya realizadas
+                            <small>(del almac&eacute;n &middot; solo lectura)</small>
+                          </div>
                           <div class="panel-body">
+                            <p class="text-muted" style="margin-top:0">
+                              Entregas que el almac&eacute;n ya hizo para los pedidos de esta OT.
+                              Al reci&eacute;n asignar la OT normalmente est&aacute; vac&iacute;o: se van llenando a medida que el almac&eacute;n entrega.
+                            </p>
                             <table class="table table-condensed" id="tablaEntregasEjec">
                               <thead><tr><th>N&deg;</th><th>Fecha</th><th>Comprobante</th><th>Solicitante</th><th>Destino</th></tr></thead>
                               <tbody></tbody>
