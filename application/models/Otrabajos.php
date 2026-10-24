@@ -296,10 +296,28 @@ class Otrabajos extends CI_Model {
         // F4 (REQ-ASSET-ALM): el detalle local se conserva en MariaDB; los datos
         // de la herramienta salen del pañol de tools via REST (tools_helper).
         $this->load->helper('tools');
-        $this->db->select('cantidad, herrId');
+        $this->db->select('cantidad, herrId, descripcion_libre');
         $this->db->from('tbl_otherramientas');
         $this->db->where('otId', $id);
-        return tools_merge_herramientas($this->db->get()->result_array());
+        $rows = $this->db->get()->result_array();
+        // F3 REQ-ASSET-ALM: las filas de texto libre (herrId 0) muestran su texto
+        $libres = array();
+        $catalogo = array();
+        foreach ($rows as $r) {
+            if ((int) $r['herrId'] === 0 && !empty($r['descripcion_libre'])) {
+                $libres[] = array(
+                    'herrId'      => 0,
+                    'cantidad'    => $r['cantidad'],
+                    'codigo'      => '(texto libre)',
+                    'marca'       => '',
+                    'descripcion' => $r['descripcion_libre'],
+                );
+            } else {
+                $catalogo[] = $r;
+            }
+        }
+        $merged = tools_merge_herramientas($catalogo);
+        return array_merge($merged, $libres);
     }
 		// Trae insumos por id de preventivo para Editar
     function getOTInsumos($id){

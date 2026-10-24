@@ -494,3 +494,154 @@ if (!function_exists('tools_pan_write')) {
         return $ci->rest->callAPI($metodo, REST_TOOLS_PAN . '/' . ltrim($path, '/'), $body, $headers);
     }
 }
+
+if (!function_exists('tools_entregas_pedido')) {
+    /**
+     * Entregas (parciales o totales) de un pedido de materiales, desde el
+     * almacen de tools. F2 REQ-ASSET-ALM: /entregas/pedido/{pema_id}.
+     *
+     * @param  int|string $pema
+     * @return array  lista de entregas: enma_id, fecha, solicitante, dni, comprobante
+     */
+    function tools_entregas_pedido($pema)
+    {
+        $ci =& get_instance();
+        if (!$pema) {
+            return array();
+        }
+        $aux  = $ci->rest->callAPI('GET', REST_TOOLS_ALM . '/entregas/pedido/' . $pema);
+        $resp = json_decode($aux['data'], true);
+        $ent  = isset($resp['entregas']['entrega']) ? $resp['entregas']['entrega'] : array();
+        if ($ent && !isset($ent[0])) {
+            $ent = array($ent);
+        }
+        return $ent;
+    }
+}
+
+if (!function_exists('tools_entrega_detalle')) {
+    /**
+     * Detalle de una entrega: articulos entregados con lote y deposito.
+     * El precio NO se expone (decision del PM). F2: /entregas/detalle/{enma_id}.
+     *
+     * @param  int|string $enma
+     * @return array
+     */
+    function tools_entrega_detalle($enma)
+    {
+        $ci =& get_instance();
+        if (!$enma) {
+            return array();
+        }
+        $aux  = $ci->rest->callAPI('GET', REST_TOOLS_ALM . '/entregas/detalle/' . $enma);
+        $resp = json_decode($aux['data'], true);
+        $det  = isset($resp['detalles']['detalle']) ? $resp['detalles']['detalle'] : array();
+        if ($det && !isset($det[0])) {
+            $det = array($det);
+        }
+        return $det;
+    }
+}
+
+if (!function_exists('tools_salida_fecha')) {
+    /** Fecha (y datos) de un vale de salida de panol. F5 REQ-ASSET-ALM. */
+    function tools_salida_fecha($sapa)
+    {
+        $ci =& get_instance();
+        if (!$sapa) { return null; }
+        $aux  = $ci->rest->callAPI('GET', REST_TOOLS_PAN . '/salida/fecha/' . $sapa);
+        $resp = json_decode($aux['data'], true);
+        return isset($resp['salida']) ? $resp['salida'] : null;
+    }
+}
+
+if (!function_exists('tools_devolucion_herramienta')) {
+    /**
+     * Fecha de devolucion de una herramienta: la primera entrada al panol
+     * posterior a la salida (definicion 10). Devuelve 'YYYY-MM-DD' o null.
+     */
+    function tools_devolucion_herramienta($herrId, $desde)
+    {
+        $ci =& get_instance();
+        if (!$herrId || !$desde) { return null; }
+        $aux  = $ci->rest->callAPI('GET', REST_TOOLS_PAN . '/herramienta/' . $herrId . '/devolucion/desde/' . $desde);
+        $resp = json_decode($aux['data'], true);
+        $f = isset($resp['devolucion']['fecha']) ? $resp['devolucion']['fecha'] : '';
+        return ($f !== '' && $f !== null) ? $f : null;
+    }
+}
+
+if (!function_exists('tools_dias_entre')) {
+    /** Dias entre dos fechas 'YYYY-MM-DD' (hasta=null => hoy). >=0. */
+    function tools_dias_entre($desde, $hasta)
+    {
+        if (!$desde) { return 0; }
+        $d1 = strtotime(substr($desde, 0, 10));
+        $d2 = $hasta ? strtotime(substr($hasta, 0, 10)) : time();
+        $dias = (int) floor(($d2 - $d1) / 86400);
+        return $dias < 0 ? 0 : $dias;
+    }
+}
+
+if (!function_exists('tools_vales_por_dni')) {
+    /**
+     * Vales de salida de panol filtrados por el DNI del formulario del vale
+     * y un rango de fechas (MANTENEDOR). Definiciones 2 y 3. Devuelve array de
+     * salidas: array('sapa_id','fecha','comprobante','responsable','destino').
+     */
+    function tools_vales_por_dni($dni, $desde, $hasta)
+    {
+        $ci =& get_instance();
+        $dni = trim($dni);
+        if ($dni === '') { return array(); }
+        $empr = tools_empr_id();
+        if ($empr === null) { return array(); }
+        $url = REST_TOOLS_PAN . '/salidas/dni/' . rawurlencode($dni)
+             . '/empresa/' . $empr . '/desde/' . $desde . '/hasta/' . $hasta;
+        $aux  = $ci->rest->callAPI('GET', $url);
+        $resp = json_decode($aux['data'], true);
+        return tools_normaliza_salidas($resp);
+    }
+}
+
+if (!function_exists('tools_vales')) {
+    /** Vales de salida por rango de fechas, sin filtro de DNI (SUPERVISOR). */
+    function tools_vales($desde, $hasta)
+    {
+        $ci =& get_instance();
+        $empr = tools_empr_id();
+        if ($empr === null) { return array(); }
+        $url = REST_TOOLS_PAN . '/salidas/empresa/' . $empr
+             . '/desde/' . $desde . '/hasta/' . $hasta;
+        $aux  = $ci->rest->callAPI('GET', $url);
+        $resp = json_decode($aux['data'], true);
+        return tools_normaliza_salidas($resp);
+    }
+}
+
+if (!function_exists('tools_normaliza_salidas')) {
+    /** Desempaqueta {salidas:{salida:[...] | {...}}} a un array plano. PHP 5.6. */
+    function tools_normaliza_salidas($resp)
+    {
+        if (!isset($resp['salidas']['salida'])) { return array(); }
+        $s = $resp['salidas']['salida'];
+        // DSS devuelve objeto suelto cuando hay un solo registro
+        if (isset($s['sapa_id'])) { $s = array($s); }
+        return $s;
+    }
+}
+
+if (!function_exists('tools_herramientas_de_vale')) {
+    /** Herramientas de un vale: array de array('herr_id','codigo','descripcion'). */
+    function tools_herramientas_de_vale($sapa)
+    {
+        $ci =& get_instance();
+        if (!$sapa) { return array(); }
+        $aux  = $ci->rest->callAPI('GET', REST_TOOLS_PAN . '/panol/salida/' . $sapa . '/herramientas');
+        $resp = json_decode($aux['data'], true);
+        if (!isset($resp['herramientas']['herramienta'])) { return array(); }
+        $h = $resp['herramientas']['herramienta'];
+        if (isset($h['herr_id'])) { $h = array($h); }
+        return $h;
+    }
+}
