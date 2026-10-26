@@ -199,79 +199,51 @@ class Preventivos extends CI_Model
 
 	// Trae herramientas por empresa logueada - Listo
 	function getherramienta(){
-
-		$userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa']; 
-
-		$query= $this->db->get_where('herramientas',array('id_empresa' => $empId));
-		if($query->num_rows()>0){
-            return $query->result();
-        }
-        else{
-            return false;
-        }
+		log_message('DEBUG', "#TRAZA | ASSET | Preventivos | getherramienta()");
+		// F4 (REQ-ASSET-ALM): el catalogo de herramientas vive en el pañol de tools.
+		$this->load->helper('tools');
+		return tools_herramientas_full();
 	}
 
 	function getHerramientasB()
 	{
-		$userdata = $this->session->userdata('user_data');
-		$empId = $userdata[0]['id_empresa']; 
-		$this->db->select('herramientas.herrId AS value, 
-				herramientas.herrcodigo AS codigo,
-				herramientas.herrmarca AS marca,
-				herramientas.herrdescrip AS label');
-		$this->db->from('herramientas');      
-		$this->db->where('herramientas.id_empresa', $empId);
-		//$this->db->where('herramientas.estado !=', 'AN');
-		$this->db->order_by('label', 'ASC');
-		$query = $this->db->get();
-
-		if($query->num_rows()>0){
-				return $query->result_array();
-		}
-		else{
-				return false;
-		}
+		log_message('DEBUG', "#TRAZA | ASSET | Preventivos | getHerramientasB()");
+		// F4 (REQ-ASSET-ALM): autocomplete contra el pañol de tools.
+		$this->load->helper('tools');
+		return tools_herramientas_autocomplete();
 	}
 
 	//Trae insumos (articles) por empresa logueada
 	function getinsumo(){
-		$userdata = $this->session->userdata('user_data');
-			$empId = $userdata[0]['id_empresa'];
-			$this->db->select('articles.artId AS value, 
-												articles.artBarCode AS codigo,
-												articles.artDescription AS label');
-			$this->db->from('articles');      
-			$this->db->where('articles.id_empresa', $empId);
-			$this->db->where('articles.artEstado !=', 'AN');
-			$this->db->order_by('label', 'ASC');
-			$query = $this->db->get();		
-		if($query->num_rows()>0){
-			return $query->result();
-		}
-		else{
-			return false;
-		}
+		log_message('DEBUG', "#TRAZA | ASSET | Preventivos | getinsumo()");
+		// F3 (REQ-ASSET-ALM): el catalogo de articulos vive en tools, no en `articles`.
+		$this->load->helper('tools');
+		return tools_articulos_autocomplete();
 	}
 
 	//Trae insumo por id
 	function traerinsumo($data = null){
-		$id = $data['id_insumo'];
-		$userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa']; 
-
-        $this->db->select('articles.*');
-    	$this->db->from('articles');    	
-    	$this->db->where('articles.artId', $id);    	
-    	$this->db->where('articles.id_empresa', $empId);
-
-    	$query= $this->db->get();
-    	if($query->num_rows()>0){
-                return $query->result();
-       	}
-        else{
-                return false;
-        }	
+		log_message('DEBUG', "#TRAZA | ASSET | Preventivos | traerinsumo()");
+		// F3 (REQ-ASSET-ALM): el articulo se resuelve contra el catalogo de tools.
+		if ($data == null || empty($data['id_insumo'])) {
+			return false;
+		}
+		$this->load->helper('tools');
+		$map = tools_articulos_map();
+		$id  = (int) $data['id_insumo'];
+		if (!isset($map[$id])) {
+			return false;
+		}
+		$a = $map[$id];
+		return array((object) array(
+			'artId'          => (int) $a['arti_id'],
+			'artBarCode'     => $a['barcode'],
+			'artDescription' => $a['descripcion'],
+			'artCoste'       => $a['costo'],
+			'punto_pedido'   => $a['punto_pedido'],
+			'unidadmedida'   => $a['unidad_medida'],
+			'id_empresa'     => tools_empr_id(),
+		));
 	}
 
 	// Guarda Preventivo 
@@ -355,55 +327,26 @@ class Preventivos extends CI_Model
 
     // Trae herramientas ppor id de preventivo para Editar
     function getPreventivoHerramientas($id){
-        
-        $userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa']; 
-
-        $this->db->select('tbl_preventivoherramientas.cantidad,
-                            herramientas.herrcodigo,
-                            herramientas.herrmarca,
-                            herramientas.herrdescrip,
-                            herramientas.herrId');
+        log_message('DEBUG', "#TRAZA | ASSET | Preventivos | getPreventivoHerramientas()");
+        // F4 (REQ-ASSET-ALM): el detalle local se conserva en MariaDB; los datos
+        // de la herramienta salen del pañol de tools via REST (tools_helper).
+        $this->load->helper('tools');
+        $this->db->select('cantidad, herrId');
         $this->db->from('tbl_preventivoherramientas');
-        $this->db->join('herramientas', 'herramientas.herrId = tbl_preventivoherramientas.herrId');   
-        $this->db->where('tbl_preventivoherramientas.prevId', $id);        
-        $this->db->where('tbl_preventivoherramientas.id_empresa', $empId);
-        $query= $this->db->get();
-
-        if( $query->num_rows() > 0)
-        {
-          return $query->result_array();
-        }
-        else {
-          return 0;
-        }
+        $this->db->where('prevId', $id);
+        return tools_merge_herramientas($this->db->get()->result_array());
     }
 
     // Trae insumos por id de preventivo para Editar
     function getPreventivoInsumos($id){
-        
-        $userdata = $this->session->userdata('user_data');
-        $empId = $userdata[0]['id_empresa']; 
-
-        $this->db->select('tbl_preventivoinsumos.id,
-                            tbl_preventivoinsumos.cantidad,
-                            articles.artBarCode,
-                            articles.artId,
-                            articles.artDescription,
-                            articles.id_empresa');                            
+        log_message('DEBUG', "#TRAZA | ASSET | Preventivos | getPreventivoInsumos()");
+        // F3 (REQ-ASSET-ALM): el detalle local se conserva en MariaDB; los datos
+        // del articulo salen del catalogo de tools via REST (tools_helper).
+        $this->load->helper('tools');
+        $this->db->select('id, cantidad, artId');
         $this->db->from('tbl_preventivoinsumos');
-        $this->db->join('articles', 'articles.artId = tbl_preventivoinsumos.artId');   
-        $this->db->where('tbl_preventivoinsumos.prevId', $id);        
-        $this->db->where('articles.id_empresa', $empId);
-        $query= $this->db->get(); 
-
-        if( $query->num_rows() > 0)
-        {
-          return $query->result_array();
-        }
-        else {
-          return 0;
-        }
+        $this->db->where('prevId', $id);
+        return tools_merge_articulos($this->db->get()->result_array());
     }
 
     // Guarda edicion de Preventivo 
@@ -443,16 +386,19 @@ class Preventivos extends CI_Model
 
 ///////////////////
     function getProductos (){
-  	 	$query = $this->db->query("SELECT `herrId`,`herrcodigo`, `herrmarca`, `equip_est` FROM `herramientas`");
-     	$i=0;
-	    foreach ($query->result() as $row)
-	    {
-	        $productos[$i]['label'] = $row->herrcodigo;
-	        $productos[$i]['value'] = $row->herrmarca;
-	        $productos[$i]['id_herr'] = $row->herrId;
-	        $i = $i++;
-	    }
-	    return $productos;
+        log_message('DEBUG', "#TRAZA | ASSET | Preventivos | getProductos()");
+        // F4 (REQ-ASSET-ALM): catalogo del pañol de tools. De paso corrige el
+        // $i = $i++ del original, que devolvia siempre un solo elemento.
+        $this->load->helper('tools');
+        $productos = array();
+        foreach (tools_herramientas() as $h) {
+            $productos[] = array(
+                'label'   => $h['codigo'],
+                'value'   => $h['marca'],
+                'id_herr' => (int) $h['herr_id'],
+            );
+        }
+        return $productos;
     }
 
     function getdatos($data = null){

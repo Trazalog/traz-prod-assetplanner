@@ -214,6 +214,8 @@ class Groups extends CI_Model {
 		$this->db->join('sismenuactions', 'sismenuactions.menuAccId = sisgroupsactions.menuAccId', 'inner');
 		$this->db->join('sismenu', 'sismenu.id = sismenuactions.menuId', 'inner');
 		//$this->db->where('sismenu.id_empresa', $empresaId);
+		// F3 (REQ-ASSET-ALM): honrar sismenu.estado — 'IN' inhabilita el item sin borrarlo
+		$this->db->where('sismenu.estado', 'AC');
 		$this->db->where('sisgroups.grpId', $grpId);
 		$this->db->group_by('sismenu.name');
 		$this->db->order_by("sismenu.id", "asc");
@@ -226,7 +228,8 @@ class Groups extends CI_Model {
 			if($m['parent'] != null){
 				if( array_search($m['parent'], array_column($all_menu, 'id')) !== false)
 				{
-				    $mnuParent = $this->db->get_where("sismenu", array('id' => $m['parent']) )->result_array();
+				    $mnuParent = $this->db->get_where("sismenu", array('id' => $m['parent'], 'estado' => 'AC') )->result_array();
+				    if (empty($mnuParent)) { continue; } // padre inhabilitado (F3)
 				    //array_push($mnuParent[0], $grpId);
 				    $mnuParent[0] += ['grpId' => $grpId];
 					$main_menu[] = $mnuParent[0];

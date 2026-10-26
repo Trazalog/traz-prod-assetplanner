@@ -356,10 +356,11 @@
                   <tr>
                     <th>Nº O.Insumo</th>
                     <th>Fecha</th>
-                    <th>Solicitante</th>
                     <th>Código</th>
                     <th>Descripción</th>
-                    <th>Cantidad</th>
+                    <th>Pedido</th>
+                    <th>Entregado</th>
+                    <th>Pendiente</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
@@ -437,20 +438,22 @@
     
             for(i = 0; i < data.length; i++) {
               
-              var otNro = data[i]['nroOT'];
+              var otNro = data[i]['pema_id'];
               var fecha = data[i]['fecha'];
-              var solicitante = data[i]['nombre'] + ' '+ data[i]['apellido'];
-              var codigo = data[i]['codigo'];
+              var codigo = data[i]['barcode'];
               var descripcion = data[i]['descripcion'];
-              var cantidad = data[i]['cantidad'];
+              var pedido = data[i]['pedido'];
+              var entregado = data[i]['entregado'];
+              var pendiente = data[i]['pendiente'];
               //agrego valores a la tabla
-              $('#tablalistinsumos').DataTable().row.add( [            
+              $('#tablalistinsumos').DataTable().row.add( [
                 otNro,
                 fecha,
-                solicitante,
                 codigo,
-                descripcion, 
-                cantidad             
+                descripcion,
+                pedido,
+                entregado,
+                pendiente
               ] );
               $('#tablalistinsumos').DataTable().draw();        
             }   

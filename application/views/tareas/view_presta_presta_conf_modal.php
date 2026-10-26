@@ -205,14 +205,18 @@
                     <th>Nº O.Insumo</th>
                     <th>Fecha</th>
                     <!-- <th>Solicitante</th> -->
-                    <th>Código</th>  
-                    <th>Descripción</th>           
-                    <th>Cantidad</th> 
+                    <th>Código</th>
+                    <th>Descripción</th>
+                    <th>Pedido</th>
+                    <th>Entregado</th>
+                    <th>Pendiente</th>
                   </tr>
                 </thead>
                 <tbody>
-                <?php                  
+                <?php
                    foreach($insumos as $ins){
+                      $entregado = isset($ins['entregado']) ? $ins['entregado'] : '';
+                      $pendiente = isset($ins['pendiente']) ? $ins['pendiente'] : '';
                       echo '<tr>';
                       echo '<td>'.$ins['pema_id'].'</td>';
                       echo '<td>'.$ins['fecha'].'</td>';
@@ -220,8 +224,10 @@
                       echo '<td>'.$ins['barcode'].'</td>';
                       echo '<td>'.$ins['descripcion'].'</td>';
                       echo '<td>'.$ins['cantidad'].'</td>';
+                      echo '<td>'.$entregado.'</td>';
+                      echo '<td>'.$pendiente.'</td>';
                       echo '</tr>';
-                    }     
+                    }
                   ?>
                 </tbody>
               </table>
@@ -309,7 +315,49 @@
               </div>
             </div>
           </div><!-- Fin Panel imagenes de evidencia  -->
-  
+
+          <!-- F4 REQ-ASSET-ALM: Insumos y entregas (lectura) -->
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingInsumosPC">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseInsumosPC" aria-expanded="false">Insumos y Entregas</a>
+              </h4>
+            </div>
+            <div id="collapseInsumosPC" class="panel-collapse collapse" role="tabpanel">
+              <div class="panel-body">
+                <table class="table table-condensed" id="tablaInsumosPC">
+                  <thead><tr><th>C&oacute;digo</th><th>Art&iacute;culo</th><th>Pedido</th><th>Entregado</th><th>Pendiente</th></tr></thead>
+                  <tbody></tbody>
+                </table>
+                <p class="text-muted" id="sinInsumosPC" style="display:none">Esta OT no gener&oacute; pedido de materiales.</p>
+                <h5><span class="fa fa-truck"></span> Entregas del Pedido</h5>
+                <table class="table table-condensed" id="tablaEntregasPC">
+                  <thead><tr><th>N&deg;</th><th>Fecha</th><th>Comprobante</th><th>Solicitante</th><th>Destino</th></tr></thead>
+                  <tbody></tbody>
+                </table>
+                <p class="text-muted" id="sinEntregasPC" style="display:none">Sin entregas registradas.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- F5 REQ-ASSET-ALM: Herramientas usadas (lectura, con tiempo de uso) -->
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingHerrPC">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseHerrPC" aria-expanded="false">Herramientas Usadas</a>
+              </h4>
+            </div>
+            <div id="collapseHerrPC" class="panel-collapse collapse" role="tabpanel">
+              <div class="panel-body">
+                <table class="table table-condensed" id="tablaHerrUsadasPC">
+                  <thead><tr><th>Us&oacute;</th><th>C&oacute;digo</th><th>Herramienta</th><th>Marca</th><th>Vale</th><th>Origen</th><th>Uso</th><th>Devoluci&oacute;n</th></tr></thead>
+                  <tbody></tbody>
+                </table>
+                <p class="text-muted" id="sinHerrUsadasPC" style="display:none">No se asociaron herramientas usadas a esta OT.</p>
+              </div>
+            </div>
+          </div>
+
         </div> <!-- / .panel-group -->
   </form>      
 
@@ -379,3 +427,25 @@
       }); 
   
   </script>
+
+<script>
+// F4/F5 REQ-ASSET-ALM: insumos+entregas y herramientas usadas en Presta Conformidad (lectura).
+(function(){
+  var oid = $('#id_ot').val();
+  $.ajax({ type:'POST', global:false, dataType:'json', url:'Ordenservicio/getInsumosPorOT', data:{ id_ot:oid },
+    success:function(d){ var tb=$('#tablaInsumosPC tbody'); tb.empty(); d=d||[];
+      for(var i=0;i<d.length;i++){ var x=d[i]; tb.append('<tr><td>'+(x.codigo||'')+'</td><td>'+(x.articulo||x.descripcion||'')+'</td><td>'+(x.pedido||0)+'</td><td>'+(x.entregado||0)+'</td><td>'+(x.pendiente||0)+'</td></tr>'); }
+      $('#sinInsumosPC').toggle(d.length===0); }});
+  $.ajax({ type:'POST', global:false, dataType:'json', url:'Ordenservicio/getEntregasPorOT', data:{ id_ot:oid },
+    success:function(peds){ var tb=$('#tablaEntregasPC tbody'); tb.empty(); peds=peds||[]; var n=0;
+      for(var i=0;i<peds.length;i++){ var ents=peds[i].entregas||[]; for(var j=0;j<ents.length;j++){ var e=ents[j]; n++; tb.append('<tr><td>N° '+e.enma_id+'</td><td>'+(e.fecha||'')+'</td><td>'+(e.comprobante||'')+'</td><td>'+(e.solicitante||'')+'</td><td>'+(e.destino||'')+'</td></tr>'); } }
+      $('#sinEntregasPC').toggle(n===0); }});
+  $.ajax({ type:'POST', global:false, dataType:'json', url:'Ordenservicio/getHerramientasUsadas', data:{ id_ot:oid },
+    success:function(d){ var tb=$('#tablaHerrUsadasPC tbody'); tb.empty(); d=d||[];
+      for(var i=0;i<d.length;i++){ var h=d[i];
+        var dev = h.devolucion ? '<span class="label label-success">'+h.devolucion+'</span>' : '<span class="label label-warning">sin devolver</span>';
+        var org = '<span class="label label-default">'+h.origen.toLowerCase()+'</span>';
+        tb.append('<tr><td><input type="checkbox" '+(h.activa?'checked':'')+' disabled></td><td>'+(h.codigo||'')+'</td><td>'+(h.descripcion||'')+'</td><td>'+(h.marca||'')+'</td><td>N\u00b0 '+h.sapa_id+'</td><td>'+org+'</td><td>'+h.dias+(h.dias==1?' d\u00eda':' d\u00edas')+'</td><td>'+dev+'</td></tr>'); }
+      $('#sinHerrUsadasPC').toggle(d.length===0); }});
+})();
+</script>

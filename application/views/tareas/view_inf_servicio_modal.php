@@ -249,7 +249,60 @@
           </div>
         </div>
       </div>
-    </div><!-- end .tabpanel -->
+          <!-- F5 REQ-ASSET-ALM: Herramientas usadas (desde vales de panol) con tiempo de uso -->
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span class="fa fa-wrench icotitulo" aria-hidden="true"></span> Herramientas Usadas <small>(de vales de pa&ntilde;ol)</small>
+          <button type="button" class="btn btn-xs btn-primary pull-right" id="btnAbrirBuscarVales"><span class="fa fa-plus"></span> Asociar vale</button>
+        </div>
+        <div class="panel-body">
+          <!-- F5: buscador de vales (MANTENEDOR -> por DNI; def. 2 y 3) -->
+          <div id="buscarValesBox" class="well well-sm" style="display:none">
+            <div class="row">
+              <div class="col-sm-3">
+                <label class="small">DNI del vale</label>
+                <input type="text" class="form-control input-sm" id="valeDni" placeholder="DNI cargado en el vale">
+              </div>
+              <div class="col-sm-3">
+                <label class="small">Desde</label>
+                <input type="date" class="form-control input-sm" id="valeDesde">
+              </div>
+              <div class="col-sm-3">
+                <label class="small">Hasta</label>
+                <input type="date" class="form-control input-sm" id="valeHasta">
+              </div>
+              <div class="col-sm-3">
+                <label class="small">&nbsp;</label><br>
+                <button type="button" class="btn btn-sm btn-default" id="btnBuscarVales"><span class="fa fa-search"></span> Buscar</button>
+              </div>
+            </div>
+            <p class="small text-muted" style="margin-top:6px">El mantenedor sin DNI cargado no puede asociar herramientas (def. 3). El DNI es el del formulario del vale.</p>
+            <table class="table table-condensed" id="tablaValesEncontrados" style="display:none">
+              <thead><tr><th>Vale</th><th>Fecha</th><th>Responsable</th><th>Destino</th><th></th></tr></thead>
+              <tbody></tbody>
+            </table>
+            <p class="text-muted small" id="sinValesEncontrados" style="display:none">No se encontraron vales para ese filtro.</p>
+          </div>
+          <table class="table table-condensed table-responsive" id="tablaHerrUsadas">
+            <thead>
+              <tr>
+                <th>Us&oacute;</th>
+                <th>C&oacute;digo</th>
+                <th>Herramienta</th>
+                <th>Marca</th>
+                <th>Vale</th>
+                <th>Origen</th>
+                <th>Uso</th>
+                <th>Devoluci&oacute;n</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <p class="text-muted" id="sinHerrUsadas" style="display:none">A&uacute;n no se asociaron herramientas usadas a esta OT.</p>
+        </div>
+      </div>
+</div><!-- end .tabpanel -->
 
     <div role="tabpanel" class="tab-pane" id="rrhh">
       <!--  ORDEN DE RECURSOS HUMANOS  -->
@@ -342,7 +395,9 @@
                     <th>Fecha</th>
                     <th>Código</th>
                     <th>Descripción</th>
-                    <th>Cantidad</th>
+                    <th>Pedido</th>
+                    <th>Entregado</th>
+                    <th>Pendiente</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
@@ -352,6 +407,28 @@
           </div>
         </div><!-- end .panel-body -->
       </div><!-- end .panel-default -->
+
+      <!-- F4 REQ-ASSET-ALM: Entregas del pedido (parciales/totales), desde el almacen de tools -->
+      <div class="panel panel-default">
+        <div class="panel-heading"><span class="fa fa-truck icotitulo" aria-hidden="true"></span> Entregas del Pedido</div>
+        <div class="panel-body">
+          <table class="table table-condensed table-responsive" id="tablaEntregas">
+            <thead>
+              <tr>
+                <th>N&deg; Entrega</th>
+                <th>Fecha</th>
+                <th>Comprobante</th>
+                <th>Retir&oacute;</th>
+                <th>DNI</th>
+                <th>&Iacute;tems</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <p class="text-muted" id="sinEntregas" style="display:none">Este pedido todav&iacute;a no tiene entregas registradas.</p>
+        </div>
+      </div>
     </div><!-- end .tabpanel -->
 
     <div role="tabpanel" class="tab-pane" id="evidencias">
@@ -465,6 +542,8 @@
 
   // Trae insumos
     getInsumos();
+    getEntregas();
+    getHerramientasUsadas();
     function getInsumos(){
     
       var id_ot = $("#numSolic").val(); 
@@ -487,15 +566,19 @@
              // var solicitante = data[i]['nombre'] + ' '+ data[i]['apellido'];
               var codigo = data[i]['barcode'];
               var descripcion = data[i]['descripcion'];
-              var cantidad = data[i]['cantidad'];
+              var pedido = data[i]['pedido'];
+              var entregado = data[i]['entregado'];
+              var pendiente = data[i]['pendiente'];
               //agrego valores a la tabla
-              $('#tablalistinsumos').DataTable().row.add( [            
+              $('#tablalistinsumos').DataTable().row.add( [
                 otNro,
                 fecha,
                 //solicitante,
                 codigo,
-                descripcion, 
-                cantidad             
+                descripcion,
+                pedido,
+                entregado,
+                pendiente
               ] );
               $('#tablalistinsumos').DataTable().draw();        
             }   
@@ -1085,4 +1168,154 @@ function validarFechasInicioFin() {
 $("#fecha_inicio, #fecha_fin").on('change blur', function() {
   validarFechasInicioFin();
 });
+
+    // F4 REQ-ASSET-ALM: entregas del pedido desde tools
+    function getEntregas(){
+      var id_ot = $("#numSolic").val();
+      $.ajax({
+        data: { id_ot:id_ot }, async:true, type:"POST", global:false, dataType:'json',
+        url: "Ordenservicio/getEntregasPorOT",
+        success: function (pedidos) {
+          var tb = $('#tablaEntregas tbody'); tb.empty();
+          window._detEntregas = {};
+          var total = 0;
+          for (var i=0; i<pedidos.length; i++) {
+            var ent = pedidos[i]['entregas'] || [];
+            for (var j=0; j<ent.length; j++) {
+              var e = ent[j]; total++;
+              var det = e['detalle'] || [];
+              window._detEntregas[e['enma_id']] = det;
+              tb.append('<tr><td>'+e['enma_id']+'</td><td>'+e['fecha']+'</td><td>'+(e['comprobante']||'')+'</td><td>'+(e['solicitante']||'')+'</td><td>'+(e['dni']||'')+'</td><td>'+det.length+'</td><td><a href="#" class="btn btn-xs btn-info" onclick="verDetalleEntrega(\''+e['enma_id']+'\');return false;">ver detalle</a></td></tr>');
+            }
+          }
+          $('#sinEntregas').toggle(total===0);
+        }
+      });
+    }
+    function verDetalleEntrega(enma){
+      var det = (window._detEntregas||{})[enma] || [];
+      var b = $('#detEntregaBody'); b.empty();
+      $('#detEntregaNro').text('N\u00b0 '+enma);
+      for (var i=0;i<det.length;i++){
+        var d=det[i];
+        b.append('<tr><td>'+(d['barcode']||'')+'</td><td>'+(d['descripcion']||'')+'</td><td>'+d['cantidad']+'</td><td>'+(d['lote_id']||'')+'</td><td>'+(d['deposito']||'')+'</td></tr>');
+      }
+      $('#modalDetalleEntrega').modal('show');
+    }
+
+
+    // F5 REQ-ASSET-ALM: herramientas usadas con dias de uso
+    // F5: rol que opera en esta pantalla (informe = mantenedor). Define origen y permisos (def. 8).
+    var ROL_ASOCIA = 'MANTENEDOR';
+
+    function getHerramientasUsadas(){
+      var id_ot = $("#numSolic").val();
+      $.ajax({
+        data:{ id_ot:id_ot }, async:true, type:"POST", global:false, dataType:'json',
+        url:"Ordenservicio/getHerramientasUsadas",
+        success:function(data){
+          var tb=$('#tablaHerrUsadas tbody'); tb.empty();
+          // permisos def. 8: quien puede quitar/destildar segun quien asocio el vale
+          var puedeQuitar = { MANTENEDOR:['MANTENEDOR'], SUPERVISOR:['SUPERVISOR','PANOLERO'] };
+          for(var i=0;i<data.length;i++){
+            var h=data[i];
+            var editable = ($.inArray(h['origen'], puedeQuitar[ROL_ASOCIA]||[]) > -1);
+            var chk = editable
+              ? '<input type="checkbox" class="chkUso" data-herr="'+h['herrId']+'" data-sapa="'+h['sapa_id']+'" '+(h['activa']?'checked':'')+'>'
+              : '<input type="checkbox" '+(h['activa']?'checked':'')+' disabled title="Lo asoci\u00f3 el '+h['origen'].toLowerCase()+'">';
+            var dev = h['devolucion']
+              ? '<span class="label label-success">'+h['devolucion']+'</span>'
+              : '<span class="label label-warning">sin devolver</span>';
+            var org = '<span class="label label-default">'+h['origen'].toLowerCase()+'</span>';
+            var quitar = editable
+              ? '<button type="button" class="btn btn-xs btn-link text-danger btnQuitarVale" data-sapa="'+h['sapa_id']+'" title="Quitar este vale"><span class="fa fa-trash"></span></button>'
+              : '<span class="text-muted" title="Lo asoci\u00f3 el '+h['origen'].toLowerCase()+'">&#128274;</span>';
+            tb.append('<tr><td>'+chk+'</td><td>'+(h['codigo']||'')+'</td><td>'+(h['descripcion']||'')+'</td><td>'+(h['marca']||'')+'</td><td>N\u00b0 '+h['sapa_id']+'</td><td>'+org+'</td><td>'+h['dias']+(h['dias']==1?' d\u00eda':' d\u00edas')+'</td><td>'+dev+'</td><td>'+quitar+'</td></tr>');
+          }
+          $('#sinHerrUsadas').toggle(data.length===0);
+        }
+      });
+    }
+
+    // Abrir/cerrar el buscador de vales
+    $(document).on('click','#btnAbrirBuscarVales',function(){
+      $('#buscarValesBox').toggle();
+      if(!$('#valeHasta').val()){
+        var hoy=new Date(), tresm=new Date(); tresm.setMonth(tresm.getMonth()-3);
+        $('#valeHasta').val(hoy.toISOString().substr(0,10));
+        $('#valeDesde').val(tresm.toISOString().substr(0,10));
+      }
+    });
+
+    // Buscar vales (por DNI para el mantenedor)
+    $(document).on('click','#btnBuscarVales',function(){
+      $.ajax({
+        type:'POST', global:false, dataType:'json', url:'Ordenservicio/buscarVales',
+        data:{ rol:ROL_ASOCIA, dni:$('#valeDni').val(), desde:$('#valeDesde').val(), hasta:$('#valeHasta').val() },
+        success:function(r){
+          if(!r.ok){ alert(r.msg); return; }
+          var tb=$('#tablaValesEncontrados tbody'); tb.empty();
+          var vales=r.vales||[];
+          for(var i=0;i<vales.length;i++){
+            var v=vales[i];
+            tb.append('<tr><td>N\u00b0 '+v.sapa_id+'</td><td>'+(v.fecha||'')+'</td><td>'+(v.responsable||'')+'</td><td>'+(v.destino||'')+'</td>'
+              +'<td><button type="button" class="btn btn-xs btn-success btnAsociarVale" data-sapa="'+v.sapa_id+'">Asociar</button></td></tr>');
+          }
+          $('#tablaValesEncontrados').toggle(vales.length>0);
+          $('#sinValesEncontrados').toggle(vales.length===0);
+        }
+      });
+    });
+
+    // Asociar un vale encontrado
+    $(document).on('click','.btnAsociarVale',function(){
+      var sapa=$(this).data('sapa');
+      $.ajax({
+        type:'POST', global:false, dataType:'json', url:'Ordenservicio/asociarVale',
+        data:{ id_ot:$('#numSolic').val(), sapa_id:sapa, origen:ROL_ASOCIA },
+        success:function(r){
+          if(!r.ok){ alert(r.msg); return; }
+          getHerramientasUsadas();
+          $('#btnBuscarVales').click();
+        }
+      });
+    });
+
+    // Quitar un vale (permisos def. 8 revalidados en el servidor)
+    $(document).on('click','.btnQuitarVale',function(){
+      if(!confirm('\u00bfQuitar este vale de la OT?')) return;
+      var sapa=$(this).data('sapa');
+      $.ajax({
+        type:'POST', global:false, dataType:'json', url:'Ordenservicio/quitarVale',
+        data:{ id_ot:$('#numSolic').val(), sapa_id:sapa, rol:ROL_ASOCIA },
+        success:function(r){ if(!r.ok){ alert(r.msg); } getHerramientasUsadas(); }
+      });
+    });
+
+    // Tildar/destildar "se uso"
+    $(document).on('change','.chkUso',function(){
+      var $c=$(this);
+      $.ajax({
+        type:'POST', global:false, dataType:'json', url:'Ordenservicio/tildarHerramienta',
+        data:{ id_ot:$('#numSolic').val(), herr_id:$c.data('herr'), sapa_id:$c.data('sapa'), activa:$c.is(':checked')?1:0 }
+      });
+    });
+
 </script>
+
+<div class="modal fade" id="modalDetalleEntrega" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Detalle de la entrega <span id="detEntregaNro"></span></h4>
+      </div>
+      <div class="modal-body">
+        <table class="table table-condensed">
+          <thead><tr><th>C&oacute;digo</th><th>Art&iacute;culo</th><th>Cant.</th><th>Lote</th><th>Dep&oacute;sito</th></tr></thead>
+          <tbody id="detEntregaBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

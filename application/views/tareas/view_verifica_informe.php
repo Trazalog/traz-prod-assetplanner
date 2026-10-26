@@ -29,6 +29,8 @@
 												data-toggle="tab">Vista
 												Global
 											</a></li>
+										<li role="presentation"><a href="#insumosSup" aria-controls="insumosSup" role="tab" data-toggle="tab">Insumos</a></li>
+										<li role="presentation"><a href="#herrSup" aria-controls="herrSup" role="tab" data-toggle="tab">Herramientas</a></li>
 									</ul>
 
 									<!-- Tab panes -->
@@ -165,6 +167,64 @@
 										<div class="panel-body">
 											<!-- COMENTARIOS -->
 											<?php echo $comentarios ?>
+										</div>
+									</div>
+
+									<!-- F4 REQ-ASSET-ALM: Pedido y entregas (supervisor, lectura) -->
+									<div role="tabpanel" class="tab-pane" id="insumosSup">
+										<div class="panel-body">
+											<div class="panel panel-default">
+												<div class="panel-heading"><span class="fa fa-cube"></span> Insumos (pedido / entregado / pendiente)</div>
+												<div class="panel-body">
+													<table class="table table-condensed" id="tablaInsumosSup">
+														<thead><tr><th>C&oacute;digo</th><th>Art&iacute;culo</th><th>Pedido</th><th>Entregado</th><th>Pendiente</th></tr></thead>
+														<tbody></tbody>
+													</table>
+													<p class="text-muted" id="sinInsumosSup" style="display:none">Esta OT no gener&oacute; pedido de materiales.</p>
+												</div>
+											</div>
+											<div class="panel panel-default">
+												<div class="panel-heading"><span class="fa fa-truck"></span> Entregas del Pedido</div>
+												<div class="panel-body">
+													<table class="table table-condensed" id="tablaEntregasSup">
+														<thead><tr><th>N&deg;</th><th>Fecha</th><th>Comprobante</th><th>Solicitante</th><th>Destino</th></tr></thead>
+														<tbody></tbody>
+													</table>
+													<p class="text-muted" id="sinEntregasSup" style="display:none">Sin entregas registradas.</p>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<!-- F5 REQ-ASSET-ALM: Herramientas usadas (supervisor: asociar sin DNI, quitar vales del panolero) -->
+									<div role="tabpanel" class="tab-pane" id="herrSup">
+										<div class="panel-body">
+											<div class="panel panel-default">
+												<div class="panel-heading">
+													<span class="fa fa-wrench"></span> Herramientas Usadas <small>(de vales de pa&ntilde;ol)</small>
+													<button type="button" class="btn btn-xs btn-primary pull-right" id="btnAbrirBuscarValesSup"><span class="fa fa-plus"></span> Asociar vale</button>
+												</div>
+												<div class="panel-body">
+													<div id="buscarValesBoxSup" class="well well-sm" style="display:none">
+														<div class="row">
+															<div class="col-sm-4"><label class="small">Desde</label><input type="date" class="form-control input-sm" id="valeDesdeSup"></div>
+															<div class="col-sm-4"><label class="small">Hasta</label><input type="date" class="form-control input-sm" id="valeHastaSup"></div>
+															<div class="col-sm-4"><label class="small">&nbsp;</label><br><button type="button" class="btn btn-sm btn-default" id="btnBuscarValesSup"><span class="fa fa-search"></span> Buscar</button></div>
+														</div>
+														<p class="small text-muted" style="margin-top:6px">El supervisor ve todos los vales del per&iacute;odo, sin filtro de DNI.</p>
+														<table class="table table-condensed" id="tablaValesEncontradosSup" style="display:none">
+															<thead><tr><th>Vale</th><th>Fecha</th><th>Responsable</th><th>Destino</th><th></th></tr></thead>
+															<tbody></tbody>
+														</table>
+														<p class="text-muted small" id="sinValesEncontradosSup" style="display:none">No se encontraron vales para ese filtro.</p>
+													</div>
+													<table class="table table-condensed" id="tablaHerrUsadasSup">
+														<thead><tr><th>Us&oacute;</th><th>C&oacute;digo</th><th>Herramienta</th><th>Marca</th><th>Vale</th><th>Origen</th><th>Uso</th><th>Devoluci&oacute;n</th><th></th></tr></thead>
+														<tbody></tbody>
+													</table>
+													<p class="text-muted" id="sinHerrUsadasSup" style="display:none">A&uacute;n no se asociaron herramientas usadas a esta OT.</p>
+												</div>
+											</div>
 										</div>
 									</div>
 
@@ -479,3 +539,85 @@
         </div>
     </div>
 </div> 
+
+<script>
+// F4/F5 REQ-ASSET-ALM: pedido+entregas y herramientas usadas en la verificacion del supervisor.
+(function(){
+  var ROL_ASOCIA = 'SUPERVISOR';
+  var puedeQuitar = { MANTENEDOR:['MANTENEDOR'], SUPERVISOR:['SUPERVISOR','PANOLERO'] };
+  function otId(){ return $('#id_OT').val(); }
+  var cargado = false;
+
+  function cargarInsumosSup(){
+    $.ajax({ type:'POST', global:false, dataType:'json', url:'Ordenservicio/getInsumosPorOT', data:{ id_ot:otId() },
+      success:function(d){
+        var tb=$('#tablaInsumosSup tbody'); tb.empty(); d=d||[];
+        for(var i=0;i<d.length;i++){ var x=d[i];
+          tb.append('<tr><td>'+(x.codigo||'')+'</td><td>'+(x.articulo||x.descripcion||'')+'</td><td>'+(x.pedido||0)+'</td><td>'+(x.entregado||0)+'</td><td>'+(x.pendiente||0)+'</td></tr>'); }
+        $('#sinInsumosSup').toggle(d.length===0);
+      }});
+  }
+  function cargarEntregasSup(){
+    $.ajax({ type:'POST', global:false, dataType:'json', url:'Ordenservicio/getEntregasPorOT', data:{ id_ot:otId() },
+      success:function(peds){
+        var tb=$('#tablaEntregasSup tbody'); tb.empty(); peds=peds||[]; var n=0;
+        for(var i=0;i<peds.length;i++){ var ents=peds[i].entregas||[]; for(var j=0;j<ents.length;j++){ var e=ents[j]; n++; tb.append('<tr><td>N° '+e.enma_id+'</td><td>'+(e.fecha||'')+'</td><td>'+(e.comprobante||'')+'</td><td>'+(e.solicitante||'')+'</td><td>'+(e.destino||'')+'</td></tr>'); } }
+        $('#sinEntregasSup').toggle(n===0);
+      }});
+  }
+  function cargarHerrSup(){
+    $.ajax({ type:'POST', global:false, dataType:'json', url:'Ordenservicio/getHerramientasUsadas', data:{ id_ot:otId() },
+      success:function(d){
+        var tb=$('#tablaHerrUsadasSup tbody'); tb.empty(); d=d||[];
+        for(var i=0;i<d.length;i++){ var h=d[i];
+          var editable = ($.inArray(h.origen, puedeQuitar[ROL_ASOCIA]||[]) > -1);
+          var chk = editable
+            ? '<input type="checkbox" class="chkUsoSup" data-herr="'+h.herrId+'" data-sapa="'+h.sapa_id+'" '+(h.activa?'checked':'')+'>'
+            : '<input type="checkbox" '+(h.activa?'checked':'')+' disabled>';
+          var dev = h.devolucion ? '<span class="label label-success">'+h.devolucion+'</span>' : '<span class="label label-warning">sin devolver</span>';
+          var org = '<span class="label label-default">'+h.origen.toLowerCase()+'</span>';
+          var quitar = editable
+            ? '<button type="button" class="btn btn-xs btn-link text-danger btnQuitarValeSup" data-sapa="'+h.sapa_id+'" title="Quitar vale"><span class="fa fa-trash"></span></button>'
+            : '<span class="text-muted" title="Lo asoció el '+h.origen.toLowerCase()+'">&#128274;</span>';
+          tb.append('<tr><td>'+chk+'</td><td>'+(h.codigo||'')+'</td><td>'+(h.descripcion||'')+'</td><td>'+(h.marca||'')+'</td><td>N° '+h.sapa_id+'</td><td>'+org+'</td><td>'+h.dias+(h.dias==1?' día':' días')+'</td><td>'+dev+'</td><td>'+quitar+'</td></tr>');
+        }
+        $('#sinHerrUsadasSup').toggle(d.length===0);
+      }});
+  }
+  function cargarTodo(){ if(cargado) return; cargado=true; cargarInsumosSup(); cargarEntregasSup(); cargarHerrSup(); }
+
+  // cargar cuando se muestra alguna de las pestañas nuevas
+  $(document).on('shown.bs.tab','a[href="#insumosSup"],a[href="#herrSup"]', cargarTodo);
+
+  $(document).on('click','#btnAbrirBuscarValesSup',function(){
+    $('#buscarValesBoxSup').toggle();
+    if(!$('#valeHastaSup').val()){ var hoy=new Date(), t=new Date(); t.setMonth(t.getMonth()-3);
+      $('#valeHastaSup').val(hoy.toISOString().substr(0,10)); $('#valeDesdeSup').val(t.toISOString().substr(0,10)); }
+  });
+  $(document).on('click','#btnBuscarValesSup',function(){
+    $.ajax({ type:'POST', global:false, dataType:'json', url:'Ordenservicio/buscarVales',
+      data:{ rol:ROL_ASOCIA, desde:$('#valeDesdeSup').val(), hasta:$('#valeHastaSup').val() },
+      success:function(r){ if(!r.ok){ alert(r.msg); return; }
+        var tb=$('#tablaValesEncontradosSup tbody'); tb.empty(); var v=r.vales||[];
+        for(var i=0;i<v.length;i++){ var x=v[i];
+          tb.append('<tr><td>N° '+x.sapa_id+'</td><td>'+(x.fecha||'')+'</td><td>'+(x.responsable||'')+'</td><td>'+(x.destino||'')+'</td><td><button type="button" class="btn btn-xs btn-success btnAsociarValeSup" data-sapa="'+x.sapa_id+'">Asociar</button></td></tr>'); }
+        $('#tablaValesEncontradosSup').toggle(v.length>0); $('#sinValesEncontradosSup').toggle(v.length===0);
+      }});
+  });
+  $(document).on('click','.btnAsociarValeSup',function(){
+    $.ajax({ type:'POST', global:false, dataType:'json', url:'Ordenservicio/asociarVale',
+      data:{ id_ot:otId(), sapa_id:$(this).data('sapa'), origen:ROL_ASOCIA },
+      success:function(r){ if(!r.ok){ alert(r.msg); return; } cargarHerrSup(); $('#btnBuscarValesSup').click(); }});
+  });
+  $(document).on('click','.btnQuitarValeSup',function(){
+    if(!confirm('¿Quitar este vale de la OT?')) return;
+    $.ajax({ type:'POST', global:false, dataType:'json', url:'Ordenservicio/quitarVale',
+      data:{ id_ot:otId(), sapa_id:$(this).data('sapa'), rol:ROL_ASOCIA },
+      success:function(r){ if(!r.ok){ alert(r.msg); } cargarHerrSup(); }});
+  });
+  $(document).on('change','.chkUsoSup',function(){ var c=$(this);
+    $.ajax({ type:'POST', global:false, dataType:'json', url:'Ordenservicio/tildarHerramienta',
+      data:{ id_ot:otId(), herr_id:c.data('herr'), sapa_id:c.data('sapa'), activa:c.is(':checked')?1:0 }});
+  });
+})();
+</script>

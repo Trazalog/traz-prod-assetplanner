@@ -26,6 +26,7 @@
                   <!--tabs -->
                    <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#detalle" aria-controls="profile" role="tab" data-toggle="tab">Detalle</a></li>
+                    <li role="presentation"><a href="#herrEjec" aria-controls="herrEjec" role="tab" data-toggle="tab">Herramientas</a></li>
                       <?php
                        if($btnVisibilidad){
                          echo '<li role="presentation"><a href="#responsable" aria-controls="responsable" role="tab" data-toggle="tab">Asignación Responsable</a></li>';
@@ -205,11 +206,49 @@
                     <!--/#tareas -->
                     <!-- Tab pedidomateriales -->
                     <div role="tabpanel" class="tab-pane" id="pedidomateriales">
-                        <?php 
+                        <!-- F4 REQ-ASSET-ALM: aclaracion de los dos bloques de esta pestana -->
+                        <p class="text-muted" style="margin:0 0 10px">
+                          <span class="fa fa-info-circle"></span>
+                          Esta pesta&ntilde;a tiene dos partes: arriba, <strong>solicitar materiales</strong> (crear el pedido al almac&eacute;n);
+                          abajo, las <strong>entregas ya realizadas</strong> de esta OT (informativo, solo lectura).
+                        </p>
+                        <?php
                         $this->load->view(ALM.'notapedido/generar_pedido');
                       ?>
+                        <!-- F4 REQ-ASSET-ALM: entregas del pedido (lectura) -->
+                        <div class="panel panel-default" style="margin-top:12px">
+                          <div class="panel-heading">
+                            <span class="fa fa-truck"></span> Entregas ya realizadas
+                            <small>(del almac&eacute;n &middot; solo lectura)</small>
+                          </div>
+                          <div class="panel-body">
+                            <p class="text-muted" style="margin-top:0">
+                              Entregas que el almac&eacute;n ya hizo para los pedidos de esta OT.
+                              Al reci&eacute;n asignar la OT normalmente est&aacute; vac&iacute;o: se van llenando a medida que el almac&eacute;n entrega.
+                            </p>
+                            <table class="table table-condensed" id="tablaEntregasEjec">
+                              <thead><tr><th>N&deg;</th><th>Fecha</th><th>Comprobante</th><th>Solicitante</th><th>Destino</th></tr></thead>
+                              <tbody></tbody>
+                            </table>
+                            <p class="text-muted" id="sinEntregasEjec" style="display:none">A&uacute;n no hay entregas para esta OT.</p>
+                          </div>
+                        </div>
                     </div>
                     <!--/#pedidomateriales -->
+
+                    <!-- F5 REQ-ASSET-ALM: herramientas usadas (lectura) -->
+                    <div role="tabpanel" class="tab-pane" id="herrEjec">
+                      <div class="panel panel-default">
+                        <div class="panel-heading"><span class="fa fa-wrench"></span> Herramientas Usadas <small>(de vales de pa&ntilde;ol)</small></div>
+                        <div class="panel-body">
+                          <table class="table table-condensed" id="tablaHerrUsadasEjec">
+                            <thead><tr><th>Us&oacute;</th><th>C&oacute;digo</th><th>Herramienta</th><th>Marca</th><th>Vale</th><th>Origen</th><th>Uso</th><th>Devoluci&oacute;n</th></tr></thead>
+                            <tbody></tbody>
+                          </table>
+                          <p class="text-muted" id="sinHerrUsadasEjec" style="display:none">A&uacute;n no se asociaron herramientas usadas a esta OT.</p>
+                        </div>
+                      </div>
+                    </div>
 
                    </div>
                   <!-- tab-content -->
@@ -546,4 +585,22 @@ function guardarTarea(idOt) {
 			dataType: 'json'
 		});
 	}
+</script>
+
+<script>
+// F4/F5 REQ-ASSET-ALM: entregas y herramientas usadas en Ejecutar OT (lectura).
+(function(){
+  var oid = $('#idOt').val();
+  $.ajax({ type:'POST', global:false, dataType:'json', url:'Ordenservicio/getEntregasPorOT', data:{ id_ot:oid },
+    success:function(peds){ var tb=$('#tablaEntregasEjec tbody'); tb.empty(); peds=peds||[]; var n=0;
+      for(var i=0;i<peds.length;i++){ var ents=peds[i].entregas||[]; for(var j=0;j<ents.length;j++){ var e=ents[j]; n++; tb.append('<tr><td>N° '+e.enma_id+'</td><td>'+(e.fecha||'')+'</td><td>'+(e.comprobante||'')+'</td><td>'+(e.solicitante||'')+'</td><td>'+(e.destino||'')+'</td></tr>'); } }
+      $('#sinEntregasEjec').toggle(n===0); }});
+  $.ajax({ type:'POST', global:false, dataType:'json', url:'Ordenservicio/getHerramientasUsadas', data:{ id_ot:oid },
+    success:function(d){ var tb=$('#tablaHerrUsadasEjec tbody'); tb.empty(); d=d||[];
+      for(var i=0;i<d.length;i++){ var h=d[i];
+        var dev = h.devolucion ? '<span class="label label-success">'+h.devolucion+'</span>' : '<span class="label label-warning">sin devolver</span>';
+        var org = '<span class="label label-default">'+h.origen.toLowerCase()+'</span>';
+        tb.append('<tr><td><input type="checkbox" '+(h.activa?'checked':'')+' disabled></td><td>'+(h.codigo||'')+'</td><td>'+(h.descripcion||'')+'</td><td>'+(h.marca||'')+'</td><td>N\u00b0 '+h.sapa_id+'</td><td>'+org+'</td><td>'+h.dias+(h.dias==1?' d\u00eda':' d\u00edas')+'</td><td>'+dev+'</td></tr>'); }
+      $('#sinHerrUsadasEjec').toggle(d.length===0); }});
+})();
 </script>
