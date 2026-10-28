@@ -776,6 +776,8 @@ class Preventivos extends CI_Model
     public function eliminarAdjunto($idPreventivo)
     {
         $data  = array( 'prev_adjunto' => '' );
+        $userdata = $this->session->userdata('user_data');
+        $this->db->where('id_empresa', $userdata[0]['id_empresa']); // T20: solo la empresa logueada
         $this->db->where('prevId', $idPreventivo);
         $query = $this->db->update("preventivo", $data);
         return $query;

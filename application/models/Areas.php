@@ -22,6 +22,8 @@ class areas extends CI_Model
 
 	function Obtener_areas($id){
 
+		$userdata = $this->session->userdata('user_data');
+		$this->db->where('id_empresa', $userdata[0]['id_empresa']); // T11: solo la empresa logueada
     $this->db->where('id_area', $id);
     $query=$this->db->get('area');
    
@@ -55,6 +57,8 @@ class areas extends CI_Model
 	function Eliminar_areas($data){
 
 		$this->db->set('estado', 'AN');
+		$userdata = $this->session->userdata('user_data');
+		$this->db->where('id_empresa', $userdata[0]['id_empresa']); // T11: solo la empresa logueada
 		$this->db->where('id_area', $data);
 		$query=$this->db->update('area');
 		return $query;

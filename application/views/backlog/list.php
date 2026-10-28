@@ -731,7 +731,7 @@ function eliminarAdjunto() {
             },
             dataType: 'json',
             type: 'POST',
-            url: 'index.php/Preventivo/eliminarAdjunto',
+            url: 'index.php/Backlog/eliminarAdjunto',
         })
         .done(function(data) {
             //console.table(data); 

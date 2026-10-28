@@ -270,6 +270,14 @@ class Predictivo extends CI_Controller {
 	}	
 
 	// Agrega adjunto desde modal edicion
+	/**
+	 * Borra el nombre del adjunto (T20).
+	 */
+	public function eliminarAdjunto()
+	{
+		echo json_encode($this->Predictivos->eliminarAdjunto($this->input->post('idprev')));
+	}
+
 	public function agregarAdjunto(){
 		$userdata     = $this->session->userdata('user_data');
 		$empId        = $userdata[0]['id_empresa'];
