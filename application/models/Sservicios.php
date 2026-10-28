@@ -86,6 +86,8 @@ class Sservicios extends CI_Model
 					$this->db->from('equipos');
 					$this->db->where('equipos.estado', 'AC');
 					$this->db->where('equipos.id_sector', $id);
+					$userdata = $this->session->userdata('user_data');
+					$this->db->where('equipos.id_empresa', $userdata[0]['id_empresa']); // T27: solo la empresa logueada
 					$query = $this->db->get();
 			if ($query->num_rows()!=0)
 			{
@@ -106,6 +108,8 @@ class Sservicios extends CI_Model
 			$this->db->from('solicitud_reparacion');
 			$this->db->join('sisusers', 'solicitud_reparacion.id_usuario_eliminada = sisusers.usrId', 'left');
 			$this->db->where('solicitud_reparacion.id_solicitud', $idSS);
+			$userdata = $this->session->userdata('user_data');
+			$this->db->where('solicitud_reparacion.id_empresa', $userdata[0]['id_empresa']); // T27: solo la empresa logueada
 
 			$query = $this->db->get()->result();
 			return $query;
@@ -313,6 +317,8 @@ class Sservicios extends CI_Model
 		$this->db->join('sector', 'equipos.id_sector = sector.id_sector');
 		$this->db->join('grupo', 'equipos.id_grupo = grupo.id_grupo');				
 		$this->db->where('solicitud_reparacion.estado', 'T');
+		$userdata = $this->session->userdata('user_data');
+		$this->db->where('solicitud_reparacion.id_empresa', $userdata[0]['id_empresa']); // T27: solo la empresa logueada
 		$this->db->order_by('solicitud_reparacion.id_solicitud','DESC');
 		$query= $this->db->get();
 

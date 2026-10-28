@@ -415,7 +415,7 @@ function eliminarAdjunto() {
     data: { idprev: idprev },
     dataType: 'json',
     type: 'POST',
-    url: 'index.php/Preventivo/eliminarAdjunto',
+    url: 'index.php/Predictivo/eliminarAdjunto',
   }) 
   .done( function(data){     
     //console.table(data); 

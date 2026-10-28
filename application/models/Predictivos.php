@@ -150,6 +150,17 @@ class Predictivos extends CI_Model
 	}
 
 // Guarda el nombre de adjunto
+	/**
+	 * Borra el nombre del adjunto (el archivo queda en disco). T20: antes la vista usaba Preventivo/eliminarAdjunto
+	 * con este id, que borraba el adjunto del preventivo con ese número.
+	 */
+	function eliminarAdjunto($id){
+		$userdata = $this->session->userdata('user_data');
+		$this->db->where('id_empresa', $userdata[0]['id_empresa']);
+		$this->db->where('predId', $id);
+		return $this->db->update('predictivo', array('pred_adjunto' => ''));
+	}
+
 function updateAdjunto($adjunto,$ultimoId){
 	$this->db->where('predId', $ultimoId);
 	$query = $this->db->update("predictivo",$adjunto);

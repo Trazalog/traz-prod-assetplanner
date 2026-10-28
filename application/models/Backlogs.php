@@ -142,6 +142,17 @@ class Backlogs extends CI_Model
 		return $query;
 	}  	
 	// Guarda el nombre de adjunto
+	/**
+	 * Borra el nombre del adjunto (el archivo queda en disco). T20: antes la vista usaba Preventivo/eliminarAdjunto
+	 * con este id, que borraba el adjunto del preventivo con ese número.
+	 */
+	function eliminarAdjunto($id){
+		$userdata = $this->session->userdata('user_data');
+		$this->db->where('id_empresa', $userdata[0]['id_empresa']);
+		$this->db->where('backId', $id);
+		return $this->db->update('tbl_back', array('back_adjunto' => ''));
+	}
+
 	function updateAdjunto($adjunto,$ultimoId){
 		$this->db->where('backId', $ultimoId);
 		$query = $this->db->update("tbl_back",$adjunto);

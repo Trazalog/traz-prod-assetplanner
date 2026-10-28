@@ -25,6 +25,8 @@ class procesos extends CI_Model
 
 	function Obtener_procesos($id){
 		
+		$userdata = $this->session->userdata('user_data');
+		$this->db->where('id_empresa', $userdata[0]['id_empresa']); // T11: solo la empresa logueada
     $this->db->where('id_proceso', $id);
     $query=$this->db->get('proceso');
    
@@ -58,6 +60,8 @@ class procesos extends CI_Model
 	function Eliminar_procesos($data){
     	
         $this->db->set('estado', 'AN');
+		$userdata = $this->session->userdata('user_data');
+		$this->db->where('id_empresa', $userdata[0]['id_empresa']); // T11: solo la empresa logueada
 		$this->db->where('id_proceso', $data);
 		$query=$this->db->update('proceso');
 		return $query;
